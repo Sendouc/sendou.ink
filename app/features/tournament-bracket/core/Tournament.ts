@@ -18,6 +18,7 @@ import { fillWithNullTillPowerOfTwo } from "../tournament-bracket-utils";
 import type { Stage } from "~/modules/brackets-model";
 import { Bracket } from "./Bracket";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
+import { currentSeason } from "~/features/mmr";
 
 export type OptionalIdObject = { id: number } | undefined;
 
@@ -42,7 +43,7 @@ export class Tournament {
         return 1;
       }
 
-      return a.createdAt - b.createdAt;
+      return this.compareUnseededTeams(a, b);
     });
     this.ctx = {
       ...ctx,
@@ -54,6 +55,31 @@ export class Tournament {
     };
 
     this.initBrackets(data);
+  }
+
+  private compareUnseededTeams(
+    a: TournamentData["ctx"]["teams"][number],
+    b: TournamentData["ctx"]["teams"][number],
+  ) {
+    const aPlus = a.members
+      .flatMap((a) => (a.plusTier ? [a.plusTier] : []))
+      .sort((a, b) => a - b)
+      .slice(0, 4);
+    const bPlus = b.members
+      .flatMap((b) => (b.plusTier ? [b.plusTier] : []))
+      .sort((a, b) => a - b)
+      .slice(0, 4);
+
+    for (let i = 0; i < 4; i++) {
+      if (aPlus[i] && !bPlus[i]) return -1;
+      if (!aPlus[i] && bPlus[i]) return 1;
+
+      if (aPlus[i] !== bPlus[i]) {
+        return aPlus[i] - bPlus[i];
+      }
+    }
+
+    return a.createdAt - b.createdAt;
   }
 
   private initBrackets(data: ValueToArray<DataTypes>) {
@@ -82,6 +108,7 @@ export class Tournament {
             preview: false,
             name,
             sources,
+            createdAt: inProgressStage.createdAt,
             data: {
               ...data,
               participant: data.participant.filter((participant) =>
@@ -117,7 +144,10 @@ export class Tournament {
           });
 
         if (checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START) {
-          const seeding = checkedInTeams.map((team) => team.name);
+          const seeding = checkedInTeams.map((team) => ({
+            name: team.name,
+            id: team.id,
+          }));
           manager.create({
             tournamentId: this.ctx.id,
             name,
@@ -139,6 +169,7 @@ export class Tournament {
             data: manager.get.tournamentData(this.ctx.id),
             type,
             sources,
+            createdAt: null,
             canBeStarted:
               checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
               (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
@@ -233,6 +264,10 @@ export class Tournament {
     }
   }
 
+  get ranked() {
+    return Boolean(currentSeason(this.ctx.startTime));
+  }
+
   get logoSrc() {
     return HACKY_resolvePicture(this.ctx);
   }
@@ -294,15 +329,11 @@ export class Tournament {
   }
 
   teamById(id: number) {
-    return this.ctx.teams.find((team) => team.id === id);
-  }
+    const teamIdx = this.ctx.teams.findIndex((team) => team.id === id);
 
-  seedByTeamId(id: number) {
-    const idx = this.ctx.teams.findIndex((team) => team.id === id);
+    if (teamIdx === -1) return;
 
-    if (idx === -1) return null;
-
-    return idx + 1;
+    return { ...this.ctx.teams[teamIdx], seed: teamIdx + 1 };
   }
 
   participatedPlayersByTeamId(id: number) {

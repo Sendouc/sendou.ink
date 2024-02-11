@@ -25,9 +25,6 @@ export class Delete {
   public stage(stageId: number): void {
     // The order is important here, because the abstract storage can possibly have foreign key checks (e.g. SQL).
 
-    if (!this.storage.delete("match_game", { stage_id: stageId }))
-      throw Error("Could not delete match games.");
-
     if (!this.storage.delete("match", { stage_id: stageId }))
       throw Error("Could not delete matches.");
 

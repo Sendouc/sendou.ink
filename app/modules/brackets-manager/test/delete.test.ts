@@ -18,7 +18,6 @@ DeleteStage("should delete a stage and all its linked data", () => {
     tournamentId: 0,
     type: "single_elimination",
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: { matchesChildCount: 2 },
   });
 
   manager.delete.stage(0);
@@ -27,13 +26,11 @@ DeleteStage("should delete a stage and all its linked data", () => {
   const groups = storage.select("group")!;
   const rounds = storage.select("round")!;
   const matches = storage.select<any>("match")!;
-  const games = manager.get.matchGames(matches);
 
   assert.equal(stages.length, 0);
   assert.equal(groups.length, 0);
   assert.equal(rounds.length, 0);
   assert.equal(matches.length, 0);
-  assert.equal(games.length, 0);
 });
 
 DeleteStage("should delete one stage and only its linked data", () => {
@@ -42,7 +39,6 @@ DeleteStage("should delete one stage and only its linked data", () => {
     tournamentId: 0,
     type: "single_elimination",
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: { matchesChildCount: 2 },
   });
 
   manager.create({
@@ -50,7 +46,6 @@ DeleteStage("should delete one stage and only its linked data", () => {
     tournamentId: 0,
     type: "single_elimination",
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: { matchesChildCount: 2 },
   });
 
   manager.delete.stage(0);
@@ -59,20 +54,17 @@ DeleteStage("should delete one stage and only its linked data", () => {
   const groups = storage.select<any>("group")!;
   const rounds = storage.select<any>("round")!;
   const matches = storage.select<any>("match")!;
-  const games = manager.get.matchGames(matches);
 
   assert.equal(stages.length, 1);
   assert.equal(groups.length, 1);
   assert.equal(rounds.length, 2);
   assert.equal(matches.length, 3);
-  assert.equal(games.length, 6);
 
   // Remaining data
   assert.equal(stages[0].id, 1);
   assert.equal(groups[0].id, 1);
   assert.equal(rounds[0].id, 2);
   assert.equal(matches[0].id, 3);
-  assert.equal(games[0].id, 6);
 });
 
 DeleteStage("should delete all stages of the tournament", () => {
@@ -81,7 +73,6 @@ DeleteStage("should delete all stages of the tournament", () => {
     tournamentId: 0,
     type: "single_elimination",
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: { matchesChildCount: 2 },
   });
 
   manager.create({
@@ -89,7 +80,6 @@ DeleteStage("should delete all stages of the tournament", () => {
     tournamentId: 0,
     type: "single_elimination",
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: { matchesChildCount: 2 },
   });
 
   manager.delete.tournament(0);
@@ -98,13 +88,11 @@ DeleteStage("should delete all stages of the tournament", () => {
   const groups = storage.select("group")!;
   const rounds = storage.select("round")!;
   const matches = storage.select<any>("match")!;
-  const games = manager.get.matchGames(matches);
 
   assert.equal(stages.length, 0);
   assert.equal(groups.length, 0);
   assert.equal(rounds.length, 0);
   assert.equal(matches.length, 0);
-  assert.equal(games.length, 0);
 });
 
 DeleteStage.run();

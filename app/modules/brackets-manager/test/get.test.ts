@@ -6,50 +6,6 @@ import * as assert from "uvu/assert";
 const storage = new InMemoryDatabase();
 const manager = new BracketsManager(storage);
 
-const GetChildGames = suite("Get child games");
-
-GetChildGames.before.each(() => {
-  storage.reset();
-});
-
-GetChildGames("should get child games of a list of matches", () => {
-  manager.create({
-    name: "Example",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: { matchesChildCount: 2 },
-  });
-
-  const matches = storage.select<any>("match", { round_id: 0 })!;
-  const games = manager.get.matchGames(matches);
-
-  assert.equal(matches.length, 2);
-  assert.equal(games.length, 4);
-  assert.equal(games[2].parent_id, 1);
-});
-
-GetChildGames(
-  "should get child games of a list of matches with some which do not have child games",
-  () => {
-    manager.create({
-      name: "Example",
-      tournamentId: 0,
-      type: "single_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-      settings: { matchesChildCount: 2 },
-    });
-
-    manager.update.matchChildCount("match", 1, 0); // Remove child games from match id 1.
-
-    const matches = storage.select<any>("match", { round_id: 0 })!;
-    const games = manager.get.matchGames(matches);
-
-    assert.equal(matches.length, 2);
-    assert.equal(games.length, 2); // Only two child games.
-  },
-);
-
 const GetFinalStandings = suite("Get final standings");
 
 GetFinalStandings.before.each(() => {
@@ -362,6 +318,5 @@ GetSeeding("should get the seeding with BYEs", () => {
   ]);
 });
 
-GetChildGames.run();
 GetFinalStandings.run();
 GetSeeding.run();

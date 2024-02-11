@@ -95,23 +95,5 @@ export interface Match extends MatchResults {
   /** The number of the match in its round. */
   number: number;
 
-  /** The count of match games this match has. Can be `0` if it's a simple match, or a positive number for "Best Of" matches. */
-  child_count: number;
-}
-
-/**
- * A game of a match.
- */
-export interface MatchGame extends MatchResults {
-  /** ID of the match game. */
-  id: number;
-
-  /** ID of the parent stage. */
-  stage_id: number;
-
-  /** ID of the parent match. */
-  parent_id: number;
-
-  /** The number of the match game in its parent match. */
-  number: number;
+  lastGameFinishedAt?: number | null;
 }

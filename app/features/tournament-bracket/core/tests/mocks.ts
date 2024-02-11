@@ -11,7 +11,6 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       settings: {
         groupCount: 1,
         roundRobinMode: "simple",
-        matchesChildCount: 0,
         size: 4,
         seedOrdering: ["groups.seed_optimized"],
       },
@@ -51,7 +50,6 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 0,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 0,
@@ -68,7 +66,6 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 0,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 2,
@@ -85,7 +82,6 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 1,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 1,
@@ -102,7 +98,6 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 1,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 0,
@@ -119,7 +114,6 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 2,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 2,
@@ -136,7 +130,6 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 2,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 1,
@@ -148,7 +141,6 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       },
     },
   ],
-  match_game: [],
   participant: [
     {
       id: 0,
@@ -185,7 +177,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
         groupCount: 1,
         seedOrdering: ["groups.seed_optimized"],
         roundRobinMode: "simple",
-        matchesChildCount: 0,
         size: 5,
       },
     },
@@ -236,7 +227,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 0,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 4,
@@ -253,7 +243,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 1,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 0,
@@ -270,7 +259,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 1,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 4,
@@ -287,7 +275,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 2,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 1,
@@ -304,7 +291,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 2,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 0,
@@ -321,7 +307,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 3,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 2,
@@ -338,7 +323,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 3,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 1,
@@ -355,7 +339,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 4,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 3,
@@ -372,7 +355,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 4,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 2,
@@ -389,7 +371,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 0,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 3,
@@ -401,7 +382,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       },
     },
   ],
-  match_game: [],
   participant: [
     {
       id: 0,
@@ -443,7 +423,6 @@ export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
         groupCount: 2,
         seedOrdering: ["groups.seed_optimized"],
         roundRobinMode: "simple",
-        matchesChildCount: 0,
         size: 6,
       },
     },
@@ -505,7 +484,6 @@ export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 0,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 4,
@@ -522,7 +500,6 @@ export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 1,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 0,
@@ -539,7 +516,6 @@ export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 0,
       round_id: 2,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 3,
@@ -556,7 +532,6 @@ export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 1,
       round_id: 3,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 5,
@@ -573,7 +548,6 @@ export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 1,
       round_id: 4,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 1,
@@ -590,7 +564,6 @@ export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
       stage_id: 0,
       group_id: 1,
       round_id: 5,
-      child_count: 0,
       status: 2,
       opponent1: {
         id: 2,
@@ -602,7 +575,6 @@ export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
       },
     },
   ],
-  match_game: [],
   participant: [
     {
       id: 0,

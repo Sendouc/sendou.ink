@@ -62,7 +62,7 @@ export function TeamRosterInputs({
         const showWinnerRadio =
           !points || !presentational || winnerRadioChecked;
 
-        const seed = tournament.seedByTeamId(team.id);
+        const seed = tournament.teamById(team.id)?.seed;
 
         return (
           <div key={team.id}>
@@ -84,7 +84,7 @@ export function TeamRosterInputs({
               ) : null}{" "}
               <Link
                 to={tournamentTeamPage({
-                  eventId: tournament.ctx.id,
+                  tournamentId: tournament.ctx.id,
                   tournamentTeamId: team.id,
                 })}
                 className="tournament-bracket__during-match-actions__team-name"
@@ -227,7 +227,7 @@ function PointInput({
         data-testid={testId}
       />
       <Label htmlFor={id} spaced={false}>
-        Points
+        Score
       </Label>
     </div>
   );

@@ -270,7 +270,23 @@ export default function TournamentRegisterPage() {
         />
         <div>
           <div className="tournament__title">{tournament.ctx.name}</div>
-          <div className="tournament__by">
+          <div className="stack horizontal sm">
+            {tournament.ranked ? (
+              <div className="tournament__badge tournament__badge__ranked">
+                Ranked
+              </div>
+            ) : (
+              <div className="tournament__badge tournament__badge__unranked">
+                Unranked
+              </div>
+            )}
+            <div className="tournament__badge tournament__badge__modes">
+              {tournament.modesIncluded.map((mode) => (
+                <ModeImage key={mode} mode={mode} size={16} />
+              ))}
+            </div>
+          </div>
+          <div className="tournament__by mt-1">
             <div className="stack horizontal xs items-center">
               <UserIcon className="tournament__info__icon" />{" "}
               {tournament.ctx.author.discordName}
@@ -286,13 +302,6 @@ export default function TournamentRegisterPage() {
                     month: "numeric",
                   })
                 : null}
-            </div>
-            <div className="stack horizontal sm mt-1">
-              {tournament.modesIncluded.map((mode) => (
-                <div key={mode} className="tournament___info__mode-container">
-                  <ModeImage mode={mode} size={18} />
-                </div>
-              ))}
             </div>
           </div>
         </div>
@@ -640,7 +649,7 @@ function FillRoster({
   const { t } = useTranslation(["common", "tournament"]);
 
   const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
-    eventId: tournament.ctx.id,
+    tournamentId: tournament.ctx.id,
     inviteCode: ownTeam.inviteCode!,
   })}`;
 

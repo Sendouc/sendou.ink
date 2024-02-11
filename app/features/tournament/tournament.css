@@ -4,6 +4,10 @@
   background-color: var(--bg-lighter);
 }
 
+.tournament__action-section__top-padded {
+  padding: var(--s-3) var(--s-6) var(--s-6) var(--s-6);
+}
+
 .tournament__action-section-title {
   font-size: var(--fonts-lg);
   font-weight: var(--bold);
@@ -175,10 +179,9 @@
   white-space: nowrap;
 }
 
-.tournament__team-member-name__captain {
+.tournament__team-member-name__role {
   font-size: var(--fonts-xxxs);
-  color: var(--theme);
-  font-weight: var(--semi-bold);
+  font-weight: var(--bold);
 }
 
 .tournament__logo-container {
@@ -196,15 +199,36 @@
   font-weight: var(--bold);
 }
 
+.tournament__badge {
+  text-transform: uppercase;
+  font-size: var(--fonts-xxs);
+  font-weight: var(--bold);
+  padding: var(--s-0-5) var(--s-2);
+  border-radius: var(--rounded);
+  display: grid;
+  place-items: center;
+  width: max-content;
+  display: flex;
+  gap: var(--s-2);
+}
+
+.tournament__badge__ranked {
+  background-color: var(--theme-info-transparent);
+  color: var(--theme-info);
+}
+
+.tournament__badge__unranked {
+  background-color: var(--theme-success-transparent);
+  color: var(--theme-success);
+}
+
+.tournament__badge__modes {
+  background-color: var(--bg-lighter-transparent);
+}
+
 .tournament__info__icon {
   width: 18px;
   padding: var(--s-1) 0;
-}
-
-.tournament___info__mode-container {
-  background-color: var(--bg-lighter);
-  border-radius: 100%;
-  padding: var(--s-2);
 }
 
 .tournament__by {

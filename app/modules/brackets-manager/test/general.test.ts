@@ -256,69 +256,6 @@ SpecialCases(
   },
 );
 
-const UpdateMatchChildCount = suite("Update match child count");
-
-UpdateMatchChildCount.before.each(() => {
-  storage.reset();
-
-  manager.create({
-    name: "Example",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ],
-    settings: { seedOrdering: ["natural"], matchesChildCount: 1 },
-  });
-});
-
-UpdateMatchChildCount("should change match child count at match level", () => {
-  manager.update.matchChildCount("match", 0, 3);
-  assert.equal(storage.select<any>("match", 0).child_count, 3);
-  assert.equal(storage.select<any>("match_game")!.length, 6 + 3);
-});
-
-UpdateMatchChildCount("should remove all child games of the match", () => {
-  manager.update.matchChildCount("match", 0, 3); // Bo3
-  manager.update.matchChildCount("match", 0, 0); // No child games.
-  assert.equal(storage.select<any>("match", 0).child_count, 0);
-  assert.equal(storage.select<any>("match_game")!.length, 6);
-});
-
-UpdateMatchChildCount("should change match child count at round level", () => {
-  manager.update.matchChildCount("round", 2, 3); // Round of id 2 in Bo3
-  assert.equal(storage.select<any>("match_game")!.length, 6 + 3);
-
-  manager.update.matchChildCount("round", 1, 2); // Round of id 1 in Bo2
-  assert.equal(storage.select<any>("match_game")!.length, 4 + 4 + 3);
-
-  manager.update.matchChildCount("round", 0, 0); // Round of id 0 in Bo0 (normal matches without games)
-  assert.equal(storage.select<any>("match_game")!.length, 0 + 4 + 3);
-});
-
-UpdateMatchChildCount("should change match child count at group level", () => {
-  manager.update.matchChildCount("group", 0, 4);
-  assert.equal(storage.select<any>("match_game")!.length, 7 * 4);
-
-  manager.update.matchChildCount("group", 0, 2);
-  assert.equal(storage.select<any>("match_game")!.length, 7 * 2);
-});
-
-UpdateMatchChildCount("should change match child count at stage level", () => {
-  manager.update.matchChildCount("stage", 0, 4);
-  assert.equal(storage.select<any>("match_game")!.length, 7 * 4);
-
-  manager.update.matchChildCount("stage", 0, 2);
-  assert.equal(storage.select<any>("match_game")!.length, 7 * 2);
-});
-
 const SeedingAndOrderingInElimination = suite(
   "Seeding and ordering in elimination",
 );
@@ -481,289 +418,6 @@ SeedingAndOrderingInElimination(
   },
 );
 
-const BestOfSeriesMatchesCompletion = suite(
-  "Best-Of series matches completion",
-);
-
-BestOfSeriesMatchesCompletion.before.each(() => {
-  storage.reset();
-});
-
-BestOfSeriesMatchesCompletion("should end Bo1 matches", () => {
-  manager.create({
-    name: "Example",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: {
-      matchesChildCount: 1,
-    },
-  });
-
-  manager.update.matchGame({ id: 0, opponent1: { result: "win" } });
-
-  const match = storage.select<any>("match", 0);
-  assert.equal(match.opponent1.score, 1);
-  assert.equal(match.opponent2.score, 0);
-  assert.equal(match.opponent1.result, "win");
-});
-
-BestOfSeriesMatchesCompletion(
-  "should end Bo2 matches in round-robin stage",
-  () => {
-    manager.create({
-      name: "Example",
-      tournamentId: 0,
-      type: "round_robin",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-      settings: {
-        matchesChildCount: 2, // Bo2
-        groupCount: 1,
-      },
-    });
-
-    manager.update.matchGame({ id: 0, opponent1: { result: "win" } });
-    manager.update.matchGame({ id: 1, opponent2: { result: "win" } });
-
-    const match = storage.select<any>("match", 0);
-    assert.equal(match.opponent1.score, 1);
-    assert.equal(match.opponent2.score, 1);
-    assert.equal(match.opponent1.result, "draw");
-    assert.equal(match.opponent2.result, "draw");
-  },
-);
-
-BestOfSeriesMatchesCompletion(
-  "should throw if a BoX match has a tie in an elimination stage",
-  () => {
-    manager.create({
-      name: "Example",
-      tournamentId: 0,
-      type: "single_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-      settings: {
-        matchesChildCount: 2, // Bo2
-      },
-    });
-
-    manager.update.matchGame({ id: 0, opponent1: { result: "win" } });
-
-    assert.throws(
-      () =>
-        manager.update.matchGame({
-          id: 1,
-          opponent2: { result: "win" },
-        }),
-      "Match games result in a tie for the parent match.",
-    );
-  },
-);
-
-BestOfSeriesMatchesCompletion("should end Bo3 matches", () => {
-  manager.create({
-    name: "Example",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: {
-      matchesChildCount: 3,
-    },
-  });
-
-  manager.update.matchGame({
-    parent_id: 0,
-    number: 1,
-    opponent1: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 0,
-    number: 2,
-    opponent1: { result: "win" },
-  });
-
-  const firstMatch = storage.select<any>("match", 0);
-  assert.equal(firstMatch.opponent1.score, 2);
-  assert.equal(firstMatch.opponent2.score, 0);
-  assert.equal(firstMatch.opponent1.result, "win");
-
-  manager.update.matchGame({
-    parent_id: 1,
-    number: 1,
-    opponent2: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 1,
-    number: 2,
-    opponent1: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 1,
-    number: 3,
-    opponent1: { result: "win" },
-  });
-
-  const secondMatch = storage.select<any>("match", 1);
-  assert.equal(secondMatch.opponent1.score, 2);
-  assert.equal(secondMatch.opponent2.score, 1);
-  assert.equal(secondMatch.opponent1.result, "win");
-});
-
-BestOfSeriesMatchesCompletion(
-  "should let the last match be played even if not necessary",
-  () => {
-    manager.create({
-      name: "Example",
-      tournamentId: 0,
-      type: "single_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-      settings: {
-        matchesChildCount: 3,
-      },
-    });
-
-    manager.update.matchGame({
-      parent_id: 0,
-      number: 1,
-      opponent1: { result: "win" },
-    });
-    manager.update.matchGame({
-      parent_id: 0,
-      number: 2,
-      opponent1: { result: "win" },
-    });
-
-    let match = storage.select<any>("match", 0);
-    assert.equal(match.opponent1.score, 2);
-    assert.equal(match.opponent2.score, 0);
-    assert.equal(match.opponent1.result, "win");
-
-    manager.update.matchGame({
-      parent_id: 0,
-      number: 3,
-      opponent2: { result: "win" },
-    });
-
-    match = storage.select<any>("match", 0);
-    assert.equal(match.opponent1.score, 2);
-    assert.equal(match.opponent2.score, 1);
-    assert.equal(match.opponent1.result, "win");
-  },
-);
-
-BestOfSeriesMatchesCompletion("should end Bo5 matches", () => {
-  manager.create({
-    name: "Example",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: {
-      matchesChildCount: 5,
-    },
-  });
-
-  manager.update.matchGame({
-    parent_id: 0,
-    number: 1,
-    opponent1: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 0,
-    number: 2,
-    opponent1: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 0,
-    number: 3,
-    opponent1: { result: "win" },
-  });
-
-  const firstMatch = storage.select<any>("match", 0);
-  assert.equal(firstMatch.opponent1.score, 3);
-  assert.equal(firstMatch.opponent2.score, 0);
-  assert.equal(firstMatch.opponent1.result, "win");
-
-  manager.update.matchGame({
-    parent_id: 1,
-    number: 1,
-    opponent2: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 1,
-    number: 2,
-    opponent1: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 1,
-    number: 3,
-    opponent1: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 1,
-    number: 4,
-    opponent1: { result: "win" },
-  });
-
-  const secondMatch = storage.select<any>("match", 1);
-  assert.equal(secondMatch.opponent1.score, 3);
-  assert.equal(secondMatch.opponent2.score, 1);
-  assert.equal(secondMatch.opponent1.result, "win");
-
-  manager.update.matchGame({
-    parent_id: 2,
-    number: 1,
-    opponent2: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 2,
-    number: 2,
-    opponent1: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 2,
-    number: 3,
-    opponent1: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 2,
-    number: 4,
-    opponent2: { result: "win" },
-  });
-  manager.update.matchGame({
-    parent_id: 2,
-    number: 5,
-    opponent1: { result: "win" },
-  });
-
-  const thirdMatch = storage.select<any>("match", 2);
-  assert.equal(thirdMatch.opponent1.score, 3);
-  assert.equal(thirdMatch.opponent2.score, 2);
-  assert.equal(thirdMatch.opponent1.result, "win");
-});
-
-BestOfSeriesMatchesCompletion(
-  "should handle match auto-win against a BYE after a BoX series",
-  () => {
-    manager.create({
-      name: "Example",
-      tournamentId: 0,
-      type: "single_elimination",
-      seeding: ["Team 1", "Team 2"],
-      settings: {
-        seedOrdering: ["natural"],
-        matchesChildCount: 3,
-        size: 8,
-        consolationFinal: true,
-      },
-    });
-
-    manager.update.matchGame({ id: 0, opponent1: { result: "win" } });
-    manager.update.matchGame({ id: 1, opponent1: { result: "win" } });
-
-    assert.equal(storage.select<any>("match", 4).opponent1.result, "win");
-    assert.equal(storage.select<any>("match", 6).opponent1.result, "win");
-  },
-);
-
 const ResetMatchAndMatchGames = suite("Reset match and match games");
 
 ResetMatchAndMatchGames.before.each(() => {
@@ -852,34 +506,6 @@ ResetMatchAndMatchGames(
   },
 );
 
-ResetMatchAndMatchGames("should reset results of a match game", () => {
-  manager.create({
-    name: "Example",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: ["Team 1", "Team 2"],
-    settings: {
-      seedOrdering: ["natural"],
-      matchesChildCount: 3,
-      consolationFinal: true,
-      size: 8,
-    },
-  });
-
-  manager.update.matchGame({ id: 0, opponent1: { result: "win" } });
-  manager.update.matchGame({ id: 1, opponent1: { result: "win" } });
-
-  assert.equal(storage.select<any>("match", 4).opponent1.result, "win");
-  assert.equal(storage.select<any>("match", 6).opponent1.result, "win");
-  assert.equal(storage.select<any>("match", 7).opponent1, null); // BYE in consolation final.
-
-  manager.reset.matchGameResults(1);
-
-  assert.equal(storage.select<any>("match", 4).opponent1.result, undefined);
-  assert.equal(storage.select<any>("match", 6).opponent1.result, undefined);
-  assert.equal(storage.select<any>("match", 7).opponent1, null); // Still BYE in consolation final.
-});
-
 const ImportExport = suite("Import / export");
 
 ImportExport.before.each(() => {
@@ -894,7 +520,6 @@ ImportExport("should import data in the storage", () => {
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
     settings: {
       seedOrdering: ["natural"],
-      matchesChildCount: 1,
     },
   });
 
@@ -937,7 +562,6 @@ ImportExport("should import data in the storage with normalized IDs", () => {
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
     settings: {
       groupCount: 1,
-      matchesChildCount: 1,
     },
   });
 
@@ -948,7 +572,6 @@ ImportExport("should import data in the storage with normalized IDs", () => {
     seeding: ["Team 5", "Team 6", "Team 7", "Team 8"],
     settings: {
       seedOrdering: ["natural"],
-      matchesChildCount: 1,
     },
   });
 
@@ -976,16 +599,6 @@ ImportExport("should import data in the storage with normalized IDs", () => {
     opponent2: { id: 6, position: 2 },
     number: 1,
     status: 2,
-    child_count: 1,
-  });
-  assert.equal(initialData.match_game[0], {
-    id: 6,
-    number: 1,
-    stage_id: 1,
-    parent_id: 6,
-    status: 2,
-    opponent1: { id: 5 },
-    opponent2: { id: 6 },
   });
 
   manager.import(initialData, true);
@@ -1014,16 +627,6 @@ ImportExport("should import data in the storage with normalized IDs", () => {
     opponent2: { id: 5, position: 2 },
     number: 1,
     status: 2,
-    child_count: 1,
-  });
-  assert.equal(data.match_game[0], {
-    id: 0,
-    number: 1,
-    stage_id: 0,
-    parent_id: 0,
-    status: 2,
-    opponent1: { id: 4 },
-    opponent2: { id: 5 },
   });
 });
 
@@ -1035,20 +638,12 @@ ImportExport("should export data from the storage", () => {
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
     settings: {
       seedOrdering: ["natural"],
-      matchesChildCount: 2,
     },
   });
 
   const data = manager.export();
 
-  for (const key of [
-    "participant",
-    "stage",
-    "group",
-    "round",
-    "match",
-    "match_game",
-  ]) {
+  for (const key of ["participant", "stage", "group", "round", "match"]) {
     assert.ok(Object.keys(data).includes(key));
   }
 
@@ -1057,14 +652,11 @@ ImportExport("should export data from the storage", () => {
   assert.equal(storage.select<any>("group"), data.group);
   assert.equal(storage.select<any>("round"), data.round);
   assert.equal(storage.select<any>("match"), data.match);
-  assert.equal(storage.select<any>("match_game"), data.match_game);
 });
 
 BYEHandling.run();
 PositionChecks.run();
 SpecialCases.run();
-UpdateMatchChildCount.run();
 SeedingAndOrderingInElimination.run();
-BestOfSeriesMatchesCompletion.run();
 ResetMatchAndMatchGames.run();
 ImportExport.run();

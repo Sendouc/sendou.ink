@@ -190,7 +190,7 @@ function SetInfo({ set, team }: { set: PlayedSet; team: TournamentDataTeam }) {
         <Link
           to={tournamentMatchPage({
             matchId: set.tournamentMatchId,
-            eventId: tournament.ctx.id,
+            tournamentId: tournament.ctx.id,
           })}
           className="tournament__team__set__round-name"
         >
@@ -235,7 +235,7 @@ function SetInfo({ set, team }: { set: PlayedSet; team: TournamentDataTeam }) {
         <Link
           to={tournamentTeamPage({
             tournamentTeamId: set.opponent.id,
-            eventId: tournament.ctx.id,
+            tournamentId: tournament.ctx.id,
           })}
           className="tournament__team__set__opponent__team"
         >

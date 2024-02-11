@@ -317,7 +317,7 @@ test.describe("Tournament bracket", () => {
       url: tournamentBracketsPage({ tournamentId }),
     });
 
-    await page.getByText("Underground bracket").click();
+    await page.getByRole("button", { name: "Underground" }).click();
     await page.getByTestId("check-in-bracket-button").click();
 
     await impersonate(page);
@@ -377,5 +377,67 @@ test.describe("Tournament bracket", () => {
     await expect(
       page.locator('[data-testid="mates-cell-placement-0"] li'),
     ).toHaveCount(3);
+  });
+
+  test("locks/unlocks matches & sets match as casted", async ({ page }) => {
+    const tournamentId = 2;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentPage(tournamentId),
+    });
+
+    await page.getByTestId("admin-tab").click();
+
+    await page.getByLabel("Action").selectOption("CHECK_OUT");
+
+    for (let id = 103; id < 115; id++) {
+      await page.getByLabel("Team").selectOption(String(id));
+      await submit(page);
+    }
+
+    await page.getByLabel("Twitch accounts").fill("test");
+    await page.getByTestId("save-cast-twitch-accounts-button").click();
+
+    await navigate({
+      page,
+      url: tournamentBracketsPage({ tournamentId }),
+    });
+
+    await page.getByTestId("finalize-bracket-button").click();
+
+    await page.locator('[data-match-id="1"]').click();
+    await reportResult({
+      page,
+      amountOfMapsToReport: 2,
+      sidesWithMoreThanFourPlayers: ["last"],
+    });
+    await backToBracket(page);
+
+    await page.locator('[data-match-id="3"]').click();
+    await page.getByTestId("cast-info-submit-button").click();
+    await backToBracket(page);
+
+    await page.locator('[data-match-id="2"]').click();
+    await reportResult({
+      page,
+      amountOfMapsToReport: 2,
+      sidesWithMoreThanFourPlayers: ["last"],
+    });
+    await backToBracket(page);
+
+    await expect(page.getByText("⚪ CAST")).toBeVisible();
+    await page.locator('[data-match-id="3"]').click();
+    await expect(page.getByText("Match locked to be casted")).toBeVisible();
+    await page.getByTestId("cast-info-submit-button").click();
+    await expect(page.getByTestId("stage-banner")).toBeVisible();
+
+    await page.getByTestId("cast-info-select").selectOption("test");
+    await page.getByTestId("cast-info-submit-button").click();
+    await backToBracket(page);
+    await expect(page.getByText("🔴 LIVE")).toBeVisible();
   });
 });

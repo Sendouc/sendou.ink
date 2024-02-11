@@ -20,8 +20,8 @@ export const db = new Kysely<DB>({
   dialect: new SqliteDialect({
     database: sql,
   }),
-  log: process.env.NODE_ENV === "development" ? ["query"] : undefined,
-  // uncomment if you want examine the parameters of the queries
+  // uncomment if you want examine the queries
+  // log: process.env.NODE_ENV === "development" ? ["query"] : undefined,
   // log(event): void {
   //   if (event.level === "query") {
   //     console.log(event.query.sql);

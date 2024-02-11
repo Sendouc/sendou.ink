@@ -127,53 +127,5 @@ ExtraFields("Extra fields when updating a match", () => {
   });
 });
 
-ExtraFields("Extra fields when updating a match game", () => {
-  manager.create({
-    name: "Amateur",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: ["Team 1", "Team 2"],
-    settings: {
-      matchesChildCount: 3,
-    },
-  });
-
-  manager.update.matchGame({
-    id: 0,
-    // @ts-expect-error incomplete types
-    weather: "rainy", // Extra field.
-    opponent1: {
-      score: 3,
-      result: "win",
-    },
-    opponent2: {
-      score: 1,
-      result: "loss",
-    },
-  });
-
-  manager.update.matchGame({
-    id: 1,
-    opponent1: {
-      score: 3,
-      result: "win",
-      // @ts-expect-error incomplete types
-      foo: 42, // Extra field.
-    },
-    opponent2: {
-      score: 1,
-      result: "loss",
-      // @ts-expect-error incomplete types
-      info: { replacements: [1, 2] }, // Extra field.
-    },
-  });
-
-  assert.equal(storage.select<any>("match_game", 0).weather, "rainy");
-  assert.equal(storage.select<any>("match_game", 1).opponent1.foo, 42);
-  assert.equal(storage.select<any>("match_game", 1).opponent2.info, {
-    replacements: [1, 2],
-  });
-});
-
 CustomSeeding.run();
 ExtraFields.run();

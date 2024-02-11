@@ -1,7 +1,6 @@
 import type {
   GrandFinalType,
   Match,
-  MatchGame,
   MatchResults,
   Participant,
   ParticipantResult,
@@ -240,7 +239,6 @@ export function normalizeIds(data: Database): Database {
     group: makeNormalizedIdMapping(data.group),
     round: makeNormalizedIdMapping(data.round),
     match: makeNormalizedIdMapping(data.match),
-    match_game: makeNormalizedIdMapping(data.match_game),
   };
 
   return {
@@ -269,14 +267,6 @@ export function normalizeIds(data: Database): Database {
       stage_id: mappings.stage[value.stage_id],
       group_id: mappings.group[value.group_id],
       round_id: mappings.round[value.round_id],
-      opponent1: normalizeParticipant(value.opponent1, mappings.participant),
-      opponent2: normalizeParticipant(value.opponent2, mappings.participant),
-    })),
-    match_game: data.match_game.map((value) => ({
-      ...value,
-      id: mappings.match_game[value.id],
-      stage_id: mappings.stage[value.stage_id],
-      parent_id: mappings.match[value.parent_id],
       opponent1: normalizeParticipant(value.opponent1, mappings.participant),
       opponent2: normalizeParticipant(value.opponent2, mappings.participant),
     })),
@@ -566,18 +556,10 @@ export function getMatchResult(match: MatchResults): Side | null {
 
   let winner: Side | null = null;
 
-  if (
-    match.opponent1?.result === "win" ||
-    match.opponent2 === null ||
-    match.opponent2.forfeit
-  )
+  if (match.opponent1?.result === "win" || match.opponent2 === null)
     winner = "opponent1";
 
-  if (
-    match.opponent2?.result === "win" ||
-    match.opponent1 === null ||
-    match.opponent1.forfeit
-  ) {
+  if (match.opponent2?.result === "win" || match.opponent1 === null) {
     if (winner !== null) throw Error("There are two winners.");
     winner = "opponent2";
   }
@@ -654,25 +636,7 @@ export function isMatchStarted(match: DeepPartial<MatchResults>): boolean {
  * @param match Partial match results.
  */
 export function isMatchCompleted(match: DeepPartial<MatchResults>): boolean {
-  return (
-    isMatchByeCompleted(match) ||
-    isMatchForfeitCompleted(match) ||
-    isMatchResultCompleted(match)
-  );
-}
-
-/**
- * Checks if a match is completed because of a forfeit.
- *
- * @param match Partial match results.
- */
-export function isMatchForfeitCompleted(
-  match: DeepPartial<MatchResults>,
-): boolean {
-  return (
-    match.opponent1?.forfeit !== undefined ||
-    match.opponent2?.forfeit !== undefined
-  );
+  return isMatchByeCompleted(match) || isMatchResultCompleted(match);
 }
 
 /**
@@ -832,12 +796,12 @@ export function setMatchResults(
 
   if (completed && currentlyCompleted) {
     // Ensure everything is good.
-    setCompleted(stored, match, inRoundRobin);
+    setCompleted(stored, match);
     return { statusChanged: false, resultChanged: true };
   }
 
   if (completed && !currentlyCompleted) {
-    setCompleted(stored, match, inRoundRobin);
+    setCompleted(stored, match);
     return { statusChanged: true, resultChanged: true };
   }
 
@@ -856,12 +820,10 @@ export function setMatchResults(
  */
 export function resetMatchResults(stored: MatchResults): void {
   if (stored.opponent1) {
-    stored.opponent1.forfeit = undefined;
     stored.opponent1.result = undefined;
   }
 
   if (stored.opponent2) {
-    stored.opponent2.forfeit = undefined;
     stored.opponent2.result = undefined;
   }
 
@@ -896,7 +858,7 @@ export function setExtraFields(
     });
   };
 
-  const ignoredKeys: Array<keyof (Match & MatchGame)> = [
+  const ignoredKeys: Array<keyof Match> = [
     "id",
     "number",
     "stage_id",
@@ -905,8 +867,6 @@ export function setExtraFields(
     "status",
     "opponent1",
     "opponent2",
-    "child_count",
-    "parent_id",
   ];
 
   const ignoredOpponentKeys: Array<keyof ParticipantResult> = [
@@ -1209,24 +1169,20 @@ export function setScores(
  *
  * @param stored A reference to what will be updated in the storage.
  * @param match Input of the update.
- * @param inRoundRobin Indicates whether the match is in a round-robin stage.
  */
 export function setCompleted(
   stored: MatchResults,
   match: DeepPartial<MatchResults>,
-  inRoundRobin: boolean,
 ): void {
   stored.status = Status.Completed;
 
-  setResults(stored, match, "win", "loss", inRoundRobin);
-  setResults(stored, match, "loss", "win", inRoundRobin);
-  setResults(stored, match, "draw", "draw", inRoundRobin);
+  setResults(stored, match, "win", "loss");
+  setResults(stored, match, "loss", "win");
+  setResults(stored, match, "draw", "draw");
 
   if (stored.opponent1 && !stored.opponent2) stored.opponent1.result = "win"; // Win against opponent 2 BYE.
 
   if (!stored.opponent1 && stored.opponent2) stored.opponent2.result = "win"; // Win against opponent 1 BYE.
-
-  setForfeits(stored, match);
 }
 
 /**
@@ -1238,14 +1194,12 @@ export function setCompleted(
  * @param match Input of the update.
  * @param check A result to check in each opponent.
  * @param change A result to set in each other opponent if `check` is correct.
- * @param inRoundRobin Indicates whether the match is in a round-robin stage.
  */
 export function setResults(
   stored: MatchResults,
   match: DeepPartial<MatchResults>,
   check: Result,
   change: Result,
-  inRoundRobin: boolean,
 ): void {
   if (match.opponent1 && match.opponent2) {
     if (match.opponent1.result === "win" && match.opponent2.result === "win")
@@ -1253,13 +1207,6 @@ export function setResults(
 
     if (match.opponent1.result === "loss" && match.opponent2.result === "loss")
       throw Error("There are two losers.");
-
-    if (
-      !inRoundRobin &&
-      match.opponent1.forfeit === true &&
-      match.opponent2.forfeit === true
-    )
-      throw Error("There are two forfeits.");
   }
 
   if (match.opponent1?.result === check) {
@@ -1276,40 +1223,6 @@ export function setResults(
 
     if (stored.opponent1) stored.opponent1.result = change;
     else stored.opponent1 = { id: null, result: change };
-  }
-}
-
-/**
- * Sets forfeits for each opponent (if needed).
- *
- * @param stored A reference to what will be updated in the storage.
- * @param match Input of the update.
- */
-export function setForfeits(
-  stored: MatchResults,
-  match: DeepPartial<MatchResults>,
-): void {
-  if (match.opponent1?.forfeit === true && match.opponent2?.forfeit === true) {
-    if (stored.opponent1) stored.opponent1.forfeit = true;
-    if (stored.opponent2) stored.opponent2.forfeit = true;
-
-    // Don't set any result (win/draw/loss) with a double forfeit
-    // so that it doesn't count any point in the ranking.
-    return;
-  }
-
-  if (match.opponent1?.forfeit === true) {
-    if (stored.opponent1) stored.opponent1.forfeit = true;
-
-    if (stored.opponent2) stored.opponent2.result = "win";
-    else stored.opponent2 = { id: null, result: "win" };
-  }
-
-  if (match.opponent2?.forfeit === true) {
-    if (stored.opponent2) stored.opponent2.forfeit = true;
-
-    if (stored.opponent1) stored.opponent1.result = "win";
-    else stored.opponent1 = { id: null, result: "win" };
   }
 }
 
@@ -1548,50 +1461,6 @@ export function transitionToMinor(
 }
 
 /**
- * Sets the parent match to a completed status if all its child games are completed.
- *
- * @param parent The partial parent match to update.
- * @param childCount Child count of this parent match.
- * @param inRoundRobin Indicates whether the parent match is in a round-robin stage.
- */
-export function setParentMatchCompleted(
-  parent: Pick<MatchResults, "opponent1" | "opponent2">,
-  childCount: number,
-  inRoundRobin: boolean,
-): void {
-  if (
-    parent.opponent1?.score === undefined ||
-    parent.opponent2?.score === undefined
-  )
-    throw Error("Either opponent1, opponent2 or their scores are falsy.");
-
-  const minToWin = minScoreToWinBestOfX(childCount);
-
-  if (parent.opponent1.score >= minToWin) {
-    parent.opponent1.result = "win";
-    return;
-  }
-
-  if (parent.opponent2.score >= minToWin) {
-    parent.opponent2.result = "win";
-    return;
-  }
-
-  if (
-    parent.opponent1.score === parent.opponent2.score &&
-    parent.opponent1.score + parent.opponent2.score > childCount - 1
-  ) {
-    if (inRoundRobin) {
-      parent.opponent1.result = "draw";
-      parent.opponent2.result = "draw";
-      return;
-    }
-
-    throw Error("Match games result in a tie for the parent match.");
-  }
-}
-
-/**
  * Returns a parent match results based on its child games scores.
  *
  * @param storedParent The parent match stored in the database.
@@ -1650,26 +1519,6 @@ export function getUpdatedMatchResults<T extends MatchResults>(
               : { ...existing.opponent2, ...match.opponent2 },
         }),
   };
-}
-
-/**
- * Calculates the score of a parent match based on its child games.
- *
- * @param games The child games to process.
- */
-export function getChildGamesResults(games: MatchGame[]): Scores {
-  const scores = {
-    opponent1: 0,
-    opponent2: 0,
-  };
-
-  for (const game of games) {
-    const result = getMatchResult(game);
-    if (result === "opponent1") scores.opponent1++;
-    else if (result === "opponent2") scores.opponent2++;
-  }
-
-  return scores;
 }
 
 /**

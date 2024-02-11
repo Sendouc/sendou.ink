@@ -85,11 +85,6 @@ export interface StageSettings {
   balanceByes?: boolean;
 
   /**
-   * All matches of the stage will have this child count. This can later be overridden for certain groups, rounds or matches.
-   */
-  matchesChildCount?: number;
-
-  /**
    * Number of groups in a round-robin stage.
    */
   groupCount?: number;

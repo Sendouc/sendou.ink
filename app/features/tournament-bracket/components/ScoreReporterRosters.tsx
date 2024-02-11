@@ -12,6 +12,7 @@ import { stageImageUrl } from "~/utils/urls";
 import { Image } from "~/components/Image";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import { useTournament } from "~/features/tournament/routes/to.$id";
+import { matchIsLocked } from "../tournament-bracket-utils";
 
 export function ScoreReporterRosters({
   teams,
@@ -92,6 +93,11 @@ export function ScoreReporterRosters({
               winnerName={winningTeam()}
               currentStageWithMode={currentStageWithMode}
               wouldEndSet={wouldEndSet}
+              matchLocked={matchIsLocked({
+                matchId: data.match.id,
+                scores: scores,
+                tournament,
+              })}
             />
           </div>
         ) : null}
@@ -160,6 +166,7 @@ function ReportScoreButtons({
   winnerName,
   currentStageWithMode,
   wouldEndSet,
+  matchLocked,
 }: {
   points?: [number, number];
   winnerIdx?: number;
@@ -167,8 +174,17 @@ function ReportScoreButtons({
   winnerName?: string;
   currentStageWithMode: TournamentMapListMap;
   wouldEndSet: boolean;
+  matchLocked: boolean;
 }) {
   const { t } = useTranslation(["game-misc"]);
+
+  if (matchLocked) {
+    return (
+      <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
+        Match is pending to be casted. Please wait a bit
+      </p>
+    );
+  }
 
   if (checkedPlayers.some((team) => team.length === 0)) {
     return (
@@ -185,7 +201,7 @@ function ReportScoreButtons({
   ) {
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-        Winner should have more points than loser
+        Winner should have higher score than loser
       </p>
     );
   }
@@ -197,7 +213,7 @@ function ReportScoreButtons({
   ) {
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-        If there was a KO (100 points), other team should have 0 points
+        If there was a KO (100 score), other team should have 0 score
       </p>
     );
   }

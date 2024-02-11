@@ -77,7 +77,7 @@ export function UserResultsTable({
                 {result.tournamentId ? (
                   <Link
                     to={tournamentTeamPage({
-                      eventId: result.tournamentId,
+                      tournamentId: result.tournamentId,
                       tournamentTeamId: result.teamId,
                     })}
                   >

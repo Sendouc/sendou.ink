@@ -75,24 +75,24 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const tournament = await tournamentData({ tournamentId, user });
 
+  const streams =
+    tournament.ctx.inProgressBrackets.length > 0
+      ? await streamsByTournamentId({
+          tournamentId,
+          castTwitchAccounts: tournament.ctx.castTwitchAccounts,
+        })
+      : [];
+
   return {
     tournament,
     subsCount,
-    streamsCount:
-      tournament.ctx.inProgressBrackets.length > 0
-        ? (
-            await streamsByTournamentId({
-              tournamentId,
-              castTwitchAccounts: tournament.ctx.castTwitchAccounts,
-            })
-          ).length
-        : 0,
+    streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
+    streamsCount: streams.length,
   };
 };
 
 const TournamentContext = React.createContext<Tournament>(null!);
 
-// TODO: icons to nav could be nice
 export default function TournamentLayout() {
   const { t } = useTranslation(["tournament"]);
   const user = useUser();
@@ -102,6 +102,7 @@ export default function TournamentLayout() {
     () => new Tournament(data.tournament),
     [data],
   );
+  const [bracketExpanded, setBracketExpanded] = React.useState(true);
 
   // this is nice to debug with tournament in browser console
   if (process.env.NODE_ENV === "development") {
@@ -118,17 +119,21 @@ export default function TournamentLayout() {
     <Main bigger={onBracketsPage}>
       <SubNav>
         {!tournament.hasStarted ? (
-          <SubNavLink to="register" data-testid="register-tab">
+          <SubNavLink
+            to="register"
+            data-testid="register-tab"
+            prefetch="render"
+          >
             {t("tournament:tabs.register")}
           </SubNavLink>
         ) : null}
-        <SubNavLink to="brackets" data-testid="brackets-tab">
+        <SubNavLink to="brackets" data-testid="brackets-tab" prefetch="render">
           {t("tournament:tabs.brackets")}
         </SubNavLink>
         {tournament.ctx.showMapListGenerator ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
         ) : null}
-        <SubNavLink to="teams" end={false}>
+        <SubNavLink to="teams" end={false} prefetch="render">
           {t("tournament:tabs.teams", { count: tournament.ctx.teams.length })}
         </SubNavLink>
         {!tournament.everyBracketOver && tournament.subsFeatureEnabled && (
@@ -138,7 +143,9 @@ export default function TournamentLayout() {
         )}
         {tournament.hasStarted && !tournament.everyBracketOver ? (
           <SubNavLink to="streams">
-            {t("tournament:tabs.streams", { count: data.streamsCount })}
+            {t("tournament:tabs.streams", {
+              count: data.streamsCount,
+            })}
           </SubNavLink>
         ) : null}
         {tournament.isOrganizer(user) && !tournament.hasStarted && (
@@ -151,12 +158,39 @@ export default function TournamentLayout() {
         )}
       </SubNav>
       <TournamentContext.Provider value={tournament}>
-        <Outlet context={tournament satisfies Tournament} />
+        <Outlet
+          context={
+            {
+              tournament,
+              bracketExpanded,
+              setBracketExpanded,
+              streamingParticipants: data.streamingParticipants,
+            } satisfies TournamentContext
+          }
+        />
       </TournamentContext.Provider>
     </Main>
   );
 }
 
+type TournamentContext = {
+  tournament: Tournament;
+  bracketExpanded: boolean;
+  streamingParticipants: number[];
+  setBracketExpanded: (expanded: boolean) => void;
+};
+
 export function useTournament() {
-  return useOutletContext<Tournament>();
+  return useOutletContext<TournamentContext>().tournament;
+}
+
+export function useBracketExpanded() {
+  const { bracketExpanded, setBracketExpanded } =
+    useOutletContext<TournamentContext>();
+
+  return { bracketExpanded, setBracketExpanded };
+}
+
+export function useStreamingParticipants() {
+  return useOutletContext<TournamentContext>().streamingParticipants;
 }

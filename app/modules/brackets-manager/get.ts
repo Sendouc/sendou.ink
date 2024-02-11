@@ -3,7 +3,6 @@ import type {
   Group,
   Round,
   Match,
-  MatchGame,
   Participant,
 } from "~/modules/brackets-model";
 import { Status } from "~/modules/brackets-model";
@@ -30,7 +29,6 @@ export class Get extends BaseGetter {
       group: stageData.groups,
       round: stageData.rounds,
       match: stageData.matches,
-      match_game: stageData.matchGames,
       participant: participants,
     };
   }
@@ -69,29 +67,8 @@ export class Get extends BaseGetter {
         (acc, data) => [...acc, ...data.matches],
         [] as Match[],
       ),
-      match_game: stagesData.reduce(
-        (acc, data) => [...acc, ...data.matchGames],
-        [] as MatchGame[],
-      ),
       participant: participants,
     };
-  }
-
-  /**
-   * Returns the match games associated to a list of matches.
-   *
-   * @param matches A list of matches.
-   */
-  public matchGames(matches: Match[]): MatchGame[] {
-    const parentMatches = matches.filter((match) => match.child_count > 0);
-
-    const matchGamesQueries = parentMatches.map((match) =>
-      this.storage.select("match_game", { parent_id: match.id }),
-    );
-    if (matchGamesQueries.some((game) => game === null))
-      throw Error("Error getting match games.");
-
-    return helpers.getNonNull(matchGamesQueries).flat();
   }
 
   /**
@@ -443,7 +420,6 @@ export class Get extends BaseGetter {
     groups: Group[];
     rounds: Round[];
     matches: Match[];
-    matchGames: MatchGame[];
   } {
     const stage = this.storage.select("stage", stageId);
     if (!stage) throw Error("Stage not found.");
@@ -457,14 +433,11 @@ export class Get extends BaseGetter {
     const matches = this.storage.select("match", { stage_id: stageId });
     if (!matches) throw Error("Error getting matches.");
 
-    const matchGames = this.matchGames(matches);
-
     return {
       stage,
       groups,
       rounds,
       matches,
-      matchGames,
     };
   }
 }

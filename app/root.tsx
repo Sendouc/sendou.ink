@@ -161,10 +161,6 @@ function Document({
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
-        <script
-          type="text/javascript"
-          src="https://cdn.jsdelivr.net/npm/brackets-viewer@1.5.1/dist/brackets-viewer.min.js"
-        />
         {data?.browserTimingHeader ? (
           <script
             type="text/javascript"

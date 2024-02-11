@@ -34,6 +34,17 @@
   font-size: var(--fonts-xxs);
 }
 
+.tournament-bracket__locked-banner {
+  width: 100%;
+  height: 10rem;
+  background-color: var(--bg-lightest-solid);
+  border-start-end-radius: var(--rounded);
+  border-start-start-radius: var(--rounded);
+  grid-area: img;
+  display: grid;
+  place-items: center;
+}
+
 .tournament-bracket__stage-banner {
   display: flex;
   width: 100%;
@@ -226,6 +237,7 @@
   overflow-x: hidden;
   text-overflow: ellipsis;
   padding-inline: var(--s-2);
+  max-width: 150px;
 }
 
 .tournament-bracket__during-match-actions__seed {
@@ -381,4 +393,85 @@
   .tournament-bracket__infos {
     flex-direction: row;
   }
+}
+
+.tournament-bracket__bracket-nav {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tournament-bracket__bracket-nav__link {
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  border-color: var(--bg-lightest-solid);
+  background-color: var(--bg);
+  border-radius: 0;
+}
+
+.tournament-bracket__bracket-nav__link:active {
+  transform: translateY(0px);
+}
+
+.tournament-bracket__bracket-nav__link:first-of-type {
+  border-start-start-radius: var(--rounded);
+  border-end-start-radius: var(--rounded);
+}
+
+.tournament-bracket__bracket-nav__link:not(
+    .tournament-bracket__bracket-nav__link:first-of-type
+  ) {
+  margin-left: -2px;
+}
+
+.tournament-bracket__bracket-nav__link:last-of-type {
+  border-start-end-radius: var(--rounded);
+  border-end-end-radius: var(--rounded);
+}
+
+.tournament-bracket__bracket-nav__link__selected {
+  color: var(--text);
+  background-color: var(--bg);
+  background-color: var(--bg-lighter);
+}
+
+.tournament-bracket__compactify-button {
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  border-color: var(--bg-lightest-solid);
+  background-color: var(--bg);
+  border-radius: var(--rounded);
+}
+
+.tournament-bracket__compactify-button .button-icon {
+  width: 0.85rem;
+}
+
+.tournament-bracket__cast-info-container {
+  display: flex;
+  gap: var(--s-2);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
+  width: max-content;
+}
+
+.tournament-bracket__cast-info-container__label {
+  padding: var(--s-2) var(--s-3-5);
+  text-transform: uppercase;
+  background-color: var(--bg-lightest);
+  border-radius: var(--rounded) 0 0 var(--rounded);
+  font-weight: var(--bold);
+  color: var(--text-lighter);
+  display: grid;
+  place-items: center;
+  justify-content: center;
+}
+
+.tournament-bracket__cast-info-container__content {
+  padding-block: var(--s-2);
+  display: flex;
+  align-items: center;
+}
+
+.tournament-bracket__stream-popover {
+  width: 280px;
 }

@@ -42,7 +42,6 @@ export class SqlDatabase {
           arg.group_id,
           arg.round_id,
           arg.number,
-          arg.child_count,
           null,
           null,
           null,
@@ -50,8 +49,6 @@ export class SqlDatabase {
           JSON.stringify(arg.opponent2),
         );
         return match.insert() && match.id;
-
-      case "match_game":
         throw new Error("not implemented");
         const matchGame = new MatchGame(
           undefined,
@@ -185,8 +182,6 @@ export class SqlDatabase {
         }
 
         break;
-
-      case "match_game":
         throw new Error("not implemented");
         if (typeof arg === "number") {
           const game = MatchGame.getById(arg);
@@ -230,7 +225,6 @@ export class SqlDatabase {
             update.group_id,
             update.round_id,
             update.number,
-            update.child_count,
             null,
             null,
             null,
@@ -241,27 +235,7 @@ export class SqlDatabase {
           return match.update();
         }
 
-        if (query.stage_id)
-          return Match.updateChildCountByStage(
-            query.stage_id,
-            update.child_count,
-          );
-
-        if (query.group_id)
-          return Match.updateChildCountByGroup(
-            query.group_id,
-            update.child_count,
-          );
-
-        if (query.round_id)
-          return Match.updateChildCountByRound(
-            query.round_id,
-            update.child_count,
-          );
-
         break;
-
-      case "match_game":
         throw new Error("not implemented");
         if (typeof query === "number") {
           const game = new MatchGame(
@@ -326,8 +300,6 @@ export class SqlDatabase {
           Number.isInteger(filter.stage_id) &&
           Match.deleteByStageId(filter.stage_id)
         );
-
-      case "match_game":
         if (Number.isInteger(filter.stage_id))
           return MatchGame.deleteByStageId(filter.stage_id);
         if (

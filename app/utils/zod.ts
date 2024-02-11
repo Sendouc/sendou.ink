@@ -99,6 +99,12 @@ export function falsyToNull(value: unknown): unknown {
   return null;
 }
 
+export function nullLiteraltoNull(value: unknown): unknown {
+  if (value === "null") return null;
+
+  return value;
+}
+
 export function jsonParseable(value: unknown) {
   try {
     JSON.parse(value as string);

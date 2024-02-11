@@ -42,9 +42,12 @@ import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
   matchIdFromParams,
+  matchIsLocked,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
+import { CastInfo } from "../components/CastInfo";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 
 export const links: LinksFunction = () => [
   {
@@ -103,6 +106,10 @@ export const action: ActionFunction = async ({ params, request }) => {
         "Winner team id is invalid",
       );
       validate(match.opponentOne && match.opponentTwo, "Teams are missing");
+      validate(
+        !matchIsLocked({ matchId: match.id, tournament, scores }),
+        "Match is locked",
+      );
 
       const mapList =
         match.opponentOne?.id && match.opponentTwo?.id
@@ -259,6 +266,42 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
+    case "SET_AS_CASTED": {
+      validate(tournament.isOrganizerOrStreamer(user));
+
+      await TournamentRepository.setMatchAsCasted({
+        matchId: match.id,
+        tournamentId: tournament.ctx.id,
+        twitchAccount: data.twitchAccount,
+      });
+
+      break;
+    }
+    case "LOCK": {
+      validate(tournament.isOrganizerOrStreamer(user));
+
+      // can't lock, let's update their view to reflect that
+      if (match.opponentOne?.id && match.opponentTwo?.id) {
+        return null;
+      }
+
+      await TournamentRepository.lockMatch({
+        matchId: match.id,
+        tournamentId: tournament.ctx.id,
+      });
+
+      break;
+    }
+    case "UNLOCK": {
+      validate(tournament.isOrganizerOrStreamer(user));
+
+      await TournamentRepository.unlockMatch({
+        matchId: match.id,
+        tournamentId: tournament.ctx.id,
+      });
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -364,20 +407,35 @@ export default function TournamentMatchPage() {
           Back to bracket
         </LinkButton>
       </div>
-      {data.matchIsOver ? <ResultsSection /> : null}
-      {!data.matchIsOver &&
-      typeof data.match.opponentOne?.id === "number" &&
-      typeof data.match.opponentTwo?.id === "number" ? (
-        <MapListSection
-          teams={[data.match.opponentOne.id, data.match.opponentTwo.id]}
-          type={type}
+      <div className="stack md">
+        <CastInfo
+          matchIsOngoing={Boolean(
+            (data.match.opponentOne?.score &&
+              data.match.opponentOne.score > 0) ||
+              (data.match.opponentTwo?.score &&
+                data.match.opponentTwo.score > 0),
+          )}
+          matchIsOver={data.matchIsOver}
+          matchId={data.match.id}
+          hasBothParticipants={Boolean(
+            data.match.opponentOne?.id && data.match.opponentTwo?.id,
+          )}
         />
-      ) : null}
-      {showRosterPeek() ? (
-        <Rosters
-          teams={[data.match.opponentOne?.id, data.match.opponentTwo?.id]}
-        />
-      ) : null}
+        {data.matchIsOver ? <ResultsSection /> : null}
+        {!data.matchIsOver &&
+        typeof data.match.opponentOne?.id === "number" &&
+        typeof data.match.opponentTwo?.id === "number" ? (
+          <MapListSection
+            teams={[data.match.opponentOne.id, data.match.opponentTwo.id]}
+            type={type}
+          />
+        ) : null}
+        {showRosterPeek() ? (
+          <Rosters
+            teams={[data.match.opponentOne?.id, data.match.opponentTwo?.id]}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -394,7 +452,7 @@ function useAutoRefresh() {
   const data = useLoaderData<typeof loader>();
   const lastEventId = useEventSource(
     tournamentMatchSubscribePage({
-      eventId: tournament.ctx.id,
+      tournamentId: tournament.ctx.id,
       matchId: data.match.id,
     }),
     {
@@ -479,6 +537,8 @@ function ResultsSection() {
   );
 }
 
+const INACTIVE_PLAYER_CSS =
+  "tournament__team-with-roster__member__inactive text-lighter-important";
 function Rosters({
   teams,
 }: {
@@ -496,6 +556,13 @@ function Rosters({
     (p) => p.tournamentTeamId === teamTwo?.id,
   );
 
+  const teamOneParticipatedPlayers = teamOnePlayers.filter((p) =>
+    tournament.ctx.participatedUsers.includes(p.id),
+  );
+  const teamTwoParticipatedPlayers = teamTwoPlayers.filter((p) =>
+    tournament.ctx.participatedUsers.includes(p.id),
+  );
+
   return (
     <div className="tournament-bracket__rosters">
       <div>
@@ -511,7 +578,7 @@ function Rosters({
           {teamOne ? (
             <Link
               to={tournamentTeamPage({
-                eventId: tournament.ctx.id,
+                tournamentId: tournament.ctx.id,
                 tournamentTeamId: teamOne.id,
               })}
               className="text-main-forced font-bold"
@@ -527,7 +594,17 @@ function Rosters({
             {teamOnePlayers.map((p) => {
               return (
                 <li key={p.id}>
-                  <Link to={userPage(p)} className="stack horizontal sm">
+                  <Link
+                    to={userPage(p)}
+                    className={clsx("stack horizontal sm", {
+                      [INACTIVE_PLAYER_CSS]:
+                        teamOneParticipatedPlayers.length === 0 ||
+                        teamOneParticipatedPlayers.every(
+                          (participatedPlayer) =>
+                            p.id !== participatedPlayer.id,
+                        ),
+                    })}
+                  >
                     <Avatar user={p} size="xxs" />
                     {p.discordName}
                   </Link>
@@ -546,7 +623,7 @@ function Rosters({
           {teamTwo ? (
             <Link
               to={tournamentTeamPage({
-                eventId: tournament.ctx.id,
+                tournamentId: tournament.ctx.id,
                 tournamentTeamId: teamTwo.id,
               })}
               className="text-main-forced font-bold"
@@ -562,7 +639,17 @@ function Rosters({
             {teamTwoPlayers.map((p) => {
               return (
                 <li key={p.id}>
-                  <Link to={userPage(p)} className="stack horizontal sm">
+                  <Link
+                    to={userPage(p)}
+                    className={clsx("stack horizontal sm", {
+                      [INACTIVE_PLAYER_CSS]:
+                        teamTwoParticipatedPlayers.length === 0 ||
+                        teamTwoParticipatedPlayers.every(
+                          (participatedPlayer) =>
+                            p.id !== participatedPlayer.id,
+                        ),
+                    })}
+                  >
                     <Avatar user={p} size="xxs" />
                     {p.discordName}
                   </Link>

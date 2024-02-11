@@ -384,12 +384,24 @@ export interface TournamentSettings {
   teamsPerGroup?: number;
 }
 
+export interface CastedMatchesInfo {
+  /** Array for match ID's that are locked because they are pending to be casted */
+  lockedMatches: number[];
+  /** What matches are streamed currently & where */
+  castedMatches: { twitchAccount: string; matchId: number }[];
+}
+
 export interface Tournament {
   settings: ColumnType<TournamentSettings, string, string>;
   id: GeneratedAlways<number>;
   mapPickingStyle: TournamentMapPickingStyle;
   showMapListGenerator: Generated<number | null>;
   castTwitchAccounts: ColumnType<string[] | null, string | null, string | null>;
+  castedMatchesInfo: ColumnType<
+    CastedMatchesInfo | null,
+    string | null,
+    string | null
+  >;
 }
 
 export interface TournamentBadgeOwner {
@@ -406,7 +418,6 @@ export interface TournamentGroup {
 export interface TournamentMatch {
   bestOf: Generated<3 | 5 | 7>;
   chatCode: string | null;
-  childCount: number;
   groupId: number;
   id: GeneratedAlways<number>;
   number: number;
@@ -459,6 +470,8 @@ export interface TournamentStage {
   settings: string;
   tournamentId: number;
   type: "double_elimination" | "single_elimination" | "round_robin";
+  // not Generated<> because SQLite doesn't allow altering tables to add columns with default values :(
+  createdAt: number | null;
 }
 
 export interface TournamentSub {

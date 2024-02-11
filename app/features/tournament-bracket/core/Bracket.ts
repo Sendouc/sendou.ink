@@ -8,6 +8,8 @@ import type { TournamentDataTeam } from "./Tournament.server";
 import { removeDuplicates } from "~/utils/arrays";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { logger } from "~/utils/logger";
+import type { Round } from "~/modules/brackets-model";
+import { getTournamentManager } from "..";
 
 interface CreateBracketArgs {
   id: number;
@@ -18,6 +20,7 @@ interface CreateBracketArgs {
   name: string;
   teamsPendingCheckIn?: number[];
   tournament: Tournament;
+  createdAt: number | null;
   sources?: {
     bracketIdx: number;
     placements: number[];
@@ -27,17 +30,28 @@ interface CreateBracketArgs {
 export interface Standing {
   team: TournamentDataTeam;
   placement: number; // 1st, 2nd, 3rd, 4th, 5th, 5th...
+  groupId?: number;
+  stats?: {
+    setWins: number;
+    setLosses: number;
+    mapWins: number;
+    mapLosses: number;
+    points: number;
+    winsAgainstTied: number;
+  };
 }
 
 export abstract class Bracket {
   id;
   preview;
   data;
+  simulatedData: ValueToArray<DataTypes> | undefined;
   canBeStarted;
   name;
   teamsPendingCheckIn;
   tournament;
   sources;
+  createdAt;
 
   constructor({
     id,
@@ -48,6 +62,7 @@ export abstract class Bracket {
     teamsPendingCheckIn,
     tournament,
     sources,
+    createdAt,
   }: Omit<CreateBracketArgs, "format">) {
     this.id = id;
     this.preview = preview;
@@ -57,6 +72,129 @@ export abstract class Bracket {
     this.teamsPendingCheckIn = teamsPendingCheckIn;
     this.tournament = tournament;
     this.sources = sources;
+    this.createdAt = createdAt;
+
+    this.createdSimulation();
+  }
+
+  private createdSimulation() {
+    if (
+      this.type === "round_robin" ||
+      this.preview ||
+      this.tournament.ctx.isFinalized
+    )
+      return;
+
+    try {
+      const manager = getTournamentManager("IN_MEMORY");
+
+      manager.import(this.data);
+
+      const teamOrder = this.teamOrderForSimulation();
+
+      let matchesToResolve = true;
+      let loopCount = 0;
+      while (matchesToResolve) {
+        if (loopCount > 100) {
+          logger.error("Bracket.createdSimulation: loopCount > 100");
+          break;
+        }
+        matchesToResolve = false;
+        loopCount++;
+
+        for (const match of manager.export().match) {
+          if (!match) continue;
+          // we have a result already
+          if (
+            match.opponent1?.result === "win" ||
+            match.opponent2?.result === "win"
+          ) {
+            continue;
+          }
+          // no opponent yet, let's simulate this in a coming loop
+          if (
+            (match.opponent1 && !match.opponent1.id) ||
+            (match.opponent2 && !match.opponent2.id)
+          ) {
+            matchesToResolve = true;
+            continue;
+          }
+          // BYE
+          if (match.opponent1 === null || match.opponent2 === null) {
+            continue;
+          }
+
+          const winner =
+            (teamOrder.get(match.opponent1.id!) ?? 0) <
+            (teamOrder.get(match.opponent2.id!) ?? 0)
+              ? 1
+              : 2;
+
+          manager.update.match({
+            id: match.id,
+            opponent1: {
+              score: winner === 1 ? 1 : 0,
+              result: winner === 1 ? "win" : undefined,
+            },
+            opponent2: {
+              score: winner === 2 ? 1 : 0,
+              result: winner === 2 ? "win" : undefined,
+            },
+          });
+        }
+      }
+
+      this.simulatedData = manager.export();
+    } catch (e) {
+      logger.error("Bracket.createdSimulation: ", e);
+    }
+  }
+
+  private teamOrderForSimulation() {
+    const result = new Map(this.tournament.ctx.teams.map((t, i) => [t.id, i]));
+
+    for (const match of this.data.match) {
+      if (
+        !match.opponent1?.id ||
+        !match.opponent2?.id ||
+        (match.opponent1?.result !== "win" && match.opponent2?.result !== "win")
+      ) {
+        continue;
+      }
+
+      const opponent1Seed = result.get(match.opponent1.id) ?? -1;
+      const opponent2Seed = result.get(match.opponent2.id) ?? -1;
+      if (opponent1Seed === -1 || opponent2Seed === -1) {
+        console.error("opponent1Seed or opponent2Seed not found");
+        continue;
+      }
+
+      if (opponent1Seed < opponent2Seed && match.opponent1?.result === "win") {
+        continue;
+      }
+
+      if (opponent2Seed < opponent1Seed && match.opponent2?.result === "win") {
+        continue;
+      }
+
+      if (opponent1Seed < opponent2Seed) {
+        result.set(match.opponent1.id, opponent1Seed + 0.1);
+        result.set(match.opponent2.id, opponent1Seed);
+      } else {
+        result.set(match.opponent2.id, opponent2Seed + 0.1);
+        result.set(match.opponent1.id, opponent2Seed);
+      }
+    }
+
+    return result;
+  }
+
+  simulatedMatch(matchId: number) {
+    if (!this.simulatedData) return;
+
+    return this.simulatedData.match
+      .filter(Boolean)
+      .find((match) => match.id === matchId);
   }
 
   get collectResultsWithPoints() {
@@ -69,6 +207,14 @@ export abstract class Bracket {
 
   get standings(): Standing[] {
     throw new Error("not implemented");
+  }
+
+  currentStandings(_includeUnfinishedGroups: boolean) {
+    return this.standings;
+  }
+
+  winnersSourceRound(_roundNumber: number): Round | undefined {
+    return;
   }
 
   protected standingsWithoutNonParticipants(standings: Standing[]): Standing[] {
@@ -243,6 +389,19 @@ class DoubleEliminationBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "double_elimination";
+  }
+
+  winnersSourceRound(roundNumber: number) {
+    const isMajorRound = roundNumber === 1 || roundNumber % 2 === 0;
+    if (!isMajorRound) return;
+
+    const roundNumberWB = Math.ceil((roundNumber + 1) / 2);
+
+    const groupIdWB = this.data.group.find((g) => g.number === 1)?.id;
+
+    return this.data.round.find(
+      (round) => round.number === roundNumberWB && round.group_id === groupIdWB,
+    );
   }
 
   get standings(): Standing[] {
@@ -515,6 +674,10 @@ class RoundRobinBracket extends Bracket {
   }
 
   get standings(): Standing[] {
+    return this.currentStandings();
+  }
+
+  currentStandings(includeUnfinishedGroups = false) {
     const groupIds = this.data.group.map((group) => group.id);
 
     const placements: (Standing & { groupId: number })[] = [];
@@ -533,7 +696,7 @@ class RoundRobinBracket extends Bracket {
           match.opponent2?.result === "win",
       );
 
-      if (!groupIsFinished) continue;
+      if (!groupIsFinished && !includeUnfinishedGroups) continue;
 
       const teams: {
         id: number;
@@ -581,6 +744,13 @@ class RoundRobinBracket extends Bracket {
       };
 
       for (const match of matches) {
+        if (
+          match.opponent1?.result !== "win" &&
+          match.opponent2?.result !== "win"
+        ) {
+          continue;
+        }
+
         const winner =
           match.opponent1?.result === "win" ? match.opponent1 : match.opponent2;
 
@@ -594,6 +764,7 @@ class RoundRobinBracket extends Bracket {
             typeof loser.id === "number" &&
             typeof winner.score === "number" &&
             typeof loser.score === "number",
+          "RoundRobinBracket.standings: winner or loser id not found",
         );
 
         if (
@@ -661,8 +832,8 @@ class RoundRobinBracket extends Bracket {
             if (a.points > b.points) return -1;
             if (a.points < b.points) return 1;
 
-            const aSeed = Number(this.tournament.seedByTeamId(a.id));
-            const bSeed = Number(this.tournament.seedByTeamId(b.id));
+            const aSeed = Number(this.tournament.teamById(a.id)?.seed);
+            const bSeed = Number(this.tournament.teamById(b.id)?.seed);
 
             if (aSeed < bSeed) return -1;
             if (aSeed > bSeed) return 1;
@@ -674,6 +845,14 @@ class RoundRobinBracket extends Bracket {
               team: this.tournament.teamById(team.id)!,
               placement: i + 1,
               groupId,
+              stats: {
+                setWins: team.setWins,
+                setLosses: team.setLosses,
+                mapWins: team.mapWins,
+                mapLosses: team.mapLosses,
+                points: team.points,
+                winsAgainstTied: team.winsAgainstTied,
+              },
             };
           }),
       );
@@ -702,6 +881,7 @@ class RoundRobinBracket extends Bracket {
         return {
           ...team,
           placement: currentPlacement,
+          stats: team.stats,
         };
       }),
     );

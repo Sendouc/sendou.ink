@@ -1,4 +1,4 @@
-import type { Group, Match, MatchGame } from "~/modules/brackets-model";
+import type { Group, Match } from "~/modules/brackets-model";
 import { BaseGetter } from "./base/getter";
 import * as helpers from "./helpers";
 
@@ -151,14 +151,5 @@ export class Find extends BaseGetter {
     matchNumber: number,
   ): Match {
     return this.findMatch(groupId, roundNumber, matchNumber);
-  }
-
-  /**
-   * Finds a match game based on its `id` or based on the combination of its `parent_id` and `number`.
-   *
-   * @param game Values to change in a match game.
-   */
-  public matchGame(game: Partial<MatchGame>): MatchGame {
-    return this.findMatchGame(game);
   }
 }

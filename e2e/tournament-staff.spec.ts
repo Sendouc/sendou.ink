@@ -102,7 +102,7 @@ test.describe("Tournament staff", () => {
 
     await navigate({
       page,
-      url: tournamentMatchPage({ eventId: TOURNAMENT_ID, matchId: 2 }),
+      url: tournamentMatchPage({ tournamentId: TOURNAMENT_ID, matchId: 2 }),
     });
 
     const roomPassSelector = page.getByTestId("room-pass");
@@ -131,7 +131,7 @@ test.describe("Tournament staff", () => {
     await impersonate(page, NZAP_TEST_ID);
     await navigate({
       page,
-      url: tournamentMatchPage({ eventId: TOURNAMENT_ID, matchId: 2 }),
+      url: tournamentMatchPage({ tournamentId: TOURNAMENT_ID, matchId: 2 }),
     });
 
     await expect(roomPassSelector).toBeVisible();

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { _action, id, safeJSONParse } from "~/utils/zod";
+import { _action, id, nullLiteraltoNull, safeJSONParse } from "~/utils/zod";
 import { TOURNAMENT } from "../tournament/tournament-constants";
 
 const reportedMatchPlayerIds = z.preprocess(
@@ -52,6 +52,19 @@ export const matchSchema = z.union([
   }),
   z.object({
     _action: _action("REOPEN_MATCH"),
+  }),
+  z.object({
+    _action: _action("SET_AS_CASTED"),
+    twitchAccount: z.preprocess(
+      nullLiteraltoNull,
+      z.string().min(1).max(100).nullable(),
+    ),
+  }),
+  z.object({
+    _action: _action("LOCK"),
+  }),
+  z.object({
+    _action: _action("UNLOCK"),
   }),
 ]);
 
