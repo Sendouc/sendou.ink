@@ -23,7 +23,7 @@ export const settingsActionSchema = z.union([
       z
         .object({
           modes: z.array(z.object({ mode: modeShort, preference })),
-          pools: z.array(
+          pool: z.array(
             z.object({
               stages: z.array(stageId).length(AMOUNT_OF_MAPS_IN_POOL_PER_MODE),
               mode: modeShort,
@@ -31,7 +31,7 @@ export const settingsActionSchema = z.union([
           ),
         })
         .refine((val) =>
-          val.pools.every((pool) => {
+          val.pool.every((pool) => {
             const mp = val.modes.find((m) => m.mode === pool.mode);
             return mp?.preference !== "AVOID";
           }, "Can't have map pool for a mode that was avoided"),
@@ -41,7 +41,7 @@ export const settingsActionSchema = z.union([
             const mp = val.modes.find((m) => m.mode === mode);
             if (mp?.preference === "AVOID") continue;
 
-            if (!val.pools.some((p) => p.mode === mode)) return false;
+            if (!val.pool.some((p) => p.mode === mode)) return false;
           }
 
           return true;

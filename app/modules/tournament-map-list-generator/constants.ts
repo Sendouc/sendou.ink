@@ -1,5 +1,6 @@
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
+// xxx: update this
 export const DEFAULT_MAP_POOL = new MapPool([
   { mode: "SZ", stageId: 6 },
   { mode: "SZ", stageId: 8 },

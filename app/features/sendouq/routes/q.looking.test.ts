@@ -5,7 +5,7 @@ import { action as rawMatchAction } from "./q.match.$id";
 import type { lookingSchema, matchSchema } from "../q-schemas.server";
 import { db } from "~/db/sql";
 import type { UserMapModePreferences } from "~/db/tables";
-import type { StageId } from "~/modules/in-game-lists";
+import { stageIds, type StageId } from "~/modules/in-game-lists";
 import invariant from "tiny-invariant";
 import * as assert from "uvu/assert";
 import type { SerializeFrom } from "@remix-run/server-runtime";
@@ -57,19 +57,13 @@ const prepareGroups = async () => {
 
   await insertMapModePreferences(1, {
     modes: SZ_ONLY_PREFERENCE,
-    maps: Array.from({ length: 10 }).map((_, i) => ({
-      mode: "SZ",
-      preference: "PREFER",
-      stageId: i as StageId,
-    })),
+    pool: [{ mode: "SZ", stages: [...stageIds].slice(0, 7) }],
   });
 
   await insertMapModePreferences(5, {
     modes: SZ_ONLY_PREFERENCE,
-    maps: [
-      { mode: "SZ", preference: "PREFER", stageId: 11 },
-      { mode: "SZ", preference: "PREFER", stageId: 12 },
-      { mode: "SZ", preference: "PREFER", stageId: 13 },
+    pool: [
+      { mode: "SZ", stages: [...stageIds].slice(0, 20).reverse().slice(0, 7) },
     ],
   });
 };
@@ -199,27 +193,6 @@ SendouQMatchCreation(
   },
 );
 
-SendouQMatchCreation(
-  "user missing from preferences if only neutral preference",
-  async () => {
-    await insertMapModePreferences(3, {
-      modes: SZ_ONLY_PREFERENCE,
-      maps: Array.from({ length: 10 }).map((_, i) => ({
-        mode: "SZ",
-        stageId: i as StageId,
-      })),
-    });
-
-    await createMatch();
-
-    const match = await findMatch();
-
-    assert.not.ok(
-      match.memento?.mapPreferences?.flat().find((p) => p.userId === 3),
-    );
-  },
-);
-
 SendouQMatchCreation("adds mode preferences to memento", async () => {
   await createMatch();
 
@@ -235,7 +208,7 @@ SendouQMatchCreation(
   async () => {
     await insertMapModePreferences(2, {
       modes: [{ mode: "TC", preference: "PREFER" }],
-      maps: [],
+      pool: [],
     });
 
     await createMatch();

@@ -1,9 +1,6 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import {
-  mapModePreferencesToModeList,
-  mapPoolFromPreferences,
-} from "./match.server";
+import { mapModePreferencesToModeList } from "./match.server";
 import * as Test from "~/utils/Test";
 import { type ModeShort, stageIds } from "~/modules/in-game-lists";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";

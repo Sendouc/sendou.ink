@@ -69,6 +69,7 @@ import {
 } from "./constants";
 import placements from "./placements.json";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
+import { AMOUNT_OF_MAPS_IN_POOL_PER_MODE } from "~/features/sendouq-settings/q-settings-constants";
 
 const calendarEventWithToToolsRegOpen = () =>
   calendarEventWithToTools("PICNIC", true);
@@ -360,27 +361,30 @@ async function userProfiles() {
 }
 
 const randomPreferences = (): UserMapModePreferences => {
-  return {
-    modes: modesShort.flatMap((mode) => {
-      if (Math.random() > 0.5 && mode !== "SZ") return [];
+  const modes: UserMapModePreferences["modes"] = modesShort.flatMap((mode) => {
+    if (Math.random() > 0.5 && mode !== "SZ") return [];
 
-      const criteria = mode === "SZ" ? 0.2 : 0.5;
+    const criteria = mode === "SZ" ? 0.2 : 0.5;
+
+    return {
+      mode,
+      preference: Math.random() > criteria ? "PREFER" : "AVOID",
+    };
+  });
+
+  return {
+    modes,
+    pool: modesShort.flatMap((mode) => {
+      const mp = modes.find((m) => m.mode === mode);
+      if (mp?.preference === "AVOID") return [];
 
       return {
         mode,
-        preference: Math.random() > criteria ? "PREFER" : "AVOID",
+        stages: shuffle([...stageIds]).slice(
+          0,
+          AMOUNT_OF_MAPS_IN_POOL_PER_MODE,
+        ),
       };
-    }),
-    maps: stageIds.slice(0, 10).flatMap((stageId) => {
-      return modesShort.flatMap((mode) => {
-        if (Math.random() > 0.7) return { stageId, mode };
-
-        return {
-          stageId,
-          mode,
-          preference: Math.random() > 0.3 ? "PREFER" : "AVOID",
-        };
-      });
     }),
   };
 };

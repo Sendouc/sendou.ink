@@ -133,7 +133,7 @@ function MapPicker() {
   const fetcher = useFetcher();
   const [preferences, setPreferences] = React.useState<UserMapModePreferences>(
     data.settings.mapModePreferences ?? {
-      pools: [],
+      pool: [],
       modes: [],
     },
   );
@@ -169,7 +169,7 @@ function MapPicker() {
       );
       if (mp?.preference === "AVOID") continue;
 
-      const pool = preferences.pools.find((p) => p.mode === mode);
+      const pool = preferences.pool.find((p) => p.mode === mode);
       if (!pool || pool.stages.length !== AMOUNT_OF_MAPS_IN_POOL_PER_MODE) {
         return false;
       }
@@ -191,7 +191,7 @@ function MapPicker() {
           name="mapModePreferences"
           value={JSON.stringify({
             ...preferences,
-            pools: preferences.pools.filter((p) => {
+            pools: preferences.pool.filter((p) => {
               const isAvoided =
                 preferences.modes.find((m) => m.mode === p.mode)?.preference ===
                 "AVOID";
@@ -237,16 +237,16 @@ function MapPicker() {
                   mode={mode}
                   amountToPick={AMOUNT_OF_MAPS_IN_POOL_PER_MODE}
                   pool={
-                    preferences.pools.find((p) => p.mode === mode)?.stages ?? []
+                    preferences.pool.find((p) => p.mode === mode)?.stages ?? []
                   }
                   onChange={(stages) => {
-                    const newPools = preferences.pools.filter(
+                    const newPools = preferences.pool.filter(
                       (p) => p.mode !== mode,
                     );
                     newPools.push({ mode, stages });
                     setPreferences({
                       ...preferences,
-                      pools: newPools,
+                      pool: newPools,
                     });
                   }}
                 />

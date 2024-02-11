@@ -207,7 +207,9 @@ export type ParsedMemento = {
   modePreferences?: Partial<
     Record<ModeShort, Array<{ userId: number; preference?: Preference }>>
   >;
+  /** mapPreferences of season 2 */
   mapPreferences?: Array<{ userId: number; preference?: Preference }[]>;
+  pools: Array<{ userId: number; pool: UserMapModePreferences["pool"] }>;
 };
 
 export interface GroupMatch {
@@ -545,7 +547,7 @@ export interface UserMapModePreferences {
     mode: ModeShort;
     preference?: Preference;
   }>;
-  pools: Array<{
+  pool: Array<{
     mode: ModeShort;
     stages: StageId[];
   }>;

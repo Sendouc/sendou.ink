@@ -15,7 +15,7 @@ import {
 } from "~/modules/in-game-lists";
 import { mapPoolListToMapPoolObject } from "./map-list-generator/utils";
 
-type DbMapPoolList = Array<Pick<MapPoolMap, "stageId" | "mode">>;
+export type DbMapPoolList = Array<Pick<MapPoolMap, "stageId" | "mode">>;
 
 export class MapPool {
   private source: string | ReadonlyMapPoolObject;
