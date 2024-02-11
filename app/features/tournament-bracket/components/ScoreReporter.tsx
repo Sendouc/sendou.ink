@@ -63,6 +63,10 @@ export function ScoreReporter({
 
   const showFullInfos = !presentational && type === "EDIT";
 
+  const isMemberOfTeamParticipating = data.match.players.some(
+    (p) => p.id === user?.id,
+  );
+
   const roundInfos = [
     showFullInfos ? (
       <>
@@ -120,7 +124,7 @@ export function ScoreReporter({
         {currentPosition > 0 &&
           !presentational &&
           type === "EDIT" &&
-          tournament.isOrganizer(user) && (
+          (tournament.isOrganizer(user) || isMemberOfTeamParticipating) && (
             <Form method="post">
               <input
                 type="hidden"
