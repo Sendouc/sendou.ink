@@ -12,7 +12,7 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"],
+      "~/*": ["./app/*"]
     },
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
@@ -24,9 +24,9 @@
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
     "useUnknownInCatchVariables": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "ts-node": {
-    "transpileOnly": true,
-  },
+    "transpileOnly": true
+  }
 }
