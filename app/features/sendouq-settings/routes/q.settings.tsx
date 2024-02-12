@@ -47,6 +47,7 @@ import {
 } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
+import { BANNED_MAPS } from "../banned-maps";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -132,9 +133,21 @@ function MapPicker() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const [preferences, setPreferences] = React.useState<UserMapModePreferences>(
-    data.settings.mapModePreferences ?? {
-      pool: [],
-      modes: [],
+    () => {
+      if (!data.settings.mapModePreferences) {
+        return {
+          pool: [],
+          modes: [],
+        };
+      }
+
+      return {
+        modes: data.settings.mapModePreferences.modes,
+        pool: data.settings.mapModePreferences.pool.map((p) => ({
+          mode: p.mode,
+          stages: p.stages.filter((s) => !BANNED_MAPS[p.mode].includes(s)),
+        })),
+      };
     },
   );
 

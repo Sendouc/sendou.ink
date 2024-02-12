@@ -20,8 +20,6 @@ export function ModeMapPoolPicker({
   pool: StageId[];
   onChange: (stages: StageId[]) => void;
 }) {
-  // xxx: initial state from data but take in account they might have banned stages in DB
-
   const stages: (StageId | null)[] = [
     ...pool,
     ...nullFilledArray(amountToPick - pool.length),

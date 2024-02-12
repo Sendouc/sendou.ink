@@ -18,6 +18,8 @@ import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
+import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/constants";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
 export function matchMapList(
   groupOne: {
@@ -83,7 +85,7 @@ export function matchMapList(
 
 const MAPS_PER_MODE = 7;
 
-function mapLottery(
+export function mapLottery(
   pools: UserMapModePreferences["pool"][],
   modes: ModeShort[],
 ) {
@@ -99,7 +101,12 @@ function mapLottery(
     const modeStageIdsForMatch: StageId[] = [];
     for (const stageId of stageIdsFromPools) {
       if (modeStageIdsForMatch.length === MAPS_PER_MODE) break;
-      if (modeStageIdsForMatch.includes(stageId)) continue;
+      if (
+        modeStageIdsForMatch.includes(stageId) ||
+        BANNED_MAPS[mode].includes(stageId)
+      ) {
+        continue;
+      }
 
       modeStageIdsForMatch.push(stageId);
     }
@@ -108,8 +115,13 @@ function mapLottery(
       for (const stageId of modeStageIdsForMatch) {
         mapPoolList.push({ mode, stageId });
       }
+      // this should only happen if they made no map picks at all yet
+      // as when everyone avoids a mode it can't appear
+      // and if they select mode as neutral/prefer you need to pick 7 maps
     } else {
-      // xxx: default maps
+      mapPoolList.push(
+        ...SENDOUQ_DEFAULT_MAPS[mode].map((stageId) => ({ mode, stageId })),
+      );
     }
   }
 

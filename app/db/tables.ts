@@ -582,7 +582,6 @@ export interface User {
   twitter: string | null;
   vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
   youtubeId: string | null;
-  // xxx: migration?
   mapModePreferences: ColumnType<
     UserMapModePreferences | null,
     string | null,
