@@ -267,7 +267,7 @@ export function usersThatTrusted(userId: number) {
       ),
     )
     .where("User.banned", "=", 0)
-    .unionAll((eb) =>
+    .union((eb) =>
       eb
         .selectFrom("TrustRelationship")
         .innerJoin("User", "User.id", "TrustRelationship.trustGiverUserId")

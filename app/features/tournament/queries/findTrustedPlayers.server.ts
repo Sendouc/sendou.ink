@@ -9,6 +9,7 @@ const stm = sql.prepare(/* sql */ `
     left join "User" on "User"."id" = "TeamMember"."userId"
     where "TeamMember"."teamId" = @teamId
       and "TeamMember"."userId" != @userId
+      and "User"."banned" = 0
   union
     select
       "User"."id",
@@ -17,6 +18,7 @@ const stm = sql.prepare(/* sql */ `
     from "TrustRelationship"
     left join "User" on "User"."id" = "TrustRelationship"."trustGiverUserId"
     where "TrustRelationship"."trustReceiverUserId" = @userId
+      and "User"."banned" = 0
 `);
 
 export interface TrustedPlayer {

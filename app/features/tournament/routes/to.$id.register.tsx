@@ -249,7 +249,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: useTruster hook
 export default function TournamentRegisterPage() {
   const user = useUser();
   const isMounted = useIsMounted();
