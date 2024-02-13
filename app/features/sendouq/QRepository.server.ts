@@ -250,3 +250,31 @@ export function deletePrivateUserNote({
     .where("targetId", "=", targetId)
     .execute();
 }
+
+export function usersThatTrusted(userId: number) {
+  return db
+    .selectFrom("TeamMember")
+    .innerJoin("User", "User.id", "TeamMember.userId")
+    .select(COMMON_USER_FIELDS)
+    .where((eb) =>
+      eb(
+        "TeamMember.teamId",
+        "=",
+        eb
+          .selectFrom("TeamMember")
+          .select("TeamMember.teamId")
+          .where("TeamMember.userId", "=", userId),
+      ),
+    )
+    .where("User.banned", "=", 0)
+    .unionAll((eb) =>
+      eb
+        .selectFrom("TrustRelationship")
+        .innerJoin("User", "User.id", "TrustRelationship.trustGiverUserId")
+        .select(COMMON_USER_FIELDS)
+        .where("TrustRelationship.trustReceiverUserId", "=", userId)
+        .where("User.banned", "=", 0),
+    )
+    .orderBy("User.discordName asc")
+    .execute();
+}

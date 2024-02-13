@@ -93,6 +93,7 @@
   "looking.groups.actions.leaveQ": "Leave queue",
   "looking.groups.actions.goBack": "Go back",
   "looking.groups.adder.quickAdd": "Quick add",
+  "looking.groups.adder.error": "That user is already in a group",
   "looking.groups.adder.selectUser": "Select user",
   "looking.groups.adder.inviteLink": "Invite link",
   "looking.groups.editNote": "Edit note",

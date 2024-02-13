@@ -182,6 +182,8 @@ module.exports = {
       route("/q/preparing", "features/sendouq/routes/q.preparing.tsx");
       route("/q/match/:id", "features/sendouq/routes/q.match.$id.tsx");
 
+      route("/trusters", "features/sendouq/routes/trusters.ts");
+
       route("/q/settings", "features/sendouq-settings/routes/q.settings.tsx");
 
       route("/q/streams", "features/sendouq-streams/routes/q.streams.tsx");

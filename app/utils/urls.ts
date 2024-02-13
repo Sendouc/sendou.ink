@@ -130,6 +130,7 @@ export const soundPath = (fileName: string) =>
   `/static-assets/sounds/${fileName}.wav`;
 
 export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";
+export const GET_TRUSTERS_ROUTE = "/trusters";
 
 interface UserLinkArgs {
   discordId: User["discordId"];

@@ -8,17 +8,32 @@ import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import invariant from "tiny-invariant";
-import { Main } from "~/components/Main";
-import { SubmitButton } from "~/components/SubmitButton";
-import { useIsMounted } from "~/hooks/useIsMounted";
+import { Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
+import invariant from "tiny-invariant";
+import { Alert } from "~/components/Alert";
+import { LinkButton } from "~/components/Button";
+import { Image } from "~/components/Image";
+import { Main } from "~/components/Main";
+import { NewTabs } from "~/components/NewTabs";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useUser } from "~/features/auth/core";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
+import * as NotificationService from "~/features/chat/NotificationService.server";
+import { Chat, useChat } from "~/features/chat/components/Chat";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { userSkills } from "~/features/mmr/tiered.server";
+import * as QRepository from "~/features/sendouq/QRepository.server";
+import { useAutoRefresh } from "~/hooks/useAutoRefresh";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { useWindowSize } from "~/hooks/useWindowSize";
 import {
   parseRequestFormData,
   validate,
   type SendouRouteHandle,
 } from "~/utils/remix";
+import { errorIsSqliteForeignKeyConstraintFailure } from "~/utils/sql";
+import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_LOOKING_PAGE,
@@ -29,6 +44,8 @@ import {
   sendouQMatchPage,
 } from "~/utils/urls";
 import { GroupCard } from "../components/GroupCard";
+import { GroupLeaver } from "../components/GroupLeaver";
+import { MemberAdder } from "../components/MemberAdder";
 import { groupAfterMorph, hasGroupManagerPerms } from "../core/groups";
 import {
   addFutureMatchModes,
@@ -43,14 +60,18 @@ import {
 import { createMatchMemento, matchMapList } from "../core/match.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { lookingSchema } from "../q-schemas.server";
+import type { LookingGroupWithInviteCode } from "../q-types";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
 import styles from "../q.css";
 import { addLike } from "../queries/addLike.server";
 import { addManagerRole } from "../queries/addManagerRole.server";
+import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
 import { createMatch } from "../queries/createMatch.server";
 import { deleteLike } from "../queries/deleteLike.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findLikes } from "../queries/findLikes";
+import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
+import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { groupSize } from "../queries/groupSize.server";
 import { groupSuccessorOwner } from "../queries/groupSuccessorOwner";
 import { leaveGroup } from "../queries/leaveGroup.server";
@@ -58,30 +79,8 @@ import { likeExists } from "../queries/likeExists.server";
 import { morphGroups } from "../queries/morphGroups.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
-import { makeTitle } from "~/utils/strings";
-import { MemberAdder } from "../components/MemberAdder";
-import type { LookingGroupWithInviteCode } from "../q-types";
-import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
-import { userSkills } from "~/features/mmr/tiered.server";
-import { useAutoRefresh } from "~/hooks/useAutoRefresh";
-import { groupHasMatch } from "../queries/groupHasMatch.server";
-import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
-import { currentOrPreviousSeason } from "~/features/mmr/season";
-import { Chat, useChat } from "~/features/chat/components/Chat";
-import { NewTabs } from "~/components/NewTabs";
-import { useWindowSize } from "~/hooks/useWindowSize";
 import { updateNote } from "../queries/updateNote.server";
-import { GroupLeaver } from "../components/GroupLeaver";
-import * as NotificationService from "~/features/chat/NotificationService.server";
-import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
-import * as QRepository from "~/features/sendouq/QRepository.server";
-import { Flipper } from "react-flip-toolkit";
-import { Alert } from "~/components/Alert";
-import { useUser } from "~/features/auth/core";
-import { LinkButton } from "~/components/Button";
-import { Image } from "~/components/Image";
 import { cachedStreams } from "~/features/sendouq-streams/core/streams.server";
-import { errorIsSqliteForeignKeyConstraintFailure } from "~/utils/sql";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -467,9 +466,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     lastUpdated: new Date().getTime(),
     streamsCount: (await cachedStreams()).length,
     expiryStatus: groupExpiryStatus(currentGroup),
-    trustedPlayers: hasGroupManagerPerms(currentGroup.role)
-      ? trustedPlayersAvailableToPlay(user!)
-      : [],
   };
 };
 
@@ -713,7 +709,7 @@ function Groups() {
       {ownGroup.inviteCode ? (
         <MemberAdder
           inviteCode={ownGroup.inviteCode}
-          trustedPlayers={data.trustedPlayers}
+          groupMemberIds={(data.groups.own.members ?? [])?.map((m) => m.id)}
         />
       ) : null}
       <GroupLeaver
