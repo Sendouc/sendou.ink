@@ -36,8 +36,6 @@
   "pre.roster.delete.header": "חבר צוות למחיקה",
 
   "pre.pool.header": "בחרו מאגר מפות",
-  "pre.pool.tiebreaker": "שובר שיוויון: {{stage}}",
-  "pre.pool.pick": "בחרו {{number}}",
 
   "pre.sub.prompt": "אין לכם קבוצה מראש לאירוע? אתם יכולים להצטרף לרשימת הממלאי מקום.",
 

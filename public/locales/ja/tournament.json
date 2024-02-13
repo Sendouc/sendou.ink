@@ -36,8 +36,6 @@
   "pre.roster.delete.header": "削除するメンバー",
 
   "pre.pool.header": "マッププールを選択する",
-  "pre.pool.tiebreaker": "同点決勝: {{stage}}",
-  "pre.pool.pick": "選択 {{number}}",
 
   "pre.sub.prompt": "このイベントで参加したいチームが見当たらない場合は、サブで参加することもできます。",
 

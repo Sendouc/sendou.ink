@@ -13,11 +13,13 @@ export function ModeMapPoolPicker({
   mode,
   amountToPick,
   pool,
+  tiebreaker,
   onChange,
 }: {
   mode: ModeShort;
   amountToPick: number;
   pool: StageId[];
+  tiebreaker?: StageId;
   onChange: (stages: StageId[]) => void;
 }) {
   const stages: (StageId | null)[] = [
@@ -61,10 +63,12 @@ export function ModeMapPoolPicker({
       </Divider>
       <div className="stack sm horizontal flex-wrap justify-center mt-1">
         {stageIds.map((stageId) => {
+          const isTiebreaker = tiebreaker === stageId;
           const banned = BANNED_MAPS[mode].includes(stageId);
           const selected = stages.includes(stageId);
 
           const onClick = () => {
+            if (isTiebreaker) return;
             if (banned) return;
             if (selected) return handlePickedStageClick(stageId);
 
@@ -78,6 +82,7 @@ export function ModeMapPoolPicker({
               onClick={onClick}
               selected={selected}
               banned={banned}
+              tiebreaker={isTiebreaker}
             />
           );
         })}
@@ -107,11 +112,13 @@ function MapButton({
   onClick,
   selected,
   banned,
+  tiebreaker,
 }: {
   stageId: StageId;
   onClick: () => void;
   selected?: boolean;
   banned?: boolean;
+  tiebreaker?: boolean;
 }) {
   const { t } = useTranslation(["game-misc"]);
 
@@ -119,7 +126,8 @@ function MapButton({
     <div className="stack items-center relative">
       <button
         className={clsx("map-pool-picker__map-button", {
-          "map-pool-picker__map-button__greyed-out": selected || banned,
+          "map-pool-picker__map-button__greyed-out":
+            selected || banned || tiebreaker,
         })}
         style={
           { "--map-image-url": `url("${stageImageUrl(stageId)}.png")` } as any
@@ -134,8 +142,14 @@ function MapButton({
           onClick={onClick}
         />
       ) : null}
-      {banned ? (
-        <div className="map-pool-picker__map-button__banned">Banned</div>
+      {tiebreaker ? (
+        <div className="map-pool-picker__map-button__text text-info">
+          Tiebreak
+        </div>
+      ) : banned ? (
+        <div className="map-pool-picker__map-button__text text-error">
+          Banned
+        </div>
       ) : null}
       <div className="map-pool-picker__map-button__label">
         {t(`game-misc:STAGE_${stageId}`)}

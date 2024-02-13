@@ -1658,10 +1658,9 @@ html[dir="rtl"] .fix-rtl {
   cursor: pointer;
 }
 
-.map-pool-picker__map-button__banned {
+.map-pool-picker__map-button__text {
   position: absolute;
   top: 14px;
-  color: var(--theme-error);
   text-transform: uppercase;
   font-weight: var(--bold);
   cursor: not-allowed;

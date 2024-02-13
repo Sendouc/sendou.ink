@@ -36,8 +36,6 @@
   "pre.roster.delete.header": "Membre à effacer",
 
   "pre.pool.header": "Sélection de stage",
-  "pre.pool.tiebreaker": "Tiebreaker: {{stage}}",
-  "pre.pool.pick": "Choisissez-en {{number}}",
 
   "pre.sub.prompt": "Pas d'équipe en tête pour cet évenement ? Vous pouvez aussi rejoindre la liste des remplaçants.",
 

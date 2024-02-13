@@ -469,6 +469,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: send/resend challenge using their mode preferences
 export default function QLookingPage() {
   const { t } = useTranslation(["q"]);
   const user = useUser();

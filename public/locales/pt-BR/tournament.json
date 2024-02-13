@@ -36,8 +36,6 @@
   "pre.roster.delete.header": "Membro a ser excluído",
 
   "pre.pool.header": "Escolher seleção de mapas",
-  "pre.pool.tiebreaker": "Desempate: {{stage}}",
-  "pre.pool.pick": "Escolha {{number}}",
 
   "pre.sub.prompt": "Não tem um time em mente para esse evento? Você também pode se juntar à lista de substitutos.",
 

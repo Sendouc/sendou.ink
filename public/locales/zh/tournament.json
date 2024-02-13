@@ -36,8 +36,6 @@
   "pre.roster.delete.header": "要删除的成员",
 
   "pre.pool.header": "选择地图池",
-  "pre.pool.tiebreaker": "决胜局: {{stage}}",
-  "pre.pool.pick": "选择 {{number}}",
 
   "pre.sub.prompt": "没有队伍？您也可以加入替补列表。",
 

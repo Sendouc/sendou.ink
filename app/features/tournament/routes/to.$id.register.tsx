@@ -14,7 +14,7 @@ import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { Image, ModeImage } from "~/components/Image";
+import { ModeImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Popover } from "~/components/Popover";
@@ -27,6 +27,7 @@ import { useUser } from "~/features/auth/core";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
+import { ModeMapPoolPicker } from "~/features/sendouq-settings/components/ModeMapPoolPicker";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
@@ -36,12 +37,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import type {
-  ModeShort,
-  RankedModeShort,
-  StageId,
-} from "~/modules/in-game-lists";
-import { stageIds } from "~/modules/in-game-lists";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
   notFoundIfFalsy,
@@ -56,7 +52,6 @@ import {
   CALENDAR_PAGE,
   LOG_IN_URL,
   SENDOU_INK_BASE_URL,
-  modeImageUrl,
   navIconUrl,
   tournamentBracketsPage,
   tournamentJoinPage,
@@ -76,7 +71,6 @@ import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { TOURNAMENT } from "../tournament-constants";
-import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import {
   HACKY_isInviteOnlyEvent,
@@ -835,22 +829,12 @@ function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc", "tournament"]);
   const tournament = useTournament();
   const fetcher = useFetcher();
-
-  const { counterpickMaps, handleCounterpickMapPoolSelect } =
-    useSelectCounterpickMapPoolState();
-
-  const counterPickMapPool = new MapPool(
-    Object.entries(counterpickMaps).flatMap(([mode, stages]) => {
-      return stages
-        .filter((stageId) => stageId !== null)
-        .map((stageId) => {
-          return {
-            mode: mode as RankedModeShort,
-            stageId: stageId as StageId,
-          };
-        });
-    }),
+  const data = useLoaderData<typeof loader>();
+  const [counterPickMaps, setCounterPickMaps] = React.useState(
+    data?.mapPool ?? [],
   );
+
+  const counterPickMapPool = new MapPool(counterPickMaps);
 
   const isOneModeTournamentOf =
     tournament.modesIncluded.length === 1 ? tournament.modesIncluded[0] : null;
@@ -861,14 +845,11 @@ function CounterPickMapPoolPicker() {
         3. {t("tournament:pre.pool.header")}
       </h3>
       <section className="tournament__section">
-        <fetcher.Form
-          method="post"
-          className="stack md tournament__section-centered"
-        >
+        <fetcher.Form method="post" className="stack lg">
           <input
             type="hidden"
             name="mapPool"
-            value={counterPickMapPool.serialized}
+            value={JSON.stringify(counterPickMaps)}
           />
           {rankedModesShort
             .filter(
@@ -876,76 +857,32 @@ function CounterPickMapPoolPicker() {
                 !isOneModeTournamentOf || isOneModeTournamentOf === mode,
             )
             .map((mode) => {
-              const tiebreakerStageId = tournament.ctx.tieBreakerMapPool.find(
-                (stage) => stage.mode === mode,
-              )?.stageId;
-
               return (
-                <div key={mode} className="stack md">
-                  <div className="stack sm">
-                    <div className="stack horizontal sm items-center font-bold">
-                      <Image
-                        path={modeImageUrl(mode)}
-                        width={32}
-                        height={32}
-                        alt=""
-                      />
-                      {t(`game-misc:MODE_LONG_${mode}`)}
-                    </div>
-                    {typeof tiebreakerStageId === "number" ? (
-                      <div className="text-xs text-lighter">
-                        {t("tournament:pre.pool.tiebreaker", {
-                          stage: t(`game-misc:STAGE_${tiebreakerStageId}`),
-                        })}
-                      </div>
-                    ) : null}
-                  </div>
-                  {new Array(
+                <ModeMapPoolPicker
+                  key={mode}
+                  amountToPick={
                     isOneModeTournamentOf
                       ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
-                      : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE,
-                  )
-                    .fill(null)
-                    .map((_, i) => {
-                      return (
-                        <div
-                          key={i}
-                          className="tournament__section__map-select-row"
-                        >
-                          {t("tournament:pre.pool.pick", { number: i + 1 })}
-                          <select
-                            value={counterpickMaps[mode][i] ?? undefined}
-                            onChange={handleCounterpickMapPoolSelect(mode, i)}
-                            data-testid={`counterpick-map-pool-${mode}-num-${
-                              i + 1
-                            }`}
-                          >
-                            <option value=""></option>
-                            {stageIds.map((stageId) => {
-                              const isBanned =
-                                BANNED_MAPS[mode].includes(stageId);
-
-                              const isTiebreaker =
-                                stageId === tiebreakerStageId;
-
-                              return (
-                                <option key={stageId} value={stageId}>
-                                  {t(`game-misc:STAGE_${stageId}`)}{" "}
-                                  {isTiebreaker
-                                    ? `(${t(
-                                        "tournament:pre.pool.tiebreaker.short",
-                                      )})`
-                                    : isBanned
-                                      ? `(${t("tournament:pre.pool.banned")})`
-                                      : ""}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        </div>
-                      );
-                    })}
-                </div>
+                      : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE
+                  }
+                  mode={mode}
+                  tiebreaker={
+                    tournament.ctx.tieBreakerMapPool.find(
+                      (stage) => stage.mode === mode,
+                    )?.stageId
+                  }
+                  pool={
+                    counterPickMaps
+                      .filter((m) => m.mode === mode)
+                      .map((m) => m.stageId) ?? []
+                  }
+                  onChange={(stageIds) =>
+                    setCounterPickMaps([
+                      ...counterPickMaps.filter((m) => m.mode !== mode),
+                      ...stageIds.map((stageId) => ({ mode, stageId })),
+                    ])
+                  }
+                />
               );
             })}
           {validateCounterPickMapPool(

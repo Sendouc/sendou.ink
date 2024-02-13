@@ -247,11 +247,6 @@
   padding: var(--s-4) var(--s-3);
 }
 
-.tournament__section-centered {
-  margin: 0 auto;
-  max-width: 20rem;
-}
-
 .tournament__section__input-container {
   width: 16rem;
 }

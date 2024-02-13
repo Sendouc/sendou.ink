@@ -36,8 +36,6 @@
   "pre.roster.delete.header": "Member to delete",
 
   "pre.pool.header": "Pick map pool",
-  "pre.pool.tiebreaker": "Tiebreaker: {{stage}}",
-  "pre.pool.pick": "Pick {{number}}",
   "pre.pool.banned": "Banned",
   "pre.pool.tiebreaker.short": "Tiebreaker",
 

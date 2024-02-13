@@ -135,6 +135,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: show tournaments
 const DAYS_WITH_SKILL_NEEDED_TO_SHOW_POWER_CHART = 2;
 export default function UserSeasonsPage() {
   const { t } = useTranslation(["user"]);

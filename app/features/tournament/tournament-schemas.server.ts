@@ -3,7 +3,9 @@ import {
   _action,
   checkboxValueToBoolean,
   id,
+  modeShort,
   safeJSONParse,
+  stageId,
 } from "~/utils/zod";
 import { TOURNAMENT } from "./tournament-constants";
 import { bracketIdx } from "../tournament-bracket/tournament-bracket-schemas.server";
@@ -16,7 +18,10 @@ export const registerSchema = z.union([
   }),
   z.object({
     _action: _action("UPDATE_MAP_POOL"),
-    mapPool: z.string(),
+    mapPool: z.preprocess(
+      safeJSONParse,
+      z.array(z.object({ stageId, mode: modeShort })),
+    ),
   }),
   z.object({
     _action: _action("DELETE_TEAM_MEMBER"),
