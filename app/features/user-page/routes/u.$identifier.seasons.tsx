@@ -136,6 +136,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 };
 
 // xxx: show tournaments
+// xxx: show elo changed bottom bar
+// xxx: map/player charts show bars instead and with sorting + filtering (mode)
 const DAYS_WITH_SKILL_NEEDED_TO_SHOW_POWER_CHART = 2;
 export default function UserSeasonsPage() {
   const { t } = useTranslation(["user"]);

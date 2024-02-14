@@ -6,6 +6,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import * as Test from "~/utils/Test";
 import { nullFilledArray } from "~/utils/arrays";
 import { mapLottery, mapModePreferencesToModeList } from "./match.server";
+import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/constants";
 
 const MapModePreferencesToModeList = suite("mapModePreferencesToModeList()");
 const MapPoolFromPreferences = suite("mapPoolFromPreferences()");
@@ -158,7 +159,13 @@ MapPoolFromPreferences("returns some maps from the map pools", () => {
     }),
   );
 
-  const pool = mapLottery([memberOnePool, memberTwoPool], rankedModesShort);
+  const pool = mapLottery(
+    [
+      { modes: [], pool: memberOnePool },
+      { modes: [], pool: memberTwoPool },
+    ],
+    rankedModesShort,
+  );
 
   assert.ok(
     pool.stageModePairs.some((p) => p.stageId <= 7),
@@ -180,13 +187,33 @@ MapPoolFromPreferences(
       }),
     );
 
-    const pool = mapLottery([memberOnePool], ["SZ", "TC"]);
+    const pool = mapLottery([{ modes: [], pool: memberOnePool }], ["SZ", "TC"]);
 
     assert.ok(
       pool.stageModePairs.every((p) => p.mode === "SZ" || p.mode === "TC"),
     );
   },
 );
+
+MapPoolFromPreferences("excludes map preferences if mode is avoided", () => {
+  const memberOnePool: UserMapModePreferences["pool"] = [
+    {
+      mode: "SZ",
+      stages: nullFilledArray(7).map((_, i) => (i + 1) as StageId),
+    },
+  ];
+
+  const pool = mapLottery(
+    [{ modes: [{ preference: "AVOID", mode: "SZ" }], pool: memberOnePool }],
+    ["SZ"],
+  );
+
+  assert.ok(
+    pool.stageModePairs.every((p) =>
+      SENDOUQ_DEFAULT_MAPS["SZ"].some((stageId) => stageId === p.stageId),
+    ),
+  );
+});
 
 MapModePreferencesToModeList.run();
 MapPoolFromPreferences.run();

@@ -47,14 +47,14 @@ export function matchMapList(
         {
           id: groupOne.id,
           maps: mapLottery(
-            groupOne.preferences.map(({ preferences }) => preferences.pool),
+            groupOne.preferences.map((p) => p.preferences),
             modesIncluded,
           ),
         },
         {
           id: groupTwo.id,
           maps: mapLottery(
-            groupTwo.preferences.map(({ preferences }) => preferences.pool),
+            groupTwo.preferences.map((p) => p.preferences),
             modesIncluded,
           ),
         },
@@ -86,7 +86,7 @@ export function matchMapList(
 const MAPS_PER_MODE = 7;
 
 export function mapLottery(
-  pools: UserMapModePreferences["pool"][],
+  preferences: UserMapModePreferences[],
   modes: ModeShort[],
 ) {
   invariant(modes.length > 0, "mapLottery: no modes");
@@ -95,7 +95,18 @@ export function mapLottery(
 
   for (const mode of modes) {
     const stageIdsFromPools = shuffle(
-      pools.flatMap((pool) => pool.find((p) => p.mode === mode)?.stages ?? []),
+      preferences.flatMap((preference) => {
+        // if they disliked the mode don't include their maps
+        // they are just saved in the DB so they can be restored later
+        if (
+          preference.modes.find((mp) => mp.mode === mode)?.preference ===
+          "AVOID"
+        ) {
+          return [];
+        }
+
+        return preference.pool.find((pool) => pool.mode === mode)?.stages ?? [];
+      }),
     );
 
     const modeStageIdsForMatch: StageId[] = [];
@@ -330,6 +341,7 @@ function modePreferencesMemento(args: CreateMatchMementoArgs) {
   return result;
 }
 
+// xxx: exclude disliked mode pools
 function poolsMemento(args: CreateMatchMementoArgs): ParsedMemento["pools"] {
   return [...args.own.preferences, ...args.their.preferences].map((p) => {
     return {

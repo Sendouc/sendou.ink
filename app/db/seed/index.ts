@@ -380,10 +380,9 @@ const randomPreferences = (): UserMapModePreferences => {
 
       return {
         mode,
-        stages: shuffle([...stageIds]).slice(
-          0,
-          AMOUNT_OF_MAPS_IN_POOL_PER_MODE,
-        ),
+        stages: shuffle([...stageIds])
+          .filter((stageId) => !BANNED_MAPS[mode].includes(stageId))
+          .slice(0, AMOUNT_OF_MAPS_IN_POOL_PER_MODE),
       };
     }),
   };

@@ -205,7 +205,7 @@ function MapPicker() {
           name="mapModePreferences"
           value={JSON.stringify({
             ...preferences,
-            pools: preferences.pool.filter((p) => {
+            pool: preferences.pool.filter((p) => {
               const isAvoided =
                 preferences.modes.find((m) => m.mode === p.mode)?.preference ===
                 "AVOID";

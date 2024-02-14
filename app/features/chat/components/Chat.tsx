@@ -343,6 +343,7 @@ export function useChat({
       if (sound && soundEnabled(sound)) {
         const audio = new Audio(soundPath(sound));
         audio.volume = soundVolume() / 100;
+        // xxx: can this crash the page if throws no permissions to play error?
         void audio.play();
       }
 

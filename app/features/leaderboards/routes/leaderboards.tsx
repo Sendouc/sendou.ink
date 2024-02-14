@@ -164,6 +164,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: switch to show all on team leaderboard
 export default function LeaderboardsPage() {
   const { t } = useTranslation(["common", "game-misc", "weapons"]);
   const [searchParams, setSearchParams] = useSearchParams();

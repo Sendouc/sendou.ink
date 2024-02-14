@@ -454,6 +454,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: do revalidation when score is confirmed IF not currently submitting weapons to show changed ranks
+// xxx: fix weapon selector reopening by switching to weapon name + image + button to remove it?
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -1359,22 +1361,6 @@ function MapListMap({
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["q", "game-misc", "tournament"]);
 
-  const pickInfo = (source: string) => {
-    if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
-    if (source === "BOTH") return t("tournament:pickInfo.both");
-    if (source === "DEFAULT") return t("tournament:pickInfo.default");
-
-    if (source === String(data.match.alphaGroupId)) {
-      return t("tournament:pickInfo.team.specific", {
-        team: t("q:match.sides.alpha"),
-      });
-    }
-
-    return t("tournament:pickInfo.team.specific", {
-      team: t("q:match.sides.bravo"),
-    });
-  };
-
   const handleReportScore = (i: number, side: "ALPHA" | "BRAVO") => () => {
     const newWinners = [...winners];
     newWinners[i] = side;
@@ -1428,7 +1414,6 @@ function MapListMap({
   };
 
   const modePreferences = data.match.memento?.modePreferences?.[map.mode];
-  const mapPreferences = data.match.memento?.mapPreferences?.[i];
 
   const userIdToName = (userId: number) => {
     const member = [
@@ -1478,35 +1463,7 @@ function MapListMap({
               {t(`game-misc:STAGE_${map.stageId}`)}
             </div>
             <div className="text-lighter text-xs stack xxs horizontal">
-              {mapPreferences && mapPreferences.length > 0 ? (
-                <Popover
-                  triggerClassName="q-match__stage-popover-button"
-                  contentClassName="text-main-forced"
-                  buttonChildren={<span>{pickInfo(map.source)}</span>}
-                >
-                  <div className="text-md text-center text-lighter mb-2 line-height-very-tight">
-                    {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
-                    {t(`game-misc:STAGE_${map.stageId}`)}
-                  </div>
-                  {mapPreferences.map(({ userId, preference }) => {
-                    return (
-                      <div
-                        key={userId}
-                        className="stack horizontal items-center xs"
-                      >
-                        <img
-                          src={preferenceEmojiUrl(preference)}
-                          className="q-settings__radio__emoji"
-                          width={18}
-                        />
-                        {userIdToName(userId)}
-                      </div>
-                    );
-                  })}
-                </Popover>
-              ) : (
-                pickInfo(map.source)
-              )}{" "}
+              <MapListMapPickInfo i={i} map={map} />{" "}
               {winningInfoText(map.winnerGroupId)}
             </div>
           </div>
@@ -1631,6 +1588,122 @@ function MapListMap({
       ) : null}
     </div>
   );
+}
+
+function MapListMapPickInfo({
+  i,
+  map,
+}: {
+  i: number;
+  map: Unpacked<SerializeFrom<typeof loader>["match"]["mapList"]>;
+}) {
+  const data = useLoaderData<typeof loader>();
+  const { t } = useTranslation(["q", "game-misc", "tournament"]);
+
+  const pickInfo = (source: string) => {
+    if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
+    if (source === "BOTH") return t("tournament:pickInfo.both");
+    if (source === "DEFAULT") return t("tournament:pickInfo.default");
+
+    if (source === String(data.match.alphaGroupId)) {
+      return t("tournament:pickInfo.team.specific", {
+        team: t("q:match.sides.alpha"),
+      });
+    }
+
+    return t("tournament:pickInfo.team.specific", {
+      team: t("q:match.sides.bravo"),
+    });
+  };
+
+  const userIdToUser = (userId: number) => {
+    const member = [
+      ...data.groupAlpha.members,
+      ...data.groupBravo.members,
+    ].find((m) => m.id === userId);
+
+    return member;
+  };
+
+  const sourcePoolMemberIds = () => {
+    const result: number[] = [];
+
+    if (!data.match.memento?.pools) return result;
+
+    const pickerGroups = [data.groupAlpha, data.groupBravo].filter(
+      (g) => map.source === "BOTH" || String(g.id) === map.source,
+    );
+    if (pickerGroups.length === 0) return result;
+
+    for (const pickerGroup of pickerGroups) {
+      for (const { userId, pool } of data.match.memento.pools) {
+        if (!pickerGroup.members.some((m) => m.id === userId)) {
+          continue;
+        }
+
+        const modePool = pool.find((p) => p.mode === map.mode);
+        if (modePool?.stages.includes(map.stageId)) {
+          result.push(userId);
+        }
+      }
+    }
+
+    return result;
+  };
+
+  const mapPreferences = data.match.memento?.mapPreferences?.[i];
+  const showPopover = () => {
+    // legacy preference system (season 2)
+    if (mapPreferences && mapPreferences.length > 0) return true;
+
+    return sourcePoolMemberIds().length > 0;
+  };
+
+  if (showPopover()) {
+    return (
+      <Popover
+        triggerClassName="q-match__stage-popover-button"
+        contentClassName="text-main-forced"
+        buttonChildren={<span>{pickInfo(map.source)}</span>}
+      >
+        <div className="text-md text-center text-lighter mb-2 line-height-very-tight">
+          {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
+          {t(`game-misc:STAGE_${map.stageId}`)}
+        </div>
+        {sourcePoolMemberIds().length > 0 ? (
+          <div className="stack sm">
+            {sourcePoolMemberIds().map((userId) => {
+              const user = userIdToUser(userId);
+              return (
+                <div
+                  key={userId}
+                  className="stack sm horizontal items-center xs"
+                >
+                  <Avatar user={user} size="xxs" />
+                  {user?.discordName}
+                </div>
+              );
+            })}
+          </div>
+        ) : mapPreferences ? (
+          mapPreferences.map(({ userId, preference }) => {
+            return (
+              <div key={userId} className="stack horizontal items-center xs">
+                <img
+                  src={preferenceEmojiUrl(preference)}
+                  className="q-settings__radio__emoji"
+                  width={18}
+                />
+                {userIdToUser(userId)?.discordName}
+              </div>
+            );
+          })
+        ) : null}
+      </Popover>
+    );
+  }
+
+  return pickInfo(map.source);
 }
 
 function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {

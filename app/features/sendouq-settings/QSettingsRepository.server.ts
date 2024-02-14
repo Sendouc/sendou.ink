@@ -1,6 +1,6 @@
 import { db } from "~/db/sql";
 import type { Tables, UserMapModePreferences } from "~/db/tables";
-import type { MainWeaponId } from "~/modules/in-game-lists";
+import { modesShort, type MainWeaponId } from "~/modules/in-game-lists";
 
 export async function settingsByUserId(userId: number) {
   const preferences = await db
@@ -20,13 +20,34 @@ export async function settingsByUserId(userId: number) {
   };
 }
 
-export function updateUserMapModePreferences({
+export async function updateUserMapModePreferences({
   userId,
   mapModePreferences,
 }: {
   userId: number;
   mapModePreferences: UserMapModePreferences;
 }) {
+  const modesExcluded = modesShort.filter(
+    (mode) => !mapModePreferences.pool.some((mp) => mp.mode === mode),
+  );
+
+  const currentPreferences = (
+    await db
+      .selectFrom("User")
+      .select("mapModePreferences")
+      .where("id", "=", userId)
+      .executeTakeFirstOrThrow()
+  ).mapModePreferences;
+
+  for (const mode of modesExcluded) {
+    const previousModePreference = currentPreferences?.pool.filter(
+      (mp) => mp.mode === mode,
+    );
+    if (previousModePreference && previousModePreference.length > 0) {
+      mapModePreferences.pool.push(...previousModePreference);
+    }
+  }
+
   return db
     .updateTable("User")
     .set({ mapModePreferences: JSON.stringify(mapModePreferences) })

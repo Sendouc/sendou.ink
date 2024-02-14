@@ -9,6 +9,7 @@ import { nullFilledArray } from "~/utils/arrays";
 import { stageImageUrl } from "~/utils/urls";
 import { BANNED_MAPS } from "../banned-maps";
 
+// xxx: wiggle https://stackoverflow.com/questions/38132700/css-wiggle-shake-effect
 export function ModeMapPoolPicker({
   mode,
   amountToPick,
