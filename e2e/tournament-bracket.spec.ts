@@ -126,8 +126,8 @@ test.describe("Tournament bracket", () => {
     });
 
     // 1)
-    await page.locator('[data-match-id="5"]').click();
-    await reportResult({ page, amountOfMapsToReport: tournamentId });
+    await navigateToMatch(page, 6);
+    await reportResult({ page, amountOfMapsToReport: 2 });
     await backToBracket(page);
 
     // 2)
@@ -136,7 +136,7 @@ test.describe("Tournament bracket", () => {
       page,
       url: tournamentBracketsPage({ tournamentId }),
     });
-    await navigateToMatch(page, 6);
+    await navigateToMatch(page, 5);
     await reportResult({ page, amountOfMapsToReport: 2 });
     await backToBracket(page);
 
@@ -150,7 +150,7 @@ test.describe("Tournament bracket", () => {
     await backToBracket(page);
 
     // 4)
-    await navigateToMatch(page, 5);
+    await navigateToMatch(page, 6);
     await isNotVisible(page.getByTestId("reopen-match-button"));
     await backToBracket(page);
 
@@ -161,7 +161,7 @@ test.describe("Tournament bracket", () => {
     await backToBracket(page);
 
     // 6)
-    await navigateToMatch(page, 5);
+    await navigateToMatch(page, 6);
     await page.getByTestId("reopen-match-button").click();
     await expectScore(page, [1, 0]);
 
@@ -171,7 +171,7 @@ test.describe("Tournament bracket", () => {
       page,
       url: tournamentBracketsPage({ tournamentId }),
     });
-    await navigateToMatch(page, 5);
+    await navigateToMatch(page, 6);
     await page.getByTestId("undo-score-button").click();
     await expectScore(page, [0, 0]);
     await reportResult({
