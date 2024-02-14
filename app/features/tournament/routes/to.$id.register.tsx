@@ -99,11 +99,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const tournamentId = tournamentIdFromParams(params);
   const tournament = await tournamentFromDB({ tournamentId, user });
-  const hasStarted = hasTournamentStarted(tournamentId);
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   validate(
-    !hasStarted,
+    tournament.ctx.inProgressBrackets.length === 0,
     "Tournament has started, cannot make edits to registration",
   );
 
@@ -122,6 +121,10 @@ export const action: ActionFunction = async ({ request, params }) => {
         });
       } else {
         validate(!HACKY_isInviteOnlyEvent(event), "Event is invite only");
+        validate(
+          !tournament.teamMemberOfByUser(user),
+          "You are already in a team that you aren't captain of",
+        );
 
         createTeam({
           name: data.teamName,
