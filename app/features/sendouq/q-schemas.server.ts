@@ -11,7 +11,7 @@ import {
   weaponSplId,
 } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
-import { SENDOUQ, SENDOUQ_BEST_OF } from "./q-constants";
+import { FRIEND_CODE_REGEXP, SENDOUQ, SENDOUQ_BEST_OF } from "./q-constants";
 
 export const frontPageSchema = z.union([
   z.object({
@@ -23,6 +23,10 @@ export const frontPageSchema = z.union([
   }),
   z.object({
     _action: _action("JOIN_TEAM_WITH_TRUST"),
+  }),
+  z.object({
+    _action: _action("ADD_FRIEND_CODE"),
+    friendCode: z.string().regex(FRIEND_CODE_REGEXP),
   }),
 ]);
 

@@ -467,7 +467,7 @@ dialog::backdrop {
 
 .input-addon {
   display: grid;
-  border-radius: var(--rounded-sm) 0 0 var(--rounded-sm);
+  border-radius: var(--rounded-xs) 0 0 var(--rounded-xs);
   background-color: var(--bg-lighter);
   color: var(--text-lighter);
   font-size: var(--fonts-xs);

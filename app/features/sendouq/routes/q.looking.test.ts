@@ -118,18 +118,30 @@ SendouQMatchCreation("adds pools to memento", async () => {
   assert.ok(pools.some((p) => p.pool[0].stages.includes(19)));
 });
 
-SendouQMatchCreation(
-  "user missing from preferences if no preferences at all",
-  async () => {
-    await createMatch();
+SendouQMatchCreation("doesn't add pool where mode is avoided", async () => {
+  await insertMapModePreferences(1, {
+    modes: [
+      { mode: "SZ", preference: "AVOID" },
+      { mode: "TC", preference: "PREFER" },
+    ],
+    pool: [
+      { mode: "SZ", stages: [...stageIds].slice(0, 7) },
+      { mode: "TC", stages: [...stageIds].slice(0, 7) },
+    ],
+  });
 
-    const match = await findMatch();
+  await createMatch();
 
-    assert.not.ok(
-      match.memento?.mapPreferences?.flat().find((p) => p.userId === 3),
-    );
-  },
-);
+  const match = await findMatch();
+  const pools = match.memento?.pools;
+
+  invariant(pools, "pools missing");
+
+  assert.equal(pools.length, 2);
+  assert.ok(
+    pools.find((p) => p.userId === 1)!.pool.every((p) => p.mode !== "SZ"),
+  );
+});
 
 SendouQMatchCreation("adds mode preferences to memento", async () => {
   await createMatch();

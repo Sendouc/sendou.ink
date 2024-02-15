@@ -194,6 +194,8 @@ function wipeDB() {
   }
 }
 
+// xxx: friend codes
+
 async function adminUser() {
   await UserRepository.upsert({
     discordDiscriminator: "0",

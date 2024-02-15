@@ -52,7 +52,11 @@ import {
   navIconUrl,
   userSeasonsPage,
 } from "~/utils/urls";
-import { FULL_GROUP_SIZE, JOIN_CODE_SEARCH_PARAM_KEY } from "../q-constants";
+import {
+  FRIEND_CODE_REGEXP_PATTERN,
+  FULL_GROUP_SIZE,
+  JOIN_CODE_SEARCH_PARAM_KEY,
+} from "../q-constants";
 import { frontPageSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
 import styles from "../q.css";
@@ -61,6 +65,9 @@ import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
 import { Image } from "~/components/Image";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { Input } from "~/components/Input";
+import { Label } from "~/components/Label";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -143,6 +150,20 @@ export const action: ActionFunction = async ({ request }) => {
           : SENDOUQ_LOOKING_PAGE,
       );
     }
+    case "ADD_FRIEND_CODE": {
+      validate(
+        !(await UserRepository.currentFriendCodeByUserId(user.id)),
+        "Friend code already set",
+      );
+
+      await UserRepository.insertFriendCode({
+        userId: user.id,
+        friendCode: data.friendCode,
+        submitterUserId: user.id,
+      });
+
+      return null;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -175,9 +196,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     season,
     upcomingSeason,
     groupInvitedTo,
+    friendCode: user
+      ? await UserRepository.currentFriendCodeByUserId(user.id)
+      : undefined,
   };
 };
 
+// xxx: exclude joining team via link if no friend code
 export default function QPage() {
   const { t } = useTranslation(["q"]);
   const [dialogOpen, setDialogOpen] = React.useState(true);
@@ -215,12 +240,16 @@ export default function QPage() {
               members={data.groupInvitedTo.members}
             />
           ) : null}
+          {user ? <FriendCodeInput /> : null}
           {user ? (
             <>
               <fetcher.Form className="stack md" method="post">
                 <input type="hidden" name="_action" value="JOIN_QUEUE" />
                 <div className="stack horizontal md items-center mt-4 mx-auto">
-                  <SubmitButton icon={<UsersIcon />}>
+                  <SubmitButton
+                    icon={<UsersIcon />}
+                    disabled={!data.friendCode}
+                  >
                     {t("q:front.actions.joinWithGroup")}
                   </SubmitButton>
                   <SubmitButton
@@ -229,22 +258,30 @@ export default function QPage() {
                     state={fetcher.state}
                     icon={<UserIcon />}
                     variant="outlined"
+                    disabled={!data.friendCode}
                   >
                     {t("q:front.actions.joinSolo")}
                   </SubmitButton>
                 </div>
-                <ActiveSeasonInfo season={data.season} />
+                {data.friendCode ? (
+                  <ActiveSeasonInfo season={data.season} />
+                ) : (
+                  <div className="text-lighter text-xs text-center text-error">
+                    Save your friend code to join the queue
+                  </div>
+                )}
               </fetcher.Form>
             </>
           ) : (
             <form
-              className="stack items-center"
+              className="stack md items-center"
               action={LOG_IN_URL}
               method="post"
             >
               <Button size="big" type="submit">
                 {t("q:front.actions.logIn")}
               </Button>
+              <ActiveSeasonInfo season={data.season} />
             </form>
           )}
         </>
@@ -323,6 +360,39 @@ function Clocks() {
         );
       })}
     </div>
+  );
+}
+
+// xxx: link to how to play + adjust form message text + i18n
+function FriendCodeInput() {
+  const data = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form method="post">
+      <div className="stack sm horizontal items-end">
+        <div>
+          <Label htmlFor="friendCode">Friend code</Label>
+          {data.friendCode ? (
+            <div className="font-bold">SW-{data.friendCode}</div>
+          ) : (
+            <Input
+              leftAddon="SW-"
+              id="friendCode"
+              name="friendCode"
+              pattern={FRIEND_CODE_REGEXP_PATTERN}
+              placeholder="1234-5678-9012"
+            />
+          )}
+        </div>
+        {!data.friendCode ? (
+          <SubmitButton _action="ADD_FRIEND_CODE" state={fetcher.state}>
+            Save
+          </SubmitButton>
+        ) : null}
+      </div>
+      <FormMessage type="info">Check how to play for more info</FormMessage>
+    </fetcher.Form>
   );
 }
 

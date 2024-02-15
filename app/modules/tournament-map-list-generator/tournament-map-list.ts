@@ -205,7 +205,9 @@ export function createTournamentMapList(
       return stageIds.map((id) => ({ mode, stageId: id }));
     }
 
-    return DEFAULT_MAP_POOL.stageModePairs;
+    return DEFAULT_MAP_POOL.stageModePairs.filter(({ mode }) =>
+      input.modesIncluded.includes(mode),
+    );
   }
 
   type StageValidatorInput = Pick<
@@ -274,7 +276,7 @@ export function createTournamentMapList(
         }
       }
     }
-    invariant(previousModeShouldBe, "Couldn't resolve maplist pattern");
+    if (!previousModeShouldBe) return false;
 
     return mapList[mapList.length - 1].mode !== previousModeShouldBe;
   }

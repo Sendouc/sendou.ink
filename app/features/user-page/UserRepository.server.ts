@@ -296,6 +296,22 @@ export function searchExact(args: {
   return query.execute();
 }
 
+export async function currentFriendCodeByUserId(userId: number) {
+  return (
+    await db
+      .selectFrom("UserFriendCode")
+      .select("UserFriendCode.friendCode")
+      .where("userId", "=", userId)
+      .orderBy("UserFriendCode.createdAt desc")
+      .limit(1)
+      .executeTakeFirst()
+  )?.friendCode;
+}
+
+export function insertFriendCode(args: TablesInsertable["UserFriendCode"]) {
+  return db.insertInto("UserFriendCode").values(args).execute();
+}
+
 export function upsert(
   args: Pick<
     TablesInsertable["User"],

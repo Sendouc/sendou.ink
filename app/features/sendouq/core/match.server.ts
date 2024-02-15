@@ -341,12 +341,21 @@ function modePreferencesMemento(args: CreateMatchMementoArgs) {
   return result;
 }
 
-// xxx: exclude disliked mode pools
 function poolsMemento(args: CreateMatchMementoArgs): ParsedMemento["pools"] {
-  return [...args.own.preferences, ...args.their.preferences].map((p) => {
+  return [...args.own.preferences, ...args.their.preferences].flatMap((p) => {
+    const avoidedModes = p.preferences.modes
+      .filter((m) => m.preference === "AVOID")
+      .map((m) => m.mode);
+
+    const pool = p.preferences.pool.filter(
+      (pool) => !avoidedModes.includes(pool.mode),
+    );
+
+    if (pool.length === 0) return [];
+
     return {
       userId: p.userId,
-      pool: p.preferences.pool,
+      pool,
     };
   });
 }

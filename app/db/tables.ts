@@ -613,6 +613,13 @@ export interface UserWeapon {
   weaponSplId: MainWeaponId;
 }
 
+export interface UserFriendCode {
+  friendCode: string;
+  userId: number;
+  submitterUserId: number;
+  createdAt: GeneratedAlways<number>;
+}
+
 export interface Video {
   eventId: number | null;
   id: GeneratedAlways<number>;
@@ -721,6 +728,7 @@ export interface DB {
   UserResultHighlight: UserResultHighlight;
   UserSubmittedImage: UserSubmittedImage;
   UserWeapon: UserWeapon;
+  UserFriendCode: UserFriendCode;
   Video: Video;
   VideoMatch: VideoMatch;
   VideoMatchPlayer: VideoMatchPlayer;
