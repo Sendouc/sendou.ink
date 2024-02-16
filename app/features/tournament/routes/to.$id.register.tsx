@@ -77,7 +77,8 @@ import {
   isOneModeTournamentOf,
   tournamentIdFromParams,
 } from "../tournament-utils";
-import { useTournament } from "./to.$id";
+import { useFriendCode, useTournament } from "./to.$id";
+import { FriendCodeInput } from "~/components/FriendCodeInput";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -334,6 +335,7 @@ function RegistrationForms() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
   const tournament = useTournament();
+  const friendCode = useFriendCode();
 
   const ownTeam = tournament.ownedTeamByUser(user);
   const ownTeamCheckedIn = Boolean(ownTeam && ownTeam.checkIns.length > 0);
@@ -366,11 +368,16 @@ function RegistrationForms() {
         />
       ) : null}
       {showRegisterNewTeam() ? (
-        <TeamInfo
-          name={ownTeam?.name}
-          prefersNotToHost={ownTeam?.prefersNotToHost}
-          canUnregister={Boolean(ownTeam && !ownTeamCheckedIn)}
-        />
+        <>
+          <FriendCode />
+          {friendCode ? (
+            <TeamInfo
+              name={ownTeam?.name}
+              prefersNotToHost={ownTeam?.prefersNotToHost}
+              canUnregister={Boolean(ownTeam && !ownTeamCheckedIn)}
+            />
+          ) : null}
+        </>
       ) : null}
       {ownTeam ? (
         <>
@@ -570,7 +577,7 @@ function TeamInfo({
     <div>
       <div className="stack horizontal justify-between">
         <h3 className="tournament__section-header">
-          1. {t("tournament:pre.info.header")}
+          2. {t("tournament:pre.info.header")}
         </h3>
         {canUnregister ? (
           <FormWithConfirm
@@ -629,6 +636,21 @@ function TeamInfo({
   );
 }
 
+function FriendCode() {
+  const friendCode = useFriendCode();
+
+  return (
+    <div>
+      <h3 className="tournament__section-header">1. Friend code</h3>
+      <section className="tournament__section">
+        <div className="tournament__section__input-container mx-auto">
+          <FriendCodeInput friendCode={friendCode} />
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function FillRoster({
   ownTeam,
   ownTeamCheckedIn,
@@ -678,7 +700,7 @@ function FillRoster({
   return (
     <div>
       <h3 className="tournament__section-header">
-        2. {t("tournament:pre.roster.header")}
+        3. {t("tournament:pre.roster.header")}
       </h3>
       <section className="tournament__section stack lg items-center">
         {playersAvailableToDirectlyAdd.length > 0 && !teamIsFull ? (
@@ -842,7 +864,7 @@ function CounterPickMapPoolPicker() {
   return (
     <div>
       <h3 className="tournament__section-header">
-        3. {t("tournament:pre.pool.header")}
+        4. {t("tournament:pre.pool.header")}
       </h3>
       <section className="tournament__section">
         <fetcher.Form method="post" className="stack lg">

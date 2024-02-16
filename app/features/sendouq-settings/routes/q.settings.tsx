@@ -115,7 +115,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: remember selected pool when switching between mode prefer/avoid but filter out in the map pool making phase
 export default function SendouQSettingsPage() {
   return (
     <Main className="stack sm">

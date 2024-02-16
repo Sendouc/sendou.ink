@@ -25,6 +25,7 @@ import { assertUnreachable } from "~/utils/types";
 import { streamsByTournamentId } from "../core/streams.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -90,6 +91,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     subsCount,
     streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
     streamsCount: streams.length,
+    // xxx: probably get in the tournament call so admins can see them on the teams page
+    friendCode: user
+      ? await UserRepository.currentFriendCodeByUserId(user.id)
+      : undefined,
   };
 };
 
@@ -167,6 +172,7 @@ export default function TournamentLayout() {
               bracketExpanded,
               setBracketExpanded,
               streamingParticipants: data.streamingParticipants,
+              friendCode: data.friendCode,
             } satisfies TournamentContext
           }
         />
@@ -180,6 +186,7 @@ type TournamentContext = {
   bracketExpanded: boolean;
   streamingParticipants: number[];
   setBracketExpanded: (expanded: boolean) => void;
+  friendCode?: string;
 };
 
 export function useTournament() {
@@ -195,4 +202,8 @@ export function useBracketExpanded() {
 
 export function useStreamingParticipants() {
   return useOutletContext<TournamentContext>().streamingParticipants;
+}
+
+export function useFriendCode() {
+  return useOutletContext<TournamentContext>().friendCode;
 }
