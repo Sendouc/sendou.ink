@@ -15,6 +15,7 @@ import { MESSAGE_MAX_LENGTH } from "../chat-constants";
 import { messageTypeToSound, soundEnabled, soundVolume } from "../chat-utils";
 import { soundPath } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
+import { logger } from "~/utils/logger";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
@@ -343,8 +344,9 @@ export function useChat({
       if (sound && soundEnabled(sound)) {
         const audio = new Audio(soundPath(sound));
         audio.volume = soundVolume() / 100;
-        // xxx: can this crash the page if throws no permissions to play error?
-        void audio.play();
+        void audio
+          .play()
+          .catch((e) => logger.error(`Couldn't play sound: ${e}`));
       }
 
       if (messageArr[0].revalidateOnly) {
