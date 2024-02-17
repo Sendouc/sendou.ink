@@ -23,7 +23,9 @@ import {
   tournamentIdFromParams,
   tournamentTeamMaxSize,
 } from "../tournament-utils";
-import { useTournament } from "./to.$id";
+import { useTournamentFriendCode, useTournament } from "./to.$id";
+import { FriendCodeInput } from "~/components/FriendCodeInput";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -60,6 +62,10 @@ export const action: ActionFunction = async ({ request, params }) => {
       tournament,
     }) === "VALID",
     "Cannot join this team or invite code is invalid",
+  );
+  validate(
+    await UserRepository.currentFriendCodeByUserId(user.id),
+    "No friend code",
   );
 
   const whatToDoWithPreviousTeam = !previousTeam
@@ -115,6 +121,7 @@ export default function JoinTeamPage() {
   const user = useUser();
   const tournament = useTournament();
   const data = useLoaderData<typeof loader>();
+  const friendCode = useTournamentFriendCode();
 
   const teamToJoin = data.teamId ? tournament.teamById(data.teamId) : undefined;
   const captain = teamToJoin?.members.find((member) => member.isOwner);
@@ -150,24 +157,35 @@ export default function JoinTeamPage() {
   };
 
   return (
-    <Form method="post" className="tournament__invite-container">
-      <div className="stack sm">
-        <div className="text-center">{textPrompt()}</div>
+    <div className="stack lg items-center">
+      <div className="text-center text-lg font-semi-bold">{textPrompt()}</div>
+      {validationStatus === "VALID" ? (
+        <FriendCodeInput friendCode={friendCode} />
+      ) : null}
+      <Form method="post" className="tournament__invite-container">
         {validationStatus === "VALID" ? (
-          <div className="text-lighter text-sm stack horizontal sm items-center">
-            <input id={id} type="checkbox" name="trust" />{" "}
-            <label htmlFor={id} className="mb-0">
-              {t("tournament:join.giveTrust", {
-                name: captain ? captain.discordName : "",
-              })}
-            </label>
+          <div className="stack md items-center">
+            <SubmitButton size="big" disabled={!friendCode}>
+              {t("common:actions.join")}
+            </SubmitButton>
+            {!friendCode ? (
+              <div className="text-warning">
+                Save friend code before joining the team
+              </div>
+            ) : (
+              <div className="text-lighter text-sm stack horizontal sm items-center">
+                <input id={id} type="checkbox" name="trust" />{" "}
+                <label htmlFor={id} className="mb-0">
+                  {t("tournament:join.giveTrust", {
+                    name: captain ? captain.discordName : "",
+                  })}
+                </label>
+              </div>
+            )}
           </div>
         ) : null}
-      </div>
-      {validationStatus === "VALID" ? (
-        <SubmitButton size="big">{t("common:actions.join")}</SubmitButton>
-      ) : null}
-    </Form>
+      </Form>
+    </div>
   );
 }
 

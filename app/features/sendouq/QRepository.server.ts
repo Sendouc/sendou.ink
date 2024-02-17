@@ -144,6 +144,15 @@ export async function findLookingGroups({
     });
 }
 
+export async function findActiveGroupMembers() {
+  return db
+    .selectFrom("GroupMember")
+    .innerJoin("Group", "Group.id", "GroupMember.groupId")
+    .select("GroupMember.userId")
+    .where("Group.status", "!=", "INACTIVE")
+    .execute();
+}
+
 type CreateGroupArgs = {
   status: Exclude<Tables["Group"]["status"], "INACTIVE">;
   userId: number;
@@ -255,6 +264,7 @@ export function usersThatTrusted(userId: number) {
   return db
     .selectFrom("TeamMember")
     .innerJoin("User", "User.id", "TeamMember.userId")
+    .innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
     .select(COMMON_USER_FIELDS)
     .where((eb) =>
       eb(
@@ -271,6 +281,7 @@ export function usersThatTrusted(userId: number) {
       eb
         .selectFrom("TrustRelationship")
         .innerJoin("User", "User.id", "TrustRelationship.trustGiverUserId")
+        .innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
         .select(COMMON_USER_FIELDS)
         .where("TrustRelationship.trustReceiverUserId", "=", userId)
         .where("User.banned", "=", 0),

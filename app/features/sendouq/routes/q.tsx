@@ -88,9 +88,13 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-const validateCanJoinQ = (user: { id: number }) => {
+const validateCanJoinQ = async (user: { id: number }) => {
   validate(currentSeason(new Date()), "Season is not active");
   validate(!findCurrentGroupByUserId(user.id), "Already in a group");
+  validate(
+    await UserRepository.currentFriendCodeByUserId(user.id),
+    "No friend code",
+  );
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -102,7 +106,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   switch (data._action) {
     case "JOIN_QUEUE": {
-      validateCanJoinQ(user);
+      await validateCanJoinQ(user);
 
       await QRepository.createGroup({
         status: data.direct === "true" ? "ACTIVE" : "PREPARING",
@@ -115,7 +119,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
     case "JOIN_TEAM_WITH_TRUST":
     case "JOIN_TEAM": {
-      validateCanJoinQ(user);
+      await validateCanJoinQ(user);
 
       const code = new URL(request.url).searchParams.get(
         JOIN_CODE_SEARCH_PARAM_KEY,
@@ -202,7 +206,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: exclude joining team via link if no friend code
 export default function QPage() {
   const { t } = useTranslation(["q"]);
   const [dialogOpen, setDialogOpen] = React.useState(true);
@@ -232,7 +235,13 @@ export default function QPage() {
           {data.groupInvitedTo === null ? (
             <Alert variation="WARNING">{t("q:front.inviteCodeWrong")}</Alert>
           ) : null}
-          {data.groupInvitedTo &&
+          {!data.friendCode &&
+          data.groupInvitedTo &&
+          data.groupInvitedTo.members.length < FULL_GROUP_SIZE ? (
+            <Alert variation="WARNING">{t("q:front.noFriendCode")}</Alert>
+          ) : null}
+          {data.friendCode &&
+          data.groupInvitedTo &&
           data.groupInvitedTo.members.length < FULL_GROUP_SIZE ? (
             <JoinTeamDialog
               open={dialogOpen}

@@ -36,7 +36,7 @@ import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.se
 import { findPreparingGroup } from "../queries/findPreparingGroup.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { setGroupAsActive } from "../queries/setGroupAsActive.server";
-import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q", "user"],
@@ -86,10 +86,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       return redirect(SENDOUQ_LOOKING_PAGE);
     }
     case "ADD_TRUSTED": {
-      const available = trustedPlayersAvailableToPlay(user);
-      if (!available.some((u) => u.id === data.id)) {
+      const available = await QRepository.findActiveGroupMembers();
+      if (available.some(({ userId }) => userId === data.id)) {
         return { error: "taken" } as const;
       }
+
+      validate(
+        (await QRepository.usersThatTrusted(user.id)).some(
+          (trusterUser) => trusterUser.id === data.id,
+        ),
+        "Not trusted",
+      );
 
       const ownGroupWithMembers = await QMatchRepository.findGroupById({
         groupId: currentGroup.id,

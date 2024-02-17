@@ -45,8 +45,6 @@ export const handle: SendouRouteHandle = {
 
 export type TournamentLoaderData = SerializeFrom<typeof loader>;
 
-// xxx: handle friend codes when joining
-// xxx: friend codes for adding trusted
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
@@ -204,6 +202,6 @@ export function useStreamingParticipants() {
   return useOutletContext<TournamentContext>().streamingParticipants;
 }
 
-export function useFriendCode() {
+export function useTournamentFriendCode() {
   return useOutletContext<TournamentContext>().friendCode;
 }

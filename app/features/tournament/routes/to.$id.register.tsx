@@ -28,7 +28,6 @@ import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { ModeMapPoolPicker } from "~/features/sendouq-settings/components/ModeMapPoolPicker";
-import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import {
@@ -46,7 +45,6 @@ import {
   type SendouRouteHandle,
 } from "~/utils/remix";
 import { booleanToInt } from "~/utils/sql";
-import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
   CALENDAR_PAGE,
@@ -64,8 +62,6 @@ import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import type { TrustedPlayer } from "../queries/findTrustedPlayers.server";
-import { findTrustedPlayers } from "../queries/findTrustedPlayers.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
@@ -77,8 +73,10 @@ import {
   isOneModeTournamentOf,
   tournamentIdFromParams,
 } from "../tournament-utils";
-import { useFriendCode, useTournament } from "./to.$id";
+import { useTournamentFriendCode, useTournament } from "./to.$id";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -117,6 +115,10 @@ export const action: ActionFunction = async ({ request, params }) => {
         });
       } else {
         validate(!HACKY_isInviteOnlyEvent(event), "Event is invite only");
+        validate(
+          await UserRepository.currentFriendCodeByUserId(user.id),
+          "No friend code",
+        );
 
         createTeam({
           name: data.teamName,
@@ -187,11 +189,14 @@ export const action: ActionFunction = async ({ request, params }) => {
       );
       validate(ownTeam);
       validate(
-        findTrustedPlayers({
-          userId: user.id,
-          teamId: (await TeamRepository.findByUserId(user.id))?.id,
-        }).some((trustedPlayer) => trustedPlayer.id === data.userId),
+        (await QRepository.usersThatTrusted(user.id)).some(
+          (trusterPlayer) => trusterPlayer.id === data.userId,
+        ),
         "No trust given from this user",
+      );
+      validate(
+        await UserRepository.currentFriendCodeByUserId(data.userId),
+        "No friend code",
       );
 
       joinTeam({
@@ -237,10 +242,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   return {
     mapPool: findMapPoolByTeamId(ownTeam.id),
-    trustedPlayers: findTrustedPlayers({
-      userId: user.id,
-      teamId: (await TeamRepository.findByUserId(user.id))?.id,
-    }),
+    trusterPlayers: await QRepository.usersThatTrusted(user.id),
   };
 };
 
@@ -335,7 +337,7 @@ function RegistrationForms() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
   const tournament = useTournament();
-  const friendCode = useFriendCode();
+  const friendCode = useTournamentFriendCode();
 
   const ownTeam = tournament.ownedTeamByUser(user);
   const ownTeamCheckedIn = Boolean(ownTeam && ownTeam.checkIns.length > 0);
@@ -637,7 +639,7 @@ function TeamInfo({
 }
 
 function FriendCode() {
-  const friendCode = useFriendCode();
+  const friendCode = useTournamentFriendCode();
 
   return (
     <div>
@@ -688,7 +690,7 @@ function FillRoster({
       ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
 
   const playersAvailableToDirectlyAdd = (() => {
-    return data!.trustedPlayers.filter((user) => {
+    return data!.trusterPlayers.filter((user) => {
       return tournament.ctx.teams.every((team) =>
         team.members.every((member) => member.userId !== user.id),
       );
@@ -770,7 +772,11 @@ function FillRoster({
   );
 }
 
-function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
+function DirectlyAddPlayerSelect({
+  players,
+}: {
+  players: { id: number; discordName: string }[];
+}) {
   const { t } = useTranslation(["tournament", "common"]);
   const fetcher = useFetcher();
   const id = React.useId();
@@ -785,7 +791,7 @@ function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
           {players.map((player) => {
             return (
               <option key={player.id} value={player.id}>
-                {discordFullName(player)}
+                {player.discordName}
               </option>
             );
           })}

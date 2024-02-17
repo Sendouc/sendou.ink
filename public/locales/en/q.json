@@ -26,6 +26,7 @@
   "front.cities.tokyo": "Tokyo",
   "front.watchVideo": "Watch introduction video on YouTube by Chara",
   "front.inviteCodeWrong": "Invite code doesn't match any active team",
+  "front.noFriendCode": "Set friend code before joining the group",
   "front.upcomingSeason.header": "It's off-season!",
   "front.upcomingSeason.date": "Join Season {{nth}} starting {{date}}",
   "front.nav.rules.title": "Rules",
