@@ -99,7 +99,7 @@ function TrusterDropdown({
   const { t } = useTranslation(["q"]);
   const { trusters } = useTrusted();
 
-  if (!trusters) {
+  if (!trusters || trusters.length === 0) {
     return (
       <select
         name="id"
