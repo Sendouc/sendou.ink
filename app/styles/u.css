@@ -356,6 +356,18 @@
   gap: var(--s-4);
 }
 
+.u__season__match__with-diff {
+  border-radius: var(--rounded) var(--rounded) 0 0;
+}
+
+.u__season__match__sp-diff {
+  border-radius: 0 0 var(--rounded) var(--rounded);
+  background-color: var(--bg-light-variation);
+  font-size: var(--fonts-xs);
+  text-align: center;
+  font-weight: var(--semi-bold);
+}
+
 .u__season__match:hover {
   background-color: var(--theme-transparent);
 }

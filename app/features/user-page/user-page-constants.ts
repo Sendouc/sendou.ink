@@ -1,0 +1,1 @@
+export const MATCHES_PER_SEASONS_PAGE = 8;

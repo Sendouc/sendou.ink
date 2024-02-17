@@ -1,11 +1,11 @@
 import { sql } from "~/db/sql";
 import type { GroupMatch, GroupMatchMap, User } from "~/db/types";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import { seasonObject } from "~/features/mmr/season";
+import { MATCHES_PER_SEASONS_PAGE } from "~/features/user-page/user-page-constants";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
-
-const MATCHES_PER_PAGE = 8;
 
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
@@ -14,17 +14,19 @@ const stm = sql.prepare(/* sql */ `
       "GroupMatch"."alphaGroupId",
       "GroupMatch"."bravoGroupId",
       "GroupMatch"."createdAt",
+      "Skill"."ordinal" as "ordinalAfter",
       (select exists (select 1 from "Skill" where "Skill"."groupMatchId" = "GroupMatch"."id")) as "isLocked"
     from "GroupMatch"
     left join "Group" on 
       "GroupMatch"."alphaGroupId" = "Group"."id" or 
       "GroupMatch"."bravoGroupId" = "Group"."id"
     left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
+    left join "Skill" on "GroupMatch"."id" = "Skill"."groupMatchId" and "Skill"."userId" = @userId and "Skill"."matchesCount" >= ${MATCHES_COUNT_NEEDED_FOR_LEADERBOARD}
     where "GroupMember"."userId" = @userId
       and "GroupMatch"."createdAt" between @starts and @ends
     order by "GroupMatch"."id" desc
-    limit ${MATCHES_PER_PAGE}
-    offset ${MATCHES_PER_PAGE} * (@page - 1)
+    limit ${MATCHES_PER_SEASONS_PAGE + 1}
+    offset ${MATCHES_PER_SEASONS_PAGE} * (@page - 1)
   ),
   "q2" as (
     select
@@ -99,6 +101,7 @@ interface SeasonMatchByUserId {
   winnerGroupIds: Array<GroupMatchMap["winnerGroupId"]>;
   createdAt: GroupMatch["createdAt"];
   isLocked: number;
+  ordinalAfter: number | null;
   groupAlphaMembers: Array<{
     id: User["id"];
     discordName: User["discordName"];
@@ -191,5 +194,5 @@ export function seasonMatchesByUserIdPagesCount({
     ends: dateToDatabaseTimestamp(ends),
   }) as any;
 
-  return Math.ceil((row.count as number) / MATCHES_PER_PAGE);
+  return Math.ceil((row.count as number) / MATCHES_PER_SEASONS_PAGE);
 }
