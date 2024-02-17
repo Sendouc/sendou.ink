@@ -129,7 +129,7 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
                     <div
                       className="analyzer__ink-grid__cell"
                       key={key}
-                      style={{ "--cell-color": "var(--bg-lighter)" } as any}
+                      style={{ "--cell-color": "var(--bg-lighter)" }}
                       title={title}
                       onMouseEnter={() =>
                         handleHover({ ismAP: cell.ismAP, issAP: cell.issAP })
@@ -144,7 +144,7 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
                   <div
                     key={key}
                     className="analyzer__ink-grid__cell"
-                    style={{ "--cell-color": cell.hex } as any}
+                    style={{ "--cell-color": cell.hex }}
                     title={title}
                     onMouseEnter={() =>
                       handleHover({ ismAP: cell.ismAP, issAP: cell.issAP })

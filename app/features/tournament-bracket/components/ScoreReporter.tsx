@@ -245,7 +245,7 @@ function FancyStageBanner({
           className={clsx("tournament-bracket__stage-banner", {
             rounded: !infos,
           })}
-          style={style as any}
+          style={style}
           data-testid="stage-banner"
         >
           <div className="tournament-bracket__stage-banner__top-bar">
@@ -487,7 +487,7 @@ function ActionSectionWrapper({
       }
     : undefined;
   return (
-    <section className="tournament__action-section" style={style as any}>
+    <section className="tournament__action-section" style={style}>
       <div
         className={clsx("tournament__action-section__content", {
           "justify-center": rest["justify-center"],

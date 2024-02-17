@@ -629,7 +629,7 @@ function WeaponCircle({
       <div className="u__season__weapon-border__outer-static" />
       <div
         className="u__season__weapon-border__outer"
-        style={{ "--degree": `${degrees}deg` } as any}
+        style={{ "--degree": `${degrees}deg` }}
       >
         <div className="u__season__weapon-border__inner">{children}</div>
       </div>

@@ -235,7 +235,7 @@ function Message({
             className="chat__message__user"
             style={
               user?.chatNameColor
-                ? ({ "--chat-user-color": user.chatNameColor } as any)
+                ? { "--chat-user-color": user.chatNameColor }
                 : undefined
             }
           >

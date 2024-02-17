@@ -150,9 +150,7 @@ function MapButton({
           "map-pool-picker__map-button__greyed-out":
             selected || banned || tiebreaker,
         })}
-        style={
-          { "--map-image-url": `url("${stageImageUrl(stageId)}.png")` } as any
-        }
+        style={{ "--map-image-url": `url("${stageImageUrl(stageId)}.png")` }}
         onClick={onClick}
         disabled={banned}
         type="button"

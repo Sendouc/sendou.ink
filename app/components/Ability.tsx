@@ -65,11 +65,9 @@ export function Ability({
         },
         className,
       )}
-      style={
-        {
-          "--ability-size": `${sizeNumber}px`,
-        } as any
-      }
+      style={{
+        "--ability-size": `${sizeNumber}px`,
+      }}
       onClick={onClick}
       data-testid={`${ability}-ability`}
       onDragOver={onDragOver}

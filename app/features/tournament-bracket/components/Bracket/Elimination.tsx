@@ -17,7 +17,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
   return (
     <div
       className="elim-bracket__container"
-      style={{ "--round-count": rounds.length } as any}
+      style={{ "--round-count": rounds.length }}
     >
       {rounds.flatMap((round, roundIdx) => {
         const bestOf = tournament.ctx.bestOfs.find(
