@@ -409,15 +409,36 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(groupAlpha, "Group alpha not found");
   invariant(groupBravo, "Group bravo not found");
 
-  const censoredGroupAlpha = { ...groupAlpha, chatCode: undefined };
-  const censoredGroupBravo = { ...groupBravo, chatCode: undefined };
-  const censoredMatch = { ...match, chatCode: undefined };
-
   const isTeamAlphaMember = groupAlpha.members.some((m) => m.id === user?.id);
   const isTeamBravoMember = groupBravo.members.some((m) => m.id === user?.id);
-  const canAccessMatchChat =
-    isTeamAlphaMember || isTeamBravoMember || isMod(user);
-  const canPostChatMessages = isTeamAlphaMember || isTeamBravoMember;
+  const isMatchInsider = isTeamAlphaMember || isTeamBravoMember || isMod(user);
+  const matchHappenedInTheLastMonth =
+    databaseTimestampToDate(match.createdAt).getTime() >
+    Date.now() - 30 * 24 * 3600 * 1000;
+
+  const censoredGroupAlpha = {
+    ...groupAlpha,
+    chatCode: undefined,
+    members: groupAlpha.members.map((m) => ({
+      ...m,
+      friendCode:
+        isMatchInsider && matchHappenedInTheLastMonth
+          ? m.friendCode
+          : undefined,
+    })),
+  };
+  const censoredGroupBravo = {
+    ...groupBravo,
+    chatCode: undefined,
+    members: groupBravo.members.map((m) => ({
+      ...m,
+      friendCode:
+        isMatchInsider && matchHappenedInTheLastMonth
+          ? m.friendCode
+          : undefined,
+    })),
+  };
+  const censoredMatch = { ...match, chatCode: undefined };
 
   const groupChatCode = () => {
     if (isTeamAlphaMember) return groupAlpha.chatCode;
@@ -432,8 +453,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   return {
     match: censoredMatch,
-    matchChatCode: canAccessMatchChat ? match.chatCode : null,
-    canPostChatMessages,
+    matchChatCode: isMatchInsider ? match.chatCode : null,
+    canPostChatMessages: isTeamAlphaMember || isTeamBravoMember,
     groupChatCode: groupChatCode(),
     groupAlpha: censoredGroupAlpha,
     groupBravo: censoredGroupBravo,
@@ -544,6 +565,7 @@ export default function QMatchPage() {
           <div className="q-match__teams-container">
             {[data.groupAlpha, data.groupBravo].map((group, i) => {
               const side = i === 0 ? "ALPHA" : "BRAVO";
+              const isOwnGroup = data.groupMemberOf === side;
 
               const matchHasBeenReported = Boolean(data.match.reportedByUserId);
               const showAddNote =
@@ -571,7 +593,7 @@ export default function QMatchPage() {
                   <GroupCard
                     group={group}
                     displayOnly
-                    hideVc={matchHasBeenReported}
+                    hideVc={matchHasBeenReported || !isOwnGroup}
                     hideWeapons={matchHasBeenReported}
                     showAddNote={showAddNote}
                   />

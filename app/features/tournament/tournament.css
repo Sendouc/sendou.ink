@@ -121,7 +121,6 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   gap: var(--s-2);
-  list-style: none;
   padding-inline-start: var(--s-4);
   padding-block: var(--s-3);
 }

@@ -34,6 +34,7 @@ import { EditIcon } from "~/components/icons/Edit";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
+import { InfoPopover } from "~/components/InfoPopover";
 
 export function GroupCard({
   group,
@@ -288,6 +289,9 @@ function GroupMember({
               <Image path={navIconUrl("plus")} width={20} height={20} alt="" />
               {member.plusTier}
             </div>
+          ) : null}
+          {member.friendCode ? (
+            <InfoPopover>SW-{member.friendCode}</InfoPopover>
           ) : null}
           {showAddNote ? (
             <LinkButton

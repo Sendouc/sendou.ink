@@ -134,6 +134,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   commissionsOpen,
   playedMatches,
   groups,
+  friendCodes,
 ];
 
 export async function seed(variation?: SeedVariation | null) {
@@ -182,6 +183,7 @@ function wipeDB() {
     "UnvalidatedVideo",
     "XRankPlacement",
     "SplatoonPlayer",
+    "UserFriendCode",
     "User",
     "PlusSuggestion",
     "PlusVote",
@@ -193,8 +195,6 @@ function wipeDB() {
     sql.prepare(`delete from "${table}"`).run();
   }
 }
-
-// xxx: friend codes
 
 async function adminUser() {
   await UserRepository.upsert({
@@ -2028,5 +2028,20 @@ async function playedMatches() {
         };
       }),
     );
+  }
+}
+
+async function friendCodes() {
+  const allUsers = userIdsInRandomOrder();
+
+  for (const userId of allUsers) {
+    const friendCode = "####-####-####".replace(/#+/g, (m) =>
+      faker.string.numeric(m.length),
+    );
+    await UserRepository.insertFriendCode({
+      userId,
+      submitterUserId: userId,
+      friendCode,
+    });
   }
 }

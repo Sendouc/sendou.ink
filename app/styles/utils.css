@@ -418,6 +418,10 @@
   opacity: 0.6;
 }
 
+.list-none {
+  list-style: none;
+}
+
 @media screen and (min-width: 480px) {
   .mobile-hidden {
     display: inherit;
