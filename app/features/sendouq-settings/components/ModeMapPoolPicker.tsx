@@ -8,8 +8,8 @@ import { stageIds } from "~/modules/in-game-lists";
 import { nullFilledArray } from "~/utils/arrays";
 import { stageImageUrl } from "~/utils/urls";
 import { BANNED_MAPS } from "../banned-maps";
+import * as React from "react";
 
-// xxx: wiggle https://stackoverflow.com/questions/38132700/css-wiggle-shake-effect
 export function ModeMapPoolPicker({
   mode,
   amountToPick,
@@ -23,6 +23,21 @@ export function ModeMapPoolPicker({
   tiebreaker?: StageId;
   onChange: (stages: StageId[]) => void;
 }) {
+  const [wigglingStageId, setWigglingStageId] = React.useState<StageId | null>(
+    null,
+  );
+
+  React.useEffect(() => {
+    if (wigglingStageId === null) return;
+    const timeout = setTimeout(() => {
+      setWigglingStageId(null);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [wigglingStageId]);
+
   const stages: (StageId | null)[] = [
     ...pool,
     ...nullFilledArray(amountToPick - pool.length),
@@ -35,6 +50,7 @@ export function ModeMapPoolPicker({
   const handleUnpickedStageClick = (stageId: StageId) => {
     // is there space left?
     if (stages[amountToPick - 1] !== null) {
+      setWigglingStageId(stageId);
       return;
     }
 
@@ -84,6 +100,7 @@ export function ModeMapPoolPicker({
               selected={selected}
               banned={banned}
               tiebreaker={isTiebreaker}
+              wiggle={wigglingStageId === stageId}
             />
           );
         })}
@@ -114,12 +131,14 @@ function MapButton({
   selected,
   banned,
   tiebreaker,
+  wiggle,
 }: {
   stageId: StageId;
   onClick: () => void;
   selected?: boolean;
   banned?: boolean;
   tiebreaker?: boolean;
+  wiggle?: boolean;
 }) {
   const { t } = useTranslation(["game-misc"]);
 
@@ -127,6 +146,7 @@ function MapButton({
     <div className="stack items-center relative">
       <button
         className={clsx("map-pool-picker__map-button", {
+          "map-pool-picker__map-button__wiggle": wiggle,
           "map-pool-picker__map-button__greyed-out":
             selected || banned || tiebreaker,
         })}

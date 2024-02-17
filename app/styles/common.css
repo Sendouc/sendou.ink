@@ -1641,6 +1641,26 @@ html[dir="rtl"] .fix-rtl {
     opacity 0.2s;
 }
 
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.map-pool-picker__map-button__wiggle {
+  animation: wiggle 0.25s infinite;
+  animation-iteration-count: 1;
+}
+
 .map-pool-picker__map-button:active {
   transform: none;
 }
