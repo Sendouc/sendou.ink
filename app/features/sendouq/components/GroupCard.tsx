@@ -1,19 +1,31 @@
 import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
+import type { SqlBool } from "kysely";
+import * as React from "react";
+import { Flipped } from "react-flip-toolkit";
+import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, ModeImage, TierImage, WeaponImage } from "~/components/Image";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
+import { EditIcon } from "~/components/icons/Edit";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
 import { SpeakerIcon } from "~/components/icons/Speaker";
 import { SpeakerXIcon } from "~/components/icons/SpeakerX";
+import { StarIcon } from "~/components/icons/Star";
+import { StarFilledIcon } from "~/components/icons/StarFilled";
+import { TrashIcon } from "~/components/icons/Trash";
 import type { GroupMember as GroupMemberType, ParsedMemento } from "~/db/types";
+import { useUser } from "~/features/auth/core";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
-import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
 import { languagesUnified } from "~/modules/i18n/config";
+import type { ModeShort } from "~/modules/in-game-lists";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import {
   SENDOUQ_LOOKING_PAGE,
   TIERS_PAGE,
@@ -23,19 +35,6 @@ import {
 } from "~/utils/urls";
 import { FULL_GROUP_SIZE, SENDOUQ } from "../q-constants";
 import type { LookingGroup } from "../q-types";
-import { StarIcon } from "~/components/icons/Star";
-import { StarFilledIcon } from "~/components/icons/StarFilled";
-import { inGameNameWithoutDiscriminator } from "~/utils/strings";
-import * as React from "react";
-import type { SqlBool } from "kysely";
-import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
-import { Flipped } from "react-flip-toolkit";
-import { EditIcon } from "~/components/icons/Edit";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { TrashIcon } from "~/components/icons/Trash";
-import { InfoPopover } from "~/components/InfoPopover";
-import type { ModeShort } from "~/modules/in-game-lists";
 
 export function GroupCard({
   group,
@@ -53,7 +52,7 @@ export function GroupCard({
 }: {
   group: Omit<LookingGroup, "createdAt" | "chatCode">;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP" | "MATCH_UP_RECHALLENGE";
-  ownRole?: GroupMemberType["role"];
+  ownRole?: GroupMemberType["role"] | "PREVIEWER";
   ownGroup?: boolean;
   isExpired?: boolean;
   displayOnly?: boolean;
@@ -99,7 +98,7 @@ export function GroupCard({
             })}
           </div>
         ) : null}
-        {group.futureMatchModes ? (
+        {group.futureMatchModes && !group.members ? (
           <div className="stack horizontal sm justify-center">
             {group.futureMatchModes.map((mode) => {
               return (
@@ -294,7 +293,7 @@ function GroupMember({
         </div>
       </div>
       <div className="stack horizontal justify-between">
-        <div className="stack horizontal xxs">
+        <div className="stack horizontal items-center xxs">
           {member.vc && !hideVc ? (
             <div className="q__group-member__extra-info">
               <VoiceChatInfo member={member} />
@@ -307,7 +306,12 @@ function GroupMember({
             </div>
           ) : null}
           {member.friendCode ? (
-            <InfoPopover>SW-{member.friendCode}</InfoPopover>
+            <Popover
+              buttonChildren={<>FC</>}
+              triggerClassName="q__group-member__extra-info-button"
+            >
+              SW-{member.friendCode}
+            </Popover>
           ) : null}
           {showAddNote ? (
             <LinkButton

@@ -38,7 +38,7 @@ export async function findLookingGroups({
 }: {
   minGroupSize?: number;
   maxGroupSize?: number;
-  ownGroupId: number;
+  ownGroupId?: number;
   includeChatCode?: boolean;
   includeMapModePreferences?: boolean;
   loggedInUserId?: number;
@@ -113,7 +113,7 @@ export async function findLookingGroups({
           ">",
           sql<number>`(unixepoch() - ${SECONDS_TILL_STALE})`,
         ),
-        eb("Group.id", "=", ownGroupId),
+        eb("Group.id", "=", ownGroupId ?? -1),
       ]),
     )
     .execute();

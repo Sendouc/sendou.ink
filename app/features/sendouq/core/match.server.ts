@@ -307,9 +307,9 @@ export async function createMatchMemento(
     ),
     groups: Object.fromEntries(
       [ownWithTier, theirWithTier].map((group) => [
-        group.id,
+        group!.id,
         {
-          tier: group.tier,
+          tier: group!.tier,
         },
       ]),
     ),

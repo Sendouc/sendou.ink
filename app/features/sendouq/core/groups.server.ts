@@ -25,13 +25,13 @@ export function divideGroups({
   likes,
 }: {
   groups: LookingGroupWithInviteCode[];
-  ownGroupId: number;
+  ownGroupId?: number;
   likes: Pick<
     Tables["GroupLike"],
     "likerGroupId" | "targetGroupId" | "isRechallenge"
   >[];
 }): DividedGroupsUncensored {
-  let own: LookingGroupWithInviteCode | null = null;
+  let own: LookingGroupWithInviteCode | undefined = undefined;
   const neutral: LookingGroupWithInviteCode[] = [];
   const likesReceived: LookingGroupWithInviteCode[] = [];
 
@@ -74,8 +74,6 @@ export function divideGroups({
 
     neutral.push(group);
   }
-
-  invariant(own && own.members, "own group not found");
 
   return {
     own,
@@ -128,8 +126,8 @@ export function addReplayIndicator({
 export function addFutureMatchModes(
   groups: DividedGroupsUncensored,
 ): DividedGroupsUncensored {
-  const ownModePreferences = groups.own.mapModePreferences?.map((p) => p.modes);
-  if (!ownModePreferences) return groups;
+  const ownModePreferences =
+    groups.own?.mapModePreferences?.map((p) => p.modes) ?? [];
 
   const combinedMatchModes = (group: LookingGroupWithInviteCode) => {
     const theirModePreferences = group.mapModePreferences?.map((p) => p.modes);
@@ -169,9 +167,10 @@ export function addFutureMatchModes(
     own: groups.own,
     likesReceived: groups.likesReceived.map((g) => ({
       ...g,
-      futureMatchModes: g.isRechallenge
-        ? oneGroupMatchModes(groups.own)
-        : combinedMatchModes(g),
+      futureMatchModes:
+        g.isRechallenge && groups.own
+          ? oneGroupMatchModes(groups.own)
+          : combinedMatchModes(g),
     })),
     neutral: groups.neutral
       .map((g) => ({
@@ -200,20 +199,25 @@ const censorGroupPartly = ({
 }: LookingGroupWithInviteCode): LookingGroup => group;
 export function censorGroups({
   groups,
-  showMembers,
   showInviteCode,
 }: {
   groups: DividedGroupsUncensored;
-  showMembers: boolean;
   showInviteCode: boolean;
 }): DividedGroups {
   return {
-    own: showInviteCode ? groups.own : censorGroupPartly(groups.own),
-    neutral: groups.neutral.map(
-      showMembers ? censorGroupPartly : censorGroupFully,
+    own:
+      showInviteCode || !groups.own
+        ? groups.own
+        : censorGroupPartly(groups.own),
+    neutral: groups.neutral.map((g) =>
+      g.members.length === FULL_GROUP_SIZE
+        ? censorGroupFully(g)
+        : censorGroupPartly(g),
     ),
-    likesReceived: groups.likesReceived.map(
-      showMembers ? censorGroupPartly : censorGroupFully,
+    likesReceived: groups.likesReceived.map((g) =>
+      g.members.length === FULL_GROUP_SIZE
+        ? censorGroupFully(g)
+        : censorGroupPartly(g),
     ),
   };
 }
@@ -222,19 +226,27 @@ export function sortGroupsBySkillAndSentiment({
   groups,
   userSkills,
   intervals,
+  userId,
 }: {
   groups: DividedGroups;
   userSkills: Record<string, TieredSkill>;
   intervals: SkillTierInterval[];
+  userId?: number;
 }): DividedGroups {
-  const ownGroupTier =
-    groups.own.tier?.name ??
-    resolveGroupSkill({
-      group: groups.own as LookingGroupWithInviteCode,
-      userSkills,
-      intervals,
-    })?.name;
-  const ownGroupTierIndex = TIERS.findIndex((t) => t.name === ownGroupTier);
+  const ownGroupTier = () => {
+    if (groups.own?.tier?.name) return groups.own.tier.name;
+    if (groups.own) {
+      return resolveGroupSkill({
+        group: groups.own as LookingGroupWithInviteCode,
+        userSkills,
+        intervals,
+      })?.name;
+    }
+
+    // preview mode, BRONZE as some kind of sensible defaults for unranked folks
+    return userSkills[String(userId)]?.tier?.name ?? "BRONZE";
+  };
+  const ownGroupTierIndex = TIERS.findIndex((t) => t.name === ownGroupTier());
 
   const tierDiff = (otherGroupTierName?: string) => {
     if (!otherGroupTierName) return 10;
@@ -326,7 +338,7 @@ export function addSkillsToGroups({
   });
 
   return {
-    own: addSkill(groups.own),
+    own: groups.own ? addSkill(groups.own) : undefined,
     neutral: groups.neutral.map(addSkill),
     likesReceived: groups.likesReceived.map(addSkill),
   };
@@ -363,8 +375,10 @@ function resolveGroupSkill({
 }
 
 export function groupExpiryStatus(
-  group: Pick<Group, "latestActionAt">,
+  group?: Pick<Group, "latestActionAt">,
 ): null | "EXPIRING_SOON" | "EXPIRED" {
+  if (!group) return null;
+
   // group expires in 30min without actions performed
   const groupExpiresAt =
     databaseTimestampToDate(group.latestActionAt).getTime() + 30 * 60 * 1000;

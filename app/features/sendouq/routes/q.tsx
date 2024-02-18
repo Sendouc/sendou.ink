@@ -12,7 +12,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Flag } from "~/components/Flag";
 import { FormMessage } from "~/components/FormMessage";
@@ -46,12 +46,12 @@ import {
   LEADERBOARDS_PAGE,
   LOG_IN_URL,
   SENDOUQ_LOOKING_PAGE,
+  SENDOUQ_LOOKING_PREVIEW_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
   SENDOUQ_RULES_PAGE,
   SENDOUQ_SETTINGS_PAGE,
   SENDOUQ_STREAMS_PAGE,
-  SENDOUQ_YOUTUBE_VIDEO,
   navIconUrl,
   userSeasonsPage,
 } from "~/utils/urls";
@@ -63,6 +63,8 @@ import { addMember } from "../queries/addMember.server";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
+import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
+import { Popover } from "~/components/Popover";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -215,21 +217,15 @@ export default function QPage() {
 
   return (
     <Main halfWidth className="stack lg">
-      <div className="stack sm">
+      <div className="stack md">
+        {data.season ? (
+          <ActiveSeasonInfo season={data.season} />
+        ) : data.upcomingSeason ? (
+          <UpcomingSeasonInfo season={data.upcomingSeason} />
+        ) : null}
         <Clocks />
-        <a
-          href={SENDOUQ_YOUTUBE_VIDEO}
-          target="_blank"
-          rel="noreferrer"
-          className="text-xs font-bold text-center"
-        >
-          {t("q:front.watchVideo")}
-        </a>
       </div>
       <QLinks />
-      {data.upcomingSeason ? (
-        <UpcomingSeasonInfo season={data.upcomingSeason} />
-      ) : null}
       {data.season ? (
         <>
           {data.groupInvitedTo === null ? (
@@ -272,12 +268,12 @@ export default function QPage() {
                     {t("q:front.actions.joinSolo")}
                   </SubmitButton>
                 </div>
-                {data.friendCode ? (
-                  <ActiveSeasonInfo season={data.season} />
-                ) : (
+                {!data.friendCode ? (
                   <div className="text-lighter text-xs text-center text-error">
                     Save your friend code to join the queue
                   </div>
+                ) : (
+                  <PreviewQueueButton />
                 )}
               </fetcher.Form>
             </>
@@ -290,7 +286,6 @@ export default function QPage() {
               <Button size="big" type="submit">
                 {t("q:front.actions.logIn")}
               </Button>
-              <ActiveSeasonInfo season={data.season} />
             </form>
           )}
         </>
@@ -555,5 +550,27 @@ function UpcomingSeasonInfo({
         date: dateToString(starts),
       })}
     </div>
+  );
+}
+
+function PreviewQueueButton() {
+  const user = useUser();
+  const { t } = useTranslation(["q"]);
+
+  if (!isAtLeastFiveDollarTierPatreon(user)) {
+    return (
+      <Popover
+        buttonChildren={<>{t("q:front.preview")}</>}
+        triggerClassName="minimal mx-auto text-xs"
+      >
+        {t("q:front.preview.explanation")}
+      </Popover>
+    );
+  }
+
+  return (
+    <LinkButton to={SENDOUQ_LOOKING_PREVIEW_PAGE} variant="minimal" size="tiny">
+      {t("q:front.preview")}
+    </LinkButton>
   );
 }

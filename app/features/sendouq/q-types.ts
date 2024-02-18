@@ -53,13 +53,13 @@ export type LookingGroupWithInviteCode = LookingGroup & {
 };
 
 export interface DividedGroups {
-  own: LookingGroup | LookingGroupWithInviteCode;
+  own?: LookingGroup | LookingGroupWithInviteCode;
   neutral: LookingGroup[];
   likesReceived: LookingGroup[];
 }
 
 export interface DividedGroupsUncensored {
-  own: LookingGroupWithInviteCode;
+  own?: LookingGroupWithInviteCode;
   neutral: LookingGroupWithInviteCode[];
   likesReceived: LookingGroupWithInviteCode[];
 }

@@ -81,6 +81,7 @@ import { refreshGroup } from "../queries/refreshGroup.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
 import { updateNote } from "../queries/updateNote.server";
 import { cachedStreams } from "~/features/sendouq-streams/core/streams.server";
+import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -417,33 +418,42 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
 
-  const currentGroup = user ? findCurrentGroupByUserId(user.id) : undefined;
-  const redirectLocation = groupRedirectLocationByCurrentLocation({
-    group: currentGroup,
-    currentLocation: "looking",
-  });
+  const isPreview =
+    new URL(request.url).searchParams.get("preview") === "true" &&
+    user &&
+    isAtLeastFiveDollarTierPatreon(user);
+
+  const currentGroup =
+    user && !isPreview ? findCurrentGroupByUserId(user.id) : undefined;
+  const redirectLocation = isPreview
+    ? undefined
+    : groupRedirectLocationByCurrentLocation({
+        group: currentGroup,
+        currentLocation: "looking",
+      });
 
   if (redirectLocation) {
     throw redirect(redirectLocation);
   }
 
-  invariant(currentGroup, "currentGroup is undefined");
+  invariant(currentGroup || isPreview, "currentGroup is undefined");
 
-  const currentGroupSize = groupSize(currentGroup.id);
+  const currentGroupSize = currentGroup ? groupSize(currentGroup.id) : 1;
   const groupIsFull = currentGroupSize === FULL_GROUP_SIZE;
 
   const dividedGroups = divideGroups({
     groups: await QRepository.findLookingGroups({
-      maxGroupSize: groupIsFull
-        ? undefined
-        : membersNeededForFull(currentGroupSize),
-      minGroupSize: groupIsFull ? FULL_GROUP_SIZE : undefined,
-      ownGroupId: currentGroup.id,
-      includeMapModePreferences: groupIsFull,
+      maxGroupSize:
+        groupIsFull || isPreview
+          ? undefined
+          : membersNeededForFull(currentGroupSize),
+      minGroupSize: groupIsFull && !isPreview ? FULL_GROUP_SIZE : undefined,
+      ownGroupId: currentGroup?.id,
+      includeMapModePreferences: Boolean(groupIsFull || isPreview),
       loggedInUserId: user?.id,
     }),
-    ownGroupId: currentGroup.id,
-    likes: findLikes(currentGroup.id),
+    ownGroupId: currentGroup?.id,
+    likes: currentGroup ? findLikes(currentGroup.id) : [],
   });
 
   const season = currentOrPreviousSeason(new Date());
@@ -469,20 +479,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const censoredGroups = censorGroups({
     groups: groupsWithReplayIndicator,
-    showMembers: !groupIsFull,
-    showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
+    showInviteCode: currentGroup
+      ? hasGroupManagerPerms(currentGroup.role) && !groupIsFull
+      : false,
   });
 
   const sortedGroups = sortGroupsBySkillAndSentiment({
     groups: censoredGroups,
     intervals,
     userSkills: calculatedUserSkills,
+    userId: user?.id,
   });
 
   return {
     groups: sortedGroups,
-    role: currentGroup.role,
-    chatCode: currentGroup.chatCode,
+    role: currentGroup ? currentGroup.role : ("PREVIEWER" as const),
+    chatCode: currentGroup?.chatCode,
     lastUpdated: new Date().getTime(),
     streamsCount: (await cachedStreams()).length,
     expiryStatus: groupExpiryStatus(currentGroup),
@@ -498,14 +510,19 @@ export default function QLookingPage() {
 
   const wasTryingToJoinAnotherTeam = searchParams.get("joining") === "true";
 
-  const isAlone = data.groups.own.members!.length === 1;
-  const hasWeaponPool = Boolean(
-    data.groups.own.members!.find((m) => m.id === user?.id)?.weapons,
-  );
-  const hasVCStatus =
-    (data.groups.own.members!.find((m) => m.id === user?.id)?.languages ?? [])
-      .length > 0;
-  const showGoToSettingPrompt = isAlone && (!hasWeaponPool || !hasVCStatus);
+  const showGoToSettingPrompt = () => {
+    if (!data.groups.own) return false;
+
+    const isAlone = data.groups.own.members!.length === 1;
+    const hasWeaponPool = Boolean(
+      data.groups.own.members!.find((m) => m.id === user?.id)?.weapons,
+    );
+    const hasVCStatus =
+      (data.groups.own.members!.find((m) => m.id === user?.id)?.languages ?? [])
+        .length > 0;
+
+    return isAlone && (!hasWeaponPool || !hasVCStatus);
+  };
 
   return (
     <Main className="stack md">
@@ -515,7 +532,7 @@ export default function QLookingPage() {
           {t("q:looking.joiningGroupError")}
         </div>
       ) : null}
-      {showGoToSettingPrompt ? (
+      {showGoToSettingPrompt() ? (
         <Alert variation="INFO">{t("q:looking.goToSettingsPrompt")}</Alert>
       ) : null}
       <Groups />
@@ -629,7 +646,9 @@ function Groups() {
   const { width } = useWindowSize();
 
   const chatUsers = React.useMemo(() => {
-    return Object.fromEntries(data.groups.own.members!.map((m) => [m.id, m]));
+    return Object.fromEntries(
+      (data.groups.own?.members ?? []).map((m) => [m.id, m]),
+    );
   }, [data]);
 
   const rooms = React.useMemo(() => {
@@ -663,10 +682,11 @@ function Groups() {
   if (!isMounted) return null;
 
   const isMobile = width < 750;
-  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
-  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
+  const isFullGroup =
+    data.groups.own && data.groups.own.members!.length === FULL_GROUP_SIZE;
+  const ownGroup = data.groups.own as LookingGroupWithInviteCode | undefined;
 
-  const renderChat = data.groups.own.members!.length > 1;
+  const renderChat = data.groups.own && data.groups.own.members!.length > 1;
 
   const invitedGroupsDesktop = (
     <div className="stack sm">
@@ -715,21 +735,16 @@ function Groups() {
     </div>
   );
 
-  const ownGroupElement = (
+  const ownGroupElement = ownGroup ? (
     <div className="stack md">
       {!renderChat && (
         <ColumnHeader>{t("q:looking.columns.myGroup")}</ColumnHeader>
       )}
-      <GroupCard
-        group={data.groups.own}
-        ownRole={data.role}
-        ownGroup
-        showNote
-      />
-      {ownGroup.inviteCode ? (
+      <GroupCard group={ownGroup} ownRole={data.role} ownGroup showNote />
+      {ownGroup?.inviteCode ? (
         <MemberAdder
           inviteCode={ownGroup.inviteCode}
-          groupMemberIds={(data.groups.own.members ?? [])?.map((m) => m.id)}
+          groupMemberIds={(ownGroup.members ?? [])?.map((m) => m.id)}
         />
       ) : null}
       <GroupLeaver
@@ -737,7 +752,7 @@ function Groups() {
       />
       {!isMobile ? invitedGroupsDesktop : null}
     </div>
-  );
+  ) : null;
 
   // no animations needed if liking group on mobile as they stay in place
   const flipKey = `${data.groups.neutral
@@ -759,7 +774,8 @@ function Groups() {
               tabs={[
                 {
                   label: t("q:looking.columns.myGroup"),
-                  number: data.groups.own.members!.length,
+                  number: data.groups.own ? data.groups.own.members!.length : 0,
+                  hidden: !data.groups.own,
                 },
                 {
                   label: t("q:looking.columns.chat"),
@@ -801,8 +817,8 @@ function Groups() {
               },
               {
                 label: t("q:looking.columns.myGroup"),
-                number: data.groups.own.members!.length,
-                hidden: !isMobile,
+                number: data.groups.own ? data.groups.own.members!.length : 0,
+                hidden: !isMobile || !data.groups.own,
               },
               {
                 label: t("q:looking.columns.chat"),
@@ -840,6 +856,7 @@ function Groups() {
                 hidden: !isMobile,
                 element: (
                   <div className="stack sm">
+                    {!data.groups.own ? <JoinQueuePrompt /> : null}
                     {data.groups.likesReceived.map((group) => {
                       const action = () => {
                         if (!isFullGroup) return "GROUP_UP";
@@ -884,6 +901,7 @@ function Groups() {
                   : "q:looking.columns.invitations",
               )}
             </ColumnHeader>
+            {!data.groups.own ? <JoinQueuePrompt /> : null}
             {data.groups.likesReceived.map((group) => {
               const action = () => {
                 if (!isFullGroup) return "GROUP_UP";
@@ -918,4 +936,14 @@ function ColumnHeader({ children }: { children: React.ReactNode }) {
   if (isMobile) return null;
 
   return <div className="q__column-header">{children}</div>;
+}
+
+function JoinQueuePrompt() {
+  const { t } = useTranslation(["q"]);
+
+  return (
+    <LinkButton to={SENDOUQ_PAGE} variant="minimal" size="tiny">
+      {t("q:looking.joinQPrompt")}
+    </LinkButton>
+  );
 }
