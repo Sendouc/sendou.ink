@@ -225,6 +225,21 @@ export async function createGroupFromPrevious(
   });
 }
 
+export function rechallenge({
+  likerGroupId,
+  targetGroupId,
+}: {
+  likerGroupId: number;
+  targetGroupId: number;
+}) {
+  return db
+    .updateTable("GroupLike")
+    .set({ isRechallenge: 1 })
+    .where("likerGroupId", "=", likerGroupId)
+    .where("targetGroupId", "=", targetGroupId)
+    .execute();
+}
+
 export function upsertPrivateUserNote(
   args: TablesInsertable["PrivateUserNote"],
 ) {

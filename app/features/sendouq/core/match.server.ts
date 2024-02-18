@@ -25,15 +25,21 @@ export function matchMapList(
   groupOne: {
     preferences: { userId: number; preferences: UserMapModePreferences }[];
     id: number;
+    ignoreModePreferences?: boolean;
   },
   groupTwo: {
     preferences: { userId: number; preferences: UserMapModePreferences }[];
     id: number;
+    ignoreModePreferences?: boolean;
   },
 ) {
   const modesIncluded = mapModePreferencesToModeList(
-    groupOne.preferences.map(({ preferences }) => preferences.modes),
-    groupTwo.preferences.map(({ preferences }) => preferences.modes),
+    groupOne.ignoreModePreferences
+      ? []
+      : groupOne.preferences.map(({ preferences }) => preferences.modes),
+    groupTwo.ignoreModePreferences
+      ? []
+      : groupTwo.preferences.map(({ preferences }) => preferences.modes),
   );
 
   try {

@@ -186,6 +186,7 @@ export interface GroupLike {
   createdAt: Generated<number>;
   likerGroupId: number;
   targetGroupId: number;
+  isRechallenge: number | null;
 }
 
 export type ParsedMemento = {

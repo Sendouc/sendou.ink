@@ -16,10 +16,12 @@ export type LookingGroup = {
   tier?: TieredSkill["tier"];
   isReplay?: boolean;
   isLiked?: boolean;
+  isRechallenge?: boolean;
   team?: GroupForMatch["team"];
   chatCode?: Group["chatCode"];
   mapModePreferences?: Array<NonNullable<Tables["User"]["mapModePreferences"]>>;
   futureMatchModes?: Array<ModeShort>;
+  rechallengeMatchModes?: Array<ModeShort>;
   skillDifference?: ParsedMemento["groups"][number]["skillDifference"];
   members?: {
     id: number;

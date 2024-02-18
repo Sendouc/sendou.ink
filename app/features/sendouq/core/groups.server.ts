@@ -1,5 +1,13 @@
 import invariant from "tiny-invariant";
-import type { Group, GroupLike } from "~/db/types";
+import type { Tables } from "~/db/tables";
+import type { Group } from "~/db/types";
+import { TIERS } from "~/features/mmr/mmr-constants";
+import { defaultOrdinal } from "~/features/mmr/mmr-utils";
+import type {
+  SkillTierInterval,
+  TieredSkill,
+} from "~/features/mmr/tiered.server";
+import { modesShort } from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import type {
@@ -8,15 +16,8 @@ import type {
   LookingGroup,
   LookingGroupWithInviteCode,
 } from "../q-types";
-import type {
-  SkillTierInterval,
-  TieredSkill,
-} from "~/features/mmr/tiered.server";
 import type { RecentMatchPlayer } from "../queries/findRecentMatchPlayersByUserId.server";
-import { TIERS } from "~/features/mmr/mmr-constants";
 import { mapModePreferencesToModeList } from "./match.server";
-import { modesShort } from "~/modules/in-game-lists";
-import { defaultOrdinal } from "~/features/mmr/mmr-utils";
 
 export function divideGroups({
   groups,
@@ -25,7 +26,10 @@ export function divideGroups({
 }: {
   groups: LookingGroupWithInviteCode[];
   ownGroupId: number;
-  likes: Pick<GroupLike, "likerGroupId" | "targetGroupId">[];
+  likes: Pick<
+    Tables["GroupLike"],
+    "likerGroupId" | "targetGroupId" | "isRechallenge"
+  >[];
 }): DividedGroupsUncensored {
   let own: LookingGroupWithInviteCode | null = null;
   const neutral: LookingGroupWithInviteCode[] = [];
@@ -44,11 +48,18 @@ export function divideGroups({
 
       if (like.likerGroupId === group.id) {
         likesReceived.push(group);
+        if (like.isRechallenge) {
+          group.isRechallenge = true;
+        }
+
         unneutralGroupIds.add(group.id);
         break;
       }
       if (like.targetGroupId === group.id) {
         group.isLiked = true;
+        if (like.isRechallenge) {
+          group.isRechallenge = true;
+        }
       }
     }
   }
@@ -120,7 +131,7 @@ export function addFutureMatchModes(
   const ownModePreferences = groups.own.mapModePreferences?.map((p) => p.modes);
   if (!ownModePreferences) return groups;
 
-  const futureMatchModes = (group: LookingGroupWithInviteCode) => {
+  const combinedMatchModes = (group: LookingGroupWithInviteCode) => {
     const theirModePreferences = group.mapModePreferences?.map((p) => p.modes);
     if (!theirModePreferences) return;
 
@@ -130,16 +141,47 @@ export function addFutureMatchModes(
     ).sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b));
   };
 
+  const oneGroupMatchModes = (group: LookingGroupWithInviteCode) => {
+    const modePreferences = group.mapModePreferences?.map((p) => p.modes);
+    if (!modePreferences) return;
+
+    return mapModePreferencesToModeList(modePreferences, []).sort(
+      (a, b) => modesShort.indexOf(a) - modesShort.indexOf(b),
+    );
+  };
+
+  const removeRechallengeIfIdentical = (group: LookingGroupWithInviteCode) => {
+    if (!group.futureMatchModes || !group.rechallengeMatchModes) return group;
+
+    return {
+      ...group,
+      rechallengeMatchModes:
+        group.futureMatchModes.length === group.rechallengeMatchModes.length &&
+        group.futureMatchModes.every(
+          (m, i) => m === group.rechallengeMatchModes![i],
+        )
+          ? undefined
+          : group.rechallengeMatchModes,
+    };
+  };
+
   return {
     own: groups.own,
     likesReceived: groups.likesReceived.map((g) => ({
       ...g,
-      futureMatchModes: futureMatchModes(g),
+      futureMatchModes: g.isRechallenge
+        ? oneGroupMatchModes(groups.own)
+        : combinedMatchModes(g),
     })),
-    neutral: groups.neutral.map((g) => ({
-      ...g,
-      futureMatchModes: futureMatchModes(g),
-    })),
+    neutral: groups.neutral
+      .map((g) => ({
+        ...g,
+        futureMatchModes: g.isRechallenge
+          ? oneGroupMatchModes(g)
+          : combinedMatchModes(g),
+        rechallengeMatchModes: g.isLiked ? oneGroupMatchModes(g) : undefined,
+      }))
+      .map(removeRechallengeIfIdentical),
   };
 }
 

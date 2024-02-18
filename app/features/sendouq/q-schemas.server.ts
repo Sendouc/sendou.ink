@@ -46,6 +46,10 @@ export const lookingSchema = z.union([
     targetGroupId: id,
   }),
   z.object({
+    _action: _action("RECHALLENGE"),
+    targetGroupId: id,
+  }),
+  z.object({
     _action: _action("UNLIKE"),
     targetGroupId: id,
   }),
@@ -55,6 +59,10 @@ export const lookingSchema = z.union([
   }),
   z.object({
     _action: _action("MATCH_UP"),
+    targetGroupId: id,
+  }),
+  z.object({
+    _action: _action("MATCH_UP_RECHALLENGE"),
     targetGroupId: id,
   }),
   z.object({

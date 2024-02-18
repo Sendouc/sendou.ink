@@ -3,6 +3,10 @@ module.exports.up = function (db) {
     db.prepare(/* sql */ `update "User" set "mapModePreferences" = null`).run();
 
     db.prepare(
+      /* sql */ `alter table "GroupLike" add "isRechallenge" integer`,
+    ).run();
+
+    db.prepare(
       /*sql*/ `
       create table "UserFriendCode" (
         "friendCode" text not null,

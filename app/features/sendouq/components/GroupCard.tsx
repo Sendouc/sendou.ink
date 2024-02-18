@@ -35,6 +35,7 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
 import { InfoPopover } from "~/components/InfoPopover";
+import type { ModeShort } from "~/modules/in-game-lists";
 
 export function GroupCard({
   group,
@@ -51,7 +52,7 @@ export function GroupCard({
   showNote = false,
 }: {
   group: Omit<LookingGroup, "createdAt" | "chatCode">;
-  action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
+  action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP" | "MATCH_UP_RECHALLENGE";
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;
   isExpired?: boolean;
@@ -102,7 +103,13 @@ export function GroupCard({
           <div className="stack horizontal sm justify-center">
             {group.futureMatchModes.map((mode) => {
               return (
-                <div key={mode} className="q__group__future-match-mode">
+                <div
+                  key={mode}
+                  className={clsx("q__group__future-match-mode", {
+                    "q__group__future-match-mode__rechallenge":
+                      group.isRechallenge,
+                  })}
+                >
                   <ModeImage mode={mode} />
                 </div>
               );
@@ -147,7 +154,7 @@ export function GroupCard({
               _action={action}
               state={fetcher.state}
             >
-              {action === "MATCH_UP"
+              {action === "MATCH_UP" || action === "MATCH_UP_RECHALLENGE"
                 ? t("q:looking.groups.actions.startMatch")
                 : action === "LIKE" && !group.members
                   ? t("q:looking.groups.actions.challenge")
@@ -158,6 +165,15 @@ export function GroupCard({
                       : t("q:looking.groups.actions.undo")}
             </SubmitButton>
           </fetcher.Form>
+        ) : null}
+        {!group.isRechallenge &&
+        group.rechallengeMatchModes &&
+        (ownRole === "OWNER" || ownRole === "MANAGER") &&
+        !isExpired ? (
+          <RechallengeForm
+            modes={group.rechallengeMatchModes}
+            targetGroupId={group.id}
+          />
         ) : null}
       </section>
     </GroupCardContainer>
@@ -437,6 +453,36 @@ function AddPrivateNoteForm({
           </span>
         )}
       </div>
+    </fetcher.Form>
+  );
+}
+
+function RechallengeForm({
+  modes,
+  targetGroupId,
+}: {
+  modes: ModeShort[];
+  targetGroupId: number;
+}) {
+  const { t } = useTranslation(["q"]);
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form method="post" className="stack sm justify-center horizontal">
+      <input type="hidden" name="targetGroupId" value={targetGroupId} />
+      <SubmitButton
+        _action="RECHALLENGE"
+        state={fetcher.state}
+        size="miniscule"
+        variant="minimal"
+      >
+        {t("q:looking.groups.actions.rechallenge")}
+        <div className="stack xs items-center horizontal ml-2 -mt-1px">
+          {modes.map((mode) => (
+            <ModeImage key={mode} mode={mode} size={18} />
+          ))}
+        </div>
+      </SubmitButton>
     </fetcher.Form>
   );
 }

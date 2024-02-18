@@ -146,6 +146,24 @@ export const action: ActionFunction = async ({ request }) => {
 
       break;
     }
+    case "RECHALLENGE": {
+      if (!isGroupManager()) return null;
+
+      await QRepository.rechallenge({
+        likerGroupId: currentGroup.id,
+        targetGroupId: data.targetGroupId,
+      });
+
+      const targetChatCode = chatCodeByGroupId(data.targetGroupId);
+      if (targetChatCode) {
+        NotificationService.notify({
+          room: targetChatCode,
+          type: "LIKE_RECEIVED",
+          revalidateOnly: true,
+        });
+      }
+      break;
+    }
     case "UNLIKE": {
       if (!isGroupManager()) return null;
 
@@ -219,6 +237,7 @@ export const action: ActionFunction = async ({ request }) => {
 
       break;
     }
+    case "MATCH_UP_RECHALLENGE":
     case "MATCH_UP": {
       if (!isGroupManager()) return null;
       if (
@@ -273,6 +292,7 @@ export const action: ActionFunction = async ({ request }) => {
         {
           id: theirGroup.id,
           preferences: theirGroupPreferences,
+          ignoreModePreferences: data._action === "MATCH_UP_RECHALLENGE",
         },
       );
       const createdMatch = createMatch({
@@ -469,7 +489,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: send/resend challenge using their mode preferences
 export default function QLookingPage() {
   const { t } = useTranslation(["q"]);
   const user = useUser();
@@ -720,8 +739,9 @@ function Groups() {
     </div>
   );
 
+  // no animations needed if liking group on mobile as they stay in place
   const flipKey = `${data.groups.neutral
-    .map((g) => `${g.id}-${g.isLiked}`)
+    .map((g) => `${g.id}-${isMobile ? true : g.isLiked}`)
     .join(":")};${data.groups.likesReceived.map((g) => g.id).join(":")}`;
 
   return (
@@ -821,11 +841,18 @@ function Groups() {
                 element: (
                   <div className="stack sm">
                     {data.groups.likesReceived.map((group) => {
+                      const action = () => {
+                        if (!isFullGroup) return "GROUP_UP";
+
+                        if (group.isRechallenge) return "MATCH_UP_RECHALLENGE";
+                        return "MATCH_UP";
+                      };
+
                       return (
                         <GroupCard
                           key={group.id}
                           group={group}
-                          action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
+                          action={action()}
                           ownRole={data.role}
                           isExpired={data.expiryStatus === "EXPIRED"}
                           showNote
@@ -858,11 +885,18 @@ function Groups() {
               )}
             </ColumnHeader>
             {data.groups.likesReceived.map((group) => {
+              const action = () => {
+                if (!isFullGroup) return "GROUP_UP";
+
+                if (group.isRechallenge) return "MATCH_UP_RECHALLENGE";
+                return "MATCH_UP";
+              };
+
               return (
                 <GroupCard
                   key={group.id}
                   group={group}
-                  action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
+                  action={action()}
                   ownRole={data.role}
                   isExpired={data.expiryStatus === "EXPIRED"}
                   showNote

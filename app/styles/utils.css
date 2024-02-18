@@ -194,6 +194,10 @@
   margin-block-start: var(--s-0);
 }
 
+.-mt-1px {
+  margin-block-start: -1px;
+}
+
 .mt-1 {
   margin-block-start: var(--s-1);
 }
