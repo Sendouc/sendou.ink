@@ -430,6 +430,7 @@
   align-self: flex-start;
   top: var(--sticky-top);
   position: sticky;
+  width: 100%;
 }
 
 .q-match__bottom-mid-section {
