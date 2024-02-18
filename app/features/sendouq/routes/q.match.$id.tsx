@@ -643,7 +643,9 @@ function Score({
     return (
       <div className="stack items-center line-height-tight">
         <div className="text-sm font-bold text-warning">
-          {t("q:match.canceled")}
+          {data.match.isLocked
+            ? t("q:match.canceled")
+            : t("q:match.cancelRequested")}
         </div>
         {!data.match.isLocked ? (
           <div className="text-xs text-lighter stack xs items-center text-center">

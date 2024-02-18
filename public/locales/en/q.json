@@ -135,6 +135,7 @@
   "match.password.short": "Pass",
   "match.cancelMatch": "Cancel match",
   "match.canceled": "Match canceled",
+  "match.cancelRequested": "Cancel requested",
   "match.reportedBy": "Reported by {{name}} at",
   "match.cancelPendingConfirmation": "Pending other team's confirmation",
   "match.cancelMatch.confirm": "Cancel match? (requires confirmation from the other group, abuse of the feature will lead to a ban)",
