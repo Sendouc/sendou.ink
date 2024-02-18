@@ -476,7 +476,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: do revalidation when score is confirmed IF not currently submitting weapons to show changed ranks
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -1015,6 +1014,7 @@ function BottomSection({
   const { width } = useWindowSize();
   const isMobile = width < 750;
   const isMounted = useIsMounted();
+  const [isReportingWeapons, setIsReportingWeapons] = React.useState(false);
 
   const user = useUser();
   const data = useLoaderData<typeof loader>();
@@ -1044,9 +1044,17 @@ function BottomSection({
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.matchChatCode, data.groupChatCode]);
 
-  // revalidates: false because we don't want the user to lose the weapons
+  const ownWeaponsReported = data.rawReportedWeapons?.some(
+    (rw) => rw.userId === user?.id,
+  );
+
+  // revalidates: false when we don't want the user to lose the weapons
   // they are reporting when the match gets suddenly locked
-  const chat = useChat({ rooms: chatRooms, onNewMessage, revalidates: false });
+  const chat = useChat({
+    rooms: chatRooms,
+    onNewMessage,
+    revalidates: ownWeaponsReported || !isReportingWeapons,
+  });
 
   const onChatMount = React.useCallback(() => {
     setChatVisible(true);
@@ -1088,6 +1096,7 @@ function BottomSection({
       canReportScore={canReportScore}
       isResubmission={ownTeamReported}
       fetcher={submitScoreFetcher}
+      setIsReportingWeapons={setIsReportingWeapons}
     />
   );
 
@@ -1248,10 +1257,12 @@ function MapList({
   canReportScore,
   isResubmission,
   fetcher,
+  setIsReportingWeapons,
 }: {
   canReportScore: boolean;
   isResubmission: boolean;
   fetcher: FetcherWithComponents<any>;
+  setIsReportingWeapons: (val: boolean) => void;
 }) {
   const { t } = useTranslation(["q"]);
   const user = useUser();
@@ -1314,6 +1325,8 @@ function MapList({
                 }
                 onOwnWeaponSelected={(newReportedWeapon) => {
                   if (!newReportedWeapon) return;
+
+                  setIsReportingWeapons(true);
 
                   setOwnWeaponsUsage((val) => {
                     const result = val.filter(
