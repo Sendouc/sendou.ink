@@ -8,6 +8,7 @@ export const WEAPON_LEADERBOARD_MAX_SIZE = 100;
 export const LEADERBOARD_TYPES = [
   "USER",
   "TEAM",
+  "TEAM-ALL",
   ...(weaponCategories.map(
     (category) => `USER-${category.name}`,
   ) as `USER-${(typeof weaponCategories)[number]["name"]}`[]),

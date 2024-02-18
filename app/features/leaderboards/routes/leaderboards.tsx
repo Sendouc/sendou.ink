@@ -119,13 +119,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   );
 
   const teamLeaderboard =
-    type === "TEAM"
+    type === "TEAM" || type === "TEAM-ALL"
       ? await cachified({
-          key: `team-leaderboard-season-${season}`,
+          key: `team-leaderboard-season-${season}-${type}`,
           cache,
           ttl: ttl(HALF_HOUR_IN_MS),
           async getFreshValue() {
-            return LeaderboardRepository.teamLeaderboardBySeason(season);
+            return LeaderboardRepository.teamLeaderboardBySeason({
+              season,
+              onlyOneEntryPerUser: type !== "TEAM-ALL",
+            });
           },
         })
       : null;
@@ -164,7 +167,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: switch to show all on team leaderboard
 export default function LeaderboardsPage() {
   const { t } = useTranslation(["common", "game-misc", "weapons"]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -237,6 +239,9 @@ export default function LeaderboardsPage() {
                       value={seasonPlusTypeToKey({ season, type })}
                     >
                       {t(`common:leaderboard.type.${userOrTeam}`)}
+                      {type.includes("ALL")
+                        ? ` (${t("leaderboard.type.XP-ALL")})`
+                        : null}
                       {category
                         ? ` (${t(`common:weapon.category.${category}`)})`
                         : ""}
@@ -310,7 +315,10 @@ export default function LeaderboardsPage() {
         />
       ) : null}
       {data.teamLeaderboard ? (
-        <TeamTable entries={data.teamLeaderboard} />
+        <TeamTable
+          entries={data.teamLeaderboard}
+          showQualificationDividers={!selectValue().includes("ALL")}
+        />
       ) : null}
       {data.xpLeaderboard ? <XPTable entries={data.xpLeaderboard} /> : null}
 
@@ -450,13 +458,16 @@ function PlayersTable({
 
 function TeamTable({
   entries,
+  showQualificationDividers: _showQualificationDividers,
 }: {
   entries: NonNullable<SerializeFrom<typeof loader>["teamLeaderboard"]>;
+  showQualificationDividers?: boolean;
 }) {
   const { t } = useTranslation("common");
   const data = useLoaderData<typeof loader>();
   const isCurrentSeason = data.season === currentSeason(new Date())?.nth;
-  const showQualificationDividers = isCurrentSeason && entries.length > 20;
+  const showQualificationDividers =
+    _showQualificationDividers && isCurrentSeason && entries.length > 20;
 
   return (
     <div className="placements__table">
