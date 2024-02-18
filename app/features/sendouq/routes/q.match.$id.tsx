@@ -101,6 +101,7 @@ import { useWindowSize } from "~/hooks/useWindowSize";
 import { joinListToNaturalString } from "~/utils/arrays";
 import { NewTabs } from "~/components/NewTabs";
 import { refreshStreamsCache } from "~/features/sendouq-streams/core/streams.server";
+import { CrossIcon } from "~/components/icons/Cross";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -476,7 +477,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 };
 
 // xxx: do revalidation when score is confirmed IF not currently submitting weapons to show changed ranks
-// xxx: fix weapon selector reopening by switching to weapon name + image + button to remove it?
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -1320,7 +1320,9 @@ function MapList({
                         newReportedWeapon.groupMatchMapId,
                     );
 
-                    result.push(newReportedWeapon);
+                    if (typeof newReportedWeapon.weaponSplId === "number") {
+                      result.push(newReportedWeapon);
+                    }
 
                     return result;
                   });
@@ -1381,7 +1383,7 @@ function MapListMap({
 }) {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const { t } = useTranslation(["q", "game-misc", "tournament"]);
+  const { t } = useTranslation(["q", "game-misc", "tournament", "weapons"]);
 
   const handleReportScore = (i: number, side: "ALPHA" | "BRAVO") => () => {
     const newWinners = [...winners];
@@ -1574,35 +1576,65 @@ function MapListMap({
                 <div
                   className={clsx({ invisible: typeof ownWeapon !== "number" })}
                 >
-                  <WeaponImage
-                    weaponSplId={ownWeapon ?? 0}
-                    variant="badge"
-                    size={28}
-                  />
+                  {typeof ownWeapon === "number" ? (
+                    <WeaponImage
+                      weaponSplId={ownWeapon}
+                      variant="badge"
+                      size={36}
+                    />
+                  ) : (
+                    <WeaponImage
+                      weaponSplId={0}
+                      variant="badge"
+                      size={36}
+                      className="invisible"
+                    />
+                  )}
                 </div>
-                <WeaponCombobox
-                  inputName="weapon"
-                  quickSelectWeaponIds={recentlyReportedWeapons}
-                  onChange={(weapon) => {
-                    const userId = user!.id;
-                    const groupMatchMapId = map.id;
+                {typeof ownWeapon === "number" ? (
+                  <div className="font-bold stack sm horizontal">
+                    {t(`weapons:MAIN_${ownWeapon}`)}
+                    <Button
+                      size="tiny"
+                      icon={<CrossIcon />}
+                      variant="minimal-destructive"
+                      onClick={() => {
+                        const userId = user!.id;
+                        const groupMatchMapId = map.id;
 
-                    const weaponSplId = Number(weapon?.value) as MainWeaponId;
+                        onOwnWeaponSelected({
+                          mapIndex: i,
+                          groupMatchMapId,
+                          userId,
+                        });
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <WeaponCombobox
+                    inputName="weapon"
+                    quickSelectWeaponIds={recentlyReportedWeapons}
+                    onChange={(weapon) => {
+                      const userId = user!.id;
+                      const groupMatchMapId = map.id;
 
-                    addRecentlyReportedWeapon?.(weaponSplId);
+                      const weaponSplId = Number(weapon?.value) as MainWeaponId;
 
-                    onOwnWeaponSelected(
-                      weapon
-                        ? {
-                            weaponSplId,
-                            mapIndex: i,
-                            groupMatchMapId,
-                            userId,
-                          }
-                        : null,
-                    );
-                  }}
-                />
+                      addRecentlyReportedWeapon?.(weaponSplId);
+
+                      onOwnWeaponSelected(
+                        weapon
+                          ? {
+                              weaponSplId,
+                              mapIndex: i,
+                              groupMatchMapId,
+                              userId,
+                            }
+                          : null,
+                      );
+                    }}
+                  />
+                )}
               </>
             ) : null}
           </div>
