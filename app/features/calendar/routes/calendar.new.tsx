@@ -283,6 +283,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         id: eventId,
         includeMapPool: true,
         includeTieBreakerMapPool: true,
+        includeBadgePrizes: true,
       });
 
   const canEditEvent =
