@@ -365,7 +365,10 @@
   background-color: var(--bg-light-variation);
   font-size: var(--fonts-xs);
   text-align: center;
-  font-weight: var(--semi-bold);
+  font-weight: var(--bold);
+  display: flex;
+  gap: var(--s-1);
+  justify-content: center;
 }
 
 .u__season__match:hover {

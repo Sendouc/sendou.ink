@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
+import type { ParsedMemento } from "~/db/tables";
 import type { GroupMatch, GroupMatchMap, User } from "~/db/types";
-import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import { seasonObject } from "~/features/mmr/season";
 import { MATCHES_PER_SEASONS_PAGE } from "~/features/user-page/user-page-constants";
 import type { MainWeaponId } from "~/modules/in-game-lists";
@@ -14,18 +14,17 @@ const stm = sql.prepare(/* sql */ `
       "GroupMatch"."alphaGroupId",
       "GroupMatch"."bravoGroupId",
       "GroupMatch"."createdAt",
-      "Skill"."ordinal" as "ordinalAfter",
+      "GroupMatch"."memento",
       (select exists (select 1 from "Skill" where "Skill"."groupMatchId" = "GroupMatch"."id")) as "isLocked"
     from "GroupMatch"
     left join "Group" on 
       "GroupMatch"."alphaGroupId" = "Group"."id" or 
       "GroupMatch"."bravoGroupId" = "Group"."id"
     left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
-    left join "Skill" on "GroupMatch"."id" = "Skill"."groupMatchId" and "Skill"."userId" = @userId and "Skill"."matchesCount" >= ${MATCHES_COUNT_NEEDED_FOR_LEADERBOARD}
     where "GroupMember"."userId" = @userId
       and "GroupMatch"."createdAt" between @starts and @ends
     order by "GroupMatch"."id" desc
-    limit ${MATCHES_PER_SEASONS_PAGE + 1}
+    limit ${MATCHES_PER_SEASONS_PAGE}
     offset ${MATCHES_PER_SEASONS_PAGE} * (@page - 1)
   ),
   "q2" as (
@@ -101,7 +100,7 @@ interface SeasonMatchByUserId {
   winnerGroupIds: Array<GroupMatchMap["winnerGroupId"]>;
   createdAt: GroupMatch["createdAt"];
   isLocked: number;
-  ordinalAfter: number | null;
+  spDiff: number | null;
   groupAlphaMembers: Array<{
     id: User["id"];
     discordName: User["discordName"];
@@ -139,8 +138,14 @@ export function seasonMatchesByUserId({
   return rows.map((row: any) => {
     const weapons = weaponsStm.all({ id: row.id }) as any;
 
+    const skillDiff = row.memento
+      ? (JSON.parse(row.memento) as ParsedMemento).users[userId]
+          ?.skillDifference
+      : null;
+
     return {
       ...row,
+      spDiff: skillDiff?.calculated ? skillDiff.spDiff : null,
       winnerGroupIds: parseDBArray(row.winnerGroupIds),
       groupAlphaMembers: parseDBJsonArray(row.groupAlphaMembers).map(
         (member: any) => ({

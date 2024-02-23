@@ -60,7 +60,6 @@ import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
 import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { MATCHES_PER_SEASONS_PAGE } from "../user-page-constants";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user"],
@@ -136,8 +135,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: show tournaments
-// xxx: map/player charts show bars instead and with sorting + filtering (mode)
 const DAYS_WITH_SKILL_NEEDED_TO_SHOW_POWER_CHART = 2;
 export default function UserSeasonsPage() {
   const { t } = useTranslation(["user"]);
@@ -655,32 +652,16 @@ function Matches() {
     });
   }, [data.matches.currentPage]);
 
-  const matchesToShow =
-    data.matches.value.length > MATCHES_PER_SEASONS_PAGE
-      ? data.matches.value.slice(0, data.matches.value.length - 1)
-      : data.matches.value;
-
   let lastDayRendered: number | null = null;
   return (
     <div>
       <div ref={ref} />
       <div className="stack lg">
         <div className="stack">
-          {matchesToShow.map((match, i) => {
+          {data.matches.value.map((match) => {
             const day = databaseTimestampToDate(match.createdAt).getDate();
             const shouldRenderDateHeader = day !== lastDayRendered;
             lastDayRendered = day;
-
-            const spDiff = () => {
-              if (!match.ordinalAfter) return null;
-
-              const ordinalBefore = data.matches.value[i + 1]?.ordinalAfter;
-              if (!ordinalBefore) return null;
-
-              return (
-                ordinalToSp(match.ordinalAfter) - ordinalToSp(ordinalBefore)
-              );
-            };
 
             return (
               <React.Fragment key={match.id}>
@@ -703,7 +684,7 @@ function Matches() {
                       )
                     : "t"}
                 </div>
-                <Match match={match} spDiff={spDiff()} />
+                <Match match={match} />
               </React.Fragment>
             );
           })}
@@ -724,10 +705,8 @@ function Matches() {
 
 function Match({
   match,
-  spDiff,
 }: {
   match: SerializeFrom<typeof loader>["matches"]["value"][0];
-  spDiff: number | null;
 }) {
   const { t } = useTranslation(["user"]);
   const [, parentRoute] = useMatches();
@@ -790,7 +769,7 @@ function Match({
       <Link
         to={sendouQMatchPage(match.id)}
         className={clsx("u__season__match", {
-          "u__season__match__with-diff": spDiff,
+          "u__season__match__with-diff": match.spDiff,
         })}
       >
         {rows}
@@ -801,15 +780,14 @@ function Match({
           </div>
         ) : null}
       </Link>
-      {spDiff ? (
-        <div
-          className={clsx("u__season__match__sp-diff", {
-            "text-error": spDiff < 0,
-            "text-success": spDiff > 0,
-          })}
-        >
-          {spDiff > 0 ? "+" : ""}
-          {roundToNDecimalPlaces(spDiff)}
+      {match.spDiff ? (
+        <div className="u__season__match__sp-diff">
+          {match.spDiff > 0 ? (
+            <span className="text-success">▲</span>
+          ) : (
+            <span className="text-warning">▼</span>
+          )}
+          {Math.abs(roundToNDecimalPlaces(match.spDiff))}SP
         </div>
       ) : null}
     </div>
