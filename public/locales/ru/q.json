@@ -68,7 +68,6 @@
   "settings.misc.header": "Прочее",
   "settings.banned": "Запрещённый режим",
   "settings.avoid.label": "Избегать {{special}}",
-  "settings.avoid.explanation": "Был поднят вопрос о вреде нового особого оружия. Данная опция запрещает это оружие в любых матчах SendouQ и турнирах sendou.ink, в которых вы участвуете.",
   "settings.avoid.readMore": "Для более подробной информации читайте здесь",
 
   "looking.joiningGroupError": "Перед тем как присоединиться к новой группе, покиньте текущую",

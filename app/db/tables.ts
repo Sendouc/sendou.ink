@@ -590,8 +590,7 @@ export interface User {
   >;
   qWeaponPool: ColumnType<MainWeaponId[] | null, string | null, string | null>;
   plusSkippedForSeasonNth: number | null;
-  // TODO: remove with migration
-  // noScreen: Generated<number>;
+  noScreen: Generated<number>;
 }
 
 export interface UserResultHighlight {

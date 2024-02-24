@@ -454,6 +454,27 @@
   letter-spacing: 1px;
 }
 
+.q-match__screen-legality svg {
+  width: 24px;
+}
+
+.q-match__screen-legality .alert {
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2-5);
+}
+
+.q-match__screen-legality__button {
+  width: 100%;
+}
+
+.q-match__screen-legality__button:focus-visible {
+  outline: none !important;
+}
+
+.q-match__screen-legality__button:focus-visible .alert {
+  background-color: var(--bg-lighter);
+}
+
 @media screen and (min-width: 640px) {
   .q-match__teams-container {
     grid-template-columns: 1fr 1fr;
