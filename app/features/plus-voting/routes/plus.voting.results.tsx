@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   SerializeFrom,
   MetaFunction,
@@ -11,15 +10,12 @@ import type { UserWithPlusTier } from "~/db/types";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { getUser } from "~/features/auth/core/user.server";
 import { lastCompletedVoting } from "~/features/plus-voting/core";
-import styles from "~/styles/plus-history.css?url";
 import { roundToNDecimalPlaces } from "~/utils/number";
 import { makeTitle } from "~/utils/strings";
 import { PLUS_SERVER_DISCORD_URL, userPage } from "~/utils/urls";
 import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "~/styles/plus-history.css";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;

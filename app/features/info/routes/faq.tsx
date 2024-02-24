@@ -1,10 +1,11 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import styles from "~/styles/faq.css?url";
 import { makeTitle } from "~/utils/strings";
 import { type SendouRouteHandle } from "~/utils/remix";
+
+import "~/styles/faq.css";
 
 const AMOUNT_OF_QUESTIONS = 9;
 
@@ -13,10 +14,6 @@ export const meta: MetaFunction = () => {
     { title: makeTitle("FAQ") },
     { name: "description", content: "Frequently asked questions" },
   ];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {

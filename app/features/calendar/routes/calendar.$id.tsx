@@ -1,15 +1,15 @@
-import { json, redirect } from "@remix-run/node";
 import type {
   ActionFunction,
-  SerializeFrom,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Link } from "@remix-run/react/dist/components";
 import clsx from "clsx";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
@@ -19,19 +19,18 @@ import { Main } from "~/components/Main";
 import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "react-i18next";
+import { Table } from "~/components/Table";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n/i18next.server";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { i18next } from "~/modules/i18n/i18next.server";
 import {
   canDeleteCalendarEvent,
   canEditCalendarEvent,
   canReportCalendarEventWinners,
 } from "~/permissions";
-import calendarStyles from "~/styles/calendar-event.css?url";
-import mapsStyles from "~/styles/maps.css?url";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
   notFoundIfFalsy,
@@ -40,20 +39,21 @@ import {
 } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import {
+  CALENDAR_PAGE,
   calendarEditPage,
   calendarEventPage,
   calendarReportWinnersPage,
-  CALENDAR_PAGE,
   navIconUrl,
   readonlyMapsPage,
   resolveBaseUrl,
-  userPage,
   tournamentPage,
+  userPage,
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "../components/Tags";
-import { Table } from "~/components/Table";
-import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+
+import "~/styles/calendar-event.css";
+import "~/styles/maps.css";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUserId(request);
@@ -78,13 +78,6 @@ export const action: ActionFunction = async ({ params, request }) => {
   });
 
   throw redirect(CALENDAR_PAGE);
-};
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: calendarStyles },
-    { rel: "stylesheet", href: mapsStyles },
-  ];
 };
 
 export const meta: MetaFunction = (args) => {

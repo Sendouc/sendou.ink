@@ -1,4 +1,4 @@
-import type { ActionFunction, LinksFunction } from "@remix-run/node";
+import type { ActionFunction } from "@remix-run/node";
 import { Form, Link, useFetcher, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -7,23 +7,32 @@ import { useCopyToClipboard } from "react-use";
 import { useEventSource } from "remix-utils/sse/react";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
+import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { Divider } from "~/components/Divider";
+import { Flag } from "~/components/Flag";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { Placement } from "~/components/Placement";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
+import { EyeIcon } from "~/components/icons/Eye";
+import { EyeSlashIcon } from "~/components/icons/EyeSlash";
 import { sql } from "~/db/sql";
+import { useUser } from "~/features/auth/core/user";
 import { requireUser } from "~/features/auth/core/user.server";
 import {
   queryCurrentTeamRating,
   queryCurrentUserRating,
   queryTeamPlayerRatingAverage,
 } from "~/features/mmr/mmr-utils.server";
+import { currentSeason } from "~/features/mmr/season";
 import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { HACKY_isInviteOnlyEvent } from "~/features/tournament/tournament-utils";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
+import { removeDuplicates } from "~/utils/arrays";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -37,8 +46,11 @@ import {
   useBracketExpanded,
   useTournament,
 } from "../../tournament/routes/to.$id";
+import { Bracket } from "../components/Bracket";
+import type { Standing } from "../core/Bracket";
 import { tournamentFromDB } from "../core/Tournament.server";
 import { resolveBestOfs } from "../core/bestOf.server";
+import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 import { tournamentSummary } from "../core/summarizer.server";
 import { addSummary } from "../queries/addSummary.server";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
@@ -49,33 +61,9 @@ import {
   bracketSubscriptionKey,
   fillWithNullTillPowerOfTwo,
 } from "../tournament-bracket-utils";
-import bracketStyles from "../tournament-bracket.css?url";
-import bracketComponentStyles from "../components/Bracket/bracket.css?url";
-import type { Standing } from "../core/Bracket";
-import { removeDuplicates } from "~/utils/arrays";
-import { Placement } from "~/components/Placement";
-import { Avatar } from "~/components/Avatar";
-import { Flag } from "~/components/Flag";
-import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
-import { Bracket } from "../components/Bracket";
-import { EyeIcon } from "~/components/icons/Eye";
-import { EyeSlashIcon } from "~/components/icons/EyeSlash";
-import { useUser } from "~/features/auth/core/user";
-import { currentSeason } from "~/features/mmr/season";
-import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 
-export const links: LinksFunction = () => {
-  return [
-    {
-      rel: "stylesheet",
-      href: bracketStyles,
-    },
-    {
-      rel: "stylesheet",
-      href: bracketComponentStyles,
-    },
-  ];
-};
+import "../components/Bracket/bracket.css";
+import "../tournament-bracket.css";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);

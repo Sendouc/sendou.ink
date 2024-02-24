@@ -1,6 +1,5 @@
 import { cachified } from "@epic-web/cachified";
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -39,7 +38,6 @@ import {
   userSeasonsPage,
   userSubmittedImage,
 } from "~/utils/urls";
-import styles from "../../top-search/top-search.css?url";
 import { TopTenPlayer } from "../components/TopTenPlayer";
 import {
   cachedFullUserLeaderboard,
@@ -59,6 +57,8 @@ import {
   type XPLeaderboardItem,
 } from "../queries/XPLeaderboard.server";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
+
+import "../../top-search/top-search.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -82,10 +82,6 @@ export const meta: MetaFunction = (args) => {
         "Leaderboards of top Splatoon players ranked by their X Power and tournament results",
     },
   ];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 const TYPE_SEARCH_PARAM_KEY = "type";

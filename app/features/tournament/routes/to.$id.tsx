@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -24,10 +23,11 @@ import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { streamsByTournamentId } from "../core/streams.server";
 import { tournamentIdFromParams } from "../tournament-utils";
-import styles from "../tournament.css?url";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
+
+import "../tournament.css?url";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -35,10 +35,6 @@ export const meta: MetaFunction = (args) => {
   if (!data) return [];
 
   return [{ title: makeTitle(data.tournament.ctx.name) }];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {

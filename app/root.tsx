@@ -1,38 +1,31 @@
-import { json } from "@remix-run/node";
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
-  SerializeFrom,
   MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
-  type ShouldRevalidateFunction,
   useLoaderData,
   useMatches,
   useNavigation,
+  type ShouldRevalidateFunction,
 } from "@remix-run/react";
-import * as React from "react";
-import commonStyles from "~/styles/common.css?url";
-import variableStyles from "~/styles/vars.css?url";
-import utilStyles from "~/styles/utils.css?url";
-import layoutStyles from "~/styles/layout.css?url";
-import resetStyles from "~/styles/reset.css?url";
-import flagsStyles from "~/styles/flags.css?url";
-import { Catcher } from "./components/Catcher";
-import { Layout } from "./components/layout";
-import { getUser } from "./features/auth/core/user.server";
-import { useChangeLanguage } from "remix-i18next/react";
-import { type CustomTypeOptions } from "react-i18next";
-import { useTranslation } from "react-i18next";
-import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
-import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
-import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
-import { getThemeSession } from "./features/theme/core/session.server";
+import NProgress from "nprogress";
+import * as React from "react";
+import { useTranslation, type CustomTypeOptions } from "react-i18next";
+import { useChangeLanguage } from "remix-i18next/react";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { type SendouRouteHandle } from "~/utils/remix";
+import { Catcher } from "./components/Catcher";
+import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
+import { Layout } from "./components/layout";
+import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
+import { getUser } from "./features/auth/core/user.server";
 import {
   Theme,
   ThemeHead,
@@ -40,32 +33,26 @@ import {
   isTheme,
   useTheme,
 } from "./features/theme/core/provider";
+import { getThemeSession } from "./features/theme/core/session.server";
 import { useIsMounted } from "./hooks/useIsMounted";
-import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
-import NProgress from "nprogress";
-import nProgressStyles from "nprogress/nprogress.css?url";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { browserTimingHeader } from "./utils/newrelic.server";
-import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
 import { DEFAULT_LANGUAGE } from "./modules/i18n/config";
+import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
+import { browserTimingHeader } from "./utils/newrelic.server";
+import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
+
+import "nprogress/nprogress.css";
+import "~/styles/common.css";
+import "~/styles/flags.css";
+import "~/styles/layout.css";
+import "~/styles/reset.css";
+import "~/styles/utils.css";
+import "~/styles/vars.css";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
   const lang = nextUrl.searchParams.get("lng");
 
   return Boolean(lang);
-};
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: resetStyles },
-    { rel: "stylesheet", href: commonStyles },
-    { rel: "stylesheet", href: variableStyles },
-    { rel: "stylesheet", href: utilStyles },
-    { rel: "stylesheet", href: layoutStyles },
-    { rel: "stylesheet", href: flagsStyles },
-    { rel: "stylesheet", href: nProgressStyles },
-  ];
 };
 
 export const meta: MetaFunction = () => {

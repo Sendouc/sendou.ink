@@ -1,7 +1,6 @@
 import {
   redirect,
   type ActionFunction,
-  type LinksFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -15,7 +14,10 @@ import { WeaponImage } from "~/components/Image";
 import { Redirect } from "~/components/Redirect";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
 import { TrashIcon } from "~/components/icons/Trash";
+import { useUser } from "~/features/auth/core/user";
+import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import { useTournament } from "~/features/tournament/routes/to.$id";
 import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
@@ -25,19 +27,8 @@ import {
   findSubsByTournamentId,
   type SubByTournamentId,
 } from "../queries/findSubsByTournamentId.server";
-import styles from "../tournament-subs.css?url";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
-import { getUser, requireUser } from "~/features/auth/core/user.server";
-import { useUser } from "~/features/auth/core/user";
 
-export const links: LinksFunction = () => {
-  return [
-    {
-      rel: "stylesheet",
-      href: styles,
-    },
-  ];
-};
+import "../tournament-subs.css";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);

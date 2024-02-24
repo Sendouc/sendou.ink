@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
@@ -39,18 +38,15 @@ import { allTeams } from "../queries/allTeams.server";
 import { createNewTeam } from "../queries/createNewTeam.server";
 import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
 import { createTeamSchema } from "../team-schemas.server";
-import styles from "../team.css?url";
 import { usePagination } from "~/hooks/usePagination";
 import { Pagination } from "~/components/Pagination";
+
+import "../team.css";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [{ title: data.title }];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const action: ActionFunction = async ({ request }) => {

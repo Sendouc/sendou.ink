@@ -1,14 +1,10 @@
-import type { LinksFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import styles from "~/styles/plus.css?url";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, plusSuggestionPage } from "~/utils/urls";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "~/styles/plus.css";
 
 export const handle: SendouRouteHandle = {
   navItemName: "plus",

@@ -1,6 +1,5 @@
 import type {
   ActionFunctionArgs,
-  LinksFunction,
   LoaderFunctionArgs,
   SerializeFrom,
   MetaFunction,
@@ -78,7 +77,6 @@ import {
 import { FULL_GROUP_SIZE, USER_SKILLS_CACHE_KEY } from "../q-constants";
 import { matchSchema } from "../q-schemas.server";
 import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
-import styles from "../q.css?url";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { addMapResults } from "../queries/addMapResults.server";
 import { addPlayerResults } from "../queries/addPlayerResults.server";
@@ -107,6 +105,8 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
 import { currentSeason } from "~/features/mmr/season";
 
+import "../q.css";
+
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
@@ -125,10 +125,6 @@ export const meta: MetaFunction = (args) => {
       )}`,
     },
   ];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {

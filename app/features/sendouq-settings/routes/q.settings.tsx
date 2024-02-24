@@ -1,9 +1,5 @@
 import { RadioGroup } from "@headlessui/react";
-import type {
-  ActionFunctionArgs,
-  LinksFunction,
-  LoaderFunctionArgs,
-} from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -48,11 +44,8 @@ import {
   SENDOUQ_WEAPON_POOL_MAX_SIZE,
 } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
-import styles from "../q-settings.css?url";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "../q-settings.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],

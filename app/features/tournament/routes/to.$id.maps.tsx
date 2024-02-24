@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -18,7 +18,6 @@ import type {
   TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
-import mapsStyles from "~/styles/maps.css?url";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { tournamentPage } from "~/utils/urls";
 import { findMapPoolsByTournamentId } from "../queries/findMapPoolsByTournamentId.server";
@@ -26,9 +25,7 @@ import { TOURNAMENT } from "../tournament-constants";
 import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: mapsStyles }];
-};
+import "~/styles/maps.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["tournament"],

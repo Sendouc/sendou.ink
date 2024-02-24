@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -45,8 +44,6 @@ import { i18next } from "~/modules/i18n/i18next.server";
 import type { RankedModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { canEditCalendarEvent } from "~/permissions";
-import calendarNewStyles from "~/styles/calendar-new.css?url";
-import mapsStyles from "~/styles/maps.css?url";
 import { isDefined } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
@@ -75,12 +72,8 @@ import {
 } from "../calendar-utils.server";
 import { Tags } from "../components/Tags";
 
-export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: calendarNewStyles },
-    { rel: "stylesheet", href: mapsStyles },
-  ];
-};
+import "~/styles/calendar-new.css";
+import "~/styles/maps.css";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;

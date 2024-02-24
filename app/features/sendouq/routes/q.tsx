@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -19,6 +18,7 @@ import { FormMessage } from "~/components/FormMessage";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserIcon } from "~/components/icons/User";
 import { UsersIcon } from "~/components/icons/Users";
@@ -26,9 +26,8 @@ import { sql } from "~/db/sql";
 import type { GroupMember } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
-import { currentSeason } from "~/features/mmr/season";
 import type { RankingSeason } from "~/features/mmr/season";
-import { nextSeason } from "~/features/mmr/season";
+import { currentSeason, nextSeason } from "~/features/mmr/season";
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import { giveTrust } from "~/features/tournament/queries/giveTrust.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
@@ -55,16 +54,16 @@ import {
   navIconUrl,
   userSeasonsPage,
 } from "~/utils/urls";
+import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 import { FULL_GROUP_SIZE, JOIN_CODE_SEARCH_PARAM_KEY } from "../q-constants";
 import { frontPageSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
-import styles from "../q.css?url";
 import { addMember } from "../queries/addMember.server";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
-import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
-import { Popover } from "~/components/Popover";
+
+import "../q.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -73,10 +72,6 @@ export const handle: SendouRouteHandle = {
     href: SENDOUQ_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = () => {

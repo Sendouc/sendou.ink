@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
@@ -63,7 +62,6 @@ import { FULL_GROUP_SIZE } from "../q-constants";
 import { lookingSchema } from "../q-schemas.server";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
-import styles from "../q.css?url";
 import { addLike } from "../queries/addLike.server";
 import { addManagerRole } from "../queries/addManagerRole.server";
 import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
@@ -84,6 +82,8 @@ import { updateNote } from "../queries/updateNote.server";
 import { cachedStreams } from "~/features/sendouq-streams/core/streams.server";
 import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 
+import "../q.css";
+
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
   breadcrumb: () => ({
@@ -91,10 +91,6 @@ export const handle: SendouRouteHandle = {
     href: SENDOUQ_LOOKING_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = () => {

@@ -1,22 +1,22 @@
-import { redirect } from "@remix-run/node";
 import type {
-  LinksFunction,
-  MetaFunction,
-  SerializeFrom,
   ActionFunction,
   LoaderFunctionArgs,
+  MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { CustomizedColorsInput } from "~/components/CustomizedColorsInput";
 import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "react-i18next";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
   notFoundIfFalsy,
@@ -27,10 +27,10 @@ import {
 import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
+  TEAM_SEARCH_PAGE,
   mySlugify,
   navIconUrl,
   teamPage,
-  TEAM_SEARCH_PAGE,
   uploadImagePage,
 } from "~/utils/urls";
 import { deleteTeam } from "../queries/deleteTeam.server";
@@ -39,12 +39,8 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
-import styles from "../team.css?url";
-import { Input } from "~/components/Input";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "../team.css";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];

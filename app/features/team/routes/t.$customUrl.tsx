@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -8,17 +7,17 @@ import type {
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Flag } from "~/components/Flag";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { EditIcon } from "~/components/icons/Edit";
-import { TwitterIcon } from "~/components/icons/Twitter";
-import { UsersIcon } from "~/components/icons/Users";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
-import { useTranslation } from "react-i18next";
+import { EditIcon } from "~/components/icons/Edit";
+import { TwitterIcon } from "~/components/icons/Twitter";
+import { UsersIcon } from "~/components/icons/Users";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
@@ -28,11 +27,11 @@ import {
 } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
+  TEAM_SEARCH_PAGE,
   editTeamPage,
   manageTeamRosterPage,
   navIconUrl,
   teamPage,
-  TEAM_SEARCH_PAGE,
   twitterUrl,
   userPage,
   userSubmittedImage,
@@ -46,7 +45,8 @@ import {
   isTeamMember,
   isTeamOwner,
 } from "../team-utils";
-import styles from "../team.css?url";
+
+import "../team.css";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
@@ -55,10 +55,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     { title: makeTitle(data.team.name) },
     { name: "description", content: data.team.bio },
   ];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const action: ActionFunction = async ({ request, params }) => {

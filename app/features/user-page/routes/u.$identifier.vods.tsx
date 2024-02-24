@@ -1,22 +1,18 @@
-import type { LinksFunction } from "@remix-run/node";
 import { useMatches } from "@remix-run/react";
-import invariant from "tiny-invariant";
-import { VodListing } from "~/features/vods";
-import type { SendouRouteHandle } from "~/utils/remix";
-import styles from "~/features/vods/vods.css?url";
-import type { UserPageLoaderData } from "./u.$identifier";
-import { Popover } from "~/components/Popover";
 import { useTranslation } from "react-i18next";
-import { newVodPage } from "~/utils/urls";
+import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
+import { Popover } from "~/components/Popover";
 import { useUser } from "~/features/auth/core/user";
+import { VodListing } from "~/features/vods/components/VodListing";
+import type { SendouRouteHandle } from "~/utils/remix";
+import { newVodPage } from "~/utils/urls";
+import type { UserPageLoaderData } from "./u.$identifier";
+
+import "~/features/vods/vods.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function UserVodsPage() {

@@ -11,8 +11,6 @@ import {
   userPage,
 } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
-import type { LinksFunction } from "@remix-run/node";
-import styles from "~/styles/front.css?url";
 import { Link } from "@remix-run/react";
 import { GlobeIcon } from "~/components/icons/Globe";
 import { LanguageChanger } from "~/components/layout/LanguageChanger";
@@ -29,9 +27,7 @@ import { useTheme } from "~/features/theme/core/provider";
 import { useUser } from "~/features/auth/core/user";
 import { languages } from "~/modules/i18n/config";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "~/styles/front.css";
 
 export default function FrontPage() {
   const data = useRootLoaderData();

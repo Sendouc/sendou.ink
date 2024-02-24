@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -7,33 +6,34 @@ import type {
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
-import { EditIcon } from "~/components/icons/Edit";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
 import { Toggle } from "~/components/Toggle";
+import { EditIcon } from "~/components/icons/Edit";
 import type { CalendarEvent } from "~/db/types";
-import { useTranslation } from "react-i18next";
 import { getUserId } from "~/features/auth/core/user.server";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { stageIds, type ModeWithStage } from "~/modules/in-game-lists";
-import styles from "~/styles/maps.css?url";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
+  MAPS_URL,
   calendarEventPage,
   ipLabsMaps,
-  MAPS_URL,
   navIconUrl,
 } from "~/utils/urls";
-import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
-import { MapPool } from "../core/map-pool";
 import { generateMapList } from "../core/map-list-generator/map-list";
 import { modesOrder } from "../core/map-list-generator/modes";
 import { mapPoolToNonEmptyModes } from "../core/map-list-generator/utils";
+import { MapPool } from "../core/map-pool";
+
+import "~/styles/maps.css";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -42,10 +42,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // Only let loader reload data if we're not currently editing the map pool
   // and persisting it in the search params.
   return searchParams.has("readonly");
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = (args) => {

@@ -1,8 +1,4 @@
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderFunctionArgs,
-} from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import { nanoid } from "nanoid";
@@ -13,8 +9,10 @@ import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";
+import { useUser } from "~/features/auth/core/user";
 import { requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { useTournament } from "~/features/tournament/routes/to.$id";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
@@ -28,8 +26,10 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
+import { CastInfo } from "../components/CastInfo";
 import { ScoreReporter } from "../components/ScoreReporter";
 import { tournamentFromDB } from "../core/Tournament.server";
+import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 import { emitter } from "../core/emitters.server";
 import { resolveMapList } from "../core/mapList.server";
 import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
@@ -44,18 +44,8 @@ import {
   matchIsLocked,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
-import bracketStyles from "../tournament-bracket.css?url";
-import { CastInfo } from "../components/CastInfo";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { useUser } from "~/features/auth/core/user";
-import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 
-export const links: LinksFunction = () => [
-  {
-    rel: "stylesheet",
-    href: bracketStyles,
-  },
-];
+import "../tournament-bracket.css";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);

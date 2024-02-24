@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     remix({
       ignoredRouteFiles: ["**/.*", "**/*.json", "**/components/*"],
-      serverModuleFormat: "cjs",
+      serverModuleFormat: "esm",
       routes: (defineRoutes) => {
         return defineRoutes((route) => {
           route("/", "features/front-page/routes/index.tsx");

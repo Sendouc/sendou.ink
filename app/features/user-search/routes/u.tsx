@@ -1,12 +1,7 @@
-import type {
-  LinksFunction,
-  LoaderFunctionArgs,
-  SerializeFrom,
-} from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import { Main } from "~/components/Main";
 import { parseSearchParams, type SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, userPage, USER_SEARCH_PAGE } from "~/utils/urls";
-import styles from "~/styles/u.css?url";
 import { Input } from "~/components/Input";
 import { SearchIcon } from "~/components/icons/Search";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
@@ -18,9 +13,7 @@ import { z } from "zod";
 import { queryToUserIdentifier } from "~/utils/users";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "~/styles/u.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user"],

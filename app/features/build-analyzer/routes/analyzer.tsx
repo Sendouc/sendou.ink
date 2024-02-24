@@ -1,8 +1,10 @@
-import { type LinksFunction, type MetaFunction } from "@remix-run/node";
+import { type MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
+import invariant from "tiny-invariant";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
 import Chart from "~/components/Chart";
@@ -15,9 +17,9 @@ import { Tab, Tabs } from "~/components/Tabs";
 import { Toggle } from "~/components/Toggle";
 import { BeakerIcon } from "~/components/icons/Beaker";
 import { MAX_AP } from "~/constants";
-import { useSetTitle } from "~/hooks/useSetTitle";
-import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core/user";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { useSetTitle } from "~/hooks/useSetTitle";
 import type { Ability as AbilityType } from "~/modules/in-game-lists";
 import {
   ANGLE_SHOOTER_ID,
@@ -59,7 +61,7 @@ import type {
   Stat,
   SubWeaponDamage,
 } from "../analyzer-types";
-import styles from "../analyzer.css?url";
+import { PerInkTankGrid } from "../components/PerInkTankGrid";
 import {
   ABILITIES_WITHOUT_CHUNKS,
   getAbilityChunksMapAsArray,
@@ -75,9 +77,8 @@ import {
   isMainOnlyAbility,
   isStackableAbility,
 } from "../core/utils";
-import { PerInkTankGrid } from "../components/PerInkTankGrid";
-import invariant from "tiny-invariant";
-import { useIsMounted } from "~/hooks/useIsMounted";
+
+import "../analyzer.css";
 
 export const CURRENT_PATCH = "6.1";
 
@@ -89,10 +90,6 @@ export const meta: MetaFunction = () => {
       content: "Detailed stats for any weapon and build in Splatoon 3.",
     },
   ];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {

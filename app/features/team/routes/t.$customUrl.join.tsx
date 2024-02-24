@@ -1,8 +1,4 @@
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderFunctionArgs,
-} from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
@@ -24,11 +20,7 @@ import type { DetailedTeam } from "../team-types";
 import { isTeamFull, isTeamMember } from "../team-utils";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
-import styles from "../team.css?url";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "../team.css";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);

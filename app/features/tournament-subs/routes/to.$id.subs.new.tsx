@@ -1,7 +1,6 @@
 import {
   redirect,
   type ActionFunction,
-  type LinksFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
@@ -9,7 +8,6 @@ import React from "react";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "react-i18next";
-import styles from "../tournament-subs.css?url";
 import { requireUser } from "~/features/auth/core/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { WeaponCombobox } from "~/components/Combobox";
@@ -26,17 +24,10 @@ import { upsertSub } from "../queries/upsertSub.server";
 import { tournamentSubsPage } from "~/utils/urls";
 import { useUser } from "~/features/auth/core/user";
 
+import "../tournament-subs.css";
+
 export const handle: SendouRouteHandle = {
   i18n: ["user"],
-};
-
-export const links: LinksFunction = () => {
-  return [
-    {
-      rel: "stylesheet",
-      href: styles,
-    },
-  ];
 };
 
 export const action: ActionFunction = async ({ params, request }) => {

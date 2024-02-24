@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -18,7 +17,8 @@ import { navIconUrl, VODS_PAGE } from "~/utils/urls";
 import { VodListing } from "../components/VodListing";
 import { findVods } from "../queries/findVods.server";
 import { videoMatchTypes, VODS_PAGE_BATCH_SIZE } from "../vods-constants";
-import styles from "../vods.css?url";
+
+import "../vods.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -27,10 +27,6 @@ export const handle: SendouRouteHandle = {
     href: VODS_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = (args) => {

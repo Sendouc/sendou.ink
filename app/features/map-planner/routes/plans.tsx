@@ -1,12 +1,13 @@
 import { lazy } from "react";
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
-import styles from "../plans.css?url";
+import type { MetaFunction } from "@remix-run/node";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { navIconUrl, PLANNER_URL } from "~/utils/urls";
 import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "react-i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
+
+import "../plans.css";
 
 export const meta: MetaFunction = () => {
   return [
@@ -26,10 +27,6 @@ export const handle: SendouRouteHandle = {
     href: PLANNER_URL,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 const Planner = lazy(() => import("~/features/map-planner/components/Planner"));

@@ -1,8 +1,7 @@
-import type { LinksFunction, SerializeFrom } from "@remix-run/node";
+import type { SerializeFrom } from "@remix-run/node";
 import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { Badge } from "~/components/Badge";
 import { Main } from "~/components/Main";
-import styles from "~/styles/badges.css?url";
 import {
   BADGES_PAGE,
   BORZOIC_TWITTER,
@@ -14,9 +13,7 @@ import { useTranslation } from "react-i18next";
 import { type SendouRouteHandle } from "~/utils/remix";
 import * as BadgeRepository from "../BadgeRepository.server";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "~/styles/badges.css";
 
 export const handle: SendouRouteHandle = {
   i18n: "badges",

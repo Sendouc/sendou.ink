@@ -1,25 +1,25 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
-import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
-import { PlacementsTable } from "../components/Placements";
-import { findPlacementsByPlayerId } from "../queries/findPlacements.server";
-import styles from "../top-search.css?url";
+import { i18next } from "~/modules/i18n/i18next.server";
 import { removeDuplicates } from "~/utils/arrays";
+import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import {
   navIconUrl,
   topSearchPage,
   topSearchPlayerPage,
   userPage,
 } from "~/utils/urls";
-import { i18next } from "~/modules/i18n/i18next.server";
-import { makeTitle } from "~/utils/strings";
-import { useTranslation } from "react-i18next";
+import { PlacementsTable } from "../components/Placements";
+import { findPlacementsByPlayerId } from "../queries/findPlacements.server";
+
+import "../top-search.css";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: ({ match }) => {
@@ -42,10 +42,6 @@ export const handle: SendouRouteHandle = {
       },
     ];
   },
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = (args) => {

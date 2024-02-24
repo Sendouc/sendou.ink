@@ -1,6 +1,5 @@
 import type {
   ActionFunctionArgs,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
@@ -13,6 +12,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { currentSeason } from "~/features/mmr/season";
 import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { parseRequestFormData, validate } from "~/utils/remix";
@@ -30,13 +30,13 @@ import { hasGroupManagerPerms } from "../core/groups";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { preparingSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
-import styles from "../q.css?url";
 import { addMember } from "../queries/addMember.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findPreparingGroup } from "../queries/findPreparingGroup.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { setGroupAsActive } from "../queries/setGroupAsActive.server";
-import * as QRepository from "~/features/sendouq/QRepository.server";
+
+import "../q.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q", "user"],
@@ -45,10 +45,6 @@ export const handle: SendouRouteHandle = {
     href: SENDOUQ_PREPARING_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = () => {

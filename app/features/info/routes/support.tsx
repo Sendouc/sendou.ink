@@ -1,26 +1,22 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
-import { Main } from "~/components/Main";
-import styles from "../support.css?url";
+import type { MetaFunction } from "@remix-run/node";
 import * as React from "react";
-import { CheckmarkIcon } from "~/components/icons/Checkmark";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
+import { Main } from "~/components/Main";
+import { Popover } from "~/components/Popover";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
+import { useSetTitle } from "~/hooks/useSetTitle";
+import { makeTitle } from "~/utils/strings";
 import {
   PATREON_HOW_TO_CONNECT_DISCORD_URL,
   SENDOU_INK_PATREON_URL,
 } from "~/utils/urls";
-import { Popover } from "~/components/Popover";
-import { Trans } from "react-i18next";
-import { makeTitle } from "~/utils/strings";
-import { useSetTitle } from "~/hooks/useSetTitle";
+
+import "../support.css";
 
 export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Support") }];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 // 1 = support

@@ -1,25 +1,27 @@
-import { json } from "@remix-run/node";
 import type {
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
-  LinksFunction,
 } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { addDays, addMonths, subDays, subMonths } from "date-fns";
 import React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
+import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
+import { Divider } from "~/components/Divider";
 import { Main } from "~/components/Main";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "react-i18next";
+import { UsersIcon } from "~/components/icons/Users";
 import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
+import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { i18next } from "~/modules/i18n/i18next.server";
-import styles from "~/styles/calendar.css?url";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
@@ -33,24 +35,18 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import {
-  calendarReportWinnersPage,
   CALENDAR_PAGE,
+  calendarReportWinnersPage,
   navIconUrl,
   resolveBaseUrl,
   tournamentPage,
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
-import { Tags } from "../components/Tags";
-import { Divider } from "~/components/Divider";
-import { UsersIcon } from "~/components/icons/Users";
 import * as CalendarRepository from "../CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
-import { Avatar } from "~/components/Avatar";
-import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
+import { Tags } from "../components/Tags";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "~/styles/calendar.css";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;

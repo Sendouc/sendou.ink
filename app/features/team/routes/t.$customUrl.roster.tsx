@@ -1,6 +1,5 @@
 import { redirect } from "@remix-run/node";
 import type {
-  LinksFunction,
   MetaFunction,
   SerializeFrom,
   ActionFunction,
@@ -39,11 +38,8 @@ import { TEAM_MEMBER_ROLES } from "../team-constants";
 import { manageRosterSchema, teamParamsSchema } from "../team-schemas.server";
 import type { DetailedTeamMember } from "../team-types";
 import { isTeamFull, isTeamOwner } from "../team-utils";
-import styles from "../team.css?url";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "../team.css";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];

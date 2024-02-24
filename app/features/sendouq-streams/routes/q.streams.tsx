@@ -1,25 +1,21 @@
 import { Link, useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
+import { Avatar } from "~/components/Avatar";
+import { TierImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { UserIcon } from "~/components/icons/User";
+import { useAutoRerender } from "~/hooks/useAutoRerender";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
+import { databaseTimestampToDate } from "~/utils/dates";
+import type { SendouRouteHandle } from "~/utils/remix";
 import { FAQ_PAGE, sendouQMatchPage, twitchUrl, userPage } from "~/utils/urls";
 import { cachedStreams } from "../core/streams.server";
-import { Avatar } from "~/components/Avatar";
-import styles from "~/features/sendouq/q.css?url";
-import type { LinksFunction } from "@remix-run/node";
-import { useTranslation } from "react-i18next";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { TierImage, WeaponImage } from "~/components/Image";
-import { useAutoRerender } from "~/hooks/useAutoRerender";
-import type { SendouRouteHandle } from "~/utils/remix";
+
+import "~/features/sendouq/q.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const loader = async () => {

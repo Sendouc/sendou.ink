@@ -1,25 +1,24 @@
-import type { LinksFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import clsx from "clsx";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Ability } from "~/components/Ability";
 import { AllWeaponCombobox } from "~/components/Combobox";
 import { Image, WeaponImage } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
-import { possibleApValues } from "~/features/build-analyzer";
 import type { AnyWeapon, DamageType } from "~/features/build-analyzer";
+import { possibleApValues } from "~/features/build-analyzer";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import { useTranslation } from "react-i18next";
 import {
   BIG_BUBBLER_ID,
   BOOYAH_BOMB_ID,
   CRAB_TANK_ID,
+  INK_VAC_ID,
   SPLASH_WALL_ID,
   SPRINKLER_ID,
   SQUID_BEAKON_ID,
-  INK_VAC_ID,
   TORPEDO_ID,
   WAVE_BREAKER_ID,
 } from "~/modules/in-game-lists";
@@ -35,15 +34,12 @@ import {
 } from "~/utils/urls";
 import { useObjectDamage } from "../calculator-hooks";
 import type { DamageReceiver } from "../calculator-types";
-import styles from "../calculator.css?url";
+
+import "../calculator.css";
 
 export const CURRENT_PATCH = "6.1";
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer", "builds"],

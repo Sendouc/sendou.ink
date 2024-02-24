@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -7,36 +6,33 @@ import type {
 import { useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Button, LinkButton } from "~/components/Button";
 import { Image, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
+import { useUser } from "~/features/auth/core/user";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core/user";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import {
+  VODS_PAGE,
   modeImageUrl,
   navIconUrl,
   newVodPage,
   stageImageUrl,
-  VODS_PAGE,
   vodVideoPage,
 } from "~/utils/urls";
 import { PovUser } from "../components/VodPov";
 import { findVodById } from "../queries/findVodById.server";
 import type { Vod } from "../vods-types";
 import { canEditVideo } from "../vods-utils";
-import styles from "../vods.css?url";
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "../vods.css";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: ({ match }) => {

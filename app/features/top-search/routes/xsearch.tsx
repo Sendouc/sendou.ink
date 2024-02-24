@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -7,7 +6,6 @@ import type {
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { findPlacementsOfMonth } from "../queries/findPlacements.server";
-import styles from "../top-search.css?url";
 import { PlacementsTable } from "../components/Placements";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { XRankPlacement } from "~/db/types";
@@ -22,16 +20,14 @@ import { monthYears } from "../queries/monthYears";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, topSearchPage } from "~/utils/urls";
 
+import "../top-search.css?url";
+
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
     imgPath: navIconUrl("xsearch"),
     href: topSearchPage(),
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = (args) => {
