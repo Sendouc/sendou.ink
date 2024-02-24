@@ -1,7 +1,7 @@
 import { createCookie } from "@remix-run/node";
 import Backend from "i18next-fs-backend";
 import { resolve } from "node:path";
-import { RemixI18Next } from "remix-i18next";
+import { RemixI18Next } from "remix-i18next/server";
 import { config } from "./config";
 
 const TEN_YEARS_IN_SECONDS = 31_536_000 * 10;

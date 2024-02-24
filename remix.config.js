@@ -264,6 +264,7 @@ module.exports = {
     "react-charts",
     "d3-time-format",
     "nanoid",
+    /^remix-i18next.*/,
     /^remix-utils.*/,
   ],
 };

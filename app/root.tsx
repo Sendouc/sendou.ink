@@ -27,7 +27,7 @@ import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
 import { getUser } from "./features/auth/core";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
-import { useChangeLanguage } from "remix-i18next";
+import { useChangeLanguage } from "remix-i18next/react";
 import { type CustomTypeOptions } from "react-i18next";
 import { useTranslation } from "react-i18next";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
