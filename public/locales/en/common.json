@@ -213,5 +213,7 @@
   "chat.systemMsg.scoreConfirmed": "{{name}} confirmed score. Match is now locked",
   "chat.systemMsg.cancelReported": "{{name}} requested canceling the match",
   "chat.systemMsg.cancelConfirmed": "{{name}} confirmed canceling the match. Match is now locked",
-  "chat.systemMsg.userLeft": "{{name}} left the group"
+  "chat.systemMsg.userLeft": "{{name}} left the group",
+
+  "fc.title": "Friend code"
 }

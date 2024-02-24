@@ -1,20 +1,20 @@
 import { useFetcher } from "@remix-run/react";
-import { FormMessage } from "~/components/FormMessage";
+import { useTranslation } from "react-i18next";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { FRIEND_CODE_REGEXP_PATTERN } from "~/features/sendouq/q-constants";
 import { SENDOUQ_PAGE } from "~/utils/urls";
 
-// xxx: link to how to play + adjust form message text + i18n
 export function FriendCodeInput({ friendCode }: { friendCode?: string }) {
   const fetcher = useFetcher();
+  const { t } = useTranslation(["common"]);
 
   return (
     <fetcher.Form method="post" action={SENDOUQ_PAGE}>
       <div className="stack sm horizontal items-end">
         <div>
-          <Label htmlFor="friendCode">Friend code</Label>
+          <Label htmlFor="friendCode">{t("common:fc.title")}</Label>
           {friendCode ? (
             <div className="font-bold">SW-{friendCode}</div>
           ) : (
@@ -33,7 +33,6 @@ export function FriendCodeInput({ friendCode }: { friendCode?: string }) {
           </SubmitButton>
         ) : null}
       </div>
-      <FormMessage type="info">Check how to play for more info</FormMessage>
     </fetcher.Form>
   );
 }
