@@ -282,6 +282,7 @@ export async function findRecentMapPoolsByAuthorId(authorId: number) {
     ])
     .where("CalendarEvent.authorId", "=", authorId)
     .orderBy("CalendarEvent.id", "desc")
+    .groupBy("CalendarEvent.id")
     .limit(5)
     .execute();
 

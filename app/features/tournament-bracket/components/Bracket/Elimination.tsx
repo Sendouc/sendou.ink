@@ -14,6 +14,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
   const tournament = useTournament();
   const rounds = getRounds(props);
 
+  let atLeastOneColumnHidden = false;
   return (
     <div
       className="elim-bracket__container"
@@ -42,6 +43,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
           roundIdx < rounds.length - 2 &&
           !someMatchOngoing
         ) {
+          atLeastOneColumnHidden = true;
           return null;
         }
 
@@ -60,6 +62,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
             <div
               className={clsx("elim-bracket__round-matches-container", {
                 "elim-bracket__round-matches-container__top-bye":
+                  !atLeastOneColumnHidden &&
                   props.type === "winners" &&
                   (!props.bracket.data.match[0].opponent1 ||
                     !props.bracket.data.match[0].opponent2),

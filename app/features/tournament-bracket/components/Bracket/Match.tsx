@@ -93,8 +93,7 @@ function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
         >
           <MatchStreams match={match} />
         </Popover>
-      ) : null}
-      {toBeCasted ? (
+      ) : toBeCasted ? (
         <Popover
           buttonChildren={<>⚪ CAST</>}
           triggerClassName="bracket__match__header__box bracket__match__header__box__button"

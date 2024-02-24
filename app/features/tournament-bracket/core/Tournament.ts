@@ -144,18 +144,14 @@ export class Tournament {
           });
 
         if (checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START) {
-          const seeding = checkedInTeams.map((team) => ({
-            name: team.name,
-            id: team.id,
-          }));
           manager.create({
             tournamentId: this.ctx.id,
             name,
             type,
             seeding:
               type === "round_robin"
-                ? seeding
-                : fillWithNullTillPowerOfTwo(seeding),
+                ? checkedInTeams
+                : fillWithNullTillPowerOfTwo(checkedInTeams),
             settings: this.bracketSettings(type, checkedInTeams.length),
           });
         }
@@ -164,6 +160,7 @@ export class Tournament {
           Bracket.create({
             id: -1 * bracketIdx,
             tournament: this,
+            seeding: checkedInTeams,
             preview: true,
             name,
             data: manager.get.tournamentData(this.ctx.id),

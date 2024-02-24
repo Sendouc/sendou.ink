@@ -25,6 +25,10 @@ interface CreateBracketArgs {
     bracketIdx: number;
     placements: number[];
   }[];
+  seeding?: {
+    id: number;
+    name: string;
+  }[];
 }
 
 export interface Standing {
@@ -52,6 +56,7 @@ export abstract class Bracket {
   tournament;
   sources;
   createdAt;
+  seeding;
 
   constructor({
     id,
@@ -63,6 +68,7 @@ export abstract class Bracket {
     tournament,
     sources,
     createdAt,
+    seeding,
   }: Omit<CreateBracketArgs, "format">) {
     this.id = id;
     this.preview = preview;
@@ -73,6 +79,7 @@ export abstract class Bracket {
     this.tournament = tournament;
     this.sources = sources;
     this.createdAt = createdAt;
+    this.seeding = seeding;
 
     this.createdSimulation();
   }

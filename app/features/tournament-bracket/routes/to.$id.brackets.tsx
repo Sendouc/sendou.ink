@@ -90,22 +90,21 @@ export const action: ActionFunction = async ({ params, request }) => {
       const bracket = tournament.bracketByIdx(data.bracketIdx);
       invariant(bracket, "Bracket not found");
 
+      const seeding = bracket.seeding;
+      invariant(seeding, "Seeding not found");
+
       validate(bracket.canBeStarted, "Bracket is not ready to be started");
 
       sql.transaction(() => {
-        const participants = bracket.data.participant.map((p) => p.name);
         const stage = manager.create({
           tournamentId,
           name: bracket.name,
           type: bracket.type,
           seeding:
             bracket.type === "round_robin"
-              ? participants
-              : fillWithNullTillPowerOfTwo(participants),
-          settings: tournament.bracketSettings(
-            bracket.type,
-            participants.length,
-          ),
+              ? seeding
+              : fillWithNullTillPowerOfTwo(seeding),
+          settings: tournament.bracketSettings(bracket.type, seeding.length),
         });
 
         const matches = findAllMatchesByStageId(stage.id);

@@ -77,6 +77,7 @@ import {
 } from "../core/utils";
 import { PerInkTankGrid } from "../components/PerInkTankGrid";
 import invariant from "tiny-invariant";
+import { useIsMounted } from "~/hooks/useIsMounted";
 
 export const CURRENT_PATCH = "6.1";
 
@@ -106,7 +107,17 @@ export const handle: SendouRouteHandle = {
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
-export default function BuildAnalyzerPage() {
+export default function BuildAnalyzerShell() {
+  const isMounted = useIsMounted();
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return <BuildAnalyzerPage />;
+}
+
+function BuildAnalyzerPage() {
   const user = useUser();
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
   useSetTitle(t("common:pages.analyzer"));
