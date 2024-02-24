@@ -149,6 +149,16 @@
   color: var(--text);
 }
 
+.q__group__no-screen {
+  background-color: var(--theme-error-transparent);
+  border-radius: 100%;
+  padding: var(--s-1);
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+}
+
 .q__group__display-only {
   height: 100%;
   padding-block-end: var(--s-10);

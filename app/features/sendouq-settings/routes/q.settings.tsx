@@ -14,6 +14,7 @@ import { WeaponCombobox } from "~/components/Combobox";
 import { ModeImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
+import { Toggle } from "~/components/Toggle";
 import { CrossIcon } from "~/components/icons/Cross";
 import { MapIcon } from "~/components/icons/Map";
 import { MicrophoneFilledIcon } from "~/components/icons/MicrophoneFilled";
@@ -40,6 +41,7 @@ import {
   preferenceEmojiUrl,
   soundPath,
 } from "~/utils/urls";
+import { BANNED_MAPS } from "../banned-maps";
 import { ModeMapPoolPicker } from "../components/ModeMapPoolPicker";
 import {
   AMOUNT_OF_MAPS_IN_POOL_PER_MODE,
@@ -47,9 +49,6 @@ import {
 } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
-import { BANNED_MAPS } from "../banned-maps";
-import { Toggle } from "~/components/Toggle";
-import { FormMessage } from "~/components/FormMessage";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

@@ -15,6 +15,7 @@ export type LookingGroup = {
   createdAt: Group["createdAt"];
   tier?: TieredSkill["tier"];
   isReplay?: boolean;
+  isNoScreen?: boolean;
   isLiked?: boolean;
   isRechallenge?: boolean;
   team?: GroupForMatch["team"];
@@ -28,6 +29,7 @@ export type LookingGroup = {
     discordId: string;
     discordName: string;
     discordAvatar: string | null;
+    noScreen?: number;
     customUrl?: User["customUrl"];
     plusTier?: PlusTier["tier"];
     role: GroupMember["role"];

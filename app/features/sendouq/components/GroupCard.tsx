@@ -24,12 +24,14 @@ import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { languagesUnified } from "~/modules/i18n/config";
 import type { ModeShort } from "~/modules/in-game-lists";
+import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import {
   SENDOUQ_LOOKING_PAGE,
   TIERS_PAGE,
   navIconUrl,
+  specialWeaponImageUrl,
   tierImageUrl,
   userPage,
 } from "~/utils/urls";
@@ -99,20 +101,37 @@ export function GroupCard({
           </div>
         ) : null}
         {group.futureMatchModes && !group.members ? (
-          <div className="stack horizontal sm justify-center">
-            {group.futureMatchModes.map((mode) => {
-              return (
-                <div
-                  key={mode}
-                  className={clsx("q__group__future-match-mode", {
-                    "q__group__future-match-mode__rechallenge":
-                      group.isRechallenge,
-                  })}
-                >
-                  <ModeImage mode={mode} />
-                </div>
-              );
+          <div
+            className={clsx("stack horizontal", {
+              "justify-between": group.isNoScreen,
+              "justify-center": !group.isNoScreen,
             })}
+          >
+            <div className="stack horizontal sm justify-center">
+              {group.futureMatchModes.map((mode) => {
+                return (
+                  <div
+                    key={mode}
+                    className={clsx("q__group__future-match-mode", {
+                      "q__group__future-match-mode__rechallenge":
+                        group.isRechallenge,
+                    })}
+                  >
+                    <ModeImage mode={mode} />
+                  </div>
+                );
+              })}
+            </div>
+            {group.isNoScreen ? (
+              <div className="q__group__no-screen">
+                <Image
+                  path={specialWeaponImageUrl(SPLATTERCOLOR_SCREEN_ID)}
+                  width={22}
+                  height={22}
+                  alt={`weapons:SPECIAL_${SPLATTERCOLOR_SCREEN_ID}`}
+                />
+              </div>
+            ) : null}
           </div>
         ) : null}
         {group.tier && !displayOnly ? (

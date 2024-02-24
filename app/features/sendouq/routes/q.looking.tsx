@@ -49,6 +49,7 @@ import { MemberAdder } from "../components/MemberAdder";
 import { groupAfterMorph, hasGroupManagerPerms } from "../core/groups";
 import {
   addFutureMatchModes,
+  addNoScreenIndicator,
   addReplayIndicator,
   addSkillsToGroups,
   censorGroups,
@@ -469,13 +470,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const groupsWithFutureMatchModes = addFutureMatchModes(groupsWithSkills);
 
+  const groupsWithNoScreenIndicator = addNoScreenIndicator(
+    groupsWithFutureMatchModes,
+  );
+
   const groupsWithReplayIndicator = groupIsFull
     ? addReplayIndicator({
-        groups: groupsWithFutureMatchModes,
+        groups: groupsWithNoScreenIndicator,
         recentMatchPlayers: findRecentMatchPlayersByUserId(user!.id),
         userId: user!.id,
       })
-    : groupsWithFutureMatchModes;
+    : groupsWithNoScreenIndicator;
 
   const censoredGroups = censorGroups({
     groups: groupsWithReplayIndicator,

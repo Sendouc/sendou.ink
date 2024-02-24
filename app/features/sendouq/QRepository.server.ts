@@ -71,6 +71,7 @@ export async function findLookingGroups({
             "GroupMember.role",
             "User.languages",
             "User.vc",
+            "User.noScreen",
             jsonObjectFrom(
               eb
                 .selectFrom("PrivateUserNote")

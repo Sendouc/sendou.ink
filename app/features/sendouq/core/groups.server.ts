@@ -82,6 +82,37 @@ export function divideGroups({
   };
 }
 
+export function addNoScreenIndicator(
+  groups: DividedGroupsUncensored,
+): DividedGroupsUncensored {
+  const ownGroupFull = groups.own?.members.length === FULL_GROUP_SIZE;
+  const ownGroupNoScreen = groups.own?.members.some((m) => m.noScreen);
+
+  const addNoScreenIndicatorIfNeeded = (group: LookingGroupWithInviteCode) => {
+    const theirGroupNoScreen = group.members.some((m) => m.noScreen);
+
+    return {
+      ...group,
+      isNoScreen: ownGroupFull && (ownGroupNoScreen || theirGroupNoScreen),
+      members: group.members.map((m) => ({ ...m, noScreen: undefined })),
+    };
+  };
+
+  return {
+    own: groups.own
+      ? {
+          ...groups.own,
+          members: groups.own.members.map((m) => ({
+            ...m,
+            noScreen: undefined,
+          })),
+        }
+      : undefined,
+    likesReceived: groups.likesReceived.map(addNoScreenIndicatorIfNeeded),
+    neutral: groups.neutral.map(addNoScreenIndicatorIfNeeded),
+  };
+}
+
 const MIN_PLAYERS_FOR_REPLAY = 3;
 export function addReplayIndicator({
   groups,
