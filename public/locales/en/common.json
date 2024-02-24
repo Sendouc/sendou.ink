@@ -174,6 +174,7 @@
   "support.perk.privateDiscord.extra": "Used to share occasional WIP updates, receive priority support and prioritized feature requests.",
   "support.perk.prioritySupport": "Priority support",
   "support.perk.prioritySupport.extra": "Access to a separate helpdesk that I prioritize for support requests",
+  "support.perk.previewQ": "Preview groups in SendouQ before joining",
 
   "custom.colors.title": "Custom colors",
   "custom.colors.bg": "Background",
@@ -212,5 +213,7 @@
   "chat.systemMsg.scoreConfirmed": "{{name}} confirmed score. Match is now locked",
   "chat.systemMsg.cancelReported": "{{name}} requested canceling the match",
   "chat.systemMsg.cancelConfirmed": "{{name}} confirmed canceling the match. Match is now locked",
-  "chat.systemMsg.userLeft": "{{name}} left the group"
+  "chat.systemMsg.userLeft": "{{name}} left the group",
+
+  "fc.title": "Friend code"
 }

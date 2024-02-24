@@ -5,7 +5,7 @@ import { ModeImage, StageImage } from "~/components/Image";
 import type { MapPoolMap, User } from "~/db/types";
 import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
 import { userPage } from "~/utils/urls";
-import { useTournament } from "../routes/to.$id";
+import { useTournament, useTournamentFriendCodes } from "../routes/to.$id";
 import { databaseTimestampToDate } from "~/utils/dates";
 
 export function TeamWithRoster({
@@ -22,6 +22,7 @@ export function TeamWithRoster({
   activePlayers?: User["id"][];
 }) {
   const tournament = useTournament();
+  const friendCodes = useTournamentFriendCodes();
 
   return (
     <div>
@@ -34,43 +35,48 @@ export function TeamWithRoster({
         </div>
         <ul className="tournament__team-with-roster__members">
           {team.members.map((member) => {
+            const friendCode = friendCodes?.[member.userId];
             const isSub =
               databaseTimestampToDate(member.createdAt) >
               tournament.ctx.startTime;
 
             return (
-              <li
-                key={member.userId}
-                className={clsx("tournament__team-with-roster__member", {
-                  "tournament__team-with-roster__member__inactive":
-                    activePlayers && !activePlayers.includes(member.userId),
-                })}
-              >
-                <Avatar
-                  user={member}
-                  size="xxs"
-                  className={
-                    activePlayers && !activePlayers.includes(member.userId)
-                      ? "tournament__team-with-roster__member__avatar-inactive"
-                      : undefined
-                  }
-                />
-                <Link
-                  to={userPage(member)}
-                  className="tournament__team-member-name"
+              <li key={member.userId} className="list-none">
+                <div
+                  className={clsx("tournament__team-with-roster__member", {
+                    "tournament__team-with-roster__member__inactive":
+                      activePlayers && !activePlayers.includes(member.userId),
+                  })}
                 >
-                  {member.discordName}{" "}
-                  {member.isOwner ? (
-                    <span className="tournament__team-member-name__role text-theme">
-                      (C)
-                    </span>
-                  ) : null}
-                  {isSub ? (
-                    <span className="tournament__team-member-name__role text-info">
-                      Sub
-                    </span>
-                  ) : null}
-                </Link>
+                  <Avatar
+                    user={member}
+                    size="xxs"
+                    className={
+                      activePlayers && !activePlayers.includes(member.userId)
+                        ? "tournament__team-with-roster__member__avatar-inactive"
+                        : undefined
+                    }
+                  />
+                  <Link
+                    to={userPage(member)}
+                    className="tournament__team-member-name"
+                  >
+                    {member.discordName}{" "}
+                    {member.isOwner ? (
+                      <span className="tournament__team-member-name__role text-theme">
+                        (C)
+                      </span>
+                    ) : null}
+                    {isSub ? (
+                      <span className="tournament__team-member-name__role text-info">
+                        Sub
+                      </span>
+                    ) : null}
+                  </Link>
+                </div>
+                {friendCode ? (
+                  <div className="text-xs text-lighter">SW-{friendCode}</div>
+                ) : null}
               </li>
             );
           })}

@@ -1,15 +1,19 @@
 import type {
-  ActionFunction,
+  ActionFunctionArgs,
   LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
+import { currentSeason } from "~/features/mmr";
+import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
+import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -20,6 +24,7 @@ import {
   navIconUrl,
 } from "~/utils/urls";
 import { GroupCard } from "../components/GroupCard";
+import { GroupLeaver } from "../components/GroupLeaver";
 import { MemberAdder } from "../components/MemberAdder";
 import { hasGroupManagerPerms } from "../core/groups";
 import { FULL_GROUP_SIZE } from "../q-constants";
@@ -31,12 +36,7 @@ import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.se
 import { findPreparingGroup } from "../queries/findPreparingGroup.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { setGroupAsActive } from "../queries/setGroupAsActive.server";
-import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
-import { useAutoRefresh } from "~/hooks/useAutoRefresh";
-import { currentSeason } from "~/features/mmr";
-import { GroupLeaver } from "../components/GroupLeaver";
-import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
-import { useTranslation } from "react-i18next";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q", "user"],
@@ -55,7 +55,9 @@ export const meta: MetaFunction = () => {
   return [{ title: makeTitle("SendouQ") }];
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export type SendouQPreparingAction = typeof action;
+
+export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUser(request);
   const data = await parseRequestFormData({
     request,
@@ -74,7 +76,9 @@ export const action: ActionFunction = async ({ request }) => {
 
   switch (data._action) {
     case "JOIN_QUEUE": {
-      validate(currentGroup.status === "PREPARING", "No group preparing");
+      if (currentGroup.status !== "PREPARING") {
+        return null;
+      }
 
       setGroupAsActive(currentGroup.id);
       refreshGroup(currentGroup.id);
@@ -82,10 +86,16 @@ export const action: ActionFunction = async ({ request }) => {
       return redirect(SENDOUQ_LOOKING_PAGE);
     }
     case "ADD_TRUSTED": {
-      const available = trustedPlayersAvailableToPlay(user);
+      const available = await QRepository.findActiveGroupMembers();
+      if (available.some(({ userId }) => userId === data.id)) {
+        return { error: "taken" } as const;
+      }
+
       validate(
-        available.some((u) => u.id === data.id),
-        "Player not available to play",
+        (await QRepository.usersThatTrusted(user.id)).some(
+          (trusterUser) => trusterUser.id === data.id,
+        ),
+        "Not trusted",
       );
 
       const ownGroupWithMembers = await QMatchRepository.findGroupById({
@@ -131,9 +141,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     lastUpdated: new Date().getTime(),
     group: ownGroup,
     role: currentGroup!.role,
-    trustedPlayers: hasGroupManagerPerms(currentGroup!.role)
-      ? trustedPlayersAvailableToPlay(user!)
-      : [],
   };
 };
 
@@ -158,7 +165,7 @@ export default function QPreparingPage() {
       hasGroupManagerPerms(data.role) ? (
         <MemberAdder
           inviteCode={data.group.inviteCode}
-          trustedPlayers={data.trustedPlayers}
+          groupMemberIds={data.group.members.map((m) => m.id)}
         />
       ) : null}
       <joinQFetcher.Form method="post">

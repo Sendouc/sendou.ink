@@ -1,10 +1,14 @@
 import shuffle from "just-shuffle";
+import invariant from "tiny-invariant";
 import type { ParsedMemento, UserMapModePreferences } from "~/db/tables";
-import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import {
+  type DbMapPoolList,
+  MapPool,
+} from "~/features/map-list-generator/core/map-pool";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import { modesShort, stageIds } from "~/modules/in-game-lists";
+import { modesShort } from "~/modules/in-game-lists";
 import {
   createTournamentMapList,
   type TournamentMapListMap,
@@ -14,25 +18,28 @@ import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
+import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/constants";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
-const filterMapPoolByMode = (mapPool: MapPool, modesIncluded: ModeShort[]) =>
-  new MapPool(
-    mapPool.stageModePairs.filter(({ mode }) => modesIncluded.includes(mode)),
-  );
 export function matchMapList(
   groupOne: {
     preferences: { userId: number; preferences: UserMapModePreferences }[];
     id: number;
+    ignoreModePreferences?: boolean;
   },
   groupTwo: {
     preferences: { userId: number; preferences: UserMapModePreferences }[];
     id: number;
+    ignoreModePreferences?: boolean;
   },
 ) {
   const modesIncluded = mapModePreferencesToModeList(
-    groupOne.preferences.map(({ preferences }) => preferences.modes),
-    groupTwo.preferences.map(({ preferences }) => preferences.modes),
+    groupOne.ignoreModePreferences
+      ? []
+      : groupOne.preferences.map(({ preferences }) => preferences.modes),
+    groupTwo.ignoreModePreferences
+      ? []
+      : groupTwo.preferences.map(({ preferences }) => preferences.modes),
   );
 
   try {
@@ -45,19 +52,15 @@ export function matchMapList(
       teams: [
         {
           id: groupOne.id,
-          maps: filterMapPoolByMode(
-            mapPoolFromPreferences(
-              groupOne.preferences.map(({ preferences }) => preferences.maps),
-            ),
+          maps: mapLottery(
+            groupOne.preferences.map((p) => p.preferences),
             modesIncluded,
           ),
         },
         {
           id: groupTwo.id,
-          maps: filterMapPoolByMode(
-            mapPoolFromPreferences(
-              groupTwo.preferences.map(({ preferences }) => preferences.maps),
-            ),
+          maps: mapLottery(
+            groupTwo.preferences.map((p) => p.preferences),
             modesIncluded,
           ),
         },
@@ -84,6 +87,62 @@ export function matchMapList(
       ],
     });
   }
+}
+
+const MAPS_PER_MODE = 7;
+
+export function mapLottery(
+  preferences: UserMapModePreferences[],
+  modes: ModeShort[],
+) {
+  invariant(modes.length > 0, "mapLottery: no modes");
+
+  const mapPoolList: DbMapPoolList = [];
+
+  for (const mode of modes) {
+    const stageIdsFromPools = shuffle(
+      preferences.flatMap((preference) => {
+        // if they disliked the mode don't include their maps
+        // they are just saved in the DB so they can be restored later
+        if (
+          preference.modes.find((mp) => mp.mode === mode)?.preference ===
+          "AVOID"
+        ) {
+          return [];
+        }
+
+        return preference.pool.find((pool) => pool.mode === mode)?.stages ?? [];
+      }),
+    );
+
+    const modeStageIdsForMatch: StageId[] = [];
+    for (const stageId of stageIdsFromPools) {
+      if (modeStageIdsForMatch.length === MAPS_PER_MODE) break;
+      if (
+        modeStageIdsForMatch.includes(stageId) ||
+        BANNED_MAPS[mode].includes(stageId)
+      ) {
+        continue;
+      }
+
+      modeStageIdsForMatch.push(stageId);
+    }
+
+    if (modeStageIdsForMatch.length === MAPS_PER_MODE) {
+      for (const stageId of modeStageIdsForMatch) {
+        mapPoolList.push({ mode, stageId });
+      }
+      // this should only happen if they made no map picks at all yet
+      // as when everyone avoids a mode it can't appear
+      // and if they select mode as neutral/prefer you need to pick 7 maps
+    } else {
+      mapPoolList.push(
+        ...SENDOUQ_DEFAULT_MAPS[mode].map((stageId) => ({ mode, stageId })),
+      );
+    }
+  }
+
+  return new MapPool(mapPoolList);
 }
 
 export function mapModePreferencesToModeList(
@@ -155,50 +214,6 @@ export function mapModePreferencesToModeList(
   return result;
 }
 
-const AMOUNT_OF_MAPS_TO_PICK = 7;
-export function mapPoolFromPreferences(
-  groupPreferences: UserMapModePreferences["maps"][],
-) {
-  const stageModePairs: { stageId: StageId; mode: ModeShort }[] = [];
-
-  for (const mode of modesShort) {
-    const scores = new Map<StageId, number>();
-    for (const userPreferences of groupPreferences) {
-      for (const preference of userPreferences) {
-        if (preference.mode !== mode) continue;
-
-        const currentScore = scores.get(preference.stageId) ?? 0;
-
-        const delta = preference.preference === "AVOID" ? -1 : 1;
-
-        scores.set(preference.stageId, currentScore + delta);
-      }
-    }
-
-    const stagesWithScore = stageIds.map((stageId) => ({
-      stageId,
-      score: scores.get(stageId) ?? 0,
-    }));
-    stagesWithScore.sort((a, b) => {
-      if (a.score === b.score) return b.stageId - a.stageId;
-      return a.score > b.score ? -1 : 1;
-    });
-
-    const bannedMapsExcluded = stagesWithScore.filter(
-      ({ stageId }) => !BANNED_MAPS[mode].includes(stageId),
-    );
-
-    for (const { stageId } of bannedMapsExcluded.slice(
-      0,
-      AMOUNT_OF_MAPS_TO_PICK,
-    )) {
-      stageModePairs.push({ stageId, mode });
-    }
-  }
-
-  return new MapPool(stageModePairs);
-}
-
 export function compareMatchToReportedScores({
   match,
   winners,
@@ -259,7 +274,7 @@ type CreateMatchMementoArgs = {
 };
 export async function createMatchMemento(
   args: CreateMatchMementoArgs,
-): Promise<ParsedMemento> {
+): Promise<Omit<ParsedMemento, "mapPreferences">> {
   const skills = await userSkills(currentOrPreviousSeason(new Date())!.nth);
   const withTiers = addSkillsToGroups({
     groups: {
@@ -274,8 +289,8 @@ export async function createMatchMemento(
   const theirWithTier = withTiers.likesReceived[0];
 
   return {
-    mapPreferences: mapPreferenceMemento(args),
     modePreferences: modePreferencesMemento(args),
+    pools: poolsMemento(args),
     users: Object.fromEntries(
       [...args.own.group.members, ...args.their.group.members].map((member) => {
         const skill = skills.userSkills[member.id];
@@ -292,70 +307,13 @@ export async function createMatchMemento(
     ),
     groups: Object.fromEntries(
       [ownWithTier, theirWithTier].map((group) => [
-        group.id,
+        group!.id,
         {
-          tier: group.tier,
+          tier: group!.tier,
         },
       ]),
     ),
   };
-}
-
-function mapPreferenceMemento(args: CreateMatchMementoArgs) {
-  const result: NonNullable<ParsedMemento["mapPreferences"]> = [];
-
-  for (const map of args.mapList) {
-    const preferencesOfThisMap: NonNullable<
-      ParsedMemento["mapPreferences"]
-    >[number] = [];
-    if (map.source === args.own.group.id || map.source === "BOTH") {
-      preferencesOfThisMap.push(
-        ...opinionsAboutMapFromGroupPreferences({
-          map,
-          groupPreferences: args.own.preferences,
-        }),
-      );
-    }
-
-    if (map.source === args.their.group.id || map.source === "BOTH") {
-      preferencesOfThisMap.push(
-        ...opinionsAboutMapFromGroupPreferences({
-          map,
-          groupPreferences: args.their.preferences,
-        }),
-      );
-    }
-
-    result.push(preferencesOfThisMap);
-  }
-
-  return result;
-}
-
-function opinionsAboutMapFromGroupPreferences({
-  map,
-  groupPreferences,
-}: {
-  map: TournamentMapListMap;
-  groupPreferences: CreateMatchMementoArgs["own"]["preferences"];
-}) {
-  const result: NonNullable<ParsedMemento["mapPreferences"]>[number] = [];
-
-  for (const { preferences, userId } of groupPreferences) {
-    const hasOnlyNeutral = preferences.maps.every((m) => !m.preference);
-    if (hasOnlyNeutral) continue;
-
-    const found = preferences.maps.find(
-      (pref) => pref.stageId === map.stageId && pref.mode === map.mode,
-    );
-
-    result.push({
-      userId,
-      preference: found?.preference,
-    });
-  }
-
-  return result;
 }
 
 function modePreferencesMemento(args: CreateMatchMementoArgs) {
@@ -387,4 +345,23 @@ function modePreferencesMemento(args: CreateMatchMementoArgs) {
   }
 
   return result;
+}
+
+function poolsMemento(args: CreateMatchMementoArgs): ParsedMemento["pools"] {
+  return [...args.own.preferences, ...args.their.preferences].flatMap((p) => {
+    const avoidedModes = p.preferences.modes
+      .filter((m) => m.preference === "AVOID")
+      .map((m) => m.mode);
+
+    const pool = p.preferences.pool.filter(
+      (pool) => !avoidedModes.includes(pool.mode),
+    );
+
+    if (pool.length === 0) return [];
+
+    return {
+      userId: p.userId,
+      pool,
+    };
+  });
 }

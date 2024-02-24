@@ -8,17 +8,32 @@ import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import invariant from "tiny-invariant";
-import { Main } from "~/components/Main";
-import { SubmitButton } from "~/components/SubmitButton";
-import { useIsMounted } from "~/hooks/useIsMounted";
+import { Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
+import invariant from "tiny-invariant";
+import { Alert } from "~/components/Alert";
+import { LinkButton } from "~/components/Button";
+import { Image } from "~/components/Image";
+import { Main } from "~/components/Main";
+import { NewTabs } from "~/components/NewTabs";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useUser } from "~/features/auth/core";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
+import * as NotificationService from "~/features/chat/NotificationService.server";
+import { Chat, useChat } from "~/features/chat/components/Chat";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { userSkills } from "~/features/mmr/tiered.server";
+import * as QRepository from "~/features/sendouq/QRepository.server";
+import { useAutoRefresh } from "~/hooks/useAutoRefresh";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { useWindowSize } from "~/hooks/useWindowSize";
 import {
   parseRequestFormData,
   validate,
   type SendouRouteHandle,
 } from "~/utils/remix";
+import { errorIsSqliteForeignKeyConstraintFailure } from "~/utils/sql";
+import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_LOOKING_PAGE,
@@ -29,9 +44,12 @@ import {
   sendouQMatchPage,
 } from "~/utils/urls";
 import { GroupCard } from "../components/GroupCard";
+import { GroupLeaver } from "../components/GroupLeaver";
+import { MemberAdder } from "../components/MemberAdder";
 import { groupAfterMorph, hasGroupManagerPerms } from "../core/groups";
 import {
   addFutureMatchModes,
+  addNoScreenIndicator,
   addReplayIndicator,
   addSkillsToGroups,
   censorGroups,
@@ -43,14 +61,18 @@ import {
 import { createMatchMemento, matchMapList } from "../core/match.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { lookingSchema } from "../q-schemas.server";
+import type { LookingGroupWithInviteCode } from "../q-types";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
 import styles from "../q.css";
 import { addLike } from "../queries/addLike.server";
 import { addManagerRole } from "../queries/addManagerRole.server";
+import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
 import { createMatch } from "../queries/createMatch.server";
 import { deleteLike } from "../queries/deleteLike.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findLikes } from "../queries/findLikes";
+import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
+import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { groupSize } from "../queries/groupSize.server";
 import { groupSuccessorOwner } from "../queries/groupSuccessorOwner";
 import { leaveGroup } from "../queries/leaveGroup.server";
@@ -58,30 +80,9 @@ import { likeExists } from "../queries/likeExists.server";
 import { morphGroups } from "../queries/morphGroups.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
-import { makeTitle } from "~/utils/strings";
-import { MemberAdder } from "../components/MemberAdder";
-import type { LookingGroupWithInviteCode } from "../q-types";
-import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
-import { userSkills } from "~/features/mmr/tiered.server";
-import { useAutoRefresh } from "~/hooks/useAutoRefresh";
-import { groupHasMatch } from "../queries/groupHasMatch.server";
-import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
-import { currentOrPreviousSeason } from "~/features/mmr/season";
-import { Chat, useChat } from "~/features/chat/components/Chat";
-import { NewTabs } from "~/components/NewTabs";
-import { useWindowSize } from "~/hooks/useWindowSize";
 import { updateNote } from "../queries/updateNote.server";
-import { GroupLeaver } from "../components/GroupLeaver";
-import * as NotificationService from "~/features/chat/NotificationService.server";
-import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
-import * as QRepository from "~/features/sendouq/QRepository.server";
-import { Flipper } from "react-flip-toolkit";
-import { Alert } from "~/components/Alert";
-import { useUser } from "~/features/auth/core";
-import { LinkButton } from "~/components/Button";
-import { Image } from "~/components/Image";
 import { cachedStreams } from "~/features/sendouq-streams/core/streams.server";
-import { errorIsSqliteForeignKeyConstraintFailure } from "~/utils/sql";
+import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -145,6 +146,24 @@ export const action: ActionFunction = async ({ request }) => {
         });
       }
 
+      break;
+    }
+    case "RECHALLENGE": {
+      if (!isGroupManager()) return null;
+
+      await QRepository.rechallenge({
+        likerGroupId: currentGroup.id,
+        targetGroupId: data.targetGroupId,
+      });
+
+      const targetChatCode = chatCodeByGroupId(data.targetGroupId);
+      if (targetChatCode) {
+        NotificationService.notify({
+          room: targetChatCode,
+          type: "LIKE_RECEIVED",
+          revalidateOnly: true,
+        });
+      }
       break;
     }
     case "UNLIKE": {
@@ -220,6 +239,7 @@ export const action: ActionFunction = async ({ request }) => {
 
       break;
     }
+    case "MATCH_UP_RECHALLENGE":
     case "MATCH_UP": {
       if (!isGroupManager()) return null;
       if (
@@ -274,6 +294,7 @@ export const action: ActionFunction = async ({ request }) => {
         {
           id: theirGroup.id,
           preferences: theirGroupPreferences,
+          ignoreModePreferences: data._action === "MATCH_UP_RECHALLENGE",
         },
       );
       const createdMatch = createMatch({
@@ -398,33 +419,42 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
 
-  const currentGroup = user ? findCurrentGroupByUserId(user.id) : undefined;
-  const redirectLocation = groupRedirectLocationByCurrentLocation({
-    group: currentGroup,
-    currentLocation: "looking",
-  });
+  const isPreview =
+    new URL(request.url).searchParams.get("preview") === "true" &&
+    user &&
+    isAtLeastFiveDollarTierPatreon(user);
+
+  const currentGroup =
+    user && !isPreview ? findCurrentGroupByUserId(user.id) : undefined;
+  const redirectLocation = isPreview
+    ? undefined
+    : groupRedirectLocationByCurrentLocation({
+        group: currentGroup,
+        currentLocation: "looking",
+      });
 
   if (redirectLocation) {
     throw redirect(redirectLocation);
   }
 
-  invariant(currentGroup, "currentGroup is undefined");
+  invariant(currentGroup || isPreview, "currentGroup is undefined");
 
-  const currentGroupSize = groupSize(currentGroup.id);
+  const currentGroupSize = currentGroup ? groupSize(currentGroup.id) : 1;
   const groupIsFull = currentGroupSize === FULL_GROUP_SIZE;
 
   const dividedGroups = divideGroups({
     groups: await QRepository.findLookingGroups({
-      maxGroupSize: groupIsFull
-        ? undefined
-        : membersNeededForFull(currentGroupSize),
-      minGroupSize: groupIsFull ? FULL_GROUP_SIZE : undefined,
-      ownGroupId: currentGroup.id,
-      includeMapModePreferences: groupIsFull,
+      maxGroupSize:
+        groupIsFull || isPreview
+          ? undefined
+          : membersNeededForFull(currentGroupSize),
+      minGroupSize: groupIsFull && !isPreview ? FULL_GROUP_SIZE : undefined,
+      ownGroupId: currentGroup?.id,
+      includeMapModePreferences: Boolean(groupIsFull || isPreview),
       loggedInUserId: user?.id,
     }),
-    ownGroupId: currentGroup.id,
-    likes: findLikes(currentGroup.id),
+    ownGroupId: currentGroup?.id,
+    likes: currentGroup ? findLikes(currentGroup.id) : [],
   });
 
   const season = currentOrPreviousSeason(new Date());
@@ -440,36 +470,39 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const groupsWithFutureMatchModes = addFutureMatchModes(groupsWithSkills);
 
+  const groupsWithNoScreenIndicator = addNoScreenIndicator(
+    groupsWithFutureMatchModes,
+  );
+
   const groupsWithReplayIndicator = groupIsFull
     ? addReplayIndicator({
-        groups: groupsWithFutureMatchModes,
+        groups: groupsWithNoScreenIndicator,
         recentMatchPlayers: findRecentMatchPlayersByUserId(user!.id),
         userId: user!.id,
       })
-    : groupsWithFutureMatchModes;
+    : groupsWithNoScreenIndicator;
 
   const censoredGroups = censorGroups({
     groups: groupsWithReplayIndicator,
-    showMembers: !groupIsFull,
-    showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
+    showInviteCode: currentGroup
+      ? hasGroupManagerPerms(currentGroup.role) && !groupIsFull
+      : false,
   });
 
   const sortedGroups = sortGroupsBySkillAndSentiment({
     groups: censoredGroups,
     intervals,
     userSkills: calculatedUserSkills,
+    userId: user?.id,
   });
 
   return {
     groups: sortedGroups,
-    role: currentGroup.role,
-    chatCode: currentGroup.chatCode,
+    role: currentGroup ? currentGroup.role : ("PREVIEWER" as const),
+    chatCode: currentGroup?.chatCode,
     lastUpdated: new Date().getTime(),
     streamsCount: (await cachedStreams()).length,
     expiryStatus: groupExpiryStatus(currentGroup),
-    trustedPlayers: hasGroupManagerPerms(currentGroup.role)
-      ? trustedPlayersAvailableToPlay(user!)
-      : [],
   };
 };
 
@@ -482,14 +515,19 @@ export default function QLookingPage() {
 
   const wasTryingToJoinAnotherTeam = searchParams.get("joining") === "true";
 
-  const isAlone = data.groups.own.members!.length === 1;
-  const hasWeaponPool = Boolean(
-    data.groups.own.members!.find((m) => m.id === user?.id)?.weapons,
-  );
-  const hasVCStatus =
-    (data.groups.own.members!.find((m) => m.id === user?.id)?.languages ?? [])
-      .length > 0;
-  const showGoToSettingPrompt = isAlone && (!hasWeaponPool || !hasVCStatus);
+  const showGoToSettingPrompt = () => {
+    if (!data.groups.own) return false;
+
+    const isAlone = data.groups.own.members!.length === 1;
+    const hasWeaponPool = Boolean(
+      data.groups.own.members!.find((m) => m.id === user?.id)?.weapons,
+    );
+    const hasVCStatus =
+      (data.groups.own.members!.find((m) => m.id === user?.id)?.languages ?? [])
+        .length > 0;
+
+    return isAlone && (!hasWeaponPool || !hasVCStatus);
+  };
 
   return (
     <Main className="stack md">
@@ -499,7 +537,7 @@ export default function QLookingPage() {
           {t("q:looking.joiningGroupError")}
         </div>
       ) : null}
-      {showGoToSettingPrompt ? (
+      {showGoToSettingPrompt() ? (
         <Alert variation="INFO">{t("q:looking.goToSettingsPrompt")}</Alert>
       ) : null}
       <Groups />
@@ -613,7 +651,9 @@ function Groups() {
   const { width } = useWindowSize();
 
   const chatUsers = React.useMemo(() => {
-    return Object.fromEntries(data.groups.own.members!.map((m) => [m.id, m]));
+    return Object.fromEntries(
+      (data.groups.own?.members ?? []).map((m) => [m.id, m]),
+    );
   }, [data]);
 
   const rooms = React.useMemo(() => {
@@ -647,10 +687,11 @@ function Groups() {
   if (!isMounted) return null;
 
   const isMobile = width < 750;
-  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
-  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
+  const isFullGroup =
+    data.groups.own && data.groups.own.members!.length === FULL_GROUP_SIZE;
+  const ownGroup = data.groups.own as LookingGroupWithInviteCode | undefined;
 
-  const renderChat = data.groups.own.members!.length > 1;
+  const renderChat = data.groups.own && data.groups.own.members!.length > 1;
 
   const invitedGroupsDesktop = (
     <div className="stack sm">
@@ -699,21 +740,16 @@ function Groups() {
     </div>
   );
 
-  const ownGroupElement = (
+  const ownGroupElement = ownGroup ? (
     <div className="stack md">
       {!renderChat && (
         <ColumnHeader>{t("q:looking.columns.myGroup")}</ColumnHeader>
       )}
-      <GroupCard
-        group={data.groups.own}
-        ownRole={data.role}
-        ownGroup
-        showNote
-      />
-      {ownGroup.inviteCode ? (
+      <GroupCard group={ownGroup} ownRole={data.role} ownGroup showNote />
+      {ownGroup?.inviteCode ? (
         <MemberAdder
           inviteCode={ownGroup.inviteCode}
-          trustedPlayers={data.trustedPlayers}
+          groupMemberIds={(ownGroup.members ?? [])?.map((m) => m.id)}
         />
       ) : null}
       <GroupLeaver
@@ -721,10 +757,11 @@ function Groups() {
       />
       {!isMobile ? invitedGroupsDesktop : null}
     </div>
-  );
+  ) : null;
 
+  // no animations needed if liking group on mobile as they stay in place
   const flipKey = `${data.groups.neutral
-    .map((g) => `${g.id}-${g.isLiked}`)
+    .map((g) => `${g.id}-${isMobile ? true : g.isLiked}`)
     .join(":")};${data.groups.likesReceived.map((g) => g.id).join(":")}`;
 
   return (
@@ -742,7 +779,8 @@ function Groups() {
               tabs={[
                 {
                   label: t("q:looking.columns.myGroup"),
-                  number: data.groups.own.members!.length,
+                  number: data.groups.own ? data.groups.own.members!.length : 0,
+                  hidden: !data.groups.own,
                 },
                 {
                   label: t("q:looking.columns.chat"),
@@ -784,8 +822,8 @@ function Groups() {
               },
               {
                 label: t("q:looking.columns.myGroup"),
-                number: data.groups.own.members!.length,
-                hidden: !isMobile,
+                number: data.groups.own ? data.groups.own.members!.length : 0,
+                hidden: !isMobile || !data.groups.own,
               },
               {
                 label: t("q:looking.columns.chat"),
@@ -823,12 +861,20 @@ function Groups() {
                 hidden: !isMobile,
                 element: (
                   <div className="stack sm">
+                    {!data.groups.own ? <JoinQueuePrompt /> : null}
                     {data.groups.likesReceived.map((group) => {
+                      const action = () => {
+                        if (!isFullGroup) return "GROUP_UP";
+
+                        if (group.isRechallenge) return "MATCH_UP_RECHALLENGE";
+                        return "MATCH_UP";
+                      };
+
                       return (
                         <GroupCard
                           key={group.id}
                           group={group}
-                          action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
+                          action={action()}
                           ownRole={data.role}
                           isExpired={data.expiryStatus === "EXPIRED"}
                           showNote
@@ -860,12 +906,20 @@ function Groups() {
                   : "q:looking.columns.invitations",
               )}
             </ColumnHeader>
+            {!data.groups.own ? <JoinQueuePrompt /> : null}
             {data.groups.likesReceived.map((group) => {
+              const action = () => {
+                if (!isFullGroup) return "GROUP_UP";
+
+                if (group.isRechallenge) return "MATCH_UP_RECHALLENGE";
+                return "MATCH_UP";
+              };
+
               return (
                 <GroupCard
                   key={group.id}
                   group={group}
-                  action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
+                  action={action()}
                   ownRole={data.role}
                   isExpired={data.expiryStatus === "EXPIRED"}
                   showNote
@@ -887,4 +941,14 @@ function ColumnHeader({ children }: { children: React.ReactNode }) {
   if (isMobile) return null;
 
   return <div className="q__column-header">{children}</div>;
+}
+
+function JoinQueuePrompt() {
+  const { t } = useTranslation(["q"]);
+
+  return (
+    <LinkButton to={SENDOUQ_PAGE} variant="minimal" size="tiny">
+      {t("q:looking.joinQPrompt")}
+    </LinkButton>
+  );
 }

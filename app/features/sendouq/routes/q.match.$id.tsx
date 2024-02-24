@@ -23,7 +23,7 @@ import { Button, LinkButton } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
+import { Image, ModeImage, StageImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -59,6 +59,7 @@ import {
   navIconUrl,
   preferenceEmojiUrl,
   sendouQMatchPage,
+  specialWeaponImageUrl,
   teamPage,
   userSubmittedImage,
 } from "~/utils/urls";
@@ -100,7 +101,11 @@ import { DiscordIcon } from "~/components/icons/Discord";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { joinListToNaturalString } from "~/utils/arrays";
 import { NewTabs } from "~/components/NewTabs";
+import { Alert } from "~/components/Alert";
+import cachified from "@epic-web/cachified";
 import { refreshStreamsCache } from "~/features/sendouq-streams/core/streams.server";
+import { CrossIcon } from "~/components/icons/Cross";
+import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -409,15 +414,36 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(groupAlpha, "Group alpha not found");
   invariant(groupBravo, "Group bravo not found");
 
-  const censoredGroupAlpha = { ...groupAlpha, chatCode: undefined };
-  const censoredGroupBravo = { ...groupBravo, chatCode: undefined };
-  const censoredMatch = { ...match, chatCode: undefined };
-
   const isTeamAlphaMember = groupAlpha.members.some((m) => m.id === user?.id);
   const isTeamBravoMember = groupBravo.members.some((m) => m.id === user?.id);
-  const canAccessMatchChat =
-    isTeamAlphaMember || isTeamBravoMember || isMod(user);
-  const canPostChatMessages = isTeamAlphaMember || isTeamBravoMember;
+  const isMatchInsider = isTeamAlphaMember || isTeamBravoMember || isMod(user);
+  const matchHappenedInTheLastMonth =
+    databaseTimestampToDate(match.createdAt).getTime() >
+    Date.now() - 30 * 24 * 3600 * 1000;
+
+  const censoredGroupAlpha = {
+    ...groupAlpha,
+    chatCode: undefined,
+    members: groupAlpha.members.map((m) => ({
+      ...m,
+      friendCode:
+        isMatchInsider && matchHappenedInTheLastMonth
+          ? m.friendCode
+          : undefined,
+    })),
+  };
+  const censoredGroupBravo = {
+    ...groupBravo,
+    chatCode: undefined,
+    members: groupBravo.members.map((m) => ({
+      ...m,
+      friendCode:
+        isMatchInsider && matchHappenedInTheLastMonth
+          ? m.friendCode
+          : undefined,
+    })),
+  };
+  const censoredMatch = { ...match, chatCode: undefined };
 
   const groupChatCode = () => {
     if (isTeamAlphaMember) return groupAlpha.chatCode;
@@ -430,13 +456,30 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     ? reportedWeaponsByMatchId(matchId)
     : null;
 
+  const banScreen = !match.isLocked
+    ? await cachified({
+        key: `matches-screen-ban-${match.id}`,
+        cache,
+        async getFreshValue() {
+          const noScreenSettings =
+            await QMatchRepository.groupMembersNoScreenSettings([
+              groupAlpha,
+              groupBravo,
+            ]);
+
+          return noScreenSettings.some((user) => user.noScreen);
+        },
+      })
+    : null;
+
   return {
     match: censoredMatch,
-    matchChatCode: canAccessMatchChat ? match.chatCode : null,
-    canPostChatMessages,
+    matchChatCode: isMatchInsider ? match.chatCode : null,
+    canPostChatMessages: isTeamAlphaMember || isTeamBravoMember,
     groupChatCode: groupChatCode(),
     groupAlpha: censoredGroupAlpha,
     groupBravo: censoredGroupBravo,
+    banScreen,
     groupMemberOf: isTeamAlphaMember
       ? ("ALPHA" as const)
       : isTeamBravoMember
@@ -542,6 +585,7 @@ export default function QMatchPage() {
           <div className="q-match__teams-container">
             {[data.groupAlpha, data.groupBravo].map((group, i) => {
               const side = i === 0 ? "ALPHA" : "BRAVO";
+              const isOwnGroup = data.groupMemberOf === side;
 
               const matchHasBeenReported = Boolean(data.match.reportedByUserId);
               const showAddNote =
@@ -569,7 +613,7 @@ export default function QMatchPage() {
                   <GroupCard
                     group={group}
                     displayOnly
-                    hideVc={matchHasBeenReported}
+                    hideVc={matchHasBeenReported || !isOwnGroup}
                     hideWeapons={matchHasBeenReported}
                     showAddNote={showAddNote}
                   />
@@ -619,7 +663,9 @@ function Score({
     return (
       <div className="stack items-center line-height-tight">
         <div className="text-sm font-bold text-warning">
-          {t("q:match.canceled")}
+          {data.match.isLocked
+            ? t("q:match.canceled")
+            : t("q:match.cancelRequested")}
         </div>
         {!data.match.isLocked ? (
           <div className="text-xs text-lighter stack xs items-center text-center">
@@ -989,6 +1035,7 @@ function BottomSection({
   const { width } = useWindowSize();
   const isMobile = width < 750;
   const isMounted = useIsMounted();
+  const [isReportingWeapons, setIsReportingWeapons] = React.useState(false);
 
   const user = useUser();
   const data = useLoaderData<typeof loader>();
@@ -1018,9 +1065,17 @@ function BottomSection({
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.matchChatCode, data.groupChatCode]);
 
-  // revalidates: false because we don't want the user to lose the weapons
+  const ownWeaponsReported = data.rawReportedWeapons?.some(
+    (rw) => rw.userId === user?.id,
+  );
+
+  // revalidates: false when we don't want the user to lose the weapons
   // they are reporting when the match gets suddenly locked
-  const chat = useChat({ rooms: chatRooms, onNewMessage, revalidates: false });
+  const chat = useChat({
+    rooms: chatRooms,
+    onNewMessage,
+    revalidates: ownWeaponsReported || !isReportingWeapons,
+  });
 
   const onChatMount = React.useCallback(() => {
     setChatVisible(true);
@@ -1062,6 +1117,7 @@ function BottomSection({
       canReportScore={canReportScore}
       isResubmission={ownTeamReported}
       fetcher={submitScoreFetcher}
+      setIsReportingWeapons={setIsReportingWeapons}
     />
   );
 
@@ -1125,6 +1181,11 @@ function BottomSection({
       </FormWithConfirm>
     ) : null;
 
+  const screenLegalityInfoElement =
+    data.banScreen !== null ? (
+      <ScreenLegalityInfo ban={data.banScreen} />
+    ) : null;
+
   const chatHidden = chatRooms.length === 0;
 
   if (!showMid && chatHidden) {
@@ -1137,6 +1198,7 @@ function BottomSection({
         <div className="stack horizontal lg items-center justify-center">
           {roomJoiningInfoElement}
           <div className="stack md">
+            {screenLegalityInfoElement}
             {rulesButtonElement}
             {helpdeskButtonElement}
             {cancelMatchElement}
@@ -1188,6 +1250,7 @@ function BottomSection({
             {roomJoiningInfoElement}
             {rulesButtonElement}
             {helpdeskButtonElement}
+            {screenLegalityInfoElement}
             {cancelMatchElement}
           </div>
         </div>
@@ -1209,6 +1272,38 @@ function BottomSection({
   );
 }
 
+function ScreenLegalityInfo({ ban }: { ban: boolean }) {
+  const { t } = useTranslation(["q", "weapons", "weapons"]);
+
+  return (
+    <div className="q-match__screen-legality">
+      <Popover
+        triggerClassName="minimal tiny q-match__screen-legality__button"
+        buttonChildren={
+          <Alert variation={ban ? "ERROR" : "SUCCESS"}>
+            <div className="stack xs horizontal items-center">
+              <Image
+                path={specialWeaponImageUrl(SPLATTERCOLOR_SCREEN_ID)}
+                width={30}
+                height={30}
+                alt={`weapons:SPECIAL_${SPLATTERCOLOR_SCREEN_ID}`}
+              />
+            </div>
+          </Alert>
+        }
+      >
+        {ban
+          ? t("q:match.screen.ban", {
+              special: t("weapons:SPECIAL_19"),
+            })
+          : t("q:match.screen.allowed", {
+              special: t("weapons:SPECIAL_19"),
+            })}
+      </Popover>
+    </div>
+  );
+}
+
 function InfoWithHeader({ header, value }: { header: string; value: string }) {
   return (
     <div>
@@ -1222,10 +1317,12 @@ function MapList({
   canReportScore,
   isResubmission,
   fetcher,
+  setIsReportingWeapons,
 }: {
   canReportScore: boolean;
   isResubmission: boolean;
   fetcher: FetcherWithComponents<any>;
+  setIsReportingWeapons: (val: boolean) => void;
 }) {
   const { t } = useTranslation(["q"]);
   const user = useUser();
@@ -1289,6 +1386,8 @@ function MapList({
                 onOwnWeaponSelected={(newReportedWeapon) => {
                   if (!newReportedWeapon) return;
 
+                  setIsReportingWeapons(true);
+
                   setOwnWeaponsUsage((val) => {
                     const result = val.filter(
                       (reportedWeapon) =>
@@ -1296,7 +1395,9 @@ function MapList({
                         newReportedWeapon.groupMatchMapId,
                     );
 
-                    result.push(newReportedWeapon);
+                    if (typeof newReportedWeapon.weaponSplId === "number") {
+                      result.push(newReportedWeapon);
+                    }
 
                     return result;
                   });
@@ -1357,23 +1458,7 @@ function MapListMap({
 }) {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const { t } = useTranslation(["q", "game-misc", "tournament"]);
-
-  const pickInfo = (source: string) => {
-    if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
-    if (source === "BOTH") return t("tournament:pickInfo.both");
-    if (source === "DEFAULT") return t("tournament:pickInfo.default");
-
-    if (source === String(data.match.alphaGroupId)) {
-      return t("tournament:pickInfo.team.specific", {
-        team: t("q:match.sides.alpha"),
-      });
-    }
-
-    return t("tournament:pickInfo.team.specific", {
-      team: t("q:match.sides.bravo"),
-    });
-  };
+  const { t } = useTranslation(["q", "game-misc", "tournament", "weapons"]);
 
   const handleReportScore = (i: number, side: "ALPHA" | "BRAVO") => () => {
     const newWinners = [...winners];
@@ -1428,7 +1513,6 @@ function MapListMap({
   };
 
   const modePreferences = data.match.memento?.modePreferences?.[map.mode];
-  const mapPreferences = data.match.memento?.mapPreferences?.[i];
 
   const userIdToName = (userId: number) => {
     const member = [
@@ -1478,35 +1562,7 @@ function MapListMap({
               {t(`game-misc:STAGE_${map.stageId}`)}
             </div>
             <div className="text-lighter text-xs stack xxs horizontal">
-              {mapPreferences && mapPreferences.length > 0 ? (
-                <Popover
-                  triggerClassName="q-match__stage-popover-button"
-                  contentClassName="text-main-forced"
-                  buttonChildren={<span>{pickInfo(map.source)}</span>}
-                >
-                  <div className="text-md text-center text-lighter mb-2 line-height-very-tight">
-                    {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
-                    {t(`game-misc:STAGE_${map.stageId}`)}
-                  </div>
-                  {mapPreferences.map(({ userId, preference }) => {
-                    return (
-                      <div
-                        key={userId}
-                        className="stack horizontal items-center xs"
-                      >
-                        <img
-                          src={preferenceEmojiUrl(preference)}
-                          className="q-settings__radio__emoji"
-                          width={18}
-                        />
-                        {userIdToName(userId)}
-                      </div>
-                    );
-                  })}
-                </Popover>
-              ) : (
-                pickInfo(map.source)
-              )}{" "}
+              <MapListMapPickInfo i={i} map={map} />{" "}
               {winningInfoText(map.winnerGroupId)}
             </div>
           </div>
@@ -1595,35 +1651,65 @@ function MapListMap({
                 <div
                   className={clsx({ invisible: typeof ownWeapon !== "number" })}
                 >
-                  <WeaponImage
-                    weaponSplId={ownWeapon ?? 0}
-                    variant="badge"
-                    size={28}
-                  />
+                  {typeof ownWeapon === "number" ? (
+                    <WeaponImage
+                      weaponSplId={ownWeapon}
+                      variant="badge"
+                      size={36}
+                    />
+                  ) : (
+                    <WeaponImage
+                      weaponSplId={0}
+                      variant="badge"
+                      size={36}
+                      className="invisible"
+                    />
+                  )}
                 </div>
-                <WeaponCombobox
-                  inputName="weapon"
-                  quickSelectWeaponIds={recentlyReportedWeapons}
-                  onChange={(weapon) => {
-                    const userId = user!.id;
-                    const groupMatchMapId = map.id;
+                {typeof ownWeapon === "number" ? (
+                  <div className="font-bold stack sm horizontal">
+                    {t(`weapons:MAIN_${ownWeapon}`)}
+                    <Button
+                      size="tiny"
+                      icon={<CrossIcon />}
+                      variant="minimal-destructive"
+                      onClick={() => {
+                        const userId = user!.id;
+                        const groupMatchMapId = map.id;
 
-                    const weaponSplId = Number(weapon?.value) as MainWeaponId;
+                        onOwnWeaponSelected({
+                          mapIndex: i,
+                          groupMatchMapId,
+                          userId,
+                        });
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <WeaponCombobox
+                    inputName="weapon"
+                    quickSelectWeaponIds={recentlyReportedWeapons}
+                    onChange={(weapon) => {
+                      const userId = user!.id;
+                      const groupMatchMapId = map.id;
 
-                    addRecentlyReportedWeapon?.(weaponSplId);
+                      const weaponSplId = Number(weapon?.value) as MainWeaponId;
 
-                    onOwnWeaponSelected(
-                      weapon
-                        ? {
-                            weaponSplId,
-                            mapIndex: i,
-                            groupMatchMapId,
-                            userId,
-                          }
-                        : null,
-                    );
-                  }}
-                />
+                      addRecentlyReportedWeapon?.(weaponSplId);
+
+                      onOwnWeaponSelected(
+                        weapon
+                          ? {
+                              weaponSplId,
+                              mapIndex: i,
+                              groupMatchMapId,
+                              userId,
+                            }
+                          : null,
+                      );
+                    }}
+                  />
+                )}
               </>
             ) : null}
           </div>
@@ -1631,6 +1717,122 @@ function MapListMap({
       ) : null}
     </div>
   );
+}
+
+function MapListMapPickInfo({
+  i,
+  map,
+}: {
+  i: number;
+  map: Unpacked<SerializeFrom<typeof loader>["match"]["mapList"]>;
+}) {
+  const data = useLoaderData<typeof loader>();
+  const { t } = useTranslation(["q", "game-misc", "tournament"]);
+
+  const pickInfo = (source: string) => {
+    if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
+    if (source === "BOTH") return t("tournament:pickInfo.both");
+    if (source === "DEFAULT") return t("tournament:pickInfo.default");
+
+    if (source === String(data.match.alphaGroupId)) {
+      return t("tournament:pickInfo.team.specific", {
+        team: t("q:match.sides.alpha"),
+      });
+    }
+
+    return t("tournament:pickInfo.team.specific", {
+      team: t("q:match.sides.bravo"),
+    });
+  };
+
+  const userIdToUser = (userId: number) => {
+    const member = [
+      ...data.groupAlpha.members,
+      ...data.groupBravo.members,
+    ].find((m) => m.id === userId);
+
+    return member;
+  };
+
+  const sourcePoolMemberIds = () => {
+    const result: number[] = [];
+
+    if (!data.match.memento?.pools) return result;
+
+    const pickerGroups = [data.groupAlpha, data.groupBravo].filter(
+      (g) => map.source === "BOTH" || String(g.id) === map.source,
+    );
+    if (pickerGroups.length === 0) return result;
+
+    for (const pickerGroup of pickerGroups) {
+      for (const { userId, pool } of data.match.memento.pools) {
+        if (!pickerGroup.members.some((m) => m.id === userId)) {
+          continue;
+        }
+
+        const modePool = pool.find((p) => p.mode === map.mode);
+        if (modePool?.stages.includes(map.stageId)) {
+          result.push(userId);
+        }
+      }
+    }
+
+    return result;
+  };
+
+  const mapPreferences = data.match.memento?.mapPreferences?.[i];
+  const showPopover = () => {
+    // legacy preference system (season 2)
+    if (mapPreferences && mapPreferences.length > 0) return true;
+
+    return sourcePoolMemberIds().length > 0;
+  };
+
+  if (showPopover()) {
+    return (
+      <Popover
+        triggerClassName="q-match__stage-popover-button"
+        contentClassName="text-main-forced"
+        buttonChildren={<span>{pickInfo(map.source)}</span>}
+      >
+        <div className="text-md text-center text-lighter mb-2 line-height-very-tight">
+          {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
+          {t(`game-misc:STAGE_${map.stageId}`)}
+        </div>
+        {sourcePoolMemberIds().length > 0 ? (
+          <div className="stack sm">
+            {sourcePoolMemberIds().map((userId) => {
+              const user = userIdToUser(userId);
+              return (
+                <div
+                  key={userId}
+                  className="stack sm horizontal items-center xs"
+                >
+                  <Avatar user={user} size="xxs" />
+                  {user?.discordName}
+                </div>
+              );
+            })}
+          </div>
+        ) : mapPreferences ? (
+          mapPreferences.map(({ userId, preference }) => {
+            return (
+              <div key={userId} className="stack horizontal items-center xs">
+                <img
+                  src={preferenceEmojiUrl(preference)}
+                  className="q-settings__radio__emoji"
+                  width={18}
+                />
+                {userIdToUser(userId)?.discordName}
+              </div>
+            );
+          })
+        ) : null}
+      </Popover>
+    );
+  }
+
+  return pickInfo(map.source);
 }
 
 function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {

@@ -2,19 +2,22 @@ import type {
   ActionFunction,
   LinksFunction,
   LoaderFunctionArgs,
-  SerializeFrom,
   MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Flag } from "~/components/Flag";
 import { FormMessage } from "~/components/FormMessage";
+import { FriendCodeInput } from "~/components/FriendCodeInput";
+import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserIcon } from "~/components/icons/User";
@@ -28,9 +31,9 @@ import type { RankingSeason } from "~/features/mmr/season";
 import { nextSeason } from "~/features/mmr/season";
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import { giveTrust } from "~/features/tournament/queries/giveTrust.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "react-i18next";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
   parseRequestFormData,
@@ -43,12 +46,12 @@ import {
   LEADERBOARDS_PAGE,
   LOG_IN_URL,
   SENDOUQ_LOOKING_PAGE,
+  SENDOUQ_LOOKING_PREVIEW_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
   SENDOUQ_RULES_PAGE,
   SENDOUQ_SETTINGS_PAGE,
   SENDOUQ_STREAMS_PAGE,
-  SENDOUQ_YOUTUBE_VIDEO,
   navIconUrl,
   userSeasonsPage,
 } from "~/utils/urls";
@@ -60,7 +63,8 @@ import { addMember } from "../queries/addMember.server";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
-import { Image } from "~/components/Image";
+import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
+import { Popover } from "~/components/Popover";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -86,6 +90,15 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+const validateCanJoinQ = async (user: { id: number }) => {
+  validate(currentSeason(new Date()), "Season is not active");
+  validate(!findCurrentGroupByUserId(user.id), "Already in a group");
+  validate(
+    await UserRepository.currentFriendCodeByUserId(user.id),
+    "No friend code",
+  );
+};
+
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({
@@ -93,12 +106,10 @@ export const action: ActionFunction = async ({ request }) => {
     schema: frontPageSchema,
   });
 
-  const season = currentSeason(new Date());
-  validate(season, "Season is not active");
-  validate(!findCurrentGroupByUserId(user.id), "Already in a group");
-
   switch (data._action) {
     case "JOIN_QUEUE": {
+      await validateCanJoinQ(user);
+
       await QRepository.createGroup({
         status: data.direct === "true" ? "ACTIVE" : "PREPARING",
         userId: user.id,
@@ -110,6 +121,8 @@ export const action: ActionFunction = async ({ request }) => {
     }
     case "JOIN_TEAM_WITH_TRUST":
     case "JOIN_TEAM": {
+      await validateCanJoinQ(user);
+
       const code = new URL(request.url).searchParams.get(
         JOIN_CODE_SEARCH_PARAM_KEY,
       );
@@ -143,6 +156,20 @@ export const action: ActionFunction = async ({ request }) => {
           : SENDOUQ_LOOKING_PAGE,
       );
     }
+    case "ADD_FRIEND_CODE": {
+      validate(
+        !(await UserRepository.currentFriendCodeByUserId(user.id)),
+        "Friend code already set",
+      );
+
+      await UserRepository.insertFriendCode({
+        userId: user.id,
+        friendCode: data.friendCode,
+        submitterUserId: user.id,
+      });
+
+      return null;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -175,6 +202,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     season,
     upcomingSeason,
     groupInvitedTo,
+    friendCode: user
+      ? await UserRepository.currentFriendCodeByUserId(user.id)
+      : undefined,
   };
 };
 
@@ -187,27 +217,27 @@ export default function QPage() {
 
   return (
     <Main halfWidth className="stack lg">
-      <div className="stack sm">
+      <div className="stack md">
+        {data.season ? (
+          <ActiveSeasonInfo season={data.season} />
+        ) : data.upcomingSeason ? (
+          <UpcomingSeasonInfo season={data.upcomingSeason} />
+        ) : null}
         <Clocks />
-        <a
-          href={SENDOUQ_YOUTUBE_VIDEO}
-          target="_blank"
-          rel="noreferrer"
-          className="text-xs font-bold text-center"
-        >
-          {t("q:front.watchVideo")}
-        </a>
       </div>
       <QLinks />
-      {data.upcomingSeason ? (
-        <UpcomingSeasonInfo season={data.upcomingSeason} />
-      ) : null}
       {data.season ? (
         <>
           {data.groupInvitedTo === null ? (
             <Alert variation="WARNING">{t("q:front.inviteCodeWrong")}</Alert>
           ) : null}
-          {data.groupInvitedTo &&
+          {!data.friendCode &&
+          data.groupInvitedTo &&
+          data.groupInvitedTo.members.length < FULL_GROUP_SIZE ? (
+            <Alert variation="WARNING">{t("q:front.noFriendCode")}</Alert>
+          ) : null}
+          {data.friendCode &&
+          data.groupInvitedTo &&
           data.groupInvitedTo.members.length < FULL_GROUP_SIZE ? (
             <JoinTeamDialog
               open={dialogOpen}
@@ -215,12 +245,16 @@ export default function QPage() {
               members={data.groupInvitedTo.members}
             />
           ) : null}
+          {user ? <FriendCodeInput friendCode={data.friendCode} /> : null}
           {user ? (
             <>
               <fetcher.Form className="stack md" method="post">
                 <input type="hidden" name="_action" value="JOIN_QUEUE" />
                 <div className="stack horizontal md items-center mt-4 mx-auto">
-                  <SubmitButton icon={<UsersIcon />}>
+                  <SubmitButton
+                    icon={<UsersIcon />}
+                    disabled={!data.friendCode}
+                  >
                     {t("q:front.actions.joinWithGroup")}
                   </SubmitButton>
                   <SubmitButton
@@ -229,16 +263,23 @@ export default function QPage() {
                     state={fetcher.state}
                     icon={<UserIcon />}
                     variant="outlined"
+                    disabled={!data.friendCode}
                   >
                     {t("q:front.actions.joinSolo")}
                   </SubmitButton>
                 </div>
-                <ActiveSeasonInfo season={data.season} />
+                {!data.friendCode ? (
+                  <div className="text-lighter text-xs text-center text-error">
+                    Save your friend code to join the queue
+                  </div>
+                ) : (
+                  <PreviewQueueButton />
+                )}
               </fetcher.Form>
             </>
           ) : (
             <form
-              className="stack items-center"
+              className="stack md items-center"
               action={LOG_IN_URL}
               method="post"
             >
@@ -509,5 +550,27 @@ function UpcomingSeasonInfo({
         date: dateToString(starts),
       })}
     </div>
+  );
+}
+
+function PreviewQueueButton() {
+  const user = useUser();
+  const { t } = useTranslation(["q"]);
+
+  if (!isAtLeastFiveDollarTierPatreon(user)) {
+    return (
+      <Popover
+        buttonChildren={<>{t("q:front.preview")}</>}
+        triggerClassName="minimal mx-auto text-xs"
+      >
+        {t("q:front.preview.explanation")}
+      </Popover>
+    );
+  }
+
+  return (
+    <LinkButton to={SENDOUQ_LOOKING_PREVIEW_PAGE} variant="minimal" size="tiny">
+      {t("q:front.preview")}
+    </LinkButton>
   );
 }

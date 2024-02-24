@@ -186,6 +186,7 @@ export interface GroupLike {
   createdAt: Generated<number>;
   likerGroupId: number;
   targetGroupId: number;
+  isRechallenge: number | null;
 }
 
 export type ParsedMemento = {
@@ -207,7 +208,9 @@ export type ParsedMemento = {
   modePreferences?: Partial<
     Record<ModeShort, Array<{ userId: number; preference?: Preference }>>
   >;
+  /** mapPreferences of season 2 */
   mapPreferences?: Array<{ userId: number; preference?: Preference }[]>;
+  pools: Array<{ userId: number; pool: UserMapModePreferences["pool"] }>;
 };
 
 export interface GroupMatch {
@@ -545,10 +548,9 @@ export interface UserMapModePreferences {
     mode: ModeShort;
     preference?: Preference;
   }>;
-  maps: Array<{
-    stageId: StageId;
+  pool: Array<{
     mode: ModeShort;
-    preference?: Preference;
+    stages: StageId[];
   }>;
 }
 
@@ -588,8 +590,7 @@ export interface User {
   >;
   qWeaponPool: ColumnType<MainWeaponId[] | null, string | null, string | null>;
   plusSkippedForSeasonNth: number | null;
-  // TODO: remove with migration
-  // noScreen: Generated<number>;
+  noScreen: Generated<number>;
 }
 
 export interface UserResultHighlight {
@@ -610,6 +611,13 @@ export interface UserWeapon {
   order: number;
   userId: number;
   weaponSplId: MainWeaponId;
+}
+
+export interface UserFriendCode {
+  friendCode: string;
+  userId: number;
+  submitterUserId: number;
+  createdAt: GeneratedAlways<number>;
 }
 
 export interface Video {
@@ -720,6 +728,7 @@ export interface DB {
   UserResultHighlight: UserResultHighlight;
   UserSubmittedImage: UserSubmittedImage;
   UserWeapon: UserWeapon;
+  UserFriendCode: UserFriendCode;
   Video: Video;
   VideoMatch: VideoMatch;
   VideoMatchPlayer: VideoMatchPlayer;

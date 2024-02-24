@@ -34,7 +34,7 @@ export function RoundRobinBracket({ bracket }: { bracket: BracketType }) {
             <h2 className="text-lg">{groupName}</h2>
             <div
               className="elim-bracket__container"
-              style={{ "--round-count": rounds.length } as any}
+              style={{ "--round-count": rounds.length }}
             >
               {rounds.flatMap((round) => {
                 const bestOf = tournament.ctx.bestOfs.find(

@@ -1,14 +1,14 @@
+import type { SerializeFrom } from "@remix-run/server-runtime";
+import invariant from "tiny-invariant";
 import { suite } from "uvu";
-import * as Test from "~/utils/Test";
-import { loader, action as rawLookingAction } from "./q.looking";
-import { action as rawMatchAction } from "./q.match.$id";
-import type { lookingSchema, matchSchema } from "../q-schemas.server";
+import * as assert from "uvu/assert";
 import { db } from "~/db/sql";
 import type { UserMapModePreferences } from "~/db/tables";
-import type { StageId } from "~/modules/in-game-lists";
-import invariant from "tiny-invariant";
-import * as assert from "uvu/assert";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { stageIds } from "~/modules/in-game-lists";
+import * as Test from "~/utils/Test";
+import type { lookingSchema, matchSchema } from "../q-schemas.server";
+import { loader, action as rawLookingAction } from "./q.looking";
+import { action as rawMatchAction } from "./q.match.$id";
 
 const SendouQMatchCreation = suite("SendouQ match creation");
 const PrivateUserNoteSorting = suite("Private user note sorting");
@@ -57,19 +57,13 @@ const prepareGroups = async () => {
 
   await insertMapModePreferences(1, {
     modes: SZ_ONLY_PREFERENCE,
-    maps: Array.from({ length: 10 }).map((_, i) => ({
-      mode: "SZ",
-      preference: "PREFER",
-      stageId: i as StageId,
-    })),
+    pool: [{ mode: "SZ", stages: [...stageIds].slice(0, 7) }],
   });
 
   await insertMapModePreferences(5, {
     modes: SZ_ONLY_PREFERENCE,
-    maps: [
-      { mode: "SZ", preference: "PREFER", stageId: 11 },
-      { mode: "SZ", preference: "PREFER", stageId: 12 },
-      { mode: "SZ", preference: "PREFER", stageId: 13 },
+    pool: [
+      { mode: "SZ", stages: [...stageIds].slice(0, 20).reverse().slice(0, 7) },
     ],
   });
 };
@@ -111,114 +105,43 @@ SendouQMatchCreation.after.each(() => {
   Test.database.reset();
 });
 
-SendouQMatchCreation(
-  "adds about created map preferences to memento in the correct spot",
-  async () => {
-    await createMatch();
+SendouQMatchCreation("adds pools to memento", async () => {
+  await createMatch();
 
-    const match = await findMatch();
+  const match = await findMatch();
+  const pools = match.memento?.pools;
 
-    const index = match.memento?.mapPreferences?.findIndex((preference) =>
-      preference.some((p) => p.userId === 1),
-    );
-    invariant(typeof index === "number", "User 1 not found in memento");
+  invariant(pools, "pools missing");
 
-    await db
-      .selectFrom("GroupMatchMap")
-      .selectAll()
-      .where("GroupMatchMap.index", "=", index)
-      .where("GroupMatchMap.source", "=", "1")
-      .executeTakeFirstOrThrow();
-  },
-);
+  assert.equal(pools.length, 2);
+  assert.ok(pools.some((p) => p.pool[0].stages.includes(1)));
+  assert.ok(pools.some((p) => p.pool[0].stages.includes(19)));
+});
 
-SendouQMatchCreation(
-  "adds about created map preferences to memento in the correct spot (two preferrers)",
-  async () => {
-    await insertMapModePreferences(2, {
-      modes: SZ_ONLY_PREFERENCE,
-      maps: Array.from({ length: 10 }).map((_, i) => ({
-        mode: "SZ",
-        preference: "PREFER",
-        stageId: i as StageId,
-      })),
-    });
-
-    await createMatch();
-
-    const match = await findMatch();
-
-    const index = match.memento?.mapPreferences?.findIndex(
-      (preference) =>
-        preference.some((p) => p.userId === 1) &&
-        preference.some((p) => p.userId === 2),
-    );
-    invariant(typeof index === "number", "User 1 not found in memento");
-
-    await db
-      .selectFrom("GroupMatchMap")
-      .selectAll()
-      .where("GroupMatchMap.index", "=", index)
-      .where("GroupMatchMap.source", "=", "1")
-      .executeTakeFirstOrThrow();
-  },
-);
-
-SendouQMatchCreation("adds neutral preferences", async () => {
-  await insertMapModePreferences(2, {
-    modes: SZ_ONLY_PREFERENCE,
-    maps: Array.from({ length: 18 }).map((_, i) => ({
-      mode: "SZ",
-      preference: i < 10 ? undefined : "AVOID",
-      stageId: i as StageId,
-    })),
+SendouQMatchCreation("doesn't add pool where mode is avoided", async () => {
+  await insertMapModePreferences(1, {
+    modes: [
+      { mode: "SZ", preference: "AVOID" },
+      { mode: "TC", preference: "PREFER" },
+    ],
+    pool: [
+      { mode: "SZ", stages: [...stageIds].slice(0, 7) },
+      { mode: "TC", stages: [...stageIds].slice(0, 7) },
+    ],
   });
 
   await createMatch();
 
   const match = await findMatch();
+  const pools = match.memento?.pools;
 
-  const preference = match.memento?.mapPreferences
-    ?.flat()
-    .find((p) => p.userId === 2);
-  invariant(preference, "User 2 not found in memento");
+  invariant(pools, "pools missing");
 
-  assert.equal(preference.preference, undefined);
+  assert.equal(pools.length, 2);
+  assert.ok(
+    pools.find((p) => p.userId === 1)!.pool.every((p) => p.mode !== "SZ"),
+  );
 });
-
-SendouQMatchCreation(
-  "user missing from preferences if no preferences at all",
-  async () => {
-    await createMatch();
-
-    const match = await findMatch();
-
-    assert.not.ok(
-      match.memento?.mapPreferences?.flat().find((p) => p.userId === 3),
-    );
-  },
-);
-
-SendouQMatchCreation(
-  "user missing from preferences if only neutral preference",
-  async () => {
-    await insertMapModePreferences(3, {
-      modes: SZ_ONLY_PREFERENCE,
-      maps: Array.from({ length: 10 }).map((_, i) => ({
-        mode: "SZ",
-        stageId: i as StageId,
-      })),
-    });
-
-    await createMatch();
-
-    const match = await findMatch();
-
-    assert.not.ok(
-      match.memento?.mapPreferences?.flat().find((p) => p.userId === 3),
-    );
-  },
-);
 
 SendouQMatchCreation("adds mode preferences to memento", async () => {
   await createMatch();
@@ -235,7 +158,7 @@ SendouQMatchCreation(
   async () => {
     await insertMapModePreferences(2, {
       modes: [{ mode: "TC", preference: "PREFER" }],
-      maps: [],
+      pool: [],
     });
 
     await createMatch();

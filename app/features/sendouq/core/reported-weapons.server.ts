@@ -4,11 +4,12 @@ import type { MatchById } from "../queries/findMatchById.server";
 import type { GroupForMatch } from "~/features/sendouq-match/QMatchRepository.server";
 
 export type ReportedWeaponForMerging = {
-  weaponSplId: MainWeaponId;
+  weaponSplId?: MainWeaponId;
   mapIndex: number;
   groupMatchMapId: number;
   userId: number;
 };
+type ReportedWeapon = ReportedWeaponForMerging & { weaponSplId: MainWeaponId };
 export function mergeReportedWeapons({
   newWeapons,
   oldWeapons,
@@ -17,7 +18,7 @@ export function mergeReportedWeapons({
   newWeapons: ReportedWeaponForMerging[];
   oldWeapons: ReportedWeaponForMerging[];
   newReportedMapsCount?: number;
-}) {
+}): ReportedWeapon[] {
   let result: ReportedWeaponForMerging[] = [];
 
   // make corrections to the old weapons
@@ -53,7 +54,9 @@ export function mergeReportedWeapons({
     result = result.filter((wpn) => wpn.mapIndex < newReportedMapsCount);
   }
 
-  return result;
+  return result.flatMap((w) =>
+    typeof w.weaponSplId === "number" ? [w as ReportedWeapon] : [],
+  );
 }
 
 export function reportedWeaponsToArrayOfArrays({

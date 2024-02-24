@@ -37,6 +37,15 @@ export default function SendouqRules() {
         should be played out.
       </div>
 
+      <h2 className="text-lg mt-4">Unallowed weapons</h2>
+      <div>
+        If someone picks an unallowed weapon game can be canceled within 1
+        minute by any player. For the replay everyone has to use the same
+        weapons and gear except the player with unallowed weapon who should
+        switch to the allowed variant of the weapon. For example had a player
+        picked Foil Squeezer they need to play regular Squeezer in the replay.
+      </div>
+
       <h2 className="text-lg mt-4">Subs</h2>
       <div>
         There are no subs. If a player is unavailable to play from either team
@@ -47,10 +56,6 @@ export default function SendouqRules() {
       <div>
         Match can be canceled if both group owners agree. If the groups
         don&apos;t agree then the match should be played out.
-        <br />
-        <br /> Only exception is if a group asks to play without Splattercolor
-        Screen and the other group in the match doesn&apos;t want to. In this
-        situation either group is free to cancel the match.
       </div>
 
       <h2 className="text-lg mt-4">Room hosting</h2>

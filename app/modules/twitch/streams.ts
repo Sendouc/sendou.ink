@@ -106,6 +106,8 @@ function mapRawStream(stream: RawStream) {
 
 const SPLATOON_3_TWITCH_GAME_ID = "1158884259";
 async function getAllStreams() {
+  if (process.env.NODE_ENV === "test") return [];
+
   const result: RawStream[] = [];
 
   let cursor: string | undefined = undefined;

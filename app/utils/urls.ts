@@ -69,8 +69,6 @@ export const ipLabsMaps = (pool: string) =>
 export const SPLATOON_3_INK = "https://splatoon3.ink/";
 export const RHODESMAS_FREESOUND_PROFILE_URL =
   "https://freesound.org/people/rhodesmas/";
-export const SPLATTERCOLOR_SCREEN_TWITTER_URL =
-  "https://twitter.com/ProChara/status/1730986554078945562";
 
 export const twitterUrl = (accountName: string) =>
   `https://twitter.com/${accountName}`;
@@ -99,13 +97,12 @@ export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
 export const LEADERBOARDS_PAGE = "/leaderboards";
 export const LINKS_PAGE = "/links";
-export const SENDOUQ_YOUTUBE_VIDEO =
-  "https://youtu.be/juOIDmkS1dw?si=iMU4LC_bDmp3fiB1";
 export const SENDOUQ_PAGE = "/q";
 export const SENDOUQ_RULES_PAGE = "/q/rules";
 export const SENDOUQ_SETTINGS_PAGE = "/q/settings";
 export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
 export const SENDOUQ_LOOKING_PAGE = "/q/looking";
+export const SENDOUQ_LOOKING_PREVIEW_PAGE = "/q/looking?preview=true";
 export const SENDOUQ_STREAMS_PAGE = "/q/streams";
 export const TIERS_PAGE = "/tiers";
 
@@ -130,6 +127,7 @@ export const soundPath = (fileName: string) =>
   `/static-assets/sounds/${fileName}.wav`;
 
 export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";
+export const GET_TRUSTERS_ROUTE = "/trusters";
 
 interface UserLinkArgs {
   discordId: User["discordId"];

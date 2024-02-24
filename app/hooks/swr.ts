@@ -1,21 +1,27 @@
 import useSWRImmutable from "swr/immutable";
+import type { EventsWithMapPoolsLoaderData } from "~/features/calendar/routes/map-pool-events";
+import type { TrustersLoaderData } from "~/features/sendouq/routes/trusters";
 import type { WeaponUsageLoaderData } from "~/features/sendouq/routes/weapon-usage";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import type { EventsWithMapPoolsLoaderData } from "~/features/calendar/routes/map-pool-events";
 import {
   GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE,
+  GET_TRUSTERS_ROUTE,
   getWeaponUsage,
 } from "~/utils/urls";
 
-const fetcher = async (url: string) => {
+const fetcher = (key: string) => async (url: string) => {
   const res = await fetch(url);
+  if (res.status !== 200) {
+    console.error(`swr error ${key}: status code ${res.status}`);
+    throw new Error("fetching failed");
+  }
   return res.json();
 };
 
 export function useAllEventsWithMapPools() {
   const { data, error } = useSWRImmutable<EventsWithMapPoolsLoaderData>(
     GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE,
-    fetcher,
+    fetcher(GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE),
   );
 
   return {
@@ -33,11 +39,24 @@ export function useWeaponUsage(args: {
 }) {
   const { data, error } = useSWRImmutable<WeaponUsageLoaderData>(
     getWeaponUsage(args),
-    fetcher,
+    fetcher("getWeaponUsage"),
   );
 
   return {
     weaponUsage: data?.usage,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}
+
+export function useTrusted() {
+  const { data, error } = useSWRImmutable<TrustersLoaderData>(
+    GET_TRUSTERS_ROUTE,
+    fetcher(GET_TRUSTERS_ROUTE),
+  );
+
+  return {
+    trusters: data?.trusters,
     isLoading: !error && !data,
     isError: error,
   };

@@ -63,6 +63,7 @@ export interface GroupForMatch {
     vc: Tables["User"]["vc"];
     languages: string[];
     skillDifference?: UserSkillDifference;
+    friendCode?: string;
     privateNote: Pick<
       Tables["PrivateUserNote"],
       "sentiment" | "text" | "updatedAt"
@@ -117,6 +118,13 @@ export async function findGroupById({
             "User.vc",
             "User.languages",
             "User.qWeaponPool as weapons",
+            arrayEb
+              .selectFrom("UserFriendCode")
+              .select("UserFriendCode.friendCode")
+              .whereRef("UserFriendCode.userId", "=", "User.id")
+              .orderBy("UserFriendCode.createdAt desc")
+              .limit(1)
+              .as("friendCode"),
             jsonObjectFrom(
               eb
                 .selectFrom("PrivateUserNote")
@@ -153,4 +161,16 @@ export async function findGroupById({
       skillDifference: row.memento?.users[m.id]?.skillDifference,
     })),
   } as GroupForMatch;
+}
+
+export function groupMembersNoScreenSettings(groups: GroupForMatch[]) {
+  return db
+    .selectFrom("User")
+    .select("User.noScreen")
+    .where(
+      "User.id",
+      "in",
+      groups.flatMap((group) => group.members.map((member) => member.id)),
+    )
+    .execute();
 }

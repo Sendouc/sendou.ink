@@ -8,6 +8,9 @@ export const SENDOUQ = {
   PRIVATE_USER_NOTE_MAX_LENGTH: TWEET_LENGTH_MAX_LENGTH,
 } as const;
 
+export const FRIEND_CODE_REGEXP_PATTERN = "^[0-9]{4}-[0-9]{4}-[0-9]{4}$";
+export const FRIEND_CODE_REGEXP = new RegExp(FRIEND_CODE_REGEXP_PATTERN);
+
 export const FULL_GROUP_SIZE = 4;
 
 export const SENDOUQ_BEST_OF = 7;

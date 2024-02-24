@@ -141,13 +141,11 @@ function TeamBanner() {
         className={clsx("team__banner", {
           team__banner__placeholder: !team.bannerSrc,
         })}
-        style={
-          {
-            "--team-banner-img": team.bannerSrc
-              ? `url("${userSubmittedImage(team.bannerSrc)}")`
-              : undefined,
-          } as any
-        }
+        style={{
+          "--team-banner-img": team.bannerSrc
+            ? `url("${userSubmittedImage(team.bannerSrc)}")`
+            : undefined,
+        }}
       >
         {team.avatarSrc ? (
           <div className="team__banner__avatar">

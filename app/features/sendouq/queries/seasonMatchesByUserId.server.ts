@@ -1,11 +1,11 @@
 import { sql } from "~/db/sql";
+import type { ParsedMemento } from "~/db/tables";
 import type { GroupMatch, GroupMatchMap, User } from "~/db/types";
 import { seasonObject } from "~/features/mmr/season";
+import { MATCHES_PER_SEASONS_PAGE } from "~/features/user-page/user-page-constants";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
-
-const MATCHES_PER_PAGE = 8;
 
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
@@ -14,6 +14,7 @@ const stm = sql.prepare(/* sql */ `
       "GroupMatch"."alphaGroupId",
       "GroupMatch"."bravoGroupId",
       "GroupMatch"."createdAt",
+      "GroupMatch"."memento",
       (select exists (select 1 from "Skill" where "Skill"."groupMatchId" = "GroupMatch"."id")) as "isLocked"
     from "GroupMatch"
     left join "Group" on 
@@ -23,8 +24,8 @@ const stm = sql.prepare(/* sql */ `
     where "GroupMember"."userId" = @userId
       and "GroupMatch"."createdAt" between @starts and @ends
     order by "GroupMatch"."id" desc
-    limit ${MATCHES_PER_PAGE}
-    offset ${MATCHES_PER_PAGE} * (@page - 1)
+    limit ${MATCHES_PER_SEASONS_PAGE}
+    offset ${MATCHES_PER_SEASONS_PAGE} * (@page - 1)
   ),
   "q2" as (
     select
@@ -99,6 +100,7 @@ interface SeasonMatchByUserId {
   winnerGroupIds: Array<GroupMatchMap["winnerGroupId"]>;
   createdAt: GroupMatch["createdAt"];
   isLocked: number;
+  spDiff: number | null;
   groupAlphaMembers: Array<{
     id: User["id"];
     discordName: User["discordName"];
@@ -136,8 +138,14 @@ export function seasonMatchesByUserId({
   return rows.map((row: any) => {
     const weapons = weaponsStm.all({ id: row.id }) as any;
 
+    const skillDiff = row.memento
+      ? (JSON.parse(row.memento) as ParsedMemento).users[userId]
+          ?.skillDifference
+      : null;
+
     return {
       ...row,
+      spDiff: skillDiff?.calculated ? skillDiff.spDiff : null,
       winnerGroupIds: parseDBArray(row.winnerGroupIds),
       groupAlphaMembers: parseDBJsonArray(row.groupAlphaMembers).map(
         (member: any) => ({
@@ -191,5 +199,5 @@ export function seasonMatchesByUserIdPagesCount({
     ends: dateToDatabaseTimestamp(ends),
   }) as any;
 
-  return Math.ceil((row.count as number) / MATCHES_PER_PAGE);
+  return Math.ceil((row.count as number) / MATCHES_PER_SEASONS_PAGE);
 }

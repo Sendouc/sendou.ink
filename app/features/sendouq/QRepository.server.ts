@@ -38,7 +38,7 @@ export async function findLookingGroups({
 }: {
   minGroupSize?: number;
   maxGroupSize?: number;
-  ownGroupId: number;
+  ownGroupId?: number;
   includeChatCode?: boolean;
   includeMapModePreferences?: boolean;
   loggedInUserId?: number;
@@ -71,6 +71,7 @@ export async function findLookingGroups({
             "GroupMember.role",
             "User.languages",
             "User.vc",
+            "User.noScreen",
             jsonObjectFrom(
               eb
                 .selectFrom("PrivateUserNote")
@@ -113,7 +114,7 @@ export async function findLookingGroups({
           ">",
           sql<number>`(unixepoch() - ${SECONDS_TILL_STALE})`,
         ),
-        eb("Group.id", "=", ownGroupId),
+        eb("Group.id", "=", ownGroupId ?? -1),
       ]),
     )
     .execute();
@@ -142,6 +143,15 @@ export async function findLookingGroups({
 
       return true;
     });
+}
+
+export async function findActiveGroupMembers() {
+  return db
+    .selectFrom("GroupMember")
+    .innerJoin("Group", "Group.id", "GroupMember.groupId")
+    .select("GroupMember.userId")
+    .where("Group.status", "!=", "INACTIVE")
+    .execute();
 }
 
 type CreateGroupArgs = {
@@ -216,6 +226,21 @@ export async function createGroupFromPrevious(
   });
 }
 
+export function rechallenge({
+  likerGroupId,
+  targetGroupId,
+}: {
+  likerGroupId: number;
+  targetGroupId: number;
+}) {
+  return db
+    .updateTable("GroupLike")
+    .set({ isRechallenge: 1 })
+    .where("likerGroupId", "=", likerGroupId)
+    .where("targetGroupId", "=", targetGroupId)
+    .execute();
+}
+
 export function upsertPrivateUserNote(
   args: TablesInsertable["PrivateUserNote"],
 ) {
@@ -248,5 +273,35 @@ export function deletePrivateUserNote({
     .deleteFrom("PrivateUserNote")
     .where("authorId", "=", authorId)
     .where("targetId", "=", targetId)
+    .execute();
+}
+
+export function usersThatTrusted(userId: number) {
+  return db
+    .selectFrom("TeamMember")
+    .innerJoin("User", "User.id", "TeamMember.userId")
+    .innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
+    .select(COMMON_USER_FIELDS)
+    .where((eb) =>
+      eb(
+        "TeamMember.teamId",
+        "=",
+        eb
+          .selectFrom("TeamMember")
+          .select("TeamMember.teamId")
+          .where("TeamMember.userId", "=", userId),
+      ),
+    )
+    .where("User.banned", "=", 0)
+    .union((eb) =>
+      eb
+        .selectFrom("TrustRelationship")
+        .innerJoin("User", "User.id", "TrustRelationship.trustGiverUserId")
+        .innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
+        .select(COMMON_USER_FIELDS)
+        .where("TrustRelationship.trustReceiverUserId", "=", userId)
+        .where("User.banned", "=", 0),
+    )
+    .orderBy("User.discordName asc")
     .execute();
 }

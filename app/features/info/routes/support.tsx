@@ -87,6 +87,11 @@ const PERKS = [
     name: "autoValidatePictures",
     extraInfo: true,
   },
+  {
+    tier: 2,
+    name: "previewQ",
+    extraInfo: false,
+  },
 ] as const;
 
 export default function SupportPage() {

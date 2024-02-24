@@ -1,39 +1,42 @@
 import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
+import type { SqlBool } from "kysely";
+import * as React from "react";
+import { Flipped } from "react-flip-toolkit";
+import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, ModeImage, TierImage, WeaponImage } from "~/components/Image";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
+import { EditIcon } from "~/components/icons/Edit";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
 import { SpeakerIcon } from "~/components/icons/Speaker";
 import { SpeakerXIcon } from "~/components/icons/SpeakerX";
+import { StarIcon } from "~/components/icons/Star";
+import { StarFilledIcon } from "~/components/icons/StarFilled";
+import { TrashIcon } from "~/components/icons/Trash";
 import type { GroupMember as GroupMemberType, ParsedMemento } from "~/db/types";
+import { useUser } from "~/features/auth/core";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
-import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
 import { languagesUnified } from "~/modules/i18n/config";
+import type { ModeShort } from "~/modules/in-game-lists";
+import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import {
   SENDOUQ_LOOKING_PAGE,
   TIERS_PAGE,
   navIconUrl,
+  specialWeaponImageUrl,
   tierImageUrl,
   userPage,
 } from "~/utils/urls";
 import { FULL_GROUP_SIZE, SENDOUQ } from "../q-constants";
 import type { LookingGroup } from "../q-types";
-import { StarIcon } from "~/components/icons/Star";
-import { StarFilledIcon } from "~/components/icons/StarFilled";
-import { inGameNameWithoutDiscriminator } from "~/utils/strings";
-import * as React from "react";
-import type { SqlBool } from "kysely";
-import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
-import { Flipped } from "react-flip-toolkit";
-import { EditIcon } from "~/components/icons/Edit";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { TrashIcon } from "~/components/icons/Trash";
 
 export function GroupCard({
   group,
@@ -50,8 +53,8 @@ export function GroupCard({
   showNote = false,
 }: {
   group: Omit<LookingGroup, "createdAt" | "chatCode">;
-  action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
-  ownRole?: GroupMemberType["role"];
+  action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP" | "MATCH_UP_RECHALLENGE";
+  ownRole?: GroupMemberType["role"] | "PREVIEWER";
   ownGroup?: boolean;
   isExpired?: boolean;
   displayOnly?: boolean;
@@ -97,15 +100,38 @@ export function GroupCard({
             })}
           </div>
         ) : null}
-        {group.futureMatchModes ? (
-          <div className="stack horizontal sm justify-center">
-            {group.futureMatchModes.map((mode) => {
-              return (
-                <div key={mode} className="q__group__future-match-mode">
-                  <ModeImage mode={mode} />
-                </div>
-              );
+        {group.futureMatchModes && !group.members ? (
+          <div
+            className={clsx("stack horizontal", {
+              "justify-between": group.isNoScreen,
+              "justify-center": !group.isNoScreen,
             })}
+          >
+            <div className="stack horizontal sm justify-center">
+              {group.futureMatchModes.map((mode) => {
+                return (
+                  <div
+                    key={mode}
+                    className={clsx("q__group__future-match-mode", {
+                      "q__group__future-match-mode__rechallenge":
+                        group.isRechallenge,
+                    })}
+                  >
+                    <ModeImage mode={mode} />
+                  </div>
+                );
+              })}
+            </div>
+            {group.isNoScreen ? (
+              <div className="q__group__no-screen">
+                <Image
+                  path={specialWeaponImageUrl(SPLATTERCOLOR_SCREEN_ID)}
+                  width={22}
+                  height={22}
+                  alt={`weapons:SPECIAL_${SPLATTERCOLOR_SCREEN_ID}`}
+                />
+              </div>
+            ) : null}
           </div>
         ) : null}
         {group.tier && !displayOnly ? (
@@ -146,7 +172,7 @@ export function GroupCard({
               _action={action}
               state={fetcher.state}
             >
-              {action === "MATCH_UP"
+              {action === "MATCH_UP" || action === "MATCH_UP_RECHALLENGE"
                 ? t("q:looking.groups.actions.startMatch")
                 : action === "LIKE" && !group.members
                   ? t("q:looking.groups.actions.challenge")
@@ -157,6 +183,15 @@ export function GroupCard({
                       : t("q:looking.groups.actions.undo")}
             </SubmitButton>
           </fetcher.Form>
+        ) : null}
+        {!group.isRechallenge &&
+        group.rechallengeMatchModes &&
+        (ownRole === "OWNER" || ownRole === "MANAGER") &&
+        !isExpired ? (
+          <RechallengeForm
+            modes={group.rechallengeMatchModes}
+            targetGroupId={group.id}
+          />
         ) : null}
       </section>
     </GroupCardContainer>
@@ -277,7 +312,7 @@ function GroupMember({
         </div>
       </div>
       <div className="stack horizontal justify-between">
-        <div className="stack horizontal xxs">
+        <div className="stack horizontal items-center xxs">
           {member.vc && !hideVc ? (
             <div className="q__group-member__extra-info">
               <VoiceChatInfo member={member} />
@@ -288,6 +323,14 @@ function GroupMember({
               <Image path={navIconUrl("plus")} width={20} height={20} alt="" />
               {member.plusTier}
             </div>
+          ) : null}
+          {member.friendCode ? (
+            <Popover
+              buttonChildren={<>FC</>}
+              triggerClassName="q__group-member__extra-info-button"
+            >
+              SW-{member.friendCode}
+            </Popover>
           ) : null}
           {showAddNote ? (
             <LinkButton
@@ -433,6 +476,36 @@ function AddPrivateNoteForm({
           </span>
         )}
       </div>
+    </fetcher.Form>
+  );
+}
+
+function RechallengeForm({
+  modes,
+  targetGroupId,
+}: {
+  modes: ModeShort[];
+  targetGroupId: number;
+}) {
+  const { t } = useTranslation(["q"]);
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form method="post" className="stack sm justify-center horizontal">
+      <input type="hidden" name="targetGroupId" value={targetGroupId} />
+      <SubmitButton
+        _action="RECHALLENGE"
+        state={fetcher.state}
+        size="miniscule"
+        variant="minimal"
+      >
+        {t("q:looking.groups.actions.rechallenge")}
+        <div className="stack xs items-center horizontal ml-2 -mt-1px">
+          {modes.map((mode) => (
+            <ModeImage key={mode} mode={mode} size={18} />
+          ))}
+        </div>
+      </SubmitButton>
     </fetcher.Form>
   );
 }

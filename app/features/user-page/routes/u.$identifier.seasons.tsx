@@ -55,7 +55,7 @@ import {
 import { modesShort } from "~/modules/in-game-lists/modes";
 import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { cutToNDecimalPlaces } from "~/utils/number";
+import { cutToNDecimalPlaces, roundToNDecimalPlaces } from "~/utils/number";
 import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
 import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
@@ -626,7 +626,7 @@ function WeaponCircle({
       <div className="u__season__weapon-border__outer-static" />
       <div
         className="u__season__weapon-border__outer"
-        style={{ "--degree": `${degrees}deg` } as any}
+        style={{ "--degree": `${degrees}deg` }}
       >
         <div className="u__season__weapon-border__inner">{children}</div>
       </div>
@@ -765,15 +765,32 @@ function Match({
       ];
 
   return (
-    <Link to={sendouQMatchPage(match.id)} className="u__season__match">
-      {rows}
-      {!match.isLocked ? (
-        <div className="stack horizontal sm text-xs text-lighter items-center justify-center">
-          <AlertIcon className="text-warning w-24px" />
-          {t("user:seasons.matchBeingProcessed")}
+    <div>
+      <Link
+        to={sendouQMatchPage(match.id)}
+        className={clsx("u__season__match", {
+          "u__season__match__with-diff": match.spDiff,
+        })}
+      >
+        {rows}
+        {!match.isLocked ? (
+          <div className="stack horizontal sm text-xs text-lighter items-center justify-center">
+            <AlertIcon className="text-warning w-24px" />
+            {t("user:seasons.matchBeingProcessed")}
+          </div>
+        ) : null}
+      </Link>
+      {match.spDiff ? (
+        <div className="u__season__match__sp-diff">
+          {match.spDiff > 0 ? (
+            <span className="text-success">▲</span>
+          ) : (
+            <span className="text-warning">▼</span>
+          )}
+          {Math.abs(roundToNDecimalPlaces(match.spDiff))}SP
         </div>
       ) : null}
-    </Link>
+    </div>
   );
 }
 

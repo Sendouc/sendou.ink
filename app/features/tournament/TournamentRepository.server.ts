@@ -216,6 +216,34 @@ export function checkedInTournamentTeamsByBracket({
     .execute();
 }
 
+export async function friendCodesByTournamentId(tournamentId: number) {
+  const values = await db
+    .selectFrom("TournamentTeam")
+    .innerJoin(
+      "TournamentTeamMember",
+      "TournamentTeam.id",
+      "TournamentTeamMember.tournamentTeamId",
+    )
+    .innerJoin(
+      "UserFriendCode",
+      "TournamentTeamMember.userId",
+      "UserFriendCode.userId",
+    )
+    .select(["TournamentTeamMember.userId", "UserFriendCode.friendCode"])
+    .orderBy("UserFriendCode.createdAt asc")
+    .where("TournamentTeam.tournamentId", "=", tournamentId)
+    .execute();
+
+  // later friend code overwrites earlier ones
+  return values.reduce(
+    (acc, cur) => {
+      acc[cur.userId] = cur.friendCode;
+      return acc;
+    },
+    {} as Record<number, string>,
+  );
+}
+
 export function checkIn({
   tournamentTeamId,
   bracketIdx,

@@ -7,11 +7,14 @@ import type {
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
-import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
+import { ModeImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
+import { Toggle } from "~/components/Toggle";
 import { CrossIcon } from "~/components/icons/Cross";
 import { MapIcon } from "~/components/icons/Map";
 import { MicrophoneFilledIcon } from "~/components/icons/MicrophoneFilled";
@@ -26,26 +29,26 @@ import {
 } from "~/features/chat/chat-utils";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "react-i18next";
 import { languagesUnified } from "~/modules/i18n/config";
-import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
-import { stageIds } from "~/modules/in-game-lists";
+import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import { type SendouRouteHandle, parseRequestFormData } from "~/utils/remix";
+import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_PAGE,
   SENDOUQ_SETTINGS_PAGE,
   navIconUrl,
   preferenceEmojiUrl,
+  soundPath,
 } from "~/utils/urls";
-import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "../q-settings-constants";
+import { BANNED_MAPS } from "../banned-maps";
+import { ModeMapPoolPicker } from "../components/ModeMapPoolPicker";
+import {
+  AMOUNT_OF_MAPS_IN_POOL_PER_MODE,
+  SENDOUQ_WEAPON_POOL_MAX_SIZE,
+} from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
-import { BANNED_MAPS } from "../banned-maps";
-import { Divider } from "~/components/Divider";
-import { useState } from "react";
-import { soundPath } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -97,6 +100,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       });
       break;
     }
+    case "UPDATE_NO_SCREEN": {
+      await QSettingsRepository.updateNoScreen({
+        userId: user.id,
+        noScreen: Number(data.noScreen),
+      });
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -121,6 +131,7 @@ export default function SendouQSettingsPage() {
         <WeaponPool />
         <VoiceChat />
         <Sounds />
+        <Misc />
       </div>
     </Main>
   );
@@ -131,38 +142,23 @@ function MapPicker() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const [preferences, setPreferences] = React.useState<UserMapModePreferences>(
-    data.settings.mapModePreferences ?? {
-      maps: [],
-      modes: [],
+    () => {
+      if (!data.settings.mapModePreferences) {
+        return {
+          pool: [],
+          modes: [],
+        };
+      }
+
+      return {
+        modes: data.settings.mapModePreferences.modes,
+        pool: data.settings.mapModePreferences.pool.map((p) => ({
+          mode: p.mode,
+          stages: p.stages.filter((s) => !BANNED_MAPS[p.mode].includes(s)),
+        })),
+      };
     },
   );
-
-  const handleMapPreferenceChange = ({
-    stageId,
-    mode,
-    preference,
-  }: {
-    stageId: StageId;
-    mode: ModeShort;
-    preference: Preference & "NEUTRAL";
-  }) => {
-    const newMapPreferences = preferences.maps.filter(
-      (map) => map.stageId !== stageId || map.mode !== mode,
-    );
-
-    if (preference !== "NEUTRAL") {
-      newMapPreferences.push({
-        stageId,
-        mode,
-        preference,
-      });
-    }
-
-    setPreferences({
-      ...preferences,
-      maps: newMapPreferences,
-    });
-  };
 
   const handleModePreferenceChange = ({
     mode,
@@ -188,6 +184,22 @@ function MapPicker() {
     });
   };
 
+  const poolsOk = () => {
+    for (const mode of modesShort) {
+      const mp = preferences.modes.find(
+        (preference) => preference.mode === mode,
+      );
+      if (mp?.preference === "AVOID") continue;
+
+      const pool = preferences.pool.find((p) => p.mode === mode);
+      if (!pool || pool.stages.length !== AMOUNT_OF_MAPS_IN_POOL_PER_MODE) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   return (
     <details>
       <summary className="q-settings__summary">
@@ -199,7 +211,16 @@ function MapPicker() {
         <input
           type="hidden"
           name="mapModePreferences"
-          value={JSON.stringify(preferences)}
+          value={JSON.stringify({
+            ...preferences,
+            pool: preferences.pool.filter((p) => {
+              const isAvoided =
+                preferences.modes.find((m) => m.mode === p.mode)?.preference ===
+                "AVOID";
+
+              return !isAvoided;
+            }),
+          })}
         />
         <div className="stack lg">
           <div className="stack items-center">
@@ -226,83 +247,55 @@ function MapPicker() {
           </div>
 
           <div className="stack lg">
-            {stageIds.map((stageId) => (
-              <MapModeRadios
-                key={stageId}
-                stageId={stageId}
-                preferences={preferences.maps.filter(
-                  (map) => map.stageId === stageId,
-                )}
-                onPreferenceChange={handleMapPreferenceChange}
-              />
-            ))}
+            {modesShort.map((mode) => {
+              const mp = preferences.modes.find(
+                (preference) => preference.mode === mode,
+              );
+              if (mp?.preference === "AVOID") return null;
+
+              return (
+                <ModeMapPoolPicker
+                  key={mode}
+                  mode={mode}
+                  amountToPick={AMOUNT_OF_MAPS_IN_POOL_PER_MODE}
+                  pool={
+                    preferences.pool.find((p) => p.mode === mode)?.stages ?? []
+                  }
+                  onChange={(stages) => {
+                    const newPools = preferences.pool.filter(
+                      (p) => p.mode !== mode,
+                    );
+                    newPools.push({ mode, stages });
+                    setPreferences({
+                      ...preferences,
+                      pool: newPools,
+                    });
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
         <div className="mt-6">
-          <SubmitButton
-            _action="UPDATE_MAP_MODE_PREFERENCES"
-            state={fetcher.state}
-            className="mx-auto"
-            size="big"
-          >
-            {t("common:actions.save")}
-          </SubmitButton>
+          {poolsOk() ? (
+            <SubmitButton
+              _action="UPDATE_MAP_MODE_PREFERENCES"
+              state={fetcher.state}
+              className="mx-auto"
+              size="big"
+            >
+              {t("common:actions.save")}
+            </SubmitButton>
+          ) : (
+            <div className="text-warning text-sm text-center font-bold">
+              {t("q:settings.mapPool.notOk", {
+                count: AMOUNT_OF_MAPS_IN_POOL_PER_MODE,
+              })}
+            </div>
+          )}
         </div>
       </fetcher.Form>
     </details>
-  );
-}
-
-function MapModeRadios({
-  stageId,
-  preferences,
-  onPreferenceChange,
-}: {
-  stageId: StageId;
-  preferences: UserMapModePreferences["maps"];
-  onPreferenceChange: (args: {
-    stageId: StageId;
-    mode: ModeShort;
-    preference: Preference & "NEUTRAL";
-  }) => void;
-}) {
-  const { t } = useTranslation(["q", "game-misc"]);
-
-  return (
-    <div className="q-settings__map-mode-radios-container">
-      <div className="stack items-center text-uppercase text-lighter text-xs font-bold">
-        {t(`game-misc:STAGE_${stageId}`)}
-        <StageImage stageId={stageId} width={250} className="rounded" />
-      </div>
-      <div className="stack justify-evenly">
-        {modesShort.map((modeShort) => {
-          const preference = preferences.find(
-            (preference) =>
-              preference.mode === modeShort && preference.stageId === stageId,
-          );
-
-          const isBanned = BANNED_MAPS[modeShort].includes(stageId);
-
-          return (
-            <div key={modeShort} className="stack horizontal xs my-1">
-              <ModeImage mode={modeShort} width={24} />
-              {isBanned ? (
-                <Divider className="q-settings__banned">
-                  {t("q:settings.banned")}
-                </Divider>
-              ) : (
-                <PreferenceRadioGroup
-                  preference={preference?.preference}
-                  onPreferenceChange={(preference) =>
-                    onPreferenceChange({ mode: modeShort, preference, stageId })
-                  }
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
   );
 }
 
@@ -700,5 +693,45 @@ function SoundSlider() {
         onMouseUp={playSound}
       />
     </div>
+  );
+}
+
+function Misc() {
+  const data = useLoaderData<typeof loader>();
+  const [checked, setChecked] = React.useState(Boolean(data.settings.noScreen));
+  const { t } = useTranslation(["common", "q", "weapons"]);
+  const fetcher = useFetcher();
+
+  return (
+    <details>
+      <summary className="q-settings__summary">
+        <div>{t("q:settings.misc.header")}</div>
+      </summary>
+      <fetcher.Form method="post" className="mb-4 ml-2-5 stack sm">
+        <div className="stack horizontal xs items-center">
+          <Toggle
+            checked={checked}
+            setChecked={setChecked}
+            id="noScreen"
+            name="noScreen"
+          />
+          <label className="mb-0" htmlFor="noScreen">
+            {t("q:settings.avoid.label", {
+              special: t("weapons:SPECIAL_19"),
+            })}
+          </label>
+        </div>
+        <div className="mt-6">
+          <SubmitButton
+            size="big"
+            className="mx-auto"
+            _action="UPDATE_NO_SCREEN"
+            state={fetcher.state}
+          >
+            {t("common:actions.save")}
+          </SubmitButton>
+        </div>
+      </fetcher.Form>
+    </details>
   );
 }

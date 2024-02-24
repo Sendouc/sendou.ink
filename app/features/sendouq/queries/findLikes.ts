@@ -1,10 +1,11 @@
 import { sql } from "~/db/sql";
-import type { GroupLike } from "~/db/types";
+import type { Tables } from "~/db/tables";
 
 const stm = sql.prepare(/* sql */ `
   select
     "GroupLike"."likerGroupId",
-    "GroupLike"."targetGroupId"
+    "GroupLike"."targetGroupId",
+    "GroupLike"."isRechallenge"
   from
     "GroupLike"
   where
@@ -16,6 +17,9 @@ const stm = sql.prepare(/* sql */ `
 
 export function findLikes(
   groupId: number,
-): Pick<GroupLike, "likerGroupId" | "targetGroupId">[] {
+): Pick<
+  Tables["GroupLike"],
+  "likerGroupId" | "targetGroupId" | "isRechallenge"
+>[] {
   return stm.all({ groupId }) as any;
 }

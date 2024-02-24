@@ -25,6 +25,9 @@ import { assertUnreachable } from "~/utils/types";
 import { streamsByTournamentId } from "../core/streams.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -83,11 +86,27 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
         })
       : [];
 
+  const tournamentStartedInTheLastMonth =
+    databaseTimestampToDate(tournament.ctx.startTime) >
+    new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const showFriendCodes =
+    tournamentStartedInTheLastMonth &&
+    (tournament.ctx.author.id === user?.id ||
+      tournament.ctx.staff.some(
+        (s) => s.role === "ORGANIZER" && s.id === user?.id,
+      ));
+
   return {
     tournament,
     subsCount,
     streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
     streamsCount: streams.length,
+    friendCode: user
+      ? await UserRepository.currentFriendCodeByUserId(user.id)
+      : undefined,
+    friendCodes: showFriendCodes
+      ? await TournamentRepository.friendCodesByTournamentId(tournamentId)
+      : undefined,
   };
 };
 
@@ -165,6 +184,8 @@ export default function TournamentLayout() {
               bracketExpanded,
               setBracketExpanded,
               streamingParticipants: data.streamingParticipants,
+              friendCode: data.friendCode,
+              friendCodes: data.friendCodes,
             } satisfies TournamentContext
           }
         />
@@ -178,6 +199,8 @@ type TournamentContext = {
   bracketExpanded: boolean;
   streamingParticipants: number[];
   setBracketExpanded: (expanded: boolean) => void;
+  friendCode?: string;
+  friendCodes?: SerializeFrom<typeof loader>["friendCodes"];
 };
 
 export function useTournament() {
@@ -193,4 +216,12 @@ export function useBracketExpanded() {
 
 export function useStreamingParticipants() {
   return useOutletContext<TournamentContext>().streamingParticipants;
+}
+
+export function useTournamentFriendCode() {
+  return useOutletContext<TournamentContext>().friendCode;
+}
+
+export function useTournamentFriendCodes() {
+  return useOutletContext<TournamentContext>().friendCodes;
 }

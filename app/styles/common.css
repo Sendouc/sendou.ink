@@ -467,7 +467,7 @@ dialog::backdrop {
 
 .input-addon {
   display: grid;
-  border-radius: var(--rounded-sm) 0 0 var(--rounded-sm);
+  border-radius: var(--rounded-xs) 0 0 var(--rounded-xs);
   background-color: var(--bg-lighter);
   color: var(--text-lighter);
   font-size: var(--fonts-xs);
@@ -1597,6 +1597,115 @@ html[dir="rtl"] .fix-rtl {
 .winner__img {
   overflow: visible;
   max-width: initial;
+}
+
+.map-pool-picker {
+  --map-width: 90px;
+  --map-height: 50.63px;
+}
+
+.map-pool-picker__slot {
+  font-size: var(--fonts-xs);
+  display: grid;
+  place-items: center;
+  color: var(--text-lighter);
+  border-radius: var(--rounded-sm);
+  font-weight: var(--bold);
+  width: 24px;
+  height: 24px;
+  border: 2px dotted var(--bg-lightest);
+}
+
+.map-pool-picker__slot__icon {
+  color: var(--theme-success);
+  width: 16px;
+}
+
+.map-pool-picker__slot__picked {
+  border-style: solid;
+}
+
+.map-pool-picker__map-img {
+  border-radius: var(--rounded-sm);
+}
+
+.map-pool-picker__map-button {
+  background-image: var(--map-image-url);
+  background-size: contain;
+  height: var(--map-height);
+  width: var(--map-width);
+  border: none;
+  background-color: transparent;
+  transition:
+    filter,
+    opacity 0.2s;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(5deg);
+  }
+
+  75% {
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.map-pool-picker__map-button__wiggle {
+  animation: wiggle 0.25s infinite;
+  animation-iteration-count: 1;
+}
+
+.map-pool-picker__map-button:active {
+  transform: none;
+}
+
+.map-pool-picker__map-button__greyed-out {
+  filter: grayscale(100%) !important;
+  opacity: 0.4 !important;
+}
+
+.map-pool-picker__map-button__icon {
+  position: absolute;
+  top: 2px;
+  fill: var(--theme-success);
+  width: 48px;
+  cursor: pointer;
+}
+
+.map-pool-picker__map-button__text {
+  position: absolute;
+  top: 14px;
+  text-transform: uppercase;
+  font-weight: var(--bold);
+  cursor: not-allowed;
+}
+
+.map-pool-picker__map-button__label {
+  font-size: var(--fonts-xxxxs);
+  color: var(--text-lighter);
+  font-weight: var(--semi-bold);
+}
+
+.map-pool-picker__divider::before,
+.map-pool-picker__divider::after {
+  border-bottom: 2px dotted var(--bg-lightest);
+}
+
+.map-pool-picker__divider {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  text-transform: uppercase;
+  display: flex;
+  gap: var(--s-2);
 }
 
 #nprogress .bar {

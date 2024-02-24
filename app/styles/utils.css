@@ -194,6 +194,10 @@
   margin-block-start: var(--s-0);
 }
 
+.-mt-1px {
+  margin-block-start: -1px;
+}
+
 .mt-1 {
   margin-block-start: var(--s-1);
 }
@@ -416,6 +420,10 @@
 
 .opaque {
   opacity: 0.6;
+}
+
+.list-none {
+  list-style: none;
 }
 
 @media screen and (min-width: 480px) {

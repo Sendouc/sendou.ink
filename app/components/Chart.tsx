@@ -138,12 +138,10 @@ function ChartTooltip({
                 chart__dot__focused:
                   focusedDatum?.seriesId === dataPoint.seriesId,
               })}
-              style={
-                {
-                  "--dot-color": color,
-                  "--dot-color-outline": color.replace(")", "-transparent)"),
-                } as any
-              }
+              style={{
+                "--dot-color": color,
+                "--dot-color-outline": color.replace(")", "-transparent)"),
+              }}
             />
             <div className="chart__tooltip__label">
               {dataPoint.originalSeries.label}

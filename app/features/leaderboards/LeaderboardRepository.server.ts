@@ -78,10 +78,18 @@ const teamLeaderboardBySeasonQuery = (season: number) =>
 type TeamLeaderboardBySeasonQueryReturnType = InferResult<
   ReturnType<typeof teamLeaderboardBySeasonQuery>
 >;
-export async function teamLeaderboardBySeason(season: number) {
+export async function teamLeaderboardBySeason({
+  season,
+  onlyOneEntryPerUser,
+}: {
+  season: number;
+  onlyOneEntryPerUser: boolean;
+}) {
   const entries = await teamLeaderboardBySeasonQuery(season).execute();
 
-  const oneEntryPerUser = filterOneEntryPerUser(entries);
+  const oneEntryPerUser = onlyOneEntryPerUser
+    ? filterOneEntryPerUser(entries)
+    : entries;
   const withSharedTeam = resolveSharedTeam(oneEntryPerUser);
   const withPower = addPowers(withSharedTeam);
   return addPlacementRank(withPower);

@@ -45,6 +45,7 @@ html {
   --backdrop-filter: blur(10px) brightness(95%);
   --rounded: 16px;
   --rounded-full: 200px;
+  --rounded-xs: 8px;
   --rounded-sm: 10px;
   --fonts-xl: 1.5rem;
   --fonts-lg: 1.2rem;

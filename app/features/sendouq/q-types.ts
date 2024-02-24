@@ -15,17 +15,21 @@ export type LookingGroup = {
   createdAt: Group["createdAt"];
   tier?: TieredSkill["tier"];
   isReplay?: boolean;
+  isNoScreen?: boolean;
   isLiked?: boolean;
+  isRechallenge?: boolean;
   team?: GroupForMatch["team"];
   chatCode?: Group["chatCode"];
   mapModePreferences?: Array<NonNullable<Tables["User"]["mapModePreferences"]>>;
   futureMatchModes?: Array<ModeShort>;
+  rechallengeMatchModes?: Array<ModeShort>;
   skillDifference?: ParsedMemento["groups"][number]["skillDifference"];
   members?: {
     id: number;
     discordId: string;
     discordName: string;
     discordAvatar: string | null;
+    noScreen?: number;
     customUrl?: User["customUrl"];
     plusTier?: PlusTier["tier"];
     role: GroupMember["role"];
@@ -37,6 +41,7 @@ export type LookingGroup = {
     languages: string[];
     chatNameColor: string | null;
     skillDifference?: ParsedMemento["users"][number]["skillDifference"];
+    friendCode?: string;
     privateNote: Pick<
       Tables["PrivateUserNote"],
       "sentiment" | "text" | "updatedAt"
@@ -50,13 +55,13 @@ export type LookingGroupWithInviteCode = LookingGroup & {
 };
 
 export interface DividedGroups {
-  own: LookingGroup | LookingGroupWithInviteCode;
+  own?: LookingGroup | LookingGroupWithInviteCode;
   neutral: LookingGroup[];
   likesReceived: LookingGroup[];
 }
 
 export interface DividedGroupsUncensored {
-  own: LookingGroupWithInviteCode;
+  own?: LookingGroupWithInviteCode;
   neutral: LookingGroupWithInviteCode[];
   likesReceived: LookingGroupWithInviteCode[];
 }

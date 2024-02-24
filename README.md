@@ -146,6 +146,12 @@ Note: Currently the project is in progress to migrating this style so that's why
 
 ## Commands
 
+### Update friend code
+
+```bash
+npm run update-fc -- 79237403620945920 1234-1234-1234
+```
+
 ### Add new badge to the database
 
 ```bash

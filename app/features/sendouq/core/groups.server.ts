@@ -1,5 +1,13 @@
 import invariant from "tiny-invariant";
-import type { Group, GroupLike } from "~/db/types";
+import type { Tables } from "~/db/tables";
+import type { Group } from "~/db/types";
+import { TIERS } from "~/features/mmr/mmr-constants";
+import { defaultOrdinal } from "~/features/mmr/mmr-utils";
+import type {
+  SkillTierInterval,
+  TieredSkill,
+} from "~/features/mmr/tiered.server";
+import { modesShort } from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import type {
@@ -8,15 +16,8 @@ import type {
   LookingGroup,
   LookingGroupWithInviteCode,
 } from "../q-types";
-import type {
-  SkillTierInterval,
-  TieredSkill,
-} from "~/features/mmr/tiered.server";
 import type { RecentMatchPlayer } from "../queries/findRecentMatchPlayersByUserId.server";
-import { TIERS } from "~/features/mmr/mmr-constants";
 import { mapModePreferencesToModeList } from "./match.server";
-import { modesShort } from "~/modules/in-game-lists";
-import { defaultOrdinal } from "~/features/mmr/mmr-utils";
 
 export function divideGroups({
   groups,
@@ -24,10 +25,13 @@ export function divideGroups({
   likes,
 }: {
   groups: LookingGroupWithInviteCode[];
-  ownGroupId: number;
-  likes: Pick<GroupLike, "likerGroupId" | "targetGroupId">[];
+  ownGroupId?: number;
+  likes: Pick<
+    Tables["GroupLike"],
+    "likerGroupId" | "targetGroupId" | "isRechallenge"
+  >[];
 }): DividedGroupsUncensored {
-  let own: LookingGroupWithInviteCode | null = null;
+  let own: LookingGroupWithInviteCode | undefined = undefined;
   const neutral: LookingGroupWithInviteCode[] = [];
   const likesReceived: LookingGroupWithInviteCode[] = [];
 
@@ -44,11 +48,18 @@ export function divideGroups({
 
       if (like.likerGroupId === group.id) {
         likesReceived.push(group);
+        if (like.isRechallenge) {
+          group.isRechallenge = true;
+        }
+
         unneutralGroupIds.add(group.id);
         break;
       }
       if (like.targetGroupId === group.id) {
         group.isLiked = true;
+        if (like.isRechallenge) {
+          group.isRechallenge = true;
+        }
       }
     }
   }
@@ -64,12 +75,41 @@ export function divideGroups({
     neutral.push(group);
   }
 
-  invariant(own && own.members, "own group not found");
-
   return {
     own,
     neutral,
     likesReceived,
+  };
+}
+
+export function addNoScreenIndicator(
+  groups: DividedGroupsUncensored,
+): DividedGroupsUncensored {
+  const ownGroupFull = groups.own?.members.length === FULL_GROUP_SIZE;
+  const ownGroupNoScreen = groups.own?.members.some((m) => m.noScreen);
+
+  const addNoScreenIndicatorIfNeeded = (group: LookingGroupWithInviteCode) => {
+    const theirGroupNoScreen = group.members.some((m) => m.noScreen);
+
+    return {
+      ...group,
+      isNoScreen: ownGroupFull && (ownGroupNoScreen || theirGroupNoScreen),
+      members: group.members.map((m) => ({ ...m, noScreen: undefined })),
+    };
+  };
+
+  return {
+    own: groups.own
+      ? {
+          ...groups.own,
+          members: groups.own.members.map((m) => ({
+            ...m,
+            noScreen: undefined,
+          })),
+        }
+      : undefined,
+    likesReceived: groups.likesReceived.map(addNoScreenIndicatorIfNeeded),
+    neutral: groups.neutral.map(addNoScreenIndicatorIfNeeded),
   };
 }
 
@@ -117,10 +157,10 @@ export function addReplayIndicator({
 export function addFutureMatchModes(
   groups: DividedGroupsUncensored,
 ): DividedGroupsUncensored {
-  const ownModePreferences = groups.own.mapModePreferences?.map((p) => p.modes);
-  if (!ownModePreferences) return groups;
+  const ownModePreferences =
+    groups.own?.mapModePreferences?.map((p) => p.modes) ?? [];
 
-  const futureMatchModes = (group: LookingGroupWithInviteCode) => {
+  const combinedMatchModes = (group: LookingGroupWithInviteCode) => {
     const theirModePreferences = group.mapModePreferences?.map((p) => p.modes);
     if (!theirModePreferences) return;
 
@@ -130,16 +170,48 @@ export function addFutureMatchModes(
     ).sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b));
   };
 
+  const oneGroupMatchModes = (group: LookingGroupWithInviteCode) => {
+    const modePreferences = group.mapModePreferences?.map((p) => p.modes);
+    if (!modePreferences) return;
+
+    return mapModePreferencesToModeList(modePreferences, []).sort(
+      (a, b) => modesShort.indexOf(a) - modesShort.indexOf(b),
+    );
+  };
+
+  const removeRechallengeIfIdentical = (group: LookingGroupWithInviteCode) => {
+    if (!group.futureMatchModes || !group.rechallengeMatchModes) return group;
+
+    return {
+      ...group,
+      rechallengeMatchModes:
+        group.futureMatchModes.length === group.rechallengeMatchModes.length &&
+        group.futureMatchModes.every(
+          (m, i) => m === group.rechallengeMatchModes![i],
+        )
+          ? undefined
+          : group.rechallengeMatchModes,
+    };
+  };
+
   return {
     own: groups.own,
     likesReceived: groups.likesReceived.map((g) => ({
       ...g,
-      futureMatchModes: futureMatchModes(g),
+      futureMatchModes:
+        g.isRechallenge && groups.own
+          ? oneGroupMatchModes(groups.own)
+          : combinedMatchModes(g),
     })),
-    neutral: groups.neutral.map((g) => ({
-      ...g,
-      futureMatchModes: futureMatchModes(g),
-    })),
+    neutral: groups.neutral
+      .map((g) => ({
+        ...g,
+        futureMatchModes: g.isRechallenge
+          ? oneGroupMatchModes(g)
+          : combinedMatchModes(g),
+        rechallengeMatchModes: g.isLiked ? oneGroupMatchModes(g) : undefined,
+      }))
+      .map(removeRechallengeIfIdentical),
   };
 }
 
@@ -158,20 +230,25 @@ const censorGroupPartly = ({
 }: LookingGroupWithInviteCode): LookingGroup => group;
 export function censorGroups({
   groups,
-  showMembers,
   showInviteCode,
 }: {
   groups: DividedGroupsUncensored;
-  showMembers: boolean;
   showInviteCode: boolean;
 }): DividedGroups {
   return {
-    own: showInviteCode ? groups.own : censorGroupPartly(groups.own),
-    neutral: groups.neutral.map(
-      showMembers ? censorGroupPartly : censorGroupFully,
+    own:
+      showInviteCode || !groups.own
+        ? groups.own
+        : censorGroupPartly(groups.own),
+    neutral: groups.neutral.map((g) =>
+      g.members.length === FULL_GROUP_SIZE
+        ? censorGroupFully(g)
+        : censorGroupPartly(g),
     ),
-    likesReceived: groups.likesReceived.map(
-      showMembers ? censorGroupPartly : censorGroupFully,
+    likesReceived: groups.likesReceived.map((g) =>
+      g.members.length === FULL_GROUP_SIZE
+        ? censorGroupFully(g)
+        : censorGroupPartly(g),
     ),
   };
 }
@@ -180,19 +257,27 @@ export function sortGroupsBySkillAndSentiment({
   groups,
   userSkills,
   intervals,
+  userId,
 }: {
   groups: DividedGroups;
   userSkills: Record<string, TieredSkill>;
   intervals: SkillTierInterval[];
+  userId?: number;
 }): DividedGroups {
-  const ownGroupTier =
-    groups.own.tier?.name ??
-    resolveGroupSkill({
-      group: groups.own as LookingGroupWithInviteCode,
-      userSkills,
-      intervals,
-    })?.name;
-  const ownGroupTierIndex = TIERS.findIndex((t) => t.name === ownGroupTier);
+  const ownGroupTier = () => {
+    if (groups.own?.tier?.name) return groups.own.tier.name;
+    if (groups.own) {
+      return resolveGroupSkill({
+        group: groups.own as LookingGroupWithInviteCode,
+        userSkills,
+        intervals,
+      })?.name;
+    }
+
+    // preview mode, BRONZE as some kind of sensible defaults for unranked folks
+    return userSkills[String(userId)]?.tier?.name ?? "BRONZE";
+  };
+  const ownGroupTierIndex = TIERS.findIndex((t) => t.name === ownGroupTier());
 
   const tierDiff = (otherGroupTierName?: string) => {
     if (!otherGroupTierName) return 10;
@@ -284,7 +369,7 @@ export function addSkillsToGroups({
   });
 
   return {
-    own: addSkill(groups.own),
+    own: groups.own ? addSkill(groups.own) : undefined,
     neutral: groups.neutral.map(addSkill),
     likesReceived: groups.likesReceived.map(addSkill),
   };
@@ -321,8 +406,10 @@ function resolveGroupSkill({
 }
 
 export function groupExpiryStatus(
-  group: Pick<Group, "latestActionAt">,
+  group?: Pick<Group, "latestActionAt">,
 ): null | "EXPIRING_SOON" | "EXPIRED" {
+  if (!group) return null;
+
   // group expires in 30min without actions performed
   const groupExpiresAt =
     databaseTimestampToDate(group.latestActionAt).getTime() + 30 * 60 * 1000;

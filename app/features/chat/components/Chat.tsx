@@ -15,6 +15,7 @@ import { MESSAGE_MAX_LENGTH } from "../chat-constants";
 import { messageTypeToSound, soundEnabled, soundVolume } from "../chat-utils";
 import { soundPath } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
+import { logger } from "~/utils/logger";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
@@ -234,7 +235,7 @@ function Message({
             className="chat__message__user"
             style={
               user?.chatNameColor
-                ? ({ "--chat-user-color": user.chatNameColor } as any)
+                ? { "--chat-user-color": user.chatNameColor }
                 : undefined
             }
           >
@@ -298,6 +299,7 @@ export function useChat({
 }) {
   const { revalidate } = useRevalidator();
   const rootLoaderData = useRootLoaderData();
+  const shouldRevalidate = React.useRef<boolean>();
   const user = useUser();
 
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
@@ -309,6 +311,11 @@ export function useChat({
 
   const ws = React.useRef<ReconnectingWebSocket>();
   const lastSeenMessagesByRoomId = React.useRef<Map<string, string>>(new Map());
+
+  // same principal as here behind separating it into a ref: https://overreacted.io/making-setinterval-declarative-with-react-hooks/
+  React.useEffect(() => {
+    shouldRevalidate.current = revalidates;
+  }, [revalidates]);
 
   React.useEffect(() => {
     if (rooms.length === 0) return;
@@ -335,7 +342,7 @@ export function useChat({
       // something interesting happened
       // -> let's run data loaders so they can see it sooner
       const isSystemMessage = Boolean(messageArr[0].type);
-      if (isSystemMessage && revalidates) {
+      if (isSystemMessage && shouldRevalidate.current) {
         revalidate();
       }
 
@@ -343,7 +350,9 @@ export function useChat({
       if (sound && soundEnabled(sound)) {
         const audio = new Audio(soundPath(sound));
         audio.volume = soundVolume() / 100;
-        void audio.play();
+        void audio
+          .play()
+          .catch((e) => logger.error(`Couldn't play sound: ${e}`));
       }
 
       if (messageArr[0].revalidateOnly) {
@@ -372,7 +381,7 @@ export function useChat({
       wsCurrent?.close();
       setMessages([]);
     };
-  }, [rooms, onNewMessage, rootLoaderData.skalopUrl, revalidate, revalidates]);
+  }, [rooms, onNewMessage, rootLoaderData.skalopUrl, revalidate]);
 
   React.useEffect(() => {
     // ping every minute to keep connection alive
