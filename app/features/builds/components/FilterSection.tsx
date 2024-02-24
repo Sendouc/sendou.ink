@@ -209,8 +209,12 @@ function DateFilter({
     return "CUSTOM";
   };
 
-  const oneMonthAgo = new Date();
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  // on Saturday so it doesn't overlap with actual path dates (no patches on Saturdays)
+  const oneMonthAgoOnSaturday = new Date();
+  oneMonthAgoOnSaturday.setDate(oneMonthAgoOnSaturday.getDate() - 30);
+  oneMonthAgoOnSaturday.setDate(
+    oneMonthAgoOnSaturday.getDate() - oneMonthAgoOnSaturday.getDay() + 6,
+  );
 
   return (
     <div className="build__filter build__filter__date">
@@ -223,7 +227,7 @@ function DateFilter({
           onChange({
             date:
               e.target.value === "CUSTOM"
-                ? dateToYYYYMMDD(oneMonthAgo)
+                ? dateToYYYYMMDD(oneMonthAgoOnSaturday)
                 : e.target.value,
           })
         }
