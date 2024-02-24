@@ -6,7 +6,7 @@ import {
   DEFAULT_LEADERBOARD_MAX_SIZE,
   MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
 } from "./leaderboards-constants";
-import { ordinalToSp } from "../mmr";
+import { ordinalToSp } from "../mmr/mmr-utils";
 
 function addPowers<T extends { ordinal: number }>(entries: T[]) {
   return entries.map((entry) => ({

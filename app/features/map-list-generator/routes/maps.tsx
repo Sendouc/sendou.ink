@@ -18,9 +18,9 @@ import { Toggle } from "~/components/Toggle";
 import type { CalendarEvent } from "~/db/types";
 import { useTranslation } from "react-i18next";
 import { getUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
+import { i18next } from "~/modules/i18n/i18next.server";
 import { stageIds, type ModeWithStage } from "~/modules/in-game-lists";
-import styles from "~/styles/maps.css";
+import styles from "~/styles/maps.css?url";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {

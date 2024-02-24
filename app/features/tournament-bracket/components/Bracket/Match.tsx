@@ -7,7 +7,7 @@ import {
 import { Link, useFetcher } from "@remix-run/react";
 import { tournamentMatchPage, tournamentStreamsPage } from "~/utils/urls";
 import clsx from "clsx";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import type { Bracket } from "../../core/Bracket";
 import { Popover } from "~/components/Popover";
 import * as React from "react";

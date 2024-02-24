@@ -23,12 +23,11 @@ import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ClockIcon } from "~/components/icons/Clock";
 import { CrossIcon } from "~/components/icons/Cross";
 import { UserIcon } from "~/components/icons/User";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { ModeMapPoolPicker } from "~/features/sendouq-settings/components/ModeMapPoolPicker";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import {
   tournamentFromDB,
@@ -77,6 +76,7 @@ import { useTournamentFriendCode, useTournament } from "./to.$id";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as QRepository from "~/features/sendouq/QRepository.server";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({

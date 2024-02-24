@@ -1,10 +1,10 @@
 import { useSearchParams } from "@remix-run/react";
 import type * as React from "react";
 import { useTranslation } from "react-i18next";
-import { languages } from "~/modules/i18n";
 import { LinkButton } from "../Button";
 import { GlobeIcon } from "../icons/Globe";
 import { Popover } from "../Popover";
+import { languages } from "~/modules/i18n/config";
 
 const addUniqueParam = (
   oldParams: URLSearchParams,

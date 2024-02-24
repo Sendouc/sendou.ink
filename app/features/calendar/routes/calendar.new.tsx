@@ -1,23 +1,22 @@
-import { json, redirect } from "@remix-run/node";
 import type {
-  SerializeFrom,
   ActionFunction,
   LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import type { AlertVariation } from "~/components/Alert";
 import { Alert } from "~/components/Alert";
 import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { DateInput } from "~/components/DateInput";
+import { Divider } from "~/components/Divider";
 import { FormMessage } from "~/components/FormMessage";
-import { CrossIcon } from "~/components/icons/Cross";
-import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -25,16 +24,29 @@ import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
+import { CrossIcon } from "~/components/icons/Cross";
+import { TrashIcon } from "~/components/icons/Trash";
 import { CALENDAR_EVENT } from "~/constants";
+import type { Tables } from "~/db/tables";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "react-i18next";
 import { requireUser } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
+import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import {
+  BRACKET_NAMES,
+  TOURNAMENT,
+  type TournamentFormatShort,
+} from "~/features/tournament/tournament-constants";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { i18next } from "~/modules/i18n/i18next.server";
+import type { RankedModeShort } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { canEditCalendarEvent } from "~/permissions";
-import calendarNewStyles from "~/styles/calendar-new.css";
-import mapsStyles from "~/styles/maps.css";
+import calendarNewStyles from "~/styles/calendar-new.css?url";
+import mapsStyles from "~/styles/maps.css?url";
 import { isDefined } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
@@ -50,45 +62,18 @@ import {
 } from "~/utils/remix";
 import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
 import { calendarEventPage, tournamentBracketsPage } from "~/utils/urls";
-import {
-  actualNumber,
-  checkboxValueToBoolean,
-  date,
-  falsyToNull,
-  id,
-  processMany,
-  removeDuplicates,
-  safeJSONParse,
-  toArray,
-} from "~/utils/zod";
-import { Tags } from "../components/Tags";
-import type { RankedModeShort } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
-import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import { newCalendarEventActionSchema } from "../calendar-schemas.server";
 import {
   bracketProgressionToShortTournamentFormat,
+  calendarEventMaxDate,
+  calendarEventMinDate,
   canAddNewEvent,
 } from "../calendar-utils";
 import {
   canCreateTournament,
   formValuesToBracketProgression,
 } from "../calendar-utils.server";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
-import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
-import type { Tables } from "~/db/tables";
-import { Divider } from "~/components/Divider";
-import {
-  BRACKET_NAMES,
-  FORMATS_SHORT,
-  TOURNAMENT,
-  type TournamentFormatShort,
-} from "~/features/tournament/tournament-constants";
-
-const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
-
-const MAX_DATE = new Date();
-MAX_DATE.setFullYear(MAX_DATE.getFullYear() + 1);
+import { Tags } from "../components/Tags";
 
 export const links: LinksFunction = () => {
   return [
@@ -104,84 +89,6 @@ export const meta: MetaFunction = (args) => {
 
   return [{ title: data.title }];
 };
-
-export const newCalendarEventActionSchema = z
-  .object({
-    eventToEditId: z.preprocess(actualNumber, id.nullish()),
-    name: z
-      .string()
-      .min(CALENDAR_EVENT.NAME_MIN_LENGTH)
-      .max(CALENDAR_EVENT.NAME_MAX_LENGTH),
-    description: z.preprocess(
-      falsyToNull,
-      z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable(),
-    ),
-    date: z.preprocess(
-      toArray,
-      z
-        .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
-        .min(1)
-        .max(CALENDAR_EVENT.MAX_AMOUNT_OF_DATES),
-    ),
-    bracketUrl: z
-      .string()
-      .url()
-      .max(CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH)
-      .default("https://sendou.ink"),
-    discordInviteCode: z.preprocess(
-      falsyToNull,
-      z.string().max(CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH).nullable(),
-    ),
-    tags: z.preprocess(
-      processMany(safeJSONParse, removeDuplicates),
-      z
-        .array(
-          z
-            .string()
-            .refine((val) =>
-              CALENDAR_EVENT.TAGS.includes(val as CalendarEventTag),
-            ),
-        )
-        .nullable(),
-    ),
-    badges: z.preprocess(
-      processMany(safeJSONParse, removeDuplicates),
-      z.array(id).nullable(),
-    ),
-    pool: z.string().optional(),
-    toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
-    toToolsMode: z.enum(["ALL", "SZ", "TC", "RM", "CB"]).optional(),
-    //
-    // tournament format related fields
-    //
-    format: z.enum(FORMATS_SHORT).nullish(),
-    withUndergroundBracket: z.preprocess(checkboxValueToBoolean, z.boolean()),
-    teamsPerGroup: z.coerce
-      .number()
-      .min(TOURNAMENT.MIN_GROUP_SIZE)
-      .max(TOURNAMENT.MAX_GROUP_SIZE)
-      .nullish(),
-    advancingCount: z.coerce
-      .number()
-      .min(1)
-      .max(TOURNAMENT.MAX_GROUP_SIZE)
-      .nullish(),
-  })
-  .refine(
-    async (schema) => {
-      if (schema.eventToEditId) {
-        const eventToEdit = await CalendarRepository.findById({
-          id: schema.eventToEditId,
-        });
-        return schema.date.length === 1 || !eventToEdit?.tournamentId;
-      } else {
-        return schema.date.length === 1 || !schema.toToolsEnabled;
-      }
-    },
-    {
-      message: "Tournament must have exactly one date",
-    },
-  );
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
@@ -501,8 +408,8 @@ function DatesInput({ allowMultiDate }: { allowMultiDate?: boolean }) {
                     id={`date-input-${key}`}
                     name="date"
                     defaultValue={date ?? undefined}
-                    min={MIN_DATE}
-                    max={MAX_DATE}
+                    min={calendarEventMinDate()}
+                    max={calendarEventMaxDate()}
                     required
                     onChange={(newDate: Date | null) => {
                       setDatesInputState((current) =>

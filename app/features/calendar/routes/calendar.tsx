@@ -16,10 +16,10 @@ import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
-import styles from "~/styles/calendar.css";
+import { i18next } from "~/modules/i18n/i18next.server";
+import styles from "~/styles/calendar.css?url";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
   databaseTimestampToDate,

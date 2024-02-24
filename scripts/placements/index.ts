@@ -6,7 +6,7 @@ import { sql } from "~/db/sql";
 import type { XRankPlacement } from "~/db/types";
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import { xRankSchema } from "./schemas";
-import { syncXPBadges } from "~/features/badges";
+import { syncXPBadges } from "~/features/badges/queries/syncXPBadges.server";
 
 const rawJsonNumber = process.argv[2]?.trim();
 invariant(rawJsonNumber, "jsonNumber is required (argument 1)");

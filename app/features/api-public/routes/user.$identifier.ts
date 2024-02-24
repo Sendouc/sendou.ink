@@ -5,7 +5,8 @@ import { safeNumberParse } from "~/utils/number";
 import { notFoundIfFalsy, parseParams } from "~/utils/remix";
 import type { GetUserResponse } from "../schema";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
-import { i18next } from "~/modules/i18n";
+import { i18next } from "~/modules/i18n/i18next.server";
+("~/modules/i18n");
 import { requireBearerAuth } from "../api-public-utils.server";
 
 const paramsSchema = z.object({

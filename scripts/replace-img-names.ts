@@ -3,6 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
 
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const GEAR_IMAGES_DIR_PATH = path.join(
   __dirname,
   "..",

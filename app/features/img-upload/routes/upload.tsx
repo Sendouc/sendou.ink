@@ -17,7 +17,7 @@ import Compressor from "compressorjs";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import { useTranslation } from "react-i18next";
-import { requireUser } from "~/features/auth/core";
+import { requireUser } from "~/features/auth/core/user.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { validate } from "~/utils/remix";
 import { teamPage } from "~/utils/urls";

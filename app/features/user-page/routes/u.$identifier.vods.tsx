@@ -3,13 +3,13 @@ import { useMatches } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { VodListing } from "~/features/vods";
 import type { SendouRouteHandle } from "~/utils/remix";
-import styles from "~/features/vods/vods.css";
+import styles from "~/features/vods/vods.css?url";
 import type { UserPageLoaderData } from "./u.$identifier";
 import { Popover } from "~/components/Popover";
 import { useTranslation } from "react-i18next";
 import { newVodPage } from "~/utils/urls";
 import { LinkButton } from "~/components/Button";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],

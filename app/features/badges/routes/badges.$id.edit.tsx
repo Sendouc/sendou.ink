@@ -9,7 +9,7 @@ import { Label } from "~/components/Label";
 import { UserSearch } from "~/components/UserSearch";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { User } from "~/db/types";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { canEditBadgeManagers, canEditBadgeOwners } from "~/permissions";
 import { atOrError } from "~/utils/arrays";

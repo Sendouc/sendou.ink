@@ -13,13 +13,12 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { sql } from "~/db/sql";
-import { requireUser, useUser } from "~/features/auth/core";
+import { requireUser } from "~/features/auth/core/user.server";
 import {
-  currentSeason,
   queryCurrentTeamRating,
   queryCurrentUserRating,
-} from "~/features/mmr";
-import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
+  queryTeamPlayerRatingAverage,
+} from "~/features/mmr/mmr-utils.server";
 import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { HACKY_isInviteOnlyEvent } from "~/features/tournament/tournament-utils";
@@ -40,7 +39,6 @@ import {
 } from "../../tournament/routes/to.$id";
 import { tournamentFromDB } from "../core/Tournament.server";
 import { resolveBestOfs } from "../core/bestOf.server";
-import { getTournamentManager } from "../core/brackets-manager";
 import { tournamentSummary } from "../core/summarizer.server";
 import { addSummary } from "../queries/addSummary.server";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
@@ -51,8 +49,8 @@ import {
   bracketSubscriptionKey,
   fillWithNullTillPowerOfTwo,
 } from "../tournament-bracket-utils";
-import bracketStyles from "../tournament-bracket.css";
-import bracketComponentStyles from "../components/Bracket/bracket.css";
+import bracketStyles from "../tournament-bracket.css?url";
+import bracketComponentStyles from "../components/Bracket/bracket.css?url";
 import type { Standing } from "../core/Bracket";
 import { removeDuplicates } from "~/utils/arrays";
 import { Placement } from "~/components/Placement";
@@ -62,6 +60,9 @@ import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { Bracket } from "../components/Bracket";
 import { EyeIcon } from "~/components/icons/Eye";
 import { EyeSlashIcon } from "~/components/icons/EyeSlash";
+import { useUser } from "~/features/auth/core/user";
+import { currentSeason } from "~/features/mmr/season";
+import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -81,7 +82,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   const tournamentId = tournamentIdFromParams(params);
   const tournament = await tournamentFromDB({ tournamentId, user });
   const data = await parseRequestFormData({ request, schema: bracketSchema });
-  const manager = getTournamentManager("SQL");
+  const manager = getServerTournamentManager();
 
   switch (data._action) {
     case "START_BRACKET": {

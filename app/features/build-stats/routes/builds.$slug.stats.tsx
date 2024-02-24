@@ -10,7 +10,7 @@ import { weaponNameSlugToId } from "~/utils/unslugify.server";
 import { averageAbilityPoints } from "../queries/averageAbilityPoints.server";
 import { abilityPointCountsToAverages } from "../build-stats-utils";
 import { Ability } from "~/components/Ability";
-import styles from "../build-stats.css";
+import styles from "../build-stats.css?url";
 import { WeaponImage } from "~/components/Image";
 import { notFoundIfNullLike, type SendouRouteHandle } from "~/utils/remix";
 import { MAX_AP, ONE_HOUR_IN_MS } from "~/constants";
@@ -21,7 +21,7 @@ import {
   outlinedMainWeaponImageUrl,
   weaponBuildPage,
 } from "~/utils/urls";
-import { i18next } from "~/modules/i18n";
+import { i18next } from "~/modules/i18n/i18next.server";
 import { makeTitle } from "~/utils/strings";
 import { cache, ttl } from "~/utils/cache.server";
 import { cachified } from "@epic-web/cachified";

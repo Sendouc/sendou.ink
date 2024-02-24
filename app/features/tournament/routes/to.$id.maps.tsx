@@ -6,7 +6,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "~/components/Alert";
 import type { MapPoolMap } from "~/db/types";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
@@ -18,7 +18,7 @@ import type {
   TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
-import mapsStyles from "~/styles/maps.css";
+import mapsStyles from "~/styles/maps.css?url";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { tournamentPage } from "~/utils/urls";
 import { findMapPoolsByTournamentId } from "../queries/findMapPoolsByTournamentId.server";

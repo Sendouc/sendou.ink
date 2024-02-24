@@ -9,8 +9,8 @@ import React from "react";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "react-i18next";
-import styles from "../tournament-subs.css";
-import { requireUser, useUser } from "~/features/auth/core";
+import styles from "../tournament-subs.css?url";
+import { requireUser } from "~/features/auth/core/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { WeaponCombobox } from "~/components/Combobox";
 import { TOURNAMENT_SUB } from "../tournament-subs-constants";
@@ -24,6 +24,7 @@ import { FormMessage } from "~/components/FormMessage";
 import { subSchema } from "../tournament-subs-schemas.server";
 import { upsertSub } from "../queries/upsertSub.server";
 import { tournamentSubsPage } from "~/utils/urls";
+import { useUser } from "~/features/auth/core/user";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user"],

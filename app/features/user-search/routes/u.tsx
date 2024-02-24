@@ -6,7 +6,7 @@ import type {
 import { Main } from "~/components/Main";
 import { parseSearchParams, type SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, userPage, USER_SEARCH_PAGE } from "~/utils/urls";
-import styles from "~/styles/u.css";
+import styles from "~/styles/u.css?url";
 import { Input } from "~/components/Input";
 import { SearchIcon } from "~/components/icons/Search";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";

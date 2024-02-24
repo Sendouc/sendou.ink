@@ -1,10 +1,10 @@
 import { Tournament } from "./Tournament";
-import { getTournamentManager } from "..";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { notFoundIfFalsy } from "~/utils/remix";
 import type { Unwrapped } from "~/utils/types";
+import { getServerTournamentManager } from "./brackets-manager/manager.server";
 
-const manager = getTournamentManager("SQL");
+const manager = getServerTournamentManager();
 
 export type TournamentData = Unwrapped<typeof tournamentData>;
 export type TournamentDataTeam = TournamentData["ctx"]["teams"][number];

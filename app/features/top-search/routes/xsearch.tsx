@@ -7,7 +7,7 @@ import type {
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { findPlacementsOfMonth } from "../queries/findPlacements.server";
-import styles from "../top-search.css";
+import styles from "../top-search.css?url";
 import { PlacementsTable } from "../components/Placements";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { XRankPlacement } from "~/db/types";
@@ -16,7 +16,7 @@ import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import type { MonthYear } from "../top-search-utils";
-import { i18next } from "~/modules/i18n";
+import { i18next } from "~/modules/i18n/i18next.server";
 import { makeTitle } from "~/utils/strings";
 import { monthYears } from "../queries/monthYears";
 import type { SendouRouteHandle } from "~/utils/remix";

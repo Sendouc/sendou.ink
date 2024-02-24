@@ -39,7 +39,7 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
-import styles from "../team.css";
+import styles from "../team.css?url";
 import { Input } from "~/components/Input";
 
 export const links: LinksFunction = () => {

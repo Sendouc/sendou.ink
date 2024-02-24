@@ -35,11 +35,10 @@ import type { GroupMember, ReportedWeapon } from "~/db/types";
 import * as NotificationService from "~/features/chat/NotificationService.server";
 import type { ChatMessage } from "~/features/chat/chat-types";
 import { type ChatProps, Chat, useChat } from "~/features/chat/components/Chat";
-import { currentSeason } from "~/features/mmr";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId, requireUser } from "~/features/auth/core/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { isMod } from "~/permissions";
@@ -79,7 +78,7 @@ import {
 import { FULL_GROUP_SIZE, USER_SKILLS_CACHE_KEY } from "../q-constants";
 import { matchSchema } from "../q-schemas.server";
 import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
-import styles from "../q.css";
+import styles from "../q.css?url";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { addMapResults } from "../queries/addMapResults.server";
 import { addPlayerResults } from "../queries/addPlayerResults.server";
@@ -106,6 +105,7 @@ import cachified from "@epic-web/cachified";
 import { refreshStreamsCache } from "~/features/sendouq-streams/core/streams.server";
 import { CrossIcon } from "~/components/icons/Cross";
 import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
+import { currentSeason } from "~/features/mmr/season";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;

@@ -15,7 +15,6 @@ import subWeapons from "./dicts/WeaponInfoSub.json";
 import specialWeapons from "./dicts/WeaponInfoSpecial.json";
 import playersParams from "./dicts/SplPlayer.game__GameParameterTable.json";
 import fs from "node:fs";
-import path from "node:path";
 import invariant from "tiny-invariant";
 import type { MainWeaponParams, SubWeaponParams } from "~/modules/analyzer";
 import type { ParamsJson } from "~/modules/analyzer/types";
@@ -25,6 +24,11 @@ import {
   loadLangDicts,
   translationJsonFolderName,
 } from "./utils";
+
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const CURRENT_SEASON = 6;
 

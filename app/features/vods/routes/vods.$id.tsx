@@ -14,7 +14,7 @@ import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
@@ -32,7 +32,7 @@ import { PovUser } from "../components/VodPov";
 import { findVodById } from "../queries/findVodById.server";
 import type { Vod } from "../vods-types";
 import { canEditVideo } from "../vods-utils";
-import styles from "../vods.css";
+import styles from "../vods.css?url";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

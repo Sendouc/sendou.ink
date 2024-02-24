@@ -22,4 +22,3 @@ export {
   subStats,
 } from "./core/stats";
 export { DAMAGE_TYPE, damageTypeToWeaponType } from "./analyzer-constants";
-export { default as weaponParams } from "./core/weapon-params.json";

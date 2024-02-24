@@ -11,10 +11,10 @@ import { isbot } from "isbot";
 import cron from "node-cron";
 import { renderToPipeableStream } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
-import { getUser } from "./features/auth/core";
-import { i18Instance } from "./modules/i18n";
+import { getUser } from "./features/auth/core/user.server";
 import { updatePatreonData } from "./modules/patreon";
 import { noticeError, setTransactionName } from "./utils/newrelic.server";
+import { i18Instance } from "./modules/i18n/loader.server";
 
 const ABORT_DELAY = 5000;
 

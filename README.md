@@ -52,7 +52,7 @@ There is a sequence of commands you need to run:
 3. Make a copy of `.env.example` that's called `.env`. Filling additional values is not necessary unless you want to use real Discord authentication or develop the Lohi bot.
 4. `npm run migrate up` to set up the database tables.
 5. `npm run dev` to run the project in development mode.
-6. Navigate to `http://localhost:5800/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
+6. Navigate to `http://localhost:5173/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
 
 ## Contributing
 
@@ -217,7 +217,7 @@ Note: This is only useful if you have access to a production running on Render.c
 11. Fill new weapon IDs by category to `weapon-ids.ts` (easy to take from the diff of English weapons.json)
 12. Get gear IDs for each slot from /output folder and update `gear-ids.ts`.
 13. Replace `object-dmg.json` with the `object-dmg.json` in /output folder
-14. Replace `weapon-params.json` with the `params.json` in /output folder
+14. Replace `weapon-params.ts` with the `params.json` in /output folder
 15. Delete all images inside `main-weapons`, `main-weapons-outlined`, `main-weapons-outlined-2` and `gear` folders.
 16. Replace with images from Lean's repository.
 17. Run the `npm run replace-img-names` command

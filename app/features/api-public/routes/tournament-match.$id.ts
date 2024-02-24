@@ -4,10 +4,10 @@ import { db } from "~/db/sql";
 import { notFoundIfFalsy, parseParams } from "~/utils/remix";
 import { id } from "~/utils/zod";
 import type { GetTournamentMatchResponse } from "../schema";
-import { i18next } from "~/modules/i18n";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { resolveMapList } from "~/features/tournament-bracket/core/mapList.server";
 import { requireBearerAuth } from "../api-public-utils.server";
+import i18next from "~/modules/i18n/i18next.server";
 
 const paramsSchema = z.object({
   id,

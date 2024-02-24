@@ -6,13 +6,17 @@ import clothes from "./dicts/GearInfoClothes.json";
 import shoes from "./dicts/GearInfoShoes.json";
 
 import fs from "node:fs";
-import path from "node:path";
 import invariant from "tiny-invariant";
 import {
   LANG_JSONS_TO_CREATE,
   loadLangDicts,
   translationJsonFolderName,
 } from "./utils";
+
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const CURRENT_SEASON = 6;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");

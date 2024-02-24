@@ -5,10 +5,10 @@ import type {
   SubWeaponId,
 } from "~/modules/in-game-lists";
 import type { SPECIAL_EFFECTS } from "./core/specialEffects";
-import type weaponParams from "./core/weapon-params.json";
-import type abilityValues from "./core/ability-values.json";
 import type { DAMAGE_TYPE } from "./analyzer-constants";
 import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
+import type { weaponParams } from "./core/weapon-params";
+import type { abilityValues } from "./core/utils";
 
 type Overwrites = Record<
   string,
@@ -113,7 +113,7 @@ export interface DistanceDamage {
 
 export interface SubWeaponParams {
   overwrites?: Overwrites;
-  SubInkSaveLv: 0 | 1 | 2 | 3;
+  SubInkSaveLv: 0 | 1 | 2 | 3 | 4;
   /** How much ink one usage of the sub consumes */
   InkConsume: number;
   /** Amount of frames white ink (=no ink recovery during this time) takes */

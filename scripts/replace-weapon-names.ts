@@ -6,6 +6,10 @@ import path from "node:path";
 import invariant from "tiny-invariant";
 import weapons from "./dicts/WeaponInfoMain.json";
 
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const DIR_PATH_1 = path.join(
   __dirname,
   "..",

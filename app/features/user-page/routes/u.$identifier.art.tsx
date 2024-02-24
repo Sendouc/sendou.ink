@@ -7,17 +7,9 @@ import {
   validate,
   parseRequestFormData,
 } from "~/utils/remix";
-import {
-  artsByUserId,
-  ArtGrid,
-  type ArtSouce,
-  ART_SOURCES,
-  findArtById,
-} from "~/features/art";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { useUser } from "~/features/auth/core";
-import { deleteArt, deleteArtSchema } from "~/features/art";
+import { useUser } from "~/features/auth/core/user";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
@@ -26,6 +18,12 @@ import { useTranslation } from "react-i18next";
 import { newArtPage } from "~/utils/urls";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { deleteArtSchema } from "~/features/art/art-schemas.server";
+import { findArtById } from "~/features/art/queries/findArtById.server";
+import { deleteArt } from "~/features/art/queries/deleteArt.server";
+import { artsByUserId } from "~/features/art/queries/artsByUserId.server";
+import { ART_SOURCES, type ArtSource } from "~/features/art/art-types";
+import { ArtGrid } from "~/features/art/components/ArtGrid";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
@@ -88,7 +86,7 @@ export default function UserArtPage() {
   const { t } = useTranslation(["art"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const [type, setType] = useSearchParamState<ArtSouce>({
+  const [type, setType] = useSearchParamState<ArtSource>({
     defaultValue: "ALL",
     name: "source",
     revive: (value) => ART_SOURCES.find((s) => s === value),

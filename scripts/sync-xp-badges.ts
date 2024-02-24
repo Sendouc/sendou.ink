@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import "dotenv/config";
-import { syncXPBadges } from "~/features/badges";
+import { syncXPBadges } from "~/features/badges/queries/syncXPBadges.server";
 
 syncXPBadges();
 

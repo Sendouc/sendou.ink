@@ -9,7 +9,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { useTranslation } from "react-i18next";
-import { requireUser } from "~/features/auth/core";
+import { requireUser } from "~/features/auth/core/user.server";
 import {
   notFoundIfFalsy,
   validate,
@@ -24,7 +24,7 @@ import type { DetailedTeam } from "../team-types";
 import { isTeamFull, isTeamMember } from "../team-utils";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
-import styles from "../team.css";
+import styles from "../team.css?url";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

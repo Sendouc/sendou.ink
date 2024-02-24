@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import { NewTabs } from "~/components/NewTabs";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { Chat, useChat } from "~/features/chat/components/Chat";
 import { useTournament } from "~/features/tournament/routes/to.$id";
 import { useIsMounted } from "~/hooks/useIsMounted";

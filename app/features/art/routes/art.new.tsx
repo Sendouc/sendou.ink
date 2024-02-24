@@ -21,7 +21,7 @@ import { Toggle } from "~/components/Toggle";
 import { CrossIcon } from "~/components/icons/Cross";
 import { s3UploadHandler } from "~/features/img-upload";
 import { useTranslation } from "react-i18next";
-import { requireUser } from "~/features/auth/core";
+import { requireUser } from "~/features/auth/core/user.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import {
   validate,

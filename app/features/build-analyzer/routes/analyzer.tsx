@@ -17,7 +17,7 @@ import { BeakerIcon } from "~/components/icons/Beaker";
 import { MAX_AP } from "~/constants";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import type { Ability as AbilityType } from "~/modules/in-game-lists";
 import {
   ANGLE_SHOOTER_ID,
@@ -59,7 +59,7 @@ import type {
   Stat,
   SubWeaponDamage,
 } from "../analyzer-types";
-import styles from "../analyzer.css";
+import styles from "../analyzer.css?url";
 import {
   ABILITIES_WITHOUT_CHUNKS,
   getAbilityChunksMapAsArray,

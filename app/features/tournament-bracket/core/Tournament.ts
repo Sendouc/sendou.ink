@@ -13,12 +13,12 @@ import {
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { getTournamentManager } from "..";
 import { fillWithNullTillPowerOfTwo } from "../tournament-bracket-utils";
 import type { Stage } from "~/modules/brackets-model";
 import { Bracket } from "./Bracket";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
-import { currentSeason } from "~/features/mmr";
+import { currentSeason } from "~/features/mmr/season";
+import { getTournamentManager } from "./brackets-manager";
 
 export type OptionalIdObject = { id: number } | undefined;
 
@@ -129,7 +129,7 @@ export class Tournament {
           }),
         );
       } else {
-        const manager = getTournamentManager("IN_MEMORY");
+        const manager = getTournamentManager();
         const { teams, relevantMatchesFinished } = sources
           ? this.resolveTeamsFromSources(sources)
           : {

@@ -2,7 +2,7 @@ import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import styles from "~/styles/faq.css";
+import styles from "~/styles/faq.css?url";
 import { makeTitle } from "~/utils/strings";
 import { type SendouRouteHandle } from "~/utils/remix";
 

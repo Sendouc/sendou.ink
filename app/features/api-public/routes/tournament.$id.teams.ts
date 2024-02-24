@@ -6,8 +6,8 @@ import { id } from "~/utils/zod";
 import type { GetTournamentTeamsResponse } from "../schema";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
-import { i18next } from "~/modules/i18n";
 import { requireBearerAuth } from "../api-public-utils.server";
+import i18next from "~/modules/i18n/i18next.server";
 
 const paramsSchema = z.object({
   id,

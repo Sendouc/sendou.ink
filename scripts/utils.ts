@@ -5,6 +5,10 @@ import path from "node:path";
 import fs from "node:fs";
 import type euEn from "./dicts/langs/EUen.json";
 
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const LANG_DICTS_PATH = path.join(__dirname, "dicts", "langs");
 
 export const LANG_JSONS_TO_CREATE = [

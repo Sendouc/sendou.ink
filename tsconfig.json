@@ -1,5 +1,5 @@
 {
-  "include": ["./types/remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["./types/env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "module": "ESNext",

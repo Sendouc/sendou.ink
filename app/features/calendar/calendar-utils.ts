@@ -12,3 +12,10 @@ export function bracketProgressionToShortTournamentFormat(
 
   return "RR_TO_SE";
 }
+
+export const calendarEventMinDate = () => new Date(Date.UTC(2015, 4, 28));
+export const calendarEventMaxDate = () => {
+  const result = new Date();
+  result.setFullYear(result.getFullYear() + 1);
+  return result;
+};

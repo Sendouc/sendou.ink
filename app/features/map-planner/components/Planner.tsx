@@ -4,7 +4,6 @@ import randomInt from "just-random-integer";
 import * as React from "react";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
 import { useTranslation } from "react-i18next";
-import type { LanguageCode } from "~/modules/i18n";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import {
   specialWeaponIds,
@@ -27,6 +26,7 @@ import { Button } from "../../../components/Button";
 import { Image } from "../../../components/Image";
 import type { StageBackgroundStyle } from "../plans-types";
 import clsx from "clsx";
+import type { LanguageCode } from "~/modules/i18n/config";
 
 export default function Planner() {
   const { t } = useTranslation(["common"]);

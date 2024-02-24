@@ -10,13 +10,17 @@ import weapons from "./dicts/WeaponInfoMain.json";
 import subWeapons from "./dicts/WeaponInfoSub.json";
 import specialWeapons from "./dicts/WeaponInfoSpecial.json";
 import fs from "node:fs";
-import path from "node:path";
 import {
   mainWeaponIds,
   specialWeaponIds,
   subWeaponIds,
 } from "~/modules/in-game-lists";
 import { DAMAGE_RECEIVERS } from "~/features/object-damage-calculator/calculator-constants";
+
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
 

@@ -12,16 +12,15 @@ import { Avatar } from "~/components/Avatar";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { HALF_HOUR_IN_MS } from "~/constants";
-import { getUser } from "~/features/auth/core";
+import { getUser } from "~/features/auth/core/user.server";
 import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
-import { ordinalToSp } from "~/features/mmr";
 import {
   allSeasons,
   currentOrPreviousSeason,
   currentSeason,
 } from "~/features/mmr/season";
 import type { SkillTierInterval } from "~/features/mmr/tiered.server";
-import { i18next } from "~/modules/i18n";
+import { i18next } from "~/modules/i18n/i18next.server";
 import {
   weaponCategories,
   type MainWeaponId,
@@ -40,7 +39,7 @@ import {
   userSeasonsPage,
   userSubmittedImage,
 } from "~/utils/urls";
-import styles from "../../top-search/top-search.css";
+import styles from "../../top-search/top-search.css?url";
 import { TopTenPlayer } from "../components/TopTenPlayer";
 import {
   cachedFullUserLeaderboard,
@@ -59,6 +58,7 @@ import {
   weaponXPLeaderboard,
   type XPLeaderboardItem,
 } from "../queries/XPLeaderboard.server";
+import { ordinalToSp } from "~/features/mmr/mmr-utils";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],

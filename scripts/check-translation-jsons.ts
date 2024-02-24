@@ -1,6 +1,10 @@
 import fs from "fs";
-import path from "path";
 import prettier from "prettier";
+
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const NO_WRITE_KEY = "--no-write";
 const dontWrite = process.argv.includes(NO_WRITE_KEY);

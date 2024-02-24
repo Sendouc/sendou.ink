@@ -31,7 +31,7 @@ import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
 import { Image, TierImage } from "~/components/Image";
 import { SubmitButton } from "~/components/SubmitButton";
-import { requireUser } from "~/features/auth/core";
+import { requireUser } from "~/features/auth/core/user.server";
 import { cachedFullUserLeaderboard } from "~/features/leaderboards/core/leaderboards.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import {

@@ -13,7 +13,7 @@ import { Button } from "~/components/Button";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { RelativeTime } from "~/components/RelativeTime";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
-import { getUser, requireUser } from "~/features/auth/core";
+import { getUser, requireUser } from "~/features/auth/core/user.server";
 import type { PlusVoteFromFE } from "~/features/plus-voting/core";
 import {
   rangeToMonthYear,

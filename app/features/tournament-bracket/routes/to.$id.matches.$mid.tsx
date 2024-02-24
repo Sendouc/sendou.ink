@@ -13,7 +13,7 @@ import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";
-import { requireUser, useUser } from "~/features/auth/core";
+import { requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";
 import { useTournament } from "~/features/tournament/routes/to.$id";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
@@ -30,7 +30,6 @@ import {
 } from "~/utils/urls";
 import { ScoreReporter } from "../components/ScoreReporter";
 import { tournamentFromDB } from "../core/Tournament.server";
-import { getTournamentManager } from "../core/brackets-manager";
 import { emitter } from "../core/emitters.server";
 import { resolveMapList } from "../core/mapList.server";
 import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
@@ -45,9 +44,11 @@ import {
   matchIsLocked,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
-import bracketStyles from "../tournament-bracket.css";
+import bracketStyles from "../tournament-bracket.css?url";
 import { CastInfo } from "../components/CastInfo";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { useUser } from "~/features/auth/core/user";
+import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 
 export const links: LinksFunction = () => [
   {
@@ -84,7 +85,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     );
   };
 
-  const manager = getTournamentManager("SQL");
+  const manager = getServerTournamentManager();
 
   const scores: [number, number] = [
     match.opponentOne?.score ?? 0,

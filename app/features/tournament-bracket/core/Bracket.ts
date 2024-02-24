@@ -9,7 +9,7 @@ import { removeDuplicates } from "~/utils/arrays";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { logger } from "~/utils/logger";
 import type { Round } from "~/modules/brackets-model";
-import { getTournamentManager } from "..";
+import { getTournamentManager } from "./brackets-manager";
 
 interface CreateBracketArgs {
   id: number;
@@ -93,7 +93,7 @@ export abstract class Bracket {
       return;
 
     try {
-      const manager = getTournamentManager("IN_MEMORY");
+      const manager = getTournamentManager();
 
       manager.import(this.data);
 

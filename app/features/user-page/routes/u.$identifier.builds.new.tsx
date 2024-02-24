@@ -26,7 +26,7 @@ import {
 } from "~/features/build-analyzer";
 import { buildsByUserId } from "~/features/builds";
 import { useTranslation } from "react-i18next";
-import { requireUser } from "~/features/auth/core";
+import { requireUser } from "~/features/auth/core/user.server";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
   type Ability,

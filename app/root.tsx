@@ -7,7 +7,6 @@ import type {
 } from "@remix-run/node";
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -17,16 +16,15 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import * as React from "react";
-import commonStyles from "~/styles/common.css";
-import variableStyles from "~/styles/vars.css";
-import utilStyles from "~/styles/utils.css";
-import layoutStyles from "~/styles/layout.css";
-import resetStyles from "~/styles/reset.css";
-import flagsStyles from "~/styles/flags.css";
+import commonStyles from "~/styles/common.css?url";
+import variableStyles from "~/styles/vars.css?url";
+import utilStyles from "~/styles/utils.css?url";
+import layoutStyles from "~/styles/layout.css?url";
+import resetStyles from "~/styles/reset.css?url";
+import flagsStyles from "~/styles/flags.css?url";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
-import { getUser } from "./features/auth/core";
-import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
+import { getUser } from "./features/auth/core/user.server";
 import { useChangeLanguage } from "remix-i18next/react";
 import { type CustomTypeOptions } from "react-i18next";
 import { useTranslation } from "react-i18next";
@@ -45,9 +43,11 @@ import {
 import { useIsMounted } from "./hooks/useIsMounted";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
-import nProgressStyles from "nprogress/nprogress.css";
+import nProgressStyles from "nprogress/nprogress.css?url";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { browserTimingHeader } from "./utils/newrelic.server";
+import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
+import { DEFAULT_LANGUAGE } from "./modules/i18n/config";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -180,7 +180,6 @@ function Document({
         </React.StrictMode>
         <ConditionalScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

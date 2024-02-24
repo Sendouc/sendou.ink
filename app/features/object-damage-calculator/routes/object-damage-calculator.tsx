@@ -35,7 +35,7 @@ import {
 } from "~/utils/urls";
 import { useObjectDamage } from "../calculator-hooks";
 import type { DamageReceiver } from "../calculator-types";
-import styles from "../calculator.css";
+import styles from "../calculator.css?url";
 
 export const CURRENT_PATCH = "6.1";
 

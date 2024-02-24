@@ -29,7 +29,7 @@ import {
   ONE_HOUR_IN_MS,
   PATCHES,
 } from "~/constants";
-import { i18next } from "~/modules/i18n";
+import { i18next } from "~/modules/i18n/i18next.server";
 import { weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import { cache, ttl } from "~/utils/cache.server";
 import { safeJSONParse } from "~/utils/json";

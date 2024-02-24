@@ -52,7 +52,7 @@ import {
   roundToNDecimalPlaces,
   sumArray,
 } from "~/utils/number";
-import type abilityValuesJson from "./ability-values.json";
+import type { abilityValues as abilityValuesJson } from "./ability-values";
 
 export function buildStats({
   weaponSplId,

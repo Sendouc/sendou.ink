@@ -5,8 +5,8 @@ import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
 import type { CalendarEventTag } from "~/db/types";
-import allTags from "../tags.json";
 import type * as CalendarRepository from "../CalendarRepository.server";
+import { tags as allTags } from "../calendar-constants";
 
 export function Tags({
   tags,

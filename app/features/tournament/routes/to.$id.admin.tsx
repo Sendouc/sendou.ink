@@ -14,7 +14,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { UserSearch } from "~/components/UserSearch";
 import { TrashIcon } from "~/components/icons/Trash";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
@@ -36,7 +36,7 @@ import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerato
 import { adminActionSchema } from "../tournament-schemas.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);

@@ -21,17 +21,17 @@ import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
+import { i18next } from "~/modules/i18n/i18next.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
   canDeleteCalendarEvent,
   canEditCalendarEvent,
   canReportCalendarEventWinners,
 } from "~/permissions";
-import calendarStyles from "~/styles/calendar-event.css";
-import mapsStyles from "~/styles/maps.css";
+import calendarStyles from "~/styles/calendar-event.css?url";
+import mapsStyles from "~/styles/maps.css?url";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
   notFoundIfFalsy,

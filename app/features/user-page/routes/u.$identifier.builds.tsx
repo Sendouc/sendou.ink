@@ -5,7 +5,7 @@ import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { BUILD } from "~/constants";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import { atOrError } from "~/utils/arrays";
 import {

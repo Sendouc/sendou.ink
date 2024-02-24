@@ -2,7 +2,7 @@ import type { LinksFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import styles from "~/styles/plus.css";
+import styles from "~/styles/plus.css?url";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, plusSuggestionPage } from "~/utils/urls";
 

@@ -15,7 +15,6 @@ import { WeaponImage } from "~/components/Image";
 import { Redirect } from "~/components/Redirect";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
 import { TrashIcon } from "~/components/icons/Trash";
-import { getUser, requireUser, useUser } from "~/features/auth/core";
 import { tournamentIdFromParams } from "~/features/tournament";
 import { useTournament } from "~/features/tournament/routes/to.$id";
 import { discordFullName } from "~/utils/strings";
@@ -26,8 +25,10 @@ import {
   findSubsByTournamentId,
   type SubByTournamentId,
 } from "../queries/findSubsByTournamentId.server";
-import styles from "../tournament-subs.css";
+import styles from "../tournament-subs.css?url";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import { getUser, requireUser } from "~/features/auth/core/user.server";
+import { useUser } from "~/features/auth/core/user";
 
 export const links: LinksFunction = () => {
   return [

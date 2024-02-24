@@ -12,7 +12,7 @@ import {
   weaponCategoryUrl,
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
-import styles from "~/styles/builds.css";
+import styles from "~/styles/builds.css?url";
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
 import { makeTitle } from "~/utils/strings";

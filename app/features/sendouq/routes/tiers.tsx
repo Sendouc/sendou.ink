@@ -1,7 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { TierImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { ordinalToSp } from "~/features/mmr";
 import {
   TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
   TIERS,
@@ -11,6 +10,7 @@ import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 import { useTranslation } from "react-i18next";
 import type { SendouRouteHandle } from "~/utils/remix";
+import { ordinalToSp } from "~/features/mmr/mmr-utils";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],

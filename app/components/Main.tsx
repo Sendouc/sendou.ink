@@ -6,7 +6,7 @@ import {
 import clsx from "clsx";
 import type * as React from "react";
 import { useMatches } from "react-router";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import type { RootLoaderData } from "~/root";
 import { SideNav } from "app/components/layout/SideNav";
 

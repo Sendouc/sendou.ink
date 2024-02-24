@@ -1,8 +1,8 @@
 import { db, sql } from "~/db/sql";
-import { syncXPBadges } from "../badges";
 import type { Tables } from "~/db/tables";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import invariant from "tiny-invariant";
+import { syncXPBadges } from "../badges/queries/syncXPBadges.server";
 
 const removeOldLikesStm = sql.prepare(/*sql*/ `
   delete from 

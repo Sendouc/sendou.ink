@@ -3,7 +3,7 @@ import { InfoPopover } from "~/components/InfoPopover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { LockIcon } from "~/components/icons/Lock";
 import { UnlockIcon } from "~/components/icons/Unlock";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { useTournament } from "~/features/tournament/routes/to.$id";
 
 const lockingInfo =

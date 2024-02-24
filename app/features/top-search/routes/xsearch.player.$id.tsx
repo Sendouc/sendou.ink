@@ -9,7 +9,7 @@ import { Main } from "~/components/Main";
 import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { PlacementsTable } from "../components/Placements";
 import { findPlacementsByPlayerId } from "../queries/findPlacements.server";
-import styles from "../top-search.css";
+import styles from "../top-search.css?url";
 import { removeDuplicates } from "~/utils/arrays";
 import {
   navIconUrl,
@@ -17,7 +17,7 @@ import {
   topSearchPlayerPage,
   userPage,
 } from "~/utils/urls";
-import { i18next } from "~/modules/i18n";
+import { i18next } from "~/modules/i18n/i18next.server";
 import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "react-i18next";
 

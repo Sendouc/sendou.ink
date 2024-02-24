@@ -6,8 +6,8 @@ import type {
   RankedModeShort,
   StageId,
 } from "~/modules/in-game-lists";
-import type allTags from "~/features/calendar/tags.json";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
+import type { tags } from "~/features/calendar/calendar-constants";
 
 export interface User {
   id: number;
@@ -135,7 +135,7 @@ export interface CalendarEvent {
   tournamentId: number | null;
 }
 
-export type CalendarEventTag = keyof typeof allTags;
+export type CalendarEventTag = keyof typeof tags;
 
 export interface CalendarEventDate {
   id: number;

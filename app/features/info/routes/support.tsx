@@ -1,6 +1,6 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
-import styles from "../support.css";
+import styles from "../support.css?url";
 import * as React from "react";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { useTranslation } from "react-i18next";

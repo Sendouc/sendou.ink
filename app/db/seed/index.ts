@@ -5,7 +5,6 @@ import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db, sql } from "~/db/sql";
-import allTags from "~/features/calendar/tags.json";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
   lastCompletedVoting,
@@ -70,6 +69,7 @@ import {
 import placements from "./placements.json";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { AMOUNT_OF_MAPS_IN_POOL_PER_MODE } from "~/features/sendouq-settings/q-settings-constants";
+import { tags } from "~/features/calendar/calendar-constants";
 
 const calendarEventWithToToolsRegOpen = () =>
   calendarEventWithToTools("PICNIC", true);
@@ -667,7 +667,9 @@ function calendarEvents() {
   const userIds = userIdsInRandomOrder();
 
   for (let id = 1; id <= AMOUNT_OF_CALENDAR_EVENTS; id++) {
-    const tags = shuffle(Object.keys(allTags)).filter((tag) => tag !== "BADGE");
+    const shuffledTags = shuffle(Object.keys(tags)).filter(
+      (tag) => tag !== "BADGE",
+    );
 
     sql
       .prepare(
@@ -702,7 +704,7 @@ function calendarEvents() {
         authorId: id === 1 ? NZAP_TEST_ID : userIds.pop(),
         tags:
           Math.random() > 0.2
-            ? tags
+            ? shuffledTags
                 .slice(
                   0,
                   faker.helpers.arrayElement([

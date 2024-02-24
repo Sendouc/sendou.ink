@@ -1,5 +1,5 @@
-import allTags from "~/features/calendar/tags.json";
 import type { CalendarEventTag } from "./db/types";
+import { tags } from "./features/calendar/calendar-constants";
 import type { BuildAbilitiesTupleWithUnknown } from "./modules/in-game-lists";
 
 export const TWEET_LENGTH_MAX_LENGTH = 280;
@@ -24,7 +24,7 @@ export const CALENDAR_EVENT = {
   DISCORD_INVITE_CODE_MAX_LENGTH: 50,
   BRACKET_URL_MAX_LENGTH: 200,
   MAX_AMOUNT_OF_DATES: 5,
-  TAGS: Object.keys(allTags) as Array<CalendarEventTag>,
+  TAGS: Object.keys(tags) as Array<CalendarEventTag>,
 };
 
 export const CALENDAR_EVENT_RESULT = {

@@ -9,12 +9,12 @@ import {
   specialFieldHp,
   subStats,
   hpDivided,
-  weaponParams,
   type AbilityPoints,
   type SpecialWeaponParams,
   type SubWeaponParams,
 } from "~/features/build-analyzer";
 import type { HitPoints } from "../calculator-types";
+import { weaponParams } from "~/features/build-analyzer/core/weapon-params";
 
 const WAVE_BREAKER_HP = 400;
 const SPRINKLER_HP = 120;

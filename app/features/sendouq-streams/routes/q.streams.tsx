@@ -5,7 +5,7 @@ import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
 import { FAQ_PAGE, sendouQMatchPage, twitchUrl, userPage } from "~/utils/urls";
 import { cachedStreams } from "../core/streams.server";
 import { Avatar } from "~/components/Avatar";
-import styles from "~/features/sendouq/q.css";
+import styles from "~/features/sendouq/q.css?url";
 import type { LinksFunction } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
 import { useIsMounted } from "~/hooks/useIsMounted";

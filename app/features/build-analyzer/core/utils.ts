@@ -30,11 +30,11 @@ import type {
   SubWeaponDamage,
   SubWeaponParams,
 } from "../analyzer-types";
-import abilityValuesJson from "./ability-values.json";
-import weaponParamsJson from "./weapon-params.json";
+import { abilityValues as abilityValuesJson } from "./ability-values";
+import { weaponParams as rawWeaponParams } from "./weapon-params";
 
 export function weaponParams(): ParamsJson {
-  return weaponParamsJson as ParamsJson;
+  return rawWeaponParams as ParamsJson;
 }
 
 export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {

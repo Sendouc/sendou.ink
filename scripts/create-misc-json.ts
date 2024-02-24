@@ -7,9 +7,13 @@ import {
   translationJsonFolderName,
 } from "./utils";
 import fs from "fs";
-import path from "path";
 import invariant from "tiny-invariant";
 import { abilitiesShort } from "~/modules/in-game-lists";
+
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ⚠️ keep same order as https://github.com/IPLSplatoon/IPLMapGen2/blob/main/data.js
 const stages = [

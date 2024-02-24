@@ -20,14 +20,14 @@ import type {
   BuildAbilitiesTupleWithUnknown,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
-import { type AuthErrorCode } from "~/features/auth/core";
+import { type AuthErrorCode } from "~/features/auth/core/errors";
 import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
-import type { ArtSouce } from "~/features/art";
 import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import type { Preference } from "~/db/tables";
+import type { ArtSource } from "~/features/art/art-types";
 
 const staticAssetsUrl = ({
   folder,
@@ -158,7 +158,7 @@ export const newVodPage = (vodToEditId?: number) =>
 export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
   `${userResultsPage(user)}/highlights`;
 export const artPage = (tag?: string) => `/art${tag ? `?tag=${tag}` : ""}`;
-export const userArtPage = (user: UserLinkArgs, source?: ArtSouce) =>
+export const userArtPage = (user: UserLinkArgs, source?: ArtSource) =>
   `${userPage(user)}/art${source ? `?source=${source}` : ""}`;
 export const newArtPage = (artId?: Art["id"]) =>
   `${artPage()}/new${artId ? `?art=${artId}` : ""}`;

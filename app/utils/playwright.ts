@@ -85,7 +85,7 @@ export function modalClickConfirmButton(page: Page) {
 }
 
 export async function fetchSendouInk<T>(url: string) {
-  const res = await fetch(`http://localhost:5800${url}`);
+  const res = await fetch(`http://localhost:5173${url}`);
   if (!res.ok) throw new Error("Response not successful");
 
   return res.json() as T;

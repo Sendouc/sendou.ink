@@ -2,7 +2,7 @@ import { Main } from "~/components/Main";
 import type { LinksFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { mostRecentArticles } from "../core/list.server";
-import styles from "~/styles/front.css";
+import styles from "~/styles/front.css?url";
 import { useTranslation } from "react-i18next";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { articlePage, ARTICLES_MAIN_PAGE, navIconUrl } from "~/utils/urls";

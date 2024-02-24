@@ -2,7 +2,6 @@ import type { MetaFunction } from "@remix-run/node";
 import { Trans } from "react-i18next";
 import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import { languages } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
 import {
   ANTARISKA_TWITTER,
@@ -18,6 +17,7 @@ import {
 import { type SendouRouteHandle } from "~/utils/remix";
 import { useTranslation } from "react-i18next";
 import * as React from "react";
+import { languages } from "~/modules/i18n/config";
 
 export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Contributions") }];

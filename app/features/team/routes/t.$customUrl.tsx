@@ -19,7 +19,7 @@ import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
   notFoundIfFalsy,
@@ -46,7 +46,7 @@ import {
   isTeamMember,
   isTeamOwner,
 } from "../team-utils";
-import styles from "../team.css";
+import styles from "../team.css?url";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];

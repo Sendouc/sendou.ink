@@ -17,8 +17,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
-import { makeArtist } from "~/features/art";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import {
   getUserId,
   isImpersonating,
@@ -35,6 +34,7 @@ import { assertUnreachable } from "~/utils/types";
 import { SEED_URL, STOP_IMPERSONATING_URL, impersonateUrl } from "~/utils/urls";
 import { adminActionSchema } from "../admin-schemas.server";
 import { plusTiersFromVotingAndLeaderboard } from "../core/plus-tier.server";
+import { makeArtist } from "~/features/art/queries/makeArtist.server";
 
 export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];

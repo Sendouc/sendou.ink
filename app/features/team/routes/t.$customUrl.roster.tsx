@@ -17,7 +17,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useBaseUrl } from "~/hooks/useBaseUrl";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
@@ -39,7 +39,7 @@ import { TEAM_MEMBER_ROLES } from "../team-constants";
 import { manageRosterSchema, teamParamsSchema } from "../team-schemas.server";
 import type { DetailedTeamMember } from "../team-types";
 import { isTeamFull, isTeamOwner } from "../team-utils";
-import styles from "../team.css";
+import styles from "../team.css?url";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
