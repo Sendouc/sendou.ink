@@ -71,14 +71,12 @@ test.describe("Tournament", () => {
 
     let stage = 5;
     for (const mode of rankedModesShort) {
-      for (const num of [1, 2]) {
+      for (let i = 0; i < 2; i++) {
         while (BANNED_MAPS[mode].includes(stage as StageId)) {
           stage++;
         }
 
-        await page
-          .getByTestId(`counterpick-map-pool-${mode}-num-${num}`)
-          .selectOption(String(stage));
+        await page.getByTestId(`map-pool-${mode}-${stage}`).click();
         stage++;
       }
     }

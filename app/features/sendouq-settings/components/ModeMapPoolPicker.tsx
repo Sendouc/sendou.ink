@@ -101,6 +101,7 @@ export function ModeMapPoolPicker({
               banned={banned}
               tiebreaker={isTiebreaker}
               wiggle={wigglingStageId === stageId}
+              testId={`map-pool-${mode}-${stageId}`}
             />
           );
         })}
@@ -132,6 +133,7 @@ function MapButton({
   banned,
   tiebreaker,
   wiggle,
+  testId,
 }: {
   stageId: StageId;
   onClick: () => void;
@@ -139,6 +141,7 @@ function MapButton({
   banned?: boolean;
   tiebreaker?: boolean;
   wiggle?: boolean;
+  testId: string;
 }) {
   const { t } = useTranslation(["game-misc"]);
 
@@ -154,6 +157,7 @@ function MapButton({
         onClick={onClick}
         disabled={banned}
         type="button"
+        data-testid={testId}
       />
       {selected ? (
         <CheckmarkIcon
