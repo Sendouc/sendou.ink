@@ -24,6 +24,8 @@ export function RoundRobinBracket({ bracket }: { bracket: BracketType }) {
 
           return matches.every(
             (match) =>
+              !match.opponent1 ||
+              !match.opponent2 ||
               match.opponent1?.result === "win" ||
               match.opponent2?.result === "win",
           );
