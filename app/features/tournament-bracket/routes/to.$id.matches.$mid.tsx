@@ -589,7 +589,7 @@ function Rosters({
                     to={userPage(p)}
                     className={clsx("stack horizontal sm", {
                       [INACTIVE_PLAYER_CSS]:
-                        teamOneParticipatedPlayers.length === 0 ||
+                        teamOneParticipatedPlayers.length > 0 &&
                         teamOneParticipatedPlayers.every(
                           (participatedPlayer) =>
                             p.id !== participatedPlayer.id,
@@ -634,7 +634,7 @@ function Rosters({
                     to={userPage(p)}
                     className={clsx("stack horizontal sm", {
                       [INACTIVE_PLAYER_CSS]:
-                        teamTwoParticipatedPlayers.length === 0 ||
+                        teamTwoParticipatedPlayers.length > 0 &&
                         teamTwoParticipatedPlayers.every(
                           (participatedPlayer) =>
                             p.id !== participatedPlayer.id,
