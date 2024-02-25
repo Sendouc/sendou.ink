@@ -3,7 +3,7 @@ import "dotenv/config";
 import { db } from "~/db/sql";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { modesShort, stageIds } from "~/modules/in-game-lists";
-import names from "../public/locales/en/game-misc.json";
+import names from "../locales/en/game-misc.json";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { cutToNDecimalPlaces } from "~/utils/number";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";

@@ -14,7 +14,13 @@ export function i18nLoader() {
       ...config,
       ns: getInitialNamespaces(),
       backend: {
-        loadPath: "/locales/{{lng}}/{{ns}}.json",
+        loadPath: (lng: any, ns: any) => {
+          // use vite static asset fingerprinting
+          return new URL(
+            `../../../locales/${lng[0]}/${ns[0]}.json`,
+            import.meta.url,
+          ).href;
+        },
       },
       detection: {
         order: ["htmlTag"],

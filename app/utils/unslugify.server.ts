@@ -1,5 +1,5 @@
 import type { MainWeaponId } from "~/modules/in-game-lists";
-import weaponTranslations from "../../public/locales/en/weapons.json";
+import weaponTranslations from "../../locales/en/weapons.json";
 import { mySlugify } from "./urls";
 
 export function weaponNameSlugToId(slug?: string) {
