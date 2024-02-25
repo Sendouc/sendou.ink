@@ -8,7 +8,7 @@
     "deploy": "npm ci && npm run build",
     "build": "remix vite:build",
     "dev": "remix vite:dev",
-    "dev:prod": "cross-env DB_PATH=db-prod.sqlite3 remix dev",
+    "dev:prod": "cross-env DB_PATH=db-prod.sqlite3 npm run dev",
     "dev:ci": "cp .env.example .env && npm run migrate up && npm run dev",
     "start": "npm run migrate up && remix-serve ./build/server/index.js",
     "start:nr": "npm run migrate up && NODE_OPTIONS='-r dotenv/config -r newrelic' remix-serve ./build/server/index.js",

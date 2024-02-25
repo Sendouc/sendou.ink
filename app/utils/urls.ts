@@ -40,7 +40,8 @@ const staticAssetsUrl = ({
 
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
-const USER_SUBMITTED_IMAGE_ROOT = "https://sendou.nyc3.digitaloceanspaces.com";
+const USER_SUBMITTED_IMAGE_ROOT =
+  "https://sendou.nyc3.cdn.digitaloceanspaces.com";
 export const userSubmittedImage = (fileName: string) =>
   `${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
 // images with https are not hosted on spaces, this is used for local development
