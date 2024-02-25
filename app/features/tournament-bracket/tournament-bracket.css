@@ -340,9 +340,10 @@
   border-radius: var(--rounded);
   padding: var(--s-3);
   gap: var(--s-2);
-  max-width: max-content;
   margin: 0 auto;
   margin-bottom: var(--s-4);
+  width: 100%;
+  max-width: 850px;
 }
 [data-placement="1"] {
   order: -1;
@@ -355,7 +356,7 @@
   .tournament-bracket__standings {
     grid-template-columns: 1fr 1fr 1fr;
   }
-  .tournament-bracket__stadings__full-row-taker {
+  .tournament-bracket__standings__full-row-taker {
     grid-column: 1 / 4;
   }
   [data-placement="1"] {

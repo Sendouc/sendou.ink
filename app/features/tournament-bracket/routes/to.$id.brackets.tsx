@@ -526,10 +526,10 @@ function FinalStandings() {
       {nonTopThreePlacements.map((placement) => {
         return (
           <React.Fragment key={placement}>
-            <Divider className="tournament-bracket__stadings__full-row-taker">
+            <Divider className="tournament-bracket__standings__full-row-taker">
               <Placement placement={placement} />
             </Divider>
-            <div className="stack xl horizontal justify-center tournament-bracket__stadings__full-row-taker">
+            <div className="stack xl horizontal flex-wrap justify-center tournament-bracket__standings__full-row-taker">
               {standings
                 .filter((s) => s.placement === placement)
                 .map((standing) => {
