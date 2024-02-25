@@ -186,7 +186,11 @@ export async function findAllBetweenTwoTimestamps({
         return {
           ...row,
           participantCounts: row.tournamentId
-            ? await tournamentParticipantCount(row.tournamentId)
+            ? await tournamentParticipantCount({
+                tournamentId: row.tournamentId,
+                checkedInOnly:
+                  row.startTime < dateToDatabaseTimestamp(new Date()),
+              })
             : undefined,
         };
       }),
@@ -208,13 +212,30 @@ function tagsArray(args: {
   return tags;
 }
 
-async function tournamentParticipantCount(tournamentId: number) {
+async function tournamentParticipantCount({
+  tournamentId,
+  checkedInOnly,
+}: {
+  tournamentId: number;
+  checkedInOnly: boolean;
+}) {
   const rows = await db
     .selectFrom("TournamentTeam")
     .leftJoin(
       "TournamentTeamMember",
       "TournamentTeam.id",
       "TournamentTeamMember.tournamentTeamId",
+    )
+    .$if(checkedInOnly, (qb) =>
+      qb.innerJoin("TournamentTeamCheckIn", (join) =>
+        join
+          .onRef(
+            "TournamentTeamCheckIn.tournamentTeamId",
+            "=",
+            "TournamentTeam.id",
+          )
+          .on("TournamentTeamCheckIn.bracketIdx", "is", null),
+      ),
     )
     .select(({ fn }) => fn.countAll<number>().as("memberCount"))
     .where("TournamentTeam.tournamentId", "=", tournamentId)
