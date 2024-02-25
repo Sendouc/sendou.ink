@@ -184,12 +184,24 @@ export default function TournamentBracketsPage() {
   const visibility = useVisibilityChange();
   const { revalidate } = useRevalidator();
   const user = useUser();
+  const tournament = useTournament();
+
+  const defaultBracketIdx = () => {
+    if (
+      tournament.brackets.length === 1 ||
+      tournament.brackets[1].isUnderground ||
+      !tournament.brackets[0].everyMatchOver
+    ) {
+      return 0;
+    }
+
+    return 1;
+  };
   const [bracketIdx, setBracketIdx] = useSearchParamState({
-    defaultValue: 0,
+    defaultValue: defaultBracketIdx(),
     name: "idx",
     revive: Number,
   });
-  const tournament = useTournament();
 
   const bracket = React.useMemo(
     () => tournament.bracketByIdxOrDefault(bracketIdx),
