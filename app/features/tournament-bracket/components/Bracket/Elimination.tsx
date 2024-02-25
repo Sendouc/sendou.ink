@@ -104,7 +104,7 @@ function getRounds(props: EliminationBracketSideProps) {
     return group.id;
   });
 
-  let showingBracketReset = true;
+  let showingBracketReset = props.bracket.data.round.length > 1;
   const rounds = props.bracket.data.round
     .flatMap((round) => {
       if (
