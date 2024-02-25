@@ -20,7 +20,7 @@ import { monthYears } from "../queries/monthYears";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, topSearchPage } from "~/utils/urls";
 
-import "../top-search.css?url";
+import "../top-search.css";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({

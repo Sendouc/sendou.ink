@@ -27,7 +27,7 @@ import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
 
-import "../tournament.css?url";
+import "../tournament.css";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
