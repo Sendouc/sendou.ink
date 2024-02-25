@@ -24,7 +24,11 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { Catcher } from "./components/Catcher";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { Layout } from "./components/layout";
-import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
+import {
+  CUSTOMIZED_CSS_VARS_NAME,
+  ONE_HOUR_IN_MS,
+  TEN_MINUTES_IN_MS,
+} from "./constants";
 import { getUser } from "./features/auth/core/user.server";
 import {
   Theme,
@@ -39,6 +43,9 @@ import { DEFAULT_LANGUAGE } from "./modules/i18n/config";
 import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
 import { browserTimingHeader } from "./utils/newrelic.server";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { cache, ttl } from "~/utils/cache.server";
+import cachified from "@epic-web/cachified";
 
 import "nprogress/nprogress.css";
 import "~/styles/common.css";
@@ -80,6 +87,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       locale,
       theme: themeSession.getTheme(),
       patrons: await UserRepository.findAllPatrons(),
+      tournaments: await cachified({
+        key: "tournament-showcase",
+        cache,
+        ttl: ttl(TEN_MINUTES_IN_MS),
+        staleWhileRevalidate: ttl(ONE_HOUR_IN_MS),
+        async getFreshValue() {
+          return TournamentRepository.forShowcase();
+        },
+      }),
       baseUrl: process.env["BASE_URL"]!,
       skalopUrl: process.env["SKALOP_WS_URL"]!,
       publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],

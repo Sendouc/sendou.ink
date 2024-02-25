@@ -77,6 +77,7 @@ export const CUSTOMIZED_CSS_VARS_NAME = "css";
 
 export const MAX_AP = 57;
 
+export const TEN_MINUTES_IN_MS = 10 * 60 * 1000;
 export const HALF_HOUR_IN_MS = 30 * 60 * 1000;
 export const ONE_HOUR_IN_MS = 60 * 60 * 1000;
 

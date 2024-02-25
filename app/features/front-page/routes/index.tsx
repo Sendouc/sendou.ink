@@ -8,6 +8,7 @@ import {
   FRONT_GIRL_PATH,
   LOG_OUT_URL,
   navIconUrl,
+  tournamentPage,
   userPage,
 } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
@@ -26,8 +27,17 @@ import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import { useTheme } from "~/features/theme/core/provider";
 import { useUser } from "~/features/auth/core/user";
 import { languages } from "~/modules/i18n/config";
+import type { RootLoaderData } from "~/root";
 
 import "~/styles/front.css";
+import {
+  HACKY_resolvePicture,
+  HACKY_resolveThemeColors,
+} from "~/features/tournament/tournament-utils";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { Placement } from "~/components/Placement";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import clsx from "clsx";
 
 export default function FrontPage() {
   const data = useRootLoaderData();
@@ -49,7 +59,11 @@ export default function FrontPage() {
           Log-in is temporarily disabled due to problems with the Discord API
         </div>
       )}
-      <TopBanner />
+      <div className="stack horizontal sm">
+        {data.tournaments.map((tournament) => (
+          <TournamentCard key={tournament.id} tournament={tournament} />
+        ))}
+      </div>
       <div className="front__nav-items-container">
         <div className="front__nav-item round">
           <LanguageChanger plain>
@@ -109,26 +123,85 @@ export default function FrontPage() {
   );
 }
 
-// TODO: make into a dynamic feature
-function TopBanner() {
-  const eventInThePast = new Date() > new Date("2023-12-03T22:00:00Z");
+function TournamentCard({
+  tournament,
+}: {
+  tournament: RootLoaderData["tournaments"][number];
+}) {
+  const { t } = useTranslation(["common"]);
+  const isMounted = useIsMounted();
+  const { i18n } = useTranslation();
+  const theme = HACKY_resolveThemeColors(tournament);
 
-  if (eventInThePast) return null;
+  const happeningNow =
+    tournament.firstPlacers.length === 0 &&
+    databaseTimestampToDate(tournament.startTime) < new Date();
+
+  const rtf = new Intl.RelativeTimeFormat(i18n.language, { numeric: "auto" });
+
+  const time = () => {
+    if (!isMounted) return "Placeholder";
+    if (happeningNow) return t("common:showcase.liveNow");
+
+    const date = databaseTimestampToDate(tournament.startTime);
+    const dayDifference = Math.floor(
+      (date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    if (tournament.firstPlacers.length > 0)
+      return rtf.format(dayDifference, "day");
+
+    return databaseTimestampToDate(tournament.startTime).toLocaleString(
+      i18n.language,
+      {
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+      },
+    );
+  };
 
   return (
-    <div className="front__top-banner">
-      SendouQ Season 1 Finale tournament featuring Jackpot, FTWin, Starburst,
-      Alliance Rogue and more top level teams! Catch the action{" "}
-      <a
-        href="https://www.twitch.tv/iplsplatoon"
-        className="front__top-banner__link"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        via IPL
-      </a>{" "}
-      on Sunday 3rd @ 10AM PST / 1PM EST / 6PM GMT
-    </div>
+    <Link
+      to={tournamentPage(tournament.id)}
+      className="front__tournament-card"
+      style={{
+        "--card-bg": theme.bg,
+        "--card-text": theme.text,
+      }}
+    >
+      <div className="stack horizontal justify-between items-center">
+        <Avatar url={HACKY_resolvePicture(tournament)} size="xxs" />
+        <div
+          className={clsx("front__tournament-card__time", {
+            invisible: !isMounted,
+          })}
+        >
+          {time()}
+        </div>
+      </div>
+      <div className="front__tournament-card__name">{tournament.name}</div>
+      {tournament.firstPlacers.length > 0 ? (
+        <>
+          <div />
+          <div className="mx-auto stack horizontal sm items-center text-xs">
+            <Placement placement={1} size={16} />
+            {tournament.firstPlacers[0].teamName}
+          </div>
+          <ul className="front__tournament-card__first-placers">
+            {tournament.firstPlacers.map((p) => (
+              <li key={p.id}>{p.discordName}</li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <div className="front__tournament-card__register">
+          {happeningNow
+            ? t("common:showcase.bracket")
+            : t("common:showcase.register")}
+        </div>
+      )}
+    </Link>
   );
 }
 

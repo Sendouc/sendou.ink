@@ -215,5 +215,9 @@
   "chat.systemMsg.cancelConfirmed": "{{name}} confirmed canceling the match. Match is now locked",
   "chat.systemMsg.userLeft": "{{name}} left the group",
 
-  "fc.title": "Friend code"
+  "fc.title": "Friend code",
+
+  "showcase.register": "Register",
+  "showcase.bracket": "Bracket",
+  "showcase.liveNow": "Live now!"
 }

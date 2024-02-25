@@ -182,6 +182,58 @@ export async function findById(id: number) {
   };
 }
 
+const NEXT_TOURNAMENTS_TO_SHOW_WITH_UPCOMING = 2;
+export async function forShowcase() {
+  const rows = await db
+    .selectFrom("Tournament")
+    .innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
+    .innerJoin(
+      "CalendarEventDate",
+      "CalendarEvent.id",
+      "CalendarEventDate.eventId",
+    )
+    .select((eb) => [
+      "Tournament.id",
+      "CalendarEvent.name",
+      "CalendarEventDate.startTime",
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentResult")
+          .innerJoin("User", "TournamentResult.userId", "User.id")
+          .innerJoin(
+            "TournamentTeam",
+            "TournamentResult.tournamentTeamId",
+            "TournamentTeam.id",
+          )
+          .whereRef("TournamentResult.tournamentId", "=", "Tournament.id")
+          .where("TournamentResult.placement", "=", 1)
+          .select([
+            "User.id",
+            "User.discordName",
+            "TournamentTeam.name as teamName",
+          ]),
+      ).as("firstPlacers"),
+    ])
+    .orderBy("CalendarEventDate.startTime desc")
+    .execute();
+
+  const latestWinners = rows.find((r) => r.firstPlacers.length > 0);
+  const next: typeof rows = [];
+
+  const nextTournamentsCount = latestWinners
+    ? NEXT_TOURNAMENTS_TO_SHOW_WITH_UPCOMING
+    : NEXT_TOURNAMENTS_TO_SHOW_WITH_UPCOMING + 1;
+
+  for (const row of rows) {
+    if (row.id === latestWinners?.id) break;
+    next.unshift(row);
+
+    if (next.length > nextTournamentsCount) next.pop();
+  }
+
+  return [latestWinners, ...next].filter(Boolean);
+}
+
 export async function findCastTwitchAccountsByTournamentId(
   tournamentId: number,
 ) {

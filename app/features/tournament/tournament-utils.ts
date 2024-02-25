@@ -79,6 +79,36 @@ export function HACKY_resolvePicture(event: { name: string }) {
   return tournamentLogoUrl("default");
 }
 
+const BLACK = "#1e1e1e";
+const WHITE = "#fffcfc";
+export function HACKY_resolveThemeColors(event: { name: string }) {
+  if (HACKY_isInviteOnlyEvent(event)) {
+    return { bg: "#1e1e1e", text: WHITE };
+  }
+
+  if (event.name.includes("Paddling Pool")) {
+    return { bg: "#fff", text: BLACK };
+  }
+
+  if (event.name.includes("In The Zone")) {
+    return { bg: "#8b0000", text: BLACK };
+  }
+
+  if (event.name.includes("PICNIC")) {
+    return { bg: "#e3fefe", text: BLACK };
+  }
+
+  if (event.name.includes("Proving Grounds")) {
+    return { bg: "#ffe809", text: BLACK };
+  }
+
+  if (event.name.includes("Triton")) {
+    return { bg: "#aee8ff", text: BLACK };
+  }
+
+  return { bg: "#3430ad", text: WHITE };
+}
+
 const HACKY_isSendouQSeasonFinale = (event: { name: string }) =>
   event.name.includes("Finale");
 
