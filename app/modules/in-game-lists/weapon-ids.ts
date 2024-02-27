@@ -69,10 +69,34 @@ export const mainWeaponIds = weaponCategories
   .flatMap((category) => category.weaponIds)
   .sort((a, b) => a - b);
 
-export const weaponIdToAltId = new Map<MainWeaponId, MainWeaponId>([[40, 45]]);
-export const altWeaponIdToId = new Map<MainWeaponId, MainWeaponId>([[45, 40]]);
+export const weaponIdToAltId = new Map<
+  MainWeaponId,
+  MainWeaponId | MainWeaponId[]
+>([
+  [40, [45, 47]],
+  [41, 46],
+  [200, 205],
+  [1010, 1015],
+  [1110, 1115],
+  [2010, 2015],
+  [5010, 5015],
+  [6000, 6005],
+  [8000, 8005],
+]);
+export const altWeaponIdToId = new Map<MainWeaponId, MainWeaponId>([
+  [45, 40],
+  [47, 40],
+  [46, 41],
+  [205, 200],
+  [1015, 1010],
+  [1115, 1110],
+  [2015, 2010],
+  [5015, 5010],
+  [6005, 6000],
+  [8005, 8000],
+]);
 
-const altWeaponIds = new Set(weaponIdToAltId.values());
+const altWeaponIds = new Set(altWeaponIdToId.keys());
 export const weaponIdIsNotAlt = (weaponId: MainWeaponId) =>
   !altWeaponIds.has(weaponId);
 

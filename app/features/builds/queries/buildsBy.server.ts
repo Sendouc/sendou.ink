@@ -22,6 +22,7 @@ with "Top500Weapon" as (
       (
         "BuildWeapon"."weaponSplId" = @weaponId
         or "BuildWeapon"."weaponSplId" = @altWeaponId
+        or "BuildWeapon"."weaponSplId" = @altWeaponIdTwo
       )
       and "XRankPlacement"."rank" is not null
     ) as "relevant"
@@ -195,10 +196,20 @@ export function buildsByWeaponId({
   weaponId: BuildWeapon["weaponSplId"];
   limit: number;
 }) {
+  const [altWeaponId, altWeaponIdTwo] = (() => {
+    const alts = weaponIdToAltId.get(weaponId);
+    // default to impossible weapon id so we can always have same amount of placeholder values
+    if (!alts) return [-1, -1];
+    if (typeof alts === "number") return [alts, -1];
+
+    invariant(alts.length === 2, "expected 2 alts");
+    return alts;
+  })();
+
   const rows = buildsByWeaponIdStm.all({
     weaponId,
-    // default to impossible weapon id so we can always have same amount of placeholder values
-    altWeaponId: weaponIdToAltId.get(weaponId) ?? -1,
+    altWeaponId,
+    altWeaponIdTwo,
     limit,
   }) as Array<BuildsByWeaponIdRow>;
 
