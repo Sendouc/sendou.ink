@@ -57,8 +57,10 @@ async function main() {
         continue;
       }
 
-      const weapon: any = weapons.find((weapon: any) =>
-        file.includes(weapon.__RowId),
+      const weapon: any = weapons.find(
+        (weapon: any) =>
+          file.includes(`${weapon.__RowId}.`) ||
+          file.includes(`${weapon.__RowId}_`),
       );
 
       if (!weapon) {

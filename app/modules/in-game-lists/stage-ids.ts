@@ -22,6 +22,7 @@ export const stageIds = [
   19, // Shipshape Cargo Co.
   20, // Bluefin Depot
   21, // Robo ROM-en
+  22, // Marlin Airport
 ] as const;
 
 export const stagesObj = {
@@ -47,4 +48,5 @@ export const stagesObj = {
   SHIPSHAPE_CARGO_CO: 19,
   BLUEFIN_DEPOT: 20,
   ROBO_ROM_EN: 21,
+  MARLIN_AIRPORT: 22,
 } as const;

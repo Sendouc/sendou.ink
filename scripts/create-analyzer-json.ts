@@ -30,7 +30,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CURRENT_SEASON = 6;
+const CURRENT_SEASON = 7;
 
 type MainWeapon = (typeof weapons)[number];
 type SubWeapon = (typeof subWeapons)[number];
@@ -782,6 +782,7 @@ const WEAPON_TYPES_TO_IGNORE = [
   "Hero",
   "Rival",
   "SalmonBuddy",
+  "Sdodr",
 ];
 
 const INTERNAL_WEAPON_NAMES_TO_IGNORE: readonly string[] = ["Free"] as const;
@@ -807,7 +808,10 @@ function subWeaponShouldBeSkipped(subWeapon: SubWeapon) {
 }
 
 function specialWeaponShouldBeSkipped(specialWeapon: SpecialWeapon) {
-  if (WEAPON_TYPES_TO_IGNORE.some((val) => specialWeapon.Type.includes(val))) {
+  if (
+    WEAPON_TYPES_TO_IGNORE.some((val) => specialWeapon.Type.includes(val)) ||
+    WEAPON_TYPES_TO_IGNORE.some((val) => specialWeapon.__RowId.includes(val))
+  ) {
     return true;
   }
   if (specialWeapon.__RowId === "SpGachihoko") return true;
@@ -877,7 +881,6 @@ function writeTranslationsJsons(arr: TranslationArray) {
       path.join(
         __dirname,
         "..",
-        "public",
         "locales",
         translationJsonFolderName(langCode),
         `weapons.json`,

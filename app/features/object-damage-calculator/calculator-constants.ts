@@ -128,8 +128,17 @@ export const damageTypesToCombine: Partial<
       multiplierOnly: true,
     },
   ],
-  // Neo Splatana Stamper
+  // Splatana Stamper Nouveau
   8001: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
+  // Order Splatana Replica
+  8005: [
     { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
     {
       when: "SPLATANA_HORIZONTAL_DIRECT",

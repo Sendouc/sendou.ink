@@ -209,19 +209,19 @@ Note: This is only useful if you have access to a production running on Render.c
 4. Update `CURRENT_PATCH` constants
 5. Update `PATCHES` constant with the late patch + remove the oldest
 6. Update the stage list in `stage-ids.ts` and `create-misc-json.ts`. Add images from Lean's repository and avify them.
-7. `npm run create-misc-json`
-8. `npm run create-gear-json`
-9. `npm run create-analyzer-json`
+7. `npx tsx scripts/create-misc-json.ts`
+8. `npx tsx scripts/create-gear-json.ts`
+9. `npx tsx scripts/create-analyzer-json.ts`
    8a. Double check that no hard-coded special damages changed
-10. `npm run create-object-dmg-json`
+10. `npx tsx scripts/create-object-dmg-json.ts`
 11. Fill new weapon IDs by category to `weapon-ids.ts` (easy to take from the diff of English weapons.json)
 12. Get gear IDs for each slot from /output folder and update `gear-ids.ts`.
 13. Replace `object-dmg.json` with the `object-dmg.json` in /output folder
 14. Replace `weapon-params.ts` with the `params.json` in /output folder
 15. Delete all images inside `main-weapons`, `main-weapons-outlined`, `main-weapons-outlined-2` and `gear` folders.
 16. Replace with images from Lean's repository.
-17. Run the `npm run replace-img-names` command
-18. Run the `npm run replace-weapon-names` command
+17. Run the `npx tsx scripts/replace-img-names.ts` command
+18. Run the `npx tsx scripts/replace-weapon-names.ts` command
 19. Run the .avif generating command in each image folder.
 20. Update manually any languages that use English `gear.json` and `weapons.json` files
 

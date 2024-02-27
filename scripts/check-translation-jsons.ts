@@ -25,7 +25,7 @@ const MD = {
 
 const otherLanguageTranslationPath = (code?: string, fileName?: string) =>
   path.join(
-    ...[__dirname, "..", "public", "locales", code, fileName].filter(
+    ...[__dirname, "..", "locales", code, fileName].filter(
       (val): val is string => !!val,
     ),
   );

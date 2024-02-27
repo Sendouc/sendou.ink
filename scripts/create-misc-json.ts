@@ -39,6 +39,7 @@ const stages = [
   "Shipshape Cargo Co.",
   "Bluefin Depot",
   "Robo ROM-en",
+  "Marlin Airport",
 ] as const;
 
 const abilityShortToInternalName = new Map([
@@ -118,7 +119,6 @@ async function main() {
       path.join(
         __dirname,
         "..",
-        "public",
         "locales",
         translationJsonFolderName(langCode),
         `game-misc.json`,

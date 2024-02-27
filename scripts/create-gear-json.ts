@@ -18,7 +18,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CURRENT_SEASON = 6;
+const CURRENT_SEASON = 7;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
 
 const LEAN_HEAD_CODE = "Hed";
@@ -30,7 +30,7 @@ const LEAN_SHOES_CODE = "Shs";
 const AVAILABLE_SR_GEAR = [
   21010, 21011, 21015, 21013, 21012, 21014, 21012, 21000, 21001, 21002, 21001,
   21002, 21001, 21016, 21017, 21018, 21019, 21004, 21002, 21005, 21003, 21002,
-  21005, 21008, 21020,
+  21005, 21008, 21020, 21015, 21007,
 ];
 
 async function main() {
@@ -129,7 +129,6 @@ async function main() {
       path.join(
         __dirname,
         "..",
-        "public",
         "locales",
         translationJsonFolderName(langCode),
         `gear.json`,

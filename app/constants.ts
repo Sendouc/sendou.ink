@@ -96,6 +96,10 @@ export const findSplatoon3XpBadgeValue = (xPower: number) => {
 
 export const PATCHES = [
   {
+    patch: "7.0.0",
+    date: "2024-02-21",
+  },
+  {
     patch: "6.1.0",
     date: "2024-01-24",
   },
@@ -103,10 +107,10 @@ export const PATCHES = [
     patch: "6.0.0",
     date: "2023-11-29",
   },
-  {
-    patch: "5.1.0",
-    date: "2023-10-17",
-  },
+  // {
+  //   patch: "5.1.0",
+  //   date: "2023-10-17",
+  // },
   // {
   //   patch: "5.0.0",
   //   date: "2023-08-30",
