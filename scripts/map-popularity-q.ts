@@ -10,7 +10,7 @@ import {
 } from "~/utils/dates";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
-const SEASON_1_START = new Date("2023-09-11T17:00:00.000Z");
+const SEASON_2_START = new Date("2023-12-04T17:00:00.000Z");
 
 async function main() {
   const appearance = await db
@@ -22,7 +22,7 @@ async function main() {
       fn.countAll<number>().as("count"),
     ])
     .groupBy(["GroupMatchMap.stageId", "GroupMatchMap.mode"])
-    .where("GroupMatch.createdAt", ">", dateToDatabaseTimestamp(SEASON_1_START))
+    .where("GroupMatch.createdAt", ">", dateToDatabaseTimestamp(SEASON_2_START))
     .execute();
 
   const usage: Record<
@@ -117,7 +117,9 @@ async function main() {
     }
 
     console.log("Banned maps: " + banCount);
-    console.log();
+    console.log(
+      Object.values(usage[mode]).reduce((acc, cur) => acc + cur.count, 0),
+    );
   }
 }
 
