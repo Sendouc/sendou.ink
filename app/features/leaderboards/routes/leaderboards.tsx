@@ -502,11 +502,6 @@ function TeamTable({
                 <div className="placements__table__power">{entry.power}</div>
               </div>
             </div>
-            {i === 3 && showQualificationDividers ? (
-              <div className="placements__table__row placements__table__row__qualification">
-                {t("common:leaderboard.qualification.withBye")}
-              </div>
-            ) : null}
             {i === 11 && showQualificationDividers ? (
               <div className="placements__table__row placements__table__row__qualification">
                 {t("common:leaderboard.qualification")}
