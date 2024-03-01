@@ -13,7 +13,11 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LoaderFunctionArgs,
+  SerializeFrom,
+} from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
   Link,
@@ -45,6 +49,8 @@ import { updateTeamSeeds } from "../queries/updateTeamSeeds.server";
 import { seedsActionSchema } from "../tournament-schemas.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
+import { Toggle } from "~/components/Toggle";
+import { Label } from "~/components/Label";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({
@@ -72,10 +78,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     throw redirect(tournamentBracketsPage({ tournamentId }));
   }
 
-  const powers = async () => {
-    const leaderboard = await cachedFullUserLeaderboard(
-      currentOrPreviousSeason(new Date())!.nth,
-    );
+  const powers = async (season: number) => {
+    const leaderboard = await cachedFullUserLeaderboard(season);
 
     return Object.fromEntries(
       leaderboard.map((entry) => {
@@ -84,8 +88,13 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     );
   };
 
+  const currentSeason = currentOrPreviousSeason(new Date())!.nth;
+
   return {
-    powers: await powers(),
+    powers: {
+      current: await powers(currentSeason),
+      previous: await powers(currentSeason - 1),
+    },
   };
 };
 
@@ -99,6 +108,8 @@ export default function TournamentSeedsPage() {
   const [activeTeam, setActiveTeam] = React.useState<TournamentDataTeam | null>(
     null,
   );
+  const [usingPreviousSeasonPowers, setUsingPreviousSeasonPowers] =
+    React.useState(false);
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -114,9 +125,13 @@ export default function TournamentSeedsPage() {
     (a, b) => teamOrder.indexOf(a.id) - teamOrder.indexOf(b.id),
   );
 
+  const activePowers = usingPreviousSeasonPowers
+    ? data.powers.previous
+    : data.powers.current;
+
   const rankTeam = (team: TournamentDataTeam) => {
     const powers = team.members
-      .map((m) => data.powers[m.userId]?.power)
+      .map((m) => activePowers[m.userId]?.power)
       .filter(Boolean);
 
     if (powers.length === 0) return 0;
@@ -127,21 +142,30 @@ export default function TournamentSeedsPage() {
   return (
     <div className="stack lg">
       <SeedAlert teamOrder={teamOrder} />
-      <Button
-        className="tournament__seeds__order-button"
-        variant="minimal"
-        size="tiny"
-        type="button"
-        onClick={() => {
-          setTeamOrder(
-            clone(tournament.ctx.teams)
-              .sort((a, b) => rankTeam(b) - rankTeam(a))
-              .map((t) => t.id),
-          );
-        }}
-      >
-        Sort automatically
-      </Button>
+      <div className="stack horizontal justify-between">
+        <Button
+          className="tournament__seeds__order-button"
+          variant="minimal"
+          size="tiny"
+          type="button"
+          onClick={() => {
+            setTeamOrder(
+              clone(tournament.ctx.teams)
+                .sort((a, b) => rankTeam(b) - rankTeam(a))
+                .map((t) => t.id),
+            );
+          }}
+        >
+          Sort automatically
+        </Button>
+        <div className="stack horizontal sm items-center">
+          <Label spaced={false}>Previous season powers</Label>
+          <Toggle
+            checked={usingPreviousSeasonPowers}
+            setChecked={setUsingPreviousSeasonPowers}
+          />
+        </div>
+      </div>
       <ul>
         <li className="tournament__seeds__teams-list-row">
           <div className="tournament__seeds__teams-container__header">Seed</div>
@@ -194,7 +218,7 @@ export default function TournamentSeedsPage() {
                   },
                 )}
               >
-                <RowContents team={team} seed={i + 1} />
+                <RowContents team={team} seed={i + 1} powers={activePowers} />
               </Draggable>
             ))}
           </SortableContext>
@@ -202,7 +226,7 @@ export default function TournamentSeedsPage() {
           <DragOverlay>
             {activeTeam && (
               <li className="tournament__seeds__teams-list-row active">
-                <RowContents team={activeTeam} />
+                <RowContents team={activeTeam} powers={activePowers} />
               </li>
             )}
           </DragOverlay>
@@ -265,12 +289,12 @@ function SeedAlert({ teamOrder }: { teamOrder: number[] }) {
 function RowContents({
   team,
   seed,
+  powers,
 }: {
   team: TournamentDataTeam;
   seed?: number;
+  powers: SerializeFrom<typeof loader>["powers"]["current"];
 }) {
-  const data = useLoaderData<typeof loader>();
-
   return (
     <>
       <div>{seed}</div>
@@ -279,7 +303,7 @@ function RowContents({
       </div>
       <div className="stack horizontal sm">
         {team.members.map((member) => {
-          const { power, tier } = data.powers[member.userId] ?? {};
+          const { power, tier } = powers[member.userId] ?? {};
           const lonely =
             (!power && member.plusTier) || (!member.plusTier && power);
 
