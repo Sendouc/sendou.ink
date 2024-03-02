@@ -68,7 +68,7 @@ export const matchSchema = z.union([
   }),
 ]);
 
-export const bracketIdx = z.coerce.number().int().min(0).max(2);
+export const bracketIdx = z.coerce.number().int().min(0).max(100);
 
 export const bracketSchema = z.union([
   z.object({

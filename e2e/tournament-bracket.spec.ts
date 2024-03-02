@@ -290,9 +290,17 @@ test.describe("Tournament bracket", () => {
 
     await page.getByTestId("edit-event-info-button").click();
 
-    await page
-      .getByLabel("Amount of teams advancing per group")
-      .selectOption("1");
+    await page.getByTestId("add-bracket").click();
+    await page.getByLabel("2. Name").fill("Underground bracket");
+
+    for (const testId of [
+      "placement-1-2",
+      "placement-2-2",
+      "placement-2-3",
+      "placement-2-4",
+    ]) {
+      await page.getByTestId(testId).click();
+    }
 
     await submit(page);
 

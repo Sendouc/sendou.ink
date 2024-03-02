@@ -6,7 +6,6 @@ import { assertUnreachable } from "~/utils/types";
 import type { OptionalIdObject, Tournament } from "./Tournament";
 import type { TournamentDataTeam } from "./Tournament.server";
 import { removeDuplicates } from "~/utils/arrays";
-import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { logger } from "~/utils/logger";
 import type { Round } from "~/modules/brackets-model";
 import { getTournamentManager } from "./brackets-manager";
@@ -239,7 +238,14 @@ export abstract class Bracket {
   }
 
   get isUnderground() {
-    return this.name === BRACKET_NAMES.UNDERGROUND;
+    return Boolean(
+      this.sources &&
+        this.sources.flatMap((s) => s.placements).every((p) => p !== 1),
+    );
+  }
+
+  get isFinals() {
+    return Boolean(this.sources?.some((s) => s.placements.includes(1)));
   }
 
   get everyMatchOver() {

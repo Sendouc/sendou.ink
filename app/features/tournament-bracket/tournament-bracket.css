@@ -435,6 +435,26 @@
   background-color: var(--bg-lighter);
 }
 
+.tournament-bracket__bracket-nav__chevron {
+  margin-inline-start: var(--s-2);
+  font-size: var(--fonts-xxxs);
+  margin-block-end: -2px;
+}
+
+.tournament-bracket__button-row {
+  display: none;
+}
+
+@media screen and (min-width: 600px) {
+  .tournament-bracket__menu {
+    display: none;
+  }
+
+  .tournament-bracket__button-row {
+    display: inherit;
+  }
+}
+
 .tournament-bracket__compactify-button {
   font-size: var(--fonts-xxs);
   color: var(--text-lighter);

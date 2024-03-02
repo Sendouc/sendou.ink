@@ -5,19 +5,21 @@ import clsx from "clsx";
 export function Menu({
   button,
   items,
+  className,
 }: {
   button: React.ElementType;
   items: {
     // type: "button"; TODO: type: "link"
     text: string;
     id: string;
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
     onClick: () => void;
     disabled?: boolean;
   }[];
+  className?: string;
 }) {
   return (
-    <HeadlessUIMenu as="div" className="menu-container">
+    <HeadlessUIMenu as="div" className={clsx("menu-container", className)}>
       <HeadlessUIMenu.Button as={button} />
       <Transition
         as={React.Fragment}
@@ -41,7 +43,9 @@ export function Menu({
                     onClick={item.onClick}
                     data-testid={`menu-item-${item.id}`}
                   >
-                    <span className="menu__item__icon">{item.icon}</span>
+                    {item.icon ? (
+                      <span className="menu__item__icon">{item.icon}</span>
+                    ) : null}
                     {item.text}
                   </button>
                 )}

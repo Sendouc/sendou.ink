@@ -80,11 +80,18 @@ export const newCalendarEventActionSchema = z
       .min(TOURNAMENT.MIN_GROUP_SIZE)
       .max(TOURNAMENT.MAX_GROUP_SIZE)
       .nullish(),
-    advancingCount: z.coerce
-      .number()
-      .min(1)
-      .max(TOURNAMENT.MAX_GROUP_SIZE)
-      .nullish(),
+    followUpBrackets: z.preprocess(
+      safeJSONParse,
+      z
+        .array(
+          z.object({
+            name: z.string(),
+            placements: z.array(z.number()),
+          }),
+        )
+        .min(1)
+        .nullish(),
+    ),
   })
   .refine(
     async (schema) => {

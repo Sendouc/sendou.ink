@@ -28,7 +28,6 @@ import {
 import { currentSeason } from "~/features/mmr/season";
 import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { HACKY_isInviteOnlyEvent } from "~/features/tournament/tournament-utils";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
@@ -64,6 +63,7 @@ import {
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
+import { Menu } from "~/components/Menu";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -110,9 +110,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       // check in teams to the final stage ahead of time so they don't have to do it
       // separately, but also allow for TO's to check them out if needed
       if (data.bracketIdx === 0 && tournament.brackets.length > 1) {
-        const finalStageIdx = tournament.brackets.findIndex(
-          (b) => b.name === BRACKET_NAMES.FINALS,
-        );
+        const finalStageIdx = tournament.brackets.findIndex((b) => b.isFinals);
 
         if (finalStageIdx !== -1) {
           await TournamentRepository.checkInMany({
@@ -246,7 +244,9 @@ export default function TournamentBracketsPage() {
       tournament.brackets[0].type === "round_robin" &&
       bracket.isUnderground
     ) {
-      return "Teams that don't advance to the final stage can play in this bracket (optional)";
+      const placements = bracket.sources?.flatMap((s) => s.placements) ?? [];
+
+      return `Teams that don't advance to the final stage can play in this bracket (placements: ${placements.join(", ")})`;
     }
 
     if (
@@ -629,31 +629,62 @@ function BracketNav({
 
   if (tournament.ctx.settings.bracketProgression.length < 2) return null;
 
-  return (
-    <div className="tournament-bracket__bracket-nav">
-      {tournament.ctx.settings.bracketProgression.map((bracket, i) => {
-        // underground bracket was never played despite being in the format
-        if (
-          tournament.bracketByIdxOrDefault(i).preview &&
-          tournament.ctx.isFinalized
-        ) {
-          return null;
-        }
+  const visibleBrackets = tournament.ctx.settings.bracketProgression.filter(
+    // an underground bracket was never played despite being in the format
+    (_, i) =>
+      !tournament.ctx.isFinalized ||
+      !tournament.bracketByIdxOrDefault(i).preview,
+  );
 
-        return (
-          <Button
-            key={bracket.name}
-            onClick={() => setBracketIdx(i)}
-            className={clsx("tournament-bracket__bracket-nav__link", {
-              "tournament-bracket__bracket-nav__link__selected":
-                bracketIdx === i,
-            })}
-          >
-            {bracket.name.replace("bracket", "")}
-          </Button>
-        );
-      })}
-    </div>
+  const bracketNameForButton = (name: string) => name.replace("bracket", "");
+
+  const button = React.forwardRef(function (props, ref) {
+    return (
+      <Button
+        className="tournament-bracket__bracket-nav__link"
+        _ref={ref}
+        {...props}
+      >
+        {bracketNameForButton(
+          tournament.bracketByIdxOrDefault(bracketIdx).name,
+        )}
+        <span className="tournament-bracket__bracket-nav__chevron">▼</span>
+      </Button>
+    );
+  });
+
+  return (
+    <>
+      {/** MOBILE */}
+      <Menu
+        items={visibleBrackets.map((bracket, i) => {
+          return {
+            id: bracket.name,
+            onClick: () => setBracketIdx(i),
+            text: bracketNameForButton(bracket.name),
+          };
+        })}
+        button={button}
+        className="tournament-bracket__menu"
+      />
+      {/** DESKTOP */}
+      <div className="tournament-bracket__bracket-nav tournament-bracket__button-row">
+        {visibleBrackets.map((bracket, i) => {
+          return (
+            <Button
+              key={bracket.name}
+              onClick={() => setBracketIdx(i)}
+              className={clsx("tournament-bracket__bracket-nav__link", {
+                "tournament-bracket__bracket-nav__link__selected":
+                  bracketIdx === i,
+              })}
+            >
+              {bracketNameForButton(bracket.name)}
+            </Button>
+          );
+        })}
+      </div>
+    </>
   );
 }
 

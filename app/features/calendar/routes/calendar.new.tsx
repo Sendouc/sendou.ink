@@ -36,7 +36,6 @@ import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import {
   BRACKET_NAMES,
-  TOURNAMENT,
   type TournamentFormatShort,
 } from "~/features/tournament/tournament-constants";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -44,7 +43,7 @@ import { i18next } from "~/modules/i18n/i18next.server";
 import type { RankedModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { canEditCalendarEvent } from "~/permissions";
-import { isDefined } from "~/utils/arrays";
+import { isDefined, nullFilledArray } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
   dateToDatabaseTimestamp,
@@ -65,6 +64,7 @@ import {
   calendarEventMaxDate,
   calendarEventMinDate,
   canAddNewEvent,
+  validateFollowUpBrackets,
 } from "../calendar-utils";
 import {
   canCreateTournament,
@@ -74,6 +74,8 @@ import { Tags } from "../components/Tags";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
+import { Placement } from "~/components/Placement";
+import type { FollowUpBracket } from "../calendar-types";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -815,33 +817,6 @@ function TournamentFormatSelector() {
     data.tournamentCtx?.settings.teamsPerGroup ?? 4,
   );
 
-  const undergroundBracketExplanation = () => {
-    if (format === "RR_TO_SE") {
-      return "Optional bracket for teams that don't make it to the final stage";
-    }
-
-    return "Optional bracket for teams who lose in the first two rounds of losers bracket.";
-  };
-
-  const advancingPerGroup = () => {
-    const DEFAULT = 2;
-    const hasRR = data.tournamentCtx?.settings.bracketProgression.some(
-      (b) => b.type === "round_robin",
-    );
-
-    if (!hasRR) return DEFAULT;
-
-    const finalBracket = data.tournamentCtx?.settings.bracketProgression.find(
-      (b) => b.name === BRACKET_NAMES.FINALS,
-    );
-
-    if (!finalBracket) return DEFAULT;
-
-    return Math.max(
-      ...(finalBracket.sources?.flatMap((s) => s.placements) ?? [DEFAULT]),
-    );
-  };
-
   return (
     <div className="stack md">
       <Divider>Tournament format</Divider>
@@ -861,16 +836,23 @@ function TournamentFormatSelector() {
         </select>
       </div>
 
-      <div>
-        <Label htmlFor="withUndergroundBracket">With underground bracket</Label>
-        <Toggle
-          checked={withUndergroundBracket}
-          setChecked={setWithUndergroundBracket}
-          name="withUndergroundBracket"
-          id="withUndergroundBracket"
-        />
-        <FormMessage type="info">{undergroundBracketExplanation()}</FormMessage>
-      </div>
+      {format === "DE" ? (
+        <div>
+          <Label htmlFor="withUndergroundBracket">
+            With underground bracket
+          </Label>
+          <Toggle
+            checked={withUndergroundBracket}
+            setChecked={setWithUndergroundBracket}
+            name="withUndergroundBracket"
+            id="withUndergroundBracket"
+          />
+          <FormMessage type="info">
+            Optional bracket for teams who lose in the first two rounds of
+            losers bracket.
+          </FormMessage>
+        </div>
+      ) : null}
 
       {format === "RR_TO_SE" ? (
         <div>
@@ -889,31 +871,129 @@ function TournamentFormatSelector() {
           </select>
         </div>
       ) : null}
-
       {format === "RR_TO_SE" ? (
-        <div>
-          <Label htmlFor="advancingCount">
-            Amount of teams advancing per group
-          </Label>
-          <select
-            defaultValue={advancingPerGroup()}
-            className="w-max"
-            name="advancingCount"
-            id="advancingCount"
-          >
-            {new Array(TOURNAMENT.MAX_GROUP_SIZE).fill(null).map((_, i) => {
-              const advancingCount = i + 1;
-
-              if (advancingCount > teamsPerGroup) return null;
-              return (
-                <option key={i} value={advancingCount}>
-                  {advancingCount}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+        <FollowUpBrackets teamsPerGroup={teamsPerGroup} />
       ) : null}
+    </div>
+  );
+}
+
+function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
+  const [_brackets, setBrackets] = React.useState<Array<FollowUpBracket>>([
+    { name: "Top cut", placements: [1, 2] },
+  ]);
+
+  const brackets = _brackets.map((b) => ({
+    ...b,
+    // handle teams per group changing after group placements have been set
+    placements: b.placements.filter((p) => p <= teamsPerGroup),
+  }));
+
+  const validationErrorMsg = validateFollowUpBrackets(brackets, teamsPerGroup);
+
+  return (
+    <div>
+      <RequiredHiddenInput
+        isValid={!validationErrorMsg}
+        name="followUpBrackets"
+        value={JSON.stringify(brackets)}
+      />
+      <Label>Follow-up brackets</Label>
+      <div className="stack lg">
+        {brackets.map((b, i) => (
+          <FollowUpBracketInputs
+            key={i}
+            teamsPerGroup={teamsPerGroup}
+            onChange={(newBracket) => {
+              setBrackets(
+                brackets.map((oldBracket, j) =>
+                  j === i ? newBracket : oldBracket,
+                ),
+              );
+            }}
+            bracket={b}
+            nth={i + 1}
+          />
+        ))}
+        <div className="stack sm horizontal">
+          <Button
+            size="tiny"
+            onClick={() => {
+              setBrackets([...brackets, { name: "", placements: [] }]);
+            }}
+            data-testid="add-bracket"
+          >
+            Add bracket
+          </Button>
+          <Button
+            size="tiny"
+            variant="destructive"
+            onClick={() => {
+              setBrackets(brackets.slice(0, -1));
+            }}
+            disabled={brackets.length === 1}
+          >
+            Remove bracket
+          </Button>
+        </div>
+
+        {validationErrorMsg ? (
+          <FormMessage type="error">{validationErrorMsg}</FormMessage>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function FollowUpBracketInputs({
+  teamsPerGroup,
+  bracket,
+  onChange,
+  nth,
+}: {
+  teamsPerGroup: number;
+  bracket: FollowUpBracket;
+  onChange: (bracket: FollowUpBracket) => void;
+  nth: number;
+}) {
+  const id = React.useId();
+  return (
+    <div className="stack sm">
+      <div className="stack items-center horizontal sm">
+        <Label spaced={false} htmlFor={id}>
+          {nth}. Name
+        </Label>
+        <Input
+          value={bracket.name}
+          onChange={(e) => onChange({ ...bracket, name: e.target.value })}
+          id={id}
+        />
+      </div>
+      <div className="stack items-center horizontal md flex-wrap">
+        <Label spaced={false}>Group placements</Label>
+        {nullFilledArray(teamsPerGroup).map((_, i) => {
+          const placement = i + 1;
+          return (
+            <div key={i} className="stack horizontal items-center xs">
+              <Label spaced={false} htmlFor={`${id}-${i}`}>
+                <Placement placement={placement} />
+              </Label>
+              <input
+                id={`${id}-${i}`}
+                data-testid={`placement-${nth}-${placement}`}
+                type="checkbox"
+                checked={bracket.placements.includes(placement)}
+                onChange={(e) => {
+                  const newPlacements = e.target.checked
+                    ? [...bracket.placements, placement]
+                    : bracket.placements.filter((p) => p !== placement);
+                  onChange({ ...bracket, placements: newPlacements });
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

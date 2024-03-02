@@ -358,7 +358,7 @@ export class Tournament {
         return bracket.standings;
       }
 
-      if (bracket.name === BRACKET_NAMES.FINALS) {
+      if (bracket.isFinals) {
         const finalsStandings = bracket.standings;
 
         const firstStageStandings = this.brackets[0].standings;
