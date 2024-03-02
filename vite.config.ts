@@ -209,6 +209,7 @@ export default defineConfig({
           route("/play", "features/sendouq/routes/play.tsx");
           route("/q", "features/sendouq/routes/q.tsx");
           route("/q/rules", "features/sendouq/routes/q.rules.tsx");
+          // route("/q/info", "features/sendouq/routes/q.info.tsx");
           route("/q/looking", "features/sendouq/routes/q.looking.tsx");
           route("/q/preparing", "features/sendouq/routes/q.preparing.tsx");
           route("/q/match/:id", "features/sendouq/routes/q.match.$id.tsx");
