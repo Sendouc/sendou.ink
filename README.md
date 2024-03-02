@@ -149,25 +149,25 @@ Note: Currently the project is in progress to migrating this style so that's why
 ### Update friend code
 
 ```bash
-npx tsx scripts/update-fc.ts -- 79237403620945920 1234-1234-1234
+npx tsx scripts/update-fc.ts 79237403620945920 1234-1234-1234
 ```
 
 ### Add new badge to the database
 
 ```bash
-npx tsx scripts/add-badge.ts -- sundae "4v4 Sundaes"
+npx tsx scripts/add-badge.ts fire_green "Octofin Eliteboard"
 ```
 
 ### Rename display name of a badge
 
 ```bash
-npx tsx scripts/rename-badge.ts -- 10 "New 4v4 Sundaes"
+npx tsx scripts/rename-badge.ts 10 "New 4v4 Sundaes"
 ```
 
 ### Add many badge owners
 
 ```bash
-npx tsx scripts/add-badge-winners.ts -- 10 "750705955909664791,79237403620945920"
+npx tsx scripts/add-badge-winners.ts 10 "750705955909664791,79237403620945920"
 ```
 
 ### Converting gifs (badges) to thumbnail (.png)
