@@ -76,6 +76,10 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("tc");
   }
 
+  if (event.name.includes("Swim or Sink")) {
+    return tournamentLogoUrl("sos");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -104,6 +108,10 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (event.name.includes("Triton")) {
     return { bg: "#aee8ff", text: BLACK };
+  }
+
+  if (event.name.includes("Swim or Sink")) {
+    return { bg: "#d7f8ea", text: BLACK };
   }
 
   return { bg: "#3430ad", text: WHITE };
