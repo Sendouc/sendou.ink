@@ -879,9 +879,24 @@ function TournamentFormatSelector() {
 }
 
 function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
-  const [_brackets, setBrackets] = React.useState<Array<FollowUpBracket>>([
-    { name: "Top cut", placements: [1, 2] },
-  ]);
+  const data = useLoaderData<typeof loader>();
+  const [_brackets, setBrackets] = React.useState<Array<FollowUpBracket>>(
+    () => {
+      if (
+        data.tournamentCtx &&
+        data.tournamentCtx.settings.bracketProgression[0].type === "round_robin"
+      ) {
+        return data.tournamentCtx.settings.bracketProgression
+          .slice(1)
+          .map((b) => ({
+            name: b.name,
+            placements: b.sources?.flatMap((s) => s.placements) ?? [],
+          }));
+      }
+
+      return [{ name: "Top cut", placements: [1, 2] }];
+    },
+  );
 
   const brackets = _brackets.map((b) => ({
     ...b,
