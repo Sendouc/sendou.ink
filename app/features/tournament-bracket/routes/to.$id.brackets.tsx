@@ -244,7 +244,9 @@ export default function TournamentBracketsPage() {
       tournament.brackets[0].type === "round_robin" &&
       bracket.isUnderground
     ) {
-      const placements = bracket.sources?.flatMap((s) => s.placements) ?? [];
+      const placements = (
+        bracket.sources?.flatMap((s) => s.placements) ?? []
+      ).sort((a, b) => a - b);
 
       return `Teams that don't advance to the final stage can play in this bracket (placements: ${placements.join(", ")})`;
     }
