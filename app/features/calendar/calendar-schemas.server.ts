@@ -75,6 +75,10 @@ export const newCalendarEventActionSchema = z
     //
     format: z.enum(FORMATS_SHORT).nullish(),
     withUndergroundBracket: z.preprocess(checkboxValueToBoolean, z.boolean()),
+    thirdPlaceMatch: z.preprocess(
+      checkboxValueToBoolean,
+      z.boolean().nullish(),
+    ),
     teamsPerGroup: z.coerce
       .number()
       .min(TOURNAMENT.MIN_GROUP_SIZE)

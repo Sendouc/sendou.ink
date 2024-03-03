@@ -14,9 +14,12 @@ export function RoundHeader({
   bestOf?: 3 | 5 | 7;
   showInfos?: boolean;
 }) {
-  const hasDeadline = !["WB Finals", "Grand Finals", "Bracket Reset"].includes(
-    name,
-  );
+  const hasDeadline = ![
+    "WB Finals",
+    "Grand Finals",
+    "Bracket Reset",
+    "Finals",
+  ].includes(name);
 
   return (
     <div>

@@ -385,6 +385,7 @@ type CreateArgs = Pick<
   mapPickingStyle: Tables["Tournament"]["mapPickingStyle"];
   bracketProgression: TournamentSettings["bracketProgression"] | null;
   teamsPerGroup?: number;
+  thirdPlaceMatch?: boolean;
 };
 export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
@@ -394,6 +395,7 @@ export async function create(args: CreateArgs) {
       const settings: Tables["Tournament"]["settings"] = {
         bracketProgression: args.bracketProgression,
         teamsPerGroup: args.teamsPerGroup,
+        thirdPlaceMatch: args.thirdPlaceMatch,
       };
 
       tournamentId = (
@@ -462,6 +464,7 @@ export async function update(args: UpdateArgs) {
       const settings: Tables["Tournament"]["settings"] = {
         bracketProgression: args.bracketProgression,
         teamsPerGroup: args.teamsPerGroup,
+        thirdPlaceMatch: args.thirdPlaceMatch,
       };
 
       await trx

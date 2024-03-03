@@ -288,21 +288,24 @@ test.describe("Tournament bracket", () => {
       await submit(page);
     }
 
-    await page.getByTestId("edit-event-info-button").click();
+    // TODO: test for a different format
+    // and include await isNotVisible(page.getByTestId("standing-3"));
+    //
+    // await page.getByTestId("edit-event-info-button").click();
 
-    await page.getByTestId("add-bracket").click();
-    await page.getByLabel("2. Name").fill("Underground bracket");
+    // await page.getByTestId("add-bracket").click();
+    // await page.getByLabel("2. Name").fill("Underground bracket");
 
-    for (const testId of [
-      "placement-1-2",
-      "placement-2-2",
-      "placement-2-3",
-      "placement-2-4",
-    ]) {
-      await page.getByTestId(testId).click();
-    }
+    // for (const testId of [
+    //   "placement-1-2",
+    //   "placement-2-2",
+    //   "placement-2-3",
+    //   "placement-2-4",
+    // ]) {
+    //   await page.getByTestId(testId).click();
+    // }
 
-    await submit(page);
+    // await submit(page);
 
     await page.getByTestId("brackets-tab").click();
     await page.getByTestId("finalize-bracket-button").click();
@@ -319,7 +322,7 @@ test.describe("Tournament bracket", () => {
     }
 
     // captain of one of the underground bracket teams
-    await impersonate(page, 52);
+    await impersonate(page, 57);
     await navigate({
       page,
       url: tournamentBracketsPage({ tournamentId }),
@@ -357,19 +360,20 @@ test.describe("Tournament bracket", () => {
       url: tournamentBracketsPage({ tournamentId, bracketIdx: 1 }),
     });
     await page.getByTestId("finalize-bracket-button").click();
-    await navigateToMatch(page, 14);
-    await reportResult({
-      page,
-      amountOfMapsToReport: 3,
-      sidesWithMoreThanFourPlayers: ["first", "last"],
-    });
+    for (const matchId of [14, 15, 16, 17]) {
+      await navigateToMatch(page, matchId);
+      await reportResult({
+        page,
+        amountOfMapsToReport: 3,
+        sidesWithMoreThanFourPlayers: ["first", "last"],
+      });
 
-    await backToBracket(page);
+      await backToBracket(page);
+    }
     await page.getByTestId("finalize-tournament-button").click();
     await page.getByTestId("confirm-button").click();
 
     await expect(page.getByTestId("standing-1")).toBeVisible();
-    await isNotVisible(page.getByTestId("standing-3"));
 
     // not possible to reopen finals match anymore
     await navigateToMatch(page, 14);

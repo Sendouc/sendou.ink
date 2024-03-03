@@ -111,6 +111,10 @@ export const action: ActionFunction = async ({ request, params }) => {
           }),
         "Can't check-in",
       );
+      validate(
+        team.checkIns.length > 0 || data.bracketIdx === 0,
+        "Can't check-in to follow up bracket if not checked in for the event itself",
+      );
 
       const bracket = tournament.bracketByIdx(data.bracketIdx);
       invariant(bracket, "Invalid bracket idx");

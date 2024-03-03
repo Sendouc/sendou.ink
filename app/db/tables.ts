@@ -385,6 +385,7 @@ export type TournamentBracketProgression = {
 export interface TournamentSettings {
   bracketProgression: TournamentBracketProgression;
   teamsPerGroup?: number;
+  thirdPlaceMatch?: boolean;
 }
 
 export interface CastedMatchesInfo {

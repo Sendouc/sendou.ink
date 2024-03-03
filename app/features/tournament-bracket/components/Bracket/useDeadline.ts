@@ -74,7 +74,10 @@ function dateByPreviousRound(bracket: Bracket, round: Round) {
     (r) => r.number === round.number - 1 && round.group_id === r.group_id,
   );
   if (!previousRound) {
-    logger.warn("Previous round not found", { bracket, round });
+    // single elimination 3rd place match -> no deadline
+    if (bracket.type !== "single_elimination") {
+      logger.warn("Previous round not found", { bracket, round });
+    }
     return null;
   }
 

@@ -169,6 +169,7 @@ function wipeDB() {
     "TournamentTeamMember",
     "MapPoolMap",
     "TournamentMatchGameResult",
+    "TournamentTeamCheckIn",
     "TournamentTeam",
     "TournamentStage",
     "TournamentResult",

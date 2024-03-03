@@ -343,6 +343,12 @@ const match_getByIdStm = sql.prepare(/*sql*/ `
     where "TournamentMatch"."id" = @id
 `);
 
+const match_getByRoundIdStm = sql.prepare(/*sql*/ `
+  select *
+    from "TournamentMatch"
+    where "TournamentMatch"."roundId" = @roundId
+`);
+
 const match_getByStageIdStm = sql.prepare(/*sql*/ `
   select 
     "TournamentMatch".*, 
@@ -454,6 +460,12 @@ export class Match {
     const match = match_getByIdStm.get({ id }) as any;
     if (!match) return match;
     return this.#convertMatch(match);
+  }
+
+  static getByRoundId(roundId: TournamentRound["id"]): MatchType[] {
+    return (match_getByRoundIdStm.all({ roundId }) as any[]).map(
+      this.#convertMatch,
+    );
   }
 
   static getByStageId(stageId: TournamentStage["id"]): MatchType[] {

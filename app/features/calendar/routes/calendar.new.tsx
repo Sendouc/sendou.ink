@@ -116,6 +116,7 @@ export const action: ActionFunction = async ({ request }) => {
       rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
     bracketProgression: formValuesToBracketProgression(data),
     teamsPerGroup: data.teamsPerGroup ?? undefined,
+    thirdPlaceMatch: data.thirdPlaceMatch ?? undefined,
   };
   validate(
     !commonArgs.toToolsEnabled || commonArgs.bracketProgression,
@@ -813,6 +814,9 @@ function TournamentFormatSelector() {
         )
       : true,
   );
+  const [thirdPlaceMatch, setThirdPlaceMatch] = React.useState(
+    data.tournamentCtx?.settings.thirdPlaceMatch ?? true,
+  );
   const [teamsPerGroup, setTeamsPerGroup] = React.useState(
     data.tournamentCtx?.settings.teamsPerGroup ?? 4,
   );
@@ -851,6 +855,18 @@ function TournamentFormatSelector() {
             Optional bracket for teams who lose in the first two rounds of
             losers bracket.
           </FormMessage>
+        </div>
+      ) : null}
+
+      {format === "RR_TO_SE" ? (
+        <div>
+          <Label htmlFor="thirdPlaceMatch">Third place match</Label>
+          <Toggle
+            checked={thirdPlaceMatch}
+            setChecked={setThirdPlaceMatch}
+            name="thirdPlaceMatch"
+            id="thirdPlaceMatch"
+          />
         </div>
       ) : null}
 

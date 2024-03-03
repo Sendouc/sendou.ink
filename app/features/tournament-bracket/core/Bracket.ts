@@ -331,12 +331,28 @@ class SingleEliminationBracket extends Bracket {
     return "single_elimination";
   }
 
+  private hasThirdPlaceMatch() {
+    return removeDuplicates(this.data.match.map((m) => m.group_id)).length > 1;
+  }
+
   get standings(): Standing[] {
     const teams: { id: number; lostAt: number }[] = [];
 
-    for (const match of this.data.match
-      .slice()
-      .sort((a, b) => a.round_id - b.round_id)) {
+    const matches = (() => {
+      if (!this.hasThirdPlaceMatch()) {
+        return this.data.match.slice();
+      }
+
+      const thirdPlaceMatch = this.data.match.find(
+        (m) => m.group_id === Math.max(...this.data.group.map((g) => g.id)),
+      );
+
+      return this.data.match.filter(
+        (m) => m.group_id !== thirdPlaceMatch?.group_id,
+      );
+    })();
+
+    for (const match of matches.sort((a, b) => a.round_id - b.round_id)) {
       if (
         match.opponent1?.result !== "win" &&
         match.opponent2?.result !== "win"
@@ -389,9 +405,32 @@ class SingleEliminationBracket extends Bracket {
       });
     }
 
-    // TODO: 3rd place match
+    const thirdPlaceMatch = this.hasThirdPlaceMatch()
+      ? this.data.match.find((m) => m.group_id !== matches[0].group_id)
+      : undefined;
+    const thirdPlaceMatchWinner =
+      thirdPlaceMatch?.opponent1?.result === "win"
+        ? thirdPlaceMatch.opponent1
+        : thirdPlaceMatch?.opponent2?.result === "win"
+          ? thirdPlaceMatch.opponent2
+          : undefined;
 
-    return this.standingsWithoutNonParticipants(result.reverse());
+    const resultWithThirdPlaceTiebroken = result
+      .map((standing) => {
+        if (
+          standing.placement === 3 &&
+          thirdPlaceMatchWinner?.id !== standing.team.id
+        ) {
+          return {
+            ...standing,
+            placement: 4,
+          };
+        }
+        return standing;
+      })
+      .sort((a, b) => a.placement - b.placement);
+
+    return this.standingsWithoutNonParticipants(resultWithThirdPlaceTiebroken);
   }
 }
 

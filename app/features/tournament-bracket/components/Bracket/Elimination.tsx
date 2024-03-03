@@ -3,6 +3,7 @@ import type { Bracket as BracketType } from "../../core/Bracket";
 import { Match } from "./Match";
 import { RoundHeader } from "./RoundHeader";
 import clsx from "clsx";
+import { removeDuplicates } from "~/utils/arrays";
 
 interface EliminationBracketSideProps {
   bracket: BracketType;
@@ -142,6 +143,10 @@ function getRounds(props: EliminationBracketSideProps) {
       return atLeastOneNonByeMatch;
     });
 
+  const hasThirdPlaceMatch =
+    props.type === "single" &&
+    removeDuplicates(props.bracket.data.match.map((m) => m.group_id)).length >
+      1;
   return rounds.map((round, i) => {
     const name = () => {
       if (
@@ -151,6 +156,14 @@ function getRounds(props: EliminationBracketSideProps) {
       ) {
         return "Grand Finals";
       }
+
+      if (hasThirdPlaceMatch && i === rounds.length - 2) {
+        return "Finals";
+      }
+      if (hasThirdPlaceMatch && i === rounds.length - 1) {
+        return "3rd place match";
+      }
+
       if (props.type === "winners" && i === rounds.length - 1) {
         return showingBracketReset ? "Bracket Reset" : "Grand Finals";
       }
@@ -159,7 +172,10 @@ function getRounds(props: EliminationBracketSideProps) {
         props.type === "winners" ? "WB " : props.type === "losers" ? "LB " : "";
 
       const isFinals = i === rounds.length - (props.type === "winners" ? 3 : 1);
-      const isSemis = i === rounds.length - (props.type === "winners" ? 4 : 2);
+
+      const semisOffSet =
+        props.type === "winners" ? 4 : hasThirdPlaceMatch ? 3 : 2;
+      const isSemis = i === rounds.length - semisOffSet;
 
       return `${namePrefix}${
         isFinals ? "Finals" : isSemis ? "Semis" : `Round ${i + 1}`

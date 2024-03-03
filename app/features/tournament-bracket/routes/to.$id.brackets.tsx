@@ -115,7 +115,9 @@ export const action: ActionFunction = async ({ params, request }) => {
         if (finalStageIdx !== -1) {
           await TournamentRepository.checkInMany({
             bracketIdx: finalStageIdx,
-            tournamentTeamIds: tournament.ctx.teams.map((t) => t.id),
+            tournamentTeamIds: tournament.ctx.teams
+              .filter((t) => t.checkIns.length > 0)
+              .map((t) => t.id),
           });
         }
       }

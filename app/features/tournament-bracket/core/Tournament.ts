@@ -243,7 +243,11 @@ export class Tournament {
   ): Stage["settings"] {
     switch (type) {
       case "single_elimination":
-        return { consolationFinal: false };
+        if (participantsCount < 4) {
+          return { consolationFinal: false };
+        }
+
+        return { consolationFinal: this.ctx.settings.thirdPlaceMatch ?? true };
       case "double_elimination":
         return {
           grandFinal: "double",

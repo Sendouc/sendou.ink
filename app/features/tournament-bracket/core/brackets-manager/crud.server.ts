@@ -176,9 +176,7 @@ export class SqlDatabase {
         }
 
         if (arg.round_id) {
-          throw new Error("not implemented");
-          const matches = Match.getByRoundId(arg.round_id);
-          return matches && matches.map(convertMatch);
+          return Match.getByRoundId(arg.round_id);
         }
 
         break;
