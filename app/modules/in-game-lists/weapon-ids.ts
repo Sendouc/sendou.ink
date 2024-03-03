@@ -79,8 +79,11 @@ export const weaponIdToAltId = new Map<
   [1010, 1015],
   [1110, 1115],
   [2010, 2015],
+  [3000, 3005],
+  [4010, 4015],
   [5010, 5015],
   [6000, 6005],
+  [7010, 7015],
   [8000, 8005],
 ]);
 export const altWeaponIdToId = new Map<MainWeaponId, MainWeaponId>([
@@ -91,8 +94,11 @@ export const altWeaponIdToId = new Map<MainWeaponId, MainWeaponId>([
   [1015, 1010],
   [1115, 1110],
   [2015, 2010],
+  [3005, 3000],
+  [4015, 4010],
   [5015, 5010],
   [6005, 6000],
+  [7015, 7010],
   [8005, 8000],
 ]);
 
