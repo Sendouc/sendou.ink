@@ -10,7 +10,26 @@ export function resolveBestOfs(
     return matches.map((match) => [3, match.matchId]);
   }
   if (type === "single_elimination") {
-    return matches.map((match) => [5, match.matchId]);
+    const maxRoundNumber = Math.max(
+      ...matches.map((match) => match.roundNumber),
+    );
+
+    return matches.map((match) => {
+      const isTopFour =
+        match.roundNumber === maxRoundNumber ||
+        match.roundNumber === maxRoundNumber - 1;
+
+      const isFirstTwoRounds =
+        match.roundNumber === 1 || match.roundNumber === 2;
+
+      const isThirdPlaceMatch = match.groupNumber === 2;
+
+      if (isTopFour || isThirdPlaceMatch || !isFirstTwoRounds) {
+        return [5, match.matchId];
+      }
+
+      return [3, match.matchId];
+    });
   }
 
   // Double Elimination logic
