@@ -306,7 +306,7 @@ export default function TournamentRegisterPage() {
           </div>
         </div>
       </div>
-      <div>{tournament.ctx.description}</div>
+      <div className="whitespace-pre-wrap">{tournament.ctx.description}</div>
       {isRegularMemberOfATeam ? (
         <Alert>{t("tournament:pre.inATeam")}</Alert>
       ) : (
