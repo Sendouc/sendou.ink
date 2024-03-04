@@ -44,6 +44,7 @@ import { assertUnreachable } from "~/utils/types";
 import {
   LEADERBOARDS_PAGE,
   LOG_IN_URL,
+  SENDOUQ_INFO_PAGE,
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_LOOKING_PREVIEW_PAGE,
   SENDOUQ_PAGE,
@@ -220,7 +221,6 @@ export default function QPage() {
         ) : null}
         <Clocks />
       </div>
-      <QLinks />
       {data.season ? (
         <>
           {data.groupInvitedTo === null ? (
@@ -285,6 +285,7 @@ export default function QPage() {
           )}
         </>
       ) : null}
+      <QLinks />
     </Main>
   );
 }
@@ -460,9 +461,9 @@ function QLinks() {
     <div className="stack sm">
       <QLink
         navIcon="articles"
-        url={SENDOUQ_RULES_PAGE}
-        title={t("q:front.nav.rules.title")}
-        subText={t("q:front.nav.rules.description")}
+        url={SENDOUQ_INFO_PAGE}
+        title={t("q:front.nav.info.title")}
+        subText={t("q:front.nav.info.description")}
       />
       {user ? (
         <QLink
@@ -492,6 +493,12 @@ function QLinks() {
           subText={t("q:front.nav.mySeason.description")}
         />
       ) : null}
+      <QLink
+        navIcon="articles"
+        url={SENDOUQ_RULES_PAGE}
+        title={t("q:front.nav.rules.title")}
+        subText={t("q:front.nav.rules.description")}
+      />
     </div>
   );
 }

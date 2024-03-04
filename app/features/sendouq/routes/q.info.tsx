@@ -13,10 +13,12 @@ import "../q.css";
 import { Image } from "~/components/Image";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
+import { Button } from "~/components/Button";
 
 export default function SendouQInfoPage() {
   return (
     <Main className="q-info__container">
+      <TableOfContents />
       <GeneralInfo />
       <BeforeJoining />
       <JoiningTheQueue />
@@ -28,10 +30,115 @@ export default function SendouQInfoPage() {
   );
 }
 
+function TableOfContents() {
+  const handleTitleClick = (id: string) => () => {
+    const element = document.getElementById(id);
+    if (!element) return;
+
+    const pos = element.getBoundingClientRect().top;
+    const headerOffset = 45;
+    window.scrollTo({
+      top: pos + window.scrollY - headerOffset,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <nav className="q-info__table-of-contents">
+      <h2>Table of contents</h2>
+      <ul>
+        <li>
+          <Button onClick={handleTitleClick("general-info")} variant="minimal">
+            General info
+          </Button>
+        </li>
+
+        <li>
+          <Button
+            onClick={handleTitleClick("before-joining")}
+            variant="minimal"
+          >
+            Before joining
+          </Button>
+        </li>
+        <li>Make a sendou.ink account</li>
+        <li>Select your map pool</li>
+        <li>Weapon pool</li>
+        <li>Voice chat</li>
+        <li>Avoiding Splattercolor Screen</li>
+        <li>Bio</li>
+        <li>Friend code</li>
+        <li>Reading rules</li>
+
+        <li>
+          <Button
+            onClick={handleTitleClick("joining-the-queue")}
+            variant="minimal"
+          >
+            Joining the queue
+          </Button>
+        </li>
+        <li>Joining solo</li>
+        <li>Joining with 1-3 mates</li>
+
+        <li>
+          <Button
+            onClick={handleTitleClick("finding-a-group")}
+            variant="minimal"
+          >
+            Finding a group
+          </Button>
+        </li>
+        <li>Plus Server icons</li>
+        <li>Adding a note</li>
+        <li>Inactivity</li>
+        <li>Group managers</li>
+
+        <li>
+          <Button
+            onClick={handleTitleClick("finding-an-opponent")}
+            variant="minimal"
+          >
+            Finding an opponent
+          </Button>
+        </li>
+        <li>Rechallenging</li>
+
+        <li>
+          <Button
+            onClick={handleTitleClick("playing-the-match")}
+            variant="minimal"
+          >
+            Playing the match
+          </Button>
+        </li>
+        <li>Canceling the match</li>
+        <li>Enemy not reporting</li>
+        <li>Private note</li>
+        <li>Joining again with the same group</li>
+        <li>Stats</li>
+
+        <li>
+          <Button onClick={handleTitleClick("other-topics")} variant="minimal">
+            Other topics
+          </Button>
+        </li>
+        <li>Ranking algorithm</li>
+        <li>Ranking tiers</li>
+        <li>Rank history</li>
+        <li>Team ranking</li>
+        <li>Ranked tournaments</li>
+        <li>SendouQ Season Finale</li>
+        <li>Off-season</li>
+      </ul>
+    </nav>
+  );
+}
+
 function GeneralInfo() {
   return (
     <section>
-      <h2>General info</h2>
+      <h2 id="general-info">General info</h2>
       <p>
         SendouQ is a community made matchmaking system. It features leaderboards
         and a season system. Everyone is free to join no matter if they are new
@@ -47,7 +154,7 @@ function GeneralInfo() {
 function BeforeJoining() {
   return (
     <section>
-      <h2>Before joining</h2>
+      <h2 id="before-joining">Before joining</h2>
       <h3>Make a sendou.ink account</h3>
       <p>
         Click “log in” on the front page (mobile) or top right (desktop). Agree
@@ -64,7 +171,7 @@ function BeforeJoining() {
         way. Prefer means you like this mode over neutral modes. These choices
         later affect what modes you will be playing. In SendouQ you might play a
         set with SZ/TC/RM/CB or only TC or TC/RM or any other combination. It
-        all depends on what people have chosen.
+        all depends on what players in that match have chosen.
       </p>
       <p>
         For each mode that you didn&apos;t avoid also choose 7 maps. Again the
@@ -96,7 +203,7 @@ function BeforeJoining() {
         accessibility reasons. Toggling this option means screen will be banned
         in all sets you play. But also note that groups challenging your group
         will see that screen would be banned in your set so it&apos;s not
-        adviced to select this option unnecessarily.
+        advised to select this option unnecessarily.
       </p>
       <h3>Bio</h3>
       <p>
@@ -124,7 +231,7 @@ function BeforeJoining() {
 function JoiningTheQueue() {
   return (
     <section>
-      <h2>Joining the queue</h2>
+      <h2 id="joining-the-queue">Joining the queue</h2>
       <h3>Joining solo</h3> <p>Click “Join solo” on the SendouQ front page.</p>
       <h3>Joining with 1-3 mates</h3>
       <p>
@@ -141,12 +248,12 @@ function JoiningTheQueue() {
 function FindingAGroup() {
   return (
     <section>
-      <h2>Finding a group</h2>
+      <h2 id="finding-a-group">Finding a group</h2>
       <p>
         <p>
           If you didn&apos;t join with a full group of 4 next you will join a
           screen where the aim is to get a full group. You do this by getting
-          other people join your group or morphing with other groups. Click the
+          other people join your group or merging with other groups. Click the
           “Invite” button for any group you would like to group up with
           considering the weapons, skill level and other factors. There is no
           downside in sending more invites so it&apos;s not advised to only send
@@ -182,6 +289,13 @@ function FindingAGroup() {
         marked inactive and hidden. Click the prompt that you are still looking
         to be visible again.
       </p>
+      <h3>Group managers</h3>
+      <p>
+        Only the group owner or manager can send invites. When groups merge then
+        the previous owner and manager will have it in the new group as well.
+        Group owner can give the manager role by clicking the star icon and
+        selecting &quot;Give manager&quot;.
+      </p>
     </section>
   );
 }
@@ -189,10 +303,21 @@ function FindingAGroup() {
 function FindingAnOpponent() {
   return (
     <section>
-      <p>TODO</p>
-      <h2>Finding an opponent</h2>
+      <h2 id="finding-an-opponent">Finding an opponent</h2>
+      <p>
+        Like with finding a group you will get presented a list of groups you
+        can challenge. Typically choosing a group with similar skill level might
+        result in the best match but you are free to challenge group of any
+        level (and they are free to not accept). You will also see the modes the
+        set would have before deciding on challenging/accepting.
+      </p>
       <h3>Rechallenging</h3>
-      <p>TODO</p>
+      <p>
+        Sometimes it can take a while for a group to accept your challenge. If
+        you don&apos;t have a strong preference about modes you might consider
+        &quot;Rechallenging&quot; the team on their mode preferences. In some
+        cases it might help you get into a match faster.
+      </p>
     </section>
   );
 }
@@ -200,16 +325,58 @@ function FindingAnOpponent() {
 function PlayingTheMatch() {
   return (
     <section>
-      <p>TODO, info about hosting & how to join a room in S3</p>
-      <h2>Playing the match</h2>
+      <h2 id="playing-the-match">Playing the match</h2>
+      <p>
+        When you have a match it&apos;s time to join the room. The person who
+        first volunteers in the match chat will host the room. Use the pool and
+        password provided. As host remember to use the Y button (letter icon) to
+        send invites periodically as if people joined the pool after you by
+        default they don&apos;t see the room. As a player joining the room the
+        room will appear in the &quot;letter tab&quot;. Press X to refresh the
+        view and if you are not seeing it then ask the host to send you an
+        invite.
+      </p>
+      <p>
+        Then just play matches till either team has reached 4 wins and report
+        the score. Your SP will be adjusted after both teams report the score.
+      </p>
       <h3>Canceling the match</h3>
-      <p>TODO</p>
+      <p>
+        Match can be canceled if both teams agree to (read the rules). Click the
+        cancel button to request canceling the match. If the other team agrees
+        then they can also click it to confirm and lock the match.
+      </p>
+      <h3>Enemy not reporting</h3>
+      <p>
+        As the first measure contact the opponent and politely remind them to.
+        If that is not working then come to the helpdesk channel on our Discord
+        to get help from admin.
+      </p>
       <h3>Private note</h3>
-      <p>TODO</p>
+      <p>
+        After the set you can leave private notes about your teammates. If you
+        had good experience with someone why not leave a positive reminder so
+        you remember to group up with them in future as well? Likewise if you
+        did not have such a good time playing with someone you can leave a
+        negative note. The sentiment affects their sorting in the group up
+        phase. Clicking their avatar in the group up phase will show what you
+        wrote about them.
+      </p>
       <h3>Joining again with the same group</h3>
-      <p>TODO</p>
+      <p>
+        As a group owner you can use the &quot;Look again with same group&quot;
+        to instantly join the queue with the same roster. Note that this button
+        should only be used if you checked with all your mates that they can
+        still play another set.
+      </p>
       <h3>Stats</h3>
-      <p>TODO</p>
+      <p>
+        While reporting the score you can also report weapons. You can view
+        statistics on your user profile. You can for example see your win rate
+        with different weapons on each stage by clicking its row on the
+        &quot;Stages&quot; tab or view your winrates with different mates on the
+        &quot;Teammates&quot; tab.
+      </p>
     </section>
   );
 }
@@ -217,7 +384,7 @@ function PlayingTheMatch() {
 function OtherTopics() {
   return (
     <section>
-      <h2>Other topics</h2>
+      <h2 id="other-topics">Other topics</h2>
       <h3>Ranking algorithm</h3>
       <p>
         The ranking algorithm used is called OpenSkill. Most common question
@@ -234,6 +401,10 @@ function OtherTopics() {
           Twitter thread
         </a>{" "}
         on a longer explanation.
+      </p>
+      <p>
+        Only the whole set&apos;s result matters so points gained/lost are the
+        same whether the set ends 4-3 or 4-0.
       </p>
       <h3>Ranking tiers</h3>
       <p>
@@ -255,8 +426,8 @@ function OtherTopics() {
         There is also a tier recalculation in the first week of the season that
         can change your ranking tier significantly. When there are less than{" "}
         {USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN} entries on the leaderboard
-        tiers are calculated based everyone&apos;s powers. After crossing that
-        threshold tiers switch being calculated based on players on the
+        tiers are calculated based on everyone&apos;s powers. After crossing
+        that threshold tiers switch being calculated based on players on the
         leaderboard only.
       </p>
       <h3>Rank history</h3>
@@ -287,7 +458,7 @@ function OtherTopics() {
         on sendou.ink. If on the registration page it has the “Ranked” badge
         then you know it is a ranked tournament. In ranked tournaments each set
         is counted as a SendouQ set. Ranking changes are applied when the
-        tournament ends and is finalised by the TO.
+        tournament ends and is finalized by the TO.
       </p>
       <p>
         If you sub around then note that only the people who played in the set

@@ -4,6 +4,8 @@ date: 2023-09-28
 author: Joy
 ---
 
+Update 5th February 2024: Check the new [SendouQ info page](https://sendou.ink/q/info).
+
 ## What is SendouQ?
 
 SendouQ is a third-party matchmaking service for Splatoon 3, offering a more competitive alternative to the in-game matchmaking. Matches are conducted in a first-to-4 format, with maps and modes selected by the players. The service is free and open to all players.

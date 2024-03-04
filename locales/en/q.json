@@ -30,6 +30,8 @@
   "front.upcomingSeason.date": "Join Season {{nth}} starting {{date}}",
   "front.nav.rules.title": "Rules",
   "front.nav.rules.description": "Read these before playing",
+  "front.nav.info.title": "Info",
+  "front.nav.info.description": "What is SendouQ and how to use it",
   "front.nav.settings.title": "Settings",
   "front.nav.settings.description": "Map preferences, weapon pool, voice chat & sounds",
   "front.nav.leaderboards.title": "Leaderboards",

@@ -544,3 +544,22 @@
 .q-info__container p {
   margin-block: var(--s-2);
 }
+
+.q-info__table-of-contents ul {
+  padding-left: 0;
+}
+
+.q-info__table-of-contents li {
+  list-style: none;
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+}
+
+.q-info__table-of-contents li:has(button) {
+  margin-block-start: var(--s-2);
+}
+
+.q-info__table-of-contents li:not(:has(button)) {
+  margin-inline-start: var(--s-2);
+  font-size: var(--fonts-xs);
+}
