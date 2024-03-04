@@ -140,7 +140,7 @@ export const action: ActionFunction = async ({ params, request }) => {
           teams: tournament.ctx.teams,
           finalStandings: _finalStandings,
           results,
-          calculateSeasonalStats: typeof season === "number",
+          calculateSeasonalStats: tournament.ranked,
           queryCurrentTeamRating: (identifier) =>
             queryCurrentTeamRating({ identifier, season: season! }).rating,
           queryCurrentUserRating: (userId) =>

@@ -386,6 +386,7 @@ type CreateArgs = Pick<
   bracketProgression: TournamentSettings["bracketProgression"] | null;
   teamsPerGroup?: number;
   thirdPlaceMatch?: boolean;
+  isRanked?: boolean;
 };
 export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
@@ -396,6 +397,7 @@ export async function create(args: CreateArgs) {
         bracketProgression: args.bracketProgression,
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
+        isRanked: args.isRanked,
       };
 
       tournamentId = (
@@ -465,6 +467,7 @@ export async function update(args: UpdateArgs) {
         bracketProgression: args.bracketProgression,
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
+        isRanked: args.isRanked,
       };
 
       await trx

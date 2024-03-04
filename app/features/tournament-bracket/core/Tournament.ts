@@ -266,7 +266,10 @@ export class Tournament {
   }
 
   get ranked() {
-    return Boolean(currentSeason(this.ctx.startTime));
+    const seasonIsActive = Boolean(currentSeason(this.ctx.startTime));
+    if (!seasonIsActive) return false;
+
+    return this.ctx.settings.isRanked ?? true;
   }
 
   get logoSrc() {

@@ -117,6 +117,7 @@ export const action: ActionFunction = async ({ request }) => {
     bracketProgression: formValuesToBracketProgression(data),
     teamsPerGroup: data.teamsPerGroup ?? undefined,
     thirdPlaceMatch: data.thirdPlaceMatch ?? undefined,
+    isRanked: data.isRanked ?? undefined,
   };
   validate(
     !commonArgs.toToolsEnabled || commonArgs.bracketProgression,
@@ -253,6 +254,12 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
+        {isTournament ? (
+          <>
+            <Divider>Tournament settings</Divider>
+            <RankedToggle />
+          </>
+        ) : null}
         {/* can't edit as participants might have chosen maps and changing this might cause impossible states */}
         {isTournament && !eventToEdit ? (
           <TournamentMapPickingStyleSelect />
@@ -607,6 +614,33 @@ function BadgesAdder() {
   );
 }
 
+function RankedToggle() {
+  const data = useLoaderData<typeof loader>();
+  const [isRanked, setIsRanked] = React.useState(
+    data.tournamentCtx?.settings.isRanked ?? true,
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id}>Ranked</label>
+      <Toggle
+        name="isRanked"
+        id={id}
+        tiny
+        checked={isRanked}
+        setChecked={setIsRanked}
+      />
+      <FormMessage type="info">
+        Ranked tournaments affect SP. Tournaments that don&apos;t have open
+        registration (skill capped) or &quot;gimmick tournaments&quot; must
+        always be hosted as unranked. Any tournament hosted during off-season is
+        always unranked no matter what is chosen here.
+      </FormMessage>
+    </div>
+  );
+}
+
 const mapPickingStyleToShort: Record<
   Tables["Tournament"]["mapPickingStyle"],
   "ALL" | RankedModeShort
@@ -822,7 +856,7 @@ function TournamentFormatSelector() {
   );
 
   return (
-    <div className="stack md">
+    <div className="stack md w-full">
       <Divider>Tournament format</Divider>
       <div>
         <Label htmlFor="format">Format</Label>
@@ -866,6 +900,7 @@ function TournamentFormatSelector() {
             setChecked={setThirdPlaceMatch}
             name="thirdPlaceMatch"
             id="thirdPlaceMatch"
+            tiny
           />
         </div>
       ) : null}

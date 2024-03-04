@@ -386,6 +386,7 @@ export interface TournamentSettings {
   bracketProgression: TournamentBracketProgression;
   teamsPerGroup?: number;
   thirdPlaceMatch?: boolean;
+  isRanked?: boolean;
 }
 
 export interface CastedMatchesInfo {
