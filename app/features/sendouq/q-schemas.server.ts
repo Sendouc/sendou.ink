@@ -26,7 +26,12 @@ export const frontPageSchema = z.union([
   }),
   z.object({
     _action: _action("ADD_FRIEND_CODE"),
-    friendCode: z.string().regex(FRIEND_CODE_REGEXP),
+    friendCode: z
+      .string()
+      .regex(FRIEND_CODE_REGEXP, {
+        message:
+          "Invalid friend code. Did you include dashes? Example: 1234-5678-9012",
+      }),
   }),
 ]);
 
