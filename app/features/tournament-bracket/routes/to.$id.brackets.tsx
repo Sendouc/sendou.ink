@@ -44,10 +44,9 @@ import {
 import {
   useBracketExpanded,
   useTournament,
-  useTournamentToSetMapPool,
 } from "../../tournament/routes/to.$id";
 import { Bracket } from "../components/Bracket";
-import type { Standing } from "../core/Bracket";
+import type { Bracket as BracketType, Standing } from "../core/Bracket";
 import { tournamentFromDB } from "../core/Tournament.server";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
@@ -65,7 +64,6 @@ import {
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
 import { Menu } from "~/components/Menu";
-import { generateTournamentRoundMaplist } from "../core/toMapList";
 import { BracketMapListDialog } from "../components/BracketMapListDialog";
 
 export const action: ActionFunction = async ({ params, request }) => {
@@ -188,7 +186,6 @@ export default function TournamentBracketsPage() {
   const { revalidate } = useRevalidator();
   const user = useUser();
   const tournament = useTournament();
-  const toSetMapPool = useTournamentToSetMapPool();
 
   const defaultBracketIdx = () => {
     if (
@@ -211,16 +208,6 @@ export default function TournamentBracketsPage() {
     () => tournament.bracketByIdxOrDefault(bracketIdx),
     [tournament, bracketIdx],
   );
-  if (toSetMapPool) {
-    console.log(
-      generateTournamentRoundMaplist({
-        mapCounts: bracket.defaultRoundBestOfs,
-        pool: toSetMapPool,
-        rounds: bracket.data.round,
-        type: bracket.type,
-      }),
-    );
-  }
 
   React.useEffect(() => {
     if (visibility !== "visible" || tournament.everyBracketOver) return;
@@ -317,7 +304,7 @@ export default function TournamentBracketsPage() {
             >
               {t("tournament:bracket.finalize.text")}{" "}
               {bracket.canBeStarted ? (
-                <BracketStarter />
+                <BracketStarter bracket={bracket} />
               ) : (
                 <Popover
                   buttonChildren={
@@ -395,7 +382,7 @@ function useAutoRefresh() {
   }, [lastEvent, revalidate]);
 }
 
-function BracketStarter() {
+function BracketStarter({ bracket }: { bracket: BracketType }) {
   const { t } = useTranslation(["tournament"]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -404,6 +391,7 @@ function BracketStarter() {
       <BracketMapListDialog
         isOpen={dialogOpen}
         close={() => setDialogOpen(false)}
+        bracket={bracket}
       />
       <Button
         variant="outlined"

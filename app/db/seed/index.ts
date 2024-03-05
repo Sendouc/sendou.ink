@@ -70,8 +70,7 @@ import placements from "./placements.json";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { AMOUNT_OF_MAPS_IN_POOL_PER_MODE } from "~/features/sendouq-settings/q-settings-constants";
 import { tags } from "~/features/calendar/calendar-constants";
-
-// xxx: add swim or sink test with to picked maps
+import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/constants";
 
 const calendarEventWithToToolsRegOpen = () =>
   calendarEventWithToTools("PICNIC", true);
@@ -83,6 +82,9 @@ const calendarEventWithToToolsPPRegOpen = () =>
   calendarEventWithToTools("PP", true);
 const calendarEventWithToToolsTeamsPP = () =>
   calendarEventWithToToolsTeams("PP");
+const calendarEventWithToToolsSOS = () => calendarEventWithToTools("SOS");
+const calendarEventWithToToolsTeamsSOS = () =>
+  calendarEventWithToToolsTeams("SOS");
 
 const basicSeeds = (variation?: SeedVariation | null) => [
   adminUser,
@@ -123,6 +125,9 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   variation === "NO_TOURNAMENT_TEAMS"
     ? undefined
     : calendarEventWithToToolsTeamsPP,
+  calendarEventWithToToolsSOS,
+  calendarEventWithToToolsTeamsSOS,
+  calendarEventWithToToolsToSetMapPool,
   tournamentSubs,
   adminBuilds,
   manySplattershotBuilds,
@@ -836,58 +841,87 @@ async function calendarEventResults() {
 
 const TO_TOOLS_CALENDAR_EVENT_ID = 201;
 function calendarEventWithToTools(
-  event: "PICNIC" | "ITZ" | "PP" = "PICNIC",
+  event: "PICNIC" | "ITZ" | "PP" | "SOS" = "PICNIC",
   registrationOpen: boolean = false,
 ) {
   const tournamentId = {
     PICNIC: 1,
     ITZ: 2,
     PP: 3,
+    SOS: 4,
   }[event];
   const eventId = {
     PICNIC: TO_TOOLS_CALENDAR_EVENT_ID + 0,
     ITZ: TO_TOOLS_CALENDAR_EVENT_ID + 1,
     PP: TO_TOOLS_CALENDAR_EVENT_ID + 2,
+    SOS: TO_TOOLS_CALENDAR_EVENT_ID + 3,
   }[event];
   const name = {
     PICNIC: "PICNIC #2",
     ITZ: "In The Zone 22",
     PP: "Paddling Pool 253",
+    SOS: "Swim or Sink 101",
   }[event];
 
   const settings: Tables["Tournament"]["settings"] =
-    event === "PP"
+    event === "SOS"
       ? {
           bracketProgression: [
             { type: "round_robin", name: "Groups stage" },
             {
               type: "single_elimination",
-              name: "Final stage",
-              sources: [{ bracketIdx: 0, placements: [1, 2] }],
+              name: "Great White",
+              sources: [{ bracketIdx: 0, placements: [1] }],
             },
             {
               type: "single_elimination",
-              name: "Underground bracket",
-              sources: [{ bracketIdx: 0, placements: [3, 4] }],
+              name: "Hammerhead",
+              sources: [{ bracketIdx: 0, placements: [2] }],
+            },
+            {
+              type: "single_elimination",
+              name: "Mako",
+              sources: [{ bracketIdx: 0, placements: [3] }],
+            },
+            {
+              type: "single_elimination",
+              name: "Lantern",
+              sources: [{ bracketIdx: 0, placements: [4] }],
             },
           ],
         }
-      : event === "ITZ"
+      : event === "PP"
         ? {
             bracketProgression: [
-              { type: "double_elimination", name: "Main bracket" },
+              { type: "round_robin", name: "Groups stage" },
+              {
+                type: "single_elimination",
+                name: "Final stage",
+                sources: [{ bracketIdx: 0, placements: [1, 2] }],
+              },
               {
                 type: "single_elimination",
                 name: "Underground bracket",
-                sources: [{ bracketIdx: 0, placements: [-1, -2] }],
+                sources: [{ bracketIdx: 0, placements: [3, 4] }],
               },
             ],
           }
-        : {
-            bracketProgression: [
-              { type: "double_elimination", name: "Main bracket" },
-            ],
-          };
+        : event === "ITZ"
+          ? {
+              bracketProgression: [
+                { type: "double_elimination", name: "Main bracket" },
+                {
+                  type: "single_elimination",
+                  name: "Underground bracket",
+                  sources: [{ bracketIdx: 0, placements: [-1, -2] }],
+                },
+              ],
+            }
+          : {
+              bracketProgression: [
+                { type: "double_elimination", name: "Main bracket" },
+              ],
+            };
 
   sql
     .prepare(
@@ -906,7 +940,8 @@ function calendarEventWithToTools(
     .run({
       id: tournamentId,
       settings: JSON.stringify(settings),
-      mapPickingStyle: event === "ITZ" ? "AUTO_SZ" : "AUTO_ALL",
+      mapPickingStyle:
+        event === "SOS" ? "TO" : event === "ITZ" ? "AUTO_SZ" : "AUTO_ALL",
     });
 
   sql
@@ -1000,6 +1035,37 @@ function calendarEventWithToToolsTieBreakerMapPool() {
   }
 }
 
+function calendarEventWithToToolsToSetMapPool() {
+  const stages = [
+    ...SENDOUQ_DEFAULT_MAPS.SZ.map((stageId) => ({ mode: "SZ", stageId })),
+    ...SENDOUQ_DEFAULT_MAPS.TC.map((stageId) => ({ mode: "TC", stageId })),
+    ...SENDOUQ_DEFAULT_MAPS.RM.map((stageId) => ({ mode: "RM", stageId })),
+    ...SENDOUQ_DEFAULT_MAPS.CB.map((stageId) => ({ mode: "CB", stageId })),
+  ];
+
+  for (const { mode, stageId } of stages) {
+    sql
+      .prepare(
+        `
+        insert into "MapPoolMap" (
+          "calendarEventId",
+          "stageId",
+          "mode"
+        ) values (
+          $calendarEventId,
+          $stageId,
+          $mode
+        )
+      `,
+      )
+      .run({
+        calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID + 3,
+        stageId,
+        mode,
+      });
+  }
+}
+
 const validTournamentTeamName = () => {
   while (true) {
     const name = faker.music.songName();
@@ -1014,7 +1080,7 @@ const availablePairs = rankedModesShort
   )
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(
-  event: "PICNIC" | "ITZ" | "PP" = "PICNIC",
+  event: "PICNIC" | "ITZ" | "PP" | "SOS" = "PICNIC",
 ) {
   const userIds = userIdsInAscendingOrderById();
   const names = Array.from(
@@ -1025,12 +1091,14 @@ function calendarEventWithToToolsTeams(
     PICNIC: 1,
     ITZ: 2,
     PP: 3,
+    SOS: 4,
   }[event];
 
   const teamIdAddition = {
     PICNIC: 0,
     ITZ: 100,
     PP: 200,
+    SOS: 300,
   }[event];
 
   for (let id = 1; id <= 16; id++) {
