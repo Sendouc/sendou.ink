@@ -9,6 +9,7 @@ import { removeDuplicates } from "~/utils/arrays";
 import { logger } from "~/utils/logger";
 import type { Round } from "~/modules/brackets-model";
 import { getTournamentManager } from "./brackets-manager";
+import type { BracketMapCounts } from "./toMapList";
 
 interface CreateBracketArgs {
   id: number;
@@ -319,6 +320,10 @@ export abstract class Bracket {
         assertUnreachable(args.type);
       }
     }
+  }
+
+  get defaultRoundBestOfs(): BracketMapCounts {
+    throw new Error("not implemented");
   }
 }
 
@@ -941,5 +946,21 @@ class RoundRobinBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "round_robin";
+  }
+
+  get defaultRoundBestOfs() {
+    const result: BracketMapCounts = new Map();
+
+    for (const round of this.data.round) {
+      if (!result.get(round.group_id)) {
+        result.set(round.group_id, new Map());
+      }
+
+      result
+        .get(round.group_id)!
+        .set(round.number, { count: 3, type: "BEST_OF" });
+    }
+
+    return result;
   }
 }

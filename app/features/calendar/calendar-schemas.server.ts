@@ -69,7 +69,7 @@ export const newCalendarEventActionSchema = z
     ),
     pool: z.string().optional(),
     toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
-    toToolsMode: z.enum(["ALL", "SZ", "TC", "RM", "CB"]).optional(),
+    toToolsMode: z.enum(["ALL", "TO", "SZ", "TC", "RM", "CB"]).optional(),
     isRanked: z.preprocess(checkboxValueToBoolean, z.boolean().nullish()),
     //
     // tournament format related fields

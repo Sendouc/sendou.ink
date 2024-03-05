@@ -272,6 +272,10 @@ export class Tournament {
     return this.ctx.settings.isRanked ?? true;
   }
 
+  get teamsPrePickMaps() {
+    return this.ctx.mapPickingStyle !== "TO";
+  }
+
   get logoSrc() {
     return HACKY_resolvePicture(this.ctx);
   }
@@ -462,7 +466,7 @@ export class Tournament {
       return false;
     }
 
-    if (mapPool.length === 0) {
+    if (this.teamsPrePickMaps && mapPool.length === 0) {
       return false;
     }
 

@@ -71,6 +71,8 @@ import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { AMOUNT_OF_MAPS_IN_POOL_PER_MODE } from "~/features/sendouq-settings/q-settings-constants";
 import { tags } from "~/features/calendar/calendar-constants";
 
+// xxx: add swim or sink test with to picked maps
+
 const calendarEventWithToToolsRegOpen = () =>
   calendarEventWithToTools("PICNIC", true);
 const calendarEventWithToToolsSz = () => calendarEventWithToTools("ITZ");

@@ -44,6 +44,7 @@ import {
 import {
   useBracketExpanded,
   useTournament,
+  useTournamentToSetMapPool,
 } from "../../tournament/routes/to.$id";
 import { Bracket } from "../components/Bracket";
 import type { Standing } from "../core/Bracket";
@@ -64,6 +65,8 @@ import {
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
 import { Menu } from "~/components/Menu";
+import { generateTournamentRoundMaplist } from "../core/toMapList";
+import { BracketMapListDialog } from "../components/BracketMapListDialog";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -185,6 +188,7 @@ export default function TournamentBracketsPage() {
   const { revalidate } = useRevalidator();
   const user = useUser();
   const tournament = useTournament();
+  const toSetMapPool = useTournamentToSetMapPool();
 
   const defaultBracketIdx = () => {
     if (
@@ -207,6 +211,16 @@ export default function TournamentBracketsPage() {
     () => tournament.bracketByIdxOrDefault(bracketIdx),
     [tournament, bracketIdx],
   );
+  if (toSetMapPool) {
+    console.log(
+      generateTournamentRoundMaplist({
+        mapCounts: bracket.defaultRoundBestOfs,
+        pool: toSetMapPool,
+        rounds: bracket.data.round,
+        type: bracket.type,
+      }),
+    );
+  }
 
   React.useEffect(() => {
     if (visibility !== "visible" || tournament.everyBracketOver) return;
@@ -303,14 +317,7 @@ export default function TournamentBracketsPage() {
             >
               {t("tournament:bracket.finalize.text")}{" "}
               {bracket.canBeStarted ? (
-                <SubmitButton
-                  variant="outlined"
-                  size="tiny"
-                  testId="finalize-bracket-button"
-                  _action="START_BRACKET"
-                >
-                  {t("tournament:bracket.finalize.action")}
-                </SubmitButton>
+                <BracketStarter />
               ) : (
                 <Popover
                   buttonChildren={
@@ -386,6 +393,36 @@ function useAutoRefresh() {
     // TODO: maybe later could look into not revalidating unless bracket advanced but do something fancy in the tournament class instead
     revalidate();
   }, [lastEvent, revalidate]);
+}
+
+function BracketStarter() {
+  const { t } = useTranslation(["tournament"]);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  return (
+    <>
+      <BracketMapListDialog
+        isOpen={dialogOpen}
+        close={() => setDialogOpen(false)}
+      />
+      <Button
+        variant="outlined"
+        size="tiny"
+        testId="finalize-bracket-button"
+        onClick={() => setDialogOpen(true)}
+      >
+        {t("tournament:bracket.finalize.action")}
+      </Button>
+      {/* <SubmitButton
+        variant="outlined"
+        size="tiny"
+        testId="finalize-bracket-button"
+        _action="START_BRACKET"
+      >
+        {t("tournament:bracket.finalize.action")}
+      </SubmitButton> */}
+    </>
+  );
 }
 
 function BracketCheckinButton({ bracketIdx }: { bracketIdx: number }) {

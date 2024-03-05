@@ -433,7 +433,10 @@ export async function create(args: CreateArgs) {
       trx,
       eventId,
       mapPoolMaps: args.mapPoolMaps ?? [],
-      isFullTournament: args.isFullTournament,
+      column:
+        args.isFullTournament && args.mapPickingStyle !== "TO"
+          ? "tieBreakerCalendarEventId"
+          : "calendarEventId",
     });
 
     return eventId;
@@ -461,6 +464,7 @@ export async function update(args: UpdateArgs) {
       .returning("tournamentId")
       .executeTakeFirstOrThrow();
 
+    let mapPickingStyle: Tables["Tournament"]["mapPickingStyle"] | undefined;
     if (tournamentId) {
       invariant(args.bracketProgression, "Expected bracketProgression");
       const settings: Tables["Tournament"]["settings"] = {
@@ -470,13 +474,16 @@ export async function update(args: UpdateArgs) {
         isRanked: args.isRanked,
       };
 
-      await trx
+      const { mapPickingStyle: _mapPickingStyle } = await trx
         .updateTable("Tournament")
         .set({
           settings: JSON.stringify(settings),
         })
         .where("id", "=", tournamentId)
-        .execute();
+        .returning("mapPickingStyle")
+        .executeTakeFirstOrThrow();
+
+      mapPickingStyle = _mapPickingStyle;
     }
 
     await trx
@@ -499,12 +506,12 @@ export async function update(args: UpdateArgs) {
       trx,
     });
 
-    if (!tournamentId) {
+    if (!tournamentId || mapPickingStyle === "TO") {
       await upsertMapPoolInTrx({
         trx,
         eventId: args.eventId,
         mapPoolMaps: args.mapPoolMaps ?? [],
-        isFullTournament: false,
+        column: "calendarEventId",
       });
     }
   });
@@ -600,12 +607,12 @@ export function upsertReportedScores(args: {
 async function upsertMapPoolInTrx({
   eventId,
   mapPoolMaps,
-  isFullTournament,
+  column,
   trx,
 }: {
   eventId: number;
   mapPoolMaps: NonNullable<CreateArgs["mapPoolMaps"]>;
-  isFullTournament: boolean;
+  column: "tieBreakerCalendarEventId" | "calendarEventId";
   trx: Transaction<DB>;
 }) {
   await trx
@@ -626,8 +633,7 @@ async function upsertMapPoolInTrx({
       mapPoolMaps.map((mapPoolMap) => ({
         stageId: mapPoolMap.stageId,
         mode: mapPoolMap.mode,
-        [isFullTournament ? "tieBreakerCalendarEventId" : "calendarEventId"]:
-          eventId,
+        [column]: eventId,
       })),
     )
     .execute();

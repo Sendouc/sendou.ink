@@ -28,6 +28,9 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import { databaseTimestampToDate } from "~/utils/dates";
 
 import "../tournament.css";
+import "~/styles/maps.css";
+import "~/styles/calendar-event.css";
+import { isAdmin } from "~/permissions";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -85,18 +88,23 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const tournamentStartedInTheLastMonth =
     databaseTimestampToDate(tournament.ctx.startTime) >
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-  const showFriendCodes =
-    tournamentStartedInTheLastMonth &&
-    (tournament.ctx.author.id === user?.id ||
-      tournament.ctx.staff.some(
-        (s) => s.role === "ORGANIZER" && s.id === user?.id,
-      ));
+  const isTournamentAdmin =
+    tournament.ctx.author.id === user?.id ||
+    tournament.ctx.staff.some(
+      (s) => s.role === "ORGANIZER" && s.id === user?.id,
+    ) ||
+    isAdmin(user);
+  const showFriendCodes = tournamentStartedInTheLastMonth && isTournamentAdmin;
 
   return {
     tournament,
     subsCount,
     streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
     streamsCount: streams.length,
+    toSetMapPool:
+      tournament.ctx.mapPickingStyle === "TO"
+        ? await TournamentRepository.findTOSetMapPoolById(tournamentId)
+        : undefined,
     friendCode: user
       ? await UserRepository.currentFriendCodeByUserId(user.id)
       : undefined,
@@ -182,6 +190,7 @@ export default function TournamentLayout() {
               streamingParticipants: data.streamingParticipants,
               friendCode: data.friendCode,
               friendCodes: data.friendCodes,
+              toSetMapPool: data.toSetMapPool,
             } satisfies TournamentContext
           }
         />
@@ -197,6 +206,7 @@ type TournamentContext = {
   setBracketExpanded: (expanded: boolean) => void;
   friendCode?: string;
   friendCodes?: SerializeFrom<typeof loader>["friendCodes"];
+  toSetMapPool?: SerializeFrom<typeof loader>["toSetMapPool"];
 };
 
 export function useTournament() {
@@ -220,4 +230,8 @@ export function useTournamentFriendCode() {
 
 export function useTournamentFriendCodes() {
   return useOutletContext<TournamentContext>().friendCodes;
+}
+
+export function useTournamentToSetMapPool() {
+  return useOutletContext<TournamentContext>().toSetMapPool;
 }

@@ -11,10 +11,10 @@ import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { ModeImage } from "~/components/Image";
+import { Image, ModeImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Popover } from "~/components/Popover";
@@ -50,6 +50,7 @@ import {
   LOG_IN_URL,
   SENDOU_INK_BASE_URL,
   navIconUrl,
+  readonlyMapsPage,
   tournamentBracketsPage,
   tournamentJoinPage,
   tournamentSubsPage,
@@ -72,11 +73,18 @@ import {
   isOneModeTournamentOf,
   tournamentIdFromParams,
 } from "../tournament-utils";
-import { useTournamentFriendCode, useTournament } from "./to.$id";
+import {
+  useTournamentFriendCode,
+  useTournament,
+  useTournamentToSetMapPool,
+} from "./to.$id";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
+import { filterOutFalsy } from "~/utils/arrays";
+import { MapPoolStages } from "~/components/MapPoolSelector";
+import { Section } from "~/components/Section";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -227,11 +235,11 @@ export const action: ActionFunction = async ({ request, params }) => {
 export type TournamentRegisterPageLoader = typeof loader;
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const eventId = tournamentIdFromParams(params);
-  const hasStarted = hasTournamentStarted(eventId);
+  const tournamentId = tournamentIdFromParams(params);
+  const hasStarted = hasTournamentStarted(tournamentId);
 
   if (hasStarted) {
-    throw redirect(tournamentBracketsPage({ tournamentId: eventId }));
+    throw redirect(tournamentBracketsPage({ tournamentId }));
   }
 
   const user = await getUser(request);
@@ -320,6 +328,7 @@ export default function TournamentRegisterPage() {
           {t("tournament:pre.sub.prompt")}
         </Link>
       ) : null}
+      <TOPickedMapPoolInfo />
     </div>
   );
 }
@@ -387,7 +396,7 @@ function RegistrationForms() {
       {ownTeam ? (
         <>
           <FillRoster ownTeam={ownTeam} ownTeamCheckedIn={ownTeamCheckedIn} />
-          <CounterPickMapPoolPicker />
+          {tournament.teamsPrePickMaps ? <CounterPickMapPoolPicker /> : null}
         </>
       ) : null}
     </div>
@@ -408,7 +417,7 @@ function RegistrationProgress({
   const { t } = useTranslation(["tournament"]);
   const tournament = useTournament();
 
-  const steps = [
+  const steps = filterOutFalsy([
     {
       name: t("tournament:pre.steps.name"),
       completed: Boolean(name),
@@ -418,15 +427,17 @@ function RegistrationProgress({
       completed:
         members && members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     },
-    {
-      name: t("tournament:pre.steps.pool"),
-      completed: mapPool && mapPool.length > 0,
-    },
+    tournament.teamsPrePickMaps
+      ? {
+          name: t("tournament:pre.steps.pool"),
+          completed: mapPool && mapPool.length > 0,
+        }
+      : null,
     {
       name: t("tournament:pre.steps.check-in"),
       completed: checkedIn,
     },
-  ];
+  ]);
 
   return (
     <div>
@@ -854,7 +865,6 @@ function DeleteMember({ members }: { members: TournamentDataTeam["members"] }) {
   );
 }
 
-// TODO: when "Can't pick stage more than 2 times" highlight those selects in red
 // TODO: useBlocker to prevent leaving page if made changes without saving
 function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc", "tournament"]);
@@ -1043,4 +1053,29 @@ function validateCounterPickMapPool(
   }
 
   return "VALID";
+}
+
+function TOPickedMapPoolInfo() {
+  const { t } = useTranslation(["calendar"]);
+  const toSetMapPool = useTournamentToSetMapPool();
+  const tournament = useTournament();
+
+  if (!toSetMapPool || toSetMapPool.length === 0) return null;
+
+  return (
+    <Section title={t("calendar:forms.mapPool")}>
+      <div className="event__map-pool-section">
+        <MapPoolStages mapPool={new MapPool(toSetMapPool)} />
+        <LinkButton
+          className="event__create-map-list-link"
+          to={readonlyMapsPage(tournament.ctx.eventId)}
+          variant="outlined"
+          size="tiny"
+        >
+          <Image alt="" path={navIconUrl("maps")} width={22} height={22} />
+          {t("calendar:createMapList")}
+        </LinkButton>
+      </div>
+    </Section>
+  );
 }

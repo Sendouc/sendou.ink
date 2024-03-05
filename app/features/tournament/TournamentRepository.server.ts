@@ -182,6 +182,15 @@ export async function findById(id: number) {
   };
 }
 
+export function findTOSetMapPoolById(tournamentId: number) {
+  return db
+    .selectFrom("CalendarEvent")
+    .innerJoin("MapPoolMap", "CalendarEvent.id", "MapPoolMap.calendarEventId")
+    .select(["MapPoolMap.mode", "MapPoolMap.stageId"])
+    .where("CalendarEvent.tournamentId", "=", tournamentId)
+    .execute();
+}
+
 const NEXT_TOURNAMENTS_TO_SHOW_WITH_UPCOMING = 2;
 export async function forShowcase() {
   const rows = await db
