@@ -1,4 +1,4 @@
-import { type Page, test, expect } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { ADMIN_DISCORD_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
 import {
@@ -451,5 +451,42 @@ test.describe("Tournament bracket", () => {
     await page.getByTestId("cast-info-submit-button").click();
     await backToBracket(page);
     await expect(page.getByText("🔴 LIVE")).toBeVisible();
+  });
+
+  test("resets bracket", async ({ page }) => {
+    const tournamentId = 1;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentBracketsPage({ tournamentId }),
+    });
+
+    await page.getByTestId("finalize-bracket-button").click();
+
+    await isNotVisible(page.locator('[data-match-id="1"]'));
+    await page.locator('[data-match-id="2"]').click();
+    await reportResult({
+      page,
+      amountOfMapsToReport: 2,
+      sidesWithMoreThanFourPlayers: ["last"],
+    });
+
+    await page.getByTestId("admin-tab").click();
+    await page
+      .getByLabel('Type bracket name ("Main bracket") to confirm')
+      .fill("Main bracket");
+    await page.getByTestId("reset-bracket-button").click();
+
+    await page.getByLabel("Action").selectOption("CHECK_IN");
+    await page.getByLabel("Team").selectOption("1");
+    await submit(page);
+
+    await page.getByTestId("brackets-tab").click();
+    await page.getByTestId("finalize-bracket-button").click();
+    // bye is gone
+    await expect(page.locator('[data-match-id="1"]')).toBeVisible();
   });
 });

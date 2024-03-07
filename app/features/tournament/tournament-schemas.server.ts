@@ -104,6 +104,10 @@ export const adminActionSchema = z.union([
       z.array(z.string()),
     ),
   }),
+  z.object({
+    _action: _action("RESET_BRACKET"),
+    stageId: id,
+  }),
 ]);
 
 export const joinSchema = z.object({

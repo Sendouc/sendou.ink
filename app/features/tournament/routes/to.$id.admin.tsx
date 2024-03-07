@@ -37,6 +37,7 @@ import { adminActionSchema } from "../tournament-schemas.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
+import { Input } from "~/components/Input";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -164,8 +165,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
-    // TODO: could also handle the case of admin trying
-    // to add members from a checked in team
     case "ADD_MEMBER": {
       validateIsTournamentOrganizer();
       const team = tournament.teamById(data.teamId);
@@ -224,6 +223,31 @@ export const action: ActionFunction = async ({ request, params }) => {
         tournamentId: tournament.ctx.id,
         castTwitchAccounts: data.castTwitchAccounts,
       });
+      break;
+    }
+    case "RESET_BRACKET": {
+      validateIsTournamentOrganizer();
+      validate(!tournament.ctx.isFinalized, "Tournament is finalized");
+
+      const bracketToResetIdx = tournament.brackets.findIndex(
+        (b) => b.id === data.stageId,
+      );
+      const bracketToReset = tournament.brackets[bracketToResetIdx];
+      validate(bracketToReset, "Invalid bracket id");
+      validate(!bracketToReset.preview, "Bracket has not started");
+
+      const inProgressBrackets = tournament.brackets.filter((b) => !b.preview);
+      validate(
+        inProgressBrackets.every(
+          (b) =>
+            !b.sources ||
+            b.sources.every((s) => s.bracketIdx !== bracketToResetIdx),
+        ),
+        "Some bracket that sources teams from this bracket has started",
+      );
+
+      await TournamentRepository.resetBracket(data.stageId);
+
       break;
     }
     default: {
@@ -287,6 +311,8 @@ export default function TournamentAdminPage() {
       <CastTwitchAccounts />
       <Divider smallText>Participant list download</Divider>
       <DownloadParticipants />
+      <Divider smallText>Bracket reset</Divider>
+      <BracketReset />
       {isAdmin(user) ? <EnableMapList /> : null}
     </div>
   );
@@ -761,4 +787,69 @@ function handleDownload({
   element.download = filename;
   document.body.appendChild(element);
   element.click();
+}
+
+function BracketReset() {
+  const tournament = useTournament();
+  const fetcher = useFetcher();
+  const inProgressBrackets = tournament.brackets.filter((b) => !b.preview);
+  const [_bracketToDelete, setBracketToDelete] = React.useState(
+    inProgressBrackets[0]?.id,
+  );
+  const [confirmText, setConfirmText] = React.useState("");
+
+  if (inProgressBrackets.length === 0) {
+    return <div className="text-lighter text-sm">No brackets in progress</div>;
+  }
+
+  const bracketToDelete = _bracketToDelete ?? inProgressBrackets[0].id;
+
+  const bracketToDeleteName = inProgressBrackets.find(
+    (bracket) => bracket.id === bracketToDelete,
+  )?.name;
+
+  return (
+    <div>
+      <fetcher.Form method="post" className="stack horizontal sm items-end">
+        <div>
+          <label htmlFor="bracket">Bracket</label>
+          <select
+            id="bracket"
+            name="stageId"
+            value={bracketToDelete}
+            onChange={(e) => setBracketToDelete(Number(e.target.value))}
+          >
+            {inProgressBrackets.map((bracket) => (
+              <option key={bracket.name} value={bracket.id}>
+                {bracket.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="bracket-confirmation">
+            Type bracket name (&quot;{bracketToDeleteName}&quot;) to confirm
+          </label>
+          <Input
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            id="bracket-confirmation"
+          />
+        </div>
+        <SubmitButton
+          _action="RESET_BRACKET"
+          state={fetcher.state}
+          disabled={confirmText !== bracketToDeleteName}
+          testId="reset-bracket-button"
+        >
+          Reset
+        </SubmitButton>
+      </fetcher.Form>
+      <FormMessage type="error" className="mt-2">
+        Resetting a bracket will delete all the match results in it (but not
+        other brackets) and reset the bracket to its initial state allowing you
+        to change participating teams.
+      </FormMessage>
+    </div>
+  );
 }

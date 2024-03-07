@@ -465,7 +465,7 @@ export interface TournamentRound {
   groupId: number;
   id: GeneratedAlways<number>;
   number: number;
-  stageId: StageId;
+  stageId: number;
 }
 
 export interface TournamentStage {
