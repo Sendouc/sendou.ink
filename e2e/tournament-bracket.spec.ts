@@ -339,7 +339,9 @@ test.describe("Tournament bracket", () => {
 
     await page.getByLabel("Action").selectOption("CHECK_IN");
     await page.getByLabel("Team").selectOption("216");
-    await page.getByLabel("Bracket").selectOption("Underground bracket");
+    await page
+      .getByLabel("Bracket", { exact: true })
+      .selectOption("Underground bracket");
     await submit(page);
 
     await navigate({
@@ -389,6 +391,60 @@ test.describe("Tournament bracket", () => {
     await expect(
       page.locator('[data-testid="mates-cell-placement-0"] li'),
     ).toHaveCount(3);
+  });
+
+  test("reopens round robin match and changes score", async ({ page }) => {
+    const tournamentId = 3;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentBracketsPage({ tournamentId }),
+    });
+
+    await page.getByTestId("finalize-bracket-button").click();
+
+    // set situation where match A is completed and its participants also completed their follow up matches B & C
+    // and then we go back and change the winner of A
+    await navigateToMatch(page, 8);
+    await reportResult({
+      page,
+      amountOfMapsToReport: 2,
+      sidesWithMoreThanFourPlayers: ["first"],
+      points: [100, 0],
+    });
+    await backToBracket(page);
+
+    await navigateToMatch(page, 9);
+    await reportResult({
+      page,
+      amountOfMapsToReport: 2,
+      sidesWithMoreThanFourPlayers: ["last"],
+      points: [100, 0],
+    });
+    await backToBracket(page);
+
+    await navigateToMatch(page, 10);
+    await reportResult({
+      page,
+      amountOfMapsToReport: 2,
+      sidesWithMoreThanFourPlayers: ["last"],
+      points: [100, 0],
+    });
+    await backToBracket(page);
+
+    await navigateToMatch(page, 8);
+    await page.getByTestId("reopen-match-button").click();
+    await page.getByTestId("undo-score-button").click();
+    await reportResult({
+      page,
+      amountOfMapsToReport: 2,
+      sidesWithMoreThanFourPlayers: ["first"],
+      points: [0, 100],
+      winner: 2,
+    });
   });
 
   test("locks/unlocks matches & sets match as casted", async ({ page }) => {
