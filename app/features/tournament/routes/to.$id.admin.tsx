@@ -834,6 +834,7 @@ function BracketReset() {
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             id="bracket-confirmation"
+            disableAutoComplete
           />
         </div>
         <SubmitButton
