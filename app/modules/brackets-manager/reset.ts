@@ -24,13 +24,16 @@ export class Reset extends BaseUpdater {
       stored.round_id,
     );
     const matchLocation = helpers.getMatchLocation(stage.type, group.number);
-    const nextMatches = this.getNextMatches(
-      stored,
-      matchLocation,
-      stage,
-      roundNumber,
-      roundCount,
-    );
+    const nextMatches =
+      stage.type !== "round_robin"
+        ? this.getNextMatches(
+            stored,
+            matchLocation,
+            stage,
+            roundNumber,
+            roundCount,
+          )
+        : [];
 
     if (
       nextMatches.some(

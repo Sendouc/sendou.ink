@@ -475,7 +475,7 @@ export interface TournamentRound {
   groupId: number;
   id: GeneratedAlways<number>;
   number: number;
-  stageId: StageId;
+  stageId: number;
   maps: ColumnType<TournamentRoundMaps | null, string | null, string | null>;
 }
 

@@ -23,7 +23,6 @@
     "prettier:write": "prettier --write . --log-level warn",
     "typecheck": "tsc --noEmit",
     "test:unit": "cross-env DB_PATH=:memory: NODE_ENV=test BASE_URL=https://example.com SKALOP_SYSTEM_MESSAGE_URL=http://skalop.test SKALOP_TOKEN=test uvu -r tsm -r tsconfig-paths/register -r ignore-styles -i e2e",
-    "test:unit:single": "cross-env DB_PATH=:memory: NODE_ENV=test BASE_URL=https://example.com SKALOP_SYSTEM_MESSAGE_URL=http://skalop.test SKALOP_TOKEN=test node -r tsm -r tsconfig-paths/register -r ignore-styles",
     "test:e2e": "npx playwright test",
     "checks": "npm run test:unit && npm run lint:css && npm run lint:ts && npm run prettier:check && npm run typecheck",
     "cf": "npm run test:unit && npm run check-translation-jsons && npm run lint:css -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck && npm run test:e2e",

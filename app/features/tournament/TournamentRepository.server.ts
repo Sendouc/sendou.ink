@@ -525,3 +525,27 @@ export function setMatchAsCasted({
       .execute();
   });
 }
+
+export function resetBracket(tournamentStageId: number) {
+  return db.transaction().execute(async (trx) => {
+    await trx
+      .deleteFrom("TournamentMatch")
+      .where("stageId", "=", tournamentStageId)
+      .execute();
+
+    await trx
+      .deleteFrom("TournamentRound")
+      .where("stageId", "=", tournamentStageId)
+      .execute();
+
+    await trx
+      .deleteFrom("TournamentGroup")
+      .where("stageId", "=", tournamentStageId)
+      .execute();
+
+    await trx
+      .deleteFrom("TournamentStage")
+      .where("id", "=", tournamentStageId)
+      .execute();
+  });
+}
