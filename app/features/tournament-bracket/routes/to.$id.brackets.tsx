@@ -65,6 +65,7 @@ import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
 import { Menu } from "~/components/Menu";
 import { BracketMapListDialog } from "../components/BracketMapListDialog";
+import { useIsMounted } from "~/hooks/useIsMounted";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -385,14 +386,17 @@ function useAutoRefresh() {
 function BracketStarter({ bracket }: { bracket: BracketType }) {
   const { t } = useTranslation(["tournament"]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const isMounted = useIsMounted();
 
   return (
     <>
-      <BracketMapListDialog
-        isOpen={dialogOpen}
-        close={() => setDialogOpen(false)}
-        bracket={bracket}
-      />
+      {isMounted ? (
+        <BracketMapListDialog
+          isOpen={dialogOpen}
+          close={() => setDialogOpen(false)}
+          bracket={bracket}
+        />
+      ) : null}
       <Button
         variant="outlined"
         size="tiny"

@@ -2,6 +2,7 @@ import type { NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
+import { modesShort } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 
@@ -182,13 +183,23 @@ export async function findById(id: number) {
   };
 }
 
-export function findTOSetMapPoolById(tournamentId: number) {
-  return db
-    .selectFrom("CalendarEvent")
-    .innerJoin("MapPoolMap", "CalendarEvent.id", "MapPoolMap.calendarEventId")
-    .select(["MapPoolMap.mode", "MapPoolMap.stageId"])
-    .where("CalendarEvent.tournamentId", "=", tournamentId)
-    .execute();
+export async function findTOSetMapPoolById(tournamentId: number) {
+  return (
+    await db
+      .selectFrom("CalendarEvent")
+      .innerJoin("MapPoolMap", "CalendarEvent.id", "MapPoolMap.calendarEventId")
+      .select(["MapPoolMap.mode", "MapPoolMap.stageId"])
+      .where("CalendarEvent.tournamentId", "=", tournamentId)
+      .execute()
+  ).sort((a, b) => {
+    const modeAIndexOf = modesShort.indexOf(a.mode);
+    const modeBIndexOf = modesShort.indexOf(b.mode);
+
+    if (modeAIndexOf < modeBIndexOf) return -1;
+    if (modeAIndexOf > modeBIndexOf) return 1;
+
+    return a.stageId - b.stageId;
+  });
 }
 
 const NEXT_TOURNAMENTS_TO_SHOW_WITH_UPCOMING = 2;
