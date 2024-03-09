@@ -1,20 +1,28 @@
 import { suite } from "uvu";
 import { Tournament } from "./Tournament";
-import { PADDLING_POOL_257 } from "./tests/mocks";
+import {
+  IN_THE_ZONE_32,
+  PADDLING_POOL_255,
+  PADDLING_POOL_255_TOP_CUT_INITIAL_MATCHES,
+  PADDLING_POOL_257,
+} from "./tests/mocks";
 import * as assert from "uvu/assert";
+import type { Match } from "~/modules/brackets-model";
 
 const FollowUp = suite("Follow-up bracket progression");
 
-const tournament = new Tournament(PADDLING_POOL_257());
+const tournamentPP257 = new Tournament(PADDLING_POOL_257());
+const tournamentPP255 = new Tournament(PADDLING_POOL_255());
+const tournamentITZ32 = new Tournament(IN_THE_ZONE_32());
 
 FollowUp("correct amount of teams in the top cut", () => {
-  assert.equal(tournament.brackets[1].seeding?.length, 18);
+  assert.equal(tournamentPP257.brackets[1].seeding?.length, 18);
 });
 
 FollowUp("includes correct teams in the top cut", () => {
   for (const tournamentTeamId of [892, 882, 881]) {
     assert.ok(
-      tournament.brackets[1].seeding?.some(
+      tournamentPP257.brackets[1].seeding?.some(
         (team) => team.id === tournamentTeamId,
       ),
     );
@@ -22,11 +30,19 @@ FollowUp("includes correct teams in the top cut", () => {
 });
 
 FollowUp("underground bracket includes a checked in team", () => {
-  assert.ok(tournament.brackets[2].seeding?.some((team) => team.id === 902));
+  assert.ok(
+    tournamentPP257.brackets[2].seeding?.some((team) => team.id === 902),
+  );
 });
 
 FollowUp("underground bracket doesn't include a non checked in team", () => {
-  assert.ok(tournament.brackets[2].seeding?.some((team) => team.id === 902));
+  assert.ok(
+    tournamentPP257.brackets[2].seeding?.some((team) => team.id === 902),
+  );
+});
+
+FollowUp("underground bracket includes checked in teams (DE->SE)", () => {
+  assert.equal(tournamentITZ32.brackets[1].seeding?.length, 4);
 });
 
 const AMOUNT_OF_WORSE_VS_BEST = 5;
@@ -34,12 +50,12 @@ const AMOUNT_OF_BEST_VS_BEST = 1;
 const AMOUNT_OF_WORSE_VS_WORSE = 2;
 
 FollowUp("correct seed distribution in the top cut", () => {
-  const rrPlacements = tournament.brackets[0].standings;
+  const rrPlacements = tournamentPP257.brackets[0].standings;
 
   let ACTUAL_AMOUNT_OF_WORSE_VS_BEST = 0;
   let ACTUAL_AMOUNT_OF_BEST_VS_BEST = 0;
   let ACTUAL_AMOUNT_OF_WORSE_VS_WORSE = 0;
-  for (const match of tournament.brackets[1].data.match) {
+  for (const match of tournamentPP257.brackets[1].data.match) {
     const opponent1 = rrPlacements.find(
       (placement) => placement.team.id === match.opponent1?.id,
     );
@@ -78,11 +94,7 @@ FollowUp("correct seed distribution in the top cut", () => {
   );
 });
 
-// TODO: https://github.com/Sendouc/sendou.ink/issues/1670
-FollowUp.skip("avoids rematches in RR -> SE", () => {
-  const rrMatches = tournament.brackets[0].data.match;
-  const topCutMatches = tournament.brackets[1].data.match;
-
+const validateNoRematches = (rrMatches: Match[], topCutMatches: Match[]) => {
   for (const topCutMatch of topCutMatches) {
     if (!topCutMatch.opponent1?.id || !topCutMatch.opponent2?.id) {
       continue;
@@ -113,6 +125,46 @@ FollowUp.skip("avoids rematches in RR -> SE", () => {
       }
     }
   }
+};
+
+FollowUp("avoids rematches in RR -> SE (PP 257)", () => {
+  const rrMatches = tournamentPP257.brackets[0].data.match;
+  const topCutMatches = tournamentPP257.brackets[1].data.match;
+
+  validateNoRematches(rrMatches, topCutMatches);
+});
+
+FollowUp("avoids rematches in RR -> SE (PP 255)", () => {
+  const rrMatches = tournamentPP255.brackets[0].data.match;
+  const topCutMatches = tournamentPP255.brackets[1].data.match;
+
+  validateNoRematches(rrMatches, topCutMatches);
+});
+
+FollowUp("avoids rematches in RR -> SE (PP 255)", () => {
+  const oldTopCutMatches = PADDLING_POOL_255_TOP_CUT_INITIAL_MATCHES();
+  const newTopCutMatches = tournamentPP255.brackets[1].data.match;
+
+  let different = 0;
+
+  for (const match of oldTopCutMatches) {
+    if (!match.opponent1?.id || !match.opponent2?.id) {
+      continue;
+    }
+
+    const newMatch = newTopCutMatches.find(
+      (m) =>
+        m.opponent1?.id === match.opponent1.id &&
+        m.opponent2?.id === match.opponent2.id,
+    );
+
+    if (!newMatch) {
+      different++;
+    }
+  }
+
+  // 1 team should get swapped meaning two matches are now different
+  assert.equal(different, 2);
 });
 
 FollowUp.run();

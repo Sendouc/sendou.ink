@@ -143,16 +143,28 @@ export class Tournament {
             bracketIdx,
           });
 
-        if (checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START) {
+        const checkedInTeamsWithReplaysAvoided =
+          this.avoidReplaysOfPreviousBracketOpponent(checkedInTeams, {
+            sources,
+            type,
+          });
+
+        if (
+          checkedInTeamsWithReplaysAvoided.length >=
+          TOURNAMENT.ENOUGH_TEAMS_TO_START
+        ) {
           manager.create({
             tournamentId: this.ctx.id,
             name,
             type,
             seeding:
               type === "round_robin"
-                ? checkedInTeams
-                : fillWithNullTillPowerOfTwo(checkedInTeams),
-            settings: this.bracketSettings(type, checkedInTeams.length),
+                ? checkedInTeamsWithReplaysAvoided
+                : fillWithNullTillPowerOfTwo(checkedInTeamsWithReplaysAvoided),
+            settings: this.bracketSettings(
+              type,
+              checkedInTeamsWithReplaysAvoided.length,
+            ),
           });
         }
 
@@ -160,7 +172,7 @@ export class Tournament {
           Bracket.create({
             id: -1 * bracketIdx,
             tournament: this,
-            seeding: checkedInTeams,
+            seeding: checkedInTeamsWithReplaysAvoided,
             preview: true,
             name,
             data: manager.get.tournamentData(this.ctx.id),
@@ -168,7 +180,8 @@ export class Tournament {
             sources,
             createdAt: null,
             canBeStarted:
-              checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
+              checkedInTeamsWithReplaysAvoided.length >=
+                TOURNAMENT.ENOUGH_TEAMS_TO_START &&
               (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
             teamsPendingCheckIn:
               bracketIdx !== 0 ? notCheckedInTeams.map((t) => t.id) : undefined,
@@ -197,6 +210,145 @@ export class Tournament {
     }
 
     return { teams, relevantMatchesFinished: allRelevantMatchesFinished };
+  }
+
+  private avoidReplaysOfPreviousBracketOpponent(
+    teams: {
+      id: number;
+      name: string;
+    }[],
+    bracket: {
+      sources: TournamentBracketProgression[number]["sources"];
+      type: TournamentBracketProgression[number]["type"];
+    },
+  ) {
+    if (teams.length < TOURNAMENT.ENOUGH_TEAMS_TO_START) return teams;
+
+    // can't have replays from previous brackets in the first bracket
+    // & no support yet for avoiding replays if many sources
+    if (bracket.sources?.length !== 1) return teams;
+
+    const sourceBracket = this.bracketByIdx(bracket.sources[0].bracketIdx);
+    if (!sourceBracket) {
+      logger.warn(
+        "avoidReplaysOfPreviousBracketOpponent: Source bracket not found",
+      );
+      return teams;
+    }
+
+    // should not happen but just in case
+    if (bracket.type === "round_robin") return teams;
+
+    const sourceBracketEncounters = sourceBracket.data.match.reduce(
+      (acc, cur) => {
+        const oneId = cur.opponent1?.id;
+        const twoId = cur.opponent2?.id;
+
+        if (typeof oneId !== "number" || typeof twoId !== "number") return acc;
+
+        if (!acc.has(oneId)) {
+          acc.set(oneId, []);
+        }
+        if (!acc.has(twoId)) {
+          acc.set(twoId, []);
+        }
+        acc.get(oneId)!.push(twoId);
+        acc.get(twoId)!.push(oneId);
+        return acc;
+      },
+      new Map() as Map<number, number[]>,
+    );
+
+    const bracketReplays = (
+      candidateTeams: {
+        id: number;
+        name: string;
+      }[],
+    ) => {
+      const manager = getTournamentManager();
+      manager.create({
+        tournamentId: this.ctx.id,
+        name: "X",
+        type: bracket.type,
+        seeding: fillWithNullTillPowerOfTwo(candidateTeams),
+        settings: this.bracketSettings(bracket.type, candidateTeams.length),
+      });
+
+      const matches = manager.get.tournamentData(this.ctx.id).match;
+      const replays: [number, number][] = [];
+      for (const match of matches) {
+        if (!match.opponent1?.id || !match.opponent2?.id) continue;
+
+        if (
+          sourceBracketEncounters
+            .get(match.opponent1.id)
+            ?.includes(match.opponent2.id)
+        ) {
+          replays.push([match.opponent1.id, match.opponent2.id]);
+        }
+      }
+
+      return replays;
+    };
+
+    const newOrder = [...teams];
+    // TODO: handle also e.g. top 3 of each group in the bracket
+    // only switch around 2nd seeds
+    const potentialSwitchCandidates = teams.slice(Math.floor(teams.length / 2));
+    let replays = bracketReplays(newOrder);
+    let iterations = 0;
+    while (replays.length > 0) {
+      iterations++;
+      if (iterations > 100) {
+        logger.warn(
+          "avoidReplaysOfPreviousBracketOpponent: Avoiding replays failed, too many iterations",
+        );
+
+        return teams;
+      }
+
+      const [oneId, twoId] = replays[0];
+
+      const lowerSeedId =
+        newOrder.findIndex((t) => t.id === oneId) <
+        newOrder.findIndex((t) => t.id === twoId)
+          ? twoId
+          : oneId;
+
+      if (!potentialSwitchCandidates.some((t) => t.id === lowerSeedId)) {
+        logger.warn(
+          `Avoiding replays failed, no potential switch candidates found in match: ${oneId} vs. ${twoId}`,
+        );
+
+        return teams;
+      }
+
+      for (const candidate of potentialSwitchCandidates) {
+        // can't switch place with itself
+        if (candidate.id === lowerSeedId) continue;
+
+        const candidateIdx = newOrder.findIndex((t) => t.id === candidate.id);
+        const otherIdx = newOrder.findIndex((t) => t.id === lowerSeedId);
+
+        const temp = newOrder[candidateIdx];
+        newOrder[candidateIdx] = newOrder[otherIdx];
+        newOrder[otherIdx] = temp;
+
+        const oldReplayCount = replays.length;
+        const newReplays = bracketReplays(newOrder);
+        if (newReplays.length < oldReplayCount) {
+          replays = newReplays;
+          break;
+        } else {
+          // revert the switch
+          const temp = newOrder[candidateIdx];
+          newOrder[candidateIdx] = newOrder[otherIdx];
+          newOrder[otherIdx] = temp;
+        }
+      }
+    }
+
+    return newOrder;
   }
 
   private divideTeamsToCheckedInAndNotCheckedIn({
