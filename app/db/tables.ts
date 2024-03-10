@@ -387,6 +387,7 @@ export interface TournamentSettings {
   teamsPerGroup?: number;
   thirdPlaceMatch?: boolean;
   isRanked?: boolean;
+  autoCheckInAll?: boolean;
 }
 
 export interface CastedMatchesInfo {

@@ -118,6 +118,7 @@ export const action: ActionFunction = async ({ request }) => {
     teamsPerGroup: data.teamsPerGroup ?? undefined,
     thirdPlaceMatch: data.thirdPlaceMatch ?? undefined,
     isRanked: data.isRanked ?? undefined,
+    autoCheckInAll: data.autoCheckInAll ?? undefined,
   };
   validate(
     !commonArgs.toToolsEnabled || commonArgs.bracketProgression,
@@ -894,19 +895,6 @@ function TournamentFormatSelector() {
 
       {format === "RR_TO_SE" ? (
         <div>
-          <Label htmlFor="thirdPlaceMatch">Third place match</Label>
-          <Toggle
-            checked={thirdPlaceMatch}
-            setChecked={setThirdPlaceMatch}
-            name="thirdPlaceMatch"
-            id="thirdPlaceMatch"
-            tiny
-          />
-        </div>
-      ) : null}
-
-      {format === "RR_TO_SE" ? (
-        <div>
           <Label htmlFor="teamsPerGroup">Teams per group</Label>
           <select
             value={teamsPerGroup}
@@ -922,6 +910,20 @@ function TournamentFormatSelector() {
           </select>
         </div>
       ) : null}
+
+      {format === "RR_TO_SE" ? (
+        <div>
+          <Label htmlFor="thirdPlaceMatch">Third place match</Label>
+          <Toggle
+            checked={thirdPlaceMatch}
+            setChecked={setThirdPlaceMatch}
+            name="thirdPlaceMatch"
+            id="thirdPlaceMatch"
+            tiny
+          />
+        </div>
+      ) : null}
+
       {format === "RR_TO_SE" ? (
         <FollowUpBrackets teamsPerGroup={teamsPerGroup} />
       ) : null}
@@ -931,6 +933,9 @@ function TournamentFormatSelector() {
 
 function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
   const data = useLoaderData<typeof loader>();
+  const [autoCheckInAll, setAutoCheckInAll] = React.useState(
+    data.tournamentCtx?.settings.autoCheckInAll ?? false,
+  );
   const [_brackets, setBrackets] = React.useState<Array<FollowUpBracket>>(
     () => {
       if (
@@ -958,56 +963,76 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
   const validationErrorMsg = validateFollowUpBrackets(brackets, teamsPerGroup);
 
   return (
-    <div>
-      <RequiredHiddenInput
-        isValid={!validationErrorMsg}
-        name="followUpBrackets"
-        value={JSON.stringify(brackets)}
-      />
-      <Label>Follow-up brackets</Label>
-      <div className="stack lg">
-        {brackets.map((b, i) => (
-          <FollowUpBracketInputs
-            key={i}
-            teamsPerGroup={teamsPerGroup}
-            onChange={(newBracket) => {
-              setBrackets(
-                brackets.map((oldBracket, j) =>
-                  j === i ? newBracket : oldBracket,
-                ),
-              );
-            }}
-            bracket={b}
-            nth={i + 1}
+    <>
+      {brackets.length > 1 ? (
+        <div>
+          <Label htmlFor="autoCheckInAll">
+            Auto check-in to follow-up brackets
+          </Label>
+          <Toggle
+            checked={autoCheckInAll}
+            setChecked={setAutoCheckInAll}
+            name="autoCheckInAll"
+            id="autoCheckInAll"
+            tiny
           />
-        ))}
-        <div className="stack sm horizontal">
-          <Button
-            size="tiny"
-            onClick={() => {
-              setBrackets([...brackets, { name: "", placements: [] }]);
-            }}
-            data-testid="add-bracket"
-          >
-            Add bracket
-          </Button>
-          <Button
-            size="tiny"
-            variant="destructive"
-            onClick={() => {
-              setBrackets(brackets.slice(0, -1));
-            }}
-            disabled={brackets.length === 1}
-          >
-            Remove bracket
-          </Button>
+          <FormMessage type="info">
+            If disabled, the only follow-up bracket with automatic check-in is
+            the top cut
+          </FormMessage>
         </div>
+      ) : null}
+      <div>
+        <RequiredHiddenInput
+          isValid={!validationErrorMsg}
+          name="followUpBrackets"
+          value={JSON.stringify(brackets)}
+        />
+        <Label>Follow-up brackets</Label>
+        <div className="stack lg">
+          {brackets.map((b, i) => (
+            <FollowUpBracketInputs
+              key={i}
+              teamsPerGroup={teamsPerGroup}
+              onChange={(newBracket) => {
+                setBrackets(
+                  brackets.map((oldBracket, j) =>
+                    j === i ? newBracket : oldBracket,
+                  ),
+                );
+              }}
+              bracket={b}
+              nth={i + 1}
+            />
+          ))}
+          <div className="stack sm horizontal">
+            <Button
+              size="tiny"
+              onClick={() => {
+                setBrackets([...brackets, { name: "", placements: [] }]);
+              }}
+              data-testid="add-bracket"
+            >
+              Add bracket
+            </Button>
+            <Button
+              size="tiny"
+              variant="destructive"
+              onClick={() => {
+                setBrackets(brackets.slice(0, -1));
+              }}
+              disabled={brackets.length === 1}
+            >
+              Remove bracket
+            </Button>
+          </div>
 
-        {validationErrorMsg ? (
-          <FormMessage type="error">{validationErrorMsg}</FormMessage>
-        ) : null}
+          {validationErrorMsg ? (
+            <FormMessage type="error">{validationErrorMsg}</FormMessage>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
