@@ -222,7 +222,9 @@ export class Tournament {
       type: TournamentBracketProgression[number]["type"];
     },
   ) {
-    if (teams.length < TOURNAMENT.ENOUGH_TEAMS_TO_START) return teams;
+    // rather arbitrary limit, but with smaller brackets avoiding replays is not possible
+    // and then later while loop hits iteration limit
+    if (teams.length < 8) return teams;
 
     // can't have replays from previous brackets in the first bracket
     // & no support yet for avoiding replays if many sources
