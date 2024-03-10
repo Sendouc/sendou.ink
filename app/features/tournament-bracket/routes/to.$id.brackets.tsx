@@ -30,7 +30,7 @@ import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { removeDuplicates } from "~/utils/arrays";
+import { nullFilledArray, removeDuplicates } from "~/utils/arrays";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -125,8 +125,17 @@ export const action: ActionFunction = async ({ params, request }) => {
         const finalStageIdx = tournament.brackets.findIndex((b) => b.isFinals);
 
         if (finalStageIdx !== -1) {
+          const allFollowUpBracketIdxs = nullFilledArray(
+            tournament.brackets.length,
+          )
+            .map((_, i) => i)
+            // filter out groups stage
+            .filter((i) => i !== 0);
+
           await TournamentRepository.checkInMany({
-            bracketIdx: finalStageIdx,
+            bracketIdxs: tournament.ctx.settings.autoCheckInAll
+              ? allFollowUpBracketIdxs
+              : [finalStageIdx],
             tournamentTeamIds: tournament.ctx.teams
               .filter((t) => t.checkIns.length > 0)
               .map((t) => t.id),
@@ -271,7 +280,7 @@ export default function TournamentBracketsPage() {
     ) {
       return `Teams that get eliminated in the first ${Math.abs(
         Math.min(...(bracket.sources ?? []).flatMap((s) => s.placements)),
-      )} rounds of the losers bracket can play in this bracket (optional)`;
+      )} rounds of the losers bracket can play in this bracket`;
     }
 
     return null;
@@ -360,6 +369,13 @@ export default function TournamentBracketsPage() {
           {bracket.sources ? (
             <div className="text-center text-sm font-semi-bold text-lighter mt-2">
               {teamsSourceText()}
+            </div>
+          ) : null}
+          {bracket.sources &&
+          bracket.sources.every((s) => !s.placements.includes(1)) &&
+          !tournament.ctx.settings.autoCheckInAll ? (
+            <div className="text-center text-sm font-semi-bold text-lighter mt-2 text-warning">
+              Bracket requires check-in
             </div>
           ) : null}
         </div>

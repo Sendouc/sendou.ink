@@ -80,6 +80,7 @@ export const newCalendarEventActionSchema = z
       checkboxValueToBoolean,
       z.boolean().nullish(),
     ),
+    autoCheckInAll: z.preprocess(checkboxValueToBoolean, z.boolean().nullish()),
     teamsPerGroup: z.coerce
       .number()
       .min(TOURNAMENT.MIN_GROUP_SIZE)

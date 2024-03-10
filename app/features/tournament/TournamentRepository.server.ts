@@ -355,19 +355,21 @@ export function checkOut({
 
 export function checkInMany({
   tournamentTeamIds,
-  bracketIdx,
+  bracketIdxs,
 }: {
   tournamentTeamIds: number[];
-  bracketIdx: number;
+  bracketIdxs: number[];
 }) {
   return db
     .insertInto("TournamentTeamCheckIn")
     .values(
-      tournamentTeamIds.map((tournamentTeamId) => ({
-        checkedInAt: dateToDatabaseTimestamp(new Date()),
-        tournamentTeamId,
-        bracketIdx,
-      })),
+      tournamentTeamIds.flatMap((tournamentTeamId) =>
+        bracketIdxs.map((bracketIdx) => ({
+          checkedInAt: dateToDatabaseTimestamp(new Date()),
+          tournamentTeamId,
+          bracketIdx,
+        })),
+      ),
     )
     .execute();
 }

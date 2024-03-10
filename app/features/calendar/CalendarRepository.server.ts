@@ -386,6 +386,7 @@ type CreateArgs = Pick<
   bracketProgression: TournamentSettings["bracketProgression"] | null;
   teamsPerGroup?: number;
   thirdPlaceMatch?: boolean;
+  autoCheckInAll?: boolean;
   isRanked?: boolean;
 };
 export async function create(args: CreateArgs) {
@@ -398,6 +399,7 @@ export async function create(args: CreateArgs) {
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
+        autoCheckInAll: args.autoCheckInAll,
       };
 
       tournamentId = (
@@ -472,6 +474,7 @@ export async function update(args: UpdateArgs) {
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
+        autoCheckInAll: args.autoCheckInAll,
       };
 
       const { mapPickingStyle: _mapPickingStyle } = await trx
