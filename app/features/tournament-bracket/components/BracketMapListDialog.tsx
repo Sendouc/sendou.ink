@@ -14,7 +14,11 @@ import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useFetcher } from "@remix-run/react";
 import { Label } from "~/components/Label";
+import { assertUnreachable } from "~/utils/types";
+import { getRounds } from "./Bracket/Elimination";
+import clsx from "clsx";
 
+// xxx: starting tournament when prepicked maps
 export function BracketMapListDialog({
   isOpen,
   close,
@@ -44,8 +48,9 @@ export function BracketMapListDialog({
   const [mapCounts, setMapCounts] = React.useState(
     () => bracket.defaultRoundBestOfs,
   );
+  const [hoveredMap, setHoveredMap] = React.useState<string | null>(null);
 
-  const rounds = () => {
+  const rounds = React.useMemo(() => {
     if (bracket.type === "round_robin") {
       return Array.from(maps.keys()).map((roundId, i) => {
         return {
@@ -55,9 +60,20 @@ export function BracketMapListDialog({
       });
     }
 
-    // xxx: SE & DE
-    return [];
-  };
+    if (bracket.type === "double_elimination") {
+      const winners = getRounds({ type: "winners", bracket });
+      const losers = getRounds({ type: "losers", bracket });
+
+      return [...winners, ...losers];
+    }
+
+    // xxx: SE
+    if (bracket.type === "single_elimination") {
+      return [];
+    }
+
+    assertUnreachable(bracket.type);
+  }, [bracket, maps]);
 
   const mapCountsWithGlobalCount = (newCount: number) => {
     const newMap = new Map(bracket.defaultRoundBestOfs);
@@ -125,8 +141,8 @@ export function BracketMapListDialog({
             Reroll all maps
           </Button>
         </div>
-        <div className="stack horizontal md flex-wrap">
-          {rounds().map((round) => {
+        <div className="stack horizontal md flex-wrap justify-center">
+          {rounds.map((round) => {
             const roundMaps = maps.get(round.id);
             invariant(roundMaps, "Expected maps to be defined");
 
@@ -135,6 +151,8 @@ export function BracketMapListDialog({
                 key={round.id}
                 name={round.name}
                 maps={roundMaps}
+                onHoverMap={setHoveredMap}
+                hoveredMap={hoveredMap}
                 onRoundMapListChange={(newRoundMaps) => {
                   const newMaps = new Map(maps);
                   newMaps.set(round.id, newRoundMaps);
@@ -184,10 +202,14 @@ function RoundMapList({
   name,
   maps,
   onRoundMapListChange,
+  onHoverMap,
+  hoveredMap,
 }: {
   name: string;
   maps: TournamentRoundMaps;
   onRoundMapListChange: (maps: TournamentRoundMaps) => void;
+  onHoverMap: (map: string | null) => void;
+  hoveredMap: string | null;
 }) {
   const [editing, setEditing] = React.useState(false);
 
@@ -210,6 +232,8 @@ function RoundMapList({
               map={map}
               number={i + 1}
               editing={editing}
+              onHoverMap={onHoverMap}
+              hoveredMap={hoveredMap}
               onMapChange={(map) => {
                 onRoundMapListChange({
                   ...maps,
@@ -229,11 +253,15 @@ function MapListRow({
   number,
   editing,
   onMapChange,
+  onHoverMap,
+  hoveredMap,
 }: {
   map: NonNullable<TournamentRoundMaps["list"]>[number];
   number: number;
   editing: boolean;
   onMapChange: (map: NonNullable<TournamentRoundMaps["list"]>[number]) => void;
+  onHoverMap: (map: string | null) => void;
+  hoveredMap: string | null;
 }) {
   const { t } = useTranslation(["game-misc"]);
   const toSetMaps = useTournamentToSetMapPool();
@@ -271,7 +299,12 @@ function MapListRow({
   }
 
   return (
-    <li className="map-list-dialog__map-list-row">
+    <li
+      className={clsx("map-list-dialog__map-list-row", {
+        "text-theme-secondary font-bold": serializedMapMode(map) === hoveredMap,
+      })}
+      onMouseEnter={() => onHoverMap(serializedMapMode(map))}
+    >
       <div className="stack horizontal items-center xs">
         <span className="text-lg">{number}.</span>
         <ModeImage mode={map.mode} size={24} />

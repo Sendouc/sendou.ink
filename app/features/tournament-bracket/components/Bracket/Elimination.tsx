@@ -7,7 +7,7 @@ import { removeDuplicates } from "~/utils/arrays";
 interface EliminationBracketSideProps {
   bracket: BracketType;
   type: "winners" | "losers" | "single";
-  isExpanded: boolean;
+  isExpanded?: boolean;
 }
 
 export function EliminationBracketSide(props: EliminationBracketSideProps) {
@@ -93,7 +93,8 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
   );
 }
 
-function getRounds(props: EliminationBracketSideProps) {
+// xxx: to util file
+export function getRounds(props: EliminationBracketSideProps) {
   const groupIds = props.bracket.data.group.flatMap((group) => {
     if (props.type === "winners" && group.number === 2) return [];
     if (props.type === "losers" && group.number !== 2) return [];

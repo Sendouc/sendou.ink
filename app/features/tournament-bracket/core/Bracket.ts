@@ -448,6 +448,43 @@ class DoubleEliminationBracket extends Bracket {
     return "double_elimination";
   }
 
+  get defaultRoundBestOfs(): BracketMapCounts {
+    const result: BracketMapCounts = new Map();
+
+    for (const group of this.data.group) {
+      const roundsOfGroup = this.data.round.filter(
+        (round) => round.group_id === group.id,
+      );
+
+      const defaultOfRound = (round: Round) => {
+        if (group.number === 3) return 5;
+        if (group.number === 2) {
+          const lastRoundNumber = Math.max(
+            ...roundsOfGroup.map((round) => round.number),
+          );
+
+          if (round.number === lastRoundNumber) return 5;
+          return 3;
+        }
+
+        if (round.number > 2) return 5;
+        return 3;
+      };
+
+      for (const round of roundsOfGroup) {
+        if (!result.get(group.id)) {
+          result.set(group.id, new Map());
+        }
+
+        result
+          .get(group.id)!
+          .set(round.number, { count: defaultOfRound(round), type: "BEST_OF" });
+      }
+    }
+
+    return result;
+  }
+
   winnersSourceRound(roundNumber: number) {
     const isMajorRound = roundNumber === 1 || roundNumber % 2 === 0;
     if (!isMajorRound) return;

@@ -26,6 +26,7 @@ interface GenerateTournamentRoundMaplistArgs {
   type: TournamentBracketProgression[number]["type"];
 }
 
+// xxx: future improvement could be slightly biasing against maps that appear in slots that are not guaranteed to be played
 export function generateTournamentRoundMaplist(
   args: GenerateTournamentRoundMaplistArgs,
 ) {
@@ -35,24 +36,31 @@ export function generateTournamentRoundMaplist(
 
   // sort rounds in a way that allows us to space maps out
   // so in the typical order that people play out the tournament
-  const sortedRounds = sortRounds(filteredRounds);
+  const sortedRounds = sortRounds(filteredRounds, args.type);
 
   const modeFrequency = new Map<ModeShort, number>();
   const stageAppearance = new Map<StageId, number>();
+  const comboAppearance = new Map<string, number>();
 
   //                roundId
   const result: Map<number, TournamentRoundMaps> = new Map();
 
   for (const [iteration, round] of sortedRounds.entries()) {
     const count = resolveRoundMapCount(round, args.mapCounts, args.type);
-    const modes = modeOrder(count, args.pool, modeFrequency);
+    const modes = modeOrder(count, args.pool, modeFrequency, iteration);
 
     result.set(round.id, {
       count,
       type: "BEST_OF",
       list: modes.map((mode) => ({
         mode,
-        stageId: resolveStage(mode, args.pool, stageAppearance, iteration),
+        stageId: resolveStage(
+          mode,
+          args.pool,
+          stageAppearance,
+          comboAppearance,
+          iteration,
+        ),
       })),
     });
   }
@@ -71,9 +79,35 @@ function getFilteredRounds(
   return rounds.filter((x) => x.group_id === highestGroupId);
 }
 
-function sortRounds(rounds: Round[]) {
-  // xxx: also handle grand finals etc. last
-  return rounds.slice().sort((a, b) => a.number - b.number);
+function sortRounds(
+  rounds: Round[],
+  type: TournamentBracketProgression[number]["type"],
+) {
+  const minGroupId = Math.min(...rounds.map((x) => x.group_id));
+  const maxGroupId = Math.max(...rounds.map((x) => x.group_id));
+
+  return rounds.slice().sort((a, b) => {
+    if (type === "double_elimination") {
+      // grands last
+      if (a.group_id === maxGroupId && b.group_id !== maxGroupId) return 1;
+      if (a.group_id !== maxGroupId && b.group_id === maxGroupId) return -1;
+      if (a.group_id === maxGroupId && b.group_id === maxGroupId) {
+        return a.number - b.number;
+      }
+
+      const winnersMaxRoundNumber = Math.max(
+        ...rounds.filter((x) => x.group_id === minGroupId).map((x) => x.number),
+      );
+      const isLastWinnersRound = (r: Round) =>
+        r.group_id === minGroupId && r.number === winnersMaxRoundNumber;
+
+      // winners finals just before grands
+      if (isLastWinnersRound(a) && !isLastWinnersRound(b)) return 1;
+      if (!isLastWinnersRound(a) && isLastWinnersRound(b)) return -1;
+    }
+
+    return a.number - b.number;
+  });
 }
 
 function resolveRoundMapCount(
@@ -99,20 +133,27 @@ function resolveRoundMapCount(
   return count;
 }
 
-// xxx: take in account mode frequency
 function modeOrder(
   count: number,
   pool: GenerateTournamentRoundMaplistArgs["pool"],
-  _modeFrequency: Map<ModeShort, number>,
+  modeFrequency: Map<ModeShort, number>,
+  iteration: number,
 ) {
   const modes = removeDuplicates(pool.map((x) => x.mode));
   const shuffledModes = shuffle(modes);
+  shuffledModes.sort((a, b) => {
+    const aFreq = modeFrequency.get(a) ?? 0;
+    const bFreq = modeFrequency.get(b) ?? 0;
+
+    return aFreq - bFreq;
+  });
 
   const result: ModeShort[] = [];
 
   let currentI = 0;
   while (result.length < count) {
     result.push(shuffledModes[currentI]);
+    modeFrequency.set(shuffledModes[currentI], iteration);
     currentI++;
     if (currentI >= shuffledModes.length) {
       currentI = 0;
@@ -122,29 +163,50 @@ function modeOrder(
   return result;
 }
 
+const serializedMap = (mode: ModeShort, stage: StageId) => `${mode}-${stage}`;
+
 function resolveStage(
   mode: ModeShort,
   pool: GenerateTournamentRoundMaplistArgs["pool"],
   stageAppearance: Map<StageId, number>,
+  comboAppearance: Map<string, number>,
   currentIteration: number,
 ) {
   const allOptions = pool.filter((x) => x.mode === mode).map((x) => x.stageId);
 
-  let earliestAppearance = Infinity;
-  let equallyGoodOptions: StageId[] = [];
-  for (const option of allOptions) {
-    const appearance = stageAppearance.get(option) ?? -1;
-    if (appearance < earliestAppearance) {
-      earliestAppearance = appearance;
-      equallyGoodOptions = [];
-    }
+  let equallyGoodOptionsIgnoringCombo: StageId[] = [];
+  {
+    let earliestAppearance = Infinity;
+    for (const option of allOptions) {
+      const appearance = stageAppearance.get(option) ?? -1;
+      if (appearance < earliestAppearance) {
+        earliestAppearance = appearance;
+        equallyGoodOptionsIgnoringCombo = [];
+      }
 
-    if (appearance === earliestAppearance) {
-      equallyGoodOptions.push(option);
+      if (appearance === earliestAppearance) {
+        equallyGoodOptionsIgnoringCombo.push(option);
+      }
     }
   }
 
-  const stage = shuffle(equallyGoodOptions)[0];
+  let bestOptions: StageId[] = [];
+  {
+    let earliestAppearance = Infinity;
+    for (const option of equallyGoodOptionsIgnoringCombo) {
+      const appearance = comboAppearance.get(serializedMap(mode, option)) ?? -1;
+      if (appearance < earliestAppearance) {
+        earliestAppearance = appearance;
+        bestOptions = [];
+      }
+
+      if (appearance === earliestAppearance) {
+        bestOptions.push(option);
+      }
+    }
+  }
+
+  const stage = shuffle(equallyGoodOptionsIgnoringCombo)[0];
   if (typeof stage !== "number") {
     const fallback = shuffle(SENDOUQ_DEFAULT_MAPS[mode].slice())[0];
     logger.warn(
@@ -154,6 +216,10 @@ function resolveStage(
   }
 
   stageAppearance.set(stage, currentIteration);
+  comboAppearance.set(
+    serializedMap(mode, stage),
+    (comboAppearance.get(serializedMap(mode, stage)) ?? 0) + 1,
+  );
 
   return stage;
 }

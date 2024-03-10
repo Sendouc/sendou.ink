@@ -79,7 +79,7 @@ export const matchSchema = z.union([
 export const bracketIdx = z.coerce.number().int().min(0).max(100);
 
 const tournamentRoundMaps = z.object({
-  roundId: id,
+  roundId: z.number().int().min(0),
   list: z
     .array(
       z.object({
