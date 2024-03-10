@@ -11,17 +11,23 @@ import { ModeImage, StageImage } from "~/components/Image";
 import { Button } from "~/components/Button";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useFetcher } from "@remix-run/react";
 
 export function BracketMapListDialog({
   isOpen,
   close,
   bracket,
+  bracketIdx,
 }: {
   isOpen: boolean;
   close: () => void;
   bracket: Bracket;
+  bracketIdx: number;
 }) {
+  const { t } = useTranslation(["tournament"]);
   const toSetMapPool = useTournamentToSetMapPool();
+  const fetcher = useFetcher();
 
   // xxx: fallback?
   invariant(toSetMapPool, "Expected toSetMapPool to be defined");
@@ -51,7 +57,18 @@ export function BracketMapListDialog({
 
   return (
     <Dialog isOpen={isOpen} close={close} className="w-max">
-      <div className="map-list-dialog__container">
+      <fetcher.Form method="post" className="map-list-dialog__container">
+        <input type="hidden" name="bracketIdx" value={bracketIdx} />
+        <input
+          type="hidden"
+          name="maps"
+          value={JSON.stringify(
+            Array.from(maps.entries()).map(([key, value]) => ({
+              roundId: key,
+              ...value,
+            })),
+          )}
+        />
         <h2 className="text-lg text-center">{bracket.name}</h2>
         <Button
           size="tiny"
@@ -91,8 +108,16 @@ export function BracketMapListDialog({
             );
           })}
         </div>
-        <Button className="mx-auto">Start the bracket</Button>
-      </div>
+        <SubmitButton
+          variant="outlined"
+          size="tiny"
+          testId="finalize-bracket-button"
+          _action="START_BRACKET"
+          className="mx-auto"
+        >
+          {t("tournament:bracket.finalize.action")}
+        </SubmitButton>
+      </fetcher.Form>
     </Dialog>
   );
 }

@@ -1,5 +1,13 @@
 import { z } from "zod";
-import { _action, id, nullLiteraltoNull, safeJSONParse } from "~/utils/zod";
+import {
+  _action,
+  id,
+  modeShort,
+  nullLiteraltoNull,
+  numericEnum,
+  safeJSONParse,
+  stageId,
+} from "~/utils/zod";
 import { TOURNAMENT } from "../tournament/tournament-constants";
 
 const reportedMatchPlayerIds = z.preprocess(
@@ -70,10 +78,25 @@ export const matchSchema = z.union([
 
 export const bracketIdx = z.coerce.number().int().min(0).max(100);
 
+const tournamentRoundMaps = z.object({
+  roundId: id,
+  list: z
+    .array(
+      z.object({
+        mode: modeShort,
+        stageId,
+      }),
+    )
+    .nullish(),
+  count: numericEnum([3, 5, 7]),
+  type: z.enum(["BEST_OF"]),
+});
+
 export const bracketSchema = z.union([
   z.object({
     _action: _action("START_BRACKET"),
     bracketIdx,
+    maps: z.preprocess(safeJSONParse, z.array(tournamentRoundMaps)),
   }),
   z.object({
     _action: _action("FINALIZE_TOURNAMENT"),

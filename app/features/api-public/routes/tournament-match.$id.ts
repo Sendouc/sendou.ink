@@ -31,12 +31,18 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
         "TournamentMatch.stageId",
       )
       .innerJoin("Tournament", "Tournament.id", "TournamentStage.tournamentId")
+      .innerJoin(
+        "TournamentRound",
+        "TournamentRound.id",
+        "TournamentMatch.roundId",
+      )
       .select(({ eb }) => [
         "TournamentStage.tournamentId",
         "TournamentMatch.opponentOne",
         "TournamentMatch.opponentTwo",
         "Tournament.mapPickingStyle",
         "TournamentMatch.bestOf",
+        "TournamentRound.maps",
         jsonArrayFrom(
           eb
             .selectFrom("TournamentMatchGameResult")
@@ -58,7 +64,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
             ])
             .where("TournamentMatchGameResult.matchId", "=", id)
             .orderBy("TournamentMatchGameResult.number asc"),
-        ).as("mapList"),
+        ).as("playedMapList"),
       ])
       .where("TournamentMatch.id", "=", id)
       .executeTakeFirst(),
@@ -83,7 +89,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       match.opponentOne.result === "win" ||
       match.opponentTwo.result === "win"
     ) {
-      return match.mapList.map((map) => ({
+      return match.playedMapList.map((map) => ({
         map: {
           mode: map.mode,
           stage: {
@@ -103,6 +109,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       matchId: id,
       teams: [match.opponentOne.id, match.opponentTwo.id],
       mapPickingStyle: match.mapPickingStyle,
+      maps: match.maps,
     }).map((map) => {
       return {
         map: {

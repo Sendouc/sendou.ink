@@ -464,8 +464,8 @@ export interface TournamentResult {
 }
 
 export interface TournamentRoundMaps {
-  list?: Array<{ mode: ModeShort; stageId: StageId }>;
-  count: 3 | 5 | 7;
+  list?: Array<{ mode: ModeShort; stageId: StageId }> | null;
+  count: number;
   // TODO: support play_all
   type: "BEST_OF";
   // TODO: counterpick style

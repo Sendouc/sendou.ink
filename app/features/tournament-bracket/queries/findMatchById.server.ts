@@ -7,6 +7,7 @@ import type {
   User,
 } from "~/db/types";
 import { parseDBArray } from "~/utils/sql";
+import type { TournamentRoundMaps } from "~/db/tables";
 
 const stm = sql.prepare(/* sql */ `
   select 
@@ -16,6 +17,7 @@ const stm = sql.prepare(/* sql */ `
     "TournamentMatch"."bestOf",
     "TournamentMatch"."chatCode",
     "Tournament"."mapPickingStyle",
+    "TournamentRound"."maps" as "roundMaps",
     json_group_array(
       json_object(
         'id',
@@ -37,6 +39,7 @@ const stm = sql.prepare(/* sql */ `
     ) as "players"
   from "TournamentMatch"
   left join "TournamentStage" on "TournamentStage"."id" = "TournamentMatch"."stageId"
+  left join "TournamentRound" on "TournamentRound"."id" = "TournamentMatch"."roundId"
   left join "Tournament" on "Tournament"."id" = "TournamentStage"."tournamentId"
   left join "TournamentTeamMember" on 
     "TournamentTeamMember"."tournamentTeamId" = "TournamentMatch"."opponentOne" ->> '$.id'
@@ -51,17 +54,21 @@ export type FindMatchById = ReturnType<typeof findMatchById>;
 
 export const findMatchById = (id: number) => {
   const row = stm.get({ id }) as
-    | (Pick<
+    | ((Pick<
         TournamentMatch,
         "id" | "opponentOne" | "opponentTwo" | "bestOf" | "chatCode"
       > &
-        Pick<Tournament, "mapPickingStyle"> & { players: string })
+        Pick<Tournament, "mapPickingStyle"> & { players: string }) & {
+        roundMaps: string;
+      })
     | undefined;
 
   if (!row) return;
 
+  // xxx: how to handle roundMaps for old tournaments where it's missing?
   return {
     ...row,
+    roundMaps: JSON.parse(row.roundMaps) as TournamentRoundMaps,
     opponentOne: JSON.parse(row.opponentOne) as Match["opponent1"],
     opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
     players: parseDBArray(row.players) as Array<{

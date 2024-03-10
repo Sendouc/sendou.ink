@@ -110,6 +110,7 @@ export const action: ActionFunction = async ({ params, request }) => {
               matchId,
               teams: [match.opponentOne.id, match.opponentTwo.id],
               mapPickingStyle: match.mapPickingStyle,
+              maps: match.roundMaps,
             })
           : null;
       const currentMap = mapList?.[data.position];
@@ -329,6 +330,7 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
           matchId,
           teams: [match.opponentOne.id, match.opponentTwo.id],
           mapPickingStyle: match.mapPickingStyle,
+          maps: match.roundMaps,
         })
       : null;
 

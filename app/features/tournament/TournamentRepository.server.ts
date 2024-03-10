@@ -1,7 +1,12 @@
 import type { NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
-import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
+import type {
+  CastedMatchesInfo,
+  DB,
+  Tables,
+  TournamentRoundMaps,
+} from "~/db/tables";
 import { modesShort } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
@@ -121,6 +126,7 @@ export async function findById(id: number) {
           .where("TournamentTeam.tournamentId", "=", id)
           .orderBy(["TournamentTeam.seed asc", "TournamentTeam.createdAt asc"]),
       ).as("teams"),
+      // xxx: in crud?
       jsonArrayFrom(
         eb
           .selectFrom("TournamentRound")
@@ -314,6 +320,20 @@ export async function friendCodesByTournamentId(tournamentId: number) {
     },
     {} as Record<number, string>,
   );
+}
+
+export function updateRoundMaps(
+  args: (TournamentRoundMaps & { roundId: number })[],
+) {
+  return db.transaction().execute(async (trx) => {
+    for (const { roundId, ...rest } of args) {
+      await trx
+        .updateTable("TournamentRound")
+        .set({ maps: JSON.stringify(rest) })
+        .where("id", "=", roundId)
+        .execute();
+    }
+  });
 }
 
 export function checkIn({
