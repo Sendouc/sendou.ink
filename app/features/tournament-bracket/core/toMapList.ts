@@ -11,10 +11,12 @@ import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/co
 import { removeDuplicates } from "~/utils/arrays";
 import { logger } from "~/utils/logger";
 
+// xxx: support type: PLAY_ALL
 export type BracketMapCounts = Map<
+  // round.group_id ->
   number,
-  // TODO: support type: PLAY_ALL
-  Map<number, { count: 3 | 5 | 7; type: "BEST_OF" }>
+  // round.number ->
+  Map<number, { count: number; type: "BEST_OF" }>
 >;
 
 interface GenerateTournamentRoundMaplistArgs {

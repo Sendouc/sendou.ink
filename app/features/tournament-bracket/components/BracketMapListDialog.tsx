@@ -13,6 +13,7 @@ import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useFetcher } from "@remix-run/react";
+import { Label } from "~/components/Label";
 
 export function BracketMapListDialog({
   isOpen,
@@ -40,6 +41,9 @@ export function BracketMapListDialog({
       type: bracket.type,
     }),
   );
+  const [mapCounts, setMapCounts] = React.useState(
+    () => bracket.defaultRoundBestOfs,
+  );
 
   const rounds = () => {
     if (bracket.type === "round_robin") {
@@ -53,6 +57,21 @@ export function BracketMapListDialog({
 
     // xxx: SE & DE
     return [];
+  };
+
+  const mapCountsWithGlobalCount = (newCount: number) => {
+    const newMap = new Map(bracket.defaultRoundBestOfs);
+
+    for (const [groupId, value] of newMap.entries()) {
+      const newGroupMap: typeof value = new Map(value);
+      for (const [roundNumber, roundValue] of value.entries()) {
+        newGroupMap.set(roundNumber, { ...roundValue, count: newCount });
+      }
+
+      newMap.set(groupId, newGroupMap);
+    }
+
+    return newMap;
   };
 
   return (
@@ -70,24 +89,42 @@ export function BracketMapListDialog({
           )}
         />
         <h2 className="text-lg text-center">{bracket.name}</h2>
-        <Button
-          size="tiny"
-          icon={<RefreshArrowsIcon />}
-          variant="outlined"
-          className="mx-auto"
-          onClick={() =>
-            setMaps(
-              generateTournamentRoundMaplist({
-                mapCounts: bracket.defaultRoundBestOfs,
-                pool: toSetMapPool,
-                rounds: bracket.data.round,
-                type: bracket.type,
-              }),
-            )
-          }
-        >
-          Reroll all maps
-        </Button>
+        <div className="stack horizontal items-center  justify-between">
+          <div>
+            {bracket.type === "round_robin" ? (
+              <GlobalMapCountInput
+                onSetCount={(newCount) => {
+                  const newMapCounts = mapCountsWithGlobalCount(newCount);
+                  const newMaps = generateTournamentRoundMaplist({
+                    mapCounts: newMapCounts,
+                    pool: toSetMapPool,
+                    rounds: bracket.data.round,
+                    type: bracket.type,
+                  });
+                  setMaps(newMaps);
+                  setMapCounts(newMapCounts);
+                }}
+              />
+            ) : null}
+          </div>
+          <Button
+            size="tiny"
+            icon={<RefreshArrowsIcon />}
+            variant="outlined"
+            onClick={() =>
+              setMaps(
+                generateTournamentRoundMaplist({
+                  mapCounts,
+                  pool: toSetMapPool,
+                  rounds: bracket.data.round,
+                  type: bracket.type,
+                }),
+              )
+            }
+          >
+            Reroll all maps
+          </Button>
+        </div>
         <div className="stack horizontal md flex-wrap">
           {rounds().map((round) => {
             const roundMaps = maps.get(round.id);
@@ -119,6 +156,23 @@ export function BracketMapListDialog({
         </SubmitButton>
       </fetcher.Form>
     </Dialog>
+  );
+}
+
+function GlobalMapCountInput({
+  onSetCount,
+}: {
+  onSetCount: (bestOf: number) => void;
+}) {
+  return (
+    <div>
+      <Label htmlFor="count">Count</Label>
+      <select id="count" onChange={(e) => onSetCount(Number(e.target.value))}>
+        <option>3</option>
+        <option>5</option>
+        <option>7</option>
+      </select>
+    </div>
   );
 }
 

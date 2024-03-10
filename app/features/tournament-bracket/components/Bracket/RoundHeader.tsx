@@ -11,7 +11,7 @@ export function RoundHeader({
 }: {
   roundId: number;
   name: string;
-  bestOf?: 3 | 5 | 7;
+  bestOf?: number;
   showInfos?: boolean;
 }) {
   const hasDeadline = ![
@@ -38,7 +38,7 @@ export function RoundHeader({
   );
 }
 
-function Deadline({ roundId, bestOf }: { roundId: number; bestOf: 3 | 5 | 7 }) {
+function Deadline({ roundId, bestOf }: { roundId: number; bestOf: number }) {
   useAutoRerender("ten seconds");
   const isMounted = useIsMounted();
   const deadline = useDeadline(roundId, bestOf);

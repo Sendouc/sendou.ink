@@ -1,4 +1,3 @@
-import { useTournament } from "~/features/tournament/routes/to.$id";
 import type { Bracket as BracketType } from "../../core/Bracket";
 import { Match } from "./Match";
 import { RoundHeader } from "./RoundHeader";
@@ -12,7 +11,6 @@ interface EliminationBracketSideProps {
 }
 
 export function EliminationBracketSide(props: EliminationBracketSideProps) {
-  const tournament = useTournament();
   const rounds = getRounds(props);
 
   let atLeastOneColumnHidden = false;
@@ -22,9 +20,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
       style={{ "--round-count": rounds.length }}
     >
       {rounds.flatMap((round, roundIdx) => {
-        const bestOf = tournament.ctx.bestOfs.find(
-          ({ roundId }) => roundId === round.id,
-        )?.bestOf;
+        const bestOf = round.maps?.count;
 
         const matches = props.bracket.data.match.filter(
           (match) => match.round_id === round.id,

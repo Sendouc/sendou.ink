@@ -126,24 +126,6 @@ export async function findById(id: number) {
           .where("TournamentTeam.tournamentId", "=", id)
           .orderBy(["TournamentTeam.seed asc", "TournamentTeam.createdAt asc"]),
       ).as("teams"),
-      // xxx: in crud?
-      jsonArrayFrom(
-        eb
-          .selectFrom("TournamentRound")
-          .innerJoin(
-            "TournamentMatch",
-            "TournamentMatch.roundId",
-            "TournamentRound.id",
-          )
-          .innerJoin(
-            "TournamentStage",
-            "TournamentRound.stageId",
-            "TournamentStage.id",
-          )
-          .select(["TournamentRound.id as roundId", "TournamentMatch.bestOf"])
-          .groupBy("roundId")
-          .where("TournamentStage.tournamentId", "=", id),
-      ).as("bestOfs"),
       jsonArrayFrom(
         eb
           .selectFrom("MapPoolMap")

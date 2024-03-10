@@ -224,6 +224,7 @@ function FancyStageBanner({
       return t("tournament:pickInfo.tiebreaker");
     if (stage.source === "BOTH") return t("tournament:pickInfo.both");
     if (stage.source === "DEFAULT") return t("tournament:pickInfo.default");
+    if (stage.source === "TO") return "";
 
     console.error(`Unknown source: ${String(stage.source)}`);
     return "";

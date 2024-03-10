@@ -18,6 +18,7 @@ import type {
 } from "~/db/types";
 import { nanoid } from "nanoid";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import type { TournamentRoundMaps } from "~/db/tables";
 
 const team_getByTournamentIdStm = sql.prepare(/*sql*/ `
   select
@@ -275,17 +276,20 @@ export class Round {
   stageId: TournamentRound["stageId"];
   groupId: TournamentRound["groupId"];
   number: TournamentRound["number"];
+  maps: Pick<TournamentRoundMaps, "count" | "type">;
 
   constructor(
     id: TournamentRound["id"] | undefined,
     stageId: TournamentRound["stageId"],
     groupId: TournamentRound["groupId"],
     number: TournamentRound["number"],
+    maps: Pick<TournamentRoundMaps, "count" | "type">,
   ) {
     this.id = id;
     this.stageId = stageId;
     this.groupId = groupId;
     this.number = number;
+    this.maps = maps;
   }
 
   insert() {
@@ -300,12 +304,22 @@ export class Round {
     return true;
   }
 
-  static #convertRound(rawRound: TournamentRound): RoundType {
+  static #convertRound(
+    rawRound: TournamentRound & { maps?: string | null },
+  ): RoundType {
+    const parsedMaps = rawRound.maps ? JSON.parse(rawRound.maps) : null;
+
     return {
       id: rawRound.id,
       group_id: rawRound.groupId,
       number: rawRound.number,
       stage_id: rawRound.stageId,
+      maps: parsedMaps
+        ? {
+            count: parsedMaps.count,
+            type: parsedMaps.type,
+          }
+        : null,
     };
   }
 
