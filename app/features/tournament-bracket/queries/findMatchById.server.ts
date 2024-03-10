@@ -59,16 +59,17 @@ export const findMatchById = (id: number) => {
         "id" | "opponentOne" | "opponentTwo" | "bestOf" | "chatCode"
       > &
         Pick<Tournament, "mapPickingStyle"> & { players: string }) & {
-        roundMaps: string;
+        roundMaps: string | null;
       })
     | undefined;
 
   if (!row) return;
 
-  // xxx: how to handle roundMaps for old tournaments where it's missing?
   return {
     ...row,
-    roundMaps: JSON.parse(row.roundMaps) as TournamentRoundMaps,
+    roundMaps: row.roundMaps
+      ? (JSON.parse(row.roundMaps) as TournamentRoundMaps)
+      : null,
     opponentOne: JSON.parse(row.opponentOne) as Match["opponent1"],
     opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
     players: parseDBArray(row.players) as Array<{
