@@ -304,20 +304,6 @@ export async function friendCodesByTournamentId(tournamentId: number) {
   );
 }
 
-export function updateRoundMaps(
-  args: (TournamentRoundMaps & { roundId: number })[],
-) {
-  return db.transaction().execute(async (trx) => {
-    for (const { roundId, ...rest } of args) {
-      await trx
-        .updateTable("TournamentRound")
-        .set({ maps: JSON.stringify(rest) })
-        .where("id", "=", roundId)
-        .execute();
-    }
-  });
-}
-
 export function checkIn({
   tournamentTeamId,
   bracketIdx,

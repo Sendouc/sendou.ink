@@ -58,11 +58,11 @@ import {
 
 import { Menu } from "~/components/Menu";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import type { Round } from "~/modules/brackets-model";
 import { Bracket } from "../components/Bracket";
 import "../components/Bracket/bracket.css";
 import { BracketMapListDialog } from "../components/BracketMapListDialog";
 import { roundMapsFromInput } from "../core/mapList.server";
+import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.server";
 
 import "../tournament-bracket.css";
 
@@ -94,7 +94,6 @@ export const action: ActionFunction = async ({ params, request }) => {
         "Invalid map count",
       );
 
-      let rounds: Round[] = [];
       sql.transaction(() => {
         const stage = manager.create({
           tournamentId,
@@ -107,18 +106,17 @@ export const action: ActionFunction = async ({ params, request }) => {
           settings: tournament.bracketSettings(bracket.type, seeding.length),
         });
 
-        rounds = manager.get.stageData(stage.id).round;
+        updateRoundMaps(
+          roundMapsFromInput({
+            virtualRounds: bracket.data.round,
+            roundsFromDB: manager.get.stageData(stage.id).round,
+            maps: data.maps,
+            bracket,
+          }),
+        );
       })();
 
       // xxx: move this and the above the "old sql" so we get them inside trx
-      await TournamentRepository.updateRoundMaps(
-        roundMapsFromInput({
-          virtualRounds: bracket.data.round,
-          roundsFromDB: rounds,
-          maps: data.maps,
-          bracket,
-        }),
-      );
       // check in teams to the final stage ahead of time so they don't have to do it
       // separately, but also allow for TO's to check them out if needed
       if (data.bracketIdx === 0 && tournament.brackets.length > 1) {

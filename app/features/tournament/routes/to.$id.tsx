@@ -232,7 +232,6 @@ export function useTournamentFriendCodes() {
   return useOutletContext<TournamentContext>().friendCodes;
 }
 
-// xxx: fallback if empty for some reason?
 export function useTournamentToSetMapPool() {
   return useOutletContext<TournamentContext>().toSetMapPool;
 }

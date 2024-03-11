@@ -423,7 +423,7 @@ export interface TournamentGroup {
 }
 
 export interface TournamentMatch {
-  // xxx: remove?
+  // TODO: remove
   bestOf: Generated<3 | 5 | 7>;
   chatCode: string | null;
   groupId: number;
