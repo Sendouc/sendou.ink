@@ -10,7 +10,7 @@ export type BracketType =
   | "SWISS";
 
 export interface TournamentMaplistInput {
-  bestOf: 3 | 5 | 7;
+  bestOf: number;
   seed: string;
   teams: [
     {

@@ -47,7 +47,7 @@ export function resolveFreshMapList(
 
   try {
     return createTournamentMapList({
-      bestOf: args.bestOf,
+      bestOf: args.maps?.count ?? args.bestOf,
       seed: String(args.matchId),
       modesIncluded: modesIncluded({ mapPickingStyle: args.mapPickingStyle }),
       tiebreakerMaps: new MapPool(tieBreakerMapPool),

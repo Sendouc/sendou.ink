@@ -11,7 +11,6 @@ import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/co
 import { removeDuplicates } from "~/utils/arrays";
 import { logger } from "~/utils/logger";
 
-// xxx: support type: PLAY_ALL
 export type BracketMapCounts = Map<
   // round.group_id ->
   number,
@@ -26,7 +25,7 @@ interface GenerateTournamentRoundMaplistArgs {
   type: TournamentBracketProgression[number]["type"];
 }
 
-// xxx: future improvement could be slightly biasing against maps that appear in slots that are not guaranteed to be played
+// TODO: future improvement could be slightly biasing against maps that appear in slots that are not guaranteed to be played
 export function generateTournamentRoundMaplist(
   args: GenerateTournamentRoundMaplistArgs,
 ) {
@@ -52,16 +51,21 @@ export function generateTournamentRoundMaplist(
     result.set(round.id, {
       count,
       type: "BEST_OF",
-      list: modes.map((mode) => ({
-        mode,
-        stageId: resolveStage(
-          mode,
-          args.pool,
-          stageAppearance,
-          comboAppearance,
-          iteration,
-        ),
-      })),
+      list:
+        // teams pick
+        args.pool.length === 0
+          ? null
+          : // TO pick
+            modes.map((mode) => ({
+              mode,
+              stageId: resolveStage(
+                mode,
+                args.pool,
+                stageAppearance,
+                comboAppearance,
+                iteration,
+              ),
+            })),
     });
   }
 

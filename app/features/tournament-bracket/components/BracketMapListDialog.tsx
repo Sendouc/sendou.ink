@@ -17,9 +17,8 @@ import { Label } from "~/components/Label";
 import { assertUnreachable } from "~/utils/types";
 import { getRounds } from "./Bracket/Elimination";
 import clsx from "clsx";
+import { nullFilledArray } from "~/utils/arrays";
 
-// xxx: starting tournament when prepicked maps
-// xxx: best of by round for DE and SE
 export function BracketMapListDialog({
   isOpen,
   close,
@@ -87,6 +86,25 @@ export function BracketMapListDialog({
     return newMap;
   };
 
+  // TODO: could also validate you aren't going up from winners finals to grands etc. (different groups)
+  const validateNoDecreasingCount = () => {
+    for (const groupCounts of mapCounts.values()) {
+      let roundPreviousValue = 0;
+      for (const [, roundValue] of Array.from(groupCounts.entries()).sort(
+        // sort by round number
+        (a, b) => a[0] - b[0],
+      )) {
+        if (roundPreviousValue > roundValue.count) {
+          return false;
+        }
+
+        roundPreviousValue = roundValue.count;
+      }
+    }
+
+    return true;
+  };
+
   return (
     <Dialog isOpen={isOpen} close={close} className="w-max">
       <fetcher.Form method="post" className="map-list-dialog__container">
@@ -120,23 +138,25 @@ export function BracketMapListDialog({
               />
             ) : null}
           </div>
-          <Button
-            size="tiny"
-            icon={<RefreshArrowsIcon />}
-            variant="outlined"
-            onClick={() =>
-              setMaps(
-                generateTournamentRoundMaplist({
-                  mapCounts,
-                  pool: toSetMapPool,
-                  rounds: bracket.data.round,
-                  type: bracket.type,
-                }),
-              )
-            }
-          >
-            Reroll all maps
-          </Button>
+          {toSetMapPool.length > 0 ? (
+            <Button
+              size="tiny"
+              icon={<RefreshArrowsIcon />}
+              variant="outlined"
+              onClick={() =>
+                setMaps(
+                  generateTournamentRoundMaplist({
+                    mapCounts,
+                    pool: toSetMapPool,
+                    rounds: bracket.data.round,
+                    type: bracket.type,
+                  }),
+                )
+              }
+            >
+              Reroll all maps
+            </Button>
+          ) : null}
         </div>
         <div className="stack horizontal md flex-wrap justify-center">
           {rounds.map((round) => {
@@ -150,6 +170,34 @@ export function BracketMapListDialog({
                 maps={roundMaps}
                 onHoverMap={setHoveredMap}
                 hoveredMap={hoveredMap}
+                onCountChange={(newCount) => {
+                  const newMapCounts = new Map(mapCounts);
+                  const bracketRound = bracket.data.round.find(
+                    (r) => r.id === round.id,
+                  );
+                  invariant(bracketRound, "Expected round to be defined");
+
+                  const groupInfo = newMapCounts.get(bracketRound.group_id);
+                  invariant(groupInfo, "Expected group info to be defined");
+                  const oldMapInfo = newMapCounts
+                    .get(bracketRound.group_id)
+                    ?.get(bracketRound.number);
+                  invariant(oldMapInfo, "Expected map info to be defined");
+
+                  groupInfo.set(bracketRound.number, {
+                    ...oldMapInfo,
+                    count: newCount,
+                  });
+
+                  const newMaps = generateTournamentRoundMaplist({
+                    mapCounts: newMapCounts,
+                    pool: toSetMapPool,
+                    rounds: bracket.data.round,
+                    type: bracket.type,
+                  });
+                  setMaps(newMaps);
+                  setMapCounts(newMapCounts);
+                }}
                 onRoundMapListChange={(newRoundMaps) => {
                   const newMaps = new Map(maps);
                   newMaps.set(round.id, newRoundMaps);
@@ -160,15 +208,21 @@ export function BracketMapListDialog({
             );
           })}
         </div>
-        <SubmitButton
-          variant="outlined"
-          size="tiny"
-          testId="finalize-bracket-button"
-          _action="START_BRACKET"
-          className="mx-auto"
-        >
-          {t("tournament:bracket.finalize.action")}
-        </SubmitButton>
+        {validateNoDecreasingCount() ? (
+          <SubmitButton
+            variant="outlined"
+            size="tiny"
+            testId="finalize-bracket-button"
+            _action="START_BRACKET"
+            className="mx-auto"
+          >
+            {t("tournament:bracket.finalize.action")}
+          </SubmitButton>
+        ) : (
+          <div className="text-warning text-center">
+            Invalid selection: tournament progression decreases in map count
+          </div>
+        )}
       </fetcher.Form>
     </Dialog>
   );
@@ -200,12 +254,14 @@ function RoundMapList({
   maps,
   onRoundMapListChange,
   onHoverMap,
+  onCountChange,
   hoveredMap,
 }: {
   name: string;
   maps: TournamentRoundMaps;
   onRoundMapListChange: (maps: TournamentRoundMaps) => void;
   onHoverMap: (map: string | null) => void;
+  onCountChange: (count: number) => void;
   hoveredMap: string | null;
 }) {
   const [editing, setEditing] = React.useState(false);
@@ -221,26 +277,44 @@ function RoundMapList({
           {editing ? "Save" : "Edit"}
         </Button>
       </h3>
-      {maps.list ? (
-        <ol className="pl-0">
-          {maps.list.map((map, i) => (
-            <MapListRow
-              key={serializedMapMode(map)}
-              map={map}
-              number={i + 1}
-              editing={editing}
-              onHoverMap={onHoverMap}
-              hoveredMap={hoveredMap}
-              onMapChange={(map) => {
-                onRoundMapListChange({
-                  ...maps,
-                  list: maps.list?.map((m, j) => (i === j ? map : m)),
-                });
-              }}
-            />
+      {editing ? (
+        <div className="stack xs horizontal">
+          {[3, 5, 7].map((count) => (
+            <div key={count}>
+              <Label>Bo{count}</Label>
+              <input
+                type="radio"
+                name="count"
+                value={count}
+                checked={maps.count === count}
+                onChange={() => onCountChange(count)}
+              />
+            </div>
           ))}
-        </ol>
+        </div>
       ) : null}
+      <ol className="pl-0">
+        {maps.list
+          ? maps.list.map((map, i) => (
+              <MapListRow
+                key={serializedMapMode(map)}
+                map={map}
+                number={i + 1}
+                editing={editing}
+                onHoverMap={onHoverMap}
+                hoveredMap={hoveredMap}
+                onMapChange={(map) => {
+                  onRoundMapListChange({
+                    ...maps,
+                    list: maps.list?.map((m, j) => (i === j ? map : m)),
+                  });
+                }}
+              />
+            ))
+          : nullFilledArray(maps.count).map((_, i) => (
+              <MysteryRow key={i} number={i + 1} />
+            ))}
+      </ol>
     </div>
   );
 }
@@ -305,6 +379,17 @@ function MapListRow({
         <ModeImage mode={map.mode} size={24} />
         <StageImage stageId={map.stageId} height={24} className="rounded-sm" />
         {t(`game-misc:STAGE_${map.stageId}`)}
+      </div>
+    </li>
+  );
+}
+
+function MysteryRow({ number }: { number: number }) {
+  return (
+    <li className="map-list-dialog__map-list-row">
+      <div className="stack horizontal items-center xs text-lighter">
+        <span className="text-lg">{number}.</span>
+        Team&apos;s pick
       </div>
     </li>
   );
