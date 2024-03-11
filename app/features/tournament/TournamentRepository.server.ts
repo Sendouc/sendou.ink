@@ -1,12 +1,7 @@
 import type { NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
-import type {
-  CastedMatchesInfo,
-  DB,
-  Tables,
-  TournamentRoundMaps,
-} from "~/db/tables";
+import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
 import { modesShort } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
@@ -337,27 +332,6 @@ export function checkOut({
   }
 
   return query.execute();
-}
-
-export function checkInMany({
-  tournamentTeamIds,
-  bracketIdxs,
-}: {
-  tournamentTeamIds: number[];
-  bracketIdxs: number[];
-}) {
-  return db
-    .insertInto("TournamentTeamCheckIn")
-    .values(
-      tournamentTeamIds.flatMap((tournamentTeamId) =>
-        bracketIdxs.map((bracketIdx) => ({
-          checkedInAt: dateToDatabaseTimestamp(new Date()),
-          tournamentTeamId,
-          bracketIdx,
-        })),
-      ),
-    )
-    .execute();
 }
 
 export function addStaff({

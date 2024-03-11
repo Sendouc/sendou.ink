@@ -26,12 +26,17 @@ export function resolveMapList(args: ResolveCurrentMapListArgs) {
   }
 
   // include team ids in the key to handle a case where match was reopened causing one of the teams to change
-  return syncCached(`${args.matchId}-${args.teams[0]}-${args.teams[1]}`, () =>
-    resolveFreshMapList(
-      args as ResolveCurrentMapListArgs & {
-        mapPickingStyle: Exclude<Tables["Tournament"]["mapPickingStyle"], "TO">;
-      },
-    ),
+  return syncCached(
+    `${args.matchId}-${args.teams[0]}-${args.teams[1]}-${args.maps?.count}`,
+    () =>
+      resolveFreshMapList(
+        args as ResolveCurrentMapListArgs & {
+          mapPickingStyle: Exclude<
+            Tables["Tournament"]["mapPickingStyle"],
+            "TO"
+          >;
+        },
+      ),
   );
 }
 

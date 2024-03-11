@@ -65,6 +65,7 @@ import { roundMapsFromInput } from "../core/mapList.server";
 import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.server";
 
 import "../tournament-bracket.css";
+import { checkInMany } from "~/features/tournament/queries/checkInMany.server";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -114,32 +115,33 @@ export const action: ActionFunction = async ({ params, request }) => {
             bracket,
           }),
         );
-      })();
 
-      // xxx: move this and the above the "old sql" so we get them inside trx
-      // check in teams to the final stage ahead of time so they don't have to do it
-      // separately, but also allow for TO's to check them out if needed
-      if (data.bracketIdx === 0 && tournament.brackets.length > 1) {
-        const finalStageIdx = tournament.brackets.findIndex((b) => b.isFinals);
+        // check in teams to the final stage ahead of time so they don't have to do it
+        // separately, but also allow for TO's to check them out if needed
+        if (data.bracketIdx === 0 && tournament.brackets.length > 1) {
+          const finalStageIdx = tournament.brackets.findIndex(
+            (b) => b.isFinals,
+          );
 
-        if (finalStageIdx !== -1) {
-          const allFollowUpBracketIdxs = nullFilledArray(
-            tournament.brackets.length,
-          )
-            .map((_, i) => i)
-            // filter out groups stage
-            .filter((i) => i !== 0);
+          if (finalStageIdx !== -1) {
+            const allFollowUpBracketIdxs = nullFilledArray(
+              tournament.brackets.length,
+            )
+              .map((_, i) => i)
+              // filter out groups stage
+              .filter((i) => i !== 0);
 
-          await TournamentRepository.checkInMany({
-            bracketIdxs: tournament.ctx.settings.autoCheckInAll
-              ? allFollowUpBracketIdxs
-              : [finalStageIdx],
-            tournamentTeamIds: tournament.ctx.teams
-              .filter((t) => t.checkIns.length > 0)
-              .map((t) => t.id),
-          });
+            checkInMany({
+              bracketIdxs: tournament.ctx.settings.autoCheckInAll
+                ? allFollowUpBracketIdxs
+                : [finalStageIdx],
+              tournamentTeamIds: tournament.ctx.teams
+                .filter((t) => t.checkIns.length > 0)
+                .map((t) => t.id),
+            });
+          }
         }
-      }
+      })();
 
       break;
     }
