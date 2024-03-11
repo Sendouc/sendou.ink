@@ -1,8 +1,8 @@
 import type { Bracket as BracketType } from "../../core/Bracket";
+import { getRounds } from "../../core/rounds";
 import { Match } from "./Match";
 import { RoundHeader } from "./RoundHeader";
 import clsx from "clsx";
-import { removeDuplicates } from "~/utils/arrays";
 
 interface EliminationBracketSideProps {
   bracket: BracketType;
@@ -91,97 +91,4 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
       })}
     </div>
   );
-}
-
-// xxx: to util file
-export function getRounds(props: EliminationBracketSideProps) {
-  const groupIds = props.bracket.data.group.flatMap((group) => {
-    if (props.type === "winners" && group.number === 2) return [];
-    if (props.type === "losers" && group.number !== 2) return [];
-
-    return group.id;
-  });
-
-  let showingBracketReset = props.bracket.data.round.length > 1;
-  const rounds = props.bracket.data.round
-    .flatMap((round) => {
-      if (
-        typeof round.group_id === "number" &&
-        !groupIds.includes(round.group_id)
-      ) {
-        return [];
-      }
-
-      return round;
-    })
-    .filter((round, i, rounds) => {
-      const isBracketReset =
-        props.type === "winners" && i === rounds.length - 1;
-      const grandFinalsMatch =
-        props.type === "winners"
-          ? props.bracket.data.match.find(
-              (match) => match.round_id === rounds[rounds.length - 2]?.id,
-            )
-          : undefined;
-
-      if (isBracketReset && grandFinalsMatch?.opponent1?.result === "win") {
-        showingBracketReset = false;
-        return false;
-      }
-
-      const matches = props.bracket.data.match.filter(
-        (match) => match.round_id === round.id,
-      );
-
-      const atLeastOneNonByeMatch = matches.some(
-        (m) => m.opponent1 && m.opponent2,
-      );
-
-      return atLeastOneNonByeMatch;
-    });
-
-  const hasThirdPlaceMatch =
-    props.type === "single" &&
-    removeDuplicates(props.bracket.data.match.map((m) => m.group_id)).length >
-      1;
-  return rounds.map((round, i) => {
-    const name = () => {
-      if (
-        showingBracketReset &&
-        props.type === "winners" &&
-        i === rounds.length - 2
-      ) {
-        return "Grand Finals";
-      }
-
-      if (hasThirdPlaceMatch && i === rounds.length - 2) {
-        return "Finals";
-      }
-      if (hasThirdPlaceMatch && i === rounds.length - 1) {
-        return "3rd place match";
-      }
-
-      if (props.type === "winners" && i === rounds.length - 1) {
-        return showingBracketReset ? "Bracket Reset" : "Grand Finals";
-      }
-
-      const namePrefix =
-        props.type === "winners" ? "WB " : props.type === "losers" ? "LB " : "";
-
-      const isFinals = i === rounds.length - (props.type === "winners" ? 3 : 1);
-
-      const semisOffSet =
-        props.type === "winners" ? 4 : hasThirdPlaceMatch ? 3 : 2;
-      const isSemis = i === rounds.length - semisOffSet;
-
-      return `${namePrefix}${
-        isFinals ? "Finals" : isSemis ? "Semis" : `Round ${i + 1}`
-      }`;
-    };
-
-    return {
-      ...round,
-      name: name(),
-    };
-  });
 }

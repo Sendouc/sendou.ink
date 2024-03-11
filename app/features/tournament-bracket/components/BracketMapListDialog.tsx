@@ -15,9 +15,9 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { useFetcher } from "@remix-run/react";
 import { Label } from "~/components/Label";
 import { assertUnreachable } from "~/utils/types";
-import { getRounds } from "./Bracket/Elimination";
 import clsx from "clsx";
 import { nullFilledArray } from "~/utils/arrays";
+import { getRounds } from "../core/rounds";
 
 export function BracketMapListDialog({
   isOpen,
