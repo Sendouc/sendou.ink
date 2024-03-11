@@ -104,7 +104,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     toSetMapPool:
       tournament.ctx.mapPickingStyle === "TO"
         ? await TournamentRepository.findTOSetMapPoolById(tournamentId)
-        : undefined,
+        : [],
     friendCode: user
       ? await UserRepository.currentFriendCodeByUserId(user.id)
       : undefined,
@@ -206,7 +206,7 @@ type TournamentContext = {
   setBracketExpanded: (expanded: boolean) => void;
   friendCode?: string;
   friendCodes?: SerializeFrom<typeof loader>["friendCodes"];
-  toSetMapPool?: SerializeFrom<typeof loader>["toSetMapPool"];
+  toSetMapPool: SerializeFrom<typeof loader>["toSetMapPool"];
 };
 
 export function useTournament() {
@@ -232,6 +232,7 @@ export function useTournamentFriendCodes() {
   return useOutletContext<TournamentContext>().friendCodes;
 }
 
+// xxx: fallback if empty for some reason?
 export function useTournamentToSetMapPool() {
   return useOutletContext<TournamentContext>().toSetMapPool;
 }

@@ -228,6 +228,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 };
 
+// xxx: is it ok you can have map pool picking = TO but submit no map list?
 export default function CalendarNewEventPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation();

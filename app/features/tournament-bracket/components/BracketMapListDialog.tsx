@@ -19,6 +19,7 @@ import { getRounds } from "./Bracket/Elimination";
 import clsx from "clsx";
 
 // xxx: starting tournament when prepicked maps
+// xxx: best of by round for DE and SE
 export function BracketMapListDialog({
   isOpen,
   close,
@@ -33,9 +34,6 @@ export function BracketMapListDialog({
   const { t } = useTranslation(["tournament"]);
   const toSetMapPool = useTournamentToSetMapPool();
   const fetcher = useFetcher();
-
-  // xxx: fallback?
-  invariant(toSetMapPool, "Expected toSetMapPool to be defined");
 
   const [maps, setMaps] = React.useState(() =>
     generateTournamentRoundMaplist({
@@ -67,9 +65,8 @@ export function BracketMapListDialog({
       return [...winners, ...losers];
     }
 
-    // xxx: SE
     if (bracket.type === "single_elimination") {
-      return [];
+      return getRounds({ type: "single", bracket });
     }
 
     assertUnreachable(bracket.type);
@@ -267,8 +264,6 @@ function MapListRow({
   const toSetMaps = useTournamentToSetMapPool();
 
   if (editing) {
-    invariant(toSetMaps, "Expected toSetMaps to be defined");
-
     return (
       <li className="map-list-dialog__map-list-row">
         <div className="stack horizontal items-center xs">
