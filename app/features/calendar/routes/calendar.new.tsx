@@ -228,7 +228,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 };
 
-// xxx: is it ok you can have map pool picking = TO but submit no map list?
 export default function CalendarNewEventPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation();
@@ -628,7 +627,9 @@ function RankedToggle() {
 
   return (
     <div>
-      <label htmlFor={id}>Ranked</label>
+      <label htmlFor={id} className="w-max">
+        Ranked
+      </label>
       <Toggle
         name="isRanked"
         id={id}
