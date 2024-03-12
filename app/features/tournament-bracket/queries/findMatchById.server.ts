@@ -65,11 +65,14 @@ export const findMatchById = (id: number) => {
 
   if (!row) return;
 
+  const roundMaps = row.roundMaps
+    ? (JSON.parse(row.roundMaps) as TournamentRoundMaps)
+    : null;
+
   return {
     ...row,
-    roundMaps: row.roundMaps
-      ? (JSON.parse(row.roundMaps) as TournamentRoundMaps)
-      : null,
+    bestOf: (roundMaps?.count ?? row.bestOf) as 3 | 5 | 7,
+    roundMaps,
     opponentOne: JSON.parse(row.opponentOne) as Match["opponent1"],
     opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
     players: parseDBArray(row.players) as Array<{

@@ -4,7 +4,9 @@ import { seed } from "~/db/seed";
 import { parseRequestFormData } from "~/utils/remix";
 
 const seedSchema = z.object({
-  variation: z.enum(["NO_TOURNAMENT_TEAMS", "DEFAULT", "REG_OPEN"]).nullish(),
+  variation: z
+    .enum(["NO_TOURNAMENT_TEAMS", "DEFAULT", "REG_OPEN", "SMALL_SOS"])
+    .nullish(),
 });
 
 export type SeedVariation = NonNullable<

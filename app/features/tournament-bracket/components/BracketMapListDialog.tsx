@@ -230,7 +230,7 @@ export function BracketMapListDialog({
               <SubmitButton
                 variant="outlined"
                 size="tiny"
-                testId="finalize-bracket-button"
+                testId="confirm-finalize-bracket-button"
                 _action="START_BRACKET"
                 className="mx-auto"
               >
@@ -257,9 +257,9 @@ function GlobalMapCountInput({
     <div>
       <Label htmlFor="count">Count</Label>
       <select id="count" onChange={(e) => onSetCount(Number(e.target.value))}>
-        <option>3</option>
-        <option>5</option>
-        <option>7</option>
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="7">7</option>
       </select>
     </div>
   );

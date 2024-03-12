@@ -1057,6 +1057,7 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
                 setBrackets(brackets.slice(0, -1));
               }}
               disabled={brackets.length === 1}
+              testId="remove-bracket"
             >
               Remove bracket
             </Button>

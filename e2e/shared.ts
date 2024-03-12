@@ -12,4 +12,5 @@ export const startBracket = async (page: Page, tournamentId = 2) => {
   });
 
   await page.getByTestId("finalize-bracket-button").click();
+  await page.getByTestId("confirm-finalize-bracket-button").click();
 };

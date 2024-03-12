@@ -330,6 +330,7 @@ function ModeProgressIndicator({
             alt={t(`game-misc:MODE_LONG_${mode}`)}
             title={t(`game-misc:MODE_LONG_${mode}`)}
             onClick={() => setSelectedResultIndex?.(i)}
+            testId={`mode-progress-${mode}`}
           />
         );
       })}

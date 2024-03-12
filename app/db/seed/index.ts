@@ -85,6 +85,8 @@ const calendarEventWithToToolsTeamsPP = () =>
 const calendarEventWithToToolsSOS = () => calendarEventWithToTools("SOS");
 const calendarEventWithToToolsTeamsSOS = () =>
   calendarEventWithToToolsTeams("SOS");
+const calendarEventWithToToolsTeamsSOSSmall = () =>
+  calendarEventWithToToolsTeams("SOS", true);
 
 const basicSeeds = (variation?: SeedVariation | null) => [
   adminUser,
@@ -126,7 +128,9 @@ const basicSeeds = (variation?: SeedVariation | null) => [
     ? undefined
     : calendarEventWithToToolsTeamsPP,
   calendarEventWithToToolsSOS,
-  calendarEventWithToToolsTeamsSOS,
+  variation === "SMALL_SOS"
+    ? calendarEventWithToToolsTeamsSOSSmall
+    : calendarEventWithToToolsTeamsSOS,
   calendarEventWithToToolsToSetMapPool,
   tournamentSubs,
   adminBuilds,
@@ -1081,6 +1085,7 @@ const availablePairs = rankedModesShort
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(
   event: "PICNIC" | "ITZ" | "PP" | "SOS" = "PICNIC",
+  isSmall: boolean = false,
 ) {
   const userIds = userIdsInAscendingOrderById();
   const names = Array.from(
@@ -1101,7 +1106,7 @@ function calendarEventWithToToolsTeams(
     SOS: 300,
   }[event];
 
-  for (let id = 1; id <= 16; id++) {
+  for (let id = 1; id <= (isSmall ? 4 : 16); id++) {
     const teamId = id + teamIdAddition;
 
     const name = names.pop();
