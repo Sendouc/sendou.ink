@@ -88,6 +88,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const groupCount = new Set(bracket.data.round.map((r) => r.group_id))
         .size;
+      // xxx: pretty sure this won't work when a round is hidden (getRounds code)
       validate(
         bracket.type === "round_robin"
           ? bracket.data.round.length / groupCount === data.maps.length

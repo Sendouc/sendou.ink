@@ -26,11 +26,11 @@ import { tournamentIdFromParams } from "../tournament-utils";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { isAdmin } from "~/permissions";
 
 import "../tournament.css";
 import "~/styles/maps.css";
 import "~/styles/calendar-event.css";
-import { isAdmin } from "~/permissions";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;

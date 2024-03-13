@@ -1060,7 +1060,7 @@ function TOPickedMapPoolInfo() {
   const toSetMapPool = useTournamentToSetMapPool();
   const tournament = useTournament();
 
-  if (!toSetMapPool || toSetMapPool.length === 0) return null;
+  if (toSetMapPool.length === 0) return null;
 
   return (
     <Section title={t("calendar:forms.mapPool")}>
