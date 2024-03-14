@@ -364,6 +364,7 @@ function PickInfoText({
     if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
     if (source === "BOTH") return t("tournament:pickInfo.both");
     if (source === "DEFAULT") return t("tournament:pickInfo.default");
+    if (source === "TO") return "";
 
     console.error(`Unknown source: ${String(source)}`);
     return "";

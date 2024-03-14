@@ -9,6 +9,7 @@ import { removeDuplicates } from "~/utils/arrays";
 import { logger } from "~/utils/logger";
 import type { Round } from "~/modules/brackets-model";
 import { getTournamentManager } from "./brackets-manager";
+import type { BracketMapCounts } from "./toMapList";
 
 interface CreateBracketArgs {
   id: number;
@@ -320,6 +321,10 @@ export abstract class Bracket {
       }
     }
   }
+
+  get defaultRoundBestOfs(): BracketMapCounts {
+    throw new Error("not implemented");
+  }
 }
 
 class SingleEliminationBracket extends Bracket {
@@ -329,6 +334,47 @@ class SingleEliminationBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "single_elimination";
+  }
+
+  get defaultRoundBestOfs(): BracketMapCounts {
+    const result: BracketMapCounts = new Map();
+
+    const maxRoundNumber = Math.max(
+      ...this.data.round.map((round) => round.number),
+    );
+    for (const group of this.data.group) {
+      const roundsOfGroup = this.data.round.filter(
+        (round) => round.group_id === group.id,
+      );
+
+      const defaultOfRound = (round: Round) => {
+        // 3rd place match
+        if (group.number === 2) return 5;
+
+        if (round.number > 2) return 5;
+
+        // small brackets
+        if (
+          round.number === maxRoundNumber ||
+          round.number === maxRoundNumber - 1
+        ) {
+          return 5;
+        }
+        return 3;
+      };
+
+      for (const round of roundsOfGroup) {
+        if (!result.get(group.id)) {
+          result.set(group.id, new Map());
+        }
+
+        result
+          .get(group.id)!
+          .set(round.number, { count: defaultOfRound(round), type: "BEST_OF" });
+      }
+    }
+
+    return result;
   }
 
   private hasThirdPlaceMatch() {
@@ -441,6 +487,43 @@ class DoubleEliminationBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "double_elimination";
+  }
+
+  get defaultRoundBestOfs(): BracketMapCounts {
+    const result: BracketMapCounts = new Map();
+
+    for (const group of this.data.group) {
+      const roundsOfGroup = this.data.round.filter(
+        (round) => round.group_id === group.id,
+      );
+
+      const defaultOfRound = (round: Round) => {
+        if (group.number === 3) return 5;
+        if (group.number === 2) {
+          const lastRoundNumber = Math.max(
+            ...roundsOfGroup.map((round) => round.number),
+          );
+
+          if (round.number === lastRoundNumber) return 5;
+          return 3;
+        }
+
+        if (round.number > 2) return 5;
+        return 3;
+      };
+
+      for (const round of roundsOfGroup) {
+        if (!result.get(group.id)) {
+          result.set(group.id, new Map());
+        }
+
+        result
+          .get(group.id)!
+          .set(round.number, { count: defaultOfRound(round), type: "BEST_OF" });
+      }
+    }
+
+    return result;
   }
 
   winnersSourceRound(roundNumber: number) {
@@ -941,5 +1024,21 @@ class RoundRobinBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "round_robin";
+  }
+
+  get defaultRoundBestOfs() {
+    const result: BracketMapCounts = new Map();
+
+    for (const round of this.data.round) {
+      if (!result.get(round.group_id)) {
+        result.set(round.group_id, new Map());
+      }
+
+      result
+        .get(round.group_id)!
+        .set(round.number, { count: 3, type: "BEST_OF" });
+    }
+
+    return result;
   }
 }

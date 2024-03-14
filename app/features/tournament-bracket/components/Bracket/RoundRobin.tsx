@@ -1,4 +1,3 @@
-import { useTournament } from "~/features/tournament/routes/to.$id";
 import type { Bracket as BracketType } from "../../core/Bracket";
 import { RoundHeader } from "./RoundHeader";
 import { Match } from "./Match";
@@ -10,7 +9,6 @@ import { tournamentTeamPage } from "~/utils/urls";
 
 export function RoundRobinBracket({ bracket }: { bracket: BracketType }) {
   const groups = getGroups(bracket);
-  const tournament = useTournament();
 
   return (
     <div className="stack xl">
@@ -39,9 +37,7 @@ export function RoundRobinBracket({ bracket }: { bracket: BracketType }) {
               style={{ "--round-count": rounds.length }}
             >
               {rounds.flatMap((round) => {
-                const bestOf = tournament.ctx.bestOfs.find(
-                  ({ roundId }) => roundId === round.id,
-                )?.bestOf;
+                const bestOf = round.maps?.count;
 
                 const matches = bracket.data.match.filter(
                   (match) => match.round_id === round.id,

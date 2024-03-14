@@ -156,13 +156,17 @@ export const action: ActionFunction = async ({ request }) => {
 
     throw redirect(calendarEventPage(data.eventToEditId));
   } else {
+    const mapPickingStyle = () => {
+      if (data.toToolsMode === "TO") return "TO" as const;
+      if (data.toToolsMode) return `AUTO_${data.toToolsMode}` as const;
+
+      return "AUTO_ALL" as const;
+    };
     const createdEventId = await CalendarRepository.create({
       authorId: user.id,
       mapPoolMaps: deserializedMaps,
       isFullTournament: data.toToolsEnabled,
-      mapPickingStyle: data.toToolsMode
-        ? `AUTO_${data.toToolsMode}`
-        : "AUTO_ALL",
+      mapPickingStyle: mapPickingStyle(),
       ...commonArgs,
     });
 
@@ -261,12 +265,11 @@ export default function CalendarNewEventPage() {
             <RankedToggle />
           </>
         ) : null}
-        {/* can't edit as participants might have chosen maps and changing this might cause impossible states */}
-        {isTournament && !eventToEdit ? (
+        {isTournament ? (
           <TournamentMapPickingStyleSelect />
-        ) : null}
-        {/* TODO: this will be selectable depending on the tournament map picking style in future */}
-        {!isTournament ? <MapPoolSection /> : null}
+        ) : (
+          <MapPoolSection />
+        )}
         {isTournament ? <TournamentFormatSelector /> : null}
         <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
@@ -624,7 +627,9 @@ function RankedToggle() {
 
   return (
     <div>
-      <label htmlFor={id}>Ranked</label>
+      <label htmlFor={id} className="w-max">
+        Ranked
+      </label>
       <Toggle
         name="isRanked"
         id={id}
@@ -644,8 +649,9 @@ function RankedToggle() {
 
 const mapPickingStyleToShort: Record<
   Tables["Tournament"]["mapPickingStyle"],
-  "ALL" | RankedModeShort
+  "ALL" | "TO" | RankedModeShort
 > = {
+  TO: "TO",
   AUTO_ALL: "ALL",
   AUTO_SZ: "SZ",
   AUTO_TC: "TC",
@@ -653,13 +659,26 @@ const mapPickingStyleToShort: Record<
   AUTO_CB: "CB",
 };
 function TournamentMapPickingStyleSelect() {
+  const { t } = useTranslation(["common"]);
   const id = React.useId();
-  const { eventToEdit } = useLoaderData<typeof loader>();
-  const [mode, setMode] = React.useState<"ALL" | RankedModeShort>(
+  const { eventToEdit, recentEventsWithMapPools } =
+    useLoaderData<typeof loader>();
+  const [mode, setMode] = React.useState<"ALL" | "TO" | RankedModeShort>(
     eventToEdit?.mapPickingStyle
       ? mapPickingStyleToShort[eventToEdit.mapPickingStyle]
       : "ALL",
   );
+  const [mapPool, setMapPool] = React.useState<MapPool>(
+    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY,
+  );
+
+  // can't change toToolsMode in editing
+  // and also can't change tiebreaker maps in editing
+  // because otherwise some team's picks that they already made
+  // might start to overlap with tiebreaker maps
+  if (eventToEdit && mode !== "TO") {
+    return null;
+  }
 
   return (
     <>
@@ -670,15 +689,31 @@ function TournamentMapPickingStyleSelect() {
           name="toToolsMode"
           defaultValue={mode}
           id={id}
+          disabled={Boolean(eventToEdit)}
         >
           <option value="ALL">Prepicked by teams - All modes</option>
           <option value="SZ">Prepicked by teams - SZ only</option>
           <option value="TC">Prepicked by teams - TC only</option>
           <option value="RM">Prepicked by teams - RM only</option>
           <option value="CB">Prepicked by teams - CB only</option>
+          <option value="TO">Picked by TO</option>
         </select>
       </div>
       {mode === "ALL" ? <CounterPickMapPoolSection /> : null}
+      {mode === "TO" ? (
+        <>
+          <input type="hidden" name="pool" value={mapPool.serialized} />
+
+          <MapPoolSelector
+            className="w-full"
+            mapPool={mapPool}
+            title={t("common:maps.mapPool")}
+            handleMapPoolChange={setMapPool}
+            recentEvents={recentEventsWithMapPools}
+            allowBulkEdit
+          />
+        </>
+      ) : null}
     </>
   );
 }
@@ -1022,6 +1057,7 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
                 setBrackets(brackets.slice(0, -1));
               }}
               disabled={brackets.length === 1}
+              testId="remove-bracket"
             >
               Remove bracket
             </Button>

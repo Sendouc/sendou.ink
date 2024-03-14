@@ -246,11 +246,12 @@ test.describe("Tournament bracket", () => {
     });
 
     await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
 
     await page.locator('[data-match-id="1"]').click();
     await reportResult({
       page,
-      amountOfMapsToReport: 4,
+      amountOfMapsToReport: 2,
       sidesWithMoreThanFourPlayers: [],
     });
     await backToBracket(page);
@@ -288,27 +289,9 @@ test.describe("Tournament bracket", () => {
       await submit(page);
     }
 
-    // TODO: test for a different format
-    // and include await isNotVisible(page.getByTestId("standing-3"));
-    //
-    // await page.getByTestId("edit-event-info-button").click();
-
-    // await page.getByTestId("add-bracket").click();
-    // await page.getByLabel("2. Name").fill("Underground bracket");
-
-    // for (const testId of [
-    //   "placement-1-2",
-    //   "placement-2-2",
-    //   "placement-2-3",
-    //   "placement-2-4",
-    // ]) {
-    //   await page.getByTestId(testId).click();
-    // }
-
-    // await submit(page);
-
     await page.getByTestId("brackets-tab").click();
     await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
 
     for (const id of [2, 4, 6, 7, 8, 9, 10, 11, 12]) {
       await navigateToMatch(page, id);
@@ -349,6 +332,7 @@ test.describe("Tournament bracket", () => {
       url: tournamentBracketsPage({ tournamentId, bracketIdx: 2 }),
     });
     await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
 
     await navigateToMatch(page, 13);
     await reportResult({
@@ -362,6 +346,7 @@ test.describe("Tournament bracket", () => {
       url: tournamentBracketsPage({ tournamentId, bracketIdx: 1 }),
     });
     await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
     for (const matchId of [14, 15, 16, 17]) {
       await navigateToMatch(page, matchId);
       await reportResult({
@@ -393,6 +378,79 @@ test.describe("Tournament bracket", () => {
     ).toHaveCount(3);
   });
 
+  test("changes SOS format and progresses with it", async ({ page }) => {
+    const tournamentId = 4;
+
+    await seed(page, "SMALL_SOS");
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentAdminPage(tournamentId),
+    });
+
+    await page.getByTestId("edit-event-info-button").click();
+    await page.getByLabel("Auto check-in to follow-up brackets").check();
+    await page.getByTestId("remove-bracket").click();
+    await page.getByTestId("placement-3-4").click();
+
+    await submit(page);
+
+    await page.getByTestId("brackets-tab").click();
+    await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
+
+    for (const matchId of [1, 2, 3, 4, 5, 6]) {
+      await page.locator(`[data-match-id="${matchId}"]`).click();
+      await reportResult({
+        page,
+        amountOfMapsToReport: 2,
+        sidesWithMoreThanFourPlayers: [],
+        points: [100, 0],
+      });
+      await backToBracket(page);
+    }
+
+    await page.getByRole("button", { name: "Hammerhead" }).click();
+    await isNotVisible(page.getByTestId("brackets-viewer"));
+
+    await page.getByRole("button", { name: "Mako" }).click();
+    await expect(page.getByTestId("brackets-viewer")).toBeVisible();
+
+    await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
+
+    await page.locator('[data-match-id="7"]').click();
+    await expect(page.getByTestId("back-to-bracket-button")).toBeVisible();
+  });
+
+  test("changes to picked map pool & best of", async ({ page }) => {
+    const tournamentId = 4;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentAdminPage(tournamentId),
+    });
+
+    await page.getByTestId("edit-event-info-button").click();
+
+    await page.getByRole("button", { name: "Clear" }).click();
+    await page.getByLabel("Template").selectOption("preset:CB");
+
+    await submit(page);
+
+    await page.getByTestId("brackets-tab").click();
+    await page.getByTestId("finalize-bracket-button").click();
+    await page.getByLabel("Count").selectOption("5");
+    await page.getByTestId("confirm-finalize-bracket-button").click();
+
+    await page.locator('[data-match-id="1"]').click();
+    await expect(page.getByTestId("mode-progress-CB")).toHaveCount(5);
+  });
+
   test("reopens round robin match and changes score", async ({ page }) => {
     const tournamentId = 3;
 
@@ -405,6 +463,7 @@ test.describe("Tournament bracket", () => {
     });
 
     await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
 
     // set situation where match A is completed and its participants also completed their follow up matches B & C
     // and then we go back and change the winner of A
@@ -476,6 +535,7 @@ test.describe("Tournament bracket", () => {
     });
 
     await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
 
     await page.locator('[data-match-id="1"]').click();
     await reportResult({
@@ -521,6 +581,7 @@ test.describe("Tournament bracket", () => {
     });
 
     await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
 
     await isNotVisible(page.locator('[data-match-id="1"]'));
     await page.locator('[data-match-id="2"]').click();
@@ -542,6 +603,7 @@ test.describe("Tournament bracket", () => {
 
     await page.getByTestId("brackets-tab").click();
     await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
     // bye is gone
     await expect(page.locator('[data-match-id="1"]')).toBeVisible();
   });

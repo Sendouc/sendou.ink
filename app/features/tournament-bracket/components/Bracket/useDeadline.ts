@@ -13,7 +13,16 @@ const MINUTES = {
   BO7: 50,
 };
 
-export function useDeadline(roundId: number, bestOf: 3 | 5 | 7) {
+const minutesToPlay = (count: number) => {
+  if (count === 3) return MINUTES.BO3;
+  if (count === 5) return MINUTES.BO5;
+  if (count === 7) return MINUTES.BO7;
+
+  logger.warn("Unknown best of count", { count });
+  return MINUTES.BO5;
+};
+
+export function useDeadline(roundId: number, bestOf: number) {
   const tournament = useTournament();
 
   try {
@@ -60,7 +69,7 @@ export function useDeadline(roundId: number, bestOf: 3 | 5 | 7) {
 
     if (!dl) return null;
 
-    dl.setMinutes(dl.getMinutes() + MINUTES[`BO${bestOf}`]);
+    dl.setMinutes(dl.getMinutes() + minutesToPlay(bestOf));
 
     return dl;
   } catch (e) {

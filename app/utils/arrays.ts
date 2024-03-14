@@ -91,3 +91,7 @@ export function pickRandomItem<T>(array: T[]): T {
 
   return shuffled[0];
 }
+
+export function filterOutFalsy<T>(arr: (T | null | undefined)[]): T[] {
+  return arr.filter(Boolean) as T[];
+}

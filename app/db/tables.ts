@@ -364,6 +364,7 @@ export interface TaggedArt {
 // AUTO = style where teams pick their map pool ahead of time and the map lists are automatically made for each round
 // could also have the traditional style where TO picks the maps later
 type TournamentMapPickingStyle =
+  | "TO"
   | "AUTO_ALL"
   | "AUTO_SZ"
   | "AUTO_TC"
@@ -422,6 +423,7 @@ export interface TournamentGroup {
 }
 
 export interface TournamentMatch {
+  // TODO: remove
   bestOf: Generated<3 | 5 | 7>;
   chatCode: string | null;
   groupId: number;
@@ -462,11 +464,20 @@ export interface TournamentResult {
   userId: number;
 }
 
+export interface TournamentRoundMaps {
+  list?: Array<{ mode: ModeShort; stageId: StageId }> | null;
+  count: number;
+  // TODO: support play_all
+  type: "BEST_OF";
+  // TODO: counterpick style
+}
+
 export interface TournamentRound {
   groupId: number;
   id: GeneratedAlways<number>;
   number: number;
   stageId: number;
+  maps: ColumnType<TournamentRoundMaps | null, string | null, string | null>;
 }
 
 export interface TournamentStage {

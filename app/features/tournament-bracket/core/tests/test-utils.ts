@@ -60,7 +60,6 @@ export const testTournament = (
         createdAt: 0,
       })),
       castedMatchesInfo: null,
-      bestOfs: data.round.map((round) => ({ bestOf: 3, roundId: round.id })),
       teams: nTeams(
         data.participant.length,
         Math.min(...data.participant.map((p) => p.id)),

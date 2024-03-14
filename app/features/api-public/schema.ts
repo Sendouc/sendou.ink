@@ -176,8 +176,9 @@ type MapListMap = {
    * - "DEFAULT" if it was a default map, something went wrong with the algorithm typically
    * - "TIEBREAKER" if it was a tiebreaker map (selected by the TO)
    * - "BOTH" both teams picked the map
+   * - "TO" if it was a TO pick (from predefined maplist)
    */
-  source: number | "DEFAULT" | "TIEBREAKER" | "BOTH";
+  source: number | "DEFAULT" | "TIEBREAKER" | "BOTH" | "TO";
   winnerTeamId: number | null;
   participatedUserIds: Array<number> | null;
 };

@@ -138,6 +138,8 @@ export default function AdminPage() {
 
   return (
     <Main className="stack lg">
+      {process.env.NODE_ENV !== "production" && <Seed />}
+
       {isMod(user) ? <LinkPlayer /> : null}
       {isMod(user) ? <GiveArtist /> : null}
       {isMod(user) ? <GiveVideoAdder /> : null}
@@ -149,8 +151,6 @@ export default function AdminPage() {
       {isAdmin(user) ? <ForcePatron /> : null}
       {isAdmin(user) ? <RefreshPlusTiers /> : null}
       {isAdmin(user) ? <CleanUp /> : null}
-
-      {process.env.NODE_ENV !== "production" && <Seed />}
     </Main>
   );
 }

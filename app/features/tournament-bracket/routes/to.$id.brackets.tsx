@@ -1,5 +1,5 @@
 import type { ActionFunction } from "@remix-run/node";
-import { Form, Link, useFetcher, useRevalidator } from "@remix-run/react";
+import { Link, useFetcher, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -28,7 +28,6 @@ import {
 import { currentSeason } from "~/features/mmr/season";
 import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { HACKY_isInviteOnlyEvent } from "~/features/tournament/tournament-utils";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { nullFilledArray, removeDuplicates } from "~/utils/arrays";
@@ -45,25 +44,27 @@ import {
   useBracketExpanded,
   useTournament,
 } from "../../tournament/routes/to.$id";
-import { Bracket } from "../components/Bracket";
-import type { Standing } from "../core/Bracket";
+import type { Bracket as BracketType, Standing } from "../core/Bracket";
 import { tournamentFromDB } from "../core/Tournament.server";
-import { resolveBestOfs } from "../core/bestOf.server";
 import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 import { tournamentSummary } from "../core/summarizer.server";
 import { addSummary } from "../queries/addSummary.server";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
-import { findAllMatchesByStageId } from "../queries/findAllMatchesByStageId.server";
-import { setBestOf } from "../queries/setBestOf.server";
 import { bracketSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
   fillWithNullTillPowerOfTwo,
 } from "../tournament-bracket-utils";
+import { Menu } from "~/components/Menu";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { Bracket } from "../components/Bracket";
+import { BracketMapListDialog } from "../components/BracketMapListDialog";
+import { roundMapsFromInput } from "../core/mapList.server";
+import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.server";
+import { checkInMany } from "~/features/tournament/queries/checkInMany.server";
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
-import { Menu } from "~/components/Menu";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -84,6 +85,15 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       validate(bracket.canBeStarted, "Bracket is not ready to be started");
 
+      const groupCount = new Set(bracket.data.round.map((r) => r.group_id))
+        .size;
+      validate(
+        bracket.type === "round_robin"
+          ? bracket.data.round.length / groupCount === data.maps.length
+          : bracket.data.round.length === data.maps.length,
+        "Invalid map count",
+      );
+
       sql.transaction(() => {
         const stage = manager.create({
           tournamentId,
@@ -96,40 +106,41 @@ export const action: ActionFunction = async ({ params, request }) => {
           settings: tournament.bracketSettings(bracket.type, seeding.length),
         });
 
-        const matches = findAllMatchesByStageId(stage.id);
-        // TODO: dynamic best of set when bracket is made
-        const bestOfs = HACKY_isInviteOnlyEvent(tournament.ctx)
-          ? matches.map((match) => [5, match.matchId] as [5, number])
-          : resolveBestOfs(matches, bracket.type);
-        for (const [bestOf, id] of bestOfs) {
-          setBestOf({ bestOf, id });
+        updateRoundMaps(
+          roundMapsFromInput({
+            virtualRounds: bracket.data.round,
+            roundsFromDB: manager.get.stageData(stage.id).round,
+            maps: data.maps,
+            bracket,
+          }),
+        );
+
+        // check in teams to the final stage ahead of time so they don't have to do it
+        // separately, but also allow for TO's to check them out if needed
+        if (data.bracketIdx === 0 && tournament.brackets.length > 1) {
+          const finalStageIdx = tournament.brackets.findIndex(
+            (b) => b.isFinals,
+          );
+
+          if (finalStageIdx !== -1) {
+            const allFollowUpBracketIdxs = nullFilledArray(
+              tournament.brackets.length,
+            )
+              .map((_, i) => i)
+              // filter out groups stage
+              .filter((i) => i !== 0);
+
+            checkInMany({
+              bracketIdxs: tournament.ctx.settings.autoCheckInAll
+                ? allFollowUpBracketIdxs
+                : [finalStageIdx],
+              tournamentTeamIds: tournament.ctx.teams
+                .filter((t) => t.checkIns.length > 0)
+                .map((t) => t.id),
+            });
+          }
         }
       })();
-
-      // TODO: to transaction
-      // check in teams to the final stage ahead of time so they don't have to do it
-      // separately, but also allow for TO's to check them out if needed
-      if (data.bracketIdx === 0 && tournament.brackets.length > 1) {
-        const finalStageIdx = tournament.brackets.findIndex((b) => b.isFinals);
-
-        if (finalStageIdx !== -1) {
-          const allFollowUpBracketIdxs = nullFilledArray(
-            tournament.brackets.length,
-          )
-            .map((_, i) => i)
-            // filter out groups stage
-            .filter((i) => i !== 0);
-
-          await TournamentRepository.checkInMany({
-            bracketIdxs: tournament.ctx.settings.autoCheckInAll
-              ? allFollowUpBracketIdxs
-              : [finalStageIdx],
-            tournamentTeamIds: tournament.ctx.teams
-              .filter((t) => t.checkIns.length > 0)
-              .map((t) => t.id),
-          });
-        }
-      }
 
       break;
     }
@@ -294,8 +305,7 @@ export default function TournamentBracketsPage() {
         </div>
       ) : null}
       {bracket.preview && bracket.enoughTeams ? (
-        <Form method="post" className="stack items-center mb-4">
-          <input type="hidden" name="bracketIdx" value={bracketIdx} />
+        <div className="stack items-center mb-4">
           {!tournament.isOrganizer(user) ? (
             <Alert
               variation="INFO"
@@ -312,14 +322,7 @@ export default function TournamentBracketsPage() {
             >
               {t("tournament:bracket.finalize.text")}{" "}
               {bracket.canBeStarted ? (
-                <SubmitButton
-                  variant="outlined"
-                  size="tiny"
-                  testId="finalize-bracket-button"
-                  _action="START_BRACKET"
-                >
-                  {t("tournament:bracket.finalize.action")}
-                </SubmitButton>
+                <BracketStarter bracket={bracket} bracketIdx={bracketIdx} />
               ) : (
                 <Popover
                   buttonChildren={
@@ -334,7 +337,7 @@ export default function TournamentBracketsPage() {
               )}
             </Alert>
           )}
-        </Form>
+        </div>
       ) : null}
       <div className="stack horizontal sm justify-end">
         {bracket.canCheckIn(user) ? (
@@ -402,6 +405,39 @@ function useAutoRefresh() {
     // TODO: maybe later could look into not revalidating unless bracket advanced but do something fancy in the tournament class instead
     revalidate();
   }, [lastEvent, revalidate]);
+}
+
+function BracketStarter({
+  bracket,
+  bracketIdx,
+}: {
+  bracket: BracketType;
+  bracketIdx: number;
+}) {
+  const { t } = useTranslation(["tournament"]);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const isMounted = useIsMounted();
+
+  return (
+    <>
+      {isMounted ? (
+        <BracketMapListDialog
+          isOpen={dialogOpen}
+          close={() => setDialogOpen(false)}
+          bracket={bracket}
+          bracketIdx={bracketIdx}
+        />
+      ) : null}
+      <Button
+        variant="outlined"
+        size="tiny"
+        testId="finalize-bracket-button"
+        onClick={() => setDialogOpen(true)}
+      >
+        {t("tournament:bracket.finalize.action")}
+      </Button>
+    </>
+  );
 }
 
 function BracketCheckinButton({ bracketIdx }: { bracketIdx: number }) {
