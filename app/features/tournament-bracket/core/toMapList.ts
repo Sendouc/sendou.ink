@@ -87,27 +87,16 @@ function sortRounds(
   rounds: Round[],
   type: TournamentBracketProgression[number]["type"],
 ) {
-  const minGroupId = Math.min(...rounds.map((x) => x.group_id));
-  const maxGroupId = Math.max(...rounds.map((x) => x.group_id));
-
   return rounds.slice().sort((a, b) => {
     if (type === "double_elimination") {
       // grands last
+      const maxGroupId = Math.max(...rounds.map((x) => x.group_id));
       if (a.group_id === maxGroupId && b.group_id !== maxGroupId) return 1;
       if (a.group_id !== maxGroupId && b.group_id === maxGroupId) return -1;
-      if (a.group_id === maxGroupId && b.group_id === maxGroupId) {
-        return a.number - b.number;
-      }
-
-      const winnersMaxRoundNumber = Math.max(
-        ...rounds.filter((x) => x.group_id === minGroupId).map((x) => x.number),
-      );
-      const isLastWinnersRound = (r: Round) =>
-        r.group_id === minGroupId && r.number === winnersMaxRoundNumber;
-
-      // winners finals just before grands
-      if (isLastWinnersRound(a) && !isLastWinnersRound(b)) return 1;
-      if (!isLastWinnersRound(a) && isLastWinnersRound(b)) return -1;
+    }
+    if (type === "single_elimination") {
+      // finals and 3rd place match last
+      if (a.group_id !== b.group_id) return a.group_id - b.group_id;
     }
 
     return a.number - b.number;
