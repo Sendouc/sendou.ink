@@ -55,17 +55,16 @@ import {
   bracketSubscriptionKey,
   fillWithNullTillPowerOfTwo,
 } from "../tournament-bracket-utils";
-
 import { Menu } from "~/components/Menu";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { Bracket } from "../components/Bracket";
-import "../components/Bracket/bracket.css";
 import { BracketMapListDialog } from "../components/BracketMapListDialog";
 import { roundMapsFromInput } from "../core/mapList.server";
 import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.server";
-
-import "../tournament-bracket.css";
 import { checkInMany } from "~/features/tournament/queries/checkInMany.server";
+
+import "../components/Bracket/bracket.css";
+import "../tournament-bracket.css";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -88,7 +87,6 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const groupCount = new Set(bracket.data.round.map((r) => r.group_id))
         .size;
-      // xxx: pretty sure this won't work when a round is hidden (getRounds code)
       validate(
         bracket.type === "round_robin"
           ? bracket.data.round.length / groupCount === data.maps.length
