@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
+import { parseDBJsonArray } from "~/utils/sql";
 import type { LookingGroupWithInviteCode } from "../q-types";
 
 const stm = sql.prepare(/* sql */ `
@@ -12,22 +12,18 @@ const stm = sql.prepare(/* sql */ `
       "User"."discordId",
       "User"."discordName",
       "User"."discordAvatar",
+      "User"."qWeaponPool",
       "GroupMember"."role",
-      "GroupMember"."note",
-      json_group_array("UserWeapon"."weaponSplId") as "weapons"
+      "GroupMember"."note"
     from
       "Group"
     left join "GroupMember" on "GroupMember"."groupId" = "Group"."id"
     left join "User" on "User"."id" = "GroupMember"."userId"
-    left join "UserWeapon" on "UserWeapon"."userId" = "User"."id"
     left join "GroupMatch" on "GroupMatch"."alphaGroupId" = "Group"."id"
       or "GroupMatch"."bravoGroupId" = "Group"."id"
     where
       "Group"."id" = @ownGroupId
       and "Group"."status" = 'PREPARING'
-      and ("UserWeapon"."order" is null or "UserWeapon"."order" <= 3)
-    group by "User"."id"
-    order by "UserWeapon"."order" asc
   )
   select 
     "q1"."id",
@@ -41,7 +37,7 @@ const stm = sql.prepare(/* sql */ `
         'discordAvatar', "q1"."discordAvatar",
         'role', "q1"."role",
         'note', "q1"."note",
-        'weapons', "q1"."weapons"
+        'qWeaponPool', "q1"."qWeaponPool"
       )
     ) as "members"
   from "q1"
@@ -60,7 +56,7 @@ export function findPreparingGroup(
     chatCode: null,
     inviteCode: row.inviteCode,
     members: parseDBJsonArray(row.members).map((member: any) => {
-      const weapons = parseDBArray(member.weapons);
+      const weapons = member.qWeaponPool ? JSON.parse(member.qWeaponPool) : [];
 
       return {
         ...member,
