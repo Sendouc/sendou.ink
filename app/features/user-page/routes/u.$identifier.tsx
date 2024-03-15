@@ -6,7 +6,6 @@ import type {
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
-import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { userTopPlacements } from "~/features/top-search";
@@ -33,6 +32,7 @@ import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import { countArtByUserId } from "~/features/art/queries/countArtByUserId.server";
 import { findVods } from "~/features/vods/queries/findVods.server";
+import { userParamsSchema } from "../user-page-schemas.server";
 
 import "~/styles/u.css";
 
@@ -63,8 +63,6 @@ export const handle: SendouRouteHandle = {
     ];
   },
 };
-
-export const userParamsSchema = z.object({ identifier: z.string() });
 
 export type UserPageLoaderData = SerializeFrom<typeof loader>;
 

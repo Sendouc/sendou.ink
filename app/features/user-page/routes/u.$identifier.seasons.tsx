@@ -8,7 +8,6 @@ import {
 import clsx from "clsx";
 import * as React from "react";
 import invariant from "tiny-invariant";
-import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import Chart from "~/components/Chart";
 import {
@@ -57,22 +56,17 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { cutToNDecimalPlaces, roundToNDecimalPlaces } from "~/utils/number";
 import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
-import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
+import { type UserPageLoaderData } from "./u.$identifier";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
+import {
+  seasonsSearchParamsSchema,
+  userParamsSchema,
+} from "../user-page-schemas.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user"],
 };
-
-export const seasonsSearchParamsSchema = z.object({
-  page: z.coerce.number().default(1),
-  info: z.enum(["weapons", "stages", "mates", "enemies"]).optional(),
-  season: z.coerce
-    .number()
-    .optional()
-    .refine((nth) => !nth || allSeasons(new Date()).includes(nth)),
-});
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const { identifier } = userParamsSchema.parse(params);

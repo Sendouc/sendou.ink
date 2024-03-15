@@ -1,6 +1,5 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import type { UserPageLoaderData } from "./u.$identifier";
-import { userParamsSchema } from "./u.$identifier";
 import {
   type SendouRouteHandle,
   notFoundIfFalsy,
@@ -24,6 +23,7 @@ import { deleteArt } from "~/features/art/queries/deleteArt.server";
 import { artsByUserId } from "~/features/art/queries/artsByUserId.server";
 import { ART_SOURCES, type ArtSource } from "~/features/art/art-types";
 import { ArtGrid } from "~/features/art/components/ArtGrid";
+import { userParamsSchema } from "../user-page-schemas.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],

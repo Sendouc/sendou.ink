@@ -48,7 +48,8 @@ import {
   undefinedToNull,
   weaponSplId,
 } from "~/utils/zod";
-import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
+import { type UserPageLoaderData } from "./u.$identifier";
+import { userParamsSchema } from "../user-page-schemas.server";
 
 import "~/styles/u-edit.css";
 

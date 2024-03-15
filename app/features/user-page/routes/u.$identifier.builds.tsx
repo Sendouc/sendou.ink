@@ -17,13 +17,14 @@ import {
 } from "~/utils/remix";
 import { userNewBuildPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
-import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
+import { type UserPageLoaderData } from "./u.$identifier";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
 import { WeaponImage } from "~/components/Image";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { userParamsSchema } from "../user-page-schemas.server";
 
 const buildsActionSchema = z.object({
   buildToDeleteId: z.preprocess(actualNumber, id),
