@@ -1,23 +1,20 @@
-import * as React from "react";
-import { Form, useLoaderData } from "@remix-run/react";
-import { TOURNAMENT } from "../../tournament/tournament-constants";
-import { SubmitButton } from "~/components/SubmitButton";
-import { TeamRosterInputs } from "./TeamRosterInputs";
-import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import { useTranslation } from "react-i18next";
-import type { Result } from "./ScoreReporter";
-import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { SerializeFrom } from "@remix-run/node";
-import { stageImageUrl } from "~/utils/urls";
-import { Image } from "~/components/Image";
-import type { TournamentDataTeam } from "../core/Tournament.server";
+import { Form, useLoaderData } from "@remix-run/react";
+import * as React from "react";
+import { Label } from "~/components/Label";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useUser } from "~/features/auth/core/user";
 import { useTournament } from "~/features/tournament/routes/to.$id";
+import { TOURNAMENT } from "../../tournament/tournament-constants";
+import type { TournamentDataTeam } from "../core/Tournament.server";
+import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import { matchIsLocked } from "../tournament-bracket-utils";
+import type { Result } from "./ScoreReporter";
+import { TeamRosterInputs } from "./TeamRosterInputs";
 
 export function ScoreReporterRosters({
   teams,
   position,
-  currentStageWithMode,
   result,
   scores,
   bestOf,
@@ -25,7 +22,6 @@ export function ScoreReporterRosters({
 }: {
   teams: [TournamentDataTeam, TournamentDataTeam];
   position: number;
-  currentStageWithMode: TournamentMapListMap;
   result?: Result;
   scores: [number, number];
   bestOf: number;
@@ -47,7 +43,7 @@ export function ScoreReporterRosters({
 
   const presentational = _presentational || Boolean(result);
 
-  const newScore = [
+  const newScore: [number, number] = [
     scores[0] + (winnerId === teams[0].id ? 1 : 0),
     scores[1] + (winnerId === teams[1].id ? 1 : 0),
   ];
@@ -91,13 +87,13 @@ export function ScoreReporterRosters({
               points={showPoints ? points : undefined}
               checkedPlayers={checkedPlayers}
               winnerName={winningTeam()}
-              currentStageWithMode={currentStageWithMode}
               wouldEndSet={wouldEndSet}
               matchLocked={matchIsLocked({
                 matchId: data.match.id,
                 scores: scores,
                 tournament,
               })}
+              newScore={newScore}
             />
           </div>
         ) : null}
@@ -164,19 +160,22 @@ function ReportScoreButtons({
   winnerIdx,
   checkedPlayers,
   winnerName,
-  currentStageWithMode,
   wouldEndSet,
   matchLocked,
+  newScore,
 }: {
   points?: [number, number];
   winnerIdx?: number;
   checkedPlayers: number[][];
   winnerName?: string;
-  currentStageWithMode: TournamentMapListMap;
   wouldEndSet: boolean;
   matchLocked: boolean;
+  newScore: [number, number];
 }) {
-  const { t } = useTranslation(["game-misc"]);
+  const user = useUser();
+  const tournament = useTournament();
+  const confirmCheckId = React.useId();
+  const [endConfirmation, setEndConfirmation] = React.useState(false);
 
   if (matchLocked) {
     return (
@@ -239,27 +238,39 @@ function ReportScoreButtons({
     );
   }
 
+  const confirmationClass = () => {
+    const ownTeam = tournament.teamMemberOfByUser(user);
+
+    // TO reporting
+    if (!ownTeam) return "text-main-forced";
+    if (ownTeam.name === winnerName) return "text-success";
+
+    return "text-warning";
+  };
+
   return (
-    <div className="stack sm items-center">
-      <Image
-        path={stageImageUrl(currentStageWithMode.stageId)}
-        width={64}
-        height={36}
-        alt=""
-        className="rounded-sm"
-      />
-      <div className="tournament-bracket__during-match-actions__confirm-score-text">
-        Report <b>{winnerName}</b> win on{" "}
-        <b>
-          {t(`game-misc:MODE_LONG_${currentStageWithMode.mode}`)}{" "}
-          {t(`game-misc:STAGE_${currentStageWithMode.stageId}`)}
-        </b>
-        ?
-      </div>
+    <div className="stack md items-center">
+      {wouldEndSet ? (
+        <div className="stack horizontal sm items-center">
+          <input
+            type="checkbox"
+            onChange={(e) => setEndConfirmation(e.target.checked)}
+            id={confirmCheckId}
+            data-testid="end-confirmation"
+          />
+          <Label spaced={false} htmlFor={confirmCheckId}>
+            <span className="text-main-forced">Set over?</span>{" "}
+            <span className={confirmationClass()}>
+              ({newScore.join("-")} win for {winnerName})
+            </span>
+          </Label>
+        </div>
+      ) : null}
       <SubmitButton
         size="tiny"
         _action="REPORT_SCORE"
         testId="report-score-button"
+        disabled={wouldEndSet && !endConfirmation}
       >
         {wouldEndSet ? "Report & end set" : "Report"}
       </SubmitButton>

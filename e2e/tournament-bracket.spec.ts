@@ -36,6 +36,8 @@ const reportResult = async ({
   winner?: 1 | 2;
   points?: [number, number];
 }) => {
+  const confirmCheckbox = page.getByTestId("end-confirmation");
+
   const fillPointsInput = async () => {
     if (!points) return;
     await page.getByTestId("points-input-1").fill(String(points[0]));
@@ -66,10 +68,13 @@ const reportResult = async ({
   if (amountOfMapsToReport >= 2) {
     await page.getByTestId(`winner-radio-${winner}`).click();
     await fillPointsInput();
-    await page.getByTestId("report-score-button").click();
 
     if (amountOfMapsToReport === 2) {
+      await confirmCheckbox.click();
+      await page.getByTestId("report-score-button").click();
       await expect(page.getByTestId("report-timestamp")).toBeVisible();
+    } else {
+      await page.getByTestId("report-score-button").click();
     }
   }
 
@@ -78,6 +83,8 @@ const reportResult = async ({
 
     await page.getByTestId(`winner-radio-${winner}`).click();
     await fillPointsInput();
+
+    await confirmCheckbox.click();
     await page.getByTestId("report-score-button").click();
 
     await expect(page.getByTestId("report-timestamp")).toBeVisible();
@@ -93,6 +100,8 @@ const reportResult = async ({
     await expect(page.getByText("3-0")).toBeVisible();
 
     await page.getByTestId(`winner-radio-${winner}`).click();
+
+    await confirmCheckbox.click();
     await page.getByTestId("report-score-button").click();
 
     await expect(page.getByTestId("report-timestamp")).toBeVisible();

@@ -169,7 +169,6 @@ export function ScoreReporter({
         <MatchActionSectionTabs
           presentational={presentational}
           scores={[scoreOne, scoreTwo]}
-          currentStageWithMode={currentStageWithMode}
           teams={teams}
           result={result}
         />
@@ -341,13 +340,11 @@ function ModeProgressIndicator({
 function MatchActionSectionTabs({
   presentational,
   scores,
-  currentStageWithMode,
   teams,
   result,
 }: {
   presentational?: boolean;
   scores: [number, number];
-  currentStageWithMode: TournamentMapListMap;
   teams: [TournamentDataTeam, TournamentDataTeam];
   result?: Result;
 }) {
@@ -456,7 +453,6 @@ function MatchActionSectionTabs({
                 scores={scores}
                 teams={teams}
                 position={currentPosition}
-                currentStageWithMode={currentStageWithMode}
                 result={result}
                 bestOf={data.match.bestOf}
                 presentational={
