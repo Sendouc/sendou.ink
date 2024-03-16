@@ -46,6 +46,7 @@ import {
 } from "../tournament-bracket-utils";
 
 import "../tournament-bracket.css";
+import { getRounds } from "../core/rounds";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -382,10 +383,7 @@ export default function TournamentMatchPage() {
     <div className="stack lg">
       {!data.matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
       <div className="flex horizontal justify-between items-center">
-        {/* TODO: better title */}
-        <h2 className="text-lighter text-lg" data-testid="match-header">
-          Match #{data.match.id}
-        </h2>
+        <MatchHeader />
         <LinkButton
           to={tournamentBracketsPage({
             tournamentId: tournament.ctx.id,
@@ -429,6 +427,94 @@ export default function TournamentMatchPage() {
           />
         ) : null}
       </div>
+    </div>
+  );
+}
+
+function MatchHeader() {
+  const tournament = useTournament();
+  const data = useLoaderData<typeof loader>();
+
+  const { bracketName, roundName } = React.useMemo(() => {
+    let bracketName;
+    let roundName;
+
+    for (const bracket of tournament.brackets) {
+      if (bracket.preview) continue;
+
+      for (const match of bracket.data.match) {
+        if (match.id === data.match.id) {
+          bracketName = bracket.name;
+
+          if (bracket.type === "round_robin") {
+            const numberToLetter = (n: number) =>
+              String.fromCharCode(65 + n - 1).toUpperCase();
+
+            const group = bracket.data.group.find(
+              (group) => group.id === match.group_id,
+            );
+            const round = bracket.data.round.find(
+              (round) => round.id === match.round_id,
+            );
+
+            roundName = `Groups ${group?.number ? numberToLetter(group.number) : ""}${round?.number ?? ""}.${match.number}`;
+          } else if (
+            bracket.type === "single_elimination" ||
+            bracket.type === "double_elimination"
+          ) {
+            const rounds =
+              bracket.type === "single_elimination"
+                ? getRounds({ type: "single", bracket })
+                : [
+                    ...getRounds({ type: "winners", bracket }),
+                    ...getRounds({ type: "losers", bracket }),
+                  ];
+
+            const round = rounds.find((round) => round.id === match.round_id);
+
+            if (round) {
+              const specifier = () => {
+                if (
+                  [
+                    "WB Finals",
+                    "Grand Finals",
+                    "Bracket Reset",
+                    "Finals",
+                    "LB Finals",
+                    "LB Semis",
+                    "3rd place match",
+                  ].includes(round.name)
+                ) {
+                  return "";
+                }
+
+                const roundNameEndsInDigit = /\d$/.test(round.name);
+
+                if (!roundNameEndsInDigit) {
+                  return ` ${match.number}`;
+                }
+
+                return `.${match.number}`;
+              };
+              roundName = `${round.name}${specifier()}`;
+            }
+          } else {
+            assertUnreachable(bracket.type);
+          }
+        }
+      }
+    }
+
+    return {
+      bracketName,
+      roundName,
+    };
+  }, [tournament, data.match.id]);
+
+  return (
+    <div className="line-height-tight" data-testid="match-header">
+      <h2 className="text-lg">{roundName}</h2>
+      <div className="text-lighter text-xs font-bold">{bracketName}</div>
     </div>
   );
 }
