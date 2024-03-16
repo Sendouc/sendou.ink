@@ -10,10 +10,12 @@ import {
 import { TOURNAMENT } from "./tournament-constants";
 import { bracketIdx } from "../tournament-bracket/tournament-bracket-schemas.server";
 
+const teamName = z.string().trim().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH);
+
 export const registerSchema = z.union([
   z.object({
     _action: _action("UPSERT_TEAM"),
-    teamName: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
+    teamName,
     prefersNotToHost: z.preprocess(checkboxValueToBoolean, z.boolean()),
     noScreen: z.preprocess(checkboxValueToBoolean, z.boolean()),
   }),
@@ -55,6 +57,11 @@ export const adminActionSchema = z.union([
     memberId: id,
   }),
   z.object({
+    _action: _action("CHANGE_TEAM_NAME"),
+    teamId: id,
+    teamName,
+  }),
+  z.object({
     _action: _action("CHECK_IN"),
     teamId: id,
     bracketIdx,
@@ -81,7 +88,7 @@ export const adminActionSchema = z.union([
   z.object({
     _action: _action("ADD_TEAM"),
     userId: id,
-    teamName: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
+    teamName,
   }),
   z.object({
     _action: _action("ADD_STAFF"),

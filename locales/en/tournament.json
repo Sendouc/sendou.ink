@@ -67,6 +67,7 @@
 
   "admin.download": "Download participants",
   "admin.actions.CHANGE_TEAM_OWNER": "Change captain",
+  "admin.actions.CHANGE_TEAM_NAME": "Change team name",
   "admin.actions.CHECK_IN": "Check in",
   "admin.actions.CHECK_OUT": "Check out",
   "admin.actions.ADD_MEMBER": "Add member",

@@ -116,8 +116,21 @@ test.describe("Tournament", () => {
     await page.getByTestId("admin-tab").click();
 
     const actionSelect = page.getByLabel("Action");
-    const teamSelect = page.getByLabel("Team");
+    const teamSelect = page.getByLabel("Team", { exact: true });
     const memberSelect = page.getByLabel("Member");
+
+    // Change team name
+    {
+      await actionSelect.selectOption("CHANGE_TEAM_NAME");
+      await teamSelect.selectOption("1");
+      await page.getByLabel("Team name").fill("NSTC");
+      await submit(page);
+
+      const data = await fetchTournamentLoaderData();
+      const firstTeam = data.tournament.ctx.teams.find((t) => t.id === 1);
+      invariant(firstTeam, "First team not found");
+      expect(firstTeam.name).toBe("NSTC");
+    }
 
     // Change team owner
     let data = await fetchTournamentLoaderData();

@@ -101,6 +101,21 @@ export const action: ActionFunction = async ({ request, params }) => {
 
       break;
     }
+    case "CHANGE_TEAM_NAME": {
+      validateIsTournamentOrganizer();
+      validate(
+        tournament.ctx.inProgressBrackets.length === 0,
+        "Tournament started",
+      );
+      const team = tournament.teamById(data.teamId);
+      validate(team, "Invalid team id");
+
+      await TournamentRepository.updateTeamName({
+        tournamentTeamId: data.teamId,
+        name: data.teamName,
+      });
+      break;
+    }
     case "CHECK_IN": {
       validateIsTournamentOrganizer();
       const team = tournament.teamById(data.teamId);
@@ -332,6 +347,11 @@ const actions = [
     when: ["TOURNAMENT_BEFORE_START"],
   },
   {
+    type: "CHANGE_TEAM_NAME",
+    inputs: ["REGISTERED_TEAM", "TEAM_NAME"] as Input[],
+    when: ["TOURNAMENT_BEFORE_START"],
+  },
+  {
     type: "CHANGE_TEAM_OWNER",
     inputs: ["ROSTER_MEMBER", "REGISTERED_TEAM"] as Input[],
     when: [],
@@ -445,7 +465,7 @@ function TeamActions() {
       ) : null}
       {selectedAction.inputs.includes("TEAM_NAME") ? (
         <div>
-          <label htmlFor="teamId">Team name</label>
+          <label htmlFor="teamName">Team name</label>
           <input id="teamName" name="teamName" />
         </div>
       ) : null}

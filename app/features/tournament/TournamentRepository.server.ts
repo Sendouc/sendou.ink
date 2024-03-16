@@ -335,6 +335,22 @@ export function checkOut({
   return query.execute();
 }
 
+export function updateTeamName({
+  tournamentTeamId,
+  name,
+}: {
+  tournamentTeamId: number;
+  name: string;
+}) {
+  return db
+    .updateTable("TournamentTeam")
+    .set({
+      name,
+    })
+    .where("id", "=", tournamentTeamId)
+    .execute();
+}
+
 export function addStaff({
   tournamentId,
   userId,
