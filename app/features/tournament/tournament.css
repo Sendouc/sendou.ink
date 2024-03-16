@@ -141,6 +141,10 @@
   opacity: 0.4;
 }
 
+.tournament__team-with-roster__member__avatar-sub {
+  outline: 2px solid var(--theme-info);
+}
+
 .tournament__team-with-roster__map-pool {
   display: grid;
   grid-template-columns: max-content max-content max-content max-content;
@@ -167,8 +171,13 @@
 }
 
 .tournament__team-with-roster__seed {
-  font-size: var(--fonts-xs);
+  font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
+  color: var(--text-lighter);
+}
+
+.tournament__team-with-roster__team-name {
+  word-break: break-word;
 }
 
 .tournament__team-member-name {
@@ -176,6 +185,7 @@
   color: var(--text);
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100px;
 }
 
 .tournament__team-member-name__role {

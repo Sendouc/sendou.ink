@@ -29,9 +29,20 @@ export function TeamWithRoster({
       <div className="tournament__team-with-roster">
         <div className="tournament__team-with-roster__name">
           {seed ? (
-            <span className="tournament__team-with-roster__seed">#{seed}</span>
+            <div className="tournament__team-with-roster__seed">#{seed}</div>
           ) : null}{" "}
-          {teamPageUrl ? <Link to={teamPageUrl}>{team.name}</Link> : team.name}
+          {teamPageUrl ? (
+            <Link
+              to={teamPageUrl}
+              className="tournament__team-with-roster__team-name"
+            >
+              {team.name}
+            </Link>
+          ) : (
+            <span className="tournament__team-with-roster__team-name">
+              {team.name}
+            </span>
+          )}
         </div>
         <ul className="tournament__team-with-roster__members">
           {team.members.map((member) => {
@@ -51,11 +62,11 @@ export function TeamWithRoster({
                   <Avatar
                     user={member}
                     size="xxs"
-                    className={
-                      activePlayers && !activePlayers.includes(member.userId)
-                        ? "tournament__team-with-roster__member__avatar-inactive"
-                        : undefined
-                    }
+                    className={clsx({
+                      "tournament__team-with-roster__member__avatar-sub": isSub,
+                      "tournament__team-with-roster__member__avatar-inactive":
+                        activePlayers && !activePlayers.includes(member.userId),
+                    })}
                   />
                   <Link
                     to={userPage(member)}
