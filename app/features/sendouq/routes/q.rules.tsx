@@ -30,8 +30,11 @@ export default function SendouqRules() {
         team who fails to do so loses the map. If players disconnect from both
         teams a replay can be played without using either team&apos;s one replay
         for the set (or even if there were no replays left to use from either
-        team). Host disconnection can be replayed with the same conditions as
-        above.
+        team). <br /> <br /> The host disconnecting can be replayed with the
+        same conditions as above (in this case the &quot;team with DC&quot; is
+        the host&apos;s team). Host disconnecting can never mean that the
+        hosting team wins the map off that. Only outcomes are that the map is
+        replayed or the team that didn&apos;t host wins the map.
         <br />
         <br /> After the DC replay has been used by the team, further DC&apos;s
         should be played out.
