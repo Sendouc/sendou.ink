@@ -24,6 +24,7 @@ interface ImageProps {
   containerStyle?: React.CSSProperties;
   testId?: string;
   onClick?: () => void;
+  loading?: "lazy";
 }
 
 export function Image({
@@ -39,6 +40,7 @@ export function Image({
   containerClassName,
   containerStyle,
   onClick,
+  loading,
 }: ImageProps) {
   return (
     <picture
@@ -62,6 +64,7 @@ export function Image({
         height={size ?? height}
         style={style}
         draggable="false"
+        loading={loading}
         data-testid={testId}
       />
     </picture>

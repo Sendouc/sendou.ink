@@ -34,6 +34,7 @@ export function Badge({
     <Image
       path={badgeUrl({ code: badge.code })}
       alt={badge.displayName}
+      loading="lazy"
       {...commonProps}
     />
   );
