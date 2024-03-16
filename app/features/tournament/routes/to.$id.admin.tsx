@@ -71,6 +71,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         tournamentId: tournamentId,
         ownerId: data.userId,
         prefersNotToHost: 0,
+        noScreen: 0,
       });
 
       break;

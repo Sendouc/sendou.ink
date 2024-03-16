@@ -388,6 +388,7 @@ type CreateArgs = Pick<
   thirdPlaceMatch?: boolean;
   autoCheckInAll?: boolean;
   isRanked?: boolean;
+  enableNoScreenToggle?: boolean;
 };
 export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
@@ -399,6 +400,7 @@ export async function create(args: CreateArgs) {
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
+        enableNoScreenToggle: args.enableNoScreenToggle,
         autoCheckInAll: args.autoCheckInAll,
       };
 
@@ -474,6 +476,7 @@ export async function update(args: UpdateArgs) {
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
+        enableNoScreenToggle: args.enableNoScreenToggle,
         autoCheckInAll: args.autoCheckInAll,
       };
 

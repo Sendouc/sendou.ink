@@ -389,6 +389,7 @@ export interface TournamentSettings {
   thirdPlaceMatch?: boolean;
   isRanked?: boolean;
   autoCheckInAll?: boolean;
+  enableNoScreenToggle?: boolean;
 }
 
 export interface CastedMatchesInfo {
@@ -514,6 +515,7 @@ export interface TournamentTeam {
   inviteCode: string;
   name: string;
   prefersNotToHost: Generated<number>;
+  noScreen: Generated<number>;
   seed: number | null;
   tournamentId: number;
 }

@@ -119,6 +119,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           name: data.teamName,
           id: ownTeam.id,
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
+          noScreen: booleanToInt(data.noScreen),
         });
       } else {
         validate(!HACKY_isInviteOnlyEvent(event), "Event is invite only");
@@ -136,6 +137,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           tournamentId: tournamentId,
           ownerId: user.id,
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
+          noScreen: booleanToInt(data.noScreen),
         });
       }
       break;
@@ -387,6 +389,7 @@ function RegistrationForms() {
             <TeamInfo
               name={ownTeam?.name}
               prefersNotToHost={ownTeam?.prefersNotToHost}
+              noScreen={ownTeam?.noScreen}
               canUnregister={Boolean(ownTeam && !ownTeamCheckedIn)}
             />
           ) : null}
@@ -579,14 +582,17 @@ function CheckIn({
 function TeamInfo({
   name,
   prefersNotToHost = 0,
+  noScreen = 0,
   canUnregister,
 }: {
   name?: string;
   prefersNotToHost?: number;
+  noScreen?: number;
   canUnregister: boolean;
 }) {
   const { t } = useTranslation(["tournament", "common"]);
   const fetcher = useFetcher();
+  const tournament = useTournament();
 
   return (
     <div>
@@ -624,7 +630,7 @@ function TeamInfo({
                 defaultValue={name ?? undefined}
               />
             </div>
-            <div>
+            <div className="stack sm">
               <div className="text-lighter text-sm stack horizontal sm items-center">
                 <input
                   id="no-host"
@@ -636,6 +642,21 @@ function TeamInfo({
                   {t("tournament:pre.info.noHost")}
                 </label>
               </div>
+
+              {tournament.ctx.settings.enableNoScreenToggle ? (
+                <div className="text-lighter text-sm stack horizontal sm items-center">
+                  <input
+                    id="no-screen"
+                    type="checkbox"
+                    name="noScreen"
+                    defaultChecked={Boolean(noScreen)}
+                    data-testid="no-screen-checkbox"
+                  />
+                  <label htmlFor="no-screen" className="mb-0">
+                    {t("tournament:pre.info.noScreen")}
+                  </label>
+                </div>
+              ) : null}
             </div>
           </div>
           <SubmitButton

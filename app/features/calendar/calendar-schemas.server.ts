@@ -71,6 +71,10 @@ export const newCalendarEventActionSchema = z
     toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
     toToolsMode: z.enum(["ALL", "TO", "SZ", "TC", "RM", "CB"]).optional(),
     isRanked: z.preprocess(checkboxValueToBoolean, z.boolean().nullish()),
+    enableNoScreenToggle: z.preprocess(
+      checkboxValueToBoolean,
+      z.boolean().nullish(),
+    ),
     //
     // tournament format related fields
     //

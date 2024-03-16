@@ -1269,7 +1269,7 @@ function BottomSection({
 }
 
 function ScreenLegalityInfo({ ban }: { ban: boolean }) {
-  const { t } = useTranslation(["q", "weapons", "weapons"]);
+  const { t } = useTranslation(["q", "weapons"]);
 
   return (
     <div className="q-match__screen-legality">
@@ -1282,7 +1282,7 @@ function ScreenLegalityInfo({ ban }: { ban: boolean }) {
                 path={specialWeaponImageUrl(SPLATTERCOLOR_SCREEN_ID)}
                 width={30}
                 height={30}
-                alt={`weapons:SPECIAL_${SPLATTERCOLOR_SCREEN_ID}`}
+                alt={t(`weapons:SPECIAL_${SPLATTERCOLOR_SCREEN_ID}`)}
               />
             </div>
           </Alert>

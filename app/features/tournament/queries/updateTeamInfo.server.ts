@@ -6,7 +6,8 @@ const stm = sql.prepare(/*sql*/ `
     "TournamentTeam"
   set
     "name" = @name,
-    "prefersNotToHost" = @prefersNotToHost
+    "prefersNotToHost" = @prefersNotToHost,
+    "noScreen" = @noScreen
   where
     "id" = @id
 `);
@@ -15,14 +16,17 @@ export function updateTeamInfo({
   id,
   name,
   prefersNotToHost,
+  noScreen,
 }: {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
   prefersNotToHost: TournamentTeam["prefersNotToHost"];
+  noScreen: number;
 }) {
   stm.run({
     id,
     name,
     prefersNotToHost,
+    noScreen,
   });
 }

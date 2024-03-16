@@ -8,12 +8,14 @@ const createTeamStm = sql.prepare(/*sql*/ `
     "tournamentId",
     "inviteCode",
     "name",
-    "prefersNotToHost"
+    "prefersNotToHost",
+    "noScreen"
   ) values (
     @tournamentId,
     @inviteCode,
     @name,
-    @prefersNotToHost
+    @prefersNotToHost,
+    @noScreen
   ) returning *
 `);
 
@@ -35,17 +37,20 @@ export const createTeam = sql.transaction(
     name,
     ownerId,
     prefersNotToHost,
+    noScreen,
   }: {
     tournamentId: TournamentTeam["tournamentId"];
     name: TournamentTeam["name"];
     ownerId: User["id"];
     prefersNotToHost: TournamentTeam["prefersNotToHost"];
+    noScreen: number;
   }) => {
     const team = createTeamStm.get({
       tournamentId,
       name,
       inviteCode: nanoid(INVITE_CODE_LENGTH),
       prefersNotToHost,
+      noScreen,
     }) as TournamentTeam;
 
     createMemberStm.run({ tournamentTeamId: team.id, userId: ownerId });

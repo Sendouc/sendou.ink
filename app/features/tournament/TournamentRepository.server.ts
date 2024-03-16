@@ -68,6 +68,7 @@ export async function findById(id: number) {
             "TournamentTeam.name",
             "TournamentTeam.seed",
             "TournamentTeam.prefersNotToHost",
+            "TournamentTeam.noScreen",
             "TournamentTeam.inviteCode",
             "TournamentTeam.createdAt",
             jsonArrayFrom(

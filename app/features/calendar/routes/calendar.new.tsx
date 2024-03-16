@@ -118,6 +118,7 @@ export const action: ActionFunction = async ({ request }) => {
     teamsPerGroup: data.teamsPerGroup ?? undefined,
     thirdPlaceMatch: data.thirdPlaceMatch ?? undefined,
     isRanked: data.isRanked ?? undefined,
+    enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
     autoCheckInAll: data.autoCheckInAll ?? undefined,
   };
   validate(
@@ -263,6 +264,7 @@ export default function CalendarNewEventPage() {
           <>
             <Divider>Tournament settings</Divider>
             <RankedToggle />
+            <EnableNoScreenToggle />
           </>
         ) : null}
         {isTournament ? (
@@ -642,6 +644,33 @@ function RankedToggle() {
         registration (skill capped) or &quot;gimmick tournaments&quot; must
         always be hosted as unranked. Any tournament hosted during off-season is
         always unranked no matter what is chosen here.
+      </FormMessage>
+    </div>
+  );
+}
+
+function EnableNoScreenToggle() {
+  const data = useLoaderData<typeof loader>();
+  const [enableNoScreen, setEnableNoScreen] = React.useState(
+    data.tournamentCtx?.settings.enableNoScreenToggle ?? true,
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Splattercolor Screen toggle
+      </label>
+      <Toggle
+        name="enableNoScreenToggle"
+        id={id}
+        tiny
+        checked={enableNoScreen}
+        setChecked={setEnableNoScreen}
+      />
+      <FormMessage type="info">
+        When registering ask teams if they want to play without Splattercolor
+        Screen.
       </FormMessage>
     </div>
   );

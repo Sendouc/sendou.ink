@@ -12,6 +12,7 @@ import {
   tournamentAdminPage,
   tournamentBracketsPage,
   tournamentPage,
+  tournamentRegisterPage,
   userResultsPage,
 } from "~/utils/urls";
 import { startBracket } from "./shared";
@@ -615,5 +616,31 @@ test.describe("Tournament bracket", () => {
     await page.getByTestId("confirm-finalize-bracket-button").click();
     // bye is gone
     await expect(page.locator('[data-match-id="1"]')).toBeVisible();
+  });
+
+  test("tournament no screen toggle works", async ({ page }) => {
+    const tournamentId = 4;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentRegisterPage(tournamentId),
+    });
+
+    await page.getByTestId("no-screen-checkbox").click();
+    await page.getByTestId("save-team-button").click();
+
+    await page.getByTestId("brackets-tab").click();
+    await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
+
+    await page.locator('[data-match-id="7"]').click();
+    await expect(page.getByTestId("screen-allowed")).toBeVisible();
+    await backToBracket(page);
+
+    await page.locator('[data-match-id="8"]').click();
+    await expect(page.getByTestId("screen-banned")).toBeVisible();
   });
 });

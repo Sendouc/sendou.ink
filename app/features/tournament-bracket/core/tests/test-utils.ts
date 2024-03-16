@@ -16,6 +16,7 @@ const tournamentCtxTeam = (
     members: [],
     name: "Team " + teamId,
     prefersNotToHost: 0,
+    noScreen: 0,
     seed: teamId + 1,
     ...partial,
   };

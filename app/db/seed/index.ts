@@ -893,6 +893,7 @@ function calendarEventWithToTools(
               sources: [{ bracketIdx: 0, placements: [4] }],
             },
           ],
+          enableNoScreenToggle: true,
         }
       : event === "PP"
         ? {

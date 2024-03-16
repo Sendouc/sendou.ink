@@ -14,7 +14,11 @@ import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { databaseTimestampToDate } from "~/utils/dates";
 import type { Unpacked } from "~/utils/types";
-import { modeImageUrl, stageImageUrl } from "~/utils/urls";
+import {
+  modeImageUrl,
+  specialWeaponImageUrl,
+  stageImageUrl,
+} from "~/utils/urls";
 import { type TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
   mapCountPlayedInSetWithCertainty,
@@ -24,6 +28,9 @@ import {
 } from "../tournament-bracket-utils";
 import { ScoreReporterRosters } from "./ScoreReporterRosters";
 import type { TournamentDataTeam } from "../core/Tournament.server";
+import { CrossIcon } from "~/components/icons/Cross";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
+import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -107,6 +114,9 @@ export function ScoreReporter({
         bestOf: data.match.bestOf,
       })}
     </>,
+    tournament.ctx.settings.enableNoScreenToggle ? (
+      <ScreenBanIcons banned={teams.some((team) => team.noScreen)} />
+    ) : null,
   ];
 
   return (
@@ -495,5 +505,26 @@ function ActionSectionWrapper({
         {children}
       </div>
     </section>
+  );
+}
+
+function ScreenBanIcons({ banned }: { banned: boolean }) {
+  const { t } = useTranslation(["weapons"]);
+
+  return (
+    <div
+      className={clsx("tournament-bracket__no-screen", {
+        "tournament-bracket__no-screen__banned": banned,
+      })}
+      data-testid={`screen-${banned ? "banned" : "allowed"}`}
+    >
+      {banned ? <CrossIcon /> : <CheckmarkIcon />}
+      <Image
+        path={specialWeaponImageUrl(SPLATTERCOLOR_SCREEN_ID)}
+        width={24}
+        height={24}
+        alt={t(`weapons:SPECIAL_${SPLATTERCOLOR_SCREEN_ID}`)}
+      />
+    </div>
   );
 }
