@@ -2,7 +2,6 @@
   "q1": "Hvad er Plus Serveren?",
 
   "q2": "Hvordan får jeg et præmiemærke til min begivenhed?",
-  "a2": "Du afgiver bestillingen af mærket til borzoic#1991. Prisen er mellem 10 til 30€ afhængig af detaljegraden af mærket. Derefter skal du kontakte Sendou for at få den tilføjet til hjemmesiden.\n\nEnhver turnering kan have et mærke som en præmie.  Hvis du ønsker at tildele mærker for andre præstationer, så anbefales det, at du først kontakter Sendou og fortæller om din ide.",
 
   "q3": "Hvordan opdaterer jeg min avatar eller brugernavn?",
   "a3": "Når du opdaterer dit profilbillede eller brugernavn på Discord, så synkroniseres ændringerne ikke med det samme på sendou.ink. For at få ændringerne til at træde i kraft, har du 2 valgmuligheder:\n\n1) Hvis du er medlem af er hjemmesidens Discord-server eller Plus-serveren, så kan du blot vente. Der er en rutine, der køre en gang om dagen, der opdaterer ændringerne. \n\n2) For at få ændringerne opdateret med det samme, så brug kommandoen /update-profile fra Lohi Discord-botten.",

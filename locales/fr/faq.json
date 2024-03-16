@@ -2,7 +2,6 @@
   "q1": "Qu'est-ce que le Plus Server ?",
 
   "q2": "Comment obtenir un badge pour mon événement ?",
-  "a2": "Il vous faudra commissionner borzoic#1991 pour créer un badge. Le prix peut varier entre 10€ et 30€ en fonction de la complexité. Après ça, contactez Sendou pour que le badge soit ajouté à la page web.\n\nTous les tournois peuvent avoir un badge pour récompense. Si vous voulez récompenser d'autres actions avec un badge, contactez tout d'abord Sendou avec votre idée.",
 
   "q3": "Comment mettre à jour mon pseudo ou mon avatar ?",
   "a3": "Mettre à jour son pseudo ou avatar sur Discord ne se reflète pas immédiatement sur sendou.ink. Pour voir ce changement, vous avez deux options :\n\n1) Si vous êtes un membre du Discord de sendou.ink ou du Plus Server, il vous suffit d'attendre. Le site se mettra à jour automatiquement dans les 24 heures.\n\n2) Alternativement, si vous voulez les mettre à jour immédiatement, vous pouvez utiliser la commande /update-profile du bot Lohi sur discord.",
