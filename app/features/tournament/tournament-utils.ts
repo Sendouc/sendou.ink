@@ -80,6 +80,10 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("sos");
   }
 
+  if (event.name.includes("From The Ink Up")) {
+    return tournamentLogoUrl("ftiu");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -112,6 +116,10 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (event.name.includes("Swim or Sink")) {
     return { bg: "#d7f8ea", text: BLACK };
+  }
+
+  if (event.name.includes("From The Ink Up")) {
+    return { bg: "#ffdfc6", text: BLACK };
   }
 
   return { bg: "#3430ad", text: WHITE };
