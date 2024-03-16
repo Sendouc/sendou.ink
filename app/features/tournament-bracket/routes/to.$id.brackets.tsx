@@ -237,7 +237,6 @@ export default function TournamentBracketsPage() {
   const showAddSubsButton =
     !tournament.canFinalize(user) &&
     !tournament.everyBracketOver &&
-    tournament.ownedTeamByUser(user) &&
     tournament.hasStarted;
 
   const waitingForTeamsText = () => {
@@ -465,7 +464,21 @@ function AddSubsPopOver() {
   const user = useUser();
 
   const ownedTeam = tournament.ownedTeamByUser(user);
-  invariant(ownedTeam, "User doesn't have owned team");
+  if (!ownedTeam) {
+    const teamMemberOf = tournament.teamMemberOfByUser(user);
+    if (!teamMemberOf) return null;
+
+    return (
+      <Popover
+        buttonChildren={<>{t("tournament:actions.addSub")}</>}
+        triggerClassName="tiny outlined ml-auto"
+        triggerTestId="add-sub-button"
+        contentClassName="text-xs"
+      >
+        Only team captain or a TO can add subs
+      </Popover>
+    );
+  }
 
   const subsAvailableToAdd =
     tournament.maxTeamMemberCount - ownedTeam.members.length;
