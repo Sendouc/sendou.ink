@@ -1166,6 +1166,10 @@ function calendarEventWithToToolsTeams(
         userIds.unshift(NZAP_TEST_ID);
       }
 
+      // prevent everyone showing as subs
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+
       sql
         .prepare(
           `
@@ -1186,7 +1190,7 @@ function calendarEventWithToToolsTeams(
           tournamentTeamId: id + teamIdAddition,
           userId,
           isOwner: i === 0 ? 1 : 0,
-          createdAt: dateToDatabaseTimestamp(new Date()),
+          createdAt: dateToDatabaseTimestamp(yesterday),
         });
     }
 
