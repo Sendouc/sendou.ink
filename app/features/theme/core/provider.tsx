@@ -107,7 +107,7 @@ function ThemeProvider({
         // Gets corrected by clientThemeCode if set to wrong value during SSR
         metaColorScheme: theme === Theme.LIGHT ? "light dark" : "dark light",
         userTheme:
-          themeSource === "static" ? null : isAutoDetected ? "auto" : theme!,
+          themeSource === "static" ? null : isAutoDetected ? "auto" : theme,
         setUserTheme,
       }}
     >
