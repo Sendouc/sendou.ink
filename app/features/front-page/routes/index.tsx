@@ -171,7 +171,12 @@ function TournamentCard({
       }}
     >
       <div className="stack horizontal justify-between items-center">
-        <Avatar url={HACKY_resolvePicture(tournament)} size="xxs" />
+        <Image
+          path={HACKY_resolvePicture(tournament)}
+          size={24}
+          className="rounded-full"
+          alt=""
+        />
         <div
           className={clsx("front__tournament-card__time", {
             invisible: !isMounted,

@@ -269,12 +269,11 @@ export default function TournamentRegisterPage() {
   return (
     <div className="stack lg">
       <div className="tournament__logo-container">
-        <img
-          src={tournament.logoSrc}
+        <Image
+          path={tournament.logoSrc}
           alt=""
           className="tournament__logo"
-          width={124}
-          height={124}
+          size={124}
         />
         <div>
           <div className="tournament__title">{tournament.ctx.name}</div>

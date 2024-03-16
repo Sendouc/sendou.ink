@@ -12,7 +12,6 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
-import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { Main } from "~/components/Main";
@@ -45,6 +44,7 @@ import { actualNumber } from "~/utils/zod";
 import * as CalendarRepository from "../CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
+import { Image } from "~/components/Image";
 
 import "~/styles/calendar.css";
 
@@ -416,11 +416,13 @@ function EventsList({
                       <div className="stack xs">
                         <div className="stack horizontal sm-plus items-center">
                           {calendarEvent.tournamentId ? (
-                            <Avatar
-                              size="sm"
-                              url={HACKY_resolvePicture({
+                            <Image
+                              path={HACKY_resolvePicture({
                                 name: calendarEvent.name,
                               })}
+                              alt=""
+                              size={40}
+                              className="rounded-full"
                             />
                           ) : null}
                           <div>
