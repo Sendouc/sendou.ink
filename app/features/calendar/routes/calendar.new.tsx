@@ -975,7 +975,7 @@ function TournamentFormatSelector() {
         </div>
       ) : null}
 
-      {format === "RR_TO_SE" ? (
+      {format === "RR_TO_SE" || (format === "DE" && withUndergroundBracket) ? (
         <div>
           <Label htmlFor="thirdPlaceMatch">Third place match</Label>
           <Toggle
