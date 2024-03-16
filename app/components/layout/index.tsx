@@ -12,6 +12,7 @@ import { LinkButton } from "../Button";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { HeartIcon } from "../icons/Heart";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import clsx from "clsx";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -66,7 +67,7 @@ export const Layout = React.memo(function Layout({
                 key={`${breadcrumb.href}-sep`}
                 className="layout__breadcrumb-separator"
               >
-                /
+                »
               </span>,
               <BreadcrumbLink key={breadcrumb.href} data={breadcrumb} />,
             ];
@@ -119,8 +120,22 @@ export const Layout = React.memo(function Layout({
 function BreadcrumbLink({ data }: { data: Breadcrumb }) {
   if (data.type === "IMAGE") {
     return (
-      <Link to={data.href} className="layout__breadcrumb">
-        <Image alt="" path={data.imgPath} width={30} height={30} />
+      <Link
+        to={data.href}
+        className={clsx("layout__breadcrumb", {
+          "stack horizontal sm items-center": data.text,
+        })}
+      >
+        <Image
+          className={clsx("layout__breadcrumb__image", {
+            "rounded-full": data.rounded,
+          })}
+          alt=""
+          path={data.imgPath}
+          width={24}
+          height={24}
+        />
+        {data.text}
       </Link>
     );
   }

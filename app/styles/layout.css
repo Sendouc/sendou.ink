@@ -18,10 +18,14 @@
   overflow: hidden;
   max-width: 350px;
   color: var(--text);
-  font-size: var(--fonts-sm);
+  font-size: var(--fonts-xs);
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.layout__breadcrumb__image {
+  min-width: 24px;
 }
 
 .layout__breadcrumb.logo {
@@ -30,6 +34,8 @@
 
 .layout__breadcrumb-separator {
   font-size: 20px;
+  opacity: 0.4;
+  margin-inline-start: -1px;
 }
 
 .layout__item_size {

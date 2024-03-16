@@ -22,11 +22,15 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { streamsByTournamentId } from "../core/streams.server";
-import { tournamentIdFromParams } from "../tournament-utils";
+import {
+  HACKY_resolvePicture,
+  tournamentIdFromParams,
+} from "../tournament-utils";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { isAdmin } from "~/permissions";
+import { tournamentPage } from "~/utils/urls";
 
 import "../tournament.css";
 import "~/styles/maps.css";
@@ -42,6 +46,21 @@ export const meta: MetaFunction = (args) => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["tournament", "calendar"],
+  breadcrumb: ({ match }) => {
+    const data = match.data as TournamentLoaderData | undefined;
+
+    if (!data) return [];
+
+    return [
+      {
+        imgPath: HACKY_resolvePicture(data.tournament.ctx),
+        href: tournamentPage(data.tournament.ctx.id),
+        type: "IMAGE",
+        text: data.tournament.ctx.name,
+        rounded: true,
+      },
+    ];
+  },
 };
 
 export type TournamentLoaderData = SerializeFrom<typeof loader>;

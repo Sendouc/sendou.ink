@@ -37,16 +37,10 @@ import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import {
-  notFoundIfFalsy,
-  parseRequestFormData,
-  validate,
-  type SendouRouteHandle,
-} from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { booleanToInt } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
 import {
-  CALENDAR_PAGE,
   LOG_IN_URL,
   SENDOU_INK_BASE_URL,
   navIconUrl,
@@ -85,14 +79,6 @@ import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findM
 import { filterOutFalsy } from "~/utils/arrays";
 import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Section } from "~/components/Section";
-
-export const handle: SendouRouteHandle = {
-  breadcrumb: () => ({
-    imgPath: navIconUrl("calendar"),
-    href: CALENDAR_PAGE,
-    type: "IMAGE",
-  }),
-};
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
