@@ -33,6 +33,7 @@ import {
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
   type SubWeaponId,
+  BIG_BUBBLER_ID,
 } from "~/modules/in-game-lists";
 import { atOrError, nullFilledArray, removeDuplicates } from "~/utils/arrays";
 import { damageTypeTranslationString } from "~/utils/i18next";
@@ -471,6 +472,15 @@ function BuildAnalyzerPage() {
                 />
                 {t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
               </div>
+            }
+            textBelow={
+              analyzed.weapon.specialWeaponSplId === BIG_BUBBLER_ID
+                ? t("analyzer:bigBubblerExplanation", {
+                    weapon: t(
+                      `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
+                    ),
+                  })
+                : undefined
             }
           >
             <StatCard

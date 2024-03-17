@@ -156,5 +156,6 @@
   "dmgHtdExplanation": "DMG = Damage | HTD = Hits to destroy",
   "noDmgData": "No damage data yet for this weapon. Check back later!",
   "perInkTankGrid.header_one": "{{weapon}} shots after ×{{count}} sub weapon used",
-  "perInkTankGrid.header_other": "{{weapon}} shots after ×{{count}} sub weapons used"
+  "perInkTankGrid.header_other": "{{weapon}} shots after ×{{count}} sub weapons used",
+  "bigBubblerExplanation": "{{weapon}} duration is also increased as the durability increases"
 }
