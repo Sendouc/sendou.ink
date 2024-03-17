@@ -1,12 +1,29 @@
+import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
-export function all() {
-  return db
+export async function all() {
+  const rows = await db
     .selectFrom("Badge")
-    .select(["id", "displayName", "code", "hue"])
+    .select(({ eb }) => [
+      "id",
+      "displayName",
+      "code",
+      "hue",
+      jsonArrayFrom(
+        eb
+          .selectFrom("BadgeManager")
+          .whereRef("BadgeManager.badgeId", "=", "Badge.id")
+          .select(["userId"]),
+      ).as("managers"),
+    ])
     .execute();
+
+  return rows.map((row) => ({
+    ...row,
+    managers: row.managers.map((m) => m.userId),
+  }));
 }
 
 export async function findByOwnerId({

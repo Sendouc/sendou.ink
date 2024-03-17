@@ -15,6 +15,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--s-2);
+  margin-block-start: var(--s-1);
 }
 
 .badges__nav-link.active {
@@ -115,4 +116,16 @@
 
 .badges-edit__submit-button {
   margin: 0 auto;
+}
+
+.badges-search__input {
+  height: 40px !important;
+  margin: 0 auto;
+  font-size: var(--fonts-lg);
+}
+
+.badges-search__icon {
+  height: 25px;
+  margin: auto;
+  margin-right: 15px;
 }

@@ -6,5 +6,7 @@
   "tournament_other": "Awarded for winning {{tournament}} (×{{count}})",
   "forYourEvent": "Badge for your event?",
   "madeBy": "Badges by <2>borzoic</2>",
-  "managedBy": "Managed by {{users}}"
+  "managedBy": "Managed by {{users}}",
+  "own.divider": "Managed badges",
+  "other.divider": "Other badges"
 }
