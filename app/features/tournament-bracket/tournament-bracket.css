@@ -11,6 +11,13 @@
   line-height: 1.4;
 }
 
+.tournament-bracket__mini-alert {
+  background-color: var(--theme-info-transparent);
+  font-size: var(--fonts-xxs);
+  border-radius: var(--rounded);
+  padding: var(--s-1) var(--s-2);
+}
+
 .tournament-bracket__infos {
   display: flex;
   flex-direction: column;

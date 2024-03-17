@@ -98,8 +98,6 @@
 
   "bracket.waiting": "מערכים יופיעו כאן כאשר לפחות {{count}} צוותים נרשמו",
   "bracket.wip": "מערך זה הוא תצוגה מקדימה ונתון לשינויים",
-  "bracket.finalize.action": "סיימו",
-  "bracket.beforeStart": "מערך עדיין לא ניתן להפעלה כפי שהוא לפני שעת ההתחלה",
 
   "bracket.progress.thanksForPlaying": "תודה ששיחקתם ב-{{eventName}}!",
   "bracket.progress.match": "יריב נוכחי: {{opponent}}",

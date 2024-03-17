@@ -284,6 +284,12 @@ export default function TournamentBracketsPage() {
     return null;
   };
 
+  const totalTeamsAvailableForTheBracket = () =>
+    bracketIdx === 0
+      ? tournament.ctx.teams.length
+      : (bracket.teamsPendingCheckIn ?? []).length +
+        bracket.data.participant.length;
+
   return (
     <div>
       {visibility !== "hidden" && !tournament.everyBracketOver ? (
@@ -314,27 +320,30 @@ export default function TournamentBracketsPage() {
               {t("tournament:bracket.wip")}
             </Alert>
           ) : (
-            <Alert
-              variation="INFO"
-              alertClassName="tournament-bracket__start-bracket-alert"
-              textClassName="stack horizontal md items-center"
-            >
-              {t("tournament:bracket.finalize.text")}{" "}
-              {bracket.canBeStarted ? (
-                <BracketStarter bracket={bracket} bracketIdx={bracketIdx} />
-              ) : (
-                <Popover
-                  buttonChildren={
-                    <>{t("tournament:bracket.finalize.action")}</>
-                  }
-                  triggerClassName="tiny outlined"
-                >
-                  {bracketIdx === 0
-                    ? t("tournament:bracket.beforeStart")
-                    : t("tournament:bracket.waitingForResults")}
-                </Popover>
-              )}
-            </Alert>
+            <div className="stack sm items-center">
+              <Alert
+                variation="INFO"
+                alertClassName="tournament-bracket__start-bracket-alert"
+                textClassName="stack horizontal md items-center"
+              >
+                {bracket.data.participant.length}/
+                {totalTeamsAvailableForTheBracket()} teams checked in
+                {bracket.canBeStarted ? (
+                  <BracketStarter bracket={bracket} bracketIdx={bracketIdx} />
+                ) : null}
+              </Alert>
+              {!bracket.canBeStarted ? (
+                <div className="tournament-bracket__mini-alert">
+                  ⚠️{" "}
+                  {bracketIdx === 0 ? (
+                    <>Tournament start time is in the future</>
+                  ) : (
+                    <>Teams pending from the previous bracket</>
+                  )}{" "}
+                  (blocks starting)
+                </div>
+              ) : null}
+            </div>
           )}
         </div>
       ) : null}
@@ -413,7 +422,6 @@ function BracketStarter({
   bracket: BracketType;
   bracketIdx: number;
 }) {
-  const { t } = useTranslation(["tournament"]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const isMounted = useIsMounted();
 
@@ -433,7 +441,7 @@ function BracketStarter({
         testId="finalize-bracket-button"
         onClick={() => setDialogOpen(true)}
       >
-        {t("tournament:bracket.finalize.action")}
+        Start the bracket
       </Button>
     </>
   );

@@ -34,7 +34,6 @@ export function BracketMapListDialog({
   bracket: Bracket;
   bracketIdx: number;
 }) {
-  const { t } = useTranslation(["tournament"]);
   const toSetMapPool = useTournamentToSetMapPool();
   const fetcher = useFetcher();
   const tournament = useTournament();
@@ -234,7 +233,7 @@ export function BracketMapListDialog({
                 _action="START_BRACKET"
                 className="mx-auto"
               >
-                {t("tournament:bracket.finalize.action")}
+                Start the bracket
               </SubmitButton>
             ) : (
               <div className="text-warning text-center">

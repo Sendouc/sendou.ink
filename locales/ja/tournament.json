@@ -98,8 +98,6 @@
 
   "bracket.waiting": "ブラケットは、少なくとも {{count}} チームが登録した時点で表示されます",
   "bracket.wip": "このブラケットはまだプレビューで、変更される可能性があります",
-  "bracket.finalize.action": "確定",
-  "bracket.beforeStart": "開始時間前なのでブラケットを開始することができません",
 
   "bracket.progress.thanksForPlaying": "{{eventName}} への参加ありがとうございます!",
   "bracket.progress.match": "現在の対戦者: {{opponent}}",

@@ -98,8 +98,6 @@
 
   "bracket.waiting": "O bracket será mostrado aqui quando ao menos {{count}} times estiverem registrados",
   "bracket.wip": "Esse bracket é uma prévia e poderá mudar",
-  "bracket.finalize.action": "Finalizar Bracket",
-  "bracket.beforeStart": "O bracket não pode ser iniciado pois ainda é antes da hora de início do torneio",
 
   "bracket.progress.thanksForPlaying": "Obrigado por participar do(a) {{eventName}}!",
   "bracket.progress.match": "Oponente atual: {{opponent}}",

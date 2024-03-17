@@ -98,8 +98,6 @@
 
   "bracket.waiting": "至少 {{count}} 支队伍报名后，对战表将显示在这里",
   "bracket.wip": "此对战表为可调整的预览",
-  "bracket.finalize.action": "生成",
-  "bracket.beforeStart": "还未到比赛开始时间，对战表目前无法开始",
 
   "bracket.progress.thanksForPlaying": "感谢您参与 {{eventName}}！",
   "bracket.progress.match": "当前对手: {{opponent}}",
