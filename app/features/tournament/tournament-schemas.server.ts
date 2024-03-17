@@ -31,6 +31,9 @@ export const registerSchema = z.union([
     userId: id,
   }),
   z.object({
+    _action: _action("LEAVE_TEAM"),
+  }),
+  z.object({
     _action: _action("CHECK_IN"),
   }),
   z.object({

@@ -55,7 +55,6 @@ import { deleteTeam } from "../queries/deleteTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
-import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
@@ -93,10 +92,8 @@ export const action: ActionFunction = async ({ request, params }) => {
     "Tournament has started, cannot make edits to registration",
   );
 
-  const teams = findTeamsByTournamentId(tournamentId);
-  const ownTeam = teams.find((team) =>
-    team.members.some((member) => member.userId === user.id && member.isOwner),
-  );
+  const ownTeam = tournament.ownedTeamByUser(user);
+  const ownTeamCheckedIn = Boolean(ownTeam && ownTeam.checkIns.length > 0);
 
   switch (data._action) {
     case "UPSERT_TEAM": {
@@ -148,6 +145,23 @@ export const action: ActionFunction = async ({ request, params }) => {
       deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
       break;
     }
+    case "LEAVE_TEAM": {
+      validate(!ownTeam, "Can't leave a team as the owner");
+
+      const teamMemberOf = tournament.teamMemberOfByUser(user);
+      validate(teamMemberOf, "You are not in a team");
+      validate(
+        teamMemberOf.checkIns.length === 0,
+        "You cannot leave after checking in",
+      );
+
+      deleteTeamMember({
+        tournamentTeamId: teamMemberOf.id,
+        userId: user.id,
+      });
+
+      break;
+    }
     case "UPDATE_MAP_POOL": {
       const mapPool = new MapPool(data.mapPool);
       validate(ownTeam);
@@ -168,7 +182,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "CHECK_IN": {
       validate(tournament.regularCheckInIsOpen, "Check in is not open");
       validate(ownTeam);
-      validate(!ownTeam.checkedInAt, "You have already checked in");
+      validate(!ownTeamCheckedIn, "You have already checked in");
       validate(
         tournament.checkInConditionsFulfilled({
           tournamentTeamId: ownTeam.id,
@@ -181,7 +195,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "ADD_PLAYER": {
       validate(
-        teams.every((team) =>
+        tournament.ctx.teams.every((team) =>
           team.members.every((member) => member.userId !== data.userId),
         ),
         "User is already in a team",
@@ -207,7 +221,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "UNREGISTER": {
       validate(ownTeam, "You are not registered to this tournament");
-      validate(!ownTeam.checkedInAt, "You cannot unregister after checking in");
+      validate(!ownTeamCheckedIn, "You cannot unregister after checking in");
 
       deleteTeam(ownTeam.id);
       break;
@@ -251,8 +265,9 @@ export default function TournamentRegisterPage() {
   const { t, i18n } = useTranslation(["tournament"]);
   const tournament = useTournament();
 
+  const teamMemberOf = tournament.teamMemberOfByUser(user);
   const isRegularMemberOfATeam =
-    tournament.teamMemberOfByUser(user) && !tournament.ownedTeamByUser(user);
+    teamMemberOf && !tournament.ownedTeamByUser(user);
 
   return (
     <div className="stack lg">
@@ -303,7 +318,24 @@ export default function TournamentRegisterPage() {
       </div>
       <div className="whitespace-pre-wrap">{tournament.ctx.description}</div>
       {isRegularMemberOfATeam ? (
-        <Alert>{t("tournament:pre.inATeam")}</Alert>
+        <div className="stack md items-center">
+          <Alert>{t("tournament:pre.inATeam")}</Alert>
+          {teamMemberOf && teamMemberOf.checkIns.length === 0 ? (
+            <FormWithConfirm
+              dialogHeading={`Leave "${tournament.teamMemberOfByUser(user)?.name}"?`}
+              fields={[["_action", "LEAVE_TEAM"]]}
+              deleteButtonText="Leave"
+            >
+              <Button
+                className="build__small-text"
+                variant="minimal-destructive"
+                type="submit"
+              >
+                Leave the team
+              </Button>
+            </FormWithConfirm>
+          ) : null}
+        </div>
       ) : (
         <RegistrationForms />
       )}
