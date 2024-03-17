@@ -1,4 +1,4 @@
-import type { NotNull, Transaction } from "kysely";
+import type { Insertable, NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
@@ -516,6 +516,27 @@ export function setMatchAsCasted({
       .where("id", "=", tournamentId)
       .execute();
   });
+}
+
+export function counterpickEventsByMatchId(matchId: number) {
+  return db
+    .selectFrom("TournamentMatchCounterpickEvent")
+    .select([
+      "TournamentMatchCounterpickEvent.mode",
+      "TournamentMatchCounterpickEvent.stageId",
+    ])
+    .where("matchId", "=", matchId)
+    .orderBy("TournamentMatchCounterpickEvent.number asc")
+    .execute();
+}
+
+export function addCounterpickEvent(
+  values: Insertable<DB["TournamentMatchCounterpickEvent"]>,
+) {
+  return db
+    .insertInto("TournamentMatchCounterpickEvent")
+    .values(values)
+    .execute();
 }
 
 export function resetBracket(tournamentStageId: number) {

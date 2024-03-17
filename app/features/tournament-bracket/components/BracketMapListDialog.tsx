@@ -24,6 +24,8 @@ import { getRounds } from "../core/rounds";
 import { calendarEditPage } from "~/utils/urls";
 import { Toggle } from "~/components/Toggle";
 
+// xxx: best of in round robin should only be all not round specific
+// xxx: counterpicks in round robin all or nothing
 // xxx: counterpicks for prepicked
 export function BracketMapListDialog({
   isOpen,

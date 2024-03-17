@@ -1681,6 +1681,10 @@ html[dir="rtl"] .fix-rtl {
   cursor: pointer;
 }
 
+.map-pool-picker__map-button__icon__error {
+  fill: var(--theme-error);
+}
+
 .map-pool-picker__map-button__text {
   position: absolute;
   top: 14px;

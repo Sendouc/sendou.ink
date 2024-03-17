@@ -8,6 +8,7 @@ import type { Tables, TournamentRoundMaps } from "~/db/tables";
 import invariant from "tiny-invariant";
 import type { Bracket } from "./Bracket";
 import type { Round } from "~/modules/brackets-model";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
 
 interface ResolveCurrentMapListArgs {
   tournamentId: number;
@@ -16,15 +17,24 @@ interface ResolveCurrentMapListArgs {
   matchId: number;
   teams: [teamOneId: number, teamTwoId: number];
   maps: TournamentRoundMaps | null;
+  events: Array<{ mode: ModeShort; stageId: StageId }>;
 }
 
 export function resolveMapList(args: ResolveCurrentMapListArgs) {
   if (args.mapPickingStyle === "TO") {
     invariant(args.maps?.list);
 
-    return args.maps.list.map((map) => ({ ...map, source: "TO" as const }));
+    return (
+      args.maps.list
+        .map((map) => ({ ...map, source: "TO" as const }))
+        // xxx: fix source
+        .concat(
+          ...args.events.map((map) => ({ ...map, source: "TO" as const })),
+        )
+    );
   }
 
+  // xxx: counterpicks here
   // include team ids in the key to handle a case where match was reopened causing one of the teams to change
   return syncCached(
     `${args.matchId}-${args.teams[0]}-${args.teams[1]}-${args.maps?.count}`,

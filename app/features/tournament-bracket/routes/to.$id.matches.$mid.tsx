@@ -45,6 +45,7 @@ import {
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import { getRounds } from "../core/rounds";
+import * as Counterpicks from "../core/counterpicks";
 
 import "../tournament-bracket.css";
 
@@ -83,6 +84,23 @@ export const action: ActionFunction = async ({ params, request }) => {
     match.opponentTwo?.score ?? 0,
   ];
 
+  const events = match.roundMaps?.counterpicks
+    ? await TournamentRepository.counterpickEventsByMatchId(match.id)
+    : [];
+
+  const mapList =
+    match.opponentOne?.id && match.opponentTwo?.id
+      ? resolveMapList({
+          bestOf: match.bestOf,
+          tournamentId,
+          matchId,
+          teams: [match.opponentOne.id, match.opponentTwo.id],
+          mapPickingStyle: match.mapPickingStyle,
+          maps: match.roundMaps,
+          events,
+        })
+      : null;
+
   switch (data._action) {
     case "REPORT_SCORE": {
       // they are trying to report score that was already reported
@@ -103,17 +121,6 @@ export const action: ActionFunction = async ({ params, request }) => {
         "Match is locked",
       );
 
-      const mapList =
-        match.opponentOne?.id && match.opponentTwo?.id
-          ? resolveMapList({
-              bestOf: match.bestOf,
-              tournamentId,
-              matchId,
-              teams: [match.opponentOne.id, match.opponentTwo.id],
-              mapPickingStyle: match.mapPickingStyle,
-              maps: match.roundMaps,
-            })
-          : null;
       const currentMap = mapList?.[data.position];
       invariant(currentMap, "Can't resolve current map");
 
@@ -212,6 +219,47 @@ export const action: ActionFunction = async ({ params, request }) => {
           manager.reset.matchResults(match.id);
         }
       })();
+
+      break;
+    }
+    case "COUNTERPICK": {
+      const results = findResultsByMatchId(matchId);
+      validate(
+        Counterpicks.isLegalPick({ results, map: data }),
+        "Illegal pick",
+      );
+
+      invariant(
+        match.roundMaps &&
+          match.roundMaps?.list &&
+          match.opponentOne?.id &&
+          match.opponentTwo?.id,
+        "Missing fields to counterpick",
+      );
+      const turnOf = Counterpicks.turnOf({
+        results,
+        maps: match.roundMaps,
+        teams: [match.opponentOne.id, match.opponentTwo.id],
+        pickedModes: mapList?.map((map) => map.mode),
+      });
+      validate(turnOf, "Not time to counterpick");
+      validate(
+        tournament.isOrganizer(user) ||
+          tournament.ownedTeamByUser(user)?.id === turnOf,
+        "Unauthorized",
+        401,
+      );
+
+      const events = await TournamentRepository.counterpickEventsByMatchId(
+        match.id,
+      );
+      await TournamentRepository.addCounterpickEvent({
+        authorId: user.id,
+        matchId: match.id,
+        stageId: data.stageId,
+        mode: data.mode,
+        number: events.length + 1,
+      });
 
       break;
     }
@@ -317,11 +365,15 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentMatchLoaderData = typeof loader;
 
-export const loader = ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const matchId = matchIdFromParams(params);
 
   const match = notFoundIfFalsy(findMatchById(matchId));
+
+  const events = match.roundMaps?.counterpicks
+    ? await TournamentRepository.counterpickEventsByMatchId(match.id)
+    : [];
 
   const mapList =
     match.opponentOne?.id && match.opponentTwo?.id
@@ -332,6 +384,7 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
           teams: [match.opponentOne.id, match.opponentTwo.id],
           mapPickingStyle: match.mapPickingStyle,
           maps: match.roundMaps,
+          events,
         })
       : null;
 

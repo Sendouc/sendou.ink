@@ -121,6 +121,7 @@ export function StartedMatch({
     ) : null,
   ];
 
+  // xxx: Counterpick source text
   return (
     <div className="tournament-bracket__during-match-actions">
       <FancyStageBanner
@@ -234,7 +235,7 @@ function FancyStageBanner({
       results: data.results,
       maps: data.match.roundMaps,
       teams: [data.match.opponentOne.id, data.match.opponentTwo.id],
-      list: data.match.roundMaps.list,
+      pickedModes: data.modes,
     });
 
     return pickingTeamId ? teams.find((t) => t.id === pickingTeamId) : null;

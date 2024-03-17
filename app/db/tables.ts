@@ -436,6 +436,16 @@ export interface TournamentMatch {
   status: number;
 }
 
+// xxx: how event: BAN
+export interface TournamentMatchCounterpickEvent {
+  stageId: StageId;
+  mode: ModeShort;
+  matchId: number;
+  authorId: number;
+  number: number;
+  createdAt: GeneratedAlways<number>;
+}
+
 export interface TournamentMatchGameResult {
   createdAt: Generated<number>;
   id: GeneratedAlways<number>;
@@ -727,6 +737,7 @@ export interface DB {
   TournamentBadgeOwner: TournamentBadgeOwner;
   TournamentGroup: TournamentGroup;
   TournamentMatch: TournamentMatch;
+  TournamentMatchCounterpickEvent: TournamentMatchCounterpickEvent;
   TournamentMatchGameResult: TournamentMatchGameResult;
   TournamentMatchGameResultParticipant: TournamentMatchGameResultParticipant;
   TournamentResult: TournamentResult;

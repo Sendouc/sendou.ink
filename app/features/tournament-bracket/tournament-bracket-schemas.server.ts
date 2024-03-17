@@ -55,6 +55,11 @@ export const matchSchema = z.union([
     ),
   }),
   z.object({
+    _action: _action("COUNTERPICK"),
+    stageId,
+    mode: modeShort,
+  }),
+  z.object({
     _action: _action("UNDO_REPORT_SCORE"),
     position: reportedMatchPosition,
   }),

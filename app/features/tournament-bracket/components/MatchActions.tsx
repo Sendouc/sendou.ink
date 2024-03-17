@@ -11,6 +11,8 @@ import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import { matchIsLocked } from "../tournament-bracket-utils";
 import type { Result } from "./StartedMatch";
 import { TeamRosterInputs } from "./TeamRosterInputs";
+import * as Counterpicks from "../core/counterpicks";
+import { MatchActionsCounterpicker } from "./MatchActionsCounterpicker";
 
 export function MatchActions({
   teams,
@@ -52,6 +54,19 @@ export function MatchActions({
   const showPoints = tournament.bracketByIdxOrDefault(
     tournament.matchIdToBracketIdx(data.match.id) ?? 0,
   ).collectResultsWithPoints;
+
+  if (
+    data.match.roundMaps &&
+    data.match.roundMaps?.list &&
+    Counterpicks.turnOf({
+      results: data.results,
+      maps: data.match.roundMaps,
+      teams: [teams[0].id, teams[1].id],
+      pickedModes: data.modes,
+    })
+  ) {
+    return <MatchActionsCounterpicker teams={[teams[0], teams[1]]} />;
+  }
 
   return (
     <Form method="post" className="width-full">
