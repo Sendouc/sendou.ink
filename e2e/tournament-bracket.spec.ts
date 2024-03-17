@@ -45,7 +45,7 @@ const reportResult = async ({
     await page.getByTestId("points-input-2").fill(String(points[1]));
   };
 
-  await page.getByTestId("tab-Report score").click();
+  await page.getByTestId("tab-Actions").click();
 
   if (sidesWithMoreThanFourPlayers.includes("first")) {
     await page.getByTestId("player-checkbox-0").first().click();

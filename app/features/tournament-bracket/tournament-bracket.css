@@ -306,6 +306,11 @@
   outline: 2px solid var(--bg-lightest);
 }
 
+.tournament-bracket__mode-progress__image > svg {
+  width: 20px;
+  height: 20px;
+}
+
 .tournament-bracket__mode-progress__image__notable {
   background-color: var(--bg-lightest);
   border: none;

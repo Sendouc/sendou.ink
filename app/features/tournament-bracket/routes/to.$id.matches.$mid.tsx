@@ -44,9 +44,9 @@ import {
   matchIsLocked,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
+import { getRounds } from "../core/rounds";
 
 import "../tournament-bracket.css";
-import { getRounds } from "../core/rounds";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -561,7 +561,6 @@ function MapListSection({
 
   if (!teamOne || !teamTwo) return null;
 
-  invariant(data.currentMap, "No map found for this score");
   invariant(data.modes, "No modes found for this map list");
 
   return (

@@ -469,7 +469,7 @@ export interface TournamentRoundMaps {
   count: number;
   // TODO: support play_all
   type: "BEST_OF";
-  counterpicks?: "DEFAULT";
+  counterpicks?: "DEFAULT" | null;
 }
 
 export interface TournamentRound {

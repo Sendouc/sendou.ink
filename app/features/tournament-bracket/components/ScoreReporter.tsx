@@ -31,6 +31,9 @@ import type { TournamentDataTeam } from "../core/Tournament.server";
 import { CrossIcon } from "~/components/icons/Cross";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
+import { nullFilledArray } from "~/utils/arrays";
+import { ArrowsPointingInIcon } from "~/components/icons/ArrowsPointingIn";
+import * as Counterpicks from "../core/counterpicks";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -48,7 +51,7 @@ export function ScoreReporter({
 }: {
   teams: [TournamentDataTeam, TournamentDataTeam];
   result?: Result;
-  currentStageWithMode: TournamentMapListMap;
+  currentStageWithMode?: TournamentMapListMap;
   modes: ModeShort[];
   selectedResultIndex?: number;
   // if this is set it means the component is being used in presentation manner
@@ -206,25 +209,47 @@ function FancyStageBanner({
   teams,
   matchIsLocked,
 }: {
-  stage: TournamentMapListMap;
+  stage?: TournamentMapListMap;
   infos?: (JSX.Element | null)[];
   children?: React.ReactNode;
   teams: [TournamentDataTeam, TournamentDataTeam];
   matchIsLocked: boolean;
 }) {
+  const data = useLoaderData<TournamentMatchLoaderData>();
   const { t } = useTranslation(["game-misc", "tournament"]);
 
   const stageNameToBannerImageUrl = (stageId: StageId) => {
     return stageImageUrl(stageId) + ".png";
   };
 
+  const counterPickingTeam = () => {
+    if (
+      !data.match.roundMaps ||
+      !data.match.opponentOne?.id ||
+      !data.match.opponentTwo?.id ||
+      !data.match.roundMaps.list
+    )
+      return null;
+
+    const pickingTeamId = Counterpicks.turnOf({
+      results: data.results,
+      maps: data.match.roundMaps,
+      teams: [data.match.opponentOne.id, data.match.opponentTwo.id],
+      list: data.match.roundMaps.list,
+    });
+
+    return pickingTeamId ? teams.find((t) => t.id === pickingTeamId) : null;
+  };
+
   const style = {
-    "--_tournament-bg-url": `url("${stageNameToBannerImageUrl(
-      stage.stageId,
-    )}")`,
+    "--_tournament-bg-url": stage
+      ? `url("${stageNameToBannerImageUrl(stage.stageId)}")`
+      : undefined,
   };
 
   const pickInfoText = () => {
+    if (!stage) return "";
+
     if (stage.source === teams[0].id)
       return t("tournament:pickInfo.team", { number: 1 });
     if (stage.source === teams[1].id)
@@ -241,7 +266,14 @@ function FancyStageBanner({
 
   return (
     <>
-      {matchIsLocked ? (
+      {!stage ? (
+        <div className="tournament-bracket__locked-banner">
+          <div className="stack sm items-center">
+            <div className="text-lg text-center font-bold">Counterpick</div>
+            <div>Waiting for {counterPickingTeam()?.name}</div>
+          </div>
+        </div>
+      ) : matchIsLocked ? (
         <div className="tournament-bracket__locked-banner">
           <div className="stack sm items-center">
             <div className="text-lg text-center font-bold">
@@ -313,36 +345,49 @@ function ModeProgressIndicator({
   // TODO: this should be button when we click on it
   return (
     <div className="tournament-bracket__mode-progress">
-      {modes.map((mode, i) => {
-        return (
-          <Image
-            containerClassName={clsx(
-              "tournament-bracket__mode-progress__image",
-              {
-                "tournament-bracket__mode-progress__image__notable":
-                  i <= maxIndexThatWillBePlayedForSure,
-                "tournament-bracket__mode-progress__image__team-one-win":
-                  data.results[i] &&
-                  data.results[i].winnerTeamId === data.match.opponentOne?.id,
-                "tournament-bracket__mode-progress__image__team-two-win":
-                  data.results[i] &&
-                  data.results[i].winnerTeamId === data.match.opponentTwo?.id,
-                "tournament-bracket__mode-progress__image__selected":
-                  i === selectedResultIndex,
-                "cursor-pointer": Boolean(setSelectedResultIndex),
-              },
-            )}
-            key={i}
-            path={modeImageUrl(mode)}
-            height={20}
-            width={20}
-            alt={t(`game-misc:MODE_LONG_${mode}`)}
-            title={t(`game-misc:MODE_LONG_${mode}`)}
-            onClick={() => setSelectedResultIndex?.(i)}
-            testId={`mode-progress-${mode}`}
-          />
-        );
-      })}
+      {nullFilledArray(data.match.roundMaps?.count ?? modes.length).map(
+        (_, i) => {
+          const mode = modes[i];
+
+          if (!mode) {
+            // xxx: actual counterpick icon
+            return (
+              <div key={i} className="tournament-bracket__mode-progress__image">
+                <ArrowsPointingInIcon />
+              </div>
+            );
+          }
+
+          return (
+            <Image
+              containerClassName={clsx(
+                "tournament-bracket__mode-progress__image",
+                {
+                  "tournament-bracket__mode-progress__image__notable":
+                    i <= maxIndexThatWillBePlayedForSure,
+                  "tournament-bracket__mode-progress__image__team-one-win":
+                    data.results[i] &&
+                    data.results[i].winnerTeamId === data.match.opponentOne?.id,
+                  "tournament-bracket__mode-progress__image__team-two-win":
+                    data.results[i] &&
+                    data.results[i].winnerTeamId === data.match.opponentTwo?.id,
+                  "tournament-bracket__mode-progress__image__selected":
+                    i === selectedResultIndex,
+                  "cursor-pointer": Boolean(setSelectedResultIndex),
+                },
+              )}
+              key={i}
+              path={modeImageUrl(mode)}
+              height={20}
+              width={20}
+              alt={t(`game-misc:MODE_LONG_${mode}`)}
+              title={t(`game-misc:MODE_LONG_${mode}`)}
+              onClick={() => setSelectedResultIndex?.(i)}
+              testId={`mode-progress-${mode}`}
+            />
+          );
+        },
+      )}
     </div>
   );
 }
@@ -426,7 +471,7 @@ function MatchActionSectionTabs({
             hidden: !showChat,
           },
           {
-            label: presentational ? "Score" : "Report score",
+            label: presentational ? "Score" : "Actions",
           },
         ]}
         disappearing
