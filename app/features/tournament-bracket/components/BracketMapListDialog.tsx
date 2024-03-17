@@ -22,7 +22,9 @@ import clsx from "clsx";
 import { nullFilledArray } from "~/utils/arrays";
 import { getRounds } from "../core/rounds";
 import { calendarEditPage } from "~/utils/urls";
+import { Toggle } from "~/components/Toggle";
 
+// xxx: counterpicks for prepicked
 export function BracketMapListDialog({
   isOpen,
   close,
@@ -38,9 +40,13 @@ export function BracketMapListDialog({
   const fetcher = useFetcher();
   const tournament = useTournament();
 
+  const [roundsWithCounterpicks, setRoundsWithCounterpicks] = React.useState<
+    Set<number>
+  >(new Set());
   const [maps, setMaps] = React.useState(() =>
     generateTournamentRoundMaplist({
       mapCounts: bracket.defaultRoundBestOfs,
+      roundsWithCounterpicks,
       pool: toSetMapPool,
       rounds: bracket.data.round,
       type: bracket.type,
@@ -148,6 +154,7 @@ export function BracketMapListDialog({
                         pool: toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
+                        roundsWithCounterpicks,
                       });
                       setMaps(newMaps);
                       setMapCounts(newMapCounts);
@@ -167,6 +174,7 @@ export function BracketMapListDialog({
                         pool: toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
+                        roundsWithCounterpicks,
                       }),
                     )
                   }
@@ -211,9 +219,31 @@ export function BracketMapListDialog({
                         pool: toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
+                        roundsWithCounterpicks,
                       });
                       setMaps(newMaps);
                       setMapCounts(newMapCounts);
+                    }}
+                    onCounterpicksChange={(hasCounterpicks) => {
+                      const newRoundsWithCounterpicks = new Set(
+                        roundsWithCounterpicks,
+                      );
+                      if (hasCounterpicks) {
+                        newRoundsWithCounterpicks.add(round.id);
+                      } else {
+                        newRoundsWithCounterpicks.delete(round.id);
+                      }
+
+                      setRoundsWithCounterpicks(newRoundsWithCounterpicks);
+                      setMaps(
+                        generateTournamentRoundMaplist({
+                          mapCounts,
+                          pool: toSetMapPool,
+                          rounds: bracket.data.round,
+                          type: bracket.type,
+                          roundsWithCounterpicks: newRoundsWithCounterpicks,
+                        }),
+                      );
                     }}
                     onRoundMapListChange={(newRoundMaps) => {
                       const newMaps = new Map(maps);
@@ -274,6 +304,7 @@ function RoundMapList({
   onRoundMapListChange,
   onHoverMap,
   onCountChange,
+  onCounterpicksChange,
   hoveredMap,
 }: {
   name: string;
@@ -281,6 +312,7 @@ function RoundMapList({
   onRoundMapListChange: (maps: TournamentRoundMaps) => void;
   onHoverMap: (map: string | null) => void;
   onCountChange: (count: number) => void;
+  onCounterpicksChange: (hasCounterpicks: boolean) => void;
   hoveredMap: string | null;
 }) {
   const [editing, setEditing] = React.useState(false);
@@ -310,11 +342,22 @@ function RoundMapList({
               />
             </div>
           ))}
+          <div>
+            <Label>Counterpicks</Label>
+            <Toggle
+              tiny
+              checked={Boolean(maps.counterpicks)}
+              setChecked={onCounterpicksChange}
+            />
+          </div>
         </div>
       ) : null}
       <ol className="pl-0">
-        {maps.list
-          ? maps.list.map((map, i) => (
+        {nullFilledArray(maps.count).map((_, i) => {
+          const map = maps.list?.[i];
+
+          if (map) {
+            return (
               <MapListRow
                 key={i}
                 map={map}
@@ -329,10 +372,17 @@ function RoundMapList({
                   });
                 }}
               />
-            ))
-          : nullFilledArray(maps.count).map((_, i) => (
-              <MysteryRow key={i} number={i + 1} />
-            ))}
+            );
+          }
+
+          return (
+            <MysteryRow
+              key={i}
+              number={i + 1}
+              isCounterpicks={Boolean(maps.counterpicks)}
+            />
+          );
+        })}
       </ol>
     </div>
   );
@@ -362,7 +412,7 @@ function MapListRow({
         <div className="stack horizontal items-center xs">
           <span className="text-lg">{number}.</span>
           <select
-            defaultValue={serializedMapMode(map)}
+            value={serializedMapMode(map)}
             onChange={(e) => {
               const [mode, stageId] = e.target.value.split("-");
               onMapChange({
@@ -403,12 +453,18 @@ function MapListRow({
   );
 }
 
-function MysteryRow({ number }: { number: number }) {
+function MysteryRow({
+  number,
+  isCounterpicks,
+}: {
+  number: number;
+  isCounterpicks: boolean;
+}) {
   return (
     <li className="map-list-dialog__map-list-row">
       <div className="stack horizontal items-center xs text-lighter">
         <span className="text-lg">{number}.</span>
-        Team&apos;s pick
+        {isCounterpicks ? <>Counterpick</> : <>Team&apos;s pick</>}
       </div>
     </li>
   );

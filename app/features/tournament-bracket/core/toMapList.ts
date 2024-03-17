@@ -23,6 +23,7 @@ interface GenerateTournamentRoundMaplistArgs {
   rounds: Round[];
   mapCounts: BracketMapCounts;
   type: TournamentBracketProgression[number]["type"];
+  roundsWithCounterpicks: Set<number>;
 }
 
 // TODO: future improvement could be slightly biasing against maps that appear in slots that are not guaranteed to be played
@@ -46,11 +47,23 @@ export function generateTournamentRoundMaplist(
 
   for (const [iteration, round] of sortedRounds.entries()) {
     const count = resolveRoundMapCount(round, args.mapCounts, args.type);
-    const modes = modeOrder(count, args.pool, modeFrequency, iteration);
+
+    const amountOfMapsToGenerate = args.roundsWithCounterpicks.has(round.id)
+      ? 1
+      : count;
+    const modes = modeOrder(
+      amountOfMapsToGenerate,
+      args.pool,
+      modeFrequency,
+      iteration,
+    );
 
     result.set(round.id, {
       count,
       type: "BEST_OF",
+      counterpicks: args.roundsWithCounterpicks.has(round.id)
+        ? "DEFAULT"
+        : undefined,
       list:
         // teams pick
         args.pool.length === 0

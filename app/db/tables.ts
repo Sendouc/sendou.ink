@@ -93,7 +93,6 @@ export interface Badge {
   hue: number | null;
   id: GeneratedAlways<number>;
 }
-// export type SelectableBadge = Selectable<Badge>;
 
 export interface BadgeManager {
   badgeId: number;
@@ -470,7 +469,7 @@ export interface TournamentRoundMaps {
   count: number;
   // TODO: support play_all
   type: "BEST_OF";
-  // TODO: counterpick style
+  counterpicks?: "DEFAULT";
 }
 
 export interface TournamentRound {
