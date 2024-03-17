@@ -34,6 +34,7 @@ import {
   type MainWeaponId,
   type SubWeaponId,
   BIG_BUBBLER_ID,
+  KILLER_WAIL_ID,
 } from "~/modules/in-game-lists";
 import { atOrError, nullFilledArray, removeDuplicates } from "~/utils/arrays";
 import { damageTypeTranslationString } from "~/utils/i18next";
@@ -514,7 +515,9 @@ function BuildAnalyzerPage() {
                 popoverInfo={
                   analyzed.weapon.specialWeaponSplId === INK_STORM_ID
                     ? t("analyzer:stat.special.duration.inkStormExplanation")
-                    : undefined
+                    : analyzed.weapon.specialWeaponSplId === KILLER_WAIL_ID
+                      ? t("analyzer:stat.special.duration.killerWail")
+                      : undefined
                 }
               />
             )}
