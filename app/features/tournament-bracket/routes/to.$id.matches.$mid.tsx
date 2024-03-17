@@ -27,7 +27,7 @@ import {
   userPage,
 } from "~/utils/urls";
 import { CastInfo } from "../components/CastInfo";
-import { ScoreReporter } from "../components/ScoreReporter";
+import { StartedMatch } from "../components/StartedMatch";
 import { tournamentFromDB } from "../core/Tournament.server";
 import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 import { emitter } from "../core/emitters.server";
@@ -564,7 +564,7 @@ function MapListSection({
   invariant(data.modes, "No modes found for this map list");
 
   return (
-    <ScoreReporter
+    <StartedMatch
       currentStageWithMode={data.currentMap}
       teams={[teamOne, teamTwo]}
       modes={data.modes}
@@ -603,7 +603,7 @@ function ResultsSection() {
   }
 
   return (
-    <ScoreReporter
+    <StartedMatch
       currentStageWithMode={result}
       teams={[teamOne, teamTwo]}
       modes={data.results.map((result) => result.mode)}

@@ -9,10 +9,10 @@ import { TOURNAMENT } from "../../tournament/tournament-constants";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import { matchIsLocked } from "../tournament-bracket-utils";
-import type { Result } from "./ScoreReporter";
+import type { Result } from "./StartedMatch";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 
-export function ScoreReporterRosters({
+export function MatchActions({
   teams,
   position,
   result,

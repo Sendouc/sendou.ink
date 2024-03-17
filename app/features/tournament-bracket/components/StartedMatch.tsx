@@ -26,7 +26,7 @@ import {
   resolveHostingTeam,
   resolveRoomPass,
 } from "../tournament-bracket-utils";
-import { ScoreReporterRosters } from "./ScoreReporterRosters";
+import { MatchActions } from "./MatchActions";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import { CrossIcon } from "~/components/icons/Cross";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
@@ -39,8 +39,7 @@ export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
 >;
 
-// TODO: rename (since it now contains Chat as well)
-export function ScoreReporter({
+export function StartedMatch({
   teams,
   currentStageWithMode,
   modes,
@@ -179,7 +178,7 @@ export function ScoreReporter({
         setSelectedResultIndex={setSelectedResultIndex}
       />
       {type === "EDIT" || presentational ? (
-        <MatchActionSectionTabs
+        <StartedMatchTabs
           presentational={presentational}
           scores={[scoreOne, scoreTwo]}
           teams={teams}
@@ -392,7 +391,7 @@ function ModeProgressIndicator({
   );
 }
 
-function MatchActionSectionTabs({
+function StartedMatchTabs({
   presentational,
   scores,
   teams,
@@ -500,7 +499,7 @@ function MatchActionSectionTabs({
             key: "report",
             unmount: false,
             element: (
-              <ScoreReporterRosters
+              <MatchActions
                 // Without the key prop when switching to another match the winnerId is remembered
                 // which causes "No winning team matching the id" error.
                 // Switching the key props forces the component to remount.
