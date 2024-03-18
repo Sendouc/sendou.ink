@@ -65,3 +65,9 @@ export function userDiscordIdIsAged(user: { discordId: string }) {
 
   return Date.now() - timestamp > AGED_CRITERIA;
 }
+
+export function accountCreatedInTheLastSixMonths(discordId: string) {
+  const timestamp = convertSnowflakeToDate(discordId).getTime();
+
+  return Date.now() - timestamp < 1000 * 60 * 60 * 24 * 30 * 6;
+}

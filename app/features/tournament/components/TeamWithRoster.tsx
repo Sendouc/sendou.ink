@@ -7,6 +7,8 @@ import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tour
 import { userPage } from "~/utils/urls";
 import { useTournament, useTournamentFriendCodes } from "../routes/to.$id";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { useUser } from "~/features/auth/core/user";
+import { accountCreatedInTheLastSixMonths } from "~/utils/users";
 
 export function TeamWithRoster({
   team,
@@ -21,6 +23,7 @@ export function TeamWithRoster({
   teamPageUrl?: string;
   activePlayers?: User["id"][];
 }) {
+  const user = useUser();
   const tournament = useTournament();
   const friendCodes = useTournamentFriendCodes();
 
@@ -86,7 +89,12 @@ export function TeamWithRoster({
                   </Link>
                 </div>
                 {friendCode ? (
-                  <div className="text-xs text-lighter">SW-{friendCode}</div>
+                  <div className="text-xs text-lighter">
+                    {tournament.isOrganizer(user) ? (
+                      <FreshAccountEmoji discordId={member.discordId} />
+                    ) : null}
+                    SW-{friendCode}
+                  </div>
                 ) : null}
               </li>
             );
@@ -95,6 +103,19 @@ export function TeamWithRoster({
       </div>
       {mapPool && mapPool.length > 0 ? <TeamMapPool mapPool={mapPool} /> : null}
     </div>
+  );
+}
+
+function FreshAccountEmoji({ discordId }: { discordId: string }) {
+  if (!accountCreatedInTheLastSixMonths(discordId)) return null;
+
+  return (
+    <span
+      className="text-md mr-2"
+      title="Discord account created in the last 6 months"
+    >
+      👶
+    </span>
   );
 }
 
