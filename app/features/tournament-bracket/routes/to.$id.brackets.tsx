@@ -320,7 +320,7 @@ export default function TournamentBracketsPage() {
             >
               {t("tournament:bracket.wip")}
             </Alert>
-          ) : (
+          ) : tournament.regularCheckInStartInThePast ? (
             <div className="stack sm items-center">
               <Alert
                 variation="INFO"
@@ -345,7 +345,7 @@ export default function TournamentBracketsPage() {
                 </div>
               ) : null}
             </div>
-          )}
+          ) : null}
         </div>
       ) : null}
       <div className="stack horizontal sm justify-end">
