@@ -390,6 +390,10 @@ export interface TournamentSettings {
   isRanked?: boolean;
   autoCheckInAll?: boolean;
   enableNoScreenToggle?: boolean;
+  /** Can teams add subs on their own while tournament is in progress? */
+  autonomousSubs?: boolean;
+  /** Timestamp (SQLite format) when reg closes, if missing then means closes at start time */
+  regClosesAt?: number;
 }
 
 export interface CastedMatchesInfo {

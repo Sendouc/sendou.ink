@@ -48,3 +48,18 @@ export const tags = {
     color: "#FFC0CB",
   },
 };
+
+export const REG_CLOSES_AT_OPTIONS = [
+  "0",
+  "30min",
+  "1h",
+  "2h",
+  "3h",
+  "6h",
+  "12h",
+  "24h",
+  "48h",
+  "72h",
+] as const;
+
+export type RegClosesAtOption = (typeof REG_CLOSES_AT_OPTIONS)[number];

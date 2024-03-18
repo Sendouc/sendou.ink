@@ -21,6 +21,7 @@ export function Input({
   placeholder,
   onChange,
   disableAutoComplete = false,
+  disabled,
 }: {
   name?: string;
   id?: string;
@@ -42,6 +43,7 @@ export function Input({
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disableAutoComplete?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <div className={clsx("input-container", className)}>
@@ -64,6 +66,7 @@ export function Input({
         placeholder={placeholder}
         type={type}
         autoComplete={disableAutoComplete ? "one-time-code" : undefined}
+        disabled={disabled}
       />
       {icon}
     </div>

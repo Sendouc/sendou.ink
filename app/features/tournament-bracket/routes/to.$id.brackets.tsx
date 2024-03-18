@@ -237,7 +237,8 @@ export default function TournamentBracketsPage() {
   const showAddSubsButton =
     !tournament.canFinalize(user) &&
     !tournament.everyBracketOver &&
-    tournament.hasStarted;
+    tournament.hasStarted &&
+    tournament.autonomousSubs;
 
   const waitingForTeamsText = () => {
     if (bracketIdx > 0 || tournament.regularCheckInStartInThePast) {

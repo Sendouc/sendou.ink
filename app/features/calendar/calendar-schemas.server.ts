@@ -18,6 +18,7 @@ import {
   toArray,
 } from "~/utils/zod";
 import { calendarEventMaxDate, calendarEventMinDate } from "./calendar-utils";
+import { REG_CLOSES_AT_OPTIONS } from "./calendar-constants";
 
 export const newCalendarEventActionSchema = z
   .object({
@@ -71,10 +72,12 @@ export const newCalendarEventActionSchema = z
     toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
     toToolsMode: z.enum(["ALL", "TO", "SZ", "TC", "RM", "CB"]).optional(),
     isRanked: z.preprocess(checkboxValueToBoolean, z.boolean().nullish()),
+    regClosesAt: z.enum(REG_CLOSES_AT_OPTIONS).nullish(),
     enableNoScreenToggle: z.preprocess(
       checkboxValueToBoolean,
       z.boolean().nullish(),
     ),
+    autonomousSubs: z.preprocess(checkboxValueToBoolean, z.boolean().nullish()),
     //
     // tournament format related fields
     //

@@ -98,6 +98,11 @@ export const action: ActionFunction = async ({ request, params }) => {
   switch (data._action) {
     case "UPSERT_TEAM": {
       if (ownTeam) {
+        validate(
+          tournament.registrationOpen || data.teamName === ownTeam.name,
+          "Can't change team name after registration has closed",
+        );
+
         updateTeamInfo({
           name: data.teamName,
           id: ownTeam.id,
@@ -114,6 +119,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           !tournament.teamMemberOfByUser(user),
           "You are already in a team that you aren't captain of",
         );
+        validate(tournament.registrationOpen, "Registration is closed");
 
         createTeam({
           name: data.teamName,
@@ -211,6 +217,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         await UserRepository.currentFriendCodeByUserId(data.userId),
         "No friend code",
       );
+      validate(tournament.registrationOpen, "Registration is closed");
 
       joinTeam({
         userId: data.userId,
@@ -386,6 +393,7 @@ function RegistrationForms() {
   const showRegisterNewTeam = () => {
     if (ownTeam) return true;
     if (!tournament.hasOpenRegistration) return false;
+    if (!tournament.registrationOpen) return false;
 
     return !tournament.regularCheckInHasEnded;
   };
@@ -434,8 +442,9 @@ function RegistrationProgress({
   members?: unknown[];
   mapPool?: unknown[];
 }) {
-  const { t } = useTranslation(["tournament"]);
+  const { i18n, t } = useTranslation(["tournament"]);
   const tournament = useTournament();
+  const isMounted = useIsMounted();
 
   const steps = filterOutFalsy([
     {
@@ -458,6 +467,19 @@ function RegistrationProgress({
       completed: checkedIn,
     },
   ]);
+
+  const regClosesBeforeStart =
+    tournament.registrationClosesAt.getTime() !==
+    tournament.ctx.startTime.getTime();
+
+  const registrationClosesAtString = isMounted
+    ? tournament.registrationClosesAt.toLocaleTimeString(i18n.language, {
+        minute: "numeric",
+        hour: "numeric",
+        day: "2-digit",
+        month: "2-digit",
+      })
+    : "";
 
   return (
     <div>
@@ -500,7 +522,13 @@ function RegistrationProgress({
         />
       </section>
       <div className="tournament__section__warning">
-        {t("tournament:pre.footer")}
+        {regClosesBeforeStart ? (
+          <span className="text-warning">
+            Registration closes at {registrationClosesAtString}
+          </span>
+        ) : (
+          t("tournament:pre.footer")
+        )}
       </div>
     </div>
   );
@@ -646,6 +674,7 @@ function TeamInfo({
                 required
                 maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
                 defaultValue={name ?? undefined}
+                disabled={!tournament.registrationOpen}
               />
             </div>
             <div className="stack sm">
@@ -750,6 +779,7 @@ function FillRoster({
   })();
 
   const teamIsFull = ownTeamMembers.length >= tournament.maxTeamMemberCount;
+  const canAddMembers = !teamIsFull && tournament.registrationOpen;
 
   return (
     <div>
@@ -757,13 +787,13 @@ function FillRoster({
         3. {t("tournament:pre.roster.header")}
       </h3>
       <section className="tournament__section stack lg items-center">
-        {playersAvailableToDirectlyAdd.length > 0 && !teamIsFull ? (
+        {playersAvailableToDirectlyAdd.length > 0 && canAddMembers ? (
           <>
             <DirectlyAddPlayerSelect players={playersAvailableToDirectlyAdd} />
             <Divider className="text-uppercase">{t("common:or")}</Divider>
           </>
         ) : null}
-        {!teamIsFull ? (
+        {canAddMembers ? (
           <div className="stack md items-center">
             <div className="text-center text-sm">
               {t("tournament:actions.shareLink", { inviteLink })}

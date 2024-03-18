@@ -673,6 +673,20 @@ export class Tournament {
     return this.ctx.startTime;
   }
 
+  get registrationClosesAt() {
+    return this.ctx.settings.regClosesAt
+      ? databaseTimestampToDate(this.ctx.settings.regClosesAt)
+      : this.ctx.startTime;
+  }
+
+  get registrationOpen() {
+    return this.registrationClosesAt > new Date();
+  }
+
+  get autonomousSubs() {
+    return this.ctx.settings.autonomousSubs ?? true;
+  }
+
   bracketByIdxOrDefault(idx: number): Bracket {
     const bracket = this.brackets[idx];
     if (bracket) return bracket;
