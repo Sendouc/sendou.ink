@@ -674,7 +674,7 @@ function TeamInfo({
                 required
                 maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
                 defaultValue={name ?? undefined}
-                disabled={!tournament.registrationOpen}
+                readOnly={!tournament.registrationOpen}
               />
             </div>
             <div className="stack sm">
