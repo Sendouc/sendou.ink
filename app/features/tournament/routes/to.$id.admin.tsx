@@ -694,7 +694,20 @@ function DownloadParticipants() {
         const owner = team.members.find((user) => user.isOwner);
         invariant(owner);
 
-        return `${team.name} - ${owner.discordName} - <@${owner.discordId}>`;
+        const nonOwners = team.members.filter((user) => !user.isOwner);
+
+        let result = `-- ${team.name} --\n(C) ${owner.discordName} (IGN: ${owner.inGameName ?? ""}) - <@${owner.discordId}>`;
+
+        result += nonOwners
+          .map(
+            (user) =>
+              `\n${user.discordName} (IGN: ${user.inGameName ?? ""}) - <@${user.discordId}>`,
+          )
+          .join("");
+
+        result += "\n";
+
+        return result;
       })
       .join("\n");
   }
