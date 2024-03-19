@@ -177,8 +177,9 @@ type MapListMap = {
    * - "TIEBREAKER" if it was a tiebreaker map (selected by the TO)
    * - "BOTH" both teams picked the map
    * - "TO" if it was a TO pick (from predefined maplist)
+   * - "COUNTERPICK" if it was a counterpick
    */
-  source: number | "DEFAULT" | "TIEBREAKER" | "BOTH" | "TO";
+  source: number | "DEFAULT" | "TIEBREAKER" | "BOTH" | "TO" | "COUNTERPICK";
   winnerTeamId: number | null;
   participatedUserIds: Array<number> | null;
 };

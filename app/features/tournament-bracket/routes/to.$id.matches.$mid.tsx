@@ -405,6 +405,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: for mode icons make it so that if you click it shows the maplist name (in TO mode) + counterpick info
+// xxx: for TWO_BAN mode show banned maps crossed over
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();

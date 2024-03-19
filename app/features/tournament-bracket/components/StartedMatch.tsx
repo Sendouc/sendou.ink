@@ -121,7 +121,6 @@ export function StartedMatch({
     ) : null,
   ];
 
-  // xxx: Counterpick source text
   return (
     <div className="tournament-bracket__during-match-actions">
       <FancyStageBanner
@@ -250,14 +249,20 @@ function FancyStageBanner({
   const pickInfoText = () => {
     if (!stage) return "";
 
-    if (stage.source === teams[0].id)
+    if (stage.source === teams[0].id) {
       return t("tournament:pickInfo.team", { number: 1 });
-    if (stage.source === teams[1].id)
+    }
+    if (stage.source === teams[1].id) {
       return t("tournament:pickInfo.team", { number: 2 });
-    if (stage.source === "TIEBREAKER")
+    }
+    if (stage.source === "TIEBREAKER") {
       return t("tournament:pickInfo.tiebreaker");
+    }
     if (stage.source === "BOTH") return t("tournament:pickInfo.both");
     if (stage.source === "DEFAULT") return t("tournament:pickInfo.default");
+    if (stage.source === "COUNTERPICK") {
+      return t("tournament:pickInfo.counterpick");
+    }
     if (stage.source === "TO") return "";
 
     console.error(`Unknown source: ${String(stage.source)}`);

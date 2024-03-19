@@ -71,7 +71,13 @@ for (const mode of modesShort) {
   );
 }
 
-export const sourceTypes = ["DEFAULT", "TIEBREAKER", "BOTH", "TO"] as const;
+export const sourceTypes = [
+  "DEFAULT",
+  "TIEBREAKER",
+  "BOTH",
+  "TO",
+  "COUNTERPICK",
+] as const;
 
 // this is only used as a fallback, in the case that map list generation has a bug
 export const DEFAULT_MAP_POOL = new MapPool([

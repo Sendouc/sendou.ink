@@ -1,6 +1,9 @@
 import { modesIncluded } from "~/features/tournament";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
+import {
+  type TournamentMaplistSource,
+  createTournamentMapList,
+} from "~/modules/tournament-map-list-generator";
 import { findTieBreakerMapPoolByTournamentId } from "../queries/findTieBreakerMapPoolByTournamentId.server";
 import { findMapPoolByTeamId } from "../queries/findMapPoolByTeamId.server";
 import { syncCached } from "~/utils/cache.server";
@@ -24,14 +27,14 @@ export function resolveMapList(args: ResolveCurrentMapListArgs) {
   if (args.mapPickingStyle === "TO") {
     invariant(args.maps?.list);
 
-    return (
-      args.maps.list
-        .map((map) => ({ ...map, source: "TO" as const }))
-        // xxx: fix source
-        .concat(
-          ...args.events.map((map) => ({ ...map, source: "TO" as const })),
-        )
-    );
+    return args.maps.list
+      .map((map) => ({ ...map, source: "TO" as TournamentMaplistSource }))
+      .concat(
+        ...args.events.map((map) => ({
+          ...map,
+          source: "COUNTERPICK" as TournamentMaplistSource,
+        })),
+      );
   }
 
   // xxx: counterpicks here
