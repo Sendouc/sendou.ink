@@ -316,7 +316,7 @@ export default function TournamentRegisterPage() {
                     minute: "numeric",
                     hour: "numeric",
                     day: "numeric",
-                    month: "numeric",
+                    month: "long",
                   })
                 : null}
             </div>
