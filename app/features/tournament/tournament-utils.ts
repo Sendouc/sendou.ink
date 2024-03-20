@@ -84,6 +84,18 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("ftiu");
   }
 
+  if (event.name.includes("Coral Clash")) {
+    return tournamentLogoUrl("cc");
+  }
+
+  if (event.name.includes("Level Up")) {
+    return tournamentLogoUrl("lu");
+  }
+
+  if (event.name.includes("All 4 One")) {
+    return tournamentLogoUrl("a41");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -99,7 +111,7 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
   }
 
   if (event.name.includes("In The Zone")) {
-    return { bg: "#8b0000", text: BLACK };
+    return { bg: "#8b0000", text: WHITE };
   }
 
   if (event.name.includes("PICNIC")) {
@@ -120,6 +132,18 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (event.name.includes("From The Ink Up")) {
     return { bg: "#ffdfc6", text: BLACK };
+  }
+
+  if (event.name.includes("Coral Clash")) {
+    return { bg: "#f0f4ff", text: BLACK };
+  }
+
+  if (event.name.includes("Level Up")) {
+    return { bg: "#383232", text: WHITE };
+  }
+
+  if (event.name.includes("All 4 One")) {
+    return { bg: "#2b262a", text: WHITE };
   }
 
   return { bg: "#3430ad", text: WHITE };
