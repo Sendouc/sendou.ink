@@ -46,7 +46,11 @@ export function Input({
   readOnly?: boolean;
 }) {
   return (
-    <div className={clsx("input-container", className)}>
+    <div
+      className={clsx("input-container", className, {
+        "input__read-only": readOnly,
+      })}
+    >
       {leftAddon ? <div className="input-addon">{leftAddon}</div> : null}
       <input
         name={name}
