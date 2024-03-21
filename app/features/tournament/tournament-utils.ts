@@ -52,47 +52,49 @@ export function isOneModeTournamentOf(
 }
 
 export function HACKY_resolvePicture(event: { name: string }) {
+  const normalizedEventName = event.name.toLowerCase();
+
   if (HACKY_isInviteOnlyEvent(event)) {
     return tournamentLogoUrl("sf");
   }
 
-  if (event.name.includes("Paddling Pool")) {
+  if (normalizedEventName.includes("paddling pool")) {
     return tournamentLogoUrl("pp");
   }
 
-  if (event.name.includes("In The Zone")) {
+  if (normalizedEventName.includes("in the zone")) {
     return tournamentLogoUrl("itz");
   }
 
-  if (event.name.includes("PICNIC")) {
+  if (normalizedEventName.includes("picnic")) {
     return tournamentLogoUrl("pn");
   }
 
-  if (event.name.includes("Proving Grounds")) {
+  if (normalizedEventName.includes("proving grounds")) {
     return tournamentLogoUrl("pg");
   }
 
-  if (event.name.includes("Triton")) {
+  if (normalizedEventName.includes("triton")) {
     return tournamentLogoUrl("tc");
   }
 
-  if (event.name.includes("Swim or Sink")) {
+  if (normalizedEventName.includes("swim or sink")) {
     return tournamentLogoUrl("sos");
   }
 
-  if (event.name.includes("From The Ink Up")) {
+  if (normalizedEventName.includes("from the ink up")) {
     return tournamentLogoUrl("ftiu");
   }
 
-  if (event.name.includes("Coral Clash")) {
+  if (normalizedEventName.includes("coral clash")) {
     return tournamentLogoUrl("cc");
   }
 
-  if (event.name.includes("Level Up")) {
+  if (normalizedEventName.includes("level up")) {
     return tournamentLogoUrl("lu");
   }
 
-  if (event.name.includes("All 4 One")) {
+  if (normalizedEventName.includes("all 4 one")) {
     return tournamentLogoUrl("a41");
   }
 
@@ -102,47 +104,49 @@ export function HACKY_resolvePicture(event: { name: string }) {
 const BLACK = "#1e1e1e";
 const WHITE = "#fffcfc";
 export function HACKY_resolveThemeColors(event: { name: string }) {
+  const normalizedEventName = event.name.toLowerCase();
+
   if (HACKY_isInviteOnlyEvent(event)) {
     return { bg: "#1e1e1e", text: WHITE };
   }
 
-  if (event.name.includes("Paddling Pool")) {
+  if (normalizedEventName.includes("paddling pool")) {
     return { bg: "#fff", text: BLACK };
   }
 
-  if (event.name.includes("In The Zone")) {
+  if (normalizedEventName.includes("in the zone")) {
     return { bg: "#8b0000", text: WHITE };
   }
 
-  if (event.name.includes("PICNIC")) {
+  if (normalizedEventName.includes("picnic")) {
     return { bg: "#e3fefe", text: BLACK };
   }
 
-  if (event.name.includes("Proving Grounds")) {
+  if (normalizedEventName.includes("proving grounds")) {
     return { bg: "#ffe809", text: BLACK };
   }
 
-  if (event.name.includes("Triton")) {
+  if (normalizedEventName.includes("triton")) {
     return { bg: "#aee8ff", text: BLACK };
   }
 
-  if (event.name.includes("Swim or Sink")) {
+  if (normalizedEventName.includes("swim or sink")) {
     return { bg: "#d7f8ea", text: BLACK };
   }
 
-  if (event.name.includes("From The Ink Up")) {
+  if (normalizedEventName.includes("from the ink up")) {
     return { bg: "#ffdfc6", text: BLACK };
   }
 
-  if (event.name.includes("Coral Clash")) {
+  if (normalizedEventName.includes("coral clash")) {
     return { bg: "#f0f4ff", text: BLACK };
   }
 
-  if (event.name.includes("Level Up")) {
+  if (normalizedEventName.includes("level up")) {
     return { bg: "#383232", text: WHITE };
   }
 
-  if (event.name.includes("All 4 One")) {
+  if (normalizedEventName.includes("all 4 one")) {
     return { bg: "#2b262a", text: WHITE };
   }
 
