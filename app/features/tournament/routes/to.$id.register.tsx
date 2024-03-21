@@ -78,6 +78,7 @@ import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findM
 import { filterOutFalsy } from "~/utils/arrays";
 import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Section } from "~/components/Section";
+import { logger } from "~/utils/logger";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -186,6 +187,10 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHECK_IN": {
+      logger.info(
+        `Checking in (try): tournament team id: ${ownTeam?.id} - user id: ${user.id} - tournament id: ${tournamentId}`,
+      );
+
       validate(tournament.regularCheckInIsOpen, "Check in is not open");
       validate(ownTeam);
       validate(!ownTeamCheckedIn, "You have already checked in");
@@ -197,6 +202,9 @@ export const action: ActionFunction = async ({ request, params }) => {
       );
 
       checkIn(ownTeam.id);
+      logger.info(
+        `Checking in (success): tournament team id: ${ownTeam.id} - user id: ${user.id} - tournament id: ${tournamentId}`,
+      );
       break;
     }
     case "ADD_PLAYER": {

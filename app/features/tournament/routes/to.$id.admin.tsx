@@ -38,6 +38,7 @@ import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
 import { Input } from "~/components/Input";
+import { logger } from "~/utils/logger";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -162,6 +163,9 @@ export const action: ActionFunction = async ({ request, params }) => {
         // 0 = regular check in
         bracketIdx: data.bracketIdx === 0 ? null : data.bracketIdx,
       });
+      logger.info(
+        `Checked out: tournament team id: ${data.teamId} - user id: ${user.id} - tournament id: ${tournamentId} - bracket idx: ${data.bracketIdx}`,
+      );
       break;
     }
     case "REMOVE_MEMBER": {
