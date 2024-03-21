@@ -284,6 +284,8 @@ export default function TournamentRegisterPage() {
   const isRegularMemberOfATeam =
     teamMemberOf && !tournament.ownedTeamByUser(user);
 
+  const startsAtEvenHour = tournament.ctx.startTime.getMinutes() === 0;
+
   return (
     <div className="stack lg">
       <div className="tournament__logo-container">
@@ -321,7 +323,7 @@ export default function TournamentRegisterPage() {
               {isMounted
                 ? tournament.ctx.startTime.toLocaleString(i18n.language, {
                     timeZoneName: "short",
-                    minute: "numeric",
+                    minute: startsAtEvenHour ? undefined : "numeric",
                     hour: "numeric",
                     day: "numeric",
                     month: "long",
