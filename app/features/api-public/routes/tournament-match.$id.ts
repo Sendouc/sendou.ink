@@ -105,7 +105,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       }));
     }
 
-    const events = match.maps?.counterpicks
+    const pickBanEvents = match.maps?.pickBan
       ? await TournamentRepository.counterpickEventsByMatchId(match.id)
       : [];
 
@@ -116,7 +116,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       teams: [match.opponentOne.id, match.opponentTwo.id],
       mapPickingStyle: match.mapPickingStyle,
       maps: match.maps,
-      events,
+      pickBanEvents,
     }).map((map) => {
       return {
         map: {

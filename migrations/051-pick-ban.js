@@ -1,7 +1,8 @@
 export function up(db) {
   db.prepare(
     /*sql*/ `
-    create table "TournamentMatchCounterpickEvent" (
+    create table "TournamentMatchPickBanEvent" (
+      "type" text not null,
       "stageId" integer not null,
       "mode" text not null,
       "matchId" integer not null,
@@ -16,9 +17,9 @@ export function up(db) {
   ).run();
 
   db.prepare(
-    /* sql */ `create index counterpick_event_author_id on "TournamentMatchCounterpickEvent"("authorId")`,
+    /* sql */ `create index pick_ban_event_author_id on "TournamentMatchPickBanEvent"("authorId")`,
   ).run();
   db.prepare(
-    /* sql */ `create index counterpick_event_match_id on "TournamentMatchCounterpickEvent"("matchId")`,
+    /* sql */ `create index pick_ban_event_match_id on "TournamentMatchPickBanEvent"("matchId")`,
   ).run();
 }

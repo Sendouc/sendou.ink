@@ -20,7 +20,11 @@ interface ResolveCurrentMapListArgs {
   matchId: number;
   teams: [teamOneId: number, teamTwoId: number];
   maps: TournamentRoundMaps | null;
-  events: Array<{ mode: ModeShort; stageId: StageId }>;
+  pickBanEvents: Array<{
+    mode: ModeShort;
+    stageId: StageId;
+    type: Tables["TournamentMatchPickBanEvent"]["type"];
+  }>;
 }
 
 export function resolveMapList(args: ResolveCurrentMapListArgs) {
@@ -30,7 +34,7 @@ export function resolveMapList(args: ResolveCurrentMapListArgs) {
     return args.maps.list
       .map((map) => ({ ...map, source: "TO" as TournamentMaplistSource }))
       .concat(
-        ...args.events.map((map) => ({
+        ...args.pickBanEvents.map((map) => ({
           ...map,
           source: "COUNTERPICK" as TournamentMaplistSource,
         })),

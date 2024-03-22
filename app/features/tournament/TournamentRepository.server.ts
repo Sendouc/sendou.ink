@@ -520,23 +520,21 @@ export function setMatchAsCasted({
 
 export function counterpickEventsByMatchId(matchId: number) {
   return db
-    .selectFrom("TournamentMatchCounterpickEvent")
+    .selectFrom("TournamentMatchPickBanEvent")
     .select([
-      "TournamentMatchCounterpickEvent.mode",
-      "TournamentMatchCounterpickEvent.stageId",
+      "TournamentMatchPickBanEvent.mode",
+      "TournamentMatchPickBanEvent.stageId",
+      "TournamentMatchPickBanEvent.type",
     ])
     .where("matchId", "=", matchId)
-    .orderBy("TournamentMatchCounterpickEvent.number asc")
+    .orderBy("TournamentMatchPickBanEvent.number asc")
     .execute();
 }
 
-export function addCounterpickEvent(
-  values: Insertable<DB["TournamentMatchCounterpickEvent"]>,
+export function addPickBanEvent(
+  values: Insertable<DB["TournamentMatchPickBanEvent"]>,
 ) {
-  return db
-    .insertInto("TournamentMatchCounterpickEvent")
-    .values(values)
-    .execute();
+  return db.insertInto("TournamentMatchPickBanEvent").values(values).execute();
 }
 
 export function resetBracket(tournamentStageId: number) {

@@ -436,8 +436,8 @@ export interface TournamentMatch {
   status: number;
 }
 
-// xxx: how event: BAN
-export interface TournamentMatchCounterpickEvent {
+export interface TournamentMatchPickBanEvent {
+  type: "PICK" | "BAN";
   stageId: StageId;
   mode: ModeShort;
   matchId: number;
@@ -479,7 +479,7 @@ export interface TournamentRoundMaps {
   count: number;
   // TODO: support play_all
   type: "BEST_OF";
-  counterpicks?: "DEFAULT" | null;
+  pickBan?: "COUNTERPICK" | "BAN_2" | null;
 }
 
 export interface TournamentRound {
@@ -737,7 +737,7 @@ export interface DB {
   TournamentBadgeOwner: TournamentBadgeOwner;
   TournamentGroup: TournamentGroup;
   TournamentMatch: TournamentMatch;
-  TournamentMatchCounterpickEvent: TournamentMatchCounterpickEvent;
+  TournamentMatchPickBanEvent: TournamentMatchPickBanEvent;
   TournamentMatchGameResult: TournamentMatchGameResult;
   TournamentMatchGameResultParticipant: TournamentMatchGameResultParticipant;
   TournamentResult: TournamentResult;

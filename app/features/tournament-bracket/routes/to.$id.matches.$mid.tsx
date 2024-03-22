@@ -45,7 +45,7 @@ import {
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import { getRounds } from "../core/rounds";
-import * as Counterpicks from "../core/counterpicks";
+import * as PickBan from "../core/PickBan";
 
 import "../tournament-bracket.css";
 
@@ -84,7 +84,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     match.opponentTwo?.score ?? 0,
   ];
 
-  const events = match.roundMaps?.counterpicks
+  const pickBanEvents = match.roundMaps?.pickBan
     ? await TournamentRepository.counterpickEventsByMatchId(match.id)
     : [];
 
@@ -97,7 +97,7 @@ export const action: ActionFunction = async ({ params, request }) => {
           teams: [match.opponentOne.id, match.opponentTwo.id],
           mapPickingStyle: match.mapPickingStyle,
           maps: match.roundMaps,
-          events,
+          pickBanEvents,
         })
       : null;
 
@@ -224,10 +224,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     }
     case "COUNTERPICK": {
       const results = findResultsByMatchId(matchId);
-      validate(
-        Counterpicks.isLegalPick({ results, map: data }),
-        "Illegal pick",
-      );
+      validate(PickBan.isLegal({ results, map: data }), "Illegal pick");
 
       invariant(
         match.roundMaps &&
@@ -236,7 +233,7 @@ export const action: ActionFunction = async ({ params, request }) => {
           match.opponentTwo?.id,
         "Missing fields to counterpick",
       );
-      const turnOf = Counterpicks.turnOf({
+      const turnOf = PickBan.turnOf({
         results,
         maps: match.roundMaps,
         teams: [match.opponentOne.id, match.opponentTwo.id],
@@ -253,12 +250,13 @@ export const action: ActionFunction = async ({ params, request }) => {
       const events = await TournamentRepository.counterpickEventsByMatchId(
         match.id,
       );
-      await TournamentRepository.addCounterpickEvent({
+      await TournamentRepository.addPickBanEvent({
         authorId: user.id,
         matchId: match.id,
         stageId: data.stageId,
         mode: data.mode,
         number: events.length + 1,
+        type: "PICK",
       });
 
       break;
@@ -371,7 +369,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   const match = notFoundIfFalsy(findMatchById(matchId));
 
-  const events = match.roundMaps?.counterpicks
+  const pickBanEvents = match.roundMaps?.pickBan
     ? await TournamentRepository.counterpickEventsByMatchId(match.id)
     : [];
 
@@ -384,7 +382,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
           teams: [match.opponentOne.id, match.opponentTwo.id],
           mapPickingStyle: match.mapPickingStyle,
           maps: match.roundMaps,
-          events,
+          pickBanEvents,
         })
       : null;
 
@@ -400,6 +398,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     match,
     results: findResultsByMatchId(matchId),
     currentMap,
+    // xxx: this replaced with info that also has bans etc.
     modes: mapList?.map((map) => map.mode),
     matchIsOver,
   };

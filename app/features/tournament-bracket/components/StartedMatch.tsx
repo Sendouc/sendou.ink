@@ -32,8 +32,8 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
 import { nullFilledArray } from "~/utils/arrays";
-import { ArrowsPointingInIcon } from "~/components/icons/ArrowsPointingIn";
-import * as Counterpicks from "../core/counterpicks";
+import * as PickBan from "../core/PickBan";
+import { PickIcon } from "~/components/icons/Pick";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -227,10 +227,11 @@ function FancyStageBanner({
       !data.match.opponentOne?.id ||
       !data.match.opponentTwo?.id ||
       !data.match.roundMaps.list
-    )
+    ) {
       return null;
+    }
 
-    const pickingTeamId = Counterpicks.turnOf({
+    const pickingTeamId = PickBan.turnOf({
       results: data.results,
       maps: data.match.roundMaps,
       teams: [data.match.opponentOne.id, data.match.opponentTwo.id],
@@ -355,10 +356,9 @@ function ModeProgressIndicator({
           const mode = modes[i];
 
           if (!mode) {
-            // xxx: actual counterpick icon
             return (
               <div key={i} className="tournament-bracket__mode-progress__image">
-                <ArrowsPointingInIcon />
+                <PickIcon />
               </div>
             );
           }

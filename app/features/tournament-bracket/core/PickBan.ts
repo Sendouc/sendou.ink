@@ -1,6 +1,17 @@
 import invariant from "tiny-invariant";
 import type { TournamentRoundMaps } from "~/db/tables";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { assertUnreachable } from "~/utils/types";
+
+// xxx: next something like
+// interface MapListNewMap {
+//   stageId: StageId;
+//   mode: ModeShort;
+//   pickBan?: {
+//     type: "PICK" | "BAN";
+//     order: number;
+//   };
+// }
 
 export function turnOf({
   results,
@@ -13,20 +24,31 @@ export function turnOf({
   teams: [number, number];
   pickedModes?: Array<ModeShort>;
 }) {
-  if (!maps.counterpicks) return null;
+  if (!maps.pickBan) return null;
 
-  // there exists an unplayed map
-  if (!pickedModes || pickedModes.length > results.length) return null;
+  switch (maps.pickBan) {
+    case "BAN_2": {
+      // xxx: turnOf BAN_2
+      return;
+    }
+    case "COUNTERPICK": {
+      // there exists an unplayed map
+      if (!pickedModes || pickedModes.length > results.length) return null;
 
-  const latestWinner = results[results.length - 1]?.winnerTeamId;
-  invariant(latestWinner, "turnOf: No winner found");
+      const latestWinner = results[results.length - 1]?.winnerTeamId;
+      invariant(latestWinner, "turnOf: No winner found");
 
-  const result = teams.find(
-    (tournamentTeamId) => latestWinner !== tournamentTeamId,
-  );
-  invariant(result, "turnOf: No result found");
+      const result = teams.find(
+        (tournamentTeamId) => latestWinner !== tournamentTeamId,
+      );
+      invariant(result, "turnOf: No result found");
 
-  return result;
+      return result;
+    }
+    default: {
+      assertUnreachable(maps.pickBan);
+    }
+  }
 }
 
 // xxx: in prepicked return union of maps of both teams + tiebreakers
@@ -62,7 +84,7 @@ export function unavailableModes({
   );
 }
 
-export function isLegalPick({
+export function isLegal({
   results,
   map,
 }: {

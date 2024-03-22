@@ -20,7 +20,7 @@ import {
 } from "~/modules/in-game-lists";
 import { stageImageUrl } from "~/utils/urls";
 import type { TournamentDataTeam } from "../core/Tournament.server";
-import * as Counterpicks from "../core/counterpicks";
+import * as PickBan from "../core/PickBan";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 
 export function MatchActionsCounterpicker({
@@ -35,7 +35,7 @@ export function MatchActionsCounterpicker({
     stageId: StageId;
   }>();
 
-  const pickerTeamId = Counterpicks.turnOf({
+  const pickerTeamId = PickBan.turnOf({
     results: data.results,
     maps,
     teams: [teams[0].id, teams[1].id],
@@ -66,16 +66,16 @@ function MapPicker({
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const toSetMapPool = useTournamentToSetMapPool();
-  const mapPool = Counterpicks.allMaps({ toSetMapPool });
+  const mapPool = PickBan.allMaps({ toSetMapPool });
 
   const modes = modesShort.filter((mode) =>
     mapPool.some((map) => map.mode === mode),
   );
 
-  const unavailableStages = Counterpicks.unavailableStages({
+  const unavailableStages = PickBan.unavailableStages({
     results: data.results,
   });
-  const unavailableModes = Counterpicks.unavailableModes({
+  const unavailableModes = PickBan.unavailableModes({
     results: data.results,
     pickerTeamId,
   });
@@ -112,7 +112,7 @@ function MapPicker({
             </div>
             {unavailableModes.has(mode) ? (
               <div className="text-error text-xs text-center">
-                Can&apos;t pick same mode team last won on
+                Can&apos;t pick the same mode team last won on
               </div>
             ) : null}
           </div>

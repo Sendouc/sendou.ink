@@ -11,7 +11,7 @@ import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import { matchIsLocked } from "../tournament-bracket-utils";
 import type { Result } from "./StartedMatch";
 import { TeamRosterInputs } from "./TeamRosterInputs";
-import * as Counterpicks from "../core/counterpicks";
+import * as PickBan from "../core/PickBan";
 import { MatchActionsCounterpicker } from "./MatchActionsCounterpicker";
 
 export function MatchActions({
@@ -58,7 +58,7 @@ export function MatchActions({
   if (
     data.match.roundMaps &&
     data.match.roundMaps?.list &&
-    Counterpicks.turnOf({
+    PickBan.turnOf({
       results: data.results,
       maps: data.match.roundMaps,
       teams: [teams[0].id, teams[1].id],

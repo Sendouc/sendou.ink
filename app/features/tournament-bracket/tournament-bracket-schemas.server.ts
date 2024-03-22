@@ -95,7 +95,7 @@ const tournamentRoundMaps = z.object({
     .nullish(),
   count: numericEnum([3, 5, 7]),
   type: z.enum(["BEST_OF"]),
-  counterpicks: z.enum(["DEFAULT"]).nullish(),
+  pickBan: z.enum(["COUNTERPICK", "BAN_2"]).nullish(),
 });
 
 export const bracketSchema = z.union([
