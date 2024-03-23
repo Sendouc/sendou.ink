@@ -25,7 +25,6 @@ import { calendarEditPage } from "~/utils/urls";
 import { Toggle } from "~/components/Toggle";
 
 // xxx: counterpicks for prepicked
-// xxx: error when Pick/ban != NONE & no round has counterpicks (DE, SE)
 export function BracketMapListDialog({
   isOpen,
   close,
@@ -304,7 +303,16 @@ export function BracketMapListDialog({
                 );
               })}
             </div>
-            {validateNoDecreasingCount() ? (
+            {!validateNoDecreasingCount() ? (
+              <div className="text-warning text-center">
+                Invalid selection: tournament progression decreases in map count
+              </div>
+            ) : pickBanStyle && roundsWithPickBan.size === 0 ? (
+              <div className="text-warning text-center">
+                Invalid selection: pick/ban style selected but no rounds have it
+                enabled
+              </div>
+            ) : (
               <SubmitButton
                 variant="outlined"
                 size="tiny"
@@ -314,10 +322,6 @@ export function BracketMapListDialog({
               >
                 Start the bracket
               </SubmitButton>
-            ) : (
-              <div className="text-warning text-center">
-                Invalid selection: tournament progression decreases in map count
-              </div>
             )}
           </>
         )}
