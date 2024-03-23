@@ -1710,7 +1710,7 @@ html[dir="rtl"] .fix-rtl {
   color: var(--button-text);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
-  top: -10px;
+  top: -5px;
   left: 0;
 }
 

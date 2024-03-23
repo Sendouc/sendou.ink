@@ -26,7 +26,7 @@ export function createTournamentMapList(
   const usedStages = new Set<number>();
 
   const backtrack = () => {
-    invariant(mapList.length <= input.bestOf, "mapList.length > input.bestOf");
+    invariant(mapList.length <= input.count, "mapList.length > input.count");
     const mapListScore = rateMapList();
     if (typeof mapListScore === "number" && mapListScore < bestMapList.score) {
       bestMapList.maps = [...mapList];
@@ -39,7 +39,7 @@ export function createTournamentMapList(
     }
 
     const stageList =
-      mapList.length < input.bestOf - 1 || input.tiebreakerMaps.length === 0
+      mapList.length < input.count - 1 || input.tiebreakerMaps.length === 0
         ? resolveStages()
         : input.tiebreakerMaps.stageModePairs.map((p) => ({
             ...p,
@@ -177,7 +177,7 @@ export function createTournamentMapList(
   }
 
   function utilizeOtherStageIdsWhenNoTiebreaker() {
-    if (mapList.length < input.bestOf - 1) return false;
+    if (mapList.length < input.count - 1) return false;
 
     if (
       input.teams.every((team) => !team.maps.isEmpty()) &&
@@ -236,7 +236,7 @@ export function createTournamentMapList(
   }
 
   function mapListAlreadyFull() {
-    return mapList.length === input.bestOf;
+    return mapList.length === input.count;
   }
 
   function isEarlyModeRepeat(stage: StageValidatorInput) {
@@ -297,7 +297,7 @@ export function createTournamentMapList(
     const newScore = score + stage.score;
 
     if (score !== 0 && newScore !== 0) return true;
-    if (newScore !== 0 && mapList.length + 1 === input.bestOf) return true;
+    if (newScore !== 0 && mapList.length + 1 === input.count) return true;
 
     return false;
   }
@@ -344,13 +344,13 @@ export function createTournamentMapList(
       // handles special case where both teams have the same maps in their pool
       commonMaps.length !== input.teams[0].maps.stageModePairs.length &&
       newCommonMaps.length === 0 &&
-      newMapList.length !== input.bestOf
+      newMapList.length !== input.count
     );
   }
 
   function rateMapList() {
     // not a full map list
-    if (mapList.length !== input.bestOf) return;
+    if (mapList.length !== input.count) return;
 
     let score = OPTIMAL_MAPLIST_SCORE;
 

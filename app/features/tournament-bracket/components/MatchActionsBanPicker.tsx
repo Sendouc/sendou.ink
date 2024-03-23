@@ -60,6 +60,7 @@ export function MatchActionsBanPicker({
   );
 }
 
+// xxx: badges for "OUR" "THEIR" "BOTH" ?
 function MapPicker({
   selected,
   setSelected,

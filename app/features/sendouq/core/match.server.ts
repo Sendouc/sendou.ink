@@ -44,7 +44,7 @@ export function matchMapList(
 
   try {
     return createTournamentMapList({
-      bestOf: SENDOUQ_BEST_OF,
+      count: SENDOUQ_BEST_OF,
       seed: String(groupOne.id),
       modesIncluded,
       tiebreakerMaps: new MapPool([]),
@@ -71,7 +71,7 @@ export function matchMapList(
   } catch (e) {
     console.error(e);
     return createTournamentMapList({
-      bestOf: SENDOUQ_BEST_OF,
+      count: SENDOUQ_BEST_OF,
       seed: String(groupOne.id),
       modesIncluded,
       tiebreakerMaps: new MapPool([]),

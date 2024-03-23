@@ -57,7 +57,6 @@ export function MatchActions({
 
   const turnOf =
     data.match.roundMaps &&
-    data.match.roundMaps?.list &&
     PickBan.turnOf({
       results: data.results,
       maps: data.match.roundMaps,

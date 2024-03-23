@@ -243,10 +243,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       );
 
       invariant(
-        match.roundMaps &&
-          match.roundMaps?.list &&
-          match.opponentOne?.id &&
-          match.opponentTwo?.id,
+        match.roundMaps && match.opponentOne?.id && match.opponentTwo?.id,
         "Missing fields to pick/ban",
       );
       const turnOf = PickBan.turnOf({
@@ -673,9 +670,13 @@ function ResultsSection() {
     throw new Error("Team is missing");
   }
 
+  const resultSource = data.mapList?.find(
+    (m) => m.stageId === result.stageId && m.mode === result.mode,
+  )?.source;
+
   return (
     <StartedMatch
-      currentStageWithMode={result}
+      currentStageWithMode={{ ...result, source: resultSource ?? "TO" }}
       teams={[teamOne, teamTwo]}
       selectedResultIndex={selectedResultIndex}
       setSelectedResultIndex={setSelectedResultIndex}

@@ -224,8 +224,7 @@ function FancyStageBanner({
     if (
       !data.match.roundMaps ||
       !data.match.opponentOne?.id ||
-      !data.match.opponentTwo?.id ||
-      !data.match.roundMaps.list
+      !data.match.opponentTwo?.id
     ) {
       return null;
     }
@@ -361,6 +360,16 @@ function ModeProgressIndicator({
       ).map((_, i) => {
         const map = data.mapList?.[i];
 
+        const adjustedI = indexWithBansConsider(i);
+
+        if (
+          data.matchIsOver &&
+          !data.results[adjustedI] &&
+          !map?.bannedByTournamentTeamId
+        ) {
+          return null;
+        }
+
         if (!map?.mode) {
           return (
             <div key={i} className="tournament-bracket__mode-progress__image">
@@ -368,8 +377,6 @@ function ModeProgressIndicator({
             </div>
           );
         }
-
-        const adjustedI = indexWithBansConsider(i);
 
         if (map.bannedByTournamentTeamId) {
           const bannerTeamName = tournament.ctx.teams.find(

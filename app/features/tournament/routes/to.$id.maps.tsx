@@ -143,7 +143,7 @@ export default function TournamentMapsPage() {
           { ...teamOne, maps: new MapPool(teamOneMaps) },
           { ...teamTwo, maps: new MapPool(teamTwoMaps) },
         ]}
-        bestOf={bestOf}
+        count={bestOf}
         seed={`${bracketType}-${roundNumber}`}
         modesIncluded={tournament.modesIncluded}
       />

@@ -468,7 +468,7 @@ function RoundMapList({
             <MysteryRow
               key={i}
               number={i + 1}
-              isCounterpicks={Boolean(maps.pickBan)}
+              isCounterpicks={maps.pickBan === "COUNTERPICK"}
             />
           );
         })}
