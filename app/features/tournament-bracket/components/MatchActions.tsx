@@ -62,7 +62,7 @@ export function MatchActions({
       results: data.results,
       maps: data.match.roundMaps,
       teams: [teams[0].id, teams[1].id],
-      pickedModes: data.modes,
+      mapList: data.mapList,
     })
   ) {
     return <MatchActionsCounterpicker teams={[teams[0], teams[1]]} />;

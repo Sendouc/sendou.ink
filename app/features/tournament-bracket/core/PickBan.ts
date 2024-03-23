@@ -1,30 +1,22 @@
 import invariant from "tiny-invariant";
 import type { TournamentRoundMaps } from "~/db/tables";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { assertUnreachable } from "~/utils/types";
-
-// xxx: next something like
-// interface MapListNewMap {
-//   stageId: StageId;
-//   mode: ModeShort;
-//   pickBan?: {
-//     type: "PICK" | "BAN";
-//     order: number;
-//   };
-// }
 
 export function turnOf({
   results,
   maps,
   teams,
-  pickedModes,
+  mapList,
 }: {
   results: Array<{ winnerTeamId: number }>;
   maps: TournamentRoundMaps;
   teams: [number, number];
-  pickedModes?: Array<ModeShort>;
+  mapList?: TournamentMapListMap[] | null;
 }) {
   if (!maps.pickBan) return null;
+  if (!mapList) return null;
 
   switch (maps.pickBan) {
     case "BAN_2": {
@@ -33,7 +25,7 @@ export function turnOf({
     }
     case "COUNTERPICK": {
       // there exists an unplayed map
-      if (!pickedModes || pickedModes.length > results.length) return null;
+      if (mapList.length > results.length) return null;
 
       const latestWinner = results[results.length - 1]?.winnerTeamId;
       invariant(latestWinner, "turnOf: No winner found");

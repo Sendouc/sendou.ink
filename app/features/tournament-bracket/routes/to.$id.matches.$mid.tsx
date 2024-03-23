@@ -237,7 +237,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         results,
         maps: match.roundMaps,
         teams: [match.opponentOne.id, match.opponentTwo.id],
-        pickedModes: mapList?.map((map) => map.mode),
+        mapList,
       });
       validate(turnOf, "Not time to counterpick");
       validate(
@@ -386,21 +386,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
         })
       : null;
 
-  const scoreSum =
-    (match.opponentOne?.score ?? 0) + (match.opponentTwo?.score ?? 0);
-
-  const currentMap = mapList?.[scoreSum];
-
-  const matchIsOver =
-    match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
-
   return {
     match,
     results: findResultsByMatchId(matchId),
-    currentMap,
-    // xxx: this replaced with info that also has bans etc.
-    modes: mapList?.map((map) => map.mode),
-    matchIsOver,
+    mapList,
+    matchIsOver:
+      match.opponentOne?.result === "win" ||
+      match.opponentTwo?.result === "win",
   };
 };
 
@@ -615,13 +607,18 @@ function MapListSection({
 
   if (!teamOne || !teamTwo) return null;
 
-  invariant(data.modes, "No modes found for this map list");
+  invariant(data.mapList, "No mapList found for this map list");
+
+  const scoreSum =
+    (data.match.opponentOne?.score ?? 0) + (data.match.opponentTwo?.score ?? 0);
+
+  const currentMap = data.mapList?.[scoreSum];
 
   return (
     <StartedMatch
-      currentStageWithMode={data.currentMap}
+      currentStageWithMode={currentMap}
       teams={[teamOne, teamTwo]}
-      modes={data.modes}
+      modes={data.mapList.map((map) => map.mode)}
       type={type}
     />
   );

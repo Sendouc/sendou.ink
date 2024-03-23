@@ -39,7 +39,7 @@ export function MatchActionsCounterpicker({
     results: data.results,
     maps,
     teams: [teams[0].id, teams[1].id],
-    pickedModes: data.modes,
+    mapList: data.mapList,
   })!;
   const pickingTeam = teams.find((team) => team.id === pickerTeamId)!;
 

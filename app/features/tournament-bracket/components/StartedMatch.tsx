@@ -235,7 +235,7 @@ function FancyStageBanner({
       results: data.results,
       maps: data.match.roundMaps,
       teams: [data.match.opponentOne.id, data.match.opponentTwo.id],
-      pickedModes: data.modes,
+      mapList: data.mapList,
     });
 
     return pickingTeamId ? teams.find((t) => t.id === pickingTeamId) : null;

@@ -35,7 +35,8 @@ export function resolveMapList(args: ResolveCurrentMapListArgs) {
       .map((map) => ({ ...map, source: "TO" as TournamentMaplistSource }))
       .concat(
         ...args.pickBanEvents.map((map) => ({
-          ...map,
+          mode: map.mode,
+          stageId: map.stageId,
           source: "COUNTERPICK" as TournamentMaplistSource,
         })),
       );
