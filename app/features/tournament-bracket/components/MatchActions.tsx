@@ -12,7 +12,7 @@ import { matchIsLocked } from "../tournament-bracket-utils";
 import type { Result } from "./StartedMatch";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import * as PickBan from "../core/PickBan";
-import { MatchActionsCounterpicker } from "./MatchActionsCounterpicker";
+import { MatchActionsBanPicker } from "./MatchActionsBanPicker";
 
 export function MatchActions({
   teams,
@@ -55,7 +55,7 @@ export function MatchActions({
     tournament.matchIdToBracketIdx(data.match.id) ?? 0,
   ).collectResultsWithPoints;
 
-  if (
+  const turnOf =
     data.match.roundMaps &&
     data.match.roundMaps?.list &&
     PickBan.turnOf({
@@ -63,9 +63,10 @@ export function MatchActions({
       maps: data.match.roundMaps,
       teams: [teams[0].id, teams[1].id],
       mapList: data.mapList,
-    })
-  ) {
-    return <MatchActionsCounterpicker teams={[teams[0], teams[1]]} />;
+    });
+
+  if (turnOf) {
+    return <MatchActionsBanPicker key={turnOf} teams={[teams[0], teams[1]]} />;
   }
 
   return (

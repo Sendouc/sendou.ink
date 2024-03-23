@@ -31,4 +31,5 @@ export type TournamentMaplistSource = number | (typeof sourceTypes)[number];
 
 export type TournamentMapListMap = ModeWithStage & {
   source: TournamentMaplistSource;
+  bannedByTournamentTeamId?: number;
 };

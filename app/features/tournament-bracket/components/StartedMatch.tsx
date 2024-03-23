@@ -10,7 +10,7 @@ import { useUser } from "~/features/auth/core/user";
 import { Chat, useChat } from "~/features/chat/components/Chat";
 import { useTournament } from "~/features/tournament/routes/to.$id";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type { StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { databaseTimestampToDate } from "~/utils/dates";
 import type { Unpacked } from "~/utils/types";
@@ -34,6 +34,7 @@ import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
 import { nullFilledArray } from "~/utils/arrays";
 import * as PickBan from "../core/PickBan";
 import { PickIcon } from "~/components/icons/Pick";
+import { Popover } from "~/components/Popover";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -42,7 +43,6 @@ export type Result = Unpacked<
 export function StartedMatch({
   teams,
   currentStageWithMode,
-  modes,
   selectedResultIndex,
   setSelectedResultIndex,
   result,
@@ -51,7 +51,6 @@ export function StartedMatch({
   teams: [TournamentDataTeam, TournamentDataTeam];
   result?: Result;
   currentStageWithMode?: TournamentMapListMap;
-  modes: ModeShort[];
   selectedResultIndex?: number;
   // if this is set it means the component is being used in presentation manner
   setSelectedResultIndex?: (index: number) => void;
@@ -171,7 +170,6 @@ export function StartedMatch({
           )}
       </FancyStageBanner>
       <ModeProgressIndicator
-        modes={modes}
         scores={[scoreOne, scoreTwo]}
         bestOf={data.match.bestOf}
         selectedResultIndex={selectedResultIndex}
@@ -221,7 +219,7 @@ function FancyStageBanner({
     return stageImageUrl(stageId) + ".png";
   };
 
-  const counterPickingTeam = () => {
+  const banPickingTeam = () => {
     if (
       !data.match.roundMaps ||
       !data.match.opponentOne?.id ||
@@ -270,13 +268,25 @@ function FancyStageBanner({
     return "";
   };
 
+  const inBanPhase =
+    data.match.roundMaps?.pickBan === "BAN_2" &&
+    data.mapList &&
+    data.mapList.filter((m) => m.bannedByTournamentTeamId).length < 2;
+
   return (
     <>
-      {!stage ? (
+      {inBanPhase ? (
+        <div className="tournament-bracket__locked-banner">
+          <div className="stack sm items-center">
+            <div className="text-lg text-center font-bold">Banning phase</div>
+            <div>Waiting for {banPickingTeam()?.name}</div>
+          </div>
+        </div>
+      ) : !stage ? (
         <div className="tournament-bracket__locked-banner">
           <div className="stack sm items-center">
             <div className="text-lg text-center font-bold">Counterpick</div>
-            <div>Waiting for {counterPickingTeam()?.name}</div>
+            <div>Waiting for {banPickingTeam()?.name}</div>
           </div>
         </div>
       ) : matchIsLocked ? (
@@ -330,69 +340,120 @@ function FancyStageBanner({
 }
 
 function ModeProgressIndicator({
-  modes,
   scores,
   bestOf,
   selectedResultIndex,
   setSelectedResultIndex,
 }: {
-  modes: ModeShort[];
   scores: [number, number];
   bestOf: number;
   selectedResultIndex?: number;
   setSelectedResultIndex?: (index: number) => void;
 }) {
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const { t } = useTranslation(["game-misc"]);
 
   const maxIndexThatWillBePlayedForSure =
     mapCountPlayedInSetWithCertainty({ bestOf, scores }) - 1;
 
+  const indexWithBansConsider = (realIdx: number) => {
+    let result = 0;
+
+    for (const [idx, map] of (data.mapList ?? []).entries()) {
+      if (idx === realIdx) {
+        break;
+      }
+
+      if (map.bannedByTournamentTeamId) {
+        continue;
+      }
+
+      result++;
+    }
+
+    return result;
+  };
+
   // TODO: this should be button when we click on it
   return (
     <div className="tournament-bracket__mode-progress">
-      {nullFilledArray(data.match.roundMaps?.count ?? modes.length).map(
-        (_, i) => {
-          const mode = modes[i];
+      {nullFilledArray(
+        Math.max(data.mapList?.length ?? 0, data.match.roundMaps?.count ?? 0),
+      ).map((_, i) => {
+        const map = data.mapList?.[i];
 
-          if (!mode) {
-            return (
-              <div key={i} className="tournament-bracket__mode-progress__image">
-                <PickIcon />
-              </div>
-            );
-          }
+        if (!map?.mode) {
+          return (
+            <div key={i} className="tournament-bracket__mode-progress__image">
+              <PickIcon />
+            </div>
+          );
+        }
+
+        const adjustedI = indexWithBansConsider(i);
+
+        if (map.bannedByTournamentTeamId) {
+          const bannerTeamName = tournament.ctx.teams.find(
+            (t) => t.id === map.bannedByTournamentTeamId,
+          )?.name;
 
           return (
-            <Image
-              containerClassName={clsx(
-                "tournament-bracket__mode-progress__image",
-                {
-                  "tournament-bracket__mode-progress__image__notable":
-                    i <= maxIndexThatWillBePlayedForSure,
-                  "tournament-bracket__mode-progress__image__team-one-win":
-                    data.results[i] &&
-                    data.results[i].winnerTeamId === data.match.opponentOne?.id,
-                  "tournament-bracket__mode-progress__image__team-two-win":
-                    data.results[i] &&
-                    data.results[i].winnerTeamId === data.match.opponentTwo?.id,
-                  "tournament-bracket__mode-progress__image__selected":
-                    i === selectedResultIndex,
-                  "cursor-pointer": Boolean(setSelectedResultIndex),
-                },
-              )}
+            <Popover
               key={i}
-              path={modeImageUrl(mode)}
-              height={20}
-              width={20}
-              alt={t(`game-misc:MODE_LONG_${mode}`)}
-              title={t(`game-misc:MODE_LONG_${mode}`)}
-              onClick={() => setSelectedResultIndex?.(i)}
-              testId={`mode-progress-${mode}`}
-            />
+              triggerClassName="minimal tiny tournament-bracket__mode-progress__image__banned__popover-trigger"
+              buttonChildren={
+                <Image
+                  containerClassName="tournament-bracket__mode-progress__image tournament-bracket__mode-progress__image__banned"
+                  path={modeImageUrl(map.mode)}
+                  height={20}
+                  width={20}
+                  alt={t(`game-misc:MODE_LONG_${map.mode}`)}
+                />
+              }
+            >
+              <div className="text-center">
+                {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
+                {t(`game-misc:STAGE_${map.stageId}`)}
+              </div>
+              <div className="text-xs text-lighter">
+                Banned by {bannerTeamName}
+              </div>
+            </Popover>
           );
-        },
-      )}
+        }
+
+        return (
+          <Image
+            containerClassName={clsx(
+              "tournament-bracket__mode-progress__image",
+              {
+                "tournament-bracket__mode-progress__image__notable":
+                  adjustedI <= maxIndexThatWillBePlayedForSure,
+                "tournament-bracket__mode-progress__image__team-one-win":
+                  data.results[adjustedI] &&
+                  data.results[adjustedI].winnerTeamId ===
+                    data.match.opponentOne?.id,
+                "tournament-bracket__mode-progress__image__team-two-win":
+                  data.results[adjustedI] &&
+                  data.results[adjustedI].winnerTeamId ===
+                    data.match.opponentTwo?.id,
+                "tournament-bracket__mode-progress__image__selected":
+                  adjustedI === selectedResultIndex,
+                "cursor-pointer": Boolean(setSelectedResultIndex),
+              },
+            )}
+            key={i}
+            path={modeImageUrl(map.mode)}
+            height={20}
+            width={20}
+            alt={t(`game-misc:MODE_LONG_${map.mode}`)}
+            title={t(`game-misc:MODE_LONG_${map.mode}`)}
+            onClick={() => setSelectedResultIndex?.(adjustedI)}
+            testId={`mode-progress-${map.mode}`}
+          />
+        );
+      })}
     </div>
   );
 }

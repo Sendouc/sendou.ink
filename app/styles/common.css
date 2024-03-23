@@ -1699,6 +1699,21 @@ html[dir="rtl"] .fix-rtl {
   font-weight: var(--semi-bold);
 }
 
+.map-pool-picker__map-button__number {
+  position: absolute;
+  background-color: var(--theme);
+  border-radius: 100%;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  color: var(--button-text);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  top: -10px;
+  left: 0;
+}
+
 .map-pool-picker__divider::before,
 .map-pool-picker__divider::after {
   border-bottom: 2px dotted var(--bg-lightest);

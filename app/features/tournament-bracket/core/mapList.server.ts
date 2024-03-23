@@ -12,6 +12,7 @@ import invariant from "tiny-invariant";
 import type { Bracket } from "./Bracket";
 import type { Round } from "~/modules/brackets-model";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { logger } from "~/utils/logger";
 
 interface ResolveCurrentMapListArgs {
   tournamentId: number;
@@ -32,13 +33,22 @@ export function resolveMapList(args: ResolveCurrentMapListArgs) {
     invariant(args.maps?.list);
 
     return args.maps.list
-      .map((map) => ({ ...map, source: "TO" as TournamentMaplistSource }))
+      .map((map) => {
+        return {
+          ...map,
+          source: "TO" as TournamentMaplistSource,
+          bannedByTournamentTeamId: resolveBannedByTeamId(args, map),
+        };
+      })
       .concat(
-        ...args.pickBanEvents.map((map) => ({
-          mode: map.mode,
-          stageId: map.stageId,
-          source: "COUNTERPICK" as TournamentMaplistSource,
-        })),
+        ...args.pickBanEvents
+          .filter((event) => event.type === "PICK")
+          .map((map) => ({
+            mode: map.mode,
+            stageId: map.stageId,
+            source: "COUNTERPICK" as TournamentMaplistSource,
+            bannedByTournamentTeamId: undefined,
+          })),
       );
   }
 
@@ -56,6 +66,29 @@ export function resolveMapList(args: ResolveCurrentMapListArgs) {
         },
       ),
   );
+}
+
+function resolveBannedByTeamId(
+  args: ResolveCurrentMapListArgs,
+  map: { stageId: StageId; mode: ModeShort },
+) {
+  if (args.maps?.pickBan !== "BAN_2") return;
+
+  const [secondPicker, firstPicker] = args.teams;
+
+  const banIdx = args.pickBanEvents.findIndex(
+    (event) =>
+      event.type === "BAN" &&
+      event.mode === map.mode &&
+      event.stageId === map.stageId,
+  );
+
+  if (banIdx === -1) return;
+  if (banIdx === 0) return firstPicker;
+  if (banIdx === 1) return secondPicker;
+
+  logger.warn(`Unexpected ban index: ${banIdx}`);
+  return;
 }
 
 export function resolveFreshMapList(

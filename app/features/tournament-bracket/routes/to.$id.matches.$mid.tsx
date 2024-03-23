@@ -85,7 +85,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   ];
 
   const pickBanEvents = match.roundMaps?.pickBan
-    ? await TournamentRepository.counterpickEventsByMatchId(match.id)
+    ? await TournamentRepository.pickBanEventsByMatchId(match.id)
     : [];
 
   const mapList =
@@ -121,7 +121,9 @@ export const action: ActionFunction = async ({ params, request }) => {
         "Match is locked",
       );
 
-      const currentMap = mapList?.[data.position];
+      const currentMap = mapList?.filter((m) => !m.bannedByTournamentTeamId)[
+        data.position
+      ];
       invariant(currentMap, "Can't resolve current map");
 
       const scoreToIncrement = () => {
@@ -179,6 +181,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
+    // xxx: in some cases it should also get rid of the counterpick
     case "UNDO_REPORT_SCORE": {
       validateCanReportScore();
       // they are trying to remove score from the past
@@ -222,16 +225,28 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
-    case "COUNTERPICK": {
+    case "BAN_PICK": {
       const results = findResultsByMatchId(matchId);
-      validate(PickBan.isLegal({ results, map: data }), "Illegal pick");
+      validate(
+        PickBan.isLegal({
+          results,
+          map: data,
+          maps: match.roundMaps,
+          toSetMapPool:
+            tournament.ctx.mapPickingStyle === "TO"
+              ? await TournamentRepository.findTOSetMapPoolById(tournamentId)
+              : [],
+          mapList,
+        }),
+        "Illegal pick",
+      );
 
       invariant(
         match.roundMaps &&
           match.roundMaps?.list &&
           match.opponentOne?.id &&
           match.opponentTwo?.id,
-        "Missing fields to counterpick",
+        "Missing fields to pick/ban",
       );
       const turnOf = PickBan.turnOf({
         results,
@@ -239,7 +254,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         teams: [match.opponentOne.id, match.opponentTwo.id],
         mapList,
       });
-      validate(turnOf, "Not time to counterpick");
+      validate(turnOf, "Not time to pick/ban");
       validate(
         tournament.isOrganizer(user) ||
           tournament.ownedTeamByUser(user)?.id === turnOf,
@@ -247,7 +262,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         401,
       );
 
-      const events = await TournamentRepository.counterpickEventsByMatchId(
+      const events = await TournamentRepository.pickBanEventsByMatchId(
         match.id,
       );
       await TournamentRepository.addPickBanEvent({
@@ -256,7 +271,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         stageId: data.stageId,
         mode: data.mode,
         number: events.length + 1,
-        type: "PICK",
+        type: match.roundMaps.pickBan === "BAN_2" ? "BAN" : "PICK",
       });
 
       break;
@@ -370,7 +385,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const match = notFoundIfFalsy(findMatchById(matchId));
 
   const pickBanEvents = match.roundMaps?.pickBan
-    ? await TournamentRepository.counterpickEventsByMatchId(match.id)
+    ? await TournamentRepository.pickBanEventsByMatchId(match.id)
     : [];
 
   const mapList =
@@ -397,7 +412,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 
 // xxx: for mode icons make it so that if you click it shows the maplist name (in TO mode) + counterpick info
-// xxx: for TWO_BAN mode show banned maps crossed over
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();
@@ -612,13 +626,14 @@ function MapListSection({
   const scoreSum =
     (data.match.opponentOne?.score ?? 0) + (data.match.opponentTwo?.score ?? 0);
 
-  const currentMap = data.mapList?.[scoreSum];
+  const currentMap = data.mapList?.filter((m) => !m.bannedByTournamentTeamId)[
+    scoreSum
+  ];
 
   return (
     <StartedMatch
       currentStageWithMode={currentMap}
       teams={[teamOne, teamTwo]}
-      modes={data.mapList.map((map) => map.mode)}
       type={type}
     />
   );
@@ -657,7 +672,6 @@ function ResultsSection() {
     <StartedMatch
       currentStageWithMode={result}
       teams={[teamOne, teamTwo]}
-      modes={data.results.map((result) => result.mode)}
       selectedResultIndex={selectedResultIndex}
       setSelectedResultIndex={setSelectedResultIndex}
       result={result}

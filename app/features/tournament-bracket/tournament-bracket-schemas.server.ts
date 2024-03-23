@@ -55,7 +55,7 @@ export const matchSchema = z.union([
     ),
   }),
   z.object({
-    _action: _action("COUNTERPICK"),
+    _action: _action("BAN_PICK"),
     stageId,
     mode: modeShort,
   }),

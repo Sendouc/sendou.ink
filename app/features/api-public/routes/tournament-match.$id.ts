@@ -106,7 +106,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     }
 
     const pickBanEvents = match.maps?.pickBan
-      ? await TournamentRepository.counterpickEventsByMatchId(match.id)
+      ? await TournamentRepository.pickBanEventsByMatchId(match.id)
       : [];
 
     return resolveMapList({

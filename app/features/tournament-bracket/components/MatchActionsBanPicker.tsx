@@ -22,8 +22,9 @@ import { stageImageUrl } from "~/utils/urls";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import * as PickBan from "../core/PickBan";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
+import type { TournamentRoundMaps } from "~/db/tables";
 
-export function MatchActionsCounterpicker({
+export function MatchActionsBanPicker({
   teams,
 }: {
   teams: [TournamentDataTeam, TournamentDataTeam];
@@ -50,7 +51,11 @@ export function MatchActionsCounterpicker({
         setSelected={setSelected}
         pickerTeamId={pickerTeamId}
       />
-      <CounterpickSubmitter selected={selected} pickingTeam={pickingTeam} />
+      <CounterpickSubmitter
+        selected={selected}
+        pickingTeam={pickingTeam}
+        pickBan={data.match.roundMaps!.pickBan!}
+      />
     </div>
   );
 }
@@ -66,7 +71,11 @@ function MapPicker({
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const toSetMapPool = useTournamentToSetMapPool();
-  const mapPool = PickBan.allMaps({ toSetMapPool });
+  const mapPool = PickBan.allMaps({
+    toSetMapPool,
+    maps: data.match.roundMaps,
+    mapList: data.mapList,
+  });
 
   const modes = modesShort.filter((mode) =>
     mapPool.some((map) => map.mode === mode),
@@ -74,10 +83,13 @@ function MapPicker({
 
   const unavailableStages = PickBan.unavailableStages({
     results: data.results,
+    maps: data.match.roundMaps,
+    mapList: data.mapList,
   });
   const unavailableModes = PickBan.unavailableModes({
     results: data.results,
     pickerTeamId,
+    maps: data.match.roundMaps,
   });
 
   return (
@@ -94,6 +106,13 @@ function MapPicker({
             </Divider>
             <div className="stack sm horizontal flex-wrap justify-center mt-1">
               {stages.map(({ stageId }) => {
+                const number =
+                  data.match.roundMaps?.pickBan === "BAN_2"
+                    ? (data.mapList ?? [])?.findIndex(
+                        (m) => m.stageId === stageId && m.mode === mode,
+                      ) + 1
+                    : undefined;
+
                 return (
                   <MapButton
                     key={stageId}
@@ -106,6 +125,7 @@ function MapPicker({
                       selected?.mode === mode && selected.stageId === stageId
                     }
                     onClick={() => setSelected({ mode, stageId })}
+                    number={number}
                   />
                 );
               })}
@@ -127,11 +147,13 @@ function MapButton({
   onClick,
   selected,
   disabled,
+  number,
 }: {
   stageId: StageId;
   onClick: () => void;
   selected?: boolean;
   disabled?: boolean;
+  number?: number;
 }) {
   const { t } = useTranslation(["game-misc"]);
 
@@ -154,6 +176,9 @@ function MapButton({
       {disabled ? (
         <CrossIcon className="map-pool-picker__map-button__icon map-pool-picker__map-button__icon__error" />
       ) : null}
+      {number ? (
+        <span className="map-pool-picker__map-button__number">{number}</span>
+      ) : null}
       <div className="map-pool-picker__map-button__label">
         {t(`game-misc:STAGE_${stageId}`)}
       </div>
@@ -164,12 +189,14 @@ function MapButton({
 function CounterpickSubmitter({
   selected,
   pickingTeam,
+  pickBan,
 }: {
   selected?: {
     mode: ModeShort;
     stageId: StageId;
   };
   pickingTeam: TournamentDataTeam;
+  pickBan: NonNullable<TournamentRoundMaps["pickBan"]>;
 }) {
   const fetcher = useFetcher();
   const { t } = useTranslation(["game-misc"]);
@@ -184,7 +211,7 @@ function CounterpickSubmitter({
   if (!picking) {
     return (
       <div className="mt-6 text-lighter text-sm text-center">
-        Waiting for captain of {pickingTeam.name} to select the counterpick
+        Waiting for captain of {pickingTeam.name} to make their selection
       </div>
     );
   }
@@ -192,7 +219,11 @@ function CounterpickSubmitter({
   if (picking && !selected) {
     return (
       <div className="mt-6 text-lighter text-sm text-center">
-        Please select your team&apos;s counterpick above
+        {pickBan === "BAN_2" ? (
+          <>Please select your team&apos;s ban above</>
+        ) : (
+          <>Please select your team&apos;s counterpick above</>
+        )}
       </div>
     );
   }
@@ -201,8 +232,13 @@ function CounterpickSubmitter({
 
   return (
     <div className="stack md items-center">
-      <div className="mt-6 text-lighter text-sm">
-        Counterpick: {t(`game-misc:MODE_SHORT_${selected.mode}`)}{" "}
+      <div
+        className={clsx("mt-6 text-lighter text-sm", {
+          "text-warning": pickBan === "BAN_2",
+        })}
+      >
+        {pickBan === "BAN_2" ? <>Ban</> : <>Counterpick</>}:{" "}
+        {t(`game-misc:MODE_SHORT_${selected.mode}`)}{" "}
         {t(`game-misc:STAGE_${selected.stageId}`)}
       </div>
       <div className="stack sm horizontal">
@@ -216,7 +252,7 @@ function CounterpickSubmitter({
       <fetcher.Form method="post">
         <input type="hidden" name="stageId" value={selected.stageId} />
         <input type="hidden" name="mode" value={selected.mode} />
-        <SubmitButton _action="COUNTERPICK">Confirm</SubmitButton>
+        <SubmitButton _action="BAN_PICK">Confirm</SubmitButton>
       </fetcher.Form>
     </div>
   );

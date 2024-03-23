@@ -329,6 +329,19 @@
   background-color: var(--bg-lighter);
 }
 
+.tournament-bracket__mode-progress__image__banned {
+  outline: 2px solid var(--theme-error-transparent);
+  background-color: var(--bg-lighter);
+}
+
+.tournament-bracket__mode-progress__image__banned > img {
+  filter: grayscale(100%);
+}
+
+.tournament-bracket__mode-progress__image__banned__popover-trigger:focus-visible {
+  outline: none !important;
+}
+
 .tournament-bracket__team-one-dot {
   border-radius: 100%;
   background-color: var(--theme);

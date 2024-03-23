@@ -518,7 +518,7 @@ export function setMatchAsCasted({
   });
 }
 
-export function counterpickEventsByMatchId(matchId: number) {
+export function pickBanEventsByMatchId(matchId: number) {
   return db
     .selectFrom("TournamentMatchPickBanEvent")
     .select([
