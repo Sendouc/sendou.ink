@@ -46,6 +46,7 @@ import {
 } from "../tournament-bracket-utils";
 import { getRounds } from "../core/rounds";
 import * as PickBan from "../core/PickBan";
+import { OrganizerMatchMapListDialog } from "../components/OrganizerMatchMapListDialog";
 
 import "../tournament-bracket.css";
 
@@ -411,7 +412,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: for mode icons make it so that if you click it shows the maplist name (in TO mode) + counterpick info
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();
@@ -444,19 +444,24 @@ export default function TournamentMatchPage() {
       {!data.matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
       <div className="flex horizontal justify-between items-center">
         <MatchHeader />
-        <LinkButton
-          to={tournamentBracketsPage({
-            tournamentId: tournament.ctx.id,
-            bracketIdx: tournament.matchIdToBracketIdx(data.match.id),
-          })}
-          variant="outlined"
-          size="tiny"
-          className="w-max"
-          icon={<ArrowLongLeftIcon />}
-          testId="back-to-bracket-button"
-        >
-          Back to bracket
-        </LinkButton>
+        <div className="stack md horizontal flex-wrap-reverse justify-end">
+          {tournament.isOrganizerOrStreamer(user) ? (
+            <OrganizerMatchMapListDialog data={data} />
+          ) : null}
+          <LinkButton
+            to={tournamentBracketsPage({
+              tournamentId: tournament.ctx.id,
+              bracketIdx: tournament.matchIdToBracketIdx(data.match.id),
+            })}
+            variant="outlined"
+            size="tiny"
+            className="w-max"
+            icon={<ArrowLongLeftIcon />}
+            testId="back-to-bracket-button"
+          >
+            Back to bracket
+          </LinkButton>
+        </div>
       </div>
       <div className="stack md">
         <CastInfo

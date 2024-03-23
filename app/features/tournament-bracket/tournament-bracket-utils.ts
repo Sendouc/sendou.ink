@@ -2,6 +2,7 @@ import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import type { TournamentMatch } from "~/db/types";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import {
   seededRandom,
   sourceTypes,
@@ -10,6 +11,8 @@ import { removeDuplicates } from "~/utils/arrays";
 import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
 import type { TournamentDataTeam } from "./core/Tournament.server";
 import type { Tournament } from "./core/Tournament";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type { TFunction } from "i18next";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -175,4 +178,35 @@ export function matchIsLocked({
   const locked = tournament.ctx.castedMatchesInfo?.lockedMatches ?? [];
 
   return locked.includes(matchId);
+}
+
+export function pickInfoText({
+  map,
+  t,
+  teams,
+}: {
+  map?: { stageId: StageId; mode: ModeShort; source: TournamentMaplistSource };
+  t: TFunction;
+  teams: [TournamentDataTeam, TournamentDataTeam];
+}) {
+  if (!map) return "";
+
+  if (map.source === teams[0].id) {
+    return t("tournament:pickInfo.team", { number: 1 });
+  }
+  if (map.source === teams[1].id) {
+    return t("tournament:pickInfo.team", { number: 2 });
+  }
+  if (map.source === "TIEBREAKER") {
+    return t("tournament:pickInfo.tiebreaker");
+  }
+  if (map.source === "BOTH") return t("tournament:pickInfo.both");
+  if (map.source === "DEFAULT") return t("tournament:pickInfo.default");
+  if (map.source === "COUNTERPICK") {
+    return t("tournament:pickInfo.counterpick");
+  }
+  if (map.source === "TO") return "";
+
+  console.error(`Unknown source: ${String(map.source)}`);
+  return "";
 }

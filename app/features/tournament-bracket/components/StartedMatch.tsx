@@ -23,6 +23,7 @@ import { type TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
   mapCountPlayedInSetWithCertainty,
   matchIsLocked,
+  pickInfoText,
   resolveHostingTeam,
   resolveRoomPass,
 } from "../tournament-bracket-utils";
@@ -245,29 +246,6 @@ function FancyStageBanner({
       : undefined,
   };
 
-  const pickInfoText = () => {
-    if (!stage) return "";
-
-    if (stage.source === teams[0].id) {
-      return t("tournament:pickInfo.team", { number: 1 });
-    }
-    if (stage.source === teams[1].id) {
-      return t("tournament:pickInfo.team", { number: 2 });
-    }
-    if (stage.source === "TIEBREAKER") {
-      return t("tournament:pickInfo.tiebreaker");
-    }
-    if (stage.source === "BOTH") return t("tournament:pickInfo.both");
-    if (stage.source === "DEFAULT") return t("tournament:pickInfo.default");
-    if (stage.source === "COUNTERPICK") {
-      return t("tournament:pickInfo.counterpick");
-    }
-    if (stage.source === "TO") return "";
-
-    console.error(`Unknown source: ${String(stage.source)}`);
-    return "";
-  };
-
   const inBanPhase =
     data.match.roundMaps?.pickBan === "BAN_2" &&
     data.mapList &&
@@ -323,7 +301,7 @@ function FancyStageBanner({
                 {t(`game-misc:STAGE_${stage.stageId}`)}
               </span>
             </h4>
-            <h4>{pickInfoText()}</h4>
+            <h4>{pickInfoText({ t, teams, map: stage })}</h4>
           </div>
           {children}
         </div>
