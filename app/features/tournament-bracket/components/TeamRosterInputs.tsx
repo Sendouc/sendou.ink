@@ -203,6 +203,7 @@ function PointInput({
   presentational: boolean;
   testId?: string;
 }) {
+  const [focused, setFocused] = React.useState(false);
   const id = React.useId();
 
   if (presentational) {
@@ -221,10 +222,14 @@ function PointInput({
         type="number"
         min={0}
         max={100}
-        value={value}
+        value={focused && !value ? "" : String(value)}
         required
         id={id}
         data-testid={testId}
+        pattern="[0-9]*"
+        inputMode="numeric"
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
       <Label htmlFor={id} spaced={false}>
         Score
