@@ -457,7 +457,15 @@ export class Tournament {
     }
   }
 
-  resolvePoolCode({ hostingTeamId }: { hostingTeamId: number }) {
+  resolvePoolCode({
+    hostingTeamId,
+    groupLetter,
+    bracketNumber,
+  }: {
+    hostingTeamId: number;
+    groupLetter?: string;
+    bracketNumber?: number;
+  }) {
     const tournamentNameWithoutOnlyLetters = this.ctx.name.replace(
       /[^a-zA-Z ]/g,
       "",
@@ -468,9 +476,11 @@ export class Tournament {
       .join("")
       .toUpperCase()
       .slice(0, 3);
-    const lastDigit = hostingTeamId % 10;
 
-    return { prefix, lastDigit };
+    return {
+      prefix,
+      suffix: groupLetter ?? bracketNumber ?? hostingTeamId % 10,
+    };
   }
 
   get mapPickCountPerMode() {

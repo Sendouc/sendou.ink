@@ -21,6 +21,7 @@ import {
 } from "~/utils/urls";
 import { type TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
+  groupNumberToLetter,
   mapCountPlayedInSetWithCertainty,
   matchIsLocked,
   resolveHostingTeam,
@@ -31,6 +32,7 @@ import type { TournamentDataTeam } from "../core/Tournament.server";
 import { CrossIcon } from "~/components/icons/Cross";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
+import type { Bracket } from "../core/Bracket";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -74,6 +76,35 @@ export function ScoreReporter({
     (p) => p.id === user?.id,
   );
 
+  const hostingTeamId = resolveHostingTeam(teams).id;
+  const poolCode = React.useMemo(() => {
+    const match = tournament.brackets
+      .flatMap((b) => b.data.match)
+      .find((m) => m.id === data.match.id);
+
+    const hasRoundRobin = tournament.brackets.some(
+      (b) => b.type === "round_robin",
+    );
+    const bracketIdx = tournament.brackets.findIndex((b) =>
+      b.data.match.some((m) => m.id === data.match.id),
+    );
+    const bracket = tournament.brackets[bracketIdx] as Bracket | undefined;
+    const group = tournament.brackets
+      .flatMap((b) => b.data.group)
+      .find((group) => group.id === match?.group_id);
+    return tournament.resolvePoolCode({
+      hostingTeamId,
+      groupLetter:
+        group && bracket?.type === "round_robin"
+          ? groupNumberToLetter(group.number)
+          : undefined,
+      bracketNumber:
+        hasRoundRobin && bracket?.type !== "round_robin"
+          ? bracketIdx + 1
+          : undefined,
+    });
+  }, [tournament, hostingTeamId, data.match.id]);
+
   const roundInfos = [
     showFullInfos ? (
       <>
@@ -92,19 +123,8 @@ export function ScoreReporter({
     ) : null,
     showFullInfos ? (
       <span>
-        {t("tournament:match.pool")}{" "}
-        {
-          tournament.resolvePoolCode({
-            hostingTeamId: resolveHostingTeam(teams).id,
-          }).prefix
-        }
-        <span className="text-theme font-bold">
-          {
-            tournament.resolvePoolCode({
-              hostingTeamId: resolveHostingTeam(teams).id,
-            }).lastDigit
-          }
-        </span>
+        {t("tournament:match.pool")} {poolCode.prefix}
+        <span className="text-theme font-bold">{poolCode.suffix}</span>
       </span>
     ) : null,
     <>

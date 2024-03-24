@@ -40,6 +40,7 @@ import { insertTournamentMatchGameResultParticipant } from "../queries/insertTou
 import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
+  groupNumberToLetter,
   matchIdFromParams,
   matchIsLocked,
   matchSubscriptionKey,
@@ -447,9 +448,6 @@ function MatchHeader() {
           bracketName = bracket.name;
 
           if (bracket.type === "round_robin") {
-            const numberToLetter = (n: number) =>
-              String.fromCharCode(65 + n - 1).toUpperCase();
-
             const group = bracket.data.group.find(
               (group) => group.id === match.group_id,
             );
@@ -457,7 +455,7 @@ function MatchHeader() {
               (round) => round.id === match.round_id,
             );
 
-            roundName = `Groups ${group?.number ? numberToLetter(group.number) : ""}${round?.number ?? ""}.${match.number}`;
+            roundName = `Groups ${group?.number ? groupNumberToLetter(group.number) : ""}${round?.number ?? ""}.${match.number}`;
           } else if (
             bracket.type === "single_elimination" ||
             bracket.type === "double_elimination"

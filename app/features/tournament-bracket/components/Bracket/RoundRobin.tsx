@@ -6,6 +6,7 @@ import { logger } from "~/utils/logger";
 import clsx from "clsx";
 import { Link } from "@remix-run/react";
 import { tournamentTeamPage } from "~/utils/urls";
+import { groupNumberToLetter } from "../../tournament-bracket-utils";
 
 export function RoundRobinBracket({ bracket }: { bracket: BracketType }) {
   const groups = getGroups(bracket);
@@ -107,11 +108,8 @@ function getGroups(bracket: BracketType) {
       (match) => match.group_id === group.id,
     );
 
-    const numberToLetter = (n: number) =>
-      String.fromCharCode(65 + n - 1).toUpperCase();
-
     result.push({
-      groupName: `Group ${numberToLetter(group.number)}`,
+      groupName: `Group ${groupNumberToLetter(group.number)}`,
       matches,
       groupId: group.id,
     });

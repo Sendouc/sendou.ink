@@ -176,3 +176,7 @@ export function matchIsLocked({
 
   return locked.includes(matchId);
 }
+
+export function groupNumberToLetter(groupNumber: number) {
+  return String.fromCharCode(65 + groupNumber - 1).toUpperCase();
+}
