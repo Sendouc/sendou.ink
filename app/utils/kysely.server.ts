@@ -1,4 +1,5 @@
 import { sql } from "kysely";
+import type { Tables } from "~/db/tables";
 
 export const COMMON_USER_FIELDS = [
   "User.id",
@@ -7,6 +8,11 @@ export const COMMON_USER_FIELDS = [
   "User.discordAvatar",
   "User.customUrl",
 ] as const;
+
+export type CommonUser = Pick<
+  Tables["User"],
+  "id" | "discordName" | "discordId" | "discordAvatar" | "customUrl"
+>;
 
 export const userChatNameColor = sql<
   string | null
