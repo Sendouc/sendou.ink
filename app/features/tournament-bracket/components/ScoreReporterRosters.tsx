@@ -31,7 +31,7 @@ export function ScoreReporterRosters({
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [number[], number[]]
-  >(
+  >(() =>
     checkedPlayersInitialState({
       teamOneId: teams[0].id,
       teamTwoId: teams[1].id,
@@ -49,9 +49,13 @@ export function ScoreReporterRosters({
   ];
   const wouldEndSet = newScore.some((score) => score > bestOf / 2);
 
-  const showPoints = tournament.bracketByIdxOrDefault(
-    tournament.matchIdToBracketIdx(data.match.id) ?? 0,
-  ).collectResultsWithPoints;
+  const showPoints = React.useMemo(
+    () =>
+      tournament.bracketByIdxOrDefault(
+        tournament.matchIdToBracketIdx(data.match.id) ?? 0,
+      ).collectResultsWithPoints,
+    [tournament, data.match.id],
+  );
 
   return (
     <Form method="post" className="width-full">

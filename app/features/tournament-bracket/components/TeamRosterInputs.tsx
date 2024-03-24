@@ -25,16 +25,17 @@ export function TeamRosterInputs({
 }: {
   teams: [TournamentDataTeam, TournamentDataTeam];
   winnerId?: number | null;
-  setWinnerId: (newId?: number) => void;
   checkedPlayers: [number[], number[]];
-  setCheckedPlayers?: (newPlayerIds: [number[], number[]]) => void;
+  setCheckedPlayers?: React.Dispatch<
+    React.SetStateAction<[number[], number[]]>
+  >;
   points?: [number, number];
-  setPoints: (newPoints: [number, number]) => void;
+  setWinnerId: (newId?: number) => void;
+  setPoints: React.Dispatch<React.SetStateAction<[number, number]>>;
   result?: Result;
 }) {
   const presentational = Boolean(result);
 
-  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
 
   React.useEffect(() => {
@@ -58,91 +59,159 @@ export function TeamRosterInputs({
           ? result.winnerTeamId === team.id
           : winnerId === team.id;
 
-        // just so we can center the points nicely
-        const showWinnerRadio =
-          !points || !presentational || winnerRadioChecked;
-
-        const seed = tournament.teamById(team.id)?.seed;
-
         return (
-          <div key={team.id}>
-            <div className="text-xs text-lighter font-semi-bold stack horizontal xs items-center justify-center">
-              <div
-                className={
-                  teamI === 0
-                    ? "tournament-bracket__team-one-dot"
-                    : "tournament-bracket__team-two-dot"
-                }
-              />
-              Team {teamI + 1}
-            </div>
-            <h4>
-              {seed ? (
-                <span className="tournament-bracket__during-match-actions__seed">
-                  #{seed}
-                </span>
-              ) : null}{" "}
-              <Link
-                to={tournamentTeamPage({
-                  tournamentId: tournament.ctx.id,
-                  tournamentTeamId: team.id,
-                })}
-                className="tournament-bracket__during-match-actions__team-name"
-              >
-                {team.name}
-              </Link>
-            </h4>
-            <div
-              className={clsx("stack horizontal md justify-center", {
-                "mt-1": points && !presentational,
-              })}
-            >
-              {showWinnerRadio ? (
-                <WinnerRadio
-                  presentational={presentational}
-                  checked={winnerRadioChecked}
-                  teamId={team.id}
-                  onChange={() => setWinnerId?.(team.id)}
-                  team={teamI + 1}
-                />
-              ) : null}
-              {points ? (
-                <PointInput
-                  value={points[teamI]}
-                  onChange={(newPoint: number) => {
-                    const newPoints = clone(points);
-                    newPoints[teamI] = newPoint;
-                    setPoints(newPoints);
-                  }}
-                  presentational={presentational}
-                  testId={`points-input-${teamI + 1}`}
-                />
-              ) : null}
-            </div>
-            <TeamRosterInputsCheckboxes
-              teamId={team.id}
-              checkedPlayers={result?.participantIds ?? checkedPlayers[teamI]}
-              presentational={presentational}
-              handlePlayerClick={(playerId: number) => {
-                const newCheckedPlayers = () => {
-                  const newPlayers = clone(checkedPlayers);
-                  if (checkedPlayers.flat().includes(playerId)) {
-                    newPlayers[teamI] = newPlayers[teamI].filter(
-                      (id) => id !== playerId,
-                    );
-                  } else {
-                    newPlayers[teamI].push(playerId);
-                  }
-
-                  return newPlayers;
-                };
-                setCheckedPlayers?.(newCheckedPlayers());
-              }}
-            />
-          </div>
+          <TeamRoster
+            idx={teamI}
+            setPoints={setPoints}
+            presentational={presentational}
+            team={team}
+            setWinnerId={setWinnerId}
+            setCheckedPlayers={setCheckedPlayers}
+            checkedPlayers={checkedPlayers[teamI].join(",")}
+            winnerRadioChecked={winnerRadioChecked}
+            points={points ? points[teamI] : undefined}
+            key={team.id}
+          />
         );
       })}
     </div>
+  );
+}
+
+const TeamRoster = React.memo(_TeamRoster);
+function _TeamRoster({
+  team,
+  presentational,
+  idx,
+  setWinnerId,
+  setPoints,
+  setCheckedPlayers,
+  points,
+  winnerRadioChecked,
+  checkedPlayers,
+}: {
+  team: TournamentDataTeam;
+  presentational: boolean;
+  idx: number;
+  setWinnerId: (newId?: number) => void;
+  setPoints: React.Dispatch<React.SetStateAction<[number, number]>>;
+  setCheckedPlayers?: React.Dispatch<
+    React.SetStateAction<[number[], number[]]>
+  >;
+  points?: number;
+  winnerRadioChecked: boolean;
+  checkedPlayers: string;
+}) {
+  const tournament = useTournament();
+
+  const hasPoints = typeof points === "number";
+
+  // just so we can center the points nicely
+  const showWinnerRadio = !hasPoints || !presentational || winnerRadioChecked;
+
+  const onPointsChange = React.useCallback(
+    (newPoint: number) => {
+      setPoints((points) => {
+        const newPoints = clone(points);
+        newPoints[idx] = newPoint;
+        return newPoints;
+      });
+    },
+    [idx, setPoints],
+  );
+
+  return (
+    <div key={team.id}>
+      <TeamRosterHeader
+        idx={idx}
+        team={team}
+        tournamentId={tournament.ctx.id}
+      />
+      <div
+        className={clsx("stack horizontal md justify-center", {
+          "mt-1": hasPoints && !presentational,
+        })}
+      >
+        {showWinnerRadio ? (
+          <WinnerRadio
+            presentational={presentational}
+            checked={winnerRadioChecked}
+            teamId={team.id}
+            onChange={() => setWinnerId?.(team.id)}
+            team={idx + 1}
+          />
+        ) : null}
+        {hasPoints ? (
+          <PointInput
+            value={points}
+            onChange={onPointsChange}
+            presentational={presentational}
+            testId={`points-input-${idx + 1}`}
+          />
+        ) : null}
+      </div>
+      <TeamRosterInputsCheckboxes
+        teamId={team.id}
+        checkedPlayers={checkedPlayers.split(",").map(Number)}
+        presentational={presentational}
+        handlePlayerClick={(playerId: number) => {
+          if (!setCheckedPlayers) return;
+
+          setCheckedPlayers((oldPlayers) => {
+            const newPlayers = clone(oldPlayers);
+            if (oldPlayers.flat().includes(playerId)) {
+              newPlayers[idx] = newPlayers[idx].filter((id) => id !== playerId);
+            } else {
+              newPlayers[idx].push(playerId);
+            }
+
+            return newPlayers;
+          });
+        }}
+      />
+    </div>
+  );
+}
+
+const TeamRosterHeader = React.memo(_TeamRosterHeader);
+function _TeamRosterHeader({
+  idx,
+  team,
+  tournamentId,
+}: {
+  idx: number;
+  team: TournamentDataTeam;
+  tournamentId: number;
+}) {
+  return (
+    <>
+      <div className="text-xs text-lighter font-semi-bold stack horizontal xs items-center justify-center">
+        <div
+          className={
+            idx === 0
+              ? "tournament-bracket__team-one-dot"
+              : "tournament-bracket__team-two-dot"
+          }
+        />
+        Team {idx + 1}
+      </div>
+      <h4>
+        {team.seed ? (
+          <span className="tournament-bracket__during-match-actions__seed">
+            #{team.seed}
+          </span>
+        ) : null}{" "}
+        <Link
+          to={tournamentTeamPage({
+            tournamentId,
+            tournamentTeamId: team.id,
+          })}
+          className="tournament-bracket__during-match-actions__team-name"
+        >
+          {team.name}
+        </Link>
+      </h4>
+    </>
   );
 }
 
@@ -192,7 +261,8 @@ function WinnerRadio({
   );
 }
 
-function PointInput({
+const PointInput = React.memo(_PointInput);
+function _PointInput({
   value,
   onChange,
   presentational,

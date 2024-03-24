@@ -556,8 +556,16 @@ function MapListSection({
   const data = useLoaderData<typeof loader>();
   const tournament = useTournament();
 
-  const teamOne = tournament.teamById(teams[0]);
-  const teamTwo = tournament.teamById(teams[1]);
+  const teamOneId = teams[0];
+  const teamOne = React.useMemo(
+    () => tournament.teamById(teamOneId),
+    [teamOneId, tournament],
+  );
+  const teamTwoId = teams[1];
+  const teamTwo = React.useMemo(
+    () => tournament.teamById(teamTwoId),
+    [teamTwoId, tournament],
+  );
 
   if (!teamOne || !teamTwo) return null;
 
