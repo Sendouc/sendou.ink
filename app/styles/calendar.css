@@ -188,3 +188,8 @@
   padding-block-end: var(--s-2);
   text-align: center;
 }
+
+.calendar__event-logo {
+  border-radius: 100%;
+  min-width: 40px;
+}
