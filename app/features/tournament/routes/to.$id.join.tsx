@@ -11,9 +11,7 @@ import { requireUserId } from "~/features/auth/core/user.server";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentPage } from "~/utils/urls";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
-import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { giveTrust } from "../queries/giveTrust.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
@@ -26,6 +24,7 @@ import {
 import { useTournamentFriendCode, useTournament } from "./to.$id";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -36,21 +35,24 @@ export const action: ActionFunction = async ({ request, params }) => {
   invariant(inviteCode, "code is missing");
 
   const leanTeam = notFoundIfFalsy(findByInviteCode(inviteCode));
-  const teams = findTeamsByTournamentId(leanTeam.tournamentId);
 
-  const teamToJoin = teams.find((team) => team.id === leanTeam.id);
-  const previousTeam = teams.find((team) =>
+  const tournament = await tournamentFromDB({ tournamentId, user });
+
+  const teamToJoin = tournament.ctx.teams.find(
+    (team) => team.id === leanTeam.id,
+  );
+  const previousTeam = tournament.ctx.teams.find((team) =>
     team.members.some((member) => member.userId === user.id),
   );
 
-  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
-  const tournamentHasStarted = hasTournamentStarted(tournamentId);
-
-  if (tournamentHasStarted) {
+  if (tournament.hasStarted) {
     validate(
-      !previousTeam || !previousTeam.checkedInAt,
+      !previousTeam || previousTeam.checkIns.length === 0,
       "Can't leave checked in team mid tournament",
     );
+    validate(tournament.autonomousSubs, "Subs are not allowed");
+  } else {
+    validate(tournament.registrationOpen, "Registration is closed");
   }
   validate(teamToJoin, "Not team of this tournament");
   validate(
@@ -58,8 +60,8 @@ export const action: ActionFunction = async ({ request, params }) => {
       inviteCode,
       teamToJoin,
       userId: user.id,
-      tournamentHasStarted,
-      tournament,
+      tournamentHasStarted: tournament.hasStarted,
+      tournament: tournament.ctx,
     }) === "VALID",
     "Cannot join this team or invite code is invalid",
   );

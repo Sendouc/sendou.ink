@@ -12,7 +12,10 @@ import {
 } from "~/features/tournament/tournament-utils";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
-import { databaseTimestampToDate } from "~/utils/dates";
+import {
+  databaseTimestampToDate,
+  dateToDatabaseTimestamp,
+} from "~/utils/dates";
 import { fillWithNullTillPowerOfTwo } from "../tournament-bracket-utils";
 import type { Stage } from "~/modules/brackets-model";
 import { Bracket } from "./Bracket";
@@ -454,7 +457,15 @@ export class Tournament {
     }
   }
 
-  resolvePoolCode({ hostingTeamId }: { hostingTeamId: number }) {
+  resolvePoolCode({
+    hostingTeamId,
+    groupLetter,
+    bracketNumber,
+  }: {
+    hostingTeamId: number;
+    groupLetter?: string;
+    bracketNumber?: number;
+  }) {
     const tournamentNameWithoutOnlyLetters = this.ctx.name.replace(
       /[^a-zA-Z ]/g,
       "",
@@ -465,9 +476,11 @@ export class Tournament {
       .join("")
       .toUpperCase()
       .slice(0, 3);
-    const lastDigit = hostingTeamId % 10;
 
-    return { prefix, lastDigit };
+    return {
+      prefix,
+      suffix: groupLetter ?? bracketNumber ?? hostingTeamId % 10,
+    };
   }
 
   get mapPickCountPerMode() {
@@ -636,6 +649,17 @@ export class Tournament {
     return !this.isInvitational();
   }
 
+  get canAddNewSubPost() {
+    if (!this.subsFeatureEnabled) return false;
+
+    return (
+      !this.ctx.settings.regClosesAt ||
+      this.ctx.settings.regClosesAt ===
+        dateToDatabaseTimestamp(this.ctx.startTime) ||
+      this.registrationOpen
+    );
+  }
+
   get maxTeamMemberCount() {
     const maxMembersBeforeStart = this.isInvitational()
       ? 5
@@ -671,6 +695,20 @@ export class Tournament {
 
   get regularCheckInEndsAt() {
     return this.ctx.startTime;
+  }
+
+  get registrationClosesAt() {
+    return this.ctx.settings.regClosesAt
+      ? databaseTimestampToDate(this.ctx.settings.regClosesAt)
+      : this.ctx.startTime;
+  }
+
+  get registrationOpen() {
+    return this.registrationClosesAt > new Date();
+  }
+
+  get autonomousSubs() {
+    return this.ctx.settings.autonomousSubs ?? true;
   }
 
   bracketByIdxOrDefault(idx: number): Bracket {

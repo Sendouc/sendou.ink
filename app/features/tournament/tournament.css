@@ -201,6 +201,7 @@
 
 .tournament__logo {
   border-radius: 100%;
+  min-width: 124px;
 }
 
 .tournament__title {

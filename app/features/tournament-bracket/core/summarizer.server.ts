@@ -5,7 +5,6 @@ import type {
   TournamentResult,
 } from "~/db/types";
 import type { AllMatchResult } from "../queries/allMatchResultsByTournamentId.server";
-import type { FindTeamsByTournamentIdItem } from "../../tournament/queries/findTeamsByTournamentId.server";
 import invariant from "tiny-invariant";
 import { removeDuplicates } from "~/utils/arrays";
 import type { Rating } from "openskill/dist/types";
@@ -15,7 +14,6 @@ import {
   identifierToUserIds,
 } from "~/features/mmr/mmr-utils";
 import shuffle from "just-shuffle";
-import type { Unpacked } from "~/utils/types";
 import type { Standing } from "./Bracket";
 
 export interface TournamentSummary {
@@ -31,10 +29,8 @@ export interface TournamentSummary {
 type UserIdToTeamId = Record<number, number>;
 
 type TeamsArg = Array<{
-  id: FindTeamsByTournamentIdItem["id"];
-  members: Array<
-    Pick<Unpacked<FindTeamsByTournamentIdItem["members"]>, "userId">
-  >;
+  id: number;
+  members: Array<{ userId: number }>;
 }>;
 
 export function tournamentSummary({

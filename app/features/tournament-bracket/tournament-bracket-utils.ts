@@ -210,3 +210,7 @@ export function pickInfoText({
   console.error(`Unknown source: ${String(map.source)}`);
   return "";
 }
+
+export function groupNumberToLetter(groupNumber: number) {
+  return String.fromCharCode(65 + groupNumber - 1).toUpperCase();
+}

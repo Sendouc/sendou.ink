@@ -5,6 +5,7 @@ import { db, sql as dbDirect } from "~/db/sql";
 import type { DB, TablesInsertable } from "~/db/tables";
 import type { User } from "~/db/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import type { CommonUser } from "~/utils/kysely.server";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { safeNumberParse } from "~/utils/number";
 
@@ -242,20 +243,66 @@ const searchSelectedFields = ({ fn }: { fn: FunctionModule<DB, "User"> }) =>
       sql`null`,
     ]).as("discordUniqueName"),
   ] as const;
-export function search({ query, limit }: { query: string; limit: number }) {
-  const criteria = `%${query}%`;
+export async function search({
+  query,
+  limit,
+}: {
+  query: string;
+  limit: number;
+}) {
+  let exactMatches: Array<
+    CommonUser & {
+      inGameName: string | null;
+      plusTier: number | null;
+      discordUniqueName: string | null;
+    }
+  > = [];
+  if (query.length > 1) {
+    exactMatches = await db
+      .selectFrom("User")
+      .leftJoin("PlusTier", "PlusTier.userId", "User.id")
+      .select(searchSelectedFields)
+      .where((eb) =>
+        eb.or([
+          eb("User.discordName", "like", query),
+          eb("User.inGameName", "like", query),
+          eb("User.discordUniqueName", "like", query),
+          eb("User.twitter", "like", query),
+          eb("User.customUrl", "like", query),
+        ]),
+      )
+      .orderBy(
+        (eb) =>
+          eb
+            .case()
+            .when("PlusTier.tier", "is", null)
+            .then(4)
+            .else(eb.ref("PlusTier.tier"))
+            .end(),
+        "asc",
+      )
+      .limit(limit)
+      .execute();
+  }
 
-  return db
+  const fuzzyQuery = `%${query}%`;
+  const fuzzyMatches = await db
     .selectFrom("User")
     .leftJoin("PlusTier", "PlusTier.userId", "User.id")
     .select(searchSelectedFields)
     .where((eb) =>
-      eb.or([
-        eb("User.discordName", "like", criteria),
-        eb("User.inGameName", "like", criteria),
-        eb("User.discordUniqueName", "like", criteria),
-        eb("User.twitter", "like", criteria),
-      ]),
+      eb
+        .or([
+          eb("User.discordName", "like", fuzzyQuery),
+          eb("User.inGameName", "like", fuzzyQuery),
+          eb("User.discordUniqueName", "like", fuzzyQuery),
+          eb("User.twitter", "like", fuzzyQuery),
+        ])
+        .and(
+          "User.id",
+          "not in",
+          exactMatches.map((match) => match.id),
+        ),
     )
     .orderBy(
       (eb) =>
@@ -267,8 +314,10 @@ export function search({ query, limit }: { query: string; limit: number }) {
           .end(),
       "asc",
     )
-    .limit(limit)
+    .limit(limit - exactMatches.length)
     .execute();
+
+  return [...exactMatches, ...fuzzyMatches];
 }
 
 export function searchExact(args: {

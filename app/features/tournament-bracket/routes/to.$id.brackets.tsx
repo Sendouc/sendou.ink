@@ -237,7 +237,8 @@ export default function TournamentBracketsPage() {
   const showAddSubsButton =
     !tournament.canFinalize(user) &&
     !tournament.everyBracketOver &&
-    tournament.hasStarted;
+    tournament.hasStarted &&
+    tournament.autonomousSubs;
 
   const waitingForTeamsText = () => {
     if (bracketIdx > 0 || tournament.regularCheckInStartInThePast) {
@@ -319,7 +320,7 @@ export default function TournamentBracketsPage() {
             >
               {t("tournament:bracket.wip")}
             </Alert>
-          ) : (
+          ) : tournament.regularCheckInStartInThePast ? (
             <div className="stack sm items-center">
               <Alert
                 variation="INFO"
@@ -344,7 +345,7 @@ export default function TournamentBracketsPage() {
                 </div>
               ) : null}
             </div>
-          )}
+          ) : null}
         </div>
       ) : null}
       <div className="stack horizontal sm justify-end">

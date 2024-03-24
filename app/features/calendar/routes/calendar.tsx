@@ -422,7 +422,7 @@ function EventsList({
                               })}
                               alt=""
                               size={40}
-                              className="rounded-full"
+                              className="calendar__event-logo"
                             />
                           ) : null}
                           <div>

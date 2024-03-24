@@ -21,6 +21,7 @@ export function Input({
   placeholder,
   onChange,
   disableAutoComplete = false,
+  readOnly,
 }: {
   name?: string;
   id?: string;
@@ -42,9 +43,14 @@ export function Input({
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disableAutoComplete?: boolean;
+  readOnly?: boolean;
 }) {
   return (
-    <div className={clsx("input-container", className)}>
+    <div
+      className={clsx("input-container", className, {
+        "input__read-only": readOnly,
+      })}
+    >
       {leftAddon ? <div className="input-addon">{leftAddon}</div> : null}
       <input
         name={name}
@@ -64,6 +70,7 @@ export function Input({
         placeholder={placeholder}
         type={type}
         autoComplete={disableAutoComplete ? "one-time-code" : undefined}
+        readOnly={readOnly}
       />
       {icon}
     </div>

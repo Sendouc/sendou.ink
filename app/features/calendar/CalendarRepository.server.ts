@@ -389,6 +389,8 @@ type CreateArgs = Pick<
   autoCheckInAll?: boolean;
   isRanked?: boolean;
   enableNoScreenToggle?: boolean;
+  autonomousSubs?: boolean;
+  regClosesAt?: number;
 };
 export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
@@ -401,6 +403,8 @@ export async function create(args: CreateArgs) {
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
         enableNoScreenToggle: args.enableNoScreenToggle,
+        autonomousSubs: args.autonomousSubs,
+        regClosesAt: args.regClosesAt,
         autoCheckInAll: args.autoCheckInAll,
       };
 
@@ -477,6 +481,8 @@ export async function update(args: UpdateArgs) {
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
         enableNoScreenToggle: args.enableNoScreenToggle,
+        autonomousSubs: args.autonomousSubs,
+        regClosesAt: args.regClosesAt,
         autoCheckInAll: args.autoCheckInAll,
       };
 

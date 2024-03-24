@@ -40,6 +40,7 @@ import { insertTournamentMatchGameResultParticipant } from "../queries/insertTou
 import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
+  groupNumberToLetter,
   matchIdFromParams,
   matchIsLocked,
   matchSubscriptionKey,
@@ -509,9 +510,6 @@ function MatchHeader() {
           bracketName = bracket.name;
 
           if (bracket.type === "round_robin") {
-            const numberToLetter = (n: number) =>
-              String.fromCharCode(65 + n - 1).toUpperCase();
-
             const group = bracket.data.group.find(
               (group) => group.id === match.group_id,
             );
@@ -519,7 +517,7 @@ function MatchHeader() {
               (round) => round.id === match.round_id,
             );
 
-            roundName = `Groups ${group?.number ? numberToLetter(group.number) : ""}${round?.number ?? ""}.${match.number}`;
+            roundName = `Groups ${group?.number ? groupNumberToLetter(group.number) : ""}${round?.number ?? ""}.${match.number}`;
           } else if (
             bracket.type === "single_elimination" ||
             bracket.type === "double_elimination"
@@ -618,8 +616,16 @@ function MapListSection({
   const data = useLoaderData<typeof loader>();
   const tournament = useTournament();
 
-  const teamOne = tournament.teamById(teams[0]);
-  const teamTwo = tournament.teamById(teams[1]);
+  const teamOneId = teams[0];
+  const teamOne = React.useMemo(
+    () => tournament.teamById(teamOneId),
+    [teamOneId, tournament],
+  );
+  const teamTwoId = teams[1];
+  const teamTwo = React.useMemo(
+    () => tournament.teamById(teamTwoId),
+    [teamTwoId, tournament],
+  );
 
   if (!teamOne || !teamTwo) return null;
 

@@ -27,16 +27,30 @@ import {
   findSubsByTournamentId,
   type SubByTournamentId,
 } from "../queries/findSubsByTournamentId.server";
+import { parseRequestFormData, validate } from "~/utils/remix";
+import { deleteSubSchema } from "../tournament-subs-schemas.server";
+import { Popover } from "~/components/Popover";
 
 import "../tournament-subs.css";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
+  const tournament = await tournamentFromDB({ tournamentId, user });
+  const data = await parseRequestFormData({
+    request,
+    schema: deleteSubSchema,
+  });
+
+  validate(
+    user.id === data.userId || tournament.isOrganizer(user),
+    "You can only delete your own sub post",
+    401,
+  );
 
   deleteSub({
     tournamentId,
-    userId: user.id,
+    userId: data.userId,
   });
 
   return null;
@@ -84,7 +98,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 export default function TournamentSubsPage() {
   const user = useUser();
-  const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
   const tournament = useTournament();
 
@@ -96,11 +109,7 @@ export default function TournamentSubsPage() {
     <div className="stack lg">
       {!tournament.teamMemberOfByUser(user) && user ? (
         <div className="stack items-end">
-          <LinkButton to="new" size="tiny">
-            {data.hasOwnSubPost
-              ? t("tournament:subs.editPost")
-              : t("tournament:subs.addPost")}
-          </LinkButton>
+          <AddOrEditSubButton />
         </div>
       ) : null}
       {data.subs.map((sub) => {
@@ -110,9 +119,36 @@ export default function TournamentSubsPage() {
   );
 }
 
+function AddOrEditSubButton() {
+  const { t } = useTranslation(["tournament"]);
+  const data = useLoaderData<typeof loader>();
+  const tournament = useTournament();
+
+  const buttonText = data.hasOwnSubPost
+    ? t("tournament:subs.editPost")
+    : t("tournament:subs.addPost");
+
+  if (!tournament.canAddNewSubPost) {
+    return (
+      <Popover buttonChildren={<>{buttonText}</>} triggerClassName="tiny">
+        {data.hasOwnSubPost
+          ? "Sub post can't be edited anymore since registration has closed"
+          : "Sub post can't be added anymore since registration has closed"}
+      </Popover>
+    );
+  }
+
+  return (
+    <LinkButton to="new" size="tiny">
+      {buttonText}
+    </LinkButton>
+  );
+}
+
 function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
   const { t } = useTranslation(["common", "tournament"]);
   const user = useUser();
+  const tournament = useTournament();
 
   const infos = [
     <div key="vc" className="sub__section__info__vc">
@@ -172,9 +208,16 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
           <div className="sub__section__message">{sub.message}</div>
         ) : null}
       </section>
-      {user?.id === sub.userId ? (
+      {user?.id === sub.userId || tournament.isOrganizer(user) ? (
         <div className="stack mt-1 items-end">
-          <FormWithConfirm dialogHeading="Delete your sub post?">
+          <FormWithConfirm
+            dialogHeading={
+              user?.id === sub.userId
+                ? "Delete your sub post?"
+                : `Delete sub post by ${sub.discordName}?`
+            }
+            fields={[["userId", sub.userId]]}
+          >
             <Button
               variant="minimal-destructive"
               size="tiny"

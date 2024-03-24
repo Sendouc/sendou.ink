@@ -1,7 +1,7 @@
 const isEnabled =
   process.env["NEW_RELIC_APP_NAME"] && process.env["NEW_RELIC_LICENSE_KEY"];
 
-const newrelic = isEnabled ? require("newrelic") : {};
+import newrelic from "newrelic";
 
 export const browserTimingHeader = () =>
   isEnabled
@@ -22,7 +22,7 @@ export const noticeError = (
   isEnabled &&
   newrelic.noticeError(error, {
     ...attributes,
-    "tags.commit": process.env["RENDER_GIT_COMMIT"],
+    "tags.commit": process.env["RENDER_GIT_COMMIT"]!,
   });
 
 export const setTransactionName = (name: string) =>

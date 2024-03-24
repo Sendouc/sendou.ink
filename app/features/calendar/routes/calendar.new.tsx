@@ -64,6 +64,9 @@ import {
   calendarEventMaxDate,
   calendarEventMinDate,
   canAddNewEvent,
+  datesToRegClosesAt,
+  regClosesAtDate,
+  regClosesAtToDisplayName,
   validateFollowUpBrackets,
 } from "../calendar-utils";
 import {
@@ -71,11 +74,15 @@ import {
   formValuesToBracketProgression,
 } from "../calendar-utils.server";
 import { Tags } from "../components/Tags";
+import { Placement } from "~/components/Placement";
+import type { FollowUpBracket } from "../calendar-types";
+import {
+  REG_CLOSES_AT_OPTIONS,
+  type RegClosesAtOption,
+} from "../calendar-constants";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
-import { Placement } from "~/components/Placement";
-import type { FollowUpBracket } from "../calendar-types";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -95,10 +102,11 @@ export const action: ActionFunction = async ({ request }) => {
 
   validate(canAddNewEvent(user), "Not authorized", 401);
 
+  const startTimes = data.date.map((date) => dateToDatabaseTimestamp(date));
   const commonArgs = {
     name: data.name,
     description: data.description,
-    startTimes: data.date.map((date) => dateToDatabaseTimestamp(date)),
+    startTimes,
     bracketUrl: data.bracketUrl,
     discordInviteCode: data.discordInviteCode,
     tags: data.tags
@@ -120,6 +128,15 @@ export const action: ActionFunction = async ({ request }) => {
     isRanked: data.isRanked ?? undefined,
     enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
     autoCheckInAll: data.autoCheckInAll ?? undefined,
+    autonomousSubs: data.autonomousSubs ?? undefined,
+    regClosesAt: data.regClosesAt
+      ? dateToDatabaseTimestamp(
+          regClosesAtDate({
+            startTime: databaseTimestampToDate(startTimes[0]),
+            closesAt: data.regClosesAt,
+          }),
+        )
+      : undefined,
   };
   validate(
     !commonArgs.toToolsEnabled || commonArgs.bracketProgression,
@@ -263,8 +280,10 @@ export default function CalendarNewEventPage() {
         {isTournament ? (
           <>
             <Divider>Tournament settings</Divider>
+            <RegClosesAtSelect />
             <RankedToggle />
             <EnableNoScreenToggle />
+            <AutonomousSubsToggle />
           </>
         ) : null}
         {isTournament ? (
@@ -671,6 +690,74 @@ function EnableNoScreenToggle() {
       <FormMessage type="info">
         When registering ask teams if they want to play without Splattercolor
         Screen.
+      </FormMessage>
+    </div>
+  );
+}
+
+function AutonomousSubsToggle() {
+  const data = useLoaderData<typeof loader>();
+  const [autonomousSubs, setAutonomousSubs] = React.useState(
+    data.tournamentCtx?.settings.autonomousSubs ?? true,
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Autonomous subs
+      </label>
+      <Toggle
+        name="autonomousSubs"
+        id={id}
+        tiny
+        checked={autonomousSubs}
+        setChecked={setAutonomousSubs}
+      />
+      <FormMessage type="info">
+        If enabled teams can add subs on their own while the tournament is in
+        progress. When disabled needs to be done by the TO&apos;s.
+      </FormMessage>
+    </div>
+  );
+}
+
+function RegClosesAtSelect() {
+  const data = useLoaderData<typeof loader>();
+  const [regClosesAt, setRegClosesAt] = React.useState<RegClosesAtOption>(
+    data.tournamentCtx?.settings.regClosesAt
+      ? datesToRegClosesAt({
+          startTime: new Date(data.tournamentCtx.startTime),
+          regClosesAt: databaseTimestampToDate(
+            data.tournamentCtx.settings.regClosesAt,
+          ),
+        })
+      : "0",
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Registration closes at
+      </label>
+      <select
+        name="regClosesAt"
+        value={regClosesAt}
+        onChange={(e) => setRegClosesAt(e.target.value as RegClosesAtOption)}
+        className="w-max"
+      >
+        {REG_CLOSES_AT_OPTIONS.map((option) => (
+          <option key={option} value={option}>
+            {regClosesAtToDisplayName(option)}
+          </option>
+        ))}
+      </select>
+      <FormMessage type="info">
+        All times relative to the reported tournament start time e.g. &quot;30
+        minutes&quot; means &quot;30 minutes before event start time&quot;.
+        After registration closes only TO&apos;s can make changes to team
+        rosters.
       </FormMessage>
     </div>
   );
