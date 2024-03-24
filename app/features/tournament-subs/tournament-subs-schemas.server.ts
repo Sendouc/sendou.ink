@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   checkboxValueToDbBoolean,
   dbBoolean,
+  id,
   processMany,
   removeDuplicates,
   safeJSONParse,
@@ -38,4 +39,8 @@ export const subSchema = z.object({
   ),
   message: z.string().max(TOURNAMENT_SUB.MESSAGE_MAX_LENGTH).nullish(),
   visibility: z.enum(["+1", "+2", "+3", "ALL"]).default("ALL"),
+});
+
+export const deleteSubSchema = z.object({
+  userId: id,
 });

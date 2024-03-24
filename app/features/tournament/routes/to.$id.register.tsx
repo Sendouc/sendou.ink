@@ -356,7 +356,7 @@ export default function TournamentRegisterPage() {
       ) : (
         <RegistrationForms />
       )}
-      {!tournament.teamMemberOfByUser(user) && tournament.subsFeatureEnabled ? (
+      {!tournament.teamMemberOfByUser(user) && tournament.canAddNewSubPost ? (
         <Link
           to={tournamentSubsPage(tournament.ctx.id)}
           className="text-xs text-center"

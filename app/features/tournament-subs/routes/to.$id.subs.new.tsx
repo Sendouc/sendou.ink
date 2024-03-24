@@ -17,12 +17,17 @@ import { Button } from "~/components/Button";
 import { TrashIcon } from "~/components/icons/Trash";
 import { findSubsByTournamentId } from "../queries/findSubsByTournamentId.server";
 import { tournamentIdFromParams } from "~/features/tournament";
-import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
+import {
+  parseRequestFormData,
+  validate,
+  type SendouRouteHandle,
+} from "~/utils/remix";
 import { FormMessage } from "~/components/FormMessage";
 import { subSchema } from "../tournament-subs-schemas.server";
 import { upsertSub } from "../queries/upsertSub.server";
 import { tournamentSubsPage } from "~/utils/urls";
 import { useUser } from "~/features/auth/core/user";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 
 import "../tournament-subs.css";
 
@@ -37,8 +42,13 @@ export const action: ActionFunction = async ({ params, request }) => {
     schema: subSchema,
   });
   const tournamentId = tournamentIdFromParams(params);
+  const tournament = await tournamentFromDB({ tournamentId, user });
 
-  // TODO: validate tournament is not finalized
+  validate(!tournament.everyBracketOver, "Tournament is over");
+  validate(
+    tournament.canAddNewSubPost,
+    "Registration is closed or subs feature disabled",
+  );
 
   upsertSub({
     bestWeapons: data.bestWeapons.join(","),
@@ -56,6 +66,11 @@ export const action: ActionFunction = async ({ params, request }) => {
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
+  const tournament = await tournamentFromDB({ tournamentId, user });
+
+  if (!tournament.canAddNewSubPost) {
+    throw redirect(tournamentSubsPage(tournamentId));
+  }
 
   const sub = findSubsByTournamentId({ tournamentId }).find(
     (sub) => sub.userId === user.id,

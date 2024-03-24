@@ -12,7 +12,10 @@ import {
 } from "~/features/tournament/tournament-utils";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
-import { databaseTimestampToDate } from "~/utils/dates";
+import {
+  databaseTimestampToDate,
+  dateToDatabaseTimestamp,
+} from "~/utils/dates";
 import { fillWithNullTillPowerOfTwo } from "../tournament-bracket-utils";
 import type { Stage } from "~/modules/brackets-model";
 import { Bracket } from "./Bracket";
@@ -634,6 +637,17 @@ export class Tournament {
 
   get subsFeatureEnabled() {
     return !this.isInvitational();
+  }
+
+  get canAddNewSubPost() {
+    if (!this.subsFeatureEnabled) return false;
+
+    return (
+      !this.ctx.settings.regClosesAt ||
+      this.ctx.settings.regClosesAt ===
+        dateToDatabaseTimestamp(this.ctx.startTime) ||
+      this.registrationOpen
+    );
   }
 
   get maxTeamMemberCount() {
