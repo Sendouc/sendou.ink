@@ -50,6 +50,7 @@ export function MatchActionsBanPicker({
         selected={selected}
         setSelected={setSelected}
         pickerTeamId={pickerTeamId}
+        teams={teams}
       />
       <CounterpickSubmitter
         selected={selected}
@@ -65,17 +66,22 @@ function MapPicker({
   selected,
   setSelected,
   pickerTeamId,
+  teams,
 }: {
   selected?: { mode: ModeShort; stageId: StageId };
   setSelected: (selected: { mode: ModeShort; stageId: StageId }) => void;
   pickerTeamId: number;
+  teams: [TournamentDataTeam, TournamentDataTeam];
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const toSetMapPool = useTournamentToSetMapPool();
+  const tournament = useTournament();
   const mapPool = PickBan.allMaps({
     toSetMapPool,
     maps: data.match.roundMaps,
     mapList: data.mapList,
+    teams,
+    tieBreakerMapPool: tournament.ctx.tieBreakerMapPool,
   });
 
   const modes = modesShort.filter((mode) =>
@@ -91,6 +97,7 @@ function MapPicker({
     results: data.results,
     pickerTeamId,
     maps: data.match.roundMaps,
+    modesIncluded: tournament.modesIncluded,
   });
 
   return (

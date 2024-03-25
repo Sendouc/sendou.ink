@@ -24,7 +24,6 @@ import { getRounds } from "../core/rounds";
 import { calendarEditPage } from "~/utils/urls";
 import { Toggle } from "~/components/Toggle";
 
-// xxx: counterpicks for prepicked
 export function BracketMapListDialog({
   isOpen,
   close,
@@ -464,11 +463,13 @@ function RoundMapList({
             );
           }
 
+          const isTeamsPick = !maps.list && i === 0;
+
           return (
             <MysteryRow
               key={i}
               number={i + 1}
-              isCounterpicks={maps.pickBan === "COUNTERPICK"}
+              isCounterpicks={!isTeamsPick && maps.pickBan === "COUNTERPICK"}
             />
           );
         })}

@@ -229,6 +229,15 @@ export const action: ActionFunction = async ({ params, request }) => {
     }
     case "BAN_PICK": {
       const results = findResultsByMatchId(matchId);
+
+      const teamOne = match.opponentOne?.id
+        ? tournament.teamById(match.opponentOne.id)
+        : undefined;
+      const teamTwo = match.opponentTwo?.id
+        ? tournament.teamById(match.opponentTwo.id)
+        : undefined;
+      invariant(teamOne && teamTwo, "Teams are missing");
+
       validate(
         PickBan.isLegal({
           results,
@@ -239,6 +248,9 @@ export const action: ActionFunction = async ({ params, request }) => {
               ? await TournamentRepository.findTOSetMapPoolById(tournamentId)
               : [],
           mapList,
+          tieBreakerMapPool: tournament.ctx.tieBreakerMapPool,
+          teams: [teamOne, teamTwo],
+          modesIncluded: tournament.modesIncluded,
         }),
         "Illegal pick",
       );

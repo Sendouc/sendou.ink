@@ -214,3 +214,24 @@ export function pickInfoText({
 export function groupNumberToLetter(groupNumber: number) {
   return String.fromCharCode(65 + groupNumber - 1).toUpperCase();
 }
+
+// xxx: PLAY_ALL
+export function isSetOverByResults({
+  results,
+  count,
+}: {
+  results: Array<{ winnerTeamId: number }>;
+  count: number;
+}) {
+  const winCounts = new Map<number, number>();
+
+  for (const result of results) {
+    const count = winCounts.get(result.winnerTeamId) ?? 0;
+    winCounts.set(result.winnerTeamId, count + 1);
+  }
+
+  const maxWins = Math.max(...Array.from(winCounts.values()));
+
+  // best of
+  return maxWins >= Math.ceil(count / 2);
+}

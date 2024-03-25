@@ -481,7 +481,7 @@ export interface TournamentResult {
 export interface TournamentRoundMaps {
   list?: Array<{ mode: ModeShort; stageId: StageId }> | null;
   count: number;
-  // TODO: support play_all
+  // xxx: support play_all
   type: "BEST_OF";
   pickBan?: "COUNTERPICK" | "BAN_2" | null;
 }

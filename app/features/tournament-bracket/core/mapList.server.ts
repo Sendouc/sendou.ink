@@ -14,7 +14,7 @@ import type { Bracket } from "./Bracket";
 import type { Round } from "~/modules/brackets-model";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { logger } from "~/utils/logger";
-import { starterMap } from "~/modules/tournament-map-list-generator/starter-finder";
+import { starterMap } from "~/modules/tournament-map-list-generator/starter-map";
 
 interface ResolveCurrentMapListArgs {
   tournamentId: number;
