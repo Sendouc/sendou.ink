@@ -98,6 +98,10 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("a41");
   }
 
+  if (normalizedEventName.includes("fry basket")) {
+    return tournamentLogoUrl("fb");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -148,6 +152,10 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (normalizedEventName.includes("all 4 one")) {
     return { bg: "#2b262a", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("fry basket")) {
+    return { bg: "#fff", text: BLACK };
   }
 
   return { bg: "#3430ad", text: WHITE };
