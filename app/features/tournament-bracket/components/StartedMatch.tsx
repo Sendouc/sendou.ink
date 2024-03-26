@@ -130,11 +130,17 @@ export function StartedMatch({
       </span>
     ) : null,
     <>
-      {t("tournament:match.score", {
-        scoreOne,
-        scoreTwo,
-        bestOf: data.match.bestOf,
-      })}
+      {data.match.roundMaps?.type === "PLAY_ALL"
+        ? t("tournament:match.score.playAll", {
+            scoreOne,
+            scoreTwo,
+            bestOf: data.match.bestOf,
+          })
+        : t("tournament:match.score", {
+            scoreOne,
+            scoreTwo,
+            bestOf: data.match.bestOf,
+          })}
     </>,
     tournament.ctx.settings.enableNoScreenToggle ? (
       <ScreenBanIcons banned={teams.some((team) => team.noScreen)} />
@@ -352,7 +358,9 @@ function ModeProgressIndicator({
   const { t } = useTranslation(["game-misc"]);
 
   const maxIndexThatWillBePlayedForSure =
-    mapCountPlayedInSetWithCertainty({ bestOf, scores }) - 1;
+    data.match.roundMaps?.type === "PLAY_ALL"
+      ? bestOf - 1
+      : mapCountPlayedInSetWithCertainty({ bestOf, scores }) - 1;
 
   const indexWithBansConsider = (realIdx: number) => {
     let result = 0;
@@ -496,11 +504,22 @@ function StartedMatchTabs({
     );
   }, [data, tournament]);
 
-  const showChat =
-    !tournament.ctx.isFinalized &&
-    data.match.chatCode &&
-    (data.match.players.some((p) => p.id === user?.id) ||
-      tournament.isOrganizerOrStreamer(user));
+  const showChat = (() => {
+    if (!data.match.chatCode) return false;
+    if (tournament.ctx.isFinalized && !tournament.isOrganizer(user)) {
+      return false;
+    }
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    if (tournament.ctx.startTime < oneMonthAgo) {
+      return false;
+    }
+
+    return (
+      data.match.players.some((p) => p.id === user?.id) ||
+      tournament.isOrganizerOrStreamer(user)
+    );
+  })();
 
   const rooms = React.useMemo(() => {
     return showChat && data.match.chatCode
@@ -580,7 +599,6 @@ function StartedMatchTabs({
                 teams={teams}
                 position={currentPosition}
                 result={result}
-                bestOf={data.match.bestOf}
                 presentational={
                   !tournament.canReportScore({ matchId: data.match.id, user })
                 }

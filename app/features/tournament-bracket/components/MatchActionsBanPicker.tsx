@@ -61,6 +61,7 @@ export function MatchActionsBanPicker({
   );
 }
 
+// xxx: check is realtime
 // xxx: badges for "OUR" "THEIR" "BOTH" ?
 function MapPicker({
   selected,

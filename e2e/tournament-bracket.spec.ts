@@ -643,4 +643,14 @@ test.describe("Tournament bracket", () => {
     await page.locator('[data-match-id="8"]').click();
     await expect(page.getByTestId("screen-banned")).toBeVisible();
   });
+
+  // xxx: PLAY_ALL
+
+  // xxx: counterpick prepicked + try undoing score
+
+  // xxx: ban2 prepicked + try undoing score
+
+  // xxx: counterpick teampicked + try reopening match
+
+  // xxx: ban2 teampicked + try reopening match
 });

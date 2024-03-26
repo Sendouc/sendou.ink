@@ -13,6 +13,8 @@ import type { TournamentDataTeam } from "./core/Tournament.server";
 import type { Tournament } from "./core/Tournament";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TFunction } from "i18next";
+import type { TournamentRoundMaps } from "~/db/tables";
+import { sumArray } from "~/utils/number";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -215,13 +217,14 @@ export function groupNumberToLetter(groupNumber: number) {
   return String.fromCharCode(65 + groupNumber - 1).toUpperCase();
 }
 
-// xxx: PLAY_ALL
 export function isSetOverByResults({
   results,
   count,
+  countType,
 }: {
   results: Array<{ winnerTeamId: number }>;
   count: number;
+  countType: TournamentRoundMaps["type"];
 }) {
   const winCounts = new Map<number, number>();
 
@@ -230,8 +233,29 @@ export function isSetOverByResults({
     winCounts.set(result.winnerTeamId, count + 1);
   }
 
+  if (countType === "PLAY_ALL") {
+    return sumArray(Array.from(winCounts.values())) === count;
+  }
+
   const maxWins = Math.max(...Array.from(winCounts.values()));
 
   // best of
   return maxWins >= Math.ceil(count / 2);
+}
+
+export function isSetOverByScore({
+  scores,
+  count,
+  countType,
+}: {
+  scores: [number, number];
+  count: number;
+  countType: TournamentRoundMaps["type"];
+}) {
+  if (countType === "PLAY_ALL") {
+    return sumArray(scores) === count;
+  }
+
+  const matchOverAtXWins = Math.ceil(count / 2);
+  return scores[0] === matchOverAtXWins || scores[1] === matchOverAtXWins;
 }

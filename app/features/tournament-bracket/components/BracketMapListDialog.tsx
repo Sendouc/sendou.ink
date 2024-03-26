@@ -44,6 +44,8 @@ export function BracketMapListDialog({
   );
   const [pickBanStyle, setPickBanStyle] =
     React.useState<TournamentRoundMaps["pickBan"]>();
+  const [countType, setCountType] =
+    React.useState<TournamentRoundMaps["type"]>("BEST_OF");
   const [maps, setMaps] = React.useState(() =>
     generateTournamentRoundMaplist({
       mapCounts: bracket.defaultRoundBestOfs,
@@ -148,6 +150,7 @@ export function BracketMapListDialog({
           value={JSON.stringify(
             Array.from(maps.entries()).map(([key, value]) => ({
               roundId: key,
+              type: countType,
               ...value,
             })),
           )}
@@ -164,7 +167,7 @@ export function BracketMapListDialog({
         ) : (
           <>
             <div className="stack horizontal items-center  justify-between">
-              <div className="stack horizontal lg">
+              <div className="stack horizontal lg flex-wrap">
                 <PickBanSelect
                   pickBanStyle={pickBanStyle}
                   onPickBanStyleChange={(pickBanStyle) => {
@@ -203,6 +206,9 @@ export function BracketMapListDialog({
                       setMapCounts(newMapCounts);
                     }}
                   />
+                ) : null}
+                {bracket.type === "round_robin" ? (
+                  <GlobalCountTypeSelect onSetCountType={setCountType} />
                 ) : null}
               </div>
               {toSetMapPool.length > 0 ? (
@@ -346,6 +352,27 @@ function GlobalMapCountInput({
   );
 }
 
+function GlobalCountTypeSelect({
+  onSetCountType,
+}: {
+  onSetCountType: (type: TournamentRoundMaps["type"]) => void;
+}) {
+  return (
+    <div>
+      <Label htmlFor="count-type">Count type</Label>
+      <select
+        id="count-type"
+        onChange={(e) =>
+          onSetCountType(e.target.value as TournamentRoundMaps["type"])
+        }
+      >
+        <option value="BEST_OF">Best of</option>
+        <option value="PLAY_ALL">Play all</option>
+      </select>
+    </div>
+  );
+}
+
 function PickBanSelect({
   pickBanStyle,
   onPickBanStyleChange,
@@ -390,8 +417,8 @@ function RoundMapList({
   includeRoundSpecificSelections,
 }: {
   name: string;
-  maps: TournamentRoundMaps;
-  onRoundMapListChange: (maps: TournamentRoundMaps) => void;
+  maps: Omit<TournamentRoundMaps, "type">;
+  onRoundMapListChange: (maps: Omit<TournamentRoundMaps, "type">) => void;
   onHoverMap: (map: string | null) => void;
   onCountChange: (count: number) => void;
   onPickBanChange: (hasPickBan: boolean) => void;

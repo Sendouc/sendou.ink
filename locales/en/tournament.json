@@ -123,6 +123,7 @@
   "match.pass": "Pass",
   "match.pool": "Pool",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
+  "match.score.playAll": "{{scoreOne}}-{{scoreTwo}} (Play all {{bestOf}})",
   "match.action.undoLastScore": "Undo last score",
   "match.action.reopenMatch": "Reopen match",
 

@@ -55,6 +55,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
               name={round.name}
               bestOf={bestOf}
               showInfos={someMatchOngoing}
+              maps={round.maps}
             />
             <div
               className={clsx("elim-bracket__round-matches-container", {

@@ -48,7 +48,9 @@ export function turnOf({
       // there exists an unplayed map
       if (mapList.length > results.length) return null;
 
-      if (isSetOverByResults({ count: maps.count, results })) {
+      if (
+        isSetOverByResults({ count: maps.count, results, countType: maps.type })
+      ) {
         return null;
       }
 

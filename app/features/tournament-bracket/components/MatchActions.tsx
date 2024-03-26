@@ -8,25 +8,24 @@ import { useTournament } from "~/features/tournament/routes/to.$id";
 import { TOURNAMENT } from "../../tournament/tournament-constants";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
-import { matchIsLocked } from "../tournament-bracket-utils";
+import { isSetOverByScore, matchIsLocked } from "../tournament-bracket-utils";
 import type { Result } from "./StartedMatch";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import * as PickBan from "../core/PickBan";
 import { MatchActionsBanPicker } from "./MatchActionsBanPicker";
+import invariant from "tiny-invariant";
 
 export function MatchActions({
   teams,
   position,
   result,
   scores,
-  bestOf,
   presentational: _presentational,
 }: {
   teams: [TournamentDataTeam, TournamentDataTeam];
   position: number;
   result?: Result;
   scores: [number, number];
-  bestOf: number;
   presentational?: boolean;
 }) {
   const tournament = useTournament();
@@ -49,7 +48,11 @@ export function MatchActions({
     scores[0] + (winnerId === teams[0].id ? 1 : 0),
     scores[1] + (winnerId === teams[1].id ? 1 : 0),
   ];
-  const wouldEndSet = newScore.some((score) => score > bestOf / 2);
+  const wouldEndSet = isSetOverByScore({
+    count: data.match.roundMaps?.count ?? data.match.bestOf,
+    countType: data.match.roundMaps?.type ?? "BEST_OF",
+    scores: newScore,
+  });
 
   const showPoints = React.useMemo(
     () =>
@@ -105,7 +108,7 @@ export function MatchActions({
               winnerIdx={winnerId ? winningTeamIdx() : undefined}
               points={showPoints ? points : undefined}
               checkedPlayers={checkedPlayers}
-              winnerName={winningTeam()}
+              winnerOfSetName={winnerOfSetName()}
               wouldEndSet={wouldEndSet}
               matchLocked={matchIsLocked({
                 matchId: data.match.id,
@@ -127,12 +130,15 @@ export function MatchActions({
     </Form>
   );
 
-  function winningTeam() {
+  function winnerOfSetName() {
     if (!winnerId) return;
-    if (teams[0].id === winnerId) return teams[0].name;
-    if (teams[1].id === winnerId) return teams[1].name;
 
-    throw new Error("No winning team matching the id");
+    const setWinningIdx = newScore[0] > newScore[1] ? 0 : 1;
+
+    const result = teams[setWinningIdx].name;
+    invariant(result, "No set winning team");
+
+    return result;
   }
 
   function winningTeamIdx() {
@@ -178,7 +184,7 @@ function ReportScoreButtons({
   points,
   winnerIdx,
   checkedPlayers,
-  winnerName,
+  winnerOfSetName,
   wouldEndSet,
   matchLocked,
   newScore,
@@ -186,7 +192,7 @@ function ReportScoreButtons({
   points?: [number, number];
   winnerIdx?: number;
   checkedPlayers: number[][];
-  winnerName?: string;
+  winnerOfSetName?: string;
   wouldEndSet: boolean;
   matchLocked: boolean;
   newScore: [number, number];
@@ -249,7 +255,7 @@ function ReportScoreButtons({
     );
   }
 
-  if (!winnerName) {
+  if (typeof winnerIdx !== "number") {
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
         Please select the winner of this map
@@ -262,7 +268,7 @@ function ReportScoreButtons({
 
     // TO reporting
     if (!ownTeam) return "text-main-forced";
-    if (ownTeam.name === winnerName) return "text-success";
+    if (ownTeam.name === winnerOfSetName) return "text-success";
 
     return "text-warning";
   };
@@ -280,7 +286,7 @@ function ReportScoreButtons({
           <Label spaced={false} htmlFor={confirmCheckId}>
             <span className="text-main-forced">Set over?</span>{" "}
             <span className={confirmationClass()}>
-              ({newScore.join("-")} win for {winnerName})
+              ({newScore.join("-")} win for {winnerOfSetName})
             </span>
           </Label>
         </div>

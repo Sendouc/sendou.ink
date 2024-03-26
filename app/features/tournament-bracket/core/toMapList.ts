@@ -45,7 +45,7 @@ export function generateTournamentRoundMaplist(
   const comboAppearance = new Map<string, number>();
 
   //                roundId
-  const result: Map<number, TournamentRoundMaps> = new Map();
+  const result: Map<number, Omit<TournamentRoundMaps, "type">> = new Map();
 
   for (const [iteration, round] of sortedRounds.entries()) {
     const count = resolveRoundMapCount(round, args.mapCounts, args.type);
@@ -68,7 +68,6 @@ export function generateTournamentRoundMaplist(
 
     result.set(round.id, {
       count,
-      type: "BEST_OF",
       pickBan: args.roundsWithPickBan.has(round.id)
         ? args.pickBanStyle
         : undefined,

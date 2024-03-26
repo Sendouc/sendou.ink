@@ -41,6 +41,7 @@ import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
   groupNumberToLetter,
+  isSetOverByScore,
   matchIdFromParams,
   matchIsLocked,
   matchSubscriptionKey,
@@ -146,18 +147,22 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       scores[scoreToIncrement()]++;
 
+      const setOver = isSetOverByScore({
+        count: match.roundMaps?.count ?? match.bestOf,
+        countType: match.roundMaps?.type ?? "BEST_OF",
+        scores,
+      });
+
       sql.transaction(() => {
         manager.update.match({
           id: match.id,
           opponent1: {
             score: scores[0],
-            result:
-              scores[0] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
+            result: setOver && scores[0] > scores[1] ? "win" : undefined,
           },
           opponent2: {
             score: scores[1],
-            result:
-              scores[1] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
+            result: setOver && scores[1] > scores[0] ? "win" : undefined,
           },
         });
 
