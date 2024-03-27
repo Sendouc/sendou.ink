@@ -49,6 +49,7 @@
   grid-area: message;
   font-size: var(--fonts-sm);
   padding-block-start: var(--s-4);
+  white-space: pre-wrap;
 }
 
 .sub__section__weapon-text {
