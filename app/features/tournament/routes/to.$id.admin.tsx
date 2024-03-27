@@ -172,11 +172,20 @@ export const action: ActionFunction = async ({ request, params }) => {
       validateIsTournamentOrganizer();
       const team = tournament.teamById(data.teamId);
       validate(team, "Invalid team id");
-      validate(team.checkIns.length === 0, "Team is checked in");
+      validate(
+        team.checkIns.length === 0 || team.members.length > 4,
+        "Can't remove last member from checked in team",
+      );
       validate(
         !team.members.find((m) => m.userId === data.memberId)?.isOwner,
-
         "Cannot remove team owner",
+      );
+      validate(
+        !tournament.hasStarted ||
+          !tournament
+            .participatedPlayersByTeamId(data.teamId)
+            .some((p) => p.userId === data.memberId),
+        "Cannot remove player that has participated in the tournament",
       );
 
       leaveTeam({
@@ -378,7 +387,7 @@ const actions = [
   {
     type: "REMOVE_MEMBER",
     inputs: ["ROSTER_MEMBER", "REGISTERED_TEAM"] as Input[],
-    when: ["TOURNAMENT_BEFORE_START"],
+    when: [],
   },
   {
     type: "DELETE_TEAM",
