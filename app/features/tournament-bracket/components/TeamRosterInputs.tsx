@@ -61,6 +61,7 @@ export function TeamRosterInputs({
 
         return (
           <TeamRoster
+            key={team.id}
             idx={teamI}
             setPoints={setPoints}
             presentational={presentational}
@@ -70,7 +71,7 @@ export function TeamRosterInputs({
             checkedPlayers={checkedPlayers[teamI].join(",")}
             winnerRadioChecked={winnerRadioChecked}
             points={points ? points[teamI] : undefined}
-            key={team.id}
+            result={result}
           />
         );
       })}
@@ -89,6 +90,7 @@ function _TeamRoster({
   points,
   winnerRadioChecked,
   checkedPlayers,
+  result,
 }: {
   team: TournamentDataTeam;
   presentational: boolean;
@@ -101,6 +103,7 @@ function _TeamRoster({
   points?: number;
   winnerRadioChecked: boolean;
   checkedPlayers: string;
+  result?: Result;
 }) {
   const tournament = useTournament();
 
@@ -152,7 +155,9 @@ function _TeamRoster({
       </div>
       <TeamRosterInputsCheckboxes
         teamId={team.id}
-        checkedPlayers={checkedPlayers.split(",").map(Number)}
+        checkedPlayers={
+          result?.participantIds ?? checkedPlayers.split(",").map(Number)
+        }
         presentational={presentational}
         handlePlayerClick={(playerId: number) => {
           if (!setCheckedPlayers) return;
