@@ -396,7 +396,12 @@ function TeamActions() {
   );
   const [selectedAction, setSelectedAction] = React.useState<
     (typeof actions)[number]
-  >(actions[0]);
+  >(
+    // if started, default to action with no restrictions
+    tournament.hasStarted
+      ? actions.find((a) => a.when.length === 0)!
+      : actions[0],
+  );
 
   const selectedTeam = tournament.teamById(selectedTeamId);
 
