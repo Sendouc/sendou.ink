@@ -38,6 +38,7 @@ import * as PickBan from "../core/PickBan";
 import { PickIcon } from "~/components/icons/Pick";
 import { Popover } from "~/components/Popover";
 import type { Bracket } from "../core/Bracket";
+import { MatchRosters } from "./MatchRosters";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -561,6 +562,9 @@ function StartedMatchTabs({
             hidden: !showChat,
           },
           {
+            label: "Rosters",
+          },
+          {
             label: presentational ? "Score" : "Actions",
           },
         ]}
@@ -585,6 +589,10 @@ function StartedMatchTabs({
                 ) : null}
               </>
             ),
+          },
+          {
+            key: "rosters",
+            element: <MatchRosters teams={[teams[0].id, teams[1].id]} />,
           },
           {
             key: "report",

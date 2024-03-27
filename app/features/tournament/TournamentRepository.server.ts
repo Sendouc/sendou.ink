@@ -525,6 +525,7 @@ export function pickBanEventsByMatchId(matchId: number) {
       "TournamentMatchPickBanEvent.mode",
       "TournamentMatchPickBanEvent.stageId",
       "TournamentMatchPickBanEvent.type",
+      "TournamentMatchPickBanEvent.number",
     ])
     .where("matchId", "=", matchId)
     .orderBy("TournamentMatchPickBanEvent.number asc")

@@ -61,8 +61,6 @@ export function MatchActionsBanPicker({
   );
 }
 
-// xxx: check is realtime
-// xxx: badges for "OUR" "THEIR" "BOTH" ?
 function MapPicker({
   selected,
   setSelected,
@@ -74,37 +72,67 @@ function MapPicker({
   pickerTeamId: number;
   teams: [TournamentDataTeam, TournamentDataTeam];
 }) {
+  const user = useUser();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const toSetMapPool = useTournamentToSetMapPool();
   const tournament = useTournament();
-  const mapPool = PickBan.allMaps({
+
+  const pickBanMapPool = PickBan.mapsListWithLegality({
     toSetMapPool,
     maps: data.match.roundMaps,
     mapList: data.mapList,
     teams,
     tieBreakerMapPool: tournament.ctx.tieBreakerMapPool,
+    pickerTeamId,
+    results: data.results,
   });
 
   const modes = modesShort.filter((mode) =>
-    mapPool.some((map) => map.mode === mode),
+    pickBanMapPool.some((map) => map.mode === mode),
   );
 
-  const unavailableStages = PickBan.unavailableStages({
-    results: data.results,
-    maps: data.match.roundMaps,
-    mapList: data.mapList,
-  });
-  const unavailableModes = PickBan.unavailableModes({
-    results: data.results,
-    pickerTeamId,
-    maps: data.match.roundMaps,
-    modesIncluded: tournament.modesIncluded,
-  });
+  const canPickBan =
+    tournament.isOrganizer(user) ||
+    tournament.ownedTeamByUser(user)?.id === pickerTeamId;
+
+  const teamMemberOf = tournament.teamMemberOfByUser(user);
+  const isPartOfTheMatch = teams.some((t) => t.id === teamMemberOf?.id);
+  const mapFromWhere = (stageId: StageId, mode: ModeShort) => {
+    if (!isPartOfTheMatch) {
+      return;
+    }
+
+    const teamOneHas = teams[0].mapPool?.some(
+      (map) => map.stageId === stageId && map.mode === mode,
+    );
+    const teamTwoHas = teams[1].mapPool?.some(
+      (map) => map.stageId === stageId && map.mode === mode,
+    );
+
+    if (teamOneHas && teamTwoHas) {
+      return "BOTH";
+    }
+
+    if (teamOneHas) {
+      return teams[0].id === teamMemberOf?.id ? "US" : "THEM";
+    }
+
+    if (teamTwoHas) {
+      return teams[1].id === teamMemberOf?.id ? "US" : "THEM";
+    }
+
+    return;
+  };
+
+  const pickersLastWonMode = data.results
+    .slice()
+    .reverse()
+    .find((result) => result.winnerTeamId === pickerTeamId)?.mode;
 
   return (
     <div className="stack lg">
       {modes.map((mode) => {
-        const stages = mapPool
+        const stages = pickBanMapPool
           .filter((map) => map.mode === mode)
           .sort((a, b) => a.stageId - b.stageId);
 
@@ -113,8 +141,16 @@ function MapPicker({
             <Divider className="map-pool-picker__divider">
               <ModeImage mode={mode} size={32} />
             </Divider>
-            <div className="stack sm horizontal flex-wrap justify-center mt-1">
-              {stages.map(({ stageId }) => {
+            <div
+              className={clsx(
+                "stack horizontal flex-wrap justify-center mt-1",
+                {
+                  "lg-row sm-column": isPartOfTheMatch,
+                  sm: !isPartOfTheMatch,
+                },
+              )}
+            >
+              {stages.map(({ stageId, isLegal }) => {
                 const number =
                   data.match.roundMaps?.pickBan === "BAN_2"
                     ? (data.mapList ?? [])?.findIndex(
@@ -126,20 +162,22 @@ function MapPicker({
                   <MapButton
                     key={stageId}
                     stageId={stageId}
-                    disabled={
-                      unavailableStages.has(stageId) ||
-                      unavailableModes.has(mode)
-                    }
+                    disabled={!isLegal}
                     selected={
                       selected?.mode === mode && selected.stageId === stageId
                     }
-                    onClick={() => setSelected({ mode, stageId })}
+                    onClick={
+                      canPickBan
+                        ? () => setSelected({ mode, stageId })
+                        : undefined
+                    }
                     number={number}
+                    from={mapFromWhere(stageId, mode)}
                   />
                 );
               })}
             </div>
-            {unavailableModes.has(mode) ? (
+            {pickersLastWonMode === mode ? (
               <div className="text-error text-xs text-center">
                 Can&apos;t pick the same mode team last won on
               </div>
@@ -157,12 +195,14 @@ function MapButton({
   selected,
   disabled,
   number,
+  from,
 }: {
   stageId: StageId;
-  onClick: () => void;
+  onClick?: () => void;
   selected?: boolean;
   disabled?: boolean;
   number?: number;
+  from?: "US" | "THEM" | "BOTH";
 }) {
   const { t } = useTranslation(["game-misc"]);
 
@@ -175,6 +215,7 @@ function MapButton({
         style={{ "--map-image-url": `url("${stageImageUrl(stageId)}.png")` }}
         onClick={onClick}
         type="button"
+        disabled={!onClick}
       />
       {selected ? (
         <CheckmarkIcon
@@ -187,6 +228,17 @@ function MapButton({
       ) : null}
       {number ? (
         <span className="map-pool-picker__map-button__number">{number}</span>
+      ) : null}
+      {from ? (
+        <span
+          className={clsx("map-pool-picker__map-button__from", {
+            "text-theme": from === "BOTH",
+            "text-success": from === "US",
+            "text-error": from === "THEM",
+          })}
+        >
+          {from === "BOTH" ? "Both" : from === "THEM" ? "Them" : "Us"}
+        </span>
       ) : null}
       <div className="map-pool-picker__map-button__label">
         {t(`game-misc:STAGE_${stageId}`)}

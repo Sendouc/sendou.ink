@@ -278,26 +278,32 @@ export function BracketMapListDialog({
                       setMaps(newMaps);
                       setMapCounts(newMapCounts);
                     }}
-                    onPickBanChange={(hasPickBan) => {
-                      const newRoundsWithPickBan = new Set(roundsWithPickBan);
-                      if (hasPickBan) {
-                        newRoundsWithPickBan.add(round.id);
-                      } else {
-                        newRoundsWithPickBan.delete(round.id);
-                      }
+                    onPickBanChange={
+                      pickBanStyle
+                        ? (hasPickBan) => {
+                            const newRoundsWithPickBan = new Set(
+                              roundsWithPickBan,
+                            );
+                            if (hasPickBan) {
+                              newRoundsWithPickBan.add(round.id);
+                            } else {
+                              newRoundsWithPickBan.delete(round.id);
+                            }
 
-                      setRoundsWithPickBan(newRoundsWithPickBan);
-                      setMaps(
-                        generateTournamentRoundMaplist({
-                          mapCounts,
-                          pool: toSetMapPool,
-                          rounds: bracket.data.round,
-                          type: bracket.type,
-                          roundsWithPickBan: newRoundsWithPickBan,
-                          pickBanStyle,
-                        }),
-                      );
-                    }}
+                            setRoundsWithPickBan(newRoundsWithPickBan);
+                            setMaps(
+                              generateTournamentRoundMaplist({
+                                mapCounts,
+                                pool: toSetMapPool,
+                                rounds: bracket.data.round,
+                                type: bracket.type,
+                                roundsWithPickBan: newRoundsWithPickBan,
+                                pickBanStyle,
+                              }),
+                            );
+                          }
+                        : undefined
+                    }
                     onRoundMapListChange={(newRoundMaps) => {
                       const newMaps = new Map(maps);
                       newMaps.set(round.id, newRoundMaps);
@@ -421,7 +427,7 @@ function RoundMapList({
   onRoundMapListChange: (maps: Omit<TournamentRoundMaps, "type">) => void;
   onHoverMap: (map: string | null) => void;
   onCountChange: (count: number) => void;
-  onPickBanChange: (hasPickBan: boolean) => void;
+  onPickBanChange?: (hasPickBan: boolean) => void;
   hoveredMap: string | null;
   includeRoundSpecificSelections: boolean;
 }) {
@@ -447,22 +453,23 @@ function RoundMapList({
               <input
                 id={`bo-${count}-${id}`}
                 type="radio"
-                name="count"
                 value={count}
                 checked={maps.count === count}
                 onChange={() => onCountChange(count)}
               />
             </div>
           ))}
-          <div>
-            <Label htmlFor={`pick-ban-${id}`}>Pick/ban</Label>
-            <Toggle
-              tiny
-              checked={Boolean(maps.pickBan)}
-              setChecked={onPickBanChange}
-              id={`pick-ban-${id}`}
-            />
-          </div>
+          {onPickBanChange ? (
+            <div>
+              <Label htmlFor={`pick-ban-${id}`}>Pick/ban</Label>
+              <Toggle
+                tiny
+                checked={Boolean(maps.pickBan)}
+                setChecked={onPickBanChange}
+                id={`pick-ban-${id}`}
+              />
+            </div>
+          ) : null}
         </div>
       ) : null}
       <ol className="pl-0">
@@ -579,7 +586,11 @@ function MysteryRow({
 }) {
   return (
     <li className="map-list-dialog__map-list-row">
-      <div className="stack horizontal items-center xs text-lighter">
+      <div
+        className={clsx("stack horizontal items-center xs text-lighter", {
+          "text-info": isCounterpicks,
+        })}
+      >
         <span className="text-lg">{number}.</span>
         {isCounterpicks ? <>Counterpick</> : <>Team&apos;s pick</>}
       </div>

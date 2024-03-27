@@ -8,8 +8,8 @@ import type {
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { logger } from "~/utils/logger";
 import { assertUnreachable } from "~/utils/types";
-import type { TournamentDataTeam } from "./Tournament.server";
 import { isSetOverByResults } from "../tournament-bracket-utils";
+import type { TournamentDataTeam } from "./Tournament.server";
 
 export function turnOf({
   results,
@@ -70,61 +70,87 @@ export function turnOf({
   }
 }
 
-export function allMaps({
-  toSetMapPool,
-  mapList,
-  maps,
-  teams,
-  tieBreakerMapPool,
-}: {
-  toSetMapPool: Array<{ mode: ModeShort; stageId: StageId }>;
-  mapList?: TournamentMapListMap[] | null;
-  maps: TournamentRoundMaps | null;
-  teams: [TournamentDataTeam, TournamentDataTeam];
-  tieBreakerMapPool: ModeWithStage[];
-}) {
-  if (!maps?.pickBan) return [];
+export function isLegal({
+  map,
+  ...rest
+}: MapListWithStatusesArgs & { map: ModeWithStage }) {
+  const pool = mapsListWithLegality(rest);
 
-  switch (maps.pickBan) {
-    case "BAN_2": {
-      if (!mapList) {
-        logger.warn("allMaps: mapList is empty");
-        return [];
-      }
-      return mapList;
-    }
-    case "COUNTERPICK": {
-      if (toSetMapPool.length === 0) {
-        const combinedPools = [
-          ...(teams[0].mapPool ?? []),
-          ...(teams[1].mapPool ?? []),
-          ...tieBreakerMapPool,
-        ];
-
-        const result: ModeWithStage[] = [];
-        for (const map of combinedPools) {
-          if (
-            !result.some(
-              (m) => m.mode === map.mode && m.stageId === map.stageId,
-            )
-          ) {
-            result.push(map);
-          }
-        }
-
-        return result;
-      }
-
-      return toSetMapPool;
-    }
-    default: {
-      assertUnreachable(maps.pickBan);
-    }
-  }
+  return pool.some(
+    (m) => m.mode === map.mode && m.stageId === map.stageId && m.isLegal,
+  );
 }
 
-// xxx: handle edge case where all stages are picked
-export function unavailableStages({
+interface MapListWithStatusesArgs {
+  results: Array<{ mode: ModeShort; stageId: StageId; winnerTeamId: number }>;
+  maps: TournamentRoundMaps | null;
+  mapList: TournamentMapListMap[] | null;
+  teams: [TournamentDataTeam, TournamentDataTeam];
+  pickerTeamId: number;
+  tieBreakerMapPool: ModeWithStage[];
+  toSetMapPool: Array<{ mode: ModeShort; stageId: StageId }>;
+}
+export function mapsListWithLegality(args: MapListWithStatusesArgs) {
+  const mapPool = () => {
+    if (!args.maps?.pickBan) return [];
+    switch (args.maps.pickBan) {
+      case "BAN_2": {
+        if (!args.mapList) {
+          logger.warn("mapsListWithLegality: mapList is empty");
+          return [];
+        }
+        return args.mapList;
+      }
+      case "COUNTERPICK": {
+        if (args.toSetMapPool.length === 0) {
+          const combinedPools = [
+            ...(args.teams[0].mapPool ?? []),
+            ...(args.teams[1].mapPool ?? []),
+            ...args.tieBreakerMapPool,
+          ];
+
+          const result: ModeWithStage[] = [];
+          for (const map of combinedPools) {
+            if (
+              !result.some(
+                (m) => m.mode === map.mode && m.stageId === map.stageId,
+              )
+            ) {
+              result.push(map);
+            }
+          }
+
+          return result;
+        }
+
+        return args.toSetMapPool;
+      }
+      default: {
+        assertUnreachable(args.maps.pickBan);
+      }
+    }
+  };
+
+  const unavailableStagesSet = unavailableStages(args);
+  const unavailableModesSet = unavailableModes(args);
+
+  const result = mapPool().map((map) => {
+    const isLegal =
+      !unavailableStagesSet.has(map.stageId) &&
+      !unavailableModesSet.has(map.mode);
+
+    return { ...map, isLegal };
+  });
+
+  const everythingBanned = result.every((map) => !map.isLegal);
+  if (everythingBanned) {
+    return result.map((map) => ({ ...map, isLegal: true }));
+  }
+
+  return result;
+}
+
+function unavailableStages({
   results,
   mapList,
   maps,
@@ -132,7 +158,7 @@ export function unavailableStages({
   results: Array<{ mode: ModeShort; stageId: StageId }>;
   mapList?: TournamentMapListMap[] | null;
   maps: TournamentRoundMaps | null;
-}) {
+}): Set<StageId> {
   if (!maps?.pickBan) return new Set();
 
   switch (maps.pickBan) {
@@ -152,17 +178,15 @@ export function unavailableStages({
   }
 }
 
-export function unavailableModes({
+function unavailableModes({
   results,
   pickerTeamId,
   maps,
-  modesIncluded,
 }: {
   results: Array<{ mode: ModeShort; winnerTeamId: number }>;
   pickerTeamId: number;
   maps: TournamentRoundMaps | null;
-  modesIncluded: ModeShort[];
-}) {
+}): Set<ModeShort> {
   if (!maps?.pickBan || maps.pickBan === "BAN_2") return new Set();
 
   const result = new Set(
@@ -171,50 +195,5 @@ export function unavailableModes({
       .map((result) => result.mode),
   );
 
-  // let's not ban all modes
-  if (result.size === modesIncluded.length) {
-    return new Set();
-  }
-
   return result;
-}
-
-export function isLegal({
-  results,
-  map,
-  maps,
-  toSetMapPool,
-  mapList,
-  teams,
-  tieBreakerMapPool,
-  modesIncluded,
-}: {
-  results: Array<{ mode: ModeShort; stageId: StageId; winnerTeamId: number }>;
-  map: { mode: ModeShort; stageId: StageId };
-  maps: TournamentRoundMaps | null;
-  mapList?: TournamentMapListMap[] | null;
-  toSetMapPool: Array<{ mode: ModeShort; stageId: StageId }>;
-  teams: [TournamentDataTeam, TournamentDataTeam];
-  tieBreakerMapPool: ModeWithStage[];
-  modesIncluded: ModeShort[];
-}) {
-  const isInAllMaps = allMaps({
-    maps,
-    toSetMapPool,
-    mapList,
-    teams,
-    tieBreakerMapPool,
-  }).some((m) => m.mode === map.mode && m.stageId === map.stageId);
-
-  const isUnavailableStage = unavailableStages({ results, maps }).has(
-    map.stageId,
-  );
-  const isUnavailableMode = unavailableModes({
-    results,
-    pickerTeamId: map.stageId,
-    maps,
-    modesIncluded,
-  }).has(map.mode);
-
-  return isInAllMaps && !isUnavailableStage && !isUnavailableMode;
 }

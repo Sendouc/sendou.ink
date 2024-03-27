@@ -780,38 +780,56 @@ export class Tournament {
 
     if (hasInProgressFollowUpBracket) return false;
 
-    // round robin matches don't prevent reopening
-    if (bracket.type === "round_robin") return true;
-
     // BYE match
     if (!match.opponent1 || !match.opponent2) return false;
 
-    const anotherMatchBlocking = allMatches
+    const anotherMatchBlocking = this.followingMatches(matchId).some(
+      (match) =>
+        (match.opponent1?.score && match.opponent1.score > 0) ||
+        (match.opponent2?.score && match.opponent2.score > 0),
+    );
+
+    return !anotherMatchBlocking;
+  }
+
+  followingMatches(matchId: number) {
+    const match = this.brackets
+      .flatMap((bracket) => bracket.data.match)
+      .find((match) => match.id === matchId);
+    if (!match) {
+      logger.error("followingMatches: Match not found");
+      return [];
+    }
+    const bracket = this.brackets.find((bracket) =>
+      bracket.data.match.some((match) => match.id === matchId),
+    );
+    if (!bracket) {
+      logger.error("followingMatches: Bracket not found");
+      return [];
+    }
+
+    if (bracket.type === "round_robin") {
+      return [];
+    }
+
+    return bracket.data.match
       .filter(
-        // only interested in matches of the same bracket & not the match being reopened itself
+        // only interested in matches of the same bracket & not the match  itself
         (match2) =>
           match2.stage_id === match.stage_id && match2.id !== match.id,
       )
-      .some((match2) => {
-        const hasAtLeastOneMapReported =
-          (match2.opponent1?.score && match2.opponent1.score > 0) ||
-          (match2.opponent2?.score && match2.opponent2.score > 0);
-
+      .filter((match2) => {
         const hasSameParticipant =
           match2.opponent1?.id === match.opponent1?.id ||
           match2.opponent1?.id === match.opponent2?.id ||
           match2.opponent2?.id === match.opponent1?.id ||
           match2.opponent2?.id === match.opponent2?.id;
 
-        const isFollowingMatch =
+        const comesAfter =
           match2.group_id > match.group_id || match2.round_id > match.round_id;
 
-        return (
-          hasAtLeastOneMapReported && isFollowingMatch && hasSameParticipant
-        );
+        return hasSameParticipant && comesAfter;
       });
-
-    return !anotherMatchBlocking;
   }
 
   isOrganizer(user: OptionalIdObject) {
