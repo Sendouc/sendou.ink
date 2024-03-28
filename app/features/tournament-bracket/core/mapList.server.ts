@@ -39,7 +39,7 @@ export function resolveMapList(
       ? args.maps!.list?.map((m) => ({ ...m, source: "TO" as const }))
       : // include team ids in the key to handle a case where match was reopened causing one of the teams to change
         syncCached(
-          `${args.matchId}-${args.teams[0]}-${args.teams[1]}-${args.maps?.count}`,
+          `${args.matchId}-${args.teams[0]}-${args.teams[1]}-${args.maps?.count}-${args.maps?.pickBan}`,
           () =>
             resolveFreshTeamPickedMapList(
               args as ResolveCurrentMapListArgs & {

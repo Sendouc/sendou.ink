@@ -454,7 +454,7 @@ test.describe("Tournament bracket", () => {
 
     await page.getByTestId("brackets-tab").click();
     await page.getByTestId("finalize-bracket-button").click();
-    await page.getByLabel("Count").selectOption("5");
+    await page.getByLabel("Count", { exact: true }).selectOption("5");
     await page.getByTestId("confirm-finalize-bracket-button").click();
 
     await page.locator('[data-match-id="1"]').click();
@@ -644,7 +644,33 @@ test.describe("Tournament bracket", () => {
     await expect(page.getByTestId("screen-banned")).toBeVisible();
   });
 
-  // xxx: PLAY_ALL
+  test("hosts a 'play all' round robin stage", async ({ page }) => {
+    const tournamentId = 4;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentBracketsPage({ tournamentId }),
+    });
+
+    await page.getByTestId("finalize-bracket-button").click();
+    await page
+      .getByLabel("Count type", { exact: true })
+      .selectOption("PLAY_ALL");
+    await page.getByTestId("confirm-finalize-bracket-button").click();
+
+    await navigateToMatch(page, 1);
+    await expect(page.getByText("Play all 3")).toBeVisible();
+    await reportResult({
+      page,
+      amountOfMapsToReport: 3,
+      points: [100, 0],
+      sidesWithMoreThanFourPlayers: ["last"],
+      winner: 1,
+    });
+  });
 
   // xxx: counterpick prepicked + try undoing score
 

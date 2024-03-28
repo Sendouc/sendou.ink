@@ -135,7 +135,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 const TournamentContext = React.createContext<Tournament>(null!);
 
-// xxx: not giving even us-them-both for itz?
 export default function TournamentLayout() {
   const { t } = useTranslation(["tournament"]);
   const user = useUser();
