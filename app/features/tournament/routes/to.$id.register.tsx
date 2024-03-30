@@ -1,8 +1,4 @@
-import {
-  redirect,
-  type ActionFunction,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
+import { type ActionFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -14,10 +10,13 @@ import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { FriendCodeInput } from "~/components/FriendCodeInput";
 import { Image, ModeImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
+import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Popover } from "~/components/Popover";
+import { Section } from "~/components/Section";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ClockIcon } from "~/components/icons/Clock";
@@ -28,15 +27,20 @@ import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { ModeMapPoolPicker } from "~/features/sendouq-settings/components/ModeMapPoolPicker";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import {
   tournamentFromDB,
   type TournamentDataTeam,
 } from "~/features/tournament-bracket/core/Tournament.server";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
+import { filterOutFalsy } from "~/utils/arrays";
+import { logger } from "~/utils/logger";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { booleanToInt } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
@@ -45,7 +49,6 @@ import {
   SENDOU_INK_BASE_URL,
   navIconUrl,
   readonlyMapsPage,
-  tournamentBracketsPage,
   tournamentJoinPage,
   tournamentSubsPage,
 } from "~/utils/urls";
@@ -55,7 +58,6 @@ import { deleteTeam } from "../queries/deleteTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
@@ -67,18 +69,10 @@ import {
   tournamentIdFromParams,
 } from "../tournament-utils";
 import {
-  useTournamentFriendCode,
   useTournament,
+  useTournamentFriendCode,
   useTournamentToSetMapPool,
 } from "./to.$id";
-import { FriendCodeInput } from "~/components/FriendCodeInput";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
-import * as QRepository from "~/features/sendouq/QRepository.server";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
-import { filterOutFalsy } from "~/utils/arrays";
-import { MapPoolStages } from "~/components/MapPoolSelector";
-import { Section } from "~/components/Section";
-import { logger } from "~/utils/logger";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -252,13 +246,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 export type TournamentRegisterPageLoader = typeof loader;
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const tournamentId = tournamentIdFromParams(params);
-  const hasStarted = hasTournamentStarted(tournamentId);
-
-  if (hasStarted) {
-    throw redirect(tournamentBracketsPage({ tournamentId }));
-  }
-
   const user = await getUser(request);
   if (!user) return null;
 
@@ -334,7 +321,7 @@ export default function TournamentRegisterPage() {
         </div>
       </div>
       <div className="whitespace-pre-wrap">{tournament.ctx.description}</div>
-      {isRegularMemberOfATeam ? (
+      {tournament.hasStarted ? null : isRegularMemberOfATeam ? (
         <div className="stack md items-center">
           <Alert>{t("tournament:pre.inATeam")}</Alert>
           {teamMemberOf && teamMemberOf.checkIns.length === 0 ? (
@@ -356,7 +343,9 @@ export default function TournamentRegisterPage() {
       ) : (
         <RegistrationForms />
       )}
-      {!tournament.teamMemberOfByUser(user) && tournament.canAddNewSubPost ? (
+      {!tournament.teamMemberOfByUser(user) &&
+      tournament.canAddNewSubPost &&
+      !tournament.hasStarted ? (
         <Link
           to={tournamentSubsPage(tournament.ctx.id)}
           className="text-xs text-center"
@@ -365,6 +354,7 @@ export default function TournamentRegisterPage() {
         </Link>
       ) : null}
       <TOPickedMapPoolInfo />
+      <TiebreakerMapPoolInfo />
     </div>
   );
 }
@@ -1155,5 +1145,25 @@ function TOPickedMapPoolInfo() {
         </LinkButton>
       </div>
     </Section>
+  );
+}
+
+function TiebreakerMapPoolInfo() {
+  const { t } = useTranslation(["game-misc"]);
+  const tournament = useTournament();
+
+  if (tournament.ctx.tieBreakerMapPool.length === 0) return null;
+
+  return (
+    <div className="text-sm text-lighter text-semi-bold">
+      Tiebreaker map pool:{" "}
+      {tournament.ctx.tieBreakerMapPool
+        .sort((a, b) => modesShort.indexOf(a.mode) - modesShort.indexOf(b.mode))
+        .map(
+          (map) =>
+            `${t(`game-misc:MODE_SHORT_${map.mode}`)} ${t(`game-misc:STAGE_${map.stageId}`)}`,
+        )
+        .join(", ")}
+    </div>
   );
 }
