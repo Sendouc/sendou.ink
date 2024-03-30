@@ -129,6 +129,7 @@ export const action: ActionFunction = async ({ request }) => {
     enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
     autoCheckInAll: data.autoCheckInAll ?? undefined,
     autonomousSubs: data.autonomousSubs ?? undefined,
+    tournamentToCopyId: data.tournamentToCopyId,
     regClosesAt: data.regClosesAt
       ? dateToDatabaseTimestamp(
           regClosesAtDate({
@@ -261,6 +262,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       userCanCreateTournament && !eventToEdit
         ? await eventWithTournament("copyEventId")
         : undefined,
+    recentTournaments:
+      userCanCreateTournament && !eventToEdit
+        ? await CalendarRepository.findRecentTournamentsByAuthorId(user.id)
+        : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
     canCreateTournament: userCanCreateTournament,
   });
@@ -273,17 +278,59 @@ const useBaseEvent = () => {
 };
 
 export default function CalendarNewEventPage() {
+  const baseEvent = useBaseEvent();
+
   return (
     <Main className="calendar-new__container">
-      <EventForm />
+      <div className="stack md">
+        <TemplateTournamentForm />
+        <EventForm key={baseEvent?.eventId} />
+      </div>
     </Main>
+  );
+}
+
+function TemplateTournamentForm() {
+  const { recentTournaments } = useLoaderData<typeof loader>();
+  const [eventId, setEventId] = React.useState("");
+
+  if (!recentTournaments) return null;
+
+  return (
+    <>
+      <div>
+        <Form className="stack horizontal sm">
+          <select
+            className="w-max"
+            name="copyEventId"
+            onChange={(event) => {
+              setEventId(event.target.value);
+            }}
+          >
+            <option value="">Select a template</option>
+            {recentTournaments.map((event) => (
+              <option key={event.id} value={event.id} suppressHydrationWarning>
+                {event.name} (
+                {databaseTimestampToDate(event.startTime).toLocaleDateString(
+                  "en-US",
+                  { month: "long", day: "numeric", year: "numeric" },
+                )}
+                )
+              </option>
+            ))}
+          </select>
+          <SubmitButton disabled={!eventId}>Use template</SubmitButton>
+        </Form>
+      </div>
+      <hr />
+    </>
   );
 }
 
 function EventForm() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation();
-  const { eventToEdit } = useLoaderData<typeof loader>();
+  const { eventToEdit, eventToCopy } = useLoaderData<typeof loader>();
   const baseEvent = useBaseEvent();
   const [isTournament, setIsTournament] = React.useState(
     Boolean(baseEvent?.tournamentId),
@@ -294,6 +341,13 @@ function EventForm() {
       {eventToEdit && (
         <input type="hidden" name="eventToEditId" value={eventToEdit.eventId} />
       )}
+      {eventToCopy?.tournamentId ? (
+        <input
+          type="hidden"
+          name="tournamentToCopyId"
+          value={eventToCopy.tournamentId}
+        />
+      ) : null}
       {data.canCreateTournament && !eventToEdit && (
         <TournamentEnabler
           checked={isTournament}
@@ -499,8 +553,8 @@ function DatesInput({ allowMultiDate }: { allowMultiDate?: boolean }) {
                   <DateInput
                     id={`date-input-${key}`}
                     name="date"
-                    defaultValue={date ?? undefined}
                     suppressHydrationWarning
+                    defaultValue={eventToEdit && date ? date : undefined}
                     min={calendarEventMinDate()}
                     max={calendarEventMaxDate()}
                     required
