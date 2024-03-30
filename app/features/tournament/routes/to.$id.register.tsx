@@ -73,6 +73,7 @@ import {
   useTournamentFriendCode,
   useTournamentToSetMapPool,
 } from "./to.$id";
+import Markdown from "markdown-to-jsx";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -320,7 +321,11 @@ export default function TournamentRegisterPage() {
           </div>
         </div>
       </div>
-      <div className="whitespace-pre-wrap">{tournament.ctx.description}</div>
+      <div className="tournament__info__description">
+        <Markdown options={{ wrapper: React.Fragment }}>
+          {tournament.ctx.description ?? ""}
+        </Markdown>
+      </div>
       {tournament.hasStarted ? null : isRegularMemberOfATeam ? (
         <div className="stack md items-center">
           <Alert>{t("tournament:pre.inATeam")}</Alert>

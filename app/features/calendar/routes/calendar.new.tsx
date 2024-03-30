@@ -264,14 +264,14 @@ export default function CalendarNewEventPage() {
             value={eventToEdit.eventId}
           />
         )}
-        <NameInput />
-        <DescriptionTextarea />
         {data.canCreateTournament && !eventToEdit && (
           <TournamentEnabler
             checked={isTournament}
             setChecked={setIsTournament}
           />
         )}
+        <NameInput />
+        <DescriptionTextarea supportsMarkdown={isTournament} />
         <DatesInput allowMultiDate={!isTournament} />
         {!isTournament ? <BracketUrlInput /> : null}
         <DiscordLinkInput />
@@ -318,7 +318,11 @@ function NameInput() {
   );
 }
 
-function DescriptionTextarea() {
+function DescriptionTextarea({
+  supportsMarkdown,
+}: {
+  supportsMarkdown?: boolean;
+}) {
   const { t } = useTranslation();
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [value, setValue] = React.useState(eventToEdit?.description ?? "");
@@ -341,6 +345,9 @@ function DescriptionTextarea() {
         onChange={(e) => setValue(e.target.value)}
         maxLength={CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH}
       />
+      {supportsMarkdown ? (
+        <FormMessage type="info">Supports Markdown</FormMessage>
+      ) : null}
     </div>
   );
 }
