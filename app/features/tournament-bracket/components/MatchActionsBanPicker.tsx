@@ -177,7 +177,7 @@ function MapPicker({
                 );
               })}
             </div>
-            {pickersLastWonMode === mode ? (
+            {pickersLastWonMode === mode && modes.length > 1 ? (
               <div className="text-error text-xs text-center">
                 Can&apos;t pick the same mode team last won on
               </div>
@@ -216,6 +216,7 @@ function MapButton({
         onClick={onClick}
         type="button"
         disabled={!onClick}
+        data-testid={!disabled && onClick ? "pick-ban-button" : undefined}
       />
       {selected ? (
         <CheckmarkIcon

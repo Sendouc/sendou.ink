@@ -441,6 +441,7 @@ function RoundMapList({
         <Button
           variant={editing ? "minimal-success" : "minimal"}
           onClick={() => setEditing(!editing)}
+          testId="edit-round-maps-button"
         >
           {editing ? "Save" : "Edit"}
         </Button>

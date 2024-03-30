@@ -10,6 +10,7 @@ import { logger } from "~/utils/logger";
 import { assertUnreachable } from "~/utils/types";
 import { isSetOverByResults } from "../tournament-bracket-utils";
 import type { TournamentDataTeam } from "./Tournament.server";
+import { removeDuplicates } from "~/utils/arrays";
 
 export function turnOf({
   results,
@@ -91,7 +92,7 @@ interface MapListWithStatusesArgs {
   toSetMapPool: Array<{ mode: ModeShort; stageId: StageId }>;
 }
 export function mapsListWithLegality(args: MapListWithStatusesArgs) {
-  const mapPool = () => {
+  const mapPool = (() => {
     if (!args.maps?.pickBan) return [];
     switch (args.maps.pickBan) {
       case "BAN_2": {
@@ -129,12 +130,19 @@ export function mapsListWithLegality(args: MapListWithStatusesArgs) {
         assertUnreachable(args.maps.pickBan);
       }
     }
-  };
+  })();
+
+  const modesIncluded = removeDuplicates(mapPool.map((m) => m.mode));
 
   const unavailableStagesSet = unavailableStages(args);
-  const unavailableModesSet = unavailableModes(args);
+  const unavailableModesSetAll = unavailableModes(args);
+  const unavailableModesSet =
+    // one mode tournament
+    unavailableModesSetAll.size < modesIncluded.length
+      ? unavailableModesSetAll
+      : new Set();
 
-  const result = mapPool().map((map) => {
+  const result = mapPool.map((map) => {
     const isLegal =
       !unavailableStagesSet.has(map.stageId) &&
       !unavailableModesSet.has(map.mode);
