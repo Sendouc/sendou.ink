@@ -82,6 +82,8 @@ export function regClosesAtDate({
       return new Date(startTime.getTime() - 30 * 60 * 1000);
     case "1h":
       return new Date(startTime.getTime() - 60 * 60 * 1000);
+    case "1h30min":
+      return new Date(startTime.getTime() - 90 * 60 * 1000);
     case "2h":
       return new Date(startTime.getTime() - 120 * 60 * 1000);
     case "3h":
@@ -109,6 +111,8 @@ export function regClosesAtToDisplayName(closesAt: RegClosesAtOption) {
       return "30 minutes";
     case "1h":
       return "1 hour";
+    case "1h30min":
+      return "1 hour 30 minutes";
     case "2h":
       return "2 hours";
     case "3h":
@@ -139,6 +143,7 @@ export function datesToRegClosesAt({
   if (diff === 0) return "0";
   if (diff === 30 * 60 * 1000) return "30min";
   if (diff === 60 * 60 * 1000) return "1h";
+  if (diff === 90 * 60 * 1000) return "1h30min";
   if (diff === 120 * 60 * 1000) return "2h";
   if (diff === 180 * 60 * 1000) return "3h";
   if (diff === 360 * 60 * 1000) return "6h";
