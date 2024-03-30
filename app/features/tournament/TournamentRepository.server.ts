@@ -23,6 +23,7 @@ export async function findById(id: number) {
       "Tournament.castTwitchAccounts",
       "Tournament.castedMatchesInfo",
       "Tournament.mapPickingStyle",
+      "Tournament.rules",
       "CalendarEvent.name",
       "CalendarEvent.description",
       "CalendarEventDate.startTime",

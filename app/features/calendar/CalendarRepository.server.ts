@@ -391,6 +391,7 @@ type CreateArgs = Pick<
   enableNoScreenToggle?: boolean;
   autonomousSubs?: boolean;
   regClosesAt?: number;
+  rules: string | null;
 };
 export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
@@ -414,6 +415,7 @@ export async function create(args: CreateArgs) {
           .values({
             mapPickingStyle: args.mapPickingStyle,
             settings: JSON.stringify(settings),
+            rules: args.rules,
           })
           .returning("id")
           .executeTakeFirstOrThrow()
@@ -490,6 +492,7 @@ export async function update(args: UpdateArgs) {
         .updateTable("Tournament")
         .set({
           settings: JSON.stringify(settings),
+          rules: args.rules,
         })
         .where("id", "=", tournamentId)
         .returning("mapPickingStyle")

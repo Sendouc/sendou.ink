@@ -106,6 +106,7 @@ export const action: ActionFunction = async ({ request }) => {
   const commonArgs = {
     name: data.name,
     description: data.description,
+    rules: data.rules,
     startTimes,
     bracketUrl: data.bracketUrl,
     discordInviteCode: data.discordInviteCode,
@@ -272,6 +273,7 @@ export default function CalendarNewEventPage() {
         )}
         <NameInput />
         <DescriptionTextarea supportsMarkdown={isTournament} />
+        {isTournament ? <RulesTextarea supportsMarkdown /> : null}
         <DatesInput allowMultiDate={!isTournament} />
         {!isTournament ? <BracketUrlInput /> : null}
         <DiscordLinkInput />
@@ -344,6 +346,35 @@ function DescriptionTextarea({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH}
+      />
+      {supportsMarkdown ? (
+        <FormMessage type="info">Supports Markdown</FormMessage>
+      ) : null}
+    </div>
+  );
+}
+
+function RulesTextarea({ supportsMarkdown }: { supportsMarkdown?: boolean }) {
+  const { tournamentCtx } = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(tournamentCtx?.rules ?? "");
+
+  return (
+    <div>
+      <Label
+        htmlFor="rules"
+        valueLimits={{
+          current: value.length,
+          max: CALENDAR_EVENT.RULES_MAX_LENGTH,
+        }}
+      >
+        Rules
+      </Label>
+      <textarea
+        id="rules"
+        name="rules"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        maxLength={CALENDAR_EVENT.RULES_MAX_LENGTH}
       />
       {supportsMarkdown ? (
         <FormMessage type="info">Supports Markdown</FormMessage>

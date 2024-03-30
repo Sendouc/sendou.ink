@@ -413,6 +413,7 @@ export interface Tournament {
     string | null,
     string | null
   >;
+  rules: string | null;
 }
 
 export interface TournamentBadgeOwner {

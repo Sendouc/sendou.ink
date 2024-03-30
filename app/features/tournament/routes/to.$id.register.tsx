@@ -74,6 +74,8 @@ import {
   useTournamentToSetMapPool,
 } from "./to.$id";
 import Markdown from "markdown-to-jsx";
+import { NewTabs } from "~/components/NewTabs";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -263,14 +265,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export default function TournamentRegisterPage() {
-  const user = useUser();
   const isMounted = useIsMounted();
-  const { t, i18n } = useTranslation(["tournament"]);
+  const { i18n } = useTranslation();
   const tournament = useTournament();
-
-  const teamMemberOf = tournament.teamMemberOfByUser(user);
-  const isRegularMemberOfATeam =
-    teamMemberOf && !tournament.ownedTeamByUser(user);
 
   const startsAtEvenHour = tournament.ctx.startTime.getMinutes() === 0;
 
@@ -321,45 +318,121 @@ export default function TournamentRegisterPage() {
           </div>
         </div>
       </div>
-      <div className="tournament__info__description">
-        <Markdown options={{ wrapper: React.Fragment }}>
-          {tournament.ctx.description ?? ""}
-        </Markdown>
-      </div>
-      {tournament.hasStarted ? null : isRegularMemberOfATeam ? (
-        <div className="stack md items-center">
-          <Alert>{t("tournament:pre.inATeam")}</Alert>
-          {teamMemberOf && teamMemberOf.checkIns.length === 0 ? (
-            <FormWithConfirm
-              dialogHeading={`Leave "${tournament.teamMemberOfByUser(user)?.name}"?`}
-              fields={[["_action", "LEAVE_TEAM"]]}
-              deleteButtonText="Leave"
-            >
-              <Button
-                className="build__small-text"
-                variant="minimal-destructive"
-                type="submit"
-              >
-                Leave the team
-              </Button>
-            </FormWithConfirm>
-          ) : null}
-        </div>
-      ) : (
-        <RegistrationForms />
-      )}
-      {!tournament.teamMemberOfByUser(user) &&
-      tournament.canAddNewSubPost &&
-      !tournament.hasStarted ? (
-        <Link
-          to={tournamentSubsPage(tournament.ctx.id)}
-          className="text-xs text-center"
-        >
-          {t("tournament:pre.sub.prompt")}
-        </Link>
-      ) : null}
-      <TOPickedMapPoolInfo />
-      <TiebreakerMapPoolInfo />
+      <TournamentRegisterInfoTabs />
+    </div>
+  );
+}
+
+function TournamentRegisterInfoTabs() {
+  const user = useUser();
+  const tournament = useTournament();
+  const { t } = useTranslation(["tournament"]);
+
+  const teamMemberOf = tournament.teamMemberOfByUser(user);
+  const teamOwned = tournament.ownedTeamByUser(user);
+  const isRegularMemberOfATeam = teamMemberOf && !teamOwned;
+
+  const defaultTab = () => {
+    if (tournament.hasStarted || !teamOwned) return 0;
+
+    const registerTab = !tournament.ctx.rules ? 1 : 2;
+    return registerTab;
+  };
+  const [tabIndex, setTabIndex] = useSearchParamState({
+    defaultValue: defaultTab(),
+    name: "tab",
+    revive: Number,
+  });
+
+  return (
+    <div>
+      <NewTabs
+        sticky
+        selectedIndex={tabIndex}
+        setSelectedIndex={setTabIndex}
+        tabs={[
+          {
+            label: "Description",
+          },
+          {
+            label: "Rules",
+            hidden: !tournament.ctx.rules,
+          },
+          {
+            label: "Register",
+            hidden: tournament.hasStarted,
+          },
+        ]}
+        disappearing
+        content={[
+          {
+            key: "description",
+            element: (
+              <div className="stack lg">
+                <div className="tournament__info__description">
+                  <Markdown options={{ wrapper: React.Fragment }}>
+                    {tournament.ctx.description ?? ""}
+                  </Markdown>
+                </div>
+                <TOPickedMapPoolInfo />
+                <TiebreakerMapPoolInfo />
+              </div>
+            ),
+          },
+          {
+            key: "rules",
+            hidden: !tournament.ctx.rules,
+            element: (
+              <div className="tournament__info__description">
+                <Markdown options={{ wrapper: React.Fragment }}>
+                  {tournament.ctx.rules ?? ""}
+                </Markdown>
+              </div>
+            ),
+          },
+          {
+            key: "register",
+            hidden: tournament.hasStarted,
+            element: (
+              <div className="stack lg">
+                {isRegularMemberOfATeam ? (
+                  <div className="stack md items-center">
+                    <Alert>{t("tournament:pre.inATeam")}</Alert>
+                    {teamMemberOf && teamMemberOf.checkIns.length === 0 ? (
+                      <FormWithConfirm
+                        dialogHeading={`Leave "${tournament.teamMemberOfByUser(user)?.name}"?`}
+                        fields={[["_action", "LEAVE_TEAM"]]}
+                        deleteButtonText="Leave"
+                      >
+                        <Button
+                          className="build__small-text"
+                          variant="minimal-destructive"
+                          type="submit"
+                        >
+                          Leave the team
+                        </Button>
+                      </FormWithConfirm>
+                    ) : null}
+                  </div>
+                ) : (
+                  <RegistrationForms />
+                )}
+                {user &&
+                !tournament.teamMemberOfByUser(user) &&
+                tournament.canAddNewSubPost &&
+                !tournament.hasStarted ? (
+                  <Link
+                    to={tournamentSubsPage(tournament.ctx.id)}
+                    className="text-xs text-center"
+                  >
+                    {t("tournament:pre.sub.prompt")}
+                  </Link>
+                ) : null}
+              </div>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }
@@ -368,7 +441,7 @@ function PleaseLogIn() {
   const { t } = useTranslation(["tournament"]);
 
   return (
-    <form className="stack items-center" action={LOG_IN_URL} method="post">
+    <form className="stack items-center mt-4" action={LOG_IN_URL} method="post">
       <Button size="big" type="submit">
         {t("tournament:pre.logIn")}
       </Button>

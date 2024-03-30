@@ -40,6 +40,7 @@ export const testTournament = (
       eventId: 1,
       id: 1,
       description: null,
+      rules: null,
       startTime: 1705858842,
       isFinalized: 0,
       name: "test",

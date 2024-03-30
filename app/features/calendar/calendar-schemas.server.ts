@@ -31,6 +31,10 @@ export const newCalendarEventActionSchema = z
       falsyToNull,
       z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable(),
     ),
+    rules: z.preprocess(
+      falsyToNull,
+      z.string().max(CALENDAR_EVENT.RULES_MAX_LENGTH).nullable(),
+    ),
     date: z.preprocess(
       toArray,
       z
