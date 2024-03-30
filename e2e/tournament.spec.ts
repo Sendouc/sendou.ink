@@ -59,6 +59,8 @@ test.describe("Tournament", () => {
       url: tournamentPage(1),
     });
 
+    await page.getByTestId("tab-Register").click();
+
     await page.getByLabel("Team name").type("Chimera");
     await page.getByTestId("save-team-button").click();
 
