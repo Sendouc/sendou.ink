@@ -57,7 +57,7 @@ import { createTeam } from "../queries/createTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { findOwnTeam } from "../queries/findOwnTeam.server";
+import { findOwnTournamentTeam } from "../queries/findOwnTournamentTeam.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
@@ -76,6 +76,8 @@ import {
 import Markdown from "markdown-to-jsx";
 import { NewTabs } from "~/components/NewTabs";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
+import * as TeamRepository from "~/features/team/TeamRepository.server";
+import { Toggle } from "~/components/Toggle";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -95,6 +97,12 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   switch (data._action) {
     case "UPSERT_TEAM": {
+      validate(
+        !data.teamId ||
+          (await TeamRepository.findByUserId(user.id))?.id === data.teamId,
+        "Team id does not match the team you are in",
+      );
+
       if (ownTeam) {
         validate(
           tournament.registrationOpen || data.teamName === ownTeam.name,
@@ -106,6 +114,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           id: ownTeam.id,
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
           noScreen: booleanToInt(data.noScreen),
+          teamId: data.teamId ?? null,
         });
       } else {
         validate(!HACKY_isInviteOnlyEvent(event), "Event is invite only");
@@ -125,6 +134,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           ownerId: user.id,
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
           noScreen: booleanToInt(data.noScreen),
+          teamId: data.teamId ?? null,
         });
       }
       break;
@@ -134,7 +144,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(ownTeam.members.some((member) => member.userId === data.userId));
       validate(data.userId !== user.id);
 
-      const detailedOwnTeam = findOwnTeam({
+      const detailedOwnTeam = findOwnTournamentTeam({
         tournamentId,
         userId: user.id,
       });
@@ -252,15 +262,21 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   if (!user) return null;
 
-  const ownTeam = findOwnTeam({
+  const ownTournamentTeam = findOwnTournamentTeam({
     tournamentId: tournamentIdFromParams(params),
     userId: user.id,
   });
-  if (!ownTeam) return null;
+  if (!ownTournamentTeam)
+    return {
+      mapPool: null,
+      trusterPlayers: null,
+      team: await TeamRepository.findByUserId(user.id),
+    };
 
   return {
-    mapPool: findMapPoolByTeamId(ownTeam.id),
+    mapPool: findMapPoolByTeamId(ownTournamentTeam.id),
     trusterPlayers: await QRepository.usersThatTrusted(user.id),
+    team: await TeamRepository.findByUserId(user.id),
   };
 };
 
@@ -482,7 +498,7 @@ function RegistrationForms() {
         <RegistrationProgress
           checkedIn={ownTeamCheckedIn}
           name={ownTeam?.name}
-          mapPool={data?.mapPool}
+          mapPool={data?.mapPool ?? undefined}
           members={ownTeam?.members}
         />
       ) : null}
@@ -714,9 +730,24 @@ function TeamInfo({
   noScreen?: number;
   canUnregister: boolean;
 }) {
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["tournament", "common"]);
   const fetcher = useFetcher();
   const tournament = useTournament();
+  const [teamName, setTeamName] = React.useState(name);
+  const user = useUser();
+  const [signUpWithTeam, setSignUpWithTeam] = React.useState(() =>
+    Boolean(tournament.ownedTeamByUser(user)?.team),
+  );
+
+  const handleSignUpWithTeamChange = (checked: boolean) => {
+    if (!checked) {
+      setSignUpWithTeam(false);
+    } else if (data?.team) {
+      setSignUpWithTeam(true);
+      setTeamName(data.team.name);
+    }
+  };
 
   return (
     <div>
@@ -743,7 +774,23 @@ function TeamInfo({
       </div>
       <section className="tournament__section">
         <fetcher.Form method="post" className="stack md items-center">
+          {signUpWithTeam && data?.team ? (
+            <input type="hidden" name="teamId" value={data.team.id} />
+          ) : null}
           <div className="stack sm items-center">
+            {data?.team ? (
+              <div className="tournament__section__input-container">
+                <Label htmlFor="signUpAsTeam">
+                  Sign up as {data.team.name}
+                </Label>
+                <Toggle
+                  id="signUpAsTeam"
+                  checked={signUpWithTeam}
+                  setChecked={handleSignUpWithTeamChange}
+                />
+              </div>
+            ) : null}
+
             <div className="tournament__section__input-container">
               <Label htmlFor="teamName">{t("tournament:pre.steps.name")}</Label>
               <Input
@@ -751,8 +798,9 @@ function TeamInfo({
                 id="teamName"
                 required
                 maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
-                defaultValue={name ?? undefined}
-                readOnly={!tournament.registrationOpen}
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                readOnly={!tournament.registrationOpen || signUpWithTeam}
               />
             </div>
             <div className="stack sm">
@@ -849,7 +897,7 @@ function FillRoster({
       ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
 
   const playersAvailableToDirectlyAdd = (() => {
-    return data!.trusterPlayers.filter((user) => {
+    return (data!.trusterPlayers ?? []).filter((user) => {
       return tournament.ctx.teams.every((team) =>
         team.members.every((member) => member.userId !== user.id),
       );

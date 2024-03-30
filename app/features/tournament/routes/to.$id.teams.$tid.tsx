@@ -10,6 +10,7 @@ import { Redirect } from "~/components/Redirect";
 import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import {
+  teamPage,
   tournamentMatchPage,
   tournamentPage,
   tournamentTeamPage,
@@ -55,17 +56,27 @@ export default function TournamentTeamPage() {
 
   return (
     <div className="stack lg">
-      <TeamWithRoster
-        team={team}
-        mapPool={team.mapPool}
-        activePlayers={
-          data.sets.length > 0
-            ? tournament
-                .participatedPlayersByTeamId(team.id)
-                .map((p) => p.userId)
-            : undefined
-        }
-      />
+      <div className="stack sm">
+        <TeamWithRoster
+          team={team}
+          mapPool={team.mapPool}
+          activePlayers={
+            data.sets.length > 0
+              ? tournament
+                  .participatedPlayersByTeamId(team.id)
+                  .map((p) => p.userId)
+              : undefined
+          }
+        />
+        {team.team ? (
+          <Link
+            to={teamPage(team.team.customUrl)}
+            className="text-xxs text-center"
+          >
+            Team page
+          </Link>
+        ) : null}
+      </div>
       {data.winCounts.sets.total > 0 ? (
         <StatSquares
           seed={teamIndex + 1}

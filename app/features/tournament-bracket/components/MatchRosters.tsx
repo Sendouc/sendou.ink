@@ -31,6 +31,13 @@ export function MatchRosters({
     tournament.ctx.participatedUsers.includes(p.id),
   );
 
+  const teamOneLogoSrc = teamOne
+    ? tournament.tournamentTeamLogoSrc(teamOne)
+    : null;
+  const teamTwoLogoSrc = teamTwo
+    ? tournament.tournamentTeamLogoSrc(teamTwo)
+    : null;
+
   return (
     <div className="tournament-bracket__rosters">
       <div>
@@ -49,8 +56,11 @@ export function MatchRosters({
                 tournamentId: tournament.ctx.id,
                 tournamentTeamId: teamOne.id,
               })}
-              className="text-main-forced font-bold"
+              className="text-main-forced font-bold stack horizontal xs items-center"
             >
+              {teamOneLogoSrc ? (
+                <Avatar url={teamOneLogoSrc} size="xxs" />
+              ) : null}
               {teamOne.name}
             </Link>
           ) : (
@@ -94,8 +104,11 @@ export function MatchRosters({
                 tournamentId: tournament.ctx.id,
                 tournamentTeamId: teamTwo.id,
               })}
-              className="text-main-forced font-bold"
+              className="text-main-forced font-bold stack horizontal xs items-center"
             >
+              {teamTwoLogoSrc ? (
+                <Avatar url={teamTwoLogoSrc} size="xxs" />
+              ) : null}
               {teamTwo.name}
             </Link>
           ) : (

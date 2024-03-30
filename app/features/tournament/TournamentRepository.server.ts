@@ -119,6 +119,20 @@ export async function findById(id: number) {
                 )
                 .select(["MapPoolMap.stageId", "MapPoolMap.mode"]),
             ).as("mapPool"),
+            jsonObjectFrom(
+              innerEb
+                .selectFrom("Team")
+                .leftJoin(
+                  "UserSubmittedImage",
+                  "Team.avatarImgId",
+                  "UserSubmittedImage.id",
+                )
+                .whereRef("Team.id", "=", "TournamentTeam.teamId")
+                .select([
+                  "Team.customUrl",
+                  "UserSubmittedImage.url as logoUrl",
+                ]),
+            ).as("team"),
           ])
           .where("TournamentTeam.tournamentId", "=", id)
           .orderBy(["TournamentTeam.seed asc", "TournamentTeam.createdAt asc"]),

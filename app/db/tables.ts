@@ -531,6 +531,7 @@ export interface TournamentTeam {
   noScreen: Generated<number>;
   seed: number | null;
   tournamentId: number;
+  teamId: number | null;
 }
 
 export interface TournamentTeamCheckIn {

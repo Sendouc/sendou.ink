@@ -6,6 +6,8 @@ import type { Unpacked } from "./types";
 import { assertType } from "./types";
 
 export const id = z.coerce.number().int().positive();
+export const optionalId = z.coerce.number().int().positive().optional();
+
 export const dbBoolean = z.coerce.number().min(0).max(1).int();
 
 const abilityNameToType = (val: string) =>

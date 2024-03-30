@@ -69,6 +69,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
       createTeam({
         name: data.teamName,
+        teamId: null,
         tournamentId: tournamentId,
         ownerId: data.userId,
         prefersNotToHost: 0,

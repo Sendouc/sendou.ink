@@ -12,6 +12,7 @@ const tournamentCtxTeam = (
     createdAt: 0,
     id: teamId,
     inviteCode: null,
+    team: null,
     mapPool: [],
     members: [],
     name: "Team " + teamId,

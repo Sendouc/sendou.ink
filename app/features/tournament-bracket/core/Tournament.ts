@@ -5,7 +5,7 @@ import { logger } from "~/utils/logger";
 import { assertUnreachable } from "~/utils/types";
 import { isAdmin } from "~/permissions";
 import { TOURNAMENT } from "~/features/tournament";
-import type { TournamentData } from "./Tournament.server";
+import type { TournamentData, TournamentDataTeam } from "./Tournament.server";
 import {
   HACKY_isInviteOnlyEvent,
   HACKY_resolvePicture,
@@ -22,6 +22,7 @@ import { Bracket } from "./Bracket";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { currentSeason } from "~/features/mmr/season";
 import { getTournamentManager } from "./brackets-manager";
+import { userSubmittedImage } from "~/utils/urls";
 
 export type OptionalIdObject = { id: number } | undefined;
 
@@ -455,6 +456,12 @@ export class Tournament {
         return [...rankedModesShort];
       }
     }
+  }
+
+  tournamentTeamLogoSrc(team: TournamentDataTeam) {
+    if (!team.team?.logoUrl) return;
+
+    return userSubmittedImage(team.team.logoUrl);
   }
 
   resolvePoolCode({
