@@ -102,6 +102,18 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("fb");
   }
 
+  if (normalizedEventName.includes("the depths")) {
+    return tournamentLogoUrl("d");
+  }
+
+  if (normalizedEventName.includes("eclipse")) {
+    return tournamentLogoUrl("e");
+  }
+
+  if (normalizedEventName.includes("homecoming")) {
+    return tournamentLogoUrl("hc");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -156,6 +168,18 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (normalizedEventName.includes("fry basket")) {
     return { bg: "#fff", text: BLACK };
+  }
+
+  if (normalizedEventName.includes("the depths")) {
+    return { bg: "#183e42", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("eclipse")) {
+    return { bg: "#191919", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("homecoming")) {
+    return { bg: "#1c1c1c", text: WHITE };
   }
 
   return { bg: "#3430ad", text: WHITE };
