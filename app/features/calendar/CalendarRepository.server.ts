@@ -197,6 +197,26 @@ export async function findAllBetweenTwoTimestamps({
   );
 }
 
+export async function findRecentTournamentsByAuthorId(authorId: number) {
+  return db
+    .selectFrom("CalendarEvent")
+    .innerJoin("Tournament", "Tournament.id", "CalendarEvent.tournamentId")
+    .innerJoin(
+      "CalendarEventDate",
+      "CalendarEvent.id",
+      "CalendarEventDate.eventId",
+    )
+    .select([
+      "CalendarEvent.id",
+      "CalendarEvent.name",
+      "CalendarEventDate.startTime",
+    ])
+    .where("CalendarEvent.authorId", "=", authorId)
+    .orderBy("CalendarEvent.id desc")
+    .limit(10)
+    .execute();
+}
+
 function tagsArray(args: {
   hasBadge: number;
   tags?: Tables["CalendarEvent"]["tags"];
@@ -391,10 +411,21 @@ type CreateArgs = Pick<
   enableNoScreenToggle?: boolean;
   autonomousSubs?: boolean;
   regClosesAt?: number;
+  rules: string | null;
+  tournamentToCopyId?: number | null;
 };
 export async function create(args: CreateArgs) {
+  const copiedStaff = args.tournamentToCopyId
+    ? await db
+        .selectFrom("TournamentStaff")
+        .select(["role", "userId"])
+        .where("tournamentId", "=", args.tournamentToCopyId)
+        .where("TournamentStaff.userId", "!=", args.authorId)
+        .execute()
+    : [];
+
   return db.transaction().execute(async (trx) => {
-    let tournamentId;
+    let tournamentId: number | null = null;
     if (args.isFullTournament) {
       invariant(args.bracketProgression, "Expected bracketProgression");
       const settings: Tables["Tournament"]["settings"] = {
@@ -414,10 +445,25 @@ export async function create(args: CreateArgs) {
           .values({
             mapPickingStyle: args.mapPickingStyle,
             settings: JSON.stringify(settings),
+            rules: args.rules,
           })
           .returning("id")
           .executeTakeFirstOrThrow()
       ).id;
+
+      if (copiedStaff.length > 0) {
+        await trx
+          .insertInto("TournamentStaff")
+          .columns(["role", "userId", "tournamentId"])
+          .values(
+            copiedStaff.map((staff) => ({
+              role: staff.role,
+              userId: staff.userId,
+              tournamentId: tournamentId!,
+            })),
+          )
+          .execute();
+      }
     }
 
     const { id: eventId } = await trx
@@ -490,6 +536,7 @@ export async function update(args: UpdateArgs) {
         .updateTable("Tournament")
         .set({
           settings: JSON.stringify(settings),
+          rules: args.rules,
         })
         .where("id", "=", tournamentId)
         .returning("mapPickingStyle")

@@ -23,6 +23,7 @@ import { REG_CLOSES_AT_OPTIONS } from "./calendar-constants";
 export const newCalendarEventActionSchema = z
   .object({
     eventToEditId: z.preprocess(actualNumber, id.nullish()),
+    tournamentToCopyId: z.preprocess(actualNumber, id.nullish()),
     name: z
       .string()
       .min(CALENDAR_EVENT.NAME_MIN_LENGTH)
@@ -30,6 +31,10 @@ export const newCalendarEventActionSchema = z
     description: z.preprocess(
       falsyToNull,
       z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable(),
+    ),
+    rules: z.preprocess(
+      falsyToNull,
+      z.string().max(CALENDAR_EVENT.RULES_MAX_LENGTH).nullable(),
     ),
     date: z.preprocess(
       toArray,

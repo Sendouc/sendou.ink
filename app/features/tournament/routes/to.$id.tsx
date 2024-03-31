@@ -160,15 +160,9 @@ export default function TournamentLayout() {
   return (
     <Main bigger={onBracketsPage}>
       <SubNav>
-        {!tournament.hasStarted ? (
-          <SubNavLink
-            to="register"
-            data-testid="register-tab"
-            prefetch="render"
-          >
-            {t("tournament:tabs.register")}
-          </SubNavLink>
-        ) : null}
+        <SubNavLink to="register" data-testid="register-tab" prefetch="intent">
+          {tournament.hasStarted ? "Info" : t("tournament:tabs.register")}
+        </SubNavLink>
         <SubNavLink to="brackets" data-testid="brackets-tab" prefetch="render">
           {t("tournament:tabs.brackets")}
         </SubNavLink>

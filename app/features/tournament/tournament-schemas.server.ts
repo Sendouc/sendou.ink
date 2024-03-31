@@ -4,6 +4,7 @@ import {
   checkboxValueToBoolean,
   id,
   modeShort,
+  optionalId,
   safeJSONParse,
   stageId,
 } from "~/utils/zod";
@@ -18,6 +19,7 @@ export const registerSchema = z.union([
     teamName,
     prefersNotToHost: z.preprocess(checkboxValueToBoolean, z.boolean()),
     noScreen: z.preprocess(checkboxValueToBoolean, z.boolean()),
+    teamId: optionalId,
   }),
   z.object({
     _action: _action("UPDATE_MAP_POOL"),

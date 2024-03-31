@@ -55,6 +55,11 @@ export const matchSchema = z.union([
     ),
   }),
   z.object({
+    _action: _action("BAN_PICK"),
+    stageId,
+    mode: modeShort,
+  }),
+  z.object({
     _action: _action("UNDO_REPORT_SCORE"),
     position: reportedMatchPosition,
   }),
@@ -89,7 +94,8 @@ const tournamentRoundMaps = z.object({
     )
     .nullish(),
   count: numericEnum([3, 5, 7]),
-  type: z.enum(["BEST_OF"]),
+  type: z.enum(["BEST_OF", "PLAY_ALL"]),
+  pickBan: z.enum(["COUNTERPICK", "BAN_2"]).nullish(),
 });
 
 export const bracketSchema = z.union([

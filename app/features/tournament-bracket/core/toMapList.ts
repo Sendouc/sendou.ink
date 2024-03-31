@@ -10,6 +10,7 @@ import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/constants";
 import { removeDuplicates } from "~/utils/arrays";
 import { logger } from "~/utils/logger";
+import { assertUnreachable } from "~/utils/types";
 
 export type BracketMapCounts = Map<
   // round.group_id ->
@@ -23,6 +24,8 @@ interface GenerateTournamentRoundMaplistArgs {
   rounds: Round[];
   mapCounts: BracketMapCounts;
   type: TournamentBracketProgression[number]["type"];
+  roundsWithPickBan: Set<number>;
+  pickBanStyle: TournamentRoundMaps["pickBan"];
 }
 
 // TODO: future improvement could be slightly biasing against maps that appear in slots that are not guaranteed to be played
@@ -42,15 +45,32 @@ export function generateTournamentRoundMaplist(
   const comboAppearance = new Map<string, number>();
 
   //                roundId
-  const result: Map<number, TournamentRoundMaps> = new Map();
+  const result: Map<number, Omit<TournamentRoundMaps, "type">> = new Map();
 
   for (const [iteration, round] of sortedRounds.entries()) {
     const count = resolveRoundMapCount(round, args.mapCounts, args.type);
-    const modes = modeOrder(count, args.pool, modeFrequency, iteration);
+
+    const amountOfMapsToGenerate = () => {
+      if (!args.roundsWithPickBan.has(round.id) || !args.pickBanStyle) {
+        return count;
+      }
+      if (args.pickBanStyle === "COUNTERPICK") return 1;
+      if (args.pickBanStyle === "BAN_2") return count + 2;
+
+      assertUnreachable(args.pickBanStyle);
+    };
+    const modes = modeOrder(
+      amountOfMapsToGenerate(),
+      args.pool,
+      modeFrequency,
+      iteration,
+    );
 
     result.set(round.id, {
       count,
-      type: "BEST_OF",
+      pickBan: args.roundsWithPickBan.has(round.id)
+        ? args.pickBanStyle
+        : undefined,
       list:
         // teams pick
         args.pool.length === 0

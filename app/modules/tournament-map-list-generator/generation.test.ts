@@ -50,7 +50,7 @@ const tiebreakerPicks = new MapPool([
 ]);
 
 const generateMaps = ({
-  bestOf = 5,
+  count = 5,
   seed = "test",
   teams = [
     {
@@ -67,7 +67,7 @@ const generateMaps = ({
   followModeOrder = false,
 }: Partial<TournamentMaplistInput> = {}) => {
   return createTournamentMapList({
-    bestOf,
+    count,
     seed,
     teams,
     tiebreakerMaps,
@@ -291,7 +291,7 @@ TournamentMapListGenerator("Handles worst case with duplication", () => {
         maps: duplicationPicks,
       },
     ],
-    bestOf: 7,
+    count: 7,
     tiebreakerMaps: duplicationTiebreaker,
   });
 
@@ -330,7 +330,7 @@ TournamentMapListGenerator("Keeps things fair when overlap", () => {
         maps: team2PicksWithSomeDuplication,
       },
     ],
-    bestOf: 7,
+    count: 7,
   });
 
   assert.equal(mapList.length, 7);
@@ -388,7 +388,7 @@ TournamentMapListGenerator(
           maps: team2Picks,
         },
       ],
-      bestOf: 7,
+      count: 7,
       tiebreakerMaps: new MapPool([]),
     });
 
@@ -412,7 +412,7 @@ TournamentMapListGenerator(
           maps: team2PicksNoOverlap,
         },
       ],
-      bestOf: 7,
+      count: 7,
       tiebreakerMaps: new MapPool([]),
     });
 
@@ -526,7 +526,7 @@ TournamentMapListGenerator(
 //         },
 //       ],
 //       seed: String(1),
-//       bestOf: 5,
+//       count: 5,
 //       modesIncluded: ["SZ", "TC", "RM", "CB"],
 //       tiebreakerMaps: new MapPool([
 //         {
@@ -553,7 +553,7 @@ TournamentMapListGenerator(
 // );
 
 const threeModesArgs: TournamentMaplistInput = {
-  bestOf: 7,
+  count: 7,
   seed: "1002",
   modesIncluded: ["TC", "TW", "RM"],
   tiebreakerMaps: new MapPool({
@@ -765,7 +765,7 @@ TournamentMapListGeneratorOneMode("Handles worst case duplication", () => {
     ],
     modesIncluded: ["SZ"],
     tiebreakerMaps: new MapPool([]),
-    bestOf: 7,
+    count: 7,
   });
 
   for (const [i, stage] of mapList.entries()) {

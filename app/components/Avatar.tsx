@@ -4,6 +4,7 @@ import * as React from "react";
 import { BLANK_IMAGE_URL } from "~/utils/urls";
 
 const dimensions = {
+  xxxs: 16,
   xxs: 24,
   xs: 36,
   sm: 44,

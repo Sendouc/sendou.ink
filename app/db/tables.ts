@@ -93,7 +93,6 @@ export interface Badge {
   hue: number | null;
   id: GeneratedAlways<number>;
 }
-// export type SelectableBadge = Selectable<Badge>;
 
 export interface BadgeManager {
   badgeId: number;
@@ -414,6 +413,7 @@ export interface Tournament {
     string | null,
     string | null
   >;
+  rules: string | null;
 }
 
 export interface TournamentBadgeOwner {
@@ -439,6 +439,16 @@ export interface TournamentMatch {
   roundId: number;
   stageId: number;
   status: number;
+}
+
+export interface TournamentMatchPickBanEvent {
+  type: "PICK" | "BAN";
+  stageId: StageId;
+  mode: ModeShort;
+  matchId: number;
+  authorId: number;
+  number: number;
+  createdAt: GeneratedAlways<number>;
 }
 
 export interface TournamentMatchGameResult {
@@ -472,9 +482,8 @@ export interface TournamentResult {
 export interface TournamentRoundMaps {
   list?: Array<{ mode: ModeShort; stageId: StageId }> | null;
   count: number;
-  // TODO: support play_all
-  type: "BEST_OF";
-  // TODO: counterpick style
+  type: "BEST_OF" | "PLAY_ALL";
+  pickBan?: "COUNTERPICK" | "BAN_2" | null;
 }
 
 export interface TournamentRound {
@@ -522,6 +531,7 @@ export interface TournamentTeam {
   noScreen: Generated<number>;
   seed: number | null;
   tournamentId: number;
+  teamId: number | null;
 }
 
 export interface TournamentTeamCheckIn {
@@ -732,6 +742,7 @@ export interface DB {
   TournamentBadgeOwner: TournamentBadgeOwner;
   TournamentGroup: TournamentGroup;
   TournamentMatch: TournamentMatch;
+  TournamentMatchPickBanEvent: TournamentMatchPickBanEvent;
   TournamentMatchGameResult: TournamentMatchGameResult;
   TournamentMatchGameResultParticipant: TournamentMatchGameResultParticipant;
   TournamentResult: TournamentResult;

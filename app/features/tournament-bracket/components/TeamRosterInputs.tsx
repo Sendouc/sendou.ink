@@ -7,7 +7,7 @@ import { useTournament } from "../../tournament/routes/to.$id";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
-import type { Result } from "./ScoreReporter";
+import type { Result } from "./StartedMatch";
 import { tournamentTeamPage, userPage } from "~/utils/urls";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import { Avatar } from "~/components/Avatar";

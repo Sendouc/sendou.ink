@@ -10,7 +10,7 @@ export type BracketType =
   | "SWISS";
 
 export interface TournamentMaplistInput {
-  bestOf: number;
+  count: number;
   seed: string;
   teams: [
     {
@@ -31,4 +31,5 @@ export type TournamentMaplistSource = number | (typeof sourceTypes)[number];
 
 export type TournamentMapListMap = ModeWithStage & {
   source: TournamentMaplistSource;
+  bannedByTournamentTeamId?: number;
 };

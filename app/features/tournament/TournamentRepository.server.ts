@@ -1,4 +1,4 @@
-import type { NotNull, Transaction } from "kysely";
+import type { Insertable, NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
@@ -23,6 +23,7 @@ export async function findById(id: number) {
       "Tournament.castTwitchAccounts",
       "Tournament.castedMatchesInfo",
       "Tournament.mapPickingStyle",
+      "Tournament.rules",
       "CalendarEvent.name",
       "CalendarEvent.description",
       "CalendarEventDate.startTime",
@@ -118,6 +119,20 @@ export async function findById(id: number) {
                 )
                 .select(["MapPoolMap.stageId", "MapPoolMap.mode"]),
             ).as("mapPool"),
+            jsonObjectFrom(
+              innerEb
+                .selectFrom("Team")
+                .leftJoin(
+                  "UserSubmittedImage",
+                  "Team.avatarImgId",
+                  "UserSubmittedImage.id",
+                )
+                .whereRef("Team.id", "=", "TournamentTeam.teamId")
+                .select([
+                  "Team.customUrl",
+                  "UserSubmittedImage.url as logoUrl",
+                ]),
+            ).as("team"),
           ])
           .where("TournamentTeam.tournamentId", "=", id)
           .orderBy(["TournamentTeam.seed asc", "TournamentTeam.createdAt asc"]),
@@ -516,6 +531,26 @@ export function setMatchAsCasted({
       .where("id", "=", tournamentId)
       .execute();
   });
+}
+
+export function pickBanEventsByMatchId(matchId: number) {
+  return db
+    .selectFrom("TournamentMatchPickBanEvent")
+    .select([
+      "TournamentMatchPickBanEvent.mode",
+      "TournamentMatchPickBanEvent.stageId",
+      "TournamentMatchPickBanEvent.type",
+      "TournamentMatchPickBanEvent.number",
+    ])
+    .where("matchId", "=", matchId)
+    .orderBy("TournamentMatchPickBanEvent.number asc")
+    .execute();
+}
+
+export function addPickBanEvent(
+  values: Insertable<DB["TournamentMatchPickBanEvent"]>,
+) {
+  return db.insertInto("TournamentMatchPickBanEvent").values(values).execute();
 }
 
 export function resetBracket(tournamentStageId: number) {

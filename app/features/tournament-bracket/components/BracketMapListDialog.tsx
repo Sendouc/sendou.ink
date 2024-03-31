@@ -8,7 +8,7 @@ import {
   useTournamentToSetMapPool,
 } from "~/features/tournament/routes/to.$id";
 import invariant from "tiny-invariant";
-import type { TournamentRoundMaps } from "~/db/tables";
+import { type TournamentRoundMaps } from "~/db/tables";
 import { useTranslation } from "react-i18next";
 import { ModeImage, StageImage } from "~/components/Image";
 import { Button } from "~/components/Button";
@@ -22,6 +22,7 @@ import clsx from "clsx";
 import { nullFilledArray } from "~/utils/arrays";
 import { getRounds } from "../core/rounds";
 import { calendarEditPage } from "~/utils/urls";
+import { Toggle } from "~/components/Toggle";
 
 export function BracketMapListDialog({
   isOpen,
@@ -38,12 +39,21 @@ export function BracketMapListDialog({
   const fetcher = useFetcher();
   const tournament = useTournament();
 
+  const [roundsWithPickBan, setRoundsWithPickBan] = React.useState<Set<number>>(
+    new Set(),
+  );
+  const [pickBanStyle, setPickBanStyle] =
+    React.useState<TournamentRoundMaps["pickBan"]>();
+  const [countType, setCountType] =
+    React.useState<TournamentRoundMaps["type"]>("BEST_OF");
   const [maps, setMaps] = React.useState(() =>
     generateTournamentRoundMaplist({
       mapCounts: bracket.defaultRoundBestOfs,
+      roundsWithPickBan,
       pool: toSetMapPool,
       rounds: bracket.data.round,
       type: bracket.type,
+      pickBanStyle,
     }),
   );
   const [mapCounts, setMapCounts] = React.useState(
@@ -90,6 +100,24 @@ export function BracketMapListDialog({
     return newMap;
   };
 
+  const mapCountsWithGlobalPickBanStyle = (
+    newPickBanStyle: TournamentRoundMaps["pickBan"],
+  ): Set<number> => {
+    if (!newPickBanStyle) {
+      setRoundsWithPickBan(new Set());
+      return new Set();
+    }
+
+    const newRoundsWithPickBan = new Set(roundsWithPickBan);
+
+    for (const round of rounds) {
+      newRoundsWithPickBan.add(round.id);
+    }
+
+    setRoundsWithPickBan(newRoundsWithPickBan);
+    return newRoundsWithPickBan;
+  };
+
   // TODO: could also validate you aren't going up from winners finals to grands etc. (different groups)
   const validateNoDecreasingCount = () => {
     for (const groupCounts of mapCounts.values()) {
@@ -122,6 +150,7 @@ export function BracketMapListDialog({
           value={JSON.stringify(
             Array.from(maps.entries()).map(([key, value]) => ({
               roundId: key,
+              type: countType,
               ...value,
             })),
           )}
@@ -138,7 +167,29 @@ export function BracketMapListDialog({
         ) : (
           <>
             <div className="stack horizontal items-center  justify-between">
-              <div>
+              <div className="stack horizontal lg flex-wrap">
+                <PickBanSelect
+                  pickBanStyle={pickBanStyle}
+                  onPickBanStyleChange={(pickBanStyle) => {
+                    let newRoundsWithPickBan = roundsWithPickBan;
+                    if (bracket.type === "round_robin") {
+                      newRoundsWithPickBan =
+                        mapCountsWithGlobalPickBanStyle(pickBanStyle);
+                    }
+
+                    setPickBanStyle(pickBanStyle);
+                    setMaps(
+                      generateTournamentRoundMaplist({
+                        mapCounts,
+                        pool: toSetMapPool,
+                        rounds: bracket.data.round,
+                        type: bracket.type,
+                        roundsWithPickBan: newRoundsWithPickBan,
+                        pickBanStyle,
+                      }),
+                    );
+                  }}
+                />
                 {bracket.type === "round_robin" ? (
                   <GlobalMapCountInput
                     onSetCount={(newCount) => {
@@ -148,11 +199,16 @@ export function BracketMapListDialog({
                         pool: toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
+                        roundsWithPickBan,
+                        pickBanStyle,
                       });
                       setMaps(newMaps);
                       setMapCounts(newMapCounts);
                     }}
                   />
+                ) : null}
+                {bracket.type === "round_robin" ? (
+                  <GlobalCountTypeSelect onSetCountType={setCountType} />
                 ) : null}
               </div>
               {toSetMapPool.length > 0 ? (
@@ -167,6 +223,8 @@ export function BracketMapListDialog({
                         pool: toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
+                        roundsWithPickBan,
+                        pickBanStyle,
                       }),
                     )
                   }
@@ -187,6 +245,9 @@ export function BracketMapListDialog({
                     maps={roundMaps}
                     onHoverMap={setHoveredMap}
                     hoveredMap={hoveredMap}
+                    includeRoundSpecificSelections={
+                      bracket.type !== "round_robin"
+                    }
                     onCountChange={(newCount) => {
                       const newMapCounts = new Map(mapCounts);
                       const bracketRound = bracket.data.round.find(
@@ -211,10 +272,38 @@ export function BracketMapListDialog({
                         pool: toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
+                        roundsWithPickBan,
+                        pickBanStyle,
                       });
                       setMaps(newMaps);
                       setMapCounts(newMapCounts);
                     }}
+                    onPickBanChange={
+                      pickBanStyle
+                        ? (hasPickBan) => {
+                            const newRoundsWithPickBan = new Set(
+                              roundsWithPickBan,
+                            );
+                            if (hasPickBan) {
+                              newRoundsWithPickBan.add(round.id);
+                            } else {
+                              newRoundsWithPickBan.delete(round.id);
+                            }
+
+                            setRoundsWithPickBan(newRoundsWithPickBan);
+                            setMaps(
+                              generateTournamentRoundMaplist({
+                                mapCounts,
+                                pool: toSetMapPool,
+                                rounds: bracket.data.round,
+                                type: bracket.type,
+                                roundsWithPickBan: newRoundsWithPickBan,
+                                pickBanStyle,
+                              }),
+                            );
+                          }
+                        : undefined
+                    }
                     onRoundMapListChange={(newRoundMaps) => {
                       const newMaps = new Map(maps);
                       newMaps.set(round.id, newRoundMaps);
@@ -225,7 +314,16 @@ export function BracketMapListDialog({
                 );
               })}
             </div>
-            {validateNoDecreasingCount() ? (
+            {!validateNoDecreasingCount() ? (
+              <div className="text-warning text-center">
+                Invalid selection: tournament progression decreases in map count
+              </div>
+            ) : pickBanStyle && roundsWithPickBan.size === 0 ? (
+              <div className="text-warning text-center">
+                Invalid selection: pick/ban style selected but no rounds have it
+                enabled
+              </div>
+            ) : (
               <SubmitButton
                 variant="outlined"
                 size="tiny"
@@ -235,10 +333,6 @@ export function BracketMapListDialog({
               >
                 Start the bracket
               </SubmitButton>
-            ) : (
-              <div className="text-warning text-center">
-                Invalid selection: tournament progression decreases in map count
-              </div>
             )}
           </>
         )}
@@ -264,6 +358,56 @@ function GlobalMapCountInput({
   );
 }
 
+function GlobalCountTypeSelect({
+  onSetCountType,
+}: {
+  onSetCountType: (type: TournamentRoundMaps["type"]) => void;
+}) {
+  return (
+    <div>
+      <Label htmlFor="count-type">Count type</Label>
+      <select
+        id="count-type"
+        onChange={(e) =>
+          onSetCountType(e.target.value as TournamentRoundMaps["type"])
+        }
+      >
+        <option value="BEST_OF">Best of</option>
+        <option value="PLAY_ALL">Play all</option>
+      </select>
+    </div>
+  );
+}
+
+function PickBanSelect({
+  pickBanStyle,
+  onPickBanStyleChange,
+}: {
+  pickBanStyle: TournamentRoundMaps["pickBan"];
+  onPickBanStyleChange: (pickBanStyle: TournamentRoundMaps["pickBan"]) => void;
+}) {
+  return (
+    <div>
+      <Label htmlFor="pick-ban-style">Pick/ban</Label>
+      <select
+        id="pick-ban-style"
+        value={pickBanStyle ?? "NONE"}
+        onChange={(e) =>
+          onPickBanStyleChange(
+            e.target.value === "NONE"
+              ? undefined
+              : (e.target.value as TournamentRoundMaps["pickBan"]),
+          )
+        }
+      >
+        <option value="NONE">None</option>
+        <option value="COUNTERPICK">Counterpick</option>
+        <option value="BAN_2">Ban 2</option>
+      </select>
+    </div>
+  );
+}
+
 const serializedMapMode = (
   map: NonNullable<TournamentRoundMaps["list"]>[number],
 ) => `${map.mode}-${map.stageId}`;
@@ -274,15 +418,20 @@ function RoundMapList({
   onRoundMapListChange,
   onHoverMap,
   onCountChange,
+  onPickBanChange,
   hoveredMap,
+  includeRoundSpecificSelections,
 }: {
   name: string;
-  maps: TournamentRoundMaps;
-  onRoundMapListChange: (maps: TournamentRoundMaps) => void;
+  maps: Omit<TournamentRoundMaps, "type">;
+  onRoundMapListChange: (maps: Omit<TournamentRoundMaps, "type">) => void;
   onHoverMap: (map: string | null) => void;
   onCountChange: (count: number) => void;
+  onPickBanChange?: (hasPickBan: boolean) => void;
   hoveredMap: string | null;
+  includeRoundSpecificSelections: boolean;
 }) {
+  const id = React.useId();
   const [editing, setEditing] = React.useState(false);
 
   return (
@@ -292,29 +441,46 @@ function RoundMapList({
         <Button
           variant={editing ? "minimal-success" : "minimal"}
           onClick={() => setEditing(!editing)}
+          testId="edit-round-maps-button"
         >
           {editing ? "Save" : "Edit"}
         </Button>
       </h3>
-      {editing ? (
+      {editing && includeRoundSpecificSelections ? (
         <div className="stack xs horizontal">
           {[3, 5, 7].map((count) => (
             <div key={count}>
-              <Label>Bo{count}</Label>
+              <Label htmlFor={`bo-${count}-${id}`}>Bo{count}</Label>
               <input
+                id={`bo-${count}-${id}`}
                 type="radio"
-                name="count"
                 value={count}
                 checked={maps.count === count}
                 onChange={() => onCountChange(count)}
               />
             </div>
           ))}
+          {onPickBanChange ? (
+            <div>
+              <Label htmlFor={`pick-ban-${id}`}>Pick/ban</Label>
+              <Toggle
+                tiny
+                checked={Boolean(maps.pickBan)}
+                setChecked={onPickBanChange}
+                id={`pick-ban-${id}`}
+              />
+            </div>
+          ) : null}
         </div>
       ) : null}
       <ol className="pl-0">
-        {maps.list
-          ? maps.list.map((map, i) => (
+        {nullFilledArray(
+          maps.pickBan === "BAN_2" ? maps.count + 2 : maps.count,
+        ).map((_, i) => {
+          const map = maps.list?.[i];
+
+          if (map) {
+            return (
               <MapListRow
                 key={i}
                 map={map}
@@ -329,10 +495,19 @@ function RoundMapList({
                   });
                 }}
               />
-            ))
-          : nullFilledArray(maps.count).map((_, i) => (
-              <MysteryRow key={i} number={i + 1} />
-            ))}
+            );
+          }
+
+          const isTeamsPick = !maps.list && i === 0;
+
+          return (
+            <MysteryRow
+              key={i}
+              number={i + 1}
+              isCounterpicks={!isTeamsPick && maps.pickBan === "COUNTERPICK"}
+            />
+          );
+        })}
       </ol>
     </div>
   );
@@ -362,7 +537,7 @@ function MapListRow({
         <div className="stack horizontal items-center xs">
           <span className="text-lg">{number}.</span>
           <select
-            defaultValue={serializedMapMode(map)}
+            value={serializedMapMode(map)}
             onChange={(e) => {
               const [mode, stageId] = e.target.value.split("-");
               onMapChange({
@@ -403,12 +578,22 @@ function MapListRow({
   );
 }
 
-function MysteryRow({ number }: { number: number }) {
+function MysteryRow({
+  number,
+  isCounterpicks,
+}: {
+  number: number;
+  isCounterpicks: boolean;
+}) {
   return (
     <li className="map-list-dialog__map-list-row">
-      <div className="stack horizontal items-center xs text-lighter">
+      <div
+        className={clsx("stack horizontal items-center xs text-lighter", {
+          "text-info": isCounterpicks,
+        })}
+      >
         <span className="text-lg">{number}.</span>
-        Team&apos;s pick
+        {isCounterpicks ? <>Counterpick</> : <>Team&apos;s pick</>}
       </div>
     </li>
   );

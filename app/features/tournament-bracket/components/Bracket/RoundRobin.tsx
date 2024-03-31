@@ -59,6 +59,7 @@ export function RoundRobinBracket({ bracket }: { bracket: BracketType }) {
                       name={`Round ${round.number}`}
                       bestOf={bestOf}
                       showInfos={someMatchOngoing}
+                      maps={round.maps}
                     />
                     <div className="elim-bracket__round-matches-container">
                       {matches.map((match) => {

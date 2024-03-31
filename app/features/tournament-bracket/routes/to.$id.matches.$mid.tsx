@@ -1,11 +1,9 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData, useRevalidator } from "@remix-run/react";
-import clsx from "clsx";
+import { useLoaderData, useRevalidator } from "@remix-run/react";
 import { nanoid } from "nanoid";
 import * as React from "react";
 import { useEventSource } from "remix-utils/sse/react";
 import invariant from "tiny-invariant";
-import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";
@@ -23,15 +21,18 @@ import { assertUnreachable } from "~/utils/types";
 import {
   tournamentBracketsPage,
   tournamentMatchSubscribePage,
-  tournamentTeamPage,
-  userPage,
 } from "~/utils/urls";
 import { CastInfo } from "../components/CastInfo";
-import { ScoreReporter } from "../components/ScoreReporter";
+import { OrganizerMatchMapListDialog } from "../components/OrganizerMatchMapListDialog";
+import { StartedMatch } from "../components/StartedMatch";
+import * as PickBan from "../core/PickBan";
 import { tournamentFromDB } from "../core/Tournament.server";
 import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 import { emitter } from "../core/emitters.server";
 import { resolveMapList } from "../core/mapList.server";
+import { getRounds } from "../core/rounds";
+import { deleteMatchPickBanEvents } from "../queries/deleteMatchPickBanEvents.server";
+import { deletePickBanEvent } from "../queries/deletePickBanEvent.server";
 import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
 import { findMatchById } from "../queries/findMatchById.server";
 import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
@@ -41,13 +42,14 @@ import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
   groupNumberToLetter,
+  isSetOverByScore,
   matchIdFromParams,
   matchIsLocked,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
+import { MatchRosters } from "../components/MatchRosters";
 
 import "../tournament-bracket.css";
-import { getRounds } from "../core/rounds";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -84,6 +86,23 @@ export const action: ActionFunction = async ({ params, request }) => {
     match.opponentTwo?.score ?? 0,
   ];
 
+  const pickBanEvents = match.roundMaps?.pickBan
+    ? await TournamentRepository.pickBanEventsByMatchId(match.id)
+    : [];
+
+  const mapList =
+    match.opponentOne?.id && match.opponentTwo?.id
+      ? resolveMapList({
+          bestOf: match.bestOf,
+          tournamentId,
+          matchId,
+          teams: [match.opponentOne.id, match.opponentTwo.id],
+          mapPickingStyle: match.mapPickingStyle,
+          maps: match.roundMaps,
+          pickBanEvents,
+        })
+      : null;
+
   switch (data._action) {
     case "REPORT_SCORE": {
       // they are trying to report score that was already reported
@@ -104,18 +123,9 @@ export const action: ActionFunction = async ({ params, request }) => {
         "Match is locked",
       );
 
-      const mapList =
-        match.opponentOne?.id && match.opponentTwo?.id
-          ? resolveMapList({
-              bestOf: match.bestOf,
-              tournamentId,
-              matchId,
-              teams: [match.opponentOne.id, match.opponentTwo.id],
-              mapPickingStyle: match.mapPickingStyle,
-              maps: match.roundMaps,
-            })
-          : null;
-      const currentMap = mapList?.[data.position];
+      const currentMap = mapList?.filter((m) => !m.bannedByTournamentTeamId)[
+        data.position
+      ];
       invariant(currentMap, "Can't resolve current map");
 
       const scoreToIncrement = () => {
@@ -136,18 +146,22 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       scores[scoreToIncrement()]++;
 
+      const setOver = isSetOverByScore({
+        count: match.roundMaps?.count ?? match.bestOf,
+        countType: match.roundMaps?.type ?? "BEST_OF",
+        scores,
+      });
+
       sql.transaction(() => {
         manager.update.match({
           id: match.id,
           opponent1: {
             score: scores[0],
-            result:
-              scores[0] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
+            result: setOver && scores[0] > scores[1] ? "win" : undefined,
           },
           opponent2: {
             score: scores[1],
-            result:
-              scores[1] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
+            result: setOver && scores[1] > scores[0] ? "win" : undefined,
           },
         });
 
@@ -196,6 +210,26 @@ export const action: ActionFunction = async ({ params, request }) => {
         `Undoing score: Position: ${data.position}; User ID: ${user.id}; Match ID: ${match.id}`,
       );
 
+      const pickBanEventToDeleteNumber = await (async () => {
+        if (!match.roundMaps?.pickBan) return;
+
+        const pickBanEvents = await TournamentRepository.pickBanEventsByMatchId(
+          match.id,
+        );
+
+        const unplayedPicks = pickBanEvents
+          .filter((e) => e.type === "PICK")
+          .filter(
+            (e) =>
+              !results.some(
+                (r) => r.stageId === e.stageId && r.mode === e.mode,
+              ),
+          );
+        invariant(unplayedPicks.length <= 1, "Too many unplayed picks");
+
+        return unplayedPicks[0]?.number;
+      })();
+
       sql.transaction(() => {
         deleteTournamentMatchGameResultById(lastResult.id);
 
@@ -212,7 +246,71 @@ export const action: ActionFunction = async ({ params, request }) => {
         if (shouldReset) {
           manager.reset.matchResults(match.id);
         }
+
+        if (typeof pickBanEventToDeleteNumber === "number") {
+          deletePickBanEvent({ matchId, number: pickBanEventToDeleteNumber });
+        }
       })();
+
+      break;
+    }
+    case "BAN_PICK": {
+      const results = findResultsByMatchId(matchId);
+
+      const teamOne = match.opponentOne?.id
+        ? tournament.teamById(match.opponentOne.id)
+        : undefined;
+      const teamTwo = match.opponentTwo?.id
+        ? tournament.teamById(match.opponentTwo.id)
+        : undefined;
+      invariant(teamOne && teamTwo, "Teams are missing");
+
+      invariant(
+        match.roundMaps && match.opponentOne?.id && match.opponentTwo?.id,
+        "Missing fields to pick/ban",
+      );
+      const pickerTeamId = PickBan.turnOf({
+        results,
+        maps: match.roundMaps,
+        teams: [match.opponentOne.id, match.opponentTwo.id],
+        mapList,
+      });
+      validate(pickerTeamId, "Not time to pick/ban");
+      validate(
+        tournament.isOrganizer(user) ||
+          tournament.ownedTeamByUser(user)?.id === pickerTeamId,
+        "Unauthorized",
+        401,
+      );
+
+      validate(
+        PickBan.isLegal({
+          results,
+          map: data,
+          maps: match.roundMaps,
+          toSetMapPool:
+            tournament.ctx.mapPickingStyle === "TO"
+              ? await TournamentRepository.findTOSetMapPoolById(tournamentId)
+              : [],
+          mapList,
+          tieBreakerMapPool: tournament.ctx.tieBreakerMapPool,
+          teams: [teamOne, teamTwo],
+          pickerTeamId,
+        }),
+        "Illegal pick",
+      );
+
+      const pickBanEvents = await TournamentRepository.pickBanEventsByMatchId(
+        match.id,
+      );
+      await TournamentRepository.addPickBanEvent({
+        authorId: user.id,
+        matchId: match.id,
+        stageId: data.stageId,
+        mode: data.mode,
+        number: pickBanEvents.length + 1,
+        type: match.roundMaps.pickBan === "BAN_2" ? "BAN" : "PICK",
+      });
 
       break;
     }
@@ -243,7 +341,11 @@ export const action: ActionFunction = async ({ params, request }) => {
         `Reopening match: User ID: ${user.id}; Match ID: ${match.id}`,
       );
 
+      const followingMatches = tournament.followingMatches(match.id);
       sql.transaction(() => {
+        for (const match of followingMatches) {
+          deleteMatchPickBanEvents({ matchId: match.id });
+        }
         deleteTournamentMatchGameResultById(lastResult.id);
         manager.update.match({
           id: match.id,
@@ -318,11 +420,15 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentMatchLoaderData = typeof loader;
 
-export const loader = ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const matchId = matchIdFromParams(params);
 
   const match = notFoundIfFalsy(findMatchById(matchId));
+
+  const pickBanEvents = match.roundMaps?.pickBan
+    ? await TournamentRepository.pickBanEventsByMatchId(match.id)
+    : [];
 
   const mapList =
     match.opponentOne?.id && match.opponentTwo?.id
@@ -333,23 +439,17 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
           teams: [match.opponentOne.id, match.opponentTwo.id],
           mapPickingStyle: match.mapPickingStyle,
           maps: match.roundMaps,
+          pickBanEvents,
         })
       : null;
-
-  const scoreSum =
-    (match.opponentOne?.score ?? 0) + (match.opponentTwo?.score ?? 0);
-
-  const currentMap = mapList?.[scoreSum];
-
-  const matchIsOver =
-    match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
 
   return {
     match,
     results: findResultsByMatchId(matchId),
-    currentMap,
-    modes: mapList?.map((map) => map.mode),
-    matchIsOver,
+    mapList,
+    matchIsOver:
+      match.opponentOne?.result === "win" ||
+      match.opponentTwo?.result === "win",
   };
 };
 
@@ -385,19 +485,24 @@ export default function TournamentMatchPage() {
       {!data.matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
       <div className="flex horizontal justify-between items-center">
         <MatchHeader />
-        <LinkButton
-          to={tournamentBracketsPage({
-            tournamentId: tournament.ctx.id,
-            bracketIdx: tournament.matchIdToBracketIdx(data.match.id),
-          })}
-          variant="outlined"
-          size="tiny"
-          className="w-max"
-          icon={<ArrowLongLeftIcon />}
-          testId="back-to-bracket-button"
-        >
-          Back to bracket
-        </LinkButton>
+        <div className="stack md horizontal flex-wrap-reverse justify-end">
+          {tournament.isOrganizerOrStreamer(user) ? (
+            <OrganizerMatchMapListDialog data={data} />
+          ) : null}
+          <LinkButton
+            to={tournamentBracketsPage({
+              tournamentId: tournament.ctx.id,
+              bracketIdx: tournament.matchIdToBracketIdx(data.match.id),
+            })}
+            variant="outlined"
+            size="tiny"
+            className="w-max"
+            icon={<ArrowLongLeftIcon />}
+            testId="back-to-bracket-button"
+          >
+            Back to bracket
+          </LinkButton>
+        </div>
       </div>
       <div className="stack md">
         <CastInfo
@@ -423,7 +528,7 @@ export default function TournamentMatchPage() {
           />
         ) : null}
         {showRosterPeek() ? (
-          <Rosters
+          <MatchRosters
             teams={[data.match.opponentOne?.id, data.match.opponentTwo?.id]}
           />
         ) : null}
@@ -567,14 +672,19 @@ function MapListSection({
 
   if (!teamOne || !teamTwo) return null;
 
-  invariant(data.currentMap, "No map found for this score");
-  invariant(data.modes, "No modes found for this map list");
+  invariant(data.mapList, "No mapList found for this map list");
+
+  const scoreSum =
+    (data.match.opponentOne?.score ?? 0) + (data.match.opponentTwo?.score ?? 0);
+
+  const currentMap = data.mapList?.filter((m) => !m.bannedByTournamentTeamId)[
+    scoreSum
+  ];
 
   return (
-    <ScoreReporter
-      currentStageWithMode={data.currentMap}
+    <StartedMatch
+      currentStageWithMode={currentMap}
       teams={[teamOne, teamTwo]}
-      modes={data.modes}
       type={type}
     />
   );
@@ -609,141 +719,18 @@ function ResultsSection() {
     throw new Error("Team is missing");
   }
 
+  const resultSource = data.mapList?.find(
+    (m) => m.stageId === result.stageId && m.mode === result.mode,
+  )?.source;
+
   return (
-    <ScoreReporter
-      currentStageWithMode={result}
+    <StartedMatch
+      currentStageWithMode={{ ...result, source: resultSource ?? "TO" }}
       teams={[teamOne, teamTwo]}
-      modes={data.results.map((result) => result.mode)}
       selectedResultIndex={selectedResultIndex}
       setSelectedResultIndex={setSelectedResultIndex}
       result={result}
       type="OTHER"
     />
-  );
-}
-
-const INACTIVE_PLAYER_CSS =
-  "tournament__team-with-roster__member__inactive text-lighter-important";
-function Rosters({
-  teams,
-}: {
-  teams: [id: number | null | undefined, id: number | null | undefined];
-}) {
-  const data = useLoaderData<typeof loader>();
-  const tournament = useTournament();
-
-  const teamOne = teams[0] ? tournament.teamById(teams[0]) : undefined;
-  const teamTwo = teams[1] ? tournament.teamById(teams[1]) : undefined;
-  const teamOnePlayers = data.match.players.filter(
-    (p) => p.tournamentTeamId === teamOne?.id,
-  );
-  const teamTwoPlayers = data.match.players.filter(
-    (p) => p.tournamentTeamId === teamTwo?.id,
-  );
-
-  const teamOneParticipatedPlayers = teamOnePlayers.filter((p) =>
-    tournament.ctx.participatedUsers.includes(p.id),
-  );
-  const teamTwoParticipatedPlayers = teamTwoPlayers.filter((p) =>
-    tournament.ctx.participatedUsers.includes(p.id),
-  );
-
-  return (
-    <div className="tournament-bracket__rosters">
-      <div>
-        <div className="stack xs horizontal items-center text-lighter">
-          <div className="tournament-bracket__team-one-dot" />
-          Team 1
-        </div>
-        <h2
-          className={clsx("text-sm", {
-            "text-lighter": !teamOne,
-          })}
-        >
-          {teamOne ? (
-            <Link
-              to={tournamentTeamPage({
-                tournamentId: tournament.ctx.id,
-                tournamentTeamId: teamOne.id,
-              })}
-              className="text-main-forced font-bold"
-            >
-              {teamOne.name}
-            </Link>
-          ) : (
-            "Waiting on team"
-          )}
-        </h2>
-        {teamOnePlayers.length > 0 ? (
-          <ul className="stack xs mt-2">
-            {teamOnePlayers.map((p) => {
-              return (
-                <li key={p.id}>
-                  <Link
-                    to={userPage(p)}
-                    className={clsx("stack horizontal sm", {
-                      [INACTIVE_PLAYER_CSS]:
-                        teamOneParticipatedPlayers.length > 0 &&
-                        teamOneParticipatedPlayers.every(
-                          (participatedPlayer) =>
-                            p.id !== participatedPlayer.id,
-                        ),
-                    })}
-                  >
-                    <Avatar user={p} size="xxs" />
-                    {p.discordName}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        ) : null}
-      </div>
-      <div>
-        <div className="stack xs horizontal items-center text-lighter">
-          <div className="tournament-bracket__team-two-dot" />
-          Team 2
-        </div>
-        <h2 className={clsx("text-sm", { "text-lighter": !teamTwo })}>
-          {teamTwo ? (
-            <Link
-              to={tournamentTeamPage({
-                tournamentId: tournament.ctx.id,
-                tournamentTeamId: teamTwo.id,
-              })}
-              className="text-main-forced font-bold"
-            >
-              {teamTwo.name}
-            </Link>
-          ) : (
-            "Waiting on team"
-          )}
-        </h2>
-        {teamTwoPlayers.length > 0 ? (
-          <ul className="stack xs mt-2">
-            {teamTwoPlayers.map((p) => {
-              return (
-                <li key={p.id}>
-                  <Link
-                    to={userPage(p)}
-                    className={clsx("stack horizontal sm", {
-                      [INACTIVE_PLAYER_CSS]:
-                        teamTwoParticipatedPlayers.length > 0 &&
-                        teamTwoParticipatedPlayers.every(
-                          (participatedPlayer) =>
-                            p.id !== participatedPlayer.id,
-                        ),
-                    })}
-                  >
-                    <Avatar user={p} size="xxs" />
-                    {p.discordName}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        ) : null}
-      </div>
-    </div>
   );
 }

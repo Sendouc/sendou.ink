@@ -79,6 +79,10 @@ a.bracket__match:hover {
   text-overflow: ellipsis;
 }
 
+.bracket__match__team-name__narrow {
+  max-width: 75px;
+}
+
 .bracket__match__score {
   margin-inline-start: auto;
 }

@@ -32,7 +32,6 @@ import { requireUser } from "~/features/auth/core/user.server";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import {
   BRACKET_NAMES,
@@ -106,6 +105,7 @@ export const action: ActionFunction = async ({ request }) => {
   const commonArgs = {
     name: data.name,
     description: data.description,
+    rules: data.rules,
     startTimes,
     bracketUrl: data.bracketUrl,
     discordInviteCode: data.discordInviteCode,
@@ -129,6 +129,7 @@ export const action: ActionFunction = async ({ request }) => {
     enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
     autoCheckInAll: data.autoCheckInAll ?? undefined,
     autonomousSubs: data.autonomousSubs ?? undefined,
+    tournamentToCopyId: data.tournamentToCopyId,
     regClosesAt: data.regClosesAt
       ? dateToDatabaseTimestamp(
           regClosesAtDate({
@@ -203,98 +204,177 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   validate(canAddNewEvent(user), "Not authorized", 401);
 
-  const eventId = Number(url.searchParams.get("eventId"));
-  const eventToEdit = Number.isNaN(eventId)
-    ? undefined
-    : await CalendarRepository.findById({
-        id: eventId,
-        includeMapPool: true,
-        includeTieBreakerMapPool: true,
-        includeBadgePrizes: true,
-      });
+  const eventWithTournament = async (key: string) => {
+    const eventId = Number(url.searchParams.get(key));
+    const event = Number.isNaN(eventId)
+      ? undefined
+      : await CalendarRepository.findById({
+          id: eventId,
+          includeMapPool: true,
+          includeTieBreakerMapPool: true,
+          includeBadgePrizes: true,
+        });
 
+    if (!event) return;
+
+    // special tags that are added automatically
+    const tags = event?.tags?.filter(
+      (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT",
+    );
+
+    if (!event?.tournamentId) return { ...event, tags, tournamentCtx: null };
+
+    return {
+      ...event,
+      tags,
+      tournamentCtx: (
+        await tournamentFromDB({
+          tournamentId: event.tournamentId,
+          user,
+        })
+      ).ctx,
+    };
+  };
+
+  const eventToEdit = await eventWithTournament("eventId");
   const canEditEvent =
     eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
 
-  let tournament: Tournament | undefined;
-  if (eventToEdit?.tournamentId) {
-    tournament = await tournamentFromDB({
-      tournamentId: eventToEdit.tournamentId,
-      user,
-    });
-    if (tournament.hasStarted) {
-      redirect(tournamentBracketsPage({ tournamentId: tournament.ctx.id }));
-    }
+  // no editing tournament after the start
+  if (
+    eventToEdit &&
+    eventToEdit.tournamentCtx?.inProgressBrackets &&
+    eventToEdit.tournamentCtx.inProgressBrackets.length > 0
+  ) {
+    return redirect(
+      tournamentBracketsPage({ tournamentId: eventToEdit.tournamentCtx.id }),
+    );
   }
+
+  const userCanCreateTournament = canCreateTournament(user);
 
   return json({
     managedBadges: await BadgeRepository.findManagedByUserId(user.id),
     recentEventsWithMapPools:
       await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),
-    eventToEdit: canEditEvent
-      ? {
-          ...eventToEdit,
-          // "BADGE" and "FULL_TOURNAMENT" tags are special and can't be edited like other tags
-          tags: eventToEdit.tags.filter(
-            (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT",
-          ),
-        }
-      : undefined,
+    eventToEdit: canEditEvent ? eventToEdit : undefined,
+    eventToCopy:
+      userCanCreateTournament && !eventToEdit
+        ? await eventWithTournament("copyEventId")
+        : undefined,
+    recentTournaments:
+      userCanCreateTournament && !eventToEdit
+        ? await CalendarRepository.findRecentTournamentsByAuthorId(user.id)
+        : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
-    canCreateTournament: canCreateTournament(user),
-    tournamentCtx: tournament?.ctx,
+    canCreateTournament: userCanCreateTournament,
   });
 };
 
+const useBaseEvent = () => {
+  const { eventToEdit, eventToCopy } = useLoaderData<typeof loader>();
+
+  return eventToCopy ?? eventToEdit;
+};
+
 export default function CalendarNewEventPage() {
-  const data = useLoaderData<typeof loader>();
-  const { t } = useTranslation();
-  const { eventToEdit } = useLoaderData<typeof loader>();
-  const [isTournament, setIsTournament] = React.useState(
-    Boolean(eventToEdit?.tournamentId),
-  );
+  const baseEvent = useBaseEvent();
 
   return (
     <Main className="calendar-new__container">
-      <Form className="stack md items-start" method="post">
-        {eventToEdit && (
-          <input
-            type="hidden"
-            name="eventToEditId"
-            value={eventToEdit.eventId}
-          />
-        )}
-        <NameInput />
-        <DescriptionTextarea />
-        {data.canCreateTournament && !eventToEdit && (
-          <TournamentEnabler
-            checked={isTournament}
-            setChecked={setIsTournament}
-          />
-        )}
-        <DatesInput allowMultiDate={!isTournament} />
-        {!isTournament ? <BracketUrlInput /> : null}
-        <DiscordLinkInput />
-        <TagsAdder />
-        <BadgesAdder />
-        {isTournament ? (
-          <>
-            <Divider>Tournament settings</Divider>
-            <RegClosesAtSelect />
-            <RankedToggle />
-            <EnableNoScreenToggle />
-            <AutonomousSubsToggle />
-          </>
-        ) : null}
-        {isTournament ? (
-          <TournamentMapPickingStyleSelect />
-        ) : (
-          <MapPoolSection />
-        )}
-        {isTournament ? <TournamentFormatSelector /> : null}
-        <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
-      </Form>
+      <div className="stack md">
+        <TemplateTournamentForm />
+        <EventForm key={baseEvent?.eventId} />
+      </div>
     </Main>
+  );
+}
+
+function TemplateTournamentForm() {
+  const { recentTournaments } = useLoaderData<typeof loader>();
+  const [eventId, setEventId] = React.useState("");
+
+  if (!recentTournaments) return null;
+
+  return (
+    <>
+      <div>
+        <Form className="stack horizontal sm">
+          <select
+            className="w-max"
+            name="copyEventId"
+            onChange={(event) => {
+              setEventId(event.target.value);
+            }}
+          >
+            <option value="">Select a template</option>
+            {recentTournaments.map((event) => (
+              <option key={event.id} value={event.id} suppressHydrationWarning>
+                {event.name} (
+                {databaseTimestampToDate(event.startTime).toLocaleDateString(
+                  "en-US",
+                  { month: "long", day: "numeric", year: "numeric" },
+                )}
+                )
+              </option>
+            ))}
+          </select>
+          <SubmitButton disabled={!eventId}>Use template</SubmitButton>
+        </Form>
+      </div>
+      <hr />
+    </>
+  );
+}
+
+function EventForm() {
+  const data = useLoaderData<typeof loader>();
+  const { t } = useTranslation();
+  const { eventToEdit, eventToCopy } = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
+  const [isTournament, setIsTournament] = React.useState(
+    Boolean(baseEvent?.tournamentId),
+  );
+
+  return (
+    <Form className="stack md items-start" method="post">
+      {eventToEdit && (
+        <input type="hidden" name="eventToEditId" value={eventToEdit.eventId} />
+      )}
+      {eventToCopy?.tournamentId ? (
+        <input
+          type="hidden"
+          name="tournamentToCopyId"
+          value={eventToCopy.tournamentId}
+        />
+      ) : null}
+      {data.canCreateTournament && !eventToEdit && (
+        <TournamentEnabler
+          checked={isTournament}
+          setChecked={setIsTournament}
+        />
+      )}
+      <NameInput />
+      <DescriptionTextarea supportsMarkdown={isTournament} />
+      {isTournament ? <RulesTextarea supportsMarkdown /> : null}
+      <DatesInput allowMultiDate={!isTournament} />
+      {!isTournament ? <BracketUrlInput /> : null}
+      <DiscordLinkInput />
+      <TagsAdder />
+      <BadgesAdder />
+      {isTournament ? (
+        <>
+          <Divider>Tournament settings</Divider>
+          <RegClosesAtSelect />
+          <RankedToggle />
+          <EnableNoScreenToggle />
+          <AutonomousSubsToggle />
+        </>
+      ) : null}
+      {isTournament ? <TournamentMapPickingStyleSelect /> : <MapPoolSection />}
+      {isTournament ? <TournamentFormatSelector /> : null}
+      <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
+    </Form>
   );
 }
 
@@ -318,10 +398,14 @@ function NameInput() {
   );
 }
 
-function DescriptionTextarea() {
+function DescriptionTextarea({
+  supportsMarkdown,
+}: {
+  supportsMarkdown?: boolean;
+}) {
   const { t } = useTranslation();
-  const { eventToEdit } = useLoaderData<typeof loader>();
-  const [value, setValue] = React.useState(eventToEdit?.description ?? "");
+  const baseEvent = useBaseEvent();
+  const [value, setValue] = React.useState(baseEvent?.description ?? "");
 
   return (
     <div>
@@ -341,6 +425,40 @@ function DescriptionTextarea() {
         onChange={(e) => setValue(e.target.value)}
         maxLength={CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH}
       />
+      {supportsMarkdown ? (
+        <FormMessage type="info">Supports Markdown</FormMessage>
+      ) : null}
+    </div>
+  );
+}
+
+function RulesTextarea({ supportsMarkdown }: { supportsMarkdown?: boolean }) {
+  const baseEvent = useBaseEvent();
+  const [value, setValue] = React.useState(
+    baseEvent?.tournamentCtx?.rules ?? "",
+  );
+
+  return (
+    <div>
+      <Label
+        htmlFor="rules"
+        valueLimits={{
+          current: value.length,
+          max: CALENDAR_EVENT.RULES_MAX_LENGTH,
+        }}
+      >
+        Rules
+      </Label>
+      <textarea
+        id="rules"
+        name="rules"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        maxLength={CALENDAR_EVENT.RULES_MAX_LENGTH}
+      />
+      {supportsMarkdown ? (
+        <FormMessage type="info">Supports Markdown</FormMessage>
+      ) : null}
     </div>
   );
 }
@@ -435,7 +553,8 @@ function DatesInput({ allowMultiDate }: { allowMultiDate?: boolean }) {
                   <DateInput
                     id={`date-input-${key}`}
                     name="date"
-                    defaultValue={date ?? undefined}
+                    suppressHydrationWarning
+                    defaultValue={eventToEdit && date ? date : undefined}
                     min={calendarEventMinDate()}
                     max={calendarEventMaxDate()}
                     required
@@ -503,10 +622,8 @@ function BracketUrlInput() {
 
 function DiscordLinkInput() {
   const { t } = useTranslation("calendar");
-  const { eventToEdit } = useLoaderData<typeof loader>();
-  const [value, setValue] = React.useState(
-    eventToEdit?.discordInviteCode ?? "",
-  );
+  const baseEvent = useBaseEvent();
+  const [value, setValue] = React.useState(baseEvent?.discordInviteCode ?? "");
 
   return (
     <div className="stack items-start">
@@ -524,8 +641,8 @@ function DiscordLinkInput() {
 
 function TagsAdder() {
   const { t } = useTranslation(["common", "calendar"]);
-  const { eventToEdit } = useLoaderData<typeof loader>();
-  const [tags, setTags] = React.useState(eventToEdit?.tags ?? []);
+  const baseEvent = useBaseEvent();
+  const [tags, setTags] = React.useState(baseEvent?.tags ?? []);
   const id = React.useId();
 
   const tagsForSelect = CALENDAR_EVENT.TAGS.filter(
@@ -570,9 +687,9 @@ function TagsAdder() {
 
 function BadgesAdder() {
   const { t } = useTranslation("calendar");
-  const { eventToEdit } = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const { managedBadges } = useLoaderData<typeof loader>();
-  const [badges, setBadges] = React.useState(eventToEdit?.badgePrizes ?? []);
+  const [badges, setBadges] = React.useState(baseEvent?.badgePrizes ?? []);
   const id = React.useId();
 
   const input = (
@@ -640,9 +757,9 @@ function BadgesAdder() {
 }
 
 function RankedToggle() {
-  const data = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const [isRanked, setIsRanked] = React.useState(
-    data.tournamentCtx?.settings.isRanked ?? true,
+    baseEvent?.tournamentCtx?.settings.isRanked ?? true,
   );
   const id = React.useId();
 
@@ -669,9 +786,9 @@ function RankedToggle() {
 }
 
 function EnableNoScreenToggle() {
-  const data = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const [enableNoScreen, setEnableNoScreen] = React.useState(
-    data.tournamentCtx?.settings.enableNoScreenToggle ?? true,
+    baseEvent?.tournamentCtx?.settings.enableNoScreenToggle ?? true,
   );
   const id = React.useId();
 
@@ -696,9 +813,9 @@ function EnableNoScreenToggle() {
 }
 
 function AutonomousSubsToggle() {
-  const data = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const [autonomousSubs, setAutonomousSubs] = React.useState(
-    data.tournamentCtx?.settings.autonomousSubs ?? true,
+    baseEvent?.tournamentCtx?.settings.autonomousSubs ?? true,
   );
   const id = React.useId();
 
@@ -723,13 +840,13 @@ function AutonomousSubsToggle() {
 }
 
 function RegClosesAtSelect() {
-  const data = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const [regClosesAt, setRegClosesAt] = React.useState<RegClosesAtOption>(
-    data.tournamentCtx?.settings.regClosesAt
+    baseEvent?.tournamentCtx?.settings.regClosesAt
       ? datesToRegClosesAt({
-          startTime: new Date(data.tournamentCtx.startTime),
+          startTime: new Date(baseEvent.tournamentCtx.startTime),
           regClosesAt: databaseTimestampToDate(
-            data.tournamentCtx.settings.regClosesAt,
+            baseEvent.tournamentCtx.settings.regClosesAt,
           ),
         })
       : "0",
@@ -779,13 +896,14 @@ function TournamentMapPickingStyleSelect() {
   const id = React.useId();
   const { eventToEdit, recentEventsWithMapPools } =
     useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const [mode, setMode] = React.useState<"ALL" | "TO" | RankedModeShort>(
-    eventToEdit?.mapPickingStyle
-      ? mapPickingStyleToShort[eventToEdit.mapPickingStyle]
+    baseEvent?.mapPickingStyle
+      ? mapPickingStyleToShort[baseEvent.mapPickingStyle]
       : "ALL",
   );
   const [mapPool, setMapPool] = React.useState<MapPool>(
-    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY,
+    baseEvent?.mapPool ? new MapPool(baseEvent.mapPool) : MapPool.EMPTY,
   );
 
   // can't change toToolsMode in editing
@@ -863,13 +981,13 @@ function TournamentEnabler({
 function MapPoolSection() {
   const { t } = useTranslation(["game-misc", "common"]);
 
-  const { eventToEdit, recentEventsWithMapPools } =
-    useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
+  const { recentEventsWithMapPools } = useLoaderData<typeof loader>();
   const [mapPool, setMapPool] = React.useState<MapPool>(
-    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY,
+    baseEvent?.mapPool ? new MapPool(baseEvent.mapPool) : MapPool.EMPTY,
   );
   const [includeMapPool, setIncludeMapPool] = React.useState(
-    Boolean(eventToEdit?.mapPool),
+    Boolean(baseEvent?.mapPool),
   );
 
   const id = React.useId();
@@ -898,10 +1016,10 @@ function MapPoolSection() {
 
 function CounterPickMapPoolSection() {
   const { t } = useTranslation(["common"]);
-  const { eventToEdit } = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const [mapPool, setMapPool] = React.useState<MapPool>(
-    eventToEdit?.tieBreakerMapPool
-      ? new MapPool(eventToEdit.tieBreakerMapPool)
+    baseEvent?.tieBreakerMapPool
+      ? new MapPool(baseEvent.tieBreakerMapPool)
       : MapPool.EMPTY,
   );
 
@@ -985,26 +1103,26 @@ function MapPoolValidationStatusMessage({
 }
 
 function TournamentFormatSelector() {
-  const data = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const [format, setFormat] = React.useState<TournamentFormatShort>(
-    data.tournamentCtx?.settings.bracketProgression
+    baseEvent?.tournamentCtx?.settings.bracketProgression
       ? bracketProgressionToShortTournamentFormat(
-          data.tournamentCtx.settings.bracketProgression,
+          baseEvent.tournamentCtx.settings.bracketProgression,
         )
       : "DE",
   );
   const [withUndergroundBracket, setWithUndergroundBracket] = React.useState(
-    data.tournamentCtx
-      ? data.tournamentCtx.settings.bracketProgression.some(
+    baseEvent?.tournamentCtx
+      ? baseEvent.tournamentCtx.settings.bracketProgression.some(
           (b) => b.name === BRACKET_NAMES.UNDERGROUND,
         )
       : true,
   );
   const [thirdPlaceMatch, setThirdPlaceMatch] = React.useState(
-    data.tournamentCtx?.settings.thirdPlaceMatch ?? true,
+    baseEvent?.tournamentCtx?.settings.thirdPlaceMatch ?? true,
   );
   const [teamsPerGroup, setTeamsPerGroup] = React.useState(
-    data.tournamentCtx?.settings.teamsPerGroup ?? 4,
+    baseEvent?.tournamentCtx?.settings.teamsPerGroup ?? 4,
   );
 
   return (
@@ -1083,17 +1201,18 @@ function TournamentFormatSelector() {
 }
 
 function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
-  const data = useLoaderData<typeof loader>();
+  const baseEvent = useBaseEvent();
   const [autoCheckInAll, setAutoCheckInAll] = React.useState(
-    data.tournamentCtx?.settings.autoCheckInAll ?? false,
+    baseEvent?.tournamentCtx?.settings.autoCheckInAll ?? false,
   );
   const [_brackets, setBrackets] = React.useState<Array<FollowUpBracket>>(
     () => {
       if (
-        data.tournamentCtx &&
-        data.tournamentCtx.settings.bracketProgression[0].type === "round_robin"
+        baseEvent?.tournamentCtx &&
+        baseEvent.tournamentCtx.settings.bracketProgression[0].type ===
+          "round_robin"
       ) {
-        return data.tournamentCtx.settings.bracketProgression
+        return baseEvent.tournamentCtx.settings.bracketProgression
           .slice(1)
           .map((b) => ({
             name: b.name,

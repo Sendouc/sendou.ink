@@ -2,6 +2,7 @@ import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import type { TournamentMatch } from "~/db/types";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import {
   seededRandom,
   sourceTypes,
@@ -10,6 +11,10 @@ import { removeDuplicates } from "~/utils/arrays";
 import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
 import type { TournamentDataTeam } from "./core/Tournament.server";
 import type { Tournament } from "./core/Tournament";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type { TFunction } from "i18next";
+import type { TournamentRoundMaps } from "~/db/tables";
+import { sumArray } from "~/utils/number";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -177,6 +182,80 @@ export function matchIsLocked({
   return locked.includes(matchId);
 }
 
+export function pickInfoText({
+  map,
+  t,
+  teams,
+}: {
+  map?: { stageId: StageId; mode: ModeShort; source: TournamentMaplistSource };
+  t: TFunction;
+  teams: [TournamentDataTeam, TournamentDataTeam];
+}) {
+  if (!map) return "";
+
+  if (map.source === teams[0].id) {
+    return t("tournament:pickInfo.team", { number: 1 });
+  }
+  if (map.source === teams[1].id) {
+    return t("tournament:pickInfo.team", { number: 2 });
+  }
+  if (map.source === "TIEBREAKER") {
+    return t("tournament:pickInfo.tiebreaker");
+  }
+  if (map.source === "BOTH") return t("tournament:pickInfo.both");
+  if (map.source === "DEFAULT") return t("tournament:pickInfo.default");
+  if (map.source === "COUNTERPICK") {
+    return t("tournament:pickInfo.counterpick");
+  }
+  if (map.source === "TO") return "";
+
+  console.error(`Unknown source: ${String(map.source)}`);
+  return "";
+}
+
 export function groupNumberToLetter(groupNumber: number) {
   return String.fromCharCode(65 + groupNumber - 1).toUpperCase();
+}
+
+export function isSetOverByResults({
+  results,
+  count,
+  countType,
+}: {
+  results: Array<{ winnerTeamId: number }>;
+  count: number;
+  countType: TournamentRoundMaps["type"];
+}) {
+  const winCounts = new Map<number, number>();
+
+  for (const result of results) {
+    const count = winCounts.get(result.winnerTeamId) ?? 0;
+    winCounts.set(result.winnerTeamId, count + 1);
+  }
+
+  if (countType === "PLAY_ALL") {
+    return sumArray(Array.from(winCounts.values())) === count;
+  }
+
+  const maxWins = Math.max(...Array.from(winCounts.values()));
+
+  // best of
+  return maxWins >= Math.ceil(count / 2);
+}
+
+export function isSetOverByScore({
+  scores,
+  count,
+  countType,
+}: {
+  scores: [number, number];
+  count: number;
+  countType: TournamentRoundMaps["type"];
+}) {
+  if (countType === "PLAY_ALL") {
+    return sumArray(scores) === count;
+  }
+
+  const matchOverAtXWins = Math.ceil(count / 2);
+  return scores[0] === matchOverAtXWins || scores[1] === matchOverAtXWins;
 }

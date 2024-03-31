@@ -892,6 +892,10 @@ dialog::backdrop {
   gap: var(--s-2);
 }
 
+.stack.sm-column {
+  column-gap: var(--s-2);
+}
+
 .stack.sm-plus {
   gap: var(--s-3);
 }
@@ -906,6 +910,10 @@ dialog::backdrop {
 
 .stack.lg {
   gap: var(--s-8);
+}
+
+.stack.lg-row {
+  row-gap: var(--s-8);
 }
 
 .stack.xl {
@@ -1686,6 +1694,10 @@ html[dir="rtl"] .fix-rtl {
   cursor: pointer;
 }
 
+.map-pool-picker__map-button__icon__error {
+  fill: var(--theme-error);
+}
+
 .map-pool-picker__map-button__text {
   position: absolute;
   top: 14px;
@@ -1698,6 +1710,28 @@ html[dir="rtl"] .fix-rtl {
   font-size: var(--fonts-xxxxs);
   color: var(--text-lighter);
   font-weight: var(--semi-bold);
+}
+
+.map-pool-picker__map-button__number {
+  position: absolute;
+  background-color: var(--theme);
+  border-radius: 100%;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--button-text);
+  font-size: var(--fonts-xxsm);
+  font-weight: var(--semi-bold);
+  top: -5px;
+  left: 0;
+}
+
+.map-pool-picker__map-button__from {
+  position: absolute;
+  bottom: -15px;
+  font-size: var(--fonts-xxs);
+  font-weight: var(--bold);
 }
 
 .map-pool-picker__divider::before,

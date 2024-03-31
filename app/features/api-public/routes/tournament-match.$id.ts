@@ -8,6 +8,7 @@ import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { resolveMapList } from "~/features/tournament-bracket/core/mapList.server";
 import { requireBearerAuth } from "../api-public-utils.server";
 import i18next from "~/modules/i18n/i18next.server";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 
 const paramsSchema = z.object({
   id,
@@ -38,6 +39,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       )
       .select(({ eb }) => [
         "TournamentStage.tournamentId",
+        "TournamentMatch.id",
         "TournamentMatch.opponentOne",
         "TournamentMatch.opponentTwo",
         "Tournament.mapPickingStyle",
@@ -80,7 +82,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
     return parsed;
   };
-  const mapList = (): GetTournamentMatchResponse["mapList"] => {
+  const mapList = async (): Promise<GetTournamentMatchResponse["mapList"]> => {
     if (!match.opponentOne.id || !match.opponentTwo.id) {
       return null;
     }
@@ -103,6 +105,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       }));
     }
 
+    const pickBanEvents = match.maps?.pickBan
+      ? await TournamentRepository.pickBanEventsByMatchId(match.id)
+      : [];
+
     return resolveMapList({
       bestOf: match.bestOf,
       tournamentId: match.tournamentId,
@@ -110,6 +116,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       teams: [match.opponentOne.id, match.opponentTwo.id],
       mapPickingStyle: match.mapPickingStyle,
       maps: match.maps,
+      pickBanEvents,
     }).map((map) => {
       return {
         map: {
@@ -140,7 +147,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
         }
       : null,
     url: `https://sendou.ink/to/${match.tournamentId}/matches/${id}`,
-    mapList: mapList(),
+    mapList: await mapList(),
   };
 
   return result;

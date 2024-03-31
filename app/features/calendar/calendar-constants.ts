@@ -53,6 +53,7 @@ export const REG_CLOSES_AT_OPTIONS = [
   "0",
   "30min",
   "1h",
+  "1h30min",
   "2h",
   "3h",
   "6h",

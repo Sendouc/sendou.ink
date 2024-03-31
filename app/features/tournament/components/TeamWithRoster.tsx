@@ -27,13 +27,18 @@ export function TeamWithRoster({
   const tournament = useTournament();
   const friendCodes = useTournamentFriendCodes();
 
+  const teamLogoSrc = tournament.tournamentTeamLogoSrc(team);
+
   return (
     <div>
       <div className="tournament__team-with-roster">
         <div className="tournament__team-with-roster__name">
-          {seed ? (
-            <div className="tournament__team-with-roster__seed">#{seed}</div>
-          ) : null}{" "}
+          <div className="stack horizontal sm justify-end items-end">
+            {teamLogoSrc ? <Avatar size="xxs" url={teamLogoSrc} /> : null}
+            {seed ? (
+              <div className="tournament__team-with-roster__seed">#{seed}</div>
+            ) : null}
+          </div>{" "}
           {teamPageUrl ? (
             <Link
               to={teamPageUrl}

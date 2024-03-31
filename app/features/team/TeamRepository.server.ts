@@ -4,7 +4,7 @@ export function findByUserId(userId: number) {
   return db
     .selectFrom("TeamMember")
     .innerJoin("Team", "Team.id", "TeamMember.teamId")
-    .select(["Team.id", "Team.customUrl"])
+    .select(["Team.id", "Team.customUrl", "Team.name"])
     .where("TeamMember.userId", "=", userId)
     .executeTakeFirst();
 }

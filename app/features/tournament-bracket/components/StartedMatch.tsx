@@ -10,7 +10,7 @@ import { useUser } from "~/features/auth/core/user";
 import { Chat, useChat } from "~/features/chat/components/Chat";
 import { useTournament } from "~/features/tournament/routes/to.$id";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type { StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { databaseTimestampToDate } from "~/utils/dates";
 import type { Unpacked } from "~/utils/types";
@@ -24,25 +24,29 @@ import {
   groupNumberToLetter,
   mapCountPlayedInSetWithCertainty,
   matchIsLocked,
+  pickInfoText,
   resolveHostingTeam,
   resolveRoomPass,
 } from "../tournament-bracket-utils";
-import { ScoreReporterRosters } from "./ScoreReporterRosters";
+import { MatchActions } from "./MatchActions";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import { CrossIcon } from "~/components/icons/Cross";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
+import { nullFilledArray } from "~/utils/arrays";
+import * as PickBan from "../core/PickBan";
+import { PickIcon } from "~/components/icons/Pick";
+import { Popover } from "~/components/Popover";
 import type { Bracket } from "../core/Bracket";
+import { MatchRosters } from "./MatchRosters";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
 >;
 
-// TODO: rename (since it now contains Chat as well)
-export function ScoreReporter({
+export function StartedMatch({
   teams,
   currentStageWithMode,
-  modes,
   selectedResultIndex,
   setSelectedResultIndex,
   result,
@@ -50,8 +54,7 @@ export function ScoreReporter({
 }: {
   teams: [TournamentDataTeam, TournamentDataTeam];
   result?: Result;
-  currentStageWithMode: TournamentMapListMap;
-  modes: ModeShort[];
+  currentStageWithMode?: TournamentMapListMap;
   selectedResultIndex?: number;
   // if this is set it means the component is being used in presentation manner
   setSelectedResultIndex?: (index: number) => void;
@@ -128,11 +131,17 @@ export function ScoreReporter({
       </span>
     ) : null,
     <>
-      {t("tournament:match.score", {
-        scoreOne,
-        scoreTwo,
-        bestOf: data.match.bestOf,
-      })}
+      {data.match.roundMaps?.type === "PLAY_ALL"
+        ? t("tournament:match.score.playAll", {
+            scoreOne,
+            scoreTwo,
+            bestOf: data.match.bestOf,
+          })
+        : t("tournament:match.score", {
+            scoreOne,
+            scoreTwo,
+            bestOf: data.match.bestOf,
+          })}
     </>,
     tournament.ctx.settings.enableNoScreenToggle ? (
       <ScreenBanIcons banned={teams.some((team) => team.noScreen)} />
@@ -189,14 +198,13 @@ export function ScoreReporter({
           )}
       </FancyStageBanner>
       <ModeProgressIndicator
-        modes={modes}
         scores={[scoreOne, scoreTwo]}
         bestOf={data.match.bestOf}
         selectedResultIndex={selectedResultIndex}
         setSelectedResultIndex={setSelectedResultIndex}
       />
       {type === "EDIT" || presentational ? (
-        <MatchActionSectionTabs
+        <StartedMatchTabs
           presentational={presentational}
           scores={[scoreOne, scoreTwo]}
           teams={teams}
@@ -226,42 +234,66 @@ function FancyStageBanner({
   teams,
   matchIsLocked,
 }: {
-  stage: TournamentMapListMap;
+  stage?: TournamentMapListMap;
   infos?: (JSX.Element | null)[];
   children?: React.ReactNode;
   teams: [TournamentDataTeam, TournamentDataTeam];
   matchIsLocked: boolean;
 }) {
+  const data = useLoaderData<TournamentMatchLoaderData>();
   const { t } = useTranslation(["game-misc", "tournament"]);
 
   const stageNameToBannerImageUrl = (stageId: StageId) => {
     return stageImageUrl(stageId) + ".png";
   };
 
+  const banPickingTeam = () => {
+    if (
+      !data.match.roundMaps ||
+      !data.match.opponentOne?.id ||
+      !data.match.opponentTwo?.id
+    ) {
+      return null;
+    }
+
+    const pickingTeamId = PickBan.turnOf({
+      results: data.results,
+      maps: data.match.roundMaps,
+      teams: [data.match.opponentOne.id, data.match.opponentTwo.id],
+      mapList: data.mapList,
+    });
+
+    return pickingTeamId ? teams.find((t) => t.id === pickingTeamId) : null;
+  };
+
   const style = {
-    "--_tournament-bg-url": `url("${stageNameToBannerImageUrl(
-      stage.stageId,
-    )}")`,
+    "--_tournament-bg-url": stage
+      ? `url("${stageNameToBannerImageUrl(stage.stageId)}")`
+      : undefined,
   };
 
-  const pickInfoText = () => {
-    if (stage.source === teams[0].id)
-      return t("tournament:pickInfo.team", { number: 1 });
-    if (stage.source === teams[1].id)
-      return t("tournament:pickInfo.team", { number: 2 });
-    if (stage.source === "TIEBREAKER")
-      return t("tournament:pickInfo.tiebreaker");
-    if (stage.source === "BOTH") return t("tournament:pickInfo.both");
-    if (stage.source === "DEFAULT") return t("tournament:pickInfo.default");
-    if (stage.source === "TO") return "";
-
-    console.error(`Unknown source: ${String(stage.source)}`);
-    return "";
-  };
+  const inBanPhase =
+    data.match.roundMaps?.pickBan === "BAN_2" &&
+    data.mapList &&
+    data.mapList.filter((m) => m.bannedByTournamentTeamId).length < 2;
 
   return (
     <>
-      {matchIsLocked ? (
+      {inBanPhase ? (
+        <div className="tournament-bracket__locked-banner">
+          <div className="stack sm items-center">
+            <div className="text-lg text-center font-bold">Banning phase</div>
+            <div>Waiting for {banPickingTeam()?.name}</div>
+          </div>
+        </div>
+      ) : !stage ? (
+        <div className="tournament-bracket__locked-banner">
+          <div className="stack sm items-center">
+            <div className="text-lg text-center font-bold">Counterpick</div>
+            <div>Waiting for {banPickingTeam()?.name}</div>
+          </div>
+        </div>
+      ) : matchIsLocked ? (
         <div className="tournament-bracket__locked-banner">
           <div className="stack sm items-center">
             <div className="text-lg text-center font-bold">
@@ -295,7 +327,7 @@ function FancyStageBanner({
                 {t(`game-misc:STAGE_${stage.stageId}`)}
               </span>
             </h4>
-            <h4>{pickInfoText()}</h4>
+            <h4>{pickInfoText({ t, teams, map: stage })}</h4>
           </div>
           {children}
         </div>
@@ -312,54 +344,127 @@ function FancyStageBanner({
 }
 
 function ModeProgressIndicator({
-  modes,
   scores,
   bestOf,
   selectedResultIndex,
   setSelectedResultIndex,
 }: {
-  modes: ModeShort[];
   scores: [number, number];
   bestOf: number;
   selectedResultIndex?: number;
   setSelectedResultIndex?: (index: number) => void;
 }) {
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const { t } = useTranslation(["game-misc"]);
 
   const maxIndexThatWillBePlayedForSure =
-    mapCountPlayedInSetWithCertainty({ bestOf, scores }) - 1;
+    data.match.roundMaps?.type === "PLAY_ALL"
+      ? bestOf - 1
+      : mapCountPlayedInSetWithCertainty({ bestOf, scores }) - 1;
+
+  const indexWithBansConsider = (realIdx: number) => {
+    let result = 0;
+
+    for (const [idx, map] of (data.mapList ?? []).entries()) {
+      if (idx === realIdx) {
+        break;
+      }
+
+      if (map.bannedByTournamentTeamId) {
+        continue;
+      }
+
+      result++;
+    }
+
+    return result;
+  };
 
   // TODO: this should be button when we click on it
   return (
     <div className="tournament-bracket__mode-progress">
-      {modes.map((mode, i) => {
+      {nullFilledArray(
+        Math.max(data.mapList?.length ?? 0, data.match.roundMaps?.count ?? 0),
+      ).map((_, i) => {
+        const map = data.mapList?.[i];
+
+        const adjustedI = indexWithBansConsider(i);
+
+        if (
+          data.matchIsOver &&
+          !data.results[adjustedI] &&
+          !map?.bannedByTournamentTeamId
+        ) {
+          return null;
+        }
+
+        if (!map?.mode) {
+          return (
+            <div key={i} className="tournament-bracket__mode-progress__image">
+              <PickIcon />
+            </div>
+          );
+        }
+
+        if (map.bannedByTournamentTeamId) {
+          const bannerTeamName = tournament.ctx.teams.find(
+            (t) => t.id === map.bannedByTournamentTeamId,
+          )?.name;
+
+          return (
+            <Popover
+              key={i}
+              triggerClassName="minimal tiny tournament-bracket__mode-progress__image__banned__popover-trigger"
+              buttonChildren={
+                <Image
+                  containerClassName="tournament-bracket__mode-progress__image tournament-bracket__mode-progress__image__banned"
+                  path={modeImageUrl(map.mode)}
+                  height={20}
+                  width={20}
+                  alt={t(`game-misc:MODE_LONG_${map.mode}`)}
+                />
+              }
+            >
+              <div className="text-center">
+                {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
+                {t(`game-misc:STAGE_${map.stageId}`)}
+              </div>
+              <div className="text-xs text-lighter">
+                Banned by {bannerTeamName}
+              </div>
+            </Popover>
+          );
+        }
+
         return (
           <Image
             containerClassName={clsx(
               "tournament-bracket__mode-progress__image",
               {
                 "tournament-bracket__mode-progress__image__notable":
-                  i <= maxIndexThatWillBePlayedForSure,
+                  adjustedI <= maxIndexThatWillBePlayedForSure,
                 "tournament-bracket__mode-progress__image__team-one-win":
-                  data.results[i] &&
-                  data.results[i].winnerTeamId === data.match.opponentOne?.id,
+                  data.results[adjustedI] &&
+                  data.results[adjustedI].winnerTeamId ===
+                    data.match.opponentOne?.id,
                 "tournament-bracket__mode-progress__image__team-two-win":
-                  data.results[i] &&
-                  data.results[i].winnerTeamId === data.match.opponentTwo?.id,
+                  data.results[adjustedI] &&
+                  data.results[adjustedI].winnerTeamId ===
+                    data.match.opponentTwo?.id,
                 "tournament-bracket__mode-progress__image__selected":
-                  i === selectedResultIndex,
+                  adjustedI === selectedResultIndex,
                 "cursor-pointer": Boolean(setSelectedResultIndex),
               },
             )}
             key={i}
-            path={modeImageUrl(mode)}
+            path={modeImageUrl(map.mode)}
             height={20}
             width={20}
-            alt={t(`game-misc:MODE_LONG_${mode}`)}
-            title={t(`game-misc:MODE_LONG_${mode}`)}
-            onClick={() => setSelectedResultIndex?.(i)}
-            testId={`mode-progress-${mode}`}
+            alt={t(`game-misc:MODE_LONG_${map.mode}`)}
+            title={t(`game-misc:MODE_LONG_${map.mode}`)}
+            onClick={() => setSelectedResultIndex?.(adjustedI)}
+            testId={`mode-progress-${map.mode}`}
           />
         );
       })}
@@ -367,7 +472,7 @@ function ModeProgressIndicator({
   );
 }
 
-function MatchActionSectionTabs({
+function StartedMatchTabs({
   presentational,
   scores,
   teams,
@@ -400,11 +505,22 @@ function MatchActionSectionTabs({
     );
   }, [data, tournament]);
 
-  const showChat =
-    !tournament.ctx.isFinalized &&
-    data.match.chatCode &&
-    (data.match.players.some((p) => p.id === user?.id) ||
-      tournament.isOrganizerOrStreamer(user));
+  const showChat = (() => {
+    if (!data.match.chatCode) return false;
+    if (tournament.ctx.isFinalized && !tournament.isOrganizer(user)) {
+      return false;
+    }
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    if (tournament.ctx.startTime < oneMonthAgo) {
+      return false;
+    }
+
+    return (
+      data.match.players.some((p) => p.id === user?.id) ||
+      tournament.isOrganizerOrStreamer(user)
+    );
+  })();
 
   const rooms = React.useMemo(() => {
     return showChat && data.match.chatCode
@@ -446,7 +562,10 @@ function MatchActionSectionTabs({
             hidden: !showChat,
           },
           {
-            label: presentational ? "Score" : "Report score",
+            label: "Rosters",
+          },
+          {
+            label: presentational ? "Score" : "Actions",
           },
         ]}
         disappearing
@@ -472,10 +591,14 @@ function MatchActionSectionTabs({
             ),
           },
           {
+            key: "rosters",
+            element: <MatchRosters teams={[teams[0].id, teams[1].id]} />,
+          },
+          {
             key: "report",
             unmount: false,
             element: (
-              <ScoreReporterRosters
+              <MatchActions
                 // Without the key prop when switching to another match the winnerId is remembered
                 // which causes "No winning team matching the id" error.
                 // Switching the key props forces the component to remount.
@@ -484,7 +607,6 @@ function MatchActionSectionTabs({
                 teams={teams}
                 position={currentPosition}
                 result={result}
-                bestOf={data.match.bestOf}
                 presentational={
                   !tournament.canReportScore({ matchId: data.match.id, user })
                 }

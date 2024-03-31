@@ -60,6 +60,7 @@
   "pickInfo.tiebreaker": "Tiebreaker",
   "pickInfo.both": "Both picked",
   "pickInfo.default": "Default map",
+  "pickInfo.counterpick": "Counterpick",
 
   "generator.error": "Changes you made weren't saved since the tournament started",
 
@@ -122,6 +123,7 @@
   "match.pass": "Pass",
   "match.pool": "Pool",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
+  "match.score.playAll": "{{scoreOne}}-{{scoreTwo}} (Play all {{bestOf}})",
   "match.action.undoLastScore": "Undo last score",
   "match.action.reopenMatch": "Reopen match",
 

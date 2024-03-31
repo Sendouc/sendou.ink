@@ -1,8 +1,4 @@
-import {
-  redirect,
-  type ActionFunction,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
+import { type ActionFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -14,10 +10,13 @@ import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { FriendCodeInput } from "~/components/FriendCodeInput";
 import { Image, ModeImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
+import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Popover } from "~/components/Popover";
+import { Section } from "~/components/Section";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ClockIcon } from "~/components/icons/Clock";
@@ -28,15 +27,20 @@ import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { ModeMapPoolPicker } from "~/features/sendouq-settings/components/ModeMapPoolPicker";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import {
   tournamentFromDB,
   type TournamentDataTeam,
 } from "~/features/tournament-bracket/core/Tournament.server";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
+import { filterOutFalsy } from "~/utils/arrays";
+import { logger } from "~/utils/logger";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { booleanToInt } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
@@ -45,7 +49,6 @@ import {
   SENDOU_INK_BASE_URL,
   navIconUrl,
   readonlyMapsPage,
-  tournamentBracketsPage,
   tournamentJoinPage,
   tournamentSubsPage,
 } from "~/utils/urls";
@@ -54,8 +57,7 @@ import { createTeam } from "../queries/createTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { findOwnTeam } from "../queries/findOwnTeam.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { findOwnTournamentTeam } from "../queries/findOwnTournamentTeam.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
@@ -67,18 +69,15 @@ import {
   tournamentIdFromParams,
 } from "../tournament-utils";
 import {
-  useTournamentFriendCode,
   useTournament,
+  useTournamentFriendCode,
   useTournamentToSetMapPool,
 } from "./to.$id";
-import { FriendCodeInput } from "~/components/FriendCodeInput";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
-import * as QRepository from "~/features/sendouq/QRepository.server";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
-import { filterOutFalsy } from "~/utils/arrays";
-import { MapPoolStages } from "~/components/MapPoolSelector";
-import { Section } from "~/components/Section";
-import { logger } from "~/utils/logger";
+import Markdown from "markdown-to-jsx";
+import { NewTabs } from "~/components/NewTabs";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
+import * as TeamRepository from "~/features/team/TeamRepository.server";
+import { Toggle } from "~/components/Toggle";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -98,6 +97,12 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   switch (data._action) {
     case "UPSERT_TEAM": {
+      validate(
+        !data.teamId ||
+          (await TeamRepository.findByUserId(user.id))?.id === data.teamId,
+        "Team id does not match the team you are in",
+      );
+
       if (ownTeam) {
         validate(
           tournament.registrationOpen || data.teamName === ownTeam.name,
@@ -109,6 +114,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           id: ownTeam.id,
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
           noScreen: booleanToInt(data.noScreen),
+          teamId: data.teamId ?? null,
         });
       } else {
         validate(!HACKY_isInviteOnlyEvent(event), "Event is invite only");
@@ -128,6 +134,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           ownerId: user.id,
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
           noScreen: booleanToInt(data.noScreen),
+          teamId: data.teamId ?? null,
         });
       }
       break;
@@ -137,7 +144,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(ownTeam.members.some((member) => member.userId === data.userId));
       validate(data.userId !== user.id);
 
-      const detailedOwnTeam = findOwnTeam({
+      const detailedOwnTeam = findOwnTournamentTeam({
         tournamentId,
         userId: user.id,
       });
@@ -252,37 +259,31 @@ export const action: ActionFunction = async ({ request, params }) => {
 export type TournamentRegisterPageLoader = typeof loader;
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const tournamentId = tournamentIdFromParams(params);
-  const hasStarted = hasTournamentStarted(tournamentId);
-
-  if (hasStarted) {
-    throw redirect(tournamentBracketsPage({ tournamentId }));
-  }
-
   const user = await getUser(request);
   if (!user) return null;
 
-  const ownTeam = findOwnTeam({
+  const ownTournamentTeam = findOwnTournamentTeam({
     tournamentId: tournamentIdFromParams(params),
     userId: user.id,
   });
-  if (!ownTeam) return null;
+  if (!ownTournamentTeam)
+    return {
+      mapPool: null,
+      trusterPlayers: null,
+      team: await TeamRepository.findByUserId(user.id),
+    };
 
   return {
-    mapPool: findMapPoolByTeamId(ownTeam.id),
+    mapPool: findMapPoolByTeamId(ownTournamentTeam.id),
     trusterPlayers: await QRepository.usersThatTrusted(user.id),
+    team: await TeamRepository.findByUserId(user.id),
   };
 };
 
 export default function TournamentRegisterPage() {
-  const user = useUser();
   const isMounted = useIsMounted();
-  const { t, i18n } = useTranslation(["tournament"]);
+  const { i18n } = useTranslation();
   const tournament = useTournament();
-
-  const teamMemberOf = tournament.teamMemberOfByUser(user);
-  const isRegularMemberOfATeam =
-    teamMemberOf && !tournament.ownedTeamByUser(user);
 
   const startsAtEvenHour = tournament.ctx.startTime.getMinutes() === 0;
 
@@ -333,38 +334,121 @@ export default function TournamentRegisterPage() {
           </div>
         </div>
       </div>
-      <div className="whitespace-pre-wrap">{tournament.ctx.description}</div>
-      {isRegularMemberOfATeam ? (
-        <div className="stack md items-center">
-          <Alert>{t("tournament:pre.inATeam")}</Alert>
-          {teamMemberOf && teamMemberOf.checkIns.length === 0 ? (
-            <FormWithConfirm
-              dialogHeading={`Leave "${tournament.teamMemberOfByUser(user)?.name}"?`}
-              fields={[["_action", "LEAVE_TEAM"]]}
-              deleteButtonText="Leave"
-            >
-              <Button
-                className="build__small-text"
-                variant="minimal-destructive"
-                type="submit"
-              >
-                Leave the team
-              </Button>
-            </FormWithConfirm>
-          ) : null}
-        </div>
-      ) : (
-        <RegistrationForms />
-      )}
-      {!tournament.teamMemberOfByUser(user) && tournament.canAddNewSubPost ? (
-        <Link
-          to={tournamentSubsPage(tournament.ctx.id)}
-          className="text-xs text-center"
-        >
-          {t("tournament:pre.sub.prompt")}
-        </Link>
-      ) : null}
-      <TOPickedMapPoolInfo />
+      <TournamentRegisterInfoTabs />
+    </div>
+  );
+}
+
+function TournamentRegisterInfoTabs() {
+  const user = useUser();
+  const tournament = useTournament();
+  const { t } = useTranslation(["tournament"]);
+
+  const teamMemberOf = tournament.teamMemberOfByUser(user);
+  const teamOwned = tournament.ownedTeamByUser(user);
+  const isRegularMemberOfATeam = teamMemberOf && !teamOwned;
+
+  const defaultTab = () => {
+    if (tournament.hasStarted || !teamOwned) return 0;
+
+    const registerTab = !tournament.ctx.rules ? 1 : 2;
+    return registerTab;
+  };
+  const [tabIndex, setTabIndex] = useSearchParamState({
+    defaultValue: defaultTab(),
+    name: "tab",
+    revive: Number,
+  });
+
+  return (
+    <div>
+      <NewTabs
+        sticky
+        selectedIndex={tabIndex}
+        setSelectedIndex={setTabIndex}
+        tabs={[
+          {
+            label: "Description",
+          },
+          {
+            label: "Rules",
+            hidden: !tournament.ctx.rules,
+          },
+          {
+            label: "Register",
+            hidden: tournament.hasStarted,
+          },
+        ]}
+        disappearing
+        content={[
+          {
+            key: "description",
+            element: (
+              <div className="stack lg">
+                <div className="tournament__info__description">
+                  <Markdown options={{ wrapper: React.Fragment }}>
+                    {tournament.ctx.description ?? ""}
+                  </Markdown>
+                </div>
+                <TOPickedMapPoolInfo />
+                <TiebreakerMapPoolInfo />
+              </div>
+            ),
+          },
+          {
+            key: "rules",
+            hidden: !tournament.ctx.rules,
+            element: (
+              <div className="tournament__info__description">
+                <Markdown options={{ wrapper: React.Fragment }}>
+                  {tournament.ctx.rules ?? ""}
+                </Markdown>
+              </div>
+            ),
+          },
+          {
+            key: "register",
+            hidden: tournament.hasStarted,
+            element: (
+              <div className="stack lg">
+                {isRegularMemberOfATeam ? (
+                  <div className="stack md items-center">
+                    <Alert>{t("tournament:pre.inATeam")}</Alert>
+                    {teamMemberOf && teamMemberOf.checkIns.length === 0 ? (
+                      <FormWithConfirm
+                        dialogHeading={`Leave "${tournament.teamMemberOfByUser(user)?.name}"?`}
+                        fields={[["_action", "LEAVE_TEAM"]]}
+                        deleteButtonText="Leave"
+                      >
+                        <Button
+                          className="build__small-text"
+                          variant="minimal-destructive"
+                          type="submit"
+                        >
+                          Leave the team
+                        </Button>
+                      </FormWithConfirm>
+                    ) : null}
+                  </div>
+                ) : (
+                  <RegistrationForms />
+                )}
+                {user &&
+                !tournament.teamMemberOfByUser(user) &&
+                tournament.canAddNewSubPost &&
+                !tournament.hasStarted ? (
+                  <Link
+                    to={tournamentSubsPage(tournament.ctx.id)}
+                    className="text-xs text-center"
+                  >
+                    {t("tournament:pre.sub.prompt")}
+                  </Link>
+                ) : null}
+              </div>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }
@@ -373,7 +457,7 @@ function PleaseLogIn() {
   const { t } = useTranslation(["tournament"]);
 
   return (
-    <form className="stack items-center" action={LOG_IN_URL} method="post">
+    <form className="stack items-center mt-4" action={LOG_IN_URL} method="post">
       <Button size="big" type="submit">
         {t("tournament:pre.logIn")}
       </Button>
@@ -414,7 +498,7 @@ function RegistrationForms() {
         <RegistrationProgress
           checkedIn={ownTeamCheckedIn}
           name={ownTeam?.name}
-          mapPool={data?.mapPool}
+          mapPool={data?.mapPool ?? undefined}
           members={ownTeam?.members}
         />
       ) : null}
@@ -646,9 +730,24 @@ function TeamInfo({
   noScreen?: number;
   canUnregister: boolean;
 }) {
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["tournament", "common"]);
   const fetcher = useFetcher();
   const tournament = useTournament();
+  const [teamName, setTeamName] = React.useState(name);
+  const user = useUser();
+  const [signUpWithTeam, setSignUpWithTeam] = React.useState(() =>
+    Boolean(tournament.ownedTeamByUser(user)?.team),
+  );
+
+  const handleSignUpWithTeamChange = (checked: boolean) => {
+    if (!checked) {
+      setSignUpWithTeam(false);
+    } else if (data?.team) {
+      setSignUpWithTeam(true);
+      setTeamName(data.team.name);
+    }
+  };
 
   return (
     <div>
@@ -675,7 +774,23 @@ function TeamInfo({
       </div>
       <section className="tournament__section">
         <fetcher.Form method="post" className="stack md items-center">
+          {signUpWithTeam && data?.team ? (
+            <input type="hidden" name="teamId" value={data.team.id} />
+          ) : null}
           <div className="stack sm items-center">
+            {data?.team ? (
+              <div className="tournament__section__input-container">
+                <Label htmlFor="signUpAsTeam">
+                  Sign up as {data.team.name}
+                </Label>
+                <Toggle
+                  id="signUpAsTeam"
+                  checked={signUpWithTeam}
+                  setChecked={handleSignUpWithTeamChange}
+                />
+              </div>
+            ) : null}
+
             <div className="tournament__section__input-container">
               <Label htmlFor="teamName">{t("tournament:pre.steps.name")}</Label>
               <Input
@@ -683,8 +798,9 @@ function TeamInfo({
                 id="teamName"
                 required
                 maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
-                defaultValue={name ?? undefined}
-                readOnly={!tournament.registrationOpen}
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                readOnly={!tournament.registrationOpen || signUpWithTeam}
               />
             </div>
             <div className="stack sm">
@@ -781,7 +897,7 @@ function FillRoster({
       ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
 
   const playersAvailableToDirectlyAdd = (() => {
-    return data!.trusterPlayers.filter((user) => {
+    return (data!.trusterPlayers ?? []).filter((user) => {
       return tournament.ctx.teams.every((team) =>
         team.members.every((member) => member.userId !== user.id),
       );
@@ -1155,5 +1271,25 @@ function TOPickedMapPoolInfo() {
         </LinkButton>
       </div>
     </Section>
+  );
+}
+
+function TiebreakerMapPoolInfo() {
+  const { t } = useTranslation(["game-misc"]);
+  const tournament = useTournament();
+
+  if (tournament.ctx.tieBreakerMapPool.length === 0) return null;
+
+  return (
+    <div className="text-sm text-lighter text-semi-bold">
+      Tiebreaker map pool:{" "}
+      {tournament.ctx.tieBreakerMapPool
+        .sort((a, b) => modesShort.indexOf(a.mode) - modesShort.indexOf(b.mode))
+        .map(
+          (map) =>
+            `${t(`game-misc:MODE_SHORT_${map.mode}`)} ${t(`game-misc:STAGE_${map.stageId}`)}`,
+        )
+        .join(", ")}
+    </div>
   );
 }

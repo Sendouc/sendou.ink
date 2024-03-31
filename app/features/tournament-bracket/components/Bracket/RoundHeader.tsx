@@ -2,17 +2,20 @@ import clsx from "clsx";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useDeadline } from "./useDeadline";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
+import type { TournamentRoundMaps } from "~/db/tables";
 
 export function RoundHeader({
   roundId,
   name,
   bestOf,
   showInfos,
+  maps,
 }: {
   roundId: number;
   name: string;
   bestOf?: number;
   showInfos?: boolean;
+  maps?: TournamentRoundMaps | null;
 }) {
   const hasDeadline = ![
     "WB Finals",
@@ -21,12 +24,17 @@ export function RoundHeader({
     "Finals",
   ].includes(name);
 
+  const countPrefix = maps?.type === "PLAY_ALL" ? "Play all " : "Bo";
+
   return (
     <div>
       <div className="elim-bracket__round-header">{name}</div>
       {showInfos && bestOf ? (
         <div className="elim-bracket__round-header__infos">
-          <div>Bo{bestOf}</div>
+          <div>
+            {countPrefix}
+            {bestOf}
+          </div>
           {hasDeadline ? <Deadline roundId={roundId} bestOf={bestOf} /> : null}
         </div>
       ) : (

@@ -13,6 +13,7 @@ import { Popover } from "~/components/Popover";
 import * as React from "react";
 import type { TournamentStreamsLoader } from "~/features/tournament/routes/to.$id.streams";
 import { TournamentStream } from "~/features/tournament/components/TournamentStream";
+import { Avatar } from "~/components/Avatar";
 
 interface MatchProps {
   match: Unpacked<TournamentData["data"]["match"]>;
@@ -168,6 +169,9 @@ function MatchRow({
 
   const ownTeam = tournament.teamMemberOfByUser(user);
 
+  const logoSrc =
+    !simulated && team ? tournament.tournamentTeamLogoSrc(team) : null;
+
   return (
     <div
       className={clsx("stack horizontal", { "text-lighter": isLoser })}
@@ -181,11 +185,13 @@ function MatchRow({
       >
         {team?.seed}
       </div>
+      {logoSrc ? <Avatar size="xxxs" url={logoSrc} className="mr-1" /> : null}
       <div
         className={clsx("bracket__match__team-name", {
           "text-theme-secondary":
             !simulated && ownTeam && ownTeam?.id === team?.id,
           "text-lighter italic opaque": simulated,
+          "bracket__match__team-name__narrow": logoSrc,
           invisible: !team,
         })}
       >

@@ -143,7 +143,7 @@ export default function TournamentMapsPage() {
           { ...teamOne, maps: new MapPool(teamOneMaps) },
           { ...teamTwo, maps: new MapPool(teamTwoMaps) },
         ]}
-        bestOf={bestOf}
+        count={bestOf}
         seed={`${bracketType}-${roundNumber}`}
         modesIncluded={tournament.modesIncluded}
       />
@@ -357,13 +357,16 @@ function PickInfoText({
   const { t } = useTranslation(["tournament"]);
 
   const text = () => {
-    if (source === teamOneId)
+    if (source === teamOneId) {
       return t("tournament:pickInfo.team", { number: 1 });
-    if (source === teamTwoId)
+    }
+    if (source === teamTwoId) {
       return t("tournament:pickInfo.team", { number: 2 });
+    }
     if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
     if (source === "BOTH") return t("tournament:pickInfo.both");
     if (source === "DEFAULT") return t("tournament:pickInfo.default");
+    if (source === "COUNTERPICK") return t("tournament:pickInfo.counterpick");
     if (source === "TO") return "";
 
     console.error(`Unknown source: ${String(source)}`);

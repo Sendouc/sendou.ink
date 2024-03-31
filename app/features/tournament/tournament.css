@@ -241,6 +241,23 @@
   padding: var(--s-1) 0;
 }
 
+.tournament__info__description {
+  white-space: pre-wrap;
+}
+
+.tournament__info__description > :is(h1, h2, h3, h4, h5, h6) {
+  margin-block-end: var(--s-5);
+  line-height: 1.4;
+}
+
+.tournament__info__description > h1 {
+  font-size: var(--fonts-xl);
+}
+
+.tournament__info__description > :is(h2, h3, h4, h5, h6) {
+  font-size: var(--fonts-lg);
+}
+
 .tournament__by {
   color: var(--text-lighter);
   font-size: var(--fonts-sm);

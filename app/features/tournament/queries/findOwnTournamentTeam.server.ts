@@ -24,7 +24,7 @@ type FindOwnTeam =
       Pick<TournamentTeamCheckIn, "checkedInAt">)
   | null;
 
-export function findOwnTeam({
+export function findOwnTournamentTeam({
   tournamentId,
   userId,
 }: {
