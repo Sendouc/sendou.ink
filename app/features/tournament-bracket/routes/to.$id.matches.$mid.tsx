@@ -562,8 +562,16 @@ function MatchHeader() {
 
             roundName = `Groups ${group?.number ? groupNumberToLetter(group.number) : ""}${round?.number ?? ""}.${match.number}`;
           } else if (bracket.type === "swiss") {
-            // xxx: MatchHeader
-            roundName = "TODO";
+            const group = bracket.data.group.find(
+              (group) => group.id === match.group_id,
+            );
+            const round = bracket.data.round.find(
+              (round) => round.id === match.round_id,
+            );
+
+            const oneGroupOnly = bracket.data.group.length === 1;
+
+            roundName = `Swiss${oneGroupOnly ? "" : " Group"} ${group?.number && !oneGroupOnly ? groupNumberToLetter(group.number) : ""} ${round?.number ?? ""}.${match.number}`;
           } else if (
             bracket.type === "single_elimination" ||
             bracket.type === "double_elimination"

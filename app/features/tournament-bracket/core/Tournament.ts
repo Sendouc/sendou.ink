@@ -154,6 +154,7 @@ export class Tournament {
           Bracket.create({
             id: -1 * bracketIdx,
             tournament: this,
+            seeding: checkedInTeams,
             preview: true,
             name,
             data: Swiss.create({

@@ -7,6 +7,7 @@ import { Button } from "~/components/Button";
 import clsx from "clsx";
 import * as React from "react";
 
+// xxx: button to advance bracket
 export function SwissBracket({ bracket }: { bracket: BracketType }) {
   const [selectedGroupIndex, setSelectedGroupIndex] = React.useState(0);
   const groups = getGroups(bracket);
@@ -58,7 +59,10 @@ export function SwissBracket({ bracket }: { bracket: BracketType }) {
             );
 
             return (
-              <div key={round.id} className="stack md">
+              <div
+                key={round.id}
+                className={matches.length > 0 ? "stack md-plus" : "stack"}
+              >
                 <RoundHeader
                   roundId={round.id}
                   name={`Round ${round.number}`}

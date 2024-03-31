@@ -63,6 +63,8 @@ import { roundMapsFromInput } from "../core/mapList.server";
 import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.server";
 import { checkInMany } from "~/features/tournament/queries/checkInMany.server";
 import { logger } from "~/utils/logger";
+import * as Swiss from "../core/Swiss";
+import { createSwissBracketInTransaction } from "~/features/tournament/queries/createSwissBracketInTransaction.server";
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
@@ -88,29 +90,41 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const groupCount = new Set(bracket.data.round.map((r) => r.group_id))
         .size;
+
       validate(
-        bracket.type === "round_robin"
+        bracket.type === "round_robin" || bracket.type === "swiss"
           ? bracket.data.round.length / groupCount === data.maps.length
           : bracket.data.round.length === data.maps.length,
         "Invalid map count",
       );
 
-      // xxx: START_BRACKET (remove as "round_robin")
-      if (bracket.type === "swiss") {
-        throw new Error("Swiss bracket not supported yet");
-      }
-
       sql.transaction(() => {
-        const stage = manager.create({
-          tournamentId,
-          name: bracket.name,
-          type: bracket.type as "round_robin",
-          seeding:
-            bracket.type === "round_robin"
-              ? seeding
-              : fillWithNullTillPowerOfTwo(seeding),
-          settings: tournament.bracketSettings(bracket.type, seeding.length),
-        });
+        const stage =
+          bracket.type === "swiss"
+            ? createSwissBracketInTransaction(
+                Swiss.create({
+                  name: bracket.name,
+                  seeding,
+                  tournamentId,
+                  settings: tournament.bracketSettings(
+                    bracket.type,
+                    seeding.length,
+                  ),
+                }),
+              )
+            : manager.create({
+                tournamentId,
+                name: bracket.name,
+                type: bracket.type as "round_robin",
+                seeding:
+                  bracket.type === "round_robin"
+                    ? seeding
+                    : fillWithNullTillPowerOfTwo(seeding),
+                settings: tournament.bracketSettings(
+                  bracket.type,
+                  seeding.length,
+                ),
+              });
 
         updateRoundMaps(
           roundMapsFromInput({
@@ -375,6 +389,7 @@ export default function TournamentBracketsPage() {
       <div className="stack md">
         <div className="stack horizontal sm">
           <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
+          {/* xxx: compactify swiss */}
           {bracket.type !== "round_robin" && !bracket.preview ? (
             <CompactifyButton />
           ) : null}

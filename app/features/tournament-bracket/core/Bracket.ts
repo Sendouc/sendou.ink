@@ -87,6 +87,7 @@ export abstract class Bracket {
   private createdSimulation() {
     if (
       this.type === "round_robin" ||
+      this.type === "swiss" ||
       this.preview ||
       this.tournament.ctx.isFinalized
     )

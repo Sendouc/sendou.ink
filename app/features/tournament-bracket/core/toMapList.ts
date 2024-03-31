@@ -96,7 +96,7 @@ function getFilteredRounds(
   rounds: Round[],
   type: TournamentBracketProgression[number]["type"],
 ) {
-  if (type !== "round_robin") return rounds;
+  if (type !== "round_robin" && type !== "swiss") return rounds;
 
   // highest group id because lower group id's can have byes that higher don't
   const highestGroupId = Math.max(...rounds.map((x) => x.group_id));
@@ -128,10 +128,10 @@ function resolveRoundMapCount(
   counts: BracketMapCounts,
   type: TournamentBracketProgression[number]["type"],
 ) {
-  // with rr we just take the first group id
+  // with rr/swiss we just take the first group id
   // as every group has the same map list
   const groupId =
-    type === "round_robin"
+    type === "round_robin" || type === "swiss"
       ? Math.max(...Array.from(counts.keys()))
       : round.group_id;
 

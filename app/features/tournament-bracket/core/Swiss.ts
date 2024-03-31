@@ -5,7 +5,7 @@ import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import type { InputStage, Match, StageType } from "~/modules/brackets-model";
 import { nullFilledArray } from "~/utils/arrays";
 
-interface CreateArgs extends Omit<InputStage, "type" | "seeding"> {
+interface CreateArgs extends Omit<InputStage, "type" | "seeding" | "number"> {
   seeding: Array<{ id: number; name: string }>;
 }
 
@@ -21,9 +21,10 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
     number: i + 1,
   }));
 
+  let roundId = 0;
   return {
     group,
-    match: firstRoundMatches({ seeding: args.seeding, groupCount }),
+    match: firstRoundMatches({ seeding: args.seeding, groupCount, roundCount }),
     participant: args.seeding.map((p) => ({
       id: p.id,
       name: p.name,
@@ -31,7 +32,7 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
     })),
     round: group.flatMap((g) =>
       nullFilledArray(roundCount).map((_, i) => ({
-        id: i,
+        id: roundId++,
         group_id: g.id,
         number: i + 1,
         stage_id: 0,
@@ -54,13 +55,17 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
 function firstRoundMatches({
   seeding,
   groupCount,
+  roundCount,
 }: {
   seeding: CreateArgs["seeding"];
   groupCount: number;
+  roundCount: number;
 }): Match[] {
   const groups = splitToGroups();
 
   const result: Match[] = [];
+
+  let matchId = 0;
   for (const [groupIdx, participants] of groups.entries()) {
     const bye = participants.length % 2 === 0 ? null : participants.pop();
 
@@ -74,16 +79,16 @@ function firstRoundMatches({
       "firstRoundMatches: halfs not equal",
     );
 
+    const roundId = groupIdx * roundCount;
     for (let i = 0; i < upperHalf.length; i++) {
       const upper = upperHalf[i];
       const lower = lowerHalf[i];
 
       result.push({
-        id: i,
+        id: matchId++,
         group_id: groupIdx,
         stage_id: 0,
-        round_id: 0,
-        // xxx: what to put here?
+        round_id: roundId,
         number: i + 1,
         opponent1: {
           id: upper.id,
@@ -99,12 +104,11 @@ function firstRoundMatches({
 
     if (bye) {
       result.push({
-        id: result.length,
+        id: matchId++,
         group_id: groupIdx,
         stage_id: 0,
-        round_id: 0,
-        // xxx: what to put here?
-        number: result.length + 1,
+        round_id: roundId,
+        number: upperHalf.length + 1,
         opponent1: {
           id: bye.id,
           position: teamIdToPosition(bye.id),
