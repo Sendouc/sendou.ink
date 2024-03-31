@@ -462,9 +462,10 @@ export class Tournament {
           ),
           seedOrdering: ["groups.seed_optimized"],
         };
-      // xxx: bracketSettings
       case "swiss": {
-        return {};
+        return {
+          swiss: this.ctx.settings.swiss,
+        };
       }
       default: {
         assertUnreachable(type);

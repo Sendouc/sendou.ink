@@ -448,6 +448,10 @@
   border-radius: 0;
 }
 
+.tournament-bracket__bracket-nav__link__big {
+  font-size: var(--fonts-lg);
+}
+
 .tournament-bracket__bracket-nav__link:active {
   transform: translateY(0px);
 }

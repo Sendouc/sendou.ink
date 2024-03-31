@@ -2,6 +2,7 @@ import { useBracketExpanded } from "~/features/tournament/routes/to.$id";
 import type { Bracket as BracketType } from "../../core/Bracket";
 import { EliminationBracketSide } from "./Elimination";
 import { RoundRobinBracket } from "./RoundRobin";
+import { SwissBracket } from "./Swiss";
 
 export function Bracket({ bracket }: { bracket: BracketType }) {
   const { bracketExpanded } = useBracketExpanded();
@@ -10,6 +11,14 @@ export function Bracket({ bracket }: { bracket: BracketType }) {
     return (
       <BracketContainer>
         <RoundRobinBracket bracket={bracket} />
+      </BracketContainer>
+    );
+  }
+
+  if (bracket.type === "swiss") {
+    return (
+      <BracketContainer>
+        <SwissBracket bracket={bracket} />
       </BracketContainer>
     );
   }

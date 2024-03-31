@@ -393,6 +393,10 @@ export interface TournamentSettings {
   autonomousSubs?: boolean;
   /** Timestamp (SQLite format) when reg closes, if missing then means closes at start time */
   regClosesAt?: number;
+  swiss?: {
+    groupCount: number;
+    roundCount: number;
+  };
 }
 
 export interface CastedMatchesInfo {

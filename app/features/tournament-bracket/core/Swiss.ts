@@ -13,7 +13,6 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
   const swissSettings = args.settings?.swiss;
 
   const groupCount = swissSettings?.groupCount ?? 1;
-  // xxx: default roundCount inferred from participant count
   const roundCount = swissSettings?.roundCount ?? 1;
 
   const group = nullFilledArray(groupCount).map((_, i) => ({
@@ -24,7 +23,7 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
 
   return {
     group,
-    match: firstRoundMatches(args.seeding),
+    match: firstRoundMatches({ seeding: args.seeding, groupCount }),
     participant: args.seeding.map((p) => ({
       id: p.id,
       name: p.name,
@@ -52,60 +51,89 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
   };
 }
 
-function firstRoundMatches(seeding: CreateArgs["seeding"]): Match[] {
-  const participants = seeding ?? [];
-
-  const bye = participants.length % 2 === 0 ? null : participants.pop();
-
-  // split in half
-  const halfI = participants.length / 2;
-  const upperHalf = participants.slice(0, halfI);
-  const lowerHalf = participants.slice(halfI);
-
-  invariant(
-    upperHalf.length === lowerHalf.length,
-    "firstRoundMatches: halfs not equal",
-  );
+function firstRoundMatches({
+  seeding,
+  groupCount,
+}: {
+  seeding: CreateArgs["seeding"];
+  groupCount: number;
+}): Match[] {
+  const groups = splitToGroups();
 
   const result: Match[] = [];
-  for (let i = 0; i < upperHalf.length; i++) {
-    const upper = upperHalf[i];
-    const lower = lowerHalf[i];
+  for (const [groupIdx, participants] of groups.entries()) {
+    const bye = participants.length % 2 === 0 ? null : participants.pop();
 
-    result.push({
-      id: i,
-      // xxx: firstRoundMatches: support many groups
-      group_id: 0,
-      stage_id: 0,
-      round_id: 0,
-      number: i + 1,
-      opponent1: {
-        id: upper.id,
-        position: i + 1,
-      },
-      opponent2: {
-        id: lower.id,
-        position: upperHalf.length + i + 1,
-      },
-      status: 2,
-    });
-  }
+    // split in half
+    const halfI = participants.length / 2;
+    const upperHalf = participants.slice(0, halfI);
+    const lowerHalf = participants.slice(halfI);
 
-  if (bye) {
-    result.push({
-      id: result.length,
-      group_id: 0,
-      stage_id: 0,
-      round_id: 0,
-      number: result.length + 1,
-      opponent1: {
-        id: bye.id,
-        position: result.length + 1,
-      },
-      opponent2: null,
-      status: 2,
-    });
+    invariant(
+      upperHalf.length === lowerHalf.length,
+      "firstRoundMatches: halfs not equal",
+    );
+
+    for (let i = 0; i < upperHalf.length; i++) {
+      const upper = upperHalf[i];
+      const lower = lowerHalf[i];
+
+      result.push({
+        id: i,
+        group_id: groupIdx,
+        stage_id: 0,
+        round_id: 0,
+        // xxx: what to put here?
+        number: i + 1,
+        opponent1: {
+          id: upper.id,
+          position: teamIdToPosition(upper.id),
+        },
+        opponent2: {
+          id: lower.id,
+          position: teamIdToPosition(lower.id),
+        },
+        status: 2,
+      });
+    }
+
+    if (bye) {
+      result.push({
+        id: result.length,
+        group_id: groupIdx,
+        stage_id: 0,
+        round_id: 0,
+        // xxx: what to put here?
+        number: result.length + 1,
+        opponent1: {
+          id: bye.id,
+          position: teamIdToPosition(bye.id),
+        },
+        opponent2: null,
+        status: 2,
+      });
+    }
   }
 
   return result;
+
+  function splitToGroups() {
+    if (!seeding) return [];
+    if (groupCount === 1) return [seeding];
+
+    const groups: CreateArgs["seeding"][] = nullFilledArray(groupCount).map(
+      () => [],
+    );
+
+    for (let i = 0; i < seeding.length; i++) {
+      const groupIndex = i % groupCount;
+      groups[groupIndex].push(seeding[i]);
+    }
+
+    return groups;
+  }
+
+  function teamIdToPosition(id: number) {
+    return seeding.findIndex((p) => p.id === id) + 1;
+  }
 }

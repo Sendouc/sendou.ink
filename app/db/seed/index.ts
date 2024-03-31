@@ -885,6 +885,10 @@ function calendarEventWithToTools(
           bracketProgression: [{ type: "swiss", name: "Swiss" }],
           enableNoScreenToggle: true,
           isRanked: false,
+          swiss: {
+            groupCount: 2,
+            roundCount: 4,
+          },
         }
       : event === "SOS"
         ? {
