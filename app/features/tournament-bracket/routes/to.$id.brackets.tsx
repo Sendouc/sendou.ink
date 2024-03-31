@@ -62,6 +62,7 @@ import { BracketMapListDialog } from "../components/BracketMapListDialog";
 import { roundMapsFromInput } from "../core/mapList.server";
 import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.server";
 import { checkInMany } from "~/features/tournament/queries/checkInMany.server";
+import { logger } from "~/utils/logger";
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
@@ -313,13 +314,19 @@ export default function TournamentBracketsPage() {
       {bracket.preview && bracket.enoughTeams ? (
         <div className="stack items-center mb-4">
           {!tournament.isOrganizer(user) ? (
-            <Alert
-              variation="INFO"
-              alertClassName="tournament-bracket__start-bracket-alert"
-              textClassName="stack horizontal md items-center text-center"
-            >
-              {t("tournament:bracket.wip")}
-            </Alert>
+            <div className="stack sm items-center">
+              <Alert
+                variation="INFO"
+                alertClassName="tournament-bracket__start-bracket-alert"
+                textClassName="stack horizontal md items-center text-center"
+              >
+                {t("tournament:bracket.wip")}
+              </Alert>
+              <MiniCheckinInfoBanner
+                bracket={bracket}
+                bracketIdx={bracketIdx}
+              />
+            </div>
           ) : tournament.regularCheckInStartInThePast ? (
             <div className="stack sm items-center">
               <Alert
@@ -414,6 +421,47 @@ function useAutoRefresh() {
     // TODO: maybe later could look into not revalidating unless bracket advanced but do something fancy in the tournament class instead
     revalidate();
   }, [lastEvent, revalidate]);
+}
+
+function MiniCheckinInfoBanner({
+  bracket,
+  bracketIdx,
+}: {
+  bracket: BracketType;
+  bracketIdx: number;
+}) {
+  const tournament = useTournament();
+  const user = useUser();
+
+  const teamMemberOf = tournament.teamMemberOfByUser(user);
+
+  if (!teamMemberOf) return null;
+
+  if (bracket.data.participant.some((p) => p.id === teamMemberOf.id)) {
+    return (
+      <div className="tournament-bracket__mini-alert">
+        ✅ Your team is checked in to the bracket (ask the TO for a check-out if
+        needed)
+      </div>
+    );
+  }
+
+  const needsCheckIn =
+    teamMemberOf.checkIns.length === 0 ||
+    !teamMemberOf.checkIns.some((c) => c.bracketIdx === bracketIdx);
+
+  if (needsCheckIn) {
+    return (
+      <div className="tournament-bracket__mini-alert">
+        ⚠️ Your team is not checked in to the bracket (needs action by the
+        captain or TO)
+      </div>
+    );
+  }
+
+  logger.warn("Unexpected branch in MiniCheckinInfoBanner");
+
+  return null;
 }
 
 function BracketStarter({
