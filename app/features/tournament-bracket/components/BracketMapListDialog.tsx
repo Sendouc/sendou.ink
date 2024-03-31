@@ -82,6 +82,11 @@ export function BracketMapListDialog({
       return getRounds({ type: "single", bracket });
     }
 
+    // xxx: BracketMapListDialog.rounds
+    if (bracket.type === "swiss") {
+      return [];
+    }
+
     assertUnreachable(bracket.type);
   }, [bracket, maps]);
 

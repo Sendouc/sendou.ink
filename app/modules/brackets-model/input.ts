@@ -123,4 +123,9 @@ export interface StageSettings {
    * It might be fairer since it gives the WB winner the right to lose once during the stage...
    */
   grandFinal?: GrandFinalType;
+
+  swiss?: {
+    groupCount: number;
+    roundCount: number;
+  };
 }

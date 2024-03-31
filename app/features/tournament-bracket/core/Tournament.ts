@@ -1,5 +1,8 @@
 import invariant from "tiny-invariant";
-import type { TournamentBracketProgression } from "~/db/tables";
+import type {
+  TournamentBracketProgression,
+  TournamentStage,
+} from "~/db/tables";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { logger } from "~/utils/logger";
 import { assertUnreachable } from "~/utils/types";
@@ -23,6 +26,7 @@ import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { currentSeason } from "~/features/mmr/season";
 import { getTournamentManager } from "./brackets-manager";
 import { userSubmittedImage } from "~/utils/urls";
+import * as Swiss from "./Swiss";
 
 export type OptionalIdObject = { id: number } | undefined;
 
@@ -130,6 +134,42 @@ export class Tournament {
               ),
             },
             type,
+          }),
+        );
+      } else if (type === "swiss") {
+        const { teams, relevantMatchesFinished } = sources
+          ? this.resolveTeamsFromSources(sources)
+          : {
+              teams: this.ctx.teams,
+              relevantMatchesFinished: true,
+            };
+
+        const { checkedInTeams, notCheckedInTeams } =
+          this.divideTeamsToCheckedInAndNotCheckedIn({
+            teams,
+            bracketIdx,
+          });
+
+        this.brackets.push(
+          Bracket.create({
+            id: -1 * bracketIdx,
+            tournament: this,
+            preview: true,
+            name,
+            data: Swiss.create({
+              tournamentId: this.ctx.id,
+              name,
+              seeding: checkedInTeams,
+              settings: this.bracketSettings(type, checkedInTeams.length),
+            }),
+            type,
+            sources,
+            createdAt: null,
+            canBeStarted:
+              checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
+              (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
+            teamsPendingCheckIn:
+              bracketIdx !== 0 ? notCheckedInTeams.map((t) => t.id) : undefined,
           }),
         );
       } else {
@@ -243,7 +283,9 @@ export class Tournament {
     }
 
     // should not happen but just in case
-    if (bracket.type === "round_robin") return teams;
+    if (bracket.type === "round_robin" || bracket.type === "swiss") {
+      return teams;
+    }
 
     const sourceBracketEncounters = sourceBracket.data.match.reduce(
       (acc, cur) => {
@@ -275,7 +317,10 @@ export class Tournament {
       manager.create({
         tournamentId: this.ctx.id,
         name: "X",
-        type: bracket.type,
+        type: bracket.type as Exclude<
+          TournamentStage["type"],
+          "round_robin" | "swiss"
+        >,
         seeding: fillWithNullTillPowerOfTwo(candidateTeams),
         settings: this.bracketSettings(bracket.type, candidateTeams.length),
       });
@@ -417,6 +462,10 @@ export class Tournament {
           ),
           seedOrdering: ["groups.seed_optimized"],
         };
+      // xxx: bracketSettings
+      case "swiss": {
+        return {};
+      }
       default: {
         assertUnreachable(type);
       }

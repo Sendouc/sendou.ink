@@ -561,6 +561,9 @@ function MatchHeader() {
             );
 
             roundName = `Groups ${group?.number ? groupNumberToLetter(group.number) : ""}${round?.number ?? ""}.${match.number}`;
+          } else if (bracket.type === "swiss") {
+            // xxx: MatchHeader
+            roundName = "TODO";
           } else if (
             bracket.type === "single_elimination" ||
             bracket.type === "double_elimination"

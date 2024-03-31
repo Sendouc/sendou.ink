@@ -95,11 +95,16 @@ export const action: ActionFunction = async ({ params, request }) => {
         "Invalid map count",
       );
 
+      // xxx: START_BRACKET (remove as "round_robin")
+      if (bracket.type === "swiss") {
+        throw new Error("Swiss bracket not supported yet");
+      }
+
       sql.transaction(() => {
         const stage = manager.create({
           tournamentId,
           name: bracket.name,
-          type: bracket.type,
+          type: bracket.type as "round_robin",
           seeding:
             bracket.type === "round_robin"
               ? seeding

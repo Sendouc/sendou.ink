@@ -316,6 +316,9 @@ export abstract class Bracket {
       case "round_robin": {
         return new RoundRobinBracket(args);
       }
+      case "swiss": {
+        return new SwissBracket(args);
+      }
       default: {
         assertUnreachable(args.type);
       }
@@ -1024,6 +1027,56 @@ class RoundRobinBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "round_robin";
+  }
+
+  get defaultRoundBestOfs() {
+    const result: BracketMapCounts = new Map();
+
+    for (const round of this.data.round) {
+      if (!result.get(round.group_id)) {
+        result.set(round.group_id, new Map());
+      }
+
+      result
+        .get(round.group_id)!
+        .set(round.number, { count: 3, type: "BEST_OF" });
+    }
+
+    return result;
+  }
+}
+
+class SwissBracket extends Bracket {
+  constructor(args: CreateBracketArgs) {
+    super(args);
+  }
+
+  get collectResultsWithPoints() {
+    return false;
+  }
+
+  // xxx: source
+  source(_placements: number[]): {
+    relevantMatchesFinished: boolean;
+    teams: { id: number; name: string }[];
+  } {
+    return {
+      relevantMatchesFinished: false,
+      teams: [],
+    };
+  }
+
+  get standings(): Standing[] {
+    return this.currentStandings();
+  }
+
+  // xxx: currentStandings
+  currentStandings(_includeUnfinishedGroups = false) {
+    return [];
+  }
+
+  get type(): TournamentBracketProgression[number]["type"] {
+    return "swiss";
   }
 
   get defaultRoundBestOfs() {
