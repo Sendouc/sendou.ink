@@ -199,9 +199,9 @@ export function HACKY_maxRosterSizeBeforeStart(event: { name: string }) {
 }
 
 export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
-  if (round.round === "grand_finals") return `bracket.grand_finals` as const;
+  if (round.round === "grand_finals") return `bracket.grand_finals`;
   if (round.round === "bracket_reset") {
-    return `bracket.grand_finals.bracket_reset` as const;
+    return `bracket.grand_finals.bracket_reset`;
   }
   if (round.round === "finals") return `bracket.${round.type}.finals` as const;
 
