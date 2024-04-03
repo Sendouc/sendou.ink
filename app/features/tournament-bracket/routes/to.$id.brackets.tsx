@@ -164,6 +164,20 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
+    case "ADVANCE_BRACKET": {
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      validate(bracket, "Bracket not found");
+      validate(bracket.type === "swiss", "Can't advance non-swiss bracket");
+
+      const matches = Swiss.generateMatchUps({
+        bracket,
+        groupId: data.groupId,
+      });
+
+      await TournamentRepository.insertMatches(matches);
+
+      break;
+    }
     case "FINALIZE_TOURNAMENT": {
       validate(tournament.canFinalize(user), "Can't finalize tournament");
 

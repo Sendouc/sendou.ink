@@ -51,6 +51,7 @@ import { MatchRosters } from "../components/MatchRosters";
 
 import "../tournament-bracket.css";
 
+// xxx: reporting swiss
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const matchId = matchIdFromParams(params);

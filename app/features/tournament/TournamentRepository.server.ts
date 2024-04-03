@@ -1,7 +1,9 @@
 import type { Insertable, NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
+import { nanoid } from "nanoid";
 import { db } from "~/db/sql";
 import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
+import { Status } from "~/modules/brackets-model";
 import { modesShort } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
@@ -575,4 +577,27 @@ export function resetBracket(tournamentStageId: number) {
       .where("id", "=", tournamentStageId)
       .execute();
   });
+}
+
+export type TournamentRepositoryInsertableMatch = Omit<
+  Insertable<DB["TournamentMatch"]>,
+  "status" | "bestOf" | "chatCode"
+>;
+
+export function insertMatches(matches: TournamentRepositoryInsertableMatch[]) {
+  return db
+    .insertInto("TournamentMatch")
+    .values(
+      matches.map((match) => ({
+        groupId: match.groupId,
+        number: match.number,
+        opponentOne: match.opponentOne,
+        opponentTwo: match.opponentTwo,
+        roundId: match.roundId,
+        stageId: match.stageId,
+        status: Status.Ready,
+        chatCode: nanoid(10),
+      })),
+    )
+    .execute();
 }
