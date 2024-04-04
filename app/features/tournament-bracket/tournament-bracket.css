@@ -50,6 +50,7 @@
   grid-area: img;
   display: grid;
   place-items: center;
+  position: relative;
 }
 
 .tournament-bracket__stage-banner {
@@ -65,6 +66,7 @@
   grid-area: img;
   background-repeat: no-repeat;
   background-size: cover;
+  position: relative;
 }
 
 .tournament-bracket__stage-banner__top-bar {
@@ -94,6 +96,9 @@
   font-size: var(--fonts-xxs);
   padding-block: var(--s-1);
   padding-inline: var(--s-2);
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
 }
 
 .tournament-bracket__stage-banner__top-bar__header {
