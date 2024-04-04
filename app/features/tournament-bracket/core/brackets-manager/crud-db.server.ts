@@ -318,6 +318,7 @@ export class Round {
         ? {
             count: parsedMaps.count,
             type: parsedMaps.type,
+            pickBan: parsedMaps.pickBan,
           }
         : null,
     };

@@ -77,7 +77,7 @@ export interface Round {
   number: number;
 
   /** Info about the maps count */
-  maps?: Pick<TournamentRoundMaps, "count" | "type"> | null;
+  maps?: Pick<TournamentRoundMaps, "count" | "type" | "pickBan"> | null;
 }
 
 /**
