@@ -114,6 +114,22 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("hc");
   }
 
+  if (normalizedEventName.includes("bad ideas")) {
+    return tournamentLogoUrl("bio");
+  }
+
+  if (normalizedEventName.includes("tenoch")) {
+    return tournamentLogoUrl("ai");
+  }
+
+  if (normalizedEventName.includes("megalodon mondays")) {
+    return tournamentLogoUrl("mm");
+  }
+
+  if (normalizedEventName.includes("heaven 2 ocean")) {
+    return tournamentLogoUrl("ho");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -180,6 +196,22 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (normalizedEventName.includes("homecoming")) {
     return { bg: "#1c1c1c", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("bad ideas")) {
+    return { bg: "#000000", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("tenoch")) {
+    return { bg: "#425969", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("megalodon mondays")) {
+    return { bg: "#288eb5", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("heaven 2 ocean")) {
+    return { bg: "#8cf1ff", text: BLACK };
   }
 
   return { bg: "#3430ad", text: WHITE };
