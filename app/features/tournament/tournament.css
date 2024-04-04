@@ -258,6 +258,10 @@
   font-size: var(--fonts-lg);
 }
 
+.tournament__info__description > ul:has(+ p) {
+  margin-block-end: var(--s-6);
+}
+
 .tournament__by {
   color: var(--text-lighter);
   font-size: var(--fonts-sm);
