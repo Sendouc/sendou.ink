@@ -94,7 +94,6 @@
     "@types/newrelic": "^9.14.3",
     "@types/node-cron": "^3.0.11",
     "@types/nprogress": "^0.2.3",
-    "@types/prettier": "3.0.0",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.24",
     "@types/react-responsive-masonry": "^2.1.3",
