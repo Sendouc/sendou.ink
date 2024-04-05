@@ -36,6 +36,11 @@ export default defineConfig(() => {
           return defineRoutes((route) => {
             route("/", "features/front-page/routes/index.tsx");
 
+            route(
+              "/patrons-list",
+              "features/front-page/routes/patrons-list.ts",
+            );
+
             route("/u", "features/user-search/routes/u.tsx");
 
             route(

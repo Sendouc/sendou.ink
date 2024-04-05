@@ -19,7 +19,6 @@ import NProgress from "nprogress";
 import * as React from "react";
 import { useTranslation, type CustomTypeOptions } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { Catcher } from "./components/Catcher";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
@@ -86,7 +85,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     {
       locale,
       theme: themeSession.getTheme(),
-      patrons: await UserRepository.findAllPatrons(),
       tournaments: await cachified({
         key: "tournament-showcase",
         cache,

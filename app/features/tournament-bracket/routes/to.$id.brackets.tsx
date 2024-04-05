@@ -63,6 +63,7 @@ import { roundMapsFromInput } from "../core/mapList.server";
 import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.server";
 import { checkInMany } from "~/features/tournament/queries/checkInMany.server";
 import { logger } from "~/utils/logger";
+import { refreshUserSkills } from "~/features/mmr/tiered.server";
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
@@ -174,6 +175,10 @@ export const action: ActionFunction = async ({ params, request }) => {
         }),
         season,
       });
+
+      if (tournament.ranked) {
+        refreshUserSkills(season!);
+      }
 
       break;
     }

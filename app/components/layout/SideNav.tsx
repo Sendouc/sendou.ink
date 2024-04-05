@@ -1,12 +1,10 @@
 import { Link } from "@remix-run/react";
 import navItems from "~/components/layout/nav-items.json";
-import { useTranslation } from "react-i18next";
 import { navIconUrl } from "~/utils/urls";
 import { Image } from "../Image";
+import * as React from "react";
 
-export function SideNav() {
-  const { t } = useTranslation(["common"]);
-
+export function _SideNav() {
   return (
     <nav className="layout__side-nav layout__item_size">
       {navItems.map((item) => {
@@ -21,7 +19,7 @@ export function SideNav() {
                 path={navIconUrl(item.name)}
                 height={32}
                 width={32}
-                alt={t(`common:pages.${item.name}` as any)}
+                alt={item.name}
               />
             </div>
           </Link>
@@ -30,3 +28,5 @@ export function SideNav() {
     </nav>
   );
 }
+
+export const SideNav = React.memo(_SideNav);

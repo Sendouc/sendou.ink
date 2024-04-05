@@ -74,7 +74,7 @@ import {
   summarizeMaps,
   summarizePlayerResults,
 } from "../core/summarizer.server";
-import { FULL_GROUP_SIZE, USER_SKILLS_CACHE_KEY } from "../q-constants";
+import { FULL_GROUP_SIZE } from "../q-constants";
 import { matchSchema } from "../q-schemas.server";
 import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
 import { addDummySkill } from "../queries/addDummySkill.server";
@@ -103,7 +103,8 @@ import cachified from "@epic-web/cachified";
 import { refreshStreamsCache } from "~/features/sendouq-streams/core/streams.server";
 import { CrossIcon } from "~/components/icons/Cross";
 import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
-import { currentSeason } from "~/features/mmr/season";
+import { currentOrPreviousSeason, currentSeason } from "~/features/mmr/season";
+import { refreshUserSkills } from "~/features/mmr/tiered.server";
 
 import "../q.css";
 
@@ -287,8 +288,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
       if (clearCaches) {
         // this is kind of useless to do when admin reports since skills don't change
-        // but it's no the most common case so it's ok
-        cache.delete(USER_SKILLS_CACHE_KEY);
+        // but it's not the most common case so it's ok
+        refreshUserSkills(currentOrPreviousSeason(new Date())!.nth);
 
         refreshStreamsCache();
       }

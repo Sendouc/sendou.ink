@@ -297,7 +297,7 @@ export const action: ActionFunction = async ({ request }) => {
         alphaGroupId: ourGroup.id,
         bravoGroupId: theirGroup.id,
         mapList,
-        memento: await createMatchMemento({
+        memento: createMatchMemento({
           own: { group: ourGroup, preferences: ourGroupPreferences },
           their: { group: theirGroup, preferences: theirGroupPreferences },
           mapList,
@@ -455,7 +455,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const season = currentOrPreviousSeason(new Date());
 
-  const { intervals, userSkills: calculatedUserSkills } = await userSkills(
+  const { intervals, userSkills: calculatedUserSkills } = userSkills(
     season!.nth,
   );
   const groupsWithSkills = addSkillsToGroups({

@@ -1,17 +1,15 @@
+import type { Skill } from "~/db/types";
+import { cache, syncCached } from "~/utils/cache.server";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards/leaderboards-constants";
+import { USER_SKILLS_CACHE_KEY } from "../sendouq/q-constants";
 import {
+  TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
   TIERS,
+  TIERS_BEFORE_LEVIATHAN,
   USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
   type TierName,
-  TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
-  TIERS_BEFORE_LEVIATHAN,
 } from "./mmr-constants";
-import type { Skill } from "~/db/types";
-import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards/leaderboards-constants";
 import { orderedMMRBySeason } from "./queries/orderedMMRBySeason.server";
-import { cachified } from "@epic-web/cachified";
-import { cache, ttl } from "~/utils/cache.server";
-import { HALF_HOUR_IN_MS, ONE_HOUR_IN_MS } from "~/constants";
-import { USER_SKILLS_CACHE_KEY } from "../sendouq/q-constants";
 
 export interface TieredSkill {
   ordinal: number;
@@ -55,18 +53,17 @@ export function freshUserSkills(season: number): {
   };
 }
 
-export async function userSkills(season: number) {
-  const cachedSkills = await cachified({
-    key: `${USER_SKILLS_CACHE_KEY}-${season}`,
-    cache,
-    ttl: ttl(HALF_HOUR_IN_MS),
-    staleWhileRevalidate: ttl(ONE_HOUR_IN_MS),
-    getFreshValue() {
-      return freshUserSkills(season);
-    },
-  });
+const userSkillsCacheKey = (season: number) =>
+  `${USER_SKILLS_CACHE_KEY}-${season}`;
 
-  return cachedSkills;
+export function userSkills(season: number) {
+  return syncCached(userSkillsCacheKey(season), () => freshUserSkills(season));
+}
+
+export function refreshUserSkills(season: number) {
+  cache.delete(userSkillsCacheKey(season));
+
+  userSkills(season);
 }
 
 export type SkillTierInterval = ReturnType<
