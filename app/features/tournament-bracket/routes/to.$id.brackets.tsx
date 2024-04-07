@@ -177,7 +177,11 @@ export const action: ActionFunction = async ({ params, request }) => {
       });
 
       if (tournament.ranked) {
-        refreshUserSkills(season!);
+        try {
+          refreshUserSkills(season!);
+        } catch (error) {
+          logger.warn("Error refreshing user skills", error);
+        }
       }
 
       break;

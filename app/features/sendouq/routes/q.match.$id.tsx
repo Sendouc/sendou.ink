@@ -105,6 +105,7 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { SPLATTERCOLOR_SCREEN_ID } from "~/modules/in-game-lists/weapon-ids";
 import { currentOrPreviousSeason, currentSeason } from "~/features/mmr/season";
 import { refreshUserSkills } from "~/features/mmr/tiered.server";
+import { logger } from "~/utils/logger";
 
 import "../q.css";
 
@@ -289,7 +290,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       if (clearCaches) {
         // this is kind of useless to do when admin reports since skills don't change
         // but it's not the most common case so it's ok
-        refreshUserSkills(currentOrPreviousSeason(new Date())!.nth);
+        try {
+          refreshUserSkills(currentOrPreviousSeason(new Date())!.nth);
+        } catch (error) {
+          logger.warn("Error refreshing user skills", error);
+        }
 
         refreshStreamsCache();
       }

@@ -1,91 +1,24 @@
-import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
-import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
+import { WeaponImage } from "~/components/Image";
 import { BUILD } from "~/constants";
-import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core/user";
-import { getUserId, requireUserId } from "~/features/auth/core/user.server";
-import { atOrError } from "~/utils/arrays";
-import {
-  notFoundIfFalsy,
-  parseRequestFormData,
-  privatelyCachedJson,
-  validate,
-  type SendouRouteHandle,
-} from "~/utils/remix";
-import { userNewBuildPage } from "~/utils/urls";
-import { actualNumber, id } from "~/utils/zod";
-import { type UserPageLoaderData } from "./u.$identifier";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
-import { WeaponImage } from "~/components/Image";
-import { useSearchParamState } from "~/hooks/useSearchParamState";
-import * as BuildRepository from "~/features/builds/BuildRepository.server";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { userParamsSchema } from "../user-page-schemas.server";
+import { atOrError } from "~/utils/arrays";
+import { type SendouRouteHandle } from "~/utils/remix";
+import { userNewBuildPage } from "~/utils/urls";
+import { type UserPageLoaderData } from "./u.$identifier";
 
-const buildsActionSchema = z.object({
-  buildToDeleteId: z.preprocess(actualNumber, id),
-});
-
-export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUserId(request);
-  const data = await parseRequestFormData({
-    request,
-    schema: buildsActionSchema,
-  });
-
-  const usersBuilds = await BuildRepository.allByUserId({
-    userId: user.id,
-    showPrivate: true,
-  });
-
-  validate(usersBuilds.some((build) => build.id === data.buildToDeleteId));
-
-  await BuildRepository.deleteById(data.buildToDeleteId);
-
-  return null;
-};
+import { loader } from "../loaders/u.$identifier.builds.server";
+import { action } from "../actions/u.$identifier.builds.server";
+export { loader, action };
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds", "gear"],
-};
-
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const loggedInUser = await getUserId(request);
-  const { identifier } = userParamsSchema.parse(params);
-  const user = notFoundIfFalsy(
-    await UserRepository.identifierToUserId(identifier),
-  );
-
-  const builds = await BuildRepository.allByUserId({
-    userId: user.id,
-    showPrivate: loggedInUser?.id === user.id,
-  });
-
-  if (builds.length === 0 && loggedInUser?.id !== user.id) {
-    throw new Response(null, { status: 404 });
-  }
-
-  return privatelyCachedJson({
-    builds,
-    weaponCounts: calculateWeaponCounts(),
-  });
-
-  function calculateWeaponCounts() {
-    return builds.reduce(
-      (acc, build) => {
-        for (const weapon of build.weapons) {
-          acc[weapon.weaponSplId] = (acc[weapon.weaponSplId] ?? 0) + 1;
-        }
-
-        return acc;
-      },
-      {} as Record<MainWeaponId, number>,
-    );
-  }
 };
 
 export default function UserBuildsPage() {

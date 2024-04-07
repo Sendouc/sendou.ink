@@ -1,9 +1,4 @@
-import { cachified } from "@epic-web/cachified";
-import {
-  type LoaderFunctionArgs,
-  type MetaFunction,
-  type SerializeFrom,
-} from "@remix-run/node";
+import { type MetaFunction, type SerializeFrom } from "@remix-run/node";
 import {
   useLoaderData,
   useSearchParams,
@@ -26,35 +21,27 @@ import { MapIcon } from "~/components/icons/Map";
 import {
   BUILDS_PAGE_BATCH_SIZE,
   BUILDS_PAGE_MAX_BUILDS,
-  ONE_HOUR_IN_MS,
   PATCHES,
 } from "~/constants";
-import { i18next } from "~/modules/i18n/i18next.server";
-import { weaponIdIsNotAlt } from "~/modules/in-game-lists";
-import { cache, ttl } from "~/utils/cache.server";
 import { safeJSONParse } from "~/utils/json";
 import { type SendouRouteHandle } from "~/utils/remix";
-import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
-import { weaponNameSlugToId } from "~/utils/unslugify.server";
 import {
   BUILDS_PAGE,
-  mySlugify,
   navIconUrl,
   outlinedMainWeaponImageUrl,
   weaponBuildPage,
 } from "~/utils/urls";
-import { MAX_BUILD_FILTERS } from "../builds-constants";
 import {
-  buildFiltersSearchParams,
-  type BuildFiltersFromSearchParams,
-} from "../builds-schemas.server";
+  FILTER_SEARCH_PARAM_KEY,
+  MAX_BUILD_FILTERS,
+} from "../builds-constants";
+import { type BuildFiltersFromSearchParams } from "../builds-schemas.server";
 import type { AbilityBuildFilter, BuildFilter } from "../builds-types";
-import { filterBuilds } from "../core/filter.server";
-import { buildsByWeaponId } from "../queries/buildsBy.server";
 import { FilterSection } from "../components/FilterSection";
 
-const FILTER_SEARCH_PARAM_KEY = "f";
+import { loader } from "../loaders/builds.$slug.server";
+export { loader };
 
 const filterOutMeaninglessFilters = (
   filter: Unpacked<BuildFiltersFromSearchParams>,
@@ -161,69 +148,6 @@ export const handle: SendouRouteHandle = {
       },
     ];
   },
-};
-
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const t = await i18next.getFixedT(request, ["weapons", "common"], {
-    lng: "en",
-  });
-  const weaponId = weaponNameSlugToId(params["slug"]);
-
-  if (typeof weaponId !== "number" || !weaponIdIsNotAlt(weaponId)) {
-    throw new Response(null, { status: 404 });
-  }
-
-  const url = new URL(request.url);
-  const limit = Math.min(
-    Number(url.searchParams.get("limit") ?? BUILDS_PAGE_BATCH_SIZE),
-    BUILDS_PAGE_MAX_BUILDS,
-  );
-
-  const weaponName = t(`weapons:MAIN_${weaponId}`);
-
-  const slug = mySlugify(t(`weapons:MAIN_${weaponId}`, { lng: "en" }));
-
-  const cachedBuilds = await cachified({
-    key: `builds-${weaponId}`,
-    cache,
-    ttl: ttl(ONE_HOUR_IN_MS),
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async getFreshValue() {
-      return buildsByWeaponId({
-        weaponId,
-        limit: BUILDS_PAGE_MAX_BUILDS,
-      });
-    },
-  });
-
-  const rawFilters = url.searchParams.get(FILTER_SEARCH_PARAM_KEY);
-  const filters = buildFiltersSearchParams.safeParse(rawFilters ?? "[]");
-
-  if (!filters.success) {
-    console.error(
-      "Invalid filters",
-      JSON.stringify(filters.error.errors, null, 2),
-    );
-  }
-
-  const filteredBuilds =
-    filters.success && filters.data && filters.data.length > 0
-      ? filterBuilds({
-          builds: cachedBuilds,
-          filters: filters.data,
-          count: limit,
-        })
-      : cachedBuilds.slice(0, limit);
-
-  return {
-    weaponId,
-    weaponName,
-    title: makeTitle([weaponName, t("common:pages.builds")]),
-    builds: filteredBuilds,
-    limit,
-    slug,
-    filters: filters.success ? filters.data : [],
-  };
 };
 
 const BuildCards = React.memo(function BuildCards({
