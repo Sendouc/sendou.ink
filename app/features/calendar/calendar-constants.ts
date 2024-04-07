@@ -17,6 +17,9 @@ export const tags = {
   LOW: {
     color: "#BBDEFB",
   },
+  HIGH: {
+    color: "#FFA000",
+  },
   COUNT: {
     color: "#62E8F5",
   },
