@@ -1,9 +1,4 @@
-import type {
-  ActionFunction,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import {
   Form,
   Link,
@@ -12,74 +7,37 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { FormErrors } from "~/components/FormErrors";
-import { SearchIcon } from "~/components/icons/Search";
 import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
+import { Pagination } from "~/components/Pagination";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "react-i18next";
+import { SearchIcon } from "~/components/icons/Search";
 import { useUser } from "~/features/auth/core/user";
-import { getUserId, requireUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n/i18next.server";
+import { usePagination } from "~/hooks/usePagination";
 import { joinListToNaturalString } from "~/utils/arrays";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { parseRequestFormData, validate } from "~/utils/remix";
-import { makeTitle } from "~/utils/strings";
 import {
-  mySlugify,
+  TEAM_SEARCH_PAGE,
   navIconUrl,
   teamPage,
-  TEAM_SEARCH_PAGE,
   userSubmittedImage,
 } from "~/utils/urls";
-import { allTeams } from "../queries/allTeams.server";
-import { createNewTeam } from "../queries/createNewTeam.server";
 import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
-import { createTeamSchema } from "../team-schemas.server";
-import { usePagination } from "~/hooks/usePagination";
-import { Pagination } from "~/components/Pagination";
 
 import "../team.css";
+
+import { loader } from "../loaders/t.server";
+import { action } from "../actions/t.server";
+export { loader, action };
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [{ title: data.title }];
-};
-
-export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUserId(request);
-  const data = await parseRequestFormData({
-    request,
-    schema: createTeamSchema,
-  });
-
-  const teams = allTeams();
-
-  validate(
-    teams.every((team) =>
-      team.members.every((member) => member.id !== user.id),
-    ),
-    "Already in a team",
-  );
-
-  // two teams can't have same customUrl
-  const customUrl = mySlugify(data.name);
-  if (teams.some((team) => team.customUrl === customUrl)) {
-    return {
-      errors: ["forms.errors.duplicateName"],
-    };
-  }
-
-  createNewTeam({
-    captainId: user.id,
-    name: data.name,
-    customUrl,
-  });
-
-  throw redirect(teamPage(customUrl));
 };
 
 export const handle: SendouRouteHandle = {
@@ -89,57 +47,6 @@ export const handle: SendouRouteHandle = {
     href: TEAM_SEARCH_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await getUserId(request);
-  const t = await i18next.getFixedT(request);
-
-  const teams = allTeams().sort((teamA, teamB) => {
-    // show own team first always
-    if (user && teamA.members.some((m) => m.id === user.id)) {
-      return -1;
-    }
-
-    if (user && teamB.members.some((m) => m.id === user.id)) {
-      return 1;
-    }
-
-    // then full teams
-    if (teamA.members.length >= 4 && teamB.members.length < 4) {
-      return -1;
-    }
-
-    if (teamA.members.length < 4 && teamB.members.length >= 4) {
-      return 1;
-    }
-
-    // and as tiebreaker teams with a higher plus server tier member first
-    const lowestATeamPlusTier = Math.min(
-      ...teamA.members.map((m) => m.plusTier ?? Infinity),
-    );
-    const lowestBTeamPlusTier = Math.min(
-      ...teamB.members.map((m) => m.plusTier ?? Infinity),
-    );
-
-    if (lowestATeamPlusTier > lowestBTeamPlusTier) {
-      return 1;
-    }
-
-    if (lowestATeamPlusTier < lowestBTeamPlusTier) {
-      return -1;
-    }
-
-    return 0;
-  });
-
-  return {
-    title: makeTitle(t("pages.t")),
-    teams,
-    isMemberOfTeam: !user
-      ? false
-      : teams.some((t) => t.members.some((m) => m.id === user.id)),
-  };
 };
 
 export default function TeamSearchPage() {
