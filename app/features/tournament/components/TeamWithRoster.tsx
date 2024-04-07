@@ -60,7 +60,17 @@ export function TeamWithRoster({
               tournament.ctx.startTime;
 
             return (
-              <li key={member.userId} className="list-none">
+              <li key={member.userId} className="tournament__team-member-row">
+                {member.isOwner ? (
+                  <span className="tournament__team-member-name__role text-theme">
+                    C
+                  </span>
+                ) : null}
+                {isSub && !member.isOwner ? (
+                  <span className="tournament__team-member-name__role tournament__team-member-name__role__sub">
+                    S
+                  </span>
+                ) : null}
                 <div
                   className={clsx("tournament__team-with-roster__member", {
                     "tournament__team-with-roster__member__inactive":
@@ -71,7 +81,6 @@ export function TeamWithRoster({
                     user={member}
                     size="xxs"
                     className={clsx({
-                      "tournament__team-with-roster__member__avatar-sub": isSub,
                       "tournament__team-with-roster__member__avatar-inactive":
                         activePlayers && !activePlayers.includes(member.userId),
                     })}
@@ -81,16 +90,6 @@ export function TeamWithRoster({
                     className="tournament__team-member-name"
                   >
                     {member.discordName}{" "}
-                    {member.isOwner ? (
-                      <span className="tournament__team-member-name__role text-theme">
-                        (C)
-                      </span>
-                    ) : null}
-                    {isSub ? (
-                      <span className="tournament__team-member-name__role text-info">
-                        Sub
-                      </span>
-                    ) : null}
                   </Link>
                 </div>
                 {friendCode ? (
