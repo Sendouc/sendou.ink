@@ -1137,6 +1137,7 @@ function TournamentFormatSelector() {
           name="format"
           id="format"
         >
+          <option value="SE">Single-elimination</option>
           <option value="DE">Double-elimination</option>
           <option value="RR_TO_SE">
             Round robin -{">"} Single-elimination
@@ -1180,7 +1181,9 @@ function TournamentFormatSelector() {
         </div>
       ) : null}
 
-      {format === "RR_TO_SE" || (format === "DE" && withUndergroundBracket) ? (
+      {format === "RR_TO_SE" ||
+      format === "SE" ||
+      (format === "DE" && withUndergroundBracket) ? (
         <div>
           <Label htmlFor="thirdPlaceMatch">Third place match</Label>
           <Toggle

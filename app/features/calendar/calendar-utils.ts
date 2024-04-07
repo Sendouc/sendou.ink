@@ -12,6 +12,7 @@ export const canAddNewEvent = (user: { discordId: string }) =>
 export function bracketProgressionToShortTournamentFormat(
   bp: TournamentSettings["bracketProgression"],
 ): TournamentFormatShort {
+  if (bp.length === 1 && bp[0].type === "single_elimination") return "SE";
   if (bp.some((b) => b.type === "double_elimination")) return "DE";
 
   return "RR_TO_SE";

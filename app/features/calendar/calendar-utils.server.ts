@@ -34,6 +34,13 @@ export function formValuesToBracketProgression(
     }
   }
 
+  if (args.format === "SE") {
+    result.push({
+      name: BRACKET_NAMES.MAIN,
+      type: "single_elimination",
+    });
+  }
+
   if (
     args.format === "RR_TO_SE" &&
     args.teamsPerGroup &&
