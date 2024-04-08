@@ -4,7 +4,13 @@ import { EliminationBracketSide } from "./Elimination";
 import { RoundRobinBracket } from "./RoundRobin";
 import { SwissBracket } from "./Swiss";
 
-export function Bracket({ bracket }: { bracket: BracketType }) {
+export function Bracket({
+  bracket,
+  bracketIdx,
+}: {
+  bracket: BracketType;
+  bracketIdx: number;
+}) {
   const { bracketExpanded } = useBracketExpanded();
 
   if (bracket.type === "round_robin") {
@@ -18,7 +24,7 @@ export function Bracket({ bracket }: { bracket: BracketType }) {
   if (bracket.type === "swiss") {
     return (
       <BracketContainer>
-        <SwissBracket bracket={bracket} />
+        <SwissBracket bracket={bracket} bracketIdx={bracketIdx} />
       </BracketContainer>
     );
   }

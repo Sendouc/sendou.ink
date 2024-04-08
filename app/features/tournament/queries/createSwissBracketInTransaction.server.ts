@@ -111,8 +111,12 @@ export function createSwissBracketInTransaction(
           chatCode: nanoid(10),
           groupId: groupFromDB.id,
           number: match.number,
-          opponentOne: match.opponent1 ? JSON.stringify(match.opponent1) : null,
-          opponentTwo: match.opponent2 ? JSON.stringify(match.opponent2) : null,
+          opponentOne: match.opponent1
+            ? JSON.stringify(match.opponent1)
+            : "null",
+          opponentTwo: match.opponent2
+            ? JSON.stringify(match.opponent2)
+            : "null",
           roundId: roundFromDB.id,
           stageId: stageFromDB.id,
           status: match.status,

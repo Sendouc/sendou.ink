@@ -110,6 +110,12 @@ export const bracketSchema = z.union([
     bracketIdx,
   }),
   z.object({
+    _action: _action("UNADVANCE_BRACKET"),
+    groupId: id,
+    roundId: id,
+    bracketIdx,
+  }),
+  z.object({
     _action: _action("FINALIZE_TOURNAMENT"),
   }),
   z.object({

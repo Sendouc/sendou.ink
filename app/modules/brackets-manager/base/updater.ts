@@ -162,7 +162,7 @@ export class BaseUpdater extends BaseGetter {
     // Don't update related matches if it's a simple score update.
     if (!statusChanged && !resultChanged) return;
 
-    if (!helpers.isRoundRobin(stage))
+    if (!helpers.isRoundRobin(stage) && !helpers.isSwiss(stage))
       this.updateRelatedMatches(stored, statusChanged, resultChanged);
   }
 

@@ -584,7 +584,13 @@ export type TournamentRepositoryInsertableMatch = Omit<
   "status" | "bestOf" | "chatCode"
 >;
 
-export function insertMatches(matches: TournamentRepositoryInsertableMatch[]) {
+export function insertSwissMatches(
+  matches: TournamentRepositoryInsertableMatch[],
+) {
+  if (matches.length === 0) {
+    throw new Error("No matches to insert");
+  }
+
   return db
     .insertInto("TournamentMatch")
     .values(
@@ -599,5 +605,19 @@ export function insertMatches(matches: TournamentRepositoryInsertableMatch[]) {
         chatCode: nanoid(10),
       })),
     )
+    .execute();
+}
+
+export function deleteSwissMatches({
+  groupId,
+  roundId,
+}: {
+  groupId: number;
+  roundId: number;
+}) {
+  return db
+    .deleteFrom("TournamentMatch")
+    .where("groupId", "=", groupId)
+    .where("roundId", "=", roundId)
     .execute();
 }

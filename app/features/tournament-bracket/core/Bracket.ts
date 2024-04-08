@@ -1071,9 +1071,195 @@ class SwissBracket extends Bracket {
     return this.currentStandings();
   }
 
-  // xxx: currentStandings
-  currentStandings(_includeUnfinishedGroups = false) {
-    return [];
+  currentStandings(includeUnfinishedGroups = false) {
+    const groupIds = this.data.group.map((group) => group.id);
+
+    const placements: (Standing & { groupId: number })[] = [];
+    for (const groupId of groupIds) {
+      const matches = this.data.match.filter(
+        (match) => match.group_id === groupId,
+      );
+
+      const groupIsFinished = matches.every(
+        (match) =>
+          // BYE
+          match.opponent1 === null ||
+          match.opponent2 === null ||
+          // match was played out
+          match.opponent1?.result === "win" ||
+          match.opponent2?.result === "win",
+      );
+
+      if (!groupIsFinished && !includeUnfinishedGroups) continue;
+
+      const teams: {
+        id: number;
+        setWins: number;
+        setLosses: number;
+        mapWins: number;
+        mapLosses: number;
+        winsAgainstTied: number;
+      }[] = [];
+
+      const updateTeam = ({
+        teamId,
+        setWins,
+        setLosses,
+        mapWins,
+        mapLosses,
+      }: {
+        teamId: number;
+        setWins: number;
+        setLosses: number;
+        mapWins: number;
+        mapLosses: number;
+      }) => {
+        const team = teams.find((team) => team.id === teamId);
+        if (team) {
+          team.setWins += setWins;
+          team.setLosses += setLosses;
+          team.mapWins += mapWins;
+          team.mapLosses += mapLosses;
+        } else {
+          teams.push({
+            id: teamId,
+            setWins,
+            setLosses,
+            mapWins,
+            mapLosses,
+            winsAgainstTied: 0,
+          });
+        }
+      };
+
+      for (const match of matches) {
+        if (
+          match.opponent1?.result !== "win" &&
+          match.opponent2?.result !== "win"
+        ) {
+          continue;
+        }
+
+        const winner =
+          match.opponent1?.result === "win" ? match.opponent1 : match.opponent2;
+
+        const loser =
+          match.opponent1?.result === "win" ? match.opponent2 : match.opponent1;
+
+        if (!winner || !loser) continue;
+
+        invariant(
+          typeof winner.id === "number" &&
+            typeof loser.id === "number" &&
+            typeof winner.score === "number" &&
+            typeof loser.score === "number",
+          "RoundRobinBracket.standings: winner or loser id not found",
+        );
+
+        updateTeam({
+          teamId: winner.id,
+          setWins: 1,
+          setLosses: 0,
+          mapWins: winner.score,
+          mapLosses: loser.score,
+        });
+        updateTeam({
+          teamId: loser.id,
+          setWins: 0,
+          setLosses: 1,
+          mapWins: loser.score,
+          mapLosses: winner.score,
+        });
+      }
+
+      for (const team of teams) {
+        for (const team2 of teams) {
+          if (team.id === team2.id) continue;
+          if (team.setWins !== team2.setWins) continue;
+
+          // they are different teams and are tied, let's check who won
+
+          const wonTheirMatch = matches.some(
+            (match) =>
+              (match.opponent1?.id === team.id &&
+                match.opponent2?.id === team2.id &&
+                match.opponent1?.result === "win") ||
+              (match.opponent1?.id === team2.id &&
+                match.opponent2?.id === team.id &&
+                match.opponent2?.result === "win"),
+          );
+
+          if (wonTheirMatch) {
+            team.winsAgainstTied++;
+          }
+        }
+      }
+
+      placements.push(
+        ...teams
+          .sort((a, b) => {
+            if (a.setWins > b.setWins) return -1;
+            if (a.setWins < b.setWins) return 1;
+
+            if (a.winsAgainstTied > b.winsAgainstTied) return -1;
+            if (a.winsAgainstTied < b.winsAgainstTied) return 1;
+
+            if (a.mapWins > b.mapWins) return -1;
+            if (a.mapWins < b.mapWins) return 1;
+
+            const aSeed = Number(this.tournament.teamById(a.id)?.seed);
+            const bSeed = Number(this.tournament.teamById(b.id)?.seed);
+
+            if (aSeed < bSeed) return -1;
+            if (aSeed > bSeed) return 1;
+
+            return 0;
+          })
+          .map((team, i) => {
+            return {
+              team: this.tournament.teamById(team.id)!,
+              placement: i + 1,
+              groupId,
+              stats: {
+                setWins: team.setWins,
+                setLosses: team.setLosses,
+                mapWins: team.mapWins,
+                mapLosses: team.mapLosses,
+                winsAgainstTied: team.winsAgainstTied,
+                points: 0,
+              },
+            };
+          }),
+      );
+    }
+
+    const sorted = placements.sort((a, b) => {
+      if (a.placement < b.placement) return -1;
+      if (a.placement > b.placement) return 1;
+
+      if (a.groupId < b.groupId) return -1;
+      if (a.groupId > b.groupId) return 1;
+
+      return 0;
+    });
+
+    let lastPlacement = 0;
+    let currentPlacement = 1;
+    let teamsEncountered = 0;
+    return this.standingsWithoutNonParticipants(
+      sorted.map((team) => {
+        if (team.placement !== lastPlacement) {
+          lastPlacement = team.placement;
+          currentPlacement = teamsEncountered + 1;
+        }
+        teamsEncountered++;
+        return {
+          ...team,
+          placement: currentPlacement,
+          stats: team.stats,
+        };
+      }),
+    );
   }
 
   get type(): TournamentBracketProgression[number]["type"] {

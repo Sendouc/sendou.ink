@@ -174,7 +174,20 @@ export const action: ActionFunction = async ({ params, request }) => {
         groupId: data.groupId,
       });
 
-      await TournamentRepository.insertMatches(matches);
+      await TournamentRepository.insertSwissMatches(matches);
+
+      break;
+    }
+    case "UNADVANCE_BRACKET": {
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      validate(bracket, "Bracket not found");
+      validate(bracket.type === "swiss", "Can't unadvance non-swiss bracket");
+      // xxx: validate can reopen here or something
+
+      await TournamentRepository.deleteSwissMatches({
+        groupId: data.groupId,
+        roundId: data.roundId,
+      });
 
       break;
     }
@@ -408,7 +421,9 @@ export default function TournamentBracketsPage() {
             <CompactifyButton />
           ) : null}
         </div>
-        {bracket.enoughTeams ? <Bracket bracket={bracket} /> : null}
+        {bracket.enoughTeams ? (
+          <Bracket bracket={bracket} bracketIdx={bracketIdx} />
+        ) : null}
       </div>
       {!bracket.enoughTeams ? (
         <div>

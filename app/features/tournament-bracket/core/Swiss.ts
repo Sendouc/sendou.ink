@@ -5,7 +5,6 @@ import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import type { InputStage, Match, StageType } from "~/modules/brackets-model";
 import { nullFilledArray } from "~/utils/arrays";
 import type { Bracket, Standing } from "./Bracket";
-import type { TournamentDataTeam } from "./Tournament.server";
 import type { TournamentRepositoryInsertableMatch } from "~/features/tournament/TournamentRepository.server";
 
 interface CreateArgs extends Omit<InputStage, "type" | "seeding" | "number"> {
@@ -216,7 +215,7 @@ export function generateMatchUps({
 
     // lets attempt to create matches for the current sections
     // might fail if some section can't be matches so that nobody replays
-    const maybeMatches = sectionsToMatches(sections);
+    const maybeMatches = sectionsToMatches(sections, groupsMatches);
 
     // ok good matches found!
     if (Array.isArray(maybeMatches)) {
@@ -227,7 +226,7 @@ export function generateMatchUps({
     // xxx: if sections.length === 1 and got here we need to switch strat
 
     // let's unify sections so that we can try again with a better chance
-    sections = unifySections(sections, maybeMatches.impossibleSectionId);
+    sections = unifySections(sections, maybeMatches.impossibleSectionIdx);
   }
 
   // finally lets just convert the generated pairs to match objects
@@ -236,7 +235,9 @@ export function generateMatchUps({
     .slice()
     .sort((a, b) => a.id - b.id)
     .filter((r) => r.group_id === groupId)
-    .find((r) => r.id > groupsMatches[0].round_id)?.id;
+    .find(
+      (r) => r.id > Math.max(...groupsMatches.map((match) => match.round_id)),
+    )?.id;
   invariant(newRoundId, "newRoundId not found");
   let matchNumber = 1;
   const result: TournamentRepositoryInsertableMatch[] = matches.map(
@@ -317,26 +318,253 @@ function splitToByeAndPlay(standings: Standing[], matches: Match[]) {
   };
 }
 
-type TournamentDataTeamSections = TournamentDataTeam[][];
+type TournamentDataTeamSections = Standing[][];
 
-function splitPlayingTeamsToSections(
-  standings: Standing[],
-): TournamentDataTeamSections {
-  standings[0].stats?.mapWins;
-  return [];
+function splitPlayingTeamsToSections(standings: Standing[]) {
+  let result: TournamentDataTeamSections = [];
+
+  let lastMapWins = -1;
+  let currentSection: Standing[] = [];
+  for (const standing of standings) {
+    const mapWins = standing.stats?.mapWins;
+    invariant(mapWins !== undefined, "mapWins not found");
+
+    if (mapWins !== lastMapWins) {
+      if (currentSection.length > 0) result.push(currentSection);
+      currentSection = [];
+    }
+
+    currentSection.push(standing);
+    lastMapWins = mapWins;
+  }
+  result.push(currentSection);
+
+  result = evenOutSectionsForward(result);
+  result = evenOutSectionsBackward(result);
+
+  return result;
+}
+
+function evenOutSectionsForward(sections: TournamentDataTeamSections) {
+  if (sections.every((section) => section.length % 2 === 0)) {
+    return sections;
+  }
+
+  const result: TournamentDataTeamSections = [];
+
+  let pushedStanding: Standing | null = null;
+  for (const [i, section] of sections.entries()) {
+    const newSection = section.slice();
+
+    if (pushedStanding) {
+      newSection.unshift(pushedStanding);
+      pushedStanding = null;
+    }
+
+    if (newSection.length % 2 !== 0 && i < sections.length - 1) {
+      pushedStanding = newSection.pop()!;
+    }
+
+    result.push(newSection);
+  }
+
+  return result;
+}
+
+function evenOutSectionsBackward(sections: TournamentDataTeamSections) {
+  if (sections.every((section) => section.length % 2 === 0)) {
+    return sections;
+  }
+
+  const result: TournamentDataTeamSections = [];
+
+  let pushedTeam: Standing | null = null;
+  for (const [i, section] of sections.slice().reverse().entries()) {
+    const newSection = section.slice();
+
+    if (pushedTeam) {
+      newSection.push(pushedTeam);
+      pushedTeam = null;
+    }
+
+    if (newSection.length % 2 !== 0) {
+      if (i === sections.length - 1) {
+        throw new Error("Can't even out sections");
+      }
+      pushedTeam = newSection.shift()!;
+    }
+
+    result.unshift(newSection);
+  }
+
+  return result;
 }
 
 function sectionsToMatches(
-  _sections: TournamentDataTeamSections,
+  sections: TournamentDataTeamSections,
+  previousMatches: Match[],
 ):
   | [opponentOneId: number, opponentTwoId: number][]
-  | { impossibleSectionId: number } {
-  return [];
+  | { impossibleSectionIdx: number } {
+  const matches: [opponentOneId: number, opponentTwoId: number][] = [];
+
+  for (const [i, section] of sections.entries()) {
+    const isLossless = section.every(
+      (standing) => standing.stats!.mapLosses === 0,
+    );
+
+    if (isLossless) {
+      // doing it like this to make it so that if everyone plays to their seed
+      // then seeds 1 & 2 meet in the final round (assuming proper amount of rounds)
+      matches.push(...matchesBySeed(section));
+    } else {
+      const sectionMatches = matchesByNotPlayedBefore(section, previousMatches);
+      if (sectionMatches === null) {
+        return { impossibleSectionIdx: i };
+      }
+
+      matches.push(...sectionMatches);
+    }
+  }
+
+  return matches;
 }
 
 function unifySections(
   sections: TournamentDataTeamSections,
-  _sectionToUnifyId: number,
-): TournamentDataTeamSections {
-  return sections;
+  sectionToUnifyIdx: number,
+) {
+  const result: TournamentDataTeamSections = sections.slice();
+  if (sectionToUnifyIdx < sections.length - 1) {
+    // Combine section at sectionToUnifyIdx with the section after it
+    const currentSection = result[sectionToUnifyIdx];
+    const nextSection = result[sectionToUnifyIdx + 1];
+    const combinedSection = [...currentSection, ...nextSection];
+    result[sectionToUnifyIdx] = combinedSection;
+    result.splice(sectionToUnifyIdx + 1, 1);
+  } else {
+    // Combine last section with the section before it
+    const lastSection = result.pop()!;
+    const previousSection = result.pop()!;
+    const combinedSection = [...previousSection, ...lastSection];
+    result.push(combinedSection);
+  }
+
+  invariant(
+    sections.length - 1 === result.length,
+    "unifySections: length invalid",
+  );
+  return result;
+}
+
+function matchesBySeed(
+  teams: Standing[],
+): [opponentOneId: number, opponentTwoId: number][] {
+  // we know that here nobody has played each other
+  const sortedBySeed = teams.slice().sort((a, b) => {
+    invariant(a.team.seed, "matchesBySeed: a.seed is falsy");
+    invariant(b.team.seed, "matchesBySeed: b.seed is falsy");
+
+    return a.team.seed - b.team.seed;
+  });
+
+  const matches: [opponentOneId: number, opponentTwoId: number][] = [];
+  while (sortedBySeed.length > 0) {
+    const one = sortedBySeed.shift()!;
+    const two = sortedBySeed.pop()!;
+
+    matches.push([one.team.id, two.team.id]);
+  }
+
+  return matches;
+}
+
+function matchesByNotPlayedBefore(
+  teams: Standing[],
+  previousMatches: Match[],
+): [opponentOneId: number, opponentTwoId: number][] | null {
+  const alreadyPlayed = previousMatches.reduce((acc, cur) => {
+    if (!cur.opponent1?.id || !cur.opponent2?.id) return acc;
+
+    if (!acc.has(cur.opponent1.id)) {
+      acc.set(cur.opponent1.id, new Set());
+    }
+    acc.get(cur.opponent1.id)!.add(cur.opponent2.id);
+
+    if (!acc.has(cur.opponent2.id)) {
+      acc.set(cur.opponent2.id, new Set());
+    }
+    acc.get(cur.opponent2.id)!.add(cur.opponent1.id);
+
+    return acc;
+  }, new Map<number, Set<number>>());
+
+  for (const order of permutations(teams)) {
+    let allNew = true;
+    for (let i = 0; i < order.length; i += 2) {
+      const one = order[i];
+      const two = order[i + 1];
+
+      if (alreadyPlayed.get(one.team.id)?.has(two.team.id)) {
+        allNew = false;
+        break;
+      }
+    }
+
+    if (!allNew) continue;
+
+    const matches: [opponentOneId: number, opponentTwoId: number][] = [];
+    for (let i = 0; i < order.length; i += 2) {
+      const one = order[i];
+      const two = order[i + 1];
+
+      matches.push([one.team.id, two.team.id]);
+    }
+    return matches;
+  }
+
+  return null;
+}
+
+// xxx: does permutations make sense? could be something more efficient
+// algos from https://stackoverflow.com/a/66130419
+
+function* permutations<T>(t: T[]): Generator<T[], void, unknown> {
+  if (t.length < 2) {
+    yield t;
+  } else {
+    for (const p of permutations(t.slice(1))) {
+      for (const r of rotations(p, t[0])) {
+        yield r;
+      }
+    }
+  }
+}
+
+function* rotations<T>(t: T[], v: T): Generator<T[], void, unknown> {
+  if (t.length === 0) {
+    yield [v];
+  } else {
+    yield* chain(
+      [[v, ...t]],
+      map(rotations(t.slice(1), v), (r) => [t[0], ...r]),
+    );
+  }
+}
+
+function* map<T, U>(
+  t: Iterable<T>,
+  f: (arg: T) => U,
+): Generator<U, void, unknown> {
+  for (const e of t) {
+    yield f(e);
+  }
+}
+
+function* chain<T>(...ts: Iterable<T>[]): Generator<T, void, unknown> {
+  for (const t of ts) {
+    for (const e of t) {
+      yield e;
+    }
+  }
 }
