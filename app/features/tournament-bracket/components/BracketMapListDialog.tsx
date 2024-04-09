@@ -24,6 +24,7 @@ import { getRounds } from "../core/rounds";
 import { calendarEditPage } from "~/utils/urls";
 import { Toggle } from "~/components/Toggle";
 
+// xxx: swiss bo3 bo3 bo3 bo5
 export function BracketMapListDialog({
   isOpen,
   close,

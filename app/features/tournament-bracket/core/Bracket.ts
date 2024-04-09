@@ -1172,6 +1172,40 @@ class SwissBracket extends Bracket {
         });
       }
 
+      // BYES
+      for (const match of matches) {
+        if (match.opponent1 && match.opponent2) {
+          continue;
+        }
+
+        const winner = match.opponent1 ? match.opponent1 : match.opponent2;
+
+        if (!winner?.id) {
+          logger.warn("SwissBracket.currentStandings: winner not found");
+          continue;
+        }
+
+        const round = this.data.round.find(
+          (round) => round.id === match.round_id,
+        );
+        const mapWins =
+          round?.maps?.type === "PLAY_ALL"
+            ? round?.maps?.count
+            : Math.ceil((round?.maps?.count ?? 0) / 2);
+        if (!mapWins) {
+          logger.warn("SwissBracket.currentStandings: mapWins not found");
+          continue;
+        }
+
+        updateTeam({
+          teamId: winner.id,
+          setWins: 1,
+          setLosses: 0,
+          mapWins: mapWins,
+          mapLosses: 0,
+        });
+      }
+
       for (const team of teams) {
         for (const team2 of teams) {
           if (team.id === team2.id) continue;

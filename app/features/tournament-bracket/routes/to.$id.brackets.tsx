@@ -416,7 +416,6 @@ export default function TournamentBracketsPage() {
       <div className="stack md">
         <div className="stack horizontal sm">
           <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
-          {/* xxx: compactify swiss */}
           {bracket.type !== "round_robin" && !bracket.preview ? (
             <CompactifyButton />
           ) : null}

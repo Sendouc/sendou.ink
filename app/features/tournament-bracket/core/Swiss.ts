@@ -177,11 +177,16 @@ export function generateMatchUps({
     throw new Error("Not all matches are over");
   }
 
-  const standings = bracket.standings;
+  const groupsTeams = groupsMatches
+    .flatMap((match) => [match.opponent1, match.opponent2])
+    .filter(Boolean);
+  const groupsStandings = bracket.standings.filter((standing) => {
+    return groupsTeams.some((team) => team?.id === standing.team.id);
+  });
 
   // teams who have dropped out are not considered
   // xxx: standingsWithoutDropouts: read dropout bit
-  const standingsWithoutDropouts = standings;
+  const standingsWithoutDropouts = groupsStandings;
 
   // if group has uneven number of teams
   // the lowest standing team gets a bye

@@ -843,6 +843,10 @@ export class Tournament {
 
     const anotherMatchBlocking = this.followingMatches(matchId).some(
       (match) =>
+        // in swiss matches are generated round by round and the existance
+        // of a following match in itself is blocking even if they didn't start yet
+        bracket.type === "swiss" ||
+        // match is not in progress in un-swiss bracket, ok to reopen
         (match.opponent1?.score && match.opponent1.score > 0) ||
         (match.opponent2?.score && match.opponent2.score > 0),
     );

@@ -5,14 +5,17 @@ import type { Match as MatchType } from "~/modules/brackets-model";
 import { groupNumberToLetter } from "../../tournament-bracket-utils";
 import { Button } from "~/components/Button";
 import clsx from "clsx";
-import * as React from "react";
-import { useTournament } from "~/features/tournament/routes/to.$id";
+import {
+  useBracketExpanded,
+  useTournament,
+} from "~/features/tournament/routes/to.$id";
 import { useUser } from "~/features/auth/core/user";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Link, useFetcher } from "@remix-run/react";
 import { tournamentTeamPage } from "~/utils/urls";
 import { logger } from "~/utils/logger";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export function SwissBracket({
   bracket,
@@ -23,14 +26,23 @@ export function SwissBracket({
 }) {
   const user = useUser();
   const tournament = useTournament();
-  const [selectedGroupIndex, setSelectedGroupIndex] = React.useState(0);
+  const { bracketExpanded } = useBracketExpanded();
+
   const groups = getGroups(bracket);
+  const [selectedGroupId, setSelectedGroupId] = useSearchParamState({
+    defaultValue: groups[0].groupId,
+    name: "group",
+    revive: (id) =>
+      groups.find((g) => g.groupId === Number(id))
+        ? Number(id)
+        : groups[0].groupId,
+  });
   const fetcher = useFetcher();
 
-  const selectedGroup = groups[selectedGroupIndex];
+  const selectedGroup = groups.find((g) => g.groupId === selectedGroupId)!;
 
   const rounds = bracket.data.round.filter(
-    (r) => r.group_id === selectedGroup.groupId,
+    (r) => r.group_id === selectedGroupId,
   );
 
   const someMatchOngoing = (matches: MatchType[]) =>
@@ -48,8 +60,7 @@ export function SwissBracket({
     for (const round of rounds) {
       const matches = bracket.data.match.filter(
         (match) =>
-          match.round_id === round.id &&
-          match.group_id === selectedGroup.groupId,
+          match.round_id === round.id && match.group_id === selectedGroupId,
       );
 
       if (someMatchOngoing(matches) && matches.length > 0) {
@@ -69,15 +80,15 @@ export function SwissBracket({
       <div className="stack lg">
         {groups.length > 0 && (
           <div className="stack horizontal">
-            {groups.map((g, i) => (
+            {groups.map((g) => (
               <Button
                 key={g.groupId}
-                onClick={() => setSelectedGroupIndex(i)}
+                onClick={() => setSelectedGroupId(g.groupId)}
                 className={clsx(
                   "tournament-bracket__bracket-nav__link tournament-bracket__bracket-nav__link__big",
                   {
                     "tournament-bracket__bracket-nav__link__selected":
-                      selectedGroupIndex === i,
+                      selectedGroupId === g.groupId,
                   },
                 )}
               >
@@ -87,12 +98,21 @@ export function SwissBracket({
           </div>
         )}
         <div className="stack lg">
-          {rounds.flatMap((round) => {
+          {rounds.map((round, i) => {
             const matches = bracket.data.match.filter(
               (match) =>
                 match.round_id === round.id &&
-                match.group_id === selectedGroup.groupId,
+                match.group_id === selectedGroupId,
             );
+
+            if (
+              matches.length > 0 &&
+              !bracketExpanded &&
+              !someMatchOngoing(matches) &&
+              i !== rounds.length - 1
+            ) {
+              return null;
+            }
 
             const bestOf = round.maps?.count;
 
@@ -120,7 +140,7 @@ export function SwissBracket({
                       <input
                         type="hidden"
                         name="groupId"
-                        value={selectedGroup.groupId}
+                        value={selectedGroupId}
                       />
                       <input
                         type="hidden"
@@ -139,7 +159,7 @@ export function SwissBracket({
                     <FormWithConfirm
                       dialogHeading={`Delete all matches of round ${round.number}?`}
                       fields={[
-                        ["groupId", selectedGroup.groupId],
+                        ["groupId", selectedGroupId],
                         ["roundId", round.id],
                         ["bracketIdx", bracketIdx],
                         ["_action", "UNADVANCE_BRACKET"],
@@ -192,7 +212,7 @@ export function SwissBracket({
         </div>
         <PlacementsTable
           bracket={bracket}
-          groupId={selectedGroup.groupId}
+          groupId={selectedGroupId}
           // xxx: allMatchesFinished
           allMatchesFinished={false}
         />

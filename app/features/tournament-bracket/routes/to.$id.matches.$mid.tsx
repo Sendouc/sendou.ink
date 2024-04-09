@@ -51,7 +51,6 @@ import { MatchRosters } from "../components/MatchRosters";
 
 import "../tournament-bracket.css";
 
-// xxx: reporting swiss
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const matchId = matchIdFromParams(params);
@@ -454,7 +453,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: back button same swiss group tab
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();
@@ -495,6 +493,7 @@ export default function TournamentMatchPage() {
             to={tournamentBracketsPage({
               tournamentId: tournament.ctx.id,
               bracketIdx: tournament.matchIdToBracketIdx(data.match.id),
+              groupId: data.match.groupId,
             })}
             variant="outlined"
             size="tiny"

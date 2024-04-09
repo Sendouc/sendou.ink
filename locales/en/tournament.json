@@ -85,6 +85,7 @@
   "bracket.losers.finals": "Losers Finals",
   "bracket.single_elim": "Round {{round}}",
   "bracket.round_robin": "Groups Round {{round}}",
+  "bracket.swiss": "Swiss Round {{round}}",
   "bracket.single_elim.finals": "Finals",
   "bracket.grand_finals": "Grand Finals",
   "bracket.grand_finals.bracket_reset": "Bracket Reset",
