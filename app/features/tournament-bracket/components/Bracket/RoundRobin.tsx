@@ -257,7 +257,9 @@ function PlacementsTable({
                 >
                   <span>→ {dest.name}</span>
                 </td>
-              ) : null}
+              ) : (
+                <td />
+              )}
             </tr>
           );
         })}

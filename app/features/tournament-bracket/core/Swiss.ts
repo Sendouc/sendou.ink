@@ -2,7 +2,7 @@
 
 import invariant from "tiny-invariant";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
-import type { InputStage, Match, StageType } from "~/modules/brackets-model";
+import type { InputStage, Match } from "~/modules/brackets-model";
 import { nullFilledArray } from "~/utils/arrays";
 import type { Bracket, Standing } from "./Bracket";
 import type { TournamentRepositoryInsertableMatch } from "~/features/tournament/TournamentRepository.server";
@@ -15,7 +15,7 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
   const swissSettings = args.settings?.swiss;
 
   const groupCount = swissSettings?.groupCount ?? 1;
-  const roundCount = swissSettings?.roundCount ?? 1;
+  const roundCount = swissSettings?.roundCount ?? 5;
 
   const group = nullFilledArray(groupCount).map((_, i) => ({
     id: i,
@@ -47,8 +47,7 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
         number: 1,
         settings: args.settings ?? {},
         tournament_id: args.tournamentId,
-        // xxx: as problem or not?
-        type: "swiss" as StageType,
+        type: "swiss",
       },
     ],
   };
@@ -415,12 +414,16 @@ function sectionsToMatches(
 
   for (const [i, section] of sections.entries()) {
     const isLossless = section.every(
-      (standing) => standing.stats!.mapLosses === 0,
+      (standing) => standing.stats!.setLosses === 0,
+    );
+    const isWinless = section.every(
+      (standing) => standing.stats!.setWins === 0,
     );
 
-    if (isLossless) {
+    if (isLossless || isWinless) {
       // doing it like this to make it so that if everyone plays to their seed
       // then seeds 1 & 2 meet in the final round (assuming proper amount of rounds)
+      // these sections can't have replays no matter how we divide them
       matches.push(...matchesBySeed(section));
     } else {
       const sectionMatches = matchesByNotPlayedBefore(section, previousMatches);
@@ -462,6 +465,7 @@ function unifySections(
   return result;
 }
 
+// xxx: implement taking over seed..?
 function matchesBySeed(
   teams: Standing[],
 ): [opponentOneId: number, opponentTwoId: number][] {

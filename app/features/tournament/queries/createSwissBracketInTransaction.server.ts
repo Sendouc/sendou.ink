@@ -3,7 +3,6 @@ import invariant from "tiny-invariant";
 import { sql } from "~/db/sql";
 import type { Tables } from "~/db/tables";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
-import type { StageType } from "~/modules/brackets-model";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 const createTournamentStageStm = sql.prepare(/* sql */ `
@@ -73,8 +72,8 @@ export function createSwissBracketInTransaction(
 ) {
   const stageInput = input.stage[0];
   invariant(stageInput, "Stage input is required");
-  // xxx: as StageType
-  invariant(stageInput.type === ("swiss" as StageType), "Invalid stage type");
+  invariant(stageInput.type === "swiss", "Invalid stage type");
+
   const stageFromDB = createTournamentStageStm.get({
     tournamentId: stageInput.tournament_id,
     type: stageInput.type,

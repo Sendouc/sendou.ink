@@ -13,6 +13,13 @@ export function bracketProgressionToShortTournamentFormat(
   bp: TournamentSettings["bracketProgression"],
 ): TournamentFormatShort {
   if (bp.some((b) => b.type === "double_elimination")) return "DE";
+  if (bp.length === 1 && bp[0].type === "swiss") return "SWISS";
+  if (
+    bp.some(({ type }) => type === "swiss") &&
+    bp.some(({ type }) => type === "single_elimination")
+  ) {
+    return "SWISS_TO_SE";
+  }
 
   return "RR_TO_SE";
 }
@@ -26,7 +33,7 @@ export const calendarEventMaxDate = () => {
 
 export function validateFollowUpBrackets(
   brackets: FollowUpBracket[],
-  teamsPerGroup: number,
+  teamsPerGroup?: number,
 ) {
   const placementsFound: number[] = [];
 
@@ -49,7 +56,10 @@ export function validateFollowUpBrackets(
     }
   }
 
-  if (placementsFound.some((p) => p > teamsPerGroup)) {
+  if (
+    typeof teamsPerGroup === "number" &&
+    placementsFound.some((p) => p > teamsPerGroup)
+  ) {
     return `Placement higher than teams per group`;
   }
 

@@ -792,6 +792,7 @@ class RoundRobinBracket extends Bracket {
       throw new Error("Negative placements not implemented");
     }
     const standings = this.standings;
+    // xxx: check if this is correct
     const relevantMatchesFinished =
       standings.length === this.data.participant.length;
 
@@ -1056,14 +1057,50 @@ class SwissBracket extends Bracket {
     return false;
   }
 
-  // xxx: source
-  source(_placements: number[]): {
+  source(placements: number[]): {
     relevantMatchesFinished: boolean;
     teams: { id: number; name: string }[];
   } {
+    if (placements.some((p) => p < 0)) {
+      throw new Error("Negative placements not implemented");
+    }
+    const standings = this.standings;
+    const relevantMatchesFinished = this.data.round.every((round) => {
+      const roundsMatches = this.data.match.filter(
+        (match) => match.round_id === round.id,
+      );
+
+      // some round has not started yet
+      if (roundsMatches.length === 0) return false;
+
+      return roundsMatches.every((match) => {
+        if (
+          match.opponent1 &&
+          match.opponent2 &&
+          match.opponent1?.result !== "win" &&
+          match.opponent2?.result !== "win"
+        ) {
+          return false;
+        }
+
+        return true;
+      });
+    });
+
+    const uniquePlacements = removeDuplicates(
+      standings.map((s) => s.placement),
+    );
+
+    // 1,3,5 -> 1,2,3 e.g.
+    const placementNormalized = (p: number) => {
+      return uniquePlacements.indexOf(p) + 1;
+    };
+
     return {
-      relevantMatchesFinished: false,
-      teams: [],
+      relevantMatchesFinished,
+      teams: standings
+        .filter((s) => placements.includes(placementNormalized(s.placement)))
+        .map((s) => ({ id: s.team.id, name: s.team.name })),
     };
   }
 

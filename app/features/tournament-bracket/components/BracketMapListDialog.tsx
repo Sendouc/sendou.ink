@@ -24,7 +24,6 @@ import { getRounds } from "../core/rounds";
 import { calendarEditPage } from "~/utils/urls";
 import { Toggle } from "~/components/Toggle";
 
-// xxx: swiss bo3 bo3 bo3 bo5
 export function BracketMapListDialog({
   isOpen,
   close,
@@ -249,7 +248,9 @@ export function BracketMapListDialog({
                     maps={roundMaps}
                     onHoverMap={setHoveredMap}
                     hoveredMap={hoveredMap}
-                    includeRoundSpecificSelections={!globalSelections}
+                    includeRoundSpecificSelections={
+                      bracket.type !== "round_robin"
+                    }
                     onCountChange={(newCount) => {
                       const newMapCounts = new Map(mapCounts);
                       const bracketRound = bracket.data.round.find(

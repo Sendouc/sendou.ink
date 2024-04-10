@@ -54,6 +54,21 @@ export function SwissBracket({
         match.opponent2.result !== "win",
     );
 
+  const allRoundsFinished = () => {
+    for (const round of rounds) {
+      const matches = bracket.data.match.filter(
+        (match) =>
+          match.round_id === round.id && match.group_id === selectedGroupId,
+      );
+
+      if (matches.length === 0 || someMatchOngoing(matches)) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const roundThatCanBeStartedId = () => {
     if (!tournament.isOrganizer(user)) return undefined;
 
@@ -78,7 +93,7 @@ export function SwissBracket({
   return (
     <div className="stack xl">
       <div className="stack lg">
-        {groups.length > 0 && (
+        {groups.length > 1 && (
           <div className="stack horizontal">
             {groups.map((g) => (
               <Button
@@ -176,7 +191,7 @@ export function SwissBracket({
                     </FormWithConfirm>
                   ) : null}
                 </div>
-                <div className="stack horizontal md flex-wrap">
+                <div className="stack horizontal md lg-row flex-wrap">
                   {matches.length === 0 ? (
                     <div className="text-lighter text-md font-bold">
                       Waiting for the previous round to finish
@@ -213,8 +228,7 @@ export function SwissBracket({
         <PlacementsTable
           bracket={bracket}
           groupId={selectedGroupId}
-          // xxx: allMatchesFinished
-          allMatchesFinished={false}
+          allMatchesFinished={allRoundsFinished()}
         />
       </div>
     </div>
@@ -375,7 +389,9 @@ function PlacementsTable({
                 >
                   <span>→ {dest.name}</span>
                 </td>
-              ) : null}
+              ) : (
+                <td />
+              )}
             </tr>
           );
         })}

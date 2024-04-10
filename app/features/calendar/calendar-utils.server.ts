@@ -34,6 +34,13 @@ export function formValuesToBracketProgression(
     }
   }
 
+  if (args.format === "SWISS") {
+    result.push({
+      name: BRACKET_NAMES.MAIN,
+      type: "swiss",
+    });
+  }
+
   if (
     args.format === "RR_TO_SE" &&
     args.teamsPerGroup &&
@@ -46,6 +53,25 @@ export function formValuesToBracketProgression(
     result.push({
       name: BRACKET_NAMES.GROUPS,
       type: "round_robin",
+    });
+
+    for (const bracket of args.followUpBrackets) {
+      result.push({
+        name: bracket.name,
+        type: "single_elimination",
+        sources: [{ bracketIdx: 0, placements: bracket.placements }],
+      });
+    }
+  }
+
+  if (args.format === "SWISS_TO_SE" && args.followUpBrackets) {
+    if (validateFollowUpBrackets(args.followUpBrackets)) {
+      return null;
+    }
+
+    result.push({
+      name: BRACKET_NAMES.GROUPS,
+      type: "swiss",
     });
 
     for (const bracket of args.followUpBrackets) {

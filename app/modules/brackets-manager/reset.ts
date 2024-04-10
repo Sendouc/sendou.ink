@@ -25,8 +25,6 @@ export class Reset extends BaseUpdater {
     );
     const matchLocation = helpers.getMatchLocation(stage.type, group.number);
     const nextMatches =
-      // xxx: @ts-expect-error type swiss
-      // @ts-expect-error todo fix
       stage.type !== "round_robin" && stage.type !== "swiss"
         ? this.getNextMatches(
             stored,

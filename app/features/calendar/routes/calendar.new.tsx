@@ -129,6 +129,8 @@ export const action: ActionFunction = async ({ request }) => {
     enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
     autoCheckInAll: data.autoCheckInAll ?? undefined,
     autonomousSubs: data.autonomousSubs ?? undefined,
+    swissGroupCount: data.swissGroupCount ?? undefined,
+    swissRoundCount: data.swissRoundCount ?? undefined,
     tournamentToCopyId: data.tournamentToCopyId,
     regClosesAt: data.regClosesAt
       ? dateToDatabaseTimestamp(
@@ -1124,6 +1126,12 @@ function TournamentFormatSelector() {
   const [teamsPerGroup, setTeamsPerGroup] = React.useState(
     baseEvent?.tournamentCtx?.settings.teamsPerGroup ?? 4,
   );
+  const [swissGroupCount, setSwissGroupCount] = React.useState(
+    baseEvent?.tournamentCtx?.settings.swiss?.groupCount ?? 1,
+  );
+  const [swissRoundCount, setSwissRoundCount] = React.useState(
+    baseEvent?.tournamentCtx?.settings.swiss?.roundCount ?? 5,
+  );
 
   return (
     <div className="stack md w-full">
@@ -1141,6 +1149,8 @@ function TournamentFormatSelector() {
           <option value="RR_TO_SE">
             Round robin -{">"} Single-elimination
           </option>
+          <option value="SWISS">Swiss</option>
+          <option value="SWISS_TO_SE">Swiss -{">"} Single-elimination</option>
         </select>
       </div>
 
@@ -1180,7 +1190,47 @@ function TournamentFormatSelector() {
         </div>
       ) : null}
 
-      {format === "RR_TO_SE" || (format === "DE" && withUndergroundBracket) ? (
+      {format === "SWISS" || format === "SWISS_TO_SE" ? (
+        <div>
+          <Label htmlFor="swissGroupCount">Swiss groups count</Label>
+          <select
+            value={swissGroupCount}
+            onChange={(e) => setSwissGroupCount(Number(e.target.value))}
+            className="w-max"
+            name="swissGroupCount"
+            id="swissGroupCount"
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      ) : null}
+
+      {format === "SWISS" || format === "SWISS_TO_SE" ? (
+        <div>
+          <Label htmlFor="swissRoundCount">Swiss round count</Label>
+          <select
+            value={swissRoundCount}
+            onChange={(e) => setSwissRoundCount(Number(e.target.value))}
+            className="w-max"
+            name="swissRoundCount"
+            id="swissRoundCount"
+          >
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+      ) : null}
+
+      {format === "RR_TO_SE" ||
+      format === "SWISS_TO_SE" ||
+      (format === "DE" && withUndergroundBracket) ? (
         <div>
           <Label htmlFor="thirdPlaceMatch">Third place match</Label>
           <Toggle
@@ -1193,13 +1243,14 @@ function TournamentFormatSelector() {
         </div>
       ) : null}
 
-      {format === "RR_TO_SE" ? (
+      {format === "RR_TO_SE" || format === "SWISS_TO_SE" ? (
         <FollowUpBrackets teamsPerGroup={teamsPerGroup} />
       ) : null}
     </div>
   );
 }
 
+// xxx: different placement selector for swiss (top n?)
 function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
   const baseEvent = useBaseEvent();
   const [autoCheckInAll, setAutoCheckInAll] = React.useState(

@@ -1762,8 +1762,6 @@ export function isRoundRobin(stage: Stage): boolean {
 }
 
 export function isSwiss(stage: Stage): boolean {
-  // xxx: add swiss type
-  // @ts-expect-error swiss type
   return stage.type === "swiss";
 }
 

@@ -637,7 +637,26 @@ export class Tournament {
       (b) => !b.preview || !b.isUnderground,
     );
 
+    const everyRoundHasMatches = () => {
+      // only in swiss matches get generated as tournament progresses
+      if (
+        this.ctx.settings.bracketProgression.length > 1 ||
+        this.ctx.settings.bracketProgression[0].type !== "swiss"
+      ) {
+        return true;
+      }
+
+      return this.brackets[0].data.round.every((round) => {
+        const hasMatches = this.brackets[0].data.match.some(
+          (match) => match.round_id === round.id,
+        );
+
+        return hasMatches;
+      });
+    };
+
     return (
+      everyRoundHasMatches() &&
       relevantBrackets.every((b) => b.everyMatchOver) &&
       this.isOrganizer(user) &&
       !this.ctx.isFinalized
