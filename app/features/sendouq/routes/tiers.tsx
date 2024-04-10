@@ -16,9 +16,9 @@ export const handle: SendouRouteHandle = {
   i18n: ["q"],
 };
 
-export const loader = async () => {
+export const loader = () => {
   const season = currentOrPreviousSeason(new Date());
-  const { intervals } = await userSkills(season!.nth);
+  const { intervals } = userSkills(season!.nth);
 
   return {
     intervals,

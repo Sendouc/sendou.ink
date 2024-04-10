@@ -291,6 +291,7 @@ function FancyStageBanner({
           <div className="stack sm items-center">
             <div className="text-lg text-center font-bold">Counterpick</div>
             <div>Waiting for {banPickingTeam()?.name}</div>
+            {children}
           </div>
         </div>
       ) : matchIsLocked ? (

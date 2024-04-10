@@ -11,6 +11,7 @@ import type { Result } from "./StartedMatch";
 import { tournamentTeamPage, userPage } from "~/utils/urls";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import { Avatar } from "~/components/Avatar";
+import { Divider } from "~/components/Divider";
 
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
@@ -324,6 +325,7 @@ function TeamRosterInputsCheckboxes({
   handlePlayerClick: (playerId: number) => void;
   presentational: boolean;
 }) {
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const id = React.useId();
 
@@ -344,44 +346,77 @@ function TeamRosterInputsCheckboxes({
     return "DEFAULT";
   };
 
+  const participatedUserIds = React.useMemo(
+    () => tournament.participatedPlayersByTeamId(teamId).map((u) => u.userId),
+    [tournament, teamId],
+  );
+
+  const sortedMembers = members.slice().sort((a, b) => {
+    const aParticipated = participatedUserIds.includes(a.id);
+    const bParticipated = participatedUserIds.includes(b.id);
+    if (aParticipated && !bParticipated) return -1;
+    if (!aParticipated && bParticipated) return 1;
+    return 0;
+  });
+
+  let dividerDrawn = false;
+
   return (
     <div className="tournament-bracket__during-match-actions__team-players">
-      {members.map((member, i) => {
+      {sortedMembers.map((member, i) => {
+        let drawDivider = false;
+        const memberDidParticipate =
+          participatedUserIds.includes(member.id) ||
+          participatedUserIds.length === 0;
+        if (!memberDidParticipate && !dividerDrawn) {
+          drawDivider = true;
+          dividerDrawn = true;
+        }
+
         return (
-          <div key={member.id} className="stack horizontal xs">
-            <div
-              className={clsx(
-                "tournament-bracket__during-match-actions__checkbox-name",
-                { "disabled-opaque": mode() === "DISABLED" },
-                { presentational: mode() === "PRESENTATIONAL" },
-              )}
-            >
-              <input
-                className="plain tournament-bracket__during-match-actions__checkbox"
-                type="checkbox"
-                id={`${member.id}-${id}`}
-                name="playerName"
-                disabled={mode() === "DISABLED" || mode() === "PRESENTATIONAL"}
-                value={member.id}
-                checked={checkedPlayers.flat().includes(member.id)}
-                onChange={() => handlePlayerClick(member.id)}
-                data-testid={`player-checkbox-${i}`}
-              />{" "}
-              <label
-                className="tournament-bracket__during-match-actions__player-name"
-                htmlFor={`${member.id}-${id}`}
+          <React.Fragment key={member.id}>
+            {drawDivider ? (
+              <Divider className="text-xxs">
+                Didn&apos;t play in previous rounds
+              </Divider>
+            ) : null}
+            <div className="stack horizontal xs">
+              <div
+                className={clsx(
+                  "tournament-bracket__during-match-actions__checkbox-name",
+                  { "disabled-opaque": mode() === "DISABLED" },
+                  { presentational: mode() === "PRESENTATIONAL" },
+                )}
               >
-                <span className="tournament-bracket__during-match-actions__player-name__inner">
-                  {member.inGameName
-                    ? inGameNameWithoutDiscriminator(member.inGameName)
-                    : member.discordName}
-                </span>
-              </label>
+                <input
+                  className="plain tournament-bracket__during-match-actions__checkbox"
+                  type="checkbox"
+                  id={`${member.id}-${id}`}
+                  name="playerName"
+                  disabled={
+                    mode() === "DISABLED" || mode() === "PRESENTATIONAL"
+                  }
+                  value={member.id}
+                  checked={checkedPlayers.flat().includes(member.id)}
+                  onChange={() => handlePlayerClick(member.id)}
+                  data-testid={`player-checkbox-${i}`}
+                />{" "}
+                <label
+                  className="tournament-bracket__during-match-actions__player-name"
+                  htmlFor={`${member.id}-${id}`}
+                >
+                  <span className="tournament-bracket__during-match-actions__player-name__inner">
+                    {member.inGameName
+                      ? inGameNameWithoutDiscriminator(member.inGameName)
+                      : member.discordName}
+                  </span>
+                </label>
+              </div>
+              <Link to={userPage(member)} target="_blank">
+                <Avatar size="xxs" user={member} />
+              </Link>
             </div>
-            <Link to={userPage(member)} target="_blank">
-              <Avatar size="xxs" user={member} />
-            </Link>
-          </div>
+          </React.Fragment>
         );
       })}
     </div>

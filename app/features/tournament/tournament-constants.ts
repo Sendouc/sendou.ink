@@ -20,6 +20,7 @@ export const BRACKET_NAMES = {
 
 export const FORMATS_SHORT = [
   "DE",
+  "SE",
   "RR_TO_SE",
   "SWISS",
   "SWISS_TO_SE",

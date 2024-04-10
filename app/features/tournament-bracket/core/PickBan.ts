@@ -197,9 +197,11 @@ function unavailableModes({
 }): Set<ModeShort> {
   if (!maps?.pickBan || maps.pickBan === "BAN_2") return new Set();
 
+  // can't pick the same mode last won on
   const result = new Set(
     results
       .filter((result) => result.winnerTeamId === pickerTeamId)
+      .slice(-1)
       .map((result) => result.mode),
   );
 

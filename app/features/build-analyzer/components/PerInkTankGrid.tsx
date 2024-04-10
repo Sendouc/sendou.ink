@@ -7,6 +7,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { weaponParams } from "../core/utils";
 import clsx from "clsx";
+import type { FullInkTankOption } from "../analyzer-types";
 
 interface PerInkTankGridProps {
   weaponSplId: MainWeaponId;
@@ -253,7 +254,16 @@ function inkTankOptionsWhenNSubsUsed({
     subWeaponParams,
   });
 
-  return options.find((o) => o.subsUsed === subsUsed);
+  return optionsToPreferred(options).find((o) => o.subsUsed === subsUsed);
+}
+
+const PREFERRED_KEYS: FullInkTankOption["type"][] = ["FULL_CHARGE"];
+function optionsToPreferred(options: ReturnType<typeof fullInkTankOptions>) {
+  if (!options.some((option) => PREFERRED_KEYS.includes(option.type))) {
+    return options;
+  }
+
+  return options.filter((option) => PREFERRED_KEYS.includes(option.type));
 }
 
 function addGridColors(grid: ("N/A" | ShotCellData)[][]) {

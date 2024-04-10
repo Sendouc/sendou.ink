@@ -174,7 +174,6 @@ const pagesStm = sql.prepare(/* sql */ `
       "GroupMatch"."alphaGroupId" = "Group"."id" or 
       "GroupMatch"."bravoGroupId" = "Group"."id"
     left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
-    left join "GroupMatchMap" on "GroupMatch"."id" = "GroupMatchMap"."matchId"
     where "GroupMember"."userId" = @userId
       and "GroupMatch"."createdAt" between @starts and @ends
     group by "GroupMatch"."id"

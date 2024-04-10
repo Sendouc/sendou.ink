@@ -1715,11 +1715,19 @@ function ConsumptionTable({
               const opt1 = options1ForThisSubsUsed[i];
               const opt2 = options2ForThisSubsUsed[i];
 
-              const contents = !isComparing
-                ? opt1.value
-                : `${opt1?.value ?? "-"}/${opt2?.value ?? "-"}`;
+              const contents = () => {
+                if (isComparing) {
+                  return `${opt1?.value ?? "-"}/${opt2?.value ?? "-"}`;
+                }
 
-              cells.push(<td key={opt1?.id ?? opt2.id}>{contents}</td>);
+                if (!opt2 || opt1.value !== opt2.value) {
+                  return `${opt2?.value ?? "-"} ► ${opt1.value}`;
+                }
+
+                return opt1.value;
+              };
+
+              cells.push(<td key={opt1?.id ?? opt2.id}>{contents()}</td>);
             }
 
             return (

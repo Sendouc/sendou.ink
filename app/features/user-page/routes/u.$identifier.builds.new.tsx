@@ -1,219 +1,38 @@
-import {
-  json,
-  redirect,
-  type ActionFunction,
-  type LoaderFunctionArgs,
-} from "@remix-run/node";
 import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import clone from "just-clone";
 import * as React from "react";
-import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";
 import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
-import { CrossIcon } from "~/components/icons/Cross";
-import { PlusIcon } from "~/components/icons/Plus";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
+import { CrossIcon } from "~/components/icons/Cross";
+import { PlusIcon } from "~/components/icons/Plus";
 import { BUILD } from "~/constants";
 import type { GearType } from "~/db/types";
 import {
   validatedBuildFromSearchParams,
   validatedWeaponIdFromSearchParams,
 } from "~/features/build-analyzer";
-import { buildsByUserId } from "~/features/builds";
-import { useTranslation } from "react-i18next";
-import { requireUser } from "~/features/auth/core/user.server";
-import { requireUserId } from "~/features/auth/core/user.server";
-import {
-  type Ability,
-  clothesGearIds,
-  headGearIds,
-  modesShort,
-  shoesGearIds,
-} from "~/modules/in-game-lists";
+import { modesShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type {
-  BuildAbilitiesTuple,
   BuildAbilitiesTupleWithUnknown,
   MainWeaponId,
 } from "~/modules/in-game-lists/types";
-import {
-  parseRequestFormData,
-  validate,
-  type SendouRouteHandle,
-} from "~/utils/remix";
-import { modeImageUrl, userBuildsPage } from "~/utils/urls";
-import {
-  actualNumber,
-  checkboxValueToBoolean,
-  checkboxValueToDbBoolean,
-  clothesMainSlotAbility,
-  dbBoolean,
-  falsyToNull,
-  headMainSlotAbility,
-  id,
-  processMany,
-  removeDuplicates,
-  safeJSONParse,
-  shoesMainSlotAbility,
-  stackableAbility,
-  toArray,
-  weaponSplId,
-} from "~/utils/zod";
-import * as BuildRepository from "~/features/builds/BuildRepository.server";
+import { type SendouRouteHandle } from "~/utils/remix";
+import { modeImageUrl } from "~/utils/urls";
 
-const newBuildActionSchema = z.object({
-  buildToEditId: z.preprocess(actualNumber, id.nullish()),
-  title: z.string().min(BUILD.TITLE_MIN_LENGTH).max(BUILD.TITLE_MAX_LENGTH),
-  description: z.preprocess(
-    falsyToNull,
-    z.string().max(BUILD.DESCRIPTION_MAX_LENGTH).nullable(),
-  ),
-  TW: z.preprocess(checkboxValueToBoolean, z.boolean()),
-  SZ: z.preprocess(checkboxValueToBoolean, z.boolean()),
-  TC: z.preprocess(checkboxValueToBoolean, z.boolean()),
-  RM: z.preprocess(checkboxValueToBoolean, z.boolean()),
-  CB: z.preprocess(checkboxValueToBoolean, z.boolean()),
-  private: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
-  "weapon[value]": z.preprocess(
-    processMany(toArray, removeDuplicates),
-    z.array(weaponSplId).min(1).max(BUILD.MAX_WEAPONS_COUNT),
-  ),
-  "HEAD[value]": z.preprocess(
-    actualNumber,
-    z
-      .number()
-      .refine((val) =>
-        headGearIds.includes(val as (typeof headGearIds)[number]),
-      ),
-  ),
-  "CLOTHES[value]": z.preprocess(
-    actualNumber,
-    z
-      .number()
-      .refine((val) =>
-        clothesGearIds.includes(val as (typeof clothesGearIds)[number]),
-      ),
-  ),
-  "SHOES[value]": z.preprocess(
-    actualNumber,
-    z
-      .number()
-      .refine((val) =>
-        shoesGearIds.includes(val as (typeof shoesGearIds)[number]),
-      ),
-  ),
-  abilities: z.preprocess(
-    safeJSONParse,
-    z.tuple([
-      z.tuple([
-        headMainSlotAbility,
-        stackableAbility,
-        stackableAbility,
-        stackableAbility,
-      ]),
-      z.tuple([
-        clothesMainSlotAbility,
-        stackableAbility,
-        stackableAbility,
-        stackableAbility,
-      ]),
-      z.tuple([
-        shoesMainSlotAbility,
-        stackableAbility,
-        stackableAbility,
-        stackableAbility,
-      ]),
-    ]),
-  ),
-});
-
-export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
-  const data = await parseRequestFormData({
-    request,
-    schema: newBuildActionSchema,
-  });
-
-  const usersBuilds = buildsByUserId({
-    userId: user.id,
-    loggedInUserId: user.id,
-  });
-
-  if (usersBuilds.length >= BUILD.MAX_COUNT) {
-    throw new Response("Max amount of builds reached", { status: 400 });
-  }
-  validate(
-    !data.buildToEditId ||
-      usersBuilds.some((build) => build.id === data.buildToEditId),
-  );
-
-  const commonArgs = {
-    title: data.title,
-    description: data.description,
-    abilities: data.abilities as BuildAbilitiesTuple,
-    headGearSplId: data["HEAD[value]"],
-    clothesGearSplId: data["CLOTHES[value]"],
-    shoesGearSplId: data["SHOES[value]"],
-    modes: modesShort.filter((mode) => data[mode]),
-    weaponSplIds: data["weapon[value]"],
-    ownerId: user.id,
-    private: data.private,
-  };
-  if (data.buildToEditId) {
-    await BuildRepository.update({ id: data.buildToEditId, ...commonArgs });
-  } else {
-    await BuildRepository.create(commonArgs);
-  }
-
-  throw redirect(userBuildsPage(user));
-};
+import { loader } from "../loaders/u.$identifier.builds.new.server";
+import { action } from "../actions/u.$identifier.builds.new.server";
+export { loader, action };
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds", "gear"],
-};
-
-const newBuildLoaderParamsSchema = z.object({
-  buildId: z.preprocess(actualNumber, id),
-});
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await requireUserId(request);
-  const url = new URL(request.url);
-
-  const params = newBuildLoaderParamsSchema.safeParse(
-    Object.fromEntries(url.searchParams),
-  );
-
-  const usersBuilds = buildsByUserId({
-    userId: user.id,
-    loggedInUserId: user.id,
-  });
-  const buildToEdit = usersBuilds.find(
-    (b) => params.success && b.id === params.data.buildId,
-  );
-
-  return json({
-    buildToEdit,
-    gearIdToAbilities: resolveGearIdToAbilities(),
-  });
-
-  function resolveGearIdToAbilities() {
-    return usersBuilds.reduce(
-      (acc, build) => {
-        acc[`HEAD_${build.headGearSplId}`] = build.abilities[0];
-        acc[`CLOTHES_${build.clothesGearSplId}`] = build.abilities[1];
-        acc[`SHOES_${build.shoesGearSplId}`] = build.abilities[2];
-
-        return acc;
-      },
-      {} as Record<string, [Ability, Ability, Ability, Ability]>,
-    );
-  }
 };
 
 export default function NewBuildPage() {

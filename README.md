@@ -204,7 +204,7 @@ Note: This is only useful if you have access to a production running on Render.c
    - weapon = contents of `weapon` folder
    - langs = contents of `language` folder
    - Couple of others at the root: `GearInfoClothes.json`, `GearInfoHead.json`, `GearInfoShoes.json`, `spl__DamageRateInfoConfig.pp__CombinationDataTableData.json`, `SplPlayer.game__GameParameterTable.json`, `WeaponInfoMain.json`, `WeaponInfoSpecial.json` and `WeaponInfoSub.json`
-2. Update `AVAILABLE_SR_GEAR` with new SR gear
+2. Update `AVAILABLE_SR_GEAR` with new SR gear & new gear bought with scales
 3. Update all `CURRENT_SEASON` constants
 4. Update `CURRENT_PATCH` constants
 5. Update `PATCHES` constant with the late patch + remove the oldest

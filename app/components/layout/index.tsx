@@ -5,14 +5,12 @@ import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix";
 import { Footer } from "./Footer";
 import { useTranslation } from "react-i18next";
 import { Image } from "../Image";
-import { UserItem } from "./UserItem";
-import { LanguageChanger } from "./LanguageChanger";
-import { ThemeChanger } from "./ThemeChanger";
 import { LinkButton } from "../Button";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { HeartIcon } from "../icons/Heart";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
+import { TopRightButtons } from "./TopRightButtons";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -94,25 +92,16 @@ export const Layout = React.memo(function Layout({
             </>
           ) : null}
         </div>
-        <div className="layout__header__right-container">
-          {data && typeof data?.user?.patronTier !== "number" ? (
-            <LinkButton
-              to={SUPPORT_PAGE}
-              size="tiny"
-              icon={<HeartIcon />}
-              variant="outlined"
-            >
-              {t("common:pages.support")}
-            </LinkButton>
-          ) : null}
-          <LanguageChanger />
-          <ThemeChanger />
-          {!isErrored ? <UserItem /> : null}
-        </div>
+        <TopRightButtons
+          isErrored={isErrored}
+          showSupport={Boolean(
+            data && typeof data?.user?.patronTier !== "number",
+          )}
+        />
       </header>
       {showLeaderboard ? <MyRampUnit /> : null}
       {children}
-      <Footer patrons={data?.patrons} />
+      <Footer />
     </div>
   );
 });

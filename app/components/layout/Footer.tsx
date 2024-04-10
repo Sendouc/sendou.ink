@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
-import type { RootLoaderData } from "~/root";
+import { usePatrons } from "~/hooks/swr";
 import { discordFullName } from "~/utils/strings";
 import {
   CONTRIBUTIONS_PAGE,
@@ -13,18 +14,14 @@ import {
   SUPPORT_PAGE,
   userPage,
 } from "~/utils/urls";
+import { Image } from "../Image";
 import { DiscordIcon } from "../icons/Discord";
 import { GitHubIcon } from "../icons/GitHub";
 import { PatreonIcon } from "../icons/Patreon";
-import { Image } from "../Image";
 
 const currentYear = new Date().getFullYear();
 
-export function Footer({
-  patrons = [],
-}: {
-  patrons?: RootLoaderData["patrons"];
-}) {
+function _Footer() {
   const { t } = useTranslation();
 
   return (
@@ -64,31 +61,7 @@ export function Footer({
           <PatreonIcon className="layout__footer__social-icon patreon" />
         </Link>
       </div>
-      {patrons.length > 0 ? (
-        <div>
-          <h4 className="layout__footer__patron-title">
-            {t("footer.thanks")}
-            <Image
-              alt=""
-              path={SENDOU_LOVE_EMOJI_PATH}
-              width={24}
-              height={24}
-            />
-          </h4>
-          <ul className="layout__footer__patron-list">
-            {patrons.map((patron) => (
-              <li key={patron.id}>
-                <Link
-                  to={userPage(patron)}
-                  className="layout__footer__patron-list__patron"
-                >
-                  {discordFullName(patron)}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      <PatronsList />
       <div className="layout__copyright-note">
         <p>
           sendou.ink © Copyright of Sendou and contributors 2019-{currentYear}.
@@ -114,3 +87,31 @@ export function Footer({
     </footer>
   );
 }
+
+function PatronsList() {
+  const { t } = useTranslation();
+  const { patrons } = usePatrons();
+
+  return (
+    <div>
+      <h4 className="layout__footer__patron-title">
+        {t("footer.thanks")}
+        <Image alt="" path={SENDOU_LOVE_EMOJI_PATH} width={24} height={24} />
+      </h4>
+      <ul className="layout__footer__patron-list">
+        {patrons?.map((patron) => (
+          <li key={patron.id}>
+            <Link
+              to={userPage(patron)}
+              className="layout__footer__patron-list__patron"
+            >
+              {discordFullName(patron)}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export const Footer = React.memo(_Footer);

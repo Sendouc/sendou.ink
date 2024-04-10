@@ -26,6 +26,13 @@ export function RoundHeader({
 
   const countPrefix = maps?.type === "PLAY_ALL" ? "Play all " : "Bo";
 
+  const pickBanSuffix =
+    maps?.pickBan === "COUNTERPICK"
+      ? " (C)"
+      : maps?.pickBan === "BAN_2"
+        ? " (B)"
+        : "";
+
   return (
     <div>
       <div className="elim-bracket__round-header">{name}</div>
@@ -34,6 +41,7 @@ export function RoundHeader({
           <div>
             {countPrefix}
             {bestOf}
+            {pickBanSuffix}
           </div>
           {hasDeadline ? <Deadline roundId={roundId} bestOf={bestOf} /> : null}
         </div>

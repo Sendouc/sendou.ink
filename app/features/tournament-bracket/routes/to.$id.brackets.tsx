@@ -65,6 +65,7 @@ import { checkInMany } from "~/features/tournament/queries/checkInMany.server";
 import { logger } from "~/utils/logger";
 import * as Swiss from "../core/Swiss";
 import { createSwissBracketInTransaction } from "~/features/tournament/queries/createSwissBracketInTransaction.server";
+import { refreshUserSkills } from "~/features/mmr/tiered.server";
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
@@ -220,6 +221,14 @@ export const action: ActionFunction = async ({ params, request }) => {
         }),
         season,
       });
+
+      if (tournament.ranked) {
+        try {
+          refreshUserSkills(season!);
+        } catch (error) {
+          logger.warn("Error refreshing user skills", error);
+        }
+      }
 
       break;
     }

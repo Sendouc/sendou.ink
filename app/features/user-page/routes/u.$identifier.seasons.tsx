@@ -85,7 +85,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     await UserRepository.identifierToUserId(identifier),
   );
 
-  const { isAccurateTiers, userSkills } = await _userSkills(season);
+  const { isAccurateTiers, userSkills } = _userSkills(season);
   const { tier } = userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,

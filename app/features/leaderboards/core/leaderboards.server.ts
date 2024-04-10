@@ -136,7 +136,7 @@ export function addPlacementRank<T>(entries: T[]) {
   }));
 }
 
-export async function ownEntryPeek({
+export function ownEntryPeek({
   leaderboard,
   userId,
   season,
@@ -154,7 +154,7 @@ export async function ownEntryPeek({
 
   const withTier = addTiers([found], season)[0];
 
-  const { intervals } = await userSkills(season);
+  const { intervals } = userSkills(season);
 
   return {
     entry: withTier,
