@@ -114,3 +114,30 @@ export function forcePatron(args: {
     .where("User.id", "=", args.id)
     .execute();
 }
+
+export function banUser({
+  userId,
+  banned,
+  bannedReason,
+}: {
+  userId: number;
+  banned: 1 | Date;
+  bannedReason: string | null;
+}) {
+  return db
+    .updateTable("User")
+    .set({
+      banned: banned === 1 ? banned : dateToDatabaseTimestamp(banned),
+      bannedReason,
+    })
+    .where("User.id", "=", userId)
+    .execute();
+}
+
+export function unbanUser(userId: number) {
+  return db
+    .updateTable("User")
+    .set({ banned: 0 })
+    .where("User.id", "=", userId)
+    .execute();
+}

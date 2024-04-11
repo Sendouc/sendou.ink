@@ -33,6 +33,8 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import { countArtByUserId } from "~/features/art/queries/countArtByUserId.server";
 import { findVods } from "~/features/vods/queries/findVods.server";
 import { userParamsSchema } from "../user-page-schemas.server";
+import { userIsBanned } from "~/features/ban/core/banned.server";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 import "~/styles/u.css";
 
@@ -79,7 +81,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     discordUniqueName: user.showDiscordUniqueName
       ? user.discordUniqueName
       : null,
-    banned: isAdmin(loggedInUser) ? user.banned : undefined,
+    banned:
+      isAdmin(loggedInUser) && userIsBanned(user.id)
+        ? { banned: user.banned, bannedReason: user.bannedReason }
+        : undefined,
     css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: await BadgeRepository.findByOwnerId({
       userId: user.id,
@@ -143,7 +148,7 @@ export default function UserPageLayout() {
           </SubNavLink>
         )}
       </SubNav>
-      {data.banned ? <div className="text-warning">Banned</div> : null}
+      <BannedInfo />
       <Outlet />
     </Main>
   );
@@ -174,4 +179,41 @@ function useReplaceWithCustomUrl() {
         .join("/"),
     );
   }, [location, data.customUrl]);
+}
+
+function BannedInfo() {
+  const data = useLoaderData<typeof loader>();
+
+  const { banned, bannedReason } = data.banned ?? {};
+
+  if (!banned) return null;
+
+  const ends = (() => {
+    if (!banned || banned === 1) return null;
+
+    return databaseTimestampToDate(banned);
+  })();
+
+  return (
+    <div className="mb-4">
+      <h2 className="text-warning">Account suspended</h2>
+      {bannedReason ? <div>Reason: {bannedReason}</div> : null}
+      {ends ? (
+        <div suppressHydrationWarning>
+          Ends:{" "}
+          {ends.toLocaleString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          })}
+        </div>
+      ) : (
+        <div>
+          Ends: <i>no end time set</i>
+        </div>
+      )}
+    </div>
+  );
 }

@@ -585,7 +585,9 @@ export interface UserMapModePreferences {
 }
 
 export interface User {
+  /** 1 = permabanned, timestamp = ban active till then */
   banned: Generated<number | null>;
+  bannedReason: string | null;
   bio: string | null;
   commissionsOpen: Generated<number | null>;
   commissionText: string | null;

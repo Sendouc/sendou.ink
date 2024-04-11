@@ -41,6 +41,8 @@ export default defineConfig(() => {
               "features/front-page/routes/patrons-list.ts",
             );
 
+            route("/suspended", "features/ban/routes/suspended.tsx");
+
             route("/u", "features/user-search/routes/u.tsx");
 
             route(
