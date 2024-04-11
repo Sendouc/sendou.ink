@@ -3,7 +3,7 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -41,10 +41,11 @@ import { useIsMounted } from "./hooks/useIsMounted";
 import { DEFAULT_LANGUAGE } from "./modules/i18n/config";
 import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
 import { browserTimingHeader } from "./utils/newrelic.server";
-import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
+import { COMMON_PREVIEW_IMAGE, SUSPENDED_PAGE } from "./utils/urls";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { cache, ttl } from "~/utils/cache.server";
 import cachified from "@epic-web/cachified";
+import { userIsBanned } from "./features/ban/core/banned.server";
 
 import "nprogress/nprogress.css";
 import "~/styles/common.css";
@@ -75,11 +76,18 @@ export const meta: MetaFunction = () => {
 export type RootLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await getUser(request);
+  const user = await getUser(request, false);
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);
 
-  if (user?.banned) throw new Response(null, { status: 403 });
+  // avoid redirection loop
+  if (
+    user &&
+    userIsBanned(user?.id) &&
+    new URL(request.url).pathname !== SUSPENDED_PAGE
+  ) {
+    return redirect(SUSPENDED_PAGE);
+  }
 
   return json(
     {

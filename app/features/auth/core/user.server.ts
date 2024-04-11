@@ -2,9 +2,13 @@ import type { User } from "~/db/types";
 import { IMPERSONATED_SESSION_KEY, SESSION_KEY } from "./authenticator.server";
 import { authSessionStorage } from "./session.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { userIsBanned } from "~/features/ban/core/banned.server";
+import { redirect } from "@remix-run/node";
+import { SUSPENDED_PAGE } from "~/utils/urls";
 
 export async function getUserId(
   request: Request,
+  redirectIfBanned = true,
 ): Promise<Pick<User, "id"> | undefined> {
   const session = await authSessionStorage.getSession(
     request.headers.get("Cookie"),
@@ -15,11 +19,13 @@ export async function getUserId(
 
   if (!userId) return;
 
+  if (userIsBanned(userId) && redirectIfBanned) throw redirect(SUSPENDED_PAGE);
+
   return { id: userId };
 }
 
-export async function getUser(request: Request) {
-  const userId = (await getUserId(request))?.id;
+export async function getUser(request: Request, redirectIfBanned = true) {
+  const userId = (await getUserId(request, redirectIfBanned))?.id;
 
   if (!userId) return;
 

@@ -1,9 +1,4 @@
-import type {
-  ActionFunctionArgs,
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import {
   Form,
   useFetcher,
@@ -16,117 +11,18 @@ import { Catcher } from "~/components/Catcher";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
-import * as AdminRepository from "~/features/admin/AdminRepository.server";
 import { useUser } from "~/features/auth/core/user";
-import {
-  getUserId,
-  isImpersonating,
-  requireUserId,
-} from "~/features/auth/core/user.server";
 import { isAdmin, isMod } from "~/permissions";
-import {
-  parseRequestFormData,
-  validate,
-  type SendouRouteHandle,
-} from "~/utils/remix";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { assertUnreachable } from "~/utils/types";
 import { SEED_URL, STOP_IMPERSONATING_URL, impersonateUrl } from "~/utils/urls";
-import { adminActionSchema } from "../admin-schemas.server";
-import { plusTiersFromVotingAndLeaderboard } from "../core/plus-tier.server";
-import { makeArtist } from "~/features/art/queries/makeArtist.server";
+
+import { action } from "../actions/admin.server";
+import { loader } from "../loaders/admin.server";
+export { action, loader };
 
 export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
-};
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const data = await parseRequestFormData({
-    request,
-    schema: adminActionSchema,
-  });
-  const user = await requireUserId(request);
-
-  switch (data._action) {
-    case "MIGRATE": {
-      validate(isAdmin(user), "Admin needed", 401);
-
-      await AdminRepository.migrate({
-        oldUserId: data["old-user"],
-        newUserId: data["new-user"],
-      });
-      break;
-    }
-    case "REFRESH": {
-      validate(isAdmin(user));
-
-      await AdminRepository.replacePlusTiers(
-        await plusTiersFromVotingAndLeaderboard(),
-      );
-      break;
-    }
-    case "FORCE_PATRON": {
-      validate(isAdmin(user), "Admin needed", 401);
-
-      await AdminRepository.forcePatron({
-        id: data["user"],
-        patronSince: new Date(),
-        patronTier: data.patronTier,
-        patronTill: new Date(data.patronTill),
-      });
-      break;
-    }
-    case "CLEAN_UP": {
-      validate(isAdmin(user), "Admin needed", 401);
-
-      // on purpose sync
-      AdminRepository.cleanUp();
-      break;
-    }
-    case "ARTIST": {
-      validate(isMod(user), "Mod needed", 401);
-
-      makeArtist(data["user"]);
-      break;
-    }
-    case "VIDEO_ADDER": {
-      validate(isMod(user), "Mod needed", 401);
-
-      await AdminRepository.makeVideoAdderByUserId(data["user"]);
-      break;
-    }
-    case "LINK_PLAYER": {
-      validate(isMod(user), "Mod needed", 401);
-
-      await AdminRepository.linkUserAndPlayer({
-        userId: data["user"],
-        playerId: data.playerId,
-      });
-
-      break;
-    }
-    default: {
-      assertUnreachable(data);
-    }
-  }
-
-  return { ok: true };
-};
-
-interface AdminPageLoaderData {
-  isImpersonating: boolean;
-}
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUserId(request);
-
-  if (process.env.NODE_ENV === "production" && !isMod(user)) {
-    throw redirect("/");
-  }
-
-  return json<AdminPageLoaderData>({
-    isImpersonating: await isImpersonating(request),
-  });
 };
 
 export const handle: SendouRouteHandle = {
@@ -149,6 +45,8 @@ export default function AdminPage() {
       ) : null}
       {isAdmin(user) ? <MigrateUser /> : null}
       {isAdmin(user) ? <ForcePatron /> : null}
+      {isAdmin(user) ? <BanUser /> : null}
+      {isAdmin(user) ? <UnbanUser /> : null}
       {isAdmin(user) ? <RefreshPlusTiers /> : null}
       {isAdmin(user) ? <CleanUp /> : null}
     </Main>
@@ -157,7 +55,7 @@ export default function AdminPage() {
 
 function Impersonate() {
   const [userId, setUserId] = React.useState<number>();
-  const { isImpersonating } = useLoaderData<AdminPageLoaderData>();
+  const { isImpersonating } = useLoaderData<typeof loader>();
 
   return (
     <Form
@@ -333,6 +231,56 @@ function ForcePatron() {
           _action="FORCE_PATRON"
           state={fetcher.state}
         >
+          Save
+        </SubmitButton>
+      </div>
+    </fetcher.Form>
+  );
+}
+
+function BanUser() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form className="stack md" method="post">
+      <h2 className="text-warning">Ban user</h2>
+      <div className="stack horizontal md">
+        <div>
+          <label>User</label>
+          <UserSearch inputName="user" />
+        </div>
+
+        <div>
+          <label>Banned till</label>
+          <input name="duration" type="datetime-local" />
+        </div>
+
+        <div>
+          <label>Reason</label>
+          <input name="reason" type="text" />
+        </div>
+      </div>
+      <div className="stack horizontal md">
+        <SubmitButton type="submit" _action="BAN_USER" state={fetcher.state}>
+          Save
+        </SubmitButton>
+      </div>
+    </fetcher.Form>
+  );
+}
+
+function UnbanUser() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form className="stack md" method="post">
+      <h2 className="text-warning">Unban user</h2>
+      <div>
+        <label>User</label>
+        <UserSearch inputName="user" />
+      </div>
+      <div className="stack horizontal md">
+        <SubmitButton type="submit" _action="UNBAN_USER" state={fetcher.state}>
           Save
         </SubmitButton>
       </div>

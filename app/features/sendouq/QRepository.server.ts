@@ -11,6 +11,7 @@ import type { LookingGroupWithInviteCode } from "./q-types";
 import { nanoid } from "nanoid";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { userIsBanned } from "../ban/core/banned.server";
 
 export function mapModePreferencesByGroupId(groupId: number) {
   return db
@@ -276,8 +277,8 @@ export function deletePrivateUserNote({
     .execute();
 }
 
-export function usersThatTrusted(userId: number) {
-  return db
+export async function usersThatTrusted(userId: number) {
+  const rows = await db
     .selectFrom("TeamMember")
     .innerJoin("User", "User.id", "TeamMember.userId")
     .innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
@@ -292,16 +293,18 @@ export function usersThatTrusted(userId: number) {
           .where("TeamMember.userId", "=", userId),
       ),
     )
-    .where("User.banned", "=", 0)
     .union((eb) =>
       eb
         .selectFrom("TrustRelationship")
         .innerJoin("User", "User.id", "TrustRelationship.trustGiverUserId")
         .innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
         .select(COMMON_USER_FIELDS)
-        .where("TrustRelationship.trustReceiverUserId", "=", userId)
-        .where("User.banned", "=", 0),
+        .where("TrustRelationship.trustReceiverUserId", "=", userId),
     )
     .orderBy("User.discordName asc")
     .execute();
+
+  const rowsWithoutBanned = rows.filter((row) => !userIsBanned(row.id));
+
+  return rowsWithoutBanned;
 }

@@ -6,7 +6,7 @@ import { db } from "~/db/sql";
 import MockDate from "mockdate";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import type { adminActionSchema } from "../admin-schemas.server";
+import type { adminActionSchema } from "../actions/admin.server";
 
 const PlusVoting = suite("Plus voting");
 

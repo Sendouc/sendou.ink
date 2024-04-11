@@ -107,6 +107,7 @@ export const SENDOUQ_LOOKING_PAGE = "/q/looking";
 export const SENDOUQ_LOOKING_PREVIEW_PAGE = "/q/looking?preview=true";
 export const SENDOUQ_STREAMS_PAGE = "/q/streams";
 export const TIERS_PAGE = "/tiers";
+export const SUSPENDED_PAGE = "/suspended";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =

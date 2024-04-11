@@ -54,6 +54,7 @@ export function findByIdentifier(identifier: string) {
       "User.youtubeId",
       "User.favoriteBadgeId",
       "User.banned",
+      "User.bannedReason",
       "User.commissionText",
       "User.commissionsOpen",
       "User.patronTier",
@@ -97,7 +98,6 @@ export function findLeanById(id: number) {
       "User.isVideoAdder",
       "User.patronTier",
       "User.favoriteBadgeId",
-      "User.banned",
       "User.languages",
       "PlusTier.tier as plusTier",
     ])
