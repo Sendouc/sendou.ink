@@ -1406,6 +1406,7 @@ export const weaponParams = {
         },
       },
       MoveSpeed: 0.07,
+      MoveSpeed_Charge: 0.062,
       DamageParam_ValueMax: 300,
       DamageParam_ValueMin: 150,
       Jump_DegSwerve: 7,

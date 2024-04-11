@@ -141,6 +141,12 @@ function parametersToMainWeaponResult(
       ? params["DamageParam"]?.["ValueMax"]
       : undefined;
 
+  const MoveSpeed_Charge = () => {
+    if (weapon.Id === 4010) return 0.062;
+
+    return params["WeaponParam"]?.["MoveSpeed_Charge"];
+  };
+
   const DamageParam_ValueMax = () => {
     if (DamageParam_ValueDirect) return undefined;
 
@@ -258,7 +264,7 @@ function parametersToMainWeaponResult(
     MoveSpeed:
       params["WeaponParam"]?.["MoveSpeed"] ??
       params["spl__WeaponShelterShotgunParam"]?.["MoveSpeed"],
-    MoveSpeed_Charge: params["WeaponParam"]?.["MoveSpeed_Charge"],
+    MoveSpeed_Charge: MoveSpeed_Charge(),
     MoveSpeedFullCharge:
       params["WeaponParam"]?.["MoveSpeedFullCharge"] ??
       params["spl__WeaponStringerParam"]?.["ChargeParam"]?.[
