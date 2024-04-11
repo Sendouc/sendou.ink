@@ -134,6 +134,10 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("kr");
   }
 
+  if (normalizedEventName.includes("menu royale")) {
+    return tournamentLogoUrl("mr");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -220,6 +224,10 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (normalizedEventName.includes("kraken royale")) {
     return { bg: "#32333a", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("menu royale")) {
+    return { bg: "#000", text: WHITE };
   }
 
   return { bg: "#3430ad", text: WHITE };
