@@ -33,7 +33,6 @@
   "auth.errors.aborted": "Вход отменён",
   "auth.errors.failed": "Ошибка входа",
   "auth.errors.discordPermissions": "Для вашего профиля на sendou.ink странице нужет доступ к вашему имени, аватару и привязанным аккаунтам соц. сетей в Discord.",
-  "auth.errors.unknown": "Логин не удался из-за серверной ошибки. Пожалуйста, повторите попытку позже или воспользуйтесь командой /login с помощью бота Lohi, которого можно найти на Discord сервере sendou.ink:",
 
   "footer.github.subtitle": "Исходный код",
   "footer.discord.subtitle": "Помощь и обратная связь",

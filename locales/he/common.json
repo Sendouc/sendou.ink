@@ -33,7 +33,6 @@
   "auth.errors.aborted": "הכניסה בוטלה",
   "auth.errors.failed": "הכניסה נכשלה",
   "auth.errors.discordPermissions": "עבור פרופיל sendou.ink שלך, האתר זקוק לגישה לשם, הפרופיל והקשרים החברתיים של פרופיל ה-Discord שלך.",
-  "auth.errors.unknown": "ההתחברות נכשלה עקב שגיאה בשרת. נסו שוב בבקשה או השתמשו בפקודה /login דרך הלוהי בוט. הבוט נמצא בשרת דיסקורד sendou.ink:",
 
   "footer.github.subtitle": "קוד מקור",
   "footer.discord.subtitle": "עזרה & משוב",

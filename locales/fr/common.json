@@ -33,7 +33,6 @@
   "auth.errors.aborted": "Connexion abandonnée",
   "auth.errors.failed": "Connexion échouée",
   "auth.errors.discordPermissions": "Pour mettre en place votre profil, sendou.ink a besoin de votre nom de profil Discord, de votre avatar et de vos réseaux connectés.",
-  "auth.errors.unknown": "La connexion a échoué en raison d'une erreur de serveur. Veuillez réessayer plus tards ou utlisez la commande /login via le bot Lohi sur le serveur Discord:",
 
   "footer.github.subtitle": "Code source",
   "footer.discord.subtitle": "Aide & retours",
