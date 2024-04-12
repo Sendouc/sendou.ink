@@ -33,7 +33,7 @@
   "auth.errors.aborted": "Login Aborted",
   "auth.errors.failed": "Login Failed",
   "auth.errors.discordPermissions": "For your sendou.ink profile, the site needs access to your Discord profile's name, avatar and social connections.",
-  "auth.errors.unknown": "The login failed due to a server error. Please try again later or use the /login command via the Lohi bot. The bot can be found on sendou.ink's Discord:",
+  "auth.errors.unknown": "Does your Discord account have a verified email? For help please reach out to us via the #helpdesk channel on our Discord:",
 
   "footer.github.subtitle": "Source code",
   "footer.discord.subtitle": "Help & feedback",

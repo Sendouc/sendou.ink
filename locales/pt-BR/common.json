@@ -33,7 +33,6 @@
   "auth.errors.aborted": "Login Abortado",
   "auth.errors.failed": "Login Falhou",
   "auth.errors.discordPermissions": "Para o seu perfil do sendou.ink, o site precisa de acesso ao nome do perfil do seu Discord, incluindo também o avatar e conexões sociais.",
-  "auth.errors.unknown": "O login falhou devido a um erro do servidor. Por favor, tente novamente mais tarde ou use o comando /login através do bot Lohi. O bot pode ser encontrado no Discord do sendou.ink:",
 
   "footer.github.subtitle": "Código fonte",
   "footer.discord.subtitle": "Ajuda e Feedback",

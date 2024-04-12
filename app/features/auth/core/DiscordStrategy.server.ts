@@ -5,6 +5,7 @@ import { OAuth2Strategy } from "remix-auth-oauth2";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { logger } from "~/utils/logger";
 
 interface DiscordExtraParams extends Record<string, string | number> {
   scope: string;
@@ -18,6 +19,7 @@ const partialDiscordUserSchema = z.object({
   id: z.string(),
   username: z.string(),
   global_name: z.string().nullish(),
+  verified: z.boolean().nullish(),
 });
 const partialDiscordConnectionsSchema = z.array(
   z.object({
@@ -63,6 +65,15 @@ export class DiscordStrategy extends OAuth2Strategy<
           const [user, connections] =
             discordUserDetailsSchema.parse(discordResponses);
 
+          const isAlreadyRegistered = Boolean(
+            await UserRepository.findByIdentifier(user.id),
+          );
+
+          if (!isAlreadyRegistered && !user.verified) {
+            logger.info(`User is not verified with id: ${user.id}`);
+            throw new Error("Unverified user");
+          }
+
           const userFromDb = await UserRepository.upsert({
             discordAvatar: user.avatar ?? null,
             discordDiscriminator: user.discriminator,
@@ -80,7 +91,7 @@ export class DiscordStrategy extends OAuth2Strategy<
       },
     );
 
-    this.scope = "identify connections";
+    this.scope = "identify connections email";
   }
 
   private authGatewayEnabled() {

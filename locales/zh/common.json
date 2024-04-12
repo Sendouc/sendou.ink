@@ -33,7 +33,6 @@
   "auth.errors.aborted": "登录中止",
   "auth.errors.failed": "登录失败",
   "auth.errors.discordPermissions": "为了完善您的sendou.ink个人资料，网站需要获取您的Discord名字、头像和社交链接。",
-  "auth.errors.unknown": "登录因服务器错误失败。请稍后重试或通过Lohi机器人使用/login指令。机器人可以在sendou.ink的Discord 中找到：",
 
   "footer.github.subtitle": "源代码",
   "footer.discord.subtitle": "帮助及反馈",

@@ -33,7 +33,6 @@
   "auth.errors.aborted": "logindforsøg afbrudt",
   "auth.errors.failed": "Loginforsøg fejlet",
   "auth.errors.discordPermissions": "Før at du kan oprette en profil på Sendou.ink, skal Sendou.ink have adgang til din Discordprofils navn, brugerbillede og sociale forbindelser (de sociale medier, som du har tilknyttet din discordprofil).",
-  "auth.errors.unknown": "Log ind fejlet grundet en serverfejl. Prøv igen senere eller brug /login-kommandoen via Lohi-botten. Botten kan blive fundet på sendou.ink’s Discordserver",
 
   "footer.github.subtitle": "Kildekode",
   "footer.discord.subtitle": "Hjælp og feedback",

@@ -3,12 +3,15 @@ import { useTranslation } from "react-i18next";
 import { LOG_IN_URL, SENDOU_INK_DISCORD_URL } from "~/utils/urls";
 import { Button } from "../Button";
 import { Dialog } from "../Dialog";
+import { createPortal } from "react-dom";
+import { useIsMounted } from "~/hooks/useIsMounted";
 
 export function LogInButtonContainer({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isMounted = useIsMounted();
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const authError = searchParams.get("authError");
@@ -23,14 +26,19 @@ export function LogInButtonContainer({
       <form action={LOG_IN_URL} method="post">
         {children}
       </form>
-      {authError != null && (
-        <Dialog isOpen close={closeAuthErrorDialog}>
-          <div className="stack md">
-            <AuthenticationErrorHelp errorCode={authError} />
-            <Button onClick={closeAuthErrorDialog}>{t("actions.close")}</Button>
-          </div>
-        </Dialog>
-      )}
+      {authError != null &&
+        isMounted &&
+        createPortal(
+          <Dialog isOpen close={closeAuthErrorDialog}>
+            <div className="stack md">
+              <AuthenticationErrorHelp errorCode={authError} />
+              <Button onClick={closeAuthErrorDialog}>
+                {t("actions.close")}
+              </Button>
+            </div>
+          </Dialog>,
+          document.body,
+        )}
     </>
   );
 }
