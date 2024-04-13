@@ -31,6 +31,8 @@ import {
   navIconUrl,
   outlinedMainWeaponImageUrl,
   weaponBuildPage,
+  weaponBuildPopularPage,
+  weaponBuildStatsPage,
 } from "~/utils/urls";
 import {
   FILTER_SEARCH_PARAM_KEY,
@@ -310,7 +312,7 @@ export default function WeaponsBuildsPage() {
         />
         <div className="builds-buttons__link">
           <LinkButton
-            to="stats"
+            to={weaponBuildStatsPage(data.slug)}
             variant="outlined"
             icon={<ChartBarIcon />}
             size="tiny"
@@ -318,7 +320,7 @@ export default function WeaponsBuildsPage() {
             {t("builds:linkButton.abilityStats")}
           </LinkButton>
           <LinkButton
-            to="popular"
+            to={weaponBuildPopularPage(data.slug)}
             variant="outlined"
             icon={<FireIcon />}
             size="tiny"
