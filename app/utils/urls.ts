@@ -216,6 +216,10 @@ export const plusSuggestionPage = (tier?: string | number) =>
 
 export const weaponBuildPage = (weaponSlug: string) =>
   `${BUILDS_PAGE}/${weaponSlug}`;
+export const weaponBuildStatsPage = (weaponSlug: string) =>
+  `${weaponBuildPage(weaponSlug)}/stats`;
+export const weaponBuildPopularPage = (weaponSlug: string) =>
+  `${weaponBuildPage(weaponSlug)}/popular`;
 
 export const calendarEventPage = (eventId: number) => `/calendar/${eventId}`;
 export const calendarEditPage = (eventId?: number) =>
