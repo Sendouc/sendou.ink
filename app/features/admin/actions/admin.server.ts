@@ -76,7 +76,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       break;
     }
     case "BAN_USER": {
-      validate(isAdmin(user), "Admin needed", 401);
+      validate(isMod(user), "Mod needed", 401);
 
       await AdminRepository.banUser({
         bannedReason: data.reason ?? null,
@@ -89,7 +89,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       break;
     }
     case "UNBAN_USER": {
-      validate(isAdmin(user), "Admin needed", 401);
+      validate(isMod(user), "Mod needed", 401);
 
       await AdminRepository.unbanUser(data["user"]);
 
