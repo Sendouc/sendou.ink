@@ -18,6 +18,7 @@ export async function findById(id: number) {
     .select(({ eb, exists, selectFrom }) => [
       "Tournament.id",
       "CalendarEvent.id as eventId",
+      "CalendarEvent.discordUrl",
       "Tournament.settings",
       "Tournament.showMapListGenerator",
       "Tournament.castTwitchAccounts",
