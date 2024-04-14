@@ -178,3 +178,7 @@ if (!global.appStartSignal && process.env.NODE_ENV === "production") {
     updatePatreonData().catch((err) => console.error(err)),
   );
 }
+
+process.on("unhandledRejection", (reason: string, p: Promise<any>) => {
+  console.error("Unhandled Rejection at:", p, "reason:", reason);
+});
