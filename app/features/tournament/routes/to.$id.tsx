@@ -201,7 +201,7 @@ export default function TournamentLayout() {
               bracketExpanded,
               setBracketExpanded,
               streamingParticipants: data.streamingParticipants,
-              friendCode: data.friendCode,
+              friendCode: data.friendCode?.friendCode,
               friendCodes: data.friendCodes,
               toSetMapPool: data.toSetMapPool,
             } satisfies TournamentContext

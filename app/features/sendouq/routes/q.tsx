@@ -25,7 +25,7 @@ import { UsersIcon } from "~/components/icons/Users";
 import { sql } from "~/db/sql";
 import type { GroupMember } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
-import { getUserId, requireUserId } from "~/features/auth/core/user.server";
+import { getUserId, requireUser } from "~/features/auth/core/user.server";
 import type { RankingSeason } from "~/features/mmr/season";
 import { currentSeason, nextSeason } from "~/features/mmr/season";
 import * as QRepository from "~/features/sendouq/QRepository.server";
@@ -58,7 +58,10 @@ import {
 import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 import { FULL_GROUP_SIZE, JOIN_CODE_SEARCH_PARAM_KEY } from "../q-constants";
 import { frontPageSchema } from "../q-schemas.server";
-import { groupRedirectLocationByCurrentLocation } from "../q-utils";
+import {
+  groupRedirectLocationByCurrentLocation,
+  userCanJoinQueueAt,
+} from "../q-utils";
 import { addMember } from "../queries/addMember.server";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
@@ -86,17 +89,18 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-const validateCanJoinQ = async (user: { id: number }) => {
+const validateCanJoinQ = async (user: { id: number; discordId: string }) => {
+  const friendCode = await UserRepository.currentFriendCodeByUserId(user.id);
+  validate(friendCode, "No friend code");
+  const canJoinQueue = userCanJoinQueueAt(user, friendCode) === "NOW";
+
   validate(currentSeason(new Date()), "Season is not active");
   validate(!findCurrentGroupByUserId(user.id), "Already in a group");
-  validate(
-    await UserRepository.currentFriendCodeByUserId(user.id),
-    "No friend code",
-  );
+  validate(canJoinQueue, "Can't join queue right now");
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const data = await parseRequestFormData({
     request,
     schema: frontPageSchema,
@@ -211,6 +215,9 @@ export default function QPage() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
 
+  const queueJoinStatus =
+    user && data.friendCode ? userCanJoinQueueAt(user, data.friendCode) : null;
+
   return (
     <Main halfWidth className="stack lg">
       <div className="stack md">
@@ -231,7 +238,7 @@ export default function QPage() {
           data.groupInvitedTo.members.length < FULL_GROUP_SIZE ? (
             <Alert variation="WARNING">{t("q:front.noFriendCode")}</Alert>
           ) : null}
-          {data.friendCode &&
+          {queueJoinStatus === "NOW" &&
           data.groupInvitedTo &&
           data.groupInvitedTo.members.length < FULL_GROUP_SIZE ? (
             <JoinTeamDialog
@@ -240,7 +247,9 @@ export default function QPage() {
               members={data.groupInvitedTo.members}
             />
           ) : null}
-          {user ? <FriendCodeInput friendCode={data.friendCode} /> : null}
+          {user ? (
+            <FriendCodeInput friendCode={data.friendCode?.friendCode} />
+          ) : null}
           {user ? (
             <>
               <fetcher.Form className="stack md" method="post">
@@ -248,7 +257,7 @@ export default function QPage() {
                 <div className="stack horizontal md items-center mt-4 mx-auto">
                   <SubmitButton
                     icon={<UsersIcon />}
-                    disabled={!data.friendCode}
+                    disabled={queueJoinStatus !== "NOW"}
                   >
                     {t("q:front.actions.joinWithGroup")}
                   </SubmitButton>
@@ -258,12 +267,26 @@ export default function QPage() {
                     state={fetcher.state}
                     icon={<UserIcon />}
                     variant="outlined"
-                    disabled={!data.friendCode}
+                    disabled={queueJoinStatus !== "NOW"}
                   >
                     {t("q:front.actions.joinSolo")}
                   </SubmitButton>
                 </div>
-                {!data.friendCode ? (
+                {queueJoinStatus instanceof Date ? (
+                  <div
+                    className="text-lighter text-xs text-center text-warning"
+                    suppressHydrationWarning
+                  >
+                    As a fresh account please wait before joining the queue. You
+                    can join{" "}
+                    {queueJoinStatus.toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "long",
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                  </div>
+                ) : !data.friendCode ? (
                   <div className="text-lighter text-xs text-center text-error">
                     Save your friend code to join the queue
                   </div>

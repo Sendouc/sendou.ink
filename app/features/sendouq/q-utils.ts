@@ -11,6 +11,8 @@ import { stageIds } from "~/modules/in-game-lists";
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import type { MapPool } from "../map-list-generator/core/map-pool";
+import { accountCreatedInTheLastSixMonths } from "~/utils/users";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 function groupRedirectLocation(
   group?: Pick<Group, "status"> & { matchId?: number },
@@ -86,4 +88,28 @@ export function winnersArrayToWinner(winners: ("ALPHA" | "BRAVO")[]) {
   if (bravoCount > alphaCount) return "BRAVO";
 
   return null;
+}
+
+export function userCanJoinQueueAt(
+  user: { id: number; discordId: string },
+  friendCode: { createdAt: number; submitterUserId: number },
+) {
+  if (!accountCreatedInTheLastSixMonths(user.discordId)) return "NOW";
+
+  // set by admin
+  if (friendCode.submitterUserId !== user.id) return "NOW";
+
+  const friendCodeCreatedAt = databaseTimestampToDate(friendCode.createdAt);
+
+  const twentyFourHoursAgo = new Date();
+  twentyFourHoursAgo.setDate(twentyFourHoursAgo.getDate() - 1);
+
+  if (friendCodeCreatedAt < twentyFourHoursAgo) {
+    return "NOW";
+  }
+
+  const canJoinQueueAt = new Date(friendCodeCreatedAt);
+  canJoinQueueAt.setDate(canJoinQueueAt.getDate() + 1);
+
+  return canJoinQueueAt;
 }
