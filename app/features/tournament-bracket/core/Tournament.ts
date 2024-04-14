@@ -852,7 +852,12 @@ export class Tournament {
     invariant(bracket, "Bracket not found");
 
     const hasInProgressFollowUpBracket = this.brackets.some(
-      (b) => !b.preview && b.sources?.some((s) => s.bracketIdx === bracketIdx),
+      (b) =>
+        !b.preview &&
+        b.sources?.some((s) => s.bracketIdx === bracketIdx) &&
+        b.data.participant.some(
+          (p) => p.id === match.opponent1?.id || p.id === match.opponent2?.id,
+        ),
     );
 
     if (hasInProgressFollowUpBracket) return false;
