@@ -45,8 +45,8 @@ export default function AdminPage() {
       ) : null}
       {isAdmin(user) ? <MigrateUser /> : null}
       {isAdmin(user) ? <ForcePatron /> : null}
-      {isAdmin(user) ? <BanUser /> : null}
-      {isAdmin(user) ? <UnbanUser /> : null}
+      {isMod(user) ? <BanUser /> : null}
+      {isMod(user) ? <UnbanUser /> : null}
       {isAdmin(user) ? <RefreshPlusTiers /> : null}
       {isAdmin(user) ? <CleanUp /> : null}
     </Main>
