@@ -346,15 +346,17 @@ export function searchExact(args: {
 }
 
 export async function currentFriendCodeByUserId(userId: number) {
-  return (
-    await db
-      .selectFrom("UserFriendCode")
-      .select("UserFriendCode.friendCode")
-      .where("userId", "=", userId)
-      .orderBy("UserFriendCode.createdAt desc")
-      .limit(1)
-      .executeTakeFirst()
-  )?.friendCode;
+  return db
+    .selectFrom("UserFriendCode")
+    .select([
+      "UserFriendCode.friendCode",
+      "UserFriendCode.createdAt",
+      "UserFriendCode.submitterUserId",
+    ])
+    .where("userId", "=", userId)
+    .orderBy("UserFriendCode.createdAt desc")
+    .limit(1)
+    .executeTakeFirst();
 }
 
 export function insertFriendCode(args: TablesInsertable["UserFriendCode"]) {
