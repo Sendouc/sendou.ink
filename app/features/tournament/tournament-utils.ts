@@ -122,7 +122,7 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("ai");
   }
 
-  if (normalizedEventName.includes("megalodon mondays")) {
+  if (normalizedEventName.includes("megalodon monday")) {
     return tournamentLogoUrl("mm");
   }
 
@@ -214,7 +214,7 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
     return { bg: "#425969", text: WHITE };
   }
 
-  if (normalizedEventName.includes("megalodon mondays")) {
+  if (normalizedEventName.includes("megalodon monday")) {
     return { bg: "#288eb5", text: WHITE };
   }
 
