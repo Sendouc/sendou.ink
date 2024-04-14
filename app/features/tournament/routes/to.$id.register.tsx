@@ -78,6 +78,7 @@ import { NewTabs } from "~/components/NewTabs";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { Toggle } from "~/components/Toggle";
+import { DiscordIcon } from "~/components/icons/Discord";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -385,6 +386,20 @@ function TournamentRegisterInfoTabs() {
             key: "description",
             element: (
               <div className="stack lg">
+                {tournament.ctx.discordUrl ? (
+                  <div className="w-max">
+                    <LinkButton
+                      to={tournament.ctx.discordUrl}
+                      variant="outlined"
+                      size="tiny"
+                      isExternal
+                      icon={<DiscordIcon />}
+                    >
+                      Join the Discord
+                    </LinkButton>
+                  </div>
+                ) : null}
+
                 <div className="tournament__info__description">
                   <Markdown options={{ wrapper: React.Fragment }}>
                     {tournament.ctx.description ?? ""}
