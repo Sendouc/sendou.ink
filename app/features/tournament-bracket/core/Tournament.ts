@@ -17,7 +17,7 @@ import {
   dateToDatabaseTimestamp,
 } from "~/utils/dates";
 import { fillWithNullTillPowerOfTwo } from "../tournament-bracket-utils";
-import type { Stage } from "~/modules/brackets-model";
+import type { Match, Stage } from "~/modules/brackets-model";
 import { Bracket } from "./Bracket";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { currentSeason } from "~/features/mmr/season";
@@ -781,16 +781,15 @@ export class Tournament {
     const bracket = this.bracketByIdx(bracketIdx);
     invariant(bracket, "Bracket not found");
 
-    const hasInProgressFollowUpBracket = this.brackets.some(
-      (b) =>
-        !b.preview &&
-        b.sources?.some((s) => s.bracketIdx === bracketIdx) &&
-        b.data.participant.some(
-          (p) => p.id === match.opponent1?.id || p.id === match.opponent2?.id,
-        ),
-    );
-
-    if (hasInProgressFollowUpBracket) return false;
+    if (
+      this.matchAffectsAnotherBracket({
+        match,
+        matchBracket: bracket,
+        bracketIdx,
+      })
+    ) {
+      return false;
+    }
 
     // BYE match
     if (!match.opponent1 || !match.opponent2) return false;
@@ -802,6 +801,32 @@ export class Tournament {
     );
 
     return !anotherMatchBlocking;
+  }
+
+  private matchAffectsAnotherBracket({
+    match,
+    matchBracket,
+    bracketIdx,
+  }: {
+    match: Match;
+    matchBracket: Bracket;
+    bracketIdx: number;
+  }) {
+    const ongoingFollowUpBrackets = this.brackets.filter(
+      (b) => !b.preview && b.sources?.some((s) => s.bracketIdx === bracketIdx),
+    );
+
+    if (ongoingFollowUpBrackets.length === 0) return false;
+    // TODO: or swiss
+    if (matchBracket.type === "round_robin") return true;
+
+    const participantInAnotherBracket = ongoingFollowUpBrackets
+      .flatMap((b) => b.data.participant)
+      .some(
+        (p) => p.id === match.opponent1?.id || p.id === match.opponent2?.id,
+      );
+
+    return participantInAnotherBracket;
   }
 
   followingMatches(matchId: number) {
