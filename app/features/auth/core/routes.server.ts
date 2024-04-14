@@ -47,7 +47,7 @@ export const logInAction: ActionFunction = async ({ request }) => {
     "Login is temporarily disabled",
   );
 
-  return authenticator.authenticate(DISCORD_AUTH_KEY, request);
+  return await authenticator.authenticate(DISCORD_AUTH_KEY, request);
 };
 
 export const impersonateAction: ActionFunction = async ({ request }) => {
