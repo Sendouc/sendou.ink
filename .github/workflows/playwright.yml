@@ -18,6 +18,13 @@ jobs:
         run: npm ci
       - name: Build project
         run: npm run build
+      - name: Import environment variables from a file
+        id: import-env
+        shell: bash
+        run: |
+          while read line; do
+            echo "$line" >> $GITHUB_ENV
+          done < ${{ env.ENV_FILE }}
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
