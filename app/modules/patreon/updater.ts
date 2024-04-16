@@ -8,18 +8,16 @@ import {
   TIER_2_ID,
   TIER_3_ID,
   TIER_4_ID,
+  UNKNOWN_TIER_ID,
 } from "./constants";
 import { patronResponseSchema } from "./schema";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-
-interface NoDiscordConnectionUser {
-  email: string;
-  name: string;
-}
+import { logger } from "~/utils/logger";
+import { MOD_DISCORD_IDS } from "~/constants";
 
 export async function updatePatreonData(): Promise<void> {
   const patrons: UserRepository.UpdatePatronDataArgs = [];
-  const noDiscordConnected: Array<NoDiscordConnectionUser> = [];
+  const noDiscordConnected: Array<string> = [];
   const noDataIds: Array<string> = [];
   let nextUrlToFetchWith = PATREON_INITIAL_URL;
 
@@ -32,10 +30,21 @@ export async function updatePatreonData(): Promise<void> {
     noDataIds.push(...parsed.noDataIds);
 
     // TS freaks out if we don't keep nextUrlToFetchWith string so that's why this weird thing here
-    nextUrlToFetchWith = patronData.links.next ?? "";
+    nextUrlToFetchWith = patronData.links?.next ?? "";
   }
 
-  await UserRepository.updatePatronData(patrons);
+  const patronsWithMods: UserRepository.UpdatePatronDataArgs = [
+    ...patrons,
+    ...MOD_DISCORD_IDS.filter((discordId) =>
+      patrons.every((p) => p.discordId !== discordId),
+    ).map((discordId) => ({
+      discordId,
+      patronTier: 4,
+      patronSince: dateToDatabaseTimestamp(new Date()),
+    })),
+  ];
+
+  await UserRepository.updatePatronData(patronsWithMods);
 
   // eslint-disable-next-line no-console
   console.log(
@@ -82,32 +91,38 @@ function parsePatronData({
   > = [];
 
   for (const patron of data) {
-    // from Patreon:
-    // "declined_since indicates the date of the most recent payment if it failed, or `null` if the most recent payment succeeded.
-    // A pledge with a non-null declined_since should be treated as invalid."
-    if (patron.attributes.declined_since) {
+    if (patron.relationships.currently_entitled_tiers.data.length === 0) {
       continue;
     }
 
-    patronsWithIds.push({
-      patreonId: patron.relationships.patron.data.id,
-      patronSince: dateToDatabaseTimestamp(
-        new Date(patron.attributes.created_at),
+    const tier = [TIER_4_ID, TIER_3_ID, TIER_2_ID, TIER_1_ID].find((id) =>
+      patron.relationships.currently_entitled_tiers.data.some(
+        (tier) => tier.id === id,
       ),
-      patronTier: idToTier(patron.relationships.reward.data.id),
+    );
+
+    patronsWithIds.push({
+      patreonId: patron.relationships.user.data.id,
+      patronSince: dateToDatabaseTimestamp(
+        new Date(
+          patron.relationships.currently_entitled_tiers.data[0].attributes
+            ?.created_at ?? Date.now(),
+        ),
+      ),
+      patronTier: idToTierNumber(tier),
     });
   }
 
   const result: {
     patrons: UserRepository.UpdatePatronDataArgs;
-    noDiscordConnection: Array<NoDiscordConnectionUser>;
+    noDiscordConnection: Array<string>;
     noDataIds: string[];
   } = {
     patrons: [],
     noDiscordConnection: [],
     noDataIds: [],
   };
-  for (const extraData of included) {
+  for (const extraData of included ?? []) {
     if (extraData.type !== "user") continue;
 
     const patronData = patronsWithIds.find((p) => p.patreonId === extraData.id);
@@ -116,12 +131,9 @@ function parsePatronData({
       continue;
     }
 
-    const discordId = extraData.attributes.social_connections.discord?.user_id;
+    const discordId = extraData.attributes.social_connections?.discord?.user_id;
     if (!discordId) {
-      result.noDiscordConnection.push({
-        email: extraData.attributes.email,
-        name: extraData.attributes.full_name,
-      });
+      result.noDiscordConnection.push(extraData.id);
       continue;
     }
 
@@ -135,10 +147,17 @@ function parsePatronData({
   return result;
 }
 
-function idToTier(id: string) {
+function idToTierNumber(id: string | undefined) {
+  if (!id || id === UNKNOWN_TIER_ID) {
+    return null;
+  }
+
   const tier = [null, TIER_1_ID, TIER_2_ID, TIER_3_ID, TIER_4_ID].indexOf(id);
 
-  if (tier === -1) throw new Error(`Invalid tier id: ${id}`);
+  if (tier === -1) {
+    logger.warn("Unknown tier for patron", id);
+    return null;
+  }
 
   return tier;
 }

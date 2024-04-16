@@ -70,6 +70,7 @@ export const ADMIN_ID = process.env.NODE_ENV === "test" ? 1 : 274;
 
 //                      Panda
 export const MOD_IDS = [11329];
+export const MOD_DISCORD_IDS = ["138757634500067328"];
 
 export const LOHI_TOKEN_HEADER_NAME = "Lohi-Token";
 export const SKALOP_TOKEN_HEADER_NAME = "Skalop-Token";
