@@ -55,6 +55,9 @@ export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
     BulletUmbrellaCanopyCompact: hpDivided(
       weaponParams.mainWeapons[6020].CanopyHP,
     ),
+    BulletShelterCanopyFocus: hpDivided(
+      weaponParams.mainWeapons[6030].CanopyHP
+    ),
     Wsb_Shield,
     Bomb_TorpedoBullet: TORPEDO_HP,
     Chariot: hpDivided(weaponParams.specialWeapons[CRAB_TANK_ID].ArmorHP),

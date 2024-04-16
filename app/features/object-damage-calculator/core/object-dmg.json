@@ -7,40 +7,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.9
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.9
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.9
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.4
       }
@@ -54,40 +48,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3.6
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3.6
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.4
       }
@@ -101,40 +89,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.9
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.9
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.9
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.4
       }
@@ -148,40 +130,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.4
       }
@@ -195,48 +171,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 5.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 4.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 5.6
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 5.6
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 5.6
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 5.6
       }
@@ -250,8 +218,7 @@
       {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
       }
@@ -265,20 +232,16 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -292,44 +255,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -343,52 +299,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3.6
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3.6
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.9
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 3.2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 3.2
       }
@@ -402,44 +349,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -453,48 +393,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 4
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 4
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 4
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 3
       }
@@ -508,8 +440,7 @@
       {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
       }
@@ -523,44 +454,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -574,44 +498,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -625,16 +542,13 @@
       {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -648,48 +562,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.4
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 1.8
       }
@@ -703,48 +609,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 4
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 5
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 5
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 4
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 7.5
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -758,48 +656,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.4
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.4
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 0.8
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.9
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -813,48 +703,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.3
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.3
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.725
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.35
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -868,48 +750,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -923,48 +797,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.4
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.4
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 0.8
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.9
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -978,48 +844,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.35
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -1033,48 +891,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -1088,20 +938,16 @@
       {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -1115,48 +961,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 3
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 3
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 3
       }
@@ -1170,47 +1008,42 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1
       }
     ]
   },
   "Default": {
-    "mainWeaponIds": [
-      220, 210, 211, 260, 261, 1120, 1121, 1100, 1101, 1110, 1111, 2060, 2061,
-      2050, 2040, 2030, 2020, 2021, 2010, 2011, 2070, 2071, 2000, 1000, 1001,
-      1020, 1021, 1030, 1010, 1011, 1040, 1041, 6020, 6000, 6001, 6010, 6011
-    ],
+    "mainWeaponIds": [220, 210, 211, 260, 261, 1120, 1121, 1100, 1101, 1110, 1111, 2060, 2061, 2050, 2040, 2030, 2020, 2021, 2010, 2011, 2070, 2071, 2000, 1000, 1001, 1020, 1021, 1030, 1010, 1011, 1040, 1041, 6020, 6000, 6001, 6010, 6011],
     "subWeaponIds": [8, 6, 12, 9, 11],
     "specialWeaponIds": [12, 19, 15, 16, 2, 7],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1
       }
@@ -1235,44 +1068,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.25
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 3
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 5
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 3
       }
@@ -1286,52 +1112,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 3.5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.575
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.8
       }
@@ -1345,52 +1162,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 1
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2.0835
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.575
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.3334
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.8
       }
@@ -1404,48 +1212,40 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.8
       }
@@ -1459,28 +1259,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.6
       }
@@ -1494,28 +1291,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.6
       }
@@ -1529,36 +1323,31 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
       }
@@ -1572,48 +1361,40 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.375
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -1627,48 +1408,40 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.375
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -1682,40 +1455,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 3
       }
@@ -1729,40 +1496,31 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.25
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 10
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 10
       }
@@ -1776,52 +1534,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 3
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 4.75
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4.75
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 3.64
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 3.75
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 5
       }
@@ -1835,16 +1584,13 @@
       {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -1858,48 +1604,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.4
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.43
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.88
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.88
       }
@@ -1913,48 +1651,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.35
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.88
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.88
       }
@@ -1968,48 +1698,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.4
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.35
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.88
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.88
       }
@@ -2023,56 +1745,46 @@
       {
         "target": "BlowerInhale",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Bomb_TorpedoBullet",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 3
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3.4
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3.4
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2.8
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2.86
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 5.76
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 5.76
       }
@@ -2086,48 +1798,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.78
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.4
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.43
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.88
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.88
       }
@@ -2141,52 +1845,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 4.8
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4.8
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2.6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2.6
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 4.8
       }
@@ -2200,52 +1895,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 0.65
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 0.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.9
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.65
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 1.2
       }
@@ -2259,52 +1945,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 4.8
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4.8
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2.6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2.6
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 4.8
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 4.8
       }
@@ -2318,52 +1995,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.4
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.4
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.4
       }
@@ -2377,44 +2045,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -2428,44 +2089,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -2479,44 +2133,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -2530,52 +2177,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.56
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.4
       }
@@ -2589,52 +2227,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.4
       }
@@ -2648,52 +2277,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.4
       }
@@ -2707,16 +2327,13 @@
       {
         "target": "Gachihoko_Barrier",
         "rate": 0.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 0.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 3.75
       }
@@ -2730,32 +2347,25 @@
       {
         "target": "Chariot",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 8
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 8
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 8
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 100
       }
@@ -2769,28 +2379,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
       }
@@ -2804,28 +2411,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.6
       }
@@ -2839,28 +2443,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
       }
@@ -2874,40 +2475,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.1
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.1
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.1
       }
@@ -2921,40 +2516,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.1
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.1
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.1
       }
@@ -2968,36 +2557,31 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.85
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.85
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.1
       }
@@ -3011,36 +2595,31 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.1
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.1
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.1
       }
@@ -3054,28 +2633,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.6
       }
@@ -3089,28 +2665,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
       }
@@ -3124,32 +2697,28 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
       }
@@ -3163,40 +2732,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.8
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.8
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.8
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.8
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 1.2
       }
@@ -3210,40 +2773,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.85
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.85
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.85
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.85
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.15
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.15
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.15
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.65
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 1.2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 1.2
       }
@@ -3257,28 +2814,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.7
       }
@@ -3292,44 +2846,37 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 100
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 100
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 100
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 100
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 7.28
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 7.5
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 5
       }
@@ -3343,48 +2890,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 9.5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 9.5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 6
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 7.28
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 5
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 7.5
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 5
       }
@@ -3398,36 +2937,31 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1.6
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.6
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.5
       }
@@ -3441,36 +2975,31 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 3.2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.8
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 4
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 4
       }
@@ -3484,40 +3013,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 3.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.9
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.25
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 5
       }
@@ -3531,40 +3054,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.4
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.25
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2.5
       }
@@ -3578,28 +3095,25 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 0.7
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 0.6
       }
@@ -3613,16 +3127,13 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 0.6
       }
@@ -3636,40 +3147,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 1.5556
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2.3333
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.3333
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5556
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.5556
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.5556
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.5556
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1.5556
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 1.5556
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 1.5556
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 1.5556
       }
@@ -3683,48 +3188,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 3
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.3
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -3738,44 +3235,37 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -3789,52 +3279,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 2
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 2
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 2
       }
@@ -3848,40 +3329,34 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 6
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 6
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 6
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 6
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 2
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.125
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 1
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 6
       }
@@ -3895,48 +3370,40 @@
       {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 20
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 20
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 20
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 20
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 4.5
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.5
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.8
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 20
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 20
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 3
       }
@@ -3950,52 +3417,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 1
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 5
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 5
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 6
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 3.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 3.5
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 2.625
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 2.5
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 4
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 3
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 4
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 3
       }
@@ -4009,52 +3467,43 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.545
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 4.091
-      },
-      {
+      }, {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 4.091
-      },
-      {
+      }, {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4.091
+      }, {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 4.091
-      },
-      {
+      }, {
         "target": "Chariot",
         "rate": 3.273
-      },
-      {
+      }, {
         "target": "Gachihoko_Barrier",
         "rate": 1.909
-      },
-      {
+      }, {
         "target": "GreatBarrier_Barrier",
         "rate": 1.909
-      },
-      {
+      }, {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1.4318
-      },
-      {
+      }, {
         "target": "NiceBall_Armor",
         "rate": 1.364
-      },
-      {
+      }, {
         "target": "ShockSonar",
         "rate": 2.182
-      },
-      {
+      }, {
         "target": "Wsb_Flag",
         "rate": 1.636
-      },
-      {
+      }, {
         "target": "Wsb_Shield",
         "rate": 2.182
-      },
-      {
+      }, {
         "target": "Wsb_Sprinkler",
         "rate": 1.636
       }

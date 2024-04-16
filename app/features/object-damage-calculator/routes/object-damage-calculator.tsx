@@ -206,6 +206,7 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
   BulletUmbrellaCanopyNormal: mainWeaponImageUrl(6000),
   BulletUmbrellaCanopyWide: mainWeaponImageUrl(6010),
   BulletUmbrellaCanopyCompact: mainWeaponImageUrl(6020),
+  BulletShelterCanopyFocus: mainWeaponImageUrl(6030),
 };
 
 const damageReceiverAp: Partial<Record<DamageReceiver, JSX.Element>> = {
