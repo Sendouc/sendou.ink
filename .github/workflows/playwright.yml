@@ -24,13 +24,16 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         env:
+          NODE_ENV: development
           BASE_URL: "http://localhost:5173"
           DB_PATH: "db.sqlite3"
           LOHI_TOKEN: "salmon"
           SESSION_SECRET: "secret"
           DISCORD_CLIENT_ID: "123"
           DISCORD_CLIENT_SECRET: "secret"
-          NODE_ENV: development
+          SKALOP_WS_URL: "ws://localhost:5900"
+          SKALOP_SYSTEM_MESSAGE_URL: "http://localhost:5900/system"
+          SKALOP_TOKEN: "secret"
         run: npx playwright test
       - uses: actions/upload-artifact@v3
         if: always()
