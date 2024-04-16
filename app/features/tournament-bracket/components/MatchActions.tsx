@@ -13,7 +13,7 @@ import type { Result } from "./StartedMatch";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import * as PickBan from "../core/PickBan";
 import { MatchActionsBanPicker } from "./MatchActionsBanPicker";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 
 export function MatchActions({
   teams,

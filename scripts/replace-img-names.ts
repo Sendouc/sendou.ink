@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import fs from "node:fs";
 import path from "node:path";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);

@@ -1,5 +1,5 @@
 import React from "react";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 
 export function Dialog({
   children,

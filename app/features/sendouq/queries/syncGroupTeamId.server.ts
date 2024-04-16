@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { sql } from "~/db/sql";
 import { FULL_GROUP_SIZE } from "../q-constants";
 

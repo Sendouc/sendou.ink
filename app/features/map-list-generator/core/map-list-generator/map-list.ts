@@ -1,6 +1,6 @@
 // Original version by Lean
 
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import type {
   ModeShort,
   ModeWithStage,

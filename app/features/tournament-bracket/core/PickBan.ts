@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import type { TournamentRoundMaps } from "~/db/tables";
 import type {
   ModeShort,

@@ -2,7 +2,7 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { Divider } from "~/components/Divider";
 import { ModeImage, StageImage } from "~/components/Image";
 import { SubmitButton } from "~/components/SubmitButton";

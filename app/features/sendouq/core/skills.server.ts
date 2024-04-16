@@ -1,6 +1,6 @@
 import { ordinal } from "openskill";
 import type { Rating } from "openskill/dist/types";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import type {
   Group,
   GroupMatch,

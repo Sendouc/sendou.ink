@@ -2,7 +2,7 @@ import type { ActionFunction } from "@remix-run/node";
 import { useFetcher, useSubmit } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Divider } from "~/components/Divider";

@@ -6,7 +6,7 @@ import type {
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";

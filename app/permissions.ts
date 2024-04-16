@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import type * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME, MOD_IDS } from "./constants";
 import type {

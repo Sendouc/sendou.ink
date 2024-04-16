@@ -1,5 +1,5 @@
 import * as React from "react";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import type { User } from "~/db/types";
 import type { PlusVoteFromFE } from "./types";

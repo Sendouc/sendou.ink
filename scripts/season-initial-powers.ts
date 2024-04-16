@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import "dotenv/config";
 import { ordinal } from "openskill";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { sql } from "~/db/sql";
 import type { Skill } from "~/db/types";
 import type { TierName } from "~/features/mmr/mmr-constants";

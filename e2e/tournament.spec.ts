@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { ADMIN_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";

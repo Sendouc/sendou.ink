@@ -14,7 +14,7 @@ import * as React from "react";
 import { Main } from "~/components/Main";
 
 import Compressor from "compressorjs";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { Button } from "~/components/Button";
 import { useTranslation } from "react-i18next";
 import { requireUser } from "~/features/auth/core/user.server";

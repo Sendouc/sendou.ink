@@ -9,7 +9,7 @@ import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { Alert } from "~/components/Alert";
 import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";

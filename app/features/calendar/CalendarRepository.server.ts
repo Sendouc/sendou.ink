@@ -8,7 +8,7 @@ import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sumArray } from "~/utils/number";
 import type { Unwrapped } from "~/utils/types";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 
 // TODO: convert from raw to using the "exists" function
 const hasBadge = sql<number>/* sql */ `exists (

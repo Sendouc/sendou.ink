@@ -9,7 +9,7 @@ import {
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { articleBySlug } from "../core/bySlug.server";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { makeTitle } from "~/utils/strings";
 import {
   articlePage,

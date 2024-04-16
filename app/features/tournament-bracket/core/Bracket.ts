@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import type { Tables, TournamentBracketProgression } from "~/db/tables";
 import { TOURNAMENT } from "~/features/tournament";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";

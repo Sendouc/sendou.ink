@@ -2,7 +2,7 @@
 
 import type { SeedOrdering } from "~/modules/brackets-model";
 import type { OrderingMap } from "./types";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 
 export const ordering: OrderingMap = {
   natural: <T>(array: T[]) => [...array],

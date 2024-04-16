@@ -7,7 +7,7 @@ import {
   useTournament,
   useTournamentToSetMapPool,
 } from "~/features/tournament/routes/to.$id";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { type TournamentRoundMaps } from "~/db/tables";
 import { useTranslation } from "react-i18next";
 import { ModeImage, StageImage } from "~/components/Image";

@@ -1,5 +1,5 @@
 import type { SerializeFrom } from "@remix-run/server-runtime";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 import { db } from "~/db/sql";

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import "dotenv/config";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { ADMIN_ID } from "~/constants";
 import { FRIEND_CODE_REGEXP } from "~/features/sendouq/q-constants";
 import * as UserRepository from "~/features/user-page/UserRepository.server";

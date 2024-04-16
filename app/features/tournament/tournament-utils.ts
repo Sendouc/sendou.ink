@@ -1,5 +1,5 @@
 import type { Params } from "@remix-run/react";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import type { Tournament } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";

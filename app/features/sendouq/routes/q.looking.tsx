@@ -9,7 +9,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";
 import { Image } from "~/components/Image";

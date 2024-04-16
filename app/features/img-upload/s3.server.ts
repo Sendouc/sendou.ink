@@ -8,7 +8,7 @@ import { S3 } from "@aws-sdk/client-s3";
 import type { UploadHandler } from "@remix-run/node";
 import { writeAsyncIterableToWritable } from "@remix-run/node";
 import { nanoid } from "nanoid";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 
 const envVars = () => {
   const {

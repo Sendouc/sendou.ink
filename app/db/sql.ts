@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from "kysely";
 import type { DB } from "./tables";
 

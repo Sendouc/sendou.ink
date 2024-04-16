@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import capitalize from "just-capitalize";
 import shuffle from "just-shuffle";
 import { nanoid } from "nanoid";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db, sql } from "~/db/sql";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";

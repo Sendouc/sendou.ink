@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import * as React from "react";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { abilities } from "~/modules/in-game-lists";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
 import { abilityImageUrl } from "~/utils/urls";

@@ -28,7 +28,7 @@ import {
 import clsx from "clsx";
 import clone from "just-clone";
 import * as React from "react";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";

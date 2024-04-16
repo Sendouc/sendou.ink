@@ -1,6 +1,6 @@
 import { rate as openskillRate, ordinal, rating } from "openskill";
 import type { Rating, Team } from "openskill/dist/types";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 
 const TAU = 0.3;
 

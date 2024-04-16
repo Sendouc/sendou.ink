@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import {
   BIG_BUBBLER_ID,
   CRAB_TANK_ID,

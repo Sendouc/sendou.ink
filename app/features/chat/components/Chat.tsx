@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 import clsx from "clsx";
 import { Button } from "../../../components/Button";
 import ReconnectingWebSocket from "reconnecting-websocket";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import { useRevalidator } from "@remix-run/react";
 import type { ChatMessage } from "../chat-types";

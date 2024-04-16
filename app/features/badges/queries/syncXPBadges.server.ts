@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import {
   SPLATOON_3_XP_BADGE_VALUES,
   findSplatoon3XpBadgeValue,

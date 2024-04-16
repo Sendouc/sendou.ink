@@ -1,5 +1,5 @@
 import shuffle from "just-shuffle";
-import invariant from "tiny-invariant";
+import { invariant } from "~/utils/invariant";
 import type { ParsedMemento, UserMapModePreferences } from "~/db/tables";
 import {
   type DbMapPoolList,
