@@ -508,7 +508,12 @@ export function updatePatronData(users: UpdatePatronDataArgs) {
         patronSince: null,
         patronTill: null,
       })
-      .where("patronTill", "<", dateToDatabaseTimestamp(new Date()))
+      .where((eb) =>
+        eb.or([
+          eb("patronTill", "<", dateToDatabaseTimestamp(new Date())),
+          eb("patronTill", "is", null),
+        ]),
+      )
       .execute();
 
     for (const user of users) {
