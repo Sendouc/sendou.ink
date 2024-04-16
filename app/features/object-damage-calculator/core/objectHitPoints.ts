@@ -5,12 +5,12 @@ import {
   SPLASH_WALL_ID,
 } from "~/modules/in-game-lists";
 import {
+  type AbilityPoints,
+  hpDivided,
   specialDeviceHp,
   specialFieldHp,
-  subStats,
-  hpDivided,
-  type AbilityPoints,
   type SpecialWeaponParams,
+  subStats,
   type SubWeaponParams,
 } from "~/features/build-analyzer";
 import type { HitPoints } from "../calculator-types";
@@ -56,7 +56,7 @@ export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
       weaponParams.mainWeapons[6020].CanopyHP,
     ),
     BulletShelterCanopyFocus: hpDivided(
-      weaponParams.mainWeapons[6030].CanopyHP
+      weaponParams.mainWeapons[6030].CanopyHP,
     ),
     Wsb_Shield,
     Bomb_TorpedoBullet: TORPEDO_HP,
