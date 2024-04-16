@@ -45,6 +45,8 @@ for (const cell of Object.values(params.CellList)) {
   if (!DAMAGE_RECEIVERS.includes(cell.ColumnKey)) continue;
   if (!cell.DamageRate) continue;
 
+  //console.log(cell);
+
   if (!result[cell.RowKey]) {
     result[cell.RowKey] = {
       mainWeaponIds: weaponParamsToWeaponIds(weapons, cell.RowKey).filter(
@@ -76,6 +78,14 @@ for (const cell of Object.values(params.CellList)) {
     target: cell.ColumnKey,
     rate: cell.DamageRate,
   });
+
+  // if it has special damage rates for Splat Brella, add the same value for Recycled Brella
+  if (cell.ColumnKey === "BulletUmbrellaCanopyNormal") {
+    result[cell.RowKey].rates.push({
+      target: "BulletShelterCanopyFocus",
+      rate: cell.DamageRate,
+    });
+  }
 }
 
 fs.writeFileSync(
