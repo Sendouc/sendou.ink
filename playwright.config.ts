@@ -100,7 +100,7 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "npm run dev:ci",
+    command: process.env["CI"] ? "npm start" : "npm run dev:ci",
     port: 5173,
     reuseExistingServer: !process.env["CI"],
   },
