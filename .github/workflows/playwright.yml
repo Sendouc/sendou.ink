@@ -17,6 +17,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build project
+        env:
+          NODE_ENV: development
         run: npm run build
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
@@ -26,6 +28,9 @@ jobs:
           DB_PATH: "db.sqlite3"
           LOHI_TOKEN: "salmon"
           SESSION_SECRET: "secret"
+          DISCORD_CLIENT_ID: "123"
+          DISCORD_CLIENT_SECRET: "secret"
+          NODE_ENV: development
         run: npx playwright test
       - uses: actions/upload-artifact@v3
         if: always()
