@@ -17,14 +17,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build project
-        env:
-          NODE_ENV: development
         run: npm run build
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         env:
-          NODE_ENV: development
           BASE_URL: "http://localhost:5173"
           DB_PATH: "db.sqlite3"
           LOHI_TOKEN: "salmon"
