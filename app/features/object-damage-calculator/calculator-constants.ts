@@ -19,6 +19,7 @@ export const DAMAGE_RECEIVERS = [
   "BulletUmbrellaCanopyCompact", // Undercover Brella Canopy
   "BulletUmbrellaCanopyNormal", // Splat Brella Canopy
   "BulletUmbrellaCanopyWide", // Tenta Brella Canopy
+  "BulletShelterCanopyFocus", // Recycled Brella Canopy
 ] as const;
 
 export const damagePriorities: Array<
