@@ -113,7 +113,7 @@ export function SwissBracket({
           </div>
         )}
         <div className="stack lg">
-          {rounds.map((round, i) => {
+          {rounds.map((round, roundI) => {
             const matches = bracket.data.match.filter(
               (match) =>
                 match.round_id === round.id &&
@@ -124,7 +124,7 @@ export function SwissBracket({
               matches.length > 0 &&
               !bracketExpanded &&
               !someMatchOngoing(matches) &&
-              i !== rounds.length - 1
+              roundI !== rounds.length - 1
             ) {
               return null;
             }
@@ -170,7 +170,9 @@ export function SwissBracket({
                       </SubmitButton>
                     </fetcher.Form>
                   ) : null}
-                  {someMatchOngoing(matches) && tournament.isOrganizer(user) ? (
+                  {someMatchOngoing(matches) &&
+                  tournament.isOrganizer(user) &&
+                  roundI > 0 ? (
                     <FormWithConfirm
                       dialogHeading={`Delete all matches of round ${round.number}?`}
                       fields={[
