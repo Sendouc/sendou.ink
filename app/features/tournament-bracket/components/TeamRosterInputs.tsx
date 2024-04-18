@@ -368,7 +368,7 @@ function TeamRosterInputsCheckboxes({
         const memberDidParticipate =
           participatedUserIds.includes(member.id) ||
           participatedUserIds.length === 0;
-        if (!memberDidParticipate && !dividerDrawn) {
+        if (!memberDidParticipate && !dividerDrawn && !presentational) {
           drawDivider = true;
           dividerDrawn = true;
         }
