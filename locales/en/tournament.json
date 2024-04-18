@@ -75,6 +75,8 @@
   "admin.actions.REMOVE_MEMBER": "Remove member",
   "admin.actions.DELETE_TEAM": "Delete team",
   "admin.actions.ADD_TEAM": "Register team",
+  "admin.actions.DROP_TEAM_OUT": "Drop out team",
+  "admin.actions.UNDO_DROP_TEAM_OUT": "Undo drop out",
 
   "staff.role.ORGANIZER": "organizer",
   "staff.role.STREAMER": "streamer",

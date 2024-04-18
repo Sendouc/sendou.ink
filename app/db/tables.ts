@@ -553,6 +553,7 @@ export interface TournamentTeam {
   name: string;
   prefersNotToHost: Generated<number>;
   noScreen: Generated<number>;
+  droppedOut: Generated<number>;
   seed: number | null;
   tournamentId: number;
   teamId: number | null;

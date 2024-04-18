@@ -73,6 +73,7 @@ export async function findById(id: number) {
             "TournamentTeam.seed",
             "TournamentTeam.prefersNotToHost",
             "TournamentTeam.noScreen",
+            "TournamentTeam.droppedOut",
             "TournamentTeam.inviteCode",
             "TournamentTeam.createdAt",
             jsonArrayFrom(
@@ -364,6 +365,35 @@ export function updateTeamName({
     .updateTable("TournamentTeam")
     .set({
       name,
+    })
+    .where("id", "=", tournamentTeamId)
+    .execute();
+}
+
+export function dropTeamOut(tournamentTeamId: number) {
+  return db.transaction().execute(async (trx) => {
+    // xxx: something more resilient here, for example if they are already playing in the follow-up bracket then they get dropped out
+    await trx
+      .deleteFrom("TournamentTeamCheckIn")
+      .where("tournamentTeamId", "=", tournamentTeamId)
+      .where("TournamentTeamCheckIn.bracketIdx", "is not", null)
+      .execute();
+
+    await trx
+      .updateTable("TournamentTeam")
+      .set({
+        droppedOut: 1,
+      })
+      .where("id", "=", tournamentTeamId)
+      .execute();
+  });
+}
+
+export function undoDropTeamOut(tournamentTeamId: number) {
+  return db
+    .updateTable("TournamentTeam")
+    .set({
+      droppedOut: 0,
     })
     .where("id", "=", tournamentTeamId)
     .execute();

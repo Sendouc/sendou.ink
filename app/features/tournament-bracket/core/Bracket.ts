@@ -1266,9 +1266,18 @@ class SwissBracket extends Bracket {
         }
       }
 
+      const droppedOutTeams = this.tournament.ctx.teams
+        .filter((t) => t.droppedOut)
+        .map((t) => t.id);
       placements.push(
         ...teams
           .sort((a, b) => {
+            const aDroppedOut = droppedOutTeams.includes(a.id);
+            const bDroppedOut = droppedOutTeams.includes(b.id);
+
+            if (aDroppedOut && !bDroppedOut) return 1;
+            if (!aDroppedOut && bDroppedOut) return -1;
+
             if (a.setWins > b.setWins) return -1;
             if (a.setWins < b.setWins) return 1;
 

@@ -184,8 +184,9 @@ export function generateMatchUps({
   });
 
   // teams who have dropped out are not considered
-  // xxx: standingsWithoutDropouts: read dropout bit
-  const standingsWithoutDropouts = groupsStandings;
+  const standingsWithoutDropouts = groupsStandings.filter(
+    (s) => !s.team.droppedOut,
+  );
 
   // if group has uneven number of teams
   // the lowest standing team gets a bye

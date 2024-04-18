@@ -105,6 +105,14 @@ export const adminActionSchema = z.union([
     userId: id,
   }),
   z.object({
+    _action: _action("DROP_TEAM_OUT"),
+    teamId: id,
+  }),
+  z.object({
+    _action: _action("UNDO_DROP_TEAM_OUT"),
+    teamId: id,
+  }),
+  z.object({
     _action: _action("UPDATE_CAST_TWITCH_ACCOUNTS"),
     castTwitchAccounts: z.preprocess(
       (val) =>

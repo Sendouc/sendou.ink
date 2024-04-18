@@ -45,6 +45,13 @@ export function SwissBracket({
     (r) => r.group_id === selectedGroupId,
   );
 
+  // when bracket starts we go from "virtual id" to a real one
+  // which would cause the admin to see empty group after starting
+  // bracket
+  if (!groups.some((g) => g.groupId === selectedGroupId)) {
+    setSelectedGroupId(groups[0].groupId);
+  }
+
   const someMatchOngoing = (matches: MatchType[]) =>
     matches.some(
       (match) =>
@@ -366,8 +373,13 @@ function PlacementsTable({
                     tournamentTeamId: s.team.id,
                   })}
                 >
-                  {s.team.name}
+                  {s.team.name}{" "}
                 </Link>
+                {s.team.droppedOut ? (
+                  <span className="text-warning text-xxxs font-bold">
+                    Drop-out
+                  </span>
+                ) : null}
               </td>
               <td>
                 <span>
