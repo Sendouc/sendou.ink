@@ -54,7 +54,8 @@ const createTournamentMatchStm = sql.prepare(/* sql */ `
     "opponentTwo",
     "roundId",
     "stageId",
-    "status"
+    "status",
+    "createdAt"
   ) values (
     @chatCode,
     @groupId,
@@ -63,7 +64,8 @@ const createTournamentMatchStm = sql.prepare(/* sql */ `
     @opponentTwo,
     @roundId,
     @stageId,
-    @status
+    @status,
+    @createdAt
   )
 `);
 
@@ -77,7 +79,6 @@ export function createSwissBracketInTransaction(
   const stageFromDB = createTournamentStageStm.get({
     tournamentId: stageInput.tournament_id,
     type: stageInput.type,
-    // xxx: deadlines for swiss would we need createdAt for matches..?
     createdAt: dateToDatabaseTimestamp(new Date()),
     settings: JSON.stringify(stageInput.settings),
     number: stageInput.number,
@@ -119,6 +120,7 @@ export function createSwissBracketInTransaction(
           roundId: roundFromDB.id,
           stageId: stageFromDB.id,
           status: match.status,
+          createdAt: dateToDatabaseTimestamp(new Date()),
         });
       }
     }

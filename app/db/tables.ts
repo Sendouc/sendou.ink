@@ -455,6 +455,8 @@ export interface TournamentMatch {
   roundId: number;
   stageId: number;
   status: number;
+  // used only for swiss because it's the only stage type where matches are not created in advance
+  createdAt: Generated<number>;
 }
 
 export interface TournamentMatchPickBanEvent {

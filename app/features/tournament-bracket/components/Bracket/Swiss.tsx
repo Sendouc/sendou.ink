@@ -348,6 +348,14 @@ function PlacementsTable({
           <th>
             <abbr title="Map wins and losses">W/L (M)</abbr>
           </th>
+          <th>
+            <abbr title="Buchholz (summed set wins of opponents)">Buch.</abbr>
+          </th>
+          <th>
+            <abbr title="Buchholz (summed map wins of opponents)">
+              Buch. (M)
+            </abbr>
+          </th>
           <th>Seed</th>
           <th />
         </tr>
@@ -393,6 +401,12 @@ function PlacementsTable({
                 <span>
                   {stats.mapWins}/{stats.mapLosses}
                 </span>
+              </td>
+              <td>
+                <span>{stats.buchholzSets}</span>
+              </td>
+              <td>
+                <span>{stats.buchholzMaps}</span>
               </td>
               <td>{team?.seed}</td>
               {dest ? (

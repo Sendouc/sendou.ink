@@ -42,6 +42,8 @@ export interface Standing {
     mapLosses: number;
     points: number;
     winsAgainstTied: number;
+    buchholzSets?: number;
+    buchholzMaps?: number;
   };
 }
 
@@ -792,7 +794,6 @@ class RoundRobinBracket extends Bracket {
       throw new Error("Negative placements not implemented");
     }
     const standings = this.standings;
-    // xxx: check if this is correct
     const relevantMatchesFinished =
       standings.length === this.data.participant.length;
 
@@ -1136,20 +1137,26 @@ class SwissBracket extends Bracket {
         mapWins: number;
         mapLosses: number;
         winsAgainstTied: number;
+        buchholzSets: number;
+        buchholzMaps: number;
       }[] = [];
 
       const updateTeam = ({
         teamId,
-        setWins,
-        setLosses,
-        mapWins,
-        mapLosses,
+        setWins = 0,
+        setLosses = 0,
+        mapWins = 0,
+        mapLosses = 0,
+        buchholzSets = 0,
+        buchholzMaps = 0,
       }: {
         teamId: number;
-        setWins: number;
-        setLosses: number;
-        mapWins: number;
-        mapLosses: number;
+        setWins?: number;
+        setLosses?: number;
+        mapWins?: number;
+        mapLosses?: number;
+        buchholzSets?: number;
+        buchholzMaps?: number;
       }) => {
         const team = teams.find((team) => team.id === teamId);
         if (team) {
@@ -1157,6 +1164,8 @@ class SwissBracket extends Bracket {
           team.setLosses += setLosses;
           team.mapWins += mapWins;
           team.mapLosses += mapLosses;
+          team.buchholzSets += buchholzSets;
+          team.buchholzMaps += buchholzMaps;
         } else {
           teams.push({
             id: teamId,
@@ -1165,11 +1174,29 @@ class SwissBracket extends Bracket {
             mapWins,
             mapLosses,
             winsAgainstTied: 0,
+            buchholzMaps,
+            buchholzSets,
           });
         }
       };
 
+      const matchUps = new Map<number, number[]>();
+
       for (const match of matches) {
+        if (match.opponent1?.id && match.opponent2?.id) {
+          const opponentOneMatchUps = matchUps.get(match.opponent1.id) ?? [];
+          const opponentTwoMatchUps = matchUps.get(match.opponent2.id) ?? [];
+
+          matchUps.set(match.opponent1.id, [
+            ...opponentOneMatchUps,
+            match.opponent2.id,
+          ]);
+          matchUps.set(match.opponent2.id, [
+            ...opponentTwoMatchUps,
+            match.opponent1.id,
+          ]);
+        }
+
         if (
           match.opponent1?.result !== "win" &&
           match.opponent2?.result !== "win"
@@ -1243,6 +1270,34 @@ class SwissBracket extends Bracket {
         });
       }
 
+      // buchholz
+      for (const team of teams) {
+        const teamsWhoPlayedAgainst = matchUps.get(team.id) ?? [];
+
+        let buchholzSets = 0;
+        let buchholzMaps = 0;
+
+        for (const teamId of teamsWhoPlayedAgainst) {
+          const opponent = teams.find((t) => t.id === teamId);
+          if (!opponent) {
+            logger.warn("SwissBracket.currentStandings: opponent not found", {
+              teamId,
+            });
+            continue;
+          }
+
+          buchholzSets += opponent.setWins;
+          buchholzMaps += opponent.mapWins;
+        }
+
+        updateTeam({
+          teamId: team.id,
+          buchholzSets,
+          buchholzMaps,
+        });
+      }
+
+      // wins against tied
       for (const team of teams) {
         for (const team2 of teams) {
           if (team.id === team2.id) continue;
@@ -1287,6 +1342,12 @@ class SwissBracket extends Bracket {
             if (a.mapWins > b.mapWins) return -1;
             if (a.mapWins < b.mapWins) return 1;
 
+            if (a.buchholzSets > b.buchholzSets) return -1;
+            if (a.buchholzSets < b.buchholzSets) return 1;
+
+            if (a.buchholzMaps > b.buchholzMaps) return -1;
+            if (a.buchholzMaps < b.buchholzMaps) return 1;
+
             const aSeed = Number(this.tournament.teamById(a.id)?.seed);
             const bSeed = Number(this.tournament.teamById(b.id)?.seed);
 
@@ -1306,6 +1367,8 @@ class SwissBracket extends Bracket {
                 mapWins: team.mapWins,
                 mapLosses: team.mapLosses,
                 winsAgainstTied: team.winsAgainstTied,
+                buchholzSets: team.buchholzSets,
+                buchholzMaps: team.buchholzMaps,
                 points: 0,
               },
             };

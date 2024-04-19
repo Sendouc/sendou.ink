@@ -444,6 +444,7 @@ export class Match {
       opponentOnePointsTotal: number | null;
       opponentTwoPointsTotal: number | null;
       lastGameFinishedAt: number | null;
+      createdAt: number | null;
     },
   ): MatchType {
     return {
@@ -468,6 +469,7 @@ export class Match {
       stage_id: rawMatch.stageId,
       status: rawMatch.status,
       lastGameFinishedAt: rawMatch.lastGameFinishedAt,
+      createdAt: rawMatch.createdAt,
     };
   }
 

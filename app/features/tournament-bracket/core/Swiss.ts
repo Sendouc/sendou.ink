@@ -105,12 +105,9 @@ function firstRoundMatches({
         number: i + 1,
         opponent1: {
           id: upper.id,
-          // xxx: could be that position is unnecessary everywhere
-          position: teamIdToPosition(upper.id),
         },
         opponent2: {
           id: lower.id,
-          position: teamIdToPosition(lower.id),
         },
         status: 2,
       });
@@ -125,7 +122,6 @@ function firstRoundMatches({
         number: upperHalf.length + 1,
         opponent1: {
           id: bye.id,
-          position: teamIdToPosition(bye.id),
         },
         opponent2: null,
         status: 2,
@@ -149,10 +145,6 @@ function firstRoundMatches({
     }
 
     return groups;
-  }
-
-  function teamIdToPosition(id: number) {
-    return seeding.findIndex((p) => p.id === id) + 1;
   }
 }
 
@@ -228,7 +220,20 @@ export function generateMatchUps({
       break;
     }
 
-    // xxx: if sections.length === 1 and got here we need to switch strat
+    // for some reason we couldn't find new opponent for everyone
+    // even with everyone in the same section, so let's just replay
+    // (should not be possible to happen if running swiss normally)
+    if (sections.length === 1) {
+      const maybeMatches = sectionsToMatches(sections, groupsMatches, true);
+      if (Array.isArray(maybeMatches)) {
+        matches = maybeMatches;
+        break;
+      }
+
+      throw new Error(
+        "Swiss bracket generation failed (failed to generate matches even with fallback behavior)",
+      );
+    }
 
     // let's unify sections so that we can try again with a better chance
     sections = unifySections(sections, maybeMatches.impossibleSectionIdx);
@@ -408,6 +413,7 @@ function evenOutSectionsBackward(sections: TournamentDataTeamSections) {
 function sectionsToMatches(
   sections: TournamentDataTeamSections,
   previousMatches: Match[],
+  fallbackBehaviorWithReplays = false,
 ):
   | [opponentOneId: number, opponentTwoId: number][]
   | { impossibleSectionIdx: number } {
@@ -421,7 +427,7 @@ function sectionsToMatches(
       (standing) => standing.stats!.setWins === 0,
     );
 
-    if (isLossless || isWinless) {
+    if (isLossless || isWinless || fallbackBehaviorWithReplays) {
       // doing it like this to make it so that if everyone plays to their seed
       // then seeds 1 & 2 meet in the final round (assuming proper amount of rounds)
       // these sections can't have replays no matter how we divide them
@@ -466,7 +472,6 @@ function unifySections(
   return result;
 }
 
-// xxx: implement taking over seed..?
 function matchesBySeed(
   teams: Standing[],
 ): [opponentOneId: number, opponentTwoId: number][] {

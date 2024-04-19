@@ -66,6 +66,7 @@ import { logger } from "~/utils/logger";
 import * as Swiss from "../core/Swiss";
 import { createSwissBracketInTransaction } from "~/features/tournament/queries/createSwissBracketInTransaction.server";
 import { refreshUserSkills } from "~/features/mmr/tiered.server";
+import type { Tournament } from "../core/Tournament";
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
@@ -183,7 +184,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       const bracket = tournament.bracketByIdx(data.bracketIdx);
       validate(bracket, "Bracket not found");
       validate(bracket.type === "swiss", "Can't unadvance non-swiss bracket");
-      // xxx: validate can reopen here or something
+      validateNoFollowUpBrackets(tournament);
 
       await TournamentRepository.deleteSwissMatches({
         groupId: data.groupId,
@@ -254,6 +255,17 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   return null;
 };
+
+function validateNoFollowUpBrackets(tournament: Tournament) {
+  const followUpBrackets = tournament.brackets.filter(
+    (b) => b.sources && b.sources.some((source) => source.bracketIdx === 0),
+  );
+
+  validate(
+    followUpBrackets.every((b) => b.preview),
+    "Follow-up brackets are already started",
+  );
+}
 
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);

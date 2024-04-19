@@ -370,13 +370,18 @@ export function updateTeamName({
     .execute();
 }
 
-export function dropTeamOut(tournamentTeamId: number) {
+export function dropTeamOut({
+  tournamentTeamId,
+  previewBracketIdxs,
+}: {
+  tournamentTeamId: number;
+  previewBracketIdxs: number[];
+}) {
   return db.transaction().execute(async (trx) => {
-    // xxx: something more resilient here, for example if they are already playing in the follow-up bracket then they get dropped out
     await trx
       .deleteFrom("TournamentTeamCheckIn")
       .where("tournamentTeamId", "=", tournamentTeamId)
-      .where("TournamentTeamCheckIn.bracketIdx", "is not", null)
+      .where("TournamentTeamCheckIn.bracketIdx", "in", previewBracketIdxs)
       .execute();
 
     await trx
@@ -633,6 +638,7 @@ export function insertSwissMatches(
         roundId: match.roundId,
         stageId: match.stageId,
         status: Status.Ready,
+        createdAt: dateToDatabaseTimestamp(new Date()),
         chatCode: nanoid(10),
       })),
     )

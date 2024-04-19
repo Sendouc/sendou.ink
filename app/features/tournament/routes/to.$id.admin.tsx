@@ -257,12 +257,16 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "DROP_TEAM_OUT": {
       validateIsTournamentOrganizer();
-      await TournamentRepository.dropTeamOut(data.teamId);
+      await TournamentRepository.dropTeamOut({
+        tournamentTeamId: data.teamId,
+        previewBracketIdxs: tournament.brackets.flatMap((b, idx) =>
+          b.preview ? idx : [],
+        ),
+      });
       break;
     }
     case "UNDO_DROP_TEAM_OUT": {
       validateIsTournamentOrganizer();
-      // xxx: validate that a round without them has not been generated
 
       await TournamentRepository.undoDropTeamOut(data.teamId);
       break;
