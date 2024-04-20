@@ -45,8 +45,6 @@ for (const cell of Object.values(params.CellList)) {
   if (!DAMAGE_RECEIVERS.includes(cell.ColumnKey)) continue;
   if (!cell.DamageRate) continue;
 
-  //console.log(cell);
-
   if (!result[cell.RowKey]) {
     result[cell.RowKey] = {
       mainWeaponIds: weaponParamsToWeaponIds(weapons, cell.RowKey).filter(
