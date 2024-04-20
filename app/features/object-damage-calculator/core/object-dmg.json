@@ -13,6 +13,10 @@
         "rate": 2.2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
       },
@@ -57,6 +61,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.6
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3.6
       },
       {
@@ -107,6 +115,10 @@
         "rate": 2.2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
       },
@@ -154,6 +166,10 @@
         "rate": 2.2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
       },
@@ -198,6 +214,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 5
       },
       {
@@ -302,6 +322,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -350,6 +374,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.6
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3.6
       },
       {
@@ -412,6 +440,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -456,6 +488,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 4
       },
       {
@@ -533,6 +569,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -581,6 +621,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -654,6 +698,10 @@
         "rate": 1.5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
       },
@@ -706,6 +754,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 5
       },
       {
@@ -764,6 +816,10 @@
         "rate": 2.4
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.4
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -816,6 +872,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3.5
       },
       {
@@ -874,6 +934,10 @@
         "rate": 3
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -926,6 +990,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2.4
       },
       {
@@ -984,6 +1052,10 @@
         "rate": 3.5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3.5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2.4
       },
@@ -1036,6 +1108,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3
       },
       {
@@ -1121,6 +1197,10 @@
         "rate": 3
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
       },
@@ -1172,6 +1252,10 @@
         "rate": 1
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1
+      },
+      {
         "target": "BulletUmbrellaCanopyNormal",
         "rate": 1
       },
@@ -1196,6 +1280,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1
       },
       {
@@ -1242,6 +1330,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3
       },
       {
@@ -1293,6 +1385,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2.5
       },
       {
@@ -1355,6 +1451,10 @@
         "rate": 2.5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.5
       },
@@ -1414,6 +1514,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -1465,6 +1569,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
       },
@@ -1500,6 +1608,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
       },
@@ -1532,6 +1644,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -1579,6 +1695,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -1637,6 +1757,10 @@
         "rate": 1.5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
       },
@@ -1685,6 +1809,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2.5
       },
       {
@@ -1786,6 +1914,10 @@
         "rate": 4.75
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4.75
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
       },
@@ -1864,6 +1996,10 @@
         "rate": 1.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.8
       },
@@ -1919,6 +2055,10 @@
         "rate": 1.5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
       },
@@ -1971,6 +2111,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.7
       },
       {
@@ -2037,6 +2181,10 @@
         "rate": 3.4
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3.4
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.6
       },
@@ -2089,6 +2237,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.7
       },
       {
@@ -2151,6 +2303,10 @@
         "rate": 4.8
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4.8
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 4.8
       },
@@ -2207,6 +2363,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.2
       },
       {
@@ -2269,6 +2429,10 @@
         "rate": 4.8
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4.8
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 4.8
       },
@@ -2325,6 +2489,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2.4
       },
       {
@@ -2387,6 +2555,10 @@
         "rate": 5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
       },
@@ -2435,6 +2607,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 5
       },
       {
@@ -2489,6 +2665,10 @@
         "rate": 5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
       },
@@ -2537,6 +2717,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -2599,6 +2783,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -2655,6 +2843,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -2775,6 +2967,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
       },
@@ -2807,6 +3003,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.7
       },
       {
@@ -2845,6 +3045,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
       },
@@ -2877,6 +3081,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.1
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.1
       },
       {
@@ -2927,6 +3135,10 @@
         "rate": 1.1
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.1
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
       },
@@ -2974,6 +3186,10 @@
         "rate": 0.85
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.85
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
       },
@@ -3014,6 +3230,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.1
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.1
       },
       {
@@ -3060,6 +3280,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
       },
@@ -3095,6 +3319,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
       },
@@ -3127,6 +3355,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.7
       },
       {
@@ -3166,6 +3398,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.8
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.8
       },
       {
@@ -3216,6 +3452,10 @@
         "rate": 0.85
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.85
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.85
       },
@@ -3263,6 +3503,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
       },
@@ -3295,6 +3539,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 100
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 100
       },
       {
@@ -3346,6 +3594,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 9.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 9.5
       },
       {
@@ -3404,6 +3656,10 @@
         "rate": 1.6
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.6
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
       },
@@ -3447,6 +3703,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -3487,6 +3747,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -3537,6 +3801,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -3581,6 +3849,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.7
       },
       {
@@ -3642,6 +3914,10 @@
         "rate": 2.3333
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.3333
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5556
       },
@@ -3686,6 +3962,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3
       },
       {
@@ -3748,6 +4028,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -3796,6 +4080,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -3854,6 +4142,10 @@
         "rate": 6
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 6
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 6
       },
@@ -3898,6 +4190,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 20
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 20
       },
       {
@@ -3960,6 +4256,10 @@
         "rate": 5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
       },
@@ -4016,6 +4316,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4.091
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 4.091
       },
       {
