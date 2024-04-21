@@ -1,5 +1,8 @@
 import invariant from "tiny-invariant";
-import type { TournamentBracketProgression } from "~/db/tables";
+import type {
+  TournamentBracketProgression,
+  TournamentStage,
+} from "~/db/tables";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { logger } from "~/utils/logger";
 import { assertUnreachable } from "~/utils/types";
@@ -23,6 +26,7 @@ import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { currentSeason } from "~/features/mmr/season";
 import { getTournamentManager } from "./brackets-manager";
 import { userSubmittedImage } from "~/utils/urls";
+import * as Swiss from "./Swiss";
 
 export type OptionalIdObject = { id: number } | undefined;
 
@@ -130,6 +134,43 @@ export class Tournament {
               ),
             },
             type,
+          }),
+        );
+      } else if (type === "swiss") {
+        const { teams, relevantMatchesFinished } = sources
+          ? this.resolveTeamsFromSources(sources)
+          : {
+              teams: this.ctx.teams,
+              relevantMatchesFinished: true,
+            };
+
+        const { checkedInTeams, notCheckedInTeams } =
+          this.divideTeamsToCheckedInAndNotCheckedIn({
+            teams,
+            bracketIdx,
+          });
+
+        this.brackets.push(
+          Bracket.create({
+            id: -1 * bracketIdx,
+            tournament: this,
+            seeding: checkedInTeams,
+            preview: true,
+            name,
+            data: Swiss.create({
+              tournamentId: this.ctx.id,
+              name,
+              seeding: checkedInTeams,
+              settings: this.bracketSettings(type, checkedInTeams.length),
+            }),
+            type,
+            sources,
+            createdAt: null,
+            canBeStarted:
+              checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
+              (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
+            teamsPendingCheckIn:
+              bracketIdx !== 0 ? notCheckedInTeams.map((t) => t.id) : undefined,
           }),
         );
       } else {
@@ -243,7 +284,9 @@ export class Tournament {
     }
 
     // should not happen but just in case
-    if (bracket.type === "round_robin") return teams;
+    if (bracket.type === "round_robin" || bracket.type === "swiss") {
+      return teams;
+    }
 
     const sourceBracketEncounters = sourceBracket.data.match.reduce(
       (acc, cur) => {
@@ -275,7 +318,10 @@ export class Tournament {
       manager.create({
         tournamentId: this.ctx.id,
         name: "X",
-        type: bracket.type,
+        type: bracket.type as Exclude<
+          TournamentStage["type"],
+          "round_robin" | "swiss"
+        >,
         seeding: fillWithNullTillPowerOfTwo(candidateTeams),
         settings: this.bracketSettings(bracket.type, candidateTeams.length),
       });
@@ -417,6 +463,11 @@ export class Tournament {
           ),
           seedOrdering: ["groups.seed_optimized"],
         };
+      case "swiss": {
+        return {
+          swiss: this.ctx.settings.swiss,
+        };
+      }
       default: {
         assertUnreachable(type);
       }
@@ -586,7 +637,26 @@ export class Tournament {
       (b) => !b.preview || !b.isUnderground,
     );
 
+    const everyRoundHasMatches = () => {
+      // only in swiss matches get generated as tournament progresses
+      if (
+        this.ctx.settings.bracketProgression.length > 1 ||
+        this.ctx.settings.bracketProgression[0].type !== "swiss"
+      ) {
+        return true;
+      }
+
+      return this.brackets[0].data.round.every((round) => {
+        const hasMatches = this.brackets[0].data.match.some(
+          (match) => match.round_id === round.id,
+        );
+
+        return hasMatches;
+      });
+    };
+
     return (
+      everyRoundHasMatches() &&
       relevantBrackets.every((b) => b.everyMatchOver) &&
       this.isOrganizer(user) &&
       !this.ctx.isFinalized
@@ -796,6 +866,10 @@ export class Tournament {
 
     const anotherMatchBlocking = this.followingMatches(matchId).some(
       (match) =>
+        // in swiss matches are generated round by round and the existance
+        // of a following match in itself is blocking even if they didn't start yet
+        bracket.type === "swiss" ||
+        // match is not in progress in un-swiss bracket, ok to reopen
         (match.opponent1?.score && match.opponent1.score > 0) ||
         (match.opponent2?.score && match.opponent2.score > 0),
     );
@@ -817,8 +891,9 @@ export class Tournament {
     );
 
     if (ongoingFollowUpBrackets.length === 0) return false;
-    // TODO: or swiss
-    if (matchBracket.type === "round_robin") return true;
+    if (matchBracket.type === "round_robin" || matchBracket.type === "swiss") {
+      return true;
+    }
 
     const participantInAnotherBracket = ongoingFollowUpBrackets
       .flatMap((b) => b.data.participant)

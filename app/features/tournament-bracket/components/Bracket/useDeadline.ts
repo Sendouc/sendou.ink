@@ -36,7 +36,9 @@ export function useDeadline(roundId: number, bestOf: number) {
     if (!round) return null;
 
     const isFirstRoundOfBracket =
-      roundIdx === 0 || (bracket.type === "round_robin" && round.number === 1);
+      roundIdx === 0 ||
+      ((bracket.type === "round_robin" || bracket.type === "swiss") &&
+        round.number === 1);
 
     const matches = bracket.data.match.filter((m) => m.round_id === roundId);
     const everyMatchHasStarted = matches.every(
@@ -60,6 +62,8 @@ export function useDeadline(roundId: number, bestOf: number) {
           round.group_id !== losersGroupId)
       ) {
         dl = dateByPreviousRound(bracket, round);
+      } else if (bracket.type === "swiss") {
+        dl = dateByRoundMatch(bracket, round);
       } else if (bracket.type === "round_robin") {
         dl = dateByManyPreviousRounds(bracket, round);
       } else {
@@ -110,6 +114,16 @@ function dateByPreviousRound(bracket: Bracket, round: Round) {
   }
 
   return databaseTimestampToDate(maxFinishedAt);
+}
+
+function dateByRoundMatch(bracket: Bracket, round: Round) {
+  const roundMatch = bracket.data.match.find((m) => m.round_id === round.id);
+
+  if (!roundMatch?.createdAt) {
+    return null;
+  }
+
+  return databaseTimestampToDate(roundMatch.createdAt);
 }
 
 function dateByManyPreviousRounds(bracket: Bracket, round: Round) {

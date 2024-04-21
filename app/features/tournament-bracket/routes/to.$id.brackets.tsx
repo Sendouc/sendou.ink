@@ -63,7 +63,10 @@ import { roundMapsFromInput } from "../core/mapList.server";
 import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.server";
 import { checkInMany } from "~/features/tournament/queries/checkInMany.server";
 import { logger } from "~/utils/logger";
+import * as Swiss from "../core/Swiss";
+import { createSwissBracketInTransaction } from "~/features/tournament/queries/createSwissBracketInTransaction.server";
 import { refreshUserSkills } from "~/features/mmr/tiered.server";
+import type { Tournament } from "../core/Tournament";
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
@@ -89,24 +92,41 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const groupCount = new Set(bracket.data.round.map((r) => r.group_id))
         .size;
+
       validate(
-        bracket.type === "round_robin"
+        bracket.type === "round_robin" || bracket.type === "swiss"
           ? bracket.data.round.length / groupCount === data.maps.length
           : bracket.data.round.length === data.maps.length,
         "Invalid map count",
       );
 
       sql.transaction(() => {
-        const stage = manager.create({
-          tournamentId,
-          name: bracket.name,
-          type: bracket.type,
-          seeding:
-            bracket.type === "round_robin"
-              ? seeding
-              : fillWithNullTillPowerOfTwo(seeding),
-          settings: tournament.bracketSettings(bracket.type, seeding.length),
-        });
+        const stage =
+          bracket.type === "swiss"
+            ? createSwissBracketInTransaction(
+                Swiss.create({
+                  name: bracket.name,
+                  seeding,
+                  tournamentId,
+                  settings: tournament.bracketSettings(
+                    bracket.type,
+                    seeding.length,
+                  ),
+                }),
+              )
+            : manager.create({
+                tournamentId,
+                name: bracket.name,
+                type: bracket.type as "round_robin",
+                seeding:
+                  bracket.type === "round_robin"
+                    ? seeding
+                    : fillWithNullTillPowerOfTwo(seeding),
+                settings: tournament.bracketSettings(
+                  bracket.type,
+                  seeding.length,
+                ),
+              });
 
         updateRoundMaps(
           roundMapsFromInput({
@@ -143,6 +163,33 @@ export const action: ActionFunction = async ({ params, request }) => {
           }
         }
       })();
+
+      break;
+    }
+    case "ADVANCE_BRACKET": {
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      validate(bracket, "Bracket not found");
+      validate(bracket.type === "swiss", "Can't advance non-swiss bracket");
+
+      const matches = Swiss.generateMatchUps({
+        bracket,
+        groupId: data.groupId,
+      });
+
+      await TournamentRepository.insertSwissMatches(matches);
+
+      break;
+    }
+    case "UNADVANCE_BRACKET": {
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      validate(bracket, "Bracket not found");
+      validate(bracket.type === "swiss", "Can't unadvance non-swiss bracket");
+      validateNoFollowUpBrackets(tournament);
+
+      await TournamentRepository.deleteSwissMatches({
+        groupId: data.groupId,
+        roundId: data.roundId,
+      });
 
       break;
     }
@@ -208,6 +255,17 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   return null;
 };
+
+function validateNoFollowUpBrackets(tournament: Tournament) {
+  const followUpBrackets = tournament.brackets.filter(
+    (b) => b.sources && b.sources.some((source) => source.bracketIdx === 0),
+  );
+
+  validate(
+    followUpBrackets.every((b) => b.preview),
+    "Follow-up brackets are already started",
+  );
+}
 
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);
@@ -383,7 +441,9 @@ export default function TournamentBracketsPage() {
             <CompactifyButton />
           ) : null}
         </div>
-        {bracket.enoughTeams ? <Bracket bracket={bracket} /> : null}
+        {bracket.enoughTeams ? (
+          <Bracket bracket={bracket} bracketIdx={bracketIdx} />
+        ) : null}
       </div>
       {!bracket.enoughTeams ? (
         <div>

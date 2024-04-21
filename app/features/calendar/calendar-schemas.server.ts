@@ -98,6 +98,8 @@ export const newCalendarEventActionSchema = z
       .min(TOURNAMENT.MIN_GROUP_SIZE)
       .max(TOURNAMENT.MAX_GROUP_SIZE)
       .nullish(),
+    swissGroupCount: z.coerce.number().int().positive().nullish(),
+    swissRoundCount: z.coerce.number().int().positive().nullish(),
     followUpBrackets: z.preprocess(
       safeJSONParse,
       z

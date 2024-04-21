@@ -493,6 +493,7 @@ export default function TournamentMatchPage() {
             to={tournamentBracketsPage({
               tournamentId: tournament.ctx.id,
               bracketIdx: tournament.matchIdToBracketIdx(data.match.id),
+              groupId: data.match.groupId,
             })}
             variant="outlined"
             size="tiny"
@@ -561,6 +562,17 @@ function MatchHeader() {
             );
 
             roundName = `Groups ${group?.number ? groupNumberToLetter(group.number) : ""}${round?.number ?? ""}.${match.number}`;
+          } else if (bracket.type === "swiss") {
+            const group = bracket.data.group.find(
+              (group) => group.id === match.group_id,
+            );
+            const round = bracket.data.round.find(
+              (round) => round.id === match.round_id,
+            );
+
+            const oneGroupOnly = bracket.data.group.length === 1;
+
+            roundName = `Swiss${oneGroupOnly ? "" : " Group"} ${group?.number && !oneGroupOnly ? groupNumberToLetter(group.number) : ""} ${round?.number ?? ""}.${match.number}`;
           } else if (
             bracket.type === "single_elimination" ||
             bracket.type === "double_elimination"

@@ -25,7 +25,7 @@ export class Reset extends BaseUpdater {
     );
     const matchLocation = helpers.getMatchLocation(stage.type, group.number);
     const nextMatches =
-      stage.type !== "round_robin"
+      stage.type !== "round_robin" && stage.type !== "swiss"
         ? this.getNextMatches(
             stored,
             matchLocation,
@@ -48,7 +48,7 @@ export class Reset extends BaseUpdater {
     helpers.resetMatchResults(stored);
     this.applyMatchUpdate(stored);
 
-    if (!helpers.isRoundRobin(stage))
+    if (!helpers.isRoundRobin(stage) && !helpers.isSwiss(stage))
       this.updateRelatedMatches(stored, true, true);
   }
 

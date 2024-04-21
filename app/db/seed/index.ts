@@ -74,19 +74,26 @@ import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/co
 
 const calendarEventWithToToolsRegOpen = () =>
   calendarEventWithToTools("PICNIC", true);
+
 const calendarEventWithToToolsSz = () => calendarEventWithToTools("ITZ");
 const calendarEventWithToToolsTeamsSz = () =>
   calendarEventWithToToolsTeams("ITZ");
+
 const calendarEventWithToToolsPP = () => calendarEventWithToTools("PP");
 const calendarEventWithToToolsPPRegOpen = () =>
   calendarEventWithToTools("PP", true);
 const calendarEventWithToToolsTeamsPP = () =>
   calendarEventWithToToolsTeams("PP");
+
 const calendarEventWithToToolsSOS = () => calendarEventWithToTools("SOS");
 const calendarEventWithToToolsTeamsSOS = () =>
   calendarEventWithToToolsTeams("SOS");
 const calendarEventWithToToolsTeamsSOSSmall = () =>
   calendarEventWithToToolsTeams("SOS", true);
+
+const calendarEventWithToToolsDepths = () => calendarEventWithToTools("DEPTHS");
+const calendarEventWithToToolsTeamsDepths = () =>
+  calendarEventWithToToolsTeams("DEPTHS");
 
 const basicSeeds = (variation?: SeedVariation | null) => [
   adminUser,
@@ -132,6 +139,8 @@ const basicSeeds = (variation?: SeedVariation | null) => [
     ? calendarEventWithToToolsTeamsSOSSmall
     : calendarEventWithToToolsTeamsSOS,
   calendarEventWithToToolsToSetMapPool,
+  calendarEventWithToToolsDepths,
+  calendarEventWithToToolsTeamsDepths,
   tournamentSubs,
   adminBuilds,
   manySplattershotBuilds,
@@ -845,7 +854,7 @@ async function calendarEventResults() {
 
 const TO_TOOLS_CALENDAR_EVENT_ID = 201;
 function calendarEventWithToTools(
-  event: "PICNIC" | "ITZ" | "PP" | "SOS" = "PICNIC",
+  event: "PICNIC" | "ITZ" | "PP" | "SOS" | "DEPTHS" = "PICNIC",
   registrationOpen: boolean = false,
 ) {
   const tournamentId = {
@@ -853,80 +862,93 @@ function calendarEventWithToTools(
     ITZ: 2,
     PP: 3,
     SOS: 4,
+    DEPTHS: 5,
   }[event];
   const eventId = {
     PICNIC: TO_TOOLS_CALENDAR_EVENT_ID + 0,
     ITZ: TO_TOOLS_CALENDAR_EVENT_ID + 1,
     PP: TO_TOOLS_CALENDAR_EVENT_ID + 2,
     SOS: TO_TOOLS_CALENDAR_EVENT_ID + 3,
+    DEPTHS: TO_TOOLS_CALENDAR_EVENT_ID + 4,
   }[event];
   const name = {
     PICNIC: "PICNIC #2",
     ITZ: "In The Zone 22",
     PP: "Paddling Pool 253",
     SOS: "Swim or Sink 101",
+    DEPTHS: "The Depths 5",
   }[event];
 
   const settings: Tables["Tournament"]["settings"] =
-    event === "SOS"
+    event === "DEPTHS"
       ? {
-          bracketProgression: [
-            { type: "round_robin", name: "Groups stage" },
-            {
-              type: "single_elimination",
-              name: "Great White",
-              sources: [{ bracketIdx: 0, placements: [1] }],
-            },
-            {
-              type: "single_elimination",
-              name: "Hammerhead",
-              sources: [{ bracketIdx: 0, placements: [2] }],
-            },
-            {
-              type: "single_elimination",
-              name: "Mako",
-              sources: [{ bracketIdx: 0, placements: [3] }],
-            },
-            {
-              type: "single_elimination",
-              name: "Lantern",
-              sources: [{ bracketIdx: 0, placements: [4] }],
-            },
-          ],
+          bracketProgression: [{ type: "swiss", name: "Swiss" }],
           enableNoScreenToggle: true,
+          isRanked: false,
+          swiss: {
+            groupCount: 2,
+            roundCount: 4,
+          },
         }
-      : event === "PP"
+      : event === "SOS"
         ? {
             bracketProgression: [
               { type: "round_robin", name: "Groups stage" },
               {
                 type: "single_elimination",
-                name: "Final stage",
-                sources: [{ bracketIdx: 0, placements: [1, 2] }],
+                name: "Great White",
+                sources: [{ bracketIdx: 0, placements: [1] }],
               },
               {
                 type: "single_elimination",
-                name: "Underground bracket",
-                sources: [{ bracketIdx: 0, placements: [3, 4] }],
+                name: "Hammerhead",
+                sources: [{ bracketIdx: 0, placements: [2] }],
+              },
+              {
+                type: "single_elimination",
+                name: "Mako",
+                sources: [{ bracketIdx: 0, placements: [3] }],
+              },
+              {
+                type: "single_elimination",
+                name: "Lantern",
+                sources: [{ bracketIdx: 0, placements: [4] }],
               },
             ],
+            enableNoScreenToggle: true,
           }
-        : event === "ITZ"
+        : event === "PP"
           ? {
               bracketProgression: [
-                { type: "double_elimination", name: "Main bracket" },
+                { type: "round_robin", name: "Groups stage" },
+                {
+                  type: "single_elimination",
+                  name: "Final stage",
+                  sources: [{ bracketIdx: 0, placements: [1, 2] }],
+                },
                 {
                   type: "single_elimination",
                   name: "Underground bracket",
-                  sources: [{ bracketIdx: 0, placements: [-1, -2] }],
+                  sources: [{ bracketIdx: 0, placements: [3, 4] }],
                 },
               ],
             }
-          : {
-              bracketProgression: [
-                { type: "double_elimination", name: "Main bracket" },
-              ],
-            };
+          : event === "ITZ"
+            ? {
+                bracketProgression: [
+                  { type: "double_elimination", name: "Main bracket" },
+                  {
+                    type: "single_elimination",
+                    name: "Underground bracket",
+                    sources: [{ bracketIdx: 0, placements: [-1, -2] }],
+                  },
+                ],
+              }
+            : {
+                bracketProgression: [
+                  { type: "double_elimination", name: "Main bracket" },
+                ],
+              };
 
   sql
     .prepare(
@@ -1085,7 +1107,7 @@ const availablePairs = rankedModesShort
   )
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(
-  event: "PICNIC" | "ITZ" | "PP" | "SOS" = "PICNIC",
+  event: "PICNIC" | "ITZ" | "PP" | "SOS" | "DEPTHS" = "PICNIC",
   isSmall: boolean = false,
 ) {
   const userIds = userIdsInAscendingOrderById();
@@ -1098,6 +1120,7 @@ function calendarEventWithToToolsTeams(
     ITZ: 2,
     PP: 3,
     SOS: 4,
+    DEPTHS: 5,
   }[event];
 
   const teamIdAddition = {
@@ -1105,6 +1128,7 @@ function calendarEventWithToToolsTeams(
     ITZ: 100,
     PP: 200,
     SOS: 300,
+    DEPTHS: 400,
   }[event];
 
   for (let id = 1; id <= (isSmall ? 4 : 16); id++) {

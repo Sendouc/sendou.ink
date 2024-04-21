@@ -100,4 +100,6 @@ export interface Match extends MatchResults {
   number: number;
 
   lastGameFinishedAt?: number | null;
+
+  createdAt?: number | null;
 }

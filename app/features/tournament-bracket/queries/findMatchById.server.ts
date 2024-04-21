@@ -12,6 +12,7 @@ import type { TournamentRoundMaps } from "~/db/tables";
 const stm = sql.prepare(/* sql */ `
   select 
     "TournamentMatch"."id",
+    "TournamentMatch"."groupId",
     "TournamentMatch"."opponentOne",
     "TournamentMatch"."opponentTwo",
     "TournamentMatch"."bestOf",
@@ -56,7 +57,7 @@ export const findMatchById = (id: number) => {
   const row = stm.get({ id }) as
     | ((Pick<
         TournamentMatch,
-        "id" | "opponentOne" | "opponentTwo" | "bestOf" | "chatCode"
+        "id" | "groupId" | "opponentOne" | "opponentTwo" | "bestOf" | "chatCode"
       > &
         Pick<Tournament, "mapPickingStyle"> & { players: string }) & {
         roundMaps: string | null;

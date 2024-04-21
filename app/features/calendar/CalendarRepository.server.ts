@@ -413,6 +413,8 @@ type CreateArgs = Pick<
   regClosesAt?: number;
   rules: string | null;
   tournamentToCopyId?: number | null;
+  swissGroupCount?: number;
+  swissRoundCount?: number;
 };
 export async function create(args: CreateArgs) {
   const copiedStaff = args.tournamentToCopyId
@@ -437,6 +439,13 @@ export async function create(args: CreateArgs) {
         autonomousSubs: args.autonomousSubs,
         regClosesAt: args.regClosesAt,
         autoCheckInAll: args.autoCheckInAll,
+        swiss:
+          args.swissGroupCount && args.swissRoundCount
+            ? {
+                groupCount: args.swissGroupCount,
+                roundCount: args.swissRoundCount,
+              }
+            : undefined,
       };
 
       tournamentId = (
@@ -530,6 +539,13 @@ export async function update(args: UpdateArgs) {
         autonomousSubs: args.autonomousSubs,
         regClosesAt: args.regClosesAt,
         autoCheckInAll: args.autoCheckInAll,
+        swiss:
+          args.swissGroupCount && args.swissRoundCount
+            ? {
+                groupCount: args.swissGroupCount,
+                roundCount: args.swissRoundCount,
+              }
+            : undefined,
       };
 
       const { mapPickingStyle: _mapPickingStyle } = await trx

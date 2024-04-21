@@ -2,14 +2,29 @@ import { useBracketExpanded } from "~/features/tournament/routes/to.$id";
 import type { Bracket as BracketType } from "../../core/Bracket";
 import { EliminationBracketSide } from "./Elimination";
 import { RoundRobinBracket } from "./RoundRobin";
+import { SwissBracket } from "./Swiss";
 
-export function Bracket({ bracket }: { bracket: BracketType }) {
+export function Bracket({
+  bracket,
+  bracketIdx,
+}: {
+  bracket: BracketType;
+  bracketIdx: number;
+}) {
   const { bracketExpanded } = useBracketExpanded();
 
   if (bracket.type === "round_robin") {
     return (
       <BracketContainer>
         <RoundRobinBracket bracket={bracket} />
+      </BracketContainer>
+    );
+  }
+
+  if (bracket.type === "swiss") {
+    return (
+      <BracketContainer>
+        <SwissBracket bracket={bracket} bracketIdx={bracketIdx} />
       </BracketContainer>
     );
   }
