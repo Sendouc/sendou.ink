@@ -25,7 +25,6 @@ export const BANNED_MAPS: Record<ModeShort, StageId[]> = {
     s.INKBLOT_ART_ACADEMY,
   ],
   CB: [
-    s.UNDERTOW_SPILLWAY,
     s.HAMMERHEAD_BRIDGE,
     s.STURGEON_SHIPYARD,
     s.WAHOO_WORLD,
