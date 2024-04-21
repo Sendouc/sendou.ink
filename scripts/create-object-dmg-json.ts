@@ -76,6 +76,14 @@ for (const cell of Object.values(params.CellList)) {
     target: cell.ColumnKey,
     rate: cell.DamageRate,
   });
+
+  // if it has special damage rates for Splat Brella, add the same value for Recycled Brella
+  if (cell.ColumnKey === "BulletUmbrellaCanopyNormal") {
+    result[cell.RowKey].rates.push({
+      target: "BulletShelterCanopyFocus",
+      rate: cell.DamageRate,
+    });
+  }
 }
 
 fs.writeFileSync(
