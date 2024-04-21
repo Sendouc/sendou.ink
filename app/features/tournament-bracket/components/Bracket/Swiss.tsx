@@ -113,6 +113,7 @@ export function SwissBracket({
                       selectedGroupId === g.groupId,
                   },
                 )}
+                testId={`group-${g.groupName.split(" ")[1]}-button`}
               >
                 {g.groupName.split(" ")[1]}
               </Button>
@@ -172,6 +173,7 @@ export function SwissBracket({
                       <SubmitButton
                         _action="ADVANCE_BRACKET"
                         state={fetcher.state}
+                        testId="start-round-button"
                       >
                         Start round
                       </SubmitButton>
@@ -194,6 +196,7 @@ export function SwissBracket({
                         type="submit"
                         className="build__small-text mb-4"
                         size="tiny"
+                        testId="reset-round-button"
                       >
                         Reset round
                       </Button>

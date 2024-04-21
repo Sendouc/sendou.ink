@@ -673,6 +673,59 @@ test.describe("Tournament bracket", () => {
     });
   });
 
+  test("swiss tournament with bracket advancing/unadvancing & dropping out a team", async ({
+    page,
+  }) => {
+    const tournamentId = 5;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentBracketsPage({ tournamentId }),
+    });
+
+    await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
+
+    // report all group A round 1 scores
+    for (const id of [1, 2, 3, 4]) {
+      await page.locator(`[data-match-id="${id}"]`).click();
+      await reportResult({
+        page,
+        amountOfMapsToReport: 2,
+        sidesWithMoreThanFourPlayers: id === 1 ? [] : ["last"],
+      });
+      await backToBracket(page);
+    }
+
+    // test that we can change to view different group
+    await expect(page.getByTestId("start-round-button")).toBeVisible();
+    await page.getByTestId("group-B-button").click();
+    isNotVisible(page.getByTestId("start-round-button"));
+    await page.getByTestId("group-A-button").click();
+
+    await page.getByTestId("start-round-button").click();
+    await expect(page.locator(`[data-match-id="9"]`)).toBeVisible();
+
+    await page.getByTestId("admin-tab").click();
+
+    await page.getByLabel("Action").selectOption("DROP_TEAM_OUT");
+    await page.getByLabel("Team").selectOption("401");
+    await submit(page);
+
+    await navigate({
+      page,
+      url: tournamentBracketsPage({ tournamentId }),
+    });
+
+    await page.getByTestId("reset-round-button").click();
+    await page.getByTestId("confirm-button").click();
+    await page.getByTestId("start-round-button").click();
+    await expect(page.getByText("BYE")).toBeVisible();
+  });
+
   for (const pickBan of ["COUNTERPICK", "BAN_2"]) {
     for (const mapPickingStyle of ["AUTO_SZ", "TO"]) {
       test(`ban/pick ${pickBan} (${mapPickingStyle})`, async ({ page }) => {
