@@ -891,8 +891,9 @@ export class Tournament {
     );
 
     if (ongoingFollowUpBrackets.length === 0) return false;
-    // TODO: or swiss
-    if (matchBracket.type === "round_robin") return true;
+    if (matchBracket.type === "round_robin" || matchBracket.type === "swiss") {
+      return true;
+    }
 
     const participantInAnotherBracket = ongoingFollowUpBrackets
       .flatMap((b) => b.data.participant)
