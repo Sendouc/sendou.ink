@@ -498,6 +498,8 @@ function matchesByNotPlayedBefore(
   teams: Standing[],
   previousMatches: Match[],
 ): [opponentOneId: number, opponentTwoId: number][] | null {
+  invariant(teams.length % 2 === 0, "matchesByNotPlayedBefore: uneven teams");
+
   const alreadyPlayed = previousMatches.reduce((acc, cur) => {
     if (!cur.opponent1?.id || !cur.opponent2?.id) return acc;
 
@@ -514,11 +516,13 @@ function matchesByNotPlayedBefore(
     return acc;
   }, new Map<number, Set<number>>());
 
-  for (const order of permutations(teams)) {
+  const possibleRounds = makeRounds(teams.length);
+
+  for (const round of possibleRounds) {
     let allNew = true;
-    for (let i = 0; i < order.length; i += 2) {
-      const one = order[i];
-      const two = order[i + 1];
+    for (const pair of round) {
+      const one = teams[pair[0]];
+      const two = teams[pair[1]];
 
       if (alreadyPlayed.get(one.team.id)?.has(two.team.id)) {
         allNew = false;
@@ -529,9 +533,9 @@ function matchesByNotPlayedBefore(
     if (!allNew) continue;
 
     const matches: [opponentOneId: number, opponentTwoId: number][] = [];
-    for (let i = 0; i < order.length; i += 2) {
-      const one = order[i];
-      const two = order[i + 1];
+    for (const pair of round) {
+      const one = teams[pair[0]];
+      const two = teams[pair[1]];
 
       matches.push([one.team.id, two.team.id]);
     }
@@ -541,45 +545,27 @@ function matchesByNotPlayedBefore(
   return null;
 }
 
-// xxx: does permutations make sense? could be something more efficient
-// algos from https://stackoverflow.com/a/66130419
+// https://stackoverflow.com/a/75330248
+function makeRounds(n: number) {
+  const sets: Record<number, number>[] = [];
+  const rounds: [number, number][][] = [];
 
-function* permutations<T>(t: T[]): Generator<T[], void, unknown> {
-  if (t.length < 2) {
-    yield t;
-  } else {
-    for (const p of permutations(t.slice(1))) {
-      for (const r of rotations(p, t[0])) {
-        yield r;
+  for (let r = 0; r < n - 1; r++) {
+    sets.push({});
+    rounds.push([]);
+  }
+
+  for (let i = 0; i < n - 1; i++) {
+    for (let j = i + 1; j < n; j++) {
+      for (let r = 0; r < n - 1; r++) {
+        if (!sets[r][i] && !sets[r][j]) {
+          sets[r][i] = sets[r][j] = 1;
+          rounds[r].push([i, j]);
+          break;
+        }
       }
     }
   }
-}
 
-function* rotations<T>(t: T[], v: T): Generator<T[], void, unknown> {
-  if (t.length === 0) {
-    yield [v];
-  } else {
-    yield* chain(
-      [[v, ...t]],
-      map(rotations(t.slice(1), v), (r) => [t[0], ...r]),
-    );
-  }
-}
-
-function* map<T, U>(
-  t: Iterable<T>,
-  f: (arg: T) => U,
-): Generator<U, void, unknown> {
-  for (const e of t) {
-    yield f(e);
-  }
-}
-
-function* chain<T>(...ts: Iterable<T>[]): Generator<T, void, unknown> {
-  for (const t of ts) {
-    for (const e of t) {
-      yield e;
-    }
-  }
+  return rounds;
 }
