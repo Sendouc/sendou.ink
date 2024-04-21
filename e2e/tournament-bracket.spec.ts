@@ -703,7 +703,7 @@ test.describe("Tournament bracket", () => {
     // test that we can change to view different group
     await expect(page.getByTestId("start-round-button")).toBeVisible();
     await page.getByTestId("group-B-button").click();
-    isNotVisible(page.getByTestId("start-round-button"));
+    await isNotVisible(page.getByTestId("start-round-button"));
     await page.getByTestId("group-A-button").click();
 
     await page.getByTestId("start-round-button").click();
