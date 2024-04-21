@@ -51,7 +51,7 @@
     ]
   },
   "Blaster_BlasterShort": {
-    "mainWeaponIds": [200, 201],
+    "mainWeaponIds": [200, 201, 205],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -662,7 +662,7 @@
     ]
   },
   "BrushCore": {
-    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111],
+    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111, 1115],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -685,7 +685,7 @@
     ]
   },
   "BrushSplash": {
-    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111],
+    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111, 1115],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -862,7 +862,7 @@
     ]
   },
   "ChargerFull_Long": {
-    "mainWeaponIds": [2040, 2030],
+    "mainWeaponIds": [2040, 2041, 2030, 2031],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -921,7 +921,7 @@
     ]
   },
   "ChargerFull": {
-    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2000],
+    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2015, 2000, 2001],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1039,7 +1039,7 @@
     ]
   },
   "Charger_Long": {
-    "mainWeaponIds": [2040, 2030],
+    "mainWeaponIds": [2040, 2041, 2030, 2031],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1098,7 +1098,7 @@
     ]
   },
   "Charger": {
-    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2000],
+    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2015, 2000, 2001],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1252,11 +1252,11 @@
         "rate": 1
       },
       {
-        "target": "BulletShelterCanopyFocus",
+        "target": "BulletUmbrellaCanopyNormal",
         "rate": 1
       },
       {
-        "target": "BulletUmbrellaCanopyNormal",
+        "target": "BulletShelterCanopyFocus",
         "rate": 1
       },
       {
@@ -1267,9 +1267,10 @@
   },
   "Default": {
     "mainWeaponIds": [
-      220, 210, 211, 260, 261, 1120, 1121, 1100, 1101, 1110, 1111, 2060, 2061,
-      2050, 2040, 2030, 2020, 2021, 2010, 2011, 2070, 2071, 2000, 1000, 1001,
-      1020, 1021, 1030, 1010, 1011, 1040, 1041, 6020, 6000, 6001, 6010, 6011
+      220, 210, 211, 260, 261, 1120, 1121, 1100, 1101, 1110, 1111, 1115, 2060,
+      2061, 2050, 2040, 2041, 2030, 2031, 2020, 2021, 2010, 2011, 2015, 2070,
+      2071, 2000, 2001, 1000, 1001, 1020, 1021, 1030, 1031, 1010, 1011, 1015,
+      1040, 1041, 6020, 6030, 6000, 6001, 6005, 6010, 6011
     ],
     "subWeaponIds": [8, 6, 12, 9, 11],
     "specialWeaponIds": [12, 19, 15, 16, 2, 7],
@@ -1595,7 +1596,9 @@
     ]
   },
   "Maneuver": {
-    "mainWeaponIds": [5030, 5031, 5020, 5010, 5011, 5040, 5041],
+    "mainWeaponIds": [
+      5030, 5031, 5020, 5021, 5050, 5010, 5011, 5015, 5040, 5041
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1960,7 +1963,9 @@
     ]
   },
   "RollerCore": {
-    "mainWeaponIds": [1000, 1001, 1020, 1021, 1030, 1010, 1011, 1040, 1041],
+    "mainWeaponIds": [
+      1000, 1001, 1020, 1021, 1030, 1031, 1010, 1011, 1015, 1040, 1041
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2101,7 +2106,7 @@
     ]
   },
   "RollerSplash_Hunter": {
-    "mainWeaponIds": [1030],
+    "mainWeaponIds": [1030, 1031],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2227,7 +2232,7 @@
     ]
   },
   "RollerSplash": {
-    "mainWeaponIds": [1010, 1011],
+    "mainWeaponIds": [1010, 1011, 1015],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2286,7 +2291,7 @@
     ]
   },
   "Saber_ChargeShot": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001],
+    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2349,7 +2354,7 @@
     ]
   },
   "Saber_ChargeSlash": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001],
+    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2412,7 +2417,7 @@
     ]
   },
   "Saber_Shot": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001],
+    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2475,7 +2480,7 @@
     ]
   },
   "Saber_Slash": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001],
+    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2648,7 +2653,7 @@
     ]
   },
   "ShelterCanopy": {
-    "mainWeaponIds": [6000, 6001],
+    "mainWeaponIds": [6030, 6000, 6001, 6005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2829,7 +2834,7 @@
     ]
   },
   "ShelterShot": {
-    "mainWeaponIds": [6000, 6001],
+    "mainWeaponIds": [6030, 6000, 6001, 6005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3173,7 +3178,7 @@
     ]
   },
   "Shooter_Gravity": {
-    "mainWeaponIds": [50],
+    "mainWeaponIds": [50, 51],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3490,7 +3495,7 @@
     ]
   },
   "Shooter": {
-    "mainWeaponIds": [400, 401, 40, 41, 45, 100, 101, 60, 61],
+    "mainWeaponIds": [400, 401, 40, 41, 45, 47, 46, 100, 101, 60, 61],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3690,7 +3695,7 @@
     ]
   },
   "Slosher_WashtubBombCore": {
-    "mainWeaponIds": [3040],
+    "mainWeaponIds": [3040, 3041],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3737,7 +3742,7 @@
     ]
   },
   "Slosher_Washtub": {
-    "mainWeaponIds": [3040],
+    "mainWeaponIds": [3040, 3041],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3788,7 +3793,7 @@
     ]
   },
   "Slosher": {
-    "mainWeaponIds": [3010, 3011, 3050, 3020, 3021, 3000, 3001],
+    "mainWeaponIds": [3010, 3011, 3050, 3051, 3020, 3021, 3000, 3001, 3005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3839,7 +3844,9 @@
     ]
   },
   "Spinner": {
-    "mainWeaponIds": [4030, 4031, 4050, 4020, 4000, 4001, 4040, 4010, 4011],
+    "mainWeaponIds": [
+      4030, 4031, 4050, 4020, 4000, 4001, 4040, 4041, 4010, 4011, 4015
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3952,7 +3959,7 @@
     ]
   },
   "Stringer": {
-    "mainWeaponIds": [7010, 7011],
+    "mainWeaponIds": [7010, 7011, 7015],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [

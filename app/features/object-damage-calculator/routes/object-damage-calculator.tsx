@@ -37,7 +37,7 @@ import type { DamageReceiver } from "../calculator-types";
 
 import "../calculator.css";
 
-export const CURRENT_PATCH = "7.0";
+export const CURRENT_PATCH = "7.2";
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
