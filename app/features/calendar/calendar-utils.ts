@@ -34,6 +34,7 @@ export const calendarEventMaxDate = () => {
 
 export function validateFollowUpBrackets(
   brackets: FollowUpBracket[],
+  format: TournamentFormatShort,
   teamsPerGroup?: number,
 ) {
   const placementsFound: number[] = [];
@@ -58,6 +59,7 @@ export function validateFollowUpBrackets(
   }
 
   if (
+    format === "RR_TO_SE" &&
     typeof teamsPerGroup === "number" &&
     placementsFound.some((p) => p > teamsPerGroup)
   ) {

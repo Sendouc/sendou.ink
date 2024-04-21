@@ -53,7 +53,13 @@ export function formValuesToBracketProgression(
     args.teamsPerGroup &&
     args.followUpBrackets
   ) {
-    if (validateFollowUpBrackets(args.followUpBrackets, args.teamsPerGroup)) {
+    if (
+      validateFollowUpBrackets(
+        args.followUpBrackets,
+        args.format,
+        args.teamsPerGroup,
+      )
+    ) {
       return null;
     }
 
@@ -72,7 +78,7 @@ export function formValuesToBracketProgression(
   }
 
   if (args.format === "SWISS_TO_SE" && args.followUpBrackets) {
-    if (validateFollowUpBrackets(args.followUpBrackets)) {
+    if (validateFollowUpBrackets(args.followUpBrackets, args.format)) {
       return null;
     }
 

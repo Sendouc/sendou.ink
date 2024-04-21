@@ -1246,14 +1246,19 @@ function TournamentFormatSelector() {
       ) : null}
 
       {format === "RR_TO_SE" || format === "SWISS_TO_SE" ? (
-        <FollowUpBrackets teamsPerGroup={teamsPerGroup} />
+        <FollowUpBrackets teamsPerGroup={teamsPerGroup} format={format} />
       ) : null}
     </div>
   );
 }
 
-// xxx: different placement selector for swiss (top n?)
-function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
+function FollowUpBrackets({
+  teamsPerGroup,
+  format,
+}: {
+  teamsPerGroup: number;
+  format: TournamentFormatShort;
+}) {
   const baseEvent = useBaseEvent();
   const [autoCheckInAll, setAutoCheckInAll] = React.useState(
     baseEvent?.tournamentCtx?.settings.autoCheckInAll ?? false,
@@ -1262,8 +1267,9 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
     () => {
       if (
         baseEvent?.tournamentCtx &&
-        baseEvent.tournamentCtx.settings.bracketProgression[0].type ===
-          "round_robin"
+        ["round_robin", "swiss"].includes(
+          baseEvent.tournamentCtx.settings.bracketProgression[0].type,
+        )
       ) {
         return baseEvent.tournamentCtx.settings.bracketProgression
           .slice(1)
@@ -1280,10 +1286,17 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
   const brackets = _brackets.map((b) => ({
     ...b,
     // handle teams per group changing after group placements have been set
-    placements: b.placements.filter((p) => p <= teamsPerGroup),
+    placements:
+      format === "RR_TO_SE"
+        ? b.placements.filter((p) => p <= teamsPerGroup)
+        : b.placements,
   }));
 
-  const validationErrorMsg = validateFollowUpBrackets(brackets, teamsPerGroup);
+  const validationErrorMsg = validateFollowUpBrackets(
+    brackets,
+    format,
+    teamsPerGroup,
+  );
 
   return (
     <>
@@ -1326,13 +1339,23 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
               }}
               bracket={b}
               nth={i + 1}
+              format={format}
             />
           ))}
           <div className="stack sm horizontal">
             <Button
               size="tiny"
               onClick={() => {
-                setBrackets([...brackets, { name: "", placements: [] }]);
+                const currentMaxPlacement = Math.max(
+                  ...brackets.flatMap((b) => b.placements),
+                );
+
+                const placements =
+                  format === "RR_TO_SE"
+                    ? []
+                    : [currentMaxPlacement + 1, currentMaxPlacement + 2];
+
+                setBrackets([...brackets, { name: "", placements }]);
               }}
               data-testid="add-bracket"
             >
@@ -1365,11 +1388,13 @@ function FollowUpBracketInputs({
   bracket,
   onChange,
   nth,
+  format,
 }: {
   teamsPerGroup: number;
   bracket: FollowUpBracket;
   onChange: (bracket: FollowUpBracket) => void;
   nth: number;
+  format: TournamentFormatShort;
 }) {
   const id = React.useId();
   return (
@@ -1384,30 +1409,122 @@ function FollowUpBracketInputs({
           id={id}
         />
       </div>
-      <div className="stack items-center horizontal md flex-wrap">
-        <Label spaced={false}>Group placements</Label>
-        {nullFilledArray(teamsPerGroup).map((_, i) => {
-          const placement = i + 1;
-          return (
-            <div key={i} className="stack horizontal items-center xs">
-              <Label spaced={false} htmlFor={`${id}-${i}`}>
-                <Placement placement={placement} />
-              </Label>
-              <input
-                id={`${id}-${i}`}
-                data-testid={`placement-${nth}-${placement}`}
-                type="checkbox"
-                checked={bracket.placements.includes(placement)}
-                onChange={(e) => {
-                  const newPlacements = e.target.checked
-                    ? [...bracket.placements, placement]
-                    : bracket.placements.filter((p) => p !== placement);
-                  onChange({ ...bracket, placements: newPlacements });
-                }}
-              />
-            </div>
-          );
-        })}
+      {format === "RR_TO_SE" ? (
+        <FollowUpBracketGroupPlacementCheckboxes
+          teamsPerGroup={teamsPerGroup}
+          bracket={bracket}
+          onChange={onChange}
+          nth={nth}
+        />
+      ) : (
+        <FollowUpBracketRangeInputs bracket={bracket} onChange={onChange} />
+      )}
+    </div>
+  );
+}
+
+function FollowUpBracketGroupPlacementCheckboxes({
+  teamsPerGroup,
+  bracket,
+  onChange,
+  nth,
+}: {
+  teamsPerGroup: number;
+  bracket: FollowUpBracket;
+  onChange: (bracket: FollowUpBracket) => void;
+  nth: number;
+}) {
+  const id = React.useId();
+
+  return (
+    <div className="stack items-center horizontal md flex-wrap">
+      <Label spaced={false}>Group placements</Label>
+      {nullFilledArray(teamsPerGroup).map((_, i) => {
+        const placement = i + 1;
+        return (
+          <div key={i} className="stack horizontal items-center xs">
+            <Label spaced={false} htmlFor={id}>
+              <Placement placement={placement} />
+            </Label>
+            <input
+              id={id}
+              data-testid={`placement-${nth}-${placement}`}
+              type="checkbox"
+              checked={bracket.placements.includes(placement)}
+              onChange={(e) => {
+                const newPlacements = e.target.checked
+                  ? [...bracket.placements, placement]
+                  : bracket.placements.filter((p) => p !== placement);
+                onChange({ ...bracket, placements: newPlacements });
+              }}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const rangeToPlacements = ([start, end]: [number, number]) => {
+  if (start > end) {
+    return [];
+  }
+
+  const result: number[] = [];
+
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+
+  return result;
+};
+
+const placementsToRange = (placements: number[]): [number, number] => {
+  if (placements.length === 0) {
+    return [1, 2];
+  }
+
+  return [placements[0], placements[placements.length - 1]];
+};
+
+function FollowUpBracketRangeInputs({
+  bracket,
+  onChange,
+}: {
+  bracket: FollowUpBracket;
+  onChange: (bracket: FollowUpBracket) => void;
+}) {
+  const [range, setRange] = React.useState<[number, number]>(
+    placementsToRange(bracket.placements),
+  );
+
+  const handleRangeChange = (newRange: [number, number]) => {
+    setRange(newRange);
+    onChange({ ...bracket, placements: rangeToPlacements(newRange) });
+  };
+
+  return (
+    <div className="stack items-center horizontal md flex-wrap">
+      <Label spaced={false}>Group placements (both inclusive)</Label>
+      <div className="stack horizontal sm items-center text-xs">
+        from
+        <Input
+          className="calendar-new__range-input"
+          type="number"
+          value={String(range[0])}
+          onChange={(e) =>
+            handleRangeChange([Number(e.target.value), range[1]])
+          }
+        />
+        to
+        <Input
+          className="calendar-new__range-input"
+          type="number"
+          value={String(range[1])}
+          onChange={(e) =>
+            handleRangeChange([range[0], Number(e.target.value)])
+          }
+        />
       </div>
     </div>
   );
