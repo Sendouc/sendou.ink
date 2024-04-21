@@ -1191,7 +1191,7 @@ function TournamentFormatSelector() {
         </div>
       ) : null}
 
-      {format === "SWISS" || format === "SWISS_TO_SE" ? (
+      {format === "SWISS_TO_SE" ? (
         <div>
           <Label htmlFor="swissGroupCount">Swiss groups count</Label>
           <select
@@ -1226,6 +1226,13 @@ function TournamentFormatSelector() {
             <option value="7">7</option>
             <option value="8">8</option>
           </select>
+          {format === "SWISS" ? (
+            <FormMessage type="info">
+              In swiss using the correct round count corresponding to the player
+              count is recommended. Examples: at most 16 players = 4 rounds, at
+              most 32 players = 5 rounds, at most 64 players = 6 rounds.
+            </FormMessage>
+          ) : null}
         </div>
       ) : null}
 
