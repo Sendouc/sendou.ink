@@ -138,6 +138,26 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("mr");
   }
 
+  if (normalizedEventName.includes("barracuda co")) {
+    return tournamentLogoUrl("bc");
+  }
+
+  if (normalizedEventName.includes("crimson ink")) {
+    return tournamentLogoUrl("ci");
+  }
+
+  if (normalizedEventName.includes("mesozoic mayhem")) {
+    return tournamentLogoUrl("me");
+  }
+
+  if (normalizedEventName.includes("rain or shine")) {
+    return tournamentLogoUrl("ros");
+  }
+
+  if (normalizedEventName.includes("squid junction")) {
+    return tournamentLogoUrl("sj");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -228,6 +248,26 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (normalizedEventName.includes("menu royale")) {
     return { bg: "#000", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("barracuda co")) {
+    return { bg: "#47b6fe", text: BLACK };
+  }
+
+  if (normalizedEventName.includes("crimson ink")) {
+    return { bg: "#000000", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("mesozoic mayhem")) {
+    return { bg: "#ccd5da", text: BLACK };
+  }
+
+  if (normalizedEventName.includes("rain or shine")) {
+    return { bg: "#201c3b", text: WHITE };
+  }
+
+  if (normalizedEventName.includes("squid junction")) {
+    return { bg: "#fed09f", text: BLACK };
   }
 
   return { bg: "#3430ad", text: WHITE };
