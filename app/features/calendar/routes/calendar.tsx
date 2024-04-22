@@ -45,6 +45,8 @@ import * as CalendarRepository from "../CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
 import { Image } from "~/components/Image";
+import { Toggle } from "~/components/Toggle";
+import { Label } from "~/components/Label";
 
 import "~/styles/calendar.css";
 
@@ -159,27 +161,45 @@ export default function CalendarPage() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
   const isMounted = useIsMounted();
+  const [onlySendouInkEvents, setOnlySendouInkEvents] = React.useState(false);
+
+  const filteredEvents = onlySendouInkEvents
+    ? data.events.filter((event) => event.tournamentId)
+    : data.events;
 
   // we don't know which events are starting in user's time zone on server
   // so that's why this calculation is not in the loader
   const thisWeeksEvents = isMounted
-    ? data.events.filter(
+    ? filteredEvents.filter(
         (event) =>
           dateToWeekNumber(databaseTimestampToDate(event.startTime)) ===
           data.displayedWeek,
       )
-    : data.events;
+    : filteredEvents;
 
   return (
     <Main classNameOverwrite="stack lg main layout__main">
       <WeekLinks />
       <EventsToReport />
       <div className="stack md">
-        {user && canAddNewEvent(user) && (
-          <LinkButton to="new" className="calendar__add-new-button" size="tiny">
-            {t("addNew")}
-          </LinkButton>
-        )}
+        <div className="stack horizontal justify-between">
+          <div className="stack horizontal sm items-center">
+            <Toggle
+              id="onlySendouInk"
+              tiny
+              checked={onlySendouInkEvents}
+              setChecked={setOnlySendouInkEvents}
+            />
+            <Label spaced={false} htmlFor="onlySendouInk">
+              Only sendou.ink events
+            </Label>
+          </div>
+          {user && canAddNewEvent(user) && (
+            <LinkButton to="new" size="tiny" className="w-max">
+              {t("addNew")}
+            </LinkButton>
+          )}
+        </div>
         {isMounted ? (
           <>
             {thisWeeksEvents.length > 0 ? (
