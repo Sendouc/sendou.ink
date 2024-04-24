@@ -389,6 +389,10 @@ function EventsList({
           dividerRendered = true;
         }
 
+        const sectionWeekday = daysDate.toLocaleString(i18n.language, {
+          weekday: "long",
+        });
+
         return (
           <React.Fragment key={daysDate.getTime()}>
             <div className="calendar__event__date-container">
@@ -407,6 +411,12 @@ function EventsList({
             </div>
             <div className="stack md">
               {events.map((calendarEvent) => {
+                const eventWeekday = databaseTimestampToDate(
+                  calendarEvent.startTime,
+                ).toLocaleString(i18n.language, {
+                  weekday: "long",
+                });
+
                 return (
                   <section
                     key={calendarEvent.eventDateId}
@@ -432,6 +442,11 @@ function EventsList({
                             author: discordFullName(calendarEvent),
                           })}
                         </div>
+                        {sectionWeekday !== eventWeekday ? (
+                          <div className="text-xxs font-bold text-theme-secondary ml-auto">
+                            {eventWeekday}
+                          </div>
+                        ) : null}
                       </div>
                       <div className="stack xs">
                         <div className="stack horizontal sm-plus items-center">
@@ -519,6 +534,15 @@ function EventsList({
   );
 }
 
+// Goal with this is to make events that start during the night for EU (NA events)
+// grouped up with the previous day. Otherwise you have a past event showing at the
+// top of the page for the whole following day for EU.
+const dateToSixHoursAgo = (date: Date) => {
+  const sixHoursAgo = new Date(date);
+  sixHoursAgo.setHours(sixHoursAgo.getHours() - 6);
+  return sixHoursAgo;
+};
+
 type EventsGrouped = [Date, SerializeFrom<typeof loader>["events"]];
 function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
   const result: EventsGrouped[] = [];
@@ -526,10 +550,14 @@ function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
   for (const calendarEvent of events) {
     const previousIterationEvents = result[result.length - 1] ?? null;
 
-    const eventsDate = databaseTimestampToDate(calendarEvent.startTime);
+    const eventsDate = dateToSixHoursAgo(
+      databaseTimestampToDate(calendarEvent.startTime),
+    );
+
     if (
       !previousIterationEvents ||
-      previousIterationEvents[0].getDay() !== eventsDate.getDay()
+      dateToSixHoursAgo(previousIterationEvents[0]).getDay() !==
+        eventsDate.getDay()
     ) {
       result.push([eventsDate, [calendarEvent]]);
     } else {
