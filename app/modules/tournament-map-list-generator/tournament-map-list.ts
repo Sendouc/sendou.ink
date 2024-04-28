@@ -212,7 +212,7 @@ export function createTournamentMapList(
 
   type StageValidatorInput = Pick<
     ModeWithStageAndScore,
-    "score" | "stageId" | "mode"
+    "score" | "stageId" | "mode" | "source"
   >;
 
   // adding rules here can achieve to things
@@ -293,6 +293,17 @@ export function createTournamentMapList(
 
   // don't allow making two picks from one team in row
   function isMakingThingsUnfair(stage: StageValidatorInput) {
+    // allow to handle edge case where both teams have 100% overlap in one mode
+    // but not others in Bo5 for example could make impossible to make map because e.g.
+    // 1) overlap
+    // 2) team 1 pick
+    // 3) team 2 pick
+    // 4) team 1 pick
+    // 5) TIEBREAKER <- system has to allow
+    // ---
+    // but later we will with score make sure that we exhaust better options too
+    if (stage.source === "TIEBREAKER") return false;
+
     const score = mapList.reduce((acc, cur) => acc + cur.score, 0);
     const newScore = score + stage.score;
 
@@ -367,6 +378,11 @@ export function createTournamentMapList(
 
     if (!lastMapIsAGoodTieBreaker()) {
       score += 1;
+    }
+
+    const scoreSum = mapList.reduce((acc, cur) => acc + cur.score, 0);
+    if (scoreSum !== 0) {
+      score += 100;
     }
 
     return score;
