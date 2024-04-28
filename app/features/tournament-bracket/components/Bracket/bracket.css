@@ -8,6 +8,17 @@
   padding-block-end: var(--s-6);
 }
 
+.scrolling-bracket {
+  padding: var(--s-4) var(--s-6);
+  max-width: 100%;
+  max-height: min(1000px, 70vh);
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  border: 2px solid var(--border);
+  border-radius: var(--rounded-sm);
+  overflow: scroll;
+}
+
 .bracket__match__header {
   position: absolute;
   display: flex;
