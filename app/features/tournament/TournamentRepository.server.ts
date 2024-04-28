@@ -125,16 +125,17 @@ export async function findById(id: number) {
             ).as("mapPool"),
             jsonObjectFrom(
               innerEb
-                .selectFrom("Team")
+                .selectFrom("AllTeam")
                 .leftJoin(
                   "UserSubmittedImage",
-                  "Team.avatarImgId",
+                  "AllTeam.avatarImgId",
                   "UserSubmittedImage.id",
                 )
-                .whereRef("Team.id", "=", "TournamentTeam.teamId")
+                .whereRef("AllTeam.id", "=", "TournamentTeam.teamId")
                 .select([
-                  "Team.customUrl",
+                  "AllTeam.customUrl",
                   "UserSubmittedImage.url as logoUrl",
+                  "AllTeam.deletedAt",
                 ]),
             ).as("team"),
           ])
