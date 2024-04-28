@@ -151,6 +151,9 @@ function Document({
   useLoadingIndicator();
   const customizedCSSVars = useCustomizedCSSVars();
 
+  const devActionsEnabled =
+    import.meta.env["VITE_DEV_ACTIONS_ENABLED"] === "true";
+
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
@@ -180,7 +183,7 @@ function Document({
         <Fonts />
       </head>
       <body style={customizedCSSVars}>
-        {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
+        {devActionsEnabled && <HydrationTestIndicator />}
         <React.StrictMode>
           <MyRamp data={data} />
           <Layout data={data} isErrored={isErrored}>
