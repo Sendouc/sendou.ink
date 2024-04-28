@@ -172,8 +172,9 @@ export default function CalendarPage() {
   const thisWeeksEvents = isMounted
     ? filteredEvents.filter(
         (event) =>
-          dateToWeekNumber(databaseTimestampToDate(event.startTime)) ===
-          data.displayedWeek,
+          dateToWeekNumber(
+            dateToSixHoursAgo(databaseTimestampToDate(event.startTime)),
+          ) === data.displayedWeek,
       )
     : filteredEvents;
 
@@ -537,11 +538,11 @@ function EventsList({
 // Goal with this is to make events that start during the night for EU (NA events)
 // grouped up with the previous day. Otherwise you have a past event showing at the
 // top of the page for the whole following day for EU.
-const dateToSixHoursAgo = (date: Date) => {
+function dateToSixHoursAgo(date: Date) {
   const sixHoursAgo = new Date(date);
   sixHoursAgo.setHours(sixHoursAgo.getHours() - 6);
   return sixHoursAgo;
-};
+}
 
 type EventsGrouped = [Date, SerializeFrom<typeof loader>["events"]];
 function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
@@ -556,8 +557,7 @@ function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
 
     if (
       !previousIterationEvents ||
-      dateToSixHoursAgo(previousIterationEvents[0]).getDay() !==
-        eventsDate.getDay()
+      previousIterationEvents[0].getDay() !== eventsDate.getDay()
     ) {
       result.push([eventsDate, [calendarEvent]]);
     } else {
