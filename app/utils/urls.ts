@@ -243,13 +243,24 @@ export const tournamentAdminPage = (tournamentId: number) =>
 export const tournamentBracketsPage = ({
   tournamentId,
   bracketIdx,
+  groupId,
 }: {
   tournamentId: number;
   bracketIdx?: number | null;
-}) =>
-  `/to/${tournamentId}/brackets${
-    typeof bracketIdx === "number" ? `?idx=${bracketIdx}` : ""
+  groupId?: number;
+}) => {
+  const query = new URLSearchParams();
+  if (typeof bracketIdx === "number") {
+    query.set("idx", String(bracketIdx));
+  }
+  if (typeof groupId === "number") {
+    query.set("group", String(groupId));
+  }
+
+  return `/to/${tournamentId}/brackets${
+    query.size > 0 ? `?${query.toString()}` : ""
   }`;
+};
 export const tournamentBracketsSubscribePage = (tournamentId: number) =>
   `/to/${tournamentId}/brackets/subscribe`;
 export const tournamentMatchPage = ({

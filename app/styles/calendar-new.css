@@ -18,3 +18,7 @@
 .calendar-new__day-label {
   margin: 0;
 }
+
+.calendar-new__range-input {
+  width: 4.25rem;
+}

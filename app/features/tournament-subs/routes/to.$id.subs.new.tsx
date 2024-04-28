@@ -49,6 +49,10 @@ export const action: ActionFunction = async ({ params, request }) => {
     tournament.canAddNewSubPost,
     "Registration is closed or subs feature disabled",
   );
+  validate(
+    !tournament.teamMemberOfByUser(user),
+    "Can't register as a sub and be in a team at the same time",
+  );
 
   upsertSub({
     bestWeapons: data.bestWeapons.join(","),

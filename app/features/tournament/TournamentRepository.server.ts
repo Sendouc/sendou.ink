@@ -1,7 +1,9 @@
 import type { Insertable, NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
+import { nanoid } from "nanoid";
 import { db } from "~/db/sql";
 import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
+import { Status } from "~/modules/brackets-model";
 import { modesShort } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
@@ -71,6 +73,7 @@ export async function findById(id: number) {
             "TournamentTeam.seed",
             "TournamentTeam.prefersNotToHost",
             "TournamentTeam.noScreen",
+            "TournamentTeam.droppedOut",
             "TournamentTeam.inviteCode",
             "TournamentTeam.createdAt",
             jsonArrayFrom(
@@ -122,16 +125,17 @@ export async function findById(id: number) {
             ).as("mapPool"),
             jsonObjectFrom(
               innerEb
-                .selectFrom("Team")
+                .selectFrom("AllTeam")
                 .leftJoin(
                   "UserSubmittedImage",
-                  "Team.avatarImgId",
+                  "AllTeam.avatarImgId",
                   "UserSubmittedImage.id",
                 )
-                .whereRef("Team.id", "=", "TournamentTeam.teamId")
+                .whereRef("AllTeam.id", "=", "TournamentTeam.teamId")
                 .select([
-                  "Team.customUrl",
+                  "AllTeam.customUrl",
                   "UserSubmittedImage.url as logoUrl",
+                  "AllTeam.deletedAt",
                 ]),
             ).as("team"),
           ])
@@ -367,6 +371,40 @@ export function updateTeamName({
     .execute();
 }
 
+export function dropTeamOut({
+  tournamentTeamId,
+  previewBracketIdxs,
+}: {
+  tournamentTeamId: number;
+  previewBracketIdxs: number[];
+}) {
+  return db.transaction().execute(async (trx) => {
+    await trx
+      .deleteFrom("TournamentTeamCheckIn")
+      .where("tournamentTeamId", "=", tournamentTeamId)
+      .where("TournamentTeamCheckIn.bracketIdx", "in", previewBracketIdxs)
+      .execute();
+
+    await trx
+      .updateTable("TournamentTeam")
+      .set({
+        droppedOut: 1,
+      })
+      .where("id", "=", tournamentTeamId)
+      .execute();
+  });
+}
+
+export function undoDropTeamOut(tournamentTeamId: number) {
+  return db
+    .updateTable("TournamentTeam")
+    .set({
+      droppedOut: 0,
+    })
+    .where("id", "=", tournamentTeamId)
+    .execute();
+}
+
 export function addStaff({
   tournamentId,
   userId,
@@ -576,4 +614,48 @@ export function resetBracket(tournamentStageId: number) {
       .where("id", "=", tournamentStageId)
       .execute();
   });
+}
+
+export type TournamentRepositoryInsertableMatch = Omit<
+  Insertable<DB["TournamentMatch"]>,
+  "status" | "bestOf" | "chatCode"
+>;
+
+export function insertSwissMatches(
+  matches: TournamentRepositoryInsertableMatch[],
+) {
+  if (matches.length === 0) {
+    throw new Error("No matches to insert");
+  }
+
+  return db
+    .insertInto("TournamentMatch")
+    .values(
+      matches.map((match) => ({
+        groupId: match.groupId,
+        number: match.number,
+        opponentOne: match.opponentOne,
+        opponentTwo: match.opponentTwo,
+        roundId: match.roundId,
+        stageId: match.stageId,
+        status: Status.Ready,
+        createdAt: dateToDatabaseTimestamp(new Date()),
+        chatCode: nanoid(10),
+      })),
+    )
+    .execute();
+}
+
+export function deleteSwissMatches({
+  groupId,
+  roundId,
+}: {
+  groupId: number;
+  roundId: number;
+}) {
+  return db
+    .deleteFrom("TournamentMatch")
+    .where("groupId", "=", groupId)
+    .where("roundId", "=", roundId)
+    .execute();
 }

@@ -19,6 +19,7 @@ export const DAMAGE_RECEIVERS = [
   "BulletUmbrellaCanopyCompact", // Undercover Brella Canopy
   "BulletUmbrellaCanopyNormal", // Splat Brella Canopy
   "BulletUmbrellaCanopyWide", // Tenta Brella Canopy
+  "BulletShelterCanopyFocus", // Recycled Brella Canopy
 ] as const;
 
 export const damagePriorities: Array<
@@ -77,8 +78,8 @@ export const damagePriorities: Array<
   ["MAIN", [3040], "DIRECT", "Slosher_WashtubBombCore"],
   ["MAIN", [3040], "DISTANCE", "Slosher_Washtub"],
 
-  ["MAIN", [6000], "NORMAL_MAX", "ShelterShot"], // TODO: could also list damage caused by Shield bump
-  ["MAIN", [6000], "NORMAL_MIN", "ShelterShot"],
+  ["MAIN", [6000, 6030], "NORMAL_MAX", "ShelterShot"], // TODO: could also list damage caused by Shield bump
+  ["MAIN", [6000, 6030], "NORMAL_MIN", "ShelterShot"],
   ["MAIN", [6010], "NORMAL_MAX", "ShelterShot_Wide"],
   ["MAIN", [6010], "NORMAL_MIN", "ShelterShot_Wide"],
   ["MAIN", [6020], "NORMAL_MAX", "ShelterShot_Compact"],

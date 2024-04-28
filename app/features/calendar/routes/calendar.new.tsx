@@ -1,10 +1,4 @@
-import type {
-  ActionFunction,
-  LoaderFunctionArgs,
-  MetaFunction,
-  SerializeFrom,
-} from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import type { MetaFunction, SerializeFrom } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -20,6 +14,7 @@ import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { MapPoolSelector } from "~/components/MapPoolSelector";
+import { Placement } from "~/components/Placement";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
@@ -28,60 +23,42 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { CALENDAR_EVENT } from "~/constants";
 import type { Tables } from "~/db/tables";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
-import { requireUser } from "~/features/auth/core/user.server";
-import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
-import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import {
   BRACKET_NAMES,
   type TournamentFormatShort,
 } from "~/features/tournament/tournament-constants";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { i18next } from "~/modules/i18n/i18next.server";
 import type { RankedModeShort } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { canEditCalendarEvent } from "~/permissions";
 import { isDefined, nullFilledArray } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
-  dateToDatabaseTimestamp,
   getDateAtNextFullHour,
   getDateWithHoursOffset,
 } from "~/utils/dates";
-import {
-  badRequestIfFalsy,
-  parseRequestFormData,
-  validate,
-  type SendouRouteHandle,
-} from "~/utils/remix";
-import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
-import { calendarEventPage, tournamentBracketsPage } from "~/utils/urls";
-import { newCalendarEventActionSchema } from "../calendar-schemas.server";
-import {
-  bracketProgressionToShortTournamentFormat,
-  calendarEventMaxDate,
-  calendarEventMinDate,
-  canAddNewEvent,
-  datesToRegClosesAt,
-  regClosesAtDate,
-  regClosesAtToDisplayName,
-  validateFollowUpBrackets,
-} from "../calendar-utils";
-import {
-  canCreateTournament,
-  formValuesToBracketProgression,
-} from "../calendar-utils.server";
-import { Tags } from "../components/Tags";
-import { Placement } from "~/components/Placement";
-import type { FollowUpBracket } from "../calendar-types";
+import { type SendouRouteHandle } from "~/utils/remix";
+import { pathnameFromPotentialURL } from "~/utils/strings";
 import {
   REG_CLOSES_AT_OPTIONS,
   type RegClosesAtOption,
 } from "../calendar-constants";
+import type { FollowUpBracket } from "../calendar-types";
+import {
+  bracketProgressionToShortTournamentFormat,
+  calendarEventMaxDate,
+  calendarEventMinDate,
+  datesToRegClosesAt,
+  regClosesAtToDisplayName,
+  validateFollowUpBrackets,
+} from "../calendar-utils";
+import { Tags } from "../components/Tags";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
+
+import { loader } from "../loaders/calendar.new.server";
+import { action } from "../actions/calendar.new.server";
+export { loader, action };
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -91,184 +68,8 @@ export const meta: MetaFunction = (args) => {
   return [{ title: data.title }];
 };
 
-export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
-  const data = await parseRequestFormData({
-    request,
-    schema: newCalendarEventActionSchema,
-    parseAsync: true,
-  });
-
-  validate(canAddNewEvent(user), "Not authorized", 401);
-
-  const startTimes = data.date.map((date) => dateToDatabaseTimestamp(date));
-  const commonArgs = {
-    name: data.name,
-    description: data.description,
-    rules: data.rules,
-    startTimes,
-    bracketUrl: data.bracketUrl,
-    discordInviteCode: data.discordInviteCode,
-    tags: data.tags
-      ? data.tags
-          .sort(
-            (a, b) =>
-              CALENDAR_EVENT.TAGS.indexOf(a as CalendarEventTag) -
-              CALENDAR_EVENT.TAGS.indexOf(b as CalendarEventTag),
-          )
-          .join(",")
-      : data.tags,
-    badges: data.badges ?? [],
-    toToolsEnabled: canCreateTournament(user) ? Number(data.toToolsEnabled) : 0,
-    toToolsMode:
-      rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
-    bracketProgression: formValuesToBracketProgression(data),
-    teamsPerGroup: data.teamsPerGroup ?? undefined,
-    thirdPlaceMatch: data.thirdPlaceMatch ?? undefined,
-    isRanked: data.isRanked ?? undefined,
-    enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
-    autoCheckInAll: data.autoCheckInAll ?? undefined,
-    autonomousSubs: data.autonomousSubs ?? undefined,
-    tournamentToCopyId: data.tournamentToCopyId,
-    regClosesAt: data.regClosesAt
-      ? dateToDatabaseTimestamp(
-          regClosesAtDate({
-            startTime: databaseTimestampToDate(startTimes[0]),
-            closesAt: data.regClosesAt,
-          }),
-        )
-      : undefined,
-  };
-  validate(
-    !commonArgs.toToolsEnabled || commonArgs.bracketProgression,
-    "Bracket progression must be set for tournaments",
-  );
-
-  const deserializedMaps = (() => {
-    if (!data.pool) return;
-
-    return MapPool.toDbList(data.pool);
-  })();
-
-  if (data.eventToEditId) {
-    const eventToEdit = badRequestIfFalsy(
-      await CalendarRepository.findById({ id: data.eventToEditId }),
-    );
-    if (eventToEdit.tournamentId) {
-      const tournament = await tournamentFromDB({
-        tournamentId: eventToEdit.tournamentId,
-        user,
-      });
-      validate(!tournament.hasStarted, "Tournament has already started", 400);
-    }
-    validate(
-      canEditCalendarEvent({ user, event: eventToEdit }),
-      "Not authorized",
-      401,
-    );
-
-    await CalendarRepository.update({
-      eventId: data.eventToEditId,
-      mapPoolMaps: deserializedMaps,
-      ...commonArgs,
-    });
-
-    throw redirect(calendarEventPage(data.eventToEditId));
-  } else {
-    const mapPickingStyle = () => {
-      if (data.toToolsMode === "TO") return "TO" as const;
-      if (data.toToolsMode) return `AUTO_${data.toToolsMode}` as const;
-
-      return "AUTO_ALL" as const;
-    };
-    const createdEventId = await CalendarRepository.create({
-      authorId: user.id,
-      mapPoolMaps: deserializedMaps,
-      isFullTournament: data.toToolsEnabled,
-      mapPickingStyle: mapPickingStyle(),
-      ...commonArgs,
-    });
-
-    throw redirect(calendarEventPage(createdEventId));
-  }
-};
-
 export const handle: SendouRouteHandle = {
   i18n: ["calendar", "game-misc"],
-};
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const t = await i18next.getFixedT(request);
-  const user = await requireUser(request);
-  const url = new URL(request.url);
-
-  validate(canAddNewEvent(user), "Not authorized", 401);
-
-  const eventWithTournament = async (key: string) => {
-    const eventId = Number(url.searchParams.get(key));
-    const event = Number.isNaN(eventId)
-      ? undefined
-      : await CalendarRepository.findById({
-          id: eventId,
-          includeMapPool: true,
-          includeTieBreakerMapPool: true,
-          includeBadgePrizes: true,
-        });
-
-    if (!event) return;
-
-    // special tags that are added automatically
-    const tags = event?.tags?.filter(
-      (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT",
-    );
-
-    if (!event?.tournamentId) return { ...event, tags, tournamentCtx: null };
-
-    return {
-      ...event,
-      tags,
-      tournamentCtx: (
-        await tournamentFromDB({
-          tournamentId: event.tournamentId,
-          user,
-        })
-      ).ctx,
-    };
-  };
-
-  const eventToEdit = await eventWithTournament("eventId");
-  const canEditEvent =
-    eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
-
-  // no editing tournament after the start
-  if (
-    eventToEdit &&
-    eventToEdit.tournamentCtx?.inProgressBrackets &&
-    eventToEdit.tournamentCtx.inProgressBrackets.length > 0
-  ) {
-    return redirect(
-      tournamentBracketsPage({ tournamentId: eventToEdit.tournamentCtx.id }),
-    );
-  }
-
-  const userCanCreateTournament = canCreateTournament(user);
-
-  return json({
-    managedBadges: await BadgeRepository.findManagedByUserId(user.id),
-    recentEventsWithMapPools:
-      await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),
-    eventToEdit: canEditEvent ? eventToEdit : undefined,
-    eventToCopy:
-      userCanCreateTournament && !eventToEdit
-        ? await eventWithTournament("copyEventId")
-        : undefined,
-    recentTournaments:
-      userCanCreateTournament && !eventToEdit
-        ? await CalendarRepository.findRecentTournamentsByAuthorId(user.id)
-        : undefined,
-    title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
-    canCreateTournament: userCanCreateTournament,
-  });
 };
 
 const useBaseEvent = () => {
@@ -369,6 +170,8 @@ function EventForm() {
           <RankedToggle />
           <EnableNoScreenToggle />
           <AutonomousSubsToggle />
+          <InvitationalToggle />
+          <StrictDeadlinesToggle />
         </>
       ) : null}
       {isTournament ? <TournamentMapPickingStyleSelect /> : <MapPoolSection />}
@@ -839,6 +642,60 @@ function AutonomousSubsToggle() {
   );
 }
 
+function InvitationalToggle() {
+  const baseEvent = useBaseEvent();
+  const [isInvitational, setIsInvitational] = React.useState(
+    baseEvent?.tournamentCtx?.settings.isInvitational ?? false,
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Invitational
+      </label>
+      <Toggle
+        name="isInvitational"
+        id={id}
+        tiny
+        checked={isInvitational}
+        setChecked={setIsInvitational}
+      />
+      <FormMessage type="info">
+        No open registration or subs list. All teams must be added by the
+        organizer.
+      </FormMessage>
+    </div>
+  );
+}
+
+function StrictDeadlinesToggle() {
+  const baseEvent = useBaseEvent();
+  const [strictDeadlines, setStrictDeadlines] = React.useState(
+    baseEvent?.tournamentCtx?.settings.deadlines === "STRICT" ? true : false,
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Strict deadlines
+      </label>
+      <Toggle
+        name="strictDeadline"
+        id={id}
+        tiny
+        checked={strictDeadlines}
+        setChecked={setStrictDeadlines}
+      />
+      <FormMessage type="info">
+        Strict deadlines has 5 minutes less for the target time of each round
+        (25min Bo3, 35min Bo5 compared to 30min Bo3, 40min Bo5 normal).
+      </FormMessage>
+    </div>
+  );
+}
+
 function RegClosesAtSelect() {
   const baseEvent = useBaseEvent();
   const [regClosesAt, setRegClosesAt] = React.useState<RegClosesAtOption>(
@@ -1124,6 +981,12 @@ function TournamentFormatSelector() {
   const [teamsPerGroup, setTeamsPerGroup] = React.useState(
     baseEvent?.tournamentCtx?.settings.teamsPerGroup ?? 4,
   );
+  const [swissGroupCount, setSwissGroupCount] = React.useState(
+    baseEvent?.tournamentCtx?.settings.swiss?.groupCount ?? 1,
+  );
+  const [swissRoundCount, setSwissRoundCount] = React.useState(
+    baseEvent?.tournamentCtx?.settings.swiss?.roundCount ?? 5,
+  );
 
   return (
     <div className="stack md w-full">
@@ -1142,6 +1005,8 @@ function TournamentFormatSelector() {
           <option value="RR_TO_SE">
             Round robin -{">"} Single-elimination
           </option>
+          <option value="SWISS">Swiss</option>
+          <option value="SWISS_TO_SE">Swiss -{">"} Single-elimination</option>
         </select>
       </div>
 
@@ -1181,7 +1046,53 @@ function TournamentFormatSelector() {
         </div>
       ) : null}
 
+      {format === "SWISS_TO_SE" ? (
+        <div>
+          <Label htmlFor="swissGroupCount">Swiss groups count</Label>
+          <select
+            value={swissGroupCount}
+            onChange={(e) => setSwissGroupCount(Number(e.target.value))}
+            className="w-max"
+            name="swissGroupCount"
+            id="swissGroupCount"
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      ) : null}
+
+      {format === "SWISS" || format === "SWISS_TO_SE" ? (
+        <div>
+          <Label htmlFor="swissRoundCount">Swiss round count</Label>
+          <select
+            value={swissRoundCount}
+            onChange={(e) => setSwissRoundCount(Number(e.target.value))}
+            className="w-max"
+            name="swissRoundCount"
+            id="swissRoundCount"
+          >
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          {format === "SWISS" ? (
+            <FormMessage type="info">
+              In swiss using the correct round count corresponding to the player
+              count is recommended. Examples: at most 16 players = 4 rounds, at
+              most 32 players = 5 rounds, at most 64 players = 6 rounds.
+            </FormMessage>
+          ) : null}
+        </div>
+      ) : null}
+
       {format === "RR_TO_SE" ||
+      format === "SWISS_TO_SE" ||
       format === "SE" ||
       (format === "DE" && withUndergroundBracket) ? (
         <div>
@@ -1196,14 +1107,20 @@ function TournamentFormatSelector() {
         </div>
       ) : null}
 
-      {format === "RR_TO_SE" ? (
-        <FollowUpBrackets teamsPerGroup={teamsPerGroup} />
+      {format === "RR_TO_SE" || format === "SWISS_TO_SE" ? (
+        <FollowUpBrackets teamsPerGroup={teamsPerGroup} format={format} />
       ) : null}
     </div>
   );
 }
 
-function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
+function FollowUpBrackets({
+  teamsPerGroup,
+  format,
+}: {
+  teamsPerGroup: number;
+  format: TournamentFormatShort;
+}) {
   const baseEvent = useBaseEvent();
   const [autoCheckInAll, setAutoCheckInAll] = React.useState(
     baseEvent?.tournamentCtx?.settings.autoCheckInAll ?? false,
@@ -1212,8 +1129,9 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
     () => {
       if (
         baseEvent?.tournamentCtx &&
-        baseEvent.tournamentCtx.settings.bracketProgression[0].type ===
-          "round_robin"
+        ["round_robin", "swiss"].includes(
+          baseEvent.tournamentCtx.settings.bracketProgression[0].type,
+        )
       ) {
         return baseEvent.tournamentCtx.settings.bracketProgression
           .slice(1)
@@ -1230,10 +1148,17 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
   const brackets = _brackets.map((b) => ({
     ...b,
     // handle teams per group changing after group placements have been set
-    placements: b.placements.filter((p) => p <= teamsPerGroup),
+    placements:
+      format === "RR_TO_SE"
+        ? b.placements.filter((p) => p <= teamsPerGroup)
+        : b.placements,
   }));
 
-  const validationErrorMsg = validateFollowUpBrackets(brackets, teamsPerGroup);
+  const validationErrorMsg = validateFollowUpBrackets(
+    brackets,
+    format,
+    teamsPerGroup,
+  );
 
   return (
     <>
@@ -1276,13 +1201,23 @@ function FollowUpBrackets({ teamsPerGroup }: { teamsPerGroup: number }) {
               }}
               bracket={b}
               nth={i + 1}
+              format={format}
             />
           ))}
           <div className="stack sm horizontal">
             <Button
               size="tiny"
               onClick={() => {
-                setBrackets([...brackets, { name: "", placements: [] }]);
+                const currentMaxPlacement = Math.max(
+                  ...brackets.flatMap((b) => b.placements),
+                );
+
+                const placements =
+                  format === "RR_TO_SE"
+                    ? []
+                    : [currentMaxPlacement + 1, currentMaxPlacement + 2];
+
+                setBrackets([...brackets, { name: "", placements }]);
               }}
               data-testid="add-bracket"
             >
@@ -1315,11 +1250,13 @@ function FollowUpBracketInputs({
   bracket,
   onChange,
   nth,
+  format,
 }: {
   teamsPerGroup: number;
   bracket: FollowUpBracket;
   onChange: (bracket: FollowUpBracket) => void;
   nth: number;
+  format: TournamentFormatShort;
 }) {
   const id = React.useId();
   return (
@@ -1334,30 +1271,122 @@ function FollowUpBracketInputs({
           id={id}
         />
       </div>
-      <div className="stack items-center horizontal md flex-wrap">
-        <Label spaced={false}>Group placements</Label>
-        {nullFilledArray(teamsPerGroup).map((_, i) => {
-          const placement = i + 1;
-          return (
-            <div key={i} className="stack horizontal items-center xs">
-              <Label spaced={false} htmlFor={`${id}-${i}`}>
-                <Placement placement={placement} />
-              </Label>
-              <input
-                id={`${id}-${i}`}
-                data-testid={`placement-${nth}-${placement}`}
-                type="checkbox"
-                checked={bracket.placements.includes(placement)}
-                onChange={(e) => {
-                  const newPlacements = e.target.checked
-                    ? [...bracket.placements, placement]
-                    : bracket.placements.filter((p) => p !== placement);
-                  onChange({ ...bracket, placements: newPlacements });
-                }}
-              />
-            </div>
-          );
-        })}
+      {format === "RR_TO_SE" ? (
+        <FollowUpBracketGroupPlacementCheckboxes
+          teamsPerGroup={teamsPerGroup}
+          bracket={bracket}
+          onChange={onChange}
+          nth={nth}
+        />
+      ) : (
+        <FollowUpBracketRangeInputs bracket={bracket} onChange={onChange} />
+      )}
+    </div>
+  );
+}
+
+function FollowUpBracketGroupPlacementCheckboxes({
+  teamsPerGroup,
+  bracket,
+  onChange,
+  nth,
+}: {
+  teamsPerGroup: number;
+  bracket: FollowUpBracket;
+  onChange: (bracket: FollowUpBracket) => void;
+  nth: number;
+}) {
+  const id = React.useId();
+
+  return (
+    <div className="stack items-center horizontal md flex-wrap">
+      <Label spaced={false}>Group placements</Label>
+      {nullFilledArray(teamsPerGroup).map((_, i) => {
+        const placement = i + 1;
+        return (
+          <div key={i} className="stack horizontal items-center xs">
+            <Label spaced={false} htmlFor={id}>
+              <Placement placement={placement} />
+            </Label>
+            <input
+              id={id}
+              data-testid={`placement-${nth}-${placement}`}
+              type="checkbox"
+              checked={bracket.placements.includes(placement)}
+              onChange={(e) => {
+                const newPlacements = e.target.checked
+                  ? [...bracket.placements, placement]
+                  : bracket.placements.filter((p) => p !== placement);
+                onChange({ ...bracket, placements: newPlacements });
+              }}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const rangeToPlacements = ([start, end]: [number, number]) => {
+  if (start > end) {
+    return [];
+  }
+
+  const result: number[] = [];
+
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+
+  return result;
+};
+
+const placementsToRange = (placements: number[]): [number, number] => {
+  if (placements.length === 0) {
+    return [1, 2];
+  }
+
+  return [placements[0], placements[placements.length - 1]];
+};
+
+function FollowUpBracketRangeInputs({
+  bracket,
+  onChange,
+}: {
+  bracket: FollowUpBracket;
+  onChange: (bracket: FollowUpBracket) => void;
+}) {
+  const [range, setRange] = React.useState<[number, number]>(
+    placementsToRange(bracket.placements),
+  );
+
+  const handleRangeChange = (newRange: [number, number]) => {
+    setRange(newRange);
+    onChange({ ...bracket, placements: rangeToPlacements(newRange) });
+  };
+
+  return (
+    <div className="stack items-center horizontal md flex-wrap">
+      <Label spaced={false}>Group placements (both inclusive)</Label>
+      <div className="stack horizontal sm items-center text-xs">
+        from
+        <Input
+          className="calendar-new__range-input"
+          type="number"
+          value={String(range[0])}
+          onChange={(e) =>
+            handleRangeChange([Number(e.target.value), range[1]])
+          }
+        />
+        to
+        <Input
+          className="calendar-new__range-input"
+          type="number"
+          value={String(range[1])}
+          onChange={(e) =>
+            handleRangeChange([range[0], Number(e.target.value)])
+          }
+        />
       </div>
     </div>
   );

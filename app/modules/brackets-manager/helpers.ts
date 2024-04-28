@@ -1761,6 +1761,10 @@ export function isRoundRobin(stage: Stage): boolean {
   return stage.type === "round_robin";
 }
 
+export function isSwiss(stage: Stage): boolean {
+  return stage.type === "swiss";
+}
+
 /**
  * Throws if a stage is round-robin.
  *

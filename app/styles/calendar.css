@@ -2,10 +2,6 @@
   height: 48rem;
 }
 
-.calendar__add-new-button {
-  margin-inline: auto var(--s-8);
-}
-
 .calendar__weeks {
   display: flex;
   align-items: center;

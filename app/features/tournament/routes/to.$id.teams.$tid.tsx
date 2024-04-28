@@ -68,7 +68,7 @@ export default function TournamentTeamPage() {
               : undefined
           }
         />
-        {team.team ? (
+        {team.team && !team.team.deletedAt ? (
           <Link
             to={teamPage(team.team.customUrl)}
             className="text-xxs text-center"

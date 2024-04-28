@@ -191,7 +191,9 @@ export function roundMapsFromInput({
   bracket: Bracket;
 }) {
   const expandedMaps =
-    bracket.type === "round_robin" ? expandMaps({ maps, virtualRounds }) : maps;
+    bracket.type === "round_robin" || bracket.type === "swiss"
+      ? expandMaps({ maps, virtualRounds })
+      : maps;
 
   const virtualGroupIdToReal = (virtualGroupId: number) => {
     const minRealGroupId = Math.min(...roundsFromDB.map((r) => r.group_id));

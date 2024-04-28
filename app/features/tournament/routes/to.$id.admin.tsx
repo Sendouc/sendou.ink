@@ -255,6 +255,22 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    case "DROP_TEAM_OUT": {
+      validateIsTournamentOrganizer();
+      await TournamentRepository.dropTeamOut({
+        tournamentTeamId: data.teamId,
+        previewBracketIdxs: tournament.brackets.flatMap((b, idx) =>
+          b.preview ? idx : [],
+        ),
+      });
+      break;
+    }
+    case "UNDO_DROP_TEAM_OUT": {
+      validateIsTournamentOrganizer();
+
+      await TournamentRepository.undoDropTeamOut(data.teamId);
+      break;
+    }
     case "RESET_BRACKET": {
       validateIsTournamentOrganizer();
       validate(!tournament.ctx.isFinalized, "Tournament is finalized");
@@ -395,6 +411,16 @@ const actions = [
     inputs: ["REGISTERED_TEAM"] as Input[],
     when: ["TOURNAMENT_BEFORE_START"],
   },
+  {
+    type: "DROP_TEAM_OUT",
+    inputs: ["REGISTERED_TEAM"] as Input[],
+    when: ["TOURNAMENT_AFTER_START", "IS_SWISS"],
+  },
+  {
+    type: "UNDO_DROP_TEAM_OUT",
+    inputs: ["REGISTERED_TEAM"] as Input[],
+    when: ["TOURNAMENT_AFTER_START", "IS_SWISS"],
+  },
 ] as const;
 
 function TeamActions() {
@@ -429,6 +455,19 @@ function TeamActions() {
           if (tournament.hasStarted) {
             return false;
           }
+          break;
+        }
+        case "TOURNAMENT_AFTER_START": {
+          if (!tournament.hasStarted) {
+            return false;
+          }
+          break;
+        }
+        case "IS_SWISS": {
+          if (!tournament.brackets.some((b) => b.type === "swiss")) {
+            return false;
+          }
+
           break;
         }
         default: {

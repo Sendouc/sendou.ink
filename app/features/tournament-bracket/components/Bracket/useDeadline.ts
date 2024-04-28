@@ -13,10 +13,16 @@ const MINUTES = {
   BO7: 50,
 };
 
-const minutesToPlay = (count: number) => {
-  if (count === 3) return MINUTES.BO3;
-  if (count === 5) return MINUTES.BO5;
-  if (count === 7) return MINUTES.BO7;
+const STRICT_MINUTES = {
+  BO3: 25,
+  BO5: 35,
+  BO7: 45,
+};
+
+const minutesToPlay = (count: number, strict: boolean) => {
+  if (count === 3) return strict ? STRICT_MINUTES.BO3 : MINUTES.BO3;
+  if (count === 5) return strict ? STRICT_MINUTES.BO5 : MINUTES.BO5;
+  if (count === 7) return strict ? STRICT_MINUTES.BO7 : MINUTES.BO7;
 
   logger.warn("Unknown best of count", { count });
   return MINUTES.BO5;
@@ -36,7 +42,9 @@ export function useDeadline(roundId: number, bestOf: number) {
     if (!round) return null;
 
     const isFirstRoundOfBracket =
-      roundIdx === 0 || (bracket.type === "round_robin" && round.number === 1);
+      roundIdx === 0 ||
+      ((bracket.type === "round_robin" || bracket.type === "swiss") &&
+        round.number === 1);
 
     const matches = bracket.data.match.filter((m) => m.round_id === roundId);
     const everyMatchHasStarted = matches.every(
@@ -60,6 +68,8 @@ export function useDeadline(roundId: number, bestOf: number) {
           round.group_id !== losersGroupId)
       ) {
         dl = dateByPreviousRound(bracket, round);
+      } else if (bracket.type === "swiss") {
+        dl = dateByRoundMatch(bracket, round);
       } else if (bracket.type === "round_robin") {
         dl = dateByManyPreviousRounds(bracket, round);
       } else {
@@ -69,7 +79,10 @@ export function useDeadline(roundId: number, bestOf: number) {
 
     if (!dl) return null;
 
-    dl.setMinutes(dl.getMinutes() + minutesToPlay(bestOf));
+    dl.setMinutes(
+      dl.getMinutes() +
+        minutesToPlay(bestOf, tournament.ctx.settings.deadlines === "STRICT"),
+    );
 
     return dl;
   } catch (e) {
@@ -110,6 +123,16 @@ function dateByPreviousRound(bracket: Bracket, round: Round) {
   }
 
   return databaseTimestampToDate(maxFinishedAt);
+}
+
+function dateByRoundMatch(bracket: Bracket, round: Round) {
+  const roundMatch = bracket.data.match.find((m) => m.round_id === round.id);
+
+  if (!roundMatch?.createdAt) {
+    return null;
+  }
+
+  return databaseTimestampToDate(roundMatch.createdAt);
 }
 
 function dateByManyPreviousRounds(bracket: Bracket, round: Round) {

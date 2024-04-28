@@ -62,7 +62,7 @@ export function BracketMapListDialog({
   const [hoveredMap, setHoveredMap] = React.useState<string | null>(null);
 
   const rounds = React.useMemo(() => {
-    if (bracket.type === "round_robin") {
+    if (bracket.type === "round_robin" || bracket.type === "swiss") {
       return Array.from(maps.keys()).map((roundId, i) => {
         return {
           id: roundId,
@@ -140,6 +140,9 @@ export function BracketMapListDialog({
   const lacksToSetMapPool =
     toSetMapPool.length === 0 && tournament.ctx.mapPickingStyle === "TO";
 
+  const globalSelections =
+    bracket.type === "round_robin" || bracket.type === "swiss";
+
   return (
     <Dialog isOpen={isOpen} close={close} className="w-max">
       <fetcher.Form method="post" className="map-list-dialog__container">
@@ -172,7 +175,7 @@ export function BracketMapListDialog({
                   pickBanStyle={pickBanStyle}
                   onPickBanStyleChange={(pickBanStyle) => {
                     let newRoundsWithPickBan = roundsWithPickBan;
-                    if (bracket.type === "round_robin") {
+                    if (globalSelections) {
                       newRoundsWithPickBan =
                         mapCountsWithGlobalPickBanStyle(pickBanStyle);
                     }
@@ -190,7 +193,7 @@ export function BracketMapListDialog({
                     );
                   }}
                 />
-                {bracket.type === "round_robin" ? (
+                {globalSelections ? (
                   <GlobalMapCountInput
                     onSetCount={(newCount) => {
                       const newMapCounts = mapCountsWithGlobalCount(newCount);
@@ -207,7 +210,7 @@ export function BracketMapListDialog({
                     }}
                   />
                 ) : null}
-                {bracket.type === "round_robin" ? (
+                {globalSelections ? (
                   <GlobalCountTypeSelect onSetCountType={setCountType} />
                 ) : null}
               </div>

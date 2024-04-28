@@ -27,6 +27,7 @@ const createTeam = (teamId: number, userIds: number[]): TournamentDataTeam => ({
   })),
   name: "Team " + teamId,
   prefersNotToHost: 0,
+  droppedOut: 0,
   noScreen: 0,
   team: null,
   seed: 1,

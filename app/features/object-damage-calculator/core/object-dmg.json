@@ -13,6 +13,10 @@
         "rate": 2.2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
       },
@@ -47,7 +51,7 @@
     ]
   },
   "Blaster_BlasterShort": {
-    "mainWeaponIds": [200, 201],
+    "mainWeaponIds": [200, 201, 205],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -57,6 +61,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.6
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3.6
       },
       {
@@ -107,6 +115,10 @@
         "rate": 2.2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
       },
@@ -154,6 +166,10 @@
         "rate": 2.2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
       },
@@ -198,6 +214,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 5
       },
       {
@@ -302,6 +322,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -350,6 +374,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.6
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3.6
       },
       {
@@ -412,6 +440,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -456,6 +488,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 4
       },
       {
@@ -533,6 +569,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -584,6 +624,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -618,7 +662,7 @@
     ]
   },
   "BrushCore": {
-    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111],
+    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111, 1115],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -641,7 +685,7 @@
     ]
   },
   "BrushSplash": {
-    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111],
+    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111, 1115],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -651,6 +695,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.5
       },
       {
@@ -709,6 +757,10 @@
         "rate": 5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
       },
@@ -764,6 +816,10 @@
         "rate": 2.4
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.4
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -806,7 +862,7 @@
     ]
   },
   "ChargerFull_Long": {
-    "mainWeaponIds": [2040, 2030],
+    "mainWeaponIds": [2040, 2041, 2030, 2031],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -816,6 +872,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3.5
       },
       {
@@ -861,7 +921,7 @@
     ]
   },
   "ChargerFull": {
-    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2000],
+    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2015, 2000, 2001],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -871,6 +931,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3
       },
       {
@@ -929,6 +993,10 @@
         "rate": 2.4
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.4
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -971,7 +1039,7 @@
     ]
   },
   "Charger_Long": {
-    "mainWeaponIds": [2040, 2030],
+    "mainWeaponIds": [2040, 2041, 2030, 2031],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -981,6 +1049,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3.5
       },
       {
@@ -1026,7 +1098,7 @@
     ]
   },
   "Charger": {
-    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2000],
+    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2015, 2000, 2001],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1036,6 +1108,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3
       },
       {
@@ -1121,6 +1197,10 @@
         "rate": 3
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
       },
@@ -1176,6 +1256,10 @@
         "rate": 1
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1
+      },
+      {
         "target": "NiceBall_Armor",
         "rate": 1
       }
@@ -1183,9 +1267,10 @@
   },
   "Default": {
     "mainWeaponIds": [
-      220, 210, 211, 260, 261, 1120, 1121, 1100, 1101, 1110, 1111, 2060, 2061,
-      2050, 2040, 2030, 2020, 2021, 2010, 2011, 2070, 2071, 2000, 1000, 1001,
-      1020, 1021, 1030, 1010, 1011, 1040, 1041, 6020, 6000, 6001, 6010, 6011
+      220, 210, 211, 260, 261, 1120, 1121, 1100, 1101, 1110, 1111, 1115, 2060,
+      2061, 2050, 2040, 2041, 2030, 2031, 2020, 2021, 2010, 2011, 2015, 2070,
+      2071, 2000, 2001, 1000, 1001, 1020, 1021, 1030, 1031, 1010, 1011, 1015,
+      1040, 1041, 6020, 6030, 6000, 6001, 6005, 6010, 6011
     ],
     "subWeaponIds": [8, 6, 12, 9, 11],
     "specialWeaponIds": [12, 19, 15, 16, 2, 7],
@@ -1196,6 +1281,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1
       },
       {
@@ -1242,6 +1331,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3
       },
       {
@@ -1293,6 +1386,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2.5
       },
       {
@@ -1355,6 +1452,10 @@
         "rate": 2.5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.5
       },
@@ -1414,6 +1515,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -1465,6 +1570,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
       },
@@ -1487,7 +1596,9 @@
     ]
   },
   "Maneuver": {
-    "mainWeaponIds": [5030, 5031, 5020, 5010, 5011, 5040, 5041],
+    "mainWeaponIds": [
+      5030, 5031, 5020, 5021, 5050, 5010, 5011, 5015, 5040, 5041
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1497,6 +1608,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.7
       },
       {
@@ -1532,6 +1647,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -1579,6 +1698,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -1637,6 +1760,10 @@
         "rate": 1.5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
       },
@@ -1685,6 +1812,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2.5
       },
       {
@@ -1786,6 +1917,10 @@
         "rate": 4.75
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 4.75
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
       },
@@ -1828,7 +1963,9 @@
     ]
   },
   "RollerCore": {
-    "mainWeaponIds": [1000, 1001, 1020, 1021, 1030, 1010, 1011, 1040, 1041],
+    "mainWeaponIds": [
+      1000, 1001, 1020, 1021, 1030, 1031, 1010, 1011, 1015, 1040, 1041
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1861,6 +1998,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.7
       },
       {
@@ -1919,6 +2060,10 @@
         "rate": 1.5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
       },
@@ -1961,7 +2106,7 @@
     ]
   },
   "RollerSplash_Hunter": {
-    "mainWeaponIds": [1030],
+    "mainWeaponIds": [1030, 1031],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1971,6 +2116,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.7
       },
       {
@@ -2037,6 +2186,10 @@
         "rate": 3.4
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 3.4
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.6
       },
@@ -2079,7 +2232,7 @@
     ]
   },
   "RollerSplash": {
-    "mainWeaponIds": [1010, 1011],
+    "mainWeaponIds": [1010, 1011, 1015],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2089,6 +2242,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.7
       },
       {
@@ -2134,7 +2291,7 @@
     ]
   },
   "Saber_ChargeShot": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001],
+    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2148,6 +2305,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4.8
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 4.8
       },
       {
@@ -2193,7 +2354,7 @@
     ]
   },
   "Saber_ChargeSlash": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001],
+    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2207,6 +2368,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.2
       },
       {
@@ -2252,7 +2417,7 @@
     ]
   },
   "Saber_Shot": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001],
+    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2266,6 +2431,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4.8
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 4.8
       },
       {
@@ -2311,7 +2480,7 @@
     ]
   },
   "Saber_Slash": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001],
+    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2325,6 +2494,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2.4
       },
       {
@@ -2387,6 +2560,10 @@
         "rate": 5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
       },
@@ -2438,6 +2615,10 @@
         "rate": 5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
       },
@@ -2472,7 +2653,7 @@
     ]
   },
   "ShelterCanopy": {
-    "mainWeaponIds": [6000, 6001],
+    "mainWeaponIds": [6030, 6000, 6001, 6005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2486,6 +2667,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 5
       },
       {
@@ -2537,6 +2722,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -2599,6 +2788,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -2641,7 +2834,7 @@
     ]
   },
   "ShelterShot": {
-    "mainWeaponIds": [6000, 6001],
+    "mainWeaponIds": [6030, 6000, 6001, 6005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2655,6 +2848,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -2775,6 +2972,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
       },
@@ -2807,6 +3008,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.7
       },
       {
@@ -2845,6 +3050,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
       },
@@ -2877,6 +3086,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.1
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 1.1
       },
       {
@@ -2927,6 +3140,10 @@
         "rate": 1.1
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.1
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
       },
@@ -2961,7 +3178,7 @@
     ]
   },
   "Shooter_Gravity": {
-    "mainWeaponIds": [50],
+    "mainWeaponIds": [50, 51],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2971,6 +3188,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.85
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.85
       },
       {
@@ -3017,6 +3238,10 @@
         "rate": 1.1
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.1
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
       },
@@ -3060,6 +3285,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
       },
@@ -3095,6 +3324,10 @@
         "rate": 0.7
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.7
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
       },
@@ -3127,6 +3360,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.7
       },
       {
@@ -3166,6 +3403,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.8
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.8
       },
       {
@@ -3216,6 +3457,10 @@
         "rate": 0.85
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 0.85
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.85
       },
@@ -3250,7 +3495,7 @@
     ]
   },
   "Shooter": {
-    "mainWeaponIds": [400, 401, 40, 41, 45, 100, 101, 60, 61],
+    "mainWeaponIds": [400, 401, 40, 41, 45, 47, 46, 100, 101, 60, 61],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3260,6 +3505,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.7
       },
       {
@@ -3295,6 +3544,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 100
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 100
       },
       {
@@ -3346,6 +3599,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 9.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 9.5
       },
       {
@@ -3404,6 +3661,10 @@
         "rate": 1.6
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.6
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
       },
@@ -3434,7 +3695,7 @@
     ]
   },
   "Slosher_WashtubBombCore": {
-    "mainWeaponIds": [3040],
+    "mainWeaponIds": [3040, 3041],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3444,6 +3705,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -3477,7 +3742,7 @@
     ]
   },
   "Slosher_Washtub": {
-    "mainWeaponIds": [3040],
+    "mainWeaponIds": [3040, 3041],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3487,6 +3752,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -3524,7 +3793,7 @@
     ]
   },
   "Slosher": {
-    "mainWeaponIds": [3010, 3011, 3050, 3020, 3021, 3000, 3001],
+    "mainWeaponIds": [3010, 3011, 3050, 3051, 3020, 3021, 3000, 3001, 3005],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3534,6 +3803,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -3571,7 +3844,9 @@
     ]
   },
   "Spinner": {
-    "mainWeaponIds": [4030, 4031, 4050, 4020, 4000, 4001, 4040, 4010, 4011],
+    "mainWeaponIds": [
+      4030, 4031, 4050, 4020, 4000, 4001, 4040, 4041, 4010, 4011, 4015
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3581,6 +3856,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 0.7
       },
       {
@@ -3642,6 +3921,10 @@
         "rate": 2.3333
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.3333
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5556
       },
@@ -3676,7 +3959,7 @@
     ]
   },
   "Stringer": {
-    "mainWeaponIds": [7010, 7011],
+    "mainWeaponIds": [7010, 7011, 7015],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3686,6 +3969,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 3
       },
       {
@@ -3748,6 +4035,10 @@
         "rate": 2
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
       },
@@ -3796,6 +4087,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 2
       },
       {
@@ -3854,6 +4149,10 @@
         "rate": 6
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 6
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 6
       },
@@ -3898,6 +4197,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 20
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 20
       },
       {
@@ -3960,6 +4263,10 @@
         "rate": 5
       },
       {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 5
+      },
+      {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
       },
@@ -4016,6 +4323,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4.091
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
         "rate": 4.091
       },
       {

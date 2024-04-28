@@ -42,6 +42,8 @@ export interface Standing {
     mapLosses: number;
     points: number;
     winsAgainstTied: number;
+    buchholzSets?: number;
+    buchholzMaps?: number;
   };
 }
 
@@ -87,6 +89,7 @@ export abstract class Bracket {
   private createdSimulation() {
     if (
       this.type === "round_robin" ||
+      this.type === "swiss" ||
       this.preview ||
       this.tournament.ctx.isFinalized
     )
@@ -315,6 +318,9 @@ export abstract class Bracket {
       }
       case "round_robin": {
         return new RoundRobinBracket(args);
+      }
+      case "swiss": {
+        return new SwissBracket(args);
       }
       default: {
         assertUnreachable(args.type);
@@ -1024,6 +1030,383 @@ class RoundRobinBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "round_robin";
+  }
+
+  get defaultRoundBestOfs() {
+    const result: BracketMapCounts = new Map();
+
+    for (const round of this.data.round) {
+      if (!result.get(round.group_id)) {
+        result.set(round.group_id, new Map());
+      }
+
+      result
+        .get(round.group_id)!
+        .set(round.number, { count: 3, type: "BEST_OF" });
+    }
+
+    return result;
+  }
+}
+
+class SwissBracket extends Bracket {
+  constructor(args: CreateBracketArgs) {
+    super(args);
+  }
+
+  get collectResultsWithPoints() {
+    return false;
+  }
+
+  source(placements: number[]): {
+    relevantMatchesFinished: boolean;
+    teams: { id: number; name: string }[];
+  } {
+    if (placements.some((p) => p < 0)) {
+      throw new Error("Negative placements not implemented");
+    }
+    const standings = this.standings;
+    const relevantMatchesFinished = this.data.round.every((round) => {
+      const roundsMatches = this.data.match.filter(
+        (match) => match.round_id === round.id,
+      );
+
+      // some round has not started yet
+      if (roundsMatches.length === 0) return false;
+
+      return roundsMatches.every((match) => {
+        if (
+          match.opponent1 &&
+          match.opponent2 &&
+          match.opponent1?.result !== "win" &&
+          match.opponent2?.result !== "win"
+        ) {
+          return false;
+        }
+
+        return true;
+      });
+    });
+
+    const uniquePlacements = removeDuplicates(
+      standings.map((s) => s.placement),
+    );
+
+    // 1,3,5 -> 1,2,3 e.g.
+    const placementNormalized = (p: number) => {
+      return uniquePlacements.indexOf(p) + 1;
+    };
+
+    return {
+      relevantMatchesFinished,
+      teams: standings
+        .filter((s) => placements.includes(placementNormalized(s.placement)))
+        .map((s) => ({ id: s.team.id, name: s.team.name })),
+    };
+  }
+
+  get standings(): Standing[] {
+    return this.currentStandings();
+  }
+
+  currentStandings(includeUnfinishedGroups = false) {
+    const groupIds = this.data.group.map((group) => group.id);
+
+    const placements: (Standing & { groupId: number })[] = [];
+    for (const groupId of groupIds) {
+      const matches = this.data.match.filter(
+        (match) => match.group_id === groupId,
+      );
+
+      const groupIsFinished = matches.every(
+        (match) =>
+          // BYE
+          match.opponent1 === null ||
+          match.opponent2 === null ||
+          // match was played out
+          match.opponent1?.result === "win" ||
+          match.opponent2?.result === "win",
+      );
+
+      if (!groupIsFinished && !includeUnfinishedGroups) continue;
+
+      const teams: {
+        id: number;
+        setWins: number;
+        setLosses: number;
+        mapWins: number;
+        mapLosses: number;
+        winsAgainstTied: number;
+        buchholzSets: number;
+        buchholzMaps: number;
+      }[] = [];
+
+      const updateTeam = ({
+        teamId,
+        setWins = 0,
+        setLosses = 0,
+        mapWins = 0,
+        mapLosses = 0,
+        buchholzSets = 0,
+        buchholzMaps = 0,
+      }: {
+        teamId: number;
+        setWins?: number;
+        setLosses?: number;
+        mapWins?: number;
+        mapLosses?: number;
+        buchholzSets?: number;
+        buchholzMaps?: number;
+      }) => {
+        const team = teams.find((team) => team.id === teamId);
+        if (team) {
+          team.setWins += setWins;
+          team.setLosses += setLosses;
+          team.mapWins += mapWins;
+          team.mapLosses += mapLosses;
+          team.buchholzSets += buchholzSets;
+          team.buchholzMaps += buchholzMaps;
+        } else {
+          teams.push({
+            id: teamId,
+            setWins,
+            setLosses,
+            mapWins,
+            mapLosses,
+            winsAgainstTied: 0,
+            buchholzMaps,
+            buchholzSets,
+          });
+        }
+      };
+
+      const matchUps = new Map<number, number[]>();
+
+      for (const match of matches) {
+        if (match.opponent1?.id && match.opponent2?.id) {
+          const opponentOneMatchUps = matchUps.get(match.opponent1.id) ?? [];
+          const opponentTwoMatchUps = matchUps.get(match.opponent2.id) ?? [];
+
+          matchUps.set(match.opponent1.id, [
+            ...opponentOneMatchUps,
+            match.opponent2.id,
+          ]);
+          matchUps.set(match.opponent2.id, [
+            ...opponentTwoMatchUps,
+            match.opponent1.id,
+          ]);
+        }
+
+        if (
+          match.opponent1?.result !== "win" &&
+          match.opponent2?.result !== "win"
+        ) {
+          continue;
+        }
+
+        const winner =
+          match.opponent1?.result === "win" ? match.opponent1 : match.opponent2;
+
+        const loser =
+          match.opponent1?.result === "win" ? match.opponent2 : match.opponent1;
+
+        if (!winner || !loser) continue;
+
+        invariant(
+          typeof winner.id === "number" &&
+            typeof loser.id === "number" &&
+            typeof winner.score === "number" &&
+            typeof loser.score === "number",
+          "RoundRobinBracket.standings: winner or loser id not found",
+        );
+
+        updateTeam({
+          teamId: winner.id,
+          setWins: 1,
+          setLosses: 0,
+          mapWins: winner.score,
+          mapLosses: loser.score,
+        });
+        updateTeam({
+          teamId: loser.id,
+          setWins: 0,
+          setLosses: 1,
+          mapWins: loser.score,
+          mapLosses: winner.score,
+        });
+      }
+
+      // BYES
+      for (const match of matches) {
+        if (match.opponent1 && match.opponent2) {
+          continue;
+        }
+
+        const winner = match.opponent1 ? match.opponent1 : match.opponent2;
+
+        if (!winner?.id) {
+          logger.warn("SwissBracket.currentStandings: winner not found");
+          continue;
+        }
+
+        const round = this.data.round.find(
+          (round) => round.id === match.round_id,
+        );
+        const mapWins =
+          round?.maps?.type === "PLAY_ALL"
+            ? round?.maps?.count
+            : Math.ceil((round?.maps?.count ?? 0) / 2);
+        if (!mapWins) {
+          logger.warn("SwissBracket.currentStandings: mapWins not found");
+          continue;
+        }
+
+        updateTeam({
+          teamId: winner.id,
+          setWins: 1,
+          setLosses: 0,
+          mapWins: mapWins,
+          mapLosses: 0,
+        });
+      }
+
+      // buchholz
+      for (const team of teams) {
+        const teamsWhoPlayedAgainst = matchUps.get(team.id) ?? [];
+
+        let buchholzSets = 0;
+        let buchholzMaps = 0;
+
+        for (const teamId of teamsWhoPlayedAgainst) {
+          const opponent = teams.find((t) => t.id === teamId);
+          if (!opponent) {
+            logger.warn("SwissBracket.currentStandings: opponent not found", {
+              teamId,
+            });
+            continue;
+          }
+
+          buchholzSets += opponent.setWins;
+          buchholzMaps += opponent.mapWins;
+        }
+
+        updateTeam({
+          teamId: team.id,
+          buchholzSets,
+          buchholzMaps,
+        });
+      }
+
+      // wins against tied
+      for (const team of teams) {
+        for (const team2 of teams) {
+          if (team.id === team2.id) continue;
+          if (team.setWins !== team2.setWins) continue;
+
+          // they are different teams and are tied, let's check who won
+
+          const wonTheirMatch = matches.some(
+            (match) =>
+              (match.opponent1?.id === team.id &&
+                match.opponent2?.id === team2.id &&
+                match.opponent1?.result === "win") ||
+              (match.opponent1?.id === team2.id &&
+                match.opponent2?.id === team.id &&
+                match.opponent2?.result === "win"),
+          );
+
+          if (wonTheirMatch) {
+            team.winsAgainstTied++;
+          }
+        }
+      }
+
+      const droppedOutTeams = this.tournament.ctx.teams
+        .filter((t) => t.droppedOut)
+        .map((t) => t.id);
+      placements.push(
+        ...teams
+          .sort((a, b) => {
+            const aDroppedOut = droppedOutTeams.includes(a.id);
+            const bDroppedOut = droppedOutTeams.includes(b.id);
+
+            if (aDroppedOut && !bDroppedOut) return 1;
+            if (!aDroppedOut && bDroppedOut) return -1;
+
+            if (a.setWins > b.setWins) return -1;
+            if (a.setWins < b.setWins) return 1;
+
+            if (a.winsAgainstTied > b.winsAgainstTied) return -1;
+            if (a.winsAgainstTied < b.winsAgainstTied) return 1;
+
+            if (a.mapWins > b.mapWins) return -1;
+            if (a.mapWins < b.mapWins) return 1;
+
+            if (a.buchholzSets > b.buchholzSets) return -1;
+            if (a.buchholzSets < b.buchholzSets) return 1;
+
+            if (a.buchholzMaps > b.buchholzMaps) return -1;
+            if (a.buchholzMaps < b.buchholzMaps) return 1;
+
+            const aSeed = Number(this.tournament.teamById(a.id)?.seed);
+            const bSeed = Number(this.tournament.teamById(b.id)?.seed);
+
+            if (aSeed < bSeed) return -1;
+            if (aSeed > bSeed) return 1;
+
+            return 0;
+          })
+          .map((team, i) => {
+            return {
+              team: this.tournament.teamById(team.id)!,
+              placement: i + 1,
+              groupId,
+              stats: {
+                setWins: team.setWins,
+                setLosses: team.setLosses,
+                mapWins: team.mapWins,
+                mapLosses: team.mapLosses,
+                winsAgainstTied: team.winsAgainstTied,
+                buchholzSets: team.buchholzSets,
+                buchholzMaps: team.buchholzMaps,
+                points: 0,
+              },
+            };
+          }),
+      );
+    }
+
+    const sorted = placements.sort((a, b) => {
+      if (a.placement < b.placement) return -1;
+      if (a.placement > b.placement) return 1;
+
+      if (a.groupId < b.groupId) return -1;
+      if (a.groupId > b.groupId) return 1;
+
+      return 0;
+    });
+
+    let lastPlacement = 0;
+    let currentPlacement = 1;
+    let teamsEncountered = 0;
+    return this.standingsWithoutNonParticipants(
+      sorted.map((team) => {
+        if (team.placement !== lastPlacement) {
+          lastPlacement = team.placement;
+          currentPlacement = teamsEncountered + 1;
+        }
+        teamsEncountered++;
+        return {
+          ...team,
+          placement: currentPlacement,
+          stats: team.stats,
+        };
+      }),
+    );
+  }
+
+  get type(): TournamentBracketProgression[number]["type"] {
+    return "swiss";
   }
 
   get defaultRoundBestOfs() {

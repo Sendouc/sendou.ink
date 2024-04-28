@@ -45,6 +45,8 @@ import * as CalendarRepository from "../CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
 import { Image } from "~/components/Image";
+import { Toggle } from "~/components/Toggle";
+import { Label } from "~/components/Label";
 
 import "~/styles/calendar.css";
 
@@ -159,27 +161,45 @@ export default function CalendarPage() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
   const isMounted = useIsMounted();
+  const [onlySendouInkEvents, setOnlySendouInkEvents] = React.useState(false);
+
+  const filteredEvents = onlySendouInkEvents
+    ? data.events.filter((event) => event.tournamentId)
+    : data.events;
 
   // we don't know which events are starting in user's time zone on server
   // so that's why this calculation is not in the loader
   const thisWeeksEvents = isMounted
-    ? data.events.filter(
+    ? filteredEvents.filter(
         (event) =>
           dateToWeekNumber(databaseTimestampToDate(event.startTime)) ===
           data.displayedWeek,
       )
-    : data.events;
+    : filteredEvents;
 
   return (
     <Main classNameOverwrite="stack lg main layout__main">
       <WeekLinks />
       <EventsToReport />
       <div className="stack md">
-        {user && canAddNewEvent(user) && (
-          <LinkButton to="new" className="calendar__add-new-button" size="tiny">
-            {t("addNew")}
-          </LinkButton>
-        )}
+        <div className="stack horizontal justify-between">
+          <div className="stack horizontal sm items-center">
+            <Toggle
+              id="onlySendouInk"
+              tiny
+              checked={onlySendouInkEvents}
+              setChecked={setOnlySendouInkEvents}
+            />
+            <Label spaced={false} htmlFor="onlySendouInk">
+              Only sendou.ink events
+            </Label>
+          </div>
+          {user && canAddNewEvent(user) && (
+            <LinkButton to="new" size="tiny" className="w-max">
+              {t("addNew")}
+            </LinkButton>
+          )}
+        </div>
         {isMounted ? (
           <>
             {thisWeeksEvents.length > 0 ? (
@@ -369,6 +389,10 @@ function EventsList({
           dividerRendered = true;
         }
 
+        const sectionWeekday = daysDate.toLocaleString(i18n.language, {
+          weekday: "long",
+        });
+
         return (
           <React.Fragment key={daysDate.getTime()}>
             <div className="calendar__event__date-container">
@@ -387,6 +411,12 @@ function EventsList({
             </div>
             <div className="stack md">
               {events.map((calendarEvent) => {
+                const eventWeekday = databaseTimestampToDate(
+                  calendarEvent.startTime,
+                ).toLocaleString(i18n.language, {
+                  weekday: "long",
+                });
+
                 return (
                   <section
                     key={calendarEvent.eventDateId}
@@ -412,6 +442,11 @@ function EventsList({
                             author: discordFullName(calendarEvent),
                           })}
                         </div>
+                        {sectionWeekday !== eventWeekday ? (
+                          <div className="text-xxs font-bold text-theme-secondary ml-auto">
+                            {eventWeekday}
+                          </div>
+                        ) : null}
                       </div>
                       <div className="stack xs">
                         <div className="stack horizontal sm-plus items-center">
@@ -499,6 +534,15 @@ function EventsList({
   );
 }
 
+// Goal with this is to make events that start during the night for EU (NA events)
+// grouped up with the previous day. Otherwise you have a past event showing at the
+// top of the page for the whole following day for EU.
+const dateToSixHoursAgo = (date: Date) => {
+  const sixHoursAgo = new Date(date);
+  sixHoursAgo.setHours(sixHoursAgo.getHours() - 6);
+  return sixHoursAgo;
+};
+
 type EventsGrouped = [Date, SerializeFrom<typeof loader>["events"]];
 function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
   const result: EventsGrouped[] = [];
@@ -506,10 +550,14 @@ function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
   for (const calendarEvent of events) {
     const previousIterationEvents = result[result.length - 1] ?? null;
 
-    const eventsDate = databaseTimestampToDate(calendarEvent.startTime);
+    const eventsDate = dateToSixHoursAgo(
+      databaseTimestampToDate(calendarEvent.startTime),
+    );
+
     if (
       !previousIterationEvents ||
-      previousIterationEvents[0].getDay() !== eventsDate.getDay()
+      dateToSixHoursAgo(previousIterationEvents[0]).getDay() !==
+        eventsDate.getDay()
     ) {
       result.push([eventsDate, [calendarEvent]]);
     } else {

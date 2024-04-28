@@ -389,10 +389,16 @@ export interface TournamentSettings {
   isRanked?: boolean;
   autoCheckInAll?: boolean;
   enableNoScreenToggle?: boolean;
+  deadlines?: "STRICT" | "DEFAULT";
+  isInvitational?: boolean;
   /** Can teams add subs on their own while tournament is in progress? */
   autonomousSubs?: boolean;
   /** Timestamp (SQLite format) when reg closes, if missing then means closes at start time */
   regClosesAt?: number;
+  swiss?: {
+    groupCount: number;
+    roundCount: number;
+  };
 }
 
 export interface CastedMatchesInfo {
@@ -421,6 +427,18 @@ export interface TournamentBadgeOwner {
   userId: number;
 }
 
+/** A group is a logical structure used to group multiple rounds together.
+
+- In round-robin stages, a group is a pool.
+- In swiss, a group is also a pool (can have one or multiple groups)
+- In elimination stages, a group is a bracket.
+    - A single elimination stage can have one or two groups:
+      - The unique bracket.
+      - If enabled, the Consolation Final.
+    - A double elimination stage can have two or three groups:
+      - Upper and lower brackets.
+      - If enabled, the Grand Final. 
+*/
 export interface TournamentGroup {
   id: GeneratedAlways<number>;
   number: number;
@@ -439,6 +457,8 @@ export interface TournamentMatch {
   roundId: number;
   stageId: number;
   status: number;
+  // used only for swiss because it's the only stage type where matches are not created in advance
+  createdAt: Generated<number>;
 }
 
 export interface TournamentMatchPickBanEvent {
@@ -486,6 +506,13 @@ export interface TournamentRoundMaps {
   pickBan?: "COUNTERPICK" | "BAN_2" | null;
 }
 
+/** 
+ * A round is a logical structure used to group multiple matches together.
+
+  - In round-robin stages, a round can be viewed as a list of matches that can be played at the same time.
+  - In swiss, a round is a list of matches that are played at the same time.
+  - In elimination stages, a round is a round of a bracket, e.g. 8th finals, semi-finals, etc.
+ */
 export interface TournamentRound {
   groupId: number;
   id: GeneratedAlways<number>;
@@ -494,13 +521,14 @@ export interface TournamentRound {
   maps: ColumnType<TournamentRoundMaps | null, string | null, string | null>;
 }
 
+/** A stage is an intermediate phase in a tournament. In essence a bracket. */
 export interface TournamentStage {
   id: GeneratedAlways<number>;
   name: string;
   number: number;
   settings: string;
   tournamentId: number;
-  type: "double_elimination" | "single_elimination" | "round_robin";
+  type: "double_elimination" | "single_elimination" | "round_robin" | "swiss";
   // not Generated<> because SQLite doesn't allow altering tables to add columns with default values :(
   createdAt: number | null;
 }
@@ -529,6 +557,7 @@ export interface TournamentTeam {
   name: string;
   prefersNotToHost: Generated<number>;
   noScreen: Generated<number>;
+  droppedOut: Generated<number>;
   seed: number | null;
   tournamentId: number;
   teamId: number | null;

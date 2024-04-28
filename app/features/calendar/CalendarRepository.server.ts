@@ -408,11 +408,15 @@ type CreateArgs = Pick<
   thirdPlaceMatch?: boolean;
   autoCheckInAll?: boolean;
   isRanked?: boolean;
+  isInvitational?: boolean;
+  deadlines: TournamentSettings["deadlines"];
   enableNoScreenToggle?: boolean;
   autonomousSubs?: boolean;
   regClosesAt?: number;
   rules: string | null;
   tournamentToCopyId?: number | null;
+  swissGroupCount?: number;
+  swissRoundCount?: number;
 };
 export async function create(args: CreateArgs) {
   const copiedStaff = args.tournamentToCopyId
@@ -433,10 +437,19 @@ export async function create(args: CreateArgs) {
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
+        deadlines: args.deadlines,
+        isInvitational: args.isInvitational,
         enableNoScreenToggle: args.enableNoScreenToggle,
         autonomousSubs: args.autonomousSubs,
         regClosesAt: args.regClosesAt,
         autoCheckInAll: args.autoCheckInAll,
+        swiss:
+          args.swissGroupCount && args.swissRoundCount
+            ? {
+                groupCount: args.swissGroupCount,
+                roundCount: args.swissRoundCount,
+              }
+            : undefined,
       };
 
       tournamentId = (
@@ -526,10 +539,19 @@ export async function update(args: UpdateArgs) {
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
+        deadlines: args.deadlines,
+        isInvitational: args.isInvitational,
         enableNoScreenToggle: args.enableNoScreenToggle,
         autonomousSubs: args.autonomousSubs,
         regClosesAt: args.regClosesAt,
         autoCheckInAll: args.autoCheckInAll,
+        swiss:
+          args.swissGroupCount && args.swissRoundCount
+            ? {
+                groupCount: args.swissGroupCount,
+                roundCount: args.swissRoundCount,
+              }
+            : undefined,
       };
 
       const { mapPickingStyle: _mapPickingStyle } = await trx

@@ -10,13 +10,12 @@ import { sourceTypes } from "~/modules/tournament-map-list-generator";
 import { invariant } from "~/utils/invariant";
 import type { Tables } from "~/db/tables";
 import { logger } from "~/utils/logger";
-import { BRACKET_NAMES } from "../tournament-constants";
 
 export interface PlayedSet {
   tournamentMatchId: number;
   score: [teamBeingViewed: number, opponent: number];
   round: {
-    type: "winners" | "losers" | "single_elim" | "round_robin";
+    type: "winners" | "losers" | "single_elim" | "round_robin" | "swiss";
     round: number | "finals" | "grand_finals" | "bracket_reset";
   };
   stageName: string;
@@ -94,6 +93,10 @@ export function tournamentTeamSets({
       allRounds.find((round) => round.stageId === set.stageId) ?? allRounds[0];
 
     const resolveRound = () => {
+      if (round.stageType === "round_robin" || round.stageType === "swiss") {
+        return set.roundNumber;
+      }
+
       if (set.groupNumber === 3) {
         if (set.roundNumber === 2) return "bracket_reset";
 
@@ -110,10 +113,7 @@ export function tournamentTeamSets({
           .map((round) => round.roundNumber),
       );
 
-      if (
-        round.stageName !== BRACKET_NAMES.GROUPS &&
-        set.roundNumber === maxRoundNumberOfGroup
-      ) {
+      if (set.roundNumber === maxRoundNumberOfGroup) {
         return "finals";
       }
 
@@ -191,6 +191,10 @@ function resolveRoundType({
 
   if (stageType === "round_robin") {
     return "round_robin";
+  }
+
+  if (stageType === "swiss") {
+    return "swiss";
   }
 
   if (groupNumber === 1 || groupNumber === 3) {

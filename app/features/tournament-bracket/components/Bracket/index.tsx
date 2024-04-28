@@ -2,8 +2,17 @@ import { useBracketExpanded } from "~/features/tournament/routes/to.$id";
 import type { Bracket as BracketType } from "../../core/Bracket";
 import { EliminationBracketSide } from "./Elimination";
 import { RoundRobinBracket } from "./RoundRobin";
+import { SwissBracket } from "./Swiss";
+import * as React from "react";
+import { useDraggable } from "react-use-draggable-scroll";
 
-export function Bracket({ bracket }: { bracket: BracketType }) {
+export function Bracket({
+  bracket,
+  bracketIdx,
+}: {
+  bracket: BracketType;
+  bracketIdx: number;
+}) {
   const { bracketExpanded } = useBracketExpanded();
 
   if (bracket.type === "round_robin") {
@@ -14,9 +23,17 @@ export function Bracket({ bracket }: { bracket: BracketType }) {
     );
   }
 
-  if (bracket.type === "single_elimination") {
+  if (bracket.type === "swiss") {
     return (
       <BracketContainer>
+        <SwissBracket bracket={bracket} bracketIdx={bracketIdx} />
+      </BracketContainer>
+    );
+  }
+
+  if (bracket.type === "single_elimination") {
+    return (
+      <BracketContainer scrollable>
         <EliminationBracketSide
           type="single"
           bracket={bracket}
@@ -27,7 +44,7 @@ export function Bracket({ bracket }: { bracket: BracketType }) {
   }
 
   return (
-    <BracketContainer>
+    <BracketContainer scrollable>
       <EliminationBracketSide
         type="winners"
         bracket={bracket}
@@ -42,9 +59,43 @@ export function Bracket({ bracket }: { bracket: BracketType }) {
   );
 }
 
-function BracketContainer({ children }: { children: React.ReactNode }) {
+function BracketContainer({
+  children,
+  scrollable = false,
+}: {
+  children: React.ReactNode;
+  scrollable?: boolean;
+}) {
+  if (!scrollable) {
+    return (
+      <div className="bracket" data-testid="brackets-viewer">
+        {children}
+      </div>
+    );
+  }
+
+  return <ScrollableBracketContainer>{children}</ScrollableBracketContainer>;
+}
+
+function ScrollableBracketContainer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const ref = React.useRef<HTMLDivElement>(
+    null,
+  ) as React.MutableRefObject<HTMLDivElement>;
+  const { events } = useDraggable(ref, {
+    applyRubberBandEffect: true,
+  });
+
   return (
-    <div className="bracket" data-testid="brackets-viewer">
+    <div
+      className="bracket scrolling-bracket"
+      data-testid="brackets-viewer"
+      ref={ref}
+      {...events}
+    >
       {children}
     </div>
   );
