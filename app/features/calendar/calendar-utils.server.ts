@@ -2,8 +2,8 @@ import type { z } from "zod";
 import { isAdmin } from "~/permissions";
 import type { TournamentSettings } from "~/db/tables";
 import { BRACKET_NAMES } from "../tournament/tournament-constants";
-import type { newCalendarEventActionSchema } from "./calendar-schemas.server";
 import { validateFollowUpBrackets } from "./calendar-utils";
+import type { newCalendarEventActionSchema } from "./actions/calendar.new.server";
 
 const usersWithTournamentPerms =
   process.env["TOURNAMENT_PERMS"]?.split(",").map(Number) ?? [];

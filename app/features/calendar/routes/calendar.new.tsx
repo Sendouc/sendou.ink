@@ -1,5 +1,4 @@
 import type {
-  ActionFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -20,6 +19,7 @@ import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { MapPoolSelector } from "~/components/MapPoolSelector";
+import { Placement } from "~/components/Placement";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
@@ -40,48 +40,38 @@ import {
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { i18next } from "~/modules/i18n/i18next.server";
 import type { RankedModeShort } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { canEditCalendarEvent } from "~/permissions";
 import { isDefined, nullFilledArray } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
-  dateToDatabaseTimestamp,
   getDateAtNextFullHour,
   getDateWithHoursOffset,
 } from "~/utils/dates";
-import {
-  badRequestIfFalsy,
-  parseRequestFormData,
-  validate,
-  type SendouRouteHandle,
-} from "~/utils/remix";
+import { validate, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
-import { calendarEventPage, tournamentBracketsPage } from "~/utils/urls";
-import { newCalendarEventActionSchema } from "../calendar-schemas.server";
+import { tournamentBracketsPage } from "~/utils/urls";
+import {
+  REG_CLOSES_AT_OPTIONS,
+  type RegClosesAtOption,
+} from "../calendar-constants";
+import type { FollowUpBracket } from "../calendar-types";
 import {
   bracketProgressionToShortTournamentFormat,
   calendarEventMaxDate,
   calendarEventMinDate,
   canAddNewEvent,
   datesToRegClosesAt,
-  regClosesAtDate,
   regClosesAtToDisplayName,
   validateFollowUpBrackets,
 } from "../calendar-utils";
-import {
-  canCreateTournament,
-  formValuesToBracketProgression,
-} from "../calendar-utils.server";
+import { canCreateTournament } from "../calendar-utils.server";
 import { Tags } from "../components/Tags";
-import { Placement } from "~/components/Placement";
-import type { FollowUpBracket } from "../calendar-types";
-import {
-  REG_CLOSES_AT_OPTIONS,
-  type RegClosesAtOption,
-} from "../calendar-constants";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
+
+import { action } from "../actions/calendar.new.server";
+export { action };
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -89,110 +79,6 @@ export const meta: MetaFunction = (args) => {
   if (!data) return [];
 
   return [{ title: data.title }];
-};
-
-export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
-  const data = await parseRequestFormData({
-    request,
-    schema: newCalendarEventActionSchema,
-    parseAsync: true,
-  });
-
-  validate(canAddNewEvent(user), "Not authorized", 401);
-
-  const startTimes = data.date.map((date) => dateToDatabaseTimestamp(date));
-  const commonArgs = {
-    name: data.name,
-    description: data.description,
-    rules: data.rules,
-    startTimes,
-    bracketUrl: data.bracketUrl,
-    discordInviteCode: data.discordInviteCode,
-    tags: data.tags
-      ? data.tags
-          .sort(
-            (a, b) =>
-              CALENDAR_EVENT.TAGS.indexOf(a as CalendarEventTag) -
-              CALENDAR_EVENT.TAGS.indexOf(b as CalendarEventTag),
-          )
-          .join(",")
-      : data.tags,
-    badges: data.badges ?? [],
-    toToolsEnabled: canCreateTournament(user) ? Number(data.toToolsEnabled) : 0,
-    toToolsMode:
-      rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
-    bracketProgression: formValuesToBracketProgression(data),
-    teamsPerGroup: data.teamsPerGroup ?? undefined,
-    thirdPlaceMatch: data.thirdPlaceMatch ?? undefined,
-    isRanked: data.isRanked ?? undefined,
-    enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
-    autoCheckInAll: data.autoCheckInAll ?? undefined,
-    autonomousSubs: data.autonomousSubs ?? undefined,
-    swissGroupCount: data.swissGroupCount ?? undefined,
-    swissRoundCount: data.swissRoundCount ?? undefined,
-    tournamentToCopyId: data.tournamentToCopyId,
-    regClosesAt: data.regClosesAt
-      ? dateToDatabaseTimestamp(
-          regClosesAtDate({
-            startTime: databaseTimestampToDate(startTimes[0]),
-            closesAt: data.regClosesAt,
-          }),
-        )
-      : undefined,
-  };
-  validate(
-    !commonArgs.toToolsEnabled || commonArgs.bracketProgression,
-    "Bracket progression must be set for tournaments",
-  );
-
-  const deserializedMaps = (() => {
-    if (!data.pool) return;
-
-    return MapPool.toDbList(data.pool);
-  })();
-
-  if (data.eventToEditId) {
-    const eventToEdit = badRequestIfFalsy(
-      await CalendarRepository.findById({ id: data.eventToEditId }),
-    );
-    if (eventToEdit.tournamentId) {
-      const tournament = await tournamentFromDB({
-        tournamentId: eventToEdit.tournamentId,
-        user,
-      });
-      validate(!tournament.hasStarted, "Tournament has already started", 400);
-    }
-    validate(
-      canEditCalendarEvent({ user, event: eventToEdit }),
-      "Not authorized",
-      401,
-    );
-
-    await CalendarRepository.update({
-      eventId: data.eventToEditId,
-      mapPoolMaps: deserializedMaps,
-      ...commonArgs,
-    });
-
-    throw redirect(calendarEventPage(data.eventToEditId));
-  } else {
-    const mapPickingStyle = () => {
-      if (data.toToolsMode === "TO") return "TO" as const;
-      if (data.toToolsMode) return `AUTO_${data.toToolsMode}` as const;
-
-      return "AUTO_ALL" as const;
-    };
-    const createdEventId = await CalendarRepository.create({
-      authorId: user.id,
-      mapPoolMaps: deserializedMaps,
-      isFullTournament: data.toToolsEnabled,
-      mapPickingStyle: mapPickingStyle(),
-      ...commonArgs,
-    });
-
-    throw redirect(calendarEventPage(createdEventId));
-  }
 };
 
 export const handle: SendouRouteHandle = {
