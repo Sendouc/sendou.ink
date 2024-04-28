@@ -13,14 +13,10 @@ import { assertUnreachable } from "~/utils/types";
 import { tournamentPage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
 import { giveTrust } from "../queries/giveTrust.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { joinSchema } from "../tournament-schemas.server";
-import {
-  tournamentIdFromParams,
-  tournamentTeamMaxSize,
-} from "../tournament-utils";
+import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournamentFriendCode, useTournament } from "./to.$id";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
@@ -60,8 +56,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       inviteCode,
       teamToJoin,
       userId: user.id,
-      tournamentHasStarted: tournament.hasStarted,
-      tournament: tournament.ctx,
+      maxTeamSize: tournament.maxTeamMemberCount,
     }) === "VALID",
     "Cannot join this team or invite code is invalid",
   );
@@ -105,15 +100,13 @@ export const action: ActionFunction = async ({ request, params }) => {
   throw redirect(tournamentPage(leanTeam.tournamentId));
 };
 
-export const loader = ({ request, params }: LoaderFunctionArgs) => {
-  const tournamentId = tournamentIdFromParams(params);
+export const loader = ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");
 
   return {
     teamId: inviteCode ? findByInviteCode(inviteCode)?.id : null,
     inviteCode,
-    tournamentHasStarted: hasTournamentStarted(tournamentId),
   };
 };
 
@@ -128,11 +121,10 @@ export default function JoinTeamPage() {
   const teamToJoin = data.teamId ? tournament.teamById(data.teamId) : undefined;
   const captain = teamToJoin?.members.find((member) => member.isOwner);
   const validationStatus = validateCanJoin({
-    tournament: tournament.ctx,
     inviteCode: data.inviteCode,
     teamToJoin,
     userId: user?.id,
-    tournamentHasStarted: data.tournamentHasStarted,
+    maxTeamSize: tournament.maxTeamMemberCount,
   });
 
   const textPrompt = () => {
@@ -195,14 +187,12 @@ function validateCanJoin({
   inviteCode,
   teamToJoin,
   userId,
-  tournamentHasStarted,
-  tournament,
+  maxTeamSize,
 }: {
   inviteCode?: string | null;
   teamToJoin?: { members: { userId: number }[] };
   userId?: number;
-  tournamentHasStarted: boolean;
-  tournament: { name: string };
+  maxTeamSize: number;
 }) {
   if (typeof inviteCode !== "string") {
     return "MISSING_CODE";
@@ -216,10 +206,7 @@ function validateCanJoin({
   if (!teamToJoin) {
     return "NO_TEAM_MATCHING_CODE";
   }
-  if (
-    teamToJoin.members.length >=
-    tournamentTeamMaxSize({ tournament, tournamentHasStarted })
-  ) {
+  if (teamToJoin.members.length >= maxTeamSize) {
     return "TEAM_FULL";
   }
   if (teamToJoin.members.some((member) => member.userId === userId)) {

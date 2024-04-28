@@ -13,10 +13,16 @@ const MINUTES = {
   BO7: 50,
 };
 
-const minutesToPlay = (count: number) => {
-  if (count === 3) return MINUTES.BO3;
-  if (count === 5) return MINUTES.BO5;
-  if (count === 7) return MINUTES.BO7;
+const STRICT_MINUTES = {
+  BO3: 25,
+  BO5: 35,
+  BO7: 45,
+};
+
+const minutesToPlay = (count: number, strict: boolean) => {
+  if (count === 3) return strict ? STRICT_MINUTES.BO3 : MINUTES.BO3;
+  if (count === 5) return strict ? STRICT_MINUTES.BO5 : MINUTES.BO5;
+  if (count === 7) return strict ? STRICT_MINUTES.BO7 : MINUTES.BO7;
 
   logger.warn("Unknown best of count", { count });
   return MINUTES.BO5;
@@ -73,7 +79,10 @@ export function useDeadline(roundId: number, bestOf: number) {
 
     if (!dl) return null;
 
-    dl.setMinutes(dl.getMinutes() + minutesToPlay(bestOf));
+    dl.setMinutes(
+      dl.getMinutes() +
+        minutesToPlay(bestOf, tournament.ctx.settings.deadlines === "STRICT"),
+    );
 
     return dl;
   } catch (e) {

@@ -408,6 +408,8 @@ type CreateArgs = Pick<
   thirdPlaceMatch?: boolean;
   autoCheckInAll?: boolean;
   isRanked?: boolean;
+  isInvitational?: boolean;
+  deadlines: TournamentSettings["deadlines"];
   enableNoScreenToggle?: boolean;
   autonomousSubs?: boolean;
   regClosesAt?: number;
@@ -435,6 +437,8 @@ export async function create(args: CreateArgs) {
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
+        deadlines: args.deadlines,
+        isInvitational: args.isInvitational,
         enableNoScreenToggle: args.enableNoScreenToggle,
         autonomousSubs: args.autonomousSubs,
         regClosesAt: args.regClosesAt,
@@ -535,6 +539,8 @@ export async function update(args: UpdateArgs) {
         teamsPerGroup: args.teamsPerGroup,
         thirdPlaceMatch: args.thirdPlaceMatch,
         isRanked: args.isRanked,
+        deadlines: args.deadlines,
+        isInvitational: args.isInvitational,
         enableNoScreenToggle: args.enableNoScreenToggle,
         autonomousSubs: args.autonomousSubs,
         regClosesAt: args.regClosesAt,

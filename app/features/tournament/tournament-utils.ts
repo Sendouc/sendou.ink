@@ -5,7 +5,6 @@ import type { ModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { tournamentLogoUrl } from "~/utils/urls";
 import type { PlayedSet } from "./core/sets.server";
-import { TOURNAMENT } from "./tournament-constants";
 
 export function tournamentIdFromParams(params: Params<string>) {
   const result = Number(params["id"]);
@@ -54,7 +53,7 @@ export function isOneModeTournamentOf(
 export function HACKY_resolvePicture(event: { name: string }) {
   const normalizedEventName = event.name.toLowerCase();
 
-  if (HACKY_isInviteOnlyEvent(event)) {
+  if (normalizedEventName.includes("sendouq")) {
     return tournamentLogoUrl("sf");
   }
 
@@ -166,7 +165,7 @@ const WHITE = "#fffcfc";
 export function HACKY_resolveThemeColors(event: { name: string }) {
   const normalizedEventName = event.name.toLowerCase();
 
-  if (HACKY_isInviteOnlyEvent(event)) {
+  if (normalizedEventName.includes("sendouq")) {
     return { bg: "#1e1e1e", text: WHITE };
   }
 
@@ -273,19 +272,6 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
   return { bg: "#3430ad", text: WHITE };
 }
 
-const HACKY_isSendouQSeasonFinale = (event: { name: string }) =>
-  event.name.includes("Finale");
-
-export function HACKY_isInviteOnlyEvent(event: { name: string }) {
-  return HACKY_isSendouQSeasonFinale(event);
-}
-
-export function HACKY_maxRosterSizeBeforeStart(event: { name: string }) {
-  if (HACKY_isSendouQSeasonFinale(event)) return 5;
-
-  return TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START;
-}
-
 export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
   if (round.round === "grand_finals") return `bracket.grand_finals`;
   if (round.round === "bracket_reset") {
@@ -294,17 +280,4 @@ export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
   if (round.round === "finals") return `bracket.${round.type}.finals` as const;
 
   return `bracket.${round.type}` as const;
-}
-
-export function tournamentTeamMaxSize({
-  tournament,
-  tournamentHasStarted,
-}: {
-  tournament: { name: string };
-  tournamentHasStarted: boolean;
-}) {
-  // ensuring every team can add at least one sub while the tournament is ongoing
-  return (
-    HACKY_maxRosterSizeBeforeStart(tournament) + Number(tournamentHasStarted)
-  );
 }

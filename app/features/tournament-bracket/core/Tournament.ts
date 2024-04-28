@@ -9,10 +9,7 @@ import { assertUnreachable } from "~/utils/types";
 import { isAdmin } from "~/permissions";
 import { TOURNAMENT } from "~/features/tournament";
 import type { TournamentData, TournamentDataTeam } from "./Tournament.server";
-import {
-  HACKY_isInviteOnlyEvent,
-  HACKY_resolvePicture,
-} from "~/features/tournament/tournament-utils";
+import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
 import {
@@ -547,10 +544,6 @@ export class Tournament {
       : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
   }
 
-  get hasOpenRegistration() {
-    return !HACKY_isInviteOnlyEvent(this.ctx);
-  }
-
   get hasStarted() {
     return this.brackets.some((bracket) => !bracket.preview);
   }
@@ -717,13 +710,12 @@ export class Tournament {
     return true;
   }
 
-  // TODO: get from settings
-  private isInvitational() {
-    return this.ctx.name.includes("Finale");
+  get isInvitational() {
+    return this.ctx.settings.isInvitational ?? false;
   }
 
   get subsFeatureEnabled() {
-    return !this.isInvitational();
+    return !this.isInvitational;
   }
 
   get canAddNewSubPost() {
@@ -738,7 +730,7 @@ export class Tournament {
   }
 
   get maxTeamMemberCount() {
-    const maxMembersBeforeStart = this.isInvitational()
+    const maxMembersBeforeStart = this.isInvitational
       ? 5
       : TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START;
 

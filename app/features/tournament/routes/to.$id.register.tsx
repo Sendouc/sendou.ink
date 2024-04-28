@@ -64,7 +64,6 @@ import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { registerSchema } from "../tournament-schemas.server";
 import {
-  HACKY_isInviteOnlyEvent,
   isOneModeTournamentOf,
   tournamentIdFromParams,
 } from "../tournament-utils";
@@ -118,7 +117,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           teamId: data.teamId ?? null,
         });
       } else {
-        validate(!HACKY_isInviteOnlyEvent(event), "Event is invite only");
+        validate(!tournament.isInvitational, "Event is invite only");
         validate(
           await UserRepository.currentFriendCodeByUserId(user.id),
           "No friend code",
@@ -489,19 +488,19 @@ function RegistrationForms() {
   const ownTeam = tournament.ownedTeamByUser(user);
   const ownTeamCheckedIn = Boolean(ownTeam && ownTeam.checkIns.length > 0);
 
-  if (!user && tournament.hasOpenRegistration) {
+  if (!user && !tournament.isInvitational) {
     return <PleaseLogIn />;
   }
 
   const showRegistrationProgress = () => {
     if (ownTeam) return true;
 
-    return tournament.hasOpenRegistration;
+    return !tournament.isInvitational;
   };
 
   const showRegisterNewTeam = () => {
     if (ownTeam) return true;
-    if (!tournament.hasOpenRegistration) return false;
+    if (tournament.isInvitational) return false;
     if (!tournament.registrationOpen) return false;
 
     return !tournament.regularCheckInHasEnded;
@@ -516,7 +515,11 @@ function RegistrationForms() {
           mapPool={data?.mapPool ?? undefined}
           members={ownTeam?.members}
         />
-      ) : null}
+      ) : (
+        <Alert>
+          This tournament is invitational. Tournament organizer adds all teams.
+        </Alert>
+      )}
       {showRegisterNewTeam() ? (
         <>
           <FriendCode />

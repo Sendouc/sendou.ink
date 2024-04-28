@@ -170,6 +170,8 @@ function EventForm() {
           <RankedToggle />
           <EnableNoScreenToggle />
           <AutonomousSubsToggle />
+          <InvitationalToggle />
+          <StrictDeadlinesToggle />
         </>
       ) : null}
       {isTournament ? <TournamentMapPickingStyleSelect /> : <MapPoolSection />}
@@ -635,6 +637,60 @@ function AutonomousSubsToggle() {
       <FormMessage type="info">
         If enabled teams can add subs on their own while the tournament is in
         progress. When disabled needs to be done by the TO&apos;s.
+      </FormMessage>
+    </div>
+  );
+}
+
+function InvitationalToggle() {
+  const baseEvent = useBaseEvent();
+  const [isInvitational, setIsInvitational] = React.useState(
+    baseEvent?.tournamentCtx?.settings.isInvitational ?? false,
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Invitational
+      </label>
+      <Toggle
+        name="isInvitational"
+        id={id}
+        tiny
+        checked={isInvitational}
+        setChecked={setIsInvitational}
+      />
+      <FormMessage type="info">
+        No open registration or subs list. All teams must be added by the
+        organizer.
+      </FormMessage>
+    </div>
+  );
+}
+
+function StrictDeadlinesToggle() {
+  const baseEvent = useBaseEvent();
+  const [strictDeadlines, setStrictDeadlines] = React.useState(
+    baseEvent?.tournamentCtx?.settings.deadlines === "STRICT" ? true : false,
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Strict deadlines
+      </label>
+      <Toggle
+        name="strictDeadline"
+        id={id}
+        tiny
+        checked={strictDeadlines}
+        setChecked={setStrictDeadlines}
+      />
+      <FormMessage type="info">
+        Strict deadlines has 5 minutes less for the target time of each round
+        (25min Bo3, 35min Bo5 compared to 30min Bo3, 40min Bo5 normal).
       </FormMessage>
     </div>
   );
