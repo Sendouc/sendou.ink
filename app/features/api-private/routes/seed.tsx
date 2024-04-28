@@ -14,15 +14,7 @@ export type SeedVariation = NonNullable<
 >;
 
 export const action: ActionFunction = async ({ request }) => {
-  if (process.env.NODE_ENV === "production" && !process.env["CI"]) {
-    throw new Response(null, { status: 400 });
-  }
-
-  // double check
-  if (
-    !process.env["BASE_URL"] ||
-    !process.env["BASE_URL"].includes("localhost")
-  ) {
+  if (process.env.NODE_ENV === "production") {
     throw new Response(null, { status: 400 });
   }
 
