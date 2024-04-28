@@ -14,7 +14,7 @@ export type SeedVariation = NonNullable<
 >;
 
 export const action: ActionFunction = async ({ request }) => {
-  if (process.env.NODE_ENV === "production") {
+  if (process.env["VITE_DEV_ACTIONS_ENABLED"] !== "true") {
     throw new Response(null, { status: 400 });
   }
 

@@ -31,7 +31,7 @@ jobs:
           SKALOP_WS_URL: "ws://localhost:5900"
           SKALOP_SYSTEM_MESSAGE_URL: "http://localhost:5900/system"
           SKALOP_TOKEN: "secret"
-          NODE_ENV: "development"
+          VITE_DEV_ACTIONS_ENABLED: "true"
           PORT: "5173"
         run: npx playwright test
       - uses: actions/upload-artifact@v3

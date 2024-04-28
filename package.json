@@ -10,7 +10,7 @@
     "dev": "remix vite:dev --host",
     "dev:prod": "cross-env DB_PATH=db-prod.sqlite3 npm run dev",
     "start": "npm run migrate up && remix-serve ./build/server/index.js",
-    "start:ci": "cp .env.example .env && npm run migrate up && remix-serve --manual ./build/server/index.js",
+    "start:ci": "cp .env.example .env && npm run migrate up && remix-serve ./build/server/index.js",
     "start:nr": "npm run migrate up && NODE_OPTIONS='--import newrelic/esm-loader.mjs -r newrelic' remix-serve ./build/server/index.js",
     "migrate": "ley",
     "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate up",

@@ -32,17 +32,18 @@ export const handle: SendouRouteHandle = {
 export default function AdminPage() {
   const user = useUser();
 
+  const devActionsEnabled =
+    import.meta.env["VITE_DEV_ACTIONS_ENABLED"] === "true";
+
   return (
     <Main className="stack lg">
-      {process.env.NODE_ENV !== "production" && <Seed />}
+      {devActionsEnabled && <Seed />}
 
       {isMod(user) ? <LinkPlayer /> : null}
       {isMod(user) ? <GiveArtist /> : null}
       {isMod(user) ? <GiveVideoAdder /> : null}
 
-      {process.env.NODE_ENV !== "production" || isAdmin(user) ? (
-        <Impersonate />
-      ) : null}
+      {devActionsEnabled || isAdmin(user) ? <Impersonate /> : null}
       {isAdmin(user) ? <MigrateUser /> : null}
       {isAdmin(user) ? <ForcePatron /> : null}
       {isMod(user) ? <BanUser /> : null}
