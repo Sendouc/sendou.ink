@@ -6,6 +6,10 @@ import { getTwitchEnvVars } from "./utils";
 async function getFreshToken() {
   const { TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET } = getTwitchEnvVars();
 
+  if (!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET) {
+    return null;
+  }
+
   const res = await fetch(
     "https://id.twitch.tv/oauth2/token" +
       `?client_id=${TWITCH_CLIENT_ID}` +

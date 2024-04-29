@@ -146,6 +146,10 @@ export async function getStreamsChunk({
   const { TWITCH_CLIENT_ID } = getTwitchEnvVars();
   const token = await getToken();
 
+  if (!TWITCH_CLIENT_ID) {
+    return { data: [], pagination: { cursor: null } };
+  }
+
   const res = await fetch(
     `https://api.twitch.tv/helix/streams?game_id=${SPLATOON_3_TWITCH_GAME_ID}&first=100&after=${
       cursor ?? ""
