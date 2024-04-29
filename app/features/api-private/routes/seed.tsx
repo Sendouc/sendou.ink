@@ -1,5 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
 import { z } from "zod";
+import { DEV_MODE_ENABLED } from "~/constants";
 import { seed } from "~/db/seed";
 import { parseRequestFormData } from "~/utils/remix";
 
@@ -14,7 +15,7 @@ export type SeedVariation = NonNullable<
 >;
 
 export const action: ActionFunction = async ({ request }) => {
-  if (process.env["VITE_DEV_ACTIONS_ENABLED"] !== "true") {
+  if (!DEV_MODE_ENABLED) {
     throw new Response(null, { status: 400 });
   }
 

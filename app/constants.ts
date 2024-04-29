@@ -2,6 +2,8 @@ import type { CalendarEventTag } from "./db/types";
 import { tags } from "./features/calendar/calendar-constants";
 import type { BuildAbilitiesTupleWithUnknown } from "./modules/in-game-lists";
 
+export const DEV_MODE_ENABLED = import.meta.env?.["VITE_DEV_MODE"] === "true";
+
 export const TWEET_LENGTH_MAX_LENGTH = 280;
 export const DISCORD_MESSAGE_MAX_LENGTH = 2000;
 

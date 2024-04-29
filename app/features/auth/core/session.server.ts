@@ -1,4 +1,5 @@
 import { createCookieSessionStorage } from "@remix-run/node";
+import { DEV_MODE_ENABLED } from "~/constants";
 import { invariant } from "~/utils/invariant";
 
 const ONE_YEAR_IN_SECONDS = 31_536_000;
@@ -11,11 +12,11 @@ export const authSessionStorage = createCookieSessionStorage({
     name: "__session",
     sameSite: "lax",
     // need to specify domain so that sub-domains can access it
-    domain: process.env.NODE_ENV === "production" ? "sendou.ink" : undefined,
+    domain: !DEV_MODE_ENABLED ? "sendou.ink" : undefined,
     path: "/",
     httpOnly: true,
     secrets: [process.env["SESSION_SECRET"] ?? "secret"],
-    secure: process.env.NODE_ENV === "production",
+    secure: !DEV_MODE_ENABLED,
     maxAge: ONE_YEAR_IN_SECONDS,
   },
 });

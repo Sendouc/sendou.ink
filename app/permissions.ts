@@ -1,6 +1,11 @@
 import { invariant } from "~/utils/invariant";
 import type * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
-import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME, MOD_IDS } from "./constants";
+import {
+  ADMIN_ID,
+  DEV_MODE_ENABLED,
+  LOHI_TOKEN_HEADER_NAME,
+  MOD_IDS,
+} from "./constants";
 import type {
   CalendarEvent,
   PlusSuggestion,
@@ -26,7 +31,7 @@ export function isMod(user?: IsAdminUser) {
 }
 
 export function canPerformAdminActions(user?: IsAdminUser) {
-  if (["development", "test"].includes(process.env.NODE_ENV)) return true;
+  if (DEV_MODE_ENABLED) return true;
 
   return isAdmin(user);
 }

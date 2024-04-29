@@ -17,6 +17,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build project
+        env:
+          VITE_DEV_MODE: "true"
         run: npm run build
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
@@ -31,7 +33,7 @@ jobs:
           SKALOP_WS_URL: "ws://localhost:5900"
           SKALOP_SYSTEM_MESSAGE_URL: "http://localhost:5900/system"
           SKALOP_TOKEN: "secret"
-          VITE_DEV_ACTIONS_ENABLED: "true"
+          VITE_DEV_MODE: "true"
           PORT: "5173"
         run: npx playwright test
       - uses: actions/upload-artifact@v3

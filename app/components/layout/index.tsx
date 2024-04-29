@@ -11,6 +11,7 @@ import { HeartIcon } from "../icons/Heart";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
 import { TopRightButtons } from "./TopRightButtons";
+import { DEV_MODE_ENABLED } from "~/constants";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -52,8 +53,10 @@ export const Layout = React.memo(function Layout({
     data.publisherId &&
     !data?.user?.patronTier &&
     !location.pathname.includes("plans");
+
   return (
     <div className="layout__container">
+      {DEV_MODE_ENABLED && <HydrationTestIndicator />}
       <header className="layout__header layout__item_size">
         <div className="layout__breadcrumb-container">
           <Link to="/" className="layout__breadcrumb logo">
@@ -143,4 +146,12 @@ function MyRampUnit() {
   }
 
   return <RampUnit type="leaderboard_atf" cssClass="top-leaderboard" />;
+}
+
+function HydrationTestIndicator() {
+  const isMounted = useIsMounted();
+
+  if (!isMounted) return null;
+
+  return <div style={{ display: "none" }} data-testid="hydrated" />;
 }

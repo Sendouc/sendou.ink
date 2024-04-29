@@ -16,6 +16,7 @@ import { isAdmin, isMod } from "~/permissions";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { SEED_URL, STOP_IMPERSONATING_URL, impersonateUrl } from "~/utils/urls";
+import { DEV_MODE_ENABLED } from "~/constants";
 
 import { action } from "../actions/admin.server";
 import { loader } from "../loaders/admin.server";
@@ -32,18 +33,15 @@ export const handle: SendouRouteHandle = {
 export default function AdminPage() {
   const user = useUser();
 
-  const devActionsEnabled =
-    import.meta.env["VITE_DEV_ACTIONS_ENABLED"] === "true";
-
   return (
     <Main className="stack lg">
-      {devActionsEnabled && <Seed />}
+      {DEV_MODE_ENABLED && <Seed />}
 
       {isMod(user) ? <LinkPlayer /> : null}
       {isMod(user) ? <GiveArtist /> : null}
       {isMod(user) ? <GiveVideoAdder /> : null}
 
-      {devActionsEnabled || isAdmin(user) ? <Impersonate /> : null}
+      {DEV_MODE_ENABLED || isAdmin(user) ? <Impersonate /> : null}
       {isAdmin(user) ? <MigrateUser /> : null}
       {isAdmin(user) ? <ForcePatron /> : null}
       {isMod(user) ? <BanUser /> : null}

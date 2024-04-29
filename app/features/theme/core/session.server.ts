@@ -3,6 +3,7 @@ import { createCookieSessionStorage } from "@remix-run/node";
 import { isTheme } from "./provider";
 import type { Theme } from "./provider";
 import { invariant } from "~/utils/invariant";
+import { DEV_MODE_ENABLED } from "~/constants";
 
 const TEN_YEARS_IN_SECONDS = 315_360_000;
 
@@ -14,7 +15,7 @@ const sessionSecret = process.env["SESSION_SECRET"] ?? "secret";
 const themeStorage = createCookieSessionStorage({
   cookie: {
     name: "theme",
-    secure: process.env.NODE_ENV === "production",
+    secure: !DEV_MODE_ENABLED,
     secrets: [sessionSecret],
     sameSite: "lax",
     path: "/",

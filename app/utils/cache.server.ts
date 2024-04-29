@@ -1,5 +1,6 @@
 import type { CacheEntry } from "@epic-web/cachified";
 import { LRUCache } from "lru-cache";
+import { DEV_MODE_ENABLED } from "~/constants";
 
 declare global {
   // This preserves the LRU cache during development
@@ -11,8 +12,7 @@ export const cache = (global.__lruCache = global.__lruCache
   ? global.__lruCache
   : new LRUCache<string, CacheEntry<unknown>>({ max: 5000 }));
 
-export const ttl = (ms: number) =>
-  process.env.NODE_ENV === "production" ? ms : 0;
+export const ttl = (ms: number) => (!DEV_MODE_ENABLED ? ms : 0);
 
 export function syncCached<T>(key: string, getFreshValue: () => T) {
   if (cache.has(key)) {

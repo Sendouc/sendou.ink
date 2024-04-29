@@ -37,7 +37,6 @@ import {
   useTheme,
 } from "./features/theme/core/provider";
 import { getThemeSession } from "./features/theme/core/session.server";
-import { useIsMounted } from "./hooks/useIsMounted";
 import { DEFAULT_LANGUAGE } from "./modules/i18n/config";
 import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
 import { browserTimingHeader } from "./utils/newrelic.server";
@@ -151,9 +150,6 @@ function Document({
   useLoadingIndicator();
   const customizedCSSVars = useCustomizedCSSVars();
 
-  const devActionsEnabled =
-    import.meta.env["VITE_DEV_ACTIONS_ENABLED"] === "true";
-
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
@@ -183,7 +179,6 @@ function Document({
         <Fonts />
       </head>
       <body style={customizedCSSVars}>
-        {devActionsEnabled && <HydrationTestIndicator />}
         <React.StrictMode>
           <MyRamp data={data} />
           <Layout data={data} isErrored={isErrored}>
@@ -286,14 +281,6 @@ export const ErrorBoundary = () => {
     </ThemeProvider>
   );
 };
-
-function HydrationTestIndicator() {
-  const isMounted = useIsMounted();
-
-  if (!isMounted) return null;
-
-  return <div style={{ display: "none" }} data-testid="hydrated" />;
-}
 
 function Fonts() {
   return (

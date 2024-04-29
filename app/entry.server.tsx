@@ -15,6 +15,7 @@ import { getUser } from "./features/auth/core/user.server";
 import { updatePatreonData } from "./modules/patreon";
 import { noticeError, setTransactionName } from "./utils/newrelic.server";
 import { i18Instance } from "./modules/i18n/loader.server";
+import { DEV_MODE_ENABLED } from "./constants";
 
 const ABORT_DELAY = 5000;
 
@@ -169,7 +170,7 @@ declare global {
   var appStartSignal: undefined | true;
 }
 
-if (!global.appStartSignal && process.env.NODE_ENV === "production") {
+if (!global.appStartSignal && !DEV_MODE_ENABLED) {
   global.appStartSignal = true;
 
   // every 2 hours
