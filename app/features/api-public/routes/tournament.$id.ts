@@ -30,6 +30,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       .select(({ eb }) => [
         "CalendarEvent.name",
         "CalendarEventDate.startTime",
+        "Tournament.settings",
         jsonArrayFrom(
           eb
             .selectFrom("TournamentTeam")
@@ -56,6 +57,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
         .length,
       registeredCount: tournament.teams.length,
     },
+    brackets: tournament.settings.bracketProgression.map((bp) => ({
+      name: bp.name,
+      type: bp.type,
+    })),
   };
 
   return result;

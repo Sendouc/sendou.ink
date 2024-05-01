@@ -316,6 +316,10 @@ export default defineConfig(() => {
               "features/api-public/routes/tournament.$id.teams.ts",
             );
             route(
+              "/api/tournament/:id/brackets/:bidx",
+              "features/api-public/routes/tournament.$id.brackets.$bidx.ts",
+            );
+            route(
               "/api/tournament-match/:id",
               "features/api-public/routes/tournament-match.$id.ts",
             );

@@ -1,3 +1,5 @@
+import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+
 /** GET /api/user/{userId|discordId} */
 
 export interface GetUserResponse {
@@ -63,6 +65,7 @@ export interface GetTournamentResponse {
     registeredCount: number;
     checkedInCount: number;
   };
+  brackets: TournamentBracket[];
 }
 
 /** GET /api/tournament/{tournamentId}/teams */
@@ -117,6 +120,22 @@ export interface GetTournamentMatchResponse {
    */
   url: string;
 }
+
+/** GET /api/tournament/{tournamentId}/brackets/{bracketIndex} */
+
+export interface GetTournamentBracketResponse {
+  data: TournamentBracketData;
+  meta: {
+    /** How many teams per group? (round robin only) */
+    teamsPerGroup?: number;
+    /** How many groups? (swiss only) */
+    groupCount?: number;
+    /** How many rounds? (swiss only) */
+    roundCount?: number;
+  };
+}
+
+/* ----------------------------------------- */
 
 type Weapon = {
   id: number;
@@ -188,3 +207,11 @@ type TournamentMatchTeam = {
   id: number;
   score: number;
 };
+
+type TournamentBracket = {
+  type: "double_elimination" | "single_elimination" | "round_robin" | "swiss";
+  name: string;
+};
+
+// TODO: use a better documented type here
+type TournamentBracketData = ValueToArray<DataTypes>;
