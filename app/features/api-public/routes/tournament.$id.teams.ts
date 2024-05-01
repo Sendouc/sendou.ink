@@ -24,10 +24,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const teams = await db
     .selectFrom("TournamentTeam")
-    .leftJoin(
-      "TournamentTeamCheckIn",
-      "TournamentTeam.id",
-      "TournamentTeamCheckIn.tournamentTeamId",
+    .leftJoin("TournamentTeamCheckIn", (join) =>
+      join
+        .onRef(
+          "TournamentTeam.id",
+          "=",
+          "TournamentTeamCheckIn.tournamentTeamId",
+        )
+        .on("TournamentTeamCheckIn.checkedInAt", "is", null),
     )
     .select(({ eb }) => [
       "TournamentTeam.id",
