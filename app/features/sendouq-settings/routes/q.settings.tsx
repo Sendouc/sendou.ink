@@ -44,6 +44,11 @@ import {
   SENDOUQ_WEAPON_POOL_MAX_SIZE,
 } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
+import { FormMessage } from "~/components/FormMessage";
+import { UsersIcon } from "~/components/icons/Users";
+import { Avatar } from "~/components/Avatar";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { Trans } from "react-i18next";
 
 import "../q-settings.css";
 
@@ -100,6 +105,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       });
       break;
     }
+    case "REMOVE_TRUST": {
+      await QSettingsRepository.deleteTrustedUser({
+        trustGiverUserId: user.id,
+        trustReceiverUserId: data.userToRemoveTrustFromId,
+      });
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -113,6 +125,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return {
     settings: await QSettingsRepository.settingsByUserId(user.id),
+    trusted: await QSettingsRepository.findTrustedUsersByGiverId(user.id),
+    team: await QSettingsRepository.currentTeamByUserId(user.id),
   };
 };
 
@@ -124,6 +138,7 @@ export default function SendouQSettingsPage() {
         <WeaponPool />
         <VoiceChat />
         <Sounds />
+        <TrustedUsers />
         <Misc />
       </div>
     </Main>
@@ -587,8 +602,10 @@ function Sounds() {
           <span>{t("q:settings.sounds.header")}</span> <SpeakerFilledIcon />
         </div>
       </summary>
-      {isMounted && <SoundCheckboxes />}
-      {isMounted && <SoundSlider />}
+      <div className="mb-4">
+        {isMounted && <SoundCheckboxes />}
+        {isMounted && <SoundSlider />}
+      </div>
     </details>
   );
 }
@@ -686,6 +703,80 @@ function SoundSlider() {
         onMouseUp={playSound}
       />
     </div>
+  );
+}
+
+function TrustedUsers() {
+  const { t } = useTranslation(["q"]);
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <details>
+      <summary className="q-settings__summary">
+        <span>{t("q:settings.trusted.header")}</span> <UsersIcon />
+      </summary>
+      <div className="mb-4">
+        {data.trusted.length > 0 ? (
+          <>
+            <div className="stack md mt-2">
+              {data.trusted.map((trustedUser) => {
+                return (
+                  <div
+                    key={trustedUser.id}
+                    className="stack horizontal xs items-center"
+                  >
+                    <Avatar user={trustedUser} size="xxs" />
+                    <div className="text-sm font-semi-bold">
+                      {trustedUser.discordName}
+                    </div>
+                    <FormWithConfirm
+                      dialogHeading={t("q:settings.trusted.confirm", {
+                        name: trustedUser.discordName,
+                      })}
+                      fields={[
+                        ["_action", "REMOVE_TRUST"],
+                        ["userToRemoveTrustFromId", trustedUser.id],
+                      ]}
+                      deleteButtonText="Remove"
+                    >
+                      <Button
+                        className="build__small-text"
+                        variant="minimal-destructive"
+                        size="tiny"
+                        type="submit"
+                      >
+                        <TrashIcon className="build__icon" />
+                      </Button>
+                    </FormWithConfirm>
+                  </div>
+                );
+              })}
+              <FormMessage type="info">
+                {t("q:settings.trusted.trustedExplanation")}
+              </FormMessage>
+            </div>
+          </>
+        ) : (
+          <FormMessage type="info" className="mb-2">
+            {t("q:settings.trusted.noTrustedExplanation")}
+          </FormMessage>
+        )}
+        {data.team ? (
+          <FormMessage type="info" className="mb-2">
+            <Trans
+              i18nKey="q:settings.trusted.teamExplanation"
+              t={t}
+              values={{
+                name: data.team.name,
+              }}
+            >
+              In addition to the users above, a member of your team{" "}
+              <b>{data.team.name}</b> can you add you directly.
+            </Trans>
+          </FormMessage>
+        ) : null}
+      </div>
+    </details>
   );
 }
 
