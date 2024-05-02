@@ -31,7 +31,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
           "=",
           "TournamentTeamCheckIn.tournamentTeamId",
         )
-        .on("TournamentTeamCheckIn.checkedInAt", "is", null),
+        .on("TournamentTeamCheckIn.bracketIdx", "is", null),
     )
     .select(({ eb }) => [
       "TournamentTeam.id",

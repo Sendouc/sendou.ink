@@ -34,10 +34,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
         jsonArrayFrom(
           eb
             .selectFrom("TournamentTeam")
-            .leftJoin(
-              "TournamentTeamCheckIn",
-              "TournamentTeam.id",
-              "TournamentTeamCheckIn.tournamentTeamId",
+            .leftJoin("TournamentTeamCheckIn", (join) =>
+              join
+                .onRef(
+                  "TournamentTeam.id",
+                  "=",
+                  "TournamentTeamCheckIn.tournamentTeamId",
+                )
+                .on("TournamentTeamCheckIn.bracketIdx", "is", null),
             )
             .select(["TournamentTeamCheckIn.checkedInAt"])
             .where("TournamentTeam.tournamentId", "=", id),
