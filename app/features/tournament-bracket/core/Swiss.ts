@@ -545,27 +545,16 @@ function matchesByNotPlayedBefore(
   return null;
 }
 
-// https://stackoverflow.com/a/75330248
+// https://stackoverflow.com/a/75330079
 function makeRounds(n: number) {
-  const sets: Record<number, number>[] = [];
-  const rounds: [number, number][][] = [];
-
-  for (let r = 0; r < n - 1; r++) {
-    sets.push({});
-    rounds.push([]);
-  }
-
-  for (let i = 0; i < n - 1; i++) {
-    for (let j = i + 1; j < n; j++) {
-      for (let r = 0; r < n - 1; r++) {
-        if (!sets[r][i] && !sets[r][j]) {
-          sets[r][i] = sets[r][j] = 1;
-          rounds[r].push([i, j]);
-          break;
-        }
-      }
+  const pairings = [];
+  const max = n - 1;
+  for (let i = 0; i < max; i++) {
+    const pairing = [[max, i]];
+    for (let k = 1; k < n / 2; k++) {
+      pairing.push([(i + k) % max, (max + i - k) % max]);
     }
+    pairings.push(pairing);
   }
-
-  return rounds;
+  return pairings;
 }

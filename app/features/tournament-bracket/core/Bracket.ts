@@ -1256,8 +1256,8 @@ class SwissBracket extends Bracket {
           round?.maps?.type === "PLAY_ALL"
             ? round?.maps?.count
             : Math.ceil((round?.maps?.count ?? 0) / 2);
+        // preview
         if (!mapWins) {
-          logger.warn("SwissBracket.currentStandings: mapWins not found");
           continue;
         }
 
