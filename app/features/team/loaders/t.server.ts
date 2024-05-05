@@ -1,56 +1,36 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { getUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n/i18next.server";
-import { makeTitle } from "~/utils/strings";
-import { allTeams } from "../queries/allTeams.server";
+import { HttpServer } from "@effect/platform";
+import { Array, Number, Option, Order, Struct, pipe } from "effect";
+import { Remix } from "~/shared/services/prelude.server";
+import { TeamLoaderSchema } from "../routes/t";
+import { Teams } from "../services/Team.server";
+import type { Team } from "../t-models";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await getUserId(request);
-  const t = await i18next.getFixedT(request);
-
-  const teams = allTeams().sort((teamA, teamB) => {
-    // show own team first always
-    if (user && teamA.members.some((m) => m.id === user.id)) {
-      return -1;
-    }
-
-    if (user && teamB.members.some((m) => m.id === user.id)) {
-      return 1;
-    }
-
-    // then full teams
-    if (teamA.members.length >= 4 && teamB.members.length < 4) {
-      return -1;
-    }
-
-    if (teamA.members.length < 4 && teamB.members.length >= 4) {
-      return 1;
-    }
-
-    // and as tiebreaker teams with a higher plus server tier member first
-    const lowestATeamPlusTier = Math.min(
-      ...teamA.members.map((m) => m.plusTier ?? Infinity),
-    );
-    const lowestBTeamPlusTier = Math.min(
-      ...teamB.members.map((m) => m.plusTier ?? Infinity),
-    );
-
-    if (lowestATeamPlusTier > lowestBTeamPlusTier) {
-      return 1;
-    }
-
-    if (lowestATeamPlusTier < lowestBTeamPlusTier) {
-      return -1;
-    }
-
-    return 0;
+export const loader = Remix.loaderGen(function* () {
+  return yield* HttpServer.response.schemaJson(TeamLoaderSchema)({
+    teams: pipe(
+      yield* Teams.all,
+      Array.sort(
+        // xxx: byOwnTeam
+        Order.combine(/* byOwnTeam, */ byTeamIsFull, byTeamWidePlusTier),
+      ),
+    ),
   });
+});
 
-  return {
-    title: makeTitle(t("pages.t")),
-    teams,
-    isMemberOfTeam: !user
-      ? false
-      : teams.some((t) => t.members.some((m) => m.id === user.id)),
-  };
-};
+const byTeamIsFull = pipe(
+  Order.mapInput(Order.boolean, (team: Team) => team.members.length >= 4),
+  Order.reverse,
+);
+
+const byTeamWidePlusTier = pipe(
+  Order.mapInput(Order.number, (team: Team) =>
+    pipe(
+      team.members,
+      Array.map(Struct.get("plusTier")),
+      Array.map(Option.getOrElse(() => 100)),
+      Array.sort(Order.number),
+      Array.take(4),
+      Number.sumAll,
+    ),
+  ),
+);

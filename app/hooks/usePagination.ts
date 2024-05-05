@@ -4,7 +4,7 @@ export function usePagination<T>({
   items,
   pageSize,
 }: {
-  items: T[];
+  items: T[] | readonly T[];
   pageSize: number;
 }) {
   const [currentPage, setCurrentPage] = React.useState(1);

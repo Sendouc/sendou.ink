@@ -1,11 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from "@remix-run/react";
+import { Form, Link, useNavigate, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Button, LinkButton } from "~/components/Button";
@@ -16,17 +10,17 @@ import { Main } from "~/components/Main";
 import { Pagination } from "~/components/Pagination";
 import { SubmitButton } from "~/components/SubmitButton";
 import { SearchIcon } from "~/components/icons/Search";
-import { useUser } from "~/features/auth/core/user";
+import type { MaybeLoggedInUser } from "~/features/auth/core/user";
+import { useUserOption } from "~/features/auth/core/user";
 import { usePagination } from "~/hooks/usePagination";
-import { joinListToNaturalString } from "~/utils/arrays";
 import type { SendouRouteHandle } from "~/utils/remix";
-import {
-  TEAM_SEARCH_PAGE,
-  navIconUrl,
-  teamPage,
-  userSubmittedImage,
-} from "~/utils/urls";
+import { TEAM_SEARCH_PAGE, navIconUrl } from "~/utils/urls";
 import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
+import * as Schema from "@effect/schema/Schema";
+import { useSchemaLoaderData } from "~/shared/services/Remix";
+import { Team } from "../t-models";
+import { flow, String, Match, Array, pipe, Option } from "effect";
+import type { User } from "~/shared/models";
 
 import "../team.css";
 
@@ -37,7 +31,7 @@ export { loader, action };
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
-  return [{ title: data.title }];
+  return [{ title: "Teams" }];
 };
 
 export const handle: SendouRouteHandle = {
@@ -49,28 +43,18 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
+export const TeamLoaderSchema = Schema.Struct({
+  teams: Schema.Array(Team),
+});
+
 export default function TeamSearchPage() {
   const { t } = useTranslation(["team"]);
-  const user = useUser();
+  const user = useUserOption();
   const [inputValue, setInputValue] = React.useState("");
-  const data = useLoaderData<typeof loader>();
-
-  const filteredTeams = data.teams.filter((team) => {
-    if (!inputValue) return true;
-
-    const lowerCaseInput = inputValue.toLowerCase();
-
-    if (team.name.toLowerCase().includes(lowerCaseInput)) return true;
-    if (
-      team.members.some((m) =>
-        m.discordName.toLowerCase().includes(lowerCaseInput),
-      )
-    ) {
-      return true;
-    }
-
-    return false;
-  });
+  // xxx: fix useSchemaLoaderData
+  const data = useSchemaLoaderData(TeamLoaderSchema) as Schema.Schema.Type<
+    typeof TeamLoaderSchema
+  >;
 
   const {
     itemsToDisplay,
@@ -81,14 +65,14 @@ export default function TeamSearchPage() {
     previousPage,
     setPage,
   } = usePagination({
-    items: filteredTeams,
+    items: filterTeams(data.teams, inputValue),
     pageSize: TEAMS_PER_PAGE,
   });
 
   return (
     <Main className="stack lg">
       <NewTeamDialog />
-      {user && !data.isMemberOfTeam ? (
+      {canViewAddNewTeamButton(user, data.teams) ? (
         <LinkButton
           size="tiny"
           to="?new=true"
@@ -108,25 +92,24 @@ export default function TeamSearchPage() {
       />
       <div className="mt-6 stack lg">
         {itemsToDisplay.map((team, i) => (
-          <Link
-            key={team.customUrl}
-            to={teamPage(team.customUrl)}
-            className="team-search__team"
-          >
-            {team.avatarSrc ? (
-              <img
-                src={userSubmittedImage(team.avatarSrc)}
-                alt=""
-                width={64}
-                height={64}
-                className="rounded-full"
-                loading="lazy"
-              />
-            ) : (
-              <div className="team-search__team__avatar-placeholder">
-                {team.name[0]}
-              </div>
-            )}
+          <Link key={team.id} to={team.url} className="team-search__team">
+            {Option.match(team.avatarUrl, {
+              onSome: (avatarUrl) => (
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  width={64}
+                  height={64}
+                  className="rounded-full"
+                  loading="lazy"
+                />
+              ),
+              onNone: () => (
+                <div className="team-search__team__avatar-placeholder">
+                  {team.name[0]}
+                </div>
+              ),
+            })}
             <div>
               <div
                 className="team-search__team__name"
@@ -135,12 +118,7 @@ export default function TeamSearchPage() {
                 {team.name}
               </div>
               <div className="team-search__team__members">
-                {team.members.length === 1
-                  ? team.members[0].discordName
-                  : joinListToNaturalString(
-                      team.members.map((member) => member.discordName),
-                      "&",
-                    )}
+                {joinTeamMemberNames(team)}
               </div>
             </div>
           </Link>
@@ -158,6 +136,61 @@ export default function TeamSearchPage() {
     </Main>
   );
 }
+
+const stringNormalized = flow(String.toLowerCase, String.trim);
+const filterTeams = (teams: readonly Team[], inputValue: string) => {
+  if (!inputValue) return teams;
+
+  const testValue = (value: string) =>
+    pipe(
+      value,
+      stringNormalized,
+      String.includes(stringNormalized(inputValue)),
+    );
+
+  const teamMatcher = Match.type<Team>().pipe(
+    Match.whenOr(
+      {
+        name: testValue,
+      },
+      {
+        members: (members) =>
+          members.some((member) => testValue(member.username)),
+      },
+      () => true,
+    ),
+    Match.orElse(() => false),
+  );
+
+  return Array.filter(teams, teamMatcher);
+};
+
+const memberOfSomeTeam = (user: User, teams: readonly Team[]) =>
+  pipe(
+    teams,
+    Array.flatMap((team) => team.members),
+    Array.some((member) => member.id === user.id),
+  );
+
+const canViewAddNewTeamButton = (
+  user: MaybeLoggedInUser,
+  teams: readonly Team[],
+) =>
+  Option.match(user, {
+    onNone: () => false,
+    onSome: (user) => !memberOfSomeTeam(user, teams),
+  });
+
+// xxx: helper module?
+const joinTeamMemberNames = (team: Team) =>
+  pipe(
+    team.members,
+    Array.map((member) => member.username),
+    Array.partition((_, i) => i === team.members.length - 1),
+    Array.filter((x) => !Array.isEmptyArray(x)),
+    Array.map(Array.join(", ")),
+    Array.join(" & "),
+  );
 
 function NewTeamDialog() {
   const { t } = useTranslation(["common", "team"]);
