@@ -1,6 +1,6 @@
 import { HttpServer } from "@effect/platform";
 import { Console, Effect } from "effect";
-import { Remix } from "~/shared/services/prelude.server";
+import { Remix } from "~/shared/prelude.server";
 
 const barJob = Effect.gen(function* () {
   yield* Effect.sleep(5000);

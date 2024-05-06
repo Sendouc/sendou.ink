@@ -2,11 +2,14 @@ import { HttpServer } from "@effect/platform";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import type { Params as RemixParams } from "@remix-run/react";
 import { Context, Effect, Layer, ManagedRuntime } from "effect";
-import { Auth, Session } from "./Auth.server";
+import { Auth } from "./Auth.server";
 import type { YieldWrap } from "effect/Utils";
-import { Teams } from "~/features/team/services/Team.server";
+import { Teams } from "~/features/team/services/Teams.server";
+import { Users } from "~/features/user-page/services/Users.server";
 
-const AppLayer = Layer.mergeAll(Auth.layer, Teams.layer);
+// xxx: refactor to non-platform response
+
+const AppLayer = Layer.mergeAll(Auth.layer, Teams.layer, Users.layer);
 
 const runtime = ManagedRuntime.make(AppLayer);
 
@@ -17,7 +20,7 @@ const Params = Context.GenericTag<Params, RemixParams>("@services/Params");
 
 type AppEnv = Layer.Layer.Success<typeof AppLayer>;
 
-type RequestEnv = HttpServer.request.ServerRequest | Params | Session;
+type RequestEnv = HttpServer.request.ServerRequest | Params;
 
 export interface RemixHandler<E, R>
   extends Effect.Effect<
@@ -29,16 +32,13 @@ export interface RemixHandler<E, R>
 export const makeServerContext = (
   args: LoaderFunctionArgs | ActionFunctionArgs,
 ) =>
-  Layer.provideMerge(
-    Session.layer,
-    Layer.succeedContext(
-      Context.empty().pipe(
-        Context.add(
-          HttpServer.request.ServerRequest,
-          HttpServer.request.fromWeb(args.request),
-        ),
-        Context.add(Params, args.params),
+  Layer.succeedContext(
+    Context.empty().pipe(
+      Context.add(
+        HttpServer.request.ServerRequest,
+        HttpServer.request.fromWeb(args.request),
       ),
+      Context.add(Params, args.params),
     ),
   );
 

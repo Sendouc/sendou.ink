@@ -14,7 +14,6 @@ import { Flag } from "~/components/Flag";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { Placement } from "~/components/Placement";
 import { EditIcon } from "~/components/icons/Edit";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { UsersIcon } from "~/components/icons/Users";
@@ -39,7 +38,7 @@ import {
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { leaveTeam } from "../queries/leaveTeam.server";
 import { teamParamsSchema } from "../team-schemas.server";
-import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
+import type { DetailedTeamMember } from "../team-types";
 import {
   canAddCustomizedColors,
   isTeamMember,
@@ -114,7 +113,6 @@ export default function TeamPage() {
       </div>
       <MobileTeamNameCountry />
       <ActionButtons />
-      {team.results ? <ResultsBanner results={team.results} /> : null}
       {team.bio ? <article data-testid="team-bio">{team.bio}</article> : null}
       <div className="stack lg">
         {team.members.map((member, i) => (
@@ -250,23 +248,6 @@ function ActionButtons() {
         </LinkButton>
       ) : null}
     </div>
-  );
-}
-
-function ResultsBanner({ results }: { results: TeamResultPeek }) {
-  return (
-    <Link className="team__results" to="results">
-      <div>View {results.count} results</div>
-      <ul className="team__results__placements">
-        {results.placements.map(({ placement, count }) => {
-          return (
-            <li key={placement}>
-              <Placement placement={placement} />×{count}
-            </li>
-          );
-        })}
-      </ul>
-    </Link>
   );
 }
 

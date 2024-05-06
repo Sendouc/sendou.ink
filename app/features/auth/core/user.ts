@@ -2,8 +2,8 @@ import { useMatches } from "@remix-run/react";
 import { Option } from "effect";
 import invariant from "tiny-invariant";
 import type { RootLoaderData } from "~/root";
-import { User } from "~/shared/models";
 import * as Schema from "@effect/schema/Schema";
+import { User } from "~/features/user-page/user-page-models";
 
 // TODO: unify
 
@@ -14,6 +14,7 @@ export function useUser() {
   return (root.data as RootLoaderData | undefined)?.user;
 }
 
+// xxx: with loggedinuser (perms)
 export function useUserOption() {
   const [root] = useMatches();
   invariant(root);

@@ -20,8 +20,8 @@ import * as Schema from "@effect/schema/Schema";
 import { useSchemaLoaderData } from "~/shared/services/Remix";
 import { Team } from "../t-models";
 import { flow, String, Match, Array, pipe, Option } from "effect";
-import type { User } from "~/shared/models";
 
+import type { User } from "~/features/user-page/user-page-models";
 import "../team.css";
 
 import { loader } from "../loaders/t.server";

@@ -95,19 +95,6 @@ export function findByIdentifier(
           (value: any) => typeof value === "number",
         ),
       })),
-      // results: {
-      //   count: 23,
-      //   placements: [
-      //     {
-      //       count: 10,
-      //       placement: 1,
-      //     },
-      //     {
-      //       count: 5,
-      //       placement: 2,
-      //     },
-      //   ],
-      // },
     },
   };
 }

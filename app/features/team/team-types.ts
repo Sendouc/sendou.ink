@@ -11,7 +11,6 @@ export interface DetailedTeam {
   bannerSrc?: string;
   countries: string[];
   members: DetailedTeamMember[];
-  results?: TeamResultPeek;
 }
 
 export interface DetailedTeamMember {
@@ -24,14 +23,4 @@ export interface DetailedTeamMember {
   weapons: MainWeaponId[];
   role?: MemberRole;
   patronTier: number | null;
-}
-
-export interface TeamResultPeek {
-  count: number;
-  placements: Array<TeamResultPeekPlacement>;
-}
-
-export interface TeamResultPeekPlacement {
-  placement: number;
-  count: number;
 }
