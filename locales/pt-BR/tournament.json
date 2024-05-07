@@ -64,8 +64,8 @@
 
   "admin.download": "Download dos participantes",
   "admin.actions.CHANGE_TEAM_OWNER": "Mudar capitão",
-  "admin.actions.CHECK_IN": "Check in",
-  "admin.actions.CHECK_OUT": "Check out",
+  "admin.actions.CHECK_IN": "Check-in",
+  "admin.actions.CHECK_OUT": "Check-out",
   "admin.actions.ADD_MEMBER": "Adicionar membro",
   "admin.actions.REMOVE_MEMBER": "Remover membro",
   "admin.actions.DELETE_TEAM": "Excluir time",
