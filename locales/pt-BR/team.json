@@ -14,7 +14,7 @@
   "transferOwnership.header": "Transferir a posse do(a) {{teamName}} para {{user}}?",
   "actionButtons.transferOwnership.confirm": "Transferir",
   "deleteTeam.header": "Você tem certeza que quer excluir o(a) {{teamName}}?",
-  "roles.CAPTAIN": "Capitão",
+  "roles.CAPTAIN": "Capitão(ã)",
   "roles.FRONTLINE": "Linha de frente (frontline)",
   "roles.SUPPORT": "Suporte",
   "roles.MIDLINE": "Linha média (midline)",
