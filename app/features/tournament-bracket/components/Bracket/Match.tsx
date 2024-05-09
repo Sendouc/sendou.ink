@@ -85,7 +85,14 @@ function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
         {prefix()}
         {roundNumber}.{match.number}
       </div>
-      {hasStreams() ? (
+      {toBeCasted ? (
+        <Popover
+          buttonChildren={<>🔒 CAST</>}
+          triggerClassName="bracket__match__header__box bracket__match__header__box__button"
+        >
+          Match is scheduled to be casted
+        </Popover>
+      ) : hasStreams() ? (
         <Popover
           buttonChildren={<>🔴 LIVE</>}
           triggerClassName="bracket__match__header__box bracket__match__header__box__button"
@@ -93,13 +100,6 @@ function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
           placement="top"
         >
           <MatchStreams match={match} />
-        </Popover>
-      ) : toBeCasted ? (
-        <Popover
-          buttonChildren={<>⚪ CAST</>}
-          triggerClassName="bracket__match__header__box bracket__match__header__box__button"
-        >
-          Match is scheduled to be casted
         </Popover>
       ) : null}
     </div>
