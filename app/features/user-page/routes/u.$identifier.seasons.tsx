@@ -55,7 +55,7 @@ import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { cutToNDecimalPlaces, roundToNDecimalPlaces } from "~/utils/number";
 import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
-import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
+import { TIERS_PAGE, sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
 import { type UserPageLoaderData } from "./u.$identifier";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
@@ -310,10 +310,10 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
     <div className="stack horizontal items-center justify-center sm">
       <TierImage tier={data.tier} />
       <div>
-        <div className="text-xl font-bold">
+        <Link to={TIERS_PAGE} className="text-xl font-bold">
           {data.tier.name}
           {data.tier.isPlus ? "+" : ""}
-        </div>
+        </Link>
         {!data.isAccurateTiers ? (
           <div className="u__season__tentative">
             {t("user:seasons.tentative")}
