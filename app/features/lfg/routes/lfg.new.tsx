@@ -1,4 +1,4 @@
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -6,8 +6,9 @@ import { LFG, TIMEZONES } from "../lfg-constants";
 import * as React from "react";
 import { Label } from "~/components/Label";
 
+import { loader } from "../loaders/lfg.new.server";
 import { action } from "../actions/lfg.new.server";
-export { action };
+export { loader, action };
 
 // xxx: weaponPool + tell where to change
 // xxx: languages + tell where to change
@@ -32,15 +33,24 @@ export default function LFGPage() {
 // xxx: i18n
 // xxx: filter team if no team + show team in the name
 function TypeSelect() {
+  const data = useLoaderData<typeof loader>();
+
+  console.log({ data });
+
   return (
     <div>
       <Label>Type</Label>
       <select name="type">
-        {LFG.types.map((type) => (
-          <option key={type} value={type}>
-            {type}
-          </option>
-        ))}
+        {LFG.types
+          .filter(
+            (type) =>
+              data.team || ["PLAYER_FOR_TEAM", "COACH_FOR_TEAM"].includes(type),
+          )
+          .map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
       </select>
     </div>
   );

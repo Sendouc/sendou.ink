@@ -260,7 +260,7 @@ export interface LFGPost {
   type:
     | "PLAYER_FOR_TEAM"
     | "TEAM_FOR_PLAYER"
-    | "PLAYER_FOR_COACH"
+    | "TEAM_FOR_COACH"
     | "COACH_FOR_TEAM";
   text: string;
   /** e.g. Europe/Helsinki */
