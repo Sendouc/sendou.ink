@@ -3,6 +3,8 @@ import { getUserId } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { makeTitle } from "~/utils/strings";
 import { allTeams } from "../queries/allTeams.server";
+import type { UserWithPlusTier } from "~/db/types";
+import { sumArray } from "~/utils/number";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
@@ -27,19 +29,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       return 1;
     }
 
-    // and as tiebreaker teams with a higher plus server tier member first
-    const lowestATeamPlusTier = Math.min(
-      ...teamA.members.map((m) => m.plusTier ?? Infinity),
-    );
-    const lowestBTeamPlusTier = Math.min(
-      ...teamB.members.map((m) => m.plusTier ?? Infinity),
-    );
+    const teamAPlusTierRating = membersToCommonPlusTierRating(teamA.members);
+    const teamBPlusTierRating = membersToCommonPlusTierRating(teamB.members);
 
-    if (lowestATeamPlusTier > lowestBTeamPlusTier) {
+    // and as tiebreaker teams with a higher plus server tier member first (4 best considered)
+    if (teamAPlusTierRating > teamBPlusTierRating) {
       return 1;
     }
 
-    if (lowestATeamPlusTier < lowestBTeamPlusTier) {
+    if (teamAPlusTierRating < teamBPlusTierRating) {
       return -1;
     }
 
@@ -53,4 +51,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       ? false
       : teams.some((t) => t.members.some((m) => m.id === user.id)),
   };
+};
+
+const membersToCommonPlusTierRating = (
+  members: Pick<UserWithPlusTier, "plusTier">[],
+) => {
+  return sumArray(
+    members
+      .map((m) => m.plusTier ?? 100)
+      .sort((a, b) => a - b)
+      .slice(0, 4),
+  );
 };
