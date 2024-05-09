@@ -12,7 +12,8 @@ export function up(db) {
         "updatedAt" integer default (strftime('%s', 'now')) not null,
         "createdAt" integer default (strftime('%s', 'now')) not null,
         foreign key ("authorId") references "User"("id") on delete restrict,
-        foreign key ("teamId") references "Team"("id") on delete cascade
+        foreign key ("teamId") references "AllTeam"("id") on delete cascade,
+        unique("authorId", "type") on conflict rollback
       ) strict
     `,
     ).run();

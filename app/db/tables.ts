@@ -769,6 +769,7 @@ export interface DB {
   GroupMember: GroupMember;
   PrivateUserNote: PrivateUserNote;
   LogInLink: LogInLink;
+  LFGPost: LFGPost;
   MapPoolMap: MapPoolMap;
   MapResult: MapResult;
   migrations: Migrations;
