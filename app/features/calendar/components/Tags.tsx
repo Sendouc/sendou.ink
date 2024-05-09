@@ -12,9 +12,11 @@ export function Tags({
   tags,
   badges,
   onDelete,
+  tournamentRankedStatus,
 }: {
   tags: Array<CalendarEventTag>;
   badges?: CalendarRepository.FindAllBetweenTwoTimestampsItem["badgePrizes"];
+  tournamentRankedStatus?: "RANKED" | "UNRANKED";
 
   /** Called when tag delete button clicked. If undefined delete buttons won't be shown. */
   onDelete?: (tag: CalendarEventTag) => void;
@@ -25,6 +27,12 @@ export function Tags({
 
   return (
     <ul className="calendar__event__tags">
+      {tournamentRankedStatus === "RANKED" ? (
+        <li className="calendar__event__ranked-tag">Ranked</li>
+      ) : null}
+      {tournamentRankedStatus === "UNRANKED" ? (
+        <li className="calendar__event__unranked-tag">Unranked</li>
+      ) : null}
       {tags.map((tag) => (
         <React.Fragment key={tag}>
           <li

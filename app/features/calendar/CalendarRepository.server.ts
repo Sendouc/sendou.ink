@@ -153,6 +153,11 @@ export async function findAllBetweenTwoTimestamps({
       "User.discordName",
       "User.discordDiscriminator",
       "CalendarEventRanks.nthAppearance",
+      eb
+        .selectFrom("Tournament")
+        .select("Tournament.settings")
+        .whereRef("Tournament.id", "=", "CalendarEvent.tournamentId")
+        .as("tournamentSettings"),
       hasBadge,
       jsonArrayFrom(
         eb
@@ -227,7 +232,6 @@ function tagsArray(args: {
   ) as Array<CalendarEventTag>;
 
   if (args.hasBadge) tags.unshift("BADGE");
-  if (args.tournamentId) tags.unshift("FULL_TOURNAMENT");
 
   return tags;
 }

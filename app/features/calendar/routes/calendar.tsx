@@ -47,6 +47,7 @@ import { Tags } from "../components/Tags";
 import { Image } from "~/components/Image";
 import { Toggle } from "~/components/Toggle";
 import { Label } from "~/components/Label";
+import { currentSeason } from "~/features/mmr/season";
 
 import "~/styles/calendar.css";
 
@@ -418,6 +419,18 @@ function EventsList({
                   weekday: "long",
                 });
 
+                const startTimeDate = databaseTimestampToDate(
+                  calendarEvent.startTime,
+                );
+                const tournamentRankedStatus = () => {
+                  if (!calendarEvent.tournamentSettings) return undefined;
+                  if (!currentSeason(startTimeDate)) return undefined;
+
+                  return calendarEvent.tournamentSettings.isRanked
+                    ? "RANKED"
+                    : "UNRANKED";
+                };
+
                 return (
                   <section
                     key={calendarEvent.eventDateId}
@@ -431,9 +444,7 @@ function EventsList({
                           ).toISOString()}
                           className="calendar__event__time"
                         >
-                          {databaseTimestampToDate(
-                            calendarEvent.startTime,
-                          ).toLocaleTimeString(i18n.language, {
+                          {startTimeDate.toLocaleTimeString(i18n.language, {
                             hour: "numeric",
                             minute: "numeric",
                           })}
@@ -499,6 +510,7 @@ function EventsList({
                         <Tags
                           tags={calendarEvent.tags}
                           badges={calendarEvent.badgePrizes}
+                          tournamentRankedStatus={tournamentRankedStatus()}
                         />
                       </div>
                     </div>

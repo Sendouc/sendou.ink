@@ -765,6 +765,7 @@ dialog::backdrop {
   align-items: center;
   border-radius: var(--rounded);
   padding-inline: var(--s-1-5);
+  min-height: 20px;
 }
 
 .calendar__event__tag {
@@ -773,6 +774,16 @@ dialog::backdrop {
 
 .calendar__event__badge-tag {
   color: var(--badge-text);
+}
+
+.calendar__event__ranked-tag {
+  background-color: var(--theme-info-transparent);
+  color: var(--theme-info);
+}
+
+.calendar__event__unranked-tag {
+  background-color: var(--theme-success-transparent);
+  color: var(--theme-success);
 }
 
 .calendar__event__tag-delete-button {

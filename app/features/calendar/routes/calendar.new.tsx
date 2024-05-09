@@ -449,8 +449,7 @@ function TagsAdder() {
   const id = React.useId();
 
   const tagsForSelect = CALENDAR_EVENT.TAGS.filter(
-    (tag) =>
-      !tags.includes(tag) && tag !== "BADGE" && tag !== "FULL_TOURNAMENT",
+    (tag) => !tags.includes(tag) && tag !== "BADGE",
   );
 
   return (

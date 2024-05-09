@@ -47,9 +47,6 @@ export const tags = {
   CARDS: {
     color: "#E4D00A",
   },
-  FULL_TOURNAMENT: {
-    color: "#FFC0CB",
-  },
 };
 
 export const REG_CLOSES_AT_OPTIONS = [
