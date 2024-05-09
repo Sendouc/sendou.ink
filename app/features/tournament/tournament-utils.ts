@@ -157,6 +157,18 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("sj");
   }
 
+  if (normalizedEventName.includes("silly sausage")) {
+    return tournamentLogoUrl("ss");
+  }
+
+  if (normalizedEventName.includes("united-lan")) {
+    return tournamentLogoUrl("ul");
+  }
+
+  if (normalizedEventName.includes("soul cup")) {
+    return tournamentLogoUrl("sc");
+  }
+
   return tournamentLogoUrl("default");
 }
 
@@ -267,6 +279,18 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
 
   if (normalizedEventName.includes("squid junction")) {
     return { bg: "#fed09f", text: BLACK };
+  }
+
+  if (normalizedEventName.includes("silly sausage")) {
+    return { bg: "#ffd76f", text: BLACK };
+  }
+
+  if (normalizedEventName.includes("united-lan")) {
+    return { bg: "#fff", text: BLACK };
+  }
+
+  if (normalizedEventName.includes("soul cup")) {
+    return { bg: "#101011", text: WHITE };
   }
 
   return { bg: "#3430ad", text: WHITE };
