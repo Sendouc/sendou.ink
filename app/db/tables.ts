@@ -255,6 +255,22 @@ export interface LogInLink {
   userId: number;
 }
 
+export interface LFGPost {
+  id: GeneratedAlways<number>;
+  type:
+    | "PLAYER_FOR_TEAM"
+    | "TEAM_FOR_PLAYER"
+    | "PLAYER_FOR_COACH"
+    | "COACH_FOR_TEAM";
+  text: string;
+  /** e.g. Europe/Helsinki */
+  timezone: string;
+  authorId: number;
+  teamId: number | null;
+  updatedAt: Generated<number>;
+  createdAt: GeneratedAlways<number>;
+}
+
 export interface MapPoolMap {
   calendarEventId: number | null;
   mode: ModeShort;

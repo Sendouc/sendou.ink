@@ -45,6 +45,15 @@
     ]
   },
   {
+    "name": "lfg",
+    "url": "lfg",
+    "prefetch": false,
+    "filters": [
+      "invert(50%) sepia(98%) saturate(1745%) hue-rotate(175deg) brightness(96%) contrast(94%)",
+      "invert(27%) sepia(6%) saturate(919%) hue-rotate(211deg) brightness(97%) contrast(83%)"
+    ]
+  },
+  {
     "name": "plans",
     "url": "plans",
     "prefetch": false,
