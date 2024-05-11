@@ -1,14 +1,33 @@
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
-import { LFG, TIMEZONES } from "../lfg-constants";
+import { INDIVIDUAL_POST_TYPES, LFG, TIMEZONES } from "../lfg-constants";
 import * as React from "react";
 import { Label } from "~/components/Label";
+import type { SendouRouteHandle } from "~/utils/remix";
+import {
+  LFG_PAGE,
+  SENDOUQ_SETTINGS_PAGE,
+  navIconUrl,
+  userEditProfilePage,
+} from "~/utils/urls";
+import { FormMessage } from "~/components/FormMessage";
+import { WeaponImage } from "~/components/Image";
+import { useUser } from "~/features/auth/core/user";
 
 import { loader } from "../loaders/lfg.new.server";
 import { action } from "../actions/lfg.new.server";
 export { loader, action };
+
+export const handle: SendouRouteHandle = {
+  i18n: ["lfg"],
+  breadcrumb: () => ({
+    imgPath: navIconUrl("lfg"),
+    href: LFG_PAGE,
+    type: "IMAGE",
+  }),
+};
 
 // xxx: weaponPool + tell where to change
 // xxx: languages + tell where to change
@@ -24,31 +43,30 @@ export default function LFGPage() {
         <TypeSelect />
         <TimezoneSelect />
         <Textarea />
+        <Languages />
+        <WeaponPool />
         <SubmitButton state={fetcher.state}>{t("actions.submit")}</SubmitButton>
       </fetcher.Form>
     </Main>
   );
 }
 
-// xxx: i18n
-// xxx: filter team if no team + show team in the name
 function TypeSelect() {
+  const { t } = useTranslation(["lfg"]);
   const data = useLoaderData<typeof loader>();
-
-  console.log({ data });
 
   return (
     <div>
       <Label>Type</Label>
       <select name="type">
         {LFG.types
-          .filter(
-            (type) =>
-              data.team || ["PLAYER_FOR_TEAM", "COACH_FOR_TEAM"].includes(type),
-          )
+          .filter((type) => data.team || INDIVIDUAL_POST_TYPES.includes(type))
           .map((type) => (
             <option key={type} value={type}>
-              {type}
+              {t(`lfg:types.${type}`)}{" "}
+              {data.team && !INDIVIDUAL_POST_TYPES.includes(type)
+                ? `(${data.team.name})`
+                : ""}
             </option>
           ))}
       </select>
@@ -84,6 +102,7 @@ function TimezoneSelect() {
   );
 }
 
+// xxx: markdown for patrons?
 function Textarea() {
   const initialValue = undefined;
   const [value, setValue] = React.useState(initialValue ?? "");
@@ -104,6 +123,53 @@ function Textarea() {
         maxLength={LFG.MAX_TEXT_LENGTH}
         required
       />
+    </div>
+  );
+}
+
+// xxx: hide here + lfgpost component when coach
+function WeaponPool() {
+  const user = useUser();
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div>
+      <Label>Weapon pool</Label>
+      <div className="stack horizontal sm">
+        {data.weaponPool?.map(({ weaponSplId }) => (
+          <WeaponImage
+            key={weaponSplId}
+            weaponSplId={weaponSplId}
+            size={32}
+            variant="build"
+          />
+        ))}
+      </div>
+      <FormMessage type="info">
+        Edit on your{" "}
+        <Link to={userEditProfilePage(user!)} target="_blank" rel="noreferrer">
+          user profile
+        </Link>
+      </FormMessage>
+    </div>
+  );
+}
+
+function Languages() {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div>
+      <Label>Languages</Label>
+      <div className="stack horizontal sm">
+        {data.languages?.join(" / ").toUpperCase()}
+      </div>
+      <FormMessage type="info">
+        Edit on{" "}
+        <Link to={SENDOUQ_SETTINGS_PAGE} target="_blank" rel="noreferrer">
+          SendouQ settings page
+        </Link>
+      </FormMessage>
     </div>
   );
 }

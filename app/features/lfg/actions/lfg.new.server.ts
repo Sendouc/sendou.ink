@@ -1,11 +1,12 @@
 import { z } from "zod";
-import { LFG, TIMEZONES } from "../lfg-constants";
+import { INDIVIDUAL_POST_TYPES, LFG, TIMEZONES } from "../lfg-constants";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
-import { parseRequestFormData } from "~/utils/remix";
+import { parseRequestFormData, validate } from "~/utils/remix";
 import { LFG_PAGE } from "~/utils/urls";
 import * as LFGRepository from "../LFGRepository.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUser(request);
@@ -14,13 +15,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     schema,
   });
 
-  // xxx: teamId here if needed + validate
+  const identifier = String(user.id);
+  const { team } = (await UserRepository.findByIdentifier(identifier)) ?? {};
+
+  validate(
+    INDIVIDUAL_POST_TYPES.includes(data.type) || team,
+    "Team needs to be set for this type of post",
+  );
 
   await LFGRepository.insertPost({
     text: data.postText,
     timezone: data.timezone,
     type: data.type,
-    teamId: null,
+    teamId: team?.id,
     authorId: user.id,
   });
 

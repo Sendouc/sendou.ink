@@ -12,6 +12,7 @@ import { navIconUrl } from "~/utils/urls";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { formatDistanceToNow } from "date-fns";
 
 type Post = LFGLoaderData["posts"][number];
 
@@ -70,13 +71,26 @@ function PostTime({
 }) {
   const { i18n } = useTranslation();
 
+  const createdAtDate = databaseTimestampToDate(createdAt);
+  const updatedAtDate = databaseTimestampToDate(updatedAt);
+  const overDayDifferenceBetween =
+    createdAtDate.getTime() - updatedAtDate.getTime() > 1000 * 60 * 60 * 24;
+
   return (
     <div className="text-lighter text-xs font-bold">
-      {databaseTimestampToDate(createdAt).toLocaleString(i18n.language, {
+      {createdAtDate.toLocaleString(i18n.language, {
         month: "long",
         day: "numeric",
-        hour: "numeric",
-      })}
+      })}{" "}
+      {overDayDifferenceBetween ? (
+        <i>
+          (last active{" "}
+          {formatDistanceToNow(updatedAtDate, {
+            addSuffix: true,
+          })}
+          )
+        </i>
+      ) : null}
     </div>
   );
 }

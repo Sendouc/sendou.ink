@@ -1,3 +1,5 @@
+import type { Tables } from "~/db/tables";
+
 export const LFG = {
   MIN_TEXT_LENGTH: 1,
   MAX_TEXT_LENGTH: 2_000,
@@ -8,6 +10,11 @@ export const LFG = {
     "COACH_FOR_TEAM",
   ] as const,
 };
+
+export const INDIVIDUAL_POST_TYPES: Array<Tables["LFGPost"]["type"]> = [
+  "PLAYER_FOR_TEAM",
+  "COACH_FOR_TEAM",
+];
 
 export const TIMEZONES = [
   "Africa/Abidjan",

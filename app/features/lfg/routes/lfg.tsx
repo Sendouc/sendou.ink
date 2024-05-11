@@ -27,6 +27,7 @@ const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
   new Map(data.tiersMap);
 
 // xxx: +1/+2/+3 visibility
+// xxx: button to bump on post about to get old
 
 export default function LFGPage() {
   const data = useLoaderData<typeof loader>();
@@ -38,6 +39,11 @@ export default function LFGPage() {
       {data.posts.map((post) => (
         <LFGPost key={post.id} post={post} tiersMap={tiersMap} />
       ))}
+      {data.posts.length === 0 ? (
+        <div className="text-lighter text-lg font-semi-bold text-center mt-6">
+          No posts matching the filter
+        </div>
+      ) : null}
     </Main>
   );
 }
