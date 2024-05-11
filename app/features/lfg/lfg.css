@@ -1,16 +1,27 @@
 .lfg-post__wide-layout {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr;
   align-items: flex-start;
   column-gap: var(--s-2);
+  row-gap: var(--s-2);
 }
 
 .lfg-post__wide-layout__left-row {
   display: flex;
   gap: var(--s-2);
   flex-direction: column;
-  top: 55px;
-  position: sticky;
+}
+
+@media screen and (min-width: 640px) {
+  .lfg-post__wide-layout {
+    grid-template-columns: 1fr 2fr;
+    row-gap: 0;
+  }
+
+  .lfg-post__wide-layout__left-row {
+    position: sticky;
+    top: 55px;
+  }
 }
 
 .lfg__post-user-name {
