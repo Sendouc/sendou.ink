@@ -2165,7 +2165,7 @@ async function lfgPosts() {
   for (const user of allUsers) {
     await LFGRepository.insertPost({
       authorId: user,
-      text: faker.lorem.paragraph({ min: 1, max: 6 }),
+      text: faker.lorem.paragraphs({ min: 1, max: 6 }),
       timezone: faker.helpers.arrayElement(TIMEZONES),
       type: faker.helpers.arrayElement(["PLAYER_FOR_TEAM", "COACH_FOR_TEAM"]),
     });
@@ -2173,7 +2173,7 @@ async function lfgPosts() {
 
   await LFGRepository.insertPost({
     authorId: ADMIN_ID,
-    text: faker.lorem.paragraph(3),
+    text: faker.lorem.paragraphs({ min: 1, max: 6 }),
     timezone: "Europe/Helsinki",
     type: "TEAM_FOR_PLAYER",
     teamId: 1,

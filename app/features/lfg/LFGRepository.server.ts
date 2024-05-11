@@ -1,3 +1,4 @@
+import type { NotNull } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { TablesInsertable } from "~/db/tables";
@@ -68,6 +69,7 @@ export function posts() {
       ).as("team"),
     ])
     .orderBy("LFGPost.updatedAt desc")
+    .$narrowType<{ author: NotNull }>()
     .execute();
 }
 

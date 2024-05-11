@@ -100,6 +100,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: allow customizing display name?
 export default function UserPageLayout() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();

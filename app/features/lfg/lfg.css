@@ -1,0 +1,50 @@
+.lfg-post__wide-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: flex-start;
+}
+
+.lfg__post-user-name {
+  max-width: 125px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.lfg__post-text-container {
+  position: relative;
+  max-height: 150px;
+  overflow: hidden;
+}
+
+.lfg__post-text-container--expanded {
+  position: relative;
+  margin-bottom: var(--s-6);
+}
+
+.lfg__post-text {
+  white-space: pre-wrap;
+}
+
+.lfg__post-text-cut {
+  background-image: linear-gradient(to bottom, transparent, var(--bg));
+  width: 100%;
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.lfg__post-text__show-all-button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 99;
+}
+
+.lfg__post-text__show-all-button--expanded {
+  bottom: -35px;
+}

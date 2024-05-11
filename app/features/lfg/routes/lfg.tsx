@@ -1,8 +1,14 @@
 import { Main } from "~/components/Main";
 import { useLoaderData } from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/node";
+import { LFGPost } from "../components/LFGPost";
 
 import { loader } from "../loaders/lfg.server";
 export { loader };
+
+import "../lfg.css";
+
+export type LFGLoaderData = SerializeFrom<typeof loader>;
 
 // xxx: +1/+2/+3 visibility
 
@@ -11,5 +17,11 @@ export default function LFGPage() {
 
   console.log({ data });
 
-  return <Main>Hello</Main>;
+  return (
+    <Main className="stack lg">
+      {data.posts.map((post) => (
+        <LFGPost key={post.id} post={post} />
+      ))}
+    </Main>
+  );
 }
