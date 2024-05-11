@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { LFG, TIMEZONES } from "../lfg-constants";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import type { ActionFunctionArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
 import { parseRequestFormData } from "~/utils/remix";
 import { LFG_PAGE } from "~/utils/urls";

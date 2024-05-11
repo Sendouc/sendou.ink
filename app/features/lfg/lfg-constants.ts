@@ -4,7 +4,7 @@ export const LFG = {
   types: [
     "PLAYER_FOR_TEAM",
     "TEAM_FOR_PLAYER",
-    "PLAYER_FOR_COACH",
+    "TEAM_FOR_COACH",
     "COACH_FOR_TEAM",
   ] as const,
 };

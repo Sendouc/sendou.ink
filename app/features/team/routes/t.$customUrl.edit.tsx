@@ -84,6 +84,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   });
 
   switch (data._action) {
+    // xxx: when deleting team also delete their lfg posts
     case "DELETE": {
       deleteTeam(team.id);
 
