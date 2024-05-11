@@ -5,6 +5,14 @@
   column-gap: var(--s-2);
 }
 
+.lfg-post__wide-layout__left-row {
+  display: flex;
+  gap: var(--s-2);
+  flex-direction: column;
+  top: 55px;
+  position: sticky;
+}
+
 .lfg__post-user-name {
   max-width: 125px;
   text-overflow: ellipsis;

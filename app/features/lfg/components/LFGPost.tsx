@@ -24,7 +24,7 @@ export function LFGPost({
 }) {
   return (
     <div className="lfg-post__wide-layout">
-      <div className="stack sm">
+      <div className="lfg-post__wide-layout__left-row">
         <PostUserHeader author={post.author} />
         <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
         <PostPills post={post} tiersMap={tiersMap} />
