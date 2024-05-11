@@ -1,6 +1,6 @@
 import { Avatar } from "~/components/Avatar";
-import type { LFGLoaderData } from "../routes/lfg";
-import { Image, WeaponImage } from "~/components/Image";
+import type { LFGLoaderData, TiersMap } from "../routes/lfg";
+import { Image, TierImage, WeaponImage } from "~/components/Image";
 import { Flag } from "~/components/Flag";
 import { Button } from "~/components/Button";
 import React from "react";
@@ -9,16 +9,25 @@ import { hourDifferenceBetweenTimezones } from "../core/timezone";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { useTranslation } from "react-i18next";
 import { navIconUrl } from "~/utils/urls";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
+import type { TieredSkill } from "~/features/mmr/tiered.server";
+import { useIsMounted } from "~/hooks/useIsMounted";
 
 type Post = LFGLoaderData["posts"][number];
 
-export function LFGPost({ post }: { post: Post }) {
+export function LFGPost({
+  post,
+  tiersMap,
+}: {
+  post: Post;
+  tiersMap: TiersMap;
+}) {
   return (
     <div className="lfg-post__wide-layout">
       <div className="stack sm">
         <PostUserHeader author={post.author} />
         <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
-        <PostPills post={post} />
+        <PostPills post={post} tiersMap={tiersMap} />
       </div>
       <div>
         <PostTextTypeHeader type={post.type} />
@@ -72,13 +81,19 @@ function PostTime({
   );
 }
 
-function PostPills({ post }: { post: Post }) {
+function PostPills({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
+  const tiers = tiersMap.get(post.author.id);
+  const isMounted = useIsMounted();
+
+  if (!isMounted) return null;
+
   return (
-    <div className="stack sm horizontal">
+    <div className="stack sm xs-row horizontal flex-wrap">
       <PostTimezonePill timezone={post.timezone} />
       {typeof post.author.plusTier === "number" ? (
         <PostPlusServerPill plusTier={post.author.plusTier} />
       ) : null}
+      {tiers ? <PostSkillPills tiers={tiers} /> : null}
       {typeof post.author.languages === "string" ? (
         <PostLanguagePill languages={post.author.languages} />
       ) : null}
@@ -86,7 +101,56 @@ function PostPills({ post }: { post: Post }) {
   );
 }
 
-function PostSkillPill() {}
+const currentSeasonNth = currentOrPreviousSeason(new Date())!.nth;
+
+function PostSkillPills({
+  tiers,
+}: {
+  tiers: NonNullable<ReturnType<TiersMap["get"]>>;
+}) {
+  const hasBoth = tiers.latest && tiers.previous;
+
+  return (
+    <div className="stack xxxs horizontal">
+      {tiers.latest ? (
+        <PostSkillPill
+          seasonNth={currentSeasonNth}
+          tier={tiers.latest}
+          cut={hasBoth ? "END" : undefined}
+        />
+      ) : null}
+      {tiers.previous ? (
+        <PostSkillPill
+          seasonNth={currentSeasonNth - 1}
+          tier={tiers.previous}
+          cut={hasBoth ? "START" : undefined}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function PostSkillPill({
+  seasonNth,
+  tier,
+  cut,
+}: {
+  seasonNth: number;
+  tier: TieredSkill["tier"];
+  cut?: "START" | "END";
+}) {
+  return (
+    <div
+      className={clsx("lfg-post__pill", "lfg-post__tier-pill", {
+        "lfg-post__tier-pill--start": cut === "START",
+        "lfg-post__tier-pill--end": cut === "END",
+      })}
+    >
+      S{seasonNth}
+      <TierImage tier={tier} width={32} className="lfg-post__tier" />
+    </div>
+  );
+}
 
 function PostPlusServerPill({ plusTier }: { plusTier: number }) {
   return (

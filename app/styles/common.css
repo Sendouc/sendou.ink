@@ -891,6 +891,10 @@ dialog::backdrop {
   flex-direction: column;
 }
 
+.stack.xxxs {
+  gap: var(--s-0-5);
+}
+
 .stack.xxs {
   gap: var(--s-1);
 }
@@ -921,6 +925,10 @@ dialog::backdrop {
 
 .stack.lg {
   gap: var(--s-8);
+}
+
+.stack.xs-row {
+  row-gap: var(--s-1-5);
 }
 
 .stack.lg-row {

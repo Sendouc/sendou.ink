@@ -10,6 +10,7 @@ import {
   stageImageUrl,
   tierImageUrl,
 } from "~/utils/urls";
+import clsx from "clsx";
 
 interface ImageProps {
   path: string;
@@ -143,13 +144,13 @@ type TierImageProps = {
   tier: { name: TierName; isPlus: boolean };
 } & Omit<ImageProps, "path" | "alt" | "title" | "size" | "height">;
 
-export function TierImage({ tier, width = 200 }: TierImageProps) {
+export function TierImage({ tier, className, width = 200 }: TierImageProps) {
   const title = `${tier.name}${tier.isPlus ? "+" : ""}`;
 
   const height = width * 0.8675;
 
   return (
-    <div className="tier__container" style={{ width }}>
+    <div className={clsx("tier__container", className)} style={{ width }}>
       <Image
         path={tierImageUrl(tier.name)}
         width={width}
