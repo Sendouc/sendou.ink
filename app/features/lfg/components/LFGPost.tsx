@@ -1,18 +1,29 @@
 import { Avatar } from "~/components/Avatar";
 import type { LFGLoaderData } from "../routes/lfg";
-import { WeaponImage } from "~/components/Image";
+import { Image, WeaponImage } from "~/components/Image";
 import { Flag } from "~/components/Flag";
 import { Button } from "~/components/Button";
 import React from "react";
 import clsx from "clsx";
+import { hourDifferenceBetweenTimezones } from "../core/timezone";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { useTranslation } from "react-i18next";
+import { navIconUrl } from "~/utils/urls";
 
 type Post = LFGLoaderData["posts"][number];
 
 export function LFGPost({ post }: { post: Post }) {
   return (
     <div className="lfg-post__wide-layout">
-      <PostUserHeader author={post.author} />
-      <PostExpandableText text={post.text} />
+      <div className="stack sm">
+        <PostUserHeader author={post.author} />
+        <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
+        <PostPills post={post} />
+      </div>
+      <div>
+        <PostTextTypeHeader type={post.type} />
+        <PostExpandableText text={post.text} />
+      </div>
     </div>
   );
 }
@@ -41,17 +52,93 @@ function PostUserHeader({ author }: { author: Post["author"] }) {
   );
 }
 
-function PostTime() {}
+function PostTime({
+  createdAt,
+  updatedAt,
+}: {
+  createdAt: number;
+  updatedAt: number;
+}) {
+  const { i18n } = useTranslation();
 
-function PostPills() {}
+  return (
+    <div className="text-lighter text-xs font-bold">
+      {databaseTimestampToDate(createdAt).toLocaleString(i18n.language, {
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+      })}
+    </div>
+  );
+}
+
+function PostPills({ post }: { post: Post }) {
+  return (
+    <div className="stack sm horizontal">
+      <PostTimezonePill timezone={post.timezone} />
+      {typeof post.author.plusTier === "number" ? (
+        <PostPlusServerPill plusTier={post.author.plusTier} />
+      ) : null}
+      {typeof post.author.languages === "string" ? (
+        <PostLanguagePill languages={post.author.languages} />
+      ) : null}
+    </div>
+  );
+}
 
 function PostSkillPill() {}
 
-function PostPlusServerPill() {}
+function PostPlusServerPill({ plusTier }: { plusTier: number }) {
+  return (
+    <div className="lfg-post__pill">
+      <Image alt="" path={navIconUrl("plus")} size={18} />
+      {plusTier}
+    </div>
+  );
+}
 
-function PostTimezonePill() {}
+function PostTimezonePill({ timezone }: { timezone: string }) {
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const diff = hourDifferenceBetweenTimezones(userTimezone, timezone);
 
-function PostLanguagePill() {}
+  const textColorClass = () => {
+    const absDiff = Math.abs(diff);
+
+    if (absDiff <= 3) {
+      return "text-success";
+    } else if (absDiff <= 6) {
+      return "text-warning";
+    } else {
+      return "text-error";
+    }
+  };
+
+  return (
+    <div title={timezone} className={clsx("lfg-post__pill", textColorClass())}>
+      {diff === 0 ? "±" : ""}
+      {diff > 0 ? "+" : ""}
+      {diff}h
+    </div>
+  );
+}
+
+function PostLanguagePill({ languages }: { languages: string }) {
+  return (
+    <div className="lfg-post__pill">
+      {languages.replace(/,/g, " / ").toUpperCase()}
+    </div>
+  );
+}
+
+function PostTextTypeHeader({ type }: { type: Post["type"] }) {
+  const { t } = useTranslation(["lfg"]);
+
+  return (
+    <div className="text-xs text-lighter font-bold">
+      {t(`lfg:types.${type}`)}
+    </div>
+  );
+}
 
 const EXPANDABLE_CRITERIA = 500;
 function PostExpandableText({ text }: { text: string }) {

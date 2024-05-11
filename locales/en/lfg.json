@@ -1,0 +1,6 @@
+{
+  "types.PLAYER_FOR_TEAM": "Looking for team",
+  "types.TEAM_FOR_PLAYER": "Looking for players",
+  "types.TEAM_FOR_COACH": "Looking for coach",
+  "types.COACH_FOR_TEAM": "Looking for coachees"
+}

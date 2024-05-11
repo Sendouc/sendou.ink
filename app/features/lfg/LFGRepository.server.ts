@@ -13,6 +13,8 @@ export function posts() {
       "LFGPost.timezone",
       "LFGPost.type",
       "LFGPost.text",
+      "LFGPost.createdAt",
+      "LFGPost.updatedAt",
       jsonObjectFrom(
         eb
           .selectFrom("User")

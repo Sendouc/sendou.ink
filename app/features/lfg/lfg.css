@@ -48,3 +48,14 @@
 .lfg__post-text__show-all-button--expanded {
   bottom: -35px;
 }
+
+.lfg-post__pill {
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lightest);
+  padding: var(--s-0-5) var(--s-2);
+  display: flex;
+  align-items: center;
+  gap: var(--s-0-5);
+}
