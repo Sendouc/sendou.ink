@@ -17,6 +17,8 @@ import { Divider } from "~/components/Divider";
 
 type Post = LFGLoaderData["posts"][number];
 
+// xxx: links to user pages
+
 export function LFGPost({
   post,
   tiersMap,
@@ -372,7 +374,7 @@ function PostExpandableText({
   setIsExpanded: (isExpanded: boolean) => void;
   expandableCriteria?: number;
 }) {
-  const isExpandable = expandableCriteria && text.length > expandableCriteria;
+  const isExpandable = !expandableCriteria || text.length > expandableCriteria;
 
   const isExpanded = !isExpandable ? true : _isExpanded;
 
