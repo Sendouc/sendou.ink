@@ -8,11 +8,12 @@ import clsx from "clsx";
 import { hourDifferenceBetweenTimezones } from "../core/timezone";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { useTranslation } from "react-i18next";
-import { navIconUrl } from "~/utils/urls";
+import { navIconUrl, userSubmittedImage } from "~/utils/urls";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { formatDistanceToNow } from "date-fns";
+import { Divider } from "~/components/Divider";
 
 type Post = LFGLoaderData["posts"][number];
 
@@ -23,6 +24,16 @@ export function LFGPost({
   post: Post;
   tiersMap: TiersMap;
 }) {
+  if (post.team) {
+    return (
+      <TeamLFGPost post={{ ...post, team: post.team }} tiersMap={tiersMap} />
+    );
+  }
+
+  return <UserLFGPost post={post} tiersMap={tiersMap} />;
+}
+
+function UserLFGPost({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
   return (
     <div className="lfg-post__wide-layout">
       <div className="lfg-post__wide-layout__left-row">
@@ -33,6 +44,82 @@ export function LFGPost({
       <div>
         <PostTextTypeHeader type={post.type} />
         <PostExpandableText text={post.text} />
+      </div>
+    </div>
+  );
+}
+
+function TeamLFGPost({
+  post,
+  tiersMap,
+}: {
+  post: Post & { team: NonNullable<Post["team"]> };
+  tiersMap: TiersMap;
+}) {
+  return (
+    <div className="lfg-post__wide-layout">
+      <div className="stack md">
+        <div className="stack xs">
+          <div className="stack horizontal items-center justify-between">
+            <PostTeamLogoHeader team={post.team} />
+            <PostTimezonePill timezone={post.timezone} />
+          </div>
+          <Divider />
+          <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
+        </div>
+        <PostTeamMembersPeek team={post.team} tiersMap={tiersMap} />
+      </div>
+      <div>
+        <PostTextTypeHeader type={post.type} />
+        <PostExpandableText text={post.text} />
+      </div>
+    </div>
+  );
+}
+
+function PostTeamLogoHeader({ team }: { team: NonNullable<Post["team"]> }) {
+  return (
+    <div className="stack horizontal sm items-center font-bold">
+      {team.avatarUrl ? (
+        <Avatar size="xs" url={userSubmittedImage(team.avatarUrl)} />
+      ) : null}
+      {team.name}
+    </div>
+  );
+}
+
+function PostTeamMembersPeek({
+  team,
+  tiersMap,
+}: {
+  team: NonNullable<Post["team"]>;
+  tiersMap: TiersMap;
+}) {
+  return (
+    <div className="stack sm xs-row horizontal flex-wrap">
+      {team.members.map((member) => (
+        <PostTeamMember key={member.id} member={member} tiersMap={tiersMap} />
+      ))}
+    </div>
+  );
+}
+
+function PostTeamMember({
+  member,
+  tiersMap,
+}: {
+  member: NonNullable<Post["team"]>["members"][number];
+  tiersMap: TiersMap;
+}) {
+  const tiers = tiersMap.get(member.id);
+  const tier = tiers?.latest ?? tiers?.previous;
+
+  return (
+    <div className="stack sm items-center flex-same-size">
+      <div className="stack sm items-center">
+        <Avatar size="xs" user={member} />
+        <div className="lfg__post-team-member-name">{member.discordName}</div>
+        {tier ? <TierImage tier={tier} width={32} /> : null}
       </div>
     </div>
   );

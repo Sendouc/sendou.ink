@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 1fr;
   align-items: flex-start;
-  column-gap: var(--s-2);
+  column-gap: var(--s-6);
   row-gap: var(--s-2);
 }
 
@@ -29,6 +29,15 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.lfg__post-team-member-name {
+  max-width: 75px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
 }
 
 .lfg__post-text-container {

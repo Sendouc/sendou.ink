@@ -943,6 +943,10 @@ dialog::backdrop {
   flex-direction: row;
 }
 
+.flex-same-size {
+  flex: 1 1 0px;
+}
+
 .lock-scroll {
   overflow: hidden;
   height: unset;
