@@ -28,6 +28,7 @@ const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
 
 // xxx: +1/+2/+3 visibility
 // xxx: button to bump on post about to get old
+// xxx: button to add new
 
 export default function LFGPage() {
   const data = useLoaderData<typeof loader>();

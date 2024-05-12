@@ -33,22 +33,36 @@ export function LFGPost({
   return <UserLFGPost post={post} tiersMap={tiersMap} />;
 }
 
+const USER_POST_EXPANDABLE_CRITERIA = 500;
 function UserLFGPost({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
   return (
     <div className="lfg-post__wide-layout">
       <div className="lfg-post__wide-layout__left-row">
         <PostUserHeader author={post.author} />
         <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
-        <PostPills post={post} tiersMap={tiersMap} />
+        <PostPills
+          languages={post.author.languages}
+          plusTier={post.author.plusTier}
+          timezone={post.timezone}
+          tiers={tiersMap.get(post.author.id)}
+        />
       </div>
       <div>
         <PostTextTypeHeader type={post.type} />
-        <PostExpandableText text={post.text} />
+        <PostExpandableText
+          text={post.text}
+          isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
+          expandableCriteria={USER_POST_EXPANDABLE_CRITERIA}
+        />
       </div>
     </div>
   );
 }
 
+// xxx: no skills for sendou?
 function TeamLFGPost({
   post,
   tiersMap,
@@ -56,6 +70,8 @@ function TeamLFGPost({
   post: Post & { team: NonNullable<Post["team"]> };
   tiersMap: TiersMap;
 }) {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
   return (
     <div className="lfg-post__wide-layout">
       <div className="stack md">
@@ -67,11 +83,19 @@ function TeamLFGPost({
           <Divider />
           <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
         </div>
-        <PostTeamMembersPeek team={post.team} tiersMap={tiersMap} />
+        {isExpanded ? (
+          <PostTeamMembersFull team={post.team} tiersMap={tiersMap} />
+        ) : (
+          <PostTeamMembersPeek team={post.team} tiersMap={tiersMap} />
+        )}
       </div>
       <div>
         <PostTextTypeHeader type={post.type} />
-        <PostExpandableText text={post.text} />
+        <PostExpandableText
+          text={post.text}
+          isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
+        />
       </div>
     </div>
   );
@@ -99,6 +123,29 @@ function PostTeamMembersPeek({
     <div className="stack sm xs-row horizontal flex-wrap">
       {team.members.map((member) => (
         <PostTeamMember key={member.id} member={member} tiersMap={tiersMap} />
+      ))}
+    </div>
+  );
+}
+
+function PostTeamMembersFull({
+  team,
+  tiersMap,
+}: {
+  team: NonNullable<Post["team"]>;
+  tiersMap: TiersMap;
+}) {
+  return (
+    <div className="stack lg">
+      {team.members.map((member) => (
+        <div key={member.id} className="stack sm">
+          <PostUserHeader author={member} />
+          <PostPills
+            languages={member.languages}
+            plusTier={member.plusTier}
+            tiers={tiersMap.get(member.id)}
+          />
+        </div>
       ))}
     </div>
   );
@@ -182,22 +229,31 @@ function PostTime({
   );
 }
 
-function PostPills({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
-  const tiers = tiersMap.get(post.author.id);
+function PostPills({
+  timezone,
+  plusTier,
+  languages,
+  tiers,
+}: {
+  timezone?: string | null;
+  plusTier?: number | null;
+  languages?: string | null;
+  tiers?: NonNullable<ReturnType<TiersMap["get"]>>;
+}) {
   const isMounted = useIsMounted();
 
   if (!isMounted) return null;
 
   return (
     <div className="stack sm xs-row horizontal flex-wrap">
-      <PostTimezonePill timezone={post.timezone} />
-      {typeof post.author.plusTier === "number" ? (
-        <PostPlusServerPill plusTier={post.author.plusTier} />
-      ) : null}
-      {tiers ? <PostSkillPills tiers={tiers} /> : null}
-      {typeof post.author.languages === "string" ? (
-        <PostLanguagePill languages={post.author.languages} />
-      ) : null}
+      {typeof timezone === "string" && <PostTimezonePill timezone={timezone} />}
+      {typeof plusTier === "number" && (
+        <PostPlusServerPill plusTier={plusTier} />
+      )}
+      {tiers && <PostSkillPills tiers={tiers} />}
+      {typeof languages === "string" && (
+        <PostLanguagePill languages={languages} />
+      )}
     </div>
   );
 }
@@ -305,33 +361,42 @@ function PostTextTypeHeader({ type }: { type: Post["type"] }) {
   );
 }
 
-const EXPANDABLE_CRITERIA = 500;
-function PostExpandableText({ text }: { text: string }) {
-  const isExpandable = text.length > EXPANDABLE_CRITERIA;
+function PostExpandableText({
+  text,
+  isExpanded: _isExpanded,
+  setIsExpanded,
+  expandableCriteria,
+}: {
+  text: string;
+  isExpanded: boolean;
+  setIsExpanded: (isExpanded: boolean) => void;
+  expandableCriteria?: number;
+}) {
+  const isExpandable = expandableCriteria && text.length > expandableCriteria;
 
-  const [expanded, setExpanded] = React.useState(!isExpandable);
+  const isExpanded = !isExpandable ? true : _isExpanded;
 
   return (
     <div
       className={clsx({
-        "lfg__post-text-container": !expanded,
-        "lfg__post-text-container--expanded": expanded,
+        "lfg__post-text-container": !isExpanded,
+        "lfg__post-text-container--expanded": isExpanded,
       })}
     >
       <div className="lfg__post-text">{text}</div>
       {isExpandable ? (
         <Button
-          onClick={() => setExpanded((prev) => !prev)}
+          onClick={() => setIsExpanded(!isExpanded)}
           className={clsx("lfg__post-text__show-all-button", {
-            "lfg__post-text__show-all-button--expanded": expanded,
+            "lfg__post-text__show-all-button--expanded": isExpanded,
           })}
           variant="outlined"
           size="tiny"
         >
-          {expanded ? "Show less" : "Show more"}
+          {isExpanded ? "Show less" : "Show more"}
         </Button>
       ) : null}
-      {!expanded ? <div className="lfg__post-text-cut" /> : null}
+      {!isExpanded ? <div className="lfg__post-text-cut" /> : null}
     </div>
   );
 }

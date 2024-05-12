@@ -29,8 +29,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-// xxx: weaponPool + tell where to change
-// xxx: languages + tell where to change
+// xxx: error handling if trying to pick a type of post they already have
 
 export default function LFGPage() {
   const fetcher = useFetcher();
