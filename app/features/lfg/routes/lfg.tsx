@@ -7,7 +7,8 @@ import type { SendouRouteHandle } from "~/utils/remix";
 import React from "react";
 
 import { loader } from "../loaders/lfg.server";
-export { loader };
+import { action } from "../actions/lfg.server";
+export { loader, action };
 
 import "../lfg.css";
 

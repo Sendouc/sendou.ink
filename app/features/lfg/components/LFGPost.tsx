@@ -14,6 +14,11 @@ import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { formatDistanceToNow } from "date-fns";
 import { Divider } from "~/components/Divider";
+import { useFetcher } from "@remix-run/react";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { TrashIcon } from "~/components/icons/Trash";
+import { useUser } from "~/features/auth/core/user";
+import { isAdmin } from "~/permissions";
 
 type Post = LFGLoaderData["posts"][number];
 
@@ -37,6 +42,7 @@ export function LFGPost({
 
 const USER_POST_EXPANDABLE_CRITERIA = 500;
 function UserLFGPost({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
+  const user = useUser();
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
@@ -52,7 +58,12 @@ function UserLFGPost({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
         />
       </div>
       <div>
-        <PostTextTypeHeader type={post.type} />
+        <div className="stack horizontal justify-between">
+          <PostTextTypeHeader type={post.type} />
+          {isAdmin(user) || post.author.id === user?.id ? (
+            <PostDeleteButton id={post.id} type={post.type} />
+          ) : null}
+        </div>
         <PostExpandableText
           text={post.text}
           isExpanded={isExpanded}
@@ -72,6 +83,7 @@ function TeamLFGPost({
   post: Post & { team: NonNullable<Post["team"]> };
   tiersMap: TiersMap;
 }) {
+  const user = useUser();
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
@@ -92,7 +104,12 @@ function TeamLFGPost({
         )}
       </div>
       <div>
-        <PostTextTypeHeader type={post.type} />
+        <div className="stack horizontal justify-between">
+          <PostTextTypeHeader type={post.type} />
+          {isAdmin(user) || post.author.id === user?.id ? (
+            <PostDeleteButton id={post.id} type={post.type} />
+          ) : null}
+        </div>
         <PostExpandableText
           text={post.text}
           isExpanded={isExpanded}
@@ -360,6 +377,32 @@ function PostTextTypeHeader({ type }: { type: Post["type"] }) {
     <div className="text-xs text-lighter font-bold">
       {t(`lfg:types.${type}`)}
     </div>
+  );
+}
+
+function PostDeleteButton({ id, type }: { id: number; type: Post["type"] }) {
+  const fetcher = useFetcher();
+  const { t } = useTranslation(["lfg"]);
+
+  return (
+    <FormWithConfirm
+      dialogHeading={`Delete post (${t(`lfg:types.${type}`).toLowerCase()})?`}
+      fields={[
+        ["id", id],
+        ["_action", "DELETE_POST"],
+      ]}
+      fetcher={fetcher}
+    >
+      <Button
+        className="build__small-text"
+        variant="minimal-destructive"
+        size="tiny"
+        type="submit"
+        icon={<TrashIcon className="build__icon" />}
+      >
+        Delete
+      </Button>
+    </FormWithConfirm>
   );
 }
 

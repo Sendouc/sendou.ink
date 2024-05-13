@@ -2,14 +2,14 @@ import { z } from "zod";
 import { INDIVIDUAL_POST_TYPES, LFG, TIMEZONES } from "../lfg-constants";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { requireUser } from "~/features/auth/core/user.server";
+import { requireUserId } from "~/features/auth/core/user.server";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { LFG_PAGE } from "~/utils/urls";
 import * as LFGRepository from "../LFGRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const data = await parseRequestFormData({
     request,
     schema,

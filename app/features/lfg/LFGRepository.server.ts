@@ -80,3 +80,7 @@ export function insertPost(
 ) {
   return db.insertInto("LFGPost").values(args).execute();
 }
+
+export function deletePost(id: number) {
+  return db.deleteFrom("LFGPost").where("id", "=", id).execute();
+}
