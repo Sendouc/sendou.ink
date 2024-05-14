@@ -39,6 +39,7 @@ import { useTournament } from "./to.$id";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
 import { Input } from "~/components/Input";
 import { logger } from "~/utils/logger";
+import { userIsBanned } from "~/features/ban/core/banned.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -210,6 +211,11 @@ export const action: ActionFunction = async ({ request, params }) => {
       } else {
         validate(!previousTeam, "User is already on a team");
       }
+
+      validate(
+        !userIsBanned(data.userId),
+        "User trying to be added currently has an active ban from sendou.ink",
+      );
 
       joinTeam({
         userId: data.userId,
