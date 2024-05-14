@@ -9,6 +9,7 @@ import { assertUnreachable } from "~/utils/types";
 import { _action, actualNumber } from "~/utils/zod";
 import { plusTiersFromVotingAndLeaderboard } from "../core/plus-tier.server";
 import { refreshBannedCache } from "~/features/ban/core/banned.server";
+import { logger } from "~/utils/logger";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const data = await parseRequestFormData({
@@ -86,6 +87,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
       refreshBannedCache();
 
+      logger.info("Banned user", {
+        userId: data["user"],
+        byUserId: user.id,
+        reason: data.reason,
+        duration: data.duration
+          ? new Date(data.duration).toLocaleString()
+          : undefined,
+      });
+
       break;
     }
     case "UNBAN_USER": {
@@ -94,6 +104,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       await AdminRepository.unbanUser(data["user"]);
 
       refreshBannedCache();
+
+      logger.info("Unbanned user", {
+        userId: data["user"],
+        byUserId: user.id,
+      });
 
       break;
     }
