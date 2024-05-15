@@ -15,7 +15,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   switch (data._action) {
     case "DELETE_POST": {
-      const posts = await LFGRepository.posts();
+      const posts = await LFGRepository.posts(user.id);
       const post = posts.find((post) => post.id === data.id);
       validate(post, "Post to delete not found");
       validate(

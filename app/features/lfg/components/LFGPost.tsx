@@ -8,21 +8,25 @@ import clsx from "clsx";
 import { hourDifferenceBetweenTimezones } from "../core/timezone";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { useTranslation } from "react-i18next";
-import { navIconUrl, userSubmittedImage } from "~/utils/urls";
+import {
+  lfgNewPostPage,
+  navIconUrl,
+  userPage,
+  userSubmittedImage,
+} from "~/utils/urls";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { formatDistanceToNow } from "date-fns";
 import { Divider } from "~/components/Divider";
-import { useFetcher } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
 import { useUser } from "~/features/auth/core/user";
 import { isAdmin } from "~/permissions";
+import { EditIcon } from "~/components/icons/Edit";
 
 type Post = LFGLoaderData["posts"][number];
-
-// xxx: links to user pages
 
 export function LFGPost({
   post,
@@ -48,13 +52,22 @@ function UserLFGPost({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
   return (
     <div className="lfg-post__wide-layout">
       <div className="lfg-post__wide-layout__left-row">
-        <PostUserHeader author={post.author} />
+        <PostUserHeader
+          author={post.author}
+          includeWeapons={post.type !== "COACH_FOR_TEAM"}
+        />
         <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
         <PostPills
           languages={post.author.languages}
           plusTier={post.author.plusTier}
           timezone={post.timezone}
-          tiers={tiersMap.get(post.author.id)}
+          tiers={
+            post.type !== "COACH_FOR_TEAM"
+              ? tiersMap.get(post.author.id)
+              : undefined
+          }
+          canEdit={post.author.id === user?.id}
+          postId={post.id}
         />
       </div>
       <div>
@@ -75,7 +88,6 @@ function UserLFGPost({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
   );
 }
 
-// xxx: no skills for sendou?
 function TeamLFGPost({
   post,
   tiersMap,
@@ -83,6 +95,7 @@ function TeamLFGPost({
   post: Post & { team: NonNullable<Post["team"]> };
   tiersMap: TiersMap;
 }) {
+  const isMounted = useIsMounted();
   const user = useUser();
   const [isExpanded, setIsExpanded] = React.useState(false);
 
@@ -92,13 +105,22 @@ function TeamLFGPost({
         <div className="stack xs">
           <div className="stack horizontal items-center justify-between">
             <PostTeamLogoHeader team={post.team} />
-            <PostTimezonePill timezone={post.timezone} />
+            {isMounted && <PostTimezonePill timezone={post.timezone} />}
           </div>
           <Divider />
-          <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
+          <div className="stack horizontal justify-between">
+            <PostTime createdAt={post.createdAt} updatedAt={post.updatedAt} />
+            {post.author.id === user?.id ? (
+              <PostEditButton id={post.id} />
+            ) : null}
+          </div>
         </div>
         {isExpanded ? (
-          <PostTeamMembersFull team={post.team} tiersMap={tiersMap} />
+          <PostTeamMembersFull
+            team={post.team}
+            tiersMap={tiersMap}
+            postId={post.id}
+          />
         ) : (
           <PostTeamMembersPeek team={post.team} tiersMap={tiersMap} />
         )}
@@ -150,19 +172,22 @@ function PostTeamMembersPeek({
 function PostTeamMembersFull({
   team,
   tiersMap,
+  postId,
 }: {
   team: NonNullable<Post["team"]>;
   tiersMap: TiersMap;
+  postId: number;
 }) {
   return (
     <div className="stack lg">
       {team.members.map((member) => (
         <div key={member.id} className="stack sm">
-          <PostUserHeader author={member} />
+          <PostUserHeader author={member} includeWeapons />
           <PostPills
             languages={member.languages}
             plusTier={member.plusTier}
             tiers={tiersMap.get(member.id)}
+            postId={postId}
           />
         </div>
       ))}
@@ -184,32 +209,44 @@ function PostTeamMember({
     <div className="stack sm items-center flex-same-size">
       <div className="stack sm items-center">
         <Avatar size="xs" user={member} />
-        <div className="lfg__post-team-member-name">{member.discordName}</div>
+        <Link to={userPage(member)} className="lfg__post-team-member-name">
+          {member.discordName}
+        </Link>
         {tier ? <TierImage tier={tier} width={32} /> : null}
       </div>
     </div>
   );
 }
 
-function PostUserHeader({ author }: { author: Post["author"] }) {
+function PostUserHeader({
+  author,
+  includeWeapons,
+}: {
+  author: Post["author"];
+  includeWeapons: boolean;
+}) {
   return (
     <div className="stack sm horizontal items-center">
       <Avatar size="xsm" user={author} />
       <div>
         <div className="stack horizontal sm items-center text-md font-bold">
-          <span className="lfg__post-user-name">{author.discordName}</span>{" "}
+          <Link to={userPage(author)} className="lfg__post-user-name">
+            {author.discordName}
+          </Link>{" "}
           {author.country ? <Flag countryCode={author.country} tiny /> : null}
         </div>
-        <div className="stack horizontal sm">
-          {author.weaponPool.map(({ weaponSplId }) => (
-            <WeaponImage
-              key={weaponSplId}
-              weaponSplId={weaponSplId}
-              size={26}
-              variant="build"
-            />
-          ))}
-        </div>
+        {includeWeapons ? (
+          <div className="stack horizontal sm">
+            {author.weaponPool.map(({ weaponSplId }) => (
+              <WeaponImage
+                key={weaponSplId}
+                weaponSplId={weaponSplId}
+                size={26}
+                variant="build"
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -253,11 +290,15 @@ function PostPills({
   plusTier,
   languages,
   tiers,
+  canEdit,
+  postId,
 }: {
   timezone?: string | null;
   plusTier?: number | null;
   languages?: string | null;
   tiers?: NonNullable<ReturnType<TiersMap["get"]>>;
+  canEdit?: boolean;
+  postId: number;
 }) {
   const isMounted = useIsMounted();
 
@@ -273,6 +314,7 @@ function PostPills({
       {typeof languages === "string" && (
         <PostLanguagePill languages={languages} />
       )}
+      {canEdit && <PostEditButton id={postId} />}
     </div>
   );
 }
@@ -377,6 +419,15 @@ function PostTextTypeHeader({ type }: { type: Post["type"] }) {
     <div className="text-xs text-lighter font-bold">
       {t(`lfg:types.${type}`)}
     </div>
+  );
+}
+
+function PostEditButton({ id }: { id: number }) {
+  return (
+    <Link className="lfg-post__edit-button" to={lfgNewPostPage(id)}>
+      <EditIcon />
+      Edit
+    </Link>
   );
 }
 

@@ -1,11 +1,12 @@
+import { sub } from "date-fns";
 import type { NotNull } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { TablesInsertable } from "~/db/tables";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 
-// xxx: exclude old posts except own
-export function posts() {
+export function posts(userId?: number) {
   return db
     .selectFrom("LFGPost")
     .select(({ eb }) => [
@@ -71,14 +72,39 @@ export function posts() {
       ).as("team"),
     ])
     .orderBy("LFGPost.updatedAt desc")
+    .where((eb) =>
+      eb.or([
+        eb("LFGPost.updatedAt", ">", dateToDatabaseTimestamp(thirtyDaysAgo())),
+        eb("LFGPost.authorId", "=", userId ?? -1),
+      ]),
+    )
     .$narrowType<{ author: NotNull }>()
     .execute();
 }
+
+const thirtyDaysAgo = () => sub(new Date(), { days: 30 });
 
 export function insertPost(
   args: Omit<TablesInsertable["LFGPost"], "updatedAt">,
 ) {
   return db.insertInto("LFGPost").values(args).execute();
+}
+
+export function updatePost(
+  postId: number,
+  args: Omit<TablesInsertable["LFGPost"], "updatedAt" | "authorId">,
+) {
+  return db
+    .updateTable("LFGPost")
+    .set({
+      teamId: args.teamId,
+      text: args.text,
+      timezone: args.timezone,
+      type: args.type,
+      updatedAt: dateToDatabaseTimestamp(new Date()),
+    })
+    .where("id", "=", postId)
+    .execute();
 }
 
 export function deletePost(id: number) {

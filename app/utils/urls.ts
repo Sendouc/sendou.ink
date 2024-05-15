@@ -339,6 +339,9 @@ export const uploadImagePage = (type: ImageUploadType) =>
 
 export const vodVideoPage = (videoId: number) => `${VODS_PAGE}/${videoId}`;
 
+export const lfgNewPostPage = (postId?: number) =>
+  `${LFG_PAGE}/new${postId ? `?postId=${postId}` : ""}`;
+
 export const badgeUrl = ({
   code,
   extension,

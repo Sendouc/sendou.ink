@@ -29,6 +29,7 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  color: var(--text);
 }
 
 .lfg__post-team-member-name {
@@ -38,6 +39,7 @@
   white-space: nowrap;
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
+  color: var(--text);
 }
 
 .lfg__post-text-container {
@@ -88,6 +90,21 @@
   align-items: center;
   gap: var(--s-0-5);
   position: relative;
+}
+
+.lfg-post__edit-button {
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lightest);
+  padding: var(--s-0-5) var(--s-2);
+  color: var(--text);
+  display: flex;
+  gap: var(--s-1);
+}
+
+.lfg-post__edit-button > svg {
+  width: 12px;
 }
 
 .lfg-post__tier-pill--end {

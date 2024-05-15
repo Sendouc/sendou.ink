@@ -3,10 +3,12 @@ import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { userSkills } from "~/features/mmr/tiered.server";
 import type { Unpacked } from "~/utils/types";
 import * as LFGRepository from "../LFGRepository.server";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { getUserId } from "~/features/auth/core/user.server";
 
-// xxx: skills
-export const loader = async (/*{}: LoaderFunctionArgs*/) => {
-  const posts = await LFGRepository.posts();
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const user = await getUserId(request);
+  const posts = await LFGRepository.posts(user?.id);
 
   return {
     posts,

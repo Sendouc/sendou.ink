@@ -2,9 +2,11 @@ import { Main } from "~/components/Main";
 import { useLoaderData } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/node";
 import { LFGPost } from "../components/LFGPost";
-import { LFG_PAGE, navIconUrl } from "~/utils/urls";
+import { LFG_PAGE, lfgNewPostPage, navIconUrl } from "~/utils/urls";
 import type { SendouRouteHandle } from "~/utils/remix";
 import React from "react";
+import { LinkButton } from "~/components/Button";
+import { useUser } from "~/features/auth/core/user";
 
 import { loader } from "../loaders/lfg.server";
 import { action } from "../actions/lfg.server";
@@ -29,15 +31,22 @@ const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
 
 // xxx: +1/+2/+3 visibility
 // xxx: button to bump on post about to get old
-// xxx: button to add new
 
 export default function LFGPage() {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
 
   const tiersMap = React.useMemo(() => unserializeTiers(data), [data]);
 
   return (
-    <Main className="stack lg">
+    <Main className="stack xl">
+      {user && (
+        <div className="stack sm horizontal items-center justify-end">
+          <LinkButton to={lfgNewPostPage()} size="tiny">
+            Add new
+          </LinkButton>
+        </div>
+      )}
       {data.posts.map((post) => (
         <LFGPost key={post.id} post={post} tiersMap={tiersMap} />
       ))}

@@ -2,7 +2,7 @@ import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
-import { INDIVIDUAL_POST_TYPES, LFG, TIMEZONES } from "../lfg-constants";
+import { TEAM_POST_TYPES, LFG, TIMEZONES } from "../lfg-constants";
 import * as React from "react";
 import { Label } from "~/components/Label";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -18,6 +18,7 @@ import { useUser } from "~/features/auth/core/user";
 
 import { loader } from "../loaders/lfg.new.server";
 import { action } from "../actions/lfg.new.server";
+import type { Tables } from "~/db/tables";
 export { loader, action };
 
 export const handle: SendouRouteHandle = {
@@ -32,38 +33,55 @@ export const handle: SendouRouteHandle = {
 // xxx: error handling if trying to pick a type of post they already have
 
 export default function LFGPage() {
+  const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const { t } = useTranslation();
+  const [type, setType] = React.useState(data.postToEdit?.type ?? LFG.types[0]);
 
   return (
     <Main halfWidth>
-      <h2 className="text-lg mb-4">New LFG post</h2>
+      <h2 className="text-lg mb-4">
+        {data.postToEdit ? "Editing LFG post" : "New LFG post"}
+      </h2>
       <fetcher.Form className="stack md items-start" method="post">
-        <TypeSelect />
+        {data.postToEdit ? (
+          <input type="hidden" name="postId" value={data.postToEdit.id} />
+        ) : null}
+        <TypeSelect type={type} setType={setType} />
         <TimezoneSelect />
         <Textarea />
         <Languages />
-        <WeaponPool />
+        {type !== "COACH_FOR_TEAM" && <WeaponPool />}
         <SubmitButton state={fetcher.state}>{t("actions.submit")}</SubmitButton>
       </fetcher.Form>
     </Main>
   );
 }
 
-function TypeSelect() {
+function TypeSelect({
+  type,
+  setType,
+}: {
+  type: Tables["LFGPost"]["type"];
+  setType: (type: Tables["LFGPost"]["type"]) => void;
+}) {
   const { t } = useTranslation(["lfg"]);
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
       <Label>Type</Label>
-      <select name="type">
+      <select
+        name="type"
+        value={type}
+        onChange={(e) => setType(e.target.value as Tables["LFGPost"]["type"])}
+      >
         {LFG.types
-          .filter((type) => data.team || INDIVIDUAL_POST_TYPES.includes(type))
+          .filter((type) => data.team || !TEAM_POST_TYPES.includes(type))
           .map((type) => (
             <option key={type} value={type}>
               {t(`lfg:types.${type}`)}{" "}
-              {data.team && !INDIVIDUAL_POST_TYPES.includes(type)
+              {data.team && TEAM_POST_TYPES.includes(type)
                 ? `(${data.team.name})`
                 : ""}
             </option>
@@ -74,7 +92,10 @@ function TypeSelect() {
 }
 
 function TimezoneSelect() {
-  const [selected, setSelected] = React.useState(TIMEZONES[0]);
+  const data = useLoaderData<typeof loader>();
+  const [selected, setSelected] = React.useState(
+    data.postToEdit?.timezone ?? TIMEZONES[0],
+  );
 
   React.useEffect(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -103,8 +124,8 @@ function TimezoneSelect() {
 
 // xxx: markdown for patrons?
 function Textarea() {
-  const initialValue = undefined;
-  const [value, setValue] = React.useState(initialValue ?? "");
+  const data = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(data.postToEdit?.text ?? "");
 
   return (
     <div>
@@ -126,7 +147,6 @@ function Textarea() {
   );
 }
 
-// xxx: hide here + lfgpost component when coach
 function WeaponPool() {
   const user = useUser();
   const data = useLoaderData<typeof loader>();

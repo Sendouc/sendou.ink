@@ -11,9 +11,9 @@ export const LFG = {
   ] as const,
 };
 
-export const INDIVIDUAL_POST_TYPES: Array<Tables["LFGPost"]["type"]> = [
-  "PLAYER_FOR_TEAM",
-  "COACH_FOR_TEAM",
+export const TEAM_POST_TYPES: Array<Tables["LFGPost"]["type"]> = [
+  "TEAM_FOR_COACH",
+  "TEAM_FOR_PLAYER",
 ];
 
 export const TIMEZONES = [
