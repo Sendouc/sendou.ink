@@ -28,7 +28,6 @@ import { EditIcon } from "~/components/icons/Edit";
 
 type Post = LFGLoaderData["posts"][number];
 
-// xxx: pills layout shift
 export function LFGPost({
   post,
   tiersMap,
@@ -303,11 +302,16 @@ function PostPills({
 }) {
   const isMounted = useIsMounted();
 
-  if (!isMounted) return null;
-
   return (
-    <div className="stack sm xs-row horizontal flex-wrap">
-      {typeof timezone === "string" && <PostTimezonePill timezone={timezone} />}
+    <div
+      className={clsx("stack sm xs-row horizontal flex-wrap", {
+        invisible: !isMounted,
+      })}
+    >
+      {typeof timezone === "string" && isMounted && (
+        <PostTimezonePill timezone={timezone} />
+      )}
+      {!isMounted && <PostTimezonePillPlaceholder />}
       {typeof plusTier === "number" && (
         <PostPlusServerPill plusTier={plusTier} />
       )}
@@ -318,6 +322,10 @@ function PostPills({
       {canEdit && <PostEditButton id={postId} />}
     </div>
   );
+}
+
+function PostTimezonePillPlaceholder() {
+  return <div className="lfg-post__pill lfg-post__pill--placeholder" />;
 }
 
 const currentSeasonNth = currentOrPreviousSeason(new Date())!.nth;

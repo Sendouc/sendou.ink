@@ -92,6 +92,11 @@
   position: relative;
 }
 
+.lfg-post__pill--placeholder {
+  visibility: hidden;
+  width: 37px;
+}
+
 .lfg-post__edit-button {
   font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
