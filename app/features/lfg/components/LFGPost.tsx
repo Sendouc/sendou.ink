@@ -28,6 +28,8 @@ import { EditIcon } from "~/components/icons/Edit";
 
 type Post = LFGLoaderData["posts"][number];
 
+// xxx: weapons in order + 5 star
+
 export function LFGPost({
   post,
   tiersMap,

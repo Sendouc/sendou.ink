@@ -13,6 +13,10 @@ import { add, sub } from "date-fns";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { LFG } from "../lfg-constants";
 import { SubmitButton } from "~/components/SubmitButton";
+import type { LFGFilter } from "../lfg-types";
+import { filterPosts } from "../core/filtering";
+import { LFGAddFilterButton } from "../components/LFGAddFilterButton";
+import { LFGFilters } from "../components/LFGFilters";
 
 import { loader } from "../loaders/lfg.server";
 import { action } from "../actions/lfg.server";
@@ -30,6 +34,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export type LFGLoaderData = SerializeFrom<typeof loader>;
+export type LFGLoaderPost = Unpacked<LFGLoaderData["posts"]>;
 export type TiersMap = ReturnType<typeof unserializeTiers>;
 
 const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
@@ -40,8 +45,12 @@ const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
 export default function LFGPage() {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
+  // xxx: persist to search params
+  const [filters, setFilters] = React.useState<LFGFilter[]>([]);
 
   const tiersMap = React.useMemo(() => unserializeTiers(data), [data]);
+
+  const filteredPosts = filterPosts(data.posts, filters, tiersMap);
 
   const showExpiryAlert = (post: Unpacked<LFGLoaderData["posts"]>) => {
     if (post.author.id !== user?.id) return false;
@@ -58,20 +67,38 @@ export default function LFGPage() {
 
   return (
     <Main className="stack xl">
-      {user && (
-        <div className="stack sm horizontal items-center justify-end">
-          <LinkButton to={lfgNewPostPage()} size="tiny">
-            Add new
-          </LinkButton>
-        </div>
-      )}
-      {data.posts.map((post) => (
+      <div className="stack horizontal justify-between">
+        <LFGAddFilterButton
+          addFilter={(newFilter) => setFilters([...filters, newFilter])}
+        />
+        {user && (
+          <div className="stack sm horizontal items-center justify-end">
+            <LinkButton to={lfgNewPostPage()} size="tiny">
+              Add new
+            </LinkButton>
+          </div>
+        )}
+      </div>
+      <LFGFilters
+        filters={filters}
+        changeFilter={(newFilter) =>
+          setFilters(
+            filters.map((filter) =>
+              filter._tag === newFilter._tag ? newFilter : filter,
+            ),
+          )
+        }
+        removeFilterByTag={(tag) =>
+          setFilters(filters.filter((filter) => filter._tag !== tag))
+        }
+      />
+      {filteredPosts.map((post) => (
         <div key={post.id} className="stack sm">
           {showExpiryAlert(post) ? <PostExpiryAlert postId={post.id} /> : null}
           <LFGPost post={post} tiersMap={tiersMap} />
         </div>
       ))}
-      {data.posts.length === 0 ? (
+      {filteredPosts.length === 0 ? (
         <div className="text-lighter text-lg font-semi-bold text-center mt-6">
           No posts matching the filter
         </div>
