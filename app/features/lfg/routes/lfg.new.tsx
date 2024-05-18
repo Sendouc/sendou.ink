@@ -19,6 +19,8 @@ import { useUser } from "~/features/auth/core/user";
 import { loader } from "../loaders/lfg.new.server";
 import { action } from "../actions/lfg.new.server";
 import type { Tables } from "~/db/tables";
+import { LinkButton } from "~/components/Button";
+import { ArrowLeftIcon } from "~/components/icons/ArrowLeft";
 export { loader, action };
 
 export const handle: SendouRouteHandle = {
@@ -30,13 +32,23 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-// xxx: error handling if trying to pick a type of post they already have
-
 export default function LFGPage() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const { t } = useTranslation();
+  const availableTypes = useAvailablePostTypes();
   const [type, setType] = React.useState(data.postToEdit?.type ?? LFG.types[0]);
+
+  if (availableTypes.length === 0) {
+    return (
+      <Main halfWidth className="stack items-center">
+        <h2 className="text-lg mb-4">You can&apos;t create any more posts</h2>
+        <LinkButton to={LFG_PAGE} icon={<ArrowLeftIcon />}>
+          Go back
+        </LinkButton>
+      </Main>
+    );
+  }
 
   return (
     <Main halfWidth>
@@ -47,7 +59,11 @@ export default function LFGPage() {
         {data.postToEdit ? (
           <input type="hidden" name="postId" value={data.postToEdit.id} />
         ) : null}
-        <TypeSelect type={type} setType={setType} />
+        <TypeSelect
+          type={type}
+          setType={setType}
+          availableTypes={availableTypes}
+        />
         <TimezoneSelect />
         <Textarea />
         <Languages />
@@ -58,12 +74,26 @@ export default function LFGPage() {
   );
 }
 
+const useAvailablePostTypes = () => {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    LFG.types
+      // can't look for a team, if not in one
+      .filter((type) => data.team || !TEAM_POST_TYPES.includes(type))
+      // can't post two posts of same type
+      .filter((type) => !data.userPostTypes.includes(type))
+  );
+};
+
 function TypeSelect({
   type,
   setType,
+  availableTypes,
 }: {
   type: Tables["LFGPost"]["type"];
   setType: (type: Tables["LFGPost"]["type"]) => void;
+  availableTypes: Tables["LFGPost"]["type"][];
 }) {
   const { t } = useTranslation(["lfg"]);
   const data = useLoaderData<typeof loader>();
@@ -76,16 +106,14 @@ function TypeSelect({
         value={type}
         onChange={(e) => setType(e.target.value as Tables["LFGPost"]["type"])}
       >
-        {LFG.types
-          .filter((type) => data.team || !TEAM_POST_TYPES.includes(type))
-          .map((type) => (
-            <option key={type} value={type}>
-              {t(`lfg:types.${type}`)}{" "}
-              {data.team && TEAM_POST_TYPES.includes(type)
-                ? `(${data.team.name})`
-                : ""}
-            </option>
-          ))}
+        {availableTypes.map((type) => (
+          <option key={type} value={type}>
+            {t(`lfg:types.${type}`)}{" "}
+            {data.team && TEAM_POST_TYPES.includes(type)
+              ? `(${data.team.name})`
+              : ""}
+          </option>
+        ))}
       </select>
     </div>
   );

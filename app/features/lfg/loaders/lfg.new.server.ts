@@ -6,6 +6,7 @@ import { z } from "zod";
 import { id } from "~/utils/zod";
 import { parseSafeSearchParams } from "~/utils/remix";
 import * as LFGRepository from "../LFGRepository.server";
+import type { Unpacked } from "~/utils/types";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUserId(request);
@@ -14,12 +15,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     String(user.id),
   );
   const userQSettingsData = await QSettingsRepository.settingsByUserId(user.id);
+  const allPosts = await LFGRepository.posts(user.id);
 
   return {
     team: userProfileData?.team,
     weaponPool: userProfileData?.weapons,
     languages: userQSettingsData.languages,
-    postToEdit: await buildToEditFromSearchParams(request, user.id),
+    postToEdit: searchParamsToBuildToEdit(request, user.id, allPosts),
+    userPostTypes: userPostTypes(allPosts, user.id),
   };
 };
 
@@ -27,18 +30,24 @@ const searchParamsSchema = z.object({
   postId: id,
 });
 
-const buildToEditFromSearchParams = async (
+const searchParamsToBuildToEdit = (
   request: LoaderFunctionArgs["request"],
   userId: number,
+  allPosts: Unpacked<ReturnType<typeof LFGRepository.posts>>,
 ) => {
   const params = parseSafeSearchParams({ request, schema: searchParamsSchema });
 
   if (!params.success) return;
 
-  const allPosts = await LFGRepository.posts(userId);
   const post = allPosts.find(
     (p) => p.id === params.data.postId && p.author.id === userId,
   );
 
   return post;
 };
+
+const userPostTypes = (
+  allPosts: Unpacked<ReturnType<typeof LFGRepository.posts>>,
+  userId: number,
+) =>
+  allPosts.filter((post) => post.author.id === userId).map((post) => post.type);
