@@ -267,6 +267,7 @@ export interface LFGPost {
   timezone: string;
   authorId: number;
   teamId: number | null;
+  plusTierVisibility: number | null;
   updatedAt: Generated<number>;
   createdAt: GeneratedAlways<number>;
 }

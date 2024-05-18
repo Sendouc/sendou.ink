@@ -28,8 +28,6 @@ import { EditIcon } from "~/components/icons/Edit";
 
 type Post = LFGLoaderData["posts"][number];
 
-// xxx: weapons in order + 5 star
-
 export function LFGPost({
   post,
   tiersMap,
@@ -228,28 +226,30 @@ function PostUserHeader({
   includeWeapons: boolean;
 }) {
   return (
-    <div className="stack sm horizontal items-center">
-      <Avatar size="xsm" user={author} />
-      <div>
-        <div className="stack horizontal sm items-center text-md font-bold">
-          <Link to={userPage(author)} className="lfg__post-user-name">
-            {author.discordName}
-          </Link>{" "}
-          {author.country ? <Flag countryCode={author.country} tiny /> : null}
-        </div>
-        {includeWeapons ? (
-          <div className="stack horizontal sm">
-            {author.weaponPool.map(({ weaponSplId }) => (
-              <WeaponImage
-                key={weaponSplId}
-                weaponSplId={weaponSplId}
-                size={26}
-                variant="build"
-              />
-            ))}
+    <div className="stack sm">
+      <div className="stack sm horizontal items-center">
+        <Avatar size="xsm" user={author} />
+        <div>
+          <div className="stack horizontal sm items-center text-md font-bold">
+            <Link to={userPage(author)} className="lfg__post-user-name">
+              {author.discordName}
+            </Link>{" "}
+            {author.country ? <Flag countryCode={author.country} tiny /> : null}
           </div>
-        ) : null}
+        </div>
       </div>
+      {includeWeapons ? (
+        <div className="stack horizontal sm">
+          {author.weaponPool.map(({ weaponSplId, isFavorite }) => (
+            <WeaponImage
+              key={weaponSplId}
+              weaponSplId={weaponSplId}
+              size={32}
+              variant={isFavorite ? "badge-5-star" : "badge"}
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -9,6 +9,7 @@ export function up(db) {
         "timezone" text not null,
         "authorId" integer not null,
         "teamId" integer,
+        "plusTierVisibility" integer,
         "updatedAt" integer default (strftime('%s', 'now')) not null,
         "createdAt" integer default (strftime('%s', 'now')) not null,
         foreign key ("authorId") references "User"("id") on delete restrict,

@@ -34,7 +34,7 @@ export function posts(maybeUserId?: number) {
                 .selectFrom("UserWeapon")
                 .whereRef("UserWeapon.userId", "=", "User.id")
                 .orderBy("UserWeapon.order asc")
-                .select("UserWeapon.weaponSplId"),
+                .select(["UserWeapon.weaponSplId", "UserWeapon.isFavorite"]),
             ).as("weaponPool"),
           ])
           .whereRef("User.id", "=", "LFGPost.authorId"),
@@ -66,7 +66,10 @@ export function posts(maybeUserId?: number) {
                       .selectFrom("UserWeapon")
                       .whereRef("UserWeapon.userId", "=", "User.id")
                       .orderBy("UserWeapon.order asc")
-                      .select("UserWeapon.weaponSplId"),
+                      .select([
+                        "UserWeapon.weaponSplId",
+                        "UserWeapon.isFavorite",
+                      ]),
                   ).as("weaponPool"),
                 ])
                 .whereRef("TeamMember.teamId", "=", "Team.id"),

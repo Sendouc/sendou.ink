@@ -58,10 +58,11 @@ const items: Record<
   },
 };
 
-// xxx: filter those that are already in filters
 export function LFGAddFilterButton({
+  filters,
   addFilter,
 }: {
+  filters: LFGFilter[];
   addFilter: (filter: LFGFilter) => void;
 }) {
   return (
@@ -69,6 +70,7 @@ export function LFGAddFilterButton({
       items={Object.entries(items).map(([tag, item]) => ({
         id: tag,
         text: t(item.text),
+        disabled: filters.some((filter) => filter._tag === tag),
         onClick: () => addFilter(item.defaultFilter),
       }))}
       button={FilterMenuButton}

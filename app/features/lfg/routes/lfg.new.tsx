@@ -150,7 +150,6 @@ function TimezoneSelect() {
   );
 }
 
-// xxx: markdown for patrons?
 function Textarea() {
   const data = useLoaderData<typeof loader>();
   const [value, setValue] = React.useState(data.postToEdit?.text ?? "");

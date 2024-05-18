@@ -25,11 +25,10 @@ export function LFGFilters({
 
   return (
     <div className="stack md">
-      {filters.map((filter, i) => (
+      {filters.map((filter) => (
         <Filter
           key={filter._tag}
           filter={filter}
-          nth={i + 1}
           changeFilter={changeFilter}
           removeFilter={() => removeFilterByTag(filter._tag)}
         />
@@ -40,19 +39,17 @@ export function LFGFilters({
 
 function Filter({
   filter,
-  nth,
   changeFilter,
   removeFilter,
 }: {
   filter: LFGFilter;
-  nth: number;
   changeFilter: (newFilter: LFGFilter) => void;
   removeFilter: () => void;
 }) {
   return (
     <div>
       <div className="stack horizontal justify-between">
-        <Label>Filter {nth}</Label>
+        <Label>{filter._tag} filter</Label>
         <Button
           icon={<CrossIcon />}
           size="tiny"
@@ -113,7 +110,6 @@ function TypeFilterFields({
 
   return (
     <div>
-      <Label>Type</Label>
       <select
         className="w-max"
         value={value}
@@ -143,7 +139,6 @@ function TimezoneFilterFields({
 }) {
   return (
     <div>
-      <Label>Max hour difference</Label>
       <input
         type="number"
         value={value}
@@ -169,7 +164,6 @@ function LanguageFilterFields({
 }) {
   return (
     <div>
-      <Label>Language</Label>
       <select
         className="w-max"
         value={value}
@@ -199,7 +193,6 @@ function PlusTierFilterFields({
 }) {
   return (
     <div>
-      <Label>Plus tier</Label>
       <select
         value={value}
         onChange={(e) =>
@@ -226,7 +219,6 @@ function TierFilterFields({
 }) {
   return (
     <div>
-      <Label>Min tier</Label>
       <select
         value={value}
         onChange={(e) =>

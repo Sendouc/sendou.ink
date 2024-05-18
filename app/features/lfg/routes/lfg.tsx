@@ -1,6 +1,6 @@
 import { Main } from "~/components/Main";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/node";
+import type { MetaFunction, SerializeFrom } from "@remix-run/node";
 import { LFGPost } from "../components/LFGPost";
 import { LFG_PAGE, lfgNewPostPage, navIconUrl } from "~/utils/urls";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -17,6 +17,7 @@ import type { LFGFilter } from "../lfg-types";
 import { filterPosts } from "../core/filtering";
 import { LFGAddFilterButton } from "../components/LFGAddFilterButton";
 import { LFGFilters } from "../components/LFGFilters";
+import { makeTitle } from "~/utils/strings";
 
 import { loader } from "../loaders/lfg.server";
 import { action } from "../actions/lfg.server";
@@ -33,6 +34,10 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
+export const meta: MetaFunction = () => {
+  return [{ title: makeTitle("Looking for group") }];
+};
+
 export type LFGLoaderData = SerializeFrom<typeof loader>;
 export type LFGLoaderPost = Unpacked<LFGLoaderData["posts"]>;
 export type TiersMap = ReturnType<typeof unserializeTiers>;
@@ -41,6 +46,7 @@ const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
   new Map(data.tiersMap);
 
 // xxx: +1/+2/+3 visibility
+// xxx: e2e test
 
 export default function LFGPage() {
   const user = useUser();
@@ -70,6 +76,7 @@ export default function LFGPage() {
       <div className="stack horizontal justify-between">
         <LFGAddFilterButton
           addFilter={(newFilter) => setFilters([...filters, newFilter])}
+          filters={filters}
         />
         {user && (
           <div className="stack sm horizontal items-center justify-end">
