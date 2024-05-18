@@ -3,6 +3,7 @@ import type { Tables } from "~/db/tables";
 export const LFG = {
   MIN_TEXT_LENGTH: 1,
   MAX_TEXT_LENGTH: 2_000,
+  POST_FRESHNESS_DAYS: 30 as const,
   types: [
     "PLAYER_FOR_TEAM",
     "TEAM_FOR_PLAYER",

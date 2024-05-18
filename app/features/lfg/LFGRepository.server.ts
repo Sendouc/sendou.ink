@@ -1,12 +1,16 @@
 import { sub } from "date-fns";
-import type { NotNull } from "kysely";
+import { sql, type NotNull } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { TablesInsertable } from "~/db/tables";
-import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { databaseTimestampNow, dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
+import { LFG } from "./lfg-constants";
 
-export function posts(userId?: number) {
+export function posts(maybeUserId?: number) {
+  // "-1" won't match any user
+  const userId = maybeUserId ?? -1;
+
   return db
     .selectFrom("LFGPost")
     .select(({ eb }) => [
@@ -71,18 +75,24 @@ export function posts(userId?: number) {
           .whereRef("Team.id", "=", "LFGPost.teamId"),
       ).as("team"),
     ])
+    .orderBy(sql`LFGPost.authorId = ${sql`${userId}`} desc`)
     .orderBy("LFGPost.updatedAt desc")
     .where((eb) =>
       eb.or([
-        eb("LFGPost.updatedAt", ">", dateToDatabaseTimestamp(thirtyDaysAgo())),
-        eb("LFGPost.authorId", "=", userId ?? -1),
+        eb(
+          "LFGPost.updatedAt",
+          ">",
+          dateToDatabaseTimestamp(postExpiryCutoff()),
+        ),
+        eb("LFGPost.authorId", "=", userId),
       ]),
     )
     .$narrowType<{ author: NotNull }>()
     .execute();
 }
 
-const thirtyDaysAgo = () => sub(new Date(), { days: 30 });
+const postExpiryCutoff = () =>
+  sub(new Date(), { days: LFG.POST_FRESHNESS_DAYS });
 
 export function insertPost(
   args: Omit<TablesInsertable["LFGPost"], "updatedAt">,
@@ -102,6 +112,16 @@ export function updatePost(
       timezone: args.timezone,
       type: args.type,
       updatedAt: dateToDatabaseTimestamp(new Date()),
+    })
+    .where("id", "=", postId)
+    .execute();
+}
+
+export function bumpPost(postId: number) {
+  return db
+    .updateTable("LFGPost")
+    .set({
+      updatedAt: databaseTimestampNow(),
     })
     .where("id", "=", postId)
     .execute();

@@ -28,6 +28,7 @@ import { EditIcon } from "~/components/icons/Edit";
 
 type Post = LFGLoaderData["posts"][number];
 
+// xxx: pills layout shift
 export function LFGPost({
   post,
   tiersMap,

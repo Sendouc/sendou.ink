@@ -9,6 +9,10 @@ export function dateToDatabaseTimestamp(date: Date) {
   return Math.floor(date.getTime() / 1000);
 }
 
+export function databaseTimestampNow() {
+  return dateToDatabaseTimestamp(new Date());
+}
+
 export function databaseCreatedAt() {
   return dateToDatabaseTimestamp(new Date());
 }

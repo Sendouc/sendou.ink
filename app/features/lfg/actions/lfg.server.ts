@@ -13,22 +13,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     schema,
   });
 
+  const posts = await LFGRepository.posts(user.id);
+  const post = posts.find((post) => post.id === data.id);
+  validate(post, "Post not found");
+  validate(isAdmin(user) || post.author.id === user.id, "Not your own post");
+
   switch (data._action) {
     case "DELETE_POST": {
-      const posts = await LFGRepository.posts(user.id);
-      const post = posts.find((post) => post.id === data.id);
-      validate(post, "Post to delete not found");
-      validate(
-        isAdmin(user) || post.author.id === user.id,
-        "You can only delete your own posts",
-      );
-
       await LFGRepository.deletePost(data.id);
-
       break;
     }
-    case "BUMP_POSTS": {
-      // TODO
+    case "BUMP_POST": {
+      await LFGRepository.bumpPost(data.id);
       break;
     }
   }
@@ -42,6 +38,7 @@ const schema = z.union([
     id,
   }),
   z.object({
-    _action: _action("BUMP_POSTS"),
+    _action: _action("BUMP_POST"),
+    id,
   }),
 ]);
