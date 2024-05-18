@@ -5,7 +5,8 @@ const stm = sql.prepare(/* sql */ `
     set "leftAt" = strftime('%s', 'now')
   where "teamId" = @teamId
     and "userId" = @userId
-`);
+    and "isOwner" = 0
+`); // isOwner check to make sure the owner doesn't leave causing a bad state
 
 export function leaveTeam({
   teamId,
