@@ -110,3 +110,7 @@ export function updatePost(
 export function deletePost(id: number) {
   return db.deleteFrom("LFGPost").where("id", "=", id).execute();
 }
+
+export function deletePostsByTeamId(teamId: number) {
+  return db.deleteFrom("LFGPost").where("teamId", "=", teamId).execute();
+}
