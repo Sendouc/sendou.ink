@@ -26,7 +26,9 @@
     "test:e2e": "npx playwright test",
     "checks": "npm run test:unit && npm run lint:css && npm run lint:ts && npm run prettier:check && npm run typecheck",
     "cf": "npm run test:unit && npm run check-translation-jsons && npm run lint:css -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck && npm run test:e2e",
-    "cf:noe2e": "npm run test:unit && npm run check-translation-jsons && npm run lint:css -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck"
+    "cf:noe2e": "npm run test:unit && npm run check-translation-jsons && npm run lint:css -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck",
+    "db": "sqlite3 --column --header db.sqlite3",
+    "db:prod": "sqlite3 --column --header db-prod.sqlite3"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.564.0",
