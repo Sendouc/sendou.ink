@@ -19,6 +19,8 @@
   "stats.ap.title": "Ability point averages",
   "stats.percentage.title": "Primary-only ability appearance",
   "stats.all": "All",
+  "stats.public": "Public",
+  "stats.private": "Private",
 
   "addFilter": "Add filter",
   "linkButton.abilityStats": "Ability stats",

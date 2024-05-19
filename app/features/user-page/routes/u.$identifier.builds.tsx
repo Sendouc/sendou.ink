@@ -12,6 +12,7 @@ import { atOrError } from "~/utils/arrays";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { userNewBuildPage } from "~/utils/urls";
 import { type UserPageLoaderData } from "./u.$identifier";
+import { LockIcon } from "~/components/icons/Lock";
 
 import { loader } from "../loaders/u.$identifier.builds.server";
 import { action } from "../actions/u.$identifier.builds.server";
@@ -21,19 +22,19 @@ export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds", "gear"],
 };
 
+type BuildFilter = "ALL" | "PUBLIC" | "PRIVATE" | MainWeaponId;
+
 export default function UserBuildsPage() {
   const { t } = useTranslation("builds");
   const user = useUser();
   const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
   const data = useLoaderData<typeof loader>();
-  const [weaponFilter, setWeaponFilter] = useSearchParamState<
-    "ALL" | MainWeaponId
-  >({
+  const [weaponFilter, setWeaponFilter] = useSearchParamState<BuildFilter>({
     defaultValue: "ALL",
     name: "weapon",
     revive: (value) =>
-      value === "ALL"
-        ? value
+      ["ALL", "PUBLIC", "PRIVATE"].includes(value)
+        ? (value as BuildFilter)
         : mainWeaponIds.find((id) => id === Number(value)),
   });
 
@@ -42,9 +43,15 @@ export default function UserBuildsPage() {
   const builds =
     weaponFilter === "ALL"
       ? data.builds
-      : data.builds.filter((build) =>
-          build.weapons.map((wpn) => wpn.weaponSplId).includes(weaponFilter),
-        );
+      : weaponFilter === "PUBLIC"
+        ? data.builds.filter((build) => !build.private)
+        : weaponFilter === "PRIVATE"
+          ? data.builds.filter((build) => build.private)
+          : data.builds.filter((build) =>
+              build.weapons
+                .map((wpn) => wpn.weaponSplId)
+                .includes(weaponFilter),
+            );
 
   return (
     <div className="stack lg">
@@ -68,7 +75,7 @@ export default function UserBuildsPage() {
           )}
         </div>
       )}
-      <WeaponFilters
+      <BuildsFilters
         weaponFilter={weaponFilter}
         setWeaponFilter={setWeaponFilter}
       />
@@ -87,17 +94,27 @@ export default function UserBuildsPage() {
   );
 }
 
-function WeaponFilters({
+function BuildsFilters({
   weaponFilter,
   setWeaponFilter,
 }: {
-  weaponFilter: "ALL" | MainWeaponId;
-  setWeaponFilter: (weaponFilter: "ALL" | MainWeaponId) => void;
+  weaponFilter: BuildFilter;
+  setWeaponFilter: (weaponFilter: BuildFilter) => void;
 }) {
   const { t } = useTranslation(["weapons", "builds"]);
   const data = useLoaderData<typeof loader>();
+  const user = useUser();
+  const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
 
   if (data.builds.length === 0) return null;
+
+  const privateBuildsCount = data.builds.filter(
+    (build) => build.private,
+  ).length;
+  const publicBuildsCount = data.builds.length - privateBuildsCount;
+
+  const showPublicPrivateFilters =
+    user?.id === parentPageData.id && privateBuildsCount > 0;
 
   return (
     <div className="stack horizontal sm flex-wrap">
@@ -109,6 +126,28 @@ function WeaponFilters({
       >
         {t("builds:stats.all")} ({data.builds.length})
       </Button>
+      {showPublicPrivateFilters ? (
+        <>
+          <Button
+            onClick={() => setWeaponFilter("PUBLIC")}
+            variant={weaponFilter === "PUBLIC" ? undefined : "outlined"}
+            size="tiny"
+            className="u__build-filter-button"
+          >
+            {t("builds:stats.public")} ({publicBuildsCount})
+          </Button>
+          <Button
+            onClick={() => setWeaponFilter("PRIVATE")}
+            variant={weaponFilter === "PRIVATE" ? undefined : "outlined"}
+            size="tiny"
+            className="u__build-filter-button"
+            icon={<LockIcon />}
+          >
+            {t("builds:stats.private")} ({privateBuildsCount})
+          </Button>
+        </>
+      ) : null}
+
       {mainWeaponIds.map((weaponId) => {
         const count = data.weaponCounts[weaponId];
 
