@@ -1,5 +1,4 @@
-import type { MemberRole } from "~/db/types";
-import type { MainWeaponId } from "~/modules/in-game-lists";
+import type { MemberRole, UserWeapon } from "~/db/types";
 
 export interface DetailedTeam {
   id: number;
@@ -21,7 +20,7 @@ export interface DetailedTeamMember {
   discordAvatar: string | null;
   discordDiscriminator: string;
   isOwner: boolean;
-  weapons: MainWeaponId[];
+  weapons: Array<Pick<UserWeapon, "weaponSplId" | "isFavorite">>;
   role?: MemberRole;
   patronTier: number | null;
 }

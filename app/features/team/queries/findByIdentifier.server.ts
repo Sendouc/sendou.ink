@@ -2,6 +2,7 @@ import { sql } from "~/db/sql";
 import type { Team, TeamMember, User } from "~/db/types";
 import { removeDuplicates } from "~/utils/arrays";
 import type { DetailedTeam } from "../team-types";
+import { parseDBJsonArray } from "~/utils/sql";
 
 const teamStm = sql.prepare(/*sql*/ `
   select 
@@ -33,12 +34,18 @@ const membersStm = sql.prepare(/*sql*/ `
     "User"."patronTier",
     "TeamMember"."role",
     "TeamMember"."isOwner",
-    json_group_array("UserWeapon"."weaponSplId") as "weapons"
+    json_group_array(
+      json_object(
+        'weaponSplId', "UserWeapon"."weaponSplId",
+        'isFavorite', "UserWeapon"."isFavorite"
+      )
+    ) as "weapons"
   from "TeamMember"
     join "User" on "User"."id" = "TeamMember"."userId"
     left join "UserWeapon" on "UserWeapon"."userId" = "User"."id"
   where "TeamMember"."teamId" = @teamId
   group by "User"."id"
+  order by "UserWeapon"."order" asc
 `);
 
 type TeamRow =
@@ -91,9 +98,7 @@ export function findByIdentifier(
         patronTier: member.patronTier,
         role: member.role ?? undefined,
         isOwner: Boolean(member.isOwner),
-        weapons: JSON.parse(member.weapons).filter(
-          (value: any) => typeof value === "number",
-        ),
+        weapons: parseDBJsonArray(member.weapons),
       })),
       // results: {
       //   count: 23,

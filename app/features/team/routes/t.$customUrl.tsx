@@ -300,11 +300,11 @@ function MemberRow({
           {member.discordName}
         </Link>
         <div className="stack horizontal md">
-          {member.weapons.map((weapon) => (
+          {member.weapons.map(({ weaponSplId, isFavorite }) => (
             <WeaponImage
-              key={weapon}
-              variant="badge"
-              weaponSplId={weapon}
+              key={weaponSplId}
+              variant={isFavorite ? "badge-5-star" : "badge"}
+              weaponSplId={weaponSplId}
               width={48}
               height={48}
             />
@@ -327,11 +327,11 @@ function MobileMemberCard({ member }: { member: DetailedTeamMember }) {
         </Link>
         {member.weapons.length > 0 ? (
           <div className="stack horizontal md">
-            {member.weapons.map((weapon) => (
+            {member.weapons.map(({ weaponSplId, isFavorite }) => (
               <WeaponImage
-                key={weapon}
-                variant="badge"
-                weaponSplId={weapon}
+                key={weaponSplId}
+                variant={isFavorite ? "badge-5-star" : "badge"}
+                weaponSplId={weaponSplId}
                 width={32}
                 height={32}
               />
