@@ -14,6 +14,7 @@ import { teamPage, TEAM_SEARCH_PAGE } from "~/utils/urls";
 test.describe("Team search page", () => {
   test("filters teams", async ({ page }) => {
     await seed(page);
+    await impersonate(page);
     await navigate({ page, url: TEAM_SEARCH_PAGE });
 
     const searchInput = page.getByTestId("team-search-input");

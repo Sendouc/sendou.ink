@@ -46,8 +46,6 @@ export type TiersMap = ReturnType<typeof unserializeTiers>;
 const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
   new Map(data.tiersMap);
 
-// xxx: e2e test
-
 export default function LFGPage() {
   const { t } = useTranslation(["common, lfg"]);
   const user = useUser();
@@ -80,7 +78,11 @@ export default function LFGPage() {
         />
         {user && (
           <div className="stack sm horizontal items-center justify-end">
-            <LinkButton to={lfgNewPostPage()} size="tiny">
+            <LinkButton
+              to={lfgNewPostPage()}
+              size="tiny"
+              testId="add-new-button"
+            >
               {t("common:actions.addNew")}
             </LinkButton>
           </div>
