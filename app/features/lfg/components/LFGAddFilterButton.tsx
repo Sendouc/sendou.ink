@@ -30,7 +30,7 @@ const items: Record<
 > = {
   Weapon: {
     text: "Weapon",
-    defaultFilter: { _tag: "Weapon", weaponSplId: 0 },
+    defaultFilter: { _tag: "Weapon", weaponSplIds: [] },
   },
   Type: {
     text: "Type",

@@ -36,9 +36,11 @@ function filterMatchesPost(
 
   switch (filter._tag) {
     case "Weapon": {
+      if (filter.weaponSplIds.length === 0) return true;
+
       return checkMatchesSomeUserInPost(post, (user) =>
-        user.weaponPool.some(
-          ({ weaponSplId }) => weaponSplId === filter.weaponSplId,
+        user.weaponPool.some(({ weaponSplId }) =>
+          filter.weaponSplIds.includes(weaponSplId),
         ),
       );
     }

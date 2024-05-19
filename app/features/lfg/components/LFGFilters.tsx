@@ -9,6 +9,9 @@ import { languagesUnified } from "~/modules/i18n/config";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import { TIERS } from "~/features/mmr/mmr-constants";
 import { capitalize } from "~/utils/strings";
+import type { MainWeaponId } from "~/modules/in-game-lists";
+import { WeaponCombobox } from "~/components/Combobox";
+import { WeaponImage } from "~/components/Image";
 
 export function LFGFilters({
   filters,
@@ -59,6 +62,12 @@ function Filter({
         />
       </div>
       <div className="lfg__filter">
+        {filter._tag === "Weapon" && (
+          <WeaponFilterFields
+            value={filter.weaponSplIds}
+            changeFilter={changeFilter}
+          />
+        )}
         {filter._tag === "Type" && (
           <TypeFilterFields value={filter.type} changeFilter={changeFilter} />
         )}
@@ -95,6 +104,48 @@ function Filter({
           />
         )}
       </div>
+    </div>
+  );
+}
+
+function WeaponFilterFields({
+  value,
+  changeFilter,
+}: {
+  value: MainWeaponId[];
+  changeFilter: (newFilter: LFGFilter) => void;
+}) {
+  return (
+    <div className="stack horizontal sm flex-wrap">
+      <WeaponCombobox
+        inputName="weapon"
+        key={value.length}
+        weaponIdsToOmit={new Set(value)}
+        onChange={(wpn) =>
+          wpn &&
+          changeFilter({
+            _tag: "Weapon",
+            weaponSplIds:
+              value.length >= 10
+                ? [...value.slice(1, 10), Number(wpn.value) as MainWeaponId]
+                : [...value, Number(wpn.value) as MainWeaponId],
+          })
+        }
+      />
+      {value.map((weapon) => (
+        <Button
+          key={weapon}
+          variant="minimal"
+          onClick={() =>
+            changeFilter({
+              _tag: "Weapon",
+              weaponSplIds: value.filter((weaponId) => weaponId !== weapon),
+            })
+          }
+        >
+          <WeaponImage weaponSplId={weapon} size={32} variant="badge" />
+        </Button>
+      ))}
     </div>
   );
 }
