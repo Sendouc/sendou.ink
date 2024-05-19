@@ -44,7 +44,7 @@ export function LFGPost({
   return <UserLFGPost post={post} tiersMap={tiersMap} />;
 }
 
-const USER_POST_EXPANDABLE_CRITERIA = 500;
+const USER_POST_EXPANDABLE_CRITERIA = 300;
 function UserLFGPost({ post, tiersMap }: { post: Post; tiersMap: TiersMap }) {
   const user = useUser();
   const [isExpanded, setIsExpanded] = React.useState(false);
