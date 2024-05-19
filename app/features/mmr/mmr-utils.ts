@@ -1,6 +1,8 @@
 import { rate as openskillRate, ordinal, rating } from "openskill";
 import type { Rating, Team } from "openskill/dist/types";
 import invariant from "tiny-invariant";
+import type { TierName } from "./mmr-constants";
+import { TIERS } from "./mmr-constants";
 
 const TAU = 0.3;
 
@@ -83,4 +85,11 @@ export function identifierToUserIds(identifier: string) {
 
 export function defaultOrdinal() {
   return ordinal(rating());
+}
+
+export function compareTwoTiers(tier1: TierName, tier2: TierName) {
+  return (
+    TIERS.findIndex(({ name }) => name === tier1) -
+    TIERS.findIndex(({ name }) => name === tier2)
+  );
 }

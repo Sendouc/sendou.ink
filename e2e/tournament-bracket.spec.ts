@@ -568,7 +568,7 @@ test.describe("Tournament bracket", () => {
     });
     await backToBracket(page);
 
-    await expect(page.getByText("⚪ CAST")).toBeVisible();
+    await expect(page.getByText("🔒 CAST")).toBeVisible();
     await page.locator('[data-match-id="3"]').click();
     await expect(page.getByText("Match locked to be casted")).toBeVisible();
     await page.getByTestId("cast-info-submit-button").click();

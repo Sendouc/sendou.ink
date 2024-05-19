@@ -891,6 +891,10 @@ dialog::backdrop {
   flex-direction: column;
 }
 
+.stack.xxxs {
+  gap: var(--s-0-5);
+}
+
 .stack.xxs {
   gap: var(--s-1);
 }
@@ -923,6 +927,10 @@ dialog::backdrop {
   gap: var(--s-8);
 }
 
+.stack.xs-row {
+  row-gap: var(--s-1-5);
+}
+
 .stack.lg-row {
   row-gap: var(--s-8);
 }
@@ -933,6 +941,10 @@ dialog::backdrop {
 
 .stack.horizontal {
   flex-direction: row;
+}
+
+.flex-same-size {
+  flex: 1 1 0px;
 }
 
 .lock-scroll {

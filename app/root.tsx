@@ -225,6 +225,7 @@ export const namespaceJsonsToPreloadObj: Record<
   vods: true,
   art: true,
   q: true,
+  lfg: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 

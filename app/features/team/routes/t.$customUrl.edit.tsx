@@ -39,6 +39,7 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
+import * as LFGRepository from "~/features/lfg/LFGRepository.server";
 
 import "../team.css";
 
@@ -85,6 +86,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   switch (data._action) {
     case "DELETE": {
+      await LFGRepository.deletePostsByTeamId(team.id);
       deleteTeam(team.id);
 
       throw redirect(TEAM_SEARCH_PAGE);

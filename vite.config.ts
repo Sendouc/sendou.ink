@@ -265,6 +265,9 @@ export default defineConfig(() => {
 
             route("/tiers", "features/sendouq/routes/tiers.tsx");
 
+            route("/lfg", "features/lfg/routes/lfg.tsx");
+            route("/lfg/new", "features/lfg/routes/lfg.new.tsx");
+
             route("/admin", "features/admin/routes/admin.tsx");
 
             route("/a", "features/articles/routes/a.tsx");

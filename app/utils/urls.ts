@@ -108,6 +108,7 @@ export const SENDOUQ_LOOKING_PREVIEW_PAGE = "/q/looking?preview=true";
 export const SENDOUQ_STREAMS_PAGE = "/q/streams";
 export const TIERS_PAGE = "/tiers";
 export const SUSPENDED_PAGE = "/suspended";
+export const LFG_PAGE = "/lfg";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -337,6 +338,9 @@ export const uploadImagePage = (type: ImageUploadType) =>
   `/upload?type=${type}`;
 
 export const vodVideoPage = (videoId: number) => `${VODS_PAGE}/${videoId}`;
+
+export const lfgNewPostPage = (postId?: number) =>
+  `${LFG_PAGE}/new${postId ? `?postId=${postId}` : ""}`;
 
 export const badgeUrl = ({
   code,

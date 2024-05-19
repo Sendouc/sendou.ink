@@ -38,6 +38,7 @@ import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingReposito
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
+import * as LFGRepository from "~/features/lfg/LFGRepository.server";
 import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
 import {
   summarizeMaps,
@@ -71,6 +72,7 @@ import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { AMOUNT_OF_MAPS_IN_POOL_PER_MODE } from "~/features/sendouq-settings/q-settings-constants";
 import { tags } from "~/features/calendar/calendar-constants";
 import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/constants";
+import { TIMEZONES } from "~/features/lfg/lfg-constants";
 
 const calendarEventWithToToolsRegOpen = () =>
   calendarEventWithToTools("PICNIC", true);
@@ -155,6 +157,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   playedMatches,
   groups,
   friendCodes,
+  lfgPosts,
 ];
 
 export async function seed(variation?: SeedVariation | null) {
@@ -175,6 +178,7 @@ export async function seed(variation?: SeedVariation | null) {
 
 function wipeDB() {
   const tablesToDelete = [
+    "LFGPost",
     "Skill",
     "ReportedWeapon",
     "GroupMatchMap",
@@ -2151,4 +2155,27 @@ async function friendCodes() {
       friendCode,
     });
   }
+}
+
+async function lfgPosts() {
+  const allUsers = userIdsInRandomOrder(true).slice(0, 100);
+
+  allUsers.unshift(NZAP_TEST_ID);
+
+  for (const user of allUsers) {
+    await LFGRepository.insertPost({
+      authorId: user,
+      text: faker.lorem.paragraphs({ min: 1, max: 6 }),
+      timezone: faker.helpers.arrayElement(TIMEZONES),
+      type: faker.helpers.arrayElement(["PLAYER_FOR_TEAM", "COACH_FOR_TEAM"]),
+    });
+  }
+
+  await LFGRepository.insertPost({
+    authorId: ADMIN_ID,
+    text: faker.lorem.paragraphs({ min: 1, max: 6 }),
+    timezone: "Europe/Helsinki",
+    type: "TEAM_FOR_PLAYER",
+    teamId: 1,
+  });
 }
