@@ -49,10 +49,14 @@ function Filter({
   changeFilter: (newFilter: LFGFilter) => void;
   removeFilter: () => void;
 }) {
+  const { t } = useTranslation(["lfg"]);
+
   return (
     <div>
       <div className="stack horizontal justify-between">
-        <Label>{filter._tag} filter</Label>
+        <Label>
+          {t(`lfg:filters.${filter._tag}`)} {t("lfg:filters.suffix")}
+        </Label>
         <Button
           icon={<CrossIcon />}
           size="tiny"
@@ -242,6 +246,8 @@ function PlusTierFilterFields({
   value: number;
   changeFilter: (newFilter: LFGFilter) => void;
 }) {
+  const { t } = useTranslation(["lfg"]);
+
   return (
     <div>
       <select
@@ -252,8 +258,8 @@ function PlusTierFilterFields({
         className="w-max"
       >
         <option value="1">+1</option>
-        <option value="2">+2 or above</option>
-        <option value="3">+3 or above</option>
+        <option value="2">+2 {t("lfg:filters.orAbove")}</option>
+        <option value="3">+3 {t("lfg:filters.orAbove")}</option>
       </select>
     </div>
   );

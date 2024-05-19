@@ -15,12 +15,12 @@ import {
 import { FormMessage } from "~/components/FormMessage";
 import { WeaponImage } from "~/components/Image";
 import { useUser } from "~/features/auth/core/user";
-
-import { loader } from "../loaders/lfg.new.server";
-import { action } from "../actions/lfg.new.server";
 import type { Tables } from "~/db/tables";
 import { LinkButton } from "~/components/Button";
 import { ArrowLeftIcon } from "~/components/icons/ArrowLeft";
+
+import { loader } from "../loaders/lfg.new.server";
+import { action } from "../actions/lfg.new.server";
 export { loader, action };
 
 export const handle: SendouRouteHandle = {
@@ -36,16 +36,16 @@ export default function LFGNewPostPage() {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "lfg"]);
   const availableTypes = useAvailablePostTypes();
   const [type, setType] = React.useState(data.postToEdit?.type ?? LFG.types[0]);
 
   if (availableTypes.length === 0) {
     return (
       <Main halfWidth className="stack items-center">
-        <h2 className="text-lg mb-4">You can&apos;t create any more posts</h2>
+        <h2 className="text-lg mb-4">{t("lfg:new.noMorePosts")}</h2>
         <LinkButton to={LFG_PAGE} icon={<ArrowLeftIcon />}>
-          Go back
+          {t("common:actions.goBack")}
         </LinkButton>
       </Main>
     );
@@ -72,7 +72,9 @@ export default function LFGNewPostPage() {
         ) : null}
         <Languages />
         {type !== "COACH_FOR_TEAM" && <WeaponPool />}
-        <SubmitButton state={fetcher.state}>{t("actions.submit")}</SubmitButton>
+        <SubmitButton state={fetcher.state}>
+          {t("common:actions.submit")}
+        </SubmitButton>
       </fetcher.Form>
     </Main>
   );
@@ -107,7 +109,7 @@ function TypeSelect({
 
   return (
     <div>
-      <Label>Type</Label>
+      <Label>{t("lfg:new.type.header")}</Label>
       {data.postToEdit ? (
         <input type="hidden" name="type" value={type} />
       ) : null}
@@ -131,6 +133,7 @@ function TypeSelect({
 }
 
 function TimezoneSelect() {
+  const { t } = useTranslation(["lfg"]);
   const data = useLoaderData<typeof loader>();
   const [selected, setSelected] = React.useState(
     data.postToEdit?.timezone ?? TIMEZONES[0],
@@ -145,7 +148,7 @@ function TimezoneSelect() {
 
   return (
     <div>
-      <Label>Timezone</Label>
+      <Label>{t("lfg:new.timezone.header")}</Label>
       <select
         name="timezone"
         onChange={(e) => setSelected(e.target.value)}
@@ -162,6 +165,7 @@ function TimezoneSelect() {
 }
 
 function Textarea() {
+  const { t } = useTranslation(["lfg"]);
   const data = useLoaderData<typeof loader>();
   const [value, setValue] = React.useState(data.postToEdit?.text ?? "");
 
@@ -171,7 +175,7 @@ function Textarea() {
         htmlFor="postText"
         valueLimits={{ current: value.length, max: LFG.MAX_TEXT_LENGTH }}
       >
-        Text
+        {t("lfg:new.text.header")}
       </Label>
       <textarea
         id="postText"
@@ -186,6 +190,7 @@ function Textarea() {
 }
 
 function PlusVisibilitySelect() {
+  const { t } = useTranslation(["lfg"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const [selected, setSelected] = React.useState<number | "">(
@@ -198,7 +203,7 @@ function PlusVisibilitySelect() {
 
   return (
     <div>
-      <Label>Visibility</Label>
+      <Label>{t("lfg:new.visibility.header")}</Label>
       <select
         name="plusTierVisibility"
         onChange={(e) =>
@@ -208,22 +213,43 @@ function PlusVisibilitySelect() {
       >
         {options.map((tier) => (
           <option key={tier} value={tier}>
-            +{tier} {tier > 1 ? "or above" : ""}
+            +{tier} {tier > 1 ? t("lfg:filters.orAbove") : ""}
           </option>
         ))}
-        <option value="">Everyone</option>
+        <option value="">{t("lfg:new.visibility.everyone")}</option>
       </select>
     </div>
   );
 }
 
+function Languages() {
+  const { t } = useTranslation(["lfg"]);
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div>
+      <Label>{t("lfg:new.languages.header")}</Label>
+      <div className="stack horizontal sm">
+        {data.languages?.join(" / ").toUpperCase()}
+      </div>
+      <FormMessage type="info">
+        {t("lfg:new.editOn")}{" "}
+        <Link to={SENDOUQ_SETTINGS_PAGE} target="_blank" rel="noreferrer">
+          {t("lfg:new.languages.sqSettingsPage")}
+        </Link>
+      </FormMessage>
+    </div>
+  );
+}
+
 function WeaponPool() {
+  const { t } = useTranslation(["lfg"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <Label>Weapon pool</Label>
+      <Label>{t("lfg:new.weaponPool.header")}</Label>
       <div className="stack horizontal sm">
         {data.weaponPool?.map(({ weaponSplId }) => (
           <WeaponImage
@@ -235,28 +261,9 @@ function WeaponPool() {
         ))}
       </div>
       <FormMessage type="info">
-        Edit on your{" "}
+        {t("lfg:new.editOn")}{" "}
         <Link to={userEditProfilePage(user!)} target="_blank" rel="noreferrer">
-          user profile
-        </Link>
-      </FormMessage>
-    </div>
-  );
-}
-
-function Languages() {
-  const data = useLoaderData<typeof loader>();
-
-  return (
-    <div>
-      <Label>Languages</Label>
-      <div className="stack horizontal sm">
-        {data.languages?.join(" / ").toUpperCase()}
-      </div>
-      <FormMessage type="info">
-        Edit on{" "}
-        <Link to={SENDOUQ_SETTINGS_PAGE} target="_blank" rel="noreferrer">
-          SendouQ settings page
+          {t("lfg:new.weaponPool.userProfile")}
         </Link>
       </FormMessage>
     </div>

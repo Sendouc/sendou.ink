@@ -3,59 +3,33 @@ import { Menu } from "~/components/Menu";
 import * as React from "react";
 import { FilterIcon } from "~/components/icons/Filter";
 import type { LFGFilter } from "../lfg-types";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const FilterMenuButton = React.forwardRef(function (props, ref) {
+  const { t } = useTranslation(["lfg"]);
+
   return (
     <Button
       variant="outlined"
       size="tiny"
       icon={<FilterIcon />}
-      // disabled={filters.length >= MAX_BUILD_FILTERS}
       testId="add-filter-button"
       {...props}
       _ref={ref}
     >
-      Add filter
+      {t("lfg:addFilter")}
     </Button>
   );
 });
 
-const items: Record<
-  LFGFilter["_tag"],
-  {
-    text: string;
-    defaultFilter: LFGFilter;
-  }
-> = {
-  Weapon: {
-    text: "Weapon",
-    defaultFilter: { _tag: "Weapon", weaponSplIds: [] },
-  },
-  Type: {
-    text: "Type",
-    defaultFilter: { _tag: "Type", type: "PLAYER_FOR_TEAM" },
-  },
-  Language: {
-    text: "Language",
-    defaultFilter: { _tag: "Language", language: "EN" },
-  },
-  PlusTier: {
-    text: "Plus tier",
-    defaultFilter: { _tag: "PlusTier", tier: 3 },
-  },
-  Timezone: {
-    text: "Timezone",
-    defaultFilter: { _tag: "Timezone", maxHourDifference: 3 },
-  },
-  MinTier: {
-    text: "Min tier",
-    defaultFilter: { _tag: "MinTier", tier: "GOLD" },
-  },
-  MaxTier: {
-    text: "Max tier",
-    defaultFilter: { _tag: "MaxTier", tier: "PLATINUM" },
-  },
+const defaultFilters: Record<LFGFilter["_tag"], LFGFilter> = {
+  Weapon: { _tag: "Weapon", weaponSplIds: [] },
+  Type: { _tag: "Type", type: "PLAYER_FOR_TEAM" },
+  Language: { _tag: "Language", language: "en" },
+  PlusTier: { _tag: "PlusTier", tier: 3 },
+  Timezone: { _tag: "Timezone", maxHourDifference: 3 },
+  MinTier: { _tag: "MinTier", tier: "GOLD" },
+  MaxTier: { _tag: "MaxTier", tier: "PLATINUM" },
 };
 
 export function LFGAddFilterButton({
@@ -65,13 +39,15 @@ export function LFGAddFilterButton({
   filters: LFGFilter[];
   addFilter: (filter: LFGFilter) => void;
 }) {
+  const { t } = useTranslation(["lfg"]);
+
   return (
     <Menu
-      items={Object.entries(items).map(([tag, item]) => ({
+      items={Object.entries(defaultFilters).map(([tag, defaultFilter]) => ({
         id: tag,
-        text: t(item.text),
+        text: t(`lfg:filters.${tag}`),
         disabled: filters.some((filter) => filter._tag === tag),
-        onClick: () => addFilter(item.defaultFilter),
+        onClick: () => addFilter(defaultFilter),
       }))}
       button={FilterMenuButton}
     />

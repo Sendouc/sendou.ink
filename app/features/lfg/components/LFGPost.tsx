@@ -261,7 +261,7 @@ function PostTime({
   createdAt: number;
   updatedAt: number;
 }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["lfg"]);
 
   const createdAtDate = databaseTimestampToDate(createdAt);
   const updatedAtDate = databaseTimestampToDate(updatedAt);
@@ -276,7 +276,7 @@ function PostTime({
       })}{" "}
       {overDayDifferenceBetween ? (
         <i>
-          (last active{" "}
+          ({t("lfg:post.lastActive")}{" "}
           {formatDistanceToNow(updatedAtDate, {
             addSuffix: true,
           })}
@@ -434,17 +434,19 @@ function PostTextTypeHeader({ type }: { type: Post["type"] }) {
 }
 
 function PostEditButton({ id }: { id: number }) {
+  const { t } = useTranslation(["common"]);
+
   return (
     <Link className="lfg-post__edit-button" to={lfgNewPostPage(id)}>
       <EditIcon />
-      Edit
+      {t("common:actions.edit")}
     </Link>
   );
 }
 
 function PostDeleteButton({ id, type }: { id: number; type: Post["type"] }) {
   const fetcher = useFetcher();
-  const { t } = useTranslation(["lfg"]);
+  const { t } = useTranslation(["common", "lfg"]);
 
   return (
     <FormWithConfirm
@@ -462,7 +464,7 @@ function PostDeleteButton({ id, type }: { id: number; type: Post["type"] }) {
         type="submit"
         icon={<TrashIcon className="build__icon" />}
       >
-        Delete
+        {t("common:actions.delete")}
       </Button>
     </FormWithConfirm>
   );
@@ -479,6 +481,7 @@ function PostExpandableText({
   setIsExpanded: (isExpanded: boolean) => void;
   expandableCriteria?: number;
 }) {
+  const { t } = useTranslation(["common"]);
   const isExpandable = !expandableCriteria || text.length > expandableCriteria;
 
   const isExpanded = !isExpandable ? true : _isExpanded;
@@ -500,7 +503,9 @@ function PostExpandableText({
           variant="outlined"
           size="tiny"
         >
-          {isExpanded ? "Show less" : "Show more"}
+          {isExpanded
+            ? t("common:actions.showLess")
+            : t("common:actions.showMore")}
         </Button>
       ) : null}
       {!isExpanded ? <div className="lfg__post-text-cut" /> : null}

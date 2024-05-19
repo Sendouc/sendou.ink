@@ -18,6 +18,7 @@ import { filterPosts } from "../core/filtering";
 import { LFGAddFilterButton } from "../components/LFGAddFilterButton";
 import { LFGFilters } from "../components/LFGFilters";
 import { makeTitle } from "~/utils/strings";
+import { useTranslation } from "react-i18next";
 
 import { loader } from "../loaders/lfg.server";
 import { action } from "../actions/lfg.server";
@@ -48,9 +49,9 @@ const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
 // xxx: e2e test
 
 export default function LFGPage() {
+  const { t } = useTranslation(["common, lfg"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  // xxx: persist to search params
   const [filters, setFilters] = React.useState<LFGFilter[]>([]);
 
   const tiersMap = React.useMemo(() => unserializeTiers(data), [data]);
@@ -80,7 +81,7 @@ export default function LFGPage() {
         {user && (
           <div className="stack sm horizontal items-center justify-end">
             <LinkButton to={lfgNewPostPage()} size="tiny">
-              Add new
+              {t("common:actions.addNew")}
             </LinkButton>
           </div>
         )}
@@ -106,7 +107,7 @@ export default function LFGPage() {
       ))}
       {filteredPosts.length === 0 ? (
         <div className="text-lighter text-lg font-semi-bold text-center mt-6">
-          No posts matching the filter
+          {t("lfg:noPosts")}
         </div>
       ) : null}
     </Main>
@@ -114,15 +115,16 @@ export default function LFGPage() {
 }
 
 function PostExpiryAlert({ postId }: { postId: number }) {
+  const { t } = useTranslation(["common", "lfg"]);
   const fetcher = useFetcher();
 
   return (
     <Alert variation="WARNING">
       <fetcher.Form method="post" className="stack md horizontal items-center">
         <input type="hidden" name="id" value={postId} />
-        Post is expiring. Still looking?{" "}
+        {t("lfg:expiring")}{" "}
         <SubmitButton _action="BUMP_POST" variant="outlined" size="tiny">
-          Click here
+          {t("common:actions.clickHere")}
         </SubmitButton>
       </fetcher.Form>
     </Alert>
