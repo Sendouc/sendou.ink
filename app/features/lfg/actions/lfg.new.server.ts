@@ -36,7 +36,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       text: data.postText,
       timezone: data.timezone,
       type: data.type,
-      teamId: shouldIncludeTeam ? team?.id : undefined,
+      teamId: shouldIncludeTeam ? team?.id : null,
       plusTierVisibility: data.plusTierVisibility,
     });
   } else {
@@ -44,7 +44,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       text: data.postText,
       timezone: data.timezone,
       type: data.type,
-      teamId: shouldIncludeTeam ? team?.id : undefined,
+      teamId: shouldIncludeTeam ? team?.id : null,
       authorId: user.id,
       plusTierVisibility: data.plusTierVisibility,
     });
