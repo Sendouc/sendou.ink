@@ -32,7 +32,8 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export default function LFGPage() {
+export default function LFGNewPostPage() {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const { t } = useTranslation();
@@ -66,6 +67,9 @@ export default function LFGPage() {
         />
         <TimezoneSelect />
         <Textarea />
+        {user?.plusTier && type !== "COACH_FOR_TEAM" ? (
+          <PlusVisibilitySelect />
+        ) : null}
         <Languages />
         {type !== "COACH_FOR_TEAM" && <WeaponPool />}
         <SubmitButton state={fetcher.state}>{t("actions.submit")}</SubmitButton>
@@ -82,7 +86,10 @@ const useAvailablePostTypes = () => {
       // can't look for a team, if not in one
       .filter((type) => data.team || !TEAM_POST_TYPES.includes(type))
       // can't post two posts of same type
-      .filter((type) => !data.userPostTypes.includes(type))
+      .filter(
+        (type) =>
+          !data.userPostTypes.includes(type) || data.postToEdit?.type === type,
+      )
   );
 };
 
@@ -101,10 +108,14 @@ function TypeSelect({
   return (
     <div>
       <Label>Type</Label>
+      {data.postToEdit ? (
+        <input type="hidden" name="type" value={type} />
+      ) : null}
       <select
         name="type"
         value={type}
         onChange={(e) => setType(e.target.value as Tables["LFGPost"]["type"])}
+        disabled={Boolean(data.postToEdit)}
       >
         {availableTypes.map((type) => (
           <option key={type} value={type}>
@@ -170,6 +181,38 @@ function Textarea() {
         maxLength={LFG.MAX_TEXT_LENGTH}
         required
       />
+    </div>
+  );
+}
+
+function PlusVisibilitySelect() {
+  const user = useUser();
+  const data = useLoaderData<typeof loader>();
+  const [selected, setSelected] = React.useState<number | "">(
+    data.postToEdit?.plusTierVisibility ?? "",
+  );
+
+  const options = [1, 2, 3].filter(
+    (tier) => user && user.plusTier && tier >= user?.plusTier,
+  );
+
+  return (
+    <div>
+      <Label>Visibility</Label>
+      <select
+        name="plusTierVisibility"
+        onChange={(e) =>
+          setSelected(e.target.value === "" ? "" : Number(e.target.value))
+        }
+        value={selected}
+      >
+        {options.map((tier) => (
+          <option key={tier} value={tier}>
+            +{tier} {tier > 1 ? "or above" : ""}
+          </option>
+        ))}
+        <option value="">Everyone</option>
+      </select>
     </div>
   );
 }

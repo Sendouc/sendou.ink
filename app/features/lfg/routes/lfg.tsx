@@ -45,7 +45,6 @@ export type TiersMap = ReturnType<typeof unserializeTiers>;
 const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
   new Map(data.tiersMap);
 
-// xxx: +1/+2/+3 visibility
 // xxx: e2e test
 
 export default function LFGPage() {

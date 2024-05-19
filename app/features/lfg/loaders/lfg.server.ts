@@ -4,11 +4,11 @@ import { userSkills } from "~/features/mmr/tiered.server";
 import type { Unpacked } from "~/utils/types";
 import * as LFGRepository from "../LFGRepository.server";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { getUserId } from "~/features/auth/core/user.server";
+import { getUser } from "~/features/auth/core/user.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await getUserId(request);
-  const posts = await LFGRepository.posts(user?.id);
+  const user = await getUser(request);
+  const posts = await LFGRepository.posts(user);
 
   return {
     posts,

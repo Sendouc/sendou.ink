@@ -7,11 +7,11 @@ import { databaseTimestampNow, dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { LFG } from "./lfg-constants";
 
-export function posts(maybeUserId?: number) {
+export async function posts(user?: { id: number; plusTier: number | null }) {
   // "-1" won't match any user
-  const userId = maybeUserId ?? -1;
+  const userId = user?.id ?? -1;
 
-  return db
+  const rows = await db
     .selectFrom("LFGPost")
     .select(({ eb }) => [
       "LFGPost.id",
@@ -20,6 +20,7 @@ export function posts(maybeUserId?: number) {
       "LFGPost.text",
       "LFGPost.createdAt",
       "LFGPost.updatedAt",
+      "LFGPost.plusTierVisibility",
       jsonObjectFrom(
         eb
           .selectFrom("User")
@@ -92,6 +93,13 @@ export function posts(maybeUserId?: number) {
     )
     .$narrowType<{ author: NotNull }>()
     .execute();
+
+  return rows.filter((row) => {
+    if (!row.plusTierVisibility) return true;
+    if (!user?.plusTier) return false;
+
+    return row.plusTierVisibility >= user.plusTier;
+  });
 }
 
 const postExpiryCutoff = () =>
@@ -114,6 +122,7 @@ export function updatePost(
       text: args.text,
       timezone: args.timezone,
       type: args.type,
+      plusTierVisibility: args.plusTierVisibility,
       updatedAt: dateToDatabaseTimestamp(new Date()),
     })
     .where("id", "=", postId)
