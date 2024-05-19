@@ -160,8 +160,13 @@ function ExtraInfos() {
 
   const motionSensText =
     typeof data.motionSens === "number"
-      ? ` / ${t("user:motion")} ${rawSensToString(data.motionSens)}`
-      : "";
+      ? `${t("user:motion")} ${rawSensToString(data.motionSens)}`
+      : null;
+
+  const stickSensText =
+    typeof data.stickSens === "number"
+      ? `${t("user:stick")} ${rawSensToString(data.stickSens)}`
+      : null;
 
   if (
     !data.inGameName &&
@@ -191,8 +196,7 @@ function ExtraInfos() {
       {typeof data.stickSens === "number" && (
         <div className="u__extra-info">
           <span className="u__extra-info__heading">{t("user:sens")}</span>{" "}
-          {t("user:stick")} {rawSensToString(data.stickSens)}
-          {motionSensText}
+          {[motionSensText, stickSensText].filter(Boolean).join(" / ")}
         </div>
       )}
       {data.plusTier && (

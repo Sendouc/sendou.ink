@@ -338,11 +338,11 @@ function SensSelects({
   return (
     <div className="stack horizontal md">
       <div>
-        <Label htmlFor="stickSens">{t("user:stickSens")}</Label>
+        <Label htmlFor="motionSens">{t("user:motionSens")}</Label>
         <select
-          id="stickSens"
-          name="stickSens"
-          defaultValue={parentRouteData.stickSens ?? undefined}
+          id="motionSens"
+          name="motionSens"
+          defaultValue={parentRouteData.motionSens ?? undefined}
           className="u-edit__sens-select"
         >
           <option value="">{"-"}</option>
@@ -355,11 +355,11 @@ function SensSelects({
       </div>
 
       <div>
-        <Label htmlFor="motionSens">{t("user:motionSens")}</Label>
+        <Label htmlFor="stickSens">{t("user:stickSens")}</Label>
         <select
-          id="motionSens"
-          name="motionSens"
-          defaultValue={parentRouteData.motionSens ?? undefined}
+          id="stickSens"
+          name="stickSens"
+          defaultValue={parentRouteData.stickSens ?? undefined}
           className="u-edit__sens-select"
         >
           <option value="">{"-"}</option>
