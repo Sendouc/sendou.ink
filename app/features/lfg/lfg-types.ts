@@ -2,7 +2,6 @@ import type { Tables } from "~/db/tables";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import type { TierName } from "../mmr/mmr-constants";
 
-// xxx: weapon with aliases
 export type LFGFilter =
   | WeaponFilter
   | TypeFilter

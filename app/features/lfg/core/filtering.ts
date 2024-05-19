@@ -3,6 +3,12 @@ import type { LFGFilter } from "../lfg-types";
 import type { LFGLoaderData, LFGLoaderPost, TiersMap } from "../routes/lfg";
 import { hourDifferenceBetweenTimezones } from "./timezone";
 import { assertUnreachable } from "~/utils/types";
+import type { MainWeaponId } from "~/modules/in-game-lists";
+import {
+  altWeaponIdToId,
+  mainWeaponIds,
+  weaponIdToAltId,
+} from "~/modules/in-game-lists/weapon-ids";
 
 export function filterPosts(
   posts: LFGLoaderData["posts"],
@@ -38,9 +44,12 @@ function filterMatchesPost(
     case "Weapon": {
       if (filter.weaponSplIds.length === 0) return true;
 
+      const weaponIdsWithRelated =
+        filter.weaponSplIds.flatMap(weaponIdToRelated);
+
       return checkMatchesSomeUserInPost(post, (user) =>
         user.weaponPool.some(({ weaponSplId }) =>
-          filter.weaponSplIds.includes(weaponSplId),
+          weaponIdsWithRelated.includes(weaponSplId),
         ),
       );
     }
@@ -117,4 +126,36 @@ const checkMatchesSomeUserInPost = (
   if (check(post.author)) return true;
   if (post.team?.members.some(check)) return true;
   return false;
+};
+
+// TODO: could be written more clearly, fails in some edge cases like if "Hero Shot" was selected it won't find "Octo Shot"
+const weaponIdToRelated = (weaponSplId: MainWeaponId) => {
+  const idsSet = new Set<MainWeaponId>([weaponSplId]);
+
+  const reg = altWeaponIdToId.get(weaponSplId);
+  if (reg) {
+    idsSet.add(reg);
+  }
+
+  const alt = weaponIdToAltId.get(weaponSplId);
+  if (alt) {
+    for (const id of Array.isArray(alt) ? alt : [alt]) {
+      idsSet.add(id);
+    }
+  }
+
+  const finalIdsSet = new Set<MainWeaponId>(idsSet);
+  for (const id of idsSet) {
+    // alt kits
+    const maybeId1 = id - 1;
+    const maybeId2 = id + 1;
+
+    for (const maybeId of [maybeId1, maybeId2]) {
+      if (mainWeaponIds.includes(maybeId as MainWeaponId)) {
+        finalIdsSet.add(maybeId as MainWeaponId);
+      }
+    }
+  }
+
+  return Array.from(finalIdsSet);
 };
