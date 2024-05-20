@@ -23,10 +23,7 @@ import { Tab, Tabs } from "~/components/Tabs";
 import { AlertIcon } from "~/components/icons/Alert";
 import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
 import { playerTopTenPlacement } from "~/features/leaderboards/leaderboards-utils";
-import {
-  currentMMRByUserId,
-  seasonAllMMRByUserId,
-} from "~/features/mmr/queries/seasonAllMMRByUserId.server";
+import { seasonAllMMRByUserId } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
 import {
   allSeasons,
   currentOrPreviousSeason,
@@ -86,14 +83,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   );
 
   const { isAccurateTiers, userSkills } = _userSkills(season);
-  const { tier } = userSkills[user.id] ?? {
+  const { tier, ordinal } = userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,
     tier: { isPlus: false, name: "IRON" },
   };
 
   return {
-    currentOrdinal: currentMMRByUserId({ season, userId: user.id }),
+    currentOrdinal: ordinal,
     winrates: {
       maps: seasonMapWinrateByUserId({ season, userId: user.id }),
       sets: seasonSetWinrateByUserId({ season, userId: user.id }),

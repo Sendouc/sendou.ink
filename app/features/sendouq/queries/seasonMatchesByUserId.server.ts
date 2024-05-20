@@ -16,13 +16,16 @@ const stm = sql.prepare(/* sql */ `
       "GroupMatch"."createdAt",
       "GroupMatch"."memento",
       (select exists (select 1 from "Skill" where "Skill"."groupMatchId" = "GroupMatch"."id")) as "isLocked"
-    from "GroupMatch"
-    left join "Group" on 
-      "GroupMatch"."alphaGroupId" = "Group"."id" or 
-      "GroupMatch"."bravoGroupId" = "Group"."id"
-    left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
-    where "GroupMember"."userId" = @userId
+    from "GroupMember"
+    inner join "Group" on "GroupMember"."groupId" = "Group"."id"
+    inner join "GroupMatch" on
+      (
+        "GroupMatch"."alphaGroupId" = "Group"."id" or
+        "GroupMatch"."bravoGroupId" = "Group"."id"
+      )
       and "GroupMatch"."createdAt" between @starts and @ends
+    where
+      "GroupMember"."userId" = @userId
     order by "GroupMatch"."id" desc
     limit ${MATCHES_PER_SEASONS_PAGE}
     offset ${MATCHES_PER_SEASONS_PAGE} * (@page - 1)
@@ -166,21 +169,19 @@ export function seasonMatchesByUserId({
 }
 
 const pagesStm = sql.prepare(/* sql */ `
-  with "q1" as (
-    select
-      "GroupMatch"."id"
-    from "GroupMatch"
-    left join "Group" on 
-      "GroupMatch"."alphaGroupId" = "Group"."id" or 
-      "GroupMatch"."bravoGroupId" = "Group"."id"
-    left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
-    where "GroupMember"."userId" = @userId
-      and "GroupMatch"."createdAt" between @starts and @ends
-    group by "GroupMatch"."id"
-  )
   select
     count(*) as "count"
-  from "q1"
+  from
+    "GroupMember"
+  inner join "Group" on "GroupMember"."groupId" = "Group"."id"
+  inner join "GroupMatch" on
+    (
+      "GroupMatch"."alphaGroupId" = "Group"."id" or
+      "GroupMatch"."bravoGroupId" = "Group"."id"
+    )
+    and "GroupMatch"."createdAt" between @starts and @ends
+  where
+    "GroupMember"."userId" = @userId
 `);
 
 export function seasonMatchesByUserIdPagesCount({
