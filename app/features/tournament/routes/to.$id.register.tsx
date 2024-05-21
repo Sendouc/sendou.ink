@@ -1,4 +1,9 @@
-import { type ActionFunction, type LoaderFunctionArgs } from "@remix-run/node";
+import {
+  type ActionFunction,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  type SerializeFrom,
+} from "@remix-run/node";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -78,6 +83,7 @@ import { useSearchParamState } from "~/hooks/useSearchParamState";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { Toggle } from "~/components/Toggle";
 import { DiscordIcon } from "~/components/icons/Discord";
+import { makeTitle } from "~/utils/strings";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -256,24 +262,62 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
+export const meta: MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader>;
+  if (!data) return [];
+
+  return [
+    {
+      property: "og:title",
+      content: data.tournament.title,
+    },
+    {
+      property: "og:description",
+      content: data.tournament.description,
+    },
+    {
+      property: "og:type",
+      content: "website",
+    },
+    {
+      property: "og:image",
+      content: data.tournament.logoSrc,
+    },
+  ];
+};
+
 export type TournamentRegisterPageLoader = typeof loader;
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const user = await getUser(request);
-  if (!user) return null;
+  const tournamentId = tournamentIdFromParams(params);
+  const tournament = await tournamentFromDB({ tournamentId, user });
+
+  const tournamentThings = {
+    title: makeTitle(tournament.ctx.name),
+    description: tournament.ctx.description,
+    logoSrc: tournament.logoSrc + ".png",
+  };
+
+  if (!user)
+    return {
+      tournament: tournamentThings,
+    };
 
   const ownTournamentTeam = findOwnTournamentTeam({
-    tournamentId: tournamentIdFromParams(params),
+    tournamentId: tournamentId,
     userId: user.id,
   });
   if (!ownTournamentTeam)
     return {
+      tournament: tournamentThings,
       mapPool: null,
       trusterPlayers: null,
       team: await TeamRepository.findByUserId(user.id),
     };
 
   return {
+    tournament: tournamentThings,
     mapPool: findMapPoolByTeamId(ownTournamentTeam.id),
     trusterPlayers: await QRepository.usersThatTrusted(user.id),
     team: await TeamRepository.findByUserId(user.id),
