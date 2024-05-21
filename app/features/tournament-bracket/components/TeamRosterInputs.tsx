@@ -5,13 +5,18 @@ import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { Label } from "~/components/Label";
 import { useTournament } from "../../tournament/routes/to.$id";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { Result } from "./StartedMatch";
 import { tournamentTeamPage, userPage } from "~/utils/urls";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import { Avatar } from "~/components/Avatar";
-import { Divider } from "~/components/Divider";
+import { Button } from "~/components/Button";
+import { useUser } from "~/features/auth/core/user";
+import { tournamentTeamToActiveRosterUserIds } from "../tournament-bracket-utils";
+import { SubmitButton } from "~/components/SubmitButton";
+
+// xxx: for points input have disabled style, something like winner radio
 
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
@@ -67,6 +72,9 @@ export function TeamRosterInputs({
             setPoints={setPoints}
             presentational={presentational}
             team={team}
+            bothTeamsHaveActiveRosters={teams.every(
+              tournamentTeamToActiveRosterUserIds,
+            )}
             setWinnerId={setWinnerId}
             setCheckedPlayers={setCheckedPlayers}
             checkedPlayers={checkedPlayers[teamI].join(",")}
@@ -83,6 +91,7 @@ export function TeamRosterInputs({
 const TeamRoster = React.memo(_TeamRoster);
 function _TeamRoster({
   team,
+  bothTeamsHaveActiveRosters,
   presentational,
   idx,
   setWinnerId,
@@ -94,6 +103,7 @@ function _TeamRoster({
   result,
 }: {
   team: TournamentDataTeam;
+  bothTeamsHaveActiveRosters: boolean;
   presentational: boolean;
   idx: number;
   setWinnerId: (newId?: number) => void;
@@ -106,7 +116,32 @@ function _TeamRoster({
   checkedPlayers: string;
   result?: Result;
 }) {
+  const activeRoster = tournamentTeamToActiveRosterUserIds(team);
+
+  const user = useUser();
   const tournament = useTournament();
+
+  const canEditRoster =
+    (team.members.some((member) => member.userId === user?.id) ||
+      tournament.isOrganizer(user)) &&
+    !presentational &&
+    team.members.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL;
+  const [editingRoster, _setEditingRoster] = React.useState(
+    !activeRoster && canEditRoster,
+  );
+
+  const setEditingRoster = (editing: boolean) => {
+    const didCancel = !editing;
+    if (didCancel) {
+      setCheckedPlayers?.((oldPlayers) => {
+        const newPlayers = clone(oldPlayers);
+        newPlayers[idx] = activeRoster ?? [];
+        return newPlayers;
+      });
+    }
+
+    _setEditingRoster(editing);
+  };
 
   const hasPoints = typeof points === "number";
 
@@ -123,6 +158,15 @@ function _TeamRoster({
     },
     [idx, setPoints],
   );
+
+  const checkedInputPlayerIds = () => {
+    if (result?.participantIds) return result.participantIds;
+    if (editingRoster) return checkedPlayers.split(",").map(Number);
+
+    return activeRoster ?? [];
+  };
+
+  const checkedPlayersArray = checkedPlayers.split(",").map(Number);
 
   return (
     <div key={team.id}>
@@ -143,6 +187,7 @@ function _TeamRoster({
             teamId={team.id}
             onChange={() => setWinnerId?.(team.id)}
             team={idx + 1}
+            disabled={!bothTeamsHaveActiveRosters}
           />
         ) : null}
         {hasPoints ? (
@@ -150,16 +195,15 @@ function _TeamRoster({
             value={points}
             onChange={onPointsChange}
             presentational={presentational}
+            disabled={!bothTeamsHaveActiveRosters}
             testId={`points-input-${idx + 1}`}
           />
         ) : null}
       </div>
       <TeamRosterInputsCheckboxes
         teamId={team.id}
-        checkedPlayers={
-          result?.participantIds ?? checkedPlayers.split(",").map(Number)
-        }
-        presentational={presentational}
+        checkedPlayers={checkedInputPlayerIds()}
+        presentational={presentational || !editingRoster}
         handlePlayerClick={(playerId: number) => {
           if (!setCheckedPlayers) return;
 
@@ -175,6 +219,18 @@ function _TeamRoster({
           });
         }}
       />
+      {canEditRoster ? (
+        <RosterFormWithButtons
+          editingRoster={editingRoster}
+          setEditingRoster={setEditingRoster}
+          showCancelButton={Boolean(activeRoster)}
+          checkedPlayers={checkedPlayersArray}
+          teamId={team.id}
+          valid={
+            checkedPlayersArray.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
+          }
+        />
+      ) : null}
     </div>
   );
 }
@@ -228,12 +284,14 @@ function WinnerRadio({
   checked,
   onChange,
   team,
+  disabled,
 }: {
   presentational: boolean;
   teamId: number;
   checked: boolean;
   onChange: () => void;
   team: number;
+  disabled: boolean;
 }) {
   const id = React.useId();
 
@@ -252,12 +310,21 @@ function WinnerRadio({
   }
 
   return (
-    <div className="tournament-bracket__during-match-actions__radio-container">
+    <div
+      className={clsx(
+        "tournament-bracket__during-match-actions__radio-container",
+        {
+          "tournament-bracket__during-match-actions__radio-container__disabled":
+            disabled,
+        },
+      )}
+    >
       <input
         type="radio"
         id={`${teamId}-${id}`}
         onChange={onChange}
         checked={checked}
+        disabled={disabled}
         data-testid={`winner-radio-${team}`}
       />
       <Label className="mb-0 ml-2" htmlFor={`${teamId}-${id}`}>
@@ -272,11 +339,13 @@ function _PointInput({
   value,
   onChange,
   presentational,
+  disabled,
   testId,
 }: {
   value: number;
   onChange: (newPoint: number) => void;
   presentational: boolean;
+  disabled: boolean;
   testId?: string;
 }) {
   const [focused, setFocused] = React.useState(false);
@@ -298,6 +367,7 @@ function _PointInput({
         type="number"
         min={0}
         max={100}
+        disabled={disabled}
         value={focused && !value ? "" : String(value)}
         required
         id={id}
@@ -325,7 +395,6 @@ function TeamRosterInputsCheckboxes({
   handlePlayerClick: (playerId: number) => void;
   presentational: boolean;
 }) {
-  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const id = React.useId();
 
@@ -346,79 +415,117 @@ function TeamRosterInputsCheckboxes({
     return "DEFAULT";
   };
 
-  const participatedUserIds = React.useMemo(
-    () => tournament.participatedPlayersByTeamId(teamId).map((u) => u.userId),
-    [tournament, teamId],
-  );
-
-  const sortedMembers = members.slice().sort((a, b) => {
-    const aParticipated = participatedUserIds.includes(a.id);
-    const bParticipated = participatedUserIds.includes(b.id);
-    if (aParticipated && !bParticipated) return -1;
-    if (!aParticipated && bParticipated) return 1;
-    return 0;
-  });
-
-  let dividerDrawn = false;
-
   return (
     <div className="tournament-bracket__during-match-actions__team-players">
-      {sortedMembers.map((member, i) => {
-        let drawDivider = false;
-        const memberDidParticipate =
-          participatedUserIds.includes(member.id) ||
-          participatedUserIds.length === 0;
-        if (!memberDidParticipate && !dividerDrawn && !presentational) {
-          drawDivider = true;
-          dividerDrawn = true;
-        }
-
+      {members.map((member, i) => {
         return (
-          <React.Fragment key={member.id}>
-            {drawDivider ? (
-              <Divider className="text-xxs">
-                Didn&apos;t play in previous rounds
-              </Divider>
-            ) : null}
-            <div className="stack horizontal xs">
-              <div
+          <div className="stack horizontal xs" key={member.id}>
+            <div
+              className={clsx(
+                "tournament-bracket__during-match-actions__checkbox-name",
+                { "disabled-opaque": mode() === "DISABLED" },
+                { presentational: mode() === "PRESENTATIONAL" },
+              )}
+            >
+              <input
                 className={clsx(
-                  "tournament-bracket__during-match-actions__checkbox-name",
-                  { "disabled-opaque": mode() === "DISABLED" },
-                  { presentational: mode() === "PRESENTATIONAL" },
+                  "plain tournament-bracket__during-match-actions__checkbox",
+                  {
+                    opaque: presentational,
+                  },
                 )}
+                type="checkbox"
+                id={`${member.id}-${id}`}
+                name="playerName"
+                disabled={mode() === "DISABLED" || mode() === "PRESENTATIONAL"}
+                value={member.id}
+                checked={checkedPlayers.flat().includes(member.id)}
+                onChange={() => handlePlayerClick(member.id)}
+                data-testid={`player-checkbox-${i}`}
+              />{" "}
+              <label
+                className="tournament-bracket__during-match-actions__player-name"
+                htmlFor={`${member.id}-${id}`}
               >
-                <input
-                  className="plain tournament-bracket__during-match-actions__checkbox"
-                  type="checkbox"
-                  id={`${member.id}-${id}`}
-                  name="playerName"
-                  disabled={
-                    mode() === "DISABLED" || mode() === "PRESENTATIONAL"
-                  }
-                  value={member.id}
-                  checked={checkedPlayers.flat().includes(member.id)}
-                  onChange={() => handlePlayerClick(member.id)}
-                  data-testid={`player-checkbox-${i}`}
-                />{" "}
-                <label
-                  className="tournament-bracket__during-match-actions__player-name"
-                  htmlFor={`${member.id}-${id}`}
-                >
-                  <span className="tournament-bracket__during-match-actions__player-name__inner">
-                    {member.inGameName
-                      ? inGameNameWithoutDiscriminator(member.inGameName)
-                      : member.discordName}
-                  </span>
-                </label>
-              </div>
-              <Link to={userPage(member)} target="_blank">
-                <Avatar size="xxs" user={member} />
-              </Link>
+                <span className="tournament-bracket__during-match-actions__player-name__inner">
+                  {member.inGameName
+                    ? inGameNameWithoutDiscriminator(member.inGameName)
+                    : member.discordName}
+                </span>
+              </label>
             </div>
-          </React.Fragment>
+            <Link to={userPage(member)} target="_blank">
+              <Avatar size="xxs" user={member} />
+            </Link>
+          </div>
         );
       })}
     </div>
+  );
+}
+
+function RosterFormWithButtons({
+  editingRoster,
+  setEditingRoster,
+  showCancelButton,
+  checkedPlayers,
+  teamId,
+  valid,
+}: {
+  editingRoster: boolean;
+  setEditingRoster: (editing: boolean) => void;
+  showCancelButton?: boolean;
+  checkedPlayers: number[];
+  teamId: number;
+  valid: boolean;
+}) {
+  const fetcher = useFetcher();
+
+  if (!editingRoster) {
+    return (
+      <div className="tournament-bracket__roster-buttons__container">
+        <Button
+          size="tiny"
+          onClick={() => setEditingRoster(true)}
+          className="tournament-bracket__edit-roster-button"
+          variant="minimal"
+        >
+          Edit active roster
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <fetcher.Form
+      method="post"
+      className="tournament-bracket__roster-buttons__container"
+    >
+      <input
+        type="hidden"
+        name="roster"
+        value={JSON.stringify(checkedPlayers)}
+      />
+      <input type="hidden" name="teamId" value={teamId} />
+      <SubmitButton
+        state={fetcher.state}
+        size="tiny"
+        _action="SET_ACTIVE_ROSTER"
+        disabled={!valid}
+      >
+        Save
+      </SubmitButton>
+      {showCancelButton ? (
+        <Button
+          size="tiny"
+          variant="destructive"
+          onClick={() => {
+            setEditingRoster(false);
+          }}
+        >
+          Cancel
+        </Button>
+      ) : null}
+    </fetcher.Form>
   );
 }

@@ -1,14 +1,16 @@
-import type { SerializeFrom } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useUser } from "~/features/auth/core/user";
 import { useTournament } from "~/features/tournament/routes/to.$id";
-import { TOURNAMENT } from "../../tournament/tournament-constants";
 import type { TournamentDataTeam } from "../core/Tournament.server";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
-import { isSetOverByScore, matchIsLocked } from "../tournament-bracket-utils";
+import {
+  isSetOverByScore,
+  matchIsLocked,
+  tournamentTeamToActiveRosterUserIds,
+} from "../tournament-bracket-utils";
 import type { Result } from "./StartedMatch";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import * as PickBan from "../core/PickBan";
@@ -30,15 +32,14 @@ export function MatchActions({
 }) {
   const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
+
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [number[], number[]]
-  >(() =>
-    checkedPlayersInitialState({
-      teamOneId: teams[0].id,
-      teamTwoId: teams[1].id,
-      players: data.match.players,
-    }),
-  );
+  >([
+    tournamentTeamToActiveRosterUserIds(teams[0]) ?? [],
+    tournamentTeamToActiveRosterUserIds(teams[1]) ?? [],
+  ]);
+
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
   const [points, setPoints] = React.useState<[number, number]>([0, 0]);
 
@@ -75,59 +76,54 @@ export function MatchActions({
     return <MatchActionsBanPicker key={turnOf} teams={[teams[0], teams[1]]} />;
   }
 
+  const bothTeamsHaveActiveRosters = teams.every(
+    tournamentTeamToActiveRosterUserIds,
+  );
+
   return (
-    <Form method="post" className="width-full">
-      <div>
-        <TeamRosterInputs
-          teams={teams}
-          winnerId={winnerId}
-          setWinnerId={setWinnerId}
-          checkedPlayers={checkedPlayers}
-          setCheckedPlayers={setCheckedPlayers}
-          points={showPoints ? points : undefined}
-          setPoints={setPoints}
-          result={result}
-        />
-        {!presentational ? (
-          <div className="tournament-bracket__during-match-actions__actions">
-            <input type="hidden" name="winnerTeamId" value={winnerId ?? ""} />
-            <input
-              type="hidden"
-              name="playerIds"
-              value={JSON.stringify(checkedPlayers.flat())}
-            />
-            {showPoints ? (
-              <input
-                type="hidden"
-                name="points"
-                value={JSON.stringify(points)}
-              />
-            ) : null}
-            <input type="hidden" name="position" value={position} />
-            <ReportScoreButtons
-              winnerIdx={winnerId ? winningTeamIdx() : undefined}
-              points={showPoints ? points : undefined}
-              checkedPlayers={checkedPlayers}
-              winnerOfSetName={winnerOfSetName()}
-              wouldEndSet={wouldEndSet}
-              matchLocked={matchIsLocked({
-                matchId: data.match.id,
-                scores: scores,
-                tournament,
-              })}
-              newScore={newScore}
-            />
-          </div>
-        ) : null}
-        {!result && presentational ? (
-          <div className="tournament-bracket__during-match-actions__actions">
-            <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-              No permissions to report score
-            </p>
-          </div>
-        ) : null}
-      </div>
-    </Form>
+    <div>
+      <TeamRosterInputs
+        teams={teams}
+        winnerId={winnerId}
+        setWinnerId={setWinnerId}
+        checkedPlayers={checkedPlayers}
+        setCheckedPlayers={setCheckedPlayers}
+        points={showPoints ? points : undefined}
+        setPoints={setPoints}
+        result={result}
+      />
+      {!presentational && bothTeamsHaveActiveRosters ? (
+        <Form
+          method="post"
+          className="tournament-bracket__during-match-actions__actions"
+        >
+          <input type="hidden" name="winnerTeamId" value={winnerId ?? ""} />
+          {showPoints ? (
+            <input type="hidden" name="points" value={JSON.stringify(points)} />
+          ) : null}
+          <input type="hidden" name="position" value={position} />
+          <ReportScoreButtons
+            winnerIdx={winnerId ? winningTeamIdx() : undefined}
+            points={showPoints ? points : undefined}
+            winnerOfSetName={winnerOfSetName()}
+            wouldEndSet={wouldEndSet}
+            matchLocked={matchIsLocked({
+              matchId: data.match.id,
+              scores: scores,
+              tournament,
+            })}
+            newScore={newScore}
+          />
+        </Form>
+      ) : null}
+      {!result && presentational ? (
+        <div className="tournament-bracket__during-match-actions__actions">
+          <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
+            No permissions to report score
+          </p>
+        </div>
+      ) : null}
+    </div>
   );
 
   function winnerOfSetName() {
@@ -150,40 +146,9 @@ export function MatchActions({
   }
 }
 
-// TODO: remember what previously selected for our team
-function checkedPlayersInitialState({
-  teamOneId,
-  teamTwoId,
-  players,
-}: {
-  teamOneId: number;
-  teamTwoId: number;
-  players: SerializeFrom<TournamentMatchLoaderData>["match"]["players"];
-}): [number[], number[]] {
-  const result: [number[], number[]] = [[], []];
-
-  const teamOneMembers = players.filter(
-    (player) => player.tournamentTeamId === teamOneId,
-  );
-  const teamTwoMembers = players.filter(
-    (player) => player.tournamentTeamId === teamTwoId,
-  );
-
-  if (teamOneMembers.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
-    result[0].push(...teamOneMembers.map((member) => member.id));
-  }
-
-  if (teamTwoMembers.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
-    result[1].push(...teamTwoMembers.map((member) => member.id));
-  }
-
-  return result;
-}
-
 function ReportScoreButtons({
   points,
   winnerIdx,
-  checkedPlayers,
   winnerOfSetName,
   wouldEndSet,
   matchLocked,
@@ -191,7 +156,6 @@ function ReportScoreButtons({
 }: {
   points?: [number, number];
   winnerIdx?: number;
-  checkedPlayers: number[][];
   winnerOfSetName?: string;
   wouldEndSet: boolean;
   matchLocked: boolean;
@@ -206,14 +170,6 @@ function ReportScoreButtons({
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
         Match is pending to be casted. Please wait a bit
-      </p>
-    );
-  }
-
-  if (checkedPlayers.some((team) => team.length === 0)) {
-    return (
-      <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-        Please select rosters to report the score
       </p>
     );
   }
@@ -238,19 +194,6 @@ function ReportScoreButtons({
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
         If there was a KO (100 score), other team should have 0 score
-      </p>
-    );
-  }
-
-  if (
-    !checkedPlayers.every(
-      (team) => team.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-    )
-  ) {
-    return (
-      <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-        Please choose {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL} players from both
-        teams to report the score
       </p>
     );
   }

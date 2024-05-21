@@ -15,6 +15,8 @@ import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TFunction } from "i18next";
 import type { TournamentRoundMaps } from "~/db/tables";
 import { sumArray } from "~/utils/number";
+import type { TournamentLoaderData } from "../tournament/routes/to.$id";
+import { TOURNAMENT } from "../tournament/tournament-constants";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -258,4 +260,22 @@ export function isSetOverByScore({
 
   const matchOverAtXWins = Math.ceil(count / 2);
   return scores[0] === matchOverAtXWins || scores[1] === matchOverAtXWins;
+}
+
+export function tournamentTeamToActiveRosterUserIds(
+  team: TournamentLoaderData["tournament"]["ctx"]["teams"][number],
+) {
+  if (
+    team.activeRosterUserIds &&
+    team.activeRosterUserIds.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
+  ) {
+    return team.activeRosterUserIds;
+  }
+
+  // they don't need to select active roster as they have no subs
+  if (team.members.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+    return team.members.map((member) => member.userId);
+  }
+
+  return null;
 }

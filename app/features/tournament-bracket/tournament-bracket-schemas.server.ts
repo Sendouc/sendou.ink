@@ -10,9 +10,9 @@ import {
 } from "~/utils/zod";
 import { TOURNAMENT } from "../tournament/tournament-constants";
 
-const reportedMatchPlayerIds = z.preprocess(
+const activeRosterPlayerIds = z.preprocess(
   safeJSONParse,
-  z.array(id).length(TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL * 2),
+  z.array(id).length(TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL),
 );
 
 const reportedMatchPosition = z.preprocess(
@@ -30,7 +30,6 @@ export const matchSchema = z.union([
     _action: _action("REPORT_SCORE"),
     winnerTeamId: id,
     position: reportedMatchPosition,
-    playerIds: reportedMatchPlayerIds,
     points: z.preprocess(
       safeJSONParse,
       z
@@ -53,6 +52,11 @@ export const matchSchema = z.union([
           },
         ),
     ),
+  }),
+  z.object({
+    _action: _action("SET_ACTIVE_ROSTER"),
+    roster: activeRosterPlayerIds,
+    teamId: id,
   }),
   z.object({
     _action: _action("BAN_PICK"),

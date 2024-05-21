@@ -46,8 +46,10 @@ import {
   matchIdFromParams,
   matchIsLocked,
   matchSubscriptionKey,
+  tournamentTeamToActiveRosterUserIds,
 } from "../tournament-bracket-utils";
 import { MatchRosters } from "../components/MatchRosters";
+import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 
 import "../tournament-bracket.css";
 
@@ -152,6 +154,16 @@ export const action: ActionFunction = async ({ params, request }) => {
         scores,
       });
 
+      const teamOneRoster = tournamentTeamToActiveRosterUserIds(
+        tournament.teamById(match.opponentOne.id!)!,
+      );
+      const teamTwoRoster = tournamentTeamToActiveRosterUserIds(
+        tournament.teamById(match.opponentTwo.id!)!,
+      );
+
+      validate(teamOneRoster, "Team one has no active roster");
+      validate(teamTwoRoster, "Team two has no active roster");
+
       sql.transaction(() => {
         manager.update.match({
           id: match.id,
@@ -177,13 +189,37 @@ export const action: ActionFunction = async ({ params, request }) => {
           opponentTwoPoints: data.points?.[1] ?? null,
         });
 
-        for (const userId of data.playerIds) {
+        for (const userId of [...teamOneRoster, ...teamTwoRoster]) {
           insertTournamentMatchGameResultParticipant({
             matchGameResultId: result.id,
             userId,
           });
         }
       })();
+
+      break;
+    }
+    case "SET_ACTIVE_ROSTER": {
+      validate(!tournament.everyBracketOver, "Tournament is over");
+      validate(
+        tournament.isOrganizer(user) ||
+          tournament.teamMemberOfByUser(user)?.id === data.teamId,
+        "Unauthorized",
+        401,
+      );
+
+      const team = tournament.teamById(data.teamId)!;
+      validate(
+        data.roster.every((userId) =>
+          team.members.some((m) => m.userId === userId),
+        ),
+        "Invalid roster",
+      );
+
+      await TournamentTeamRepository.setActiveRoster({
+        teamId: data.teamId,
+        activeRosterUserIds: data.roster,
+      });
 
       break;
     }

@@ -18,6 +18,8 @@ import {
 } from "~/utils/urls";
 import { startBracket } from "./shared";
 
+// xxx: fix bracket tests
+
 const navigateToMatch = async (page: Page, matchId: number) => {
   await expect(async () => {
     await page.locator(`[data-match-id="${matchId}"]`).click();
