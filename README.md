@@ -69,7 +69,7 @@ Empty DB with the latest migration run. When creating new migrations they should
 
 [Translation Progress](https://github.com/Sendouc/sendou.ink/issues/1104)
 
-sendou.ink can be translated into any language. All the translations can be found in the [locales folder](./public/locales). Here is how you can contribute:
+sendou.ink can be translated into any language. All the translations can be found in the [locales folder](./locales). Here is how you can contribute:
 
 1. Copy a `.json` file from `/en` folder.
 2. Translate lines one by one. For example `"country": "Country",` could become `"country": "Maa",`. Keep the "key" on the left side of : unchanged.
