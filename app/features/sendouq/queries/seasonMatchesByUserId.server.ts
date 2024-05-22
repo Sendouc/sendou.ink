@@ -1,3 +1,4 @@
+import { add } from "date-fns";
 import { sql } from "~/db/sql";
 import type { ParsedMemento } from "~/db/tables";
 import type { GroupMatch, GroupMatchMap, User } from "~/db/types";
@@ -134,7 +135,9 @@ export function seasonMatchesByUserId({
   const rows = stm.all({
     userId,
     starts: dateToDatabaseTimestamp(starts),
-    ends: dateToDatabaseTimestamp(ends),
+    // sets can still start a bit after season ends
+    // no season can start within 7 days of another
+    ends: dateToDatabaseTimestamp(add(ends, { days: 7 })),
     page,
   }) as any;
 
@@ -196,7 +199,8 @@ export function seasonMatchesByUserIdPagesCount({
   const row = pagesStm.get({
     userId,
     starts: dateToDatabaseTimestamp(starts),
-    ends: dateToDatabaseTimestamp(ends),
+    // see above
+    ends: dateToDatabaseTimestamp(add(ends, { days: 7 })),
   }) as any;
 
   return Math.ceil((row.count as number) / MATCHES_PER_SEASONS_PAGE);
