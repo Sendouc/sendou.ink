@@ -41,7 +41,24 @@ export const meta: MetaFunction = (args) => {
 
   if (!data) return [];
 
-  return [{ title: makeTitle(data.tournament.ctx.name) }];
+  return [
+    {
+      property: "og:title",
+      content: makeTitle(data.tournament.ctx.name),
+    },
+    {
+      property: "og:description",
+      content: data.tournament.ctx.description,
+    },
+    {
+      property: "og:type",
+      content: "website",
+    },
+    {
+      property: "og:image",
+      content: HACKY_resolvePicture(data.tournament.ctx) + ".png",
+    },
+  ];
 };
 
 export const handle: SendouRouteHandle = {
