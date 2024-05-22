@@ -302,6 +302,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!user)
     return {
       tournament: tournamentThings,
+      mapPool: null,
+      trusterPlayers: null,
+      team: null,
     };
 
   const ownTournamentTeam = findOwnTournamentTeam({
@@ -959,7 +962,7 @@ function FillRoster({
       ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
 
   const playersAvailableToDirectlyAdd = (() => {
-    return (data!.trusterPlayers ?? []).filter((user) => {
+    return (data.trusterPlayers ?? []).filter((user) => {
       return tournament.ctx.teams.every((team) =>
         team.members.every((member) => member.userId !== user.id),
       );
