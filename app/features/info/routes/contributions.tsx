@@ -50,8 +50,12 @@ const TRANSLATORS: Array<{
     language: "de",
   },
   {
-    translators: ["Hachi"],
+    translators: ["KaiserOfNone"],
     language: "es-ES",
+  },
+  {
+    translators: ["Hachi Shibaru", "KaiserOfNone"],
+    language: "es-US",
   },
   {
     translators: ["Charakiga", "marie-maxime", "Filuz"],
