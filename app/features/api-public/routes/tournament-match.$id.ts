@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { z } from "zod";
 import { db } from "~/db/sql";
 import { notFoundIfFalsy, parseParams } from "~/utils/remix";
@@ -9,6 +9,7 @@ import { resolveMapList } from "~/features/tournament-bracket/core/mapList.serve
 import { requireBearerAuth } from "../api-public-utils.server";
 import i18next from "~/modules/i18n/i18next.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { cors } from "remix-utils/cors";
 
 const paramsSchema = z.object({
   id,
@@ -150,5 +151,5 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     mapList: await mapList(),
   };
 
-  return result;
+  return await cors(request, json(result));
 };
