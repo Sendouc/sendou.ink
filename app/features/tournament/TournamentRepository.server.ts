@@ -1,3 +1,4 @@
+import { add } from "date-fns";
 import type { Insertable, NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { nanoid } from "nanoid";
@@ -5,7 +6,10 @@ import { db } from "~/db/sql";
 import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
 import { Status } from "~/modules/brackets-model";
 import { modesShort } from "~/modules/in-game-lists";
-import { dateToDatabaseTimestamp } from "~/utils/dates";
+import {
+  databaseTimestampToDate,
+  dateToDatabaseTimestamp,
+} from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 
 export async function findById(id: number) {
@@ -250,6 +254,13 @@ export async function forShowcase() {
 
   for (const row of rows) {
     if (row.id === latestWinners?.id) break;
+
+    // if they did not finalize the tournament for whatever reason, lets just stop showing it after 6 hours
+    if (
+      new Date() > add(databaseTimestampToDate(row.startTime), { hours: 6 })
+    ) {
+      continue;
+    }
     next.unshift(row);
 
     if (next.length > nextTournamentsCount) next.pop();
