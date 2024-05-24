@@ -7,7 +7,10 @@ import type { GetUserResponse } from "../schema";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { i18next } from "~/modules/i18n/i18next.server";
 ("~/modules/i18n");
-import { requireBearerAuth } from "../api-public-utils.server";
+import {
+  handleOptionsRequest,
+  requireBearerAuth,
+} from "../api-public-utils.server";
 import { cors } from "remix-utils/cors";
 
 const paramsSchema = z.object({
@@ -15,6 +18,7 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  await handleOptionsRequest(request);
   requireBearerAuth(request);
 
   const t = await i18next.getFixedT("en", ["weapons"]);

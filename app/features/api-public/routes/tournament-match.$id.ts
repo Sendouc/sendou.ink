@@ -6,7 +6,10 @@ import { id } from "~/utils/zod";
 import type { GetTournamentMatchResponse } from "../schema";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { resolveMapList } from "~/features/tournament-bracket/core/mapList.server";
-import { requireBearerAuth } from "../api-public-utils.server";
+import {
+  handleOptionsRequest,
+  requireBearerAuth,
+} from "../api-public-utils.server";
 import i18next from "~/modules/i18n/i18next.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { cors } from "remix-utils/cors";
@@ -16,6 +19,7 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  await handleOptionsRequest(request);
   requireBearerAuth(request);
 
   const t = await i18next.getFixedT("en", ["game-misc"]);
