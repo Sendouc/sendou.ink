@@ -12,7 +12,7 @@ export function useSearchParamState<T>({
   /** Function to revive string from search params to value. If returns a null or undefined value then defaultValue gets used. */
   revive: (value: string) => T | null | undefined;
 }) {
-  useSearchParamStateEncoder({
+  return useSearchParamStateEncoder({
     defaultValue: defaultValue,
     name: name,
     revive: revive,
