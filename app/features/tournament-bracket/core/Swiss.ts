@@ -7,8 +7,10 @@ import { nullFilledArray } from "~/utils/arrays";
 import type { Bracket, Standing } from "./Bracket";
 import type { TournamentRepositoryInsertableMatch } from "~/features/tournament/TournamentRepository.server";
 
+type SwissSeeding = { id: number; name: string };
+
 interface CreateArgs extends Omit<InputStage, "type" | "seeding" | "number"> {
-  seeding: Array<{ id: number; name: string }>;
+  seeding: readonly SwissSeeding[];
 }
 
 export function create(args: CreateArgs): ValueToArray<DataTypes> {
@@ -133,11 +135,9 @@ function firstRoundMatches({
 
   function splitToGroups() {
     if (!seeding) return [];
-    if (groupCount === 1) return [seeding];
+    if (groupCount === 1) return [[...seeding]];
 
-    const groups: CreateArgs["seeding"][] = nullFilledArray(groupCount).map(
-      () => [],
-    );
+    const groups: SwissSeeding[][] = nullFilledArray(groupCount).map(() => []);
 
     for (let i = 0; i < seeding.length; i++) {
       const groupIndex = i % groupCount;
