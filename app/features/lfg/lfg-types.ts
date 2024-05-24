@@ -1,6 +1,6 @@
-import type { Tables } from "~/db/tables";
+import type { LFGType } from "~/db/tables";
 import type { MainWeaponId } from "~/modules/in-game-lists";
-import type { TierName } from "../mmr/mmr-constants";
+import { TIERS, type TierName } from "../mmr/mmr-constants";
 
 export type LFGFilter =
   | WeaponFilter
@@ -18,7 +18,7 @@ type WeaponFilter = {
 
 type TypeFilter = {
   _tag: "Type";
-  type: Tables["LFGPost"]["type"];
+  type: LFGType;
 };
 
 type TimezoneFilter = {
@@ -45,3 +45,109 @@ type MinTierFilter = {
   _tag: "MinTier";
   tier: TierName;
 };
+
+const typeToNum: Map<LFGType, number> = new Map([
+  ["PLAYER_FOR_TEAM", 0],
+  ["TEAM_FOR_PLAYER", 1],
+  ["TEAM_FOR_COACH", 2],
+  ["COACH_FOR_TEAM", 3],
+]);
+
+const numToType = new Map(
+  Array.from(typeToNum).map(([type, num]) => [`${num}`, type]),
+);
+
+const tierToNum = new Map(
+  TIERS.map((tier, index) => {
+    return [tier.name, `${index}`];
+  }),
+);
+
+const numToTier = new Map(
+  Array.from(tierToNum).map(([tier, num]) => [`${num}`, tier]),
+);
+
+export function filterToSmallStr(filter: LFGFilter): string {
+  switch (filter._tag) {
+    case "Weapon": {
+      const weapons = filter.weaponSplIds.map((wid) => `${wid}`).join(",");
+      return `w.${weapons}`;
+    }
+    case "Type":
+      return `t.${typeToNum.get(filter.type)}`;
+    case "Timezone":
+      return `tz.${filter.maxHourDifference}`;
+    case "Language":
+      return `l.${filter.language}`;
+    case "PlusTier":
+      return `pt.${filter.tier}`;
+    case "MaxTier":
+      return `mx.${tierToNum.get(filter.tier)}`;
+    case "MinTier":
+      return `mn.${tierToNum.get(filter.tier)}`;
+  }
+}
+
+export function smallStrToFilter(s: string): LFGFilter | null {
+  const [tag, val] = s.split(".");
+  switch (tag) {
+    case "w": {
+      const weaponIds = val
+        .split(",")
+        .map((x) => parseInt(x) as MainWeaponId)
+        .filter((x) => x !== null && x !== undefined);
+      if (weaponIds.length === 0) return null;
+      return {
+        _tag: "Weapon",
+        weaponSplIds: weaponIds,
+      };
+    }
+    case "t": {
+      const filterType = numToType.get(val);
+      if (!filterType) return null;
+      return {
+        _tag: "Type",
+        type: filterType,
+      };
+    }
+    case "tz": {
+      const n = parseInt(val);
+      if (Number.isNaN(n)) return null;
+      return {
+        _tag: "Timezone",
+        maxHourDifference: n,
+      };
+    }
+    case "l": {
+      return {
+        _tag: "Language",
+        language: val, // Kinda trusting the language I get is good, bad idea.
+      };
+    }
+    case "pt": {
+      const n = parseInt(val);
+      if (Number.isNaN(n)) return null;
+      return {
+        _tag: "PlusTier",
+        tier: n,
+      };
+    }
+    case "mx": {
+      const tier = numToTier.get(val);
+      if (!tier) return null;
+      return {
+        _tag: "MaxTier",
+        tier: tier,
+      };
+    }
+    case "mn": {
+      const tier = numToTier.get(val);
+      if (!tier) return null;
+      return {
+        _tag: "MinTier",
+        tier: tier,
+      };
+    }
+  }
+  return null;
+}
