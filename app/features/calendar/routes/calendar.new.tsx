@@ -1062,6 +1062,10 @@ function TournamentFormatSelector() {
           </select>
         </div>
       ) : null}
+      {/* Without a follow-up bracket there can only be one swiss group */}
+      {format === "SWISS" ? (
+        <input type="hidden" name="swissGroupCount" value="1" />
+      ) : null}
 
       {format === "SWISS" || format === "SWISS_TO_SE" ? (
         <div>
