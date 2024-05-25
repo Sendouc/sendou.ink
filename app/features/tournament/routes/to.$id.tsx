@@ -30,7 +30,7 @@ import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { isAdmin } from "~/permissions";
-import { tournamentPage } from "~/utils/urls";
+import { tournamentPage, userSubmittedImage } from "~/utils/urls";
 
 import "../tournament.css";
 import "~/styles/maps.css";
@@ -70,7 +70,9 @@ export const handle: SendouRouteHandle = {
 
     return [
       {
-        imgPath: HACKY_resolvePicture(data.tournament.ctx),
+        imgPath: data.tournament.ctx.logoUrl
+          ? userSubmittedImage(data.tournament.ctx.logoUrl)
+          : HACKY_resolvePicture(data.tournament.ctx),
         href: tournamentPage(data.tournament.ctx.id),
         type: "IMAGE",
         text: data.tournament.ctx.name,

@@ -47,7 +47,6 @@ import { s3UploadHandler } from "~/features/img-upload";
 import invariant from "tiny-invariant";
 
 // xxx: handle update somehow
-// xxx: double uploads image?
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
 

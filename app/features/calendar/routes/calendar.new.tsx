@@ -145,7 +145,11 @@ function EventForm() {
   const handleSubmit = () => {
     const formData = new FormData(ref.current!);
 
-    if (avatarImg) formData.append("img", avatarImg, avatarImg.name);
+    if (avatarImg) {
+      // replace with the compressed version
+      formData.delete("img");
+      formData.append("img", avatarImg, avatarImg.name);
+    }
 
     fetcher.submit(formData, {
       encType: "multipart/form-data",
@@ -589,7 +593,6 @@ function BadgesAdder() {
   );
 }
 
-// xxx: note that if not patron need to wait for the avatar to get validated
 function AvatarImageInput({
   avatarImg,
   setAvatarImg,
@@ -687,6 +690,10 @@ function AvatarImageInput({
           </div>
         </div>
       )}
+      <FormMessage type="info">
+        Note that for non-patrons there is a validation process before avatar is
+        shown.
+      </FormMessage>
     </div>
   );
 }
