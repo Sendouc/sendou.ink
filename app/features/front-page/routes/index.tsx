@@ -39,6 +39,7 @@ import { Placement } from "~/components/Placement";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
 
+// xxx: support uploaded images
 export default function FrontPage() {
   const data = useRootLoaderData();
   const { userTheme } = useTheme();

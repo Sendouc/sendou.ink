@@ -2,10 +2,15 @@ import type { ExpressionBuilder, Transaction } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
-import type { DB, Tables, TournamentSettings } from "~/db/tables";
+import type {
+  CalendarEventAvatarMetadata,
+  DB,
+  Tables,
+  TournamentSettings,
+} from "~/db/tables";
 import type { CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { databaseTimestampNow, dateToDatabaseTimestamp } from "~/utils/dates";
 import { sumArray } from "~/utils/number";
 import type { Unwrapped } from "~/utils/types";
 import invariant from "tiny-invariant";
@@ -421,6 +426,9 @@ type CreateArgs = Pick<
   tournamentToCopyId?: number | null;
   swissGroupCount?: number;
   swissRoundCount?: number;
+  avatarFileName?: string;
+  avatarMetadata?: CalendarEventAvatarMetadata;
+  autoValidateAvatar?: boolean;
 };
 export async function create(args: CreateArgs) {
   const copiedStaff = args.tournamentToCopyId
@@ -483,6 +491,15 @@ export async function create(args: CreateArgs) {
       }
     }
 
+    const avatarImgId = args.avatarFileName
+      ? await createSubmittedImageInTrx({
+          trx,
+          avatarFileName: args.avatarFileName,
+          autoValidateAvatar: args.autoValidateAvatar,
+          userId: args.authorId,
+        })
+      : null;
+
     const { id: eventId } = await trx
       .insertInto("CalendarEvent")
       .values({
@@ -492,6 +509,10 @@ export async function create(args: CreateArgs) {
         description: args.description,
         discordInviteCode: args.discordInviteCode,
         bracketUrl: args.bracketUrl,
+        avatarImgId,
+        avatarMetadata: args.avatarMetadata
+          ? JSON.stringify(args.avatarMetadata)
+          : null,
         tournamentId,
       })
       .returning("id")
@@ -512,6 +533,30 @@ export async function create(args: CreateArgs) {
 
     return eventId;
   });
+}
+
+async function createSubmittedImageInTrx({
+  trx,
+  autoValidateAvatar,
+  avatarFileName,
+  userId,
+}: {
+  trx: Transaction<DB>;
+  avatarFileName: string;
+  autoValidateAvatar?: boolean;
+  userId: number;
+}) {
+  const result = await trx
+    .insertInto("UnvalidatedUserSubmittedImage")
+    .values({
+      url: avatarFileName,
+      validatedAt: autoValidateAvatar ? databaseTimestampNow() : null,
+      submitterUserId: userId,
+    })
+    .returning("id")
+    .executeTakeFirstOrThrow();
+
+  return result.id;
 }
 
 type UpdateArgs = Omit<

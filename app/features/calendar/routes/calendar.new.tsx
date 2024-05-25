@@ -1,5 +1,5 @@
 import type { MetaFunction, SerializeFrom } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -20,7 +20,6 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { CrossIcon } from "~/components/icons/Cross";
 import { TrashIcon } from "~/components/icons/Trash";
-import { CALENDAR_EVENT } from "~/constants";
 import type { Tables } from "~/db/tables";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
@@ -39,6 +38,7 @@ import {
 import { type SendouRouteHandle } from "~/utils/remix";
 import { pathnameFromPotentialURL } from "~/utils/strings";
 import {
+  CALENDAR_EVENT,
   REG_CLOSES_AT_OPTIONS,
   type RegClosesAtOption,
 } from "../calendar-constants";
@@ -52,6 +52,8 @@ import {
   validateFollowUpBrackets,
 } from "../calendar-utils";
 import { Tags } from "../components/Tags";
+import invariant from "tiny-invariant";
+import Compressor from "compressorjs";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
@@ -129,6 +131,7 @@ function TemplateTournamentForm() {
 }
 
 function EventForm() {
+  const fetcher = useFetcher();
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation();
   const { eventToEdit, eventToCopy } = useLoaderData<typeof loader>();
@@ -136,9 +139,28 @@ function EventForm() {
   const [isTournament, setIsTournament] = React.useState(
     Boolean(baseEvent?.tournamentId),
   );
+  const ref = React.useRef<HTMLFormElement>(null);
+  const [avatarImg, setAvatarImg] = React.useState<File | null>(null);
+
+  const handleSubmit = () => {
+    const formData = new FormData(ref.current!);
+
+    if (avatarImg) formData.append("img", avatarImg, avatarImg.name);
+
+    fetcher.submit(formData, {
+      encType: "multipart/form-data",
+      method: "post",
+    });
+  };
+
+  const submitButtonDisabled = () => {
+    if (fetcher.state !== "idle") return true;
+
+    return false;
+  };
 
   return (
-    <Form className="stack md items-start" method="post">
+    <Form className="stack md items-start" ref={ref}>
       {eventToEdit && (
         <input type="hidden" name="eventToEditId" value={eventToEdit.eventId} />
       )}
@@ -164,6 +186,9 @@ function EventForm() {
       <TagsAdder />
       <BadgesAdder />
       {isTournament ? (
+        <AvatarImageInput avatarImg={avatarImg} setAvatarImg={setAvatarImg} />
+      ) : null}
+      {isTournament ? (
         <>
           <Divider>Tournament settings</Divider>
           <RegClosesAtSelect />
@@ -176,7 +201,13 @@ function EventForm() {
       ) : null}
       {isTournament ? <TournamentMapPickingStyleSelect /> : <MapPoolSection />}
       {isTournament ? <TournamentFormatSelector /> : null}
-      <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
+      <Button
+        className="mt-4"
+        onClick={handleSubmit}
+        disabled={submitButtonDisabled()}
+      >
+        {t("actions.submit")}
+      </Button>
     </Form>
   );
 }
@@ -552,6 +583,108 @@ function BadgesAdder() {
               />
             </div>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// xxx: note that if not patron need to wait for the avatar to get validated
+function AvatarImageInput({
+  avatarImg,
+  setAvatarImg,
+}: {
+  avatarImg: File | null;
+  setAvatarImg: (img: File | null) => void;
+}) {
+  const [backgroundColor, setBackgroundColor] = React.useState("#000000");
+  const [textColor, setTextColor] = React.useState("#FFFFFF");
+
+  return (
+    <div>
+      <Label htmlFor="avatarImage">Avatar image</Label>
+      <input
+        id="avatarImage"
+        className="plain"
+        type="file"
+        name="img"
+        accept="image/png, image/jpeg, image/jpg, image/webp"
+        onChange={(e) => {
+          const uploadedFile = e.target.files?.[0];
+          if (!uploadedFile) {
+            setAvatarImg(null);
+            return;
+          }
+
+          new Compressor(uploadedFile, {
+            width: CALENDAR_EVENT.AVATAR_SIZE,
+            height: CALENDAR_EVENT.AVATAR_SIZE,
+            maxHeight: CALENDAR_EVENT.AVATAR_SIZE,
+            maxWidth: CALENDAR_EVENT.AVATAR_SIZE,
+            resize: "cover",
+            success(result) {
+              invariant(result instanceof Blob);
+              const file = new File([result], `img.webp`, {
+                type: "image/webp",
+              });
+
+              setAvatarImg(file);
+            },
+            error(err) {
+              console.error(err.message);
+            },
+          });
+        }}
+      />
+      {avatarImg && (
+        <div className="mt-4 stack horizontal md flex-wrap">
+          <img
+            src={URL.createObjectURL(avatarImg)}
+            alt=""
+            className="calendar-new__avatar-preview"
+          />
+
+          <div>
+            <div
+              style={{ backgroundColor }}
+              className="calendar-new__showcase-preview"
+            >
+              <img
+                src={URL.createObjectURL(avatarImg)}
+                alt=""
+                className="calendar-new__avatar-preview__small"
+              />
+              <div style={{ color: textColor }} className="mt-4">
+                Choose a combination that is easy to read
+                <div className="text-xs">
+                  (otherwise will be excluded from front page promotion)
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-2 stack horizontal items-center justify-center sm">
+              <Label htmlFor="backgroundColor" spaced={false}>
+                BG
+              </Label>
+              <input
+                type="color"
+                className="plain"
+                name="backgroundColor"
+                value={backgroundColor}
+                onChange={(e) => setBackgroundColor(e.target.value)}
+              />
+              <Label htmlFor="textColor" spaced={false}>
+                Text
+              </Label>
+              <input
+                type="color"
+                className="plain"
+                name="textColor"
+                value={textColor}
+                onChange={(e) => setTextColor(e.target.value)}
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>

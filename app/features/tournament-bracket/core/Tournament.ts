@@ -483,7 +483,11 @@ export class Tournament {
   }
 
   get logoSrc() {
-    return HACKY_resolvePicture(this.ctx);
+    if (this.ctx.logoUrl) {
+      return userSubmittedImage(this.ctx.logoUrl);
+    }
+
+    return HACKY_resolvePicture(this.ctx) + ".png";
   }
 
   get modesIncluded(): ModeShort[] {

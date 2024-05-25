@@ -50,6 +50,17 @@ export function isOneModeTournamentOf(
     : null;
 }
 
+export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
+  if (round.round === "grand_finals") return `bracket.grand_finals`;
+  if (round.round === "bracket_reset") {
+    return `bracket.grand_finals.bracket_reset`;
+  }
+  if (round.round === "finals") return `bracket.${round.type}.finals` as const;
+
+  return `bracket.${round.type}` as const;
+}
+
+// legacy approach, new tournament should use the avatarImgId column in CalendarEvent
 export function HACKY_resolvePicture(event: { name: string }) {
   const normalizedEventName = event.name.toLowerCase();
 
@@ -172,6 +183,7 @@ export function HACKY_resolvePicture(event: { name: string }) {
   return tournamentLogoUrl("default");
 }
 
+// legacy approach, new tournament should use the avatarMetadata column in CalendarEvent
 const BLACK = "#1e1e1e";
 const WHITE = "#fffcfc";
 export function HACKY_resolveThemeColors(event: { name: string }) {
@@ -294,14 +306,4 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
   }
 
   return { bg: "#3430ad", text: WHITE };
-}
-
-export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
-  if (round.round === "grand_finals") return `bracket.grand_finals`;
-  if (round.round === "bracket_reset") {
-    return `bracket.grand_finals.bracket_reset`;
-  }
-  if (round.round === "finals") return `bracket.${round.type}.finals` as const;
-
-  return `bracket.${round.type}` as const;
 }

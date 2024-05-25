@@ -34,6 +34,11 @@ export async function findById(id: number) {
       "CalendarEvent.name",
       "CalendarEvent.description",
       "CalendarEventDate.startTime",
+      eb
+        .selectFrom("UserSubmittedImage")
+        .select(["UserSubmittedImage.url"])
+        .whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+        .as("logoUrl"),
       jsonObjectFrom(
         eb
           .selectFrom("User")
