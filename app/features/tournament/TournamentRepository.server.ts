@@ -229,6 +229,12 @@ export async function forShowcase() {
       "Tournament.id",
       "CalendarEvent.name",
       "CalendarEventDate.startTime",
+      eb
+        .selectFrom("UserSubmittedImage")
+        .select(["UserSubmittedImage.url"])
+        .whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+        .as("logoUrl"),
+      "CalendarEvent.avatarMetadata",
       jsonArrayFrom(
         eb
           .selectFrom("TournamentResult")

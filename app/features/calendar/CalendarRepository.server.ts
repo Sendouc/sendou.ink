@@ -159,6 +159,11 @@ export async function findAllBetweenTwoTimestamps({
       "User.discordDiscriminator",
       "CalendarEventRanks.nthAppearance",
       eb
+        .selectFrom("UserSubmittedImage")
+        .select(["UserSubmittedImage.url"])
+        .whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+        .as("logoUrl"),
+      eb
         .selectFrom("Tournament")
         .select("Tournament.settings")
         .whereRef("Tournament.id", "=", "CalendarEvent.tournamentId")

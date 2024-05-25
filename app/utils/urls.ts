@@ -391,7 +391,7 @@ export const preferenceEmojiUrl = (preference?: Preference) => {
   return `/static-assets/img/emoji/${emoji}.svg`;
 };
 export const tournamentLogoUrl = (identifier: string) =>
-  `/static-assets/img/tournament-logos/${identifier}`;
+  `/static-assets/img/tournament-logos/${identifier}.png`;
 export const TIER_PLUS_URL = `/static-assets/img/tiers/plus`;
 
 export const winnersImageUrl = ({

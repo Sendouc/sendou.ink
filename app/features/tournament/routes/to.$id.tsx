@@ -56,7 +56,7 @@ export const meta: MetaFunction = (args) => {
     },
     {
       property: "og:image",
-      content: HACKY_resolvePicture(data.tournament.ctx) + ".png",
+      content: HACKY_resolvePicture(data.tournament.ctx),
     },
   ];
 };

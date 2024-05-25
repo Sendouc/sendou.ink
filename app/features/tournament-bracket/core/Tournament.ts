@@ -487,7 +487,7 @@ export class Tournament {
       return userSubmittedImage(this.ctx.logoUrl);
     }
 
-    return HACKY_resolvePicture(this.ctx) + ".png";
+    return HACKY_resolvePicture(this.ctx);
   }
 
   get modesIncluded(): ModeShort[] {
