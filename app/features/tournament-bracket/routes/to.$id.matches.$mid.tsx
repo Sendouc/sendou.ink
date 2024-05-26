@@ -50,6 +50,9 @@ import {
 } from "../tournament-bracket-utils";
 import { MatchRosters } from "../components/MatchRosters";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
+import * as TournamentMatchRepository from "~/features/tournament-bracket/TournamentMatchRepository.server";
+import { deleteParticipantsByMatchGameResultId } from "../queries/deleteParticipantsByMatchGameResultId.server";
+import { updateMatchGameResultPoints } from "../queries/updateMatchGameResultPoints.server";
 
 import "../tournament-bracket.css";
 
@@ -285,6 +288,65 @@ export const action: ActionFunction = async ({ params, request }) => {
 
         if (typeof pickBanEventToDeleteNumber === "number") {
           deletePickBanEvent({ matchId, number: pickBanEventToDeleteNumber });
+        }
+      })();
+
+      break;
+    }
+    case "UPDATE_REPORTED_SCORE": {
+      validate(tournament.isOrganizer(user));
+      validate(!tournament.ctx.isFinalized, "Tournament is finalized");
+
+      const result = await TournamentMatchRepository.findResultById(
+        data.resultId,
+      );
+      validate(result, "Result not found");
+
+      const hadPoints = typeof result.opponentOnePoints === "number";
+      const willHavePoints = typeof data.points?.[0] === "number";
+      validate(
+        (hadPoints && willHavePoints) || (!hadPoints && !willHavePoints),
+        "Points mismatch",
+      );
+
+      if (data.points) {
+        if (data.points[0] !== result.opponentOnePoints) {
+          // changing points at this point could retroactively change who advanced from the group
+          validate(
+            tournament.matchCanBeReopened(match.id),
+            "Bracket has progressed",
+          );
+        }
+
+        if (result.opponentOnePoints! > result.opponentTwoPoints!) {
+          validate(
+            data.points[0] > data.points[1],
+            "Winner must have more points than loser",
+          );
+        } else {
+          validate(
+            data.points[0] < data.points[1],
+            "Winner must have more points than loser",
+          );
+        }
+      }
+
+      sql.transaction(() => {
+        if (data.points) {
+          updateMatchGameResultPoints({
+            matchGameResultId: result.id,
+            opponentOnePoints: data.points[0],
+            opponentTwoPoints: data.points[1],
+          });
+        }
+
+        deleteParticipantsByMatchGameResultId(result.id);
+
+        for (const userId of data.rosters) {
+          insertTournamentMatchGameResultParticipant({
+            matchGameResultId: result.id,
+            userId,
+          });
         }
       })();
 

@@ -1,4 +1,4 @@
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -16,6 +16,8 @@ import { TeamRosterInputs } from "./TeamRosterInputs";
 import * as PickBan from "../core/PickBan";
 import { MatchActionsBanPicker } from "./MatchActionsBanPicker";
 import invariant from "tiny-invariant";
+import { Button } from "~/components/Button";
+import { EditIcon } from "~/components/icons/Edit";
 
 export function MatchActions({
   teams,
@@ -30,6 +32,7 @@ export function MatchActions({
   scores: [number, number];
   presentational?: boolean;
 }) {
+  const user = useUser();
   const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
 
@@ -42,8 +45,10 @@ export function MatchActions({
 
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
   const [points, setPoints] = React.useState<[number, number]>([0, 0]);
+  const [organizerEditing, setOrganizerEditing] = React.useState(false);
 
-  const presentational = _presentational || Boolean(result);
+  const presentational =
+    !organizerEditing && (_presentational || Boolean(result));
 
   const newScore: [number, number] = [
     scores[0] + (winnerId === teams[0].id ? 1 : 0),
@@ -80,6 +85,9 @@ export function MatchActions({
     tournamentTeamToActiveRosterUserIds,
   );
 
+  const canEditFinishedSetScore =
+    result && tournament.isOrganizer(user) && !tournament.ctx.isFinalized;
+
   return (
     <div>
       <TeamRosterInputs
@@ -91,6 +99,7 @@ export function MatchActions({
         points={showPoints ? points : undefined}
         setPoints={setPoints}
         result={result}
+        organizerEditing={organizerEditing}
       />
       {!presentational && bothTeamsHaveActiveRosters ? (
         <Form
@@ -102,19 +111,30 @@ export function MatchActions({
             <input type="hidden" name="points" value={JSON.stringify(points)} />
           ) : null}
           <input type="hidden" name="position" value={position} />
-          <ReportScoreButtons
-            winnerIdx={winnerId ? winningTeamIdx() : undefined}
-            points={showPoints ? points : undefined}
-            winnerOfSetName={winnerOfSetName()}
-            wouldEndSet={wouldEndSet}
-            matchLocked={matchIsLocked({
-              matchId: data.match.id,
-              scores: scores,
-              tournament,
-            })}
-            newScore={newScore}
-          />
+          {!organizerEditing && (
+            <ReportScoreButtons
+              winnerIdx={winnerId ? winningTeamIdx() : undefined}
+              points={showPoints ? points : undefined}
+              winnerOfSetName={winnerOfSetName()}
+              wouldEndSet={wouldEndSet}
+              matchLocked={matchIsLocked({
+                matchId: data.match.id,
+                scores: scores,
+                tournament,
+              })}
+              newScore={newScore}
+            />
+          )}
         </Form>
+      ) : null}
+      {canEditFinishedSetScore ? (
+        <EditScoreForm
+          editing={organizerEditing}
+          setEditing={setOrganizerEditing}
+          checkedPlayers={checkedPlayers}
+          resultId={result.id}
+          points={showPoints ? points : undefined}
+        />
       ) : null}
       {!result && presentational ? (
         <div className="tournament-bracket__during-match-actions__actions">
@@ -242,6 +262,71 @@ function ReportScoreButtons({
       >
         {wouldEndSet ? "Report & end set" : "Report"}
       </SubmitButton>
+    </div>
+  );
+}
+
+// xxx: editing points not working
+// xxx: remembers old selected roster after change
+function EditScoreForm({
+  editing,
+  setEditing,
+  checkedPlayers,
+  resultId,
+  points,
+}: {
+  editing: boolean;
+  setEditing: (value: boolean) => void;
+  checkedPlayers: [number[], number[]];
+  resultId: number;
+  points?: [number, number];
+}) {
+  const fetcher = useFetcher();
+
+  if (editing) {
+    return (
+      <fetcher.Form
+        method="post"
+        className="stack horizontal md justify-center"
+      >
+        <input type="hidden" name="resultId" value={resultId} />
+        <input
+          type="hidden"
+          name="rosters"
+          value={JSON.stringify(checkedPlayers.flat())}
+        />
+        {points ? (
+          <input type="hidden" name="points" value={JSON.stringify(points)} />
+        ) : undefined}
+        <SubmitButton
+          size="tiny"
+          state={fetcher.state}
+          _action="UPDATE_REPORTED_SCORE"
+        >
+          Save
+        </SubmitButton>
+        <Button
+          variant="destructive"
+          size="tiny"
+          onClick={() => setEditing(false)}
+        >
+          Cancel
+        </Button>
+      </fetcher.Form>
+    );
+  }
+
+  return (
+    <div className="mt-6">
+      <Button
+        icon={<EditIcon />}
+        variant="outlined"
+        size="tiny"
+        className="mx-auto"
+        onClick={() => setEditing(true)}
+      >
+        Edit
+      </Button>
     </div>
   );
 }

@@ -594,8 +594,14 @@ function StartedMatchTabs({
   const currentPosition = scores[0] + scores[1];
 
   const matchActionsKey = () =>
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    `${data.match.id}-${tournamentTeamToActiveRosterUserIds(teams[0])}-${tournamentTeamToActiveRosterUserIds(teams[1])}`;
+    [
+      data.match.id,
+      tournamentTeamToActiveRosterUserIds(teams[0]),
+      tournamentTeamToActiveRosterUserIds(teams[1]),
+      result?.participantIds,
+      result?.opponentOnePoints,
+      result?.opponentTwoPoints,
+    ].join("-");
 
   return (
     <ActionSectionWrapper topPadded={!showChat}>

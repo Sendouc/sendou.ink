@@ -15,6 +15,11 @@ const activeRosterPlayerIds = z.preprocess(
   z.array(id).length(TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL),
 );
 
+const bothTeamPlayerIds = z.preprocess(
+  safeJSONParse,
+  z.array(id).length(TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL * 2),
+);
+
 const reportedMatchPosition = z.preprocess(
   Number,
   z
@@ -25,33 +30,34 @@ const reportedMatchPosition = z.preprocess(
 );
 
 const point = z.number().int().min(0).max(100);
+const points = z.preprocess(
+  safeJSONParse,
+  z
+    .tuple([point, point])
+    .nullish()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const [p1, p2] = val;
+
+        if (p1 === p2) return false;
+        if (p1 === 100 && p2 !== 0) return false;
+        if (p2 === 100 && p1 !== 0) return false;
+
+        return true;
+      },
+      {
+        message:
+          "Invalid points. Must not be equal & if one is 100, the other must be 0.",
+      },
+    ),
+);
 export const matchSchema = z.union([
   z.object({
     _action: _action("REPORT_SCORE"),
     winnerTeamId: id,
     position: reportedMatchPosition,
-    points: z.preprocess(
-      safeJSONParse,
-      z
-        .tuple([point, point])
-        .nullish()
-        .refine(
-          (val) => {
-            if (!val) return true;
-            const [p1, p2] = val;
-
-            if (p1 === p2) return false;
-            if (p1 === 100 && p2 !== 0) return false;
-            if (p2 === 100 && p1 !== 0) return false;
-
-            return true;
-          },
-          {
-            message:
-              "Invalid points. Must not be equal & if one is 100, the other must be 0.",
-          },
-        ),
-    ),
+    points,
   }),
   z.object({
     _action: _action("SET_ACTIVE_ROSTER"),
@@ -66,6 +72,12 @@ export const matchSchema = z.union([
   z.object({
     _action: _action("UNDO_REPORT_SCORE"),
     position: reportedMatchPosition,
+  }),
+  z.object({
+    _action: _action("UPDATE_REPORTED_SCORE"),
+    rosters: bothTeamPlayerIds,
+    resultId: id,
+    points,
   }),
   z.object({
     _action: _action("REOPEN_MATCH"),
