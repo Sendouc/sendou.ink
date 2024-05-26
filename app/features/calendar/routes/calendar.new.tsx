@@ -213,6 +213,7 @@ function EventForm() {
         className="mt-4"
         onClick={handleSubmit}
         disabled={submitButtonDisabled()}
+        testId="submit-button"
       >
         {t("actions.submit")}
       </Button>
