@@ -58,7 +58,7 @@ export const meta: MetaFunction = (args) => {
     },
     {
       property: "og:image",
-      content: HACKY_resolvePicture(data.tournament.ctx),
+      content: data.tournament.ctx.logoSrc,
     },
     // Twitter special snowflake tags, see https://developer.x.com/en/docs/twitter-for-websites/cards/overview/summary
     {
