@@ -41,8 +41,15 @@ function postsUsersTiersMap(
 
   for (const userId of uniqueUsers) {
     const tiers = {
-      latest: latestSeasonSkills[userId]?.tier,
-      previous: previousSeasonSkills[userId]?.tier,
+      latest:
+        latestSeasonSkills[userId] && !latestSeasonSkills[userId].approximate
+          ? latestSeasonSkills[userId].tier
+          : undefined,
+      previous:
+        previousSeasonSkills[userId] &&
+        !previousSeasonSkills[userId].approximate
+          ? previousSeasonSkills[userId].tier
+          : undefined,
     };
 
     if (tiers.latest || tiers.previous) {
