@@ -51,6 +51,7 @@ import {
   readonlyMapsPage,
   tournamentJoinPage,
   tournamentSubsPage,
+  userPage,
 } from "~/utils/urls";
 import { checkIn } from "../queries/checkIn.server";
 import { createTeam } from "../queries/createTeam.server";
@@ -322,10 +323,13 @@ export default function TournamentRegisterPage() {
             </div>
           </div>
           <div className="tournament__by mt-1">
-            <div className="stack horizontal xs items-center">
+            <Link
+              to={userPage(tournament.ctx.author)}
+              className="stack horizontal xs items-center text-lighter"
+            >
               <UserIcon className="tournament__info__icon" />{" "}
               {tournament.ctx.author.discordName}
-            </div>
+            </Link>
             <div className="stack horizontal xs items-center">
               <ClockIcon className="tournament__info__icon" />{" "}
               {isMounted
