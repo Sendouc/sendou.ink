@@ -2285,6 +2285,8 @@ export const PADDLING_POOL_257 = () =>
       description:
         "Hosted by Dapple Productions.\n\nThe longest tournament series in Splatoon!\nEvery week a tournament!\n\n✓ DE or Groups into SE\n✓ All Modes (Picnic system)\n✓ Badge prize\n✓ A well-ran tournament experience\n\nCome join!",
       rules: null,
+      logoUrl: null,
+      avatarImgId: null,
       startTime: 1709748000,
       author: {
         id: 860,
@@ -8129,6 +8131,8 @@ export const PADDLING_POOL_255 = () =>
       name: "Paddling Pool 255",
       description: null,
       rules: null,
+      logoUrl: null,
+      avatarImgId: null,
       startTime: 1708538400,
       author: {
         id: 860,
@@ -14290,6 +14294,8 @@ export const IN_THE_ZONE_32 = () =>
       name: "In The Zone 32",
       description: "Part of sendou.ink ranked season 2",
       rules: null,
+      logoUrl: null,
+      avatarImgId: null,
       startTime: 1707588000,
       author: {
         id: 274,

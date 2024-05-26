@@ -483,6 +483,10 @@ export class Tournament {
   }
 
   get logoSrc() {
+    if (this.ctx.logoUrl) {
+      return userSubmittedImage(this.ctx.logoUrl);
+    }
+
     return HACKY_resolvePicture(this.ctx);
   }
 

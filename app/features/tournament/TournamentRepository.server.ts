@@ -32,8 +32,14 @@ export async function findById(id: number) {
       "Tournament.mapPickingStyle",
       "Tournament.rules",
       "CalendarEvent.name",
+      "CalendarEvent.avatarImgId",
       "CalendarEvent.description",
       "CalendarEventDate.startTime",
+      eb
+        .selectFrom("UserSubmittedImage")
+        .select(["UserSubmittedImage.url"])
+        .whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+        .as("logoUrl"),
       jsonObjectFrom(
         eb
           .selectFrom("User")
@@ -224,6 +230,12 @@ export async function forShowcase() {
       "Tournament.id",
       "CalendarEvent.name",
       "CalendarEventDate.startTime",
+      eb
+        .selectFrom("UserSubmittedImage")
+        .select(["UserSubmittedImage.url"])
+        .whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+        .as("logoUrl"),
+      "CalendarEvent.avatarMetadata",
       jsonArrayFrom(
         eb
           .selectFrom("TournamentResult")

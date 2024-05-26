@@ -43,6 +43,8 @@ export const testTournament = (
       id: 1,
       description: null,
       rules: null,
+      logoUrl: null,
+      avatarImgId: null,
       discordUrl: null,
       startTime: 1705858842,
       isFinalized: 0,

@@ -108,6 +108,8 @@ export const Layout = React.memo(function Layout({
 
 function BreadcrumbLink({ data }: { data: Breadcrumb }) {
   if (data.type === "IMAGE") {
+    const imageIsWithExtension = data.imgPath.includes(".");
+
     return (
       <Link
         to={data.href}
@@ -115,15 +117,27 @@ function BreadcrumbLink({ data }: { data: Breadcrumb }) {
           "stack horizontal sm items-center": data.text,
         })}
       >
-        <Image
-          className={clsx("layout__breadcrumb__image", {
-            "rounded-full": data.rounded,
-          })}
-          alt=""
-          path={data.imgPath}
-          width={24}
-          height={24}
-        />
+        {imageIsWithExtension ? (
+          <img
+            className={clsx("layout__breadcrumb__image", {
+              "rounded-full": data.rounded,
+            })}
+            alt=""
+            src={data.imgPath}
+            width={24}
+            height={24}
+          />
+        ) : (
+          <Image
+            className={clsx("layout__breadcrumb__image", {
+              "rounded-full": data.rounded,
+            })}
+            alt=""
+            path={data.imgPath}
+            width={24}
+            height={24}
+          />
+        )}
         {data.text}
       </Link>
     );

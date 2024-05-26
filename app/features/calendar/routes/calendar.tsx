@@ -39,12 +39,12 @@ import {
   navIconUrl,
   resolveBaseUrl,
   tournamentPage,
+  userSubmittedImage,
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import * as CalendarRepository from "../CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
-import { Image } from "~/components/Image";
 import { Toggle } from "~/components/Toggle";
 import { Label } from "~/components/Label";
 import { currentSeason } from "~/features/mmr/season";
@@ -463,12 +463,17 @@ function EventsList({
                       <div className="stack xs">
                         <div className="stack horizontal sm-plus items-center">
                           {calendarEvent.tournamentId ? (
-                            <Image
-                              path={HACKY_resolvePicture({
-                                name: calendarEvent.name,
-                              })}
+                            <img
+                              src={
+                                calendarEvent.logoUrl
+                                  ? userSubmittedImage(calendarEvent.logoUrl)
+                                  : HACKY_resolvePicture({
+                                      name: calendarEvent.name,
+                                    })
+                              }
                               alt=""
-                              size={40}
+                              width={40}
+                              height={40}
                               className="calendar__event-logo"
                             />
                           ) : null}

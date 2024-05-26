@@ -1,7 +1,11 @@
 import type { ActionFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import {
+  redirect,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from "@remix-run/node";
 import { z } from "zod";
-import { CALENDAR_EVENT } from "~/constants";
 import type { CalendarEventTag } from "~/db/types";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
@@ -17,17 +21,14 @@ import {
   databaseTimestampToDate,
   dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import {
-  badRequestIfFalsy,
-  parseRequestFormData,
-  validate,
-} from "~/utils/remix";
+import { badRequestIfFalsy, parseFormData, validate } from "~/utils/remix";
 import { calendarEventPage } from "~/utils/urls";
 import {
   actualNumber,
   checkboxValueToBoolean,
   date,
   falsyToNull,
+  hexCode,
   id,
   processMany,
   removeDuplicates,
@@ -39,13 +40,18 @@ import {
   canCreateTournament,
   formValuesToBracketProgression,
 } from "../calendar-utils.server";
-import { REG_CLOSES_AT_OPTIONS } from "../calendar-constants";
+import { CALENDAR_EVENT, REG_CLOSES_AT_OPTIONS } from "../calendar-constants";
 import { calendarEventMaxDate, calendarEventMinDate } from "../calendar-utils";
+import { nanoid } from "nanoid";
+import { s3UploadHandler } from "~/features/img-upload";
+import invariant from "tiny-invariant";
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
-  const data = await parseRequestFormData({
-    request,
+
+  const { avatarFileName, formData } = await uploadAvatarIfExists(request);
+  const data = await parseFormData({
+    formData,
     schema: newCalendarEventActionSchema,
     parseAsync: true,
   });
@@ -54,6 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const startTimes = data.date.map((date) => dateToDatabaseTimestamp(date));
   const commonArgs = {
+    authorId: user.id,
     name: data.name,
     description: data.description,
     rules: data.rules,
@@ -70,6 +77,18 @@ export const action: ActionFunction = async ({ request }) => {
           .join(",")
       : data.tags,
     badges: data.badges ?? [],
+    // newly uploaded avatar
+    avatarFileName,
+    // reused avatar either via edit or template
+    avatarImgId: data.avatarImgId ?? undefined,
+    avatarMetadata:
+      data.backgroundColor && data.textColor
+        ? {
+            backgroundColor: data.backgroundColor,
+            textColor: data.textColor,
+          }
+        : undefined,
+    autoValidateAvatar: Boolean(user.patronTier),
     toToolsEnabled: canCreateTournament(user) ? Number(data.toToolsEnabled) : 0,
     toToolsMode:
       rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
@@ -137,7 +156,6 @@ export const action: ActionFunction = async ({ request }) => {
       return "AUTO_ALL" as const;
     };
     const createdEventId = await CalendarRepository.create({
-      authorId: user.id,
       mapPoolMaps: deserializedMaps,
       isFullTournament: data.toToolsEnabled,
       mapPickingStyle: mapPickingStyle(),
@@ -147,6 +165,38 @@ export const action: ActionFunction = async ({ request }) => {
     throw redirect(calendarEventPage(createdEventId));
   }
 };
+
+async function uploadAvatarIfExists(request: Request) {
+  const uploadHandler = composeUploadHandlers(
+    s3UploadHandler(`tournament-logo-${nanoid()}-${Date.now()}`),
+    createMemoryUploadHandler(),
+  );
+
+  try {
+    const formData = await parseMultipartFormData(request, uploadHandler);
+    const imgSrc = formData.get("img") as string | null;
+    invariant(imgSrc);
+
+    const urlParts = imgSrc.split("/");
+    const fileName = urlParts[urlParts.length - 1];
+    invariant(fileName);
+
+    return {
+      avatarFileName: fileName,
+      formData,
+    };
+  } catch (err) {
+    // user did not submit image
+    if (err instanceof TypeError) {
+      return {
+        avatarFileName: undefined,
+        formData: await request.formData(),
+      };
+    }
+
+    throw err;
+  }
+}
 
 export const newCalendarEventActionSchema = z
   .object({
@@ -201,6 +251,9 @@ export const newCalendarEventActionSchema = z
       processMany(safeJSONParse, removeDuplicates),
       z.array(id).nullable(),
     ),
+    backgroundColor: hexCode.nullish(),
+    textColor: hexCode.nullish(),
+    avatarImgId: id.nullish(),
     pool: z.string().optional(),
     toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
     toToolsMode: z.enum(["ALL", "TO", "SZ", "TC", "RM", "CB"]).optional(),
