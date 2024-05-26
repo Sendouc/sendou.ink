@@ -129,6 +129,12 @@ export interface BuildWeapon {
   weaponSplId: MainWeaponId;
 }
 
+/** Image associated with the avatar when the event is showcased on the front page */
+export type CalendarEventAvatarMetadata = {
+  backgroundColor: string;
+  textColor: string;
+};
+
 export interface CalendarEvent {
   authorId: number;
   bracketUrl: string;
@@ -140,6 +146,12 @@ export interface CalendarEvent {
   participantCount: number | null;
   tags: string | null;
   tournamentId: number | null;
+  avatarImgId: number | null;
+  avatarMetadata: ColumnType<
+    CalendarEventAvatarMetadata | null,
+    string | null,
+    string | null
+  >;
 }
 
 export interface CalendarEventBadge {

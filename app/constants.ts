@@ -1,5 +1,3 @@
-import type { CalendarEventTag } from "./db/types";
-import { tags } from "./features/calendar/calendar-constants";
 import type { BuildAbilitiesTupleWithUnknown } from "./modules/in-game-lists";
 
 export const TWEET_LENGTH_MAX_LENGTH = 280;
@@ -16,17 +14,6 @@ export const USER = {
 
 export const PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH = 500;
 export const PlUS_SUGGESTION_COMMENT_MAX_LENGTH = TWEET_LENGTH_MAX_LENGTH;
-
-export const CALENDAR_EVENT = {
-  NAME_MIN_LENGTH: 2,
-  NAME_MAX_LENGTH: 100,
-  DESCRIPTION_MAX_LENGTH: 3000,
-  RULES_MAX_LENGTH: 10_000,
-  DISCORD_INVITE_CODE_MAX_LENGTH: 50,
-  BRACKET_URL_MAX_LENGTH: 200,
-  MAX_AMOUNT_OF_DATES: 5,
-  TAGS: Object.keys(tags) as Array<CalendarEventTag>,
-};
 
 export const CALENDAR_EVENT_RESULT = {
   MAX_PARTICIPANTS_COUNT: 1000,

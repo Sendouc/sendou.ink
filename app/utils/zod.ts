@@ -10,6 +10,8 @@ export const optionalId = z.coerce.number().int().positive().optional();
 
 export const dbBoolean = z.coerce.number().min(0).max(1).int();
 
+export const hexCode = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+
 const abilityNameToType = (val: string) =>
   abilities.find((ability) => ability.name === val)?.type;
 export const headMainSlotAbility = z

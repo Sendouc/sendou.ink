@@ -83,14 +83,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   );
 
   const { isAccurateTiers, userSkills } = _userSkills(season);
-  const { tier, ordinal } = userSkills[user.id] ?? {
+  const { tier, ordinal, approximate } = userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,
     tier: { isPlus: false, name: "IRON" },
   };
 
   return {
-    currentOrdinal: ordinal,
+    currentOrdinal: !approximate ? ordinal : undefined,
     winrates: {
       maps: seasonMapWinrateByUserId({ season, userId: user.id }),
       sets: seasonSetWinrateByUserId({ season, userId: user.id }),

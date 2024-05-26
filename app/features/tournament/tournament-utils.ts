@@ -50,6 +50,17 @@ export function isOneModeTournamentOf(
     : null;
 }
 
+export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
+  if (round.round === "grand_finals") return `bracket.grand_finals`;
+  if (round.round === "bracket_reset") {
+    return `bracket.grand_finals.bracket_reset`;
+  }
+  if (round.round === "finals") return `bracket.${round.type}.finals` as const;
+
+  return `bracket.${round.type}` as const;
+}
+
+// legacy approach, new tournament should use the avatarImgId column in CalendarEvent
 export function HACKY_resolvePicture(event: { name: string }) {
   const normalizedEventName = event.name.toLowerCase();
 
@@ -172,136 +183,127 @@ export function HACKY_resolvePicture(event: { name: string }) {
   return tournamentLogoUrl("default");
 }
 
+// legacy approach, new tournament should use the avatarMetadata column in CalendarEvent
 const BLACK = "#1e1e1e";
 const WHITE = "#fffcfc";
 export function HACKY_resolveThemeColors(event: { name: string }) {
   const normalizedEventName = event.name.toLowerCase();
 
   if (normalizedEventName.includes("sendouq")) {
-    return { bg: "#1e1e1e", text: WHITE };
+    return { backgroundColor: "#1e1e1e", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("paddling pool")) {
-    return { bg: "#fff", text: BLACK };
+    return { backgroundColor: "#fff", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("in the zone")) {
-    return { bg: "#8b0000", text: WHITE };
+    return { backgroundColor: "#8b0000", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("picnic")) {
-    return { bg: "#e3fefe", text: BLACK };
+    return { backgroundColor: "#e3fefe", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("proving grounds")) {
-    return { bg: "#ffe809", text: BLACK };
+    return { backgroundColor: "#ffe809", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("triton")) {
-    return { bg: "#aee8ff", text: BLACK };
+    return { backgroundColor: "#aee8ff", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("swim or sink")) {
-    return { bg: "#d7f8ea", text: BLACK };
+    return { backgroundColor: "#d7f8ea", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("from the ink up")) {
-    return { bg: "#ffdfc6", text: BLACK };
+    return { backgroundColor: "#ffdfc6", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("coral clash")) {
-    return { bg: "#f0f4ff", text: BLACK };
+    return { backgroundColor: "#f0f4ff", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("level up")) {
-    return { bg: "#383232", text: WHITE };
+    return { backgroundColor: "#383232", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("all 4 one")) {
-    return { bg: "#2b262a", text: WHITE };
+    return { backgroundColor: "#2b262a", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("fry basket")) {
-    return { bg: "#fff", text: BLACK };
+    return { backgroundColor: "#fff", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("the depths")) {
-    return { bg: "#183e42", text: WHITE };
+    return { backgroundColor: "#183e42", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("eclipse")) {
-    return { bg: "#191919", text: WHITE };
+    return { backgroundColor: "#191919", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("homecoming")) {
-    return { bg: "#1c1c1c", text: WHITE };
+    return { backgroundColor: "#1c1c1c", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("bad ideas")) {
-    return { bg: "#000000", text: WHITE };
+    return { backgroundColor: "#000000", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("tenoch")) {
-    return { bg: "#425969", text: WHITE };
+    return { backgroundColor: "#425969", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("megalodon monday")) {
-    return { bg: "#288eb5", text: WHITE };
+    return { backgroundColor: "#288eb5", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("heaven 2 ocean")) {
-    return { bg: "#8cf1ff", text: BLACK };
+    return { backgroundColor: "#8cf1ff", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("kraken royale")) {
-    return { bg: "#32333a", text: WHITE };
+    return { backgroundColor: "#32333a", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("menu royale")) {
-    return { bg: "#000", text: WHITE };
+    return { backgroundColor: "#000", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("barracuda co")) {
-    return { bg: "#47b6fe", text: BLACK };
+    return { backgroundColor: "#47b6fe", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("crimson ink")) {
-    return { bg: "#000000", text: WHITE };
+    return { backgroundColor: "#000000", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("mesozoic mayhem")) {
-    return { bg: "#ccd5da", text: BLACK };
+    return { backgroundColor: "#ccd5da", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("rain or shine")) {
-    return { bg: "#201c3b", text: WHITE };
+    return { backgroundColor: "#201c3b", textColor: WHITE };
   }
 
   if (normalizedEventName.includes("squid junction")) {
-    return { bg: "#fed09f", text: BLACK };
+    return { backgroundColor: "#fed09f", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("silly sausage")) {
-    return { bg: "#ffd76f", text: BLACK };
+    return { backgroundColor: "#ffd76f", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("united-lan")) {
-    return { bg: "#fff", text: BLACK };
+    return { backgroundColor: "#fff", textColor: BLACK };
   }
 
   if (normalizedEventName.includes("soul cup")) {
-    return { bg: "#101011", text: WHITE };
+    return { backgroundColor: "#101011", textColor: WHITE };
   }
 
-  return { bg: "#3430ad", text: WHITE };
-}
-
-export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
-  if (round.round === "grand_finals") return `bracket.grand_finals`;
-  if (round.round === "bracket_reset") {
-    return `bracket.grand_finals.bracket_reset`;
-  }
-  if (round.round === "finals") return `bracket.${round.type}.finals` as const;
-
-  return `bracket.${round.type}` as const;
+  return { backgroundColor: "#3430ad", textColor: WHITE };
 }

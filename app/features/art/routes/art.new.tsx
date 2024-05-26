@@ -96,7 +96,7 @@ export const action: ActionFunction = async ({ request }) => {
     const fileName = urlParts[urlParts.length - 1];
     invariant(fileName);
 
-    const data = parseFormData({
+    const data = await parseFormData({
       formData,
       schema: newArtSchema,
     });

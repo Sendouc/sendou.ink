@@ -90,16 +90,22 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 }
 
 /** Parse formData with the given schema. Throws HTTP 400 response if fails. */
-export function parseFormData<T extends z.ZodTypeAny>({
+export async function parseFormData<T extends z.ZodTypeAny>({
   formData,
   schema,
+  parseAsync,
 }: {
   formData: FormData;
   schema: T;
-}): z.infer<T> {
+  parseAsync?: boolean;
+}): Promise<z.infer<T>> {
   const formDataObj = formDataToObject(formData);
   try {
-    return schema.parse(formDataObj);
+    const parsed = parseAsync
+      ? await schema.parseAsync(formDataObj)
+      : schema.parse(formDataObj);
+
+    return parsed;
   } catch (e) {
     if (e instanceof z.ZodError) {
       noticeError(e, { formData: JSON.stringify(formDataObj) });

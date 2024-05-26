@@ -1,3 +1,5 @@
+import type { CalendarEventTag } from "~/db/types";
+
 export const tags = {
   BADGE: {
     color: "#000",
@@ -47,6 +49,18 @@ export const tags = {
   CARDS: {
     color: "#E4D00A",
   },
+};
+
+export const CALENDAR_EVENT = {
+  NAME_MIN_LENGTH: 2,
+  NAME_MAX_LENGTH: 100,
+  DESCRIPTION_MAX_LENGTH: 3000,
+  RULES_MAX_LENGTH: 10_000,
+  DISCORD_INVITE_CODE_MAX_LENGTH: 50,
+  BRACKET_URL_MAX_LENGTH: 200,
+  MAX_AMOUNT_OF_DATES: 5,
+  TAGS: Object.keys(tags) as Array<CalendarEventTag>,
+  AVATAR_SIZE: 512,
 };
 
 export const REG_CLOSES_AT_OPTIONS = [

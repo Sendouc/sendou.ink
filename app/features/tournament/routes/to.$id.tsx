@@ -30,7 +30,7 @@ import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { isAdmin } from "~/permissions";
-import { tournamentPage } from "~/utils/urls";
+import { tournamentPage, userSubmittedImage } from "~/utils/urls";
 
 import "../tournament.css";
 import "~/styles/maps.css";
@@ -41,7 +41,24 @@ export const meta: MetaFunction = (args) => {
 
   if (!data) return [];
 
-  return [{ title: makeTitle(data.tournament.ctx.name) }];
+  return [
+    {
+      property: "og:title",
+      content: makeTitle(data.tournament.ctx.name),
+    },
+    {
+      property: "og:description",
+      content: data.tournament.ctx.description,
+    },
+    {
+      property: "og:type",
+      content: "website",
+    },
+    {
+      property: "og:image",
+      content: HACKY_resolvePicture(data.tournament.ctx),
+    },
+  ];
 };
 
 export const handle: SendouRouteHandle = {
@@ -53,7 +70,9 @@ export const handle: SendouRouteHandle = {
 
     return [
       {
-        imgPath: HACKY_resolvePicture(data.tournament.ctx),
+        imgPath: data.tournament.ctx.logoUrl
+          ? userSubmittedImage(data.tournament.ctx.logoUrl)
+          : HACKY_resolvePicture(data.tournament.ctx),
         href: tournamentPage(data.tournament.ctx.id),
         type: "IMAGE",
         text: data.tournament.ctx.name,

@@ -1,10 +1,14 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { z } from "zod";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import { notFoundIfFalsy, parseParams } from "~/utils/remix";
 import { id } from "~/utils/zod";
-import { requireBearerAuth } from "../api-public-utils.server";
+import {
+  handleOptionsRequest,
+  requireBearerAuth,
+} from "../api-public-utils.server";
 import type { GetTournamentBracketResponse } from "../schema";
+import { cors } from "remix-utils/cors";
 
 const paramsSchema = z.object({
   id,
@@ -12,6 +16,7 @@ const paramsSchema = z.object({
 });
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  await handleOptionsRequest(request);
   requireBearerAuth(request);
 
   const { id, bidx } = parseParams({ params, schema: paramsSchema });
@@ -41,5 +46,5 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     },
   };
 
-  return result;
+  return await cors(request, json(result));
 };

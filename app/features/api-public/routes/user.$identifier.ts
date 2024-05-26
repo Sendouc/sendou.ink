@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { z } from "zod";
 import { db } from "~/db/sql";
 import { safeNumberParse } from "~/utils/number";
@@ -7,13 +7,18 @@ import type { GetUserResponse } from "../schema";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { i18next } from "~/modules/i18n/i18next.server";
 ("~/modules/i18n");
-import { requireBearerAuth } from "../api-public-utils.server";
+import {
+  handleOptionsRequest,
+  requireBearerAuth,
+} from "../api-public-utils.server";
+import { cors } from "remix-utils/cors";
 
 const paramsSchema = z.object({
   identifier: z.string(),
 });
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  await handleOptionsRequest(request);
   requireBearerAuth(request);
 
   const t = await i18next.getFixedT("en", ["weapons"]);
@@ -140,5 +145,5 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     //   : null,
   };
 
-  return result;
+  return await cors(request, json(result));
 };

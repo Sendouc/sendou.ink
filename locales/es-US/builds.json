@@ -1,5 +1,6 @@
 {
   "addBuild": "Añadir build",
+  "reachBuildMaxCount": "Tienes la cantidad máxima de builds.",
   "noBuilds": "Aún no hay builds. ¡Agrega tu primer build!",
   "buildCard.info": "Info",
   "buildCard.edit": "Editar",
@@ -10,6 +11,32 @@
   "forms.gear.HEAD": "Accesorios",
   "forms.gear.CLOTHES": "Ropa",
   "forms.gear.SHOES": "Calzado",
+  "forms.private.info": "Builds privados son visibles solo para tí.",
 
-  "deleteConfirm": "¿Borrar build '{{title}}'?"
+  "deleteConfirm": "¿Borrar build '{{title}}'?",
+
+  "stats.count.title": "Estadísticas de {{count}} builds para {{weapon}}",
+  "stats.ap.title": "Promedios de puntos de habilidad",
+  "stats.percentage.title": "Frecuencia de habilidades exclusivas",
+  "stats.all": "Todas",
+
+  "addFilter": "Añadir filtro",
+  "linkButton.abilityStats": "Estadísticas de abilidades",
+  "linkButton.popularBuilds": "Builds populares",
+  "noPopularBuilds": "Parece que no hay builds populares para esta arma al momento.",
+
+  "emptyAbilitySlot": "Espacio de abilidad vacío",
+
+  "filters.type.ability": "Por habilidad",
+  "filters.type.mode": "Por modo",
+  "filters.type.date": "Por fecha",
+  "filters.ability.title": "Filtro por habilidad",
+  "filters.mode.title": "Filtro por modo",
+  "filters.date.title": "Filtro por fecha",
+  "filters.has": "Tiene",
+  "filters.does.not.have": "No tiene",
+  "filters.atLeast": "Al menos",
+  "filters.atMost": "Máximo",
+  "filters.date.since": "Desde",
+  "filters.date.custom": "Elegir fecha"
 }

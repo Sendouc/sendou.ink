@@ -51,6 +51,7 @@ import {
   readonlyMapsPage,
   tournamentJoinPage,
   tournamentSubsPage,
+  userPage,
 } from "~/utils/urls";
 import { checkIn } from "../queries/checkIn.server";
 import { createTeam } from "../queries/createTeam.server";
@@ -281,20 +282,27 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export default function TournamentRegisterPage() {
+  const user = useUser();
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const tournament = useTournament();
 
   const startsAtEvenHour = tournament.ctx.startTime.getMinutes() === 0;
 
+  const showAvatarPendingApprovalText =
+    !tournament.ctx.logoUrl &&
+    tournament.ctx.avatarImgId &&
+    tournament.isOrganizer(user);
+
   return (
     <div className="stack lg">
       <div className="tournament__logo-container">
-        <Image
-          path={tournament.logoSrc}
+        <img
+          src={tournament.logoSrc}
           alt=""
           className="tournament__logo"
-          size={124}
+          width={124}
+          height={124}
         />
         <div>
           <div className="tournament__title">{tournament.ctx.name}</div>
@@ -315,10 +323,13 @@ export default function TournamentRegisterPage() {
             </div>
           </div>
           <div className="tournament__by mt-1">
-            <div className="stack horizontal xs items-center">
+            <Link
+              to={userPage(tournament.ctx.author)}
+              className="stack horizontal xs items-center text-lighter"
+            >
               <UserIcon className="tournament__info__icon" />{" "}
               {tournament.ctx.author.discordName}
-            </div>
+            </Link>
             <div className="stack horizontal xs items-center">
               <ClockIcon className="tournament__info__icon" />{" "}
               {isMounted
@@ -334,6 +345,12 @@ export default function TournamentRegisterPage() {
           </div>
         </div>
       </div>
+      {showAvatarPendingApprovalText ? (
+        <div className="text-warning text-sm font-semi-bold">
+          Tournament logo pending moderator review. Will be shown automatically
+          once approved.
+        </div>
+      ) : null}
       <TournamentRegisterInfoTabs />
     </div>
   );

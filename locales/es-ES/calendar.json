@@ -5,9 +5,19 @@
   "reportResults": "Puedes anunciar resultados:",
   "day": "Día {{number}}",
   "actions.reportWinners": "Anunciar ganadores",
+  "actions.delete": "Borrar evento",
+  "actions.delete.confirm": "Borrar toda información con relación a {{name}}?",
   "participatedCount": "{{count}} equipos participaron",
+  "participatedPlayerCount": "{{count}} jugadores participaron",
   "members": "Miembros",
   "results": "Resultados",
+  "createMapList": "Crear lista de mapas",
+  "from": "De {{author}}",
+  "pastEvents.dividerText": "Eventos previos",
+  "count.teams_one": "{{count}} equipo",
+  "count.players_one": "{{count}} judador",
+  "count.teams_other": "{{count}} equipos",
+  "count.players_other": "{{count}} jugadores",
 
   "forms.dates": "Fechas",
   "forms.bracketUrl": "Enlace de cuadros",
@@ -17,6 +27,7 @@
   "forms.tags.info": "Etiqueta \"Premios de insignia\" se agrega automáticamente si corresponde.",
   "forms.badges": "Premios de insignia",
   "forms.badges.placeholder": "Elige un premio de insignia",
+  "forms.mapPool": "Grupo de mapas",
 
   "forms.participantCount": "Participantes",
   "forms.reportResultsHeader": "Anunciando resultados para {{eventName}}",
@@ -48,5 +59,12 @@
   "tag.desc.LOW": "Quién puede jugar en este evento es limitado por habilidad.",
   "tag.desc.COUNT": "Hay un limite de equipos que pueden registrarse.",
   "tag.desc.LAN": "Este evento se juega en un área local.",
-  "tag.desc.QUALIFIER": "Este torneo es clasificatorio para otro evento."
+  "tag.desc.QUALIFIER": "Este torneo es clasificatorio para otro evento.",
+  "tag.desc.SZ": "Pintazonas es el unico modo.",
+  "tag.desc.TW": "Se juega modo Territorial.",
+  "tag.desc.S1": "El juego es Splatoon 1.",
+  "tag.desc.S2": "El juego es Splatoon 2.",
+  "tag.desc.SR": "Evento de Salmon Run",
+  "tag.desc.CARDS": "Evento de Combate carterritorial",
+  "tag.desc.FULL_TOURNAMENT": "El torneo se lleva a cabo en sendou.ink"
 }

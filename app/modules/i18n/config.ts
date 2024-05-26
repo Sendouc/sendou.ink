@@ -15,11 +15,11 @@ export const languages = [
   },
   {
     code: "es-ES",
-    name: "Español (NoE)",
+    name: "Español (España)",
   },
   {
     code: "es-US",
-    name: "Español (NoA)",
+    name: "Español (Latino)",
   },
   {
     code: "fr",
