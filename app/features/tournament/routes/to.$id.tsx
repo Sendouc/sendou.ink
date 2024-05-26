@@ -41,10 +41,12 @@ export const meta: MetaFunction = (args) => {
 
   if (!data) return [];
 
+  const title = makeTitle(data.tournament.ctx.name);
+
   return [
     {
       property: "og:title",
-      content: makeTitle(data.tournament.ctx.name),
+      content: title,
     },
     {
       property: "og:description",
@@ -57,6 +59,19 @@ export const meta: MetaFunction = (args) => {
     {
       property: "og:image",
       content: HACKY_resolvePicture(data.tournament.ctx),
+    },
+    // Twitter special snowflake tags, see https://developer.x.com/en/docs/twitter-for-websites/cards/overview/summary
+    {
+      name: "twitter:card",
+      content: "summary",
+    },
+    {
+      name: "twitter:title",
+      content: title,
+    },
+    {
+      name: "twitter:site",
+      content: "@sendouink",
     },
   ];
 };
