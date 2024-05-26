@@ -46,7 +46,6 @@ import { nanoid } from "nanoid";
 import { s3UploadHandler } from "~/features/img-upload";
 import invariant from "tiny-invariant";
 
-// xxx: handle update somehow
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
 
@@ -61,6 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const startTimes = data.date.map((date) => dateToDatabaseTimestamp(date));
   const commonArgs = {
+    authorId: user.id,
     name: data.name,
     description: data.description,
     rules: data.rules,
@@ -77,7 +77,10 @@ export const action: ActionFunction = async ({ request }) => {
           .join(",")
       : data.tags,
     badges: data.badges ?? [],
+    // newly uploaded avatar
     avatarFileName,
+    // reused avatar either via edit or template
+    avatarImgId: data.avatarImgId ?? undefined,
     avatarMetadata:
       data.backgroundColor && data.textColor
         ? {
@@ -153,7 +156,6 @@ export const action: ActionFunction = async ({ request }) => {
       return "AUTO_ALL" as const;
     };
     const createdEventId = await CalendarRepository.create({
-      authorId: user.id,
       mapPoolMaps: deserializedMaps,
       isFullTournament: data.toToolsEnabled,
       mapPickingStyle: mapPickingStyle(),
@@ -251,6 +253,7 @@ export const newCalendarEventActionSchema = z
     ),
     backgroundColor: hexCode.nullish(),
     textColor: hexCode.nullish(),
+    avatarImgId: id.nullish(),
     pool: z.string().optional(),
     toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
     toToolsMode: z.enum(["ALL", "TO", "SZ", "TC", "RM", "CB"]).optional(),

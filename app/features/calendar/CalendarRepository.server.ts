@@ -89,6 +89,8 @@ export async function findById({
       "CalendarEvent.tags",
       "CalendarEvent.tournamentId",
       "CalendarEvent.participantCount",
+      "CalendarEvent.avatarMetadata",
+      "CalendarEvent.avatarImgId",
       "Tournament.mapPickingStyle",
       "User.id as authorId",
       "CalendarEventDate.startTime",
@@ -433,6 +435,7 @@ type CreateArgs = Pick<
   swissRoundCount?: number;
   avatarFileName?: string;
   avatarMetadata?: CalendarEventAvatarMetadata;
+  avatarImgId?: number;
   autoValidateAvatar?: boolean;
 };
 export async function create(args: CreateArgs) {
@@ -514,7 +517,7 @@ export async function create(args: CreateArgs) {
         description: args.description,
         discordInviteCode: args.discordInviteCode,
         bracketUrl: args.bracketUrl,
-        avatarImgId,
+        avatarImgId: args.avatarImgId ?? avatarImgId,
         avatarMetadata: args.avatarMetadata
           ? JSON.stringify(args.avatarMetadata)
           : null,
@@ -566,12 +569,21 @@ async function createSubmittedImageInTrx({
 
 type UpdateArgs = Omit<
   CreateArgs,
-  "authorId" | "createTournament" | "mapPickingStyle" | "isFullTournament"
+  "createTournament" | "mapPickingStyle" | "isFullTournament"
 > & {
   eventId: number;
 };
 export async function update(args: UpdateArgs) {
   return db.transaction().execute(async (trx) => {
+    const avatarImgId = args.avatarFileName
+      ? await createSubmittedImageInTrx({
+          trx,
+          avatarFileName: args.avatarFileName,
+          autoValidateAvatar: args.autoValidateAvatar,
+          userId: args.authorId,
+        })
+      : null;
+
     const { tournamentId } = await trx
       .updateTable("CalendarEvent")
       .set({
@@ -580,6 +592,10 @@ export async function update(args: UpdateArgs) {
         description: args.description,
         discordInviteCode: args.discordInviteCode,
         bracketUrl: args.bracketUrl,
+        avatarMetadata: args.avatarMetadata
+          ? JSON.stringify(args.avatarMetadata)
+          : null,
+        avatarImgId: args.avatarImgId ?? avatarImgId,
       })
       .where("id", "=", args.eventId)
       .returning("tournamentId")

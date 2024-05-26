@@ -54,6 +54,7 @@ import {
 import { Tags } from "../components/Tags";
 import invariant from "tiny-invariant";
 import Compressor from "compressorjs";
+import { userSubmittedImage } from "~/utils/urls";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
@@ -145,14 +146,17 @@ function EventForm() {
   const handleSubmit = () => {
     const formData = new FormData(ref.current!);
 
-    if (avatarImg) {
+    // if "avatarImgId" it means they want to reuse an existing avatar
+    const includeImage = avatarImg && !formData.has("avatarImgId");
+
+    if (includeImage) {
       // replace with the compressed version
       formData.delete("img");
       formData.append("img", avatarImg, avatarImg.name);
     }
 
     fetcher.submit(formData, {
-      encType: "multipart/form-data",
+      encType: includeImage ? "multipart/form-data" : undefined,
       method: "post",
     });
   };
@@ -600,8 +604,51 @@ function AvatarImageInput({
   avatarImg: File | null;
   setAvatarImg: (img: File | null) => void;
 }) {
-  const [backgroundColor, setBackgroundColor] = React.useState("#000000");
-  const [textColor, setTextColor] = React.useState("#FFFFFF");
+  const baseEvent = useBaseEvent();
+  const [backgroundColor, setBackgroundColor] = React.useState(
+    baseEvent?.avatarMetadata?.backgroundColor ?? "#000000",
+  );
+  const [textColor, setTextColor] = React.useState(
+    baseEvent?.avatarMetadata?.textColor ?? "#FFFFFF",
+  );
+  const [showPrevious, setShowPrevious] = React.useState(true);
+
+  if (
+    baseEvent?.avatarImgId &&
+    baseEvent?.tournamentCtx?.logoUrl &&
+    showPrevious
+  ) {
+    const logoImgUrl = userSubmittedImage(baseEvent.tournamentCtx.logoUrl);
+
+    return (
+      <div className="stack horizontal md flex-wrap">
+        <input type="hidden" name="avatarImgId" value={baseEvent.avatarImgId} />
+        <div className="stack md items-center">
+          <img
+            src={logoImgUrl}
+            alt=""
+            className="calendar-new__avatar-preview"
+          />
+          <Button
+            variant="outlined"
+            size="tiny"
+            onClick={() => setShowPrevious(false)}
+          >
+            Edit logo
+          </Button>
+        </div>
+        <TournamentLogoColorInputsWithShowcase
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
+          textColor={textColor}
+          setTextColor={setTextColor}
+          avatarUrl={logoImgUrl}
+        />
+      </div>
+    );
+  }
+
+  const hasPreviousAvatar = Boolean(baseEvent?.avatarImgId);
 
   return (
     <div>
@@ -647,53 +694,87 @@ function AvatarImageInput({
             className="calendar-new__avatar-preview"
           />
 
-          <div>
-            <div
-              style={{ backgroundColor }}
-              className="calendar-new__showcase-preview"
-            >
-              <img
-                src={URL.createObjectURL(avatarImg)}
-                alt=""
-                className="calendar-new__avatar-preview__small"
-              />
-              <div style={{ color: textColor }} className="mt-4">
-                Choose a combination that is easy to read
-                <div className="text-xs">
-                  (otherwise will be excluded from front page promotion)
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-2 stack horizontal items-center justify-center sm">
-              <Label htmlFor="backgroundColor" spaced={false}>
-                BG
-              </Label>
-              <input
-                type="color"
-                className="plain"
-                name="backgroundColor"
-                value={backgroundColor}
-                onChange={(e) => setBackgroundColor(e.target.value)}
-              />
-              <Label htmlFor="textColor" spaced={false}>
-                Text
-              </Label>
-              <input
-                type="color"
-                className="plain"
-                name="textColor"
-                value={textColor}
-                onChange={(e) => setTextColor(e.target.value)}
-              />
-            </div>
-          </div>
+          <TournamentLogoColorInputsWithShowcase
+            backgroundColor={backgroundColor}
+            setBackgroundColor={setBackgroundColor}
+            textColor={textColor}
+            setTextColor={setTextColor}
+            avatarUrl={URL.createObjectURL(avatarImg)}
+          />
         </div>
       )}
       <FormMessage type="info">
         Note that for non-patrons there is a validation process before avatar is
         shown.
       </FormMessage>
+      {hasPreviousAvatar && (
+        <Button
+          variant="minimal-destructive"
+          size="tiny"
+          onClick={() => setShowPrevious(true)}
+          className="mt-2"
+        >
+          Cancel changing avatar image
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function TournamentLogoColorInputsWithShowcase({
+  backgroundColor,
+  setBackgroundColor,
+  textColor,
+  setTextColor,
+  avatarUrl,
+}: {
+  backgroundColor: string;
+  setBackgroundColor: (color: string) => void;
+  textColor: string;
+  setTextColor: (color: string) => void;
+  avatarUrl: string;
+}) {
+  return (
+    <div>
+      <div
+        style={{ backgroundColor }}
+        className="calendar-new__showcase-preview"
+      >
+        <img
+          src={avatarUrl}
+          alt=""
+          className="calendar-new__avatar-preview__small"
+        />
+        <div style={{ color: textColor }} className="mt-4">
+          Choose a combination that is easy to read
+          <div className="text-xs">
+            (otherwise will be excluded from front page promotion)
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-2 stack horizontal items-center justify-center sm">
+        <Label htmlFor="backgroundColor" spaced={false}>
+          BG
+        </Label>
+        <input
+          type="color"
+          className="plain"
+          name="backgroundColor"
+          value={backgroundColor}
+          onChange={(e) => setBackgroundColor(e.target.value)}
+        />
+        <Label htmlFor="textColor" spaced={false}>
+          Text
+        </Label>
+        <input
+          type="color"
+          className="plain"
+          name="textColor"
+          value={textColor}
+          onChange={(e) => setTextColor(e.target.value)}
+        />
+      </div>
     </div>
   );
 }
