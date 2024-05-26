@@ -32,6 +32,7 @@ export async function findById(id: number) {
       "Tournament.mapPickingStyle",
       "Tournament.rules",
       "CalendarEvent.name",
+      "CalendarEvent.avatarImgId",
       "CalendarEvent.description",
       "CalendarEventDate.startTime",
       eb

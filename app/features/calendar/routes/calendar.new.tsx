@@ -652,7 +652,7 @@ function AvatarImageInput({
 
   return (
     <div>
-      <Label htmlFor="avatarImage">Avatar image</Label>
+      <Label htmlFor="avatarImage">Logo</Label>
       <input
         id="avatarImage"
         className="plain"

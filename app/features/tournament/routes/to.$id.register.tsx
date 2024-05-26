@@ -281,11 +281,17 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export default function TournamentRegisterPage() {
+  const user = useUser();
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const tournament = useTournament();
 
   const startsAtEvenHour = tournament.ctx.startTime.getMinutes() === 0;
+
+  const showAvatarPendingApprovalText =
+    !tournament.ctx.logoUrl &&
+    tournament.ctx.avatarImgId &&
+    tournament.isOrganizer(user);
 
   return (
     <div className="stack lg">
@@ -335,6 +341,12 @@ export default function TournamentRegisterPage() {
           </div>
         </div>
       </div>
+      {showAvatarPendingApprovalText ? (
+        <div className="text-warning text-sm font-semi-bold">
+          Tournament logo pending moderator review. Will be shown automatically
+          once approved.
+        </div>
+      ) : null}
       <TournamentRegisterInfoTabs />
     </div>
   );
