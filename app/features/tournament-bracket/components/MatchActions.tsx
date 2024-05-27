@@ -18,6 +18,7 @@ import { MatchActionsBanPicker } from "./MatchActionsBanPicker";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import { EditIcon } from "~/components/icons/Edit";
+import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 
 export function MatchActions({
   teams,
@@ -38,13 +39,31 @@ export function MatchActions({
 
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [number[], number[]]
-  >([
-    tournamentTeamToActiveRosterUserIds(teams[0]) ?? [],
-    tournamentTeamToActiveRosterUserIds(teams[1]) ?? [],
-  ]);
+  >(() => {
+    if (result) {
+      return [
+        result.participantIds.filter((id) =>
+          teams[0].members.some((member) => member.userId === id),
+        ),
+        result.participantIds.filter((id) =>
+          teams[1].members.some((member) => member.userId === id),
+        ),
+      ];
+    }
+
+    return [
+      tournamentTeamToActiveRosterUserIds(teams[0]) ?? [],
+      tournamentTeamToActiveRosterUserIds(teams[1]) ?? [],
+    ];
+  });
 
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
-  const [points, setPoints] = React.useState<[number, number]>([0, 0]);
+  const [points, setPoints] = React.useState<[number, number]>(
+    typeof result?.opponentOnePoints === "number" &&
+      typeof result.opponentTwoPoints === "number"
+      ? [result.opponentOnePoints, result.opponentTwoPoints]
+      : [0, 0],
+  );
   const [organizerEditing, setOrganizerEditing] = React.useState(false);
 
   const presentational =
@@ -134,6 +153,10 @@ export function MatchActions({
           checkedPlayers={checkedPlayers}
           resultId={result.id}
           points={showPoints ? points : undefined}
+          submitDisabled={checkedPlayers.some(
+            (teamMembers) =>
+              teamMembers.length !== TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+          )}
         />
       ) : null}
       {!result && presentational ? (
@@ -266,20 +289,20 @@ function ReportScoreButtons({
   );
 }
 
-// xxx: editing points not working
-// xxx: remembers old selected roster after change
 function EditScoreForm({
   editing,
   setEditing,
   checkedPlayers,
   resultId,
   points,
+  submitDisabled,
 }: {
   editing: boolean;
   setEditing: (value: boolean) => void;
   checkedPlayers: [number[], number[]];
   resultId: number;
   points?: [number, number];
+  submitDisabled: boolean;
 }) {
   const fetcher = useFetcher();
 
@@ -302,6 +325,7 @@ function EditScoreForm({
           size="tiny"
           state={fetcher.state}
           _action="UPDATE_REPORTED_SCORE"
+          disabled={submitDisabled}
         >
           Save
         </SubmitButton>

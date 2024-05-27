@@ -18,6 +18,8 @@ import { SubmitButton } from "~/components/SubmitButton";
 
 // xxx: for points input have disabled style, something like winner radio
 
+// xxx: winner radio nicer styling?
+
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
   teams,
@@ -47,13 +49,15 @@ export function TeamRosterInputs({
   const data = useLoaderData<TournamentMatchLoaderData>();
 
   React.useEffect(() => {
+    if (result) return;
     setWinnerId(undefined);
     setPoints([0, 0]);
-  }, [data, setWinnerId, setPoints]);
+  }, [data, setWinnerId, setPoints, result]);
 
   const points =
     typeof result?.opponentOnePoints === "number" &&
-    typeof result?.opponentTwoPoints === "number"
+    typeof result?.opponentTwoPoints === "number" &&
+    !organizerEditing
       ? ([result.opponentOnePoints, result.opponentTwoPoints] as [
           number,
           number,
@@ -522,6 +526,7 @@ function RosterFormWithButtons({
         size="tiny"
         _action="SET_ACTIVE_ROSTER"
         disabled={!valid}
+        testId="save-active-roster-button"
       >
         Save
       </SubmitButton>

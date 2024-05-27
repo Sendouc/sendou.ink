@@ -50,17 +50,27 @@ const reportResult = async ({
 
   await page.getByTestId("tab-Actions").click();
 
-  if (sidesWithMoreThanFourPlayers.includes("first")) {
+  if (
+    sidesWithMoreThanFourPlayers.includes("first") &&
+    !(await page.getByTestId("player-checkbox-0").first().isDisabled())
+  ) {
     await page.getByTestId("player-checkbox-0").first().click();
     await page.getByTestId("player-checkbox-1").first().click();
     await page.getByTestId("player-checkbox-2").first().click();
     await page.getByTestId("player-checkbox-3").first().click();
+
+    await page.getByTestId("save-active-roster-button").first().click();
   }
-  if (sidesWithMoreThanFourPlayers.includes("last")) {
+  if (
+    sidesWithMoreThanFourPlayers.includes("last") &&
+    !(await page.getByTestId("player-checkbox-0").last().isDisabled())
+  ) {
     await page.getByTestId("player-checkbox-0").last().click();
     await page.getByTestId("player-checkbox-1").last().click();
     await page.getByTestId("player-checkbox-2").last().click();
     await page.getByTestId("player-checkbox-3").last().click();
+
+    await page.getByTestId("save-active-roster-button").last().click();
   }
 
   await fillPointsInput();
@@ -128,11 +138,15 @@ const expectScore = (page: Page, score: [number, number]) =>
 // 6) Try to reopen N-ZAP's first match and succeed
 // 7) As N-ZAP, undo all scores and switch to different team sweeping
 test.describe("Tournament bracket", () => {
+  // xxx: test that can set active as normal member
+
+  // xxx: test organizer edit
+
   test("reports score and sees bracket update", async ({ page }) => {
     const tournamentId = 2;
     await startBracket(page);
 
-    await impersonate(page, NZAP_TEST_ID);
+    await impersonate(page);
     await navigate({
       page,
       url: tournamentBracketsPage({ tournamentId }),
@@ -280,6 +294,7 @@ test.describe("Tournament bracket", () => {
     await expect(page.getByText("In The Zone 22")).toBeVisible();
   });
 
+  // xxx: flakes
   test("completes and finalizes a small tournament (RR->SE w/ underground bracket)", async ({
     page,
   }) => {

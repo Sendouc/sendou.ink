@@ -604,7 +604,7 @@ function StartedMatchTabs({
     ].join("-");
 
   return (
-    <ActionSectionWrapper topPadded={!showChat}>
+    <ActionSectionWrapper>
       <NewTabs
         tabs={[
           {
@@ -677,13 +677,11 @@ function StartedMatchTabs({
 function ActionSectionWrapper({
   children,
   icon,
-  topPadded,
   ...rest
 }: {
   children: React.ReactNode;
   icon?: "warning" | "info" | "success" | "error";
   "justify-center"?: boolean;
-  topPadded?: boolean;
 }) {
   // todo: flex-dir: column on mobile
   const style = icon
@@ -696,7 +694,6 @@ function ActionSectionWrapper({
       <div
         className={clsx("tournament__action-section__content", {
           "justify-center": rest["justify-center"],
-          "pt-3": topPadded,
         })}
       >
         {children}
