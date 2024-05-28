@@ -1,6 +1,8 @@
-import type { LFGType } from "~/db/tables";
+import { LFG_TYPES, type LFGType } from "~/db/tables";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { TIERS, type TierName } from "../mmr/mmr-constants";
+import { assertUnreachable } from "~/utils/types";
+import { languagesUnified } from "~/modules/i18n/config";
 
 export type LFGFilter =
   | WeaponFilter
@@ -46,12 +48,7 @@ type MinTierFilter = {
   tier: TierName;
 };
 
-const typeToNum: Map<LFGType, number> = new Map([
-  ["PLAYER_FOR_TEAM", 0],
-  ["TEAM_FOR_PLAYER", 1],
-  ["TEAM_FOR_COACH", 2],
-  ["COACH_FOR_TEAM", 3],
-]);
+const typeToNum = new Map(LFG_TYPES.map((tier, index) => [tier, `${index}`]));
 
 const numToType = new Map(
   Array.from(typeToNum).map(([type, num]) => [`${num}`, type]),
@@ -85,6 +82,8 @@ export function filterToSmallStr(filter: LFGFilter): string {
       return `mx.${tierToNum.get(filter.tier)}`;
     case "MinTier":
       return `mn.${tierToNum.get(filter.tier)}`;
+    default:
+      assertUnreachable(filter);
   }
 }
 
@@ -119,6 +118,7 @@ export function smallStrToFilter(s: string): LFGFilter | null {
       };
     }
     case "l": {
+      if (!languagesUnified.some((lang) => lang.code === val)) return null;
       return {
         _tag: "Language",
         language: val, // Kinda trusting the language I get is good, bad idea.
