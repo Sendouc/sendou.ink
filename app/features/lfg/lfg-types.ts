@@ -121,7 +121,7 @@ export function smallStrToFilter(s: string): LFGFilter | null {
       if (!languagesUnified.some((lang) => lang.code === val)) return null;
       return {
         _tag: "Language",
-        language: val, // Kinda trusting the language I get is good, bad idea.
+        language: val,
       };
     }
     case "pt": {
