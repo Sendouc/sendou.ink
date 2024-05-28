@@ -3,6 +3,8 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import { notFoundIfFalsy } from "~/utils/remix";
 import type { Unwrapped } from "~/utils/types";
 import { getServerTournamentManager } from "./brackets-manager/manager.server";
+import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
+import { userSubmittedImage } from "~/utils/urls";
 
 const manager = getServerTournamentManager();
 
@@ -25,11 +27,15 @@ export async function tournamentData({
     ctx.staff.some(
       (staff) => staff.id === user?.id && staff.role === "ORGANIZER",
     );
+  const logo = ctx.logoUrl
+    ? userSubmittedImage(ctx.logoUrl)
+    : HACKY_resolvePicture(ctx);
 
   return {
     data: manager.get.tournamentData(tournamentId),
     ctx: {
       ...ctx,
+      logoSrc: logo,
       teams: ctx.teams.map((team) => {
         const isOwnTeam = team.members.some(
           (member) => member.userId === user?.id,
