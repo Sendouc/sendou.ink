@@ -104,7 +104,7 @@ export function MatchActions({
     tournamentTeamToActiveRosterUserIds,
   );
 
-  const canEditFinishedSetScore =
+  const canEditFinishedSet =
     result && tournament.isOrganizer(user) && !tournament.ctx.isFinalized;
 
   return (
@@ -146,7 +146,7 @@ export function MatchActions({
           )}
         </Form>
       ) : null}
-      {canEditFinishedSetScore ? (
+      {canEditFinishedSet ? (
         <EditScoreForm
           editing={organizerEditing}
           setEditing={setOrganizerEditing}
