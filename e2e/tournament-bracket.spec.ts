@@ -294,7 +294,6 @@ test.describe("Tournament bracket", () => {
     await expect(page.getByText("In The Zone 22")).toBeVisible();
   });
 
-  // xxx: flakes
   test("completes and finalizes a small tournament (RR->SE w/ underground bracket)", async ({
     page,
   }) => {
