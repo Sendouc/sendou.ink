@@ -38,7 +38,8 @@ import "~/styles/maps.css";
 import "~/styles/calendar-event.css";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
-  const navigatedToMatchPage = typeof args.nextParams["mid"] === "string";
+  const navigatedToMatchPage =
+    typeof args.nextParams["mid"] === "string" && args.formMethod !== "POST";
 
   if (navigatedToMatchPage) return false;
 
