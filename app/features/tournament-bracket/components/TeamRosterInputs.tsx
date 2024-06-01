@@ -16,8 +16,6 @@ import { useUser } from "~/features/auth/core/user";
 import { tournamentTeamToActiveRosterUserIds } from "../tournament-bracket-utils";
 import { SubmitButton } from "~/components/SubmitButton";
 
-// xxx: for points input have disabled style, something like winner radio
-
 // xxx: winner radio nicer styling?
 
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
@@ -391,7 +389,11 @@ function _PointInput({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />
-      <Label htmlFor={id} spaced={false}>
+      <Label
+        htmlFor={id}
+        spaced={false}
+        className={clsx({ "text-lighter": disabled })}
+      >
         Score
       </Label>
     </div>
