@@ -62,8 +62,10 @@ export const damagePriorities: Array<
   ["MAIN", [1040], "SPLASH_HORIZONTAL_MAX", "RollerSplash_Wide"],
 
   ["MAIN", [1100, 1110, 1120], "ROLL_OVER", "BrushCore"],
-  ["MAIN", [1100, 1110, 1120], "SPLASH_MIN", "BrushSplash"],
-  ["MAIN", [1100, 1110, 1120], "SPLASH_MAX", "BrushSplash"],
+  ["MAIN", [1100, 1110], "SPLASH_MIN", "BrushSplash"],
+  ["MAIN", [1100, 1110], "SPLASH_MAX", "BrushSplash"],
+  ["MAIN", [1120, 1121], "SPLASH_MIN", "BrushSplash_Heavy"],
+  ["MAIN", [1120, 1121], "SPLASH_MAX", "BrushSplash_Heavy"],
 
   ["MAIN", [2000, 2010, 2020, 2060], "FULL_CHARGE", "ChargerFull"],
   ["MAIN", [2000, 2010, 2020, 2060], "MAX_CHARGE", "Charger"],
@@ -158,6 +160,24 @@ export const damageTypesToCombine: Partial<
   ],
   // Splatana Wiper Deco
   8011: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
+  // Mint Decavitator
+  8020: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
+  // Charcoal Decavitator
+  8021: [
     { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
     {
       when: "SPLATANA_HORIZONTAL_DIRECT",

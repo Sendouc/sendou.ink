@@ -30,7 +30,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CURRENT_SEASON = 7;
+const CURRENT_SEASON = 8;
 
 type MainWeapon = (typeof weapons)[number];
 type SubWeapon = (typeof subWeapons)[number];

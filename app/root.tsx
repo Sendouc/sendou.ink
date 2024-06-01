@@ -40,7 +40,6 @@ import { getThemeSession } from "./features/theme/core/session.server";
 import { useIsMounted } from "./hooks/useIsMounted";
 import { DEFAULT_LANGUAGE } from "./modules/i18n/config";
 import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
-import { browserTimingHeader } from "./utils/newrelic.server";
 import { COMMON_PREVIEW_IMAGE, SUSPENDED_PAGE } from "./utils/urls";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { cache, ttl } from "~/utils/cache.server";
@@ -111,7 +110,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],
       websiteId: process.env["PLAYWIRE_WEBSITE_ID"],
       loginDisabled: process.env["LOGIN_DISABLED"] === "true",
-      browserTimingHeader: browserTimingHeader(),
       user: user
         ? {
             discordName: user.discordName,
@@ -173,12 +171,6 @@ function Document({
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
-        {data?.browserTimingHeader ? (
-          <script
-            type="text/javascript"
-            dangerouslySetInnerHTML={{ __html: data?.browserTimingHeader }}
-          />
-        ) : null}
         <PWALinks />
         <Fonts />
       </head>

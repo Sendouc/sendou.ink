@@ -8,7 +8,8 @@ import type { MapPoolObject } from "./types";
 
 const Serializer = suite("Map pool serializer");
 
-const testSerializedPool = "tw:ccc000;sz:e85000;tc:b26000;rm:af0000;cb:e70000";
+const testSerializedPool =
+  "tw:1998000;sz:1d0a000;tc:164c000;rm:15e0000;cb:1ce0000";
 
 Serializer("Unserializes and then serializes to same result", () => {
   const mapPool = serializedStringToMapPool(testSerializedPool);
