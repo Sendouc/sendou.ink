@@ -23,6 +23,7 @@ export const stageIds = [
   20, // Bluefin Depot
   21, // Robo ROM-en
   22, // Marlin Airport
+  23, // Lemuria Hub
 ] as const;
 
 export const stagesObj = {
@@ -49,4 +50,5 @@ export const stagesObj = {
   BLUEFIN_DEPOT: 20,
   ROBO_ROM_EN: 21,
   MARLIN_AIRPORT: 22,
+  LEMURIA_HUB: 23,
 } as const;

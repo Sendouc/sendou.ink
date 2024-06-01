@@ -40,6 +40,7 @@ const stages = [
   "Bluefin Depot",
   "Robo ROM-en",
   "Marlin Airport",
+  "Lemuria Hub",
 ] as const;
 
 const abilityShortToInternalName = new Map([

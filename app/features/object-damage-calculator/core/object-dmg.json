@@ -1,4 +1,55 @@
 {
+  "Blaster_BlasterLightShort": {
+    "mainWeaponIds": [230, 231],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.2
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 2.2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.6
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.1
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
   "Blaster_BlasterMiddle": {
     "mainWeaponIds": [210, 211, 260, 261],
     "subWeaponIds": [],
@@ -93,7 +144,7 @@
       },
       {
         "target": "Wsb_Shield",
-        "rate": 2
+        "rate": 2.2
       },
       {
         "target": "Wsb_Sprinkler",
@@ -153,7 +204,7 @@
     ]
   },
   "Blaster": {
-    "mainWeaponIds": [250, 251, 230, 231, 240, 241, 220],
+    "mainWeaponIds": [250, 251, 240, 241, 220],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -684,8 +735,8 @@
       }
     ]
   },
-  "BrushSplash": {
-    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111, 1115],
+  "BrushSplash_Heavy": {
+    "mainWeaponIds": [1120, 1121],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -736,6 +787,65 @@
       {
         "target": "Wsb_Shield",
         "rate": 1.8
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 1.8
+      }
+    ]
+  },
+  "BrushSplash": {
+    "mainWeaponIds": [1100, 1101, 1110, 1111, 1115],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletShelterCanopyFocus",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.5
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.4
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.8
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.4
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.8
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 1.8
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.98
       },
       {
         "target": "Wsb_Sprinkler",
@@ -1260,8 +1370,24 @@
         "rate": 1
       },
       {
+        "target": "Gachihoko_Barrier",
+        "rate": 3
+      },
+      {
         "target": "NiceBall_Armor",
         "rate": 1
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
       }
     ]
   },
@@ -1592,6 +1718,10 @@
       {
         "target": "NiceBall_Armor",
         "rate": 0.6
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.1
       }
     ]
   },
@@ -2038,7 +2168,7 @@
       },
       {
         "target": "Wsb_Shield",
-        "rate": 2.4
+        "rate": 2.64
       },
       {
         "target": "Wsb_Sprinkler",
@@ -2282,7 +2412,7 @@
       },
       {
         "target": "Wsb_Shield",
-        "rate": 2.4
+        "rate": 2.64
       },
       {
         "target": "Wsb_Sprinkler",
@@ -2994,6 +3124,10 @@
       {
         "target": "NiceBall_Armor",
         "rate": 0.7
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.1
       }
     ]
   },
@@ -3072,6 +3206,10 @@
       {
         "target": "NiceBall_Armor",
         "rate": 0.7
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.1
       }
     ]
   },
@@ -3389,6 +3527,10 @@
       {
         "target": "NiceBall_Armor",
         "rate": 0.7
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.1
       }
     ]
   },
