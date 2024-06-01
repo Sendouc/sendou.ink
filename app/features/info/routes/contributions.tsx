@@ -32,6 +32,7 @@ const PROGRAMMERS = [
   "ElementUser",
   "remmycat",
   "zenpk",
+  "KaiserOfNone",
 ] as const;
 
 const TRANSLATORS: Array<{
