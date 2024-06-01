@@ -9,11 +9,16 @@ import { LinkButton } from "~/components/Button";
 import { useUser } from "~/features/auth/core/user";
 import { Alert } from "~/components/Alert";
 import type { Unpacked } from "~/utils/types";
+import { useSearchParamStateEncoder } from "~/hooks/useSearchParamState";
 import { add, sub } from "date-fns";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { LFG } from "../lfg-constants";
 import { SubmitButton } from "~/components/SubmitButton";
-import type { LFGFilter } from "../lfg-types";
+import {
+  type LFGFilter,
+  filterToSmallStr,
+  smallStrToFilter,
+} from "../lfg-types";
 import { filterPosts } from "../core/filtering";
 import { LFGAddFilterButton } from "../components/LFGAddFilterButton";
 import { LFGFilters } from "../components/LFGFilters";
@@ -46,11 +51,35 @@ export type TiersMap = ReturnType<typeof unserializeTiers>;
 const unserializeTiers = (data: SerializeFrom<typeof loader>) =>
   new Map(data.tiersMap);
 
+function decodeURLQuery(queryString: string): LFGFilter[] {
+  if (queryString === "") {
+    return [];
+  }
+  return queryString
+    .split("-")
+    .map(smallStrToFilter)
+    .filter((x) => x !== null) as LFGFilter[];
+}
+
+function encodeURLQuery(filters: LFGFilter[]): string {
+  return filters.map(filterToSmallStr).join("-");
+}
+
 export default function LFGPage() {
   const { t } = useTranslation(["common, lfg"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const [filters, setFilters] = React.useState<LFGFilter[]>([]);
+  const [filterFromSearch, setTilterFromSearch] = useSearchParamStateEncoder({
+    defaultValue: [],
+    name: "q",
+    revive: decodeURLQuery,
+    encode: encodeURLQuery,
+  });
+  const [filters, _setFilters] = React.useState<LFGFilter[]>(filterFromSearch);
+  const setFilters = (x: LFGFilter[]) => {
+    setTilterFromSearch(x);
+    _setFilters(x);
+  };
 
   const tiersMap = React.useMemo(() => unserializeTiers(data), [data]);
 

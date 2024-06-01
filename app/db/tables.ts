@@ -267,13 +267,22 @@ export interface LogInLink {
   userId: number;
 }
 
+export type LFGType =
+  | "PLAYER_FOR_TEAM"
+  | "TEAM_FOR_PLAYER"
+  | "TEAM_FOR_COACH"
+  | "COACH_FOR_TEAM";
+
+export const LFG_TYPES: LFGType[] = [
+  "PLAYER_FOR_TEAM",
+  "TEAM_FOR_PLAYER",
+  "TEAM_FOR_COACH",
+  "COACH_FOR_TEAM",
+];
+
 export interface LFGPost {
   id: GeneratedAlways<number>;
-  type:
-    | "PLAYER_FOR_TEAM"
-    | "TEAM_FOR_PLAYER"
-    | "TEAM_FOR_COACH"
-    | "COACH_FOR_TEAM";
+  type: LFGType;
   text: string;
   /** e.g. Europe/Helsinki */
   timezone: string;
@@ -466,7 +475,7 @@ export interface TournamentBadgeOwner {
       - If enabled, the Consolation Final.
     - A double elimination stage can have two or three groups:
       - Upper and lower brackets.
-      - If enabled, the Grand Final. 
+      - If enabled, the Grand Final.
 */
 export interface TournamentGroup {
   id: GeneratedAlways<number>;
@@ -535,7 +544,7 @@ export interface TournamentRoundMaps {
   pickBan?: "COUNTERPICK" | "BAN_2" | null;
 }
 
-/** 
+/**
  * A round is a logical structure used to group multiple matches together.
 
   - In round-robin stages, a round can be viewed as a list of matches that can be played at the same time.
