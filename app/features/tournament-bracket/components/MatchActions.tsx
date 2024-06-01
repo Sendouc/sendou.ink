@@ -64,10 +64,9 @@ export function MatchActions({
       ? [result.opponentOnePoints, result.opponentTwoPoints]
       : [0, 0],
   );
-  const [organizerEditing, setOrganizerEditing] = React.useState(false);
+  const [revising, setRevising] = React.useState(false);
 
-  const presentational =
-    !organizerEditing && (_presentational || Boolean(result));
+  const presentational = !revising && (_presentational || Boolean(result));
 
   const newScore: [number, number] = [
     scores[0] + (winnerId === teams[0].id ? 1 : 0),
@@ -118,7 +117,7 @@ export function MatchActions({
         points={showPoints ? points : undefined}
         setPoints={setPoints}
         result={result}
-        organizerEditing={organizerEditing}
+        revising={revising}
       />
       {!presentational && bothTeamsHaveActiveRosters ? (
         <Form
@@ -130,7 +129,7 @@ export function MatchActions({
             <input type="hidden" name="points" value={JSON.stringify(points)} />
           ) : null}
           <input type="hidden" name="position" value={position} />
-          {!organizerEditing && (
+          {!revising && (
             <ReportScoreButtons
               winnerIdx={winnerId ? winningTeamIdx() : undefined}
               points={showPoints ? points : undefined}
@@ -148,8 +147,8 @@ export function MatchActions({
       ) : null}
       {canEditFinishedSet ? (
         <EditScoreForm
-          editing={organizerEditing}
-          setEditing={setOrganizerEditing}
+          editing={revising}
+          setEditing={setRevising}
           checkedPlayers={checkedPlayers}
           resultId={result.id}
           points={showPoints ? points : undefined}

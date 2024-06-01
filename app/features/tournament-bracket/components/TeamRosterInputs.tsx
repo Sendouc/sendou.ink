@@ -30,7 +30,7 @@ export function TeamRosterInputs({
   points: _points,
   setPoints,
   result,
-  organizerEditing,
+  revising,
 }: {
   teams: [TournamentDataTeam, TournamentDataTeam];
   winnerId?: number | null;
@@ -42,9 +42,9 @@ export function TeamRosterInputs({
   setWinnerId: (newId?: number) => void;
   setPoints: React.Dispatch<React.SetStateAction<[number, number]>>;
   result?: Result;
-  organizerEditing?: boolean;
+  revising?: boolean;
 }) {
-  const presentational = !organizerEditing && Boolean(result);
+  const presentational = !revising && Boolean(result);
 
   const data = useLoaderData<TournamentMatchLoaderData>();
 
@@ -57,7 +57,7 @@ export function TeamRosterInputs({
   const points =
     typeof result?.opponentOnePoints === "number" &&
     typeof result?.opponentTwoPoints === "number" &&
-    !organizerEditing
+    !revising
       ? ([result.opponentOnePoints, result.opponentTwoPoints] as [
           number,
           number,
@@ -87,7 +87,7 @@ export function TeamRosterInputs({
             winnerRadioChecked={winnerRadioChecked}
             points={points ? points[teamI] : undefined}
             result={result}
-            organizerEditing={organizerEditing}
+            revising={revising}
           />
         );
       })}
@@ -108,7 +108,7 @@ function _TeamRoster({
   winnerRadioChecked,
   checkedPlayers,
   result,
-  organizerEditing,
+  revising,
 }: {
   team: TournamentDataTeam;
   bothTeamsHaveActiveRosters: boolean;
@@ -123,7 +123,7 @@ function _TeamRoster({
   winnerRadioChecked: boolean;
   checkedPlayers: string;
   result?: Result;
-  organizerEditing?: boolean;
+  revising?: boolean;
 }) {
   const activeRoster = tournamentTeamToActiveRosterUserIds(team);
 
@@ -139,7 +139,7 @@ function _TeamRoster({
     !activeRoster && canEditRoster,
   );
 
-  const editingRoster = organizerEditing || _editingRoster;
+  const editingRoster = revising || _editingRoster;
 
   const setEditingRoster = (editing: boolean) => {
     const didCancel = !editing;
@@ -171,7 +171,7 @@ function _TeamRoster({
   );
 
   const checkedInputPlayerIds = () => {
-    if (result?.participantIds && !organizerEditing) {
+    if (result?.participantIds && !revising) {
       return result.participantIds;
     }
     if (editingRoster) return checkedPlayers.split(",").map(Number);
@@ -195,7 +195,7 @@ function _TeamRoster({
       >
         {showWinnerRadio ? (
           <WinnerRadio
-            presentational={presentational || Boolean(organizerEditing)}
+            presentational={presentational || Boolean(revising)}
             checked={winnerRadioChecked}
             teamId={team.id}
             onChange={() => setWinnerId?.(team.id)}
@@ -217,7 +217,7 @@ function _TeamRoster({
         teamId={team.id}
         checkedPlayers={checkedInputPlayerIds()}
         // xxx: check makes sense with WinnerRadio presentational check
-        presentational={!organizerEditing && (presentational || !editingRoster)}
+        presentational={!revising && (presentational || !editingRoster)}
         handlePlayerClick={(playerId: number) => {
           if (!setCheckedPlayers) return;
 
@@ -233,7 +233,7 @@ function _TeamRoster({
           });
         }}
       />
-      {!organizerEditing && canEditRoster ? (
+      {!revising && canEditRoster ? (
         <RosterFormWithButtons
           editingRoster={editingRoster}
           setEditingRoster={setEditingRoster}
