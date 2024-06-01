@@ -5,6 +5,7 @@ import type {
 } from "@remix-run/node";
 import {
   Outlet,
+  type ShouldRevalidateFunction,
   useLoaderData,
   useLocation,
   useOutletContext,
@@ -35,6 +36,14 @@ import { tournamentPage, userSubmittedImage } from "~/utils/urls";
 import "../tournament.css";
 import "~/styles/maps.css";
 import "~/styles/calendar-event.css";
+
+export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
+  const navigatedToMatchPage = typeof args.nextParams["mid"] === "string";
+
+  if (navigatedToMatchPage) return false;
+
+  return args.defaultShouldRevalidate;
+};
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
