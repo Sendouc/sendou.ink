@@ -3,13 +3,6 @@ const isEnabled =
 
 import newrelic from "newrelic";
 
-export const browserTimingHeader = () =>
-  isEnabled
-    ? newrelic.getBrowserTimingHeader({
-        hasToRemoveScriptWrapper: true,
-      })
-    : null;
-
 export const noticeError = (
   error: Error,
   attributes?: {
