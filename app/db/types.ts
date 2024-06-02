@@ -15,7 +15,6 @@ export interface User {
   /** Discord display name aka global name (non-unique) */
   discordName: string;
   username: string;
-  discordDiscriminator: string;
   discordAvatar: string | null;
   /** Discord username (unique) */
   discordUniqueName: string | null;

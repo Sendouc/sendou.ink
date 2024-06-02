@@ -58,10 +58,7 @@ interface BuildProps {
       maxPower: number | null;
     }>;
   };
-  owner?: Pick<
-    UserWithPlusTier,
-    "discordId" | "username" | "discordDiscriminator" | "plusTier"
-  >;
+  owner?: Pick<UserWithPlusTier, "discordId" | "username" | "plusTier">;
   canEdit?: boolean;
 }
 

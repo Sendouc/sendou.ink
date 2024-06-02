@@ -8,7 +8,6 @@ const showcaseArtsStm = sql.prepare(/* sql */ `
     "User"."id" as "userId",
     "User"."discordId",
     "User"."username",
-    "User"."discordDiscriminator",
     "User"."discordAvatar",
     "User"."commissionsOpen",
     "UserSubmittedImage"."url"
@@ -28,7 +27,6 @@ export function showcaseArts(): ListedArt[] {
     author: {
       commissionsOpen: a.commissionsOpen,
       discordAvatar: a.discordAvatar,
-      discordDiscriminator: a.discordDiscriminator,
       discordId: a.discordId,
       username: a.username,
     },
@@ -41,7 +39,6 @@ const showcaseArtsByTagStm = sql.prepare(/* sql */ `
     "User"."id" as "userId",
     "User"."discordId",
     "User"."username",
-    "User"."discordDiscriminator",
     "User"."discordAvatar",
     "User"."commissionsOpen",
     "UserSubmittedImage"."url"
@@ -76,7 +73,6 @@ export function showcaseArtsByTag(tagId: ArtTag["id"]): ListedArt[] {
       author: {
         commissionsOpen: a.commissionsOpen,
         discordAvatar: a.discordAvatar,
-        discordDiscriminator: a.discordDiscriminator,
         discordId: a.discordId,
         username: a.username,
       },

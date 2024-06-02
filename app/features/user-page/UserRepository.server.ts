@@ -36,7 +36,6 @@ export function findByIdentifier(identifier: string) {
     .leftJoin("PlusTier", "PlusTier.userId", "User.id")
     .select(({ eb }) => [
       "User.discordAvatar",
-      "User.discordDiscriminator",
       "User.discordId",
       "User.discordName",
       "User.username",
@@ -109,13 +108,7 @@ export function findLeanById(id: number) {
 export function findAllPatrons() {
   return db
     .selectFrom("User")
-    .select([
-      "User.id",
-      "User.discordId",
-      "User.username",
-      "User.discordDiscriminator",
-      "User.patronTier",
-    ])
+    .select(["User.id", "User.discordId", "User.username", "User.patronTier"])
     .where("User.patronTier", "is not", null)
     .orderBy("User.patronTier", "desc")
     .orderBy("User.patronSince", "asc")
@@ -370,7 +363,6 @@ export function upsert(
     TablesInsertable["User"],
     | "discordId"
     | "discordName"
-    | "discordDiscriminator"
     | "discordAvatar"
     | "discordUniqueName"
     | "twitch"

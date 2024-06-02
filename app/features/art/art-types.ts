@@ -8,13 +8,11 @@ export interface ListedArt {
   linkedUsers?: Array<{
     discordId: User["discordId"];
     username: User["username"];
-    discordDiscriminator: User["discordDiscriminator"];
     customUrl: User["customUrl"];
   }>;
   author?: {
     discordId: User["discordId"];
     username: User["username"];
-    discordDiscriminator: User["discordDiscriminator"];
     discordAvatar: User["discordAvatar"];
     commissionsOpen?: User["commissionsOpen"];
   };

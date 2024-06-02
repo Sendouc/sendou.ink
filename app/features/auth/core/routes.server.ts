@@ -110,7 +110,6 @@ export const createLogInLinkAction: ActionFunction = async ({ request }) => {
 
   const user = await UserRepository.upsert({
     discordAvatar: data.discordAvatar ?? null,
-    discordDiscriminator: "0",
     discordId: data.discordId,
     discordName: data.discordName,
     discordUniqueName: data.discordUniqueName,

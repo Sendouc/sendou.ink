@@ -10,7 +10,6 @@ const stm = sql.prepare(/* sql */ `
       "Art"."createdAt",
       "User"."discordId",
       "User"."username",
-      "User"."discordDiscriminator",
       "User"."discordAvatar",
       "UserSubmittedImage"."url"
     from
@@ -29,7 +28,6 @@ const stm = sql.prepare(/* sql */ `
       "Art"."createdAt",
       null, -- discordId
       null, -- username
-      null, -- discordDiscriminator
       null, -- discordAvatar
       "UserSubmittedImage"."url"
     from
@@ -56,7 +54,6 @@ const stm = sql.prepare(/* sql */ `
       json_object(
         'discordId', "LinkedUser"."discordId",
         'username', "LinkedUser"."username",
-        'discordDiscriminator', "LinkedUser"."discordDiscriminator",
         'customUrl', "LinkedUser"."customUrl"
       )
     ) as "linkedUsers"
@@ -83,7 +80,6 @@ export function artsByUserId(userId: number): ListedArt[] {
         ? {
             commissionsOpen: a.commissionsOpen,
             discordAvatar: a.discordAvatar,
-            discordDiscriminator: a.discordDiscriminator,
             discordId: a.discordId,
             username: a.username,
           }

@@ -667,8 +667,6 @@ export interface User {
   css: ColumnType<Record<string, string> | null, string | null, string | null>;
   customUrl: string | null;
   discordAvatar: string | null;
-  // xxx: remove
-  discordDiscriminator: string;
   discordId: string;
   discordName: string;
   customName: string | null;

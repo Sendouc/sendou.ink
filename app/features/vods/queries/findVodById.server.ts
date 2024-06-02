@@ -30,8 +30,6 @@ const videoMatchesStm = sql.prepare(/* sql */ `
         "u"."discordId",
         'discordAvatar',
         "u"."discordAvatar",
-        'discordDiscriminator',
-        "u"."discordDiscriminator",
         'customUrl',
         "u"."customUrl",
         'id',
