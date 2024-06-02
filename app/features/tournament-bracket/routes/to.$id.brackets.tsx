@@ -5,7 +5,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useCopyToClipboard } from "react-use";
 import { useEventSource } from "remix-utils/sse/react";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";

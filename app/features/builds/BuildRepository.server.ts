@@ -1,6 +1,6 @@
 import type { Transaction } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { db } from "~/db/sql";
 import type { BuildWeapon, DB, Tables, TablesInsertable } from "~/db/tables";
 import {

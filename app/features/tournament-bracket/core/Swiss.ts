@@ -1,6 +1,6 @@
 // separate from brackets-manager as this wasn't part of the original brackets-manager library
 
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import type { InputStage, Match } from "~/modules/brackets-model";
 import { nullFilledArray } from "~/utils/arrays";

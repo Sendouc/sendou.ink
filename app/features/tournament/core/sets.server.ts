@@ -7,7 +7,7 @@ import {
 import { findRoundsByTournamentId } from "../queries/findRoundsByTournamentId.server";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import { sourceTypes } from "~/modules/tournament-map-list-generator";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { Tables } from "~/db/tables";
 import { logger } from "~/utils/logger";
 

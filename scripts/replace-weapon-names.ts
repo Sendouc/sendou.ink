@@ -3,7 +3,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import weapons from "./dicts/WeaponInfoMain.json";
 
 import { fileURLToPath } from "url";

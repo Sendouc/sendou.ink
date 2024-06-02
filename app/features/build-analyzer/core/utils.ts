@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { EMPTY_BUILD } from "~/constants";
 import type {
   Ability,

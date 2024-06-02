@@ -1,6 +1,6 @@
 import { useMatches } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
 import { useUser } from "~/features/auth/core/user";

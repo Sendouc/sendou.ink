@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { SKALOP_TOKEN_HEADER_NAME } from "~/constants";
 import type { ChatMessage } from "./chat-types";
 

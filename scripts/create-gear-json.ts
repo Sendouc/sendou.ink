@@ -6,7 +6,7 @@ import clothes from "./dicts/GearInfoClothes.json";
 import shoes from "./dicts/GearInfoShoes.json";
 
 import fs from "node:fs";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import {
   LANG_JSONS_TO_CREATE,
   loadLangDicts,

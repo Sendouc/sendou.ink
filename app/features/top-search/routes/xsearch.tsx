@@ -12,7 +12,7 @@ import type { XRankPlacement } from "~/db/types";
 import type { RankedModeShort } from "~/modules/in-game-lists";
 import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { MonthYear } from "../top-search-utils";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { makeTitle } from "~/utils/strings";

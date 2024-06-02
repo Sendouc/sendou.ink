@@ -3,7 +3,7 @@ import { useLoaderData, useRevalidator } from "@remix-run/react";
 import { nanoid } from "nanoid";
 import * as React from "react";
 import { useEventSource } from "remix-utils/sse/react";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";

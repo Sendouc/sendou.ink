@@ -18,7 +18,7 @@ import {
   validatedBuildFromSearchParams,
   validatedWeaponIdFromSearchParams,
 } from "./core/utils";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 
 export function useAnalyzeBuild() {
   const [searchParams, setSearchParams] = useSearchParams();

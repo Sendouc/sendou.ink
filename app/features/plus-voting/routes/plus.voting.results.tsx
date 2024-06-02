@@ -5,7 +5,7 @@ import type {
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { UserWithPlusTier } from "~/db/types";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { getUser } from "~/features/auth/core/user.server";

@@ -52,7 +52,7 @@ import {
   validateFollowUpBrackets,
 } from "../calendar-utils";
 import { Tags } from "../components/Tags";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import Compressor from "compressorjs";
 import { userSubmittedImage } from "~/utils/urls";
 

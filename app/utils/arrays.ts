@@ -3,7 +3,7 @@
 
 import clone from "just-clone";
 import shuffle from "just-shuffle";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 
 // (not all arrays need to necessarily run but they need to be defined)
 export function allTruthy(arr: unknown[]) {

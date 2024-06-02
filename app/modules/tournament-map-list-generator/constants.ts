@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import type { ModeShort, StageId } from "../in-game-lists";

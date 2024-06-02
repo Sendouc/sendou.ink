@@ -2,7 +2,7 @@ import { createCookieSessionStorage } from "@remix-run/node";
 
 import { isTheme } from "./provider";
 import type { Theme } from "./provider";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 
 const TEN_YEARS_IN_SECONDS = 315_360_000;
 

@@ -16,7 +16,7 @@ import {
 import clsx from "clsx";
 import * as React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";

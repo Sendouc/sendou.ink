@@ -11,7 +11,7 @@ import type {
   SubWeaponId,
 } from "~/modules/in-game-lists";
 import { roundToNDecimalPlaces } from "~/utils/number";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { objectHitPoints } from "./objectHitPoints";
 import {
   damageTypesToCombine,

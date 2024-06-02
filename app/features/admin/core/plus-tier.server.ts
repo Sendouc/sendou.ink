@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { addPendingPlusTiers } from "~/features/leaderboards/core/leaderboards.server";
 import { userSPLeaderboard } from "~/features/leaderboards/queries/userSPLeaderboard.server";
 import { previousSeason } from "~/features/mmr/season";

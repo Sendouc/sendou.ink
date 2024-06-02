@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import "dotenv/config";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { sql } from "~/db/sql";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 

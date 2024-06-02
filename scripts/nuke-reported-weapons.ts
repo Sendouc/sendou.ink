@@ -1,5 +1,5 @@
 import "dotenv/config";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { db } from "~/db/sql";
 import { currentSeason as _currentSeason } from "~/features/mmr/season";
 import { dateToDatabaseTimestamp } from "~/utils/dates";

@@ -1,5 +1,5 @@
 import type { Params } from "@remix-run/react";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { TournamentMatch } from "~/db/types";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";

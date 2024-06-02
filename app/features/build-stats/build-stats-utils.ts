@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { MAX_AP } from "~/constants";
 import { abilities, type Ability } from "~/modules/in-game-lists";
 import { roundToNDecimalPlaces } from "~/utils/number";

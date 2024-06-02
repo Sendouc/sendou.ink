@@ -15,7 +15,7 @@ import type { Result } from "./StartedMatch";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import * as PickBan from "../core/PickBan";
 import { MatchActionsBanPicker } from "./MatchActionsBanPicker";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { Button } from "~/components/Button";
 import { EditIcon } from "~/components/icons/Edit";
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";

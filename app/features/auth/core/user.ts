@@ -1,5 +1,5 @@
 import { useMatches } from "@remix-run/react";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { RootLoaderData } from "~/root";
 
 export function useUser() {

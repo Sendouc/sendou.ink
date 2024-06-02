@@ -5,7 +5,7 @@ import type {
 } from "@remix-run/node";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import * as React from "react";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { userTopPlacements } from "~/features/top-search";

@@ -1,7 +1,7 @@
 import type { MapResult, PlayerResult } from "~/db/types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { winnersArrayToWinner } from "../q-utils";
 
 export function summarizeMaps({

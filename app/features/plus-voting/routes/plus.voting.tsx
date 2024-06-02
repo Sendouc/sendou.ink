@@ -27,7 +27,7 @@ import { safeJSONParse } from "~/utils/zod";
 import { PlusSuggestionComments } from "../../plus-suggestions/routes/plus.suggestions";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { isVotingActive } from "~/features/plus-voting/core/voting-time";
 
 export const meta: MetaFunction = () => {

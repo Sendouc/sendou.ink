@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { Tables } from "~/db/tables";
 import type { Group } from "~/db/types";
 import { TIERS } from "~/features/mmr/mmr-constants";

@@ -8,7 +8,7 @@ import type { TCountryCode } from "countries-list";
 import { countries, getEmojiFlag } from "countries-list";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";

@@ -3,7 +3,7 @@ import { Image } from "~/components/Image";
 import { Placement } from "~/components/Placement";
 import { winnersImageUrl } from "~/utils/urls";
 import playerData from "../top-ten.json";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import clsx from "clsx";
 
 export function TopTenPlayer({

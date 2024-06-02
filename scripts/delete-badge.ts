@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import "dotenv/config";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { db } from "~/db/sql";
 
 const rawId = process.argv[2]?.trim();

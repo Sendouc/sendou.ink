@@ -36,7 +36,7 @@ import {
   RAINMAKER_SPEED_PENALTY_MODIFIER,
 } from "../analyzer-constants";
 import { INK_CONSUME_TYPES } from "../analyzer-types";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import {
   abilityPointsToEffects,
   abilityValues,

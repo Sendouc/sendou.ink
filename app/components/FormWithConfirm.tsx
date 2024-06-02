@@ -1,6 +1,6 @@
 import { type FetcherWithComponents, useFetcher } from "@remix-run/react";
 import * as React from "react";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { useTranslation } from "react-i18next";
 import { Button, type ButtonProps } from "./Button";
 import { Dialog } from "./Dialog";

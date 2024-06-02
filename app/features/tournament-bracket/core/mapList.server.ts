@@ -9,7 +9,7 @@ import { findTieBreakerMapPoolByTournamentId } from "../queries/findTieBreakerMa
 import { findMapPoolByTeamId } from "../queries/findMapPoolByTeamId.server";
 import { syncCached } from "~/utils/cache.server";
 import type { Tables, TournamentRoundMaps } from "~/db/tables";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { Bracket } from "./Bracket";
 import type { Round } from "~/modules/brackets-model";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";

@@ -44,7 +44,7 @@ import { CALENDAR_EVENT, REG_CLOSES_AT_OPTIONS } from "../calendar-constants";
 import { calendarEventMaxDate, calendarEventMinDate } from "../calendar-utils";
 import { nanoid } from "nanoid";
 import { s3UploadHandler } from "~/features/img-upload";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);

@@ -9,7 +9,7 @@ import {
 import { SENDOUQ } from "./q-constants";
 import { stageIds } from "~/modules/in-game-lists";
 import type { Params } from "@remix-run/react";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { MapPool } from "../map-list-generator/core/map-pool";
 import { accountCreatedInTheLastSixMonths } from "~/utils/users";
 import { databaseTimestampToDate } from "~/utils/dates";

@@ -7,7 +7,7 @@ import {
   translationJsonFolderName,
 } from "./utils";
 import fs from "fs";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { abilitiesShort } from "~/modules/in-game-lists";
 
 import path from "path";

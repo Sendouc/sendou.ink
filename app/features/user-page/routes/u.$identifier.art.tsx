@@ -9,7 +9,7 @@ import {
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useUser } from "~/features/auth/core/user";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
 import { countUnvalidatedArt } from "~/features/img-upload";

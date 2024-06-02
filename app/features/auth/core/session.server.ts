@@ -1,5 +1,5 @@
 import { createCookieSessionStorage } from "@remix-run/node";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 
 const ONE_YEAR_IN_SECONDS = 31_536_000;
 

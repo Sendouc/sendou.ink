@@ -2,7 +2,7 @@ import { DISCORD_AUTH_KEY } from "./authenticator.server";
 import type { User } from "~/db/types";
 import type { OAuth2Profile } from "remix-auth-oauth2";
 import { OAuth2Strategy } from "remix-auth-oauth2";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { z } from "zod";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { logger } from "~/utils/logger";

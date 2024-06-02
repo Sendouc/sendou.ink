@@ -7,7 +7,7 @@ import {
 } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { Avatar } from "~/components/Avatar";
 import Chart from "~/components/Chart";
 import {

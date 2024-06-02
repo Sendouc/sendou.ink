@@ -5,7 +5,7 @@ import type {
   TournamentResult,
 } from "~/db/types";
 import type { AllMatchResult } from "../queries/allMatchResultsByTournamentId.server";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { removeDuplicates } from "~/utils/arrays";
 import type { Rating } from "openskill/dist/types";
 import {

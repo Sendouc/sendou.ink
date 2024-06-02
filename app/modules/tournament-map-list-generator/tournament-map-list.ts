@@ -1,4 +1,4 @@
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import { type ModeShort, type StageId, stageIds } from "../in-game-lists";
 import { DEFAULT_MAP_POOL } from "./constants";
 import type {

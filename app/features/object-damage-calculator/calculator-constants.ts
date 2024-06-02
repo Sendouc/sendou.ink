@@ -1,5 +1,5 @@
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
-import invariant from "tiny-invariant";
+import invariant from "~/utils/invariant";
 import type { CombineWith } from "./calculator-types";
 import type { AnyWeapon, DamageType } from "../build-analyzer";
 import type objectDamages from "./core/object-dmg.json";
