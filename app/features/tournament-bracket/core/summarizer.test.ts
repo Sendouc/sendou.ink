@@ -31,6 +31,7 @@ const createTeam = (teamId: number, userIds: number[]): TournamentDataTeam => ({
   noScreen: 0,
   team: null,
   seed: 1,
+  activeRosterUserIds: [],
 });
 
 function summarize({ results }: { results?: AllMatchResult[] } = {}) {

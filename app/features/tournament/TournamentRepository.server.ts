@@ -86,6 +86,7 @@ export async function findById(id: number) {
             "TournamentTeam.droppedOut",
             "TournamentTeam.inviteCode",
             "TournamentTeam.createdAt",
+            "TournamentTeam.activeRosterUserIds",
             jsonArrayFrom(
               innerEb
                 .selectFrom("TournamentTeamMember")

@@ -27,6 +27,7 @@ import {
   pickInfoText,
   resolveHostingTeam,
   resolveRoomPass,
+  tournamentTeamToActiveRosterUserIds,
 } from "../tournament-bracket-utils";
 import { MatchActions } from "./MatchActions";
 import type { TournamentDataTeam } from "../core/Tournament.server";
@@ -39,6 +40,7 @@ import { PickIcon } from "~/components/icons/Pick";
 import { Popover } from "~/components/Popover";
 import type { Bracket } from "../core/Bracket";
 import { MatchRosters } from "./MatchRosters";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -277,6 +279,25 @@ function FancyStageBanner({
     data.mapList &&
     data.mapList.filter((m) => m.bannedByTournamentTeamId).length < 2;
 
+  const waitingForActiveRosterSelectionFor = (() => {
+    const teamOneMissing = !tournamentTeamToActiveRosterUserIds(teams[0]);
+    const teamTwoMissing = !tournamentTeamToActiveRosterUserIds(teams[1]);
+
+    if (teamOneMissing && teamTwoMissing) {
+      return "BOTH";
+    }
+
+    if (teamOneMissing) {
+      return teams[0].name;
+    }
+
+    if (teamTwoMissing) {
+      return teams[1].name;
+    }
+
+    return null;
+  })();
+
   return (
     <>
       {inBanPhase ? (
@@ -301,6 +322,23 @@ function FancyStageBanner({
               Match locked to be casted
             </div>
             <div>Please wait for staff to unlock</div>
+          </div>
+        </div>
+      ) : waitingForActiveRosterSelectionFor ? (
+        <div className="tournament-bracket__locked-banner">
+          <div className="stack sm items-center">
+            <div
+              className="text-lg text-center font-bold"
+              data-testid="active-roster-needed-text"
+            >
+              Active rosters need to be selected
+            </div>
+            <div>
+              Waiting on{" "}
+              {waitingForActiveRosterSelectionFor === "BOTH"
+                ? "both teams"
+                : waitingForActiveRosterSelectionFor}
+            </div>
           </div>
         </div>
       ) : (
@@ -489,6 +527,11 @@ function StartedMatchTabs({
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [_unseenMessages, setUnseenMessages] = React.useState(0);
   const [chatVisible, setChatVisible] = React.useState(false);
+  const [selectedTabIndex, setSelectedTabIndex] = useSearchParamState({
+    defaultValue: 0,
+    name: "tab",
+    revive: (value) => [0, 1, 2].find((idx) => idx === Number(value)),
+  });
 
   const chatUsers = React.useMemo(() => {
     return Object.fromEntries(
@@ -553,8 +596,18 @@ function StartedMatchTabs({
 
   const currentPosition = scores[0] + scores[1];
 
+  const matchActionsKey = () =>
+    [
+      data.match.id,
+      tournamentTeamToActiveRosterUserIds(teams[0]),
+      tournamentTeamToActiveRosterUserIds(teams[1]),
+      result?.participantIds,
+      result?.opponentOnePoints,
+      result?.opponentTwoPoints,
+    ].join("-");
+
   return (
-    <ActionSectionWrapper topPadded={!showChat}>
+    <ActionSectionWrapper>
       <NewTabs
         tabs={[
           {
@@ -602,8 +655,10 @@ function StartedMatchTabs({
               <MatchActions
                 // Without the key prop when switching to another match the winnerId is remembered
                 // which causes "No winning team matching the id" error.
+                // In addition we want the active roster changing either by the user or by another user
+                // to reset the state inside.
                 // Switching the key props forces the component to remount.
-                key={data.match.id}
+                key={matchActionsKey()}
                 scores={scores}
                 teams={teams}
                 position={currentPosition}
@@ -615,6 +670,8 @@ function StartedMatchTabs({
             ),
           },
         ]}
+        selectedIndex={selectedTabIndex}
+        setSelectedIndex={setSelectedTabIndex}
       />
     </ActionSectionWrapper>
   );
@@ -623,13 +680,11 @@ function StartedMatchTabs({
 function ActionSectionWrapper({
   children,
   icon,
-  topPadded,
   ...rest
 }: {
   children: React.ReactNode;
   icon?: "warning" | "info" | "success" | "error";
   "justify-center"?: boolean;
-  topPadded?: boolean;
 }) {
   // todo: flex-dir: column on mobile
   const style = icon
@@ -642,7 +697,6 @@ function ActionSectionWrapper({
       <div
         className={clsx("tournament__action-section__content", {
           "justify-center": rest["justify-center"],
-          "pt-3": topPadded,
         })}
       >
         {children}

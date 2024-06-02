@@ -597,6 +597,11 @@ export interface TournamentTeam {
   noScreen: Generated<number>;
   droppedOut: Generated<number>;
   seed: number | null;
+  activeRosterUserIds: ColumnType<
+    number[] | null,
+    string | null,
+    string | null
+  >;
   tournamentId: number;
   teamId: number | null;
 }

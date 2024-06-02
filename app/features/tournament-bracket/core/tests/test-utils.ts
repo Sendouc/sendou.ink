@@ -15,6 +15,7 @@ const tournamentCtxTeam = (
     team: null,
     mapPool: [],
     members: [],
+    activeRosterUserIds: [],
     name: "Team " + teamId,
     prefersNotToHost: 0,
     droppedOut: 0,

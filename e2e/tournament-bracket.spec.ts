@@ -48,17 +48,27 @@ const reportResult = async ({
 
   await page.getByTestId("tab-Actions").click();
 
-  if (sidesWithMoreThanFourPlayers.includes("first")) {
+  if (
+    sidesWithMoreThanFourPlayers.includes("first") &&
+    !(await page.getByTestId("player-checkbox-0").first().isDisabled())
+  ) {
     await page.getByTestId("player-checkbox-0").first().click();
     await page.getByTestId("player-checkbox-1").first().click();
     await page.getByTestId("player-checkbox-2").first().click();
     await page.getByTestId("player-checkbox-3").first().click();
+
+    await page.getByTestId("save-active-roster-button").first().click();
   }
-  if (sidesWithMoreThanFourPlayers.includes("last")) {
+  if (
+    sidesWithMoreThanFourPlayers.includes("last") &&
+    !(await page.getByTestId("player-checkbox-0").last().isDisabled())
+  ) {
     await page.getByTestId("player-checkbox-0").last().click();
     await page.getByTestId("player-checkbox-1").last().click();
     await page.getByTestId("player-checkbox-2").last().click();
     await page.getByTestId("player-checkbox-3").last().click();
+
+    await page.getByTestId("save-active-roster-button").last().click();
   }
 
   await fillPointsInput();
@@ -126,11 +136,51 @@ const expectScore = (page: Page, score: [number, number]) =>
 // 6) Try to reopen N-ZAP's first match and succeed
 // 7) As N-ZAP, undo all scores and switch to different team sweeping
 test.describe("Tournament bracket", () => {
+  test("sets active roster as regular member", async ({ page }) => {
+    const tournamentId = 1;
+    const matchId = 2;
+    await startBracket(page, tournamentId);
+
+    await impersonate(page, 37);
+    await navigate({
+      page,
+      url: tournamentMatchPage({ tournamentId, matchId }),
+    });
+    await expect(page.getByTestId("active-roster-needed-text")).toBeVisible();
+
+    await page.getByTestId("tab-Actions").click();
+
+    await page.getByTestId("player-checkbox-0").last().click();
+    await page.getByTestId("player-checkbox-1").last().click();
+    await page.getByTestId("player-checkbox-2").last().click();
+    await page.getByTestId("player-checkbox-3").last().click();
+
+    await page.getByTestId("save-active-roster-button").last().click();
+
+    // did it persist?
+    await navigate({
+      page,
+      url: tournamentMatchPage({ tournamentId, matchId }),
+    });
+    await isNotVisible(page.getByTestId("active-roster-needed-text"));
+
+    await page.getByTestId("tab-Actions").click();
+    await page.getByTestId("edit-active-roster-button").click();
+    await page.getByTestId("player-checkbox-3").last().click();
+    await page.getByTestId("player-checkbox-4").last().click();
+    await page.getByTestId("save-active-roster-button").last().click();
+
+    await expect(page.getByTestId("edit-active-roster-button")).toBeVisible();
+    await expect(
+      page.getByTestId("player-checkbox-3").last(),
+    ).not.toBeChecked();
+  });
+
   test("reports score and sees bracket update", async ({ page }) => {
     const tournamentId = 2;
     await startBracket(page);
 
-    await impersonate(page, NZAP_TEST_ID);
+    await impersonate(page);
     await navigate({
       page,
       url: tournamentBracketsPage({ tournamentId }),
@@ -433,6 +483,43 @@ test.describe("Tournament bracket", () => {
 
     await page.locator('[data-match-id="7"]').click();
     await expect(page.getByTestId("back-to-bracket-button")).toBeVisible();
+  });
+
+  test("organizer edits a match after it is done", async ({ page }) => {
+    const tournamentId = 3;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentPage(tournamentId),
+    });
+
+    await page.getByTestId("brackets-tab").click();
+    await page.getByTestId("finalize-bracket-button").click();
+    await page.getByTestId("confirm-finalize-bracket-button").click();
+
+    await page.locator('[data-match-id="2"]').click();
+    await reportResult({
+      page,
+      amountOfMapsToReport: 2,
+      sidesWithMoreThanFourPlayers: ["first"],
+      points: [100, 0],
+    });
+
+    await page.getByTestId("tab-Score").click();
+    await page.getByTestId("revise-button").click();
+    await page.getByTestId("player-checkbox-3").first().click();
+    await page.getByTestId("player-checkbox-4").first().click();
+    await page.getByTestId("points-input-1").fill("99");
+    await page.getByTestId("save-revise-button").click();
+
+    await expect(page.getByTestId("revise-button")).toBeVisible();
+    await expect(
+      page.getByTestId("player-checkbox-3").first(),
+    ).not.toBeChecked();
+    await expect(page.getByText("99p")).toBeVisible();
   });
 
   test("changes to picked map pool & best of", async ({ page }) => {
