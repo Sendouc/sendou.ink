@@ -327,7 +327,10 @@ function FancyStageBanner({
       ) : waitingForActiveRosterSelectionFor ? (
         <div className="tournament-bracket__locked-banner">
           <div className="stack sm items-center">
-            <div className="text-lg text-center font-bold">
+            <div
+              className="text-lg text-center font-bold"
+              data-testid="active-roster-needed-text"
+            >
               Active rosters need to be selected
             </div>
             <div>

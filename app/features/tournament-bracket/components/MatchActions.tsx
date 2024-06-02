@@ -325,6 +325,7 @@ function EditScoreForm({
           state={fetcher.state}
           _action="UPDATE_REPORTED_SCORE"
           disabled={submitDisabled}
+          testId="save-revise-button"
         >
           Save
         </SubmitButton>
@@ -347,6 +348,7 @@ function EditScoreForm({
         size="tiny"
         className="mx-auto"
         onClick={() => setEditing(true)}
+        testId="revise-button"
       >
         Edit
       </Button>

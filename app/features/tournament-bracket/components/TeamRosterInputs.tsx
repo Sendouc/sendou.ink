@@ -16,8 +16,6 @@ import { useUser } from "~/features/auth/core/user";
 import { tournamentTeamToActiveRosterUserIds } from "../tournament-bracket-utils";
 import { SubmitButton } from "~/components/SubmitButton";
 
-// xxx: winner radio nicer styling?
-
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
   teams,
@@ -214,7 +212,6 @@ function _TeamRoster({
       <TeamRosterInputsCheckboxes
         teamId={team.id}
         checkedPlayers={checkedInputPlayerIds()}
-        // xxx: check makes sense with WinnerRadio presentational check
         presentational={!revising && (presentational || !editingRoster)}
         handlePlayerClick={(playerId: number) => {
           if (!setCheckedPlayers) return;
@@ -505,6 +502,7 @@ function RosterFormWithButtons({
           onClick={() => setEditingRoster(true)}
           className="tournament-bracket__edit-roster-button"
           variant="minimal"
+          testId="edit-active-roster-button"
         >
           Edit active roster
         </Button>
