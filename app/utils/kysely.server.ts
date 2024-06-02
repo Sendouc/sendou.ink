@@ -3,7 +3,7 @@ import type { Tables } from "~/db/tables";
 
 export const COMMON_USER_FIELDS = [
   "User.id",
-  "User.discordName",
+  "User.username",
   "User.discordId",
   "User.discordAvatar",
   "User.customUrl",
@@ -11,7 +11,7 @@ export const COMMON_USER_FIELDS = [
 
 export type CommonUser = Pick<
   Tables["User"],
-  "id" | "discordName" | "discordId" | "discordAvatar" | "customUrl"
+  "id" | "username" | "discordId" | "discordAvatar" | "customUrl"
 >;
 
 export const userChatNameColor = sql<

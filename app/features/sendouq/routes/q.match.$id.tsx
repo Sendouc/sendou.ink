@@ -121,9 +121,9 @@ export const meta: MetaFunction = (args) => {
     {
       name: "description",
       content: `${joinListToNaturalString(
-        data.groupAlpha.members.map((m) => m.discordName),
+        data.groupAlpha.members.map((m) => m.username),
       )} vs. ${joinListToNaturalString(
-        data.groupBravo.members.map((m) => m.discordName),
+        data.groupBravo.members.map((m) => m.username),
       )}`,
     },
   ];
@@ -325,7 +325,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
           room: match.chatCode,
           type: type(),
           context: {
-            name: user.discordName,
+            name: user.username,
           },
         });
       }
@@ -689,7 +689,7 @@ function Score({
         <div
           className={clsx("text-xs text-lighter", { invisible: !isMounted })}
         >
-          {t("q:match.reportedBy", { name: reporter?.discordName ?? "admin" })}{" "}
+          {t("q:match.reportedBy", { name: reporter?.username ?? "admin" })}{" "}
           {isMounted
             ? databaseTimestampToDate(reportedAt).toLocaleString(
                 i18n.language,
@@ -955,7 +955,7 @@ function ReportWeaponsForm() {
                               )}
                             </>
                           ) : (
-                            member.discordName
+                            member.username
                           )}
                         </div>
                         <div className="stack horizontal sm items-center">
@@ -1522,7 +1522,7 @@ function MapListMap({
       ...data.groupBravo.members,
     ].find((m) => m.id === userId);
 
-    return member?.discordName ?? "";
+    return member?.username ?? "";
   };
 
   return (
@@ -1811,7 +1811,7 @@ function MapListMapPickInfo({
                   className="stack sm horizontal items-center xs"
                 >
                   <Avatar user={user} size="xxs" />
-                  {user?.discordName}
+                  {user?.username}
                 </div>
               );
             })}
@@ -1825,7 +1825,7 @@ function MapListMapPickInfo({
                   className="q-settings__radio__emoji"
                   width={18}
                 />
-                {userIdToUser(userId)?.discordName}
+                {userIdToUser(userId)?.username}
               </div>
             );
           })

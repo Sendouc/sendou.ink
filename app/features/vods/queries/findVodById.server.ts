@@ -24,8 +24,8 @@ const videoMatchesStm = sql.prepare(/* sql */ `
     json_group_array("vp"."playerName") as "playerNames",
     json_group_array(
       json_object(
-        'discordName',
-        "u"."discordName",
+        'username',
+        "u"."username",
         'discordId',
         "u"."discordId",
         'discordAvatar',

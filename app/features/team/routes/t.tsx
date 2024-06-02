@@ -63,7 +63,7 @@ export default function TeamSearchPage() {
     if (team.name.toLowerCase().includes(lowerCaseInput)) return true;
     if (
       team.members.some((m) =>
-        m.discordName.toLowerCase().includes(lowerCaseInput),
+        m.username.toLowerCase().includes(lowerCaseInput),
       )
     ) {
       return true;
@@ -136,9 +136,9 @@ export default function TeamSearchPage() {
               </div>
               <div className="team-search__team__members">
                 {team.members.length === 1
-                  ? team.members[0].discordName
+                  ? team.members[0].username
                   : joinListToNaturalString(
-                      team.members.map((member) => member.discordName),
+                      team.members.map((member) => member.username),
                       "&",
                     )}
               </div>

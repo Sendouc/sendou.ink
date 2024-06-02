@@ -9,7 +9,7 @@ const stm = sql.prepare(/* sql */ `
     "setLosses",
     json_object(
       'id', "User"."id",
-      'discordName', "User"."discordName",
+      'username', "User"."username",
       'discordAvatar', "User"."discordAvatar",
       'discordId', "User"."discordId",
       'customUrl', "User"."customUrl"
@@ -44,7 +44,7 @@ export function seasonsMatesEnemiesByUserId({
     setLosses: number;
     user: Pick<
       User,
-      "id" | "discordName" | "discordAvatar" | "discordId" | "customUrl"
+      "id" | "username" | "discordAvatar" | "discordId" | "customUrl"
     >;
   }>;
 }

@@ -309,7 +309,7 @@ function SuggestedUser({
         <Avatar user={suggestion.suggested} size="md" />
         <h2>
           <Link className="all-unset" to={userPage(suggestion.suggested)}>
-            {suggestion.suggested.discordName}
+            {suggestion.suggested.username}
           </Link>
         </h2>
         {canAddCommentToSuggestionFE({
@@ -366,7 +366,7 @@ export function PlusSuggestionComments({
         {suggestion.suggestions.map((suggestion) => {
           return (
             <fieldset key={suggestion.id} className="plus__comment">
-              <legend>{suggestion.author.discordName}</legend>
+              <legend>{suggestion.author.username}</legend>
               {suggestion.text}
               <div className="stack horizontal xs items-center">
                 <span className="plus__comment-time">
@@ -388,9 +388,7 @@ export function PlusSuggestionComments({
                   <CommentDeleteButton
                     suggestionId={suggestion.id}
                     tier={deleteButtonArgs.tier}
-                    suggestedDiscordName={
-                      deleteButtonArgs.suggested.discordName
-                    }
+                    suggestedUsername={deleteButtonArgs.suggested.username}
                     isFirstSuggestion={
                       deleteButtonArgs.suggestions.length === 1
                     }
@@ -408,12 +406,12 @@ export function PlusSuggestionComments({
 function CommentDeleteButton({
   suggestionId,
   tier,
-  suggestedDiscordName,
+  suggestedUsername,
   isFirstSuggestion = false,
 }: {
   suggestionId: PlusSuggestion["id"];
   tier: string;
-  suggestedDiscordName: string;
+  suggestedUsername: string;
   isFirstSuggestion?: boolean;
 }) {
   return (
@@ -424,8 +422,8 @@ function CommentDeleteButton({
       ]}
       dialogHeading={
         isFirstSuggestion
-          ? `Delete your suggestion of ${suggestedDiscordName} to +${tier}?`
-          : `Delete your comment to ${suggestedDiscordName}'s +${tier} suggestion?`
+          ? `Delete your suggestion of ${suggestedUsername} to +${tier}?`
+          : `Delete your comment to ${suggestedUsername}'s +${tier} suggestion?`
       }
     >
       <Button

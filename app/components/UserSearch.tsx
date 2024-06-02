@@ -89,7 +89,7 @@ export function UserSearch({
               : "Search via name or ID..."
           }
           onChange={(event) => setQuery(event.target.value)}
-          displayValue={(user: UserSearchUserItem) => user?.discordName ?? ""}
+          displayValue={(user: UserSearchUserItem) => user?.username ?? ""}
           className={clsx("combobox-input", className)}
           data-1p-ignore
           data-testid={`${inputName}-combobox-input`}
@@ -118,9 +118,7 @@ export function UserSearch({
                   <Avatar user={user} size="xs" />
                   <div>
                     <div className="stack xs horizontal items-center">
-                      <span className="combobox-username">
-                        {user.discordName}
-                      </span>{" "}
+                      <span className="combobox-username">{user.username}</span>{" "}
                       {user.plusTier ? (
                         <span className="text-xxs">+{user.plusTier}</span>
                       ) : null}

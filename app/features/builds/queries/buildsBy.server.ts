@@ -82,7 +82,7 @@ with "Top500Weapon" as (
 select
   "BuildWithWeapon".*,
   "User"."discordId",
-  "User"."discordName",
+  "User"."username",
   "User"."discordDiscriminator",
   "PlusTier"."tier" as "plusTier",
   json_group_array(
@@ -186,7 +186,7 @@ order by
 type BuildsByWeaponIdRow = BuildsByUserRow &
   Pick<
     UserWithPlusTier,
-    "discordId" | "discordName" | "discordDiscriminator" | "plusTier"
+    "discordId" | "username" | "discordDiscriminator" | "plusTier"
   >;
 
 export function buildsByWeaponId({

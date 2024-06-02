@@ -89,7 +89,7 @@ export function TeamWithRoster({
                     to={userPage(member)}
                     className="tournament__team-member-name"
                   >
-                    {member.discordName}{" "}
+                    {member.username}{" "}
                   </Link>
                 </div>
                 {friendCode ? (

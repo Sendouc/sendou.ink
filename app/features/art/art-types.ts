@@ -7,13 +7,13 @@ export interface ListedArt {
   tags?: string[];
   linkedUsers?: Array<{
     discordId: User["discordId"];
-    discordName: User["discordName"];
+    username: User["username"];
     discordDiscriminator: User["discordDiscriminator"];
     customUrl: User["customUrl"];
   }>;
   author?: {
     discordId: User["discordId"];
-    discordName: User["discordName"];
+    username: User["username"];
     discordDiscriminator: User["discordDiscriminator"];
     discordAvatar: User["discordAvatar"];
     commissionsOpen?: User["commissionsOpen"];

@@ -50,7 +50,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
           .innerJoin("User", "User.id", "TournamentTeamMember.userId")
           .select([
             "User.id as userId",
-            "User.discordName",
+            "User.username",
             "User.discordId",
             "User.discordAvatar",
             "TournamentTeamMember.isOwner",
@@ -85,7 +85,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       members: team.members.map((member) => {
         return {
           userId: member.userId,
-          name: member.discordName,
+          name: member.username,
           discordId: member.discordId,
           avatarUrl: member.discordAvatar
             ? `https://cdn.discordapp.com/avatars/${member.discordId}/${member.discordAvatar}.png`

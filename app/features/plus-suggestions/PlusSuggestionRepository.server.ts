@@ -16,13 +16,13 @@ type FindAllByMonthRow = {
   createdAt: number;
   author: {
     id: number;
-    discordName: string;
+    username: string;
     discordId: string;
     discordAvatar: string | null;
   };
   suggested: {
     id: number;
-    discordName: string;
+    username: string;
     discordId: string;
     discordAvatar: string | null;
     bio: string | null;

@@ -301,7 +301,7 @@ export async function usersThatTrusted(userId: number) {
         .select(COMMON_USER_FIELDS)
         .where("TrustRelationship.trustReceiverUserId", "=", userId),
     )
-    .orderBy("User.discordName asc")
+    .orderBy("User.username asc")
     .execute();
 
   const rowsWithoutBanned = rows.filter((row) => !userIsBanned(row.id));

@@ -127,7 +127,7 @@ function TrusterDropdown({
       {trustersNotInGroup.map((player) => {
         return (
           <option key={player.id} value={player.id}>
-            {player.discordName}
+            {player.username}
           </option>
         );
       })}

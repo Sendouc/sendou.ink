@@ -27,7 +27,7 @@ const teamStm = sql.prepare(/*sql*/ `
 const membersStm = sql.prepare(/*sql*/ `
   select
     "User"."id",
-    "User"."discordName",
+    "User"."username",
     "User"."discordAvatar",
     "User"."discordId",
     "User"."discordDiscriminator",
@@ -60,7 +60,7 @@ type MemberRows = Array<
   Pick<
     User,
     | "id"
-    | "discordName"
+    | "username"
     | "discordAvatar"
     | "discordId"
     | "discordDiscriminator"
@@ -93,7 +93,7 @@ export function findByIdentifier(
         id: member.id,
         discordAvatar: member.discordAvatar,
         discordId: member.discordId,
-        discordName: member.discordName,
+        username: member.username,
         discordDiscriminator: member.discordDiscriminator,
         patronTier: member.patronTier,
         role: member.role ?? undefined,

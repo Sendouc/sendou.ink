@@ -19,7 +19,7 @@ select
   "CalendarEvent"."bracketUrl",
   "CalendarEvent"."authorId",
   "CalendarEventDate"."startTime",
-  "User"."discordName",
+  "User"."username",
   "User"."discordDiscriminator",
   "User"."discordId"
   from "Tournament"
@@ -35,7 +35,7 @@ type FindByIdentifierRow = (Pick<
   "bracketUrl" | "name" | "description" | "authorId"
 > &
   Pick<Tournament, "id" | "mapPickingStyle" | "showMapListGenerator"> &
-  Pick<User, "discordId" | "discordName" | "discordDiscriminator"> &
+  Pick<User, "discordId" | "username" | "discordDiscriminator"> &
   Pick<CalendarEventDate, "startTime">) & {
   eventId: CalendarEvent["id"];
 } & { settings: string };
@@ -46,7 +46,7 @@ export function findByIdentifier(identifier: string | number) {
 
   const tournament = { ...rows[0], startTime: resolveEarliestStartTime(rows) };
 
-  const { discordId, discordName, discordDiscriminator, ...rest } = tournament;
+  const { discordId, username, discordDiscriminator, ...rest } = tournament;
 
   return {
     ...rest,
@@ -55,7 +55,7 @@ export function findByIdentifier(identifier: string | number) {
     ) as Tables["Tournament"]["settings"],
     author: {
       discordId,
-      discordName,
+      username,
       discordDiscriminator,
     },
   };

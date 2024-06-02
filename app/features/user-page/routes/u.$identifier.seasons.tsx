@@ -579,7 +579,7 @@ function Players({
               className="u__season__player-name"
             >
               <Avatar user={player.user} size="xs" className="mx-auto" />
-              {player.user.discordName}
+              {player.user.username}
             </Link>
             <div
               className={clsx("text-xs font-bold", {
@@ -803,7 +803,7 @@ function MatchMembersRow({
           <div key={member.discordId} className="u__season__match__user">
             <Avatar user={member} size="xxs" />
             <span className="u__season__match__user__name">
-              {member.discordName}
+              {member.username}
             </span>
             {typeof member.weaponSplId === "number" ? (
               <WeaponImage

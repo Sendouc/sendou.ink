@@ -721,7 +721,7 @@ function FinalStandings() {
                       to={userPage(player)}
                       className="stack items-center text-xs mt-auto"
                     >
-                      {player.discordName}
+                      {player.username}
                     </Link>
                   </div>
                 );
@@ -781,7 +781,7 @@ function FinalStandings() {
                                 to={userPage(player)}
                                 className="stack items-center text-xs mt-auto"
                               >
-                                {player.discordName}
+                                {player.username}
                               </Link>
                             </div>
                           );

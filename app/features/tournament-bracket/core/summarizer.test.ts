@@ -18,7 +18,7 @@ const createTeam = (teamId: number, userIds: number[]): TournamentDataTeam => ({
     customUrl: null,
     discordAvatar: null,
     discordId: "123",
-    discordName: "test",
+    username: "test",
     inGameName: "test",
     isOwner: 0,
     plusTier: null,

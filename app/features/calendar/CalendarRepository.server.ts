@@ -95,7 +95,7 @@ export async function findById({
       "User.id as authorId",
       "CalendarEventDate.startTime",
       "CalendarEventDate.eventId",
-      "User.discordName",
+      "User.username",
       "User.discordDiscriminator",
       "User.discordId",
       "User.discordAvatar",
@@ -157,7 +157,7 @@ export async function findAllBetweenTwoTimestamps({
       "CalendarEventDate.id as eventDateId",
       "CalendarEventDate.eventId",
       "CalendarEventDate.startTime",
-      "User.discordName",
+      "User.username",
       "User.discordDiscriminator",
       "CalendarEventRanks.nthAppearance",
       eb
@@ -364,7 +364,7 @@ export async function findResultsByEventId(eventId: number) {
           .select([
             "CalendarEventResultPlayer.userId as id",
             "CalendarEventResultPlayer.name",
-            "User.discordName",
+            "User.username",
             "User.discordId",
             "User.discordAvatar",
           ])

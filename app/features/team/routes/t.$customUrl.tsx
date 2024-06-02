@@ -297,7 +297,7 @@ function MemberRow({
           <div className="team__member__avatar">
             <Avatar user={member} size="md" />
           </div>
-          {member.discordName}
+          {member.username}
         </Link>
         <div className="stack horizontal md">
           {member.weapons.map(({ weaponSplId, isFavorite }) => (
@@ -323,7 +323,7 @@ function MobileMemberCard({ member }: { member: DetailedTeamMember }) {
       <div className="team__member-card">
         <Link to={userPage(member)} className="stack items-center">
           <Avatar user={member} size="md" />
-          <div className="team__member-card__name">{member.discordName}</div>
+          <div className="team__member-card__name">{member.username}</div>
         </Link>
         {member.weapons.length > 0 ? (
           <div className="stack horizontal md">

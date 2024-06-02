@@ -106,7 +106,7 @@ export default function PlusCommentModalPage() {
         <input type="hidden" name="tier" value={tierSuggestedTo} />
         <input type="hidden" name="suggestedId" value={targetUserId} />
         <h2 className="plus__modal-title">
-          {userBeingCommented.suggested.discordName}&apos;s +{tierSuggestedTo}{" "}
+          {userBeingCommented.suggested.username}&apos;s +{tierSuggestedTo}{" "}
           suggestion
         </h2>
         <CommentTextarea maxLength={PlUS_SUGGESTION_COMMENT_MAX_LENGTH} />

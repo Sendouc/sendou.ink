@@ -39,6 +39,7 @@ export function findByIdentifier(identifier: string) {
       "User.discordDiscriminator",
       "User.discordId",
       "User.discordName",
+      "User.username",
       "User.customName",
       "User.showDiscordUniqueName",
       "User.discordUniqueName",
@@ -111,7 +112,7 @@ export function findAllPatrons() {
     .select([
       "User.id",
       "User.discordId",
-      "User.discordName",
+      "User.username",
       "User.discordDiscriminator",
       "User.patronTier",
     ])
@@ -265,7 +266,7 @@ export async function search({
       .select(searchSelectedFields)
       .where((eb) =>
         eb.or([
-          eb("User.discordName", "like", query),
+          eb("User.username", "like", query),
           eb("User.inGameName", "like", query),
           eb("User.discordUniqueName", "like", query),
           eb("User.twitter", "like", query),
@@ -294,7 +295,7 @@ export async function search({
     .where((eb) =>
       eb
         .or([
-          eb("User.discordName", "like", fuzzyQuery),
+          eb("User.username", "like", fuzzyQuery),
           eb("User.inGameName", "like", fuzzyQuery),
           eb("User.discordUniqueName", "like", fuzzyQuery),
           eb("User.twitter", "like", fuzzyQuery),

@@ -27,7 +27,7 @@ export type LookingGroup = {
   members?: {
     id: number;
     discordId: string;
-    discordName: string;
+    username: string;
     discordAvatar: string | null;
     noScreen?: number;
     customUrl?: User["customUrl"];

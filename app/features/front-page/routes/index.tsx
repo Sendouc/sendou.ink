@@ -202,7 +202,7 @@ function TournamentCard({
           </div>
           <ul className="front__tournament-card__first-placers">
             {tournament.firstPlacers.map((p) => (
-              <li key={p.id}>{p.discordName}</li>
+              <li key={p.id}>{p.username}</li>
             ))}
           </ul>
         </>
@@ -228,7 +228,7 @@ function LogInButton() {
         <Avatar
           user={user}
           alt={t("common:header.loggedInAs", {
-            userName: `${user.discordName}`,
+            userName: `${user.username}`,
           })}
           className="front__avatar"
           size="sm"

@@ -4,6 +4,6 @@ export function up(db) {
   })();
 
   db.prepare(
-    /* sql */ `alter table "User" add "name" text generated always as (coalesce("customName", "discordName")) virtual`,
+    /* sql */ `alter table "User" add "username" text generated always as (coalesce("customName", "discordName")) virtual`,
   ).run();
 }

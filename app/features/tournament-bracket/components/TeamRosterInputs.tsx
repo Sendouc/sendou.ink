@@ -463,7 +463,7 @@ function TeamRosterInputsCheckboxes({
                 <span className="tournament-bracket__during-match-actions__player-name__inner">
                   {member.inGameName
                     ? inGameNameWithoutDiscriminator(member.inGameName)
-                    : member.discordName}
+                    : member.username}
                 </span>
               </label>
             </div>

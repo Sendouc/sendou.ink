@@ -19,7 +19,6 @@ import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import { useTournament } from "~/features/tournament/routes/to.$id";
-import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentRegisterPage, userPage } from "~/utils/urls";
 import { deleteSub } from "../queries/deleteSub.server";
@@ -170,7 +169,7 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
       <section className="sub__section">
         <Avatar user={sub} size="sm" className="sub__section__avatar" />
         <Link to={userPage(sub)} className="sub__section__name">
-          {discordFullName(sub)}
+          {sub.username}
         </Link>
         <div className="sub__section__spacer" />
         <div className="sub__section__info">{infos}</div>
@@ -214,7 +213,7 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
             dialogHeading={
               user?.id === sub.userId
                 ? "Delete your sub post?"
-                : `Delete sub post by ${sub.discordName}?`
+                : `Delete sub post by ${sub.username}?`
             }
             fields={[["userId", sub.userId]]}
           >

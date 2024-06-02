@@ -372,7 +372,7 @@ function OwnEntryPeek({
                 height={32}
               />
             ) : null}
-            <div className="placements__table__name">{entry.discordName}</div>
+            <div className="placements__table__name">{entry.username}</div>
             <div className="placements__table__power">{entry.power}</div>
           </div>
         </Link>
@@ -435,7 +435,7 @@ function PlayersTable({
                     />
                   ) : null}
                   <div className="placements__table__name">
-                    {entry.discordName}
+                    {entry.username}
                   </div>
                   {entry.pendingPlusTier ? (
                     <div className="text-xs text-theme whitespace-nowrap">
@@ -493,7 +493,7 @@ function TeamTable({
                   {entry.members.map((member, i) => {
                     return (
                       <React.Fragment key={member.id}>
-                        <Link to={userPage(member)}>{member.discordName}</Link>
+                        <Link to={userPage(member)}>{member.username}</Link>
                         {i !== entry.members.length - 1 ? ", " : null}
                       </React.Fragment>
                     );

@@ -261,7 +261,7 @@ function SetInfo({ set, team }: { set: PlayedSet; team: TournamentDataTeam }) {
                 className="tournament__team__set__opponent__member"
               >
                 <Avatar user={user} size="xxs" />
-                {user.discordName}
+                {user.username}
               </Link>
             );
           })}

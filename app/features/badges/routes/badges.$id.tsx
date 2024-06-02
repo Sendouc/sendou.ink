@@ -58,7 +58,7 @@ export default function BadgeDetailsPage() {
           })}
         >
           {t("managedBy", {
-            users: data.managers.map((m) => m.discordName).join(", "),
+            users: data.managers.map((m) => m.username).join(", "),
           })}
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function BadgeDetailsPage() {
               >
                 ×{owner.count}
               </span>
-              <span>{owner.discordName}</span>
+              <span>{owner.username}</span>
             </li>
           ))}
         </ul>

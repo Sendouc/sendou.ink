@@ -14,7 +14,7 @@ export interface Vod {
   pov?:
     | Pick<
         User,
-        | "discordName"
+        | "username"
         | "discordId"
         | "discordAvatar"
         | "discordDiscriminator"

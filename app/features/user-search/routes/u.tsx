@@ -102,7 +102,7 @@ function UsersList() {
               <div className="u-search__user">
                 <Avatar size="sm" user={user} />
                 <div>
-                  <div>{user.discordName}</div>
+                  <div>{user.username}</div>
                   {user.inGameName ? (
                     <div className="u-search__ign">
                       {t("user:ign.short")}: {user.inGameName}

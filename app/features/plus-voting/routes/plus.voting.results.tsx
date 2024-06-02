@@ -203,7 +203,7 @@ function Results({
                     {user.wasSuggested ? (
                       <span className="plus-history__suggestion-s">S</span>
                     ) : null}
-                    {user.discordName}
+                    {user.username}
                   </Link>
                 ))}
               </div>

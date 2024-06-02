@@ -15,7 +15,7 @@ import type {
 } from "~/modules/in-game-lists";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { discordFullName, gearTypeToInitial } from "~/utils/strings";
+import { gearTypeToInitial } from "~/utils/strings";
 import {
   analyzerPage,
   gearImageUrl,
@@ -60,7 +60,7 @@ interface BuildProps {
   };
   owner?: Pick<
     UserWithPlusTier,
-    "discordId" | "discordName" | "discordDiscriminator" | "plusTier"
+    "discordId" | "username" | "discordDiscriminator" | "plusTier"
   >;
   canEdit?: boolean;
 }
@@ -117,7 +117,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
                 to={userBuildsPage(owner)}
                 className="build__date-author-row__owner"
               >
-                {discordFullName(owner)}
+                {owner.username}
               </Link>
               <div>•</div>
             </>

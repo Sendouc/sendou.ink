@@ -171,7 +171,7 @@ export default function JoinTeamPage() {
                 <input id={id} type="checkbox" name="trust" />{" "}
                 <label htmlFor={id} className="mb-0">
                   {t("tournament:join.giveTrust", {
-                    name: captain ? captain.discordName : "",
+                    name: captain ? captain.username : "",
                   })}
                 </label>
               </div>

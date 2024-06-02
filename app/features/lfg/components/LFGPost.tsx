@@ -210,7 +210,7 @@ function PostTeamMember({
       <div className="stack sm items-center">
         <Avatar size="xs" user={member} />
         <Link to={userPage(member)} className="lfg__post-team-member-name">
-          {member.discordName}
+          {member.username}
         </Link>
         {tier ? <TierImage tier={tier} width={32} /> : null}
       </div>
@@ -232,7 +232,7 @@ function PostUserHeader({
         <div>
           <div className="stack horizontal sm items-center text-md font-bold">
             <Link to={userPage(author)} className="lfg__post-user-name">
-              {author.discordName}
+              {author.username}
             </Link>{" "}
             {author.country ? <Flag countryCode={author.country} tiny /> : null}
           </div>

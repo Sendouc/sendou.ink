@@ -37,7 +37,7 @@ import {
   validate,
   type SendouRouteHandle,
 } from "~/utils/remix";
-import { discordFullName, makeTitle } from "~/utils/strings";
+import { makeTitle } from "~/utils/strings";
 import {
   CALENDAR_PAGE,
   calendarEditPage,
@@ -304,7 +304,7 @@ function Results() {
                             className="stack horizontal xs items-center"
                           >
                             <Avatar user={player as any} size="xxs" />{" "}
-                            {player.discordName}
+                            {player.username}
                           </Link>
                         )}
                       </li>
@@ -353,7 +353,7 @@ function Description() {
       <div className="stack sm">
         <div className="event__author">
           <Avatar user={data.event} size="xs" />
-          {discordFullName(data.event)}
+          {data.event.username}
         </div>
         {data.event.description && (
           <div className="whitespace-pre-wrap">{data.event.description}</div>

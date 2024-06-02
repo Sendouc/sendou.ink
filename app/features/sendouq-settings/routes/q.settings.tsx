@@ -727,11 +727,11 @@ function TrustedUsers() {
                   >
                     <Avatar user={trustedUser} size="xxs" />
                     <div className="text-sm font-semi-bold">
-                      {trustedUser.discordName}
+                      {trustedUser.username}
                     </div>
                     <FormWithConfirm
                       dialogHeading={t("q:settings.trusted.confirm", {
-                        name: trustedUser.discordName,
+                        name: trustedUser.username,
                       })}
                       fields={[
                         ["_action", "REMOVE_TRUST"],

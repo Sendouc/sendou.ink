@@ -20,7 +20,7 @@ import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { discordFullName, makeTitle } from "~/utils/strings";
+import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
   joinTeamPage,
@@ -223,7 +223,7 @@ function MemberRow({
         className="team__roster__members__member"
         data-testid={`member-row-${number}`}
       >
-        {discordFullName(member)}
+        {member.username}
       </div>
       <div>
         <select
@@ -255,7 +255,7 @@ function MemberRow({
         <FormWithConfirm
           dialogHeading={t("team:kick.header", {
             teamName: team.name,
-            user: discordFullName(member),
+            user: member.username,
           })}
           deleteButtonText={t("team:actionButtons.kick")}
           fields={[
@@ -276,7 +276,7 @@ function MemberRow({
         <FormWithConfirm
           dialogHeading={t("team:transferOwnership.header", {
             teamName: team.name,
-            user: discordFullName(member),
+            user: member.username,
           })}
           deleteButtonText={t("team:actionButtons.transferOwnership.confirm")}
           fields={[

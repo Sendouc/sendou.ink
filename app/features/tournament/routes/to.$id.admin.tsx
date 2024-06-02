@@ -539,7 +539,7 @@ function TeamActions() {
           <select id="memberId" name="memberId">
             {selectedTeam.members.map((member) => (
               <option key={member.userId} value={member.userId}>
-                {member.discordName}
+                {member.username}
               </option>
             ))}
           </select>
@@ -682,7 +682,7 @@ function StaffList() {
         >
           <Avatar size="xs" user={staff} />{" "}
           <div className="mr-4">
-            <div>{staff.discordName}</div>
+            <div>{staff.username}</div>
             <div className="text-lighter text-xs text-capitalize">
               {t(`tournament:staff.role.${staff.role}`)}
             </div>
@@ -703,7 +703,7 @@ function RemoveStaffButton({
 
   return (
     <FormWithConfirm
-      dialogHeading={`Remove ${staff.discordName} as ${t(
+      dialogHeading={`Remove ${staff.username} as ${t(
         `tournament:staff.role.${staff.role}`,
       )}?`}
       fields={[
@@ -760,12 +760,12 @@ function DownloadParticipants() {
 
         const nonOwners = team.members.filter((user) => !user.isOwner);
 
-        let result = `-- ${team.name} --\n(C) ${owner.discordName} (IGN: ${owner.inGameName ?? ""}) - <@${owner.discordId}>`;
+        let result = `-- ${team.name} --\n(C) ${owner.username} (IGN: ${owner.inGameName ?? ""}) - <@${owner.discordId}>`;
 
         result += nonOwners
           .map(
             (user) =>
-              `\n${user.discordName} (IGN: ${user.inGameName ?? ""}) - <@${user.discordId}>`,
+              `\n${user.username} (IGN: ${user.inGameName ?? ""}) - <@${user.discordId}>`,
           )
           .join("");
 
@@ -789,7 +789,7 @@ function DownloadParticipants() {
           return `${i + 1}) ${team.name} - ${databaseTimestampToDate(
             team.createdAt,
           ).toISOString()} - ${team.members
-            .map((member) => `${member.discordName} - <@${member.discordId}>`)
+            .map((member) => `${member.username} - <@${member.discordId}>`)
             .join(" / ")}`;
         })
         .join("\n")
@@ -803,7 +803,7 @@ function DownloadParticipants() {
       .filter((team) => team.checkIns.length === 0)
       .map((team) => {
         return `${team.name} - ${team.members
-          .map((member) => `${member.discordName} - <@${member.discordId}>`)
+          .map((member) => `${member.username} - <@${member.discordId}>`)
           .join(" / ")}`;
       })
       .join("\n");

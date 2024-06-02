@@ -135,7 +135,7 @@ export function UserResultsTable({
                           className="stack horizontal xs items-center"
                         >
                           <Avatar user={player as any} size="xxs" />
-                          {player.discordName}
+                          {player.username}
                         </Link>
                       )}
                     </li>

@@ -58,8 +58,8 @@ const stm = sql.prepare(/* sql */ `
       json_object(
         'id',
         "u"."id",
-        'discordName',
-        "u"."discordName",
+        'username',
+        "u"."username",
         'discordAvatar',
         "u"."discordAvatar",
         'discordId',
@@ -94,10 +94,7 @@ export interface SetHistoryByTeamIdItem {
     wasWinner: number;
   }[];
   players: Array<
-    Pick<
-      User,
-      "id" | "discordName" | "discordAvatar" | "discordId" | "customUrl"
-    >
+    Pick<User, "id" | "username" | "discordAvatar" | "discordId" | "customUrl">
   >;
 }
 

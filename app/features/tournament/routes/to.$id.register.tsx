@@ -328,7 +328,7 @@ export default function TournamentRegisterPage() {
               className="stack horizontal xs items-center text-lighter"
             >
               <UserIcon className="tournament__info__icon" />{" "}
-              {tournament.ctx.author.discordName}
+              {tournament.ctx.author.username}
             </Link>
             <div className="stack horizontal xs items-center">
               <ClockIcon className="tournament__info__icon" />{" "}
@@ -979,7 +979,7 @@ function FillRoster({
                 data-testid={`member-num-${i + 1}`}
               >
                 <Avatar size="xsm" user={member} />
-                {member.discordName}
+                {member.username}
               </div>
             );
           })}
@@ -1018,7 +1018,7 @@ function FillRoster({
 function DirectlyAddPlayerSelect({
   players,
 }: {
-  players: { id: number; discordName: string }[];
+  players: { id: number; username: string }[];
 }) {
   const { t } = useTranslation(["tournament", "common"]);
   const fetcher = useFetcher();
@@ -1034,7 +1034,7 @@ function DirectlyAddPlayerSelect({
           {players.map((player) => {
             return (
               <option key={player.id} value={player.id}>
-                {player.discordName}
+                {player.username}
               </option>
             );
           })}
@@ -1078,7 +1078,7 @@ function DeleteMember({ members }: { members: TournamentDataTeam["members"] }) {
             .filter((member) => !member.isOwner)
             .map((member) => (
               <option key={member.userId} value={member.userId}>
-                {member.discordName}
+                {member.username}
               </option>
             ))}
         </select>

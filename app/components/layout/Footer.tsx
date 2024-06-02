@@ -2,7 +2,6 @@ import { Link } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { usePatrons } from "~/hooks/swr";
-import { discordFullName } from "~/utils/strings";
 import {
   CONTRIBUTIONS_PAGE,
   FAQ_PAGE,
@@ -105,7 +104,7 @@ function PatronsList() {
               to={userPage(patron)}
               className="layout__footer__patron-list__patron"
             >
-              {discordFullName(patron)}
+              {patron.username}
             </Link>
           </li>
         ))}

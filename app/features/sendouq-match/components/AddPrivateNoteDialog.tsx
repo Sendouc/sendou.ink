@@ -18,7 +18,7 @@ export function AddPrivateNoteDialog({
 }: {
   aboutUser?: Pick<
     GroupForMatch["members"][number],
-    "id" | "discordName" | "privateNote"
+    "id" | "username" | "privateNote"
   >;
   close: () => void;
 }) {
@@ -33,7 +33,7 @@ export function AddPrivateNoteDialog({
         <input type="hidden" name="targetId" value={aboutUser.id} />
         <div className="stack horizontal items-center justify-between">
           <h2 className="text-md">
-            {t("q:privateNote.header", { name: aboutUser.discordName })}
+            {t("q:privateNote.header", { name: aboutUser.username })}
           </h2>
           <Button
             variant="minimal-destructive"

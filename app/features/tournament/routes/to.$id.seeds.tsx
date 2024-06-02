@@ -314,7 +314,7 @@ function RowContents({
                 target="_blank"
                 className="tournament__seeds__team-member__name"
               >
-                {member.discordName}
+                {member.username}
               </Link>
               {member.plusTier ? (
                 <div

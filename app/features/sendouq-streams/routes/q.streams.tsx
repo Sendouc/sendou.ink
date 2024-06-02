@@ -56,7 +56,7 @@ export default function SendouQStreamsPage() {
                   className="q-stream__stream__user-container"
                 >
                   <Avatar size="xxs" user={streamedMatch.user} />{" "}
-                  {streamedMatch.user.discordName}
+                  {streamedMatch.user.username}
                 </Link>
                 <div className="stack horizontal sm">
                   {streamedMatch.weaponSplId ? (

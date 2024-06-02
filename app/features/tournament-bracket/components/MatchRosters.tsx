@@ -84,7 +84,7 @@ export function MatchRosters({
                     })}
                   >
                     <Avatar user={p} size="xxs" />
-                    {p.discordName}
+                    {p.username}
                   </Link>
                 </li>
               );
@@ -132,7 +132,7 @@ export function MatchRosters({
                     })}
                   >
                     <Avatar user={p} size="xxs" />
-                    {p.discordName}
+                    {p.username}
                   </Link>
                 </li>
               );

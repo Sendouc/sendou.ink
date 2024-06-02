@@ -23,8 +23,8 @@ const stm = sql.prepare(/* sql */ `
       json_object(
         'id',
         "User"."id",
-        'discordName',
-        "User"."discordName",
+        'username',
+        "User"."username",
         'tournamentTeamId',
         "TournamentTeamMember"."tournamentTeamId",
         'inGameName',
@@ -78,7 +78,7 @@ export const findMatchById = (id: number) => {
     opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
     players: parseDBArray(row.players) as Array<{
       id: User["id"];
-      discordName: User["discordName"];
+      username: User["username"];
       tournamentTeamId: TournamentTeamMember["tournamentTeamId"];
       inGameName: User["inGameName"];
       discordId: User["discordId"];

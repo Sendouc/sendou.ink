@@ -31,7 +31,7 @@ import {
   weekNumberToDate,
 } from "~/utils/dates";
 import { type SendouRouteHandle } from "~/utils/remix";
-import { discordFullName, makeTitle } from "~/utils/strings";
+import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import {
   CALENDAR_PAGE,
@@ -451,7 +451,7 @@ function EventsList({
                         </time>
                         <div className="calendar__event__author">
                           {t("from", {
-                            author: discordFullName(calendarEvent),
+                            author: calendarEvent.username,
                           })}
                         </div>
                         {sectionWeekday !== eventWeekday ? (
