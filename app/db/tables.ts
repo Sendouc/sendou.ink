@@ -670,6 +670,9 @@ export interface User {
   discordDiscriminator: string;
   discordId: string;
   discordName: string;
+  customName: string | null;
+  /** coalesce(customName, discordName) */
+  name: ColumnType<string, never, never>;
   discordUniqueName: string | null;
   favoriteBadgeId: number | null;
   id: GeneratedAlways<number>;

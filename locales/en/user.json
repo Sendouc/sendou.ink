@@ -1,5 +1,6 @@
 {
   "customUrl": "Custom URL",
+  "customName": "Custom name",
   "ign": "In-game name",
   "ign.short": "IGN",
   "country": "Country",
@@ -18,6 +19,7 @@
   "forms.commissionsOpen": "Commissions open",
   "forms.commissionText": "Commission info",
   "forms.commissionText.info": "Price, slots open or other info related to commissioning you",
+  "forms.customName.info": "If missing, your Discord display name is used: \"{{discordName}}\"",
 
   "results.title": "Results",
   "results.placing": "Placing",

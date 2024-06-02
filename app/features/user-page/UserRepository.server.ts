@@ -39,6 +39,7 @@ export function findByIdentifier(identifier: string) {
       "User.discordDiscriminator",
       "User.discordId",
       "User.discordName",
+      "User.customName",
       "User.showDiscordUniqueName",
       "User.discordUniqueName",
       "User.customUrl",
@@ -393,6 +394,7 @@ type UpdateProfileArgs = Pick<
   | "country"
   | "bio"
   | "customUrl"
+  | "customName"
   | "motionSens"
   | "stickSens"
   | "inGameName"
@@ -432,6 +434,7 @@ export function updateProfile(args: UpdateProfileArgs) {
         country: args.country,
         bio: args.bio,
         customUrl: args.customUrl,
+        customName: args.customName,
         motionSens: args.motionSens,
         stickSens: args.stickSens,
         inGameName: args.inGameName,
