@@ -36,9 +36,10 @@ export function findByIdentifier(identifier: string) {
     .leftJoin("PlusTier", "PlusTier.userId", "User.id")
     .select(({ eb }) => [
       "User.discordAvatar",
-      "User.discordDiscriminator",
       "User.discordId",
       "User.discordName",
+      "User.username",
+      "User.customName",
       "User.showDiscordUniqueName",
       "User.discordUniqueName",
       "User.customUrl",
@@ -107,13 +108,7 @@ export function findLeanById(id: number) {
 export function findAllPatrons() {
   return db
     .selectFrom("User")
-    .select([
-      "User.id",
-      "User.discordId",
-      "User.discordName",
-      "User.discordDiscriminator",
-      "User.patronTier",
-    ])
+    .select(["User.id", "User.discordId", "User.username", "User.patronTier"])
     .where("User.patronTier", "is not", null)
     .orderBy("User.patronTier", "desc")
     .orderBy("User.patronSince", "asc")
@@ -264,7 +259,7 @@ export async function search({
       .select(searchSelectedFields)
       .where((eb) =>
         eb.or([
-          eb("User.discordName", "like", query),
+          eb("User.username", "like", query),
           eb("User.inGameName", "like", query),
           eb("User.discordUniqueName", "like", query),
           eb("User.twitter", "like", query),
@@ -293,7 +288,7 @@ export async function search({
     .where((eb) =>
       eb
         .or([
-          eb("User.discordName", "like", fuzzyQuery),
+          eb("User.username", "like", fuzzyQuery),
           eb("User.inGameName", "like", fuzzyQuery),
           eb("User.discordUniqueName", "like", fuzzyQuery),
           eb("User.twitter", "like", fuzzyQuery),
@@ -368,7 +363,6 @@ export function upsert(
     TablesInsertable["User"],
     | "discordId"
     | "discordName"
-    | "discordDiscriminator"
     | "discordAvatar"
     | "discordUniqueName"
     | "twitch"
@@ -393,6 +387,7 @@ type UpdateProfileArgs = Pick<
   | "country"
   | "bio"
   | "customUrl"
+  | "customName"
   | "motionSens"
   | "stickSens"
   | "inGameName"
@@ -432,6 +427,7 @@ export function updateProfile(args: UpdateProfileArgs) {
         country: args.country,
         bio: args.bio,
         customUrl: args.customUrl,
+        customName: args.customName,
         motionSens: args.motionSens,
         stickSens: args.stickSens,
         inGameName: args.inGameName,

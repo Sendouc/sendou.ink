@@ -24,7 +24,7 @@ const resultsByMonthYearQuery = (args: MonthYear) =>
     ])
     .where("PlusVotingResult.month", "=", args.month)
     .where("PlusVotingResult.year", "=", args.year)
-    .orderBy(sql`"User"."discordName" collate nocase`, "asc");
+    .orderBy(sql`"User"."username" collate nocase`, "asc");
 type ResultsByMonthYearQueryReturnType = InferResult<
   ReturnType<typeof resultsByMonthYearQuery>
 >;
@@ -67,7 +67,7 @@ function groupPlusVotingResults(rows: ResultsByMonthYearQueryReturnType) {
 export type UsersForVoting = {
   user: Pick<
     Tables["User"],
-    "id" | "discordId" | "discordName" | "discordAvatar" | "bio"
+    "id" | "discordId" | "username" | "discordAvatar" | "bio"
   >;
   suggestion?: PlusSuggestionRepository.FindAllByMonthItem;
 }[];
@@ -96,7 +96,7 @@ export async function usersForVoting(loggedInUser: {
       user: {
         id: member.id,
         discordId: member.discordId,
-        discordName: member.discordName,
+        username: member.username,
         discordAvatar: member.discordAvatar,
         bio: member.bio,
       },
@@ -108,7 +108,7 @@ export async function usersForVoting(loggedInUser: {
       user: {
         id: suggestion.suggested.id,
         discordId: suggestion.suggested.discordId,
-        discordName: suggestion.suggested.discordName,
+        username: suggestion.suggested.username,
         discordAvatar: suggestion.suggested.discordAvatar,
         bio: suggestion.suggested.bio,
       },

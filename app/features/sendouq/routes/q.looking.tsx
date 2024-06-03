@@ -362,7 +362,7 @@ export const action: ActionFunction = async ({ request }) => {
         NotificationService.notify({
           room: targetChatCode,
           type: "USER_LEFT",
-          context: { name: user.discordName },
+          context: { name: user.username },
         });
       }
 

@@ -15,10 +15,9 @@ export interface DetailedTeam {
 
 export interface DetailedTeamMember {
   id: number;
-  discordName: string;
+  username: string;
   discordId: string;
   discordAvatar: string | null;
-  discordDiscriminator: string;
   isOwner: boolean;
   weapons: Array<Pick<UserWeapon, "weaponSplId" | "isFavorite">>;
   role?: MemberRole;

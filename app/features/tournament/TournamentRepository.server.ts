@@ -94,7 +94,7 @@ export async function findById(id: number) {
                 .leftJoin("PlusTier", "User.id", "PlusTier.userId")
                 .select([
                   "User.id as userId",
-                  "User.discordName",
+                  "User.username",
                   "User.discordId",
                   "User.discordAvatar",
                   "User.customUrl",
@@ -250,7 +250,7 @@ export async function forShowcase() {
           .where("TournamentResult.placement", "=", 1)
           .select([
             "User.id",
-            "User.discordName",
+            "User.username",
             "TournamentTeam.name as teamName",
           ]),
       ).as("firstPlacers"),

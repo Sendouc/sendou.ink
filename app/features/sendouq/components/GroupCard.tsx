@@ -275,7 +275,7 @@ function GroupMember({
                   })}
                 </div>
                 <DeletePrivateNoteForm
-                  name={member.discordName}
+                  name={member.username}
                   targetId={member.id}
                 />
               </div>
@@ -296,7 +296,7 @@ function GroupMember({
                 {inGameNameWithoutDiscriminator(member.inGameName)}
               </>
             ) : (
-              member.discordName
+              member.username
             )}
           </Link>
         </div>

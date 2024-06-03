@@ -32,7 +32,7 @@ export interface PlayedSet {
     roster: Array<
       Pick<
         User,
-        "id" | "discordName" | "discordAvatar" | "discordId" | "customUrl"
+        "id" | "username" | "discordAvatar" | "discordId" | "customUrl"
       >
     >;
   };

@@ -9,8 +9,7 @@ const stm = sql.prepare(/* sql */ `
       "Art"."description",
       "Art"."createdAt",
       "User"."discordId",
-      "User"."discordName",
-      "User"."discordDiscriminator",
+      "User"."username",
       "User"."discordAvatar",
       "UserSubmittedImage"."url"
     from
@@ -28,8 +27,7 @@ const stm = sql.prepare(/* sql */ `
       "Art"."description",
       "Art"."createdAt",
       null, -- discordId
-      null, -- discordName
-      null, -- discordDiscriminator
+      null, -- username
       null, -- discordAvatar
       "UserSubmittedImage"."url"
     from
@@ -55,8 +53,7 @@ const stm = sql.prepare(/* sql */ `
     json_group_array(
       json_object(
         'discordId', "LinkedUser"."discordId",
-        'discordName', "LinkedUser"."discordName",
-        'discordDiscriminator', "LinkedUser"."discordDiscriminator",
+        'username', "LinkedUser"."username",
         'customUrl', "LinkedUser"."customUrl"
       )
     ) as "linkedUsers"
@@ -83,9 +80,8 @@ export function artsByUserId(userId: number): ListedArt[] {
         ? {
             commissionsOpen: a.commissionsOpen,
             discordAvatar: a.discordAvatar,
-            discordDiscriminator: a.discordDiscriminator,
             discordId: a.discordId,
-            discordName: a.discordName,
+            username: a.username,
           }
         : undefined,
     };

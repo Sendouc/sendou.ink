@@ -78,7 +78,7 @@ export const testTournament = (
         customUrl: null,
         discordAvatar: null,
         discordId: "123",
-        discordName: "test",
+        username: "test",
         id: 1,
       },
       ...partialCtx,

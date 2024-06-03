@@ -11,9 +11,8 @@ const getStm = (where = "") =>
     "XRankPlacement"."weaponSplId",
     "XRankPlacement"."name",
     "User"."id",
-    "User"."discordName",
+    "User"."username",
     "User"."discordAvatar",
-    "User"."discordDiscriminator",
     "User"."discordId",
     "User"."customUrl",
     max("XRankPlacement"."power") as "power",
@@ -45,9 +44,8 @@ export interface XPLeaderboardItem {
   id: User["id"];
   name: XRankPlacement["name"];
   playerId: XRankPlacement["playerId"];
-  discordName: User["discordName"] | null;
+  username: User["username"] | null;
   discordAvatar: User["discordAvatar"] | null;
-  discordDiscriminator: User["discordDiscriminator"] | null;
   discordId: User["discordId"] | null;
   customUrl: User["customUrl"] | null;
   placementRank: number;

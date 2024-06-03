@@ -1,17 +1,5 @@
-import type { GearType, User } from "~/db/types";
+import type { GearType } from "~/db/types";
 import { assertUnreachable } from "./types";
-
-export const isNewDiscordUniqueName = (discordDiscriminator: string) =>
-  discordDiscriminator === "0";
-
-export function discordFullName(
-  user: Pick<User, "discordName" | "discordDiscriminator">,
-) {
-  if (isNewDiscordUniqueName(user.discordDiscriminator)) {
-    return user.discordName;
-  }
-  return `${user.discordName}#${user.discordDiscriminator}`;
-}
 
 export function inGameNameWithoutDiscriminator(inGameName: string) {
   return inGameName.split("#")[0];

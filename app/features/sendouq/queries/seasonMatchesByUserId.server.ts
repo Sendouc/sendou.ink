@@ -47,7 +47,7 @@ const stm = sql.prepare(/* sql */ `
       json_group_array(
         json_object(
           'id', "User"."id",
-          'discordName', "User"."discordName",
+          'username', "User"."username",
           'discordId', "User"."discordId",
           'discordAvatar', "User"."discordAvatar"
         )
@@ -63,7 +63,7 @@ const stm = sql.prepare(/* sql */ `
     json_group_array(
       json_object(
         'id', "User"."id",
-        'discordName', "User"."discordName",
+        'username', "User"."username",
         'discordId', "User"."discordId",
         'discordAvatar', "User"."discordAvatar"
       )
@@ -107,14 +107,14 @@ interface SeasonMatchByUserId {
   spDiff: number | null;
   groupAlphaMembers: Array<{
     id: User["id"];
-    discordName: User["discordName"];
+    username: User["username"];
     discordId: User["discordId"];
     discordAvatar: User["discordAvatar"];
     weaponSplId?: MainWeaponId;
   }>;
   groupBravoMembers: Array<{
     id: User["id"];
-    discordName: User["discordName"];
+    username: User["username"];
     discordId: User["discordId"];
     discordAvatar: User["discordAvatar"];
     weaponSplId?: MainWeaponId;

@@ -10,7 +10,7 @@ const stm = sql.prepare(/* sql */ `
       "Group"."inviteCode",
       "User"."id" as "userId",
       "User"."discordId",
-      "User"."discordName",
+      "User"."username",
       "User"."discordAvatar",
       "User"."qWeaponPool",
       "GroupMember"."role",
@@ -33,7 +33,7 @@ const stm = sql.prepare(/* sql */ `
       json_object(
         'id', "q1"."userId",
         'discordId', "q1"."discordId",
-        'discordName', "q1"."discordName",
+        'username', "q1"."username",
         'discordAvatar', "q1"."discordAvatar",
         'role', "q1"."role",
         'note', "q1"."note",

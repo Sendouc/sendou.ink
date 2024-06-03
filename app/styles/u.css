@@ -30,11 +30,7 @@
   align-items: center;
   grid-area: name;
   overflow-wrap: anywhere;
-}
-
-.u__discriminator {
-  color: var(--text-lighter);
-  margin-inline-end: var(--s-2);
+  gap: var(--s-2-5);
 }
 
 .u__country-name {

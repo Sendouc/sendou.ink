@@ -17,7 +17,7 @@ import { soundPath } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
 import { logger } from "~/utils/logger";
 
-type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
+type ChatUser = Pick<User, "username" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
   title?: string;
 };
@@ -239,7 +239,7 @@ function Message({
                 : undefined
             }
           >
-            {user?.discordName ?? missingUserName}
+            {user?.username ?? missingUserName}
           </div>
           {user?.title ? (
             <div className="text-xs text-theme-secondary font-semi-bold">

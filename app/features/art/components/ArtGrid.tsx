@@ -2,7 +2,6 @@ import { Link } from "@remix-run/react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { Avatar } from "~/components/Avatar";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { discordFullName } from "~/utils/strings";
 import {
   artPage,
   conditionalUserSubmittedImage,
@@ -116,7 +115,7 @@ function BigImageDialog({ close, art }: { close: () => void; art: ListedArt }) {
               key={user.discordId}
               className="art__dialog__tag art__dialog__tag__user"
             >
-              {discordFullName(user)}
+              {user.username}
             </Link>
           ))}
           {art.tags?.map((tag) => (
@@ -205,7 +204,7 @@ function ImagePreview({
           })}
         >
           <Avatar user={art.author} size="xxs" />
-          {t("art:madeBy")} {discordFullName(art.author)}
+          {t("art:madeBy")} {art.author.username}
         </Link>
       </div>
     );
@@ -220,7 +219,7 @@ function ImagePreview({
         })}
       >
         <Avatar user={art.author} size="xxs" />
-        {discordFullName(art.author)}
+        {art.author.username}
       </div>
     </Link>
   );

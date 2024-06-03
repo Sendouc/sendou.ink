@@ -18,7 +18,7 @@ export function UserItem() {
         <Avatar
           user={user}
           alt={t("header.loggedInAs", {
-            userName: `${user.discordName}`,
+            userName: `${user.username}`,
           })}
           className="layout__avatar"
           size="sm"

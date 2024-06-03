@@ -8,7 +8,7 @@ const stm = sql.prepare(/* sql */ `
     "Skill"."id" as "entryId",
     "Skill"."ordinal",
     "User"."id",
-    "User"."discordName",
+    "User"."username",
     "User"."discordAvatar",
     "User"."discordId",
     "User"."customUrl",
@@ -39,7 +39,7 @@ export interface UserSPLeaderboardItem {
   entryId: number;
   power: number;
   id: User["id"];
-  discordName: User["discordName"];
+  username: User["username"];
   discordAvatar: User["discordAvatar"];
   discordId: User["discordId"];
   customUrl: User["customUrl"];

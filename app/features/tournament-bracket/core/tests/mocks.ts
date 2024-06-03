@@ -2291,7 +2291,7 @@ export const PADDLING_POOL_257 = () =>
       startTime: 1709748000,
       author: {
         id: 860,
-        discordName: "공주 Alice",
+        username: "공주 Alice",
         discordId: "163771047068303360",
         discordAvatar: "b33d8f230218d6a92705a63fdf803851",
         customUrl: "alicetheto",
@@ -2300,7 +2300,7 @@ export const PADDLING_POOL_257 = () =>
       staff: [
         {
           id: 1536,
-          discordName: "Pinky",
+          username: "Pinky",
           discordId: "178489224192851969",
           discordAvatar: "8b8c1d85cc525ea366f3ce2a6a594c05",
           customUrl: "pinky",
@@ -2309,7 +2309,7 @@ export const PADDLING_POOL_257 = () =>
         },
         {
           id: 1662,
-          discordName: "Andromeda",
+          username: "Andromeda",
           discordId: "275213752025088000",
           discordAvatar: "25bf68c5aa4e622ceb5a241c34841c6d",
           customUrl: null,
@@ -2318,7 +2318,7 @@ export const PADDLING_POOL_257 = () =>
         },
         {
           id: 6648,
-          discordName: "Hαzε",
+          username: "Hαzε",
           discordId: "195618756800675841",
           discordAvatar: "a_03ec4bbcb2a4ab000237c9f3e9e71508",
           customUrl: "sdomi19",
@@ -2327,7 +2327,7 @@ export const PADDLING_POOL_257 = () =>
         },
         {
           id: 12717,
-          discordName: "Browni",
+          username: "Browni",
           discordId: "413759870333091884",
           discordAvatar: "a_b55f70ada809a600e73c5088b910e659",
           customUrl: "brufnie",
@@ -2359,7 +2359,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 10293,
-              discordName: "Yū",
+              username: "Yū",
               discordId: "769160946211880970",
               discordAvatar: "1e1c2ddba7dc735347b6859a8fba1d95",
               customUrl: "yu",
@@ -2371,7 +2371,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 5728,
-              discordName: "Cam",
+              username: "Cam",
               discordId: "335859980890669056",
               discordAvatar: "4de21a16c8885b2e36366560c24d2212",
               customUrl: "cam",
@@ -2383,7 +2383,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 185,
-              discordName: "phoenix",
+              username: "phoenix",
               discordId: "619566583970529314",
               discordAvatar: "d68b95b004a6f29dedbc1baed6d4b9da",
               customUrl: "phoenix",
@@ -2395,7 +2395,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 9925,
-              discordName: "Pouleyyy",
+              username: "Pouleyyy",
               discordId: "852633256384790559",
               discordAvatar: "403b6cd6fd6befe334f5facb06de1082",
               customUrl: "pouleyyy",
@@ -2465,7 +2465,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 15916,
-              discordName: "Raiki",
+              username: "Raiki",
               discordId: "1028691176129310790",
               discordAvatar: "00c1371c9978ed4939ff9deeb423c55f",
               customUrl: "raiki",
@@ -2477,7 +2477,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 1300,
-              discordName: "KING KZRR",
+              username: "KING KZRR",
               discordId: "444897755010301979",
               discordAvatar: "92ff2a94b46916e6d7ee84e8e5aeb9ac",
               customUrl: null,
@@ -2489,7 +2489,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 27958,
-              discordName: "tody",
+              username: "tody",
               discordId: "437402107818016780",
               discordAvatar: "8e9d4b3091cda9bfb20808792159f76e",
               customUrl: "tody",
@@ -2501,7 +2501,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 7265,
-              discordName: "Splating",
+              username: "Splating",
               discordId: "138034502692765696",
               discordAvatar: "44abbba564d1aab281c59748e28f2281",
               customUrl: "splating",
@@ -2513,7 +2513,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 4603,
-              discordName: "Punchy",
+              username: "Punchy",
               discordId: "562637304057823235",
               discordAvatar: "e485707393117b769eb4d5d308a27d9c",
               customUrl: "punchy",
@@ -2583,7 +2583,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 223,
-              discordName: "Warlock",
+              username: "Warlock",
               discordId: "661328509712728066",
               discordAvatar: "1ff6c102ae91d67ffbbc4b36d792c41f",
               customUrl: null,
@@ -2595,7 +2595,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 343,
-              discordName: "Azurai",
+              username: "Azurai",
               discordId: "402500693530902529",
               discordAvatar: "371a5eae7176b973ed444a204e7e3e41",
               customUrl: "azurai",
@@ -2607,7 +2607,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 193,
-              discordName: "jaysorawk_",
+              username: "jaysorawk_",
               discordId: "273503438124613632",
               discordAvatar: "93036057b73f67468f80b418b0ec3dd5",
               customUrl: "jaysorawk",
@@ -2619,7 +2619,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 10615,
-              discordName: "Yotzzz",
+              username: "Yotzzz",
               discordId: "700013882785267772",
               discordAvatar: "2f935c9037708045ac9923317f995231",
               customUrl: "yotzzz",
@@ -2689,7 +2689,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 22661,
-              discordName: "_Silver",
+              username: "_Silver",
               discordId: "778336481206075435",
               discordAvatar: "8c00132a8493847453f67ea7262a03db",
               customUrl: "_silver",
@@ -2701,7 +2701,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28485,
-              discordName: "˜Buηgee˜",
+              username: "˜Buηgee˜",
               discordId: "1115002996401639464",
               discordAvatar: "6b80ad95448995522b2138e3429cd0fe",
               customUrl: "gee",
@@ -2713,7 +2713,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 8734,
-              discordName: "Yuni...",
+              username: "Yuni...",
               discordId: "857226158672052226",
               discordAvatar: "a_32c90081a7582534e7b762edf3edfcb9",
               customUrl: "yuni1206",
@@ -2725,7 +2725,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 7094,
-              discordName: "Jul",
+              username: "Jul",
               discordId: "603537087798575124",
               discordAvatar: "f347062c8088a60da4fe7734c0cd2c16",
               customUrl: null,
@@ -2795,7 +2795,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 8157,
-              discordName: "Luna",
+              username: "Luna",
               discordId: "208429763419832321",
               discordAvatar: "575f6b8d8c285def1c6e13dfe4fa1437",
               customUrl: "l",
@@ -2807,7 +2807,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 2622,
-              discordName: "Fif Gen",
+              username: "Fif Gen",
               discordId: "348223650740174848",
               discordAvatar: "0897946f86c7660566f31fbc643bd3ce",
               customUrl: "fif_gen",
@@ -2819,7 +2819,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 8139,
-              discordName: "eli",
+              username: "eli",
               discordId: "293724135157399553",
               discordAvatar: "7ec4fbccbe64449375425475f275309f",
               customUrl: "eli",
@@ -2831,7 +2831,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 11199,
-              discordName: "Gus",
+              username: "Gus",
               discordId: "535329089461157888",
               discordAvatar: "3a2f179bda8930dc9974276b1a84451b",
               customUrl: "gusplatoon",
@@ -2843,7 +2843,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 13227,
-              discordName: "Luples",
+              username: "Luples",
               discordId: "404425475985768448",
               discordAvatar: "911740a2fde1b28642762bda217bd8c4",
               customUrl: "luples",
@@ -2913,7 +2913,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 23746,
-              discordName: "Proto",
+              username: "Proto",
               discordId: "148103128032608256",
               discordAvatar: "ed2ac642646017bb7bd9cbb31a59bc66",
               customUrl: "proto",
@@ -2925,7 +2925,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 8258,
-              discordName: "Red",
+              username: "Red",
               discordId: "352207524390240257",
               discordAvatar: "a_7f178ffdb6d3a0c395389023c1fcc0dc",
               customUrl: "red",
@@ -2937,7 +2937,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 13562,
-              discordName: "kiki",
+              username: "kiki",
               discordId: "707603025090445392",
               discordAvatar: "f570f994acd9f154170daf9ed424b5b6",
               customUrl: "kiki",
@@ -2949,7 +2949,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 25721,
-              discordName: "Asan",
+              username: "Asan",
               discordId: "559571840604045323",
               discordAvatar: "3bf03dc38e931f1aa66e6f65fc0f0b27",
               customUrl: "asan",
@@ -2961,7 +2961,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 1447,
-              discordName: "Tamako",
+              username: "Tamako",
               discordId: "165170281814556672",
               discordAvatar: "7241c33a50f405f052f50fb984d7e269",
               customUrl: "tamako",
@@ -3031,7 +3031,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 9125,
-              discordName: "Zivox",
+              username: "Zivox",
               discordId: "244456158201380864",
               discordAvatar: "0c19856d48d3c074b052bb8b0fb96d96",
               customUrl: "zivox",
@@ -3043,7 +3043,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 14489,
-              discordName: "keurbi",
+              username: "keurbi",
               discordId: "699648108958843011",
               discordAvatar: "82266aef4a55776c15ee8e6c4b125371",
               customUrl: "keurbii",
@@ -3055,7 +3055,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 20755,
-              discordName: "Kchouuu💜",
+              username: "Kchouuu💜",
               discordId: "517816481854128134",
               discordAvatar: "a_dbf5283fac4fa8bc631a74a4719612d9",
               customUrl: "kchouuu",
@@ -3067,7 +3067,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 11056,
-              discordName: "Yegzu",
+              username: "Yegzu",
               discordId: "700501347811983362",
               discordAvatar: "1479b86bf643851945616fb7f35ae640",
               customUrl: "yegzu8",
@@ -3079,7 +3079,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 175,
-              discordName: "Sparadox",
+              username: "Sparadox",
               discordId: "672507579888435211",
               discordAvatar: "7b39539d7e90accc5e6dd1f4a42772fb",
               customUrl: "sparadox",
@@ -3149,7 +3149,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 22746,
-              discordName: "Bomm",
+              username: "Bomm",
               discordId: "581148889114214400",
               discordAvatar: "af58a7bdf4fb231f289d24203a76ec6e",
               customUrl: null,
@@ -3161,7 +3161,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 21979,
-              discordName: "Jιky",
+              username: "Jιky",
               discordId: "1018190360918364181",
               discordAvatar: "bfe0fb7aed86889b58489fa1ffdde1e7",
               customUrl: "jiky",
@@ -3173,7 +3173,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 11627,
-              discordName: "Adil",
+              username: "Adil",
               discordId: "567674530999304212",
               discordAvatar: "2bd7a20ef08ae5195db4393c80c42961",
               customUrl: "adil",
@@ -3185,7 +3185,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 12976,
-              discordName: "Tikke",
+              username: "Tikke",
               discordId: "1005519944223555683",
               discordAvatar: "40c3446f2d71533b7cd22cd50c2fc971",
               customUrl: null,
@@ -3255,7 +3255,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 30449,
-              discordName: "xιиσ",
+              username: "xιиσ",
               discordId: "1126541740560617472",
               discordAvatar: "a86a01e74ae443c35478882f6a7c230a",
               customUrl: "xino",
@@ -3267,7 +3267,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 6508,
-              discordName: "Necrew",
+              username: "Necrew",
               discordId: "395302135501291523",
               discordAvatar: "3d48d7480b9877c2aa88c1e2da57a331",
               customUrl: "necrew",
@@ -3279,7 +3279,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 32579,
-              discordName: "c",
+              username: "c",
               discordId: "1093602436440133752",
               discordAvatar: "977b8130b8f55efbf57b7101abd99c75",
               customUrl: "clown_spl",
@@ -3291,7 +3291,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 24585,
-              discordName: "AGATE",
+              username: "AGATE",
               discordId: "555795481914245120",
               discordAvatar: "6c934620be2d75f95542278212d58b31",
               customUrl: "agatespl",
@@ -3303,7 +3303,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 27515,
-              discordName: "Devin!↑",
+              username: "Devin!↑",
               discordId: "709679861639151626",
               discordAvatar: "df9322e385fef514d0d8bf78bfbbf366",
               customUrl: null,
@@ -3315,7 +3315,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 11151,
-              discordName: "Yoshis",
+              username: "Yoshis",
               discordId: "875102801250885724",
               discordAvatar: "988ff4ff41b9e821070192b570aa61e3",
               customUrl: "yoshisgamer",
@@ -3385,7 +3385,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 3161,
-              discordName: "Saku",
+              username: "Saku",
               discordId: "575337575036878869",
               discordAvatar: "0a9061dd49908f9d114178b05568ce69",
               customUrl: "saku",
@@ -3397,7 +3397,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 379,
-              discordName: "Prism",
+              username: "Prism",
               discordId: "720997831359463528",
               discordAvatar: "97010d1eab118e23282abec4ecd59eac",
               customUrl: "prism",
@@ -3409,7 +3409,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 8480,
-              discordName: "Xone",
+              username: "Xone",
               discordId: "554738521886162945",
               discordAvatar: "4406d33804a5012478ef92e054f28741",
               customUrl: "xone",
@@ -3421,7 +3421,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 5229,
-              discordName: "Korii🌊",
+              username: "Korii🌊",
               discordId: "916478656430346302",
               discordAvatar: "6d5d694c5cb42f334748a4797666e14a",
               customUrl: "korii",
@@ -3433,7 +3433,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 7336,
-              discordName: "Elo",
+              username: "Elo",
               discordId: "363449275239366657",
               discordAvatar: "ae3c3851ae792bdd03afe0e3a247b77f",
               customUrl: "elo",
@@ -3503,7 +3503,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 28482,
-              discordName: "phantom 👻",
+              username: "phantom 👻",
               discordId: "599633578648928307",
               discordAvatar: "75e8098ed3f83903d17deb0e6f66baa1",
               customUrl: "phantom_spl",
@@ -3515,7 +3515,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 9403,
-              discordName: "Harshi",
+              username: "Harshi",
               discordId: "752042543046197268",
               discordAvatar: "b0225f4c06cbfc42f6b095ba7d11964c",
               customUrl: null,
@@ -3527,7 +3527,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 18039,
-              discordName: "Rose",
+              username: "Rose",
               discordId: "936942744985829477",
               discordAvatar: "2de3d96a7f163439de0ec19f643bc717",
               customUrl: "rosearrow",
@@ -3539,7 +3539,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 38062,
-              discordName: "kayora",
+              username: "kayora",
               discordId: "662632630696673290",
               discordAvatar: "d9b0a7bb4b93f9cf0100d96eefa0ba80",
               customUrl: null,
@@ -3551,7 +3551,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 25210,
-              discordName: "Blue",
+              username: "Blue",
               discordId: "332626957646823435",
               discordAvatar: "476885ef479abbe8a7db4c021042e46a",
               customUrl: "tdmblue",
@@ -3618,7 +3618,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 30582,
-              discordName: "Bull4Ever",
+              username: "Bull4Ever",
               discordId: "353639699237175307",
               discordAvatar: "6dba3834f111ffb94af9924fe4f0f2a5",
               customUrl: null,
@@ -3630,7 +3630,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 29321,
-              discordName: "Devil~",
+              username: "Devil~",
               discordId: "1115299092764033106",
               discordAvatar: "7031e5090156c45e06748db4f2f6ab3e",
               customUrl: null,
@@ -3642,7 +3642,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 3930,
-              discordName: "Yushi4Ever",
+              username: "Yushi4Ever",
               discordId: "268425076221804554",
               discordAvatar: "5215a068eedef51de0b81b2e7f9541fb",
               customUrl: null,
@@ -3654,7 +3654,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 1740,
-              discordName: "✰𝕋𝕚𝕟𝕖✰",
+              username: "✰𝕋𝕚𝕟𝕖✰",
               discordId: "436919166679777280",
               discordAvatar: "9f846a3e3836541927b9c39496f8d6a5",
               customUrl: null,
@@ -3666,7 +3666,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 5368,
-              discordName: "Dismaqe",
+              username: "Dismaqe",
               discordId: "643538243396042868",
               discordAvatar: "55ed273ca147c10ae1dd12dc88f17d39",
               customUrl: "dismaqe",
@@ -3678,7 +3678,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 29433,
-              discordName: "Bandito",
+              username: "Bandito",
               discordId: "788856864807845948",
               discordAvatar: "5ad1d0408b4a760a1a567efa38641f4b",
               customUrl: "bandito",
@@ -3748,7 +3748,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 32155,
-              discordName: "gugusdu45",
+              username: "gugusdu45",
               discordId: "759789817763987466",
               discordAvatar: "02720d7a968e825f89ceac25ad2f8dd6",
               customUrl: null,
@@ -3760,7 +3760,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 35118,
-              discordName: "Slord.",
+              username: "Slord.",
               discordId: "209358928692248576",
               discordAvatar: "8c4b2aba195e3de5bcc7cb84e3df7ab9",
               customUrl: null,
@@ -3772,7 +3772,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 30730,
-              discordName: "zen",
+              username: "zen",
               discordId: "224409138367692801",
               discordAvatar: "e140334114124a82b342762489c113aa",
               customUrl: "zenhmi",
@@ -3784,7 +3784,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 30758,
-              discordName: "★MεgαЯ★",
+              username: "★MεgαЯ★",
               discordId: "167957503630376960",
               discordAvatar: "b64ed12dd2cc1e6eee1db9785791fd7f",
               customUrl: null,
@@ -3796,7 +3796,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 76,
-              discordName: "alwo",
+              username: "alwo",
               discordId: "457473830022152212",
               discordAvatar: "ffd5c22b3e36cefc13181e46900f5c17",
               customUrl: "alwo",
@@ -3866,7 +3866,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 18734,
-              discordName: "Javierx9x",
+              username: "Javierx9x",
               discordId: "617402869280145418",
               discordAvatar: "fe79aac365eb877b69aad67224a4b457",
               customUrl: null,
@@ -3878,7 +3878,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28851,
-              discordName: "Aprhodite",
+              username: "Aprhodite",
               discordId: "688872021526052936",
               discordAvatar: "aaa52a048b58dc706b5d88d09d51b1c5",
               customUrl: "aprhodite",
@@ -3890,7 +3890,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 13832,
-              discordName: "rdvg",
+              username: "rdvg",
               discordId: "213628539197587456",
               discordAvatar: "aa5d2f0442a117f6c0f177322f73e58d",
               customUrl: "ruben",
@@ -3902,7 +3902,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 23307,
-              discordName: "izowen",
+              username: "izowen",
               discordId: "267037979820818432",
               discordAvatar: "9f44aeb40515409565f2eb7c783a76e7",
               customUrl: null,
@@ -3914,7 +3914,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 20143,
-              discordName: "! Ateno",
+              username: "! Ateno",
               discordId: "885858782003990539",
               discordAvatar: "fccb549bfca5f61509165b1aeb1675f6",
               customUrl: null,
@@ -3926,7 +3926,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 27108,
-              discordName: "NEOmegaX",
+              username: "NEOmegaX",
               discordId: "482200040685830154",
               discordAvatar: "92b52d3fdb574d385e88701f16cb424f",
               customUrl: null,
@@ -3996,7 +3996,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 19035,
-              discordName: "Magyk",
+              username: "Magyk",
               discordId: "271823983429550081",
               discordAvatar: "73b4e9b8ddf9d275b5cde3e859e608b9",
               customUrl: "magyk",
@@ -4008,7 +4008,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 23016,
-              discordName: "lexi ♡",
+              username: "lexi ♡",
               discordId: "869690273725284392",
               discordAvatar: "2a724110ec546bfb40a979998db2bc6e",
               customUrl: "theory",
@@ -4020,7 +4020,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 6053,
-              discordName: "Salti",
+              username: "Salti",
               discordId: "331517088248233987",
               discordAvatar: "42f6d15afbe70ddcd9d8d11658eeb912",
               customUrl: "salti64",
@@ -4032,7 +4032,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 23858,
-              discordName: "Agl",
+              username: "Agl",
               discordId: "925886127532019842",
               discordAvatar: "13b1bf6dd29698f22630f717b115e74b",
               customUrl: "angeel",
@@ -4106,7 +4106,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 6870,
-              discordName: "~シルウ~",
+              username: "~シルウ~",
               discordId: "827177277518512178",
               discordAvatar: "1a989fbc554eba4354531849fb49c719",
               customUrl: "shiruu_",
@@ -4118,7 +4118,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 29904,
-              discordName: "neko♪",
+              username: "neko♪",
               discordId: "1126172942041104488",
               discordAvatar: "fd557b8696ecaaca4c863ccce9d2c000",
               customUrl: null,
@@ -4130,7 +4130,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 20698,
-              discordName: "Yame",
+              username: "Yame",
               discordId: "1010243340429705247",
               discordAvatar: "38b06a63e893b69bbcdf09d80852290f",
               customUrl: "yame",
@@ -4142,7 +4142,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 23820,
-              discordName: "♱ seb ♱",
+              username: "♱ seb ♱",
               discordId: "863787863589650472",
               discordAvatar: "a_9cb301e90d936f5bfaf4af4769b04c92",
               customUrl: "seb",
@@ -4216,7 +4216,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 7007,
-              discordName: "Sal",
+              username: "Sal",
               discordId: "488449820600827946",
               discordAvatar: "52d7651b62846a819d6fb1346b414bda",
               customUrl: null,
@@ -4228,7 +4228,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 30220,
-              discordName: "AfroKing",
+              username: "AfroKing",
               discordId: "1012418312069714021",
               discordAvatar: "4b453d9af53e04df052ae86a98b026d3",
               customUrl: "afroking",
@@ -4240,7 +4240,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 7440,
-              discordName: "mooj",
+              username: "mooj",
               discordId: "545739590129025025",
               discordAvatar: "b62848ee1f441b528fbf96334ac68cfc",
               customUrl: "mooj",
@@ -4252,7 +4252,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 26665,
-              discordName: "tame",
+              username: "tame",
               discordId: "648555047629619221",
               discordAvatar: "d4ee0a76c2a625321a7f375f84dcb075",
               customUrl: null,
@@ -4264,7 +4264,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 27686,
-              discordName: "Pollymuff",
+              username: "Pollymuff",
               discordId: "742834414970470511",
               discordAvatar: "e211ddc3de7371229510b279d556558b",
               customUrl: null,
@@ -4331,7 +4331,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 11017,
-              discordName: "Hyperstar",
+              username: "Hyperstar",
               discordId: "343368716303728641",
               discordAvatar: "c1771c53f4c7e60e1d8d5858521fca71",
               customUrl: "hyperstar",
@@ -4343,7 +4343,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 7270,
-              discordName: "Yolorf",
+              username: "Yolorf",
               discordId: "198084438821699584",
               discordAvatar: "370b04f8f4b60cce3b14111be7076a8f",
               customUrl: null,
@@ -4355,7 +4355,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 18703,
-              discordName: "salty",
+              username: "salty",
               discordId: "231739084211486720",
               discordAvatar: "d957c9239464fa742ba1bf9ff18e167b",
               customUrl: "buffheavy",
@@ -4367,7 +4367,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 27578,
-              discordName: "Slasher",
+              username: "Slasher",
               discordId: "709380815657631755",
               discordAvatar: "cedff9867bcedc7187a0e4e9a078e1d1",
               customUrl: null,
@@ -4379,7 +4379,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 8715,
-              discordName: "yaga .",
+              username: "yaga .",
               discordId: "298009085561929728",
               discordAvatar: "3390b7f6b50065c4464e8548ea61fd1c",
               customUrl: "yaga",
@@ -4449,7 +4449,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 9874,
-              discordName: "Pallo",
+              username: "Pallo",
               discordId: "503861705395273738",
               discordAvatar: "2771f299e17bc4a09be48b6cce4f8525",
               customUrl: "pallo_spl",
@@ -4461,7 +4461,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 22434,
-              discordName: "Dark Aura",
+              username: "Dark Aura",
               discordId: "187297100827066371",
               discordAvatar: "983160d2dfaae97e031fe38f148c88c2",
               customUrl: null,
@@ -4473,7 +4473,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 10992,
-              discordName: "Endo",
+              username: "Endo",
               discordId: "852932015187558410",
               discordAvatar: "bb4d9324674a0c84c50417ecdeef52ca",
               customUrl: null,
@@ -4485,7 +4485,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 2302,
-              discordName: "Mop",
+              username: "Mop",
               discordId: "909058148713791529",
               discordAvatar: "3b1192a04ea389af320229c7ef13169a",
               customUrl: null,
@@ -4556,7 +4556,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 22948,
-              discordName: "𒉭Shadøw",
+              username: "𒉭Shadøw",
               discordId: "200912048916267008",
               discordAvatar: "80f582c65135f45b7120177a6052cdcb",
               customUrl: "shadow_carbon",
@@ -4568,7 +4568,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 35807,
-              discordName: "Baké",
+              username: "Baké",
               discordId: "630874409170894849",
               discordAvatar: "b011e4c600a09072fbd93873b4c569f2",
               customUrl: "bake",
@@ -4580,7 +4580,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 23505,
-              discordName: "⋆༺Hinamu♱༻⋆",
+              username: "⋆༺Hinamu♱༻⋆",
               discordId: "484752209742004226",
               discordAvatar: "3735124cab9988cc02a7917bbf6532f6",
               customUrl: "hinanamu",
@@ -4592,7 +4592,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 271,
-              discordName: "Myst",
+              username: "Myst",
               discordId: "379020875552522240",
               discordAvatar: "60b51665dfba74693844266f53af8d33",
               customUrl: "myst",
@@ -4662,7 +4662,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 8868,
-              discordName: "Ati",
+              username: "Ati",
               discordId: "704055690494345306",
               discordAvatar: "317047590635110c550c573979844b9f",
               customUrl: "ati",
@@ -4674,7 +4674,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 22452,
-              discordName: "S̒̒̎B̾͊̾C̶ͤhrỉ̊ͫs̷͢͢_穀物",
+              username: "S̒̒̎B̾͊̾C̶ͤhrỉ̊ͫs̷͢͢_穀物",
               discordId: "441206580931854336",
               discordAvatar: "0afea25d9e0c6b59ff51be808e9f38bd",
               customUrl: null,
@@ -4686,7 +4686,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 11625,
-              discordName: "Fate/Alex",
+              username: "Fate/Alex",
               discordId: "494482988407586827",
               discordAvatar: "756a692ceeb6e49462dbfcdf93eb47c0",
               customUrl: null,
@@ -4698,7 +4698,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 11716,
-              discordName: "y4ss1n3",
+              username: "y4ss1n3",
               discordId: "279993590141419520",
               discordAvatar: "90e1d2bc72a05d42234cf615cbbefe28",
               customUrl: null,
@@ -4768,7 +4768,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 3929,
-              discordName: "Jana",
+              username: "Jana",
               discordId: "166247465878683649",
               discordAvatar: "6f9bc247a909de72b9746dbe4cf364a6",
               customUrl: null,
@@ -4780,7 +4780,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 10883,
-              discordName: "SkyEnd",
+              username: "SkyEnd",
               discordId: "462570900953235456",
               discordAvatar: "b79baa277ec4f6cf0891592ba81f8d1c",
               customUrl: "skyend",
@@ -4792,7 +4792,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 27664,
-              discordName: "Spheonix",
+              username: "Spheonix",
               discordId: "323497340977676299",
               discordAvatar: "4b1ed8e2d90a3d455a1fed8221feb895",
               customUrl: "spheonix",
@@ -4804,7 +4804,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 2137,
-              discordName: "lookitslu",
+              username: "lookitslu",
               discordId: "269943589646106626",
               discordAvatar: "977b0d7f9eeacde2443001128ae6ee50",
               customUrl: null,
@@ -4874,7 +4874,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 21698,
-              discordName: "Bobbela💛",
+              username: "Bobbela💛",
               discordId: "324892849709645825",
               discordAvatar: "207ace711818e7f89aa116acc98a6bca",
               customUrl: "bobbela",
@@ -4886,7 +4886,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 12214,
-              discordName: "Napple",
+              username: "Napple",
               discordId: "978008725451325500",
               discordAvatar: "0e258e08b0f478472df8de3bb1c8dd9c",
               customUrl: "napple",
@@ -4898,7 +4898,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 29723,
-              discordName: "Mailin💙",
+              username: "Mailin💙",
               discordId: "473164433485594626",
               discordAvatar: "0364fd96d15f2a4eb37410835a5d1b44",
               customUrl: "goober",
@@ -4910,7 +4910,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28602,
-              discordName: "IcedMango",
+              username: "IcedMango",
               discordId: "486164026305544192",
               discordAvatar: "011ace0a135e782d607c458cdc19f6a6",
               customUrl: "icedmango",
@@ -4984,7 +4984,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 24705,
-              discordName: "Mirval",
+              username: "Mirval",
               discordId: "748837898408820778",
               discordAvatar: "874faa0d0fa84ac8855581cff3580507",
               customUrl: "mirval",
@@ -4996,7 +4996,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 9367,
-              discordName: "mishy",
+              username: "mishy",
               discordId: "631428169047605279",
               discordAvatar: "5b91b42f3ba2d2331ce5d94781d91199",
               customUrl: "mishy",
@@ -5008,7 +5008,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28191,
-              discordName: "Aera",
+              username: "Aera",
               discordId: "924046469886017657",
               discordAvatar: "25b3df25b57e5a0274359470c1d9e44c",
               customUrl: null,
@@ -5020,7 +5020,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 34238,
-              discordName: "Sili",
+              username: "Sili",
               discordId: "1101867939130511420",
               discordAvatar: null,
               customUrl: null,
@@ -5032,7 +5032,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 2781,
-              discordName: "Huge",
+              username: "Huge",
               discordId: "353558861589774337",
               discordAvatar: "2e5d73bd99f4e76eeedf576fc05ba52f",
               customUrl: null,
@@ -5103,7 +5103,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 5528,
-              discordName: "Vapor.",
+              username: "Vapor.",
               discordId: "443815041804795905",
               discordAvatar: "373f75beccdb1244d8de08767406c335",
               customUrl: null,
@@ -5115,7 +5115,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 6935,
-              discordName: "Splatos",
+              username: "Splatos",
               discordId: "375315735875944470",
               discordAvatar: "76b007d6f57b47b683e78dfd100832a7",
               customUrl: "splatos",
@@ -5127,7 +5127,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 8243,
-              discordName: "Loωαsıs'",
+              username: "Loωαsıs'",
               discordId: "500261010712821761",
               discordAvatar: "e59763ffb97a9f90b2afa6c27c290ae5",
               customUrl: null,
@@ -5139,7 +5139,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 19002,
-              discordName: "Alonika",
+              username: "Alonika",
               discordId: "768156816231497748",
               discordAvatar: "50da7f60e55e05a725642f5c2145da5b",
               customUrl: "alonika",
@@ -5213,7 +5213,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 12526,
-              discordName: "GoldA",
+              username: "GoldA",
               discordId: "706956975564652614",
               discordAvatar: "5d78f7dc7de2bf4bc7d15063c12277e9",
               customUrl: null,
@@ -5225,7 +5225,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28822,
-              discordName: "piiiro",
+              username: "piiiro",
               discordId: "715504166272893009",
               discordAvatar: "1a8315559210c961645aeb1742a247be",
               customUrl: null,
@@ -5237,7 +5237,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 24441,
-              discordName: "flemmi",
+              username: "flemmi",
               discordId: "626070366338416650",
               discordAvatar: "3a3a5b895f07ba16af5c406b236a6b2d",
               customUrl: "flemmi",
@@ -5249,7 +5249,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28629,
-              discordName: "Wolfi.Jr",
+              username: "Wolfi.Jr",
               discordId: "1093481853375217724",
               discordAvatar: "1660f3d22232d967d37dae2206f660c3",
               customUrl: null,
@@ -5261,7 +5261,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 9211,
-              discordName: "Ninjar04",
+              username: "Ninjar04",
               discordId: "518016631973085185",
               discordAvatar: "eb2872aa07883028d602ca90dbe76ac8",
               customUrl: "ninjar04",
@@ -5335,7 +5335,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 25545,
-              discordName: "jj",
+              username: "jj",
               discordId: "1011354585820049429",
               discordAvatar: "d7db25ad778e26ed9b73a266644abf61",
               customUrl: null,
@@ -5347,7 +5347,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 368,
-              discordName: "Droid (P1)",
+              username: "Droid (P1)",
               discordId: "803420789957328936",
               discordAvatar: "0c2419962932a8c5b1098faf85a66b64",
               customUrl: "splatdroid",
@@ -5359,7 +5359,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 1624,
-              discordName: "Sneaky",
+              username: "Sneaky",
               discordId: "292338070886547457",
               discordAvatar: "3e5f5e1a0e42dadb6592787f16754d00",
               customUrl: "sneaky",
@@ -5371,7 +5371,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 25088,
-              discordName: "dani",
+              username: "dani",
               discordId: "450195023561097236",
               discordAvatar: "10cbdbda702652aade7d3da726288463",
               customUrl: null,
@@ -5383,7 +5383,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 15526,
-              discordName: "Enamel",
+              username: "Enamel",
               discordId: "636691044381097989",
               discordAvatar: "dbff72fffb6da0fbb56a03f256978dbb",
               customUrl: "enamel",
@@ -5453,7 +5453,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 9411,
-              discordName: "~XploRiver 🍫",
+              username: "~XploRiver 🍫",
               discordId: "494950864931258378",
               discordAvatar: "ba4628b2b1e3f35d15979c89bd20d2c6",
               customUrl: "xploriver",
@@ -5465,7 +5465,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 18143,
-              discordName: "Hugeaux",
+              username: "Hugeaux",
               discordId: "309705516349784064",
               discordAvatar: "efa135d90a0582895d57e3b218db01f0",
               customUrl: "hugeaux",
@@ -5477,7 +5477,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 30942,
-              discordName: "Roylouk",
+              username: "Roylouk",
               discordId: "423906604774326272",
               discordAvatar: "6c3908bced150d5e002230d18a42b9dc",
               customUrl: null,
@@ -5489,7 +5489,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 21583,
-              discordName: "Deez",
+              username: "Deez",
               discordId: "563882588251619340",
               discordAvatar: "c860fdd8371d09e681c6edd41995d353",
               customUrl: "depito",
@@ -5559,7 +5559,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 27529,
-              discordName: "Axo",
+              username: "Axo",
               discordId: "793150346301145130",
               discordAvatar: "de42dbfa10f0c1a09503c2f97261c350",
               customUrl: "funiaxolotl",
@@ -5571,7 +5571,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 9307,
-              discordName: "Jax∞",
+              username: "Jax∞",
               discordId: "656909117847371787",
               discordAvatar: "aaa6aeb5f61b8a371fd1735df4d2c5a1",
               customUrl: null,
@@ -5583,7 +5583,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 5735,
-              discordName: "Kαrmα",
+              username: "Kαrmα",
               discordId: "380068065703886851",
               discordAvatar: "a20750f6b267df9b3153ae40b1541467",
               customUrl: "itis_karma",
@@ -5595,7 +5595,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 10010,
-              discordName: "CarpCranium",
+              username: "CarpCranium",
               discordId: "746314832982310953",
               discordAvatar: "3c9ccec39bc8c0b8a7a02421926cdad8",
               customUrl: null,
@@ -5607,7 +5607,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 17798,
-              discordName: "zlimit 💤",
+              username: "zlimit 💤",
               discordId: "785425618027282442",
               discordAvatar: "284a42b97ba2153c87aca6e2b73d11df",
               customUrl: null,
@@ -5619,7 +5619,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 11635,
-              discordName: "Goldeb",
+              username: "Goldeb",
               discordId: "377174419665059850",
               discordAvatar: "352a0df37dd3d1f976719a860f8fbca8",
               customUrl: "kelvin52point5",
@@ -5686,7 +5686,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 28834,
-              discordName: "⭐Neil⭐L.",
+              username: "⭐Neil⭐L.",
               discordId: "607886226103468035",
               discordAvatar: "0aacc1333847416514f20f9866dec80f",
               customUrl: null,
@@ -5698,7 +5698,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28271,
-              discordName: "Krixxor",
+              username: "Krixxor",
               discordId: "222796801273495552",
               discordAvatar: "4c5fcb6cf53fb417279631ea648b0372",
               customUrl: "krixxor",
@@ -5710,7 +5710,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 34715,
-              discordName: "Mat F",
+              username: "Mat F",
               discordId: "371359025314398210",
               discordAvatar: "971d9af8c9c27a85ca180b7eb66c25e7",
               customUrl: "forceur",
@@ -5722,7 +5722,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 12188,
-              discordName: "S4",
+              username: "S4",
               discordId: "265102656685473792",
               discordAvatar: "95ea9f2b10773c2af078abaa6f886b11",
               customUrl: "s4",
@@ -5796,7 +5796,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 19231,
-              discordName: "Axolt",
+              username: "Axolt",
               discordId: "943431424013398036",
               discordAvatar: "23a18ee68051d0027b11e608b1c460ed",
               customUrl: "axolt",
@@ -5808,7 +5808,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 26454,
-              discordName: "sorailla‽",
+              username: "sorailla‽",
               discordId: "1053404982642216980",
               discordAvatar: "1c5d7d3f0e1b85434739e7e2207b56b8",
               customUrl: "soraa",
@@ -5820,7 +5820,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 5740,
-              discordName: "Error ♪",
+              username: "Error ♪",
               discordId: "421028576444284939",
               discordAvatar: "db81e4aa22b2782d1832b5bc7c1052f7",
               customUrl: "error",
@@ -5832,7 +5832,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 27468,
-              discordName: "dam!",
+              username: "dam!",
               discordId: "672943165187031080",
               discordAvatar: "14087dba6d3666f0470ecd099f1f9348",
               customUrl: "dam",
@@ -5902,7 +5902,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 32688,
-              discordName: "OhItsAna19",
+              username: "OhItsAna19",
               discordId: "549632105320153098",
               discordAvatar: "d22a437a63f6fdc07a0f37d93cc79e39",
               customUrl: "ohitsana19",
@@ -5914,7 +5914,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28194,
-              discordName: "Nah, I'd Win.",
+              username: "Nah, I'd Win.",
               discordId: "934536595313405994",
               discordAvatar: "e966a9175ac3a29f7e8de16413af0830",
               customUrl: "nah-id-win",
@@ -5926,7 +5926,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 11226,
-              discordName: "Zyler",
+              username: "Zyler",
               discordId: "258924484373774338",
               discordAvatar: "7830665b51fcdd4a4f73ea573e7070a0",
               customUrl: "zylerisafool",
@@ -5938,7 +5938,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 10370,
-              discordName: "V1P3R☆",
+              username: "V1P3R☆",
               discordId: "690623603728973824",
               discordAvatar: "a_ae8ce84ce177f49a6ede5d6ce7a702a5",
               customUrl: "v1p3r",
@@ -6012,7 +6012,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 20063,
-              discordName: "<_>Froody",
+              username: "<_>Froody",
               discordId: "693508072391311450",
               discordAvatar: "1856ed2d28de4ece5aff26331e9d4d6c",
               customUrl: "djfroody",
@@ -6024,7 +6024,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 35382,
-              discordName: "Saibot577",
+              username: "Saibot577",
               discordId: "751130824384053420",
               discordAvatar: null,
               customUrl: null,
@@ -6036,7 +6036,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 23037,
-              discordName: "<_>𝒩𝒾𝑔𝒽𝓉𝓂𝒶𝓇𝑒",
+              username: "<_>𝒩𝒾𝑔𝒽𝓉𝓂𝒶𝓇𝑒",
               discordId: "799168748162383872",
               discordAvatar: "e954828dbb158aaab5a186d66cd17eb5",
               customUrl: null,
@@ -6048,7 +6048,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 27768,
-              discordName: "<_>Weemo",
+              username: "<_>Weemo",
               discordId: "622045781418835978",
               discordAvatar: "f2c3fa49219a80a4ae00ff2d3f8ae7bf",
               customUrl: null,
@@ -6060,7 +6060,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 38120,
-              discordName: "Necuma -> ネクマ",
+              username: "Necuma -> ネクマ",
               discordId: "938100479148314715",
               discordAvatar: "5d092d1092d6597c66cd60f4f666b406",
               customUrl: null,
@@ -6134,7 +6134,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 23009,
-              discordName: "Misa 🎀",
+              username: "Misa 🎀",
               discordId: "721698044881403915",
               discordAvatar: "a7cdc3154d2501b70f55476d2af06f78",
               customUrl: "yumsie",
@@ -6146,7 +6146,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28178,
-              discordName: "Mr.ShL",
+              username: "Mr.ShL",
               discordId: "937347333346193449",
               discordAvatar: null,
               customUrl: "shl69",
@@ -6158,7 +6158,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 23353,
-              discordName: "soosh",
+              username: "soosh",
               discordId: "513261604603691019",
               discordAvatar: "86a5795d21d8b32f503d60b8b375ba93",
               customUrl: "soosh",
@@ -6170,7 +6170,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 31658,
-              discordName: "Cajus",
+              username: "Cajus",
               discordId: "702879538132025435",
               discordAvatar: "e356743e61a0249ac782cf476c891958",
               customUrl: "cajus",
@@ -6240,7 +6240,7 @@ export const PADDLING_POOL_257 = () =>
           members: [
             {
               userId: 17734,
-              discordName: "Flip",
+              username: "Flip",
               discordId: "374303281008214016",
               discordAvatar: "0f3d6deeab62ae0c3feccd559a2f75e7",
               customUrl: "flip",
@@ -6252,7 +6252,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 28338,
-              discordName: "Noot",
+              username: "Noot",
               discordId: "264694121334177793",
               discordAvatar: "67375b0afb851c370a7ef587d5ee3f0b",
               customUrl: "noot",
@@ -6264,7 +6264,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 30928,
-              discordName: "Chaotic Arlyn",
+              username: "Chaotic Arlyn",
               discordId: "328225278432378881",
               discordAvatar: "f7e8c85575558b1afc026d2aee5afe22",
               customUrl: "chaoticarlyn",
@@ -6276,7 +6276,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 37658,
-              discordName: "Feli",
+              username: "Feli",
               discordId: "1193641679215935620",
               discordAvatar: "83211362a367cad47804c7800629488f",
               customUrl: null,
@@ -6288,7 +6288,7 @@ export const PADDLING_POOL_257 = () =>
             },
             {
               userId: 26758,
-              discordName: "Lianzi",
+              username: "Lianzi",
               discordId: "421474055972061184",
               discordAvatar: "7bc715b2fb83a282e95de902e7210413",
               customUrl: null,
@@ -8173,7 +8173,7 @@ export const PADDLING_POOL_255 = () =>
       startTime: 1708538400,
       author: {
         id: 860,
-        discordName: "공주 Alice",
+        username: "공주 Alice",
         discordId: "163771047068303360",
         discordAvatar: "b33d8f230218d6a92705a63fdf803851",
         customUrl: "alicetheto",
@@ -8182,7 +8182,7 @@ export const PADDLING_POOL_255 = () =>
       staff: [
         {
           id: 1536,
-          discordName: "Pinky",
+          username: "Pinky",
           discordId: "178489224192851969",
           discordAvatar: "8b8c1d85cc525ea366f3ce2a6a594c05",
           customUrl: "pinky",
@@ -8191,7 +8191,7 @@ export const PADDLING_POOL_255 = () =>
         },
         {
           id: 1662,
-          discordName: "Andromeda",
+          username: "Andromeda",
           discordId: "275213752025088000",
           discordAvatar: "25bf68c5aa4e622ceb5a241c34841c6d",
           customUrl: null,
@@ -8200,7 +8200,7 @@ export const PADDLING_POOL_255 = () =>
         },
         {
           id: 6648,
-          discordName: "Hαzε",
+          username: "Hαzε",
           discordId: "195618756800675841",
           discordAvatar: "a_03ec4bbcb2a4ab000237c9f3e9e71508",
           customUrl: "sdomi19",
@@ -8209,7 +8209,7 @@ export const PADDLING_POOL_255 = () =>
         },
         {
           id: 12717,
-          discordName: "Browni",
+          username: "Browni",
           discordId: "413759870333091884",
           discordAvatar: "a_b55f70ada809a600e73c5088b910e659",
           customUrl: "brufnie",
@@ -8238,7 +8238,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 11517,
-              discordName: "xenith",
+              username: "xenith",
               discordId: "936048087791702087",
               discordAvatar: "db4c8ce55ac3f516d5d8136f6eb7d1eb",
               customUrl: "xenith",
@@ -8250,7 +8250,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 62,
-              discordName: "SpongeBob",
+              username: "SpongeBob",
               discordId: "721521981979230289",
               discordAvatar: "cb48c2d4107304c5af6c8795f3d4d3a8",
               customUrl: "sancocho",
@@ -8262,7 +8262,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 4275,
-              discordName: "bab",
+              username: "bab",
               discordId: "724498097547509792",
               discordAvatar: "4785cf601eafb4506271c463f54c12e4",
               customUrl: "bab",
@@ -8274,7 +8274,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 11593,
-              discordName: "Aloha",
+              username: "Aloha",
               discordId: "554350848352714753",
               discordAvatar: "29d02e03a0f5414955ea1ede9da0f5cd",
               customUrl: null,
@@ -8344,7 +8344,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 1447,
-              discordName: "Tamako",
+              username: "Tamako",
               discordId: "165170281814556672",
               discordAvatar: "7241c33a50f405f052f50fb984d7e269",
               customUrl: "tamako",
@@ -8356,7 +8356,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 31358,
-              discordName: "ぼるてっくす/vortex",
+              username: "ぼるてっくす/vortex",
               discordId: "697023903322603591",
               discordAvatar: "d7eaaf9c2c44db64f235dc3e548adf84",
               customUrl: "vortex",
@@ -8368,7 +8368,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 32579,
-              discordName: "c",
+              username: "c",
               discordId: "1093602436440133752",
               discordAvatar: "977b8130b8f55efbf57b7101abd99c75",
               customUrl: "clown_spl",
@@ -8380,7 +8380,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 27515,
-              discordName: "Devin!↑",
+              username: "Devin!↑",
               discordId: "709679861639151626",
               discordAvatar: "df9322e385fef514d0d8bf78bfbbf366",
               customUrl: null,
@@ -8450,7 +8450,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 10812,
-              discordName: "haru",
+              username: "haru",
               discordId: "660902180425039882",
               discordAvatar: "71db04119f1f62e186a8bd004602553c",
               customUrl: "haru",
@@ -8462,7 +8462,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 27958,
-              discordName: ".",
+              username: ".",
               discordId: "437402107818016780",
               discordAvatar: "5b11047c3c07612b9a9269b05f91e7a7",
               customUrl: "tody",
@@ -8474,7 +8474,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 4061,
-              discordName: "Snnoo",
+              username: "Snnoo",
               discordId: "620181963382325268",
               discordAvatar: "4cbb17927060550172c4b2a6a27babea",
               customUrl: "snnoo",
@@ -8486,7 +8486,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 38062,
-              discordName: "kayora",
+              username: "kayora",
               discordId: "662632630696673290",
               discordAvatar: "d9b0a7bb4b93f9cf0100d96eefa0ba80",
               customUrl: null,
@@ -8498,7 +8498,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 2414,
-              discordName: "Sinayy",
+              username: "Sinayy",
               discordId: "377543915043160074",
               discordAvatar: "3e410a4640460470d001d0eb21d15529",
               customUrl: null,
@@ -8565,7 +8565,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 9535,
-              discordName: ";reyes",
+              username: ";reyes",
               discordId: "341899225891602433",
               discordAvatar: "02211ede50547d34ca52204c6d024d0e",
               customUrl: null,
@@ -8577,7 +8577,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 4234,
-              discordName: "styroz",
+              username: "styroz",
               discordId: "507702707058900992",
               discordAvatar: "a_3a213a02ad49cbc360a75508d2d19ca5",
               customUrl: "teensuicide",
@@ -8589,7 +8589,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 331,
-              discordName: "kera",
+              username: "kera",
               discordId: "678848011090264075",
               discordAvatar: "d5fef5e57e1d8a25215de3f72a63c614",
               customUrl: "kera",
@@ -8601,7 +8601,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 205,
-              discordName: "Lew",
+              username: "Lew",
               discordId: "320297534759370752",
               discordAvatar: "545c61474a698fa60049f80e2d0834b6",
               customUrl: null,
@@ -8613,7 +8613,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 319,
-              discordName: "Alex",
+              username: "Alex",
               discordId: "731230341225775184",
               discordAvatar: "869213b6ac7841ee14bb417a7c7a3ed3",
               customUrl: "alexdc",
@@ -8683,7 +8683,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 22661,
-              discordName: "_Silver",
+              username: "_Silver",
               discordId: "778336481206075435",
               discordAvatar: "8c00132a8493847453f67ea7262a03db",
               customUrl: "_silver",
@@ -8695,7 +8695,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 3400,
-              discordName: "Aloha",
+              username: "Aloha",
               discordId: "626121948081946654",
               discordAvatar: "d855a0a84f4fad8554ba4a6432f25a3b",
               customUrl: null,
@@ -8707,7 +8707,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 7094,
-              discordName: "Jul",
+              username: "Jul",
               discordId: "603537087798575124",
               discordAvatar: "df8ec4bb766669605a476a892659ff5d",
               customUrl: null,
@@ -8719,7 +8719,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 3161,
-              discordName: "Saku",
+              username: "Saku",
               discordId: "575337575036878869",
               discordAvatar: "0a9061dd49908f9d114178b05568ce69",
               customUrl: "saku",
@@ -8789,7 +8789,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 15326,
-              discordName: "Risu",
+              username: "Risu",
               discordId: "650784073966420005",
               discordAvatar: "e0b403fe67f1f5ffbeaec601fde5aa44",
               customUrl: "risu",
@@ -8801,7 +8801,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 13562,
-              discordName: "kiki",
+              username: "kiki",
               discordId: "707603025090445392",
               discordAvatar: "f570f994acd9f154170daf9ed424b5b6",
               customUrl: "kiki",
@@ -8813,7 +8813,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 8852,
-              discordName: "mocher",
+              username: "mocher",
               discordId: "730965705159082077",
               discordAvatar: "5accb71fe037f97a47562be0c79f66f3",
               customUrl: "mocha",
@@ -8825,7 +8825,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 23746,
-              discordName: "Proto",
+              username: "Proto",
               discordId: "148103128032608256",
               discordAvatar: "ed2ac642646017bb7bd9cbb31a59bc66",
               customUrl: "proto",
@@ -8837,7 +8837,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 28485,
-              discordName: "˜Buηgee˜",
+              username: "˜Buηgee˜",
               discordId: "1115002996401639464",
               discordAvatar: "6b80ad95448995522b2138e3429cd0fe",
               customUrl: "gee",
@@ -8907,7 +8907,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 115,
-              discordName: "Maeee 🌸",
+              username: "Maeee 🌸",
               discordId: "351412592335650817",
               discordAvatar: "99875d461f4dc57ff9c0c53cc626b964",
               customUrl: "mae_spl",
@@ -8919,7 +8919,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 10578,
-              discordName: "Arashi",
+              username: "Arashi",
               discordId: "430008743284178957",
               discordAvatar: "f73babaf07e6cd70188ad5d68d23f4e8",
               customUrl: "splatarashi",
@@ -8931,7 +8931,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 11151,
-              discordName: "Yoshis",
+              username: "Yoshis",
               discordId: "875102801250885724",
               discordAvatar: "988ff4ff41b9e821070192b570aa61e3",
               customUrl: "yoshisgamer",
@@ -8943,7 +8943,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 222,
-              discordName: "Aymen",
+              username: "Aymen",
               discordId: "241892796066299905",
               discordAvatar: "522828866fabba23274e81190f52ec89",
               customUrl: "oreo",
@@ -9010,7 +9010,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 15880,
-              discordName: "ilias'",
+              username: "ilias'",
               discordId: "845801148572368936",
               discordAvatar: "f314cdbae3682577ad5812e5ba83e4f7",
               customUrl: "ilias",
@@ -9022,7 +9022,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 10615,
-              discordName: "Yotzzz",
+              username: "Yotzzz",
               discordId: "700013882785267772",
               discordAvatar: "2f935c9037708045ac9923317f995231",
               customUrl: "yotzzz",
@@ -9034,7 +9034,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 31690,
-              discordName: "MYSTIIK",
+              username: "MYSTIIK",
               discordId: "520685697749745664",
               discordAvatar: "446489a3491ef9cd9f16c0f42b25ca3f",
               customUrl: "la_mystifiance",
@@ -9046,7 +9046,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 6710,
-              discordName: "KITKAT",
+              username: "KITKAT",
               discordId: "651677259144364032",
               discordAvatar: "02b3060c984cad6fac233d7bb245ef7d",
               customUrl: "kitkaat",
@@ -9116,7 +9116,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 9125,
-              discordName: "Zivox",
+              username: "Zivox",
               discordId: "244456158201380864",
               discordAvatar: "0c19856d48d3c074b052bb8b0fb96d96",
               customUrl: "zivox",
@@ -9128,7 +9128,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 14489,
-              discordName: "keurbi",
+              username: "keurbi",
               discordId: "699648108958843011",
               discordAvatar: "13a3d7f9e4da5790e84e39d12765be16",
               customUrl: "keurbii",
@@ -9140,7 +9140,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 28725,
-              discordName: "Naka",
+              username: "Naka",
               discordId: "570644384929021973",
               discordAvatar: "e16a9798288b3988c9b3ba10bd259b1d",
               customUrl: "naka",
@@ -9152,7 +9152,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 16,
-              discordName: "Danget",
+              username: "Danget",
               discordId: "196683301988204545",
               discordAvatar: "0c1ce11788a0c6fd752ee2e6ef78bea4",
               customUrl: "danget",
@@ -9164,7 +9164,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 20755,
-              discordName: "Kchouuu💜",
+              username: "Kchouuu💜",
               discordId: "517816481854128134",
               discordAvatar: "a_dbf5283fac4fa8bc631a74a4719612d9",
               customUrl: "kchouuu",
@@ -9176,7 +9176,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 4606,
-              discordName: "not kaiju",
+              username: "not kaiju",
               discordId: "756170224176201850",
               discordAvatar: "6c39f6d4d1c96fd5d4d0342ee812c4a4",
               customUrl: "kaiju",
@@ -9246,7 +9246,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 22746,
-              discordName: "Bomm",
+              username: "Bomm",
               discordId: "581148889114214400",
               discordAvatar: "af58a7bdf4fb231f289d24203a76ec6e",
               customUrl: null,
@@ -9258,7 +9258,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 12976,
-              discordName: "Tikke",
+              username: "Tikke",
               discordId: "1005519944223555683",
               discordAvatar: "40c3446f2d71533b7cd22cd50c2fc971",
               customUrl: null,
@@ -9270,7 +9270,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 21979,
-              discordName: "Jιky",
+              username: "Jιky",
               discordId: "1018190360918364181",
               discordAvatar: "bfe0fb7aed86889b58489fa1ffdde1e7",
               customUrl: "jiky",
@@ -9282,7 +9282,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 11627,
-              discordName: "Adil",
+              username: "Adil",
               discordId: "567674530999304212",
               discordAvatar: "2bd7a20ef08ae5195db4393c80c42961",
               customUrl: "adil",
@@ -9349,7 +9349,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 22948,
-              discordName: "𒉭Shadøw",
+              username: "𒉭Shadøw",
               discordId: "200912048916267008",
               discordAvatar: "80f582c65135f45b7120177a6052cdcb",
               customUrl: "shadow_carbon",
@@ -9361,7 +9361,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 38080,
-              discordName: "Awenn",
+              username: "Awenn",
               discordId: "1158149473541836820",
               discordAvatar: "b7fec35f140c0d276107917f03b1e7d5",
               customUrl: null,
@@ -9373,7 +9373,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 35807,
-              discordName: "Baké",
+              username: "Baké",
               discordId: "630874409170894849",
               discordAvatar: "b011e4c600a09072fbd93873b4c569f2",
               customUrl: "bake",
@@ -9385,7 +9385,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 23128,
-              discordName: "hiro",
+              username: "hiro",
               discordId: "946503696697688095",
               discordAvatar: "1f96c7be0c710c3dc5ceab90d18a7579",
               customUrl: "hiro",
@@ -9397,7 +9397,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 26392,
-              discordName: "Daki",
+              username: "Daki",
               discordId: "931599095225782342",
               discordAvatar: "105ad067fc8680684a149f1b42efed93",
               customUrl: "dakirikouuu",
@@ -9467,7 +9467,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 18734,
-              discordName: "Javierx9x",
+              username: "Javierx9x",
               discordId: "617402869280145418",
               discordAvatar: "fe79aac365eb877b69aad67224a4b457",
               customUrl: null,
@@ -9479,7 +9479,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 23307,
-              discordName: "izowen",
+              username: "izowen",
               discordId: "267037979820818432",
               discordAvatar: "9f44aeb40515409565f2eb7c783a76e7",
               customUrl: null,
@@ -9491,7 +9491,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 28851,
-              discordName: "Aprhodite",
+              username: "Aprhodite",
               discordId: "688872021526052936",
               discordAvatar: "aaa52a048b58dc706b5d88d09d51b1c5",
               customUrl: "aprhodite",
@@ -9503,7 +9503,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 27108,
-              discordName: "NEOmegaX",
+              username: "NEOmegaX",
               discordId: "482200040685830154",
               discordAvatar: "92b52d3fdb574d385e88701f16cb424f",
               customUrl: null,
@@ -9515,7 +9515,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 23820,
-              discordName: "♱ seb ♱",
+              username: "♱ seb ♱",
               discordId: "863787863589650472",
               discordAvatar: "a_9cb301e90d936f5bfaf4af4769b04c92",
               customUrl: "seb",
@@ -9582,7 +9582,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 30582,
-              discordName: "Bull4Ever",
+              username: "Bull4Ever",
               discordId: "353639699237175307",
               discordAvatar: "6dba3834f111ffb94af9924fe4f0f2a5",
               customUrl: null,
@@ -9594,7 +9594,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 1740,
-              discordName: "✰𝕋𝕚𝕟𝕖✰",
+              username: "✰𝕋𝕚𝕟𝕖✰",
               discordId: "436919166679777280",
               discordAvatar: "9f846a3e3836541927b9c39496f8d6a5",
               customUrl: null,
@@ -9606,7 +9606,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 3930,
-              discordName: "Yushi4Ever",
+              username: "Yushi4Ever",
               discordId: "268425076221804554",
               discordAvatar: "5215a068eedef51de0b81b2e7f9541fb",
               customUrl: null,
@@ -9618,7 +9618,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 29321,
-              discordName: "Devil~",
+              username: "Devil~",
               discordId: "1115299092764033106",
               discordAvatar: "7031e5090156c45e06748db4f2f6ab3e",
               customUrl: null,
@@ -9630,7 +9630,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 29433,
-              discordName: "Bandito",
+              username: "Bandito",
               discordId: "788856864807845948",
               discordAvatar: "5ad1d0408b4a760a1a567efa38641f4b",
               customUrl: "bandito",
@@ -9642,7 +9642,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 5368,
-              discordName: "Dismaqe",
+              username: "Dismaqe",
               discordId: "643538243396042868",
               discordAvatar: "55ed273ca147c10ae1dd12dc88f17d39",
               customUrl: "dismaqe",
@@ -9712,7 +9712,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 25400,
-              discordName: "Espace",
+              username: "Espace",
               discordId: "264152597877882890",
               discordAvatar: "d3b61683854a9746b88ee7ba7dcb05ba",
               customUrl: null,
@@ -9724,7 +9724,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 15346,
-              discordName: "Alexri",
+              username: "Alexri",
               discordId: "311182672217112586",
               discordAvatar: "f86bd2fb989200f41da2efcc7ca47b61",
               customUrl: "alerri",
@@ -9736,7 +9736,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 13296,
-              discordName: "Akygos",
+              username: "Akygos",
               discordId: "344256410382630924",
               discordAvatar: "a6d63f095307a3324d582bb6f68d876d",
               customUrl: "akygos",
@@ -9748,7 +9748,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 13832,
-              discordName: "rdvg",
+              username: "rdvg",
               discordId: "213628539197587456",
               discordAvatar: "aa5d2f0442a117f6c0f177322f73e58d",
               customUrl: "ruben",
@@ -9818,7 +9818,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 24585,
-              discordName: "AGATE",
+              username: "AGATE",
               discordId: "555795481914245120",
               discordAvatar: "6c934620be2d75f95542278212d58b31",
               customUrl: "agatespl",
@@ -9830,7 +9830,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 30449,
-              discordName: "xιиσ",
+              username: "xιиσ",
               discordId: "1126541740560617472",
               discordAvatar: "a86a01e74ae443c35478882f6a7c230a",
               customUrl: "xino",
@@ -9842,7 +9842,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 28441,
-              discordName: "™Peli",
+              username: "™Peli",
               discordId: "1114699733236199454",
               discordAvatar: "b1ecf87f69fa21e3339a70bce9d8ceab",
               customUrl: "peli",
@@ -9854,7 +9854,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 12619,
-              discordName: "Gabe",
+              username: "Gabe",
               discordId: "917590115340144721",
               discordAvatar: "dab6aac9c828198d5dd93252ec8728b4",
               customUrl: "gaberainery",
@@ -9866,7 +9866,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 31131,
-              discordName: "Benx",
+              username: "Benx",
               discordId: "686258686116888605",
               discordAvatar: "f1b3c4a737fcb4fde19882e74e4cfdca",
               customUrl: "benx",
@@ -9936,7 +9936,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 6508,
-              discordName: "Necrew",
+              username: "Necrew",
               discordId: "395302135501291523",
               discordAvatar: "3d48d7480b9877c2aa88c1e2da57a331",
               customUrl: "necrew",
@@ -9948,7 +9948,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 418,
-              discordName: "Benjix",
+              username: "Benjix",
               discordId: "489290081631469588",
               discordAvatar: "1ab563e96b2fdab001434fb518973aaf",
               customUrl: null,
@@ -9960,7 +9960,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 23858,
-              discordName: "Agl",
+              username: "Agl",
               discordId: "925886127532019842",
               discordAvatar: "13b1bf6dd29698f22630f717b115e74b",
               customUrl: "angeel",
@@ -9972,7 +9972,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 28662,
-              discordName: "Armand",
+              username: "Armand",
               discordId: "1048695593897300102",
               discordAvatar: "7b91055b6c6b197ef10640239aa5bbdb",
               customUrl: null,
@@ -10042,7 +10042,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 12351,
-              discordName: "Zeke",
+              username: "Zeke",
               discordId: "673128852318453760",
               discordAvatar: "525cd8eca595935605661fc3cc206888",
               customUrl: null,
@@ -10054,7 +10054,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 5072,
-              discordName: "Lazyice",
+              username: "Lazyice",
               discordId: "285120152645795840",
               discordAvatar: "4bd7f705d2f6ac057d05a51a9e1d7e8d",
               customUrl: "lacyice",
@@ -10066,7 +10066,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 13997,
-              discordName: "Kenn",
+              username: "Kenn",
               discordId: "979797478964621392",
               discordAvatar: "3421b319d2505c9306c9b0d3be991c7f",
               customUrl: null,
@@ -10078,7 +10078,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 7735,
-              discordName: "?Ayhm",
+              username: "?Ayhm",
               discordId: "353973462269952020",
               discordAvatar: "249ec257786e659a9cec833e3cbf204b",
               customUrl: "rrayhm",
@@ -10145,7 +10145,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 11017,
-              discordName: "Hyperstar",
+              username: "Hyperstar",
               discordId: "343368716303728641",
               discordAvatar: "c1771c53f4c7e60e1d8d5858521fca71",
               customUrl: "hyperstar",
@@ -10157,7 +10157,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 7270,
-              discordName: "Yolorf",
+              username: "Yolorf",
               discordId: "198084438821699584",
               discordAvatar: "370b04f8f4b60cce3b14111be7076a8f",
               customUrl: null,
@@ -10169,7 +10169,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 18703,
-              discordName: "salty",
+              username: "salty",
               discordId: "231739084211486720",
               discordAvatar: "d957c9239464fa742ba1bf9ff18e167b",
               customUrl: "buffheavy",
@@ -10181,7 +10181,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 27578,
-              discordName: "Slasher",
+              username: "Slasher",
               discordId: "709380815657631755",
               discordAvatar: "cedff9867bcedc7187a0e4e9a078e1d1",
               customUrl: null,
@@ -10193,7 +10193,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 8715,
-              discordName: "yaga .",
+              username: "yaga .",
               discordId: "298009085561929728",
               discordAvatar: "3390b7f6b50065c4464e8548ea61fd1c",
               customUrl: "yaga",
@@ -10263,7 +10263,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 15526,
-              discordName: "Enamel",
+              username: "Enamel",
               discordId: "636691044381097989",
               discordAvatar: "dbff72fffb6da0fbb56a03f256978dbb",
               customUrl: "enamel",
@@ -10275,7 +10275,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 27686,
-              discordName: "Pollymuff",
+              username: "Pollymuff",
               discordId: "742834414970470511",
               discordAvatar: "e211ddc3de7371229510b279d556558b",
               customUrl: null,
@@ -10287,7 +10287,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 10841,
-              discordName: "eider_pancake",
+              username: "eider_pancake",
               discordId: "714662908037955635",
               discordAvatar: "b913cbe960ab6e09fb9894a04711a520",
               customUrl: "eider",
@@ -10299,7 +10299,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 23784,
-              discordName: "SFNTR",
+              username: "SFNTR",
               discordId: "660093934818820098",
               discordAvatar: "0cfb108d0731ca2fb4d066af1469fddd",
               customUrl: "sfntr",
@@ -10311,7 +10311,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 9342,
-              discordName: "Acing",
+              username: "Acing",
               discordId: "342369454719631361",
               discordAvatar: "553b2102206ad5eaec40210460e057a0",
               customUrl: "acing",
@@ -10381,7 +10381,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 6870,
-              discordName: "~シルウ~",
+              username: "~シルウ~",
               discordId: "827177277518512178",
               discordAvatar: "1a989fbc554eba4354531849fb49c719",
               customUrl: "shiruu_",
@@ -10393,7 +10393,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 29904,
-              discordName: "neko♪",
+              username: "neko♪",
               discordId: "1126172942041104488",
               discordAvatar: "531004d57b6ff021415a39b509c1f266",
               customUrl: null,
@@ -10405,7 +10405,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 11506,
-              discordName: "7fox",
+              username: "7fox",
               discordId: "754406516244873327",
               discordAvatar: null,
               customUrl: null,
@@ -10417,7 +10417,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 32328,
-              discordName: "MoO「Wolfi」",
+              username: "MoO「Wolfi」",
               discordId: "945675731302744074",
               discordAvatar: "7463001542954fce3606de4bd9962710",
               customUrl: "wolfinium",
@@ -10491,7 +10491,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 3929,
-              discordName: "Jana",
+              username: "Jana",
               discordId: "166247465878683649",
               discordAvatar: "6f9bc247a909de72b9746dbe4cf364a6",
               customUrl: null,
@@ -10503,7 +10503,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 2137,
-              discordName: "lookitslu",
+              username: "lookitslu",
               discordId: "269943589646106626",
               discordAvatar: "977b0d7f9eeacde2443001128ae6ee50",
               customUrl: null,
@@ -10515,7 +10515,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 10883,
-              discordName: "SkyEnd",
+              username: "SkyEnd",
               discordId: "462570900953235456",
               discordAvatar: "b79baa277ec4f6cf0891592ba81f8d1c",
               customUrl: "skyend",
@@ -10527,7 +10527,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 27664,
-              discordName: "Spheonix",
+              username: "Spheonix",
               discordId: "323497340977676299",
               discordAvatar: "4b1ed8e2d90a3d455a1fed8221feb895",
               customUrl: "spheonix",
@@ -10539,7 +10539,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 342,
-              discordName: "Sander",
+              username: "Sander",
               discordId: "447460880704077825",
               discordAvatar: "9d864b31ecb3c0d334f4a7fef5df1a8d",
               customUrl: "sakeo",
@@ -10613,7 +10613,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 8169,
-              discordName: "Coffee pls ツ",
+              username: "Coffee pls ツ",
               discordId: "229221926101319681",
               discordAvatar: "33680a42a18dda961d7abd0b74921950",
               customUrl: "equira",
@@ -10625,7 +10625,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 2535,
-              discordName: "Neema Dreamer",
+              username: "Neema Dreamer",
               discordId: "255746793965355032",
               discordAvatar: "ce9a49a8ed52e98c7f4ba85e000eaef7",
               customUrl: "neemadreamer",
@@ -10637,7 +10637,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 2670,
-              discordName: "Horshio",
+              username: "Horshio",
               discordId: "194751580225011713",
               discordAvatar: "6a8a9c4ad10fba84d3da24c2e071b851",
               customUrl: null,
@@ -10649,7 +10649,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 6202,
-              discordName: "season",
+              username: "season",
               discordId: "346324686717845505",
               discordAvatar: "e215fdca24c8e625ec9457b31a68aa5c",
               customUrl: "season",
@@ -10661,7 +10661,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 9547,
-              discordName: "HarryXYZ",
+              username: "HarryXYZ",
               discordId: "283557982078369792",
               discordAvatar: "69f0f67ea1ffacd5f8f8b46871fb88da",
               customUrl: "harryxyz",
@@ -10732,7 +10732,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 3060,
-              discordName: "smmuiii",
+              username: "smmuiii",
               discordId: "707552906701963395",
               discordAvatar: "7887729ebb89e911ec55bab7db90594f",
               customUrl: "smmuiii",
@@ -10744,7 +10744,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 5844,
-              discordName: "Louis 🦈",
+              username: "Louis 🦈",
               discordId: "595595906418606091",
               discordAvatar: "ac727203d246b9373b6e93fd957e9446",
               customUrl: null,
@@ -10756,7 +10756,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 9654,
-              discordName: "Draco200",
+              username: "Draco200",
               discordId: "756604643659743282",
               discordAvatar: "94742c55a1976a62723f11a6b25617d6",
               customUrl: null,
@@ -10768,7 +10768,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 461,
-              discordName: "NeXus",
+              username: "NeXus",
               discordId: "403537631297667072",
               discordAvatar: "2f6d27dbe084610be3db6b9227a34b39",
               customUrl: "nexus_spl",
@@ -10780,7 +10780,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 10819,
-              discordName: "patツ",
+              username: "patツ",
               discordId: "411620250027556897",
               discordAvatar: "07cf1148391af8d55a003bf2a42f3761",
               customUrl: "patfat",
@@ -10850,7 +10850,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 2302,
-              discordName: "Mop",
+              username: "Mop",
               discordId: "909058148713791529",
               discordAvatar: "3b1192a04ea389af320229c7ef13169a",
               customUrl: null,
@@ -10862,7 +10862,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 9874,
-              discordName: "Pallo",
+              username: "Pallo",
               discordId: "503861705395273738",
               discordAvatar: "2771f299e17bc4a09be48b6cce4f8525",
               customUrl: "pallo_spl",
@@ -10874,7 +10874,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 10992,
-              discordName: "Endo",
+              username: "Endo",
               discordId: "852932015187558410",
               discordAvatar: "bb4d9324674a0c84c50417ecdeef52ca",
               customUrl: null,
@@ -10886,7 +10886,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 22434,
-              discordName: "Dark Aura",
+              username: "Dark Aura",
               discordId: "187297100827066371",
               discordAvatar: "983160d2dfaae97e031fe38f148c88c2",
               customUrl: null,
@@ -10956,7 +10956,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 8868,
-              discordName: "Ati",
+              username: "Ati",
               discordId: "704055690494345306",
               discordAvatar: "317047590635110c550c573979844b9f",
               customUrl: "ati",
@@ -10968,7 +10968,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 11625,
-              discordName: "Fate/Alex",
+              username: "Fate/Alex",
               discordId: "494482988407586827",
               discordAvatar: "756a692ceeb6e49462dbfcdf93eb47c0",
               customUrl: null,
@@ -10980,7 +10980,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 22452,
-              discordName: "S̒̒̎B̾͊̾C̶ͤhrỉ̊ͫs̷͢͢_穀物",
+              username: "S̒̒̎B̾͊̾C̶ͤhrỉ̊ͫs̷͢͢_穀物",
               discordId: "441206580931854336",
               discordAvatar: "0afea25d9e0c6b59ff51be808e9f38bd",
               customUrl: null,
@@ -10992,7 +10992,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 12642,
-              discordName: "Zarx",
+              username: "Zarx",
               discordId: "832968391420936202",
               discordAvatar: "06cf56e9affb8e0beca82ee4a75a7659",
               customUrl: null,
@@ -11004,7 +11004,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 11716,
-              discordName: "y4ss1n3",
+              username: "y4ss1n3",
               discordId: "279993590141419520",
               discordAvatar: "90e1d2bc72a05d42234cf615cbbefe28",
               customUrl: null,
@@ -11074,7 +11074,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 7007,
-              discordName: "Sal",
+              username: "Sal",
               discordId: "488449820600827946",
               discordAvatar: "52d7651b62846a819d6fb1346b414bda",
               customUrl: null,
@@ -11086,7 +11086,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 7440,
-              discordName: "mooj",
+              username: "mooj",
               discordId: "545739590129025025",
               discordAvatar: "b62848ee1f441b528fbf96334ac68cfc",
               customUrl: "mooj",
@@ -11098,7 +11098,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 26665,
-              discordName: "tame",
+              username: "tame",
               discordId: "648555047629619221",
               discordAvatar: "d4ee0a76c2a625321a7f375f84dcb075",
               customUrl: null,
@@ -11110,7 +11110,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 9719,
-              discordName: "Scepidilionz",
+              username: "Scepidilionz",
               discordId: "184478601171828737",
               discordAvatar: "867030e3d679357ef3161edc79292bc0",
               customUrl: "scepidilionz",
@@ -11122,7 +11122,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 30220,
-              discordName: "AfroKing",
+              username: "AfroKing",
               discordId: "1012418312069714021",
               discordAvatar: "4b453d9af53e04df052ae86a98b026d3",
               customUrl: "afroking",
@@ -11192,7 +11192,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 2589,
-              discordName: "proto",
+              username: "proto",
               discordId: "476085870609432596",
               discordAvatar: "8b178b2abe4495c98e6c34ee6f8a5a02",
               customUrl: "protoh3d",
@@ -11204,7 +11204,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 28745,
-              discordName: "Dragón",
+              username: "Dragón",
               discordId: "763474938346209283",
               discordAvatar: "e1493e396a8ea1e1f6ca01d99fdb4682",
               customUrl: null,
@@ -11216,7 +11216,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 32688,
-              discordName: "OhItsAna19",
+              username: "OhItsAna19",
               discordId: "549632105320153098",
               discordAvatar: "d22a437a63f6fdc07a0f37d93cc79e39",
               customUrl: "ohitsana19",
@@ -11228,7 +11228,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 26792,
-              discordName: "bee-a",
+              username: "bee-a",
               discordId: "591660736405700628",
               discordAvatar: "7d93d52e63b2dcd16bf904a61860dcb5",
               customUrl: "byabyabya",
@@ -11298,7 +11298,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 6935,
-              discordName: "Splatos",
+              username: "Splatos",
               discordId: "375315735875944470",
               discordAvatar: "76b007d6f57b47b683e78dfd100832a7",
               customUrl: "splatos",
@@ -11310,7 +11310,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 5528,
-              discordName: "Vapor.",
+              username: "Vapor.",
               discordId: "443815041804795905",
               discordAvatar: "373f75beccdb1244d8de08767406c335",
               customUrl: null,
@@ -11322,7 +11322,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 12358,
-              discordName: "Inkurey",
+              username: "Inkurey",
               discordId: "534075513627607051",
               discordAvatar: "202ca6b342198fb7d23a975ab7537aaa",
               customUrl: "inkurey22",
@@ -11334,7 +11334,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 19002,
-              discordName: "Alonika",
+              username: "Alonika",
               discordId: "768156816231497748",
               discordAvatar: "50da7f60e55e05a725642f5c2145da5b",
               customUrl: "alonika",
@@ -11346,7 +11346,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 306,
-              discordName: "still'",
+              username: "still'",
               discordId: "851482790830800956",
               discordAvatar: "6392a01c714770703fec6444c67c6b65",
               customUrl: null,
@@ -11358,7 +11358,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 8243,
-              discordName: "Loωαsıs'",
+              username: "Loωαsıs'",
               discordId: "500261010712821761",
               discordAvatar: "e59763ffb97a9f90b2afa6c27c290ae5",
               customUrl: null,
@@ -11432,7 +11432,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 25242,
-              discordName: "Cr◎nik",
+              username: "Cr◎nik",
               discordId: "420485156839882754",
               discordAvatar: "2ac00945ef7c177dbaccb9b189503330",
               customUrl: "cronik",
@@ -11444,7 +11444,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 13736,
-              discordName: "carota",
+              username: "carota",
               discordId: "772188607804473409",
               discordAvatar: "9b145d48e06e9743b6ebe1d01cbbe592",
               customUrl: null,
@@ -11456,7 +11456,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 27960,
-              discordName: "Anca",
+              username: "Anca",
               discordId: "751507202413428799",
               discordAvatar: "784c9e9978b664ddcb3bd2979e4869c7",
               customUrl: null,
@@ -11468,7 +11468,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 25814,
-              discordName: "WaffleUser",
+              username: "WaffleUser",
               discordId: "394115188682653696",
               discordAvatar: "d1f26ba868fe115394607a4bf85ff1ab",
               customUrl: "waffleuser",
@@ -11480,7 +11480,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 31311,
-              discordName: "Al3_",
+              username: "Al3_",
               discordId: "606522166405627905",
               discordAvatar: "97b80a62cd22c00ec62ba3fe8ec025b4",
               customUrl: null,
@@ -11550,7 +11550,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 12526,
-              discordName: "GoldA",
+              username: "GoldA",
               discordId: "706956975564652614",
               discordAvatar: "5d78f7dc7de2bf4bc7d15063c12277e9",
               customUrl: null,
@@ -11562,7 +11562,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 24441,
-              discordName: "flemmi",
+              username: "flemmi",
               discordId: "626070366338416650",
               discordAvatar: "3a3a5b895f07ba16af5c406b236a6b2d",
               customUrl: "flemmi",
@@ -11574,7 +11574,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 28629,
-              discordName: "Wolfi.Jr",
+              username: "Wolfi.Jr",
               discordId: "1093481853375217724",
               discordAvatar: "1660f3d22232d967d37dae2206f660c3",
               customUrl: null,
@@ -11586,7 +11586,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 28822,
-              discordName: "piiiro",
+              username: "piiiro",
               discordId: "715504166272893009",
               discordAvatar: "1a8315559210c961645aeb1742a247be",
               customUrl: null,
@@ -11598,7 +11598,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 9211,
-              discordName: "Ninjar04",
+              username: "Ninjar04",
               discordId: "518016631973085185",
               discordAvatar: "eb2872aa07883028d602ca90dbe76ac8",
               customUrl: "ninjar04",
@@ -11672,7 +11672,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 21989,
-              discordName: "Kyopon",
+              username: "Kyopon",
               discordId: "689451152382754898",
               discordAvatar: "a_a59b820f10bab0a7bfb9cd9784793d05",
               customUrl: "kyopon",
@@ -11684,7 +11684,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 30234,
-              discordName: "Skyban",
+              username: "Skyban",
               discordId: "437179975964164107",
               discordAvatar: "27990d2e56e763e2c5daf392c89782c2",
               customUrl: "skyban",
@@ -11696,7 +11696,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 35118,
-              discordName: "Slord.",
+              username: "Slord.",
               discordId: "209358928692248576",
               discordAvatar: "8c4b2aba195e3de5bcc7cb84e3df7ab9",
               customUrl: null,
@@ -11708,7 +11708,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 32156,
-              discordName: "black-out",
+              username: "black-out",
               discordId: "683002889072934930",
               discordAvatar: "e53c348ea2a5c59399ba695c63dfb455",
               customUrl: null,
@@ -11720,7 +11720,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 30751,
-              discordName: "Katchan 愛",
+              username: "Katchan 愛",
               discordId: "302391802445692929",
               discordAvatar: "e3ac44b439a5cd49d94d55e706743287",
               customUrl: "coolkidnextdoor",
@@ -11791,7 +11791,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 4807,
-              discordName: "capri",
+              username: "capri",
               discordId: "705369120446873630",
               discordAvatar: "74b18cdff163cd412d9cad252b63a77d",
               customUrl: "capri",
@@ -11803,7 +11803,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 16634,
-              discordName: "RJ",
+              username: "RJ",
               discordId: "803729996359008309",
               discordAvatar: "a4c5736ca6c5658428c3c3322aff3859",
               customUrl: "r",
@@ -11815,7 +11815,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 2392,
-              discordName: "Senator",
+              username: "Senator",
               discordId: "245229964180455424",
               discordAvatar: "770b2c6d4f923cba3757405d368fdf4e",
               customUrl: "senator",
@@ -11827,7 +11827,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 26726,
-              discordName: "Jokufe 8",
+              username: "Jokufe 8",
               discordId: "893910083937914951",
               discordAvatar: "2c67b55f22972742a5a8226c364faa15",
               customUrl: null,
@@ -11897,7 +11897,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 25954,
-              discordName: "kym",
+              username: "kym",
               discordId: "406948482440626206",
               discordAvatar: "aceebbbe00c2c4cac1c1953db42bb63c",
               customUrl: "kym",
@@ -11909,7 +11909,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 14973,
-              discordName: "Bazin",
+              username: "Bazin",
               discordId: "350052506094534659",
               discordAvatar: "fad4ef569ded117eba847ed6900a6c03",
               customUrl: "bazin",
@@ -11921,7 +11921,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 17137,
-              discordName: "Steeze",
+              username: "Steeze",
               discordId: "658449359469412366",
               discordAvatar: "10b2e49c19505bed6598f70eb6665f50",
               customUrl: "steeze",
@@ -11933,7 +11933,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 8391,
-              discordName: "onion",
+              username: "onion",
               discordId: "383278501484167169",
               discordAvatar: "1e574230c3252c38a65fd3609f4571b2",
               customUrl: "onionzura",
@@ -12007,7 +12007,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 18969,
-              discordName: "I love yuki~ really much ❤❤❤",
+              username: "I love yuki~ really much ❤❤❤",
               discordId: "399217428627980290",
               discordAvatar: "c1f174cdc538a2c2adc16058b1586afa",
               customUrl: null,
@@ -12019,7 +12019,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 17940,
-              discordName: "Mamadou des Doucettes et de Vil",
+              username: "Mamadou des Doucettes et de Vil",
               discordId: "914577436312756274",
               discordAvatar: "447ed6e73227d97dc304a425f13c5f0e",
               customUrl: "shiromg",
@@ -12031,7 +12031,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 30972,
-              discordName: "Inkle",
+              username: "Inkle",
               discordId: "846484394767941712",
               discordAvatar: "e9f35c6106a360e06d2d058c81a182e3",
               customUrl: null,
@@ -12043,7 +12043,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 38902,
-              discordName: "Wavy",
+              username: "Wavy",
               discordId: "1204784498173022238",
               discordAvatar: "5aa550cdbed9e55802e65ab1e838c0db",
               customUrl: "thewave",
@@ -12055,7 +12055,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 29099,
-              discordName: "Kadxx",
+              username: "Kadxx",
               discordId: "374929598015864832",
               discordAvatar: "5a3c245778efb86f9278f235b45c1cd1",
               customUrl: "kadxx",
@@ -12067,7 +12067,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 26683,
-              discordName: "Solev™",
+              username: "Solev™",
               discordId: "282873289901211658",
               discordAvatar: "11cdaf2e36f5b7369f2055ef1fc80237",
               customUrl: "kamarade",
@@ -12079,7 +12079,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 30767,
-              discordName: "∆luka~",
+              username: "∆luka~",
               discordId: "537193325921304576",
               discordAvatar: "a2326f0cab16c0f3c197899ab18742b6",
               customUrl: "luka",
@@ -12153,7 +12153,7 @@ export const PADDLING_POOL_255 = () =>
           members: [
             {
               userId: 18290,
-              discordName: "Rekie!",
+              username: "Rekie!",
               discordId: "571634807759699969",
               discordAvatar: "ed9c079168825840326447e44ee9748c",
               customUrl: "rekie",
@@ -12165,7 +12165,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 15135,
-              discordName: "Shortcake",
+              username: "Shortcake",
               discordId: "390952525551108099",
               discordAvatar: "df44ab6a236253791e0ca4010bebf528",
               customUrl: null,
@@ -12177,7 +12177,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 31597,
-              discordName: "Tetra",
+              username: "Tetra",
               discordId: "755433873449680997",
               discordAvatar: "253c816ff0adc10cf9cfb56234a70791",
               customUrl: null,
@@ -12189,7 +12189,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 34933,
-              discordName: "RexTheCookieWolf",
+              username: "RexTheCookieWolf",
               discordId: "370252717337214978",
               discordAvatar: "a_26d07fb59d02a81a83aa1e34adf6337d",
               customUrl: null,
@@ -12201,7 +12201,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 14927,
-              discordName: "Alphiqus",
+              username: "Alphiqus",
               discordId: "328507050214555648",
               discordAvatar: "60e1eaa91c34eb47bb08fd2a59862b7c",
               customUrl: "alphiqus",
@@ -12213,7 +12213,7 @@ export const PADDLING_POOL_255 = () =>
             },
             {
               userId: 7461,
-              discordName: "Asri",
+              username: "Asri",
               discordId: "553653885110321192",
               discordAvatar: "e4b0570178fad7b141d39e8f931ca6d3",
               customUrl: "asri",
@@ -14372,7 +14372,7 @@ export const IN_THE_ZONE_32 = () =>
       startTime: 1707588000,
       author: {
         id: 274,
-        discordName: "Sendou",
+        username: "Sendou",
         discordId: "79237403620945920",
         discordAvatar: "6fc41a44b069a0d2152ac06d1e496c6c",
         customUrl: "sendou",
@@ -14381,7 +14381,7 @@ export const IN_THE_ZONE_32 = () =>
       staff: [
         {
           id: 860,
-          discordName: "공주 Alice",
+          username: "공주 Alice",
           discordId: "163771047068303360",
           discordAvatar: "b33d8f230218d6a92705a63fdf803851",
           customUrl: "alicetheto",
@@ -14390,7 +14390,7 @@ export const IN_THE_ZONE_32 = () =>
         },
         {
           id: 12717,
-          discordName: "Browni",
+          username: "Browni",
           discordId: "413759870333091884",
           discordAvatar: "a_b55f70ada809a600e73c5088b910e659",
           customUrl: "brufnie",
@@ -14422,7 +14422,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 147,
-              discordName: "bran",
+              username: "bran",
               discordId: "151192098962407424",
               discordAvatar: "bc42e11e32ed032c45b67560326d775e",
               customUrl: "bran",
@@ -14434,7 +14434,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 118,
-              discordName: "bagel",
+              username: "bagel",
               discordId: "147036636608331779",
               discordAvatar: "984b7b3cd00904b3e3797b7643468572",
               customUrl: "bagel",
@@ -14446,7 +14446,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 133,
-              discordName: "ice",
+              username: "ice",
               discordId: "105390854063034368",
               discordAvatar: "2ba3d62baf34c8d519eedbe1add3f797",
               customUrl: null,
@@ -14458,7 +14458,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 257,
-              discordName: "Zero",
+              username: "Zero",
               discordId: "220344765240180738",
               discordAvatar: "8128554c8e9cdfa6130d5deccfa0744b",
               customUrl: "zero",
@@ -14516,7 +14516,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 100,
-              discordName: "Leafi",
+              username: "Leafi",
               discordId: "114889120379043843",
               discordAvatar: "c1f430c7fc82dde285c4229f6b2758ad",
               customUrl: "leafi",
@@ -14528,7 +14528,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 164,
-              discordName: ".q",
+              username: ".q",
               discordId: "266716798945067010",
               discordAvatar: "92966ce63bb148b81ffe1590a30dbb21",
               customUrl: "queue",
@@ -14540,7 +14540,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 138,
-              discordName: "Madness",
+              username: "Madness",
               discordId: "383774228937179136",
               discordAvatar: "b550107ef8b5403fe08da02676d12352",
               customUrl: "madness",
@@ -14552,7 +14552,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 305,
-              discordName: "Jared",
+              username: "Jared",
               discordId: "275491864344395776",
               discordAvatar: "2341f664d3adf39918009cf8b5c65e32",
               customUrl: null,
@@ -14610,7 +14610,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 32,
-              discordName: "Volty",
+              username: "Volty",
               discordId: "186543007850299393",
               discordAvatar: "f975216cbb37cae5997a3d42f7801ac4",
               customUrl: "volty",
@@ -14622,7 +14622,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 123,
-              discordName: "Grey",
+              username: "Grey",
               discordId: "99931397451419648",
               discordAvatar: "1ac948c5af5758a1188190f6e9230ebc",
               customUrl: "grey",
@@ -14634,7 +14634,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 1043,
-              discordName: "Scar",
+              username: "Scar",
               discordId: "129931199383601153",
               discordAvatar: "538fed139b88c64dc749c5d207d35eef",
               customUrl: null,
@@ -14646,7 +14646,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 702,
-              discordName: "Promano",
+              username: "Promano",
               discordId: "159393251453829120",
               discordAvatar: "f0f9b96bf1463973bdda4443f8598330",
               customUrl: "promano",
@@ -14704,7 +14704,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 11517,
-              discordName: "xenith",
+              username: "xenith",
               discordId: "936048087791702087",
               discordAvatar: "db4c8ce55ac3f516d5d8136f6eb7d1eb",
               customUrl: "xenith",
@@ -14716,7 +14716,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 439,
-              discordName: "y0shell",
+              username: "y0shell",
               discordId: "427160548510138383",
               discordAvatar: "ef96ff9718c352e2e7417ac4279f2cc3",
               customUrl: "y0shell",
@@ -14728,7 +14728,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 81,
-              discordName: "Atomic♪",
+              username: "Atomic♪",
               discordId: "441232639358402560",
               discordAvatar: "859aabf0d52d80823edefe31c4ead0c4",
               customUrl: "atomic",
@@ -14740,7 +14740,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 23381,
-              discordName: "Miky",
+              username: "Miky",
               discordId: "1182980612106227742",
               discordAvatar: "32e8082542ab345151808d2b8304f6c7",
               customUrl: "miky_n26",
@@ -14752,7 +14752,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 26278,
-              discordName: "Tera",
+              username: "Tera",
               discordId: "1022946467415064716",
               discordAvatar: "e1c469732f174d40b961ce952d755eb3",
               customUrl: null,
@@ -14764,7 +14764,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 104,
-              discordName: "yusnipe",
+              username: "yusnipe",
               discordId: "391583460747378701",
               discordAvatar: "594cef186ac46bf36110f50f1cad893e",
               customUrl: null,
@@ -14822,7 +14822,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 185,
-              discordName: "phoenix",
+              username: "phoenix",
               discordId: "619566583970529314",
               discordAvatar: "d68b95b004a6f29dedbc1baed6d4b9da",
               customUrl: "phoenix",
@@ -14834,7 +14834,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 10293,
-              discordName: "Yū",
+              username: "Yū",
               discordId: "769160946211880970",
               discordAvatar: "1e1c2ddba7dc735347b6859a8fba1d95",
               customUrl: "yu",
@@ -14846,7 +14846,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 5728,
-              discordName: "Cam",
+              username: "Cam",
               discordId: "335859980890669056",
               discordAvatar: "4de21a16c8885b2e36366560c24d2212",
               customUrl: "cam",
@@ -14858,7 +14858,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 35,
-              discordName: "Kiver",
+              username: "Kiver",
               discordId: "92909500100513792",
               discordAvatar: "b027415c41cd5cb10ed6438509fe74e5",
               customUrl: "kiver",
@@ -14870,7 +14870,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 99,
-              discordName: "luma",
+              username: "luma",
               discordId: "414781435057274900",
               discordAvatar: "4145bdf4de089c372454730eb47ebb00",
               customUrl: null,
@@ -14928,7 +14928,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 145,
-              discordName: "Omegα",
+              username: "Omegα",
               discordId: "203704363141562368",
               discordAvatar: "a3909f42dd5c4f55d6a6cce3071f28ad",
               customUrl: "omegazidan",
@@ -14940,7 +14940,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 48,
-              discordName: "Shadowind",
+              username: "Shadowind",
               discordId: "244246880442122250",
               discordAvatar: "bdc0461d833a6070b1afcdb608603099",
               customUrl: "shadowind",
@@ -14952,7 +14952,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 172,
-              discordName: "SSNolan",
+              username: "SSNolan",
               discordId: "228235320854970369",
               discordAvatar: "b31ce947f16614d6a45a0c466c380efb",
               customUrl: "ssnolan",
@@ -14964,7 +14964,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 126,
-              discordName: "Basil",
+              username: "Basil",
               discordId: "513869802947739679",
               discordAvatar: "971db7830177690ad1dc2fa3c9ee8fed",
               customUrl: "basil",
@@ -14976,7 +14976,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 160,
-              discordName: "Chara",
+              username: "Chara",
               discordId: "143918846535925761",
               discordAvatar: "f1bd9c58cbdf92d3c30ec580e794c861",
               customUrl: "chara",
@@ -15034,7 +15034,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 22893,
-              discordName: "Lucina❤",
+              username: "Lucina❤",
               discordId: "214062111658213376",
               discordAvatar: "efcd81e069d433ec0bae6b3576b2371f",
               customUrl: null,
@@ -15046,7 +15046,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 957,
-              discordName: "CMO♪",
+              username: "CMO♪",
               discordId: "209858231584030721",
               discordAvatar: "b6dee5515cb9dfee7aac85d2af5186f8",
               customUrl: "cmo",
@@ -15058,7 +15058,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 25423,
-              discordName: "blah blah BIG DEAL",
+              username: "blah blah BIG DEAL",
               discordId: "263131403535908868",
               discordAvatar: "69d83fef8f248451518dae8cd08a667f",
               customUrl: null,
@@ -15070,7 +15070,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 20583,
-              discordName: "sunguraa",
+              username: "sunguraa",
               discordId: "394204866089713666",
               discordAvatar: "9368e9d4e16058e17be92195940a802c",
               customUrl: "sungura",
@@ -15082,7 +15082,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 1105,
-              discordName: "cleff",
+              username: "cleff",
               discordId: "212301688822824960",
               discordAvatar: "90e05582eb7aaedfd32a0d045e1ff4ca",
               customUrl: null,
@@ -15094,7 +15094,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 14,
-              discordName: "Mecha",
+              username: "Mecha",
               discordId: "122759401613426689",
               discordAvatar: "8197d7a3c108b4e3aa3689af2fb82711",
               customUrl: "httpstwittercommochamecha2",
@@ -15152,7 +15152,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 249,
-              discordName: "Redmatt",
+              username: "Redmatt",
               discordId: "313407177236807680",
               discordAvatar: "99a057174d38562c8246248d6d24f7a9",
               customUrl: null,
@@ -15164,7 +15164,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 451,
-              discordName: "Half",
+              username: "Half",
               discordId: "468596581357060097",
               discordAvatar: "7ea175abbcf1f73c2d153ed01d38b7f3",
               customUrl: null,
@@ -15176,7 +15176,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 141,
-              discordName: "Elis",
+              username: "Elis",
               discordId: "413497313626030110",
               discordAvatar: "52b55ee940d060266adf285ae70f25af",
               customUrl: null,
@@ -15188,7 +15188,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 260,
-              discordName: "kai",
+              username: "kai",
               discordId: "138728444073738240",
               discordAvatar: null,
               customUrl: "kai",
@@ -15200,7 +15200,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 202,
-              discordName: "sam",
+              username: "sam",
               discordId: "672934395891417098",
               discordAvatar: "5afe64ba6bce4aed2c1aef3aa0bd46da",
               customUrl: "sam",
@@ -15212,7 +15212,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 276,
-              discordName: "Trizy",
+              username: "Trizy",
               discordId: "283645464572723201",
               discordAvatar: "5362a37efd582648a01b9deab907ffbf",
               customUrl: "tristan",
@@ -15270,7 +15270,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 70,
-              discordName: "Takimi",
+              username: "Takimi",
               discordId: "681164713400467614",
               discordAvatar: "8ea38ee082cece223af21eceaa79624e",
               customUrl: "takimi",
@@ -15282,7 +15282,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 124,
-              discordName: "DUDE",
+              username: "DUDE",
               discordId: "90162085337497600",
               discordAvatar: "d075a0fc43a832d3c1b0edbbb097cdb6",
               customUrl: null,
@@ -15294,7 +15294,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 255,
-              discordName: "SnipeZ!",
+              username: "SnipeZ!",
               discordId: "219877773605470211",
               discordAvatar: "406cbd6d09c200b45171af167bfc30da",
               customUrl: "snipez",
@@ -15306,7 +15306,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 252,
-              discordName: "Spore",
+              username: "Spore",
               discordId: "433708069654888448",
               discordAvatar: "154986052a1c1144e50d348f68fe60e7",
               customUrl: "spore",
@@ -15364,7 +15364,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 18,
-              discordName: "Noctis",
+              username: "Noctis",
               discordId: "189021480527331328",
               discordAvatar: "25afc40f415499d9cbe1f4c89b5e6442",
               customUrl: "yenoctis",
@@ -15376,7 +15376,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 151,
-              discordName: "anger",
+              username: "anger",
               discordId: "412203683024076800",
               discordAvatar: "04da2861d50ff96a254d5bc8b02d68ea",
               customUrl: "anger",
@@ -15388,7 +15388,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 15418,
-              discordName: ".",
+              username: ".",
               discordId: "794201321376448542",
               discordAvatar: "2b3e66ab5e9b28417f290094c9c7206e",
               customUrl: null,
@@ -15400,7 +15400,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 411,
-              discordName: "Naives",
+              username: "Naives",
               discordId: "417040760194465803",
               discordAvatar: "605b02f40052aeaab219a94120965b79",
               customUrl: "naives",
@@ -15458,7 +15458,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 76,
-              discordName: "alwo",
+              username: "alwo",
               discordId: "457473830022152212",
               discordAvatar: "ffd5c22b3e36cefc13181e46900f5c17",
               customUrl: "alwo",
@@ -15470,7 +15470,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 3298,
-              discordName: "Lucky♧🔥",
+              username: "Lucky♧🔥",
               discordId: "675299701117157377",
               discordAvatar: "149601a0b17bbaa4baabf74675eafe82",
               customUrl: "luckyf",
@@ -15482,7 +15482,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 5337,
-              discordName: "Typhlo",
+              username: "Typhlo",
               discordId: "132913124448665600",
               discordAvatar: "fad0d06a3a2d51dbdc7004373d606a54",
               customUrl: "typhlo",
@@ -15494,7 +15494,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 6557,
-              discordName: "exz",
+              username: "exz",
               discordId: "398237251894509568",
               discordAvatar: "3e8ded6ad5ad136a3527d31423966b81",
               customUrl: null,
@@ -15552,7 +15552,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 112,
-              discordName: "synapse",
+              username: "synapse",
               discordId: "397208511848644619",
               discordAvatar: "fc704ddd5b6c5c9939fdbed1a6ab0ef4",
               customUrl: "sighnaps",
@@ -15564,7 +15564,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 57,
-              discordName: "Caden",
+              username: "Caden",
               discordId: "491067479452549143",
               discordAvatar: "cb48c2d4107304c5af6c8795f3d4d3a8",
               customUrl: "caden",
@@ -15576,7 +15576,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 1658,
-              discordName: "Birch",
+              username: "Birch",
               discordId: "215697775814246401",
               discordAvatar: "2baa53eec2b4a4b6b03b0ea960e8b0ed",
               customUrl: "birch",
@@ -15588,7 +15588,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 2801,
-              discordName: "Spongebob",
+              username: "Spongebob",
               discordId: "338530058572660737",
               discordAvatar: "40e95f9b159244e1f533f4dcfeae7407",
               customUrl: "olneh",
@@ -15646,7 +15646,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 319,
-              discordName: "Alex",
+              username: "Alex",
               discordId: "731230341225775184",
               discordAvatar: "869213b6ac7841ee14bb417a7c7a3ed3",
               customUrl: "alexdc",
@@ -15658,7 +15658,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 291,
-              discordName: "yokaru",
+              username: "yokaru",
               discordId: "563813647823011863",
               discordAvatar: "054a910351c6a39bb11d24d37d38d79e",
               customUrl: "zen_yokaru",
@@ -15670,7 +15670,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 372,
-              discordName: "Mario-v",
+              username: "Mario-v",
               discordId: "164748705713356800",
               discordAvatar: "d343edc2ad965131ab719b42d4ef03c3",
               customUrl: null,
@@ -15682,7 +15682,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 392,
-              discordName: "Carlox",
+              username: "Carlox",
               discordId: "193772132675616770",
               discordAvatar: "1a67431a8b8e18148a8f00d62d571b5a",
               customUrl: "carlox",
@@ -15694,7 +15694,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 7326,
-              discordName: "Nebula",
+              username: "Nebula",
               discordId: "388778540545474570",
               discordAvatar: "9c507efebbb57f30a4d5a994e1acb734",
               customUrl: "nebulaspl",
@@ -15752,7 +15752,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 211,
-              discordName: "Migue_CaS",
+              username: "Migue_CaS",
               discordId: "232719351634067457",
               discordAvatar: "bdd9a2730e4a55cbe246a1dfdbadcbae",
               customUrl: null,
@@ -15764,7 +15764,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 286,
-              discordName: "1Shot?",
+              username: "1Shot?",
               discordId: "184791233972011008",
               discordAvatar: "bed7c7a59696536c0682bfcc879cbec4",
               customUrl: "1shot",
@@ -15776,7 +15776,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 206,
-              discordName: "Lex",
+              username: "Lex",
               discordId: "138866309655035904",
               discordAvatar: "58051caa60d83e0a99927f8bd9ceef96",
               customUrl: "lex",
@@ -15788,7 +15788,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 11010,
-              discordName: "esp",
+              username: "esp",
               discordId: "292790265029197824",
               discordAvatar: "2bd9d87f23b0c320812f8497caa6c667",
               customUrl: "esp",
@@ -15846,7 +15846,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 41,
-              discordName: "vera",
+              username: "vera",
               discordId: "316256970254581771",
               discordAvatar: "f6b44cd1868b835e44bf90184310a8e9",
               customUrl: "omega",
@@ -15858,7 +15858,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 94,
-              discordName: "bishop",
+              username: "bishop",
               discordId: "173238005761441802",
               discordAvatar: "f9a6f17f2f344ed0ce7cb0dd786ec85f",
               customUrl: "bishop",
@@ -15870,7 +15870,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 232,
-              discordName: "Patrick Not-Star",
+              username: "Patrick Not-Star",
               discordId: "738580607071944775",
               discordAvatar: "d212f14cf74129920e323c9b00b43b14",
               customUrl: "nicochicopuertorico",
@@ -15882,7 +15882,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 233,
-              discordName: "Archer",
+              username: "Archer",
               discordId: "673240733691412490",
               discordAvatar: "069ba2850ea78fb26f60e64a6e8720e5",
               customUrl: null,
@@ -15940,7 +15940,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 1300,
-              discordName: "KING KZRR",
+              username: "KING KZRR",
               discordId: "444897755010301979",
               discordAvatar: "92ff2a94b46916e6d7ee84e8e5aeb9ac",
               customUrl: null,
@@ -15952,7 +15952,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 12976,
-              discordName: "Tikke",
+              username: "Tikke",
               discordId: "1005519944223555683",
               discordAvatar: "40c3446f2d71533b7cd22cd50c2fc971",
               customUrl: null,
@@ -15964,7 +15964,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 15916,
-              discordName: "Raiki",
+              username: "Raiki",
               discordId: "1028691176129310790",
               discordAvatar: "00c1371c9978ed4939ff9deeb423c55f",
               customUrl: "raiki",
@@ -15976,7 +15976,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 27958,
-              discordName: ".",
+              username: ".",
               discordId: "437402107818016780",
               discordAvatar: "5b11047c3c07612b9a9269b05f91e7a7",
               customUrl: "tody",
@@ -15988,7 +15988,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 4603,
-              discordName: "Punchy",
+              username: "Punchy",
               discordId: "562637304057823235",
               discordAvatar: "e485707393117b769eb4d5d308a27d9c",
               customUrl: "punchy",
@@ -16046,7 +16046,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 22344,
-              discordName: "Nilla",
+              username: "Nilla",
               discordId: "809863658549149766",
               discordAvatar: "c23a493f4bd802dd95be86dbf29f5c02",
               customUrl: "nilla",
@@ -16058,7 +16058,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 10200,
-              discordName: "IB Woomy",
+              username: "IB Woomy",
               discordId: "673622543696920607",
               discordAvatar: "8aea6b82c57412e21090e111e654e3da",
               customUrl: "ibwoomy",
@@ -16070,7 +16070,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 229,
-              discordName: "bandit",
+              username: "bandit",
               discordId: "672584711289307149",
               discordAvatar: "5b1ad15a5afb05de6aa3e742a07f062c",
               customUrl: "maskedbandit",
@@ -16082,7 +16082,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 246,
-              discordName: "Ballóòn",
+              username: "Ballóòn",
               discordId: "247818300187213834",
               discordAvatar: "23209624b73572d40d8e03541913fdfd",
               customUrl: "balloon",
@@ -16094,7 +16094,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 14564,
-              discordName: "Potato",
+              username: "Potato",
               discordId: "149198643440779265",
               discordAvatar: "7976f3a8896cc310dfcfefed3f16c541",
               customUrl: "potato",
@@ -16156,7 +16156,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 236,
-              discordName: "Yeti",
+              username: "Yeti",
               discordId: "811971184315990037",
               discordAvatar: "dfc73135bc42ebd455f5d2e3e1bb1359",
               customUrl: "yeti_spl",
@@ -16168,7 +16168,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 8734,
-              discordName: "Yuni...",
+              username: "Yuni...",
               discordId: "857226158672052226",
               discordAvatar: "703b6343c7ffb62a593c92896d46f1d3",
               customUrl: "yuni1206",
@@ -16180,7 +16180,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 16980,
-              discordName: "Acer",
+              username: "Acer",
               discordId: "303473393880268801",
               discordAvatar: "ed5f26f86a75d2c08798f1fc37943222",
               customUrl: "acer",
@@ -16192,7 +16192,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 272,
-              discordName: "꩜",
+              username: "꩜",
               discordId: "658636974952939530",
               discordAvatar: "ad07360dfc6ab8be6370534f0663d414",
               customUrl: "nepia",
@@ -16204,7 +16204,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 6710,
-              discordName: "KITKAT",
+              username: "KITKAT",
               discordId: "651677259144364032",
               discordAvatar: "02b3060c984cad6fac233d7bb245ef7d",
               customUrl: "kitkaat",
@@ -16262,7 +16262,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 321,
-              discordName: "Titally",
+              username: "Titally",
               discordId: "705086782051582042",
               discordAvatar: "90e38f10cf6644311f66ec7e92860260",
               customUrl: "titallyy",
@@ -16274,7 +16274,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 11593,
-              discordName: "Aloha",
+              username: "Aloha",
               discordId: "554350848352714753",
               discordAvatar: "29d02e03a0f5414955ea1ede9da0f5cd",
               customUrl: null,
@@ -16286,7 +16286,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 50,
-              discordName: "Gettway🍒",
+              username: "Gettway🍒",
               discordId: "133616977968103424",
               discordAvatar: "ce17d54e96a7e8b8fea6b10db4ca652b",
               customUrl: "gettway",
@@ -16298,7 +16298,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 8,
-              discordName: "SG»Porky",
+              username: "SG»Porky",
               discordId: "135135051275829249",
               discordAvatar: "e138b1d63b989a77718c22858e8652ef",
               customUrl: "porky",
@@ -16310,7 +16310,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 331,
-              discordName: "kera",
+              username: "kera",
               discordId: "678848011090264075",
               discordAvatar: "d5fef5e57e1d8a25215de3f72a63c614",
               customUrl: "kera",
@@ -16322,7 +16322,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 132,
-              discordName: "xers",
+              username: "xers",
               discordId: "207150814735761408",
               discordAvatar: null,
               customUrl: "xercess",
@@ -16380,7 +16380,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 1117,
-              discordName: "Crim",
+              username: "Crim",
               discordId: "206930310611468288",
               discordAvatar: "f22f6015bdad956c75f34913a3b57331",
               customUrl: "creativepositioning",
@@ -16392,7 +16392,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 36,
-              discordName: "Pika",
+              username: "Pika",
               discordId: "122767217266917378",
               discordAvatar: "10ee6c5f6b6bd14db97f147e0119242a",
               customUrl: "pika",
@@ -16404,7 +16404,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 335,
-              discordName: "Nice O",
+              username: "Nice O",
               discordId: "479125178962411520",
               discordAvatar: "957d87f1a9b234a8db4816be1df91f71",
               customUrl: "nicooooo",
@@ -16416,7 +16416,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 292,
-              discordName: "Soarn",
+              username: "Soarn",
               discordId: "417725809436917761",
               discordAvatar: "e92b95c9c9acdcd8b25c05441bf2374e",
               customUrl: "soarn",
@@ -16474,7 +16474,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 2414,
-              discordName: "Sinayy",
+              username: "Sinayy",
               discordId: "377543915043160074",
               discordAvatar: "3e410a4640460470d001d0eb21d15529",
               customUrl: null,
@@ -16486,7 +16486,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 4061,
-              discordName: "Snnoo",
+              username: "Snnoo",
               discordId: "620181963382325268",
               discordAvatar: "4cbb17927060550172c4b2a6a27babea",
               customUrl: "snnoo",
@@ -16498,7 +16498,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 10592,
-              discordName: "dragib",
+              username: "dragib",
               discordId: "414399631124987906",
               discordAvatar: "7a42724d25f59f316a48e6093c6ed5dd",
               customUrl: "dragib",
@@ -16510,7 +16510,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 10812,
-              discordName: "haru",
+              username: "haru",
               discordId: "660902180425039882",
               discordAvatar: "71db04119f1f62e186a8bd004602553c",
               customUrl: "haru",
@@ -16522,7 +16522,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 115,
-              discordName: "Maeee 🌸",
+              username: "Maeee 🌸",
               discordId: "351412592335650817",
               discordAvatar: "99875d461f4dc57ff9c0c53cc626b964",
               customUrl: "mae_spl",
@@ -16534,7 +16534,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 12395,
-              discordName: "Shark",
+              username: "Shark",
               discordId: "687406242515124286",
               discordAvatar: "88723a4058fcc4eed1eb42590982a42a",
               customUrl: "shark",
@@ -16596,7 +16596,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 11007,
-              discordName: "Trey",
+              username: "Trey",
               discordId: "923792181100175392",
               discordAvatar: "f2ecd12a44f5ed54a757912dfb92edb9",
               customUrl: "apple_52_",
@@ -16608,7 +16608,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 71,
-              discordName: "Violet",
+              username: "Violet",
               discordId: "1195417964007137420",
               discordAvatar: "c62c91b7d42bf4f036d085880f6eb812",
               customUrl: "violett",
@@ -16620,7 +16620,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 204,
-              discordName: "Cuber",
+              username: "Cuber",
               discordId: "342838558564024322",
               discordAvatar: "2120b550b7ff5603f9b951991af6bbb7",
               customUrl: "cuberrr",
@@ -16632,7 +16632,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 4762,
-              discordName: "𝔃𝓮𝓷 ✿",
+              username: "𝔃𝓮𝓷 ✿",
               discordId: "480394213863981067",
               discordAvatar: "390e2a1e12a121086cbd412f4a4af81a",
               customUrl: "zen",
@@ -16644,7 +16644,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 6048,
-              discordName: "adapt",
+              username: "adapt",
               discordId: "500104986584416266",
               discordAvatar: "a77cf17c1fe9b7df251e353f5aed0046",
               customUrl: "adaptability",
@@ -16697,7 +16697,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 9125,
-              discordName: "Zivox",
+              username: "Zivox",
               discordId: "244456158201380864",
               discordAvatar: "0c19856d48d3c074b052bb8b0fb96d96",
               customUrl: "zivox",
@@ -16709,7 +16709,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 14489,
-              discordName: "keurbi",
+              username: "keurbi",
               discordId: "699648108958843011",
               discordAvatar: "13a3d7f9e4da5790e84e39d12765be16",
               customUrl: "keurbii",
@@ -16721,7 +16721,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 26392,
-              discordName: "Daki",
+              username: "Daki",
               discordId: "931599095225782342",
               discordAvatar: "105ad067fc8680684a149f1b42efed93",
               customUrl: "dakirikouuu",
@@ -16733,7 +16733,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 28725,
-              discordName: "Naka",
+              username: "Naka",
               discordId: "570644384929021973",
               discordAvatar: "e16a9798288b3988c9b3ba10bd259b1d",
               customUrl: "naka",
@@ -16791,7 +16791,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 6307,
-              discordName: "Kenta",
+              username: "Kenta",
               discordId: "725778044328870018",
               discordAvatar: "c9b42f8f3c98eb3c0123d4c19cfa5533",
               customUrl: "kentakiwi",
@@ -16803,7 +16803,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 15403,
-              discordName: "Caad",
+              username: "Caad",
               discordId: "1015362068733513839",
               discordAvatar: "07d518d309696fdd4e2574ef16cd2e86",
               customUrl: null,
@@ -16815,7 +16815,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 9718,
-              discordName: "ori_",
+              username: "ori_",
               discordId: "561371938383986698",
               discordAvatar: "0a0010be65b4f41bf848d3dd5a03a256",
               customUrl: "ori_",
@@ -16827,7 +16827,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 18039,
-              discordName: "Rose",
+              username: "Rose",
               discordId: "936942744985829477",
               discordAvatar: "2de3d96a7f163439de0ec19f643bc717",
               customUrl: "rosearrow",
@@ -16885,7 +16885,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 18734,
-              discordName: "Javierx9x",
+              username: "Javierx9x",
               discordId: "617402869280145418",
               discordAvatar: "fe79aac365eb877b69aad67224a4b457",
               customUrl: null,
@@ -16897,7 +16897,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 3258,
-              discordName: "geko",
+              username: "geko",
               discordId: "469796916226686977",
               discordAvatar: "ff14910472d07b96f9ddb01fecf20f62",
               customUrl: null,
@@ -16909,7 +16909,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 27108,
-              discordName: "NEOmegaX",
+              username: "NEOmegaX",
               discordId: "482200040685830154",
               discordAvatar: "92b52d3fdb574d385e88701f16cb424f",
               customUrl: null,
@@ -16921,7 +16921,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 20143,
-              discordName: "! Ateno",
+              username: "! Ateno",
               discordId: "885858782003990539",
               discordAvatar: "fccb549bfca5f61509165b1aeb1675f6",
               customUrl: null,
@@ -16933,7 +16933,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 23820,
-              discordName: "♱ seb ♱",
+              username: "♱ seb ♱",
               discordId: "863787863589650472",
               discordAvatar: "a_9cb301e90d936f5bfaf4af4769b04c92",
               customUrl: "seb",
@@ -16945,7 +16945,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 28851,
-              discordName: "Aprhodite",
+              username: "Aprhodite",
               discordId: "688872021526052936",
               discordAvatar: "aaa52a048b58dc706b5d88d09d51b1c5",
               customUrl: "aprhodite",
@@ -17003,7 +17003,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 25400,
-              discordName: "Espace",
+              username: "Espace",
               discordId: "264152597877882890",
               discordAvatar: "d3b61683854a9746b88ee7ba7dcb05ba",
               customUrl: null,
@@ -17015,7 +17015,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 13296,
-              discordName: "Akygos",
+              username: "Akygos",
               discordId: "344256410382630924",
               discordAvatar: "a6d63f095307a3324d582bb6f68d876d",
               customUrl: "akygos",
@@ -17027,7 +17027,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 15346,
-              discordName: "Alexri",
+              username: "Alexri",
               discordId: "311182672217112586",
               discordAvatar: "f86bd2fb989200f41da2efcc7ca47b61",
               customUrl: "alerri",
@@ -17039,7 +17039,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 21099,
-              discordName: "cidy",
+              username: "cidy",
               discordId: "403336270509506561",
               discordAvatar: "2bea656d16c08bac54961258fe0236ca",
               customUrl: "cidy",
@@ -17051,7 +17051,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 4099,
-              discordName: "Lasky",
+              username: "Lasky",
               discordId: "308653408771112972",
               discordAvatar: "3d54c0b82416fceaa139047e63520b16",
               customUrl: "lasky",
@@ -17109,7 +17109,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 405,
-              discordName: "ely",
+              username: "ely",
               discordId: "260999523806085120",
               discordAvatar: "a_b524ba21aadf33413c242ad4d558fb1c",
               customUrl: "elemental",
@@ -17121,7 +17121,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 20859,
-              discordName: "Munkee",
+              username: "Munkee",
               discordId: "613432730574651412",
               discordAvatar: "6482b7b3d87a0d076b6f40083ccfd652",
               customUrl: "munkee",
@@ -17133,7 +17133,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 13614,
-              discordName: "Bubbles",
+              username: "Bubbles",
               discordId: "462057926186762291",
               discordAvatar: "e0c00abd563966953530bf160d286510",
               customUrl: "bubbles",
@@ -17145,7 +17145,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 22041,
-              discordName: "zlook",
+              username: "zlook",
               discordId: "880910023008600084",
               discordAvatar: "966e8cd356fe54271e0760b3473ec8a9",
               customUrl: "zlook",
@@ -17157,7 +17157,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 20731,
-              discordName: "mel0mania",
+              username: "mel0mania",
               discordId: "178733052762128385",
               discordAvatar: "2c925566255d7b31b275debf0128c8e2",
               customUrl: "mel0mania",
@@ -17219,7 +17219,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 11467,
-              discordName: "Alex_",
+              username: "Alex_",
               discordId: "609884062219501569",
               discordAvatar: "d565d95da25d7e762bb6ac2891de7e66",
               customUrl: "alexxx",
@@ -17231,7 +17231,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 346,
-              discordName: "radish",
+              username: "radish",
               discordId: "617531521498087488",
               discordAvatar: "a_161cddb07a961474543d2d6ad0430f76",
               customUrl: "radishes",
@@ -17243,7 +17243,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 1038,
-              discordName: "Kabi",
+              username: "Kabi",
               discordId: "326532846959329280",
               discordAvatar: "0451bc4be41eaf5e776e06757c24a786",
               customUrl: "kabi",
@@ -17255,7 +17255,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 6255,
-              discordName: "Ang",
+              username: "Ang",
               discordId: "492002740617216000",
               discordAvatar: "d279ada7cb76adf00aba892f5a6a1170",
               customUrl: "ang",
@@ -17267,7 +17267,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 4097,
-              discordName: "noxraven42",
+              username: "noxraven42",
               discordId: "357866429552525322",
               discordAvatar: "31e16eb246021ce7553f0305d5c52481",
               customUrl: "noxraven42",
@@ -17325,7 +17325,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 14605,
-              discordName: "rexyyyyy",
+              username: "rexyyyyy",
               discordId: "762464672124764170",
               discordAvatar: "d3cf82bf707739a7851e2fb86ffd09dd",
               customUrl: "rexyyy",
@@ -17337,7 +17337,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 9674,
-              discordName: "b.dusty",
+              username: "b.dusty",
               discordId: "768144722245976106",
               discordAvatar: "86369c460e3f27f61c9115b5e94c60d3",
               customUrl: "bdusty",
@@ -17349,7 +17349,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 28482,
-              discordName: "phantom 👻",
+              username: "phantom 👻",
               discordId: "599633578648928307",
               discordAvatar: "75e8098ed3f83903d17deb0e6f66baa1",
               customUrl: "phantom_spl",
@@ -17361,7 +17361,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 10841,
-              discordName: "eider_pancake",
+              username: "eider_pancake",
               discordId: "714662908037955635",
               discordAvatar: "b913cbe960ab6e09fb9894a04711a520",
               customUrl: "eider",
@@ -17373,7 +17373,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 20154,
-              discordName: "echo!",
+              username: "echo!",
               discordId: "1036444173567537262",
               discordAvatar: "24068156578d8580336da81e8ab6ba2d",
               customUrl: "echo",
@@ -17428,7 +17428,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 37105,
-              discordName: "Tyraid",
+              username: "Tyraid",
               discordId: "1189399522368037026",
               discordAvatar: "df0a574122e61a2575330df05662adaf",
               customUrl: "ty",
@@ -17440,7 +17440,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 4307,
-              discordName: "Ezio!",
+              username: "Ezio!",
               discordId: "747592200887599195",
               discordAvatar: "c19cd5cacbcc0fb84a1b3c2cf7eac837",
               customUrl: "eziooooo",
@@ -17452,7 +17452,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 21339,
-              discordName: "Soro",
+              username: "Soro",
               discordId: "984782488595496971",
               discordAvatar: "1a0d460918b961d5e55ad17c2dc91e75",
               customUrl: "soro",
@@ -17464,7 +17464,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 1136,
-              discordName: "Guigas",
+              username: "Guigas",
               discordId: "151144919136862210",
               discordAvatar: "fbc77c63c85b5cc20d57de31403196b0",
               customUrl: "guigas",
@@ -17476,7 +17476,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 1441,
-              discordName: "Pose",
+              username: "Pose",
               discordId: "339981555428753411",
               discordAvatar: "c725ca4584840840402dc1c1b385165e",
               customUrl: "nowpose",
@@ -17488,7 +17488,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 25117,
-              discordName: "Datzu",
+              username: "Datzu",
               discordId: "444295883182309378",
               discordAvatar: "a_46eb603abfaaee815c606e335f4ffd00",
               customUrl: "datzu",
@@ -17546,7 +17546,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 34238,
-              discordName: "Sili",
+              username: "Sili",
               discordId: "1101867939130511420",
               discordAvatar: null,
               customUrl: null,
@@ -17558,7 +17558,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 168,
-              discordName: "96Magi",
+              username: "96Magi",
               discordId: "358726210806743051",
               discordAvatar: "dd24e52ccdad5f6e480ab301720348a2",
               customUrl: "96magi",
@@ -17570,7 +17570,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 1178,
-              discordName: "kura",
+              username: "kura",
               discordId: "250689440056475648",
               discordAvatar: "da908b1273d8cdde41269558441172c9",
               customUrl: "kura1708",
@@ -17582,7 +17582,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 9064,
-              discordName: "KLAZ",
+              username: "KLAZ",
               discordId: "614820279755079712",
               discordAvatar: "5ea1c9f40303021fae7998cb892871d2",
               customUrl: "klaz",
@@ -17594,7 +17594,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 11148,
-              discordName: "Lay'",
+              username: "Lay'",
               discordId: "936001185859633212",
               discordAvatar: "e903bb257d552de9aca8b15a17cdc4fb",
               customUrl: "tentman",
@@ -17653,7 +17653,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 22948,
-              discordName: "𒉭Shadøw",
+              username: "𒉭Shadøw",
               discordId: "200912048916267008",
               discordAvatar: "80f582c65135f45b7120177a6052cdcb",
               customUrl: "shadow_carbon",
@@ -17665,7 +17665,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 23128,
-              discordName: "hiro",
+              username: "hiro",
               discordId: "946503696697688095",
               discordAvatar: "1f96c7be0c710c3dc5ceab90d18a7579",
               customUrl: "hiro",
@@ -17677,7 +17677,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 38080,
-              discordName: "Awenn",
+              username: "Awenn",
               discordId: "1158149473541836820",
               discordAvatar: "b7fec35f140c0d276107917f03b1e7d5",
               customUrl: null,
@@ -17689,7 +17689,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 35807,
-              discordName: "Baké",
+              username: "Baké",
               discordId: "630874409170894849",
               discordAvatar: "b011e4c600a09072fbd93873b4c569f2",
               customUrl: "bake",
@@ -17747,7 +17747,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 10192,
-              discordName: "FG☆Chiaki",
+              username: "FG☆Chiaki",
               discordId: "718795604599373854",
               discordAvatar: "7667f38a7df59927501daedd13d67149",
               customUrl: "chiaki_spl",
@@ -17759,7 +17759,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 24705,
-              discordName: "Mirval",
+              username: "Mirval",
               discordId: "748837898408820778",
               discordAvatar: "874faa0d0fa84ac8855581cff3580507",
               customUrl: "mirval",
@@ -17771,7 +17771,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 9367,
-              discordName: "mishy",
+              username: "mishy",
               discordId: "631428169047605279",
               discordAvatar: "5b91b42f3ba2d2331ce5d94781d91199",
               customUrl: "mishy",
@@ -17783,7 +17783,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 28191,
-              discordName: "Aera",
+              username: "Aera",
               discordId: "924046469886017657",
               discordAvatar: "25b3df25b57e5a0274359470c1d9e44c",
               customUrl: null,
@@ -17795,7 +17795,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 13342,
-              discordName: "akuma",
+              username: "akuma",
               discordId: "443842528895172619",
               discordAvatar: "15706f50808435e18e6850e838165d86",
               customUrl: "akuma",
@@ -17853,7 +17853,7 @@ export const IN_THE_ZONE_32 = () =>
           members: [
             {
               userId: 26942,
-              discordName: "Triix :3",
+              username: "Triix :3",
               discordId: "375113228281184257",
               discordAvatar: "6752ab139bbb245d2a9dd571983f692c",
               customUrl: null,
@@ -17865,7 +17865,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 8927,
-              discordName: "okaysaffra",
+              username: "okaysaffra",
               discordId: "457356936833269778",
               discordAvatar: "a8180fb199de1cfad3e3279c45e4fcee",
               customUrl: "okaysaffra",
@@ -17877,7 +17877,7 @@ export const IN_THE_ZONE_32 = () =>
             },
             {
               userId: 4434,
-              discordName: "GYARU",
+              username: "GYARU",
               discordId: "562505510058983444",
               discordAvatar: "920f317863ced869e9ebb4cb5a526623",
               customUrl: "gyaru",

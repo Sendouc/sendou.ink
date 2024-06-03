@@ -76,7 +76,6 @@ export class DiscordStrategy extends OAuth2Strategy<
 
           const userFromDb = await UserRepository.upsert({
             discordAvatar: user.avatar ?? null,
-            discordDiscriminator: user.discriminator,
             discordId: user.id,
             discordName: user.global_name ?? user.username,
             discordUniqueName: user.global_name ? user.username : null,

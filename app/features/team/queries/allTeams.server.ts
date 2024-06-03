@@ -11,8 +11,8 @@ const stm = sql.prepare(/* sql */ `
       json_object(
         'id',
         "User"."id",
-        'discordName',
-        "User"."discordName",
+        'username',
+        "User"."username",
         'plusTier',
         "PlusTier"."tier"
       )
@@ -28,7 +28,7 @@ const stm = sql.prepare(/* sql */ `
 export type AllTeams = Array<
   Pick<Team, "customUrl" | "name"> & {
     avatarSrc?: string;
-    members: Pick<UserWithPlusTier, "id" | "plusTier" | "discordName">[];
+    members: Pick<UserWithPlusTier, "id" | "plusTier" | "username">[];
   }
 >;
 

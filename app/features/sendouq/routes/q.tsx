@@ -394,7 +394,7 @@ function JoinTeamDialog({
   open: boolean;
   close: () => void;
   members: {
-    discordName: string;
+    username: string;
     role: GroupMember["role"];
   }[];
 }) {
@@ -412,7 +412,7 @@ function JoinTeamDialog({
       className="text-center"
     >
       {t("q:front.join.header", {
-        members: joinListToNaturalString(members.map((m) => m.discordName)),
+        members: joinListToNaturalString(members.map((m) => m.username)),
       })}
       <fetcher.Form
         className="stack horizontal justify-center sm mt-4 flex-wrap"
@@ -427,7 +427,7 @@ function JoinTeamDialog({
           variant="outlined"
         >
           {t("q:front.join.joinWithTrustAction", {
-            inviterName: owner.discordName,
+            inviterName: owner.username,
           })}
         </SubmitButton>
         <Button onClick={close} variant="destructive">

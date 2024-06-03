@@ -90,7 +90,7 @@ export function findOwnersByBadgeId(badgeId: number) {
       fn.count<number>("BadgeOwner.badgeId").as("count"),
       "User.id",
       "User.discordId",
-      "User.discordName",
+      "User.username",
     ])
     .where("BadgeOwner.badgeId", "=", badgeId)
     .groupBy("User.id")

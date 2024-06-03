@@ -126,7 +126,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
         <ul className="badges-edit__users-list">
           {managers.map((manager) => (
             <li key={manager.id}>
-              {manager.discordName}
+              {manager.username}
               <Button
                 icon={<TrashIcon />}
                 variant="minimal-destructive"
@@ -201,7 +201,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
       <ul className="badges-edit__users-list">
         {owners.map((owner) => (
           <li key={owner.id}>
-            {owner.discordName}
+            {owner.username}
             <input
               className="badges-edit__number-input"
               id="number"
@@ -230,13 +230,13 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
                 <>
                   {o.difference}{" "}
                   <span className="text-success font-semi-bold">added</span> to{" "}
-                  {o.discordFullName}
+                  {o.username}
                 </>
               ) : (
                 <>
                   {o.difference}{" "}
                   <span className="text-error font-semi-bold">removed</span>{" "}
-                  from {o.discordFullName}
+                  from {o.username}
                 </>
               )}
             </li>
@@ -270,7 +270,7 @@ function getOwnerDifferences(
     id: User["id"];
     type: "added" | "removed";
     difference: number;
-    discordFullName: string;
+    username: string;
   }> = [];
 
   for (const owner of newOwners) {
@@ -280,7 +280,7 @@ function getOwnerDifferences(
         id: owner.id,
         type: "added",
         difference: owner.count,
-        discordFullName: owner.discordName,
+        username: owner.username,
       });
       continue;
     }
@@ -290,7 +290,7 @@ function getOwnerDifferences(
         id: owner.id,
         type: owner.count > oldOwner.count ? "added" : "removed",
         difference: Math.abs(owner.count - oldOwner.count),
-        discordFullName: owner.discordName,
+        username: owner.username,
       });
     }
   }

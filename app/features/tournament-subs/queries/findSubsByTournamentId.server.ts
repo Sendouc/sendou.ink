@@ -11,8 +11,7 @@ const stm = sql.prepare(/* sql */ `
   "TournamentSub"."visibility",
   "TournamentSub"."createdAt",
   "TournamentSub"."userId",
-  "User"."discordName",
-  "User"."discordDiscriminator",
+  "User"."username",
   "User"."discordAvatar",
   "User"."country",
   "User"."discordId",
@@ -39,8 +38,7 @@ export interface SubByTournamentId {
   visibility: TournamentSub["visibility"];
   createdAt: TournamentSub["createdAt"];
   userId: TournamentSub["userId"];
-  discordName: UserWithPlusTier["discordName"];
-  discordDiscriminator: UserWithPlusTier["discordDiscriminator"];
+  username: UserWithPlusTier["username"];
   discordAvatar: UserWithPlusTier["discordAvatar"];
   discordId: UserWithPlusTier["discordId"];
   customUrl: UserWithPlusTier["customUrl"];

@@ -667,9 +667,11 @@ export interface User {
   css: ColumnType<Record<string, string> | null, string | null, string | null>;
   customUrl: string | null;
   discordAvatar: string | null;
-  discordDiscriminator: string;
   discordId: string;
   discordName: string;
+  customName: string | null;
+  /** coalesce(customName, discordName) */
+  username: ColumnType<string, never, never>;
   discordUniqueName: string | null;
   favoriteBadgeId: number | null;
   id: GeneratedAlways<number>;

@@ -190,7 +190,7 @@ test.describe("Tournament", () => {
     await teamSelect.selectOption(String(teamWithSpace.id));
     await selectUser({
       labelName: "User",
-      userName: firstNonOwnerMember.discordName,
+      userName: firstNonOwnerMember.username,
       page,
     });
     await submit(page);

@@ -113,7 +113,6 @@ export const database = {
         Array.from({ length: count }).map((_, i) => ({
           id: i + 1,
           discordName: `user${i + 1}`,
-          discordDiscriminator: "0",
           discordId: String(i),
         })),
       )

@@ -14,7 +14,7 @@ import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
 import { canAddCustomizedColorsToUserProfile, isAdmin } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
-import { discordFullName, makeTitle } from "~/utils/strings";
+import { makeTitle } from "~/utils/strings";
 import {
   isCustomUrl,
   navIconUrl,
@@ -41,7 +41,7 @@ import "~/styles/u.css";
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
-  return [{ title: makeTitle(discordFullName(data)) }];
+  return [{ title: makeTitle(data.username) }];
 };
 
 export const handle: SendouRouteHandle = {
@@ -58,7 +58,7 @@ export const handle: SendouRouteHandle = {
         type: "IMAGE",
       },
       {
-        text: data.discordName,
+        text: data.username,
         href: userPage(data),
         type: "TEXT",
       },

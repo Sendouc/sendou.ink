@@ -27,10 +27,9 @@ const teamStm = sql.prepare(/*sql*/ `
 const membersStm = sql.prepare(/*sql*/ `
   select
     "User"."id",
-    "User"."discordName",
+    "User"."username",
     "User"."discordAvatar",
     "User"."discordId",
-    "User"."discordDiscriminator",
     "User"."patronTier",
     "TeamMember"."role",
     "TeamMember"."isOwner",
@@ -57,15 +56,7 @@ type TeamRow =
   | null;
 
 type MemberRows = Array<
-  Pick<
-    User,
-    | "id"
-    | "discordName"
-    | "discordAvatar"
-    | "discordId"
-    | "discordDiscriminator"
-    | "patronTier"
-  > &
+  Pick<User, "id" | "username" | "discordAvatar" | "discordId" | "patronTier"> &
     Pick<TeamMember, "role" | "isOwner"> & { weapons: string }
 >;
 
@@ -93,8 +84,7 @@ export function findByIdentifier(
         id: member.id,
         discordAvatar: member.discordAvatar,
         discordId: member.discordId,
-        discordName: member.discordName,
-        discordDiscriminator: member.discordDiscriminator,
+        username: member.username,
         patronTier: member.patronTier,
         role: member.role ?? undefined,
         isOwner: Boolean(member.isOwner),

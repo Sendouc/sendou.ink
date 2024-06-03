@@ -112,7 +112,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       loginDisabled: process.env["LOGIN_DISABLED"] === "true",
       user: user
         ? {
-            discordName: user.discordName,
+            username: user.username,
             discordAvatar: user.discordAvatar,
             discordId: user.discordId,
             id: user.id,

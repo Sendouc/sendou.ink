@@ -82,6 +82,10 @@ const userEditActionSchema = z
         .transform((val) => val?.toLowerCase())
         .nullable(),
     ),
+    customName: z.preprocess(
+      falsyToNull,
+      z.string().trim().max(USER.CUSTOM_NAME_MAX_LENGTH).nullable(),
+    ),
     stickSens: z.preprocess(
       processMany(actualNumber, undefinedToNull),
       z
@@ -232,6 +236,7 @@ export default function UserEditPage() {
         {canAddCustomizedColorsToUserProfile(user) ? (
           <CustomizedColorsInput initialColors={parentRouteData.css} />
         ) : null}
+        <CustomNameInput parentRouteData={parentRouteData} />
         <CustomUrlInput parentRouteData={parentRouteData} />
         <InGameNameInputs parentRouteData={parentRouteData} />
         <SensSelects parentRouteData={parentRouteData} />
@@ -286,6 +291,31 @@ function CustomUrlInput({
         maxLength={USER.CUSTOM_URL_MAX_LENGTH}
         defaultValue={parentRouteData.customUrl ?? undefined}
       />
+    </div>
+  );
+}
+
+function CustomNameInput({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const { t } = useTranslation(["user"]);
+
+  return (
+    <div className="w-full">
+      <Label htmlFor="customName">{t("user:customName")}</Label>
+      <Input
+        name="customName"
+        id="customName"
+        maxLength={USER.CUSTOM_NAME_MAX_LENGTH}
+        defaultValue={parentRouteData.customName ?? undefined}
+      />
+      <FormMessage type="info">
+        {t("user:forms.customName.info", {
+          discordName: parentRouteData.discordName,
+        })}
+      </FormMessage>
     </div>
   );
 }

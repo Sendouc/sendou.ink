@@ -7,8 +7,7 @@ const showcaseArtsStm = sql.prepare(/* sql */ `
     "Art"."id",
     "User"."id" as "userId",
     "User"."discordId",
-    "User"."discordName",
-    "User"."discordDiscriminator",
+    "User"."username",
     "User"."discordAvatar",
     "User"."commissionsOpen",
     "UserSubmittedImage"."url"
@@ -28,9 +27,8 @@ export function showcaseArts(): ListedArt[] {
     author: {
       commissionsOpen: a.commissionsOpen,
       discordAvatar: a.discordAvatar,
-      discordDiscriminator: a.discordDiscriminator,
       discordId: a.discordId,
-      discordName: a.discordName,
+      username: a.username,
     },
   }));
 }
@@ -40,8 +38,7 @@ const showcaseArtsByTagStm = sql.prepare(/* sql */ `
     "Art"."id",
     "User"."id" as "userId",
     "User"."discordId",
-    "User"."discordName",
-    "User"."discordDiscriminator",
+    "User"."username",
     "User"."discordAvatar",
     "User"."commissionsOpen",
     "UserSubmittedImage"."url"
@@ -76,9 +73,8 @@ export function showcaseArtsByTag(tagId: ArtTag["id"]): ListedArt[] {
       author: {
         commissionsOpen: a.commissionsOpen,
         discordAvatar: a.discordAvatar,
-        discordDiscriminator: a.discordDiscriminator,
         discordId: a.discordId,
-        discordName: a.discordName,
+        username: a.username,
       },
     }));
 }

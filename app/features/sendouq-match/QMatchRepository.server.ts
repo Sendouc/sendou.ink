@@ -53,7 +53,7 @@ export interface GroupForMatch {
   members: Array<{
     id: Tables["GroupMember"]["userId"];
     discordId: Tables["User"]["discordId"];
-    discordName: Tables["User"]["discordName"];
+    username: Tables["User"]["username"];
     discordAvatar: Tables["User"]["discordAvatar"];
     role: Tables["GroupMember"]["role"];
     customUrl: Tables["User"]["customUrl"];
