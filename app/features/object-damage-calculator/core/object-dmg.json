@@ -1,6 +1,9 @@
 {
   "Blaster_BlasterLightShort": {
-    "mainWeaponIds": [230, 231],
+    "mainWeaponIds": [
+      230,
+      231
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -51,7 +54,12 @@
     ]
   },
   "Blaster_BlasterMiddle": {
-    "mainWeaponIds": [210, 211, 260, 261],
+    "mainWeaponIds": [
+      210,
+      211,
+      260,
+      261
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -102,7 +110,11 @@
     ]
   },
   "Blaster_BlasterShort": {
-    "mainWeaponIds": [200, 201, 205],
+    "mainWeaponIds": [
+      200,
+      201,
+      205
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -153,7 +165,14 @@
     ]
   },
   "Blaster_KillOneShot": {
-    "mainWeaponIds": [220, 210, 211, 260, 261],
+    "mainWeaponIds": [
+      220,
+      221,
+      210,
+      211,
+      260,
+      261
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -204,7 +223,14 @@
     ]
   },
   "Blaster": {
-    "mainWeaponIds": [250, 251, 240, 241, 220],
+    "mainWeaponIds": [
+      250,
+      251,
+      240,
+      241,
+      220,
+      221
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -257,7 +283,9 @@
   "BlowerExhale_BombCore": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [8],
+    "specialWeaponIds": [
+      8
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -316,7 +344,9 @@
   "BlowerInhale": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [8],
+    "specialWeaponIds": [
+      8
+    ],
     "rates": [
       {
         "target": "GreatBarrier_Barrier",
@@ -330,7 +360,9 @@
   },
   "Bomb_CurlingBullet": {
     "mainWeaponIds": [],
-    "subWeaponIds": [6],
+    "subWeaponIds": [
+      6
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -357,7 +389,11 @@
   },
   "Bomb_DirectHit": {
     "mainWeaponIds": [],
-    "subWeaponIds": [2, 7, 0],
+    "subWeaponIds": [
+      2,
+      7,
+      0
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -412,7 +448,9 @@
   },
   "Bomb_Fizzy": {
     "mainWeaponIds": [],
-    "subWeaponIds": [5],
+    "subWeaponIds": [
+      5
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -475,7 +513,9 @@
   },
   "Bomb_Suction": {
     "mainWeaponIds": [],
-    "subWeaponIds": [1],
+    "subWeaponIds": [
+      1
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -530,7 +570,9 @@
   },
   "Bomb_TorpedoBullet": {
     "mainWeaponIds": [],
-    "subWeaponIds": [13],
+    "subWeaponIds": [
+      13
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -589,7 +631,9 @@
   },
   "Bomb_TorpedoSplashBurst": {
     "mainWeaponIds": [],
-    "subWeaponIds": [13],
+    "subWeaponIds": [
+      13
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -604,7 +648,9 @@
   },
   "Bomb_Trap": {
     "mainWeaponIds": [],
-    "subWeaponIds": [10],
+    "subWeaponIds": [
+      10
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -659,7 +705,12 @@
   },
   "Bomb": {
     "mainWeaponIds": [],
-    "subWeaponIds": [6, 2, 7, 0],
+    "subWeaponIds": [
+      6,
+      2,
+      7,
+      0
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -713,7 +764,15 @@
     ]
   },
   "BrushCore": {
-    "mainWeaponIds": [1120, 1121, 1100, 1101, 1110, 1111, 1115],
+    "mainWeaponIds": [
+      1120,
+      1121,
+      1100,
+      1101,
+      1110,
+      1111,
+      1115
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -736,7 +795,10 @@
     ]
   },
   "BrushSplash_Heavy": {
-    "mainWeaponIds": [1120, 1121],
+    "mainWeaponIds": [
+      1120,
+      1121
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -795,7 +857,13 @@
     ]
   },
   "BrushSplash": {
-    "mainWeaponIds": [1100, 1101, 1110, 1111, 1115],
+    "mainWeaponIds": [
+      1100,
+      1101,
+      1110,
+      1111,
+      1115
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -856,7 +924,9 @@
   "Castle": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [17],
+    "specialWeaponIds": [
+      17
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -913,7 +983,12 @@
     ]
   },
   "ChargerFull_Light": {
-    "mainWeaponIds": [2050, 2070, 2071],
+    "mainWeaponIds": [
+      2050,
+      2051,
+      2070,
+      2071
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -972,7 +1047,12 @@
     ]
   },
   "ChargerFull_Long": {
-    "mainWeaponIds": [2040, 2041, 2030, 2031],
+    "mainWeaponIds": [
+      2040,
+      2041,
+      2030,
+      2031
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1031,7 +1111,17 @@
     ]
   },
   "ChargerFull": {
-    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2015, 2000, 2001],
+    "mainWeaponIds": [
+      2060,
+      2061,
+      2020,
+      2021,
+      2010,
+      2011,
+      2015,
+      2000,
+      2001
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1090,7 +1180,12 @@
     ]
   },
   "Charger_Light": {
-    "mainWeaponIds": [2050, 2070, 2071],
+    "mainWeaponIds": [
+      2050,
+      2051,
+      2070,
+      2071
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1149,7 +1244,12 @@
     ]
   },
   "Charger_Long": {
-    "mainWeaponIds": [2040, 2041, 2030, 2031],
+    "mainWeaponIds": [
+      2040,
+      2041,
+      2030,
+      2031
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1208,7 +1308,17 @@
     ]
   },
   "Charger": {
-    "mainWeaponIds": [2060, 2061, 2020, 2021, 2010, 2011, 2015, 2000, 2001],
+    "mainWeaponIds": [
+      2060,
+      2061,
+      2020,
+      2021,
+      2010,
+      2011,
+      2015,
+      2000,
+      2001
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1269,7 +1379,9 @@
   "Chariot_Body": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [12],
+    "specialWeaponIds": [
+      12
+    ],
     "rates": [
       {
         "target": "GreatBarrier_WeakPoint",
@@ -1296,7 +1408,9 @@
   "Chariot_Cannon": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [12],
+    "specialWeaponIds": [
+      12
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -1355,7 +1469,9 @@
   "Chimney": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [19],
+    "specialWeaponIds": [
+      19
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -1393,13 +1509,71 @@
   },
   "Default": {
     "mainWeaponIds": [
-      220, 210, 211, 260, 261, 1120, 1121, 1100, 1101, 1110, 1111, 1115, 2060,
-      2061, 2050, 2040, 2041, 2030, 2031, 2020, 2021, 2010, 2011, 2015, 2070,
-      2071, 2000, 2001, 1000, 1001, 1020, 1021, 1030, 1031, 1010, 1011, 1015,
-      1040, 1041, 6020, 6030, 6000, 6001, 6005, 6010, 6011
+      220,
+      221,
+      210,
+      211,
+      260,
+      261,
+      1120,
+      1121,
+      1100,
+      1101,
+      1110,
+      1111,
+      1115,
+      2060,
+      2061,
+      2050,
+      2051,
+      2040,
+      2041,
+      2030,
+      2031,
+      2020,
+      2021,
+      2010,
+      2011,
+      2015,
+      2070,
+      2071,
+      2000,
+      2001,
+      1000,
+      1001,
+      1020,
+      1021,
+      1030,
+      1031,
+      1010,
+      1011,
+      1015,
+      1040,
+      1041,
+      6020,
+      6030,
+      6031,
+      6000,
+      6001,
+      6005,
+      6010,
+      6011
     ],
-    "subWeaponIds": [8, 6, 12, 9, 11],
-    "specialWeaponIds": [12, 19, 15, 16, 2, 7],
+    "subWeaponIds": [
+      8,
+      6,
+      12,
+      9,
+      11
+    ],
+    "specialWeaponIds": [
+      12,
+      19,
+      15,
+      16,
+      2,
+      7
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -1434,7 +1608,9 @@
   "InkStormRain": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [5],
+    "specialWeaponIds": [
+      5
+    ],
     "rates": [
       {
         "target": "BlowerInhale",
@@ -1445,7 +1621,9 @@
   "InkStorm": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [5],
+    "specialWeaponIds": [
+      5
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -1500,7 +1678,9 @@
   "Jetpack_BombCore": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [10],
+    "specialWeaponIds": [
+      10
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -1563,7 +1743,9 @@
   "Jetpack_Bullet": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [10],
+    "specialWeaponIds": [
+      10
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -1626,7 +1808,9 @@
   "Jetpack_Jet": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [10],
+    "specialWeaponIds": [
+      10
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -1683,7 +1867,10 @@
     ]
   },
   "Maneuver_Short": {
-    "mainWeaponIds": [5000, 5001],
+    "mainWeaponIds": [
+      5000,
+      5001
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -1727,7 +1914,17 @@
   },
   "Maneuver": {
     "mainWeaponIds": [
-      5030, 5031, 5020, 5021, 5050, 5010, 5011, 5015, 5040, 5041
+      5030,
+      5031,
+      5020,
+      5021,
+      5050,
+      5051,
+      5010,
+      5011,
+      5015,
+      5040,
+      5041
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -1769,7 +1966,9 @@
   "MicroLaser": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [9],
+    "specialWeaponIds": [
+      9
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -1816,7 +2015,9 @@
   "MultiMissile_BombCore": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [4],
+    "specialWeaponIds": [
+      4
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -1875,7 +2076,9 @@
   "MultiMissile_Bullet": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [4],
+    "specialWeaponIds": [
+      4
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -1934,7 +2137,9 @@
   "NiceBall": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [6],
+    "specialWeaponIds": [
+      6
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -2032,7 +2237,9 @@
   "Pogo": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [18],
+    "specialWeaponIds": [
+      18
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -2094,7 +2301,17 @@
   },
   "RollerCore": {
     "mainWeaponIds": [
-      1000, 1001, 1020, 1021, 1030, 1031, 1010, 1011, 1015, 1040, 1041
+      1000,
+      1001,
+      1020,
+      1021,
+      1030,
+      1031,
+      1010,
+      1011,
+      1015,
+      1040,
+      1041
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -2118,7 +2335,10 @@
     ]
   },
   "RollerSplash_Compact": {
-    "mainWeaponIds": [1000, 1001],
+    "mainWeaponIds": [
+      1000,
+      1001
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2177,7 +2397,10 @@
     ]
   },
   "RollerSplash_Heavy": {
-    "mainWeaponIds": [1020, 1021],
+    "mainWeaponIds": [
+      1020,
+      1021
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2236,7 +2459,10 @@
     ]
   },
   "RollerSplash_Hunter": {
-    "mainWeaponIds": [1030, 1031],
+    "mainWeaponIds": [
+      1030,
+      1031
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2295,7 +2521,10 @@
     ]
   },
   "RollerSplash_Wide": {
-    "mainWeaponIds": [1040, 1041],
+    "mainWeaponIds": [
+      1040,
+      1041
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2362,7 +2591,11 @@
     ]
   },
   "RollerSplash": {
-    "mainWeaponIds": [1010, 1011, 1015],
+    "mainWeaponIds": [
+      1010,
+      1011,
+      1015
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2421,7 +2654,15 @@
     ]
   },
   "Saber_ChargeShot": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
+    "mainWeaponIds": [
+      8020,
+      8021,
+      8010,
+      8011,
+      8000,
+      8001,
+      8005
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2484,7 +2725,15 @@
     ]
   },
   "Saber_ChargeSlash": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
+    "mainWeaponIds": [
+      8020,
+      8021,
+      8010,
+      8011,
+      8000,
+      8001,
+      8005
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2547,7 +2796,15 @@
     ]
   },
   "Saber_Shot": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
+    "mainWeaponIds": [
+      8020,
+      8021,
+      8010,
+      8011,
+      8000,
+      8001,
+      8005
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2610,7 +2867,15 @@
     ]
   },
   "Saber_Slash": {
-    "mainWeaponIds": [8010, 8011, 8000, 8001, 8005],
+    "mainWeaponIds": [
+      8020,
+      8021,
+      8010,
+      8011,
+      8000,
+      8001,
+      8005
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2673,7 +2938,11 @@
     ]
   },
   "ShelterCanopy_Compact": {
-    "mainWeaponIds": [6020, 6021],
+    "mainWeaponIds": [
+      6020,
+      6021,
+      6031
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2728,7 +2997,10 @@
     ]
   },
   "ShelterCanopy_Wide": {
-    "mainWeaponIds": [6010, 6011],
+    "mainWeaponIds": [
+      6010,
+      6011
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2783,7 +3055,12 @@
     ]
   },
   "ShelterCanopy": {
-    "mainWeaponIds": [6030, 6000, 6001, 6005],
+    "mainWeaponIds": [
+      6030,
+      6000,
+      6001,
+      6005
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2838,7 +3115,11 @@
     ]
   },
   "ShelterShot_Compact": {
-    "mainWeaponIds": [6020, 6021],
+    "mainWeaponIds": [
+      6020,
+      6021,
+      6031
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2901,7 +3182,10 @@
     ]
   },
   "ShelterShot_Wide": {
-    "mainWeaponIds": [6010, 6011],
+    "mainWeaponIds": [
+      6010,
+      6011
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2964,7 +3248,12 @@
     ]
   },
   "ShelterShot": {
-    "mainWeaponIds": [6030, 6000, 6001, 6005],
+    "mainWeaponIds": [
+      6030,
+      6000,
+      6001,
+      6005
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3028,7 +3317,9 @@
   },
   "Shield": {
     "mainWeaponIds": [],
-    "subWeaponIds": [4],
+    "subWeaponIds": [
+      4
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -3052,7 +3343,9 @@
   "ShockSonar_Wave": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [7],
+    "specialWeaponIds": [
+      7
+    ],
     "rates": [
       {
         "target": "Chariot",
@@ -3089,7 +3382,10 @@
     ]
   },
   "Shooter_Blaze": {
-    "mainWeaponIds": [30, 31],
+    "mainWeaponIds": [
+      30,
+      31
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3132,7 +3428,10 @@
     ]
   },
   "Shooter_Expert": {
-    "mainWeaponIds": [70, 71],
+    "mainWeaponIds": [
+      70,
+      71
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3171,7 +3470,10 @@
     ]
   },
   "Shooter_First": {
-    "mainWeaponIds": [10, 11],
+    "mainWeaponIds": [
+      10,
+      11
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3214,7 +3516,10 @@
     ]
   },
   "Shooter_FlashRepeat": {
-    "mainWeaponIds": [400, 401],
+    "mainWeaponIds": [
+      400,
+      401
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3265,7 +3570,10 @@
     ]
   },
   "Shooter_Flash": {
-    "mainWeaponIds": [400, 401],
+    "mainWeaponIds": [
+      400,
+      401
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3316,7 +3624,10 @@
     ]
   },
   "Shooter_Gravity": {
-    "mainWeaponIds": [50, 51],
+    "mainWeaponIds": [
+      50,
+      51
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3363,7 +3674,10 @@
     ]
   },
   "Shooter_Heavy": {
-    "mainWeaponIds": [80, 81],
+    "mainWeaponIds": [
+      80,
+      81
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3410,7 +3724,10 @@
     ]
   },
   "Shooter_Long": {
-    "mainWeaponIds": [90, 91],
+    "mainWeaponIds": [
+      90,
+      91
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3449,7 +3766,10 @@
     ]
   },
   "Shooter_Precision": {
-    "mainWeaponIds": [20, 21],
+    "mainWeaponIds": [
+      20,
+      21
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3488,7 +3808,10 @@
     ]
   },
   "Shooter_Short": {
-    "mainWeaponIds": [0, 1],
+    "mainWeaponIds": [
+      0,
+      1
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3535,7 +3858,10 @@
     ]
   },
   "Shooter_TripleMiddle": {
-    "mainWeaponIds": [310, 311],
+    "mainWeaponIds": [
+      310,
+      311
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3586,7 +3912,10 @@
     ]
   },
   "Shooter_TripleQuick": {
-    "mainWeaponIds": [300, 301],
+    "mainWeaponIds": [
+      300,
+      301
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3637,7 +3966,19 @@
     ]
   },
   "Shooter": {
-    "mainWeaponIds": [400, 401, 40, 41, 45, 47, 46, 100, 101, 60, 61],
+    "mainWeaponIds": [
+      400,
+      401,
+      40,
+      41,
+      45,
+      47,
+      46,
+      100,
+      101,
+      60,
+      61
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3678,7 +4019,9 @@
   "Skewer_Body": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [13],
+    "specialWeaponIds": [
+      13
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -3733,7 +4076,9 @@
   "Skewer": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [13],
+    "specialWeaponIds": [
+      13
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -3790,7 +4135,10 @@
     ]
   },
   "Slosher_Bathtub": {
-    "mainWeaponIds": [3030, 3031],
+    "mainWeaponIds": [
+      3030,
+      3031
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3837,7 +4185,10 @@
     ]
   },
   "Slosher_WashtubBombCore": {
-    "mainWeaponIds": [3040, 3041],
+    "mainWeaponIds": [
+      3040,
+      3041
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3884,7 +4235,10 @@
     ]
   },
   "Slosher_Washtub": {
-    "mainWeaponIds": [3040, 3041],
+    "mainWeaponIds": [
+      3040,
+      3041
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3935,7 +4289,17 @@
     ]
   },
   "Slosher": {
-    "mainWeaponIds": [3010, 3011, 3050, 3051, 3020, 3021, 3000, 3001, 3005],
+    "mainWeaponIds": [
+      3010,
+      3011,
+      3050,
+      3051,
+      3020,
+      3021,
+      3000,
+      3001,
+      3005
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3987,7 +4351,19 @@
   },
   "Spinner": {
     "mainWeaponIds": [
-      4030, 4031, 4050, 4020, 4000, 4001, 4040, 4041, 4010, 4011, 4015
+      4030,
+      4031,
+      4050,
+      4051,
+      4020,
+      4021,
+      4000,
+      4001,
+      4040,
+      4041,
+      4010,
+      4011,
+      4015
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -4028,7 +4404,9 @@
   },
   "Sprinkler": {
     "mainWeaponIds": [],
-    "subWeaponIds": [3],
+    "subWeaponIds": [
+      3
+    ],
     "specialWeaponIds": [],
     "rates": [
       {
@@ -4050,7 +4428,10 @@
     ]
   },
   "Stringer_Short": {
-    "mainWeaponIds": [7020, 7021],
+    "mainWeaponIds": [
+      7020,
+      7021
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4101,7 +4482,13 @@
     ]
   },
   "Stringer": {
-    "mainWeaponIds": [7010, 7011, 7015],
+    "mainWeaponIds": [
+      7030,
+      7031,
+      7010,
+      7011,
+      7015
+    ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4162,7 +4549,9 @@
   "SuperHook": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [3],
+    "specialWeaponIds": [
+      3
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -4217,7 +4606,9 @@
   "TripleTornado": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [14],
+    "specialWeaponIds": [
+      14
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -4280,7 +4671,9 @@
   "UltraShot": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [1],
+    "specialWeaponIds": [
+      1
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -4331,7 +4724,9 @@
   "UltraStamp_Swing": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [11],
+    "specialWeaponIds": [
+      11
+    ],
     "rates": [
       {
         "target": "BulletUmbrellaCanopyCompact",
@@ -4390,7 +4785,9 @@
   "UltraStamp_Throw_BombCore": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [11],
+    "specialWeaponIds": [
+      11
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
@@ -4453,7 +4850,9 @@
   "UltraStamp_Throw": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
-    "specialWeaponIds": [11],
+    "specialWeaponIds": [
+      11
+    ],
     "rates": [
       {
         "target": "Bomb_TorpedoBullet",
