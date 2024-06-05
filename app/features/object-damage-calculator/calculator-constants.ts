@@ -122,6 +122,12 @@ export const damageTypesToCombine: Partial<
   3040: [{ when: "DIRECT", combineWith: "DISTANCE" }],
   // Tri-Stringer
   7010: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
+  // Inkline Tri-Stringer
+  7011: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
+  // Wellstring V
+  7030: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
+  // Custom Wellstring V
+  7031: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
   // Splatana Stamper
   8000: [
     { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },

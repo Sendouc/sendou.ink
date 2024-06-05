@@ -105,6 +105,8 @@ const rawMultiShot: Partial<Record<MainWeaponId, number>> = {
   7010: 3,
   // REEF-LUX,
   7020: 3,
+  // Wellstring V,
+  7030: 5,
   // Bloblobber
   3030: 4,
   // Dread Winger
