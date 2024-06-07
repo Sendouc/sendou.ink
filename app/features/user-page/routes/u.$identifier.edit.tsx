@@ -50,6 +50,7 @@ import {
 } from "~/utils/zod";
 import { type UserPageLoaderData } from "./u.$identifier";
 import { userParamsSchema } from "../user-page-schemas.server";
+import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 
 import "~/styles/u-edit.css";
 
@@ -166,20 +167,25 @@ export const action: ActionFunction = async ({ request }) => {
   const { inGameNameText, inGameNameDiscriminator, ...data } = parsedInput.data;
 
   const user = await requireUserId(request);
+  const inGameName =
+    inGameNameText && inGameNameDiscriminator
+      ? `${inGameNameText}#${inGameNameDiscriminator}`
+      : null;
 
   try {
     const editedUser = await UserRepository.updateProfile({
       ...data,
-      weapons: data.weapons as Array<
-        Pick<UserWeapon, "weaponSplId" | "isFavorite">
-      >,
-      inGameName:
-        inGameNameText && inGameNameDiscriminator
-          ? `${inGameNameText}#${inGameNameDiscriminator}`
-          : null,
+      inGameName,
       userId: user.id,
-      showDiscordUniqueName: data.showDiscordUniqueName,
     });
+
+    // TODO: to transaction
+    if (inGameName) {
+      await TournamentTeamRepository.updateInGameNameForNonStarted({
+        inGameName,
+        userId: user.id,
+      });
+    }
 
     throw redirect(userPage(editedUser));
   } catch (e) {
@@ -221,6 +227,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       .sort((a, b) => a.name.localeCompare(b.name)),
   };
 };
+
+// xxx: edit also tournamentmember
 
 export default function UserEditPage() {
   const user = useUser();

@@ -10,7 +10,7 @@ import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
-import { tournamentPage } from "~/utils/urls";
+import { tournamentPage, userEditProfilePage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
 import { giveTrust } from "../queries/giveTrust.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
@@ -21,6 +21,8 @@ import { useTournamentFriendCode, useTournament } from "./to.$id";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import { Alert } from "~/components/Alert";
+import { LinkButton } from "~/components/Button";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -73,6 +75,16 @@ export const action: ActionFunction = async ({ request, params }) => {
       ? "DELETE"
       : "LEAVE";
 
+  const inGameNameIfNeeded = async () => {
+    if (!tournament.ctx.settings.requireInGameNames) return null;
+
+    const inGameName = await UserRepository.inGameNameByUserId(user.id);
+
+    validate(inGameName, "No in-game name");
+
+    return inGameName;
+  };
+
   joinTeam({
     userId: user.id,
     newTeamId: teamToJoin.id,
@@ -85,6 +97,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       previousTeam.members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     whatToDoWithPreviousTeam,
     tournamentId,
+    inGameName: await inGameNameIfNeeded(),
   });
   if (data.trust) {
     const inviterUserId = teamToJoin.members.find(
@@ -150,12 +163,32 @@ export default function JoinTeamPage() {
     }
   };
 
+  if (tournament.ctx.settings.requireInGameNames && user && !user.inGameName) {
+    return (
+      <Alert variation="WARNING" alertClassName="w-max">
+        <div className="stack horizontal sm items-center flex-wrap justify-center text-center">
+          This tournament requires you to have an in-game name set{" "}
+          <LinkButton to={userEditProfilePage(user)} size="tiny">
+            Edit profile
+          </LinkButton>
+        </div>
+      </Alert>
+    );
+  }
+
   return (
     <div className="stack lg items-center">
       <div className="text-center text-lg font-semi-bold">{textPrompt()}</div>
-      {validationStatus === "VALID" ? (
-        <FriendCodeInput friendCode={friendCode} />
-      ) : null}
+      <div className="stack sm items-center">
+        {validationStatus === "VALID" ? (
+          <FriendCodeInput friendCode={friendCode} />
+        ) : null}
+        {user?.inGameName ? (
+          <div className="font-bold">
+            <span className="text-lighter">IGN</span> {user.inGameName}
+          </div>
+        ) : null}
+      </div>
       <Form method="post" className="tournament__invite-container">
         {validationStatus === "VALID" ? (
           <div className="stack md items-center">

@@ -15,3 +15,19 @@ export function setActiveRoster({
     .where("TournamentTeam.id", "=", teamId)
     .execute();
 }
+
+// xxx: fix where
+export function updateInGameNameForNonStarted({
+  userId,
+  inGameName,
+}: {
+  userId: number;
+  inGameName: string;
+}) {
+  return db
+    .updateTable("TournamentTeamMember")
+    .set({ inGameName })
+    .where("TournamentTeamMember.userId", "=", userId)
+    .where("TournamentTeamMember.tournamentTeamId", "in")
+    .execute();
+}

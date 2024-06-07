@@ -41,6 +41,8 @@ import { Input } from "~/components/Input";
 import { logger } from "~/utils/logger";
 import { userIsBanned } from "~/features/ban/core/banned.server";
 
+// xxx: edit IGN action
+
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({

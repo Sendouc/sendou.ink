@@ -54,6 +54,7 @@ export const meta: MetaFunction = (args) => {
   const title = makeTitle(data.tournament.ctx.name);
 
   return [
+    { title },
     {
       property: "og:title",
       content: title,

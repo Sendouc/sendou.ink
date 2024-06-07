@@ -1,4 +1,5 @@
 import { useFetcher } from "@remix-run/react";
+import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
@@ -12,9 +13,15 @@ export function FriendCodeInput({ friendCode }: { friendCode?: string }) {
 
   return (
     <fetcher.Form method="post" action={SENDOUQ_PAGE}>
-      <div className="stack sm horizontal items-end">
+      <div
+        className={clsx("stack sm horizontal items-end", {
+          "justify-center": friendCode,
+        })}
+      >
         <div>
-          <Label htmlFor="friendCode">{t("common:fc.title")}</Label>
+          {!friendCode ? (
+            <Label htmlFor="friendCode">{t("common:fc.title")}</Label>
+          ) : null}
           {friendCode ? (
             <div className="font-bold">SW-{friendCode}</div>
           ) : (

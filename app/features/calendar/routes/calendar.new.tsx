@@ -203,6 +203,7 @@ function EventForm() {
           <RankedToggle />
           <EnableNoScreenToggle />
           <AutonomousSubsToggle />
+          <RequireIGNToggle />
           <InvitationalToggle />
           <StrictDeadlinesToggle />
         </>
@@ -863,6 +864,34 @@ function AutonomousSubsToggle() {
   );
 }
 
+function RequireIGNToggle() {
+  const baseEvent = useBaseEvent();
+  const [requireIGNs, setRequireIGNs] = React.useState(
+    baseEvent?.tournamentCtx?.settings.requireInGameNames ?? false,
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Require in-game names
+      </label>
+      <Toggle
+        name="requireInGameNames"
+        id={id}
+        tiny
+        checked={requireIGNs}
+        setChecked={setRequireIGNs}
+      />
+      <FormMessage type="info">
+        If enabled players can&apos;t join the tournament without an in-game
+        name (e.g. Sendou#1234). Players can&apos;t change the IGNs after the
+        registration closes.
+      </FormMessage>
+    </div>
+  );
+}
+
 function InvitationalToggle() {
   const baseEvent = useBaseEvent();
   const [isInvitational, setIsInvitational] = React.useState(
@@ -1194,7 +1223,7 @@ function TournamentFormatSelector() {
       ? baseEvent.tournamentCtx.settings.bracketProgression.some(
           (b) => b.name === BRACKET_NAMES.UNDERGROUND,
         )
-      : true,
+      : false,
   );
   const [thirdPlaceMatch, setThirdPlaceMatch] = React.useState(
     baseEvent?.tournamentCtx?.settings.thirdPlaceMatch ?? true,

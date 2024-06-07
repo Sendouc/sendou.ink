@@ -51,6 +51,7 @@ import {
   readonlyMapsPage,
   tournamentJoinPage,
   tournamentSubsPage,
+  userEditProfilePage,
   userPage,
 } from "~/utils/urls";
 import { checkIn } from "../queries/checkIn.server";
@@ -129,12 +130,23 @@ export const action: ActionFunction = async ({ request, params }) => {
         );
         validate(tournament.registrationOpen, "Registration is closed");
 
+        const inGameNameIfNeeded = async () => {
+          if (!tournament.ctx.settings.requireInGameNames) return null;
+
+          const inGameName = await UserRepository.inGameNameByUserId(user.id);
+
+          validate(inGameName, "No in-game name");
+
+          return inGameName;
+        };
+
         createTeam({
           name: data.teamName,
           tournamentId: tournamentId,
           ownerId: user.id,
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
           noScreen: booleanToInt(data.noScreen),
+          ownerInGameName: await inGameNameIfNeeded(),
           teamId: data.teamId ?? null,
         });
       }
@@ -215,6 +227,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       );
       break;
     }
+    // xxx: handle here and in UI
     case "ADD_PLAYER": {
       validate(
         tournament.ctx.teams.every((team) =>
@@ -280,6 +293,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     team: await TeamRepository.findByUserId(user.id),
   };
 };
+
+// xxx: after reg over, the "register as team name" toggle should not be shown
+// xxx: same spacing for team members
 
 export default function TournamentRegisterPage() {
   const user = useUser();
@@ -377,6 +393,12 @@ function TournamentRegisterInfoTabs() {
     revive: Number,
   });
 
+  const showAddIGNAlert =
+    tournament.ctx.settings.requireInGameNames &&
+    !teamOwned &&
+    user &&
+    !user?.inGameName;
+
   return (
     <div>
       <NewTabs
@@ -461,12 +483,24 @@ function TournamentRegisterInfoTabs() {
                       </FormWithConfirm>
                     ) : null}
                   </div>
+                ) : showAddIGNAlert ? (
+                  <div>
+                    <Alert variation="WARNING">
+                      <div className="stack horizontal sm items-center flex-wrap justify-center text-center">
+                        This tournament requires you to have an in-game name set{" "}
+                        <LinkButton to={userEditProfilePage(user)} size="tiny">
+                          Edit profile
+                        </LinkButton>
+                      </div>
+                    </Alert>
+                  </div>
                 ) : (
                   <RegistrationForms />
                 )}
                 {user &&
                 !tournament.teamMemberOfByUser(user) &&
                 tournament.canAddNewSubPost &&
+                !showAddIGNAlert &&
                 !tournament.hasStarted ? (
                   <Link
                     to={tournamentSubsPage(tournament.ctx.id)}
@@ -891,6 +925,11 @@ function FriendCode() {
           <FriendCodeInput friendCode={friendCode} />
         </div>
       </section>
+      {friendCode ? (
+        <div className="tournament__section__warning">
+          Is the friend code above wrong? Contact Sendou directly to change it.
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -933,9 +972,14 @@ function FillRoster({
 
   const playersAvailableToDirectlyAdd = (() => {
     return (data!.trusterPlayers ?? []).filter((user) => {
-      return tournament.ctx.teams.every((team) =>
+      const isNotInTeam = tournament.ctx.teams.every((team) =>
         team.members.every((member) => member.userId !== user.id),
       );
+
+      const hasInGameNameIfNeeded =
+        !tournament.ctx.settings.requireInGameNames || user.inGameName;
+
+      return isNotInTeam && hasInGameNameIfNeeded;
     });
   })();
 
@@ -979,7 +1023,20 @@ function FillRoster({
                 data-testid={`member-num-${i + 1}`}
               >
                 <Avatar size="xsm" user={member} />
-                {member.username}
+                {tournament.ctx.settings.requireInGameNames ? (
+                  <div>
+                    <div className="text-center">
+                      {member.inGameName ?? member.username}
+                    </div>
+                    {member.inGameName ? (
+                      <div className="text-lighter text-xs font-bold text-center">
+                        {member.username}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : (
+                  member.username
+                )}
               </div>
             );
           })}
@@ -1005,12 +1062,20 @@ function FillRoster({
           <DeleteMember members={ownTeamMembers} />
         ) : null}
       </section>
-      <div className="tournament__section__warning">
-        {t("tournament:pre.roster.footer", {
-          atLeastCount: TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-          maxCount: tournament.maxTeamMemberCount,
-        })}
-      </div>
+      {tournament.ctx.settings.requireInGameNames ? (
+        <div className="tournament__section__warning text-warning-important">
+          Note that you are expected to use the in-game names as listed above.
+          Playing in the event with a different name or using the alias feature
+          might result in disqualification.
+        </div>
+      ) : (
+        <div className="tournament__section__warning">
+          {t("tournament:pre.roster.footer", {
+            atLeastCount: TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+            maxCount: tournament.maxTeamMemberCount,
+          })}
+        </div>
+      )}
     </div>
   );
 }
