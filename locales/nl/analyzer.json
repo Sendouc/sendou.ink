@@ -31,8 +31,6 @@
   "stat.consumption.NORMAL": "Schoten",
   "stat.consumption.SWING": "Zwaaien",
   "stat.consumption.SLOSH": "Klotsen",
-  "stat.consumption.VERTICAL_SWING": "Verticale zwaaien",
-  "stat.consumption.HORIZONTAL_SWING": "Horizontale zwaaien",
   "stat.consumption.TAP_SHOT": "Tik schoten",
   "stat.consumption.FULL_CHARGE": "Volledig opgeladen schoten",
   "stat.consumption.SPLATLING_CHARGE": "Volledig opladen",

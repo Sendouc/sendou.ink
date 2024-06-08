@@ -43,8 +43,6 @@
   "stat.consumption.NORMAL": "Proiettili",
   "stat.consumption.SWING": "Colpi",
   "stat.consumption.SLOSH": "Secchiate",
-  "stat.consumption.VERTICAL_SWING": "Colpi verticali",
-  "stat.consumption.HORIZONTAL_SWING": "Colpi orizzontali",
   "stat.consumption.TAP_SHOT": "Colpi con zero carica",
   "stat.consumption.FULL_CHARGE": "Colpi caricati al completo",
   "stat.consumption.SPLATLING_CHARGE": "Cariche complete",
