@@ -87,10 +87,10 @@ export const damagePriorities: Array<
   ["MAIN", [6020], "NORMAL_MAX", "ShelterShot_Compact"],
   ["MAIN", [6020], "NORMAL_MIN", "ShelterShot_Compact"],
 
-  ["MAIN", [8000, 8010], "SPLATANA_VERTICAL", "Saber_ChargeShot"],
-  ["MAIN", [8000, 8010], "SPLATANA_VERTICAL_DIRECT", "Saber_ChargeSlash"],
-  ["MAIN", [8000, 8010], "SPLATANA_HORIZONTAL", "Saber_Shot"],
-  ["MAIN", [8000, 8010], "SPLATANA_HORIZONTAL_DIRECT", "Saber_Slash"],
+  ["MAIN", [8000, 8010, 8020], "SPLATANA_VERTICAL", "Saber_ChargeShot"],
+  ["MAIN", [8000, 8010, 8020], "SPLATANA_VERTICAL_DIRECT", "Saber_ChargeSlash"],
+  ["MAIN", [8000, 8010, 8020], "SPLATANA_HORIZONTAL", "Saber_Shot"],
+  ["MAIN", [8000, 8010, 8020], "SPLATANA_HORIZONTAL_DIRECT", "Saber_Slash"],
 
   ["SUB", [0, 2, 7], "BOMB_NORMAL", "Bomb"], // TODO: could also consider "Bomb_DirectHit" it is almost the same but has different ratio for Big Bubbler core: 0.5 vs. 1.5
   ["SUB", [6], "BOMB_DIRECT", "Bomb_CurlingBullet"],
@@ -122,6 +122,12 @@ export const damageTypesToCombine: Partial<
   3040: [{ when: "DIRECT", combineWith: "DISTANCE" }],
   // Tri-Stringer
   7010: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
+  // Inkline Tri-Stringer
+  7011: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
+  // Wellstring V
+  7030: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
+  // Custom Wellstring V
+  7031: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
   // Splatana Stamper
   8000: [
     { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
