@@ -23,6 +23,7 @@ import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";
+import { inGameNameIfNeeded } from "../tournament-utils.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -75,16 +76,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       ? "DELETE"
       : "LEAVE";
 
-  const inGameNameIfNeeded = async () => {
-    if (!tournament.ctx.settings.requireInGameNames) return null;
-
-    const inGameName = await UserRepository.inGameNameByUserId(user.id);
-
-    validate(inGameName, "No in-game name");
-
-    return inGameName;
-  };
-
   joinTeam({
     userId: user.id,
     newTeamId: teamToJoin.id,
@@ -97,7 +88,10 @@ export const action: ActionFunction = async ({ request, params }) => {
       previousTeam.members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     whatToDoWithPreviousTeam,
     tournamentId,
-    inGameName: await inGameNameIfNeeded(),
+    inGameName: await inGameNameIfNeeded({
+      tournament,
+      userId: user.id,
+    }),
   });
   if (data.trust) {
     const inviterUserId = teamToJoin.members.find(

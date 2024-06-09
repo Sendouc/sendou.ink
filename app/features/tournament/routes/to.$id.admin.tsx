@@ -40,6 +40,7 @@ import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findM
 import { Input } from "~/components/Input";
 import { logger } from "~/utils/logger";
 import { userIsBanned } from "~/features/ban/core/banned.server";
+import { inGameNameIfNeeded } from "../tournament-utils.server";
 
 // xxx: edit IGN action
 
@@ -77,6 +78,10 @@ export const action: ActionFunction = async ({ request, params }) => {
         ownerId: data.userId,
         prefersNotToHost: 0,
         noScreen: 0,
+        ownerInGameName: await inGameNameIfNeeded({
+          tournament,
+          userId: data.userId,
+        }),
       });
 
       break;
@@ -226,6 +231,10 @@ export const action: ActionFunction = async ({ request, params }) => {
         // this team is not checked in so we can simply delete it
         whatToDoWithPreviousTeam: previousTeam ? "DELETE" : undefined,
         tournamentId,
+        inGameName: await inGameNameIfNeeded({
+          tournament,
+          userId: data.userId,
+        }),
       });
       break;
     }

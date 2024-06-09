@@ -1,5 +1,5 @@
 import { add } from "date-fns";
-import type { Insertable, NotNull, Transaction } from "kysely";
+import { sql, type Insertable, type NotNull, type Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { nanoid } from "nanoid";
 import { db } from "~/db/sql";
@@ -100,11 +100,14 @@ export async function findById(id: number) {
                   "User.discordId",
                   "User.discordAvatar",
                   "User.customUrl",
-                  "User.inGameName",
                   "User.country",
                   "PlusTier.tier as plusTier",
                   "TournamentTeamMember.isOwner",
                   "TournamentTeamMember.createdAt",
+                  sql<string | null>/*sql*/ `coalesce(
+                    "TournamentTeamMember"."inGameName",
+                    "User"."inGameName"
+                  )`.as("inGameName"),
                 ])
                 .whereRef(
                   "TournamentTeamMember.tournamentTeamId",

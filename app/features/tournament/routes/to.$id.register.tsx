@@ -80,6 +80,7 @@ import { useSearchParamState } from "~/hooks/useSearchParamState";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { Toggle } from "~/components/Toggle";
 import { DiscordIcon } from "~/components/icons/Discord";
+import { inGameNameIfNeeded } from "../tournament-utils.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -130,23 +131,16 @@ export const action: ActionFunction = async ({ request, params }) => {
         );
         validate(tournament.registrationOpen, "Registration is closed");
 
-        const inGameNameIfNeeded = async () => {
-          if (!tournament.ctx.settings.requireInGameNames) return null;
-
-          const inGameName = await UserRepository.inGameNameByUserId(user.id);
-
-          validate(inGameName, "No in-game name");
-
-          return inGameName;
-        };
-
         createTeam({
           name: data.teamName,
           tournamentId: tournamentId,
           ownerId: user.id,
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
           noScreen: booleanToInt(data.noScreen),
-          ownerInGameName: await inGameNameIfNeeded(),
+          ownerInGameName: await inGameNameIfNeeded({
+            tournament,
+            userId: user.id,
+          }),
           teamId: data.teamId ?? null,
         });
       }
@@ -252,6 +246,10 @@ export const action: ActionFunction = async ({ request, params }) => {
         userId: data.userId,
         newTeamId: ownTeam.id,
         tournamentId,
+        inGameName: await inGameNameIfNeeded({
+          tournament,
+          userId: data.userId,
+        }),
       });
       break;
     }
