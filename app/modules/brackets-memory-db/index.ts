@@ -8,7 +8,6 @@ import type {
 
 export class InMemoryDatabase implements CrudInterface {
   protected data: Database = {
-    participant: [],
     stage: [],
     group: [],
     round: [],
@@ -40,7 +39,6 @@ export class InMemoryDatabase implements CrudInterface {
    */
   reset(): void {
     this.data = {
-      participant: [],
       stage: [],
       group: [],
       round: [],

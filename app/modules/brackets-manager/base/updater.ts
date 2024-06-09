@@ -1,107 +1,11 @@
-import type {
-  Match,
-  Seeding,
-  Stage,
-  GroupType,
-} from "~/modules/brackets-model";
+import type { GroupType, Match, Stage } from "~/modules/brackets-model";
 import { Status } from "~/modules/brackets-model";
-import type { DeepPartial, ParticipantSlot, Side } from "../types";
 import type { SetNextOpponent } from "../helpers";
-import { ordering } from "../ordering";
-import { Create } from "../create";
-import { BaseGetter } from "./getter";
-import { Get } from "../get";
 import * as helpers from "../helpers";
+import type { DeepPartial, Side } from "../types";
+import { BaseGetter } from "./getter";
 
 export class BaseUpdater extends BaseGetter {
-  /**
-   * Updates or resets the seeding of a stage.
-   *
-   * @param stageId ID of the stage.
-   * @param seeding A new seeding or `null` to reset the existing seeding.
-   */
-  protected updateSeeding(stageId: number, seeding: Seeding | null): void {
-    const stage = this.storage.select("stage", stageId);
-    if (!stage) throw Error("Stage not found.");
-
-    const create = new Create(this.storage, {
-      name: stage.name,
-      tournamentId: stage.tournament_id,
-      type: stage.type,
-      settings: stage.settings,
-      seeding: seeding || undefined,
-    });
-
-    create.setExisting(stageId, false);
-
-    const method = BaseGetter.getSeedingOrdering(stage.type, create);
-    const slots = create.getSlots();
-
-    const matches = this.getSeedingMatches(stage.id, stage.type);
-    if (!matches)
-      throw Error("Error getting matches associated to the seeding.");
-
-    const ordered = ordering[method](slots);
-    BaseUpdater.assertCanUpdateSeeding(matches, ordered);
-
-    create.run();
-  }
-
-  /**
-   * Confirms the current seeding of a stage.
-   *
-   * @param stageId ID of the stage.
-   */
-  protected confirmCurrentSeeding(stageId: number): void {
-    const stage = this.storage.select("stage", stageId);
-    if (!stage) throw Error("Stage not found.");
-
-    const get = new Get(this.storage);
-    const currentSeeding = get.seeding(stageId);
-    const newSeeding = helpers.convertSlotsToSeeding(
-      currentSeeding.map(helpers.convertTBDtoBYE),
-    );
-
-    const create = new Create(this.storage, {
-      name: stage.name,
-      tournamentId: stage.tournament_id,
-      type: stage.type,
-      settings: stage.settings,
-      seeding: newSeeding,
-    });
-
-    create.setExisting(stageId, true);
-
-    create.run();
-  }
-
-  /**
-   * Throws an error if a match is locked and the new seeding will change this match's participants.
-   *
-   * @param matches The matches stored in the database.
-   * @param slots The slots to check from the new seeding.
-   */
-  protected static assertCanUpdateSeeding(
-    matches: Match[],
-    slots: ParticipantSlot[],
-  ): void {
-    let index = 0;
-
-    for (const match of matches) {
-      const opponent1 = slots[index++];
-      const opponent2 = slots[index++];
-
-      const locked = helpers.isMatchParticipantLocked(match);
-      if (!locked) continue;
-
-      if (
-        match.opponent1?.id !== opponent1?.id ||
-        match.opponent2?.id !== opponent2?.id
-      )
-        throw Error("A match is locked.");
-    }
-  }
-
   /**
    * Updates the matches related (previous and next) to a match.
    *

@@ -23,22 +23,18 @@ FollowUp("includes correct teams in the top cut", () => {
   for (const tournamentTeamId of [892, 882, 881]) {
     assert.ok(
       tournamentPP257.brackets[1].seeding?.some(
-        (team) => team.id === tournamentTeamId,
+        (team) => team === tournamentTeamId,
       ),
     );
   }
 });
 
 FollowUp("underground bracket includes a checked in team", () => {
-  assert.ok(
-    tournamentPP257.brackets[2].seeding?.some((team) => team.id === 902),
-  );
+  assert.ok(tournamentPP257.brackets[2].seeding?.some((team) => team === 902));
 });
 
 FollowUp("underground bracket doesn't include a non checked in team", () => {
-  assert.ok(
-    tournamentPP257.brackets[2].seeding?.some((team) => team.id === 902),
-  );
+  assert.ok(tournamentPP257.brackets[2].seeding?.some((team) => team === 902));
 });
 
 FollowUp("underground bracket includes checked in teams (DE->SE)", () => {
@@ -141,7 +137,7 @@ FollowUp("avoids rematches in RR -> SE (PP 255)", () => {
   validateNoRematches(rrMatches, topCutMatches);
 });
 
-FollowUp("avoids rematches in RR -> SE (PP 255)", () => {
+FollowUp("avoids rematches in RR -> SE (PP 255) - only minimum swap", () => {
   const oldTopCutMatches = PADDLING_POOL_255_TOP_CUT_INITIAL_MATCHES();
   const newTopCutMatches = tournamentPP255.brackets[1].data.match;
 
@@ -164,7 +160,7 @@ FollowUp("avoids rematches in RR -> SE (PP 255)", () => {
   }
 
   // 1 team should get swapped meaning two matches are now different
-  assert.equal(different, 2);
+  assert.equal(different, 2, "Amount of different matches is incorrect");
 });
 
 FollowUp.run();

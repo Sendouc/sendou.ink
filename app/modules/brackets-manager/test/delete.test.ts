@@ -17,7 +17,7 @@ DeleteStage("should delete a stage and all its linked data", () => {
     name: "Example",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
   });
 
   manager.delete.stage(0);
@@ -38,14 +38,14 @@ DeleteStage("should delete one stage and only its linked data", () => {
     name: "Example 1",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
   });
 
   manager.create({
     name: "Example 2",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
   });
 
   manager.delete.stage(0);
@@ -72,14 +72,14 @@ DeleteStage("should delete all stages of the tournament", () => {
     name: "Example 1",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
   });
 
   manager.create({
     name: "Example 2",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
   });
 
   manager.delete.tournament(0);

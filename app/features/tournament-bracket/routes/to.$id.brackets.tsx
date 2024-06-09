@@ -357,7 +357,7 @@ export default function TournamentBracketsPage() {
     bracketIdx === 0
       ? tournament.ctx.teams.length
       : (bracket.teamsPendingCheckIn ?? []).length +
-        bracket.data.participant.length;
+        bracket.participantTournamentTeamIds.length;
 
   return (
     <div>
@@ -401,7 +401,7 @@ export default function TournamentBracketsPage() {
                 alertClassName="tournament-bracket__start-bracket-alert"
                 textClassName="stack horizontal md items-center"
               >
-                {bracket.data.participant.length}/
+                {bracket.participantTournamentTeamIds.length}/
                 {totalTeamsAvailableForTheBracket()} teams checked in
                 {bracket.canBeStarted ? (
                   <BracketStarter bracket={bracket} bracketIdx={bracketIdx} />
@@ -506,7 +506,11 @@ function MiniCheckinInfoBanner({
 
   if (!teamMemberOf) return null;
 
-  if (bracket.data.participant.some((p) => p.id === teamMemberOf.id)) {
+  if (
+    bracket.participantTournamentTeamIds.some(
+      (tournamentTeamId) => tournamentTeamId === teamMemberOf.id,
+    )
+  ) {
     return (
       <div className="tournament-bracket__mini-alert">
         ✅ Your team is checked in to the bracket (ask the TO for a check-out if

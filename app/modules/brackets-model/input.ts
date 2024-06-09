@@ -2,19 +2,12 @@
  * Contains everything which is given by the user as input.
  *-----------------------------------------------------------*/
 
-import type { Participant } from "./storage";
 import type {
   GrandFinalType,
   RoundRobinMode,
   SeedOrdering,
   StageType,
 } from "./unions";
-
-/**
- * A participant as it would be persisted in the storage, but with extra fields.
- */
-export type CustomParticipant<ExtraFields = Record<string, unknown>> =
-  Participant & ExtraFields;
 
 /**
  * The seeding for a stage.
@@ -25,7 +18,7 @@ export type CustomParticipant<ExtraFields = Record<string, unknown>> =
  * - Its ID.
  * - Or a BYE: `null`.
  */
-export type Seeding = (CustomParticipant | string | number | null)[];
+export type Seeding = (number | null)[];
 
 /**
  * Used to create a stage.

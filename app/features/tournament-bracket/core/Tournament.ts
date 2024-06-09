@@ -86,7 +86,7 @@ export class Tournament {
     return a.createdAt - b.createdAt;
   }
 
-  private initBrackets(data: ValueToArray<DataTypes>) {
+  private initBrackets(data: Omit<ValueToArray<DataTypes>, "participant">) {
     for (const [
       bracketIdx,
       { type, name, sources },
@@ -99,11 +99,6 @@ export class Tournament {
         const match = data.match.filter(
           (match) => match.stage_id === inProgressStage.id,
         );
-        const participants = new Set(
-          match
-            .flatMap((match) => [match.opponent1?.id, match.opponent2?.id])
-            .filter((id) => typeof id === "number"),
-        );
 
         this.brackets.push(
           Bracket.create({
@@ -115,9 +110,6 @@ export class Tournament {
             createdAt: inProgressStage.createdAt,
             data: {
               ...data,
-              participant: data.participant.filter((participant) =>
-                participants.has(participant.id),
-              ),
               group: data.group.filter(
                 (group) => group.stage_id === inProgressStage.id,
               ),
@@ -136,7 +128,7 @@ export class Tournament {
         const { teams, relevantMatchesFinished } = sources
           ? this.resolveTeamsFromSources(sources)
           : {
-              teams: this.ctx.teams,
+              teams: this.ctx.teams.map((team) => team.id),
               relevantMatchesFinished: true,
             };
 
@@ -166,7 +158,7 @@ export class Tournament {
               checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
               (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
             teamsPendingCheckIn:
-              bracketIdx !== 0 ? notCheckedInTeams.map((t) => t.id) : undefined,
+              bracketIdx !== 0 ? notCheckedInTeams : undefined,
           }),
         );
       } else {
@@ -174,7 +166,7 @@ export class Tournament {
         const { teams, relevantMatchesFinished } = sources
           ? this.resolveTeamsFromSources(sources)
           : {
-              teams: this.ctx.teams,
+              teams: this.ctx.teams.map((team) => team.id),
               relevantMatchesFinished: true,
             };
 
@@ -225,7 +217,7 @@ export class Tournament {
                 TOURNAMENT.ENOUGH_TEAMS_TO_START &&
               (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
             teamsPendingCheckIn:
-              bracketIdx !== 0 ? notCheckedInTeams.map((t) => t.id) : undefined,
+              bracketIdx !== 0 ? notCheckedInTeams : undefined,
           }),
         );
       }
@@ -235,7 +227,7 @@ export class Tournament {
   private resolveTeamsFromSources(
     sources: NonNullable<TournamentBracketProgression[number]["sources"]>,
   ) {
-    const teams: { id: number; name: string }[] = [];
+    const teams: number[] = [];
 
     let allRelevantMatchesFinished = true;
     for (const { bracketIdx, placements } of sources) {
@@ -254,10 +246,7 @@ export class Tournament {
   }
 
   private avoidReplaysOfPreviousBracketOpponent(
-    teams: {
-      id: number;
-      name: string;
-    }[],
+    teams: number[],
     bracket: {
       sources: TournamentBracketProgression[number]["sources"];
       type: TournamentBracketProgression[number]["type"];
@@ -304,12 +293,7 @@ export class Tournament {
       new Map() as Map<number, number[]>,
     );
 
-    const bracketReplays = (
-      candidateTeams: {
-        id: number;
-        name: string;
-      }[],
-    ) => {
+    const bracketReplays = (candidateTeams: number[]) => {
       const manager = getTournamentManager();
       manager.create({
         tournamentId: this.ctx.id,
@@ -358,12 +342,12 @@ export class Tournament {
       const [oneId, twoId] = replays[0];
 
       const lowerSeedId =
-        newOrder.findIndex((t) => t.id === oneId) <
-        newOrder.findIndex((t) => t.id === twoId)
+        newOrder.findIndex((t) => t === oneId) <
+        newOrder.findIndex((t) => t === twoId)
           ? twoId
           : oneId;
 
-      if (!potentialSwitchCandidates.some((t) => t.id === lowerSeedId)) {
+      if (!potentialSwitchCandidates.some((t) => t === lowerSeedId)) {
         logger.warn(
           `Avoiding replays failed, no potential switch candidates found in match: ${oneId} vs. ${twoId}`,
         );
@@ -373,10 +357,10 @@ export class Tournament {
 
       for (const candidate of potentialSwitchCandidates) {
         // can't switch place with itself
-        if (candidate.id === lowerSeedId) continue;
+        if (candidate === lowerSeedId) continue;
 
-        const candidateIdx = newOrder.findIndex((t) => t.id === candidate.id);
-        const otherIdx = newOrder.findIndex((t) => t.id === lowerSeedId);
+        const candidateIdx = newOrder.findIndex((t) => t === candidate);
+        const otherIdx = newOrder.findIndex((t) => t === lowerSeedId);
 
         const temp = newOrder[candidateIdx];
         newOrder[candidateIdx] = newOrder[otherIdx];
@@ -403,12 +387,12 @@ export class Tournament {
     teams,
     bracketIdx,
   }: {
-    teams: { id: number; name: string }[];
+    teams: number[];
     bracketIdx: number;
   }) {
     return teams.reduce(
       (acc, cur) => {
-        const team = this.teamById(cur.id);
+        const team = this.teamById(cur);
         invariant(team, "Team not found");
 
         const usesRegularCheckIn = bracketIdx === 0;
@@ -431,8 +415,8 @@ export class Tournament {
         return acc;
       },
       { checkedInTeams: [], notCheckedInTeams: [] } as {
-        checkedInTeams: { id: number; name: string }[];
-        notCheckedInTeams: { id: number; name: string }[];
+        checkedInTeams: number[];
+        notCheckedInTeams: number[];
       },
     );
   }
@@ -887,9 +871,11 @@ export class Tournament {
     }
 
     const participantInAnotherBracket = ongoingFollowUpBrackets
-      .flatMap((b) => b.data.participant)
+      .flatMap((b) => b.participantTournamentTeamIds)
       .some(
-        (p) => p.id === match.opponent1?.id || p.id === match.opponent2?.id,
+        (tournamentTeamId) =>
+          tournamentTeamId === match.opponent1?.id ||
+          tournamentTeamId === match.opponent2?.id,
       );
 
     return participantInAnotherBracket;

@@ -2,6 +2,7 @@ import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { Tournament } from "../Tournament";
 import type { TournamentData } from "../Tournament.server";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import { removeDuplicates } from "~/utils/arrays";
 
 const tournamentCtxTeam = (
   teamId: number,
@@ -37,6 +38,12 @@ export const testTournament = (
   data: ValueToArray<DataTypes>,
   partialCtx?: Partial<TournamentData["ctx"]>,
 ) => {
+  const participant = removeDuplicates(
+    data.match
+      .flatMap((m) => [m.opponent1?.id, m.opponent2?.id])
+      .filter(Boolean),
+  ) as number[];
+
   return new Tournament({
     data,
     ctx: {
@@ -68,10 +75,7 @@ export const testTournament = (
         createdAt: 0,
       })),
       castedMatchesInfo: null,
-      teams: nTeams(
-        data.participant.length,
-        Math.min(...data.participant.map((p) => p.id)),
-      ),
+      teams: nTeams(participant.length, Math.min(...participant)),
       author: {
         chatNameColor: null,
         customUrl: null,

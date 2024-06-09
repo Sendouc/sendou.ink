@@ -78,11 +78,6 @@ export class BracketsManager {
   public import(data: Database, normalizeIds = false): void {
     if (normalizeIds) data = helpers.normalizeIds(data);
 
-    if (!this.storage.delete("participant"))
-      throw Error("Could not empty the participant table.");
-    if (!this.storage.insert("participant", data.participant))
-      throw Error("Could not import participants.");
-
     if (!this.storage.delete("stage"))
       throw Error("Could not empty the stage table.");
     if (!this.storage.insert("stage", data.stage))
@@ -108,9 +103,6 @@ export class BracketsManager {
    * Exports data from the database.
    */
   public export(): Database {
-    const participants = this.storage.select("participant");
-    if (!participants) throw Error("Error getting participants.");
-
     const stages = this.storage.select("stage");
     if (!stages) throw Error("Error getting stages.");
 
@@ -124,7 +116,6 @@ export class BracketsManager {
     if (!matches) throw Error("Error getting matches.");
 
     return {
-      participant: participants,
       stage: stages,
       group: groups,
       round: rounds,

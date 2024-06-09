@@ -1,9 +1,4 @@
-import type {
-  Match,
-  Round,
-  Seeding,
-  SeedOrdering,
-} from "~/modules/brackets-model";
+import type { Match, Round, SeedOrdering } from "~/modules/brackets-model";
 import { Status } from "~/modules/brackets-model";
 import { ordering } from "./ordering";
 import { BaseUpdater } from "./base/updater";
@@ -63,27 +58,6 @@ export class Update extends BaseUpdater {
     helpers.ensureNotRoundRobin(stage);
 
     this.updateRoundOrdering(round, method);
-  }
-
-  /**
-   * Updates the seeding of a stage.
-   *
-   * @param stageId ID of the stage.
-   * @param seeding The new seeding.
-   */
-  public seeding(stageId: number, seeding: Seeding): void {
-    this.updateSeeding(stageId, seeding);
-  }
-
-  /**
-   * Confirms the seeding of a stage.
-   *
-   * This will convert TBDs to BYEs and propagate them.
-   *
-   * @param stageId ID of the stage.
-   */
-  public confirmSeeding(stageId: number): void {
-    this.confirmCurrentSeeding(stageId);
   }
 
   /**

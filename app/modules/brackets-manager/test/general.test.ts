@@ -17,11 +17,11 @@ BYEHandling("should propagate BYEs through the brackets", () => {
     name: "Example with BYEs",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: ["Team 1", null, null, null],
+    seeding: [1, null, null, null],
     settings: { seedOrdering: ["natural"], grandFinal: "simple" },
   });
 
-  assert.equal(storage.select<any>("match", 2).opponent1.id, 0);
+  assert.equal(storage.select<any>("match", 2).opponent1.id, 1);
   assert.equal(storage.select<any>("match", 2).opponent2, null);
 
   assert.equal(storage.select<any>("match", 3).opponent1, null);
@@ -30,7 +30,7 @@ BYEHandling("should propagate BYEs through the brackets", () => {
   assert.equal(storage.select<any>("match", 4).opponent1, null);
   assert.equal(storage.select<any>("match", 4).opponent2, null);
 
-  assert.equal(storage.select<any>("match", 5).opponent1.id, 0);
+  assert.equal(storage.select<any>("match", 5).opponent1.id, 1);
   assert.equal(storage.select<any>("match", 5).opponent2, null);
 });
 
@@ -39,7 +39,7 @@ BYEHandling("should handle incomplete seeding during creation", () => {
     name: "Example with BYEs",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: ["Team 1", "Team 2"],
+    seeding: [1, 2],
     settings: {
       seedOrdering: ["natural"],
       balanceByes: false, // Default value.
@@ -47,8 +47,8 @@ BYEHandling("should handle incomplete seeding during creation", () => {
     },
   });
 
-  assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
-  assert.equal(storage.select<any>("match", 0).opponent2.id, 1);
+  assert.equal(storage.select<any>("match", 0).opponent1.id, 1);
+  assert.equal(storage.select<any>("match", 0).opponent2.id, 2);
 
   assert.equal(storage.select<any>("match", 1).opponent1, null);
   assert.equal(storage.select<any>("match", 1).opponent2, null);
@@ -59,7 +59,7 @@ BYEHandling("should balance BYEs in the seeding", () => {
     name: "Example with BYEs",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: ["Team 1", "Team 2"],
+    seeding: [1, 2],
     settings: {
       seedOrdering: ["natural"],
       balanceByes: true,
@@ -67,10 +67,10 @@ BYEHandling("should balance BYEs in the seeding", () => {
     },
   });
 
-  assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
+  assert.equal(storage.select<any>("match", 0).opponent1.id, 1);
   assert.equal(storage.select<any>("match", 0).opponent2, null);
 
-  assert.equal(storage.select<any>("match", 1).opponent1.id, 1);
+  assert.equal(storage.select<any>("match", 1).opponent1.id, 2);
   assert.equal(storage.select<any>("match", 1).opponent2, null);
 });
 
@@ -131,42 +131,6 @@ SpecialCases.before.each(() => {
   storage.reset();
 });
 
-SpecialCases(
-  "should create a stage and add participants IDs in seeding",
-  () => {
-    const teams = [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ];
-
-    const participants = teams.map((name) => ({
-      tournament_id: 0,
-      name,
-    }));
-
-    // Simulation of external database filling for participants.
-    storage.insert("participant", participants);
-
-    manager.create({
-      name: "Example",
-      tournamentId: 0,
-      type: "single_elimination",
-      settings: { size: 8 },
-    });
-
-    // Update seeding with already existing IDs.
-    manager.update.seeding(0, [0, 1, 2, 3, 4, 5, 6, 7]);
-
-    assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
-  },
-);
-
 SpecialCases("should throw if the name of the stage is not provided", () => {
   assert.throws(
     () =>
@@ -203,15 +167,7 @@ SpecialCases(
           name: "Example",
           tournamentId: 0,
           type: "single_elimination",
-          seeding: [
-            "Team 1",
-            "Team 2",
-            "Team 3",
-            "Team 4",
-            "Team 5",
-            "Team 6",
-            "Team 7",
-          ],
+          seeding: [1, 2, 3, 4, 5, 6, 7],
         }),
       "The library only supports a participant count which is a power of two.",
     );
@@ -267,24 +223,7 @@ SeedingAndOrderingInElimination.before.each(() => {
     name: "Amateur",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-      "Team 9",
-      "Team 10",
-      "Team 11",
-      "Team 12",
-      "Team 13",
-      "Team 14",
-      "Team 15",
-      "Team 16",
-    ],
+    seeding: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     settings: {
       seedOrdering: [
         "inner_outer",
@@ -429,7 +368,7 @@ ResetMatchAndMatchGames("should reset results of a match", () => {
     name: "Example",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: ["Team 1", "Team 2"],
+    seeding: [1, 2],
     settings: {
       seedOrdering: ["natural"],
       size: 8,
@@ -478,7 +417,7 @@ ResetMatchAndMatchGames(
       name: "Example",
       tournamentId: 0,
       type: "single_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+      seeding: [1, 2, 3, 4],
       settings: {
         seedOrdering: ["natural"],
       },
@@ -517,7 +456,7 @@ ImportExport("should import data in the storage", () => {
     name: "Example",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
     settings: {
       seedOrdering: ["natural"],
     },
@@ -552,90 +491,12 @@ ImportExport("should import data in the storage", () => {
   assert.equal(storage.select<any>("match", 1).opponent1.result, undefined);
 });
 
-ImportExport("should import data in the storage with normalized IDs", () => {
-  storage.insert("participant", { name: "Unused team" });
-
-  manager.create({
-    name: "Example 1",
-    tournamentId: 0,
-    type: "round_robin",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: {
-      groupCount: 1,
-    },
-  });
-
-  manager.create({
-    name: "Example 2",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: ["Team 5", "Team 6", "Team 7", "Team 8"],
-    settings: {
-      seedOrdering: ["natural"],
-    },
-  });
-
-  const initialData = manager.get.stageData(1);
-
-  assert.equal(initialData.stage[0].id, 1);
-  assert.equal(initialData.participant[0], {
-    id: 1,
-    tournament_id: 0,
-    name: "Team 1",
-  });
-  assert.equal(initialData.group[0], { id: 1, stage_id: 1, number: 1 });
-  assert.equal(initialData.round[0], {
-    id: 3,
-    stage_id: 1,
-    group_id: 1,
-    number: 1,
-  });
-  assert.equal(initialData.match[0], {
-    id: 6,
-    stage_id: 1,
-    group_id: 1,
-    round_id: 3,
-    opponent1: { id: 5, position: 1 },
-    opponent2: { id: 6, position: 2 },
-    number: 1,
-    status: 2,
-  });
-
-  manager.import(initialData, true);
-
-  const data = manager.get.stageData(0);
-
-  assert.equal(data.stage[0].id, 0);
-  assert.equal(data.participant[0], {
-    id: 0,
-    tournament_id: 0,
-    name: "Team 1",
-  });
-  assert.equal(data.group[0], { id: 0, stage_id: 0, number: 1 });
-  assert.equal(data.round[0], {
-    id: 0,
-    stage_id: 0,
-    group_id: 0,
-    number: 1,
-  });
-  assert.equal(data.match[0], {
-    id: 0,
-    stage_id: 0,
-    group_id: 0,
-    round_id: 0,
-    opponent1: { id: 4, position: 1 },
-    opponent2: { id: 5, position: 2 },
-    number: 1,
-    status: 2,
-  });
-});
-
 ImportExport("should export data from the storage", () => {
   manager.create({
     name: "Example",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
     settings: {
       seedOrdering: ["natural"],
     },
@@ -643,11 +504,10 @@ ImportExport("should export data from the storage", () => {
 
   const data = manager.export();
 
-  for (const key of ["participant", "stage", "group", "round", "match"]) {
+  for (const key of ["stage", "group", "round", "match"]) {
     assert.ok(Object.keys(data).includes(key));
   }
 
-  assert.equal(storage.select<any>("participant"), data.participant);
   assert.equal(storage.select<any>("stage"), data.stage);
   assert.equal(storage.select<any>("group"), data.group);
   assert.equal(storage.select<any>("round"), data.round);

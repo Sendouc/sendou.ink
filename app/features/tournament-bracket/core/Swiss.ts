@@ -7,13 +7,9 @@ import { nullFilledArray } from "~/utils/arrays";
 import type { Bracket, Standing } from "./Bracket";
 import type { TournamentRepositoryInsertableMatch } from "~/features/tournament/TournamentRepository.server";
 
-type SwissSeeding = { id: number; name: string };
-
-interface CreateArgs extends Omit<InputStage, "type" | "seeding" | "number"> {
-  seeding: readonly SwissSeeding[];
-}
-
-export function create(args: CreateArgs): ValueToArray<DataTypes> {
+export function create(
+  args: Omit<InputStage, "type" | "number">,
+): ValueToArray<DataTypes> {
   const swissSettings = args.settings?.swiss;
 
   const groupCount = swissSettings?.groupCount ?? 1;
@@ -29,11 +25,6 @@ export function create(args: CreateArgs): ValueToArray<DataTypes> {
   return {
     group,
     match: firstRoundMatches({ seeding: args.seeding, groupCount, roundCount }),
-    participant: args.seeding.map((p) => ({
-      id: p.id,
-      name: p.name,
-      tournament_id: args.tournamentId,
-    })),
     round: group.flatMap((g) =>
       nullFilledArray(roundCount).map((_, i) => ({
         id: roundId++,
@@ -60,7 +51,7 @@ function firstRoundMatches({
   groupCount,
   roundCount,
 }: {
-  seeding: CreateArgs["seeding"];
+  seeding: InputStage["seeding"];
   groupCount: number;
   roundCount: number;
 }): Match[] {
@@ -106,10 +97,10 @@ function firstRoundMatches({
         round_id: roundId,
         number: i + 1,
         opponent1: {
-          id: upper.id,
+          id: upper,
         },
         opponent2: {
-          id: lower.id,
+          id: lower,
         },
         status: 2,
       });
@@ -123,7 +114,7 @@ function firstRoundMatches({
         round_id: roundId,
         number: upperHalf.length + 1,
         opponent1: {
-          id: bye.id,
+          id: bye,
         },
         opponent2: null,
         status: 2,
@@ -137,11 +128,11 @@ function firstRoundMatches({
     if (!seeding) return [];
     if (groupCount === 1) return [[...seeding]];
 
-    const groups: SwissSeeding[][] = nullFilledArray(groupCount).map(() => []);
+    const groups: number[][] = nullFilledArray(groupCount).map(() => []);
 
     for (let i = 0; i < seeding.length; i++) {
       const groupIndex = i % groupCount;
-      groups[groupIndex].push(seeding[i]);
+      groups[groupIndex].push(seeding[i]!);
     }
 
     return groups;

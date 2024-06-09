@@ -18,24 +18,7 @@ CreateDoubleElimination("should create a double elimination stage", () => {
     name: "Amateur",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-      "Team 9",
-      "Team 10",
-      "Team 11",
-      "Team 12",
-      "Team 13",
-      "Team 14",
-      "Team 15",
-      "Team 16",
-    ],
+    seeding: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     settings: { seedOrdering: ["natural"], grandFinal: "simple" },
   });
 
@@ -47,30 +30,6 @@ CreateDoubleElimination("should create a double elimination stage", () => {
   assert.equal(storage.select<any>("round")!.length, 4 + 6 + 1);
   assert.equal(storage.select<any>("match")!.length, 30);
 });
-
-CreateDoubleElimination(
-  "should create a double elimination stage with only two participants",
-  () => {
-    // This is an edge case. No lower bracket nor grand final will be created.
-    manager.create({
-      name: "Example",
-      tournamentId: 0,
-      type: "double_elimination",
-      settings: { size: 2 },
-    });
-
-    assert.equal(storage.select<any>("group")!.length, 1);
-    assert.equal(storage.select<any>("round")!.length, 1);
-    assert.equal(storage.select<any>("match")!.length, 1);
-
-    // Ensure update works.
-    manager.update.seeding(0, ["Team 1", "Team 2"]);
-    manager.update.match({
-      id: 0,
-      opponent1: { result: "win" },
-    });
-  },
-);
 
 CreateDoubleElimination(
   "should create a tournament with 256+ tournaments",
@@ -91,16 +50,7 @@ CreateDoubleElimination(
       name: "Example with double grand final",
       tournamentId: 0,
       type: "double_elimination",
-      seeding: [
-        "Team 1",
-        "Team 2",
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        "Team 6",
-        "Team 7",
-        "Team 8",
-      ],
+      seeding: [1, 2, 3, 4, 5, 6, 7, 8],
       settings: { grandFinal: "double", seedOrdering: ["natural"] },
     });
 
@@ -125,24 +75,7 @@ MatchUpdateDoubleElimination(
       name: "Amateur",
       tournamentId: 0,
       type: "double_elimination",
-      seeding: [
-        "Team 1",
-        "Team 2",
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        "Team 6",
-        "Team 7",
-        "Team 8",
-        "Team 9",
-        "Team 10",
-        "Team 11",
-        "Team 12",
-        "Team 13",
-        "Team 14",
-        "Team 15",
-        "Team 16",
-      ],
+      seeding: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
       settings: { seedOrdering: ["natural"], grandFinal: "simple" },
     });
 
@@ -196,7 +129,7 @@ MatchUpdateDoubleElimination(
       name: "Example",
       tournamentId: 0,
       type: "double_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", null],
+      seeding: [1, 2, 3, null],
       settings: { grandFinal: "simple" },
     });
 
@@ -234,7 +167,7 @@ MatchUpdateDoubleElimination("should determine matches in grand final", () => {
     name: "Example",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
     settings: { grandFinal: "double" },
   });
 
@@ -306,7 +239,7 @@ MatchUpdateDoubleElimination(
       name: "Example",
       tournamentId: 0,
       type: "double_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+      seeding: [1, 2, 3, 4],
       settings: { grandFinal: "double" },
     });
 
@@ -338,24 +271,7 @@ MatchUpdateDoubleElimination(
       name: "Amateur",
       tournamentId: 0,
       type: "double_elimination",
-      seeding: [
-        "Team 1",
-        "Team 2",
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        "Team 6",
-        "Team 7",
-        "Team 8",
-        "Team 9",
-        "Team 10",
-        "Team 11",
-        "Team 12",
-        "Team 13",
-        "Team 14",
-        "Team 15",
-        "Team 16",
-      ],
+      seeding: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
       settings: {
         seedOrdering: ["natural", "reverse", "reverse"],
         grandFinal: "simple",
@@ -397,16 +313,7 @@ MatchUpdateDoubleElimination(
       name: "Example with inner_outer loser ordering",
       tournamentId: 0,
       type: "double_elimination",
-      seeding: [
-        "Team 1",
-        "Team 2",
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        "Team 6",
-        "Team 7",
-        "Team 8",
-      ],
+      seeding: [1, 2, 3, 4, 5, 6, 7, 8],
       settings: {
         seedOrdering: ["inner_outer", "inner_outer"],
       },
@@ -423,7 +330,7 @@ MatchUpdateDoubleElimination(
       opponent1: { result: "win" }, // Loser id: 7.
     });
 
-    assert.equal(storage.select<any>("match", 7).opponent1.id, 7);
+    assert.equal(storage.select<any>("match", 7).opponent1.id, 8);
 
     // Match of position 2.
     manager.update.match({
@@ -431,7 +338,7 @@ MatchUpdateDoubleElimination(
       opponent1: { result: "win" }, // Loser id: 4.
     });
 
-    assert.equal(storage.select<any>("match", 8).opponent1.id, 4);
+    assert.equal(storage.select<any>("match", 8).opponent1.id, 5);
 
     // Match of position 3.
     manager.update.match({
@@ -439,7 +346,7 @@ MatchUpdateDoubleElimination(
       opponent1: { result: "win" }, // Loser id: 6.
     });
 
-    assert.equal(storage.select<any>("match", 8).opponent2.id, 6);
+    assert.equal(storage.select<any>("match", 8).opponent2.id, 7);
 
     // Match of position 4.
     manager.update.match({
@@ -447,7 +354,7 @@ MatchUpdateDoubleElimination(
       opponent1: { result: "win" }, // Loser id: 5.
     });
 
-    assert.equal(storage.select<any>("match", 7).opponent2.id, 5);
+    assert.equal(storage.select<any>("match", 7).opponent2.id, 6);
   },
 );
 
@@ -460,24 +367,7 @@ SkipFirstRoundDoubleElimination.before.each(() => {
     name: "Example with double grand final",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-      "Team 9",
-      "Team 10",
-      "Team 11",
-      "Team 12",
-      "Team 13",
-      "Team 14",
-      "Team 15",
-      "Team 16",
-    ],
+    seeding: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     settings: {
       seedOrdering: ["natural"],
       skipFirstRound: true,
@@ -498,8 +388,8 @@ SkipFirstRoundDoubleElimination(
 
     assert.equal(storage.select<any>("round", 0).number, 1); // Even though the "real" first round is skipped, the stored first round's number should be 1.
 
-    assert.equal(storage.select<any>("match", 0).opponent1.id, 0); // First match of WB.
-    assert.equal(storage.select<any>("match", 7).opponent1.id, 1); // First match of LB.
+    assert.equal(storage.select<any>("match", 0).opponent1.id, 1); // First match of WB.
+    assert.equal(storage.select<any>("match", 7).opponent1.id, 2); // First match of LB.
   },
 );
 
@@ -507,31 +397,31 @@ SkipFirstRoundDoubleElimination(
   "should choose the correct previous and next matches",
   () => {
     manager.update.match({ id: 0, opponent1: { result: "win" } });
-    assert.equal(storage.select<any>("match", 7).opponent1.id, 1); // First match of LB Round 1 (must stay).
-    assert.equal(storage.select<any>("match", 12).opponent1.id, 2); // First match of LB Round 2 (must be updated).
+    assert.equal(storage.select<any>("match", 7).opponent1.id, 2); // First match of LB Round 1 (must stay).
+    assert.equal(storage.select<any>("match", 12).opponent1.id, 3); // First match of LB Round 2 (must be updated).
 
     manager.update.match({ id: 1, opponent1: { result: "win" } });
-    assert.equal(storage.select<any>("match", 7).opponent2.id, 3); // First match of LB Round 1 (must stay).
-    assert.equal(storage.select<any>("match", 11).opponent1.id, 6); // Second match of LB Round 2 (must be updated).
+    assert.equal(storage.select<any>("match", 7).opponent2.id, 4); // First match of LB Round 1 (must stay).
+    assert.equal(storage.select<any>("match", 11).opponent1.id, 7); // Second match of LB Round 2 (must be updated).
 
     manager.update.match({ id: 4, opponent1: { result: "win" } }); // First match of WB Round 2.
-    assert.equal(storage.select<any>("match", 18).opponent1.id, 4); // First match of LB Round 4.
+    assert.equal(storage.select<any>("match", 18).opponent1.id, 5); // First match of LB Round 4.
 
     manager.update.match({ id: 7, opponent1: { result: "win" } }); // First match of LB Round 1.
-    assert.equal(storage.select<any>("match", 11).opponent2.id, 1); // First match of LB Round 2.
+    assert.equal(storage.select<any>("match", 11).opponent2.id, 2); // First match of LB Round 2.
 
     for (let i = 2; i < 21; i++)
       manager.update.match({ id: i, opponent1: { result: "win" } });
 
-    assert.equal(storage.select<any>("match", 15).opponent1.id, 6); // First match of LB Round 3.
+    assert.equal(storage.select<any>("match", 15).opponent1.id, 7); // First match of LB Round 3.
 
-    assert.equal(storage.select<any>("match", 21).opponent1.id, 0); // GF Round 1.
-    assert.equal(storage.select<any>("match", 21).opponent2.id, 8); // GF Round 1.
+    assert.equal(storage.select<any>("match", 21).opponent1.id, 1); // GF Round 1.
+    assert.equal(storage.select<any>("match", 21).opponent2.id, 9); // GF Round 1.
 
     manager.update.match({ id: 21, opponent2: { result: "win" } });
 
-    assert.equal(storage.select<any>("match", 21).opponent1.id, 0); // GF Round 2.
-    assert.equal(storage.select<any>("match", 22).opponent2.id, 8); // GF Round 2.
+    assert.equal(storage.select<any>("match", 21).opponent1.id, 1); // GF Round 2.
+    assert.equal(storage.select<any>("match", 22).opponent2.id, 9); // GF Round 2.
 
     manager.update.match({ id: 22, opponent2: { result: "win" } });
   },

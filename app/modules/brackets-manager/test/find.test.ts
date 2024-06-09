@@ -19,16 +19,7 @@ FindSingleElimination("should find previous matches", () => {
     name: "Example",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ],
+    seeding: [1, 2, 3, 4, 5, 6, 7, 8],
   });
 
   const beforeFirst = manager.find.previousMatches(0);
@@ -55,16 +46,7 @@ FindSingleElimination("should find next matches", () => {
     name: "Example",
     tournamentId: 0,
     type: "single_elimination",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ],
+    seeding: [1, 2, 3, 4, 5, 6, 7, 8],
   });
 
   const afterFirst = manager.find.nextMatches(0);
@@ -86,33 +68,24 @@ FindSingleElimination(
       name: "Example",
       tournamentId: 0,
       type: "single_elimination",
-      seeding: [
-        "Team 1",
-        "Team 2",
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        "Team 6",
-        "Team 7",
-        "Team 8",
-      ],
+      seeding: [1, 2, 3, 4, 5, 6, 7, 8],
       settings: {
         seedOrdering: ["natural"],
       },
     });
 
     manager.update.match({ id: 0, opponent1: { result: "loss" } });
-    const afterFirstEliminated = manager.find.nextMatches(0, 0);
+    const afterFirstEliminated = manager.find.nextMatches(0, 1);
     assert.equal(afterFirstEliminated.length, 0);
-    const afterFirstContinued = manager.find.nextMatches(0, 1);
+    const afterFirstContinued = manager.find.nextMatches(0, 2);
     assert.equal(afterFirstContinued.length, 1);
 
     manager.update.match({ id: 1, opponent1: { result: "win" } });
-    const beforeSemi1Up = manager.find.previousMatches(4, 1);
+    const beforeSemi1Up = manager.find.previousMatches(4, 2);
     assert.equal(beforeSemi1Up.length, 1);
     assert.equal(beforeSemi1Up[0].id, 0);
 
-    const beforeSemi1Down = manager.find.previousMatches(4, 2);
+    const beforeSemi1Down = manager.find.previousMatches(4, 3);
     assert.equal(beforeSemi1Down.length, 1);
     assert.equal(beforeSemi1Down[0].id, 1);
   },
@@ -131,16 +104,7 @@ FindDoubleElimination("should find previous matches", () => {
     name: "Example",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ],
+    seeding: [1, 2, 3, 4, 5, 6, 7, 8],
   });
 
   const beforeFirstWB = manager.find.previousMatches(0);
@@ -187,16 +151,7 @@ FindDoubleElimination("should find next matches", () => {
     name: "Example",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ],
+    seeding: [1, 2, 3, 4, 5, 6, 7, 8],
   });
 
   const afterFirstWB = manager.find.nextMatches(0);
@@ -236,33 +191,33 @@ FindDoubleElimination(
       name: "Example",
       tournamentId: 0,
       type: "double_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+      seeding: [1, 2, 3, 4],
       settings: {
         seedOrdering: ["natural"],
       },
     });
 
     manager.update.match({ id: 0, opponent1: { result: "loss" } });
-    const afterFirstEliminated = manager.find.nextMatches(0, 0);
+    const afterFirstEliminated = manager.find.nextMatches(0, 1);
     assert.equal(afterFirstEliminated.length, 1);
     assert.equal(afterFirstEliminated[0].id, 3);
-    const afterFirstContinued = manager.find.nextMatches(0, 1);
+    const afterFirstContinued = manager.find.nextMatches(0, 2);
     assert.equal(afterFirstContinued.length, 1);
     assert.equal(afterFirstContinued[0].id, 2);
 
     manager.update.match({ id: 1, opponent1: { result: "win" } });
-    const beforeSemi1Up = manager.find.previousMatches(2, 1);
+    const beforeSemi1Up = manager.find.previousMatches(2, 2);
     assert.equal(beforeSemi1Up.length, 1);
     assert.equal(beforeSemi1Up[0].id, 0);
 
-    const beforeSemi1Down = manager.find.previousMatches(2, 2);
+    const beforeSemi1Down = manager.find.previousMatches(2, 3);
     assert.equal(beforeSemi1Down.length, 1);
     assert.equal(beforeSemi1Down[0].id, 1);
 
     manager.update.match({ id: 3, opponent1: { result: "loss" } });
-    const afterLowerBracketEliminated = manager.find.nextMatches(3, 0);
+    const afterLowerBracketEliminated = manager.find.nextMatches(3, 1);
     assert.equal(afterLowerBracketEliminated.length, 0);
-    const afterLowerBracketContinued = manager.find.nextMatches(3, 3);
+    const afterLowerBracketContinued = manager.find.nextMatches(3, 4);
     assert.equal(afterLowerBracketContinued.length, 1);
     assert.equal(afterLowerBracketContinued[0].id, 4);
 

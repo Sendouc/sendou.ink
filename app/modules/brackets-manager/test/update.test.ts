@@ -11,24 +11,7 @@ const example = {
   name: "Amateur",
   tournamentId: 0,
   type: "double_elimination",
-  seeding: [
-    "Team 1",
-    "Team 2",
-    "Team 3",
-    "Team 4",
-    "Team 5",
-    "Team 6",
-    "Team 7",
-    "Team 8",
-    "Team 9",
-    "Team 10",
-    "Team 11",
-    "Team 12",
-    "Team 13",
-    "Team 14",
-    "Team 15",
-    "Team 16",
-  ],
+  seeding: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
   settings: { seedOrdering: ["natural"] },
 } as any;
 
@@ -67,7 +50,7 @@ UpdateMatches(
     assert.equal(after.opponent1.score, 2);
 
     // Name should stay. It shouldn't be overwritten.
-    assert.equal(after.opponent1.id, 0);
+    assert.equal(after.opponent1.id, 1);
   },
 );
 
@@ -94,7 +77,7 @@ UpdateMatches(
       opponent1: { result: "win" },
     });
 
-    assert.equal(storage.select<any>("match", 8).opponent1.id, 0);
+    assert.equal(storage.select<any>("match", 8).opponent1.id, 1);
 
     manager.update.match({
       id: 0,
@@ -108,7 +91,7 @@ UpdateMatches(
 
     const nextMatch = storage.select<any>("match", 8);
     assert.equal(nextMatch.status, Status.Waiting);
-    assert.equal(nextMatch.opponent1.id, 1);
+    assert.equal(nextMatch.opponent1.id, 2);
   },
 );
 
@@ -241,7 +224,7 @@ GiveOpponentIds.before.each(() => {
     name: "Amateur",
     tournamentId: 0,
     type: "double_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
     settings: { seedOrdering: ["natural"] },
   });
 });
@@ -250,11 +233,11 @@ GiveOpponentIds("should update the right opponents based on their IDs", () => {
   manager.update.match({
     id: 0,
     opponent1: {
-      id: 1,
+      id: 2,
       score: 10,
     },
     opponent2: {
-      id: 0,
+      id: 1,
       score: 5,
     },
   });
@@ -271,7 +254,7 @@ GiveOpponentIds(
     manager.update.match({
       id: 0,
       opponent1: {
-        id: 1,
+        id: 2,
         score: 10,
       },
     });
@@ -291,7 +274,7 @@ GiveOpponentIds(
         manager.update.match({
           id: 0,
           opponent1: {
-            id: 2, // Belongs to match id 1.
+            id: 3, // Belongs to match id 1.
             score: 10,
           },
         }),
@@ -330,387 +313,6 @@ LockedMatches(
   },
 );
 
-const Seeding = suite("Seeding");
-
-Seeding.before.each(() => {
-  storage.reset();
-
-  manager.create({
-    name: "Without participants",
-    tournamentId: 0,
-    type: "double_elimination",
-    settings: {
-      size: 8,
-      seedOrdering: ["natural"],
-    },
-  });
-});
-
-Seeding("should update the seeding in a stage without any participant", () => {
-  manager.update.seeding(0, [
-    "Team 1",
-    "Team 2",
-    "Team 3",
-    "Team 4",
-    "Team 5",
-    "Team 6",
-    "Team 7",
-    "Team 8",
-  ]);
-
-  assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
-  assert.equal(storage.select<any>("participant")!.length, 8);
-});
-
-Seeding("should update the seeding to remove participants", () => {
-  manager.update.seeding(0, [
-    "Team 1",
-    "Team 2",
-    null,
-    "Team 4",
-    "Team 5",
-    "Team 6",
-    "Team 7",
-    null,
-  ]);
-
-  assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
-
-  // In this context, a `null` value is not a BYE, but a TDB (to be determined)
-  // because we consider the tournament might have been started.
-  // If it's not and you prefer BYEs, just recreate the tournament.
-  assert.equal(storage.select<any>("match", 1).opponent1.id, null);
-  assert.equal(storage.select<any>("match", 3).opponent2.id, null);
-});
-
-Seeding("should handle incomplete seeding during seeding update", () => {
-  manager.update.seeding(0, ["Team 1", "Team 2"]);
-
-  assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
-  assert.equal(storage.select<any>("match", 0).opponent2.id, 1);
-
-  // Same here, see comments above.
-  assert.equal(storage.select<any>("match", 1).opponent1.id, null);
-  assert.equal(storage.select<any>("match", 1).opponent2.id, null);
-});
-
-Seeding("should update BYE to TBD during seeding update", () => {
-  storage.reset();
-
-  manager.create({
-    name: "With participants and BYEs",
-    tournamentId: 0,
-    type: "double_elimination",
-    seeding: [
-      null,
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ],
-    settings: {
-      seedOrdering: ["natural"],
-    },
-  });
-
-  assert.equal(storage.select<any>("match", 0).opponent1, null);
-
-  manager.update.seeding(0, [
-    null,
-    "Team 2",
-    "Team 3",
-    "Team 4",
-    "Team 5",
-    "Team 6",
-    "Team 7",
-    "Team 8",
-  ]);
-
-  // To stay consistent with the fact that `update.seeding()` uses TBD and not BYE,
-  // the BYE should be updated to TDB here.
-  assert.equal(storage.select<any>("match", 0).opponent1.id, null);
-});
-
-Seeding("should reset the seeding of a stage", () => {
-  manager.update.seeding(0, [
-    "Team 1",
-    "Team 2",
-    "Team 3",
-    "Team 4",
-    "Team 5",
-    "Team 6",
-    "Team 7",
-    "Team 8",
-  ]);
-
-  manager.reset.seeding(0);
-
-  assert.equal(storage.select<any>("match", 0).opponent1.id, null);
-  assert.equal(storage.select<any>("participant")!.length, 8); // Participants aren't removed.
-});
-
-Seeding(
-  "should update the seeding in a stage with participants already",
-  () => {
-    manager.update.seeding(0, [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ]);
-
-    manager.update.seeding(0, [
-      "Team A",
-      "Team B",
-      "Team C",
-      "Team D",
-      "Team E",
-      "Team F",
-      "Team G",
-      "Team H",
-    ]);
-
-    assert.equal(storage.select<any>("match", 0).opponent1.id, 8);
-    assert.equal(storage.select<any>("participant")!.length, 16);
-  },
-);
-
-Seeding(
-  "should update the seeding in a stage by registering only one missing participant",
-  () => {
-    manager.update.seeding(0, [
-      "Team A",
-      "Team B",
-      "Team C",
-      "Team D",
-      "Team E",
-      "Team F",
-      "Team G",
-      "Team H",
-    ]);
-
-    manager.update.seeding(0, [
-      "Team A",
-      "Team B", // Match 0.
-      "Team C",
-      "Team D", // Match 1.
-      "Team E",
-      "Team F", // Match 2.
-      "Team G",
-      "Team Z", // Match 3.
-    ]);
-
-    assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
-    assert.equal(storage.select<any>("match", 3).opponent2.id, 8);
-    assert.equal(storage.select<any>("participant")!.length, 9);
-  },
-);
-
-Seeding("should update the seeding in a stage on non-locked matches", () => {
-  manager.update.seeding(0, [
-    "Team 1",
-    "Team 2",
-    "Team 3",
-    "Team 4",
-    "Team 5",
-    "Team 6",
-    "Team 7",
-    "Team 8",
-  ]);
-
-  manager.update.match({
-    id: 2, // Any match id.
-    opponent1: { score: 1 },
-    opponent2: { score: 0 },
-  });
-
-  manager.update.seeding(0, [
-    "Team A",
-    "Team B", // Match 0.
-    "Team C",
-    "Team D", // Match 1.
-    "Team 5",
-    "Team 6", // Match 2. NO CHANGE.
-    "Team G",
-    "Team H", // Match 3.
-  ]);
-
-  assert.equal(storage.select<any>("match", 0).opponent1.id, 8); // New id.
-  assert.equal(storage.select<any>("match", 2).opponent1.id, 4); // Still old id.
-  assert.equal(storage.select<any>("participant")!.length, 8 + 6);
-});
-
-Seeding(
-  "should update the seeding and keep completed matches completed",
-  () => {
-    manager.update.seeding(0, [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ]);
-
-    manager.update.match({
-      id: 0,
-      opponent1: { score: 1, result: "win" },
-      opponent2: { score: 0 },
-    });
-
-    manager.update.seeding(0, [
-      "Team 1",
-      "Team 2", // Keep this pair.
-      "Team 4",
-      "Team 3",
-      "Team 6",
-      "Team 5",
-      "Team 8",
-      "Team 7",
-    ]);
-
-    const match = storage.select<any>("match", 0);
-    assert.equal(match.opponent1.result, "win");
-    assert.equal(match.status, Status.Completed);
-  },
-);
-
-Seeding(
-  "should throw if a match is completed and would have to be changed",
-  () => {
-    manager.update.seeding(0, [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ]);
-
-    manager.update.match({
-      id: 0,
-      opponent1: { score: 1, result: "win" },
-      opponent2: { score: 0 },
-    });
-
-    assert.throws(
-      () =>
-        manager.update.seeding(0, [
-          "Team 2",
-          "Team 1", // Change this pair.
-          "Team 3",
-          "Team 4",
-          "Team 5",
-          "Team 6",
-          "Team 7",
-          "Team 8",
-        ]),
-      "A match is locked.",
-    );
-  },
-);
-
-Seeding(
-  "should throw if a match is locked and would have to be changed",
-  () => {
-    manager.update.seeding(0, [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ]);
-
-    manager.update.match({
-      id: 2, // Any match id.
-      opponent1: { score: 1 },
-      opponent2: { score: 0 },
-    });
-
-    assert.throws(
-      () =>
-        manager.update.seeding(0, [
-          "Team A",
-          "Team B", // Match 0.
-          "Team C",
-          "Team D", // Match 1.
-          "WILL",
-          "THROW", // Match 2.
-          "Team G",
-          "Team H", // Match 3.
-        ]),
-      "A match is locked.",
-    );
-  },
-);
-
-Seeding("should throw if the seeding has duplicate participants", () => {
-  assert.throws(
-    () =>
-      manager.update.seeding(0, [
-        "Team 1",
-        "Team 1", // Duplicate
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        "Team 6",
-        "Team 7",
-        "Team 8",
-      ]),
-    "The seeding has a duplicate participant.",
-  );
-});
-
-Seeding("should confirm the current seeding", () => {
-  manager.update.seeding(0, [
-    "Team 1",
-    "Team 2",
-    null,
-    "Team 4",
-    "Team 5",
-    null,
-    null,
-    null,
-  ]);
-
-  assert.equal(storage.select<any>("match", 1).opponent1.id, null); // First, is a TBD.
-  assert.equal(storage.select<any>("match", 2).opponent2.id, null);
-  assert.equal(storage.select<any>("match", 3).opponent1.id, null);
-  assert.equal(storage.select<any>("match", 3).opponent2.id, null);
-
-  manager.update.confirmSeeding(0);
-
-  assert.equal(storage.select<any>("participant")!.length, 4);
-
-  assert.equal(storage.select<any>("match", 1).opponent1, null); // Should become a BYE.
-  assert.equal(storage.select<any>("match", 2).opponent2, null);
-  assert.equal(storage.select<any>("match", 3).opponent1, null);
-  assert.equal(storage.select<any>("match", 3).opponent2, null);
-
-  assert.equal(storage.select<any>("match", 5).opponent2, null); // A BYE should be propagated here.
-
-  assert.equal(storage.select<any>("match", 7).opponent2, null); // All of these too (in loser bracket).
-  assert.equal(storage.select<any>("match", 8).opponent1, null);
-  assert.equal(storage.select<any>("match", 8).opponent2, null);
-  assert.equal(storage.select<any>("match", 9).opponent1, null);
-  assert.equal(storage.select<any>("match", 10).opponent2, null);
-});
-
 UpdateMatches.run();
 GiveOpponentIds.run();
 LockedMatches.run();
-Seeding.run();

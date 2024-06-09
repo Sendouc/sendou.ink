@@ -10,16 +10,6 @@ import type { StageType } from "./unions";
 /**
  * A participant of a stage (team or individual).
  */
-export interface Participant {
-  /** ID of the participant. */
-  id: number;
-
-  /** ID of the tournament this participant belongs to. */
-  tournament_id: number;
-
-  /** Name of the participant. */
-  name: string;
-}
 
 /**
  * A stage, which can be a round-robin stage or a single/double elimination stage.

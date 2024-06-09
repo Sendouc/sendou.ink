@@ -51,13 +51,4 @@ export class Reset extends BaseUpdater {
     if (!helpers.isRoundRobin(stage) && !helpers.isSwiss(stage))
       this.updateRelatedMatches(stored, true, true);
   }
-
-  /**
-   * Resets the seeding of a stage.
-   *
-   * @param stageId ID of the stage.
-   */
-  public seeding(stageId: number): void {
-    this.updateSeeding(stageId, null);
-  }
 }

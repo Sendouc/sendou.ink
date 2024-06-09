@@ -17,16 +17,7 @@ CreateRoundRobinStage("should create a round-robin stage", () => {
     name: "Example",
     tournamentId: 0,
     type: "round_robin",
-    seeding: [
-      "Team 1",
-      "Team 2",
-      "Team 3",
-      "Team 4",
-      "Team 5",
-      "Team 6",
-      "Team 7",
-      "Team 8",
-    ],
+    seeding: [1, 2, 3, 4, 5, 6, 7, 8],
     settings: { groupCount: 2 },
   } as any;
 
@@ -48,16 +39,7 @@ CreateRoundRobinStage(
       name: "Example",
       tournamentId: 0,
       type: "round_robin",
-      seeding: [
-        "Team 1",
-        "Team 2",
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        "Team 6",
-        "Team 7",
-        "Team 8",
-      ],
+      seeding: [1, 2, 3, 4, 5, 6, 7, 8],
       settings: {
         groupCount: 2,
         manualOrdering: [
@@ -92,16 +74,7 @@ CreateRoundRobinStage(
           name: "Example",
           tournamentId: 0,
           type: "round_robin",
-          seeding: [
-            "Team 1",
-            "Team 2",
-            "Team 3",
-            "Team 4",
-            "Team 5",
-            "Team 6",
-            "Team 7",
-            "Team 8",
-          ],
+          seeding: [1, 2, 3, 4, 5, 6, 7, 8],
           settings: {
             groupCount: 2,
             manualOrdering: [[1, 4, 6, 7]],
@@ -116,16 +89,7 @@ CreateRoundRobinStage(
           name: "Example",
           tournamentId: 0,
           type: "round_robin",
-          seeding: [
-            "Team 1",
-            "Team 2",
-            "Team 3",
-            "Team 4",
-            "Team 5",
-            "Team 6",
-            "Team 7",
-            "Team 8",
-          ],
+          seeding: [1, 2, 3, 4, 5, 6, 7, 8],
           settings: {
             groupCount: 2,
             manualOrdering: [
@@ -146,16 +110,7 @@ CreateRoundRobinStage(
       name: "Example",
       tournamentId: 0,
       type: "round_robin",
-      seeding: [
-        "Team 1",
-        "Team 2",
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        null,
-        null,
-        null,
-      ],
+      seeding: [1, 2, 3, 4, 5, null, null, null],
       settings: { groupCount: 2 },
     } as any;
 
@@ -192,24 +147,15 @@ CreateRoundRobinStage(
       name: "Example with effort balanced",
       tournamentId: 0,
       type: "round_robin",
-      seeding: [
-        "Team 1",
-        "Team 2",
-        "Team 3",
-        "Team 4",
-        "Team 5",
-        "Team 6",
-        "Team 7",
-        "Team 8",
-      ],
+      seeding: [1, 2, 3, 4, 5, 6, 7, 8],
       settings: {
         groupCount: 2,
         seedOrdering: ["groups.seed_optimized"],
       },
     });
 
-    assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
-    assert.equal(storage.select<any>("match", 0).opponent2.id, 7);
+    assert.equal(storage.select<any>("match", 0).opponent1.id, 1);
+    assert.equal(storage.select<any>("match", 0).opponent2.id, 8);
   },
 );
 
@@ -253,7 +199,7 @@ UpdateRoundRobinScores.before.each(() => {
     name: "Example scores",
     tournamentId: 0,
     type: "round_robin",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
+    seeding: [1, 2, 3, 4],
     settings: { groupCount: 1 },
   });
 });
@@ -269,7 +215,7 @@ ExampleUseCase.before.each(() => {
     name: "Example scores",
     tournamentId: 0,
     type: "round_robin",
-    seeding: ["POCEBLO", "twitch.tv/mrs_fly", "Ballec Squad", "AQUELLEHEURE?!"],
+    seeding: [1, 2, 3, 4],
     settings: { groupCount: 1 },
   });
 });

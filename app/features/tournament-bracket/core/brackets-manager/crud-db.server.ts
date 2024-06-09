@@ -1,7 +1,6 @@
 // this file offers database functions specifically for the crud.server.ts file
 
 import type {
-  Participant,
   Stage as StageType,
   Group as GroupType,
   Round as RoundType,
@@ -9,41 +8,14 @@ import type {
 } from "~/modules/brackets-model";
 import { sql } from "~/db/sql";
 import type {
-  Tournament,
   TournamentGroup,
   TournamentMatch,
   TournamentRound,
   TournamentStage,
-  TournamentTeam,
 } from "~/db/types";
 import { nanoid } from "nanoid";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { TournamentRoundMaps } from "~/db/tables";
-
-const team_getByTournamentIdStm = sql.prepare(/*sql*/ `
-  select
-    *
-  from
-    "TournamentTeam"
-  where
-    "TournamentTeam"."tournamentId" = @tournamentId
-`);
-
-export class Team {
-  static #convertTeam(rawTeam: TournamentTeam): Participant {
-    return {
-      id: rawTeam.id,
-      name: rawTeam.name,
-      tournament_id: rawTeam.tournamentId,
-    };
-  }
-
-  static getByTournamentId(tournamentId: Tournament["id"]): Participant[] {
-    return (team_getByTournamentIdStm.all({ tournamentId }) as any[]).map(
-      this.#convertTeam,
-    );
-  }
-}
 
 const stage_getByIdStm = sql.prepare(/*sql*/ `
   select
@@ -137,7 +109,7 @@ export class Stage {
     return this.#convertStage(stage);
   }
 
-  static getByTournamentId(tournamentId: Tournament["id"]): Participant[] {
+  static getByTournamentId(tournamentId: number): StageType[] {
     return (stage_getByTournamentIdStm.all({ tournamentId }) as any[]).map(
       this.#convertStage,
     );

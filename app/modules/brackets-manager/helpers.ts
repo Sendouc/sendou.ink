@@ -2,9 +2,7 @@ import type {
   GrandFinalType,
   Match,
   MatchResults,
-  Participant,
   ParticipantResult,
-  CustomParticipant,
   Result,
   RoundRobinMode,
   Seeding,
@@ -19,16 +17,15 @@ import type {
   Database,
   DeepPartial,
   Duel,
-  FinalStandingsItem,
   IdMapping,
   Nullable,
-  OmitId,
   ParitySplit,
   ParticipantSlot,
   Scores,
   Side,
 } from "./types";
 import { ordering } from "./ordering";
+import invariant from "~/utils/invariant";
 
 /**
  * Splits an array of objects based on their values at a given key.
@@ -234,7 +231,6 @@ export function balanceByes(
  */
 export function normalizeIds(data: Database): Database {
   const mappings = {
-    participant: makeNormalizedIdMapping(data.participant),
     stage: makeNormalizedIdMapping(data.stage),
     group: makeNormalizedIdMapping(data.group),
     round: makeNormalizedIdMapping(data.round),
@@ -242,10 +238,6 @@ export function normalizeIds(data: Database): Database {
   };
 
   return {
-    participant: data.participant.map((value) => ({
-      ...value,
-      id: mappings.participant[value.id],
-    })),
     stage: data.stage.map((value) => ({
       ...value,
       id: mappings.stage[value.id],
@@ -267,8 +259,8 @@ export function normalizeIds(data: Database): Database {
       stage_id: mappings.stage[value.stage_id],
       group_id: mappings.group[value.group_id],
       round_id: mappings.round[value.round_id],
-      opponent1: normalizeParticipant(value.opponent1, mappings.participant),
-      opponent2: normalizeParticipant(value.opponent2, mappings.participant),
+      opponent1: value.opponent1,
+      opponent2: value.opponent2,
     })),
   };
 }
@@ -912,11 +904,8 @@ export function getOriginPosition(match: Match, side: Side): number {
  * @param participants The list of participants.
  * @param matches A list of matches to get losers of.
  */
-export function getLosers(
-  participants: Participant[],
-  matches: Match[],
-): Participant[][] {
-  const losers: Participant[][] = [];
+export function getLosers(matches: Match[]): number[][] {
+  const losers: number[][] = [];
 
   let currentRound: number | null = null;
   let roundIndex = -1;
@@ -931,36 +920,11 @@ export function getLosers(
     const loser = getLoser(match);
     if (loser === null) continue;
 
-    losers[roundIndex].push(findParticipant(participants, loser));
+    invariant(loser.id, "Loser id not found");
+    losers[roundIndex].push(loser.id);
   }
 
   return losers;
-}
-
-/**
- * Makes final standings based on participants grouped by ranking.
- *
- * @param grouped A list of participants grouped by ranking.
- */
-export function makeFinalStandings(
-  grouped: Participant[][],
-): FinalStandingsItem[] {
-  const standings: FinalStandingsItem[] = [];
-
-  let rank = 1;
-
-  for (const group of grouped) {
-    for (const participant of group) {
-      standings.push({
-        id: participant.id,
-        name: participant.name,
-        rank,
-      });
-    }
-    rank++;
-  }
-
-  return standings;
 }
 
 /**
@@ -984,24 +948,6 @@ export function getGrandFinalDecisiveMatch(
   }
 
   throw Error("The Grand Final is disabled.");
-}
-
-/**
- * Finds a participant in a list.
- *
- * @param participants The list of participants.
- * @param slot The slot of the participant to find.
- */
-export function findParticipant(
-  participants: Participant[],
-  slot: ParticipantSlot,
-): Participant {
-  if (!slot) throw Error("Cannot find a BYE participant.");
-  const participant = participants.find(
-    (participant) => participant.id === slot?.id,
-  );
-  if (!participant) throw Error("Participant not found.");
-  return participant;
 }
 
 /**
@@ -1224,115 +1170,6 @@ export function setResults(
     if (stored.opponent1) stored.opponent1.result = change;
     else stored.opponent1 = { id: null, result: change };
   }
-}
-
-/**
- * Indicates if a seeding is filled with participants' IDs.
- *
- * @param seeding The seeding.
- */
-export function isSeedingWithIds(seeding: Seeding): boolean {
-  return seeding.some((value) => typeof value === "number");
-}
-
-/**
- * Extracts participants from a seeding, without the BYEs.
- *
- * @param tournamentId ID of the tournament.
- * @param seeding The seeding (no IDs).
- */
-export function extractParticipantsFromSeeding(
-  tournamentId: number,
-  seeding: Seeding,
-): OmitId<Participant>[] {
-  const withoutByes = seeding.filter(
-    (name): name is /* number */ string | CustomParticipant => name !== null,
-  );
-
-  const participants = withoutByes.map<OmitId<Participant>>((item) => {
-    if (typeof item === "string") {
-      return {
-        tournament_id: tournamentId,
-        name: item,
-      };
-    }
-
-    return {
-      ...item,
-      tournament_id: tournamentId,
-      name: item.name,
-    };
-  });
-
-  return participants;
-}
-
-/**
- * Returns participant slots mapped to the instances stored in the database thanks to their name.
- *
- * @param seeding The seeding.
- * @param database The participants stored in the database.
- * @param positions An optional list of positions (seeds) for a manual ordering.
- */
-export function mapParticipantsNamesToDatabase(
-  seeding: Seeding,
-  database: Participant[],
-  positions?: number[],
-): ParticipantSlot[] {
-  return mapParticipantsToDatabase("name", seeding, database, positions);
-}
-
-/**
- * Returns participant slots mapped to the instances stored in the database thanks to their id.
- *
- * @param seeding The seeding.
- * @param database The participants stored in the database.
- * @param positions An optional list of positions (seeds) for a manual ordering.
- */
-export function mapParticipantsIdsToDatabase(
-  seeding: Seeding,
-  database: Participant[],
-  positions?: number[],
-): ParticipantSlot[] {
-  return mapParticipantsToDatabase("id", seeding, database, positions);
-}
-
-/**
- * Returns participant slots mapped to the instances stored in the database thanks to a property of theirs.
- *
- * @param prop The property to search participants with.
- * @param seeding The seeding.
- * @param database The participants stored in the database.
- * @param positions An optional list of positions (seeds) for a manual ordering.
- */
-export function mapParticipantsToDatabase(
-  prop: "id" | "name",
-  seeding: Seeding,
-  database: Participant[],
-  positions?: number[],
-): ParticipantSlot[] {
-  const slots = seeding.map((slot, i) => {
-    if (slot === null) return null; // BYE.
-
-    const found = database.find((participant) =>
-      typeof slot === "object"
-        ? participant[prop] === slot[prop]
-        : participant[prop] === slot,
-    );
-
-    if (!found) throw Error(`Participant ${prop} not found in database.`);
-
-    return { id: found.id, position: i + 1 };
-  });
-
-  if (!positions) return slots;
-
-  if (positions.length !== slots.length)
-    throw Error(
-      "Not enough seeds in at least one group of the manual ordering.",
-    );
-
-  return positions.map((position) => slots[position - 1]); // Because `position` is `i + 1`.
 }
 
 /**

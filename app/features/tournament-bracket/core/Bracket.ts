@@ -14,7 +14,7 @@ import type { BracketMapCounts } from "./toMapList";
 interface CreateBracketArgs {
   id: number;
   preview: boolean;
-  data: ValueToArray<DataTypes>;
+  data: Omit<ValueToArray<DataTypes>, "participant">;
   type: Tables["TournamentStage"]["type"];
   canBeStarted?: boolean;
   name: string;
@@ -25,10 +25,7 @@ interface CreateBracketArgs {
     bracketIdx: number;
     placements: number[];
   }[];
-  seeding?: {
-    id: number;
-    name: string;
-  }[];
+  seeding?: number[];
 }
 
 export interface Standing {
@@ -219,6 +216,18 @@ export abstract class Bracket {
     throw new Error("not implemented");
   }
 
+  get participantTournamentTeamIds() {
+    // if (this.seeding) {
+    //   return this.seeding.map((seed) => seed.id);
+    // }
+
+    return removeDuplicates(
+      this.data.match
+        .flatMap((match) => [match.opponent1?.id, match.opponent2?.id])
+        .filter(Boolean),
+    ) as number[];
+  }
+
   currentStandings(_includeUnfinishedGroups: boolean) {
     return this.standings;
   }
@@ -272,7 +281,10 @@ export abstract class Bracket {
   }
 
   get enoughTeams() {
-    return this.data.participant.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START;
+    return (
+      this.participantTournamentTeamIds.length >=
+      TOURNAMENT.ENOUGH_TEAMS_TO_START
+    );
   }
 
   canCheckIn(user: OptionalIdObject) {
@@ -287,14 +299,14 @@ export abstract class Bracket {
 
   source(_placements: number[]): {
     relevantMatchesFinished: boolean;
-    teams: { id: number; name: string }[];
+    teams: number[];
   } {
     throw new Error("not implemented");
   }
 
   teamsWithNames(teams: { id: number }[]) {
     return teams.map((team) => {
-      const name = this.data.participant.find(
+      const name = this.tournament.ctx.teams.find(
         (participant) => participant.id === team.id,
       )?.name;
       invariant(name, `Team name not found for id: ${team.id}`);
@@ -420,7 +432,7 @@ class SingleEliminationBracket extends Bracket {
     }
 
     const teamCountWhoDidntLoseYet =
-      this.data.participant.length - teams.length;
+      this.participantTournamentTeamIds.length - teams.length;
 
     const result: Standing[] = [];
     for (const roundId of removeDuplicates(teams.map((team) => team.lostAt))) {
@@ -443,13 +455,13 @@ class SingleEliminationBracket extends Bracket {
     }
 
     if (teamCountWhoDidntLoseYet === 1) {
-      const winner = this.data.participant.find((participant) =>
-        result.every(({ team }) => team.id !== participant.id),
+      const winnerId = this.participantTournamentTeamIds.find((participantId) =>
+        result.every(({ team }) => team.id !== participantId),
       );
-      invariant(winner, "No winner identified");
+      invariant(winnerId, "No winner identified");
 
-      const winnerTeam = this.tournament.teamById(winner.id);
-      invariant(winnerTeam, `Winner team not found for id: ${winner.id}`);
+      const winnerTeam = this.tournament.teamById(winnerId);
+      invariant(winnerTeam, `Winner team not found for id: ${winnerId}`);
 
       result.push({
         team: winnerTeam,
@@ -573,7 +585,7 @@ class DoubleEliminationBracket extends Bracket {
     }
 
     const teamCountWhoDidntLoseInLosersYet =
-      this.data.participant.length - teams.length;
+      this.participantTournamentTeamIds.length - teams.length;
 
     const result: Standing[] = [];
     for (const roundId of removeDuplicates(teams.map((team) => team.lostAt))) {
@@ -691,13 +703,15 @@ class DoubleEliminationBracket extends Bracket {
   }
 
   source(placements: number[]) {
-    const resolveLosersGroupId = (data: ValueToArray<DataTypes>) => {
+    const resolveLosersGroupId = (
+      data: Omit<ValueToArray<DataTypes>, "participant">,
+    ) => {
       const minGroupId = Math.min(...data.round.map((round) => round.group_id));
 
       return minGroupId + 1;
     };
     const placementsToRoundsIds = (
-      data: ValueToArray<DataTypes>,
+      data: Omit<ValueToArray<DataTypes>, "participant">,
       losersGroupId: number,
     ) => {
       const firstRoundIsOnlyByes = () => {
@@ -742,7 +756,7 @@ class DoubleEliminationBracket extends Bracket {
       (a, b) => b - a,
     );
 
-    const teams: { id: number }[] = [];
+    const teams: number[] = [];
     let relevantMatchesFinished = true;
     for (const roundId of sourceRoundsIds) {
       const roundsMatches = this.data.match.filter(
@@ -766,13 +780,13 @@ class DoubleEliminationBracket extends Bracket {
           match.opponent1?.result === "win" ? match.opponent2 : match.opponent1;
         invariant(loser?.id, "Loser id not found");
 
-        teams.push({ id: loser.id });
+        teams.push(loser.id);
       }
     }
 
     return {
       relevantMatchesFinished,
-      teams: this.teamsWithNames(teams),
+      teams,
     };
   }
 }
@@ -788,14 +802,14 @@ class RoundRobinBracket extends Bracket {
 
   source(placements: number[]): {
     relevantMatchesFinished: boolean;
-    teams: { id: number; name: string }[];
+    teams: number[];
   } {
     if (placements.some((p) => p < 0)) {
       throw new Error("Negative placements not implemented");
     }
     const standings = this.standings;
     const relevantMatchesFinished =
-      standings.length === this.data.participant.length;
+      standings.length === this.participantTournamentTeamIds.length;
 
     const uniquePlacements = removeDuplicates(
       standings.map((s) => s.placement),
@@ -810,7 +824,7 @@ class RoundRobinBracket extends Bracket {
       relevantMatchesFinished,
       teams: standings
         .filter((s) => placements.includes(placementNormalized(s.placement)))
-        .map((s) => ({ id: s.team.id, name: s.team.name })),
+        .map((s) => s.team.id),
     };
   }
 
@@ -1060,7 +1074,7 @@ class SwissBracket extends Bracket {
 
   source(placements: number[]): {
     relevantMatchesFinished: boolean;
-    teams: { id: number; name: string }[];
+    teams: number[];
   } {
     if (placements.some((p) => p < 0)) {
       throw new Error("Negative placements not implemented");
@@ -1101,7 +1115,7 @@ class SwissBracket extends Bracket {
       relevantMatchesFinished,
       teams: standings
         .filter((s) => placements.includes(placementNormalized(s.placement)))
-        .map((s) => ({ id: s.team.id, name: s.team.name })),
+        .map((s) => s.team.id),
     };
   }
 

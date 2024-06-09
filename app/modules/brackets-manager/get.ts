@@ -1,12 +1,6 @@
-import type {
-  Stage,
-  Group,
-  Round,
-  Match,
-  Participant,
-} from "~/modules/brackets-model";
+import type { Stage, Group, Round, Match } from "~/modules/brackets-model";
 import { Status } from "~/modules/brackets-model";
-import type { Database, FinalStandingsItem, ParticipantSlot } from "./types";
+import type { Database, ParticipantSlot } from "./types";
 import { BaseGetter } from "./base/getter";
 import * as helpers from "./helpers";
 
@@ -19,17 +13,11 @@ export class Get extends BaseGetter {
   public stageData(stageId: number): Database {
     const stageData = this.getStageSpecificData(stageId);
 
-    const participants = this.storage.select("participant", {
-      tournament_id: stageData.stage.tournament_id,
-    });
-    if (!participants) throw Error("Error getting participants.");
-
     return {
       stage: [stageData.stage],
       group: stageData.groups,
       round: stageData.rounds,
       match: stageData.matches,
-      participant: participants,
     };
   }
 
@@ -48,11 +36,6 @@ export class Get extends BaseGetter {
       this.getStageSpecificData(stage.id),
     );
 
-    const participants = this.storage.select("participant", {
-      tournament_id: tournamentId,
-    });
-    if (!participants) throw Error("Error getting participants.");
-
     return {
       stage: stages,
       group: stagesData.reduce(
@@ -67,7 +50,6 @@ export class Get extends BaseGetter {
         (acc, data) => [...acc, ...data.matches],
         [] as Match[],
       ),
-      participant: participants,
     };
   }
 
@@ -215,30 +197,6 @@ export class Get extends BaseGetter {
   }
 
   /**
-   * Returns the final standings of a stage.
-   *
-   * @param stageId ID of the stage.
-   */
-  public finalStandings(stageId: number): FinalStandingsItem[] {
-    const stage = this.storage.select("stage", stageId);
-    if (!stage) throw Error("Stage not found.");
-
-    switch (stage.type) {
-      case "round_robin":
-        throw Error("A round-robin stage does not have standings.");
-      case "single_elimination":
-        return this.singleEliminationStandings(stageId);
-      case "double_elimination":
-        if (stage.settings.size === 2) {
-          return this.singleEliminationStandings(stageId);
-        }
-        return this.doubleEliminationStandings(stageId);
-      default:
-        throw Error("Unknown stage type.");
-    }
-  }
-
-  /**
    * Returns the seeding of a round-robin stage.
    *
    * @param stage The stage.
@@ -283,134 +241,6 @@ export class Get extends BaseGetter {
   }
 
   /**
-   * Returns the final standings of a single elimination stage.
-   *
-   * @param stageId ID of the stage.
-   */
-  private singleEliminationStandings(stageId: number): FinalStandingsItem[] {
-    const grouped: Participant[][] = [];
-
-    const {
-      stage: stages,
-      group: groups,
-      match: matches,
-      participant: participants,
-    } = this.stageData(stageId);
-
-    const [stage] = stages;
-    const [singleBracket, finalGroup] = groups;
-
-    const final = matches
-      .filter((match) => match.group_id === singleBracket.id)
-      .pop();
-    if (!final) throw Error("Final not found.");
-
-    // 1st place: Final winner.
-    grouped[0] = [
-      helpers.findParticipant(participants, getFinalWinnerIfDefined(final)),
-    ];
-
-    // Rest: every loser in reverse order.
-    const losers = helpers.getLosers(
-      participants,
-      matches.filter((match) => match.group_id === singleBracket.id),
-    );
-    grouped.push(...losers.reverse());
-
-    if (stage.settings?.consolationFinal) {
-      const consolationFinal = matches
-        .filter((match) => match.group_id === finalGroup.id)
-        .pop();
-      if (!consolationFinal) throw Error("Consolation final not found.");
-
-      const consolationFinalWinner = helpers.findParticipant(
-        participants,
-        getFinalWinnerIfDefined(consolationFinal),
-      );
-      const consolationFinalLoser = helpers.findParticipant(
-        participants,
-        helpers.getLoser(consolationFinal),
-      );
-
-      // Overwrite semi-final losers with the consolation final results.
-      grouped.splice(2, 1, [consolationFinalWinner], [consolationFinalLoser]);
-    }
-
-    return helpers.makeFinalStandings(grouped);
-  }
-
-  /**
-   * Returns the final standings of a double elimination stage.
-   *
-   * @param stageId ID of the stage.
-   */
-  private doubleEliminationStandings(stageId: number): FinalStandingsItem[] {
-    const grouped: Participant[][] = [];
-
-    const {
-      stage: stages,
-      group: groups,
-      match: matches,
-      participant: participants,
-    } = this.stageData(stageId);
-
-    const [stage] = stages;
-    const [winnerBracket, loserBracket, finalGroup] = groups;
-
-    if (stage.settings?.grandFinal === "none") {
-      const finalWB = matches
-        .filter((match) => match.group_id === winnerBracket.id)
-        .pop();
-      if (!finalWB) throw Error("WB final not found.");
-
-      const finalLB = matches
-        .filter((match) => match.group_id === loserBracket.id)
-        .pop();
-      if (!finalLB) throw Error("LB final not found.");
-
-      // 1st place: WB Final winner.
-      grouped[0] = [
-        helpers.findParticipant(participants, getFinalWinnerIfDefined(finalWB)),
-      ];
-
-      // 2nd place: LB Final winner.
-      grouped[1] = [
-        helpers.findParticipant(participants, getFinalWinnerIfDefined(finalLB)),
-      ];
-    } else {
-      const grandFinalMatches = matches.filter(
-        (match) => match.group_id === finalGroup.id,
-      );
-      const decisiveMatch = helpers.getGrandFinalDecisiveMatch(
-        stage.settings?.grandFinal || "none",
-        grandFinalMatches,
-      );
-
-      // 1st place: Grand Final winner.
-      grouped[0] = [
-        helpers.findParticipant(
-          participants,
-          getFinalWinnerIfDefined(decisiveMatch),
-        ),
-      ];
-
-      // 2nd place: Grand Final loser.
-      grouped[1] = [
-        helpers.findParticipant(participants, helpers.getLoser(decisiveMatch)),
-      ];
-    }
-
-    // Rest: every loser in reverse order.
-    const losers = helpers.getLosers(
-      participants,
-      matches.filter((match) => match.group_id === loserBracket.id),
-    );
-    grouped.push(...losers.reverse());
-
-    return helpers.makeFinalStandings(grouped);
-  }
-
-  /**
    * Returns only the data specific to the given stage (without the participants).
    *
    * @param stageId ID of the stage.
@@ -441,9 +271,3 @@ export class Get extends BaseGetter {
     };
   }
 }
-
-const getFinalWinnerIfDefined = (match: Match): ParticipantSlot => {
-  const winner = helpers.getWinner(match);
-  if (!winner) throw Error("The final match does not have a winner.");
-  return winner;
-};

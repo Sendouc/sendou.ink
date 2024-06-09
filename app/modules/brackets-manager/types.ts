@@ -1,7 +1,6 @@
 import type {
   Group,
   Match,
-  Participant,
   Round,
   SeedOrdering,
   Stage,
@@ -90,7 +89,6 @@ export interface DataTypes {
   group: Group;
   round: Round;
   match: Match;
-  participant: Participant;
 }
 
 /**

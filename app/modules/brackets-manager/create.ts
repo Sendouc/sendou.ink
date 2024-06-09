@@ -2,10 +2,9 @@ import type {
   Group,
   InputStage,
   Match,
-  Participant,
   Round,
-  Seeding,
   SeedOrdering,
+  Seeding,
   Stage,
 } from "~/modules/brackets-model";
 import { defaultMinorOrdering, ordering } from "./ordering";
@@ -569,37 +568,7 @@ export class Create {
         this.stage.settings.size,
       );
 
-    if (helpers.isSeedingWithIds(this.stage.seeding))
-      return this.getSlotsUsingIds(this.stage.seeding, positions);
-
-    return this.getSlotsUsingNames(this.stage.seeding, positions);
-  }
-
-  /**
-   * Returns the list of slots with a seeding containing names. Participants may be added to database.
-   *
-   * @param seeding The seeding (names).
-   * @param positions An optional list of positions (seeds) for a manual ordering.
-   */
-  private getSlotsUsingNames(
-    seeding: Seeding,
-    positions?: number[],
-  ): ParticipantSlot[] {
-    const participants = helpers.extractParticipantsFromSeeding(
-      this.stage.tournamentId,
-      seeding,
-    );
-
-    if (!this.registerParticipants(participants))
-      throw Error("Error registering the participants.");
-
-    // Get participants back with IDs.
-    const added = this.storage.select("participant", {
-      tournament_id: this.stage.tournamentId,
-    });
-    if (!added) throw Error("Error getting registered participant.");
-
-    return helpers.mapParticipantsNamesToDatabase(seeding, added, positions);
+    return this.getSlotsUsingIds(this.stage.seeding, positions);
   }
 
   /**
@@ -612,16 +581,21 @@ export class Create {
     seeding: Seeding,
     positions?: number[],
   ): ParticipantSlot[] {
-    const participants = this.storage.select("participant", {
-      tournament_id: this.stage.tournamentId,
-    });
-    if (!participants) throw Error("No available participants.");
+    if (positions && positions.length !== seeding.length) {
+      throw Error(
+        "Not enough seeds in at least one group of the manual ordering.",
+      );
+    }
 
-    return helpers.mapParticipantsIdsToDatabase(
-      seeding,
-      participants,
-      positions,
-    );
+    const slots = seeding.map((slot, i) => {
+      if (slot === null) return null; // BYE.
+
+      return { id: slot, position: i + 1 };
+    });
+
+    if (!positions) return slots;
+
+    return positions.map((position) => slots[position - 1]);
   }
 
   /**
@@ -849,31 +823,6 @@ export class Create {
       throw Error("Could not update the match.");
 
     return existing.id;
-  }
-
-  /**
-   * Inserts missing participants.
-   *
-   * @param participants The list of participants to process.
-   */
-  private registerParticipants(participants: OmitId<Participant>[]): boolean {
-    const existing = this.storage.select("participant", {
-      tournament_id: this.stage.tournamentId,
-    });
-
-    // Insert all if nothing.
-    if (!existing || existing.length === 0)
-      return this.storage.insert("participant", participants);
-
-    // Insert only missing otherwise.
-    for (const participant of participants) {
-      if (existing.some((value) => value.name === participant.name)) continue;
-
-      const result = this.storage.insert("participant", participant);
-      if (result === -1) return false;
-    }
-
-    return true;
   }
 
   /**
