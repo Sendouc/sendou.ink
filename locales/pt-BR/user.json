@@ -19,7 +19,6 @@
   "forms.commissionText": "Info sobre comissões",
   "forms.commissionText.info": "Preço, vagas abertas ou qualquer outra informação relacionada ao processo de fazer um pedido para você.",
 
-  "results.title": "Resultados",
   "results.placing": "Classificação",
   "results.team": "Time",
   "results.tournament": "Torneio",
@@ -27,7 +26,6 @@
   "results.date": "Data",
   "results.mates": "Parceiros(as)",
   "results.highlights": "Destaques",
-  "results.nonHighlights": "Outros Resultados",
   "results.highlights.choose": "Escolher Destaques",
   "results.highlights.explanation": "Escolha os resultados que você quer destacar",
 

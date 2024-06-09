@@ -155,8 +155,8 @@ export const userEditProfilePage = (user: UserLinkArgs) =>
   `${userPage(user)}/edit`;
 export const userBuildsPage = (user: UserLinkArgs) =>
   `${userPage(user)}/builds`;
-export const userResultsPage = (user: UserLinkArgs) =>
-  `${userPage(user)}/results`;
+export const userResultsPage = (user: UserLinkArgs, showAll?: boolean) =>
+  `${userPage(user)}/results${showAll ? "?all=true" : ""}`;
 export const userVodsPage = (user: UserLinkArgs) => `${userPage(user)}/vods`;
 export const newVodPage = (vodToEditId?: number) =>
   `${VODS_PAGE}/new${vodToEditId ? `?vod=${vodToEditId}` : ""}`;

@@ -12,7 +12,6 @@
   "weaponPool": "Pula broni",
   "discordExplanation": "Nazwa, profilowe oraz połączone konta brane są z konta Discord. Zobacz <1>FAQ</1> by dowiedzieć się więcej.",
 
-  "results.title": "Wyniki",
   "results.placing": "Placing",
   "results.team": "Drużyna",
   "results.tournament": "Turniej",
@@ -20,7 +19,6 @@
   "results.date": "Data",
   "results.mates": "Koledzy",
   "results.highlights": "Wyróżnienia",
-  "results.nonHighlights": "Inne Wyniki",
   "results.highlights.choose": "Wybierz wyróżnienia",
   "results.highlights.explanation": "Wybierz wyniki, które chcesz wyróżnić",
 

@@ -19,7 +19,6 @@
   "forms.commissionText": "委托信息",
   "forms.commissionText.info": "你的价格、名额或者其他委托相关的信息",
 
-  "results.title": "成绩",
   "results.placing": "排名",
   "results.team": "队伍",
   "results.tournament": "比赛",
@@ -27,7 +26,6 @@
   "results.date": "日期",
   "results.mates": "队友",
   "results.highlights": "高光成绩",
-  "results.nonHighlights": "其他成绩",
   "results.highlights.choose": "选择高光成绩",
   "results.highlights.explanation": "选择您想强调的高光成绩",
 

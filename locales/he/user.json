@@ -19,7 +19,6 @@
   "forms.commissionText": "מידע עבור בקשות",
   "forms.commissionText.info": "מחיר, כמות בקשות או מידע אחר שקשור לבקשות אלכם",
 
-  "results.title": "תוצאות",
   "results.placing": "מיקום",
   "results.team": "צוות",
   "results.tournament": "טורניר",
@@ -27,7 +26,6 @@
   "results.date": "תאריך",
   "results.mates": "חברי צוות",
   "results.highlights": "נקודות שיא",
-  "results.nonHighlights": "תוצאות אחרות",
   "results.highlights.choose": "בחרו נקודות שיא",
   "results.highlights.explanation": "בחרו את התוצאות שאתם רוצים להדגיש",
 

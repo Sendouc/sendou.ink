@@ -19,7 +19,6 @@
   "forms.commissionText": "info om bestilling",
   "forms.commissionText.info": "Pris, åbne pladser eller andre relevante informationer der er relateret til at afgive en bestilling til dig.",
 
-  "results.title": "Resultater",
   "results.placing": "Placering",
   "results.team": "Hold",
   "results.tournament": "Turnering",
@@ -27,7 +26,6 @@
   "results.date": "Dato",
   "results.mates": "Holdkammerater",
   "results.highlights": "Højdepunkter",
-  "results.nonHighlights": "Andre resultater",
   "results.highlights.choose": "Vælg højdepunkter",
   "results.highlights.explanation": "Vælg de resultater, som du vil fremhæve",
 

@@ -19,7 +19,6 @@
   "forms.commissionText": "Info de comisiones",
   "forms.commissionText.info": "Precio, espacios abiertos, o cualquier otra información sobre tus comiciones.",
 
-  "results.title": "Resultados",
   "results.placing": "Lugar",
   "results.team": "Equipo",
   "results.tournament": "Torneo",
@@ -27,7 +26,6 @@
   "results.date": "Fecha",
   "results.mates": "Compañeros",
   "results.highlights": "Resaltos",
-  "results.nonHighlights": "Otros resultados",
   "results.highlights.choose": "Elegir resaltos",
   "results.highlights.explanation": "Elige los resultados que quieres resaltar",
 

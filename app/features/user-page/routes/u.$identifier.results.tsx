@@ -1,69 +1,62 @@
 import { useMatches } from "@remix-run/react";
 import invariant from "~/utils/invariant";
-import { LinkButton } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Section } from "~/components/Section";
 import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core/user";
 import { userResultsEditHighlightsPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../../../features/user-page/routes/u.$identifier";
 import { UserResultsTable } from "~/features/user-page/components/UserResultsTable";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export default function UserResultsPage() {
+  const user = useUser();
   const { t } = useTranslation("user");
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
-
   const userPageData = parentRoute.data as UserPageLoaderData;
-  const hasResults = userPageData.results.length > 0;
 
-  const nonHighlights = userPageData.results.filter((r) => !r.isHighlight);
-  const hasNonHighlights = nonHighlights.length > 0;
+  const highlightedResults = userPageData.results.filter(
+    (result) => result.isHighlight,
+  );
+  const hasHighlightedResults = highlightedResults.length > 0;
 
-  const highlights = userPageData.results.filter((r) => r.isHighlight);
-  const hasHighlights = highlights.length > 0;
+  const [showAll, setShowAll] = useSearchParamState({
+    defaultValue: !hasHighlightedResults ? true : false,
+    name: "all",
+    revive: (v) => (!hasHighlightedResults ? true : v === "true"),
+  });
 
-  const user = useUser();
-  const isOwnResultsPage = user?.id === userPageData.id;
-
-  const showHighlightsSection =
-    hasHighlights ||
-    (isOwnResultsPage && hasResults && userPageData.results.length !== 1);
+  const resultsToShow = showAll ? userPageData.results : highlightedResults;
 
   return (
     <div className="stack lg">
-      {showHighlightsSection && (
-        <Section
-          title={t("results.highlights")}
-          className="u__results-table-wrapper u__results-table-highlights stack md"
+      {user?.id === userPageData.id ? (
+        <LinkButton
+          to={userResultsEditHighlightsPage(user)}
+          className="ml-auto"
+          size="tiny"
         >
-          {hasHighlights && (
-            <UserResultsTable
-              id="user-results-highlight-table"
-              results={highlights}
-            />
-          )}
-          {isOwnResultsPage && (
-            <LinkButton
-              variant="outlined"
-              size="tiny"
-              to={userResultsEditHighlightsPage(userPageData)}
-              className="mx-auto"
-            >
-              {t("results.highlights.choose")}
-            </LinkButton>
-          )}
-        </Section>
-      )}
-      {hasNonHighlights && (
-        <Section
-          title={
-            hasHighlights ? t("results.nonHighlights") : t("results.title")
-          }
-          className="u__results-table-wrapper"
+          {t("results.highlights.choose")}
+        </LinkButton>
+      ) : null}
+      <Section
+        title={showAll ? t("results.title") : t("results.highlights")}
+        className="u__results-table-wrapper"
+      >
+        <UserResultsTable id="user-results-table" results={resultsToShow} />
+      </Section>
+      {hasHighlightedResults ? (
+        <Button
+          variant="minimal"
+          size="tiny"
+          onClick={() => setShowAll(!showAll)}
         >
-          <UserResultsTable id="user-results-table" results={nonHighlights} />
-        </Section>
-      )}
+          {showAll
+            ? t("results.button.showHighlights")
+            : t("results.button.showAll")}
+        </Button>
+      ) : null}
     </div>
   );
 }
