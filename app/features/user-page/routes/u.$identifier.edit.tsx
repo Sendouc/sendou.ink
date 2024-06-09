@@ -24,7 +24,7 @@ import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { TrashIcon } from "~/components/icons/Trash";
 import { USER } from "~/constants";
-import type { User, UserWeapon } from "~/db/types";
+import type { User } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
 import { requireUser, requireUserId } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
@@ -50,6 +50,7 @@ import {
 } from "~/utils/zod";
 import { type UserPageLoaderData } from "./u.$identifier";
 import { userParamsSchema } from "../user-page-schemas.server";
+import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 
 import "~/styles/u-edit.css";
 
@@ -166,20 +167,25 @@ export const action: ActionFunction = async ({ request }) => {
   const { inGameNameText, inGameNameDiscriminator, ...data } = parsedInput.data;
 
   const user = await requireUserId(request);
+  const inGameName =
+    inGameNameText && inGameNameDiscriminator
+      ? `${inGameNameText}#${inGameNameDiscriminator}`
+      : null;
 
   try {
     const editedUser = await UserRepository.updateProfile({
       ...data,
-      weapons: data.weapons as Array<
-        Pick<UserWeapon, "weaponSplId" | "isFavorite">
-      >,
-      inGameName:
-        inGameNameText && inGameNameDiscriminator
-          ? `${inGameNameText}#${inGameNameDiscriminator}`
-          : null,
+      inGameName,
       userId: user.id,
-      showDiscordUniqueName: data.showDiscordUniqueName,
     });
+
+    // TODO: to transaction
+    if (inGameName) {
+      await TournamentTeamRepository.updateMemberInGameNameForNonStarted({
+        inGameName,
+        userId: user.id,
+      });
+    }
 
     throw redirect(userPage(editedUser));
   } catch (e) {

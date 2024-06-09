@@ -100,6 +100,7 @@ export function findLeanById(id: number) {
       "User.patronTier",
       "User.favoriteBadgeId",
       "User.languages",
+      "User.inGameName",
       "PlusTier.tier as plusTier",
     ])
     .executeTakeFirst();
@@ -352,6 +353,16 @@ export async function currentFriendCodeByUserId(userId: number) {
     .orderBy("UserFriendCode.createdAt desc")
     .limit(1)
     .executeTakeFirst();
+}
+
+export async function inGameNameByUserId(userId: number) {
+  return (
+    await db
+      .selectFrom("User")
+      .select("User.inGameName")
+      .where("id", "=", userId)
+      .executeTakeFirst()
+  )?.inGameName;
 }
 
 export function insertFriendCode(args: TablesInsertable["UserFriendCode"]) {

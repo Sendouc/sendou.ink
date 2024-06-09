@@ -58,6 +58,10 @@
   color: var(--theme-warning);
 }
 
+.text-warning-important {
+  color: var(--theme-warning) !important;
+}
+
 .text-theme {
   color: var(--theme);
 }

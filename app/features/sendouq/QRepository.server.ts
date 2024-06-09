@@ -282,7 +282,7 @@ export async function usersThatTrusted(userId: number) {
     .selectFrom("TeamMember")
     .innerJoin("User", "User.id", "TeamMember.userId")
     .innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
-    .select(COMMON_USER_FIELDS)
+    .select([...COMMON_USER_FIELDS, "User.inGameName"])
     .where((eb) =>
       eb(
         "TeamMember.teamId",
@@ -298,7 +298,7 @@ export async function usersThatTrusted(userId: number) {
         .selectFrom("TrustRelationship")
         .innerJoin("User", "User.id", "TrustRelationship.trustGiverUserId")
         .innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
-        .select(COMMON_USER_FIELDS)
+        .select([...COMMON_USER_FIELDS, "User.inGameName"])
         .where("TrustRelationship.trustReceiverUserId", "=", userId),
     )
     .orderBy("User.username asc")

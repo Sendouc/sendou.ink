@@ -99,6 +99,7 @@ export const action: ActionFunction = async ({ request }) => {
     isInvitational: data.isInvitational ?? false,
     deadlines: data.strictDeadline ? ("STRICT" as const) : ("DEFAULT" as const),
     enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
+    requireInGameNames: data.requireInGameNames ?? undefined,
     autoCheckInAll: data.autoCheckInAll ?? undefined,
     autonomousSubs: data.autonomousSubs ?? undefined,
     swissGroupCount: data.swissGroupCount ?? undefined,
@@ -266,6 +267,10 @@ export const newCalendarEventActionSchema = z
     autonomousSubs: z.preprocess(checkboxValueToBoolean, z.boolean().nullish()),
     strictDeadline: z.preprocess(checkboxValueToBoolean, z.boolean().nullish()),
     isInvitational: z.preprocess(checkboxValueToBoolean, z.boolean().nullish()),
+    requireInGameNames: z.preprocess(
+      checkboxValueToBoolean,
+      z.boolean().nullish(),
+    ),
     //
     // tournament format related fields
     //

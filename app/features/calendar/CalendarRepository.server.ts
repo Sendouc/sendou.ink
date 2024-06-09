@@ -421,6 +421,7 @@ type CreateArgs = Pick<
   teamsPerGroup?: number;
   thirdPlaceMatch?: boolean;
   autoCheckInAll?: boolean;
+  requireInGameNames?: boolean;
   isRanked?: boolean;
   isInvitational?: boolean;
   deadlines: TournamentSettings["deadlines"];
@@ -461,6 +462,7 @@ export async function create(args: CreateArgs) {
         autonomousSubs: args.autonomousSubs,
         regClosesAt: args.regClosesAt,
         autoCheckInAll: args.autoCheckInAll,
+        requireInGameNames: args.requireInGameNames,
         swiss:
           args.swissGroupCount && args.swissRoundCount
             ? {
@@ -613,6 +615,7 @@ export async function update(args: UpdateArgs) {
         autonomousSubs: args.autonomousSubs,
         regClosesAt: args.regClosesAt,
         autoCheckInAll: args.autoCheckInAll,
+        requireInGameNames: args.requireInGameNames,
         swiss:
           args.swissGroupCount && args.swissRoundCount
             ? {

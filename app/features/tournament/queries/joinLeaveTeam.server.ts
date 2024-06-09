@@ -6,9 +6,11 @@ import { deleteSub } from "~/features/tournament-subs";
 const createTeamMemberStm = sql.prepare(/*sql*/ `
   insert into "TournamentTeamMember" (
     "tournamentTeamId",
+    "inGameName",
     "userId"
   ) values (
     @tournamentTeamId,
+    @inGameName,
     @userId
   )
 `);
@@ -31,6 +33,7 @@ export const joinTeam = sql.transaction(
     whatToDoWithPreviousTeam,
     newTeamId,
     userId,
+    inGameName,
     tournamentId,
     checkOutTeam = false,
   }: {
@@ -38,6 +41,7 @@ export const joinTeam = sql.transaction(
     whatToDoWithPreviousTeam?: "LEAVE" | "DELETE";
     newTeamId: number;
     userId: number;
+    inGameName: string | null;
     tournamentId: number;
     checkOutTeam?: boolean;
   }) => {
@@ -59,7 +63,11 @@ export const joinTeam = sql.transaction(
       checkOut(previousTeamId);
     }
 
-    createTeamMemberStm.run({ tournamentTeamId: newTeamId, userId });
+    createTeamMemberStm.run({
+      tournamentTeamId: newTeamId,
+      userId,
+      inGameName,
+    });
   },
 );
 
