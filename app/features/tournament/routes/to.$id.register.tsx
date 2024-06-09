@@ -291,8 +291,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: after reg over, the "register as team name" toggle should not be shown
-
 export default function TournamentRegisterPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -843,7 +841,7 @@ function TeamInfo({
             <input type="hidden" name="teamId" value={data.team.id} />
           ) : null}
           <div className="stack sm items-center">
-            {data?.team ? (
+            {data?.team && tournament.registrationOpen ? (
               <div className="tournament__section__input-container">
                 <Label htmlFor="signUpAsTeam">
                   Sign up as {data.team.name}
