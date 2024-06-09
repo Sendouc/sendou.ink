@@ -43,8 +43,6 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: show IGN
-
 export default function TournamentTeamPage() {
   const data = useLoaderData<typeof loader>();
   const tournament = useTournament();

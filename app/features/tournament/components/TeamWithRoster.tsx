@@ -59,6 +59,14 @@ export function TeamWithRoster({
               databaseTimestampToDate(member.createdAt) >
               tournament.ctx.startTime;
 
+            const name = () => {
+              if (!tournament.ctx.settings.requireInGameNames) {
+                return member.username;
+              }
+
+              return member.inGameName ?? member.username;
+            };
+
             return (
               <li key={member.userId} className="tournament__team-member-row">
                 {member.isOwner ? (
@@ -89,7 +97,7 @@ export function TeamWithRoster({
                     to={userPage(member)}
                     className="tournament__team-member-name"
                   >
-                    {member.username}{" "}
+                    {name()}
                   </Link>
                 </div>
                 {friendCode ? (
