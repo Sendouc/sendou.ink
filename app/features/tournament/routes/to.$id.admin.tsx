@@ -20,7 +20,11 @@ import type { TournamentData } from "~/features/tournament-bracket/core/Tourname
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import {
+  badRequestIfFalsy,
+  parseRequestFormData,
+  validate,
+} from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
   calendarEditPage,
@@ -41,8 +45,8 @@ import { Input } from "~/components/Input";
 import { logger } from "~/utils/logger";
 import { userIsBanned } from "~/features/ban/core/banned.server";
 import { inGameNameIfNeeded } from "../tournament-utils.server";
-
-// xxx: edit IGN action
+import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
+import { USER } from "~/constants";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -313,6 +317,20 @@ export const action: ActionFunction = async ({ request, params }) => {
 
       break;
     }
+    case "UPDATE_IN_GAME_NAME": {
+      validateIsTournamentOrganizer();
+
+      const teamMemberOf = badRequestIfFalsy(
+        tournament.teamMemberOfByUser({ id: data.memberId }),
+      );
+
+      await TournamentTeamRepository.updateMemberInGameName({
+        userId: data.memberId,
+        inGameName: `${data.inGameNameText}#${data.inGameNameDiscriminator}`,
+        tournamentTeamId: teamMemberOf.id,
+      });
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -386,7 +404,8 @@ type Input =
   | "REGISTERED_TEAM"
   | "USER"
   | "ROSTER_MEMBER"
-  | "BRACKET";
+  | "BRACKET"
+  | "IN_GAME_NAME";
 const actions = [
   {
     type: "ADD_TEAM",
@@ -438,6 +457,11 @@ const actions = [
     inputs: ["REGISTERED_TEAM"] as Input[],
     when: ["TOURNAMENT_AFTER_START", "IS_SWISS"],
   },
+  {
+    type: "UPDATE_IN_GAME_NAME",
+    inputs: ["ROSTER_MEMBER", "REGISTERED_TEAM", "IN_GAME_NAME"] as Input[],
+    when: ["IN_GAME_NAME_REQUIRED"],
+  },
 ] as const;
 
 function TeamActions() {
@@ -472,16 +496,25 @@ function TeamActions() {
           if (tournament.hasStarted) {
             return false;
           }
+
           break;
         }
         case "TOURNAMENT_AFTER_START": {
           if (!tournament.hasStarted) {
             return false;
           }
+
           break;
         }
         case "IS_SWISS": {
           if (!tournament.brackets.some((b) => b.type === "swiss")) {
+            return false;
+          }
+
+          break;
+        }
+        case "IN_GAME_NAME_REQUIRED": {
+          if (!tournament.ctx.settings.requireInGameNames) {
             return false;
           }
 
@@ -572,6 +605,25 @@ function TeamActions() {
               </option>
             ))}
           </select>
+        </div>
+      ) : null}
+      {selectedTeam && selectedAction.inputs.includes("IN_GAME_NAME") ? (
+        <div className="stack items-start">
+          <Label>New IGN</Label>
+          <div className="stack horizontal sm items-center">
+            <Input
+              name="inGameNameText"
+              aria-label="In game name"
+              maxLength={USER.IN_GAME_NAME_TEXT_MAX_LENGTH}
+            />
+            <div className="u-edit__in-game-name-hashtag">#</div>
+            <Input
+              name="inGameNameDiscriminator"
+              aria-label="In game name discriminator"
+              maxLength={USER.IN_GAME_NAME_DISCRIMINATOR_MAX_LENGTH}
+              pattern="[0-9a-z]{4,5}"
+            />
+          </div>
         </div>
       ) : null}
       <SubmitButton

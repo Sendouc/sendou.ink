@@ -12,8 +12,6 @@ import {
 } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 
-// xxx: coalesce ign
-
 export async function findById(id: number) {
   const result = await db
     .selectFrom("Tournament")

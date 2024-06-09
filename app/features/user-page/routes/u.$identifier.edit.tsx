@@ -24,7 +24,7 @@ import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { TrashIcon } from "~/components/icons/Trash";
 import { USER } from "~/constants";
-import type { User, UserWeapon } from "~/db/types";
+import type { User } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
 import { requireUser, requireUserId } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
@@ -181,7 +181,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     // TODO: to transaction
     if (inGameName) {
-      await TournamentTeamRepository.updateInGameNameForNonStarted({
+      await TournamentTeamRepository.updateMemberInGameNameForNonStarted({
         inGameName,
         userId: user.id,
       });
@@ -227,8 +227,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       .sort((a, b) => a.name.localeCompare(b.name)),
   };
 };
-
-// xxx: edit also tournamentmember
 
 export default function UserEditPage() {
   const user = useUser();

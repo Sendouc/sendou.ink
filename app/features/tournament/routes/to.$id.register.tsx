@@ -221,7 +221,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       );
       break;
     }
-    // xxx: handle here and in UI
     case "ADD_PLAYER": {
       validate(
         tournament.ctx.teams.every((team) =>
@@ -293,7 +292,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 // xxx: after reg over, the "register as team name" toggle should not be shown
-// xxx: same spacing for team members
 
 export default function TournamentRegisterPage() {
   const user = useUser();

@@ -46,7 +46,24 @@ const regOpenTournamentTeamIdsByJoinedUserId = (userId: number) =>
     .execute()
     .then((rows) => rows.map((row) => row.tournamentTeamId));
 
-export async function updateInGameNameForNonStarted({
+export async function updateMemberInGameName({
+  userId,
+  inGameName,
+  tournamentTeamId,
+}: {
+  userId: number;
+  inGameName: string;
+  tournamentTeamId: number;
+}) {
+  return db
+    .updateTable("TournamentTeamMember")
+    .set({ inGameName })
+    .where("TournamentTeamMember.userId", "=", userId)
+    .where("TournamentTeamMember.tournamentTeamId", "=", tournamentTeamId)
+    .execute();
+}
+
+export async function updateMemberInGameNameForNonStarted({
   userId,
   inGameName,
 }: {
