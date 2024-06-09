@@ -220,7 +220,6 @@ export interface Tournament {
   id: number;
   mapPickingStyle: TournamentMapPickingStyle;
   format: TournamentFormat;
-  showMapListGenerator: number;
 }
 
 export interface TournamentTeam {

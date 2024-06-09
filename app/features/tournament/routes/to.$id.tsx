@@ -211,9 +211,6 @@ export default function TournamentLayout() {
         <SubNavLink to="brackets" data-testid="brackets-tab" prefetch="render">
           {t("tournament:tabs.brackets")}
         </SubNavLink>
-        {tournament.ctx.showMapListGenerator ? (
-          <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
-        ) : null}
         <SubNavLink to="teams" end={false} prefetch="render">
           {t("tournament:tabs.teams", { count: tournament.ctx.teams.length })}
         </SubNavLink>

@@ -2268,7 +2268,6 @@ export const PADDLING_POOL_257 = () =>
         thirdPlaceMatch: true,
         isRanked: true,
       },
-      showMapListGenerator: 0,
       discordUrl: null,
       castTwitchAccounts: ["dappleproductions"],
       castedMatchesInfo: {
@@ -8151,7 +8150,6 @@ export const PADDLING_POOL_255 = () =>
         ],
         teamsPerGroup: 4,
       },
-      showMapListGenerator: 0,
       discordUrl: null,
       castTwitchAccounts: ["dappleproductions"],
       castedMatchesInfo: {
@@ -14358,7 +14356,6 @@ export const IN_THE_ZONE_32 = () =>
           },
         ],
       },
-      showMapListGenerator: 0,
       discordUrl: null,
       castTwitchAccounts: ["dappleproductions", "kyochandxd"],
       castedMatchesInfo: null,

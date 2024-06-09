@@ -451,7 +451,8 @@ export interface Tournament {
   settings: ColumnType<TournamentSettings, string, string>;
   id: GeneratedAlways<number>;
   mapPickingStyle: TournamentMapPickingStyle;
-  showMapListGenerator: Generated<number | null>;
+  // TODO: remove in migration
+  // showMapListGenerator: Generated<number | null>;
   castTwitchAccounts: ColumnType<string[] | null, string | null, string | null>;
   castedMatchesInfo: ColumnType<
     CastedMatchesInfo | null,

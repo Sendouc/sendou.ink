@@ -1,25 +1,29 @@
 import type { ActionFunction } from "@remix-run/node";
-import { useFetcher, useSubmit } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import invariant from "~/utils/invariant";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { FormMessage } from "~/components/FormMessage";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Redirect } from "~/components/Redirect";
 import { SubmitButton } from "~/components/SubmitButton";
-import { Toggle } from "~/components/Toggle";
 import { UserSearch } from "~/components/UserSearch";
 import { TrashIcon } from "~/components/icons/Trash";
+import { USER } from "~/constants";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
+import { userIsBanned } from "~/features/ban/core/banned.server";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
-import { isAdmin } from "~/permissions";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
+import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
+import invariant from "~/utils/invariant";
+import { logger } from "~/utils/logger";
 import {
   badRequestIfFalsy,
   parseRequestFormData,
@@ -36,17 +40,10 @@ import { changeTeamOwner } from "../queries/changeTeamOwner.server";
 import { createTeam } from "../queries/createTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
-import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerator.server";
 import { adminActionSchema } from "../tournament-schemas.server";
 import { tournamentIdFromParams } from "../tournament-utils";
-import { useTournament } from "./to.$id";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
-import { Input } from "~/components/Input";
-import { logger } from "~/utils/logger";
-import { userIsBanned } from "~/features/ban/core/banned.server";
 import { inGameNameIfNeeded } from "../tournament-utils.server";
-import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
-import { USER } from "~/constants";
+import { useTournament } from "./to.$id";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -88,14 +85,6 @@ export const action: ActionFunction = async ({ request, params }) => {
         }),
       });
 
-      break;
-    }
-    case "UPDATE_SHOW_MAP_LIST_GENERATOR": {
-      validateIsTournamentAdmin();
-      updateShowMapListGenerator({
-        tournamentId: tournament.ctx.id,
-        showMapListGenerator: Number(data.show),
-      });
       break;
     }
     case "CHANGE_TEAM_OWNER": {
@@ -394,7 +383,6 @@ export default function TournamentAdminPage() {
       <DownloadParticipants />
       <Divider smallText>Bracket reset</Divider>
       <BracketReset />
-      {isAdmin(user) ? <EnableMapList /> : null}
     </div>
   );
 }
@@ -783,30 +771,6 @@ function RemoveStaffButton({
         <TrashIcon className="build__icon" />
       </Button>
     </FormWithConfirm>
-  );
-}
-
-function EnableMapList() {
-  const tournament = useTournament();
-  const submit = useSubmit();
-  const [eventStarted, setEventStarted] = React.useState(
-    Boolean(tournament.ctx.showMapListGenerator),
-  );
-  function handleToggle(toggled: boolean) {
-    setEventStarted(toggled);
-
-    const data = new FormData();
-    data.append("_action", "UPDATE_SHOW_MAP_LIST_GENERATOR");
-    data.append("show", toggled ? "on" : "off");
-
-    submit(data, { method: "post" });
-  }
-
-  return (
-    <div>
-      <label>Public map list generator tool</label>
-      <Toggle checked={eventStarted} setChecked={handleToggle} name="show" />
-    </div>
   );
 }
 

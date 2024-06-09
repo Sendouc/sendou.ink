@@ -3,7 +3,6 @@
   "tabs.teams": "チーム ({{count}})",
   "tabs.admin": "管理",
   "tabs.register": "登録",
-  "tabs.maps": "マップ一覧",
   "tabs.brackets": "ブラケット",
   "tabs.seeds": "シード",
   "tabs.streams": "配信 ({{count}})",

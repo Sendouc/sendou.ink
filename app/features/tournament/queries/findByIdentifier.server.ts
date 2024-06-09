@@ -12,7 +12,6 @@ select
   "Tournament"."id",
   "Tournament"."mapPickingStyle",
   "Tournament"."settings",
-  "Tournament"."showMapListGenerator",
   "CalendarEvent"."id" as "eventId",
   "CalendarEvent"."name",
   "CalendarEvent"."description",
@@ -33,7 +32,7 @@ type FindByIdentifierRow = (Pick<
   CalendarEvent,
   "bracketUrl" | "name" | "description" | "authorId"
 > &
-  Pick<Tournament, "id" | "mapPickingStyle" | "showMapListGenerator"> &
+  Pick<Tournament, "id" | "mapPickingStyle"> &
   Pick<User, "discordId" | "username"> &
   Pick<CalendarEventDate, "startTime">) & {
   eventId: CalendarEvent["id"];

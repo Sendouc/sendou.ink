@@ -54,10 +54,6 @@ export const seedsActionSchema = z.object({
 
 export const adminActionSchema = z.union([
   z.object({
-    _action: _action("UPDATE_SHOW_MAP_LIST_GENERATOR"),
-    show: z.preprocess(checkboxValueToBoolean, z.boolean()),
-  }),
-  z.object({
     _action: _action("CHANGE_TEAM_OWNER"),
     teamId: id,
     memberId: id,

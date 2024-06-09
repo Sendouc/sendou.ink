@@ -3,7 +3,6 @@
   "tabs.teams": "参赛队伍 ({{count}})",
   "tabs.admin": "管理",
   "tabs.register": "报名",
-  "tabs.maps": "地图",
   "tabs.brackets": "对战表",
   "tabs.seeds": "种子",
   "tabs.streams": "直播 ({{count}})",

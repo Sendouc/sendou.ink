@@ -155,10 +155,6 @@ export default defineConfig(() => {
                 "features/tournament/routes/to.$id.seeds.tsx",
               );
               route(
-                "/to/:id/maps",
-                "features/tournament/routes/to.$id.maps.tsx",
-              );
-              route(
                 "/to/:id/streams",
                 "features/tournament/routes/to.$id.streams.tsx",
               );

@@ -26,7 +26,6 @@ export async function findById(id: number) {
       "CalendarEvent.id as eventId",
       "CalendarEvent.discordUrl",
       "Tournament.settings",
-      "Tournament.showMapListGenerator",
       "Tournament.castTwitchAccounts",
       "Tournament.castedMatchesInfo",
       "Tournament.mapPickingStyle",

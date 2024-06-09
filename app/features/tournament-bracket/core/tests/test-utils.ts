@@ -51,7 +51,6 @@ export const testTournament = (
       startTime: 1705858842,
       isFinalized: 0,
       name: "test",
-      showMapListGenerator: 0,
       castTwitchAccounts: [],
       staff: [],
       tieBreakerMapPool: [],
