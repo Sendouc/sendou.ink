@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck TODO
 
-import { Stage, Team, Group, Round, Match } from "./crud-db.server";
+import { Stage, Group, Round, Match } from "./crud-db.server";
 
 export class SqlDatabase {
   insert(table, arg) {
