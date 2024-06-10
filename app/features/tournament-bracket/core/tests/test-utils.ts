@@ -59,6 +59,7 @@ export const testTournament = (
       isFinalized: 0,
       name: "test",
       castTwitchAccounts: [],
+      subCounts: [],
       staff: [],
       tieBreakerMapPool: [],
       participatedUsers: [],

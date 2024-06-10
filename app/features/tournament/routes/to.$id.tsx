@@ -18,7 +18,6 @@ import { useUser } from "~/features/auth/core/user";
 import { getUser } from "~/features/auth/core/user.server";
 import { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { tournamentData } from "~/features/tournament-bracket/core/Tournament.server";
-import { findSubsByTournamentId } from "~/features/tournament-subs";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
@@ -114,31 +113,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
 
-  const subsCount = findSubsByTournamentId({
-    tournamentId,
-    userId: user?.id,
-    // eslint-disable-next-line array-callback-return
-  }).filter((sub) => {
-    if (sub.visibility === "ALL") return true;
-
-    const userPlusTier = user?.plusTier ?? 4;
-
-    switch (sub.visibility) {
-      case "+1": {
-        return userPlusTier === 1;
-      }
-      case "+2": {
-        return userPlusTier <= 2;
-      }
-      case "+3": {
-        return userPlusTier <= 3;
-      }
-      default: {
-        assertUnreachable(sub.visibility);
-      }
-    }
-  }).length;
-
   const tournament = await tournamentData({ tournamentId, user });
 
   const streams =
@@ -162,7 +136,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   return {
     tournament,
-    subsCount,
     streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
     streamsCount: streams.length,
     toSetMapPool:
@@ -202,6 +175,28 @@ export default function TournamentLayout() {
 
   const onBracketsPage = location.pathname.includes("brackets");
 
+  const subsCount = () =>
+    tournament.ctx.subCounts.reduce((acc, cur) => {
+      if (cur.visibility === "ALL") return acc + cur.count;
+
+      const userPlusTier = user?.plusTier ?? 4;
+
+      switch (cur.visibility) {
+        case "+1": {
+          return userPlusTier === 1 ? acc + cur.count : acc;
+        }
+        case "+2": {
+          return userPlusTier <= 2 ? acc + cur.count : acc;
+        }
+        case "+3": {
+          return userPlusTier <= 3 ? acc + cur.count : acc;
+        }
+        default: {
+          assertUnreachable(cur.visibility);
+        }
+      }
+    }, 0);
+
   return (
     <Main bigger={onBracketsPage}>
       <SubNav>
@@ -216,7 +211,7 @@ export default function TournamentLayout() {
         </SubNavLink>
         {!tournament.everyBracketOver && tournament.subsFeatureEnabled && (
           <SubNavLink to="subs" end={false}>
-            {t("tournament:tabs.subs", { count: data.subsCount })}
+            {t("tournament:tabs.subs", { count: subsCount() })}
           </SubNavLink>
         )}
         {tournament.hasStarted && !tournament.everyBracketOver ? (

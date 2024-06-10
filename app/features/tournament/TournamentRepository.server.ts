@@ -56,6 +56,16 @@ export async function findById(id: number) {
           ])
           .where("TournamentStaff.tournamentId", "=", id),
       ).as("staff"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentSub")
+          .select(({ fn }) => [
+            "TournamentSub.visibility",
+            fn.countAll<number>().as("count"),
+          ])
+          .where("TournamentSub.tournamentId", "=", id)
+          .groupBy("TournamentSub.visibility"),
+      ).as("subCounts"),
       exists(
         selectFrom("TournamentResult")
           .where("TournamentResult.tournamentId", "=", id)

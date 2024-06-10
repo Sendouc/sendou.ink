@@ -2029,6 +2029,7 @@ export const PADDLING_POOL_257 = () =>
       logoUrl: null,
       logoSrc: "/test.png",
       avatarImgId: null,
+      subCounts: [],
       startTime: 1709748000,
       author: {
         id: 860,
@@ -7733,6 +7734,7 @@ export const PADDLING_POOL_255 = () =>
       logoUrl: null,
       logoSrc: "/test.png",
       avatarImgId: null,
+      subCounts: [],
       startTime: 1708538400,
       author: {
         id: 860,
@@ -13759,6 +13761,7 @@ export const IN_THE_ZONE_32 = () =>
       logoUrl: null,
       logoSrc: "/test.png",
       avatarImgId: null,
+      subCounts: [],
       startTime: 1707588000,
       author: {
         id: 274,

@@ -581,7 +581,7 @@ export interface TournamentSub {
   okWeapons: string | null;
   tournamentId: number;
   userId: number;
-  visibility: string;
+  visibility: "+1" | "+2" | "+3" | "ALL";
 }
 
 export interface TournamentStaff {
