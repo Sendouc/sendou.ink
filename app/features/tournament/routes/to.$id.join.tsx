@@ -17,7 +17,7 @@ import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { joinSchema } from "../tournament-schemas.server";
 import { tournamentIdFromParams } from "../tournament-utils";
-import { useTournamentFriendCode, useTournament } from "./to.$id";
+import { useTournament } from "./to.$id";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
@@ -64,7 +64,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     "Cannot join this team or invite code is invalid",
   );
   validate(
-    await UserRepository.currentFriendCodeByUserId(user.id),
+    (await UserRepository.findLeanById(user.id))?.friendCode,
     "No friend code",
   );
 
@@ -123,7 +123,6 @@ export default function JoinTeamPage() {
   const user = useUser();
   const tournament = useTournament();
   const data = useLoaderData<typeof loader>();
-  const friendCode = useTournamentFriendCode();
 
   const teamToJoin = data.teamId ? tournament.teamById(data.teamId) : undefined;
   const captain = teamToJoin?.members.find((member) => member.isOwner);
@@ -175,7 +174,7 @@ export default function JoinTeamPage() {
       <div className="text-center text-lg font-semi-bold">{textPrompt()}</div>
       <div className="stack sm items-center">
         {validationStatus === "VALID" ? (
-          <FriendCodeInput friendCode={friendCode} />
+          <FriendCodeInput friendCode={user?.friendCode} />
         ) : null}
         {user?.inGameName ? (
           <div className="font-bold">
@@ -186,10 +185,10 @@ export default function JoinTeamPage() {
       <Form method="post" className="tournament__invite-container">
         {validationStatus === "VALID" ? (
           <div className="stack md items-center">
-            <SubmitButton size="big" disabled={!friendCode}>
+            <SubmitButton size="big" disabled={!user?.friendCode}>
               {t("common:actions.join")}
             </SubmitButton>
-            {!friendCode ? (
+            {!user?.friendCode ? (
               <div className="text-warning">
                 Save friend code before joining the team
               </div>

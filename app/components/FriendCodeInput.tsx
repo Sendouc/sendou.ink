@@ -7,7 +7,11 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { FRIEND_CODE_REGEXP_PATTERN } from "~/features/sendouq/q-constants";
 import { SENDOUQ_PAGE } from "~/utils/urls";
 
-export function FriendCodeInput({ friendCode }: { friendCode?: string }) {
+export function FriendCodeInput({
+  friendCode,
+}: {
+  friendCode?: string | null;
+}) {
   const fetcher = useFetcher();
   const { t } = useTranslation(["common"]);
 

@@ -26,7 +26,6 @@ import {
   HACKY_resolvePicture,
   tournamentIdFromParams,
 } from "../tournament-utils";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { isAdmin } from "~/permissions";
@@ -135,9 +134,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     tournament,
     streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
     streamsCount: streams.length,
-    friendCode: user
-      ? await UserRepository.currentFriendCodeByUserId(user.id)
-      : undefined,
     friendCodes: showFriendCodes
       ? await TournamentRepository.friendCodesByTournamentId(tournamentId)
       : undefined,
@@ -231,7 +227,6 @@ export default function TournamentLayout() {
               bracketExpanded,
               setBracketExpanded,
               streamingParticipants: data.streamingParticipants,
-              friendCode: data.friendCode?.friendCode,
               friendCodes: data.friendCodes,
             } satisfies TournamentContext
           }
@@ -263,10 +258,6 @@ export function useBracketExpanded() {
 
 export function useStreamingParticipants() {
   return useOutletContext<TournamentContext>().streamingParticipants;
-}
-
-export function useTournamentFriendCode() {
-  return useOutletContext<TournamentContext>().friendCode;
 }
 
 export function useTournamentFriendCodes() {

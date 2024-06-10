@@ -93,7 +93,7 @@ export function findLeanById(id: number) {
     .selectFrom("User")
     .leftJoin("PlusTier", "PlusTier.userId", "User.id")
     .where("User.id", "=", id)
-    .select([
+    .select(({ eb }) => [
       ...COMMON_USER_FIELDS,
       "User.isArtist",
       "User.isVideoAdder",
@@ -102,6 +102,13 @@ export function findLeanById(id: number) {
       "User.languages",
       "User.inGameName",
       "PlusTier.tier as plusTier",
+      eb
+        .selectFrom("UserFriendCode")
+        .select("UserFriendCode.friendCode")
+        .where("UserFriendCode.userId", "=", id)
+        .orderBy("UserFriendCode.createdAt", "desc")
+        .limit(1)
+        .as("friendCode"),
     ])
     .executeTakeFirst();
 }

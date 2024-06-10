@@ -20,6 +20,7 @@ const createTeam = (teamId: number, userIds: number[]): TournamentDataTeam => ({
     discordId: "123",
     username: "test",
     inGameName: "test",
+    twitch: null,
     isOwner: 0,
     plusTier: null,
     createdAt: 0,

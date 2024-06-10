@@ -69,7 +69,7 @@ import {
   isOneModeTournamentOf,
   tournamentIdFromParams,
 } from "../tournament-utils";
-import { useTournament, useTournamentFriendCode } from "./to.$id";
+import { useTournament } from "./to.$id";
 import Markdown from "markdown-to-jsx";
 import { NewTabs } from "~/components/NewTabs";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
@@ -118,7 +118,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       } else {
         validate(!tournament.isInvitational, "Event is invite only");
         validate(
-          await UserRepository.currentFriendCodeByUserId(user.id),
+          (await UserRepository.findLeanById(user.id))?.friendCode,
           "No friend code",
         );
         validate(
@@ -232,7 +232,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         "No trust given from this user",
       );
       validate(
-        await UserRepository.currentFriendCodeByUserId(data.userId),
+        (await UserRepository.findLeanById(user.id))?.friendCode,
         "No friend code",
       );
       validate(tournament.registrationOpen, "Registration is closed");
@@ -524,7 +524,6 @@ function RegistrationForms() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
   const tournament = useTournament();
-  const friendCode = useTournamentFriendCode();
 
   const ownTeam = tournament.ownedTeamByUser(user);
   const ownTeamCheckedIn = Boolean(ownTeam && ownTeam.checkIns.length > 0);
@@ -564,7 +563,7 @@ function RegistrationForms() {
       {showRegisterNewTeam() ? (
         <>
           <FriendCode />
-          {friendCode ? (
+          {user?.friendCode ? (
             <TeamInfo
               name={ownTeam?.name}
               prefersNotToHost={ownTeam?.prefersNotToHost}
@@ -905,17 +904,17 @@ function TeamInfo({
 }
 
 function FriendCode() {
-  const friendCode = useTournamentFriendCode();
+  const user = useUser();
 
   return (
     <div>
       <h3 className="tournament__section-header">1. Friend code</h3>
       <section className="tournament__section">
         <div className="tournament__section__input-container mx-auto">
-          <FriendCodeInput friendCode={friendCode} />
+          <FriendCodeInput friendCode={user?.friendCode} />
         </div>
       </section>
-      {friendCode ? (
+      {user?.friendCode ? (
         <div className="tournament__section__warning">
           Is the friend code above wrong? Contact Sendou directly to change it.
         </div>
