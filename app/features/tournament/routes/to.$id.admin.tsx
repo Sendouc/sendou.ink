@@ -106,10 +106,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHANGE_TEAM_NAME": {
       validateIsTournamentOrganizer();
-      validate(
-        tournament.ctx.inProgressBrackets.length === 0,
-        "Tournament started",
-      );
+      validate(!tournament.hasStarted, "Tournament started");
       const team = tournament.teamById(data.teamId);
       validate(team, "Invalid team id");
 

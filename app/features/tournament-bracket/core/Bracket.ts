@@ -20,7 +20,7 @@ interface CreateBracketArgs {
   name: string;
   teamsPendingCheckIn?: number[];
   tournament: Tournament;
-  createdAt: number | null;
+  createdAt?: number | null;
   sources?: {
     bracketIdx: number;
     placements: number[];

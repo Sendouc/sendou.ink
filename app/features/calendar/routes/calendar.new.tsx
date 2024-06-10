@@ -279,7 +279,7 @@ function DescriptionTextarea({
 function RulesTextarea({ supportsMarkdown }: { supportsMarkdown?: boolean }) {
   const baseEvent = useBaseEvent();
   const [value, setValue] = React.useState(
-    baseEvent?.tournamentCtx?.rules ?? "",
+    baseEvent?.tournament?.ctx.rules ?? "",
   );
 
   return (
@@ -617,10 +617,10 @@ function AvatarImageInput({
 
   if (
     baseEvent?.avatarImgId &&
-    baseEvent?.tournamentCtx?.logoUrl &&
+    baseEvent?.tournament?.ctx.logoUrl &&
     showPrevious
   ) {
-    const logoImgUrl = userSubmittedImage(baseEvent.tournamentCtx.logoUrl);
+    const logoImgUrl = userSubmittedImage(baseEvent.tournament.ctx.logoUrl);
 
     return (
       <div className="stack horizontal md flex-wrap">
@@ -784,7 +784,7 @@ function TournamentLogoColorInputsWithShowcase({
 function RankedToggle() {
   const baseEvent = useBaseEvent();
   const [isRanked, setIsRanked] = React.useState(
-    baseEvent?.tournamentCtx?.settings.isRanked ?? true,
+    baseEvent?.tournament?.ctx.settings.isRanked ?? true,
   );
   const id = React.useId();
 
@@ -813,7 +813,7 @@ function RankedToggle() {
 function EnableNoScreenToggle() {
   const baseEvent = useBaseEvent();
   const [enableNoScreen, setEnableNoScreen] = React.useState(
-    baseEvent?.tournamentCtx?.settings.enableNoScreenToggle ?? true,
+    baseEvent?.tournament?.ctx.settings.enableNoScreenToggle ?? true,
   );
   const id = React.useId();
 
@@ -840,7 +840,7 @@ function EnableNoScreenToggle() {
 function AutonomousSubsToggle() {
   const baseEvent = useBaseEvent();
   const [autonomousSubs, setAutonomousSubs] = React.useState(
-    baseEvent?.tournamentCtx?.settings.autonomousSubs ?? true,
+    baseEvent?.tournament?.ctx.settings.autonomousSubs ?? true,
   );
   const id = React.useId();
 
@@ -867,7 +867,7 @@ function AutonomousSubsToggle() {
 function RequireIGNToggle() {
   const baseEvent = useBaseEvent();
   const [requireIGNs, setRequireIGNs] = React.useState(
-    baseEvent?.tournamentCtx?.settings.requireInGameNames ?? false,
+    baseEvent?.tournament?.ctx.settings.requireInGameNames ?? false,
   );
   const id = React.useId();
 
@@ -895,7 +895,7 @@ function RequireIGNToggle() {
 function InvitationalToggle() {
   const baseEvent = useBaseEvent();
   const [isInvitational, setIsInvitational] = React.useState(
-    baseEvent?.tournamentCtx?.settings.isInvitational ?? false,
+    baseEvent?.tournament?.ctx.settings.isInvitational ?? false,
   );
   const id = React.useId();
 
@@ -922,7 +922,7 @@ function InvitationalToggle() {
 function StrictDeadlinesToggle() {
   const baseEvent = useBaseEvent();
   const [strictDeadlines, setStrictDeadlines] = React.useState(
-    baseEvent?.tournamentCtx?.settings.deadlines === "STRICT" ? true : false,
+    baseEvent?.tournament?.ctx.settings.deadlines === "STRICT" ? true : false,
   );
   const id = React.useId();
 
@@ -949,11 +949,11 @@ function StrictDeadlinesToggle() {
 function RegClosesAtSelect() {
   const baseEvent = useBaseEvent();
   const [regClosesAt, setRegClosesAt] = React.useState<RegClosesAtOption>(
-    baseEvent?.tournamentCtx?.settings.regClosesAt
+    baseEvent?.tournament?.ctx.settings.regClosesAt
       ? datesToRegClosesAt({
-          startTime: new Date(baseEvent.tournamentCtx.startTime),
+          startTime: new Date(baseEvent.tournament.ctx.startTime),
           regClosesAt: databaseTimestampToDate(
-            baseEvent.tournamentCtx.settings.regClosesAt,
+            baseEvent.tournament.ctx.settings.regClosesAt,
           ),
         })
       : "0",
@@ -1212,30 +1212,30 @@ function MapPoolValidationStatusMessage({
 function TournamentFormatSelector() {
   const baseEvent = useBaseEvent();
   const [format, setFormat] = React.useState<TournamentFormatShort>(
-    baseEvent?.tournamentCtx?.settings.bracketProgression
+    baseEvent?.tournament?.ctx.settings.bracketProgression
       ? bracketProgressionToShortTournamentFormat(
-          baseEvent.tournamentCtx.settings.bracketProgression,
+          baseEvent.tournament.ctx.settings.bracketProgression,
         )
       : "DE",
   );
   const [withUndergroundBracket, setWithUndergroundBracket] = React.useState(
-    baseEvent?.tournamentCtx
-      ? baseEvent.tournamentCtx.settings.bracketProgression.some(
+    baseEvent?.tournament
+      ? baseEvent.tournament.ctx.settings.bracketProgression.some(
           (b) => b.name === BRACKET_NAMES.UNDERGROUND,
         )
       : false,
   );
   const [thirdPlaceMatch, setThirdPlaceMatch] = React.useState(
-    baseEvent?.tournamentCtx?.settings.thirdPlaceMatch ?? true,
+    baseEvent?.tournament?.ctx.settings.thirdPlaceMatch ?? true,
   );
   const [teamsPerGroup, setTeamsPerGroup] = React.useState(
-    baseEvent?.tournamentCtx?.settings.teamsPerGroup ?? 4,
+    baseEvent?.tournament?.ctx.settings.teamsPerGroup ?? 4,
   );
   const [swissGroupCount, setSwissGroupCount] = React.useState(
-    baseEvent?.tournamentCtx?.settings.swiss?.groupCount ?? 1,
+    baseEvent?.tournament?.ctx.settings.swiss?.groupCount ?? 1,
   );
   const [swissRoundCount, setSwissRoundCount] = React.useState(
-    baseEvent?.tournamentCtx?.settings.swiss?.roundCount ?? 5,
+    baseEvent?.tournament?.ctx.settings.swiss?.roundCount ?? 5,
   );
 
   return (
@@ -1377,17 +1377,17 @@ function FollowUpBrackets({
 }) {
   const baseEvent = useBaseEvent();
   const [autoCheckInAll, setAutoCheckInAll] = React.useState(
-    baseEvent?.tournamentCtx?.settings.autoCheckInAll ?? false,
+    baseEvent?.tournament?.ctx.settings.autoCheckInAll ?? false,
   );
   const [_brackets, setBrackets] = React.useState<Array<FollowUpBracket>>(
     () => {
       if (
-        baseEvent?.tournamentCtx &&
+        baseEvent?.tournament &&
         ["round_robin", "swiss"].includes(
-          baseEvent.tournamentCtx.settings.bracketProgression[0].type,
+          baseEvent.tournament.ctx.settings.bracketProgression[0].type,
         )
       ) {
-        return baseEvent.tournamentCtx.settings.bracketProgression
+        return baseEvent.tournament.ctx.settings.bracketProgression
           .slice(1)
           .map((b) => ({
             name: b.name,

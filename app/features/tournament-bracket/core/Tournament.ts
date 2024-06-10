@@ -32,7 +32,7 @@ export class Tournament {
   ctx;
 
   constructor({ data, ctx }: TournamentData) {
-    const hasStarted = ctx.inProgressBrackets.length > 0;
+    const hasStarted = data.stage.length > 0;
 
     const teamsInSeedOrder = ctx.teams.sort((a, b) => {
       if (a.seed && b.seed) {
@@ -91,9 +91,7 @@ export class Tournament {
       bracketIdx,
       { type, name, sources },
     ] of this.ctx.settings.bracketProgression.entries()) {
-      const inProgressStage = this.ctx.inProgressBrackets.find(
-        (stage) => stage.name === name,
-      );
+      const inProgressStage = data.stage.find((stage) => stage.name === name);
 
       if (inProgressStage) {
         const match = data.match.filter(

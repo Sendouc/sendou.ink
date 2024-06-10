@@ -253,6 +253,7 @@ export interface TournamentStage {
   type: "round_robin" | "single_elimination" | "double_elimination";
   settings: string; // json
   number: number;
+  createdAt: number | null;
 }
 
 /** A group is a logical structure used to group multiple rounds together.

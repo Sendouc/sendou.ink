@@ -17,12 +17,13 @@ export async function tournamentData({
   user?: { id: number };
   tournamentId: number;
 }) {
+  const data = manager.get.tournamentData(tournamentId);
   const ctx = notFoundIfFalsy(
     await TournamentRepository.findById(tournamentId),
   );
 
   const revealAllMapPools =
-    ctx.inProgressBrackets.length > 0 ||
+    data.stage.length > 0 ||
     ctx.author.id === user?.id ||
     ctx.staff.some(
       (staff) => staff.id === user?.id && staff.role === "ORGANIZER",
@@ -32,7 +33,7 @@ export async function tournamentData({
     : HACKY_resolvePicture(ctx);
 
   return {
-    data: manager.get.tournamentData(tournamentId),
+    data,
     ctx: {
       ...ctx,
       logoSrc: logo,

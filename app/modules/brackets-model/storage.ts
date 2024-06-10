@@ -32,6 +32,8 @@ export interface Stage {
 
   /** The number of the stage in its tournament. */
   number: number;
+
+  createdAt?: number | null;
 }
 
 /**

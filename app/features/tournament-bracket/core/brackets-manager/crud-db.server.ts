@@ -100,6 +100,7 @@ export class Stage {
       settings: JSON.parse(rawStage.settings),
       tournament_id: rawStage.tournamentId,
       type: rawStage.type,
+      createdAt: rawStage.createdAt,
     };
   }
 

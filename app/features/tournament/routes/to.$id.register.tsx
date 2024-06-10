@@ -91,7 +91,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   validate(
-    tournament.ctx.inProgressBrackets.length === 0,
+    !tournament.hasStarted,
     "Tournament has started, cannot make edits to registration",
   );
 

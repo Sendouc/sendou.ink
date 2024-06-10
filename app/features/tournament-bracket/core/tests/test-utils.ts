@@ -68,12 +68,6 @@ export const testTournament = (
           { name: BRACKET_NAMES.MAIN, type: "double_elimination" },
         ],
       },
-      inProgressBrackets: data.stage.map((stage) => ({
-        id: stage.id,
-        name: stage.name,
-        type: stage.type,
-        createdAt: 0,
-      })),
       castedMatchesInfo: null,
       teams: nTeams(participant.length, Math.min(...participant)),
       author: {

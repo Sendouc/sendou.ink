@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import { tournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { canEditCalendarEvent } from "~/permissions";
 import { validate } from "~/utils/remix";
@@ -35,17 +35,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     // special tags that are added automatically
     const tags = event?.tags?.filter((tag) => tag !== "BADGE");
 
-    if (!event?.tournamentId) return { ...event, tags, tournamentCtx: null };
+    if (!event?.tournamentId) return { ...event, tags, tournament: null };
 
     return {
       ...event,
       tags,
-      tournamentCtx: (
-        await tournamentFromDB({
-          tournamentId: event.tournamentId,
-          user,
-        })
-      ).ctx,
+      tournament: await tournamentData({
+        tournamentId: event.tournamentId,
+        user,
+      }),
     };
   };
 
@@ -56,11 +54,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   // no editing tournament after the start
   if (
     eventToEdit &&
-    eventToEdit.tournamentCtx?.inProgressBrackets &&
-    eventToEdit.tournamentCtx.inProgressBrackets.length > 0
+    eventToEdit.tournament?.data.stage &&
+    eventToEdit.tournament.data.stage.length > 0
   ) {
     return redirect(
-      tournamentBracketsPage({ tournamentId: eventToEdit.tournamentCtx.id }),
+      tournamentBracketsPage({ tournamentId: eventToEdit.tournament.ctx.id }),
     );
   }
 

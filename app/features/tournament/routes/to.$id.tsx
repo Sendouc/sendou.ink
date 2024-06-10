@@ -142,7 +142,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const tournament = await tournamentData({ tournamentId, user });
 
   const streams =
-    tournament.ctx.inProgressBrackets.length > 0
+    tournament.data.stage.length > 0
       ? await streamsByTournamentId({
           tournamentId,
           castTwitchAccounts: tournament.ctx.castTwitchAccounts,

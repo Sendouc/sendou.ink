@@ -63,18 +63,6 @@ export async function findById(id: number) {
       ).as("isFinalized"),
       jsonArrayFrom(
         eb
-          .selectFrom("TournamentStage")
-          .select([
-            "TournamentStage.id",
-            "TournamentStage.name",
-            "TournamentStage.type",
-            "TournamentStage.createdAt",
-          ])
-          .where("TournamentStage.tournamentId", "=", id)
-          .orderBy("TournamentStage.number asc"),
-      ).as("inProgressBrackets"),
-      jsonArrayFrom(
-        eb
           .selectFrom("TournamentTeam")
           .select(({ eb: innerEb }) => [
             "TournamentTeam.id",
