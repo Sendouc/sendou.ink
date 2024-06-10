@@ -138,10 +138,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     tournament,
     streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
     streamsCount: streams.length,
-    toSetMapPool:
-      tournament.ctx.mapPickingStyle === "TO"
-        ? await TournamentRepository.findTOSetMapPoolById(tournamentId)
-        : [],
     friendCode: user
       ? await UserRepository.currentFriendCodeByUserId(user.id)
       : undefined,
@@ -240,7 +236,6 @@ export default function TournamentLayout() {
               streamingParticipants: data.streamingParticipants,
               friendCode: data.friendCode?.friendCode,
               friendCodes: data.friendCodes,
-              toSetMapPool: data.toSetMapPool,
             } satisfies TournamentContext
           }
         />
@@ -256,7 +251,6 @@ type TournamentContext = {
   setBracketExpanded: (expanded: boolean) => void;
   friendCode?: string;
   friendCodes?: SerializeFrom<typeof loader>["friendCodes"];
-  toSetMapPool: SerializeFrom<typeof loader>["toSetMapPool"];
 };
 
 export function useTournament() {
@@ -280,8 +274,4 @@ export function useTournamentFriendCode() {
 
 export function useTournamentFriendCodes() {
   return useOutletContext<TournamentContext>().friendCodes;
-}
-
-export function useTournamentToSetMapPool() {
-  return useOutletContext<TournamentContext>().toSetMapPool;
 }

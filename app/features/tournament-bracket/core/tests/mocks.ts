@@ -6245,6 +6245,7 @@ export const PADDLING_POOL_257 = () =>
           bestOf: 5,
         },
       ],
+      toSetMapPool: [],
       tieBreakerMapPool: [
         {
           stageId: 15,
@@ -11977,6 +11978,7 @@ export const PADDLING_POOL_255 = () =>
           bestOf: 5,
         },
       ],
+      toSetMapPool: [],
       tieBreakerMapPool: [
         {
           stageId: 15,
@@ -17355,6 +17357,7 @@ export const IN_THE_ZONE_32 = () =>
           bestOf: 5,
         },
       ],
+      toSetMapPool: [],
       tieBreakerMapPool: [],
       participatedUsers: [
         8, 18, 32, 35, 36, 41, 48, 50, 57, 70, 76, 81, 94, 100, 104, 112, 115,

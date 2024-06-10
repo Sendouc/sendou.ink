@@ -69,11 +69,7 @@ import {
   isOneModeTournamentOf,
   tournamentIdFromParams,
 } from "../tournament-utils";
-import {
-  useTournament,
-  useTournamentFriendCode,
-  useTournamentToSetMapPool,
-} from "./to.$id";
+import { useTournament, useTournamentFriendCode } from "./to.$id";
 import Markdown from "markdown-to-jsx";
 import { NewTabs } from "~/components/NewTabs";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
@@ -1345,15 +1341,14 @@ function validateCounterPickMapPool(
 
 function TOPickedMapPoolInfo() {
   const { t } = useTranslation(["calendar"]);
-  const toSetMapPool = useTournamentToSetMapPool();
   const tournament = useTournament();
 
-  if (toSetMapPool.length === 0) return null;
+  if (tournament.ctx.toSetMapPool.length === 0) return null;
 
   return (
     <Section title={t("calendar:forms.mapPool")}>
       <div className="event__map-pool-section">
-        <MapPoolStages mapPool={new MapPool(toSetMapPool)} />
+        <MapPoolStages mapPool={new MapPool(tournament.ctx.toSetMapPool)} />
         <LinkButton
           className="event__create-map-list-link"
           to={readonlyMapsPage(tournament.ctx.eventId)}

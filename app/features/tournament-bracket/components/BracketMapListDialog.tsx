@@ -3,10 +3,7 @@ import * as React from "react";
 import { Dialog } from "~/components/Dialog";
 import { generateTournamentRoundMaplist } from "../core/toMapList";
 import type { Bracket } from "../core/Bracket";
-import {
-  useTournament,
-  useTournamentToSetMapPool,
-} from "~/features/tournament/routes/to.$id";
+import { useTournament } from "~/features/tournament/routes/to.$id";
 import invariant from "~/utils/invariant";
 import { type TournamentRoundMaps } from "~/db/tables";
 import { useTranslation } from "react-i18next";
@@ -35,7 +32,6 @@ export function BracketMapListDialog({
   bracket: Bracket;
   bracketIdx: number;
 }) {
-  const toSetMapPool = useTournamentToSetMapPool();
   const fetcher = useFetcher();
   const tournament = useTournament();
 
@@ -50,7 +46,7 @@ export function BracketMapListDialog({
     generateTournamentRoundMaplist({
       mapCounts: bracket.defaultRoundBestOfs,
       roundsWithPickBan,
-      pool: toSetMapPool,
+      pool: tournament.ctx.toSetMapPool,
       rounds: bracket.data.round,
       type: bracket.type,
       pickBanStyle,
@@ -138,7 +134,8 @@ export function BracketMapListDialog({
   };
 
   const lacksToSetMapPool =
-    toSetMapPool.length === 0 && tournament.ctx.mapPickingStyle === "TO";
+    tournament.ctx.toSetMapPool.length === 0 &&
+    tournament.ctx.mapPickingStyle === "TO";
 
   const globalSelections =
     bracket.type === "round_robin" || bracket.type === "swiss";
@@ -184,7 +181,7 @@ export function BracketMapListDialog({
                     setMaps(
                       generateTournamentRoundMaplist({
                         mapCounts,
-                        pool: toSetMapPool,
+                        pool: tournament.ctx.toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
                         roundsWithPickBan: newRoundsWithPickBan,
@@ -199,7 +196,7 @@ export function BracketMapListDialog({
                       const newMapCounts = mapCountsWithGlobalCount(newCount);
                       const newMaps = generateTournamentRoundMaplist({
                         mapCounts: newMapCounts,
-                        pool: toSetMapPool,
+                        pool: tournament.ctx.toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
                         roundsWithPickBan,
@@ -214,7 +211,7 @@ export function BracketMapListDialog({
                   <GlobalCountTypeSelect onSetCountType={setCountType} />
                 ) : null}
               </div>
-              {toSetMapPool.length > 0 ? (
+              {tournament.ctx.toSetMapPool.length > 0 ? (
                 <Button
                   size="tiny"
                   icon={<RefreshArrowsIcon />}
@@ -223,7 +220,7 @@ export function BracketMapListDialog({
                     setMaps(
                       generateTournamentRoundMaplist({
                         mapCounts,
-                        pool: toSetMapPool,
+                        pool: tournament.ctx.toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
                         roundsWithPickBan,
@@ -272,7 +269,7 @@ export function BracketMapListDialog({
 
                       const newMaps = generateTournamentRoundMaplist({
                         mapCounts: newMapCounts,
-                        pool: toSetMapPool,
+                        pool: tournament.ctx.toSetMapPool,
                         rounds: bracket.data.round,
                         type: bracket.type,
                         roundsWithPickBan,
@@ -297,7 +294,7 @@ export function BracketMapListDialog({
                             setMaps(
                               generateTournamentRoundMaplist({
                                 mapCounts,
-                                pool: toSetMapPool,
+                                pool: tournament.ctx.toSetMapPool,
                                 rounds: bracket.data.round,
                                 type: bracket.type,
                                 roundsWithPickBan: newRoundsWithPickBan,
@@ -532,7 +529,7 @@ function MapListRow({
   hoveredMap: string | null;
 }) {
   const { t } = useTranslation(["game-misc"]);
-  const toSetMaps = useTournamentToSetMapPool();
+  const tournament = useTournament();
 
   if (editing) {
     return (
@@ -549,7 +546,7 @@ function MapListRow({
               });
             }}
           >
-            {toSetMaps.map((map) => (
+            {tournament.ctx.toSetMapPool.map((map) => (
               <option
                 key={serializedMapMode(map)}
                 value={serializedMapMode(map)}

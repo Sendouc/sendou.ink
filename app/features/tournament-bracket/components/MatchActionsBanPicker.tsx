@@ -9,10 +9,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { CrossIcon } from "~/components/icons/Cross";
 import { useUser } from "~/features/auth/core/user";
-import {
-  useTournament,
-  useTournamentToSetMapPool,
-} from "~/features/tournament/routes/to.$id";
+import { useTournament } from "~/features/tournament/routes/to.$id";
 import {
   type ModeShort,
   type StageId,
@@ -74,11 +71,10 @@ function MapPicker({
 }) {
   const user = useUser();
   const data = useLoaderData<TournamentMatchLoaderData>();
-  const toSetMapPool = useTournamentToSetMapPool();
   const tournament = useTournament();
 
   const pickBanMapPool = PickBan.mapsListWithLegality({
-    toSetMapPool,
+    toSetMapPool: tournament.ctx.toSetMapPool,
     maps: data.match.roundMaps,
     mapList: data.mapList,
     teams,

@@ -165,6 +165,12 @@ export async function findById(id: number) {
       ).as("tieBreakerMapPool"),
       jsonArrayFrom(
         eb
+          .selectFrom("MapPoolMap")
+          .select(["MapPoolMap.mode", "MapPoolMap.stageId"])
+          .whereRef("MapPoolMap.calendarEventId", "=", "CalendarEvent.id"),
+      ).as("toSetMapPool"),
+      jsonArrayFrom(
+        eb
           .selectFrom("TournamentStage")
           .innerJoin(
             "TournamentMatch",

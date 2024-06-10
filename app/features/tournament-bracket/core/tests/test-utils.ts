@@ -62,6 +62,7 @@ export const testTournament = (
       subCounts: [],
       staff: [],
       tieBreakerMapPool: [],
+      toSetMapPool: [],
       participatedUsers: [],
       mapPickingStyle: "AUTO_SZ",
       settings: {
