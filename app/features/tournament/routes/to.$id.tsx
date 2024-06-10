@@ -117,10 +117,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const streams =
     tournament.data.stage.length > 0
-      ? await streamsByTournamentId({
-          tournamentId,
-          castTwitchAccounts: tournament.ctx.castTwitchAccounts,
-        })
+      ? await streamsByTournamentId(tournament.ctx)
       : [];
 
   const tournamentStartedInTheLastMonth =

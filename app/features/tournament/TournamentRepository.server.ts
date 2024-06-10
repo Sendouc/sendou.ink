@@ -96,6 +96,7 @@ export async function findById(id: number) {
                   "User.discordAvatar",
                   "User.customUrl",
                   "User.country",
+                  "User.twitch",
                   "PlusTier.tier as plusTier",
                   "TournamentTeamMember.isOwner",
                   "TournamentTeamMember.createdAt",

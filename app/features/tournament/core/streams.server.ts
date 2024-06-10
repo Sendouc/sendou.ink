@@ -1,13 +1,7 @@
 import { getStreams } from "~/modules/twitch";
-import { participantTwitchUsersByTournamentId } from "../queries/participantTwitchUsersByTournamentId.server";
+import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 
-export async function streamsByTournamentId({
-  tournamentId,
-  castTwitchAccounts,
-}: {
-  tournamentId: number;
-  castTwitchAccounts: string[] | null;
-}) {
+export async function streamsByTournamentId(tournament: TournamentData["ctx"]) {
   // prevent error logs in development
   if (
     process.env.NODE_ENV === "development" &&
@@ -15,24 +9,26 @@ export async function streamsByTournamentId({
   ) {
     return [];
   }
-  const twitchUsersOfTournament =
-    participantTwitchUsersByTournamentId(tournamentId);
+  const twitchUsersOfTournament = tournament.teams
+    .filter((team) => team.checkIns.length > 0)
+    .flatMap((team) => team.members)
+    .filter((member) => member.twitch);
 
   const streams = await getStreams();
 
   const tournamentStreams = streams.flatMap((stream) => {
-    const user = twitchUsersOfTournament.find(
-      (u) => u.twitch === stream.twitchUserName,
+    const member = twitchUsersOfTournament.find(
+      (member) => member.twitch === stream.twitchUserName,
     );
 
-    if (user) {
+    if (member) {
       return {
         ...stream,
-        userId: user.id,
+        userId: member.userId,
       };
     }
 
-    if (castTwitchAccounts?.includes(stream.twitchUserName)) {
+    if (tournament.castTwitchAccounts?.includes(stream.twitchUserName)) {
       return {
         ...stream,
         userId: null,
