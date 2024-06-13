@@ -20,7 +20,10 @@ import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import {
+  clearTournamentDataCache,
+  tournamentFromDB,
+} from "~/features/tournament-bracket/core/Tournament.server";
 import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";
 import { inGameNameIfNeeded } from "../tournament-utils.server";
@@ -103,6 +106,8 @@ export const action: ActionFunction = async ({ request, params }) => {
       trustReceiverUserId: inviterUserId,
     });
   }
+
+  clearTournamentDataCache(tournamentId);
 
   throw redirect(tournamentPage(leanTeam.tournamentId));
 };

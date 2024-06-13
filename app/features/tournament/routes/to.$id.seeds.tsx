@@ -39,6 +39,7 @@ import { requireUser } from "~/features/auth/core/user.server";
 import { cachedFullUserLeaderboard } from "~/features/leaderboards/core/leaderboards.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import {
+  clearTournamentDataCache,
   tournamentFromDB,
   type TournamentDataTeam,
 } from "~/features/tournament-bracket/core/Tournament.server";
@@ -69,6 +70,8 @@ export const action: ActionFunction = async ({ request, params }) => {
   validate(!tournament.hasStarted, "Tournament has started");
 
   updateTeamSeeds({ tournamentId, teamIds: data.seeds });
+
+  clearTournamentDataCache(tournamentId);
 
   return null;
 };

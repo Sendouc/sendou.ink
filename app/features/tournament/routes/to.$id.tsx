@@ -17,7 +17,7 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { useUser } from "~/features/auth/core/user";
 import { getUser } from "~/features/auth/core/user.server";
 import { Tournament } from "~/features/tournament-bracket/core/Tournament";
-import { tournamentData } from "~/features/tournament-bracket/core/Tournament.server";
+import { tournamentDataCached } from "~/features/tournament-bracket/core/Tournament.server";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
@@ -112,7 +112,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
 
-  const tournament = await tournamentData({ tournamentId, user });
+  const tournament = await tournamentDataCached({ tournamentId, user });
 
   const streams =
     tournament.data.stage.length > 0

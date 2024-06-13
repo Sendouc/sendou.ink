@@ -1,7 +1,7 @@
 import invariant from "~/utils/invariant";
 import type { Tables, TournamentBracketProgression } from "~/db/tables";
 import { TOURNAMENT } from "~/features/tournament";
-import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import { assertUnreachable } from "~/utils/types";
 import type { OptionalIdObject, Tournament } from "./Tournament";
 import type { TournamentDataTeam } from "./Tournament.server";
@@ -14,7 +14,7 @@ import type { BracketMapCounts } from "./toMapList";
 interface CreateBracketArgs {
   id: number;
   preview: boolean;
-  data: Omit<ValueToArray<DataTypes>, "participant">;
+  data: TournamentManagerDataSet;
   type: Tables["TournamentStage"]["type"];
   canBeStarted?: boolean;
   name: string;
@@ -48,7 +48,7 @@ export abstract class Bracket {
   id;
   preview;
   data;
-  simulatedData: ValueToArray<DataTypes> | undefined;
+  simulatedData: TournamentManagerDataSet | undefined;
   canBeStarted;
   name;
   teamsPendingCheckIn;
@@ -703,15 +703,13 @@ class DoubleEliminationBracket extends Bracket {
   }
 
   source(placements: number[]) {
-    const resolveLosersGroupId = (
-      data: Omit<ValueToArray<DataTypes>, "participant">,
-    ) => {
+    const resolveLosersGroupId = (data: TournamentManagerDataSet) => {
       const minGroupId = Math.min(...data.round.map((round) => round.group_id));
 
       return minGroupId + 1;
     };
     const placementsToRoundsIds = (
-      data: Omit<ValueToArray<DataTypes>, "participant">,
+      data: TournamentManagerDataSet,
       losersGroupId: number,
     ) => {
       const firstRoundIsOnlyByes = () => {

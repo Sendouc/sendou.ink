@@ -3,7 +3,7 @@ import type {
   TournamentBracketProgression,
   TournamentStage,
 } from "~/db/tables";
-import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import { logger } from "~/utils/logger";
 import { assertUnreachable } from "~/utils/types";
 import { isAdmin } from "~/permissions";
@@ -86,7 +86,7 @@ export class Tournament {
     return a.createdAt - b.createdAt;
   }
 
-  private initBrackets(data: Omit<ValueToArray<DataTypes>, "participant">) {
+  private initBrackets(data: TournamentManagerDataSet) {
     for (const [
       bracketIdx,
       { type, name, sources },

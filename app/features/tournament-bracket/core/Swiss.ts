@@ -1,7 +1,7 @@
 // separate from brackets-manager as this wasn't part of the original brackets-manager library
 
 import invariant from "~/utils/invariant";
-import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { InputStage, Match } from "~/modules/brackets-model";
 import { nullFilledArray } from "~/utils/arrays";
 import type { Bracket, Standing } from "./Bracket";
@@ -9,7 +9,7 @@ import type { TournamentRepositoryInsertableMatch } from "~/features/tournament/
 
 export function create(
   args: Omit<InputStage, "type" | "number">,
-): ValueToArray<DataTypes> {
+): TournamentManagerDataSet {
   const swissSettings = args.settings?.swiss;
 
   const groupCount = swissSettings?.groupCount ?? 1;

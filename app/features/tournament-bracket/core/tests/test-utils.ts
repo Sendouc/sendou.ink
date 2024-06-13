@@ -1,7 +1,7 @@
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { Tournament } from "../Tournament";
 import type { TournamentData } from "../Tournament.server";
-import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import { removeDuplicates } from "~/utils/arrays";
 
 const tournamentCtxTeam = (
@@ -35,7 +35,7 @@ const nTeams = (n: number, startingId: number) => {
 };
 
 export const testTournament = (
-  data: ValueToArray<DataTypes>,
+  data: TournamentManagerDataSet,
   partialCtx?: Partial<TournamentData["ctx"]>,
 ) => {
   const participant = removeDuplicates(
@@ -86,13 +86,13 @@ export const testTournament = (
 };
 
 export const adjustResults = (
-  data: ValueToArray<DataTypes>,
+  data: TournamentManagerDataSet,
   adjustedArr: Array<{
     ids: [number, number];
     score: [number, number];
     points?: [number, number];
   }>,
-): ValueToArray<DataTypes> => {
+): TournamentManagerDataSet => {
   return {
     ...data,
     match: data.match.map((match, idx) => {

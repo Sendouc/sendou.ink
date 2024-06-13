@@ -18,7 +18,10 @@ import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { userIsBanned } from "~/features/ban/core/banned.server";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import {
+  clearTournamentDataCache,
+  tournamentFromDB,
+} from "~/features/tournament-bracket/core/Tournament.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -321,6 +324,8 @@ export const action: ActionFunction = async ({ request, params }) => {
       assertUnreachable(data);
     }
   }
+
+  clearTournamentDataCache(tournamentId);
 
   return null;
 };

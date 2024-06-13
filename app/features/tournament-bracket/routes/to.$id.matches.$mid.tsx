@@ -26,7 +26,10 @@ import { CastInfo } from "../components/CastInfo";
 import { OrganizerMatchMapListDialog } from "../components/OrganizerMatchMapListDialog";
 import { StartedMatch } from "../components/StartedMatch";
 import * as PickBan from "../core/PickBan";
-import { tournamentFromDB } from "../core/Tournament.server";
+import {
+  clearTournamentDataCache,
+  tournamentFromDB,
+} from "../core/Tournament.server";
 import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 import { emitter } from "../core/emitters.server";
 import { resolveMapList } from "../core/mapList.server";
@@ -512,6 +515,8 @@ export const action: ActionFunction = async ({ params, request }) => {
       scores[0] === Math.ceil(match.bestOf / 2) ||
       scores[1] === Math.ceil(match.bestOf / 2),
   });
+
+  clearTournamentDataCache(tournamentId);
 
   return null;
 };

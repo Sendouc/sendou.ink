@@ -10,7 +10,10 @@ import type { CalendarEventTag } from "~/db/types";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import {
+  clearTournamentDataCache,
+  tournamentFromDB,
+} from "~/features/tournament-bracket/core/Tournament.server";
 import {
   FORMATS_SHORT,
   TOURNAMENT,
@@ -147,6 +150,10 @@ export const action: ActionFunction = async ({ request }) => {
       mapPoolMaps: deserializedMaps,
       ...commonArgs,
     });
+
+    if (eventToEdit.tournamentId) {
+      clearTournamentDataCache(eventToEdit.tournamentId);
+    }
 
     throw redirect(calendarEventPage(data.eventToEditId));
   } else {

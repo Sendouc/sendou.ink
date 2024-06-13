@@ -45,7 +45,10 @@ import {
   useTournament,
 } from "../../tournament/routes/to.$id";
 import type { Bracket as BracketType, Standing } from "../core/Bracket";
-import { tournamentFromDB } from "../core/Tournament.server";
+import {
+  clearTournamentDataCache,
+  tournamentFromDB,
+} from "../core/Tournament.server";
 import { getServerTournamentManager } from "../core/brackets-manager/manager.server";
 import { tournamentSummary } from "../core/summarizer.server";
 import { addSummary } from "../queries/addSummary.server";
@@ -252,6 +255,8 @@ export const action: ActionFunction = async ({ params, request }) => {
       assertUnreachable(data);
     }
   }
+
+  clearTournamentDataCache(tournamentId);
 
   return null;
 };

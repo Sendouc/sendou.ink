@@ -11,7 +11,11 @@ import {
   dateToDatabaseTimestamp,
 } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
+import { userSubmittedImage } from "~/utils/urls";
+import { HACKY_resolvePicture } from "./tournament-utils";
+import type { Unwrapped } from "~/utils/types";
 
+export type FindById = NonNullable<Unwrapped<typeof findById>>;
 export async function findById(id: number) {
   const result = await db
     .selectFrom("Tournament")
@@ -201,6 +205,9 @@ export async function findById(id: number) {
 
   return {
     ...result,
+    logoSrc: result.logoUrl
+      ? userSubmittedImage(result.logoUrl)
+      : HACKY_resolvePicture(result),
     participatedUsers: result.participatedUsers.map((user) => user.userId),
   };
 }

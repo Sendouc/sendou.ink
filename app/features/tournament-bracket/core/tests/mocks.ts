@@ -1,7 +1,7 @@
-import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { TournamentData } from "../Tournament.server";
 
-export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
+export const FOUR_TEAMS_RR = (): TournamentManagerDataSet => ({
   stage: [
     {
       id: 0,
@@ -144,7 +144,7 @@ export const FOUR_TEAMS_RR = (): ValueToArray<DataTypes> => ({
   ],
 });
 
-export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
+export const FIVE_TEAMS_RR = (): TournamentManagerDataSet => ({
   stage: [
     {
       id: 0,
@@ -363,7 +363,7 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
   ],
 });
 
-export const SIX_TEAMS_TWO_GROUPS_RR = (): ValueToArray<DataTypes> => ({
+export const SIX_TEAMS_TWO_GROUPS_RR = (): TournamentManagerDataSet => ({
   stage: [
     {
       id: 0,

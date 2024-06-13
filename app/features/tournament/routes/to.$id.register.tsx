@@ -30,6 +30,7 @@ import { ModeMapPoolPicker } from "~/features/sendouq-settings/components/ModeMa
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import {
+  clearTournamentDataCache,
   tournamentFromDB,
   type TournamentDataTeam,
 } from "~/features/tournament-bracket/core/Tournament.server";
@@ -259,6 +260,8 @@ export const action: ActionFunction = async ({ request, params }) => {
       assertUnreachable(data);
     }
   }
+
+  clearTournamentDataCache(tournamentId);
 
   return null;
 };

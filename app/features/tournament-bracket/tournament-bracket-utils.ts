@@ -1,7 +1,7 @@
 import type { Params } from "@remix-run/react";
 import invariant from "~/utils/invariant";
 import type { TournamentMatch } from "~/db/types";
-import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import {
   seededRandom,
@@ -116,7 +116,7 @@ export function fillWithNullTillPowerOfTwo<T>(arr: T[]) {
 }
 
 export function everyMatchIsOver(
-  bracket: Pick<ValueToArray<DataTypes>, "match">,
+  bracket: Pick<TournamentManagerDataSet, "match">,
 ) {
   // winners, losers & grand finals+bracket reset are all different stages
   const isDoubleElimination =
@@ -149,7 +149,7 @@ export function everyMatchIsOver(
   return true;
 }
 
-export function everyBracketOver(tournament: ValueToArray<DataTypes>) {
+export function everyBracketOver(tournament: TournamentManagerDataSet) {
   const stageIds = tournament.stage.map((stage) => stage.id);
 
   for (const stageId of stageIds) {
@@ -165,7 +165,7 @@ export function everyBracketOver(tournament: ValueToArray<DataTypes>) {
   return true;
 }
 
-export const bracketHasStarted = (bracket: ValueToArray<DataTypes>) =>
+export const bracketHasStarted = (bracket: TournamentManagerDataSet) =>
   bracket.stage[0] && bracket.stage[0].id !== 0;
 
 export function matchIsLocked({

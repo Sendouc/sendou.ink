@@ -101,6 +101,8 @@ export type Table = keyof DataTypes;
  */
 export type Database = ValueToArray<DataTypes>;
 
+export type TournamentManagerDataSet = Database;
+
 /**
  * An item in the final standings of an elimination stage.
  */

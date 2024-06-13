@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import invariant from "~/utils/invariant";
 import { sql } from "~/db/sql";
 import type { Tables } from "~/db/tables";
-import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 const createTournamentStageStm = sql.prepare(/* sql */ `
@@ -70,7 +70,7 @@ const createTournamentMatchStm = sql.prepare(/* sql */ `
 `);
 
 export function createSwissBracketInTransaction(
-  input: ValueToArray<DataTypes>,
+  input: TournamentManagerDataSet,
 ) {
   const stageInput = input.stage[0];
   invariant(stageInput, "Stage input is required");

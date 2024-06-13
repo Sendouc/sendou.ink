@@ -73,6 +73,7 @@ import { AMOUNT_OF_MAPS_IN_POOL_PER_MODE } from "~/features/sendouq-settings/q-s
 import { tags } from "~/features/calendar/calendar-constants";
 import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/constants";
 import { TIMEZONES } from "~/features/lfg/lfg-constants";
+import { clearAllTournamentDataCache } from "~/features/tournament-bracket/core/Tournament.server";
 
 const calendarEventWithToToolsRegOpen = () =>
   calendarEventWithToTools("PICNIC", true);
@@ -174,6 +175,8 @@ export async function seed(variation?: SeedVariation | null) {
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await seedFunc();
   }
+
+  clearAllTournamentDataCache();
 }
 
 function wipeDB() {
