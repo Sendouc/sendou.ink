@@ -141,8 +141,15 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   font-size: var(--fonts-xs);
 }
 
-.style__panel {
+.plans__style-panel {
   position: fixed;
   z-index: 10;
   margin-top: 50px;
+}
+
+.plans__quick-actions {
+  position: absolute;
+  display: flex;
+  right: 0;
+  z-index: 10;
 }

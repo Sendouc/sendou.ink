@@ -1,4 +1,4 @@
-import { AssetRecordType, DefaultStylePanel, Tldraw } from "@tldraw/tldraw";
+import { AssetRecordType, DefaultQuickActions, DefaultStylePanel, Tldraw } from "@tldraw/tldraw";
 import type { Editor, TLAssetId, TLComponents, TLImageAsset, TLUiStylePanelProps } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
@@ -138,7 +138,7 @@ export default function Planner() {
           randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
           randomInt(imageSpawnBoxTop, imageSpawnBoxBottom),
         ],
-        cb: () => editor?.setCurrentTool('select'),//app?.selectTool("select"),
+        cb: () => editor?.setCurrentTool('select'),
       });
     },
     [
@@ -159,7 +159,7 @@ export default function Planner() {
     }) => {
       if (!editor)
         return;
-      // TODO: deleting is broken rn, fix
+
       editor.selectAll();
       editor.deleteShapes(editor.getSelectedShapes());
 
@@ -194,9 +194,9 @@ export default function Planner() {
     NavigationPanel: null,
     PageMenu: null,
     QuickActions: null,
+    //QuickActions: CustomQuickActions,
     SharePanel: null,
     StylePanel: CustomStylePanel,
-    Toolbar: null,
     TopPanel: null,
     ZoomMenu: null,
   }
@@ -221,11 +221,14 @@ export default function Planner() {
   );
 }
 
-// Not a fan of this, but its the easiest way to allow for styling on the style panel, otherwise the top row of colors goes behind the header bar at the top and gets blocked
+// Formats the style panel so it can have classnames, this is needed so it can be moved below the header bar which blocks clicks (idk why this is different to the old version), also needed to format the quick actions bar nicely
 function CustomStylePanel(props: TLUiStylePanelProps) {
   return (
-    <div className="style__panel">
+    <div className="plans__style-panel">
       <DefaultStylePanel {...props} />
+      <div className="plans__quick-actions">
+        <DefaultQuickActions />
+      </div>
     </div>
   )
 }
