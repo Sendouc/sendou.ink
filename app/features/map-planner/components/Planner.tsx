@@ -1,4 +1,4 @@
-import { AssetRecordType, Tldraw } from "@tldraw/tldraw";
+import { AssetRecordType, Tldraw, } from "@tldraw/tldraw";
 import type { Editor, TLComponents } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
@@ -37,11 +37,8 @@ export default function Planner() {
   const handleMount = React.useCallback(
     (mountedApp: Editor) => {
       setApp(mountedApp);
-      //      mountedApp.setSetting(
-      //        "language",
-      ourLanguageToTldrawLanguage(i18n.language);
-      //      );
-      //      mountedApp.style({ color: ColorStyle.Red });
+      mountedApp.user.updateUserPreferences({ locale: ourLanguageToTldrawLanguage(i18n.language) });
+      //      mountedApp.style({ color: ColorStyle.Red })
     },
     [i18n],
   );
@@ -195,8 +192,6 @@ export default function Planner() {
     PageMenu: null,
     QuickActions: null,
     SharePanel: null,
-    StylePanel: null,
-    Toolbar: null,
     TopPanel: null,
     ZoomMenu: null,
   }
@@ -212,7 +207,11 @@ export default function Planner() {
       </div>
       <div style={{ position: 'absolute', inset: 100 }}>
         <div style={{ position: 'fixed', inset: 0 }}>
-          <Tldraw onMount={handleMount} components={tldrawComponents} inferDarkMode />
+          <Tldraw
+            onMount={handleMount}
+            components={tldrawComponents}
+            inferDarkMode
+          />
         </div>
       </div>
     </>
