@@ -16,6 +16,7 @@ import { messageTypeToSound, soundEnabled, soundVolume } from "../chat-utils";
 import { soundPath } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
 import { logger } from "~/utils/logger";
+import { useChatAutoScroll } from "../chat-hooks";
 
 type ChatUser = Pick<User, "username" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
@@ -83,10 +84,8 @@ export function Chat({
     [send],
   );
 
-  React.useEffect(() => {
-    const messagesContainer = messagesContainerRef.current!;
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }, [messages]);
+  const { unseenMessagesInTheRoom, scrollToBottom, resetScroller } =
+    useChatAutoScroll(messages, messagesContainerRef);
 
   React.useEffect(() => {
     onMount?.();
@@ -139,7 +138,10 @@ export function Chat({
                 className={clsx("chat__room-button", {
                   current: currentRoom === room.code,
                 })}
-                onClick={() => setCurrentRoom(room.code)}
+                onClick={() => {
+                  setCurrentRoom(room.code);
+                  resetScroller();
+                }}
               >
                 <span className="chat__room-button__unseen invisible" />
                 {room.label}
@@ -183,6 +185,11 @@ export function Chat({
             );
           })}
         </ol>
+        {unseenMessagesInTheRoom ? (
+          <Button className="chat__unseen-messages" onClick={scrollToBottom}>
+            {t("common:chat.newMessages")}
+          </Button>
+        ) : null}
         <form onSubmit={handleSubmit} className="mt-4">
           <input
             className="w-full"

@@ -1567,6 +1567,7 @@ html[dir="rtl"] .fix-rtl {
 
 .chat__input-container {
   margin-top: auto;
+  position: relative;
 
   --input-width: 100%;
 }
@@ -1608,6 +1609,26 @@ html[dir="rtl"] .fix-rtl {
   align-items: flex-start;
   margin-block-start: var(--s-2);
   height: 20px;
+}
+
+.chat__unseen-messages {
+  position: absolute;
+  font-size: var(--fonts-xxs);
+  font-weight: var(--bold);
+  border-radius: var(--rounded-sm);
+  background-color: var(--bg-lightest-solid);
+  border: none;
+  color: var(--text);
+  bottom: 60px;
+  right: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 25px;
+  width: max-content;
+}
+
+.chat__unseen-messages:active {
+  transform: translate(-50%, -50%);
 }
 
 .winner__container {
