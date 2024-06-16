@@ -666,13 +666,7 @@ export class Tournament {
     return isParticipant || this.isOrganizer(user);
   }
 
-  checkInConditionsFulfilled({
-    tournamentTeamId,
-    mapPool,
-  }: {
-    tournamentTeamId: number;
-    mapPool: unknown[];
-  }) {
+  checkInConditionsFulfilledByTeamId(tournamentTeamId: number) {
     const team = this.teamById(tournamentTeamId);
     invariant(team, "Team not found");
 
@@ -684,7 +678,7 @@ export class Tournament {
       return false;
     }
 
-    if (this.teamsPrePickMaps && mapPool.length === 0) {
+    if (this.teamsPrePickMaps && (!team.mapPool || team.mapPool.length === 0)) {
       return false;
     }
 
@@ -797,6 +791,117 @@ export class Tournament {
     return this.ctx.teams.find((team) =>
       team.members.some((member) => member.userId === user.id),
     );
+  }
+
+  teamMemberOfProgressStatus(user: OptionalIdObject) {
+    const team = this.teamMemberOfByUser(user);
+    if (!team) return null;
+
+    if (
+      this.brackets.every((bracket) => bracket.preview) &&
+      !this.regularCheckInIsOpen
+    ) {
+      return null;
+    }
+
+    for (const bracket of this.brackets) {
+      if (bracket.preview) continue;
+      for (const match of bracket.data.match) {
+        const isParticipant =
+          match.opponent1?.id === team.id || match.opponent2?.id === team.id;
+        const isNotFinished =
+          match.opponent1 &&
+          match.opponent2 &&
+          match.opponent1?.result !== "win" &&
+          match.opponent2?.result !== "win";
+        const isWaitingForTeam =
+          (match.opponent1 && match.opponent1.id === null) ||
+          (match.opponent2 && match.opponent2.id === null);
+
+        if (isParticipant && isNotFinished && !isWaitingForTeam) {
+          const otherTeam = this.teamById(
+            match.opponent1!.id === team.id
+              ? match.opponent2!.id!
+              : match.opponent1!.id!,
+          )!;
+
+          const otherTeamBusyWithPreviousMatch =
+            bracket.type === "round_robin" &&
+            bracket.data.match.find(
+              (match) =>
+                (match.opponent1?.id === otherTeam.id ||
+                  match.opponent2?.id === otherTeam.id) &&
+                match.opponent1?.result !== "win" &&
+                match.opponent2?.result !== "win",
+            )?.id !== match.id;
+
+          if (otherTeamBusyWithPreviousMatch) {
+            return { type: "WAITING_FOR_MATCH" } as const;
+          }
+
+          if (this.ctx.castedMatchesInfo?.lockedMatches.includes(match.id)) {
+            return { type: "WAITING_FOR_CAST" } as const;
+          }
+
+          return {
+            type: "MATCH",
+            matchId: match.id,
+            opponent: otherTeam.name,
+          } as const;
+        }
+
+        if (isParticipant && isWaitingForTeam) {
+          return { type: "WAITING_FOR_MATCH" } as const;
+        }
+      }
+    }
+
+    if (team.checkIns.length === 0 && this.regularCheckInIsOpen) {
+      const canCheckIn = this.checkInConditionsFulfilledByTeamId(team.id);
+
+      return { type: "CHECKIN", canCheckIn } as const;
+    }
+
+    for (const [bracketIdx, bracket] of this.brackets.entries()) {
+      if (bracket.teamsPendingCheckIn?.includes(team.id)) {
+        return { type: "CHECKIN", bracketIdx } as const;
+      }
+    }
+
+    for (const bracket of this.brackets) {
+      if (!bracket.preview) continue;
+
+      const isParticipant = bracket.seeding?.includes(team.id);
+
+      if (isParticipant) {
+        return { type: "WAITING_FOR_BRACKET" } as const;
+      }
+    }
+
+    for (const bracket of this.brackets) {
+      if (bracket.preview || bracket.type !== "swiss") continue;
+
+      // TODO: both seeding and participantTournamentTeamIds are used for the same thing
+      const isParticipant = bracket.participantTournamentTeamIds.includes(
+        team.id,
+      );
+
+      const setsGeneratedCount = bracket.data.match.filter(
+        (match) =>
+          match.opponent1?.id === team.id || match.opponent2?.id === team.id,
+      ).length;
+      const notAllRoundsGenerated =
+        this.ctx.settings.swiss?.roundCount &&
+        setsGeneratedCount !== this.ctx.settings.swiss?.roundCount;
+
+      if (isParticipant && notAllRoundsGenerated) {
+        return { type: "WAITING_FOR_ROUND" } as const;
+      }
+    }
+
+    if (team.checkIns.length === 0) return null;
+
+    return { type: "THANKS_FOR_PLAYING" } as const;
   }
 
   // basic idea is that they can reopen match as long as they don't have a following match

@@ -199,22 +199,25 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHECK_IN": {
       logger.info(
-        `Checking in (try): tournament team id: ${ownTeam?.id} - user id: ${user.id} - tournament id: ${tournamentId}`,
+        `Checking in (try): owned tournament team id: ${ownTeam?.id} - user id: ${user.id} - tournament id: ${tournamentId}`,
+      );
+
+      const teamMemberOf = tournament.teamMemberOfByUser(user);
+      validate(teamMemberOf, "You are not in a team");
+      validate(
+        teamMemberOf.checkIns.length === 0,
+        "You have already checked in",
       );
 
       validate(tournament.regularCheckInIsOpen, "Check in is not open");
-      validate(ownTeam);
-      validate(!ownTeamCheckedIn, "You have already checked in");
       validate(
-        tournament.checkInConditionsFulfilled({
-          tournamentTeamId: ownTeam.id,
-          mapPool: findMapPoolByTeamId(ownTeam.id),
-        }),
+        tournament.checkInConditionsFulfilledByTeamId(teamMemberOf.id),
+        "Check in conditions not fulfilled",
       );
 
-      checkIn(ownTeam.id);
+      checkIn(teamMemberOf.id);
       logger.info(
-        `Checking in (success): tournament team id: ${ownTeam.id} - user id: ${user.id} - tournament id: ${tournamentId}`,
+        `Checking in (success): tournament team id: ${teamMemberOf.id} - user id: ${user.id} - tournament id: ${tournamentId}`,
       );
       break;
     }

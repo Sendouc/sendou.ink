@@ -22,7 +22,6 @@ import {
   clearTournamentDataCache,
   tournamentFromDB,
 } from "~/features/tournament-bracket/core/Tournament.server";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import { databaseTimestampToDate } from "~/utils/dates";
 import invariant from "~/utils/invariant";
@@ -125,10 +124,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(team, "Invalid team id");
       validate(
         data.bracketIdx !== 0 ||
-          tournament.checkInConditionsFulfilled({
-            tournamentTeamId: team.id,
-            mapPool: findMapPoolByTeamId(team.id),
-          }),
+          tournament.checkInConditionsFulfilledByTeamId(team.id),
         "Can't check-in",
       );
       validate(

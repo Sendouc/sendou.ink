@@ -1,4 +1,4 @@
-import { AssetRecordType, DefaultQuickActions, DefaultStylePanel, Tldraw } from "@tldraw/tldraw";
+import { AssetRecordType, DefaultQuickActions, DefaultStylePanel, DefaultZoomMenu, Tldraw } from "@tldraw/tldraw";
 import type { Editor, TLAssetId, TLComponents, TLImageAsset, TLUiStylePanelProps } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
@@ -35,9 +35,9 @@ export default function Planner() {
   const [editor, setApp] = React.useState<Editor | null>(null);
 
   const handleMount = React.useCallback(
-    (mountedApp: Editor) => {
-      setApp(mountedApp);
-      mountedApp.user.updateUserPreferences({ locale: ourLanguageToTldrawLanguage(i18n.language) });
+    (mountedEditor: Editor) => {
+      setApp(mountedEditor);
+      mountedEditor.user.updateUserPreferences({ locale: ourLanguageToTldrawLanguage(i18n.language) });
     },
     [i18n],
   );
@@ -63,6 +63,7 @@ export default function Planner() {
       // This lets us have multiple copies of an image on the canvas without having all of those take up memory individually"
       const assetId: TLAssetId = AssetRecordType.createId();
 
+      // idk if this is the best solution, but it was the example given and it seems to cope well with lots of shapes at once
       const imageAsset: TLImageAsset = {
         id: assetId,
         type: 'image',
@@ -180,6 +181,7 @@ export default function Planner() {
     ],
   );
 
+  // removes all tldraw ui that isnt needed
   const tldrawComponents: TLComponents = {
     ActionsMenu: null,
     ContextMenu: null,
@@ -194,7 +196,6 @@ export default function Planner() {
     NavigationPanel: null,
     PageMenu: null,
     QuickActions: null,
-    //QuickActions: CustomQuickActions,
     SharePanel: null,
     StylePanel: CustomStylePanel,
     TopPanel: null,
@@ -221,13 +222,18 @@ export default function Planner() {
   );
 }
 
-// Formats the style panel so it can have classnames, this is needed so it can be moved below the header bar which blocks clicks (idk why this is different to the old version), also needed to format the quick actions bar nicely
+// Formats the style panel so it can have classnames, this is needed so it can be moved below the header bar which blocks clicks (idk why this is different to the old version), also needed to format the quick actions bar and zoom menu nicely
 function CustomStylePanel(props: TLUiStylePanelProps) {
   return (
     <div className="plans__style-panel">
       <DefaultStylePanel {...props} />
-      <div className="plans__quick-actions">
-        <DefaultQuickActions />
+      <div className="plans__zoom-quick-actions">
+        <div className="plans__quick-actions">
+          <DefaultQuickActions />
+        </div>
+        <div className="plans__zoom-menu">
+          <DefaultZoomMenu />
+        </div>
       </div>
     </div>
   )
