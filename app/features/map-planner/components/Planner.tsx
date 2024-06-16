@@ -1,5 +1,5 @@
-import { ColorStyle, TDAssetType, TDShapeType, Tldraw } from "@tldraw/tldraw";
-import type { TDImageAsset, TldrawApp } from "@tldraw/tldraw";
+import { AssetRecordType, Tldraw } from "@tldraw/tldraw";
+import type { Editor, TLComponents } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
@@ -12,7 +12,6 @@ import {
   weaponCategories,
 } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import { semiRandomId } from "~/utils/strings";
 import {
   mainWeaponImageUrl,
   outlinedMainWeaponImageUrl,
@@ -33,16 +32,16 @@ export default function Planner() {
   const { i18n } = useTranslation();
   const plannerBgParams = usePlannerBg();
 
-  const [app, setApp] = React.useState<TldrawApp | null>(null);
+  const [editor, setApp] = React.useState<Editor | null>(null);
 
   const handleMount = React.useCallback(
-    (mountedApp: TldrawApp) => {
+    (mountedApp: Editor) => {
       setApp(mountedApp);
-      mountedApp.setSetting(
-        "language",
-        ourLanguageToTldrawLanguage(i18n.language),
-      );
-      mountedApp.style({ color: ColorStyle.Red });
+      //      mountedApp.setSetting(
+      //        "language",
+      ourLanguageToTldrawLanguage(i18n.language);
+      //      );
+      //      mountedApp.style({ color: ColorStyle.Red });
     },
     [i18n],
   );
@@ -61,37 +60,45 @@ export default function Planner() {
       point: number[];
       cb?: () => void;
     }) => {
-      if (!app) return;
-
-      const asset: TDImageAsset = {
-        id: src,
-        type: TDAssetType.Image,
-        fileName: "img",
-        src,
-        size,
-      };
+      if (!editor) return;
 
       // tldraw creator:
       // "So image shapes in tldraw work like this: we add an asset to the app.assets table, then we reference that asset in the shape object itself.
       // This lets us have multiple copies of an image on the canvas without having all of those take up memory individually"
+      const assetId = AssetRecordType.createId();
 
-      app.insertContent({
-        assets: [asset],
-        shapes: [],
+      editor.createAssets([
+        {
+          id: assetId,
+          type: 'image',
+          typeName: 'asset',
+          props: {
+            name: "img",
+            src: src,
+            w: size[0],
+            h: size[1],
+            mimeType: null,
+            isAnimated: false,
+          },
+          meta: {},
+        }
+      ]);
+
+      editor.createShape({
+        type: 'image',
+        x: point[0],
+        y: point[1],
+        isLocked: isLocked,
+        props: {
+          assetId,
+          w: size[0],
+          h: size[1],
+        },
       });
 
-      app.createShapes({
-        id: semiRandomId(),
-        type: TDShapeType.Image,
-        assetId: src,
-        size,
-        isAspectRatioLocked: true,
-        isLocked,
-        point,
-      });
       cb?.();
     },
-    [app],
+    [editor],
   );
 
   const handleAddWeapon = React.useCallback(
@@ -133,11 +140,11 @@ export default function Planner() {
           randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
           randomInt(imageSpawnBoxTop, imageSpawnBoxBottom),
         ],
-        cb: () => app?.selectTool("select"),
+        cb: () => editor?.setCurrentTool('select'),//app?.selectTool("select"),
       });
     },
     [
-      app,
+      editor,
       handleAddImage,
       plannerBgParams.bgHeight,
       plannerBgParams.bgWidth,
@@ -152,8 +159,10 @@ export default function Planner() {
       mode: ModeShort;
       style: StageBackgroundStyle;
     }) => {
-      if (!app) return;
-      app.resetDocument();
+      if (!editor)
+        return;
+      editor.deleteAssets(editor.getAssets());
+
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
         size: [plannerBgParams.bgWidth, plannerBgParams.bgHeight],
@@ -162,7 +171,7 @@ export default function Planner() {
       });
     },
     [
-      app,
+      editor,
       handleAddImage,
       plannerBgParams.bgHeight,
       plannerBgParams.bgWidth,
@@ -170,6 +179,27 @@ export default function Planner() {
       plannerBgParams.pointOffsetY,
     ],
   );
+
+  const tldrawComponents: TLComponents = {
+    ActionsMenu: null,
+    ContextMenu: null,
+    DebugMenu: null,
+    DebugPanel: null,
+    HelperButtons: null,
+    HelpMenu: null,
+    KeyboardShortcutsDialog: null,
+    MainMenu: null,
+    MenuPanel: null,
+    Minimap: null,
+    NavigationPanel: null,
+    PageMenu: null,
+    QuickActions: null,
+    SharePanel: null,
+    StylePanel: null,
+    Toolbar: null,
+    TopPanel: null,
+    ZoomMenu: null,
+  }
 
   return (
     <>
@@ -180,7 +210,11 @@ export default function Planner() {
           {t("common:plans.poweredBy", { name: "tldraw" })}
         </a>
       </div>
-      <Tldraw id="sendou" showMultiplayerMenu={false} onMount={handleMount} />
+      <div style={{ position: 'absolute', inset: 100 }}>
+        <div style={{ position: 'fixed', inset: 0 }}>
+          <Tldraw onMount={handleMount} components={tldrawComponents} inferDarkMode />
+        </div>
+      </div>
     </>
   );
 }

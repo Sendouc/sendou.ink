@@ -43,7 +43,7 @@
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
-    "@tldraw/tldraw": "^1.29.2",
+    "@tldraw/tldraw": "^2.2.0",
     "aws-sdk": "^2.1632.0",
     "better-sqlite3": "^11.0.0",
     "clsx": "^2.1.1",
