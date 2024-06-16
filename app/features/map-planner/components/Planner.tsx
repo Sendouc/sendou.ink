@@ -1,5 +1,5 @@
-import { AssetRecordType, Tldraw, } from "@tldraw/tldraw";
-import type { Editor, TLComponents } from "@tldraw/tldraw";
+import { AssetRecordType, DefaultStylePanel, Tldraw } from "@tldraw/tldraw";
+import type { Editor, TLAssetId, TLComponents, TLImageAsset, TLUiStylePanelProps } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
@@ -38,7 +38,6 @@ export default function Planner() {
     (mountedApp: Editor) => {
       setApp(mountedApp);
       mountedApp.user.updateUserPreferences({ locale: ourLanguageToTldrawLanguage(i18n.language) });
-      //      mountedApp.style({ color: ColorStyle.Red })
     },
     [i18n],
   );
@@ -62,23 +61,25 @@ export default function Planner() {
       // tldraw creator:
       // "So image shapes in tldraw work like this: we add an asset to the app.assets table, then we reference that asset in the shape object itself.
       // This lets us have multiple copies of an image on the canvas without having all of those take up memory individually"
-      const assetId = AssetRecordType.createId();
+      const assetId: TLAssetId = AssetRecordType.createId();
+
+      const imageAsset: TLImageAsset = {
+        id: assetId,
+        type: 'image',
+        typeName: 'asset',
+        props: {
+          name: "img",
+          src: src,
+          w: size[0],
+          h: size[1],
+          mimeType: null,
+          isAnimated: false,
+        },
+        meta: {},
+      }
 
       editor.createAssets([
-        {
-          id: assetId,
-          type: 'image',
-          typeName: 'asset',
-          props: {
-            name: "img",
-            src: src,
-            w: size[0],
-            h: size[1],
-            mimeType: null,
-            isAnimated: false,
-          },
-          meta: {},
-        }
+        imageAsset,
       ]);
 
       editor.createShape({
@@ -158,7 +159,9 @@ export default function Planner() {
     }) => {
       if (!editor)
         return;
-      editor.deleteAssets(editor.getAssets());
+      // TODO: deleting is broken rn, fix
+      editor.selectAll();
+      editor.deleteShapes(editor.getSelectedShapes());
 
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
@@ -192,6 +195,8 @@ export default function Planner() {
     PageMenu: null,
     QuickActions: null,
     SharePanel: null,
+    StylePanel: CustomStylePanel,
+    Toolbar: null,
     TopPanel: null,
     ZoomMenu: null,
   }
@@ -205,17 +210,24 @@ export default function Planner() {
           {t("common:plans.poweredBy", { name: "tldraw" })}
         </a>
       </div>
-      <div style={{ position: 'absolute', inset: 100 }}>
-        <div style={{ position: 'fixed', inset: 0 }}>
-          <Tldraw
-            onMount={handleMount}
-            components={tldrawComponents}
-            inferDarkMode
-          />
-        </div>
+      <div style={{ position: 'fixed', inset: 0 }}>
+        <Tldraw
+          onMount={handleMount}
+          components={tldrawComponents}
+          inferDarkMode
+        />
       </div>
     </>
   );
+}
+
+// Not a fan of this, but its the easiest way to allow for styling on the style panel, otherwise the top row of colors goes behind the header bar at the top and gets blocked
+function CustomStylePanel(props: TLUiStylePanelProps) {
+  return (
+    <div className="style__panel">
+      <DefaultStylePanel {...props} />
+    </div>
+  )
 }
 
 function WeaponImageSelector({
@@ -335,6 +347,7 @@ function WeaponImageSelector({
     </div>
   );
 }
+
 
 const LAST_STAGE_ID_WITH_IMAGES = 22;
 const LAST_STAGE_ID_WITH_OBJECT_IMAGE = 17;

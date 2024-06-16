@@ -1,6 +1,6 @@
 /* https://github.com/tldraw/tldraw/blob/2352985e949d14270fc89dc60144239c37c8ff91/packages/tldraw/src/hooks/useStylesheet.ts */
 @import url("https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Source+Code+Pro&family=Source+Sans+Pro&family=Crimson+Pro&display=block");
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap"); */
 @import url("tldraw/tldraw.css");
 
 @font-face {
@@ -139,4 +139,10 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 .plans__no-img-text {
   color: var(--theme-error);
   font-size: var(--fonts-xs);
+}
+
+.style__panel {
+  position: fixed;
+  z-index: 10;
+  margin-top: 50px;
 }
