@@ -1,5 +1,5 @@
 import type { ActionFunction } from "@remix-run/node";
-import { Link, useFetcher, useRevalidator } from "@remix-run/react";
+import { Link, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -14,7 +14,6 @@ import { Flag } from "~/components/Flag";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Placement } from "~/components/Placement";
 import { Popover } from "~/components/Popover";
-import { SubmitButton } from "~/components/SubmitButton";
 import { EyeIcon } from "~/components/icons/Eye";
 import { EyeSlashIcon } from "~/components/icons/EyeSlash";
 import { sql } from "~/db/sql";
@@ -70,6 +69,7 @@ import * as Swiss from "../core/Swiss";
 import { createSwissBracketInTransaction } from "~/features/tournament/queries/createSwissBracketInTransaction.server";
 import { refreshUserSkills } from "~/features/mmr/tiered.server";
 import type { Tournament } from "../core/Tournament";
+import { TournamentTeamActions } from "../components/TournamentTeamActions";
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
@@ -383,23 +383,11 @@ export default function TournamentBracketsPage() {
           </FormWithConfirm>
         </div>
       ) : null}
-      {bracket.preview && bracket.enoughTeams ? (
+      {bracket.preview &&
+      bracket.enoughTeams &&
+      tournament.isOrganizer(user) ? (
         <div className="stack items-center mb-4">
-          {!tournament.isOrganizer(user) ? (
-            <div className="stack sm items-center">
-              <Alert
-                variation="INFO"
-                alertClassName="tournament-bracket__start-bracket-alert"
-                textClassName="stack horizontal md items-center text-center"
-              >
-                {t("tournament:bracket.wip")}
-              </Alert>
-              <MiniCheckinInfoBanner
-                bracket={bracket}
-                bracketIdx={bracketIdx}
-              />
-            </div>
-          ) : tournament.regularCheckInStartInThePast ? (
+          {tournament.regularCheckInStartInThePast ? (
             <div className="stack sm items-center">
               <Alert
                 variation="INFO"
@@ -427,10 +415,8 @@ export default function TournamentBracketsPage() {
           ) : null}
         </div>
       ) : null}
-      <div className="stack horizontal sm justify-end">
-        {bracket.canCheckIn(user) ? (
-          <BracketCheckinButton bracketIdx={bracketIdx} />
-        ) : null}
+      <div className="stack horizontal mb-4 sm justify-between items-center">
+        <TournamentTeamActions />
         {showAddSubsButton ? (
           // TODO: could also hide this when team is not in any bracket anymore
           <AddSubsPopOver />
@@ -497,51 +483,6 @@ function useAutoRefresh() {
   }, [lastEvent, revalidate]);
 }
 
-function MiniCheckinInfoBanner({
-  bracket,
-  bracketIdx,
-}: {
-  bracket: BracketType;
-  bracketIdx: number;
-}) {
-  const tournament = useTournament();
-  const user = useUser();
-
-  const teamMemberOf = tournament.teamMemberOfByUser(user);
-
-  if (!teamMemberOf) return null;
-
-  if (
-    bracket.participantTournamentTeamIds.some(
-      (tournamentTeamId) => tournamentTeamId === teamMemberOf.id,
-    )
-  ) {
-    return (
-      <div className="tournament-bracket__mini-alert">
-        ✅ Your team is checked in to the bracket (ask the TO for a check-out if
-        needed)
-      </div>
-    );
-  }
-
-  const needsCheckIn =
-    teamMemberOf.checkIns.length === 0 ||
-    !teamMemberOf.checkIns.some((c) => c.bracketIdx === bracketIdx);
-
-  if (needsCheckIn) {
-    return (
-      <div className="tournament-bracket__mini-alert">
-        ⚠️ Your team is not checked in to the bracket (needs action by the
-        captain or TO)
-      </div>
-    );
-  }
-
-  logger.warn("Unexpected branch in MiniCheckinInfoBanner");
-
-  return null;
-}
-
 function BracketStarter({
   bracket,
   bracketIdx,
@@ -571,24 +512,6 @@ function BracketStarter({
         Start the bracket
       </Button>
     </>
-  );
-}
-
-function BracketCheckinButton({ bracketIdx }: { bracketIdx: number }) {
-  const fetcher = useFetcher();
-
-  return (
-    <fetcher.Form method="post">
-      <input type="hidden" name="bracketIdx" value={bracketIdx} />
-      <SubmitButton
-        size="tiny"
-        _action="BRACKET_CHECK_IN"
-        state={fetcher.state}
-        testId="check-in-bracket-button"
-      >
-        Check-in & join the bracket
-      </SubmitButton>
-    </fetcher.Form>
   );
 }
 

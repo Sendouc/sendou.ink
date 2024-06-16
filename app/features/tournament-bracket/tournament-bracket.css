@@ -504,6 +504,34 @@
   background-color: var(--bg-lighter);
 }
 
+.tournament-bracket__quick-action {
+  font-size: var(--fonts-xs);
+  color: var(--text);
+  border-color: var(--bg-lightest-solid);
+  background-color: var(--bg);
+  border-radius: var(--rounded);
+  border: 2px solid var(--bg-lightest-solid);
+  padding-block: var(--s-1-5);
+  padding-inline: var(--s-2-5);
+  font-weight: var(--bold);
+  align-items: center;
+}
+
+.tournament-bracket__quick-action__spaced {
+  display: flex;
+  gap: var(--s-1-5);
+}
+
+.tournament-bracket__quick-action__very-spaced {
+  display: flex;
+  gap: var(--s-3);
+}
+
+.tournament-bracket__quick-action__checkmark {
+  width: 1rem;
+  color: var(--theme-success);
+}
+
 .tournament-bracket__bracket-nav__chevron {
   margin-inline-start: var(--s-2);
   font-size: var(--fonts-xxxs);
