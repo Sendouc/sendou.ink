@@ -1,5 +1,17 @@
-import { AssetRecordType, DefaultQuickActions, DefaultStylePanel, DefaultZoomMenu, Tldraw } from "@tldraw/tldraw";
-import type { Editor, TLAssetId, TLComponents, TLImageAsset, TLUiStylePanelProps } from "@tldraw/tldraw";
+import {
+  AssetRecordType,
+  DefaultQuickActions,
+  DefaultStylePanel,
+  DefaultZoomMenu,
+  Tldraw,
+} from "@tldraw/tldraw";
+import type {
+  Editor,
+  TLAssetId,
+  TLComponents,
+  TLImageAsset,
+  TLUiStylePanelProps,
+} from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
@@ -37,7 +49,9 @@ export default function Planner() {
   const handleMount = React.useCallback(
     (mountedEditor: Editor) => {
       setApp(mountedEditor);
-      mountedEditor.user.updateUserPreferences({ locale: ourLanguageToTldrawLanguage(i18n.language) });
+      mountedEditor.user.updateUserPreferences({
+        locale: ourLanguageToTldrawLanguage(i18n.language),
+      });
     },
     [i18n],
   );
@@ -66,8 +80,8 @@ export default function Planner() {
       // idk if this is the best solution, but it was the example given and it seems to cope well with lots of shapes at once
       const imageAsset: TLImageAsset = {
         id: assetId,
-        type: 'image',
-        typeName: 'asset',
+        type: "image",
+        typeName: "asset",
         props: {
           name: "img",
           src: src,
@@ -77,14 +91,12 @@ export default function Planner() {
           isAnimated: false,
         },
         meta: {},
-      }
+      };
 
-      editor.createAssets([
-        imageAsset,
-      ]);
+      editor.createAssets([imageAsset]);
 
       editor.createShape({
-        type: 'image',
+        type: "image",
         x: point[0],
         y: point[1],
         isLocked: isLocked,
@@ -139,7 +151,7 @@ export default function Planner() {
           randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
           randomInt(imageSpawnBoxTop, imageSpawnBoxBottom),
         ],
-        cb: () => editor?.setCurrentTool('select'),
+        cb: () => editor?.setCurrentTool("select"),
       });
     },
     [
@@ -158,8 +170,7 @@ export default function Planner() {
       mode: ModeShort;
       style: StageBackgroundStyle;
     }) => {
-      if (!editor)
-        return;
+      if (!editor) return;
 
       editor.selectAll();
       editor.deleteShapes(editor.getSelectedShapes());
@@ -200,7 +211,7 @@ export default function Planner() {
     StylePanel: CustomStylePanel,
     TopPanel: null,
     ZoomMenu: null,
-  }
+  };
 
   return (
     <>
@@ -211,7 +222,7 @@ export default function Planner() {
           {t("common:plans.poweredBy", { name: "tldraw" })}
         </a>
       </div>
-      <div style={{ position: 'fixed', inset: 0 }}>
+      <div style={{ position: "fixed", inset: 0 }}>
         <Tldraw
           onMount={handleMount}
           components={tldrawComponents}
@@ -236,7 +247,7 @@ function CustomStylePanel(props: TLUiStylePanelProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function WeaponImageSelector({
@@ -356,7 +367,6 @@ function WeaponImageSelector({
     </div>
   );
 }
-
 
 const LAST_STAGE_ID_WITH_IMAGES = 22;
 const LAST_STAGE_ID_WITH_OBJECT_IMAGE = 17;
