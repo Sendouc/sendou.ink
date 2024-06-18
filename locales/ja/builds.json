@@ -19,6 +19,8 @@
   "stats.ap.title": "ギアポイント平均",
   "stats.percentage.title": "基本ギアのみの見た目",
   "stats.all": "すべて",
+  "stats.public": "公開",
+  "stats.private": "非公開",
 
   "addFilter": "絞り込みを追加",
   "linkButton.abilityStats": "ギア統計",
@@ -27,8 +29,16 @@
 
   "emptyAbilitySlot": "ギア設定をリセット",
 
+  "filters.type.ability": "能力で",
+  "filters.type.mode": "モードで",
+  "filters.type.date": "日付で",
+  "filters.ability.title": "能力フィルター",
+  "filters.mode.title": "モードフィルター",
+  "filters.date.title": "日付フィルター",
   "filters.has": "含む",
   "filters.does.not.have": "含まない",
   "filters.atLeast": "最小",
-  "filters.atMost": "最大"
+  "filters.atMost": "最大",
+  "filters.date.since": "から",
+  "filters.date.custom": "カスタム"
 }
