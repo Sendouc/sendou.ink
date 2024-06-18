@@ -27,6 +27,7 @@
   "pre.info.unregister": "登録解除",
   "pre.info.unregister.confirm": "トーナメント登録をキャンセルして、チーム情報を削除しますか?",
   "pre.info.noHost": "部屋作成はできれば遠慮したい",
+  "pre.info.noScreen": "My team prefers to avoid Splattercolor Screen",
 
   "pre.roster.header": "参加プレイヤーを登録",
   "pre.roster.footer": "少なくとも {{atLeastCount}} 人の参加が必要です。最大メンバー数は {{maxCount}} です。",
@@ -35,6 +36,8 @@
   "pre.roster.delete.header": "削除するメンバー",
 
   "pre.pool.header": "マッププールを選択する",
+  "pre.pool.banned": "Banned",
+  "pre.pool.tiebreaker.short": "Tiebreaker",
 
   "pre.sub.prompt": "このイベントで参加したいチームが見当たらない場合は、サブで参加することもできます。",
 
@@ -56,6 +59,7 @@
   "pickInfo.tiebreaker": "タイブレイカー",
   "pickInfo.both": "両者選択",
   "pickInfo.default": "デフォルトマップ",
+  "pickInfo.counterpick": "Counterpick",
 
   "generator.error": "トーナメントが開始済みなので変更は保存されませんでした。",
 
@@ -63,17 +67,27 @@
 
   "admin.download": "参加者リストをダウンロード",
   "admin.actions.CHANGE_TEAM_OWNER": "キャプテンを変更",
+  "admin.actions.CHANGE_TEAM_NAME": "Change team name",
   "admin.actions.CHECK_IN": "チェックイン",
   "admin.actions.CHECK_OUT": "チェックアウト",
   "admin.actions.ADD_MEMBER": "メンバーを追加",
   "admin.actions.REMOVE_MEMBER": "メンバーを削除",
   "admin.actions.DELETE_TEAM": "チームを削除",
+  "admin.actions.ADD_TEAM": "Register team",
+  "admin.actions.DROP_TEAM_OUT": "Drop out team",
+  "admin.actions.UNDO_DROP_TEAM_OUT": "Undo drop out",
+  "admin.actions.UPDATE_IN_GAME_NAME": "Update player IGN",
+
+  "staff.role.ORGANIZER": "organizer",
+  "staff.role.STREAMER": "streamer",
 
   "bracket.winners": "ウィナーズ・ラウンド {{round}}",
   "bracket.winners.finals": "ウィナーズ・ファイナル",
   "bracket.losers": "ルーザーズ・ラウンド {{round}}",
   "bracket.losers.finals": "ルーザーズ・ファイナル",
   "bracket.single_elim": "ラウンド {{round}}",
+  "bracket.round_robin": "Groups Round {{round}}",
+  "bracket.swiss": "Swiss Round {{round}}",
   "bracket.single_elim.finals": "ファイナル",
   "bracket.grand_finals": "グランド・ファイナル",
   "bracket.grand_finals.bracket_reset": "ブラケットをリセット",
@@ -94,8 +108,10 @@
   "team.seed": "シード",
   "team.seed.footer": "{{count}} シード中",
   "team.placement": "順位",
+  "team.placement.footer": "Main/UG",
 
   "bracket.waiting": "ブラケットは、少なくとも {{count}} チームが登録した時点で表示されます",
+  "bracket.waiting.checkin": "Bracket will be shown here when at least {{count}} teams have checked in",
   "bracket.wip": "このブラケットはまだプレビューで、変更される可能性があります",
 
   "bracket.progress.thanksForPlaying": "{{eventName}} への参加ありがとうございます!",
@@ -110,6 +126,7 @@
   "match.pass": "通過",
   "match.pool": "プール",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
+  "match.score.playAll": "{{scoreOne}}-{{scoreTwo}} (Play all {{bestOf}})",
   "match.action.undoLastScore": "最後のスコアをやりなおす",
   "match.action.reopenMatch": "対戦を再度開く",
 
