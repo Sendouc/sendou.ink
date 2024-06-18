@@ -6,5 +6,7 @@
   "tournament_other": "{{tournament}} の勝者 (×{{count}})",
   "forYourEvent": "イベント専用のバッジ?",
   "madeBy": "<2>borzoic</2> によって作成されたバッジ",
-  "managedBy": "{{users}} によって管理されています"
+  "managedBy": "{{users}} によって管理されています",
+  "own.divider": "管理しているバッジ",
+  "other.divider": "他のバッジ"
 }
