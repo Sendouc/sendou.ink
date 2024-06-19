@@ -4,12 +4,14 @@ import {
   DefaultStylePanel,
   DefaultZoomMenu,
   Tldraw,
+  createShapeId,
 } from "@tldraw/tldraw";
 import type {
   Editor,
   TLAssetId,
   TLComponents,
   TLImageAsset,
+  TLShapeId,
   TLUiStylePanelProps,
 } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
@@ -44,11 +46,11 @@ export default function Planner() {
   const { i18n } = useTranslation();
   const plannerBgParams = usePlannerBg();
 
-  const [editor, setApp] = React.useState<Editor | null>(null);
+  const [editor, setEditor] = React.useState<Editor | null>(null);
 
   const handleMount = React.useCallback(
     (mountedEditor: Editor) => {
-      setApp(mountedEditor);
+      setEditor(mountedEditor);
       mountedEditor.user.updateUserPreferences({
         locale: ourLanguageToTldrawLanguage(i18n.language),
       });
@@ -69,7 +71,7 @@ export default function Planner() {
       isLocked: boolean;
       point: number[];
       cb?: () => void;
-    }) => {
+    }) => { // there might be a nicer way of doing this than returning this.
       if (!editor) return;
 
       // tldraw creator:
@@ -95,17 +97,21 @@ export default function Planner() {
 
       editor.createAssets([imageAsset]);
 
-      editor.createShape({
+      const shapeId: TLShapeId = createShapeId();
+
+      const shape = {
         type: "image",
         x: point[0],
         y: point[1],
         isLocked: isLocked,
+        id: shapeId,
         props: {
-          assetId,
+          assetId: assetId,
           w: size[0],
           h: size[1],
         },
-      });
+      };
+      editor.createShape(shape);
 
       cb?.();
     },
@@ -172,8 +178,14 @@ export default function Planner() {
     }) => {
       if (!editor) return;
 
-      editor.selectAll();
-      editor.deleteShapes(editor.getSelectedShapes());
+      editor.mark("pre-background-change");
+
+      const shapes = editor.getCurrentPageShapes();
+      // i dont think locked shapes can be deleted
+      shapes.forEach((value) => {
+        editor.updateShape({ id: value.id, type: value.type, isLocked: false });
+      });
+      editor.deleteShapes(shapes);
 
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
