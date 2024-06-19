@@ -72,7 +72,6 @@ export default function Planner() {
       point: number[];
       cb?: () => void;
     }) => {
-      // there might be a nicer way of doing this than returning this.
       if (!editor) return;
 
       // tldraw creator:
