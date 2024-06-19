@@ -71,7 +71,8 @@ export default function Planner() {
       isLocked: boolean;
       point: number[];
       cb?: () => void;
-    }) => { // there might be a nicer way of doing this than returning this.
+    }) => {
+      // there might be a nicer way of doing this than returning this.
       if (!editor) return;
 
       // tldraw creator:
