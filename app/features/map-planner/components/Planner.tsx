@@ -1,5 +1,19 @@
-import { ColorStyle, TDAssetType, TDShapeType, Tldraw } from "@tldraw/tldraw";
-import type { TDImageAsset, TldrawApp } from "@tldraw/tldraw";
+import {
+  AssetRecordType,
+  DefaultQuickActions,
+  DefaultStylePanel,
+  DefaultZoomMenu,
+  Tldraw,
+  createShapeId,
+} from "@tldraw/tldraw";
+import type {
+  Editor,
+  TLAssetId,
+  TLComponents,
+  TLImageAsset,
+  TLShapeId,
+  TLUiStylePanelProps,
+} from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
@@ -12,7 +26,6 @@ import {
   weaponCategories,
 } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import { semiRandomId } from "~/utils/strings";
 import {
   mainWeaponImageUrl,
   outlinedMainWeaponImageUrl,
@@ -33,16 +46,14 @@ export default function Planner() {
   const { i18n } = useTranslation();
   const plannerBgParams = usePlannerBg();
 
-  const [app, setApp] = React.useState<TldrawApp | null>(null);
+  const [editor, setEditor] = React.useState<Editor | null>(null);
 
   const handleMount = React.useCallback(
-    (mountedApp: TldrawApp) => {
-      setApp(mountedApp);
-      mountedApp.setSetting(
-        "language",
-        ourLanguageToTldrawLanguage(i18n.language),
-      );
-      mountedApp.style({ color: ColorStyle.Red });
+    (mountedEditor: Editor) => {
+      setEditor(mountedEditor);
+      mountedEditor.user.updateUserPreferences({
+        locale: ourLanguageToTldrawLanguage(i18n.language),
+      });
     },
     [i18n],
   );
@@ -61,37 +72,50 @@ export default function Planner() {
       point: number[];
       cb?: () => void;
     }) => {
-      if (!app) return;
-
-      const asset: TDImageAsset = {
-        id: src,
-        type: TDAssetType.Image,
-        fileName: "img",
-        src,
-        size,
-      };
+      if (!editor) return;
 
       // tldraw creator:
       // "So image shapes in tldraw work like this: we add an asset to the app.assets table, then we reference that asset in the shape object itself.
       // This lets us have multiple copies of an image on the canvas without having all of those take up memory individually"
+      const assetId: TLAssetId = AssetRecordType.createId();
 
-      app.insertContent({
-        assets: [asset],
-        shapes: [],
-      });
+      // idk if this is the best solution, but it was the example given and it seems to cope well with lots of shapes at once
+      const imageAsset: TLImageAsset = {
+        id: assetId,
+        type: "image",
+        typeName: "asset",
+        props: {
+          name: "img",
+          src: src,
+          w: size[0],
+          h: size[1],
+          mimeType: null,
+          isAnimated: false,
+        },
+        meta: {},
+      };
 
-      app.createShapes({
-        id: semiRandomId(),
-        type: TDShapeType.Image,
-        assetId: src,
-        size,
-        isAspectRatioLocked: true,
-        isLocked,
-        point,
-      });
+      editor.createAssets([imageAsset]);
+
+      const shapeId: TLShapeId = createShapeId();
+
+      const shape = {
+        type: "image",
+        x: point[0],
+        y: point[1],
+        isLocked: isLocked,
+        id: shapeId,
+        props: {
+          assetId: assetId,
+          w: size[0],
+          h: size[1],
+        },
+      };
+      editor.createShape(shape);
+
       cb?.();
     },
-    [app],
+    [editor],
   );
 
   const handleAddWeapon = React.useCallback(
@@ -133,11 +157,11 @@ export default function Planner() {
           randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
           randomInt(imageSpawnBoxTop, imageSpawnBoxBottom),
         ],
-        cb: () => app?.selectTool("select"),
+        cb: () => editor?.setCurrentTool("select"),
       });
     },
     [
-      app,
+      editor,
       handleAddImage,
       plannerBgParams.bgHeight,
       plannerBgParams.bgWidth,
@@ -152,8 +176,17 @@ export default function Planner() {
       mode: ModeShort;
       style: StageBackgroundStyle;
     }) => {
-      if (!app) return;
-      app.resetDocument();
+      if (!editor) return;
+
+      editor.mark("pre-background-change");
+
+      const shapes = editor.getCurrentPageShapes();
+      // i dont think locked shapes can be deleted
+      shapes.forEach((value) => {
+        editor.updateShape({ id: value.id, type: value.type, isLocked: false });
+      });
+      editor.deleteShapes(shapes);
+
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
         size: [plannerBgParams.bgWidth, plannerBgParams.bgHeight],
@@ -162,7 +195,7 @@ export default function Planner() {
       });
     },
     [
-      app,
+      editor,
       handleAddImage,
       plannerBgParams.bgHeight,
       plannerBgParams.bgWidth,
@@ -170,6 +203,27 @@ export default function Planner() {
       plannerBgParams.pointOffsetY,
     ],
   );
+
+  // removes all tldraw ui that isnt needed
+  const tldrawComponents: TLComponents = {
+    ActionsMenu: null,
+    ContextMenu: null,
+    DebugMenu: null,
+    DebugPanel: null,
+    HelperButtons: null,
+    HelpMenu: null,
+    KeyboardShortcutsDialog: null,
+    MainMenu: null,
+    MenuPanel: null,
+    Minimap: null,
+    NavigationPanel: null,
+    PageMenu: null,
+    QuickActions: null,
+    SharePanel: null,
+    StylePanel: CustomStylePanel,
+    TopPanel: null,
+    ZoomMenu: null,
+  };
 
   return (
     <>
@@ -180,8 +234,31 @@ export default function Planner() {
           {t("common:plans.poweredBy", { name: "tldraw" })}
         </a>
       </div>
-      <Tldraw id="sendou" showMultiplayerMenu={false} onMount={handleMount} />
+      <div style={{ position: "fixed", inset: 0 }}>
+        <Tldraw
+          onMount={handleMount}
+          components={tldrawComponents}
+          inferDarkMode
+        />
+      </div>
     </>
+  );
+}
+
+// Formats the style panel so it can have classnames, this is needed so it can be moved below the header bar which blocks clicks (idk why this is different to the old version), also needed to format the quick actions bar and zoom menu nicely
+function CustomStylePanel(props: TLUiStylePanelProps) {
+  return (
+    <div className="plans__style-panel">
+      <DefaultStylePanel {...props} />
+      <div className="plans__zoom-quick-actions">
+        <div className="plans__quick-actions">
+          <DefaultQuickActions />
+        </div>
+        <div className="plans__zoom-menu">
+          <DefaultZoomMenu />
+        </div>
+      </div>
+    </div>
   );
 }
 

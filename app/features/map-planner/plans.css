@@ -1,5 +1,6 @@
 /* https://github.com/tldraw/tldraw/blob/2352985e949d14270fc89dc60144239c37c8ff91/packages/tldraw/src/hooks/useStylesheet.ts */
 @import url("https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Source+Code+Pro&family=Source+Sans+Pro&family=Crimson+Pro&display=block");
+@import url("tldraw/tldraw.css");
 
 @font-face {
   font-family: "Recursive";
@@ -137,4 +138,26 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 .plans__no-img-text {
   color: var(--theme-error);
   font-size: var(--fonts-xs);
+}
+
+.plans__style-panel {
+  position: fixed;
+  z-index: 10;
+  margin-top: 50px;
+}
+
+.plans__zoom-quick-actions {
+  position: absolute;
+  z-index: 10;
+  display: block;
+}
+
+.plans__zoom-menu {
+  position: absolute;
+  right: 0;
+}
+
+.plans__quick-actions {
+  display: flex;
+  right: 0;
 }
