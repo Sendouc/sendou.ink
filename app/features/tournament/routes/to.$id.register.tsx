@@ -54,6 +54,7 @@ import {
   tournamentSubsPage,
   userEditProfilePage,
   userPage,
+  userSubmittedImage,
 } from "~/utils/urls";
 import { checkIn } from "../queries/checkIn.server";
 import { createTeam } from "../queries/createTeam.server";
@@ -78,6 +79,8 @@ import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { Toggle } from "~/components/Toggle";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { inGameNameIfNeeded } from "../tournament-utils.server";
+import { imgTypeToDimensions } from "~/features/img-upload/upload-constants";
+import Compressor from "compressorjs";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
@@ -292,6 +295,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     team: await TeamRepository.findByUserId(user.id),
   };
 };
+
+// xxx: make avatar bigger in some contexts?
+// xxx: uploading avatar possible till reg ends
 
 export default function TournamentRegisterPage() {
   const user = useUser();
@@ -571,9 +577,7 @@ function RegistrationForms() {
           <FriendCode />
           {user?.friendCode ? (
             <TeamInfo
-              name={ownTeam?.name}
-              prefersNotToHost={ownTeam?.prefersNotToHost}
-              noScreen={ownTeam?.noScreen}
+              ownTeam={ownTeam}
               canUnregister={Boolean(ownTeam && !ownTeamCheckedIn)}
             />
           ) : null}
@@ -784,25 +788,23 @@ function CheckIn({
 }
 
 function TeamInfo({
-  name,
-  prefersNotToHost = 0,
-  noScreen = 0,
+  ownTeam,
   canUnregister,
 }: {
-  name?: string;
-  prefersNotToHost?: number;
-  noScreen?: number;
+  ownTeam?: TournamentDataTeam | null;
   canUnregister: boolean;
 }) {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["tournament", "common"]);
   const fetcher = useFetcher();
   const tournament = useTournament();
-  const [teamName, setTeamName] = React.useState(name);
+  const [teamName, setTeamName] = React.useState(ownTeam?.name ?? "");
   const user = useUser();
   const [signUpWithTeam, setSignUpWithTeam] = React.useState(() =>
     Boolean(tournament.ownedTeamByUser(user)?.team),
   );
+  // xxx: initial state
+  const [uploadedAvatar, setUploadedAvatar] = React.useState<File | null>(null);
 
   const handleSignUpWithTeamChange = (checked: boolean) => {
     if (!checked) {
@@ -812,6 +814,10 @@ function TeamInfo({
       setTeamName(data.team.name);
     }
   };
+
+  const showUploadAvatar = () => {};
+
+  console.log({ uploadedAvatar });
 
   return (
     <div>
@@ -867,13 +873,39 @@ function TeamInfo({
                 readOnly={!tournament.registrationOpen || signUpWithTeam}
               />
             </div>
+            <div className="tournament__section__input-container">
+              <Label htmlFor="logo">Logo</Label>
+              {ownTeam?.team?.logoUrl || uploadedAvatar ? (
+                <div className="stack horizontal md items-center">
+                  <Avatar
+                    size="xsm"
+                    url={
+                      uploadedAvatar
+                        ? URL.createObjectURL(uploadedAvatar)
+                        : userSubmittedImage(ownTeam!.team!.logoUrl!)
+                    }
+                  />
+                  {uploadedAvatar ? (
+                    <Button
+                      variant="minimal"
+                      size="tiny"
+                      onClick={() => setUploadedAvatar(null)}
+                    >
+                      {t("common:actions.edit")}
+                    </Button>
+                  ) : null}
+                </div>
+              ) : (
+                <TournamentLogoUpload onChange={setUploadedAvatar} />
+              )}
+            </div>
             <div className="stack sm">
               <div className="text-lighter text-sm stack horizontal sm items-center">
                 <input
                   id="no-host"
                   type="checkbox"
                   name="prefersNotToHost"
-                  defaultChecked={Boolean(prefersNotToHost)}
+                  defaultChecked={Boolean(ownTeam?.prefersNotToHost)}
                 />
                 <label htmlFor="no-host" className="mb-0">
                   {t("tournament:pre.info.noHost")}
@@ -886,7 +918,7 @@ function TeamInfo({
                     id="no-screen"
                     type="checkbox"
                     name="noScreen"
-                    defaultChecked={Boolean(noScreen)}
+                    defaultChecked={Boolean(ownTeam?.noScreen)}
                     data-testid="no-screen-checkbox"
                   />
                   <label htmlFor="no-screen" className="mb-0">
@@ -906,6 +938,49 @@ function TeamInfo({
         </fetcher.Form>
       </section>
     </div>
+  );
+}
+
+const logoDimensions = imgTypeToDimensions["team-pfp"];
+function TournamentLogoUpload({
+  onChange,
+}: {
+  onChange: (file: File | null) => void;
+}) {
+  return (
+    <input
+      id="img-field"
+      className="plain"
+      type="file"
+      name="img"
+      accept="image/png, image/jpeg, image/webp"
+      onChange={(e) => {
+        const uploadedFile = e.target.files?.[0];
+        if (!uploadedFile) {
+          onChange(null);
+          return;
+        }
+
+        new Compressor(uploadedFile, {
+          height: logoDimensions.height,
+          width: logoDimensions.width,
+          maxHeight: logoDimensions.height,
+          maxWidth: logoDimensions.width,
+          // 0.5MB
+          convertSize: 500_000,
+          resize: "cover",
+          success(result) {
+            const file = new File([result], `img.webp`, {
+              type: "image/webp",
+            });
+            onChange(file);
+          },
+          error(err) {
+            console.error(err.message);
+          },
+        });
+      }}
+    />
   );
 }
 

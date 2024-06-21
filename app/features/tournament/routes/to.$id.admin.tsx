@@ -47,6 +47,8 @@ import { tournamentIdFromParams } from "../tournament-utils";
 import { inGameNameIfNeeded } from "../tournament-utils.server";
 import { useTournament } from "./to.$id";
 
+// xxx: delete avatar action
+
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({

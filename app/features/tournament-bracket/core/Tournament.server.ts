@@ -42,6 +42,7 @@ function dataMapped({
       (staff) => staff.id === user?.id && staff.role === "ORGANIZER",
     );
 
+  // xxx: filter avas
   return {
     data,
     ctx: {
