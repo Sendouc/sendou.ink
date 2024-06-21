@@ -815,9 +815,20 @@ function TeamInfo({
     }
   };
 
-  const showUploadAvatar = () => {};
+  const avatarUrl = (() => {
+    if (signUpWithTeam) {
+      if (ownTeam?.team?.logoUrl) {
+        return userSubmittedImage(ownTeam.team.logoUrl);
+      }
+      return data?.team?.logoUrl ? userSubmittedImage(data.team.logoUrl) : null;
+    }
+    if (uploadedAvatar) return URL.createObjectURL(uploadedAvatar);
 
-  console.log({ uploadedAvatar });
+    return null;
+  })();
+
+  const canEditAvatar =
+    tournament.registrationOpen && !signUpWithTeam && uploadedAvatar;
 
   return (
     <div>
@@ -873,32 +884,27 @@ function TeamInfo({
                 readOnly={!tournament.registrationOpen || signUpWithTeam}
               />
             </div>
-            <div className="tournament__section__input-container">
-              <Label htmlFor="logo">Logo</Label>
-              {ownTeam?.team?.logoUrl || uploadedAvatar ? (
-                <div className="stack horizontal md items-center">
-                  <Avatar
-                    size="xsm"
-                    url={
-                      uploadedAvatar
-                        ? URL.createObjectURL(uploadedAvatar)
-                        : userSubmittedImage(ownTeam!.team!.logoUrl!)
-                    }
-                  />
-                  {uploadedAvatar ? (
-                    <Button
-                      variant="minimal"
-                      size="tiny"
-                      onClick={() => setUploadedAvatar(null)}
-                    >
-                      {t("common:actions.edit")}
-                    </Button>
-                  ) : null}
-                </div>
-              ) : (
-                <TournamentLogoUpload onChange={setUploadedAvatar} />
-              )}
-            </div>
+            {tournament.registrationOpen || avatarUrl ? (
+              <div className="tournament__section__input-container">
+                <Label htmlFor="logo">Logo</Label>
+                {avatarUrl ? (
+                  <div className="stack horizontal md items-center">
+                    <Avatar size="xsm" url={avatarUrl} />
+                    {canEditAvatar ? (
+                      <Button
+                        variant="minimal"
+                        size="tiny"
+                        onClick={() => setUploadedAvatar(null)}
+                      >
+                        {t("common:actions.edit")}
+                      </Button>
+                    ) : null}
+                  </div>
+                ) : (
+                  <TournamentLogoUpload onChange={setUploadedAvatar} />
+                )}
+              </div>
+            ) : null}
             <div className="stack sm">
               <div className="text-lighter text-sm stack horizontal sm items-center">
                 <input
