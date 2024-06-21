@@ -67,7 +67,7 @@ const TRANSLATORS: Array<{
     language: "he",
   },
   {
-    translators: [{ name: "funyaaa", twitter: "funyaaa1" }, "taqm"],
+    translators: [{ name: "funyaaa", twitter: "funyaaa1" }, "taqm", "yutarour"],
     language: "ja",
   },
   {
