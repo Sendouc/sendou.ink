@@ -337,7 +337,7 @@ function modePreferencesMemento(args: CreateMatchMementoArgs) {
 
       if (!result[mode]) result[mode] = [];
 
-      result[mode]!.push({
+      result[mode].push({
         userId,
         preference: found?.preference,
       });

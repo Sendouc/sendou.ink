@@ -490,6 +490,7 @@ function TagsAdder() {
   const id = React.useId();
 
   const tagsForSelect = CALENDAR_EVENT.TAGS.filter(
+    // @ts-expect-error TODO: fix this (5.5 version)
     (tag) => !tags.includes(tag) && tag !== "BADGE",
   );
 
@@ -506,6 +507,7 @@ function TagsAdder() {
           id={id}
           className="calendar-new__select"
           onChange={(e) =>
+            // @ts-expect-error TODO: fix this (5.5 version)
             setTags([...tags, e.target.value as CalendarEventTag])
           }
         >

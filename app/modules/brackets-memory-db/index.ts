@@ -205,11 +205,9 @@ export class InMemoryDatabase implements CrudInterface {
         if (
           // @ts-expect-error imported
           existing[key] &&
-          // @ts-expect-error imported
           typeof existing[key] === "object" &&
           typeof value[key] === "object"
         ) {
-          // @ts-expect-error imported
           Object.assign(existing[key], value[key]); // For opponent objects, this does a deep merge of level 2.
         } else {
           // @ts-expect-error imported

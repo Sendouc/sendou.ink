@@ -1206,13 +1206,13 @@ export function sortSeeding(slots: ParticipantSlot[]): ParticipantSlot[] {
 
   // a and b are not null because of the filter.
   // The slots are from seeding slots, thus they have a position.
-  withoutByes.sort((a, b) => a!.position! - b!.position!);
+  withoutByes.sort((a, b) => a.position! - b.position!);
 
   if (withoutByes.length === slots.length) return withoutByes;
 
   // Same for v and position.
   const placed = Object.fromEntries(
-    withoutByes.map((v) => [v!.position! - 1, v]),
+    withoutByes.map((v) => [v.position! - 1, v]),
   );
   const sortedWithByes = Array.from(
     { length: slots.length },

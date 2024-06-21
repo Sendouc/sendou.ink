@@ -58,7 +58,7 @@ function decodeURLQuery(queryString: string): LFGFilter[] {
   return queryString
     .split("-")
     .map(smallStrToFilter)
-    .filter((x) => x !== null) as LFGFilter[];
+    .filter((x) => x !== null);
 }
 
 function encodeURLQuery(filters: LFGFilter[]): string {
