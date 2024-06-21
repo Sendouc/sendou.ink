@@ -60,7 +60,11 @@ const TRANSLATORS: Array<{
   },
   {
     translators: ["Charakiga", "marie-maxime", "Filuz"],
-    language: "fr",
+    language: "fr-CA",
+  },
+  {
+    translators: ["Charakiga", "marie-maxime", "Filuz"],
+    language: "fr-EU",
   },
   {
     translators: ["shachar700"],

@@ -407,7 +407,7 @@ const ourLanguageToTldrawLanguageMap: Record<LanguageCode, string> = {
   da: "da",
   de: "de",
   en: "en",
-  fr: "fr",
+  fr: "fr-EU",
   it: "it",
   ja: "ja",
   ru: "ru",
