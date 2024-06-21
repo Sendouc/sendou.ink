@@ -3,6 +3,7 @@
   "type.TOURNAMENT": "トーナメント (PoV)",
   "type.MATCHMAKING": "バンカラマッチ/X バトル/ナワバリバトル",
   "type.CAST": "トーナメント (Cast)",
+  "type.SENDOUQ": "SendouQ",
   "gameCount": "ゲーム数: {{count}}",
   "minShort": "分",
   "secShort": "秒",
@@ -19,5 +20,7 @@
   "forms.title.weapon": "ブキ",
   "forms.action.addMatch": "対戦を追加",
   "forms.action.deleteMatch": "対戦を削除",
-  "noVods": "該当する動画は見つかりませんでした。なにか足りないかな? Discord で Sendou にメッセージを送って、動画投稿の権限を取得してください。"
+  "noVods": "該当する動画は見つかりませんでした。なにか足りないかな? Discord で Sendou にメッセージを送って、動画投稿の権限を取得してください。",
+  "addVod": "ビデオを追加する",
+  "gainPerms": "動画をアップロードする権限を取得するためディスコードのヘルプデスクにメッセージを送ってください。"
 }

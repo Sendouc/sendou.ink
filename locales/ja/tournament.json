@@ -27,6 +27,7 @@
   "pre.info.unregister": "登録解除",
   "pre.info.unregister.confirm": "トーナメント登録をキャンセルして、チーム情報を削除しますか?",
   "pre.info.noHost": "部屋作成はできれば遠慮したい",
+  "pre.info.noScreen": "スミナガシートはできるだけ使ってほしくない",
 
   "pre.roster.header": "参加プレイヤーを登録",
   "pre.roster.footer": "少なくとも {{atLeastCount}} 人の参加が必要です。最大メンバー数は {{maxCount}} です。",
@@ -35,6 +36,8 @@
   "pre.roster.delete.header": "削除するメンバー",
 
   "pre.pool.header": "マッププールを選択する",
+  "pre.pool.banned": "禁止",
+  "pre.pool.tiebreaker.short": "タイブレイカー",
 
   "pre.sub.prompt": "このイベントで参加したいチームが見当たらない場合は、サブで参加することもできます。",
 
@@ -56,6 +59,7 @@
   "pickInfo.tiebreaker": "タイブレイカー",
   "pickInfo.both": "両者選択",
   "pickInfo.default": "デフォルトマップ",
+  "pickInfo.counterpick": "順番に選ぶ",
 
   "generator.error": "トーナメントが開始済みなので変更は保存されませんでした。",
 
@@ -63,17 +67,27 @@
 
   "admin.download": "参加者リストをダウンロード",
   "admin.actions.CHANGE_TEAM_OWNER": "キャプテンを変更",
+  "admin.actions.CHANGE_TEAM_NAME": "チーム名変更",
   "admin.actions.CHECK_IN": "チェックイン",
   "admin.actions.CHECK_OUT": "チェックアウト",
   "admin.actions.ADD_MEMBER": "メンバーを追加",
   "admin.actions.REMOVE_MEMBER": "メンバーを削除",
   "admin.actions.DELETE_TEAM": "チームを削除",
+  "admin.actions.ADD_TEAM": "チーム登録",
+  "admin.actions.DROP_TEAM_OUT": "チームを落とす",
+  "admin.actions.UNDO_DROP_TEAM_OUT": "落としたチームを戻す",
+  "admin.actions.UPDATE_IN_GAME_NAME": "プレイヤーのゲーム内の名前をアップデートする",
+
+  "staff.role.ORGANIZER": "主催者",
+  "staff.role.STREAMER": "配信者",
 
   "bracket.winners": "ウィナーズ・ラウンド {{round}}",
   "bracket.winners.finals": "ウィナーズ・ファイナル",
   "bracket.losers": "ルーザーズ・ラウンド {{round}}",
   "bracket.losers.finals": "ルーザーズ・ファイナル",
   "bracket.single_elim": "ラウンド {{round}}",
+  "bracket.round_robin": "ラウンドロビン {{round}}",
+  "bracket.swiss": "スイスラウンド {{round}}",
   "bracket.single_elim.finals": "ファイナル",
   "bracket.grand_finals": "グランド・ファイナル",
   "bracket.grand_finals.bracket_reset": "ブラケットをリセット",
@@ -94,8 +108,10 @@
   "team.seed": "シード",
   "team.seed.footer": "{{count}} シード中",
   "team.placement": "順位",
+  "team.placement.footer": "メイン/UG",
 
   "bracket.waiting": "ブラケットは、少なくとも {{count}} チームが登録した時点で表示されます",
+  "bracket.waiting.checkin": "ブラケットは最低{{count}}チームがチェックインしてから表示されるよ",
   "bracket.wip": "このブラケットはまだプレビューで、変更される可能性があります",
 
   "bracket.progress.thanksForPlaying": "{{eventName}} への参加ありがとうございます!",
@@ -110,6 +126,7 @@
   "match.pass": "通過",
   "match.pool": "プール",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
+  "match.score.playAll": "{{scoreOne}}-{{scoreTwo}} (全てプレイする {{bestOf}})",
   "match.action.undoLastScore": "最後のスコアをやりなおす",
   "match.action.reopenMatch": "対戦を再度開く",
 

@@ -22,6 +22,7 @@
   "pages.links": "リンク",
   "pages.art": "イラスト",
   "pages.sendouq": "SendouQ",
+  "pages.lfg": "グループ探し",
 
   "header.profile": "プロファイル",
   "header.logout": "ログアウト",
@@ -33,6 +34,7 @@
   "auth.errors.aborted": "ログインを中断しました",
   "auth.errors.failed": "ログインに失敗しました",
   "auth.errors.discordPermissions": "sendou.ink は、Discord のプロファイル名、アバター、SNS連携をサイトのプロファイルに使用します。",
+  "auth.errors.unknown": "ディスコードのアカウントにバリデートされたイーメールはありますか？助けが必要な場合ディスコードの #helpdeskチャンネルでお聞きください。:",
 
   "footer.github.subtitle": "ソースコード",
   "footer.discord.subtitle": "ヘルプ & フィードバック",
@@ -44,10 +46,13 @@
   "actions.submit": "送信",
   "actions.edit": "編集",
   "actions.add": "追加",
+  "actions.addNew": "新規追加",
   "actions.remove": "除外",
   "actions.delete": "削除",
   "actions.reset": "リセット",
   "actions.loadMore": "さらに見る",
+  "actions.showMore": "もっと見せる",
+  "actions.showLess": "表示を減らす",
   "actions.copyToClipboard": "クリップボードにコピーする",
   "actions.create": "作成",
   "actions.close": "閉じる",
@@ -58,7 +63,10 @@
   "actions.search": "検索",
   "actions.setBg": "ステージ背景を設定する",
   "actions.join": "参加する",
+  "actions.nevermind": "やーめた",
   "actions.upload": "アップロード",
+  "actions.clickHere": "ここをクリック",
+  "actions.goBack": "戻る",
 
   "maps.createMapList": "ステージ一覧を作る",
   "maps.halfSz": "ガチエリア (2ヶ所)",
@@ -79,6 +87,8 @@
   "maps.validation.MAP_REPEATED": "同じステージを1回以上選択できません",
   "maps.validation.MODE_REPEATED": "同じルールを1回以上選択できません",
   "maps.validation.TOO_MUCH_STAGE_REPEAT": "同じステージを {{maxStageRepeat}} 回以上選択できません",
+  "maps.validation.INCLUDES_BANNED": "禁止ステージを選ぶことはできません。",
+  "maps.validation.INCLUDES_TIEBREAKER": "タイブレーカ(引き分けの場合)のステージを決めることができません。",
   "maps.validation.VALID": "登録できるマップリストです!",
 
   "results": "結果",
@@ -101,6 +111,7 @@
   "tag.name.MONEY": "賞金",
   "tag.name.REGION": "地域限定",
   "tag.name.LOW": "上限レベルあり",
+  "tag.name.HIGH": "下限スキルあり",
   "tag.name.COUNT": "参加数限定",
   "tag.name.LAN": "オフライン",
   "tag.name.QUALIFIER": "参加資格",
@@ -156,6 +167,7 @@
   "support.perk.nameInFooter": "フッターの名前",
   "support.perk.discordColorRole": "Discord のカラーロール",
   "support.perk.discordColorRole.extra": "Plus Server と sendou.ink の Discord サーバーでカスタムカラーロールを使用することができます。Lohi bot の /color コマンドを使用してください。.",
+  "support.perk.chatColor": "名前の色を sendou.inkのチャットで決めてください。",
   "support.perk.badge": "プロファイル バッジ",
   "support.perk.seePlusPercentage": "Plus Server の投票率を見る",
   "support.perk.seePlusPercentage.extra": "通常、失敗したサジェストのみが投票済みの投票率を見ることができます。これによって、自分の投票率を見ることができます。",
@@ -166,6 +178,9 @@
   "support.perk.customizedColorsTeam.extra": "チームのメンバーのうち1人が支援者であれば、この特典を得ることができます。",
   "support.perk.privateDiscord": "専用 Discord チャンネル",
   "support.perk.privateDiscord.extra": "開発途中の機能の共有、優先サポート、優先機能追加リクエストのために使用します。",
+  "support.perk.prioritySupport": "優先サポート",
+  "support.perk.prioritySupport.extra": "私(主)が優先的に見るヘルプデスクへのアクセス",
+  "support.perk.previewQ": "SendouQ でジョインする前にグループを見る",
 
   "custom.colors.title": "カスタムカラー",
   "custom.colors.bg": "バックグラウンド",
@@ -174,6 +189,7 @@
   "custom.colors.text": "テキスト",
   "custom.colors.text-lighter": "テキスト 明るめ",
   "custom.colors.theme": "テーマ",
+  "custom.colors.chat": "チャットネーム",
 
   "divisions.WEST": "アロメ",
   "divisions.JPN": "ヤコ",
@@ -188,5 +204,26 @@
 
   "leaderboard.type.USER": "ユーザー",
   "leaderboard.type.TEAM": "チーム",
-  "leaderboard.type.XP-ALL": "すべてのXP"
+  "leaderboard.type.XP-ALL": "すべてのXP",
+  "leaderboard.noPlayers": "リーダーボードに載っているプレイヤーはまだいません",
+  "leaderboard.noTeams": "リーダボードに載っているチームはまだいません",
+  "leaderboard.updateInfo": "リーダーボードは三十分に一回アップデートされます。",
+  "leaderboard.qualification": "今シーズンのフィナーレへの参加権",
+
+  "chat.connected": "接続されています",
+  "chat.disconnected": "接続されていません",
+  "chat.send": "送る",
+  "chat.input.placeholder": "送るためには enter を押してください",
+  "chat.systemMsg.scoreReported": "{{name}}がスコアを報告しました",
+  "chat.systemMsg.scoreConfirmed": "{{name}}がスコアを確認しました。試合がロックされました。",
+  "chat.systemMsg.cancelReported": "{{name}} が試合のキャンセルを申請しました",
+  "chat.systemMsg.cancelConfirmed": "{{name}} が試合キャンセルを承認しました。試合がロックされました。",
+  "chat.systemMsg.userLeft": "{{name}} がグループから出ました",
+  "chat.newMessages": "新着メッセージ",
+
+  "fc.title": "フレンドコード",
+
+  "showcase.register": "登録する",
+  "showcase.bracket": "ブラケット",
+  "showcase.liveNow": "只今ライブ!"
 }
