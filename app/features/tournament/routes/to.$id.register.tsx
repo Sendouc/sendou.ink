@@ -1,10 +1,10 @@
-import { type ActionFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
+import Compressor from "compressorjs";
+import Markdown from "markdown-to-jsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useCopyToClipboard } from "react-use";
-import invariant from "~/utils/invariant";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
@@ -15,36 +15,27 @@ import { Image, ModeImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { MapPoolStages } from "~/components/MapPoolSelector";
+import { NewTabs } from "~/components/NewTabs";
 import { Popover } from "~/components/Popover";
 import { Section } from "~/components/Section";
 import { SubmitButton } from "~/components/SubmitButton";
+import { Toggle } from "~/components/Toggle";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ClockIcon } from "~/components/icons/Clock";
 import { CrossIcon } from "~/components/icons/Cross";
+import { DiscordIcon } from "~/components/icons/Discord";
 import { UserIcon } from "~/components/icons/User";
 import { useUser } from "~/features/auth/core/user";
-import { getUser, requireUser } from "~/features/auth/core/user.server";
+import { imgTypeToDimensions } from "~/features/img-upload/upload-constants";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { ModeMapPoolPicker } from "~/features/sendouq-settings/components/ModeMapPoolPicker";
-import * as QRepository from "~/features/sendouq/QRepository.server";
-import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
-import {
-  clearTournamentDataCache,
-  tournamentFromDB,
-  type TournamentDataTeam,
-} from "~/features/tournament-bracket/core/Tournament.server";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { type TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
 import { filterOutFalsy } from "~/utils/arrays";
-import { logger } from "~/utils/logger";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { booleanToInt } from "~/utils/sql";
-import { assertUnreachable } from "~/utils/types";
+import invariant from "~/utils/invariant";
 import {
   LOG_IN_URL,
   SENDOU_INK_BASE_URL,
@@ -56,245 +47,18 @@ import {
   userPage,
   userSubmittedImage,
 } from "~/utils/urls";
-import { checkIn } from "../queries/checkIn.server";
-import { createTeam } from "../queries/createTeam.server";
-import { deleteTeam } from "../queries/deleteTeam.server";
-import deleteTeamMember from "../queries/deleteTeamMember.server";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { findOwnTournamentTeam } from "../queries/findOwnTournamentTeam.server";
-import { joinTeam } from "../queries/joinLeaveTeam.server";
-import { updateTeamInfo } from "../queries/updateTeamInfo.server";
-import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { TOURNAMENT } from "../tournament-constants";
-import { registerSchema } from "../tournament-schemas.server";
 import {
-  isOneModeTournamentOf,
-  tournamentIdFromParams,
+  type CounterPickValidationStatus,
+  validateCounterPickMapPool,
 } from "../tournament-utils";
 import { useTournament } from "./to.$id";
-import Markdown from "markdown-to-jsx";
-import { NewTabs } from "~/components/NewTabs";
-import { useSearchParamState } from "~/hooks/useSearchParamState";
-import * as TeamRepository from "~/features/team/TeamRepository.server";
-import { Toggle } from "~/components/Toggle";
-import { DiscordIcon } from "~/components/icons/Discord";
-import { inGameNameIfNeeded } from "../tournament-utils.server";
-import { imgTypeToDimensions } from "~/features/img-upload/upload-constants";
-import Compressor from "compressorjs";
+import type { TournamentRegisterPageLoader } from "../loaders/to.$id.register.server";
 
-export const action: ActionFunction = async ({ request, params }) => {
-  const user = await requireUser(request);
-  const data = await parseRequestFormData({ request, schema: registerSchema });
+import { loader } from "../loaders/to.$id.register.server";
+import { action } from "../actions/to.$id.register.server";
 
-  const tournamentId = tournamentIdFromParams(params);
-  const tournament = await tournamentFromDB({ tournamentId, user });
-  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
-
-  validate(
-    !tournament.hasStarted,
-    "Tournament has started, cannot make edits to registration",
-  );
-
-  const ownTeam = tournament.ownedTeamByUser(user);
-  const ownTeamCheckedIn = Boolean(ownTeam && ownTeam.checkIns.length > 0);
-
-  switch (data._action) {
-    case "UPSERT_TEAM": {
-      validate(
-        !data.teamId ||
-          (await TeamRepository.findByUserId(user.id))?.id === data.teamId,
-        "Team id does not match the team you are in",
-      );
-
-      if (ownTeam) {
-        validate(
-          tournament.registrationOpen || data.teamName === ownTeam.name,
-          "Can't change team name after registration has closed",
-        );
-
-        updateTeamInfo({
-          name: data.teamName,
-          id: ownTeam.id,
-          prefersNotToHost: booleanToInt(data.prefersNotToHost),
-          noScreen: booleanToInt(data.noScreen),
-          teamId: data.teamId ?? null,
-        });
-      } else {
-        validate(!tournament.isInvitational, "Event is invite only");
-        validate(
-          (await UserRepository.findLeanById(user.id))?.friendCode,
-          "No friend code",
-        );
-        validate(
-          !tournament.teamMemberOfByUser(user),
-          "You are already in a team that you aren't captain of",
-        );
-        validate(tournament.registrationOpen, "Registration is closed");
-
-        createTeam({
-          name: data.teamName,
-          tournamentId: tournamentId,
-          ownerId: user.id,
-          prefersNotToHost: booleanToInt(data.prefersNotToHost),
-          noScreen: booleanToInt(data.noScreen),
-          ownerInGameName: await inGameNameIfNeeded({
-            tournament,
-            userId: user.id,
-          }),
-          teamId: data.teamId ?? null,
-        });
-      }
-      break;
-    }
-    case "DELETE_TEAM_MEMBER": {
-      validate(ownTeam);
-      validate(ownTeam.members.some((member) => member.userId === data.userId));
-      validate(data.userId !== user.id);
-
-      const detailedOwnTeam = findOwnTournamentTeam({
-        tournamentId,
-        userId: user.id,
-      });
-      // making sure they aren't unfilling one checking in condition i.e. having full roster
-      // and then having members kicked without it affecting the checking in status
-      validate(
-        detailedOwnTeam &&
-          (!detailedOwnTeam.checkedInAt ||
-            ownTeam.members.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL),
-      );
-
-      deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
-      break;
-    }
-    case "LEAVE_TEAM": {
-      validate(!ownTeam, "Can't leave a team as the owner");
-
-      const teamMemberOf = tournament.teamMemberOfByUser(user);
-      validate(teamMemberOf, "You are not in a team");
-      validate(
-        teamMemberOf.checkIns.length === 0,
-        "You cannot leave after checking in",
-      );
-
-      deleteTeamMember({
-        tournamentTeamId: teamMemberOf.id,
-        userId: user.id,
-      });
-
-      break;
-    }
-    case "UPDATE_MAP_POOL": {
-      const mapPool = new MapPool(data.mapPool);
-      validate(ownTeam);
-      validate(
-        validateCounterPickMapPool(
-          mapPool,
-          isOneModeTournamentOf(event),
-          tournament.ctx.tieBreakerMapPool,
-        ) === "VALID",
-      );
-
-      upsertCounterpickMaps({
-        tournamentTeamId: ownTeam.id,
-        mapPool: new MapPool(data.mapPool),
-      });
-      break;
-    }
-    case "CHECK_IN": {
-      logger.info(
-        `Checking in (try): owned tournament team id: ${ownTeam?.id} - user id: ${user.id} - tournament id: ${tournamentId}`,
-      );
-
-      const teamMemberOf = tournament.teamMemberOfByUser(user);
-      validate(teamMemberOf, "You are not in a team");
-      validate(
-        teamMemberOf.checkIns.length === 0,
-        "You have already checked in",
-      );
-
-      validate(tournament.regularCheckInIsOpen, "Check in is not open");
-      validate(
-        tournament.checkInConditionsFulfilledByTeamId(teamMemberOf.id),
-        "Check in conditions not fulfilled",
-      );
-
-      checkIn(teamMemberOf.id);
-      logger.info(
-        `Checking in (success): tournament team id: ${teamMemberOf.id} - user id: ${user.id} - tournament id: ${tournamentId}`,
-      );
-      break;
-    }
-    case "ADD_PLAYER": {
-      validate(
-        tournament.ctx.teams.every((team) =>
-          team.members.every((member) => member.userId !== data.userId),
-        ),
-        "User is already in a team",
-      );
-      validate(ownTeam);
-      validate(
-        (await QRepository.usersThatTrusted(user.id)).some(
-          (trusterPlayer) => trusterPlayer.id === data.userId,
-        ),
-        "No trust given from this user",
-      );
-      validate(
-        (await UserRepository.findLeanById(user.id))?.friendCode,
-        "No friend code",
-      );
-      validate(tournament.registrationOpen, "Registration is closed");
-
-      joinTeam({
-        userId: data.userId,
-        newTeamId: ownTeam.id,
-        tournamentId,
-        inGameName: await inGameNameIfNeeded({
-          tournament,
-          userId: data.userId,
-        }),
-      });
-      break;
-    }
-    case "UNREGISTER": {
-      validate(ownTeam, "You are not registered to this tournament");
-      validate(!ownTeamCheckedIn, "You cannot unregister after checking in");
-
-      deleteTeam(ownTeam.id);
-      break;
-    }
-    default: {
-      assertUnreachable(data);
-    }
-  }
-
-  clearTournamentDataCache(tournamentId);
-
-  return null;
-};
-
-export type TournamentRegisterPageLoader = typeof loader;
-
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const user = await getUser(request);
-  if (!user) return null;
-
-  const ownTournamentTeam = findOwnTournamentTeam({
-    tournamentId: tournamentIdFromParams(params),
-    userId: user.id,
-  });
-  if (!ownTournamentTeam)
-    return {
-      mapPool: null,
-      trusterPlayers: null,
-      team: await TeamRepository.findByUserId(user.id),
-    };
-
-  return {
-    mapPool: findMapPoolByTeamId(ownTournamentTeam.id),
-    trusterPlayers: await QRepository.usersThatTrusted(user.id),
-    team: await TeamRepository.findByUserId(user.id),
-  };
-};
+export { loader, action };
 
 // xxx: make avatar bigger in some contexts?
 // xxx: uploading avatar possible till reg ends
@@ -533,7 +297,7 @@ function PleaseLogIn() {
 }
 
 function RegistrationForms() {
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<TournamentRegisterPageLoader>();
   const user = useUser();
   const tournament = useTournament();
 
@@ -794,7 +558,7 @@ function TeamInfo({
   ownTeam?: TournamentDataTeam | null;
   canUnregister: boolean;
 }) {
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<TournamentRegisterPageLoader>();
   const { t } = useTranslation(["tournament", "common"]);
   const fetcher = useFetcher();
   const tournament = useTournament();
@@ -1017,7 +781,7 @@ function FillRoster({
   ownTeam: TournamentDataTeam;
   ownTeamCheckedIn: boolean;
 }) {
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<TournamentRegisterPageLoader>();
   const user = useUser();
   const tournament = useTournament();
   const [, copyToClipboard] = useCopyToClipboard();
@@ -1240,7 +1004,7 @@ function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc", "tournament"]);
   const tournament = useTournament();
   const fetcher = useFetcher();
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<TournamentRegisterPageLoader>();
   const [counterPickMaps, setCounterPickMaps] = React.useState(
     data?.mapPool ?? [],
   );
@@ -1348,81 +1112,6 @@ function MapPoolValidationStatusMessage({
       </Alert>
     </div>
   );
-}
-
-type CounterPickValidationStatus =
-  | "PICKING"
-  | "VALID"
-  | "TOO_MUCH_STAGE_REPEAT"
-  | "STAGE_REPEAT_IN_SAME_MODE"
-  | "INCLUDES_BANNED"
-  | "INCLUDES_TIEBREAKER";
-
-function validateCounterPickMapPool(
-  mapPool: MapPool,
-  isOneModeOnlyTournamentFor: ModeShort | null,
-  tieBreakerMapPool: TournamentData["ctx"]["tieBreakerMapPool"],
-): CounterPickValidationStatus {
-  const stageCounts = new Map<StageId, number>();
-  for (const stageId of mapPool.stages) {
-    if (!stageCounts.has(stageId)) {
-      stageCounts.set(stageId, 0);
-    }
-
-    if (
-      stageCounts.get(stageId)! >= TOURNAMENT.COUNTERPICK_MAX_STAGE_REPEAT ||
-      (isOneModeOnlyTournamentFor && stageCounts.get(stageId)! >= 1)
-    ) {
-      return "TOO_MUCH_STAGE_REPEAT";
-    }
-
-    stageCounts.set(stageId, stageCounts.get(stageId)! + 1);
-  }
-
-  if (
-    new MapPool(mapPool.serialized).stageModePairs.length !==
-    mapPool.stageModePairs.length
-  ) {
-    return "STAGE_REPEAT_IN_SAME_MODE";
-  }
-
-  if (
-    mapPool.stageModePairs.some((pair) =>
-      BANNED_MAPS[pair.mode].includes(pair.stageId),
-    )
-  ) {
-    return "INCLUDES_BANNED";
-  }
-
-  if (
-    mapPool.stageModePairs.some((pair) =>
-      tieBreakerMapPool.some(
-        (stage) => stage.mode === pair.mode && stage.stageId === pair.stageId,
-      ),
-    )
-  ) {
-    return "INCLUDES_TIEBREAKER";
-  }
-
-  if (
-    !isOneModeOnlyTournamentFor &&
-    (mapPool.parsed.SZ.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
-      mapPool.parsed.TC.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
-      mapPool.parsed.RM.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
-      mapPool.parsed.CB.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE)
-  ) {
-    return "PICKING";
-  }
-
-  if (
-    isOneModeOnlyTournamentFor &&
-    mapPool.parsed[isOneModeOnlyTournamentFor].length !==
-      TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
-  ) {
-    return "PICKING";
-  }
-
-  return "VALID";
 }
 
 function TOPickedMapPoolInfo() {
