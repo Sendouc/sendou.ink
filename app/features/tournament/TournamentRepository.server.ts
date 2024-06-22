@@ -78,6 +78,11 @@ export async function findById(id: number) {
       jsonArrayFrom(
         eb
           .selectFrom("TournamentTeam")
+          .leftJoin(
+            "UserSubmittedImage",
+            "TournamentTeam.avatarImgId",
+            "UserSubmittedImage.id",
+          )
           .select(({ eb: innerEb }) => [
             "TournamentTeam.id",
             "TournamentTeam.name",
@@ -88,6 +93,7 @@ export async function findById(id: number) {
             "TournamentTeam.inviteCode",
             "TournamentTeam.createdAt",
             "TournamentTeam.activeRosterUserIds",
+            "UserSubmittedImage.url as pickupAvatarUrl",
             jsonArrayFrom(
               innerEb
                 .selectFrom("TournamentTeamMember")

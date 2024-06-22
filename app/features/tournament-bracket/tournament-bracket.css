@@ -311,6 +311,12 @@
   list-style: none;
 }
 
+.tournament-bracket__rosters__spaced-header {
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+}
+
 @media screen and (min-width: 640px) {
   .tournament-bracket__rosters {
     justify-content: space-evenly;

@@ -39,7 +39,6 @@ import {
 } from "~/utils/urls";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { changeTeamOwner } from "../queries/changeTeamOwner.server";
-import { createTeam } from "../queries/createTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { adminActionSchema } from "../tournament-schemas.server";
@@ -74,17 +73,19 @@ export const action: ActionFunction = async ({ request, params }) => {
         "User already on a team",
       );
 
-      createTeam({
-        name: data.teamName,
-        teamId: null,
-        tournamentId: tournamentId,
-        ownerId: data.userId,
-        prefersNotToHost: 0,
-        noScreen: 0,
+      await TournamentTeamRepository.create({
         ownerInGameName: await inGameNameIfNeeded({
           tournament,
-          userId: data.userId,
+          userId: user.id,
         }),
+        team: {
+          name: data.teamName,
+          noScreen: 0,
+          prefersNotToHost: 0,
+          teamId: null,
+        },
+        userId: user.id,
+        tournamentId,
       });
 
       break;
@@ -316,6 +317,13 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    case "DELETE_LOGO": {
+      validateIsTournamentOrganizer();
+
+      await TournamentTeamRepository.deleteLogo(data.teamId);
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -447,6 +455,11 @@ const actions = [
     type: "UPDATE_IN_GAME_NAME",
     inputs: ["ROSTER_MEMBER", "REGISTERED_TEAM", "IN_GAME_NAME"] as Input[],
     when: ["IN_GAME_NAME_REQUIRED"],
+  },
+  {
+    type: "DELETE_LOGO",
+    inputs: ["REGISTERED_TEAM"] as Input[],
+    when: [],
   },
 ] as const;
 

@@ -4,6 +4,7 @@ import { notFoundIfFalsy } from "~/utils/remix";
 import type { Unwrapped } from "~/utils/types";
 import { getServerTournamentManager } from "./brackets-manager/manager.server";
 import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
+import { isAdmin } from "~/permissions";
 
 const manager = getServerTournamentManager();
 
@@ -35,12 +36,14 @@ function dataMapped({
   ctx: TournamentRepository.FindById;
   user?: { id: number };
 }) {
-  const revealAllMapPools =
-    data.stage.length > 0 ||
+  const tournamentHasStarted = data.stage.length > 0;
+  const isOrganizer =
     ctx.author.id === user?.id ||
     ctx.staff.some(
       (staff) => staff.id === user?.id && staff.role === "ORGANIZER",
-    );
+    ) ||
+    isAdmin(user);
+  const revealInfo = tournamentHasStarted || isOrganizer;
 
   return {
     data,
@@ -53,7 +56,9 @@ function dataMapped({
 
         return {
           ...team,
-          mapPool: revealAllMapPools || isOwnTeam ? team.mapPool : null,
+          mapPool: revealInfo || isOwnTeam ? team.mapPool : null,
+          pickupAvatarUrl:
+            revealInfo || isOwnTeam ? team.pickupAvatarUrl : null,
           inviteCode: isOwnTeam ? team.inviteCode : null,
         };
       }),

@@ -1,10 +1,14 @@
 import type { Params } from "@remix-run/react";
 import invariant from "~/utils/invariant";
 import type { Tournament } from "~/db/types";
-import type { ModeShort } from "~/modules/in-game-lists";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { tournamentLogoUrl } from "~/utils/urls";
 import type { PlayedSet } from "./core/sets.server";
+import { MapPool } from "../map-list-generator/core/map-pool";
+import type { TournamentData } from "../tournament-bracket/core/Tournament.server";
+import { TOURNAMENT } from "./tournament-constants";
+import { BANNED_MAPS } from "../sendouq-settings/banned-maps";
 
 export function tournamentIdFromParams(params: Params<string>) {
   const result = Number(params["id"]);
@@ -306,4 +310,79 @@ export function HACKY_resolveThemeColors(event: { name: string }) {
   }
 
   return { backgroundColor: "#3430ad", textColor: WHITE };
+}
+
+export type CounterPickValidationStatus =
+  | "PICKING"
+  | "VALID"
+  | "TOO_MUCH_STAGE_REPEAT"
+  | "STAGE_REPEAT_IN_SAME_MODE"
+  | "INCLUDES_BANNED"
+  | "INCLUDES_TIEBREAKER";
+
+export function validateCounterPickMapPool(
+  mapPool: MapPool,
+  isOneModeOnlyTournamentFor: ModeShort | null,
+  tieBreakerMapPool: TournamentData["ctx"]["tieBreakerMapPool"],
+): CounterPickValidationStatus {
+  const stageCounts = new Map<StageId, number>();
+  for (const stageId of mapPool.stages) {
+    if (!stageCounts.has(stageId)) {
+      stageCounts.set(stageId, 0);
+    }
+
+    if (
+      stageCounts.get(stageId)! >= TOURNAMENT.COUNTERPICK_MAX_STAGE_REPEAT ||
+      (isOneModeOnlyTournamentFor && stageCounts.get(stageId)! >= 1)
+    ) {
+      return "TOO_MUCH_STAGE_REPEAT";
+    }
+
+    stageCounts.set(stageId, stageCounts.get(stageId)! + 1);
+  }
+
+  if (
+    new MapPool(mapPool.serialized).stageModePairs.length !==
+    mapPool.stageModePairs.length
+  ) {
+    return "STAGE_REPEAT_IN_SAME_MODE";
+  }
+
+  if (
+    mapPool.stageModePairs.some((pair) =>
+      BANNED_MAPS[pair.mode].includes(pair.stageId),
+    )
+  ) {
+    return "INCLUDES_BANNED";
+  }
+
+  if (
+    mapPool.stageModePairs.some((pair) =>
+      tieBreakerMapPool.some(
+        (stage) => stage.mode === pair.mode && stage.stageId === pair.stageId,
+      ),
+    )
+  ) {
+    return "INCLUDES_TIEBREAKER";
+  }
+
+  if (
+    !isOneModeOnlyTournamentFor &&
+    (mapPool.parsed.SZ.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+      mapPool.parsed.TC.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+      mapPool.parsed.RM.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+      mapPool.parsed.CB.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE)
+  ) {
+    return "PICKING";
+  }
+
+  if (
+    isOneModeOnlyTournamentFor &&
+    mapPool.parsed[isOneModeOnlyTournamentFor].length !==
+      TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
+  ) {
+    return "PICKING";
+  }
+
+  return "VALID";
 }

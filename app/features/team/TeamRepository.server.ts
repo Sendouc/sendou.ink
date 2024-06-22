@@ -4,7 +4,13 @@ export function findByUserId(userId: number) {
   return db
     .selectFrom("TeamMember")
     .innerJoin("Team", "Team.id", "TeamMember.teamId")
-    .select(["Team.id", "Team.customUrl", "Team.name"])
+    .leftJoin("UserSubmittedImage", "UserSubmittedImage.id", "Team.avatarImgId")
+    .select([
+      "Team.id",
+      "Team.customUrl",
+      "Team.name",
+      "UserSubmittedImage.url as logoUrl",
+    ])
     .where("TeamMember.userId", "=", userId)
     .executeTakeFirst();
 }

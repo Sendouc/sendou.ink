@@ -5,13 +5,14 @@ import { parseParams } from "~/utils/remix";
 import { id } from "~/utils/zod";
 import type { GetTournamentTeamsResponse } from "../schema";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { jsonArrayFrom } from "kysely/helpers/sqlite";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import {
   handleOptionsRequest,
   requireBearerAuth,
 } from "../api-public-utils.server";
 import i18next from "~/modules/i18n/i18next.server";
 import { cors } from "remix-utils/cors";
+import { userSubmittedImage } from "~/utils/urls";
 
 const paramsSchema = z.object({
   id,
@@ -29,6 +30,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const teams = await db
     .selectFrom("TournamentTeam")
+    .leftJoin("UserSubmittedImage", "avatarImgId", "UserSubmittedImage.id")
     .leftJoin("TournamentTeamCheckIn", (join) =>
       join
         .onRef(
@@ -44,6 +46,22 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       "TournamentTeam.seed",
       "TournamentTeam.createdAt",
       "TournamentTeamCheckIn.checkedInAt",
+      "UserSubmittedImage.url as avatarUrl",
+      jsonObjectFrom(
+        eb
+          .selectFrom("AllTeam")
+          .leftJoin(
+            "UserSubmittedImage",
+            "AllTeam.avatarImgId",
+            "UserSubmittedImage.id",
+          )
+          .whereRef("AllTeam.id", "=", "TournamentTeam.teamId")
+          .select([
+            "AllTeam.customUrl",
+            "UserSubmittedImage.url as logoUrl",
+            "AllTeam.deletedAt",
+          ]),
+      ).as("team"),
       jsonArrayFrom(
         eb
           .selectFrom("TournamentTeamMember")
@@ -74,11 +92,22 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     .orderBy("TournamentTeam.createdAt asc")
     .execute();
 
+  const logoUrl = (team: (typeof teams)[number]) => {
+    const url = team.team?.logoUrl ?? team.avatarUrl;
+    if (!url) return null;
+
+    return userSubmittedImage(url);
+  };
+
   const result: GetTournamentTeamsResponse = teams.map((team) => {
     return {
       id: team.id,
       name: team.name,
       url: `https://sendou.ink/to/${id}/teams/${team.id}`,
+      teamPageUrl:
+        team.team?.customUrl && !team.team.deletedAt
+          ? `https://sendou.ink/t/${team.team.customUrl}`
+          : null,
       seed: team.seed,
       registeredAt: databaseTimestampToDate(team.createdAt).toISOString(),
       checkedIn: Boolean(team.checkedInAt),
@@ -94,6 +123,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
           joinedAt: databaseTimestampToDate(member.createdAt).toISOString(),
         };
       }),
+      logoUrl: logoUrl(team),
       mapPool:
         team.mapPool.length > 0
           ? team.mapPool.map((map) => {

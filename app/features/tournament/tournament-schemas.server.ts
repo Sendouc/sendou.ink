@@ -46,6 +46,9 @@ export const registerSchema = z.union([
   z.object({
     _action: _action("UNREGISTER"),
   }),
+  z.object({
+    _action: _action("DELETE_LOGO"),
+  }),
 ]);
 
 export const seedsActionSchema = z.object({
@@ -107,6 +110,10 @@ export const adminActionSchema = z.union([
   }),
   z.object({
     _action: _action("UNDO_DROP_TEAM_OUT"),
+    teamId: id,
+  }),
+  z.object({
+    _action: _action("DELETE_LOGO"),
     teamId: id,
   }),
   z.object({

@@ -606,6 +606,7 @@ export interface TournamentTeam {
   >;
   tournamentId: number;
   teamId: number | null;
+  avatarImgId: number | null;
 }
 
 export interface TournamentTeamCheckIn {

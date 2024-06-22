@@ -2097,6 +2097,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709743534,
           members: [
             {
@@ -2207,6 +2208,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709737918,
           members: [
             {
@@ -2330,6 +2332,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709743523,
           members: [
             {
@@ -2440,6 +2443,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709743262,
           members: [
             {
@@ -2550,6 +2554,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709741396,
           members: [
             {
@@ -2673,6 +2678,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709711811,
           members: [
             {
@@ -2796,6 +2802,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709738831,
           members: [
             {
@@ -2919,6 +2926,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709737837,
           members: [
             {
@@ -3029,6 +3037,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709741719,
           members: [
             {
@@ -3165,6 +3174,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709730354,
           members: [
             {
@@ -3288,6 +3298,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709745630,
           members: [
             {
@@ -3408,6 +3419,7 @@ export const PADDLING_POOL_257 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709592381,
           members: [
             {
@@ -3544,6 +3556,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709723749,
           members: [
             {
@@ -3667,6 +3680,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709668399,
           members: [
             {
@@ -3803,6 +3817,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709735267,
           members: [
             {
@@ -3917,6 +3932,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709745849,
           members: [
             {
@@ -4031,6 +4047,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709742258,
           members: [
             {
@@ -4151,6 +4168,7 @@ export const PADDLING_POOL_257 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709738744,
           members: [
             {
@@ -4274,6 +4292,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709746054,
           members: [
             {
@@ -4385,6 +4404,7 @@ export const PADDLING_POOL_257 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709744894,
           members: [
             {
@@ -4495,6 +4515,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709728278,
           members: [
             {
@@ -4605,6 +4626,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709715006,
           members: [
             {
@@ -4715,6 +4737,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709660578,
           members: [
             {
@@ -4829,6 +4852,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709721869,
           members: [
             {
@@ -4953,6 +4977,7 @@ export const PADDLING_POOL_257 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709743633,
           members: [
             {
@@ -5067,6 +5092,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709738747,
           members: [
             {
@@ -5194,6 +5220,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709626047,
           members: [
             {
@@ -5317,6 +5344,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709727951,
           members: [
             {
@@ -5427,6 +5455,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709741482,
           members: [
             {
@@ -5560,6 +5589,7 @@ export const PADDLING_POOL_257 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709744451,
           members: [
             {
@@ -5674,6 +5704,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709726536,
           members: [
             {
@@ -5784,6 +5815,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709558706,
           members: [
             {
@@ -5898,6 +5930,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709744323,
           members: [
             {
@@ -6025,6 +6058,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709677397,
           members: [
             {
@@ -6135,6 +6169,7 @@ export const PADDLING_POOL_257 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1709618711,
           members: [
             {
@@ -7962,6 +7997,7 @@ export const PADDLING_POOL_255 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708476597,
           members: [
             {
@@ -8072,6 +8108,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708535137,
           members: [
             {
@@ -8182,6 +8219,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708533764,
           members: [
             {
@@ -8302,6 +8340,7 @@ export const PADDLING_POOL_255 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708537512,
           members: [
             {
@@ -8425,6 +8464,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708533309,
           members: [
             {
@@ -8535,6 +8575,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708430641,
           members: [
             {
@@ -8658,6 +8699,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708536306,
           members: [
             {
@@ -8765,6 +8807,7 @@ export const PADDLING_POOL_255 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708526368,
           members: [
             {
@@ -8875,6 +8918,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708506060,
           members: [
             {
@@ -9011,6 +9055,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708526814,
           members: [
             {
@@ -9118,6 +9163,7 @@ export const PADDLING_POOL_255 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708466421,
           members: [
             {
@@ -9241,6 +9287,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708377426,
           members: [
             {
@@ -9361,6 +9408,7 @@ export const PADDLING_POOL_255 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708448289,
           members: [
             {
@@ -9497,6 +9545,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708532602,
           members: [
             {
@@ -9607,6 +9656,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708535205,
           members: [
             {
@@ -9730,6 +9780,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708515945,
           members: [
             {
@@ -9840,6 +9891,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708453334,
           members: [
             {
@@ -9947,6 +9999,7 @@ export const PADDLING_POOL_255 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708522730,
           members: [
             {
@@ -10070,6 +10123,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708375443,
           members: [
             {
@@ -10193,6 +10247,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708532665,
           members: [
             {
@@ -10307,6 +10362,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708364254,
           members: [
             {
@@ -10434,6 +10490,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708464101,
           members: [
             {
@@ -10558,6 +10615,7 @@ export const PADDLING_POOL_255 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708520249,
           members: [
             {
@@ -10681,6 +10739,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708535804,
           members: [
             {
@@ -10791,6 +10850,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708535891,
           members: [
             {
@@ -10914,6 +10974,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708521749,
           members: [
             {
@@ -11037,6 +11098,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708536584,
           members: [
             {
@@ -11147,6 +11209,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708537772,
           members: [
             {
@@ -11287,6 +11350,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708379916,
           members: [
             {
@@ -11410,6 +11474,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708519753,
           members: [
             {
@@ -11537,6 +11602,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708534312,
           members: [
             {
@@ -11661,6 +11727,7 @@ export const PADDLING_POOL_255 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708531929,
           members: [
             {
@@ -11771,6 +11838,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708477155,
           members: [
             {
@@ -11885,6 +11953,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708531564,
           members: [
             {
@@ -12038,6 +12107,7 @@ export const PADDLING_POOL_255 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1708503356,
           members: [
             {
@@ -14142,6 +14212,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707443313,
           members: [
             {
@@ -14240,6 +14311,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707366405,
           members: [
             {
@@ -14338,6 +14410,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1706912643,
           members: [
             {
@@ -14436,6 +14509,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707359335,
           members: [
             {
@@ -14560,6 +14634,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707171426,
           members: [
             {
@@ -14671,6 +14746,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707342696,
           members: [
             {
@@ -14782,6 +14858,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707513942,
           members: [
             {
@@ -14906,6 +14983,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707526815,
           members: [
             {
@@ -15030,6 +15108,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707583385,
           members: [
             {
@@ -15128,6 +15207,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707486395,
           members: [
             {
@@ -15226,6 +15306,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707513290,
           members: [
             {
@@ -15324,6 +15405,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707531084,
           members: [
             {
@@ -15422,6 +15504,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707568466,
           members: [
             {
@@ -15533,6 +15616,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707481625,
           members: [
             {
@@ -15631,6 +15715,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707530166,
           members: [
             {
@@ -15729,6 +15814,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707181792,
           members: [
             {
@@ -15840,6 +15926,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707550321,
           members: [
             {
@@ -15955,6 +16042,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707575096,
           members: [
             {
@@ -16066,6 +16154,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707569490,
           members: [
             {
@@ -16190,6 +16279,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707537425,
           members: [
             {
@@ -16288,6 +16378,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707564691,
           members: [
             {
@@ -16416,6 +16507,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707145818,
           members: [
             {
@@ -16522,6 +16614,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707558330,
           members: [
             {
@@ -16620,6 +16713,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707586842,
           members: [
             {
@@ -16718,6 +16812,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707583597,
           members: [
             {
@@ -16842,6 +16937,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707429804,
           members: [
             {
@@ -16953,6 +17049,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707539973,
           members: [
             {
@@ -17068,6 +17165,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707507831,
           members: [
             {
@@ -17179,6 +17277,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707586297,
           members: [
             {
@@ -17287,6 +17386,7 @@ export const IN_THE_ZONE_32 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707583885,
           members: [
             {
@@ -17411,6 +17511,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707578076,
           members: [
             {
@@ -17523,6 +17624,7 @@ export const IN_THE_ZONE_32 = () =>
           prefersNotToHost: 1,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707582953,
           members: [
             {
@@ -17621,6 +17723,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707575330,
           members: [
             {
@@ -17732,6 +17835,7 @@ export const IN_THE_ZONE_32 = () =>
           team: null,
           inviteCode: null,
           activeRosterUserIds: [],
+          pickupAvatarUrl: null,
           createdAt: 1707527645,
           members: [
             {

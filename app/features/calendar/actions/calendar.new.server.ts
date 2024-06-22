@@ -1,10 +1,5 @@
 import type { ActionFunction } from "@remix-run/node";
-import {
-  redirect,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { z } from "zod";
 import type { CalendarEventTag } from "~/db/types";
 import { requireUser } from "~/features/auth/core/user.server";
@@ -24,7 +19,12 @@ import {
   databaseTimestampToDate,
   dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import { badRequestIfFalsy, parseFormData, validate } from "~/utils/remix";
+import {
+  badRequestIfFalsy,
+  parseFormData,
+  uploadImageIfSubmitted,
+  validate,
+} from "~/utils/remix";
 import { calendarEventPage } from "~/utils/urls";
 import {
   actualNumber,
@@ -38,21 +38,25 @@ import {
   safeJSONParse,
   toArray,
 } from "~/utils/zod";
-import { canAddNewEvent, regClosesAtDate } from "../calendar-utils";
+import { CALENDAR_EVENT, REG_CLOSES_AT_OPTIONS } from "../calendar-constants";
+import {
+  calendarEventMaxDate,
+  calendarEventMinDate,
+  canAddNewEvent,
+  regClosesAtDate,
+} from "../calendar-utils";
 import {
   canCreateTournament,
   formValuesToBracketProgression,
 } from "../calendar-utils.server";
-import { CALENDAR_EVENT, REG_CLOSES_AT_OPTIONS } from "../calendar-constants";
-import { calendarEventMaxDate, calendarEventMinDate } from "../calendar-utils";
-import { nanoid } from "nanoid";
-import { s3UploadHandler } from "~/features/img-upload";
-import invariant from "~/utils/invariant";
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
 
-  const { avatarFileName, formData } = await uploadAvatarIfExists(request);
+  const { avatarFileName, formData } = await uploadImageIfSubmitted({
+    request,
+    fileNamePrefix: "tournament-logo",
+  });
   const data = await parseFormData({
     formData,
     schema: newCalendarEventActionSchema,
@@ -173,38 +177,6 @@ export const action: ActionFunction = async ({ request }) => {
     throw redirect(calendarEventPage(createdEventId));
   }
 };
-
-async function uploadAvatarIfExists(request: Request) {
-  const uploadHandler = composeUploadHandlers(
-    s3UploadHandler(`tournament-logo-${nanoid()}-${Date.now()}`),
-    createMemoryUploadHandler(),
-  );
-
-  try {
-    const formData = await parseMultipartFormData(request, uploadHandler);
-    const imgSrc = formData.get("img") as string | null;
-    invariant(imgSrc);
-
-    const urlParts = imgSrc.split("/");
-    const fileName = urlParts[urlParts.length - 1];
-    invariant(fileName);
-
-    return {
-      avatarFileName: fileName,
-      formData,
-    };
-  } catch (err) {
-    // user did not submit image
-    if (err instanceof TypeError) {
-      return {
-        avatarFileName: undefined,
-        formData: await request.formData(),
-      };
-    }
-
-    throw err;
-  }
-}
 
 export const newCalendarEventActionSchema = z
   .object({
