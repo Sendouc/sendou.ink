@@ -61,8 +61,6 @@ import { action } from "../actions/to.$id.register.server";
 
 export { loader, action };
 
-// xxx: uploading avatar possible till reg ends
-
 export default function TournamentRegisterPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -568,7 +566,6 @@ function TeamInfo({
   const [signUpWithTeam, setSignUpWithTeam] = React.useState(() =>
     Boolean(tournament.ownedTeamByUser(user)?.team),
   );
-  // xxx: initial state
   const [uploadedAvatar, setUploadedAvatar] = React.useState<File | null>(null);
 
   const handleSignUpWithTeamChange = (checked: boolean) => {

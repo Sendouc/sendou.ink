@@ -4,6 +4,14 @@ import type navItems from "~/components/layout/nav-items.json";
 import { json } from "@remix-run/node";
 import type { Namespace, TFunction } from "i18next";
 import { noticeError } from "./newrelic.server";
+import {
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from "@remix-run/node";
+import { s3UploadHandler } from "~/features/img-upload";
+import { nanoid } from "nanoid";
+import invariant from "./invariant";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -242,4 +250,42 @@ export function privatelyCachedJson<T>(data: T) {
   return json(data, {
     headers: { "Cache-Control": "private, max-age=5" },
   });
+}
+
+export async function uploadImageIfSubmitted({
+  request,
+  fileNamePrefix,
+}: {
+  request: Request;
+  fileNamePrefix: string;
+}) {
+  const uploadHandler = composeUploadHandlers(
+    s3UploadHandler(`${fileNamePrefix}-${nanoid()}-${Date.now()}`),
+    createMemoryUploadHandler(),
+  );
+
+  try {
+    const formData = await parseMultipartFormData(request, uploadHandler);
+    const imgSrc = formData.get("img") as string | null;
+    invariant(imgSrc);
+
+    const urlParts = imgSrc.split("/");
+    const fileName = urlParts[urlParts.length - 1];
+    invariant(fileName);
+
+    return {
+      avatarFileName: fileName,
+      formData,
+    };
+  } catch (err) {
+    // user did not submit image
+    if (err instanceof TypeError) {
+      return {
+        avatarFileName: undefined,
+        formData: await request.formData(),
+      };
+    }
+
+    throw err;
+  }
 }

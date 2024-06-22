@@ -9,7 +9,12 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { logger } from "~/utils/logger";
-import { notFoundIfFalsy, parseFormData, validate } from "~/utils/remix";
+import {
+  notFoundIfFalsy,
+  parseFormData,
+  uploadImageIfSubmitted,
+  validate,
+} from "~/utils/remix";
 import { booleanToInt } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
 import { checkIn } from "../queries/checkIn.server";
@@ -27,19 +32,14 @@ import {
   validateCounterPickMapPool,
 } from "../tournament-utils";
 import { inGameNameIfNeeded } from "../tournament-utils.server";
-import {
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-} from "@remix-run/node";
-import { s3UploadHandler } from "~/features/img-upload";
-import { nanoid } from "nanoid";
-import invariant from "~/utils/invariant";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
-  const { avatarFileName, formData } = await uploadAvatarIfExists(request);
+  const { avatarFileName, formData } = await uploadImageIfSubmitted({
+    request,
+    fileNamePrefix: "pickup-logo",
+  });
   const data = await parseFormData({
     formData,
     schema: registerSchema,
@@ -244,36 +244,3 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   return null;
 };
-
-// xxx: make into util function?
-async function uploadAvatarIfExists(request: Request) {
-  const uploadHandler = composeUploadHandlers(
-    s3UploadHandler(`pickup-logo-${nanoid()}-${Date.now()}`),
-    createMemoryUploadHandler(),
-  );
-
-  try {
-    const formData = await parseMultipartFormData(request, uploadHandler);
-    const imgSrc = formData.get("img") as string | null;
-    invariant(imgSrc);
-
-    const urlParts = imgSrc.split("/");
-    const fileName = urlParts[urlParts.length - 1];
-    invariant(fileName);
-
-    return {
-      avatarFileName: fileName,
-      formData,
-    };
-  } catch (err) {
-    // user did not submit image
-    if (err instanceof TypeError) {
-      return {
-        avatarFileName: undefined,
-        formData: await request.formData(),
-      };
-    }
-
-    throw err;
-  }
-}
