@@ -637,7 +637,6 @@ function TeamInfo({
               className="build__small-text"
               variant="minimal-destructive"
               size="tiny"
-              type="submit"
             >
               {t("tournament:pre.info.unregister")}
             </Button>
@@ -740,7 +739,6 @@ function TeamInfo({
               ) : null}
             </div>
           </div>
-          {/* why jumps on SSR? */}
           <Button
             testId="save-team-button"
             disabled={submitButtonDisabled()}

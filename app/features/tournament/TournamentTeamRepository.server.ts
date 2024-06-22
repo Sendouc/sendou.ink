@@ -161,7 +161,7 @@ export function update({
           userId,
         })
       : // don't overwrite the existing avatarImgId even if no new avatar is provided
-        // later there might be a delete functionality separately
+        // delete is a separate functionality
         undefined;
 
     await trx

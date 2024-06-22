@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { Button, type ButtonProps } from "./Button";
 import { Dialog } from "./Dialog";
 import { SubmitButton } from "./SubmitButton";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { createPortal } from "react-dom";
 
 export function FormWithConfirm({
   fields,
@@ -33,6 +35,7 @@ export function FormWithConfirm({
   const componentsFetcher = useFetcher();
   const fetcher = _fetcher ?? componentsFetcher;
 
+  const isMounted = useIsMounted();
   const { t } = useTranslation(["common"]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -51,17 +54,23 @@ export function FormWithConfirm({
 
   return (
     <>
-      <fetcher.Form
-        id={id}
-        className="hidden"
-        ref={formRef}
-        method="post"
-        action={action}
-      >
-        {fields?.map(([name, value]) => (
-          <input type="hidden" key={name} name={name} value={value} />
-        ))}
-      </fetcher.Form>
+      {isMounted
+        ? // using portal here makes nesting this component in another form work
+          createPortal(
+            <fetcher.Form
+              id={id}
+              className="hidden"
+              ref={formRef}
+              method="post"
+              action={action}
+            >
+              {fields?.map(([name, value]) => (
+                <input type="hidden" key={name} name={name} value={value} />
+              ))}
+            </fetcher.Form>,
+            document.body,
+          )
+        : null}
       <Dialog isOpen={dialogOpen} close={closeDialog} className="text-center">
         <div className="stack md">
           <h2 className="text-sm">{dialogHeading}</h2>
@@ -82,6 +91,7 @@ export function FormWithConfirm({
       {React.cloneElement(children, {
         // @ts-expect-error broke with @types/react upgrade. TODO: figure out narrower type than React.ReactNode
         onClick: openDialog,
+        type: "button",
       })}
     </>
   );
