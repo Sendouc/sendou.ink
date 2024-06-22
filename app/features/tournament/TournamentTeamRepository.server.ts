@@ -90,7 +90,6 @@ export async function updateMemberInGameNameForNonStarted({
   );
 }
 
-// xxx: can we replace createTeam old and updateTeam old?
 export function create({
   team,
   avatarFileName,

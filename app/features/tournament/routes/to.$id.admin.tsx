@@ -39,7 +39,6 @@ import {
 } from "~/utils/urls";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { changeTeamOwner } from "../queries/changeTeamOwner.server";
-import { createTeam } from "../queries/createTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { adminActionSchema } from "../tournament-schemas.server";
@@ -74,17 +73,19 @@ export const action: ActionFunction = async ({ request, params }) => {
         "User already on a team",
       );
 
-      createTeam({
-        name: data.teamName,
-        teamId: null,
-        tournamentId: tournamentId,
-        ownerId: data.userId,
-        prefersNotToHost: 0,
-        noScreen: 0,
+      await TournamentTeamRepository.create({
         ownerInGameName: await inGameNameIfNeeded({
           tournament,
-          userId: data.userId,
+          userId: user.id,
         }),
+        team: {
+          name: data.teamName,
+          noScreen: 0,
+          prefersNotToHost: 0,
+          teamId: null,
+        },
+        userId: user.id,
+        tournamentId,
       });
 
       break;
