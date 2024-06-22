@@ -23,6 +23,7 @@ export const LANG_JSONS_TO_CREATE = [
   "EUru",
   "JPja",
   "KRko",
+  "USfr",
 ];
 
 export async function loadLangDicts() {
@@ -45,5 +46,7 @@ export async function loadLangDicts() {
 export function translationJsonFolderName(langCode: string) {
   if (langCode === "EUes") return "es-ES";
   if (langCode === "USes") return "es-US";
+  if (langCode === "EUfr") return "fr-EU";
+  if (langCode === "USfr") return "fr-CA";
   return langCode.slice(2);
 }

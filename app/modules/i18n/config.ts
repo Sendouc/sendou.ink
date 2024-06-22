@@ -22,8 +22,12 @@ export const languages = [
     name: "Español (Latino)",
   },
   {
-    code: "fr",
-    name: "Français",
+    code: "fr-CA",
+    name: "Français (NoA)",
+  },
+  {
+    code: "fr-EU",
+    name: "Français (NoE)",
   },
   {
     code: "he",
