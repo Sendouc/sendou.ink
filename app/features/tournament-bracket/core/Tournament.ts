@@ -488,7 +488,7 @@ export class Tournament {
   }
 
   tournamentTeamLogoSrc(team: TournamentDataTeam) {
-    const url = team.team?.logoUrl ?? team.avatarUrl;
+    const url = team.team?.logoUrl ?? team.pickupAvatarUrl;
 
     if (!url) return;
 

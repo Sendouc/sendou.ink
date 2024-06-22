@@ -93,7 +93,7 @@ export async function findById(id: number) {
             "TournamentTeam.inviteCode",
             "TournamentTeam.createdAt",
             "TournamentTeam.activeRosterUserIds",
-            "UserSubmittedImage.url as avatarUrl",
+            "UserSubmittedImage.url as pickupAvatarUrl",
             jsonArrayFrom(
               innerEb
                 .selectFrom("TournamentTeamMember")

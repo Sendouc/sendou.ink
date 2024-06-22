@@ -609,7 +609,9 @@ function TeamInfo({
       return data?.team?.logoUrl ? userSubmittedImage(data.team.logoUrl) : null;
     }
     if (uploadedAvatar) return URL.createObjectURL(uploadedAvatar);
-    if (ownTeam?.avatarUrl) return userSubmittedImage(ownTeam.avatarUrl);
+    if (ownTeam?.pickupAvatarUrl) {
+      return userSubmittedImage(ownTeam.pickupAvatarUrl);
+    }
 
     return null;
   })();
@@ -618,9 +620,9 @@ function TeamInfo({
     tournament.registrationOpen &&
     !signUpWithTeam &&
     uploadedAvatar &&
-    !ownTeam?.avatarUrl;
+    !ownTeam?.pickupAvatarUrl;
 
-  const canDeleteAvatar = ownTeam?.avatarUrl;
+  const canDeleteAvatar = ownTeam?.pickupAvatarUrl;
 
   return (
     <div>
