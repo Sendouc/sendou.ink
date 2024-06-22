@@ -47,8 +47,6 @@ import { tournamentIdFromParams } from "../tournament-utils";
 import { inGameNameIfNeeded } from "../tournament-utils.server";
 import { useTournament } from "./to.$id";
 
-// xxx: delete avatar action
-
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({
@@ -318,6 +316,13 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    case "DELETE_LOGO": {
+      validateIsTournamentOrganizer();
+
+      await TournamentTeamRepository.deleteLogo(data.teamId);
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -449,6 +454,11 @@ const actions = [
     type: "UPDATE_IN_GAME_NAME",
     inputs: ["ROSTER_MEMBER", "REGISTERED_TEAM", "IN_GAME_NAME"] as Input[],
     when: ["IN_GAME_NAME_REQUIRED"],
+  },
+  {
+    type: "DELETE_LOGO",
+    inputs: ["REGISTERED_TEAM"] as Input[],
+    when: [],
   },
 ] as const;
 

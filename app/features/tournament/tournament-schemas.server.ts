@@ -113,6 +113,10 @@ export const adminActionSchema = z.union([
     teamId: id,
   }),
   z.object({
+    _action: _action("DELETE_LOGO"),
+    teamId: id,
+  }),
+  z.object({
     _action: _action("UPDATE_CAST_TWITCH_ACCOUNTS"),
     castTwitchAccounts: z.preprocess(
       (val) =>
