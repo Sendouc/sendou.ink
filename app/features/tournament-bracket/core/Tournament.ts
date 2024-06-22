@@ -488,9 +488,11 @@ export class Tournament {
   }
 
   tournamentTeamLogoSrc(team: TournamentDataTeam) {
-    if (!team.team?.logoUrl) return;
+    const url = team.team?.logoUrl ?? team.avatarUrl;
 
-    return userSubmittedImage(team.team.logoUrl);
+    if (!url) return;
+
+    return userSubmittedImage(url);
   }
 
   resolvePoolCode({

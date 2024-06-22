@@ -46,6 +46,9 @@ export const registerSchema = z.union([
   z.object({
     _action: _action("UNREGISTER"),
   }),
+  z.object({
+    _action: _action("DELETE_LOGO"),
+  }),
 ]);
 
 export const seedsActionSchema = z.object({

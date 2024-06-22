@@ -952,6 +952,11 @@ dialog::backdrop {
   height: unset;
 }
 
+.small-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
 /* https://stackoverflow.com/questions/50917016/make-a-hidden-field-required/50917245#comment117565184_50917245 */
 .hidden-input-with-validation {
   position: absolute;

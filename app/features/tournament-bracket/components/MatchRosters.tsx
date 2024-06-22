@@ -40,7 +40,7 @@ export function MatchRosters({
 
   return (
     <div className="tournament-bracket__rosters">
-      <div>
+      <div className="stack xxs">
         <div className="stack xs horizontal items-center text-lighter">
           <div className="tournament-bracket__team-one-dot" />
           Team 1
@@ -48,6 +48,8 @@ export function MatchRosters({
         <h2
           className={clsx("text-sm", {
             "text-lighter": !teamOne,
+            "tournament-bracket__rosters__spaced-header":
+              teamOneLogoSrc || teamTwoLogoSrc,
           })}
         >
           {teamOne ? (
@@ -59,7 +61,7 @@ export function MatchRosters({
               className="text-main-forced font-bold stack horizontal xs items-center"
             >
               {teamOneLogoSrc ? (
-                <Avatar url={teamOneLogoSrc} size="xxs" />
+                <Avatar url={teamOneLogoSrc} size="sm" />
               ) : null}
               {teamOne.name}
             </Link>
@@ -92,12 +94,18 @@ export function MatchRosters({
           </ul>
         ) : null}
       </div>
-      <div>
+      <div className="stack xxs">
         <div className="stack xs horizontal items-center text-lighter">
           <div className="tournament-bracket__team-two-dot" />
           Team 2
         </div>
-        <h2 className={clsx("text-sm", { "text-lighter": !teamTwo })}>
+        <h2
+          className={clsx("text-sm", {
+            "text-lighter": !teamTwo,
+            "tournament-bracket__rosters__spaced-header":
+              teamOneLogoSrc || teamTwoLogoSrc,
+          })}
+        >
           {teamTwo ? (
             <Link
               to={tournamentTeamPage({
@@ -107,7 +115,7 @@ export function MatchRosters({
               className="text-main-forced font-bold stack horizontal xs items-center"
             >
               {teamTwoLogoSrc ? (
-                <Avatar url={teamTwoLogoSrc} size="xxs" />
+                <Avatar url={teamTwoLogoSrc} size="sm" />
               ) : null}
               {teamTwo.name}
             </Link>

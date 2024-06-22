@@ -1,4 +1,4 @@
-import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import Compressor from "compressorjs";
 import Markdown from "markdown-to-jsx";
@@ -54,13 +54,13 @@ import {
 } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 import type { TournamentRegisterPageLoader } from "../loaders/to.$id.register.server";
+import { TrashIcon } from "~/components/icons/Trash";
 
 import { loader } from "../loaders/to.$id.register.server";
 import { action } from "../actions/to.$id.register.server";
 
 export { loader, action };
 
-// xxx: make avatar bigger in some contexts?
 // xxx: uploading avatar possible till reg ends
 
 export default function TournamentRegisterPage() {
@@ -564,6 +564,7 @@ function TeamInfo({
   const tournament = useTournament();
   const [teamName, setTeamName] = React.useState(ownTeam?.name ?? "");
   const user = useUser();
+  const ref = React.useRef<HTMLFormElement>(null);
   const [signUpWithTeam, setSignUpWithTeam] = React.useState(() =>
     Boolean(tournament.ownedTeamByUser(user)?.team),
   );
@@ -579,6 +580,27 @@ function TeamInfo({
     }
   };
 
+  const handleSubmit = () => {
+    const formData = new FormData(ref.current!);
+
+    if (uploadedAvatar) {
+      // replace with the compressed version
+      formData.delete("img");
+      formData.append("img", uploadedAvatar, uploadedAvatar.name);
+    }
+
+    fetcher.submit(formData, {
+      encType: uploadedAvatar ? "multipart/form-data" : undefined,
+      method: "post",
+    });
+  };
+
+  const submitButtonDisabled = () => {
+    if (fetcher.state !== "idle") return true;
+
+    return false;
+  };
+
   const avatarUrl = (() => {
     if (signUpWithTeam) {
       if (ownTeam?.team?.logoUrl) {
@@ -587,12 +609,18 @@ function TeamInfo({
       return data?.team?.logoUrl ? userSubmittedImage(data.team.logoUrl) : null;
     }
     if (uploadedAvatar) return URL.createObjectURL(uploadedAvatar);
+    if (ownTeam?.avatarUrl) return userSubmittedImage(ownTeam.avatarUrl);
 
     return null;
   })();
 
   const canEditAvatar =
-    tournament.registrationOpen && !signUpWithTeam && uploadedAvatar;
+    tournament.registrationOpen &&
+    !signUpWithTeam &&
+    uploadedAvatar &&
+    !ownTeam?.avatarUrl;
+
+  const canDeleteAvatar = ownTeam?.avatarUrl;
 
   return (
     <div>
@@ -618,7 +646,8 @@ function TeamInfo({
         ) : null}
       </div>
       <section className="tournament__section">
-        <fetcher.Form method="post" className="stack md items-center">
+        <Form method="post" className="stack md items-center" ref={ref}>
+          <input type="hidden" name="_action" value="UPSERT_TEAM" />
           {signUpWithTeam && data?.team ? (
             <input type="hidden" name="teamId" value={data.team.id} />
           ) : null}
@@ -663,6 +692,20 @@ function TeamInfo({
                         {t("common:actions.edit")}
                       </Button>
                     ) : null}
+                    {canDeleteAvatar ? (
+                      <FormWithConfirm
+                        dialogHeading="Delete team logo?"
+                        fields={[["_action", "DELETE_LOGO"]]}
+                      >
+                        <Button
+                          variant="minimal-destructive"
+                          size="tiny"
+                          type="submit"
+                        >
+                          <TrashIcon className="small-icon" />
+                        </Button>
+                      </FormWithConfirm>
+                    ) : null}
                   </div>
                 ) : (
                   <TournamentLogoUpload onChange={setUploadedAvatar} />
@@ -698,14 +741,15 @@ function TeamInfo({
               ) : null}
             </div>
           </div>
-          <SubmitButton
-            _action="UPSERT_TEAM"
-            state={fetcher.state}
+          {/* why jumps on SSR? */}
+          <Button
             testId="save-team-button"
+            disabled={submitButtonDisabled()}
+            onClick={handleSubmit}
           >
             {t("common:actions.save")}
-          </SubmitButton>
-        </fetcher.Form>
+          </Button>
+        </Form>
       </section>
     </div>
   );

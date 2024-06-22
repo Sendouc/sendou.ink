@@ -9,17 +9,15 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { logger } from "~/utils/logger";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseFormData, validate } from "~/utils/remix";
 import { booleanToInt } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
 import { checkIn } from "../queries/checkIn.server";
-import { createTeam } from "../queries/createTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTournamentTeam } from "../queries/findOwnTournamentTeam.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
-import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { registerSchema } from "../tournament-schemas.server";
@@ -29,10 +27,23 @@ import {
   validateCounterPickMapPool,
 } from "../tournament-utils";
 import { inGameNameIfNeeded } from "../tournament-utils.server";
+import {
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from "@remix-run/node";
+import { s3UploadHandler } from "~/features/img-upload";
+import { nanoid } from "nanoid";
+import invariant from "~/utils/invariant";
+import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
-  const data = await parseRequestFormData({ request, schema: registerSchema });
+  const { avatarFileName, formData } = await uploadAvatarIfExists(request);
+  const data = await parseFormData({
+    formData,
+    schema: registerSchema,
+  });
 
   const tournamentId = tournamentIdFromParams(params);
   const tournament = await tournamentFromDB({ tournamentId, user });
@@ -60,12 +71,16 @@ export const action: ActionFunction = async ({ request, params }) => {
           "Can't change team name after registration has closed",
         );
 
-        updateTeamInfo({
-          name: data.teamName,
-          id: ownTeam.id,
-          prefersNotToHost: booleanToInt(data.prefersNotToHost),
-          noScreen: booleanToInt(data.noScreen),
-          teamId: data.teamId ?? null,
+        await TournamentTeamRepository.update({
+          userId: user.id,
+          avatarFileName,
+          team: {
+            id: ownTeam.id,
+            name: data.teamName,
+            prefersNotToHost: booleanToInt(data.prefersNotToHost),
+            noScreen: booleanToInt(data.noScreen),
+            teamId: data.teamId ?? null,
+          },
         });
       } else {
         validate(!tournament.isInvitational, "Event is invite only");
@@ -79,17 +94,20 @@ export const action: ActionFunction = async ({ request, params }) => {
         );
         validate(tournament.registrationOpen, "Registration is closed");
 
-        createTeam({
-          name: data.teamName,
-          tournamentId: tournamentId,
-          ownerId: user.id,
-          prefersNotToHost: booleanToInt(data.prefersNotToHost),
-          noScreen: booleanToInt(data.noScreen),
+        await TournamentTeamRepository.create({
           ownerInGameName: await inGameNameIfNeeded({
             tournament,
             userId: user.id,
           }),
-          teamId: data.teamId ?? null,
+          team: {
+            name: data.teamName,
+            noScreen: booleanToInt(data.noScreen),
+            prefersNotToHost: booleanToInt(data.prefersNotToHost),
+            teamId: data.teamId ?? null,
+          },
+          userId: user.id,
+          tournamentId,
+          avatarFileName,
         });
       }
       break;
@@ -210,6 +228,13 @@ export const action: ActionFunction = async ({ request, params }) => {
       deleteTeam(ownTeam.id);
       break;
     }
+    case "DELETE_LOGO": {
+      validate(ownTeam, "You are not registered to this tournament");
+
+      await TournamentTeamRepository.deleteLogo(ownTeam.id);
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -219,3 +244,36 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   return null;
 };
+
+// xxx: make into util function?
+async function uploadAvatarIfExists(request: Request) {
+  const uploadHandler = composeUploadHandlers(
+    s3UploadHandler(`pickup-logo-${nanoid()}-${Date.now()}`),
+    createMemoryUploadHandler(),
+  );
+
+  try {
+    const formData = await parseMultipartFormData(request, uploadHandler);
+    const imgSrc = formData.get("img") as string | null;
+    invariant(imgSrc);
+
+    const urlParts = imgSrc.split("/");
+    const fileName = urlParts[urlParts.length - 1];
+    invariant(fileName);
+
+    return {
+      avatarFileName: fileName,
+      formData,
+    };
+  } catch (err) {
+    // user did not submit image
+    if (err instanceof TypeError) {
+      return {
+        avatarFileName: undefined,
+        formData: await request.formData(),
+      };
+    }
+
+    throw err;
+  }
+}
