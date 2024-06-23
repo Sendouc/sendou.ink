@@ -78,7 +78,7 @@ export function PlacementsTable({
               </div>
             ) : null}
           </div>
-          <div>{placement.power}</div>
+          <div>{placement.power.toFixed(1)}</div>
         </Link>
       ))}
     </div>

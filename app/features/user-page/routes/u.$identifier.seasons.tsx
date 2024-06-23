@@ -322,10 +322,12 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
             </Popover>
           </div>
         ) : null}
-        <div className="text-lg font-bold">{ordinalToSp(currentOrdinal)}SP</div>
+        <div className="text-lg font-bold">
+          {ordinalToSp(currentOrdinal).toFixed(2)}SP
+        </div>
         {!peakAndCurrentSame ? (
           <div className="text-lighter text-sm">
-            {t("user:seasons.peak")} {ordinalToSp(maxOrdinal)}SP
+            {t("user:seasons.peak")} {ordinalToSp(maxOrdinal).toFixed(2)}SP
           </div>
         ) : null}
         {topTenPlacement ? (

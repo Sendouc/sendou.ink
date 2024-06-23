@@ -442,7 +442,9 @@ function PlayersTable({
                       ➜ +{entry.pendingPlusTier}
                     </div>
                   ) : null}
-                  <div className="placements__table__power">{entry.power}</div>
+                  <div className="placements__table__power">
+                    {entry.power.toFixed(2)}
+                  </div>
                 </div>
               </Link>
             </React.Fragment>
@@ -499,7 +501,9 @@ function TeamTable({
                     );
                   })}
                 </div>
-                <div className="placements__table__power">{entry.power}</div>
+                <div className="placements__table__power">
+                  {entry.power.toFixed(2)}
+                </div>
               </div>
             </div>
             {i === 11 && showQualificationDividers ? (
@@ -539,7 +543,9 @@ function XPTable({ entries }: { entries: XPLeaderboardItem[] }) {
                 height={32}
               />
               <div>{entry.name}</div>
-              <div className="placements__table__power">{entry.power}</div>
+              <div className="placements__table__power">
+                {entry.power.toFixed(1)}
+              </div>
             </div>
           </Link>
         );
