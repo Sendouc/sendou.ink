@@ -87,6 +87,10 @@ const userEditActionSchema = z
       falsyToNull,
       z.string().trim().max(USER.CUSTOM_NAME_MAX_LENGTH).nullable(),
     ),
+    battlefy: z.preprocess(
+      falsyToNull,
+      z.string().max(USER.BATTLEFY_MAX_LENGTH).nullable(),
+    ),
     stickSens: z.preprocess(
       processMany(actualNumber, undefinedToNull),
       z
@@ -246,6 +250,7 @@ export default function UserEditPage() {
         <CustomUrlInput parentRouteData={parentRouteData} />
         <InGameNameInputs parentRouteData={parentRouteData} />
         <SensSelects parentRouteData={parentRouteData} />
+        <BattlefyInput parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
         <FavBadgeSelect parentRouteData={parentRouteData} />
         <WeaponPoolSelect parentRouteData={parentRouteData} />
@@ -434,6 +439,27 @@ function CountrySelect({
           </option>
         ))}
       </select>
+    </div>
+  );
+}
+
+function BattlefyInput({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const { t } = useTranslation(["user"]);
+
+  return (
+    <div className="w-full">
+      <Label htmlFor="customName">{t("user:battlefy")}</Label>
+      <Input
+        name="battlefy"
+        id="battlefy"
+        maxLength={USER.BATTLEFY_MAX_LENGTH}
+        defaultValue={parentRouteData.battlefy ?? undefined}
+      />
+      <FormMessage type="info">{t("user:forms.info.battlefy")}</FormMessage>
     </div>
   );
 }

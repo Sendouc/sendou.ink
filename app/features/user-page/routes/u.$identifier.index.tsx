@@ -25,6 +25,7 @@ import {
 import { badgeExplanationText } from "../../badges/routes/badges.$id";
 import type { UserPageLoaderData } from "./u.$identifier";
 import { DiscordIcon } from "~/components/icons/Discord";
+import { BattlefyIcon } from "~/components/icons/Battlefy";
 
 export const handle: SendouRouteHandle = {
   i18n: "badges",
@@ -57,6 +58,9 @@ export default function UserInfoPage() {
           ) : null}
           {data.youtubeId ? (
             <SocialLink type="youtube" identifier={data.youtubeId} />
+          ) : null}
+          {data.battlefy ? (
+            <SocialLink type="battlefy" identifier={data.battlefy} />
           ) : null}
         </div>
       </div>
@@ -93,7 +97,7 @@ function TeamInfo() {
 }
 
 interface SocialLinkProps {
-  type: "youtube" | "twitter" | "twitch";
+  type: "youtube" | "twitter" | "twitch" | "battlefy";
   identifier: string;
 }
 
@@ -101,7 +105,7 @@ export function SocialLink({
   type,
   identifier,
 }: {
-  type: "youtube" | "twitter" | "twitch";
+  type: "youtube" | "twitter" | "twitch" | "battlefy";
   identifier: string;
 }) {
   const href = () => {
@@ -112,6 +116,8 @@ export function SocialLink({
         return `https://www.twitter.com/${identifier}`;
       case "youtube":
         return `https://www.youtube.com/channel/${identifier}`;
+      case "battlefy":
+        return `https://battlefy.com/users/${identifier}`;
       default:
         assertUnreachable(type);
     }
@@ -123,6 +129,7 @@ export function SocialLink({
         youtube: type === "youtube",
         twitter: type === "twitter",
         twitch: type === "twitch",
+        battlefy: type === "battlefy",
       })}
       href={href()}
     >
@@ -139,6 +146,8 @@ function SocialLinkIcon({ type }: Pick<SocialLinkProps, "type">) {
       return <TwitterIcon />;
     case "youtube":
       return <YouTubeIcon />;
+    case "battlefy":
+      return <BattlefyIcon />;
     default:
       assertUnreachable(type);
   }

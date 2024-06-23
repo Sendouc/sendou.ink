@@ -13,6 +13,7 @@
   "weaponPool": "Weapon pool",
   "discordExplanation": "Username, profile picture, YouTube, Twitter and Twitch accounts come from your Discord account. See <1>FAQ</1> for more information.",
   "favoriteBadge": "Favorite Badge",
+  "battlefy": "Battlefy account name",
 
   "forms.showDiscordUniqueName": "Show Discord username",
   "forms.showDiscordUniqueName.info": "Show your unique Discord name ({{discordUniqueName}}) publicly?",
@@ -40,6 +41,7 @@
   "forms.errors.invalidCustomUrl.duplicate": "Someone is already using this custom URL",
   "forms.errors.invalidSens": "Motion sens can't be set if R-stick sens isn't",
   "forms.info.favoriteBadge": "Your favorite badge is shown as big by default on your profile.",
+  "forms.info.battlefy": "Battlefy account name is used for seeding and verification in some tournaments",
 
   "search.info": "Search for users by Discord, Splatoon 3 or Twitter name",
   "search.noResults": "No users found matching '{{query}}'",

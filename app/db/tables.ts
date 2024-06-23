@@ -691,6 +691,7 @@ export interface User {
   stickSens: number | null;
   twitch: string | null;
   twitter: string | null;
+  battlefy: string | null;
   vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
   youtubeId: string | null;
   mapModePreferences: ColumnType<

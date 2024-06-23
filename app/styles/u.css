@@ -87,6 +87,15 @@
   fill: #9146ff;
 }
 
+.u__social-link.battlefy {
+  border-color: #de4c5e;
+  background-color: #de4c5e2f;
+}
+
+.u__social-link.battlefy > svg {
+  fill: #de4c5e;
+}
+
 .u__extra-infos {
   display: flex;
   max-width: 24rem;

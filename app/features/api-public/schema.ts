@@ -110,6 +110,10 @@ export type GetTournamentTeamsResponse = Array<{
      */
     discordId: string;
     /**
+     * @example "sendouc"
+     */
+    battlefy: string | null;
+    /**
      * @example "https://cdn.discordapp.com/avatars/79237403620945920/6fc41a44b069a0d2152ac06d1e496c6c.png"
      */
     avatarUrl: string | null;

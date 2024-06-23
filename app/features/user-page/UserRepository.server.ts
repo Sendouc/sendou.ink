@@ -53,6 +53,7 @@ export function findByIdentifier(identifier: string) {
       "User.twitch",
       "User.twitter",
       "User.youtubeId",
+      "User.battlefy",
       "User.favoriteBadgeId",
       "User.banned",
       "User.bannedReason",
@@ -409,6 +410,7 @@ type UpdateProfileArgs = Pick<
   | "motionSens"
   | "stickSens"
   | "inGameName"
+  | "battlefy"
   | "css"
   | "favoriteBadgeId"
   | "showDiscordUniqueName"
@@ -450,6 +452,7 @@ export function updateProfile(args: UpdateProfileArgs) {
         stickSens: args.stickSens,
         inGameName: args.inGameName,
         css: args.css,
+        battlefy: args.battlefy,
         favoriteBadgeId: args.favoriteBadgeId,
         showDiscordUniqueName: args.showDiscordUniqueName,
         commissionText: args.commissionText,
