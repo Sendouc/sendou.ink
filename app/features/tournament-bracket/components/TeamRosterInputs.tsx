@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import clone from "just-clone";
 import * as React from "react";
-import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { Label } from "~/components/Label";
 import { useTournament } from "../../tournament/routes/to.$id";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
@@ -43,6 +42,7 @@ export function TeamRosterInputs({
   const presentational = !revising && Boolean(result);
 
   const data = useLoaderData<TournamentMatchLoaderData>();
+  const tournament = useTournament();
 
   React.useEffect(() => {
     if (result) return;
@@ -74,8 +74,11 @@ export function TeamRosterInputs({
             setPoints={setPoints}
             presentational={presentational}
             team={team}
-            bothTeamsHaveActiveRosters={teams.every(
-              tournamentTeamToActiveRosterUserIds,
+            bothTeamsHaveActiveRosters={teams.every((team) =>
+              tournamentTeamToActiveRosterUserIds(
+                team,
+                tournament.minMembersPerTeam,
+              ),
             )}
             setWinnerId={setWinnerId}
             setCheckedPlayers={setCheckedPlayers}
@@ -121,16 +124,19 @@ function _TeamRoster({
   result?: Result;
   revising?: boolean;
 }) {
-  const activeRoster = tournamentTeamToActiveRosterUserIds(team);
+  const tournament = useTournament();
+  const activeRoster = tournamentTeamToActiveRosterUserIds(
+    team,
+    tournament.minMembersPerTeam,
+  );
 
   const user = useUser();
-  const tournament = useTournament();
 
   const canEditRoster =
     (team.members.some((member) => member.userId === user?.id) ||
       tournament.isOrganizer(user)) &&
     !presentational &&
-    team.members.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL;
+    team.members.length > tournament.minMembersPerTeam;
   const [_editingRoster, _setEditingRoster] = React.useState(
     !activeRoster && canEditRoster,
   );
@@ -235,9 +241,7 @@ function _TeamRoster({
           showCancelButton={Boolean(activeRoster)}
           checkedPlayers={checkedPlayersArray}
           teamId={team.id}
-          valid={
-            checkedPlayersArray.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
-          }
+          valid={checkedPlayersArray.length === tournament.minMembersPerTeam}
         />
       ) : null}
     </div>
@@ -410,6 +414,7 @@ function TeamRosterInputsCheckboxes({
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const id = React.useId();
+  const tournament = useTournament();
 
   const members = data.match.players.filter(
     (p) => p.tournamentTeamId === teamId,
@@ -421,7 +426,7 @@ function TeamRosterInputsCheckboxes({
     // Disabled in this case because we expect a result to have exactly
     // TOURNAMENT_TEAM_ROSTER_MIN_SIZE members per team when reporting it
     // so there is no point to let user to change them around
-    if (members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+    if (members.length <= tournament.minMembersPerTeam) {
       return "DISABLED";
     }
 

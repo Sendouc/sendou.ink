@@ -1243,6 +1243,8 @@ function TournamentFormatSelector() {
   return (
     <div className="stack md w-full">
       <Divider>Tournament format</Divider>
+      <MemberCountSelect />
+
       <div>
         <Label htmlFor="format">Format</Label>
         <select
@@ -1366,6 +1368,32 @@ function TournamentFormatSelector() {
       {format === "RR_TO_SE" || format === "SWISS_TO_SE" ? (
         <FollowUpBrackets teamsPerGroup={teamsPerGroup} format={format} />
       ) : null}
+    </div>
+  );
+}
+
+function MemberCountSelect() {
+  const baseEvent = useBaseEvent();
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id} className="w-max">
+        Players count
+      </label>
+      <select
+        name="minMembersPerTeam"
+        defaultValue={
+          baseEvent?.tournament?.ctx.settings.minMembersPerTeam ?? 4
+        }
+        className="w-max"
+      >
+        {[4, 3, 2, 1].map((count) => (
+          <option key={count} value={count}>
+            {`${count}v${count}`}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

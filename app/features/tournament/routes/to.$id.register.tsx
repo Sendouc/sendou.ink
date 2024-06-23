@@ -377,8 +377,7 @@ function RegistrationProgress({
     },
     {
       name: t("tournament:pre.steps.roster"),
-      completed:
-        members && members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+      completed: members && members.length >= tournament.minMembersPerTeam,
     },
     tournament.teamsPrePickMaps
       ? {
@@ -837,7 +836,7 @@ function FillRoster({
   invariant(ownTeamMembers, "own team members should exist");
 
   const missingMembers = Math.max(
-    TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL - ownTeamMembers.length,
+    tournament.minMembersPerTeam - ownTeamMembers.length,
     0,
   );
 
@@ -848,8 +847,7 @@ function FillRoster({
 
   const showDeleteMemberSection =
     (!ownTeamCheckedIn && ownTeamMembers.length > 1) ||
-    (ownTeamCheckedIn &&
-      ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
+    (ownTeamCheckedIn && ownTeamMembers.length > tournament.minMembersPerTeam);
 
   const playersAvailableToDirectlyAdd = (() => {
     return (data!.trusterPlayers ?? []).filter((user) => {
@@ -950,9 +948,10 @@ function FillRoster({
           might result in disqualification.
         </div>
       ) : (
+        // TODO: proper English for 1v1 "At least 1 members are required to participate. Max roster size is 1"
         <div className="tournament__section__warning">
           {t("tournament:pre.roster.footer", {
-            atLeastCount: TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+            atLeastCount: tournament.minMembersPerTeam,
             maxCount: tournament.maxTeamMemberCount,
           })}
         </div>

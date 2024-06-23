@@ -18,7 +18,6 @@ import { MatchActionsBanPicker } from "./MatchActionsBanPicker";
 import invariant from "~/utils/invariant";
 import { Button } from "~/components/Button";
 import { EditIcon } from "~/components/icons/Edit";
-import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 
 export function MatchActions({
   teams,
@@ -52,8 +51,14 @@ export function MatchActions({
     }
 
     return [
-      tournamentTeamToActiveRosterUserIds(teams[0]) ?? [],
-      tournamentTeamToActiveRosterUserIds(teams[1]) ?? [],
+      tournamentTeamToActiveRosterUserIds(
+        teams[0],
+        tournament.minMembersPerTeam,
+      ) ?? [],
+      tournamentTeamToActiveRosterUserIds(
+        teams[1],
+        tournament.minMembersPerTeam,
+      ) ?? [],
     ];
   });
 
@@ -99,8 +104,8 @@ export function MatchActions({
     return <MatchActionsBanPicker key={turnOf} teams={[teams[0], teams[1]]} />;
   }
 
-  const bothTeamsHaveActiveRosters = teams.every(
-    tournamentTeamToActiveRosterUserIds,
+  const bothTeamsHaveActiveRosters = teams.every((team) =>
+    tournamentTeamToActiveRosterUserIds(team, tournament.minMembersPerTeam),
   );
 
   const canEditFinishedSet =
@@ -154,7 +159,7 @@ export function MatchActions({
           points={showPoints ? points : undefined}
           submitDisabled={checkedPlayers.some(
             (teamMembers) =>
-              teamMembers.length !== TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+              teamMembers.length !== tournament.minMembersPerTeam,
           )}
         />
       ) : null}

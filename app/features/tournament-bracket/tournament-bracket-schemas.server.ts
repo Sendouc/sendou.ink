@@ -10,15 +10,9 @@ import {
 } from "~/utils/zod";
 import { TOURNAMENT } from "../tournament/tournament-constants";
 
-const activeRosterPlayerIds = z.preprocess(
-  safeJSONParse,
-  z.array(id).length(TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL),
-);
+const activeRosterPlayerIds = z.preprocess(safeJSONParse, z.array(id));
 
-const bothTeamPlayerIds = z.preprocess(
-  safeJSONParse,
-  z.array(id).length(TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL * 2),
-);
+const bothTeamPlayerIds = z.preprocess(safeJSONParse, z.array(id));
 
 const reportedMatchPosition = z.preprocess(
   Number,

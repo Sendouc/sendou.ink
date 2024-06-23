@@ -16,7 +16,6 @@ import type { TFunction } from "i18next";
 import type { TournamentRoundMaps } from "~/db/tables";
 import { sumArray } from "~/utils/number";
 import type { TournamentLoaderData } from "../tournament/routes/to.$id";
-import { TOURNAMENT } from "../tournament/tournament-constants";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -264,16 +263,17 @@ export function isSetOverByScore({
 
 export function tournamentTeamToActiveRosterUserIds(
   team: TournamentLoaderData["tournament"]["ctx"]["teams"][number],
+  teamMinMemberCount: number,
 ) {
   if (
     team.activeRosterUserIds &&
-    team.activeRosterUserIds.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
+    team.activeRosterUserIds.length === teamMinMemberCount
   ) {
     return team.activeRosterUserIds;
   }
 
   // they don't need to select active roster as they have no subs
-  if (team.members.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+  if (team.members.length === teamMinMemberCount) {
     return team.members.map((member) => member.userId);
   }
 

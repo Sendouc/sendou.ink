@@ -456,7 +456,14 @@ export class Tournament {
     const seasonIsActive = Boolean(currentSeason(this.ctx.startTime));
     if (!seasonIsActive) return false;
 
+    // 1v1, 2v2 and 3v3 are always considered "gimmicky"
+    if (this.minMembersPerTeam !== 4) return false;
+
     return this.ctx.settings.isRanked ?? true;
+  }
+
+  get minMembersPerTeam() {
+    return this.ctx.settings.minMembersPerTeam ?? 4;
   }
 
   get teamsPrePickMaps() {
@@ -676,7 +683,7 @@ export class Tournament {
       return false;
     }
 
-    if (team.members.length < TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+    if (team.members.length < this.minMembersPerTeam) {
       return false;
     }
 
@@ -707,9 +714,10 @@ export class Tournament {
   }
 
   get maxTeamMemberCount() {
-    const maxMembersBeforeStart = this.isInvitational
-      ? 5
-      : TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START;
+    // special format
+    if (this.minMembersPerTeam !== 4) return this.minMembersPerTeam;
+
+    const maxMembersBeforeStart = this.isInvitational ? 5 : 6;
 
     if (this.hasStarted) {
       return maxMembersBeforeStart + 1;

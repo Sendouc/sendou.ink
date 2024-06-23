@@ -24,7 +24,6 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTournamentTeam } from "../queries/findOwnTournamentTeam.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
-import { TOURNAMENT } from "../tournament-constants";
 import { registerSchema } from "../tournament-schemas.server";
 import {
   isOneModeTournamentOf,
@@ -126,7 +125,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(
         detailedOwnTeam &&
           (!detailedOwnTeam.checkedInAt ||
-            ownTeam.members.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL),
+            ownTeam.members.length > tournament.minMembersPerTeam),
       );
 
       deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });

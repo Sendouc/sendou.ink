@@ -162,9 +162,11 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const teamOneRoster = tournamentTeamToActiveRosterUserIds(
         tournament.teamById(match.opponentOne.id!)!,
+        tournament.minMembersPerTeam,
       );
       const teamTwoRoster = tournamentTeamToActiveRosterUserIds(
         tournament.teamById(match.opponentTwo.id!)!,
+        tournament.minMembersPerTeam,
       );
 
       validate(teamOneRoster, "Team one has no active roster");
@@ -212,6 +214,10 @@ export const action: ActionFunction = async ({ params, request }) => {
           tournament.teamMemberOfByUser(user)?.id === data.teamId,
         "Unauthorized",
         401,
+      );
+      validate(
+        data.roster.length === tournament.minMembersPerTeam,
+        "Invalid roster length",
       );
 
       const team = tournament.teamById(data.teamId)!;
@@ -304,6 +310,10 @@ export const action: ActionFunction = async ({ params, request }) => {
         data.resultId,
       );
       validate(result, "Result not found");
+      validate(
+        data.rosters.length === tournament.minMembersPerTeam * 2,
+        "Invalid roster length",
+      );
 
       const hadPoints = typeof result.opponentOnePoints === "number";
       const willHavePoints = typeof data.points?.[0] === "number";

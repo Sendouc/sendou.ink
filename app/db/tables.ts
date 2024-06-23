@@ -438,6 +438,7 @@ export interface TournamentSettings {
     groupCount: number;
     roundCount: number;
   };
+  minMembersPerTeam?: number;
 }
 
 export interface CastedMatchesInfo {

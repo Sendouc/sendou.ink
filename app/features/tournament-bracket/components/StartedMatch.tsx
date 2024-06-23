@@ -244,6 +244,7 @@ function FancyStageBanner({
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const { t } = useTranslation(["game-misc", "tournament"]);
+  const tournament = useTournament();
 
   const stageNameToBannerImageUrl = (stageId: StageId) => {
     return stageImageUrl(stageId) + ".png";
@@ -280,8 +281,14 @@ function FancyStageBanner({
     data.mapList.filter((m) => m.bannedByTournamentTeamId).length < 2;
 
   const waitingForActiveRosterSelectionFor = (() => {
-    const teamOneMissing = !tournamentTeamToActiveRosterUserIds(teams[0]);
-    const teamTwoMissing = !tournamentTeamToActiveRosterUserIds(teams[1]);
+    const teamOneMissing = !tournamentTeamToActiveRosterUserIds(
+      teams[0],
+      tournament.minMembersPerTeam,
+    );
+    const teamTwoMissing = !tournamentTeamToActiveRosterUserIds(
+      teams[1],
+      tournament.minMembersPerTeam,
+    );
 
     if (teamOneMissing && teamTwoMissing) {
       return "BOTH";
@@ -599,8 +606,14 @@ function StartedMatchTabs({
   const matchActionsKey = () =>
     [
       data.match.id,
-      tournamentTeamToActiveRosterUserIds(teams[0]),
-      tournamentTeamToActiveRosterUserIds(teams[1]),
+      tournamentTeamToActiveRosterUserIds(
+        teams[0],
+        tournament.minMembersPerTeam,
+      ),
+      tournamentTeamToActiveRosterUserIds(
+        teams[1],
+        tournament.minMembersPerTeam,
+      ),
       result?.participantIds,
       result?.opponentOnePoints,
       result?.opponentTwoPoints,

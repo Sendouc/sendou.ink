@@ -14,7 +14,6 @@ import { tournamentPage, userEditProfilePage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
 import { giveTrust } from "../queries/giveTrust.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
-import { TOURNAMENT } from "../tournament-constants";
 import { joinSchema } from "../tournament-schemas.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
@@ -88,7 +87,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     checkOutTeam:
       whatToDoWithPreviousTeam === "LEAVE" &&
       previousTeam &&
-      previousTeam.members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+      previousTeam.members.length <= tournament.minMembersPerTeam,
     whatToDoWithPreviousTeam,
     tournamentId,
     inGameName: await inGameNameIfNeeded({
