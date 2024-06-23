@@ -37,6 +37,15 @@ export const tags = {
   TW: {
     color: "#D50000",
   },
+  ONES: {
+    color: "#FAEC25",
+  },
+  DUOS: {
+    color: "#1ADB1E",
+  },
+  TRIOS: {
+    color: "#571ADB",
+  },
   S1: {
     color: "#E5E4E2",
   },
