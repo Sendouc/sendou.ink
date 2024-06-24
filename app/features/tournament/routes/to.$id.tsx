@@ -1,14 +1,14 @@
 import type {
-  LoaderFunctionArgs,
-  MetaFunction,
-  SerializeFrom,
+	LoaderFunctionArgs,
+	MetaFunction,
+	SerializeFrom,
 } from "@remix-run/node";
 import {
-  Outlet,
-  type ShouldRevalidateFunction,
-  useLoaderData,
-  useLocation,
-  useOutletContext,
+	Outlet,
+	type ShouldRevalidateFunction,
+	useLoaderData,
+	useLocation,
+	useOutletContext,
 } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -18,248 +18,247 @@ import { useUser } from "~/features/auth/core/user";
 import { getUser } from "~/features/auth/core/user.server";
 import { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { tournamentDataCached } from "~/features/tournament-bracket/core/Tournament.server";
-import { type SendouRouteHandle } from "~/utils/remix";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { isAdmin } from "~/permissions";
+import { databaseTimestampToDate } from "~/utils/dates";
+import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
+import { tournamentPage, userSubmittedImage } from "~/utils/urls";
 import { streamsByTournamentId } from "../core/streams.server";
 import {
-  HACKY_resolvePicture,
-  tournamentIdFromParams,
+	HACKY_resolvePicture,
+	tournamentIdFromParams,
 } from "../tournament-utils";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { isAdmin } from "~/permissions";
-import { tournamentPage, userSubmittedImage } from "~/utils/urls";
 
 import "../tournament.css";
 import "~/styles/maps.css";
 import "~/styles/calendar-event.css";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
-  const navigatedToMatchPage =
-    typeof args.nextParams["mid"] === "string" && args.formMethod !== "POST";
+	const navigatedToMatchPage =
+		typeof args.nextParams.mid === "string" && args.formMethod !== "POST";
 
-  if (navigatedToMatchPage) return false;
+	if (navigatedToMatchPage) return false;
 
-  return args.defaultShouldRevalidate;
+	return args.defaultShouldRevalidate;
 };
 
 export const meta: MetaFunction = (args) => {
-  const data = args.data as SerializeFrom<typeof loader>;
+	const data = args.data as SerializeFrom<typeof loader>;
 
-  if (!data) return [];
+	if (!data) return [];
 
-  const title = makeTitle(data.tournament.ctx.name);
+	const title = makeTitle(data.tournament.ctx.name);
 
-  return [
-    { title },
-    {
-      property: "og:title",
-      content: title,
-    },
-    {
-      property: "og:description",
-      content: data.tournament.ctx.description,
-    },
-    {
-      property: "og:type",
-      content: "website",
-    },
-    {
-      property: "og:image",
-      content: data.tournament.ctx.logoSrc,
-    },
-    // Twitter special snowflake tags, see https://developer.x.com/en/docs/twitter-for-websites/cards/overview/summary
-    {
-      name: "twitter:card",
-      content: "summary",
-    },
-    {
-      name: "twitter:title",
-      content: title,
-    },
-    {
-      name: "twitter:site",
-      content: "@sendouink",
-    },
-  ];
+	return [
+		{ title },
+		{
+			property: "og:title",
+			content: title,
+		},
+		{
+			property: "og:description",
+			content: data.tournament.ctx.description,
+		},
+		{
+			property: "og:type",
+			content: "website",
+		},
+		{
+			property: "og:image",
+			content: data.tournament.ctx.logoSrc,
+		},
+		// Twitter special snowflake tags, see https://developer.x.com/en/docs/twitter-for-websites/cards/overview/summary
+		{
+			name: "twitter:card",
+			content: "summary",
+		},
+		{
+			name: "twitter:title",
+			content: title,
+		},
+		{
+			name: "twitter:site",
+			content: "@sendouink",
+		},
+	];
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["tournament", "calendar"],
-  breadcrumb: ({ match }) => {
-    const data = match.data as TournamentLoaderData | undefined;
+	i18n: ["tournament", "calendar"],
+	breadcrumb: ({ match }) => {
+		const data = match.data as TournamentLoaderData | undefined;
 
-    if (!data) return [];
+		if (!data) return [];
 
-    return [
-      {
-        imgPath: data.tournament.ctx.logoUrl
-          ? userSubmittedImage(data.tournament.ctx.logoUrl)
-          : HACKY_resolvePicture(data.tournament.ctx),
-        href: tournamentPage(data.tournament.ctx.id),
-        type: "IMAGE",
-        text: data.tournament.ctx.name,
-        rounded: true,
-      },
-    ];
-  },
+		return [
+			{
+				imgPath: data.tournament.ctx.logoUrl
+					? userSubmittedImage(data.tournament.ctx.logoUrl)
+					: HACKY_resolvePicture(data.tournament.ctx),
+				href: tournamentPage(data.tournament.ctx.id),
+				type: "IMAGE",
+				text: data.tournament.ctx.name,
+				rounded: true,
+			},
+		];
+	},
 };
 
 export type TournamentLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const user = await getUser(request);
-  const tournamentId = tournamentIdFromParams(params);
+	const user = await getUser(request);
+	const tournamentId = tournamentIdFromParams(params);
 
-  const tournament = await tournamentDataCached({ tournamentId, user });
+	const tournament = await tournamentDataCached({ tournamentId, user });
 
-  const streams =
-    tournament.data.stage.length > 0
-      ? await streamsByTournamentId(tournament.ctx)
-      : [];
+	const streams =
+		tournament.data.stage.length > 0
+			? await streamsByTournamentId(tournament.ctx)
+			: [];
 
-  const tournamentStartedInTheLastMonth =
-    databaseTimestampToDate(tournament.ctx.startTime) >
-    new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-  const isTournamentAdmin =
-    tournament.ctx.author.id === user?.id ||
-    tournament.ctx.staff.some(
-      (s) => s.role === "ORGANIZER" && s.id === user?.id,
-    ) ||
-    isAdmin(user);
-  const showFriendCodes = tournamentStartedInTheLastMonth && isTournamentAdmin;
+	const tournamentStartedInTheLastMonth =
+		databaseTimestampToDate(tournament.ctx.startTime) >
+		new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+	const isTournamentAdmin =
+		tournament.ctx.author.id === user?.id ||
+		tournament.ctx.staff.some(
+			(s) => s.role === "ORGANIZER" && s.id === user?.id,
+		) ||
+		isAdmin(user);
+	const showFriendCodes = tournamentStartedInTheLastMonth && isTournamentAdmin;
 
-  return {
-    tournament,
-    streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
-    streamsCount: streams.length,
-    friendCodes: showFriendCodes
-      ? await TournamentRepository.friendCodesByTournamentId(tournamentId)
-      : undefined,
-  };
+	return {
+		tournament,
+		streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
+		streamsCount: streams.length,
+		friendCodes: showFriendCodes
+			? await TournamentRepository.friendCodesByTournamentId(tournamentId)
+			: undefined,
+	};
 };
 
 const TournamentContext = React.createContext<Tournament>(null!);
 
 export default function TournamentLayout() {
-  const { t } = useTranslation(["tournament"]);
-  const user = useUser();
-  const data = useLoaderData<typeof loader>();
-  const location = useLocation();
-  const tournament = React.useMemo(
-    () => new Tournament(data.tournament),
-    [data],
-  );
-  const [bracketExpanded, setBracketExpanded] = React.useState(true);
+	const { t } = useTranslation(["tournament"]);
+	const user = useUser();
+	const data = useLoaderData<typeof loader>();
+	const location = useLocation();
+	const tournament = React.useMemo(
+		() => new Tournament(data.tournament),
+		[data],
+	);
+	const [bracketExpanded, setBracketExpanded] = React.useState(true);
 
-  // this is nice to debug with tournament in browser console
-  if (process.env.NODE_ENV === "development") {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    React.useEffect(() => {
-      // @ts-expect-error for dev purposes
-      window.tourney = tournament;
-    }, [tournament]);
-  }
+	// this is nice to debug with tournament in browser console
+	if (process.env.NODE_ENV === "development") {
+		React.useEffect(() => {
+			// @ts-expect-error for dev purposes
+			window.tourney = tournament;
+		}, [tournament]);
+	}
 
-  const onBracketsPage = location.pathname.includes("brackets");
+	const onBracketsPage = location.pathname.includes("brackets");
 
-  const subsCount = () =>
-    tournament.ctx.subCounts.reduce((acc, cur) => {
-      if (cur.visibility === "ALL") return acc + cur.count;
+	const subsCount = () =>
+		tournament.ctx.subCounts.reduce((acc, cur) => {
+			if (cur.visibility === "ALL") return acc + cur.count;
 
-      const userPlusTier = user?.plusTier ?? 4;
+			const userPlusTier = user?.plusTier ?? 4;
 
-      switch (cur.visibility) {
-        case "+1": {
-          return userPlusTier === 1 ? acc + cur.count : acc;
-        }
-        case "+2": {
-          return userPlusTier <= 2 ? acc + cur.count : acc;
-        }
-        case "+3": {
-          return userPlusTier <= 3 ? acc + cur.count : acc;
-        }
-        default: {
-          assertUnreachable(cur.visibility);
-        }
-      }
-    }, 0);
+			switch (cur.visibility) {
+				case "+1": {
+					return userPlusTier === 1 ? acc + cur.count : acc;
+				}
+				case "+2": {
+					return userPlusTier <= 2 ? acc + cur.count : acc;
+				}
+				case "+3": {
+					return userPlusTier <= 3 ? acc + cur.count : acc;
+				}
+				default: {
+					assertUnreachable(cur.visibility);
+				}
+			}
+		}, 0);
 
-  return (
-    <Main bigger={onBracketsPage}>
-      <SubNav>
-        <SubNavLink to="register" data-testid="register-tab" prefetch="intent">
-          {tournament.hasStarted ? "Info" : t("tournament:tabs.register")}
-        </SubNavLink>
-        <SubNavLink to="brackets" data-testid="brackets-tab" prefetch="render">
-          {t("tournament:tabs.brackets")}
-        </SubNavLink>
-        <SubNavLink to="teams" end={false} prefetch="render">
-          {t("tournament:tabs.teams", { count: tournament.ctx.teams.length })}
-        </SubNavLink>
-        {!tournament.everyBracketOver && tournament.subsFeatureEnabled && (
-          <SubNavLink to="subs" end={false}>
-            {t("tournament:tabs.subs", { count: subsCount() })}
-          </SubNavLink>
-        )}
-        {tournament.hasStarted && !tournament.everyBracketOver ? (
-          <SubNavLink to="streams">
-            {t("tournament:tabs.streams", {
-              count: data.streamsCount,
-            })}
-          </SubNavLink>
-        ) : null}
-        {tournament.isOrganizer(user) && !tournament.hasStarted && (
-          <SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
-        )}
-        {tournament.isOrganizer(user) && !tournament.everyBracketOver && (
-          <SubNavLink to="admin" data-testid="admin-tab">
-            {t("tournament:tabs.admin")}
-          </SubNavLink>
-        )}
-      </SubNav>
-      <TournamentContext.Provider value={tournament}>
-        <Outlet
-          context={
-            {
-              tournament,
-              bracketExpanded,
-              setBracketExpanded,
-              streamingParticipants: data.streamingParticipants,
-              friendCodes: data.friendCodes,
-            } satisfies TournamentContext
-          }
-        />
-      </TournamentContext.Provider>
-    </Main>
-  );
+	return (
+		<Main bigger={onBracketsPage}>
+			<SubNav>
+				<SubNavLink to="register" data-testid="register-tab" prefetch="intent">
+					{tournament.hasStarted ? "Info" : t("tournament:tabs.register")}
+				</SubNavLink>
+				<SubNavLink to="brackets" data-testid="brackets-tab" prefetch="render">
+					{t("tournament:tabs.brackets")}
+				</SubNavLink>
+				<SubNavLink to="teams" end={false} prefetch="render">
+					{t("tournament:tabs.teams", { count: tournament.ctx.teams.length })}
+				</SubNavLink>
+				{!tournament.everyBracketOver && tournament.subsFeatureEnabled && (
+					<SubNavLink to="subs" end={false}>
+						{t("tournament:tabs.subs", { count: subsCount() })}
+					</SubNavLink>
+				)}
+				{tournament.hasStarted && !tournament.everyBracketOver ? (
+					<SubNavLink to="streams">
+						{t("tournament:tabs.streams", {
+							count: data.streamsCount,
+						})}
+					</SubNavLink>
+				) : null}
+				{tournament.isOrganizer(user) && !tournament.hasStarted && (
+					<SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
+				)}
+				{tournament.isOrganizer(user) && !tournament.everyBracketOver && (
+					<SubNavLink to="admin" data-testid="admin-tab">
+						{t("tournament:tabs.admin")}
+					</SubNavLink>
+				)}
+			</SubNav>
+			<TournamentContext.Provider value={tournament}>
+				<Outlet
+					context={
+						{
+							tournament,
+							bracketExpanded,
+							setBracketExpanded,
+							streamingParticipants: data.streamingParticipants,
+							friendCodes: data.friendCodes,
+						} satisfies TournamentContext
+					}
+				/>
+			</TournamentContext.Provider>
+		</Main>
+	);
 }
 
 type TournamentContext = {
-  tournament: Tournament;
-  bracketExpanded: boolean;
-  streamingParticipants: number[];
-  setBracketExpanded: (expanded: boolean) => void;
-  friendCode?: string;
-  friendCodes?: SerializeFrom<typeof loader>["friendCodes"];
+	tournament: Tournament;
+	bracketExpanded: boolean;
+	streamingParticipants: number[];
+	setBracketExpanded: (expanded: boolean) => void;
+	friendCode?: string;
+	friendCodes?: SerializeFrom<typeof loader>["friendCodes"];
 };
 
 export function useTournament() {
-  return useOutletContext<TournamentContext>().tournament;
+	return useOutletContext<TournamentContext>().tournament;
 }
 
 export function useBracketExpanded() {
-  const { bracketExpanded, setBracketExpanded } =
-    useOutletContext<TournamentContext>();
+	const { bracketExpanded, setBracketExpanded } =
+		useOutletContext<TournamentContext>();
 
-  return { bracketExpanded, setBracketExpanded };
+	return { bracketExpanded, setBracketExpanded };
 }
 
 export function useStreamingParticipants() {
-  return useOutletContext<TournamentContext>().streamingParticipants;
+	return useOutletContext<TournamentContext>().streamingParticipants;
 }
 
 export function useTournamentFriendCodes() {
-  return useOutletContext<TournamentContext>().friendCodes;
+	return useOutletContext<TournamentContext>().friendCodes;
 }

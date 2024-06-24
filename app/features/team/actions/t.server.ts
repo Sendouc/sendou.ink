@@ -8,37 +8,37 @@ import { createNewTeam } from "../queries/createNewTeam.server";
 import { createTeamSchema } from "../team-schemas.server";
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUserId(request);
-  const data = await parseRequestFormData({
-    request,
-    schema: createTeamSchema,
-  });
+	const user = await requireUserId(request);
+	const data = await parseRequestFormData({
+		request,
+		schema: createTeamSchema,
+	});
 
-  const teams = allTeams();
+	const teams = allTeams();
 
-  validate(
-    teams.every((team) =>
-      team.members.every((member) => member.id !== user.id),
-    ),
-    "Already in a team",
-  );
+	validate(
+		teams.every((team) =>
+			team.members.every((member) => member.id !== user.id),
+		),
+		"Already in a team",
+	);
 
-  // two teams can't have same customUrl
-  const customUrl = mySlugify(data.name);
+	// two teams can't have same customUrl
+	const customUrl = mySlugify(data.name);
 
-  validate(customUrl.length > 0, "Team name can't be only special characters");
+	validate(customUrl.length > 0, "Team name can't be only special characters");
 
-  if (teams.some((team) => team.customUrl === customUrl)) {
-    return {
-      errors: ["forms.errors.duplicateName"],
-    };
-  }
+	if (teams.some((team) => team.customUrl === customUrl)) {
+		return {
+			errors: ["forms.errors.duplicateName"],
+		};
+	}
 
-  createNewTeam({
-    captainId: user.id,
-    name: data.name,
-    customUrl,
-  });
+	createNewTeam({
+		captainId: user.id,
+		name: data.name,
+		customUrl,
+	});
 
-  throw redirect(teamPage(customUrl));
+	throw redirect(teamPage(customUrl));
 };

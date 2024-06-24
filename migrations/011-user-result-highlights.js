@@ -1,6 +1,6 @@
 export function up(db) {
-  db.prepare(
-    `
+	db.prepare(
+		`
     create table "UserResultHighlight" (
       "teamId" integer not null,
       "userId" integer not null,
@@ -9,17 +9,17 @@ export function up(db) {
       unique("teamId", "userId") on conflict rollback
     ) strict
     `,
-  ).run();
+	).run();
 
-  db.prepare(
-    `create index user_result_highlight_user_id on "UserResultHighlight"("userId")`,
-  ).run();
+	db.prepare(
+		`create index user_result_highlight_user_id on "UserResultHighlight"("userId")`,
+	).run();
 
-  db.prepare(
-    `create index user_result_highlight_team_id on "UserResultHighlight"("teamId")`,
-  ).run();
+	db.prepare(
+		`create index user_result_highlight_team_id on "UserResultHighlight"("teamId")`,
+	).run();
 }
 
 export function down(db) {
-  db.prepare(`drop table "UserResultHighlight"`).run();
+	db.prepare(`drop table "UserResultHighlight"`).run();
 }

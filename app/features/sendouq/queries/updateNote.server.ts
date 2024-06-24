@@ -8,9 +8,9 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function updateNote(args: {
-  note: GroupMember["note"];
-  groupId: GroupMember["groupId"];
-  userId: GroupMember["userId"];
+	note: GroupMember["note"];
+	groupId: GroupMember["groupId"];
+	userId: GroupMember["userId"];
 }) {
-  stm.run(args);
+	stm.run(args);
 }

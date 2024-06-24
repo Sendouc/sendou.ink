@@ -23,31 +23,31 @@ const updateTeamBannerStm = sql.prepare(/* sql */ `
 `);
 
 export const addNewImage = sql.transaction(
-  ({
-    submitterUserId,
-    url,
-    validatedAt,
-    teamId,
-    type,
-  }: {
-    submitterUserId: number;
-    url: string;
-    validatedAt: number | null;
-    teamId: number;
-    type: ImageUploadType;
-  }) => {
-    const img = addImgStm.get({
-      submitterUserId,
-      url,
-      validatedAt,
-    }) as UserSubmittedImage;
+	({
+		submitterUserId,
+		url,
+		validatedAt,
+		teamId,
+		type,
+	}: {
+		submitterUserId: number;
+		url: string;
+		validatedAt: number | null;
+		teamId: number;
+		type: ImageUploadType;
+	}) => {
+		const img = addImgStm.get({
+			submitterUserId,
+			url,
+			validatedAt,
+		}) as UserSubmittedImage;
 
-    if (type === "team-pfp") {
-      updateTeamAvatarStm.run({ avatarImgId: img.id, teamId });
-    } else if (type === "team-banner") {
-      updateTeamBannerStm.run({ bannerImgId: img.id, teamId });
-    }
+		if (type === "team-pfp") {
+			updateTeamAvatarStm.run({ avatarImgId: img.id, teamId });
+		} else if (type === "team-banner") {
+			updateTeamBannerStm.run({ bannerImgId: img.id, teamId });
+		}
 
-    return img;
-  },
+		return img;
+	},
 );

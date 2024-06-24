@@ -43,42 +43,42 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 interface Opponent {
-  id: number;
-  score: number;
-  result: "win" | "loss";
+	id: number;
+	score: number;
+	result: "win" | "loss";
 }
 export interface AllMatchResult {
-  opponentOne: Opponent;
-  opponentTwo: Opponent;
-  maps: Array<{
-    stageId: StageId;
-    mode: ModeShort;
-    winnerTeamId: number;
-    userIds: number[];
-  }>;
+	opponentOne: Opponent;
+	opponentTwo: Opponent;
+	maps: Array<{
+		stageId: StageId;
+		mode: ModeShort;
+		winnerTeamId: number;
+		userIds: number[];
+	}>;
 }
 
 export function allMatchResultsByTournamentId(
-  tournamentId: number,
+	tournamentId: number,
 ): AllMatchResult[] {
-  const rows = stm.all({ tournamentId }) as unknown as any[];
+	const rows = stm.all({ tournamentId }) as unknown as any[];
 
-  return rows.map((row) => {
-    return {
-      opponentOne: {
-        id: row.opponentOneId,
-        score: row.opponentOneScore,
-        result: row.opponentOneResult,
-      },
-      opponentTwo: {
-        id: row.opponentTwoId,
-        score: row.opponentTwoScore,
-        result: row.opponentTwoResult,
-      },
-      maps: parseDBJsonArray(row.maps).map((map: any) => ({
-        ...map,
-        userIds: parseDBArray(map.userIds),
-      })),
-    };
-  });
+	return rows.map((row) => {
+		return {
+			opponentOne: {
+				id: row.opponentOneId,
+				score: row.opponentOneScore,
+				result: row.opponentOneResult,
+			},
+			opponentTwo: {
+				id: row.opponentTwoId,
+				score: row.opponentTwoScore,
+				result: row.opponentTwoResult,
+			},
+			maps: parseDBJsonArray(row.maps).map((map: any) => ({
+				...map,
+				userIds: parseDBArray(map.userIds),
+			})),
+		};
+	});
 }

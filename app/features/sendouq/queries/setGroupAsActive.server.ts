@@ -8,5 +8,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function setGroupAsActive(groupId: Group["id"]) {
-  stm.run({ groupId });
+	stm.run({ groupId });
 }

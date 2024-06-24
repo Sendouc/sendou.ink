@@ -14,13 +14,13 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function addMember({
-  groupId,
-  userId,
-  role = "REGULAR",
+	groupId,
+	userId,
+	role = "REGULAR",
 }: {
-  groupId: number;
-  userId: number;
-  role?: GroupMember["role"];
+	groupId: number;
+	userId: number;
+	role?: GroupMember["role"];
 }) {
-  stm.run({ groupId, userId, role });
+	stm.run({ groupId, userId, role });
 }

@@ -4,13 +4,13 @@ import { getUserId, isImpersonating } from "~/features/auth/core/user.server";
 import { isMod } from "~/permissions";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUserId(request);
+	const user = await getUserId(request);
 
-  if (process.env.NODE_ENV === "production" && !isMod(user)) {
-    throw redirect("/");
-  }
+	if (process.env.NODE_ENV === "production" && !isMod(user)) {
+		throw redirect("/");
+	}
 
-  return {
-    isImpersonating: await isImpersonating(request),
-  };
+	return {
+		isImpersonating: await isImpersonating(request),
+	};
 };

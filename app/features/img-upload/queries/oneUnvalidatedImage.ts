@@ -20,10 +20,10 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 type UnvalidatedImage = Pick<
-  UserSubmittedImage,
-  "id" | "url" | "submitterUserId"
+	UserSubmittedImage,
+	"id" | "url" | "submitterUserId"
 >;
 
 export function oneUnvalidatedImage() {
-  return stm.get() as UnvalidatedImage | null;
+	return stm.get() as UnvalidatedImage | null;
 }

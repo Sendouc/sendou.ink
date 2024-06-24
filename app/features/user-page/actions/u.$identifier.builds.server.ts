@@ -8,36 +8,36 @@ import { parseRequestFormData, validate } from "~/utils/remix";
 import { actualNumber, id } from "~/utils/zod";
 
 const buildsActionSchema = z.object({
-  buildToDeleteId: z.preprocess(actualNumber, id),
+	buildToDeleteId: z.preprocess(actualNumber, id),
 });
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUserId(request);
-  const data = await parseRequestFormData({
-    request,
-    schema: buildsActionSchema,
-  });
+	const user = await requireUserId(request);
+	const data = await parseRequestFormData({
+		request,
+		schema: buildsActionSchema,
+	});
 
-  const usersBuilds = await BuildRepository.allByUserId({
-    userId: user.id,
-    showPrivate: true,
-  });
+	const usersBuilds = await BuildRepository.allByUserId({
+		userId: user.id,
+		showPrivate: true,
+	});
 
-  const buildToDelete = usersBuilds.find(
-    (build) => build.id === data.buildToDeleteId,
-  );
+	const buildToDelete = usersBuilds.find(
+		(build) => build.id === data.buildToDeleteId,
+	);
 
-  validate(buildToDelete);
+	validate(buildToDelete);
 
-  await BuildRepository.deleteById(data.buildToDeleteId);
+	await BuildRepository.deleteById(data.buildToDeleteId);
 
-  try {
-    refreshBuildsCacheByWeaponSplIds(
-      buildToDelete.weapons.map((weapon) => weapon.weaponSplId),
-    );
-  } catch (error) {
-    logger.warn("Error refreshing builds cache", error);
-  }
+	try {
+		refreshBuildsCacheByWeaponSplIds(
+			buildToDelete.weapons.map((weapon) => weapon.weaponSplId),
+		);
+	} catch (error) {
+		logger.warn("Error refreshing builds cache", error);
+	}
 
-  return null;
+	return null;
 };

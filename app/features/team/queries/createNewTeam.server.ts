@@ -17,25 +17,25 @@ const createMemberStm = sql.prepare(/* sql */ `
 `);
 
 export const createNewTeam = sql.transaction(
-  ({
-    name,
-    customUrl,
-    captainId,
-  }: {
-    name: string;
-    customUrl: string;
-    captainId: number;
-  }) => {
-    const team = createTeamStm.get({
-      name,
-      customUrl,
-      inviteCode: nanoid(INVITE_CODE_LENGTH),
-    }) as Team;
+	({
+		name,
+		customUrl,
+		captainId,
+	}: {
+		name: string;
+		customUrl: string;
+		captainId: number;
+	}) => {
+		const team = createTeamStm.get({
+			name,
+			customUrl,
+			inviteCode: nanoid(INVITE_CODE_LENGTH),
+		}) as Team;
 
-    createMemberStm.run({
-      teamId: team.id,
-      userId: captainId,
-      isOwner: 1,
-    });
-  },
+		createMemberStm.run({
+			teamId: team.id,
+			userId: captainId,
+			isOwner: 1,
+		});
+	},
 );

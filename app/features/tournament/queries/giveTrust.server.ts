@@ -11,11 +11,11 @@ const stm = sql.prepare(/*sql */ `
 `);
 
 export function giveTrust({
-  trustGiverUserId,
-  trustReceiverUserId,
+	trustGiverUserId,
+	trustReceiverUserId,
 }: {
-  trustGiverUserId: number;
-  trustReceiverUserId: number;
+	trustGiverUserId: number;
+	trustReceiverUserId: number;
 }) {
-  stm.run({ trustGiverUserId, trustReceiverUserId });
+	stm.run({ trustGiverUserId, trustReceiverUserId });
 }

@@ -30,28 +30,28 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export interface MatchById {
-  id: GroupMatch["id"];
-  alphaGroupId: GroupMatch["alphaGroupId"];
-  bravoGroupId: GroupMatch["bravoGroupId"];
-  createdAt: GroupMatch["createdAt"];
-  reportedAt: GroupMatch["reportedAt"];
-  reportedByUserId: GroupMatch["reportedByUserId"];
-  chatCode: GroupMatch["chatCode"];
-  isLocked: boolean;
-  memento: ParsedMemento;
-  mapList: Array<
-    Pick<GroupMatchMap, "id" | "mode" | "stageId" | "source" | "winnerGroupId">
-  >;
+	id: GroupMatch["id"];
+	alphaGroupId: GroupMatch["alphaGroupId"];
+	bravoGroupId: GroupMatch["bravoGroupId"];
+	createdAt: GroupMatch["createdAt"];
+	reportedAt: GroupMatch["reportedAt"];
+	reportedByUserId: GroupMatch["reportedByUserId"];
+	chatCode: GroupMatch["chatCode"];
+	isLocked: boolean;
+	memento: ParsedMemento;
+	mapList: Array<
+		Pick<GroupMatchMap, "id" | "mode" | "stageId" | "source" | "winnerGroupId">
+	>;
 }
 
 export function findMatchById(id: number) {
-  const row = stm.get({ id }) as any;
-  if (!row) return null;
+	const row = stm.get({ id }) as any;
+	if (!row) return null;
 
-  return {
-    ...row,
-    mapList: parseDBJsonArray(row.mapList),
-    isLocked: Boolean(row.isLocked),
-    memento: row.memento ? JSON.parse(row.memento) : null,
-  } as MatchById;
+	return {
+		...row,
+		mapList: parseDBJsonArray(row.mapList),
+		isLocked: Boolean(row.isLocked),
+		memento: row.memento ? JSON.parse(row.memento) : null,
+	} as MatchById;
 }

@@ -9,11 +9,11 @@ const stm = sql.prepare(/* sql */ `
 `); // isOwner check to make sure the owner doesn't leave causing a bad state
 
 export function leaveTeam({
-  teamId,
-  userId,
+	teamId,
+	userId,
 }: {
-  teamId: number;
-  userId: number;
+	teamId: number;
+	userId: number;
 }) {
-  stm.run({ teamId, userId });
+	stm.run({ teamId, userId });
 }

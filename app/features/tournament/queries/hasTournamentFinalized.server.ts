@@ -8,5 +8,5 @@ const stm = sql.prepare(/*sql*/ `
 `);
 
 export default function hasTournamentFinalized(tournamentId: Tournament["id"]) {
-  return Boolean(stm.get({ tournamentId }));
+	return Boolean(stm.get({ tournamentId }));
 }

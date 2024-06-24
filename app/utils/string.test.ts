@@ -5,11 +5,11 @@ import { pathnameFromPotentialURL } from "./strings";
 const PathnameFromPotentialURL = suite("pathnameFromPotentialURL()");
 
 PathnameFromPotentialURL("Resolves path name from valid URL", () => {
-  assert.is(pathnameFromPotentialURL("https://twitter.com/sendouc"), "sendouc");
+	assert.is(pathnameFromPotentialURL("https://twitter.com/sendouc"), "sendouc");
 });
 
 PathnameFromPotentialURL("Returns string as is if not URL", () => {
-  assert.is(pathnameFromPotentialURL("sendouc"), "sendouc");
+	assert.is(pathnameFromPotentialURL("sendouc"), "sendouc");
 });
 
 PathnameFromPotentialURL.run();

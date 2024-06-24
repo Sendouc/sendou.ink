@@ -1,12 +1,12 @@
-/* eslint-disable no-console */
 import "dotenv/config";
 import { ordinal } from "openskill";
-import invariant from "~/utils/invariant";
 import { sql } from "~/db/sql";
 import type { Skill } from "~/db/types";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import { freshUserSkills } from "~/features/mmr/tiered.server";
 import { addInitialSkill } from "~/features/sendouq/queries/addInitialSkill.server";
+import invariant from "~/utils/invariant";
+import { logger } from "~/utils/logger";
 
 const rawNth = process.argv[2]?.trim();
 
@@ -25,12 +25,12 @@ const skillsExistStm = sql.prepare(/* sql */ `
 `);
 
 invariant(
-  skillsExistStm.get({ season: nth - 1 }),
-  `No skills for season ${nth - 1}`,
+	skillsExistStm.get({ season: nth - 1 }),
+	`No skills for season ${nth - 1}`,
 );
 invariant(
-  !skillsExistStm.get({ season: nth }),
-  `Skills for season ${nth} already exist`,
+	!skillsExistStm.get({ season: nth }),
+	`Skills for season ${nth} already exist`,
 );
 
 const activeMatchExistsStm = sql.prepare(/* sql */ `
@@ -42,12 +42,12 @@ const activeMatchExistsStm = sql.prepare(/* sql */ `
     "Skill"."id" is null
 `);
 const idsOfActiveMatches = activeMatchExistsStm
-  .all()
-  .map((row) => (row as any).id) as number[];
+	.all()
+	.map((row) => (row as any).id) as number[];
 
 invariant(
-  !activeMatchExistsStm.get(),
-  `There are active matches: (ids: ${idsOfActiveMatches.join(", ")})`,
+	!activeMatchExistsStm.get(),
+	`There are active matches: (ids: ${idsOfActiveMatches.join(", ")})`,
 );
 
 // from prod database:
@@ -58,33 +58,33 @@ invariant(
 const DEFAULT_NEW_SIGMA = 6.5;
 
 const TIER_TO_NEW_TIER: Record<TierName, TierName> = {
-  IRON: "BRONZE",
-  BRONZE: "BRONZE",
-  SILVER: "SILVER",
-  GOLD: "GOLD",
-  PLATINUM: "PLATINUM",
-  DIAMOND: "DIAMOND",
-  LEVIATHAN: "DIAMOND",
+	IRON: "BRONZE",
+	BRONZE: "BRONZE",
+	SILVER: "SILVER",
+	GOLD: "GOLD",
+	PLATINUM: "PLATINUM",
+	DIAMOND: "DIAMOND",
+	LEVIATHAN: "DIAMOND",
 };
 
 const allSkills = Object.entries(freshUserSkills(nth - 1).userSkills)
-  .map(([userId, skill]) => ({ userId: Number(userId), ...skill }))
-  .filter((s) => !s.approximate)
-  .sort((a, b) => b.ordinal - a.ordinal);
+	.map(([userId, skill]) => ({ userId: Number(userId), ...skill }))
+	.filter((s) => !s.approximate)
+	.sort((a, b) => b.ordinal - a.ordinal);
 const skillsToConsider = allSkills.filter((s) =>
-  Object.values(TIER_TO_NEW_TIER).includes(s.tier.name),
+	Object.values(TIER_TO_NEW_TIER).includes(s.tier.name),
 );
 
 const groupedSkills = skillsToConsider.reduce(
-  (acc, skill) => {
-    const { tier } = skill;
-    if (!acc[tier.name]) {
-      acc[tier.name] = [];
-    }
-    acc[tier.name].push(skill);
-    return acc;
-  },
-  {} as Record<TierName, typeof skillsToConsider>,
+	(acc, skill) => {
+		const { tier } = skill;
+		if (!acc[tier.name]) {
+			acc[tier.name] = [];
+		}
+		acc[tier.name].push(skill);
+		return acc;
+	},
+	{} as Record<TierName, typeof skillsToConsider>,
 );
 
 const skillStm = sql.prepare(/* sql */ `
@@ -96,29 +96,29 @@ const skillStm = sql.prepare(/* sql */ `
     and "ordinal" = @ordinal
 `);
 const midPoints = Object.entries(groupedSkills).reduce(
-  (acc, [tier, skills]) => {
-    const midPoint = skills[Math.floor(skills.length / 2)];
-    const midPointSkill = skillStm.get(midPoint) as Skill;
-    invariant(midPointSkill, "midPointSkill not found");
+	(acc, [tier, skills]) => {
+		const midPoint = skills[Math.floor(skills.length / 2)];
+		const midPointSkill = skillStm.get(midPoint) as Skill;
+		invariant(midPointSkill, "midPointSkill not found");
 
-    acc[tier as TierName] = midPointSkill;
-    return acc;
-  },
-  {} as Record<TierName, Skill>,
+		acc[tier as TierName] = midPointSkill;
+		return acc;
+	},
+	{} as Record<TierName, Skill>,
 );
 
 const newSkills = allSkills.map((s) => {
-  const newTier = TIER_TO_NEW_TIER[s.tier.name];
-  const mu = midPoints[newTier].mu;
-  const sigma = DEFAULT_NEW_SIGMA;
+	const newTier = TIER_TO_NEW_TIER[s.tier.name];
+	const mu = midPoints[newTier].mu;
+	const sigma = DEFAULT_NEW_SIGMA;
 
-  return {
-    userId: s.userId,
-    sigma,
-    mu,
-    ordinal: ordinal({ sigma, mu }),
-    season: nth,
-  };
+	return {
+		userId: s.userId,
+		sigma,
+		mu,
+		ordinal: ordinal({ sigma, mu }),
+		season: nth,
+	};
 });
 
 const allGroupsInactiveStm = sql.prepare(/* sql */ `
@@ -128,12 +128,12 @@ const allGroupsInactiveStm = sql.prepare(/* sql */ `
     "status" = 'INACTIVE'
 `);
 sql.transaction(() => {
-  for (const skill of newSkills) {
-    addInitialSkill(skill);
-  }
-  allGroupsInactiveStm.run();
+	for (const skill of newSkills) {
+		addInitialSkill(skill);
+	}
+	allGroupsInactiveStm.run();
 })();
 
-console.log(
-  `Done adding new skills for season ${nth} (${newSkills.length} added)`,
+logger.info(
+	`Done adding new skills for season ${nth} (${newSkills.length} added)`,
 );

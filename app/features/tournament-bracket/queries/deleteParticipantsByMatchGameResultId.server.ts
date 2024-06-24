@@ -6,7 +6,7 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function deleteParticipantsByMatchGameResultId(
-  matchGameResultId: number,
+	matchGameResultId: number,
 ) {
-  stm.run({ matchGameResultId });
+	stm.run({ matchGameResultId });
 }

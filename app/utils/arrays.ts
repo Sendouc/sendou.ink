@@ -7,91 +7,93 @@ import invariant from "~/utils/invariant";
 
 // (not all arrays need to necessarily run but they need to be defined)
 export function allTruthy(arr: unknown[]) {
-  return arr.every(Boolean);
+	return arr.every(Boolean);
 }
 
 /** Mimics Array.prototype.at except throws an error if index out of bounds */
 export function atOrError<T>(arr: T[], n: number) {
-  const result = at(arr, n);
-  if (result === undefined) {
-    throw new Error(`Index ${n} out of bounds. Array length is ${arr.length}`);
-  }
-  return result;
+	const result = at(arr, n);
+	if (result === undefined) {
+		throw new Error(`Index ${n} out of bounds. Array length is ${arr.length}`);
+	}
+	return result;
 }
 
 // https://github.com/tc39/proposal-relative-indexing-method#polyfill
 /** Array.at polyfill */
 function at<T>(arr: T[], n: number) {
-  // ToInteger() abstract op
-  n = Math.trunc(n) || 0;
-  // Allow negative indexing from the end
-  if (n < 0) n += arr.length;
-  // OOB access is guaranteed to return undefined
-  if (n < 0 || n >= arr.length) return undefined;
-  // Otherwise, this is just normal property access
-  return arr[n];
+	// ToInteger() abstract op
+	// biome-ignore lint/style/noParameterAssign : biome migration
+	n = Math.trunc(n) || 0;
+	// Allow negative indexing from the end
+	// biome-ignore lint/style/noParameterAssign: biome migration
+	if (n < 0) n += arr.length;
+	// OOB access is guaranteed to return undefined
+	if (n < 0 || n >= arr.length) return undefined;
+	// Otherwise, this is just normal property access
+	return arr[n];
 }
 
 // TODO: i18n (at least for SendouQ)
 export function joinListToNaturalString(arg: string[], lastSeparator = "and") {
-  if (arg.length === 1) return arg[0];
+	if (arg.length === 1) return arg[0];
 
-  const list = [...arg];
-  const last = list.pop();
-  const commaJoined = list.join(", ");
+	const list = [...arg];
+	const last = list.pop();
+	const commaJoined = list.join(", ");
 
-  return last ? `${commaJoined} ${lastSeparator} ${last}` : commaJoined;
+	return last ? `${commaJoined} ${lastSeparator} ${last}` : commaJoined;
 }
 
 export function normalizeFormFieldArray(
-  value: undefined | null | string | string[],
+	value: undefined | null | string | string[],
 ): string[] {
-  return value == null ? [] : typeof value === "string" ? [value] : value;
+	return value == null ? [] : typeof value === "string" ? [value] : value;
 }
 
 /** Can be used as a strongly typed array filter */
 export function isDefined<T>(value: T | undefined | null): value is T {
-  return value !== null && value !== undefined;
+	return value !== null && value !== undefined;
 }
 
 export function removeDuplicates<T>(arr: T[]): T[] {
-  const seen = new Set<T>();
+	const seen = new Set<T>();
 
-  return arr.filter((item) => {
-    if (seen.has(item)) return false;
-    seen.add(item);
+	return arr.filter((item) => {
+		if (seen.has(item)) return false;
+		seen.add(item);
 
-    return true;
-  });
+		return true;
+	});
 }
 
 export function removeDuplicatesByProperty<T>(
-  arr: T[],
-  getter: (arg0: T) => number | string,
+	arr: T[],
+	getter: (arg0: T) => number | string,
 ): T[] {
-  const seen = new Set();
-  return arr.filter((item) => {
-    const id = getter(item);
+	const seen = new Set();
+	return arr.filter((item) => {
+		const id = getter(item);
 
-    if (seen.has(id)) return false;
-    seen.add(id);
+		if (seen.has(id)) return false;
+		seen.add(id);
 
-    return true;
-  });
+		return true;
+	});
 }
 
 export function nullFilledArray(size: number): null[] {
-  return new Array(size).fill(null);
+	return new Array(size).fill(null);
 }
 
 export function pickRandomItem<T>(array: T[]): T {
-  invariant(array.length > 0, "Can't pick from empty array");
+	invariant(array.length > 0, "Can't pick from empty array");
 
-  const shuffled = shuffle(clone(array));
+	const shuffled = shuffle(clone(array));
 
-  return shuffled[0];
+	return shuffled[0];
 }
 
 export function filterOutFalsy<T>(arr: (T | null | undefined)[]): T[] {
-  return arr.filter(Boolean) as T[];
+	return arr.filter(Boolean) as T[];
 }

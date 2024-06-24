@@ -13,17 +13,17 @@ const stm = sql.prepare(/*sql */ `
 `);
 
 type BannedUserRow = Pick<Tables["User"], "banned" | "bannedReason"> & {
-  userId: number;
+	userId: number;
 };
 
 export function allBannedUsers() {
-  const rows = stm.all() as Array<BannedUserRow>;
+	const rows = stm.all() as Array<BannedUserRow>;
 
-  const result: Map<number, BannedUserRow> = new Map();
+	const result: Map<number, BannedUserRow> = new Map();
 
-  for (const row of rows) {
-    result.set(row.userId, row);
-  }
+	for (const row of rows) {
+		result.set(row.userId, row);
+	}
 
-  return result;
+	return result;
 }

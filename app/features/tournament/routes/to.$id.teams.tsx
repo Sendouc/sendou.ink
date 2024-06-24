@@ -3,23 +3,23 @@ import { TeamWithRoster } from "../components/TeamWithRoster";
 import { useTournament } from "./to.$id";
 
 export default function TournamentTeamsPage() {
-  const tournament = useTournament();
+	const tournament = useTournament();
 
-  return (
-    <div className="stack lg">
-      {tournament.ctx.teams.map((team, i) => {
-        return (
-          <TeamWithRoster
-            key={team.id}
-            team={team}
-            seed={i + 1}
-            teamPageUrl={tournamentTeamPage({
-              tournamentId: tournament.ctx.id,
-              tournamentTeamId: team.id,
-            })}
-          />
-        );
-      })}
-    </div>
-  );
+	return (
+		<div className="stack lg">
+			{tournament.ctx.teams.map((team, i) => {
+				return (
+					<TeamWithRoster
+						key={team.id}
+						team={team}
+						seed={i + 1}
+						teamPageUrl={tournamentTeamPage({
+							tournamentId: tournament.ctx.id,
+							tournamentTeamId: team.id,
+						})}
+					/>
+				);
+			})}
+		</div>
+	);
 }

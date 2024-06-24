@@ -7,5 +7,5 @@ const groupToInactiveStm = sql.prepare(/* sql */ `
 `);
 
 export function setGroupAsInactive(groupId: number) {
-  groupToInactiveStm.run({ groupId });
+	groupToInactiveStm.run({ groupId });
 }

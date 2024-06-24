@@ -10,5 +10,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function allArtTags(): Array<Pick<ArtTag, "id" | "name">> {
-  return stm.all() as any;
+	return stm.all() as any;
 }

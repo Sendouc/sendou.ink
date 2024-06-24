@@ -14,14 +14,14 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function reportedWeaponsByMatchId(matchId: number) {
-  const rows = stm.all({ matchId }) as Array<
-    ReportedWeapon & {
-      mapIndex: GroupMatchMap["index"];
-      groupMatchMapId: number;
-    }
-  >;
+	const rows = stm.all({ matchId }) as Array<
+		ReportedWeapon & {
+			mapIndex: GroupMatchMap["index"];
+			groupMatchMapId: number;
+		}
+	>;
 
-  if (rows.length === 0) return null;
+	if (rows.length === 0) return null;
 
-  return rows;
+	return rows;
 }

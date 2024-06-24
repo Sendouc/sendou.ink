@@ -32,60 +32,60 @@ const createVideoMatchPlayerStm = sql.prepare(/* sql */ `
 `);
 
 export const createVod = sql.transaction(
-  (
-    args: VideoBeingAdded & {
-      submitterUserId: number;
-      isValidated: boolean;
-      id?: number;
-    },
-  ) => {
-    const video = createVideoStm.get({
-      id: args.id,
-      title: args.title,
-      type: args.type,
-      youtubeDate: args.youtubeDate,
-      eventId: args.eventId,
-      youtubeId: args.youtubeId,
-      submitterUserId: args.submitterUserId,
-      validatedAt: args.isValidated
-        ? dateToDatabaseTimestamp(new Date())
-        : null,
-    }) as Video;
+	(
+		args: VideoBeingAdded & {
+			submitterUserId: number;
+			isValidated: boolean;
+			id?: number;
+		},
+	) => {
+		const video = createVideoStm.get({
+			id: args.id,
+			title: args.title,
+			type: args.type,
+			youtubeDate: args.youtubeDate,
+			eventId: args.eventId,
+			youtubeId: args.youtubeId,
+			submitterUserId: args.submitterUserId,
+			validatedAt: args.isValidated
+				? dateToDatabaseTimestamp(new Date())
+				: null,
+		}) as Video;
 
-    for (const match of args.matches) {
-      const videoMatch = createVideoMatchStm.get({
-        videoId: video.id,
-        startsAt: match.startsAt,
-        stageId: match.stageId,
-        mode: match.mode,
-      }) as any;
+		for (const match of args.matches) {
+			const videoMatch = createVideoMatchStm.get({
+				videoId: video.id,
+				startsAt: match.startsAt,
+				stageId: match.stageId,
+				mode: match.mode,
+			}) as any;
 
-      for (const [i, weaponSplId] of match.weapons.entries()) {
-        createVideoMatchPlayerStm.run({
-          videoMatchId: videoMatch.id,
-          playerUserId: args.povUserId,
-          playerName: args.povUserName,
-          weaponSplId,
-          player: i + 1,
-        });
-      }
-    }
+			for (const [i, weaponSplId] of match.weapons.entries()) {
+				createVideoMatchPlayerStm.run({
+					videoMatchId: videoMatch.id,
+					playerUserId: args.povUserId,
+					playerName: args.povUserName,
+					weaponSplId,
+					player: i + 1,
+				});
+			}
+		}
 
-    return video;
-  },
+		return video;
+	},
 );
 
 export const updateVodByReplacing = sql.transaction(
-  (
-    args: VideoBeingAdded & {
-      submitterUserId: number;
-      isValidated: boolean;
-      id: number;
-    },
-  ) => {
-    deleteVideoStm.run({ id: args.id });
-    const video = createVod(args);
+	(
+		args: VideoBeingAdded & {
+			submitterUserId: number;
+			isValidated: boolean;
+			id: number;
+		},
+	) => {
+		deleteVideoStm.run({ id: args.id });
+		const video = createVod(args);
 
-    return video;
-  },
+		return video;
+	},
 );

@@ -1,10 +1,10 @@
 import { sql } from "~/db/sql";
 import type { Tables } from "~/db/tables";
 import type {
-  CalendarEvent,
-  CalendarEventDate,
-  Tournament,
-  User,
+	CalendarEvent,
+	CalendarEventDate,
+	Tournament,
+	User,
 } from "~/db/types";
 
 const stm = sql.prepare(/*sql*/ `
@@ -29,37 +29,37 @@ select
 `);
 
 type FindByIdentifierRow = (Pick<
-  CalendarEvent,
-  "bracketUrl" | "name" | "description" | "authorId"
+	CalendarEvent,
+	"bracketUrl" | "name" | "description" | "authorId"
 > &
-  Pick<Tournament, "id" | "mapPickingStyle"> &
-  Pick<User, "discordId" | "username"> &
-  Pick<CalendarEventDate, "startTime">) & {
-  eventId: CalendarEvent["id"];
+	Pick<Tournament, "id" | "mapPickingStyle"> &
+	Pick<User, "discordId" | "username"> &
+	Pick<CalendarEventDate, "startTime">) & {
+	eventId: CalendarEvent["id"];
 } & { settings: string };
 
 export function findByIdentifier(identifier: string | number) {
-  const rows = stm.all({ identifier }) as FindByIdentifierRow[];
-  if (rows.length === 0) return null;
+	const rows = stm.all({ identifier }) as FindByIdentifierRow[];
+	if (rows.length === 0) return null;
 
-  const tournament = { ...rows[0], startTime: resolveEarliestStartTime(rows) };
+	const tournament = { ...rows[0], startTime: resolveEarliestStartTime(rows) };
 
-  const { discordId, username, ...rest } = tournament;
+	const { discordId, username, ...rest } = tournament;
 
-  return {
-    ...rest,
-    settings: JSON.parse(
-      tournament.settings,
-    ) as Tables["Tournament"]["settings"],
-    author: {
-      discordId,
-      username,
-    },
-  };
+	return {
+		...rest,
+		settings: JSON.parse(
+			tournament.settings,
+		) as Tables["Tournament"]["settings"],
+		author: {
+			discordId,
+			username,
+		},
+	};
 }
 
 function resolveEarliestStartTime(
-  rows: Pick<CalendarEventDate, "startTime">[],
+	rows: Pick<CalendarEventDate, "startTime">[],
 ) {
-  return Math.min(...rows.map((row) => row.startTime));
+	return Math.min(...rows.map((row) => row.startTime));
 }

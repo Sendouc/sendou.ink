@@ -11,11 +11,11 @@ const getGroupMatchMapsStm = sql.prepare(/* sql */ `
 `);
 
 export const deleteReporterWeaponsByMatchId = (matchId: number) => {
-  const groupMatchMaps = getGroupMatchMapsStm.all({ matchId }) as Array<{
-    id: number;
-  }>;
+	const groupMatchMaps = getGroupMatchMapsStm.all({ matchId }) as Array<{
+		id: number;
+	}>;
 
-  for (const { id } of groupMatchMaps) {
-    deleteStm.run({ groupMatchMapId: id });
-  }
+	for (const { id } of groupMatchMaps) {
+		deleteStm.run({ groupMatchMapId: id });
+	}
 };

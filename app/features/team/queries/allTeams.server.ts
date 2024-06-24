@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
-import { parseDBArray } from "~/utils/sql";
 import type { Team, UserWithPlusTier } from "~/db/types";
+import { parseDBArray } from "~/utils/sql";
 
 const stm = sql.prepare(/* sql */ `
   select
@@ -26,19 +26,19 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export type AllTeams = Array<
-  Pick<Team, "customUrl" | "name"> & {
-    avatarSrc?: string;
-    members: Pick<UserWithPlusTier, "id" | "plusTier" | "username">[];
-  }
+	Pick<Team, "customUrl" | "name"> & {
+		avatarSrc?: string;
+		members: Pick<UserWithPlusTier, "id" | "plusTier" | "username">[];
+	}
 >;
 
 export function allTeams(): AllTeams {
-  const rows = stm.all() as any[];
+	const rows = stm.all() as any[];
 
-  return rows.map((row) => {
-    return {
-      ...row,
-      members: parseDBArray(row.members),
-    };
-  });
+	return rows.map((row) => {
+		return {
+			...row,
+			members: parseDBArray(row.members),
+		};
+	});
 }

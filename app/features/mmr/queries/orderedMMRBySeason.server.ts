@@ -42,15 +42,15 @@ const teamStm = sql.prepare(/* sql */ `
 `);
 
 export function orderedMMRBySeason({
-  season,
-  type,
+	season,
+	type,
 }: {
-  season: number;
-  type: "team" | "user";
+	season: number;
+	type: "team" | "user";
 }) {
-  const stm = type === "team" ? teamStm : userStm;
+	const stm = type === "team" ? teamStm : userStm;
 
-  return stm.all({ season }) as Array<
-    Pick<Skill, "ordinal" | "matchesCount" | "userId" | "identifier">
-  >;
+	return stm.all({ season }) as Array<
+		Pick<Skill, "ordinal" | "matchesCount" | "userId" | "identifier">
+	>;
 }

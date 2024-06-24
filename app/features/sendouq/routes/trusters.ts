@@ -5,9 +5,9 @@ import * as QRepository from "~/features/sendouq/QRepository.server";
 export type TrustersLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { id: userId } = await requireUserId(request);
+	const { id: userId } = await requireUserId(request);
 
-  return {
-    trusters: await QRepository.usersThatTrusted(userId),
-  };
+	return {
+		trusters: await QRepository.usersThatTrusted(userId),
+	};
 };

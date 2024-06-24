@@ -16,11 +16,11 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function findRoundsByTournamentId(tournamentId: number) {
-  return stm.all({ tournamentId }) as Array<{
-    stageId: number;
-    stageName: string;
-    stageType: Tables["TournamentStage"]["type"];
-    roundNumber: number;
-    groupNumber: number;
-  }>;
+	return stm.all({ tournamentId }) as Array<{
+		stageId: number;
+		stageName: string;
+		stageType: Tables["TournamentStage"]["type"];
+		roundNumber: number;
+		groupNumber: number;
+	}>;
 }

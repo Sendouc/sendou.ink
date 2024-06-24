@@ -9,10 +9,10 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function userIdByLogInLinkCode(code: string) {
-  return (
-    stm.get({
-      code,
-      now: dateToDatabaseTimestamp(new Date()),
-    }) as any
-  )?.userId as number | undefined;
+	return (
+		stm.get({
+			code,
+			now: dateToDatabaseTimestamp(new Date()),
+		}) as any
+	)?.userId as number | undefined;
 }

@@ -22,23 +22,23 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 interface FindResultsByMatchIdResult {
-  id: TournamentMatchGameResult["id"];
-  winnerTeamId: TournamentMatchGameResult["winnerTeamId"];
-  stageId: TournamentMatchGameResult["stageId"];
-  mode: TournamentMatchGameResult["mode"];
-  participantIds: Array<User["id"]>;
-  createdAt: TournamentMatchGameResult["createdAt"];
-  opponentOnePoints: Tables["TournamentMatchGameResult"]["opponentOnePoints"];
-  opponentTwoPoints: Tables["TournamentMatchGameResult"]["opponentTwoPoints"];
+	id: TournamentMatchGameResult["id"];
+	winnerTeamId: TournamentMatchGameResult["winnerTeamId"];
+	stageId: TournamentMatchGameResult["stageId"];
+	mode: TournamentMatchGameResult["mode"];
+	participantIds: Array<User["id"]>;
+	createdAt: TournamentMatchGameResult["createdAt"];
+	opponentOnePoints: Tables["TournamentMatchGameResult"]["opponentOnePoints"];
+	opponentTwoPoints: Tables["TournamentMatchGameResult"]["opponentTwoPoints"];
 }
 
 export function findResultsByMatchId(
-  matchId: number,
+	matchId: number,
 ): Array<FindResultsByMatchIdResult> {
-  const rows = stm.all({ matchId }) as any[];
+	const rows = stm.all({ matchId }) as any[];
 
-  return rows.map((row) => ({
-    ...row,
-    participantIds: parseDBArray(row.participantIds),
-  }));
+	return rows.map((row) => ({
+		...row,
+		participantIds: parseDBArray(row.participantIds),
+	}));
 }

@@ -16,10 +16,10 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function findLikes(
-  groupId: number,
+	groupId: number,
 ): Pick<
-  Tables["GroupLike"],
-  "likerGroupId" | "targetGroupId" | "isRechallenge"
+	Tables["GroupLike"],
+	"likerGroupId" | "targetGroupId" | "isRechallenge"
 >[] {
-  return stm.all({ groupId }) as any;
+	return stm.all({ groupId }) as any;
 }

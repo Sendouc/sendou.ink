@@ -1,14 +1,14 @@
-import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
+import { type LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { tournamentBracketsPage, tournamentRegisterPage } from "~/utils/urls";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 
 export const loader = ({ params }: LoaderFunctionArgs) => {
-  const eventId = tournamentIdFromParams(params);
+	const eventId = tournamentIdFromParams(params);
 
-  if (!hasTournamentStarted(eventId)) {
-    throw redirect(tournamentRegisterPage(eventId));
-  }
+	if (!hasTournamentStarted(eventId)) {
+		throw redirect(tournamentRegisterPage(eventId));
+	}
 
-  throw redirect(tournamentBracketsPage({ tournamentId: eventId }));
+	throw redirect(tournamentBracketsPage({ tournamentId: eventId }));
 };

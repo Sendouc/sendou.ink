@@ -19,14 +19,14 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function findCurrentTeamSkillByIdentifier({
-  identifier,
-  season,
+	identifier,
+	season,
 }: {
-  identifier: string;
-  season: number;
+	identifier: string;
+	season: number;
 }) {
-  return stm.get({ identifier, season }) as Pick<
-    Skill,
-    "mu" | "sigma" | "matchesCount"
-  > | null;
+	return stm.get({ identifier, season }) as Pick<
+		Skill,
+		"mu" | "sigma" | "matchesCount"
+	> | null;
 }

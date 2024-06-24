@@ -13,71 +13,70 @@ import { canAddNewEvent } from "../calendar-utils";
 import { canCreateTournament } from "../calendar-utils.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const t = await i18next.getFixedT(request);
-  const user = await requireUser(request);
-  const url = new URL(request.url);
+	const t = await i18next.getFixedT(request);
+	const user = await requireUser(request);
+	const url = new URL(request.url);
 
-  validate(canAddNewEvent(user), "Not authorized", 401);
+	validate(canAddNewEvent(user), "Not authorized", 401);
 
-  const eventWithTournament = async (key: string) => {
-    const eventId = Number(url.searchParams.get(key));
-    const event = Number.isNaN(eventId)
-      ? undefined
-      : await CalendarRepository.findById({
-          id: eventId,
-          includeMapPool: true,
-          includeTieBreakerMapPool: true,
-          includeBadgePrizes: true,
-        });
+	const eventWithTournament = async (key: string) => {
+		const eventId = Number(url.searchParams.get(key));
+		const event = Number.isNaN(eventId)
+			? undefined
+			: await CalendarRepository.findById({
+					id: eventId,
+					includeMapPool: true,
+					includeTieBreakerMapPool: true,
+					includeBadgePrizes: true,
+				});
 
-    if (!event) return;
+		if (!event) return;
 
-    // special tags that are added automatically
-    const tags = event?.tags?.filter((tag) => tag !== "BADGE");
+		// special tags that are added automatically
+		const tags = event?.tags?.filter((tag) => tag !== "BADGE");
 
-    if (!event?.tournamentId) return { ...event, tags, tournament: null };
+		if (!event?.tournamentId) return { ...event, tags, tournament: null };
 
-    return {
-      ...event,
-      tags,
-      tournament: await tournamentData({
-        tournamentId: event.tournamentId,
-        user,
-      }),
-    };
-  };
+		return {
+			...event,
+			tags,
+			tournament: await tournamentData({
+				tournamentId: event.tournamentId,
+				user,
+			}),
+		};
+	};
 
-  const eventToEdit = await eventWithTournament("eventId");
-  const canEditEvent =
-    eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
+	const eventToEdit = await eventWithTournament("eventId");
+	const canEditEvent =
+		eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
 
-  // no editing tournament after the start
-  if (
-    eventToEdit &&
-    eventToEdit.tournament?.data.stage &&
-    eventToEdit.tournament.data.stage.length > 0
-  ) {
-    return redirect(
-      tournamentBracketsPage({ tournamentId: eventToEdit.tournament.ctx.id }),
-    );
-  }
+	// no editing tournament after the start
+	if (
+		eventToEdit?.tournament?.data.stage &&
+		eventToEdit.tournament.data.stage.length > 0
+	) {
+		return redirect(
+			tournamentBracketsPage({ tournamentId: eventToEdit.tournament.ctx.id }),
+		);
+	}
 
-  const userCanCreateTournament = canCreateTournament(user);
+	const userCanCreateTournament = canCreateTournament(user);
 
-  return json({
-    managedBadges: await BadgeRepository.findManagedByUserId(user.id),
-    recentEventsWithMapPools:
-      await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),
-    eventToEdit: canEditEvent ? eventToEdit : undefined,
-    eventToCopy:
-      userCanCreateTournament && !eventToEdit
-        ? await eventWithTournament("copyEventId")
-        : undefined,
-    recentTournaments:
-      userCanCreateTournament && !eventToEdit
-        ? await CalendarRepository.findRecentTournamentsByAuthorId(user.id)
-        : undefined,
-    title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
-    canCreateTournament: userCanCreateTournament,
-  });
+	return json({
+		managedBadges: await BadgeRepository.findManagedByUserId(user.id),
+		recentEventsWithMapPools:
+			await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),
+		eventToEdit: canEditEvent ? eventToEdit : undefined,
+		eventToCopy:
+			userCanCreateTournament && !eventToEdit
+				? await eventWithTournament("copyEventId")
+				: undefined,
+		recentTournaments:
+			userCanCreateTournament && !eventToEdit
+				? await CalendarRepository.findRecentTournamentsByAuthorId(user.id)
+				: undefined,
+		title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
+		canCreateTournament: userCanCreateTournament,
+	});
 };

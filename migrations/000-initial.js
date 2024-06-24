@@ -1,6 +1,6 @@
 export function up(db) {
-  db.prepare(
-    `
+	db.prepare(
+		`
   create table "User" (
     "id" integer primary key,
     "discordId" text unique not null,
@@ -14,10 +14,10 @@ export function up(db) {
     "country" text
   ) strict
   `,
-  ).run();
+	).run();
 
-  db.prepare(
-    `
+	db.prepare(
+		`
   create table "PlusSuggestion" (
     "id" integer primary key,
     "text" text not null,
@@ -38,16 +38,16 @@ export function up(db) {
     ) on conflict rollback
   ) strict
   `,
-  ).run();
-  db.prepare(
-    `create index plus_suggestion_author_id on "PlusSuggestion"("authorId")`,
-  ).run();
-  db.prepare(
-    `create index plus_suggestion_suggested_id on "PlusSuggestion"("suggestedId")`,
-  ).run();
+	).run();
+	db.prepare(
+		`create index plus_suggestion_author_id on "PlusSuggestion"("authorId")`,
+	).run();
+	db.prepare(
+		`create index plus_suggestion_suggested_id on "PlusSuggestion"("suggestedId")`,
+	).run();
 
-  db.prepare(
-    `
+	db.prepare(
+		`
   create table "PlusVote" (
     "month" integer not null,
     "year" integer not null,
@@ -61,14 +61,14 @@ export function up(db) {
     unique("month", "year", "authorId", "votedId") on conflict rollback
   ) strict
   `,
-  ).run();
-  db.prepare(
-    `create index plus_vote_author_id on "PlusVote"("authorId");`,
-  ).run();
-  db.prepare(`create index plus_vote_voted_id on "PlusVote"("votedId");`).run();
+	).run();
+	db.prepare(
+		`create index plus_vote_author_id on "PlusVote"("authorId");`,
+	).run();
+	db.prepare(`create index plus_vote_voted_id on "PlusVote"("votedId");`).run();
 
-  db.prepare(
-    `
+	db.prepare(
+		`
   create view "PlusVotingResult" as
   select
     "votedId",
@@ -96,10 +96,10 @@ export function up(db) {
     "month",
     "year";
   `,
-  ).run();
+	).run();
 
-  db.prepare(
-    `
+	db.prepare(
+		`
   create view "PlusTier" as
   select
     "votedId" as "userId",
@@ -142,13 +142,13 @@ export function up(db) {
     group by
       "votedId";
   `,
-  ).run();
+	).run();
 }
 
 export function down(db) {
-  db.prepare(`drop view "PlusVotingResult"`).run();
-  db.prepare(`drop view "PlusTier"`).run();
-  db.prepare(`drop table "User"`).run();
-  db.prepare(`drop table "PlusSuggestion"`).run();
-  db.prepare(`drop table "PlusVote"`).run();
+	db.prepare(`drop view "PlusVotingResult"`).run();
+	db.prepare(`drop view "PlusTier"`).run();
+	db.prepare(`drop table "User"`).run();
+	db.prepare(`drop table "PlusSuggestion"`).run();
+	db.prepare(`drop table "PlusVote"`).run();
 }
