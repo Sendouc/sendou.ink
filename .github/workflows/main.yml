@@ -27,12 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Prettier
-        run: npm run prettier:check
-      - name: Lint TS
-        run: npm run lint:ts
-      - name: Stylelint
-        run: npm run lint:css
+      - name: Biome
+        run: npm run biome:check
       - name: Typecheck
         run: npm run typecheck
       - name: Check translations jsons
