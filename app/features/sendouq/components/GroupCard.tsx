@@ -158,6 +158,18 @@ export function GroupCard({
 						{group.tier.isPlus ? "+" : ""}
 					</div>
 				) : null}
+				{group.tierRange ? (
+					<div className="stack sm items-center">
+						<div className="q__group__tier-diff-text">
+							±{group.tierRange.diff}
+						</div>
+						<div className="stack sm horizontal items-center text-lg">
+							<TierImage tier={group.tierRange.range[0]} width={38} />
+							—
+							<TierImage tier={group.tierRange.range[1]} width={38} />
+						</div>
+					</div>
+				) : null}
 				{group.skillDifference ? (
 					<GroupSkillDifference skillDifference={group.skillDifference} />
 				) : null}

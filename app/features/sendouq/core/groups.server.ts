@@ -1,3 +1,4 @@
+import clone from "just-clone";
 import type { Tables } from "~/db/tables";
 import type { Group } from "~/db/types";
 import { TIERS } from "~/features/mmr/mmr-constants";
@@ -304,21 +305,6 @@ export function sortGroupsBySkillAndSentiment({
 	return {
 		...groups,
 		neutral: groups.neutral.sort((a, b) => {
-			const aTier =
-				a.tier?.name ??
-				resolveGroupSkill({
-					group: a as LookingGroupWithInviteCode,
-					userSkills,
-					intervals,
-				})?.name;
-			const bTier =
-				b.tier?.name ??
-				resolveGroupSkill({
-					group: b as LookingGroupWithInviteCode,
-					userSkills,
-					intervals,
-				})?.name;
-
 			const aSentiment = groupSentiment(a);
 			const bSentiment = groupSentiment(b);
 
@@ -328,6 +314,16 @@ export function sortGroupsBySkillAndSentiment({
 				if (aSentiment === "POSITIVE") return -1;
 				if (bSentiment === "POSITIVE") return 1;
 			}
+
+			const aDiff = a.tierRange?.diff ?? 0;
+			const bDiff = b.tierRange?.diff ?? 0;
+
+			if (aDiff || bDiff) {
+				return aDiff - bDiff;
+			}
+
+			const aTier = a.tier?.name;
+			const bTier = b.tier?.name;
 
 			const aTierDiff = tierDiff(aTier);
 			const bTierDiff = tierDiff(bTier);
@@ -375,6 +371,36 @@ export function addSkillsToGroups({
 	};
 }
 
+const FALLBACK_TIER = { isPlus: false, name: "IRON" } as const;
+export function addSkillRangeToGroups({
+	groups,
+	hasLeviathan,
+}: { groups: DividedGroups; hasLeviathan: boolean }) {
+	const addRange = (group: LookingGroup) => {
+		if (group.members && group.members.length !== FULL_GROUP_SIZE) return group;
+
+		const range = tierDifferenceToRangeOrExact({
+			ourTier: groups.own?.tier ?? FALLBACK_TIER,
+			theirTier: group.tier ?? FALLBACK_TIER,
+			hasLeviathan,
+		});
+
+		if (!Array.isArray(range.tier)) return group;
+
+		return {
+			...group,
+			tierRange: { range: range.tier, diff: range.diff },
+			tier: undefined,
+		};
+	};
+
+	return {
+		own: groups.own,
+		neutral: groups.neutral.map(addRange),
+		likesReceived: groups.likesReceived.map(addRange),
+	};
+}
+
 export function membersNeededForFull(currentSize: number) {
 	return FULL_GROUP_SIZE - currentSize;
 }
@@ -395,14 +421,11 @@ function resolveGroupSkill({
 	const averageOrdinal =
 		skills.reduce((acc, s) => acc + s.ordinal, 0) / skills.length;
 
-	const tier = intervals.find(
-		(i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal,
-	) ?? { isPlus: false, name: "IRON" };
-
-	// For Leviathan we don't specify if it's plus or not
-	return tier.name === "LEVIATHAN"
-		? { name: "LEVIATHAN", isPlus: false }
-		: { name: tier.name, isPlus: tier.isPlus };
+	return (
+		intervals.find(
+			(i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal,
+		) ?? { isPlus: false, name: "IRON" }
+	);
 }
 
 export function groupExpiryStatus(
@@ -427,4 +450,52 @@ export function groupExpiryStatus(
 	}
 
 	return null;
+}
+
+const allTiersOrdered = TIERS.flatMap((tier) => [
+	{ name: tier.name, isPlus: true },
+	{ name: tier.name, isPlus: false },
+]).reverse();
+export function tierDifferenceToRangeOrExact({
+	ourTier,
+	theirTier,
+	hasLeviathan,
+}: {
+	ourTier: TieredSkill["tier"];
+	theirTier: TieredSkill["tier"];
+	hasLeviathan: boolean;
+}): {
+	diff: number;
+	tier: TieredSkill["tier"] | [TieredSkill["tier"], TieredSkill["tier"]];
+} {
+	if (ourTier.name === theirTier.name && ourTier.isPlus === theirTier.isPlus) {
+		return { diff: 0, tier: clone(ourTier) };
+	}
+
+	const tiers = hasLeviathan
+		? allTiersOrdered
+		: allTiersOrdered.filter((tier) => tier.name !== "LEVIATHAN");
+
+	const tier1Idx = tiers.findIndex(
+		(t) => t.name === ourTier.name && t.isPlus === ourTier.isPlus,
+	);
+	const tier2Idx = tiers.findIndex(
+		(t) => t.name === theirTier.name && t.isPlus === theirTier.isPlus,
+	);
+	invariant(tier1Idx !== -1, "tier1 not found");
+	invariant(tier2Idx !== -1, "tier2 not found");
+
+	const idxDiff = Math.abs(tier1Idx - tier2Idx);
+
+	const lowerBound = tier1Idx - idxDiff;
+	const upperBound = tier1Idx + idxDiff;
+
+	if (lowerBound < 0 || upperBound >= tiers.length) {
+		return { diff: idxDiff, tier: clone(theirTier) };
+	}
+
+	const lowerTier = tiers[lowerBound];
+	const upperTier = tiers[upperBound];
+
+	return { diff: idxDiff, tier: [clone(lowerTier), clone(upperTier)] };
 }

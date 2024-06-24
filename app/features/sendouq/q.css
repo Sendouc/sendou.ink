@@ -318,6 +318,10 @@
 	transform: translate(-50%, -50%);
 }
 
+.q__group__tier-diff-text {
+	font-size: 3rem;
+}
+
 .q__member-adder__input {
 	--input-width: 11rem;
 	width: 11rem;

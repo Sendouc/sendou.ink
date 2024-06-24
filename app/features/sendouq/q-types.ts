@@ -14,6 +14,10 @@ export type LookingGroup = {
 	id: number;
 	createdAt: Group["createdAt"];
 	tier?: TieredSkill["tier"];
+	tierRange?: {
+		range: [TieredSkill["tier"], TieredSkill["tier"]];
+		diff: number;
+	};
 	isReplay?: boolean;
 	isNoScreen?: boolean;
 	isLiked?: boolean;

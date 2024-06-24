@@ -52,6 +52,7 @@ import {
 	addFutureMatchModes,
 	addNoScreenIndicator,
 	addReplayIndicator,
+	addSkillRangeToGroups,
 	addSkillsToGroups,
 	censorGroups,
 	divideGroups,
@@ -455,9 +456,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 	const season = currentOrPreviousSeason(new Date());
 
-	const { intervals, userSkills: calculatedUserSkills } = userSkills(
-		season!.nth,
-	);
+	const {
+		intervals,
+		userSkills: calculatedUserSkills,
+		isAccurateTiers,
+	} = userSkills(season!.nth);
 	const groupsWithSkills = addSkillsToGroups({
 		groups: dividedGroups,
 		intervals,
@@ -485,8 +488,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 			: false,
 	});
 
-	const sortedGroups = sortGroupsBySkillAndSentiment({
+	const rangedGroups = addSkillRangeToGroups({
 		groups: censoredGroups,
+		hasLeviathan: isAccurateTiers,
+	});
+
+	const sortedGroups = sortGroupsBySkillAndSentiment({
+		groups: rangedGroups,
 		intervals,
 		userSkills: calculatedUserSkills,
 		userId: user?.id,
