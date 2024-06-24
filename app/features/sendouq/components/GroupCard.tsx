@@ -165,7 +165,7 @@ export function GroupCard({
 						</div>
 						<div className="stack sm horizontal items-center text-lg">
 							<TierImage tier={group.tierRange.range[0]} width={38} />
-							—
+							/
 							<TierImage tier={group.tierRange.range[1]} width={38} />
 						</div>
 					</div>
