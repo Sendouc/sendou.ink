@@ -7,19 +7,19 @@ const stm = sql.prepare(/*sql*/ `
 `);
 
 export function checkInMany({
-  tournamentTeamIds,
-  bracketIdxs,
+	tournamentTeamIds,
+	bracketIdxs,
 }: {
-  tournamentTeamIds: number[];
-  bracketIdxs: number[];
+	tournamentTeamIds: number[];
+	bracketIdxs: number[];
 }) {
-  for (const bracketIdx of bracketIdxs) {
-    for (const tournamentTeamId of tournamentTeamIds) {
-      stm.run({
-        checkedInAt: dateToDatabaseTimestamp(new Date()),
-        tournamentTeamId,
-        bracketIdx,
-      });
-    }
-  }
+	for (const bracketIdx of bracketIdxs) {
+		for (const tournamentTeamId of tournamentTeamIds) {
+			stm.run({
+				checkedInAt: dateToDatabaseTimestamp(new Date()),
+				tournamentTeamId,
+				bracketIdx,
+			});
+		}
+	}
 }

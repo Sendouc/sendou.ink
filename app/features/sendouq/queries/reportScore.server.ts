@@ -23,30 +23,30 @@ const updateMatchMapStm = sql.prepare(/* sql */ `
 `);
 
 export const reportScore = ({
-  reportedByUserId,
-  winners,
-  matchId,
+	reportedByUserId,
+	winners,
+	matchId,
 }: {
-  reportedByUserId: number;
-  winners: ("ALPHA" | "BRAVO")[];
-  matchId: number;
+	reportedByUserId: number;
+	winners: ("ALPHA" | "BRAVO")[];
+	matchId: number;
 }) => {
-  const updatedMatch = updateMatchStm.get({
-    reportedAt: dateToDatabaseTimestamp(new Date()),
-    reportedByUserId,
-    matchId,
-  }) as GroupMatch;
+	const updatedMatch = updateMatchStm.get({
+		reportedAt: dateToDatabaseTimestamp(new Date()),
+		reportedByUserId,
+		matchId,
+	}) as GroupMatch;
 
-  clearMatchMapWinnersStm.run({ matchId });
+	clearMatchMapWinnersStm.run({ matchId });
 
-  for (const [index, winner] of winners.entries()) {
-    updateMatchMapStm.run({
-      winnerGroupId:
-        winner === "ALPHA"
-          ? updatedMatch.alphaGroupId
-          : updatedMatch.bravoGroupId,
-      matchId,
-      index,
-    });
-  }
+	for (const [index, winner] of winners.entries()) {
+		updateMatchMapStm.run({
+			winnerGroupId:
+				winner === "ALPHA"
+					? updatedMatch.alphaGroupId
+					: updatedMatch.bravoGroupId,
+			matchId,
+			index,
+		});
+	}
 };

@@ -20,11 +20,11 @@ const LOG_IN_LINK_VALID_FOR = 10 * 60 * 1000;
 const LOG_IN_LINK_LENGTH = 12;
 
 export function createLogInLink(userId: number) {
-  return stm.get({
-    userId,
-    expiresAt: dateToDatabaseTimestamp(
-      new Date(Date.now() + LOG_IN_LINK_VALID_FOR),
-    ),
-    code: nanoid(LOG_IN_LINK_LENGTH),
-  }) as LogInLink;
+	return stm.get({
+		userId,
+		expiresAt: dateToDatabaseTimestamp(
+			new Date(Date.now() + LOG_IN_LINK_VALID_FOR),
+		),
+		code: nanoid(LOG_IN_LINK_LENGTH),
+	}) as LogInLink;
 }

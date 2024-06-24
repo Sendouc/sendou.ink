@@ -1,3 +1,3 @@
-self.addEventListener("fetch", function () {
-  return;
+self.addEventListener("fetch", () => {
+	return;
 });

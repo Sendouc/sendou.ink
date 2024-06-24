@@ -13,10 +13,10 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 interface BestOfByTournamentId {
-  roundId: TournamentRound["id"];
-  bestOf: TournamentMatch["bestOf"];
+	roundId: TournamentRound["id"];
+	bestOf: TournamentMatch["bestOf"];
 }
 
 export function bestOfsByTournamentId(tournamentId: number) {
-  return stm.all({ tournamentId }) as BestOfByTournamentId[];
+	return stm.all({ tournamentId }) as BestOfByTournamentId[];
 }

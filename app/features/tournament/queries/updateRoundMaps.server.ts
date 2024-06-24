@@ -8,12 +8,12 @@ const stm = sql.prepare(/*sql*/ `
 `);
 
 export function updateRoundMaps(
-  args: (TournamentRoundMaps & { roundId: number })[],
+	args: (TournamentRoundMaps & { roundId: number })[],
 ) {
-  for (const { roundId, ...rest } of args) {
-    stm.run({
-      maps: JSON.stringify(rest),
-      roundId,
-    });
-  }
+	for (const { roundId, ...rest } of args) {
+		stm.run({
+			maps: JSON.stringify(rest),
+			roundId,
+		});
+	}
 }

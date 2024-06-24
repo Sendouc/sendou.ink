@@ -1,14 +1,14 @@
 {
-  "mapListPreference.NO_PREFERENCE": "Sem preferência",
-  "mapListPreference.PREFER_ALL_MODES": "Preferir todos os modos",
-  "mapListPreference.PREFER_SZ": "Preferir apenas Zones",
-  "mapListPreference.ALL_MODES_ONLY": "Apenas todos os modos",
-  "mapListPreference.SZ_ONLY": "Apenas Zones",
-  "mapListPreference.note": "Aviso: você não será combinado com times que escolheram \"{{optionOne}}\". Considere selecionar \"{{optionTwo}}\".",
-  "roles.OWNER": "Proprietário",
-  "roles.MANAGER": "Gerente",
-  "roles.REGULAR": "Membro regular",
-  "vc.YES": "Pode participar do chat de voz",
-  "vc.NO": "Não pode participar do chat de voz",
-  "vc.LISTEN_ONLY": "Pode apenas ouvir"
+	"mapListPreference.NO_PREFERENCE": "Sem preferência",
+	"mapListPreference.PREFER_ALL_MODES": "Preferir todos os modos",
+	"mapListPreference.PREFER_SZ": "Preferir apenas Zones",
+	"mapListPreference.ALL_MODES_ONLY": "Apenas todos os modos",
+	"mapListPreference.SZ_ONLY": "Apenas Zones",
+	"mapListPreference.note": "Aviso: você não será combinado com times que escolheram \"{{optionOne}}\". Considere selecionar \"{{optionTwo}}\".",
+	"roles.OWNER": "Proprietário",
+	"roles.MANAGER": "Gerente",
+	"roles.REGULAR": "Membro regular",
+	"vc.YES": "Pode participar do chat de voz",
+	"vc.NO": "Não pode participar do chat de voz",
+	"vc.LISTEN_ONLY": "Pode apenas ouvir"
 }

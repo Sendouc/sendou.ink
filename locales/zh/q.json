@@ -1,14 +1,14 @@
 {
-  "mapListPreference.NO_PREFERENCE": "没有倾向",
-  "mapListPreference.PREFER_ALL_MODES": "倾向于所有模式",
-  "mapListPreference.PREFER_SZ": "倾向于仅区域",
-  "mapListPreference.ALL_MODES_ONLY": "仅所有模式",
-  "mapListPreference.SZ_ONLY": "仅区域",
-  "mapListPreference.note": "注意：您不会与选择了 \"{{optionOne}}\" 的队伍匹配。请考虑选择 \"{{optionTwo}}\"。",
-  "roles.OWNER": "所有者",
-  "roles.MANAGER": "管理者",
-  "roles.REGULAR": "普通成员",
-  "vc.YES": "可以语音",
-  "vc.NO": "不可以语音",
-  "vc.LISTEN_ONLY": "仅能收听"
+	"mapListPreference.NO_PREFERENCE": "没有倾向",
+	"mapListPreference.PREFER_ALL_MODES": "倾向于所有模式",
+	"mapListPreference.PREFER_SZ": "倾向于仅区域",
+	"mapListPreference.ALL_MODES_ONLY": "仅所有模式",
+	"mapListPreference.SZ_ONLY": "仅区域",
+	"mapListPreference.note": "注意：您不会与选择了 \"{{optionOne}}\" 的队伍匹配。请考虑选择 \"{{optionTwo}}\"。",
+	"roles.OWNER": "所有者",
+	"roles.MANAGER": "管理者",
+	"roles.REGULAR": "普通成员",
+	"vc.YES": "可以语音",
+	"vc.NO": "不可以语音",
+	"vc.LISTEN_ONLY": "仅能收听"
 }

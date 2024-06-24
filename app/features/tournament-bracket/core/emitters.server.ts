@@ -1,7 +1,7 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from "node:events";
 
 const globalForEmitter = global as unknown as {
-  emitter: EventEmitter | undefined;
+	emitter: EventEmitter | undefined;
 };
 
 export const emitter = globalForEmitter.emitter ?? new EventEmitter();

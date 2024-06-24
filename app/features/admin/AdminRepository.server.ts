@@ -28,116 +28,116 @@ const cleanUpStm = sql.prepare(/*sql*/ `
 `);
 
 export const cleanUp = () => {
-  removeOldLikesStm.run();
-  removeOldGroupStm.run();
-  cleanUpStm.run();
+	removeOldLikesStm.run();
+	removeOldGroupStm.run();
+	cleanUpStm.run();
 };
 
 export function migrate(args: { newUserId: number; oldUserId: number }) {
-  return db.transaction().execute(async (trx) => {
-    const deletedUser = await trx
-      .deleteFrom("User")
-      .where("User.id", "=", args.newUserId)
-      .returning("discordId")
-      .executeTakeFirstOrThrow();
+	return db.transaction().execute(async (trx) => {
+		const deletedUser = await trx
+			.deleteFrom("User")
+			.where("User.id", "=", args.newUserId)
+			.returning("discordId")
+			.executeTakeFirstOrThrow();
 
-    await trx
-      .updateTable("User")
-      .set({ discordId: deletedUser.discordId })
-      .where("User.id", "=", args.oldUserId)
-      .execute();
-  });
+		await trx
+			.updateTable("User")
+			.set({ discordId: deletedUser.discordId })
+			.where("User.id", "=", args.oldUserId)
+			.execute();
+	});
 }
 
 export function replacePlusTiers(
-  plusTiers: Array<{ userId: number; tier: number }>,
+	plusTiers: Array<{ userId: number; tier: number }>,
 ) {
-  invariant(plusTiers.length > 0, "plusTiers must not be empty");
+	invariant(plusTiers.length > 0, "plusTiers must not be empty");
 
-  return db.transaction().execute(async (trx) => {
-    await trx.deleteFrom("PlusTier").execute();
-    await trx.insertInto("PlusTier").values(plusTiers).execute();
-  });
+	return db.transaction().execute(async (trx) => {
+		await trx.deleteFrom("PlusTier").execute();
+		await trx.insertInto("PlusTier").values(plusTiers).execute();
+	});
 }
 
 export function allPlusTiersFromLatestVoting() {
-  return db
-    .selectFrom("FreshPlusTier")
-    .select(["FreshPlusTier.userId", "FreshPlusTier.tier"])
-    .where("FreshPlusTier.tier", "is not", null)
-    .execute() as Promise<{ userId: number; tier: number }[]>;
+	return db
+		.selectFrom("FreshPlusTier")
+		.select(["FreshPlusTier.userId", "FreshPlusTier.tier"])
+		.where("FreshPlusTier.tier", "is not", null)
+		.execute() as Promise<{ userId: number; tier: number }[]>;
 }
 
 export function makeVideoAdderByUserId(userId: number) {
-  return db
-    .updateTable("User")
-    .set({ isVideoAdder: 1 })
-    .where("User.id", "=", userId)
-    .execute();
+	return db
+		.updateTable("User")
+		.set({ isVideoAdder: 1 })
+		.where("User.id", "=", userId)
+		.execute();
 }
 
 export async function linkUserAndPlayer({
-  userId,
-  playerId,
+	userId,
+	playerId,
 }: {
-  userId: number;
-  playerId: number;
+	userId: number;
+	playerId: number;
 }) {
-  await db
-    .updateTable("SplatoonPlayer")
-    .set({ userId: null })
-    .where("SplatoonPlayer.userId", "=", userId)
-    .execute();
+	await db
+		.updateTable("SplatoonPlayer")
+		.set({ userId: null })
+		.where("SplatoonPlayer.userId", "=", userId)
+		.execute();
 
-  await db
-    .updateTable("SplatoonPlayer")
-    .set({ userId })
-    .where("SplatoonPlayer.id", "=", playerId)
-    .execute();
+	await db
+		.updateTable("SplatoonPlayer")
+		.set({ userId })
+		.where("SplatoonPlayer.id", "=", playerId)
+		.execute();
 
-  syncXPBadges();
+	syncXPBadges();
 }
 
 export function forcePatron(args: {
-  id: number;
-  patronTier: Tables["User"]["patronTier"];
-  patronSince: Date;
-  patronTill: Date;
+	id: number;
+	patronTier: Tables["User"]["patronTier"];
+	patronSince: Date;
+	patronTill: Date;
 }) {
-  return db
-    .updateTable("User")
-    .set({
-      patronTier: args.patronTier,
-      patronSince: dateToDatabaseTimestamp(args.patronSince),
-      patronTill: dateToDatabaseTimestamp(args.patronTill),
-    })
-    .where("User.id", "=", args.id)
-    .execute();
+	return db
+		.updateTable("User")
+		.set({
+			patronTier: args.patronTier,
+			patronSince: dateToDatabaseTimestamp(args.patronSince),
+			patronTill: dateToDatabaseTimestamp(args.patronTill),
+		})
+		.where("User.id", "=", args.id)
+		.execute();
 }
 
 export function banUser({
-  userId,
-  banned,
-  bannedReason,
+	userId,
+	banned,
+	bannedReason,
 }: {
-  userId: number;
-  banned: 1 | Date;
-  bannedReason: string | null;
+	userId: number;
+	banned: 1 | Date;
+	bannedReason: string | null;
 }) {
-  return db
-    .updateTable("User")
-    .set({
-      banned: banned === 1 ? banned : dateToDatabaseTimestamp(banned),
-      bannedReason,
-    })
-    .where("User.id", "=", userId)
-    .execute();
+	return db
+		.updateTable("User")
+		.set({
+			banned: banned === 1 ? banned : dateToDatabaseTimestamp(banned),
+			bannedReason,
+		})
+		.where("User.id", "=", userId)
+		.execute();
 }
 
 export function unbanUser(userId: number) {
-  return db
-    .updateTable("User")
-    .set({ banned: 0 })
-    .where("User.id", "=", userId)
-    .execute();
+	return db
+		.updateTable("User")
+		.set({ banned: 0 })
+		.where("User.id", "=", userId)
+		.execute();
 }

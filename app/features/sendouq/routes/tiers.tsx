@@ -1,73 +1,73 @@
 import { useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { TierImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import {
-  TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
-  TIERS,
-  USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
+	TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
+	TIERS,
+	USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
 } from "~/features/mmr/mmr-constants";
+import { ordinalToSp } from "~/features/mmr/mmr-utils";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
-import { useTranslation } from "react-i18next";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { ordinalToSp } from "~/features/mmr/mmr-utils";
 
 export const handle: SendouRouteHandle = {
-  i18n: ["q"],
+	i18n: ["q"],
 };
 
 export const loader = () => {
-  const season = currentOrPreviousSeason(new Date());
-  const { intervals } = userSkills(season!.nth);
+	const season = currentOrPreviousSeason(new Date());
+	const { intervals } = userSkills(season!.nth);
 
-  return {
-    intervals,
-  };
+	return {
+		intervals,
+	};
 };
 
 export default function TiersPage() {
-  const data = useLoaderData<typeof loader>();
-  const { t } = useTranslation(["q"]);
+	const data = useLoaderData<typeof loader>();
+	const { t } = useTranslation(["q"]);
 
-  return (
-    <Main halfWidth className="stack md">
-      {TIERS.map((tier) => {
-        const neededOrdinal = data.intervals.find(
-          (i) => !i.isPlus && i.name === tier.name,
-        )?.neededOrdinal;
-        return (
-          <div key={tier.name} className="stack horizontal sm items-center">
-            <TierImage tier={{ isPlus: false, name: tier.name }} width={150} />
-            <div>
-              <div className="text-lg font-bold">{tier.name}</div>
-              <div className="text-lg font-bold text-lighter">
-                {tier.percentile}%
-              </div>
-              {neededOrdinal ? (
-                <>
-                  <div className="text-xs font-semi-bold text-lighter">
-                    {t("q:tiers.currentCriteria")}
-                  </div>
-                  <div className="text-sm font-semi-bold text-lighter">
-                    {ordinalToSp(neededOrdinal)}SP
-                  </div>
-                </>
-              ) : null}
-            </div>
-          </div>
-        );
-      })}
-      <p>{t("q:tiers.info.p1")}</p>
-      <p>
-        {t("q:tiers.info.p2", {
-          usersMin: USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
-          teamsMin: TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
-        })}
-      </p>
-      <div>
-        {t("q:tiers.info.p3")}
-        <TierImage tier={{ isPlus: true, name: "BRONZE" }} width={32} />
-      </div>
-    </Main>
-  );
+	return (
+		<Main halfWidth className="stack md">
+			{TIERS.map((tier) => {
+				const neededOrdinal = data.intervals.find(
+					(i) => !i.isPlus && i.name === tier.name,
+				)?.neededOrdinal;
+				return (
+					<div key={tier.name} className="stack horizontal sm items-center">
+						<TierImage tier={{ isPlus: false, name: tier.name }} width={150} />
+						<div>
+							<div className="text-lg font-bold">{tier.name}</div>
+							<div className="text-lg font-bold text-lighter">
+								{tier.percentile}%
+							</div>
+							{neededOrdinal ? (
+								<>
+									<div className="text-xs font-semi-bold text-lighter">
+										{t("q:tiers.currentCriteria")}
+									</div>
+									<div className="text-sm font-semi-bold text-lighter">
+										{ordinalToSp(neededOrdinal)}SP
+									</div>
+								</>
+							) : null}
+						</div>
+					</div>
+				);
+			})}
+			<p>{t("q:tiers.info.p1")}</p>
+			<p>
+				{t("q:tiers.info.p2", {
+					usersMin: USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
+					teamsMin: TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
+				})}
+			</p>
+			<div>
+				{t("q:tiers.info.p3")}
+				<TierImage tier={{ isPlus: true, name: "BRONZE" }} width={32} />
+			</div>
+		</Main>
+	);
 }

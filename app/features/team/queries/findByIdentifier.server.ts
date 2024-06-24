@@ -1,8 +1,8 @@
 import { sql } from "~/db/sql";
 import type { Team, TeamMember, User } from "~/db/types";
 import { removeDuplicates } from "~/utils/arrays";
-import type { DetailedTeam } from "../team-types";
 import { parseDBJsonArray } from "~/utils/sql";
+import type { DetailedTeam } from "../team-types";
 
 const teamStm = sql.prepare(/*sql*/ `
   select 
@@ -48,61 +48,61 @@ const membersStm = sql.prepare(/*sql*/ `
 `);
 
 type TeamRow =
-  | (Pick<Team, "id" | "name" | "twitter" | "bio" | "customUrl" | "css"> & {
-      avatarSrc: string;
-      bannerSrc: string;
-      countries: string;
-    })
-  | null;
+	| (Pick<Team, "id" | "name" | "twitter" | "bio" | "customUrl" | "css"> & {
+			avatarSrc: string;
+			bannerSrc: string;
+			countries: string;
+	  })
+	| null;
 
 type MemberRows = Array<
-  Pick<User, "id" | "username" | "discordAvatar" | "discordId" | "patronTier"> &
-    Pick<TeamMember, "role" | "isOwner"> & { weapons: string }
+	Pick<User, "id" | "username" | "discordAvatar" | "discordId" | "patronTier"> &
+		Pick<TeamMember, "role" | "isOwner"> & { weapons: string }
 >;
 
 export function findByIdentifier(
-  customUrl: string,
+	customUrl: string,
 ): { team: DetailedTeam; css: Record<string, string> | null } | null {
-  const team = teamStm.get({ customUrl: customUrl.toLowerCase() }) as TeamRow;
+	const team = teamStm.get({ customUrl: customUrl.toLowerCase() }) as TeamRow;
 
-  if (!team) return null;
+	if (!team) return null;
 
-  const members = membersStm.all({ teamId: team.id }) as MemberRows;
+	const members = membersStm.all({ teamId: team.id }) as MemberRows;
 
-  return {
-    css: team.css ? (JSON.parse(team.css) as Record<string, string>) : null,
-    team: {
-      id: team.id,
-      name: team.name,
-      customUrl: team.customUrl,
-      twitter: team.twitter ?? undefined,
-      bio: team.bio ?? undefined,
-      avatarSrc: team.avatarSrc,
-      bannerSrc: team.bannerSrc,
-      countries: removeDuplicates(JSON.parse(team.countries).filter(Boolean)),
-      members: members.map((member) => ({
-        id: member.id,
-        discordAvatar: member.discordAvatar,
-        discordId: member.discordId,
-        username: member.username,
-        patronTier: member.patronTier,
-        role: member.role ?? undefined,
-        isOwner: Boolean(member.isOwner),
-        weapons: parseDBJsonArray(member.weapons),
-      })),
-      // results: {
-      //   count: 23,
-      //   placements: [
-      //     {
-      //       count: 10,
-      //       placement: 1,
-      //     },
-      //     {
-      //       count: 5,
-      //       placement: 2,
-      //     },
-      //   ],
-      // },
-    },
-  };
+	return {
+		css: team.css ? (JSON.parse(team.css) as Record<string, string>) : null,
+		team: {
+			id: team.id,
+			name: team.name,
+			customUrl: team.customUrl,
+			twitter: team.twitter ?? undefined,
+			bio: team.bio ?? undefined,
+			avatarSrc: team.avatarSrc,
+			bannerSrc: team.bannerSrc,
+			countries: removeDuplicates(JSON.parse(team.countries).filter(Boolean)),
+			members: members.map((member) => ({
+				id: member.id,
+				discordAvatar: member.discordAvatar,
+				discordId: member.discordId,
+				username: member.username,
+				patronTier: member.patronTier,
+				role: member.role ?? undefined,
+				isOwner: Boolean(member.isOwner),
+				weapons: parseDBJsonArray(member.weapons),
+			})),
+			// results: {
+			//   count: 23,
+			//   placements: [
+			//     {
+			//       count: 10,
+			//       placement: 1,
+			//     },
+			//     {
+			//       count: 5,
+			//       placement: 2,
+			//     },
+			//   ],
+			// },
+		},
+	};
 }

@@ -1,10 +1,10 @@
 import { sql } from "~/db/sql";
-import { DEFAULT_LEADERBOARD_MAX_SIZE } from "../leaderboards-constants";
 import type { User, XRankPlacement } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
+import { DEFAULT_LEADERBOARD_MAX_SIZE } from "../leaderboards-constants";
 
 const getStm = (where = "") =>
-  sql.prepare(/* sql */ `
+	sql.prepare(/* sql */ `
   select
     "XRankPlacement"."id" as "entryId",
     "XRankPlacement"."playerId",
@@ -39,31 +39,31 @@ const weaponStm = getStm(/* sql */ `
 `);
 
 export interface XPLeaderboardItem {
-  entryId: number;
-  power: number;
-  id: User["id"];
-  name: XRankPlacement["name"];
-  playerId: XRankPlacement["playerId"];
-  username: User["username"] | null;
-  discordAvatar: User["discordAvatar"] | null;
-  discordId: User["discordId"] | null;
-  customUrl: User["customUrl"] | null;
-  placementRank: number;
-  weaponSplId: MainWeaponId;
+	entryId: number;
+	power: number;
+	id: User["id"];
+	name: XRankPlacement["name"];
+	playerId: XRankPlacement["playerId"];
+	username: User["username"] | null;
+	discordAvatar: User["discordAvatar"] | null;
+	discordId: User["discordId"] | null;
+	customUrl: User["customUrl"] | null;
+	placementRank: number;
+	weaponSplId: MainWeaponId;
 }
 
 export function allXPLeaderboard(): XPLeaderboardItem[] {
-  return allStm.all() as any[];
+	return allStm.all() as any[];
 }
 
 export function modeXPLeaderboard(
-  mode: XRankPlacement["mode"],
+	mode: XRankPlacement["mode"],
 ): XPLeaderboardItem[] {
-  return modeStm.all({ mode }) as any[];
+	return modeStm.all({ mode }) as any[];
 }
 
 export function weaponXPLeaderboard(
-  weaponSplId: MainWeaponId,
+	weaponSplId: MainWeaponId,
 ): XPLeaderboardItem[] {
-  return weaponStm.all({ weaponSplId }) as any[];
+	return weaponStm.all({ weaponSplId }) as any[];
 }

@@ -24,14 +24,14 @@ const groupedSkillsStm = sql.prepare(/* sql */ `
 `);
 
 export function seasonAllMMRByUserId({
-  userId,
-  season,
+	userId,
+	season,
 }: {
-  userId: number;
-  season: number;
+	userId: number;
+	season: number;
 }) {
-  return groupedSkillsStm.all({ userId, season }) as Array<{
-    ordinal: number;
-    date: string;
-  }>;
+	return groupedSkillsStm.all({ userId, season }) as Array<{
+		ordinal: number;
+		date: string;
+	}>;
 }

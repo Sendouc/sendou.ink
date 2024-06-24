@@ -26,10 +26,10 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export type PlayerThatPlayedByTeamId = Pick<
-  User,
-  "id" | "username" | "discordAvatar" | "discordId" | "customUrl" | "country"
+	User,
+	"id" | "username" | "discordAvatar" | "discordId" | "customUrl" | "country"
 > & { tournamentTeamId: number };
 
 export function playersThatPlayedByTournamentId(tournamentId: number) {
-  return stm.all({ tournamentId }) as PlayerThatPlayedByTeamId[];
+	return stm.all({ tournamentId }) as PlayerThatPlayedByTeamId[];
 }

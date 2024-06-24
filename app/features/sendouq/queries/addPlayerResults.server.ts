@@ -30,7 +30,7 @@ const addPlayerResultDeltaStm = sql.prepare(/* sql */ `
 `);
 
 export function addPlayerResults(results: Array<PlayerResult>) {
-  for (const result of results) {
-    addPlayerResultDeltaStm.run(result);
-  }
+	for (const result of results) {
+		addPlayerResultDeltaStm.run(result);
+	}
 }

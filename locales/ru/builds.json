@@ -1,33 +1,33 @@
 {
-  "addBuild": "Добавить сборку",
-  "noBuilds": "Сборок пока нет. Будьте первым!",
-  "buildCard.info": "Инфо",
-  "buildCard.edit": "Изменить",
+	"addBuild": "Добавить сборку",
+	"noBuilds": "Сборок пока нет. Будьте первым!",
+	"buildCard.info": "Инфо",
+	"buildCard.edit": "Изменить",
 
-  "forms.title": "Название",
-  "forms.modes": "Режимы",
-  "forms.weapons": "Оружия",
-  "forms.gear.HEAD": "Снаряжение (аксессуары)",
-  "forms.gear.CLOTHES": "Снаряжение (одежда)",
-  "forms.gear.SHOES": "Снаряжение (обувь)",
+	"forms.title": "Название",
+	"forms.modes": "Режимы",
+	"forms.weapons": "Оружия",
+	"forms.gear.HEAD": "Снаряжение (аксессуары)",
+	"forms.gear.CLOTHES": "Снаряжение (одежда)",
+	"forms.gear.SHOES": "Снаряжение (обувь)",
 
-  "deleteConfirm": "Удалить сборку '{{title}}'?",
+	"deleteConfirm": "Удалить сборку '{{title}}'?",
 
-  "stats.count.title": "Статистика по {{count}} сборкам {{weapon}}",
-  "stats.ap.title": "Среднее по количеству свойств",
-  "stats.percentage.title": "Свойства только на главный слот",
-  "stats.all": "Все",
+	"stats.count.title": "Статистика по {{count}} сборкам {{weapon}}",
+	"stats.ap.title": "Среднее по количеству свойств",
+	"stats.percentage.title": "Свойства только на главный слот",
+	"stats.all": "Все",
 
-  "addFilter": "Фильтры",
-  "linkButton.abilityStats": "Статистика свойств",
-  "linkButton.popularBuilds": "Популярные сборки",
-  "noPopularBuilds": "На данный момент для этого оружия нет популярных сборок.",
+	"addFilter": "Фильтры",
+	"linkButton.abilityStats": "Статистика свойств",
+	"linkButton.popularBuilds": "Популярные сборки",
+	"noPopularBuilds": "На данный момент для этого оружия нет популярных сборок.",
 
-  "emptyAbilitySlot": "Пустой слот",
+	"emptyAbilitySlot": "Пустой слот",
 
-  "filters.title": "Фильтр {{number}}",
-  "filters.has": "Имеет",
-  "filters.does.not.have": "Не имеет",
-  "filters.atLeast": "Минимум",
-  "filters.atMost": "Максимум"
+	"filters.title": "Фильтр {{number}}",
+	"filters.has": "Имеет",
+	"filters.does.not.have": "Не имеет",
+	"filters.atLeast": "Минимум",
+	"filters.atMost": "Максимум"
 }

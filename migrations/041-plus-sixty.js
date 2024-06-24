@@ -1,10 +1,10 @@
 export function up(db) {
-  db.transaction(() => {
-    db.prepare(`drop view "PlusVotingResult"`).run();
+	db.transaction(() => {
+		db.prepare(`drop view "PlusVotingResult"`).run();
 
-    // same as 000-initial.js except 60% criteria
-    db.prepare(
-      /* sql */ `
+		// same as 000-initial.js except 60% criteria
+		db.prepare(
+			/* sql */ `
       create view "PlusVotingResult" as
       select
         "votedId",
@@ -32,6 +32,6 @@ export function up(db) {
         "month",
         "year";
     `,
-    ).run();
-  })();
+		).run();
+	})();
 }

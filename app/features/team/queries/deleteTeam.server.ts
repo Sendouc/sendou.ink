@@ -7,5 +7,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function deleteTeam(id: number) {
-  stm.run({ id });
+	stm.run({ id });
 }

@@ -26,21 +26,21 @@ const findTagsStm = sql.prepare(/* sql */ `
 `);
 
 interface FindArtById {
-  isShowcase: Art["isShowcase"];
-  description: Art["description"];
-  url: UserSubmittedImage["url"];
-  authorId: Art["authorId"];
-  linkedUsers: User["id"][];
-  tags: Array<Pick<ArtTag, "id" | "name">>;
+	isShowcase: Art["isShowcase"];
+	description: Art["description"];
+	url: UserSubmittedImage["url"];
+	authorId: Art["authorId"];
+	linkedUsers: User["id"][];
+	tags: Array<Pick<ArtTag, "id" | "name">>;
 }
 
 export function findArtById(artId: number): FindArtById | null {
-  const art = findArtStm.get({ artId }) as any;
-  if (!art) return null;
+	const art = findArtStm.get({ artId }) as any;
+	if (!art) return null;
 
-  return {
-    ...art,
-    linkedUsers: parseDBArray(art.linkedUsers),
-    tags: findTagsStm.all({ artId }),
-  };
+	return {
+		...art,
+		linkedUsers: parseDBArray(art.linkedUsers),
+		tags: findTagsStm.all({ artId }),
+	};
 }

@@ -24,27 +24,27 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function seasonsMatesEnemiesByUserId({
-  userId,
-  season,
-  type,
+	userId,
+	season,
+	type,
 }: {
-  userId: number;
-  season: number;
-  type: PlayerResult["type"];
+	userId: number;
+	season: number;
+	type: PlayerResult["type"];
 }) {
-  const rows = stm.all({ userId, season, type }) as any[];
+	const rows = stm.all({ userId, season, type }) as any[];
 
-  return rows.map((row) => ({
-    ...row,
-    user: JSON.parse(row.user),
-  })) as Array<{
-    mapWins: number;
-    mapLosses: number;
-    setWins: number;
-    setLosses: number;
-    user: Pick<
-      User,
-      "id" | "username" | "discordAvatar" | "discordId" | "customUrl"
-    >;
-  }>;
+	return rows.map((row) => ({
+		...row,
+		user: JSON.parse(row.user),
+	})) as Array<{
+		mapWins: number;
+		mapLosses: number;
+		setWins: number;
+		setLosses: number;
+		user: Pick<
+			User,
+			"id" | "username" | "discordAvatar" | "discordId" | "customUrl"
+		>;
+	}>;
 }

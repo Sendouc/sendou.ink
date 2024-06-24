@@ -19,27 +19,27 @@ const deleteGroupStm = sql.prepare(/* sql */ `
 `);
 
 export const leaveGroup = sql.transaction(
-  ({
-    groupId,
-    userId,
-    newOwnerId,
-    wasOwner,
-  }: {
-    groupId: number;
-    userId: number;
-    newOwnerId: number | null;
-    wasOwner: boolean;
-  }) => {
-    if (!wasOwner) {
-      deleteGroupMemberStm.run({ groupId, userId });
-      return;
-    }
+	({
+		groupId,
+		userId,
+		newOwnerId,
+		wasOwner,
+	}: {
+		groupId: number;
+		userId: number;
+		newOwnerId: number | null;
+		wasOwner: boolean;
+	}) => {
+		if (!wasOwner) {
+			deleteGroupMemberStm.run({ groupId, userId });
+			return;
+		}
 
-    if (newOwnerId) {
-      makeMemberOwnerStm.run({ groupId, userId: newOwnerId });
-      deleteGroupMemberStm.run({ groupId, userId });
-    } else {
-      deleteGroupStm.run({ groupId });
-    }
-  },
+		if (newOwnerId) {
+			makeMemberOwnerStm.run({ groupId, userId: newOwnerId });
+			deleteGroupMemberStm.run({ groupId, userId });
+		} else {
+			deleteGroupStm.run({ groupId });
+		}
+	},
 );

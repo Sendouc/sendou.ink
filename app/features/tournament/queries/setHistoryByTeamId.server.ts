@@ -79,39 +79,39 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export interface SetHistoryByTeamIdItem {
-  tournamentMatchId: number;
-  opponentOneScore: number | null;
-  opponentTwoScore: number | null;
-  otherTeamName: string;
-  otherTeamId: number;
-  roundNumber: number;
-  stageId: number;
-  groupNumber: number;
-  matches: {
-    stageId: StageId;
-    source: TournamentMatchGameResult["source"];
-    mode: ModeShort;
-    wasWinner: number;
-  }[];
-  players: Array<
-    Pick<User, "id" | "username" | "discordAvatar" | "discordId" | "customUrl">
-  >;
+	tournamentMatchId: number;
+	opponentOneScore: number | null;
+	opponentTwoScore: number | null;
+	otherTeamName: string;
+	otherTeamId: number;
+	roundNumber: number;
+	stageId: number;
+	groupNumber: number;
+	matches: {
+		stageId: StageId;
+		source: TournamentMatchGameResult["source"];
+		mode: ModeShort;
+		wasWinner: number;
+	}[];
+	players: Array<
+		Pick<User, "id" | "username" | "discordAvatar" | "discordId" | "customUrl">
+	>;
 }
 
 export function setHistoryByTeamId(
-  tournamentTeamId: number,
+	tournamentTeamId: number,
 ): Array<SetHistoryByTeamIdItem> {
-  const rows = stm.all({ tournamentTeamId }) as any[];
+	const rows = stm.all({ tournamentTeamId }) as any[];
 
-  return rows.map((row) => {
-    return {
-      ...row,
-      matches: parseDBArray(row.matches),
-      // TODO: there is probably a way to do this in SQL
-      players: removeDuplicatesByProperty(
-        parseDBArray(row.players),
-        (u: Pick<User, "id">) => u.id,
-      ),
-    };
-  });
+	return rows.map((row) => {
+		return {
+			...row,
+			matches: parseDBArray(row.matches),
+			// TODO: there is probably a way to do this in SQL
+			players: removeDuplicatesByProperty(
+				parseDBArray(row.players),
+				(u: Pick<User, "id">) => u.id,
+			),
+		};
+	});
 }

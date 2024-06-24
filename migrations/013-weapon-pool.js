@@ -1,6 +1,6 @@
 export function up(db) {
-  db.prepare(
-    `
+	db.prepare(
+		`
   create table "UserWeapon" (
     "userId" integer not null,
     "weaponSplId" integer not null,
@@ -11,13 +11,13 @@ export function up(db) {
     foreign key ("userId") references "User"("id") on delete restrict
   ) strict
   `,
-  ).run();
+	).run();
 
-  db.prepare(
-    `create index user_weapon_user_id on "UserWeapon"("userId")`,
-  ).run();
+	db.prepare(
+		`create index user_weapon_user_id on "UserWeapon"("userId")`,
+	).run();
 }
 
 export function down(db) {
-  db.prepare(`drop table "UserWeapon"`).run();
+	db.prepare(`drop table "UserWeapon"`).run();
 }

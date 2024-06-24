@@ -13,60 +13,60 @@ export const dbBoolean = z.coerce.number().min(0).max(1).int();
 export const hexCode = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 
 const abilityNameToType = (val: string) =>
-  abilities.find((ability) => ability.name === val)?.type;
+	abilities.find((ability) => ability.name === val)?.type;
 export const headMainSlotAbility = z
-  .string()
-  .refine((val) =>
-    ["STACKABLE", "HEAD_MAIN_ONLY"].includes(abilityNameToType(val) as any),
-  );
+	.string()
+	.refine((val) =>
+		["STACKABLE", "HEAD_MAIN_ONLY"].includes(abilityNameToType(val) as any),
+	);
 export const clothesMainSlotAbility = z
-  .string()
-  .refine((val) =>
-    ["STACKABLE", "CLOTHES_MAIN_ONLY"].includes(abilityNameToType(val) as any),
-  );
+	.string()
+	.refine((val) =>
+		["STACKABLE", "CLOTHES_MAIN_ONLY"].includes(abilityNameToType(val) as any),
+	);
 export const shoesMainSlotAbility = z
-  .string()
-  .refine((val) =>
-    ["STACKABLE", "SHOES_MAIN_ONLY"].includes(abilityNameToType(val) as any),
-  );
+	.string()
+	.refine((val) =>
+		["STACKABLE", "SHOES_MAIN_ONLY"].includes(abilityNameToType(val) as any),
+	);
 export const stackableAbility = z
-  .string()
-  .refine((val) => abilityNameToType(val) === "STACKABLE");
+	.string()
+	.refine((val) => abilityNameToType(val) === "STACKABLE");
 
 export const ability = z.enum([
-  "ISM",
-  "ISS",
-  "IRU",
-  "RSU",
-  "SSU",
-  "SCU",
-  "SS",
-  "SPU",
-  "QR",
-  "QSJ",
-  "BRU",
-  "RES",
-  "SRU",
-  "IA",
-  "OG",
-  "LDE",
-  "T",
-  "CB",
-  "NS",
-  "H",
-  "TI",
-  "RP",
-  "AD",
-  "SJ",
-  "OS",
-  "DR",
+	"ISM",
+	"ISS",
+	"IRU",
+	"RSU",
+	"SSU",
+	"SCU",
+	"SS",
+	"SPU",
+	"QR",
+	"QSJ",
+	"BRU",
+	"RES",
+	"SRU",
+	"IA",
+	"OG",
+	"LDE",
+	"T",
+	"CB",
+	"NS",
+	"H",
+	"TI",
+	"RP",
+	"AD",
+	"SJ",
+	"OS",
+	"DR",
 ]);
 // keep in-game-lists and the zod enum in sync
 assertType<z.infer<typeof ability>, Unpacked<typeof abilitiesShort>>();
 
 export const weaponSplId = z.preprocess(
-  actualNumber,
-  numericEnum(mainWeaponIds),
+	actualNumber,
+	numericEnum(mainWeaponIds),
 );
 
 export const modeShort = z.enum(["TW", "SZ", "TC", "RM", "CB"]);
@@ -74,141 +74,141 @@ export const modeShort = z.enum(["TW", "SZ", "TC", "RM", "CB"]);
 export const stageId = z.preprocess(actualNumber, numericEnum(stageIds));
 
 export function processMany(
-  ...processFuncs: Array<(value: unknown) => unknown>
+	...processFuncs: Array<(value: unknown) => unknown>
 ) {
-  return (value: unknown) => {
-    let result = value;
+	return (value: unknown) => {
+		let result = value;
 
-    for (const processFunc of processFuncs) {
-      result = processFunc(result);
-    }
+		for (const processFunc of processFuncs) {
+			result = processFunc(result);
+		}
 
-    return result;
-  };
+		return result;
+	};
 }
 
 export function safeJSONParse(value: unknown): unknown {
-  try {
-    if (typeof value !== "string") return value;
-    const parsedValue = z.string().parse(value);
-    return JSON.parse(parsedValue);
-  } catch (e) {
-    return undefined;
-  }
+	try {
+		if (typeof value !== "string") return value;
+		const parsedValue = z.string().parse(value);
+		return JSON.parse(parsedValue);
+	} catch (e) {
+		return undefined;
+	}
 }
 
 export function falsyToNull(value: unknown): unknown {
-  if (value) return value;
+	if (value) return value;
 
-  return null;
+	return null;
 }
 
 export function nullLiteraltoNull(value: unknown): unknown {
-  if (value === "null") return null;
+	if (value === "null") return null;
 
-  return value;
+	return value;
 }
 
 export function jsonParseable(value: unknown) {
-  try {
-    JSON.parse(value as string);
-    return true;
-  } catch {
-    return false;
-  }
+	try {
+		JSON.parse(value as string);
+		return true;
+	} catch {
+		return false;
+	}
 }
 
 export function undefinedToNull(value: unknown): unknown {
-  if (value === undefined) return null;
+	if (value === undefined) return null;
 
-  return value;
+	return value;
 }
 
 export function actualNumber(value: unknown) {
-  if (value === "") return undefined;
+	if (value === "") return undefined;
 
-  const parsed = Number(value);
+	const parsed = Number(value);
 
-  return Number.isNaN(parsed) ? undefined : parsed;
+	return Number.isNaN(parsed) ? undefined : parsed;
 }
 
 export function trimmedString(value: unknown) {
-  if (typeof value !== "string") {
-    throw new Error("Expected string value");
-  }
+	if (typeof value !== "string") {
+		throw new Error("Expected string value");
+	}
 
-  return value.trim();
+	return value.trim();
 }
 
 export function date(value: unknown) {
-  if (typeof value === "string" || typeof value === "number") {
-    const valueAsNumber = Number(value);
+	if (typeof value === "string" || typeof value === "number") {
+		const valueAsNumber = Number(value);
 
-    return new Date(Number.isNaN(valueAsNumber) ? value : valueAsNumber);
-  }
+		return new Date(Number.isNaN(valueAsNumber) ? value : valueAsNumber);
+	}
 
-  return value;
+	return value;
 }
 
 export function noDuplicates(arr: (number | string)[]) {
-  return new Set(arr).size === arr.length;
+	return new Set(arr).size === arr.length;
 }
 
 export function removeDuplicates(value: unknown) {
-  if (!Array.isArray(value)) return value;
+	if (!Array.isArray(value)) return value;
 
-  return Array.from(new Set(value));
+	return Array.from(new Set(value));
 }
 
 export function toArray<T>(value: T | Array<T>) {
-  if (Array.isArray(value)) return value;
+	if (Array.isArray(value)) return value;
 
-  return [value];
+	return [value];
 }
 
 export function checkboxValueToBoolean(value: unknown) {
-  if (!value) return false;
+	if (!value) return false;
 
-  if (typeof value !== "string") {
-    throw new Error("Expected string checkbox value");
-  }
+	if (typeof value !== "string") {
+		throw new Error("Expected string checkbox value");
+	}
 
-  return value === "on";
+	return value === "on";
 }
 
 export function checkboxValueToDbBoolean(value: unknown) {
-  if (checkboxValueToBoolean(value)) return 1;
+	if (checkboxValueToBoolean(value)) return 1;
 
-  return 0;
+	return 0;
 }
 
 export const _action = <T extends z.Primitive>(value: T) =>
-  z.preprocess(deduplicate, z.literal(value));
+	z.preprocess(deduplicate, z.literal(value));
 
 // Fix bug at least in Safari 15 where SubmitButton value might get sent twice
 export function deduplicate(value: unknown) {
-  if (Array.isArray(value)) {
-    const [one, two, ...rest] = value;
-    if (rest.length > 0) return value;
-    if (one !== two) return value;
+	if (Array.isArray(value)) {
+		const [one, two, ...rest] = value;
+		if (rest.length > 0) return value;
+		if (one !== two) return value;
 
-    return one;
-  }
+		return one;
+	}
 
-  return value;
+	return value;
 }
 
 // https://github.com/colinhacks/zod/issues/1118#issuecomment-1235065111
 export function numericEnum<TValues extends readonly number[]>(
-  values: TValues,
+	values: TValues,
 ) {
-  return z.number().superRefine((val, ctx) => {
-    if (!values.includes(val)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.invalid_enum_value,
-        options: [...values],
-        received: val,
-      });
-    }
-  }) as ZodType<TValues[number]>;
+	return z.number().superRefine((val, ctx) => {
+		if (!values.includes(val)) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.invalid_enum_value,
+				options: [...values],
+				received: val,
+			});
+		}
+	}) as ZodType<TValues[number]>;
 }

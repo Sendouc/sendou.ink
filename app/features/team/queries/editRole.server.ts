@@ -9,13 +9,13 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function editRole({
-  userId,
-  teamId,
-  role,
+	userId,
+	teamId,
+	role,
 }: {
-  userId: number;
-  teamId: number;
-  role: MemberRole | null;
+	userId: number;
+	teamId: number;
+	role: MemberRole | null;
 }) {
-  return stm.run({ userId, teamId, role });
+	return stm.run({ userId, teamId, role });
 }

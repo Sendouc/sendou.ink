@@ -1,6 +1,6 @@
 export function up(db) {
-  db.prepare(
-    /*sql*/ `
+	db.prepare(
+		/*sql*/ `
     create table "TournamentSub" (
       "userId" integer not null,
       "tournamentId" integer not null,
@@ -15,5 +15,5 @@ export function up(db) {
       unique("userId", "tournamentId") on conflict rollback
     ) strict
   `,
-  ).run();
+	).run();
 }

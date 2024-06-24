@@ -1,14 +1,14 @@
 export function up(db) {
-  db.transaction(() => {
-    db.prepare(/* sql */ `update "User" set "mapModePreferences" = null`).run();
-    db.prepare(/* sql */ `update "User" set "noScreen" = 0`).run();
+	db.transaction(() => {
+		db.prepare(/* sql */ `update "User" set "mapModePreferences" = null`).run();
+		db.prepare(/* sql */ `update "User" set "noScreen" = 0`).run();
 
-    db.prepare(
-      /* sql */ `alter table "GroupLike" add "isRechallenge" integer`,
-    ).run();
+		db.prepare(
+			/* sql */ `alter table "GroupLike" add "isRechallenge" integer`,
+		).run();
 
-    db.prepare(
-      /*sql*/ `
+		db.prepare(
+			/*sql*/ `
       create table "UserFriendCode" (
         "friendCode" text not null,
         "userId" integer not null,
@@ -18,6 +18,6 @@ export function up(db) {
         foreign key ("submitterUserId") references "User"("id") on delete cascade
       ) strict
     `,
-    ).run();
-  })();
+		).run();
+	})();
 }

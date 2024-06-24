@@ -1,13 +1,13 @@
-import type { Match } from "~/modules/brackets-model";
 import { sql } from "~/db/sql";
-import type {
-  Tournament,
-  TournamentMatch,
-  TournamentTeamMember,
-  User,
-} from "~/db/types";
-import { parseDBArray } from "~/utils/sql";
 import type { TournamentRoundMaps } from "~/db/tables";
+import type {
+	Tournament,
+	TournamentMatch,
+	TournamentTeamMember,
+	User,
+} from "~/db/types";
+import type { Match } from "~/modules/brackets-model";
+import { parseDBArray } from "~/utils/sql";
 
 const stm = sql.prepare(/* sql */ `
   select 
@@ -54,37 +54,37 @@ const stm = sql.prepare(/* sql */ `
 export type FindMatchById = ReturnType<typeof findMatchById>;
 
 export const findMatchById = (id: number) => {
-  const row = stm.get({ id }) as
-    | ((Pick<
-        TournamentMatch,
-        "id" | "groupId" | "opponentOne" | "opponentTwo" | "bestOf" | "chatCode"
-      > &
-        Pick<Tournament, "mapPickingStyle"> & { players: string }) & {
-        roundMaps: string | null;
-      })
-    | undefined;
+	const row = stm.get({ id }) as
+		| ((Pick<
+				TournamentMatch,
+				"id" | "groupId" | "opponentOne" | "opponentTwo" | "bestOf" | "chatCode"
+		  > &
+				Pick<Tournament, "mapPickingStyle"> & { players: string }) & {
+				roundMaps: string | null;
+		  })
+		| undefined;
 
-  if (!row) return;
+	if (!row) return;
 
-  const roundMaps = row.roundMaps
-    ? (JSON.parse(row.roundMaps) as TournamentRoundMaps)
-    : null;
+	const roundMaps = row.roundMaps
+		? (JSON.parse(row.roundMaps) as TournamentRoundMaps)
+		: null;
 
-  return {
-    ...row,
-    bestOf: (roundMaps?.count ?? row.bestOf) as 3 | 5 | 7,
-    roundMaps,
-    opponentOne: JSON.parse(row.opponentOne) as Match["opponent1"],
-    opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
-    players: parseDBArray(row.players) as Array<{
-      id: User["id"];
-      username: User["username"];
-      tournamentTeamId: TournamentTeamMember["tournamentTeamId"];
-      inGameName: User["inGameName"];
-      discordId: User["discordId"];
-      customUrl: User["customUrl"];
-      discordAvatar: User["discordAvatar"];
-      chatNameColor: string | null;
-    }>,
-  };
+	return {
+		...row,
+		bestOf: (roundMaps?.count ?? row.bestOf) as 3 | 5 | 7,
+		roundMaps,
+		opponentOne: JSON.parse(row.opponentOne) as Match["opponent1"],
+		opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
+		players: parseDBArray(row.players) as Array<{
+			id: User["id"];
+			username: User["username"];
+			tournamentTeamId: TournamentTeamMember["tournamentTeamId"];
+			inGameName: User["inGameName"];
+			discordId: User["discordId"];
+			customUrl: User["customUrl"];
+			discordAvatar: User["discordAvatar"];
+			chatNameColor: string | null;
+		}>,
+	};
 };

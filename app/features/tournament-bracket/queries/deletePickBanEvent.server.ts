@@ -7,11 +7,11 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function deletePickBanEvent({
-  matchId,
-  number,
+	matchId,
+	number,
 }: {
-  matchId: number;
-  number: number;
+	matchId: number;
+	number: number;
 }) {
-  return stm.run({ matchId, number });
+	return stm.run({ matchId, number });
 }

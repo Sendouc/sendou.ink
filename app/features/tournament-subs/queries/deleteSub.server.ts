@@ -9,7 +9,7 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function deleteSub(
-  args: Pick<TournamentSub, "userId" | "tournamentId">,
+	args: Pick<TournamentSub, "userId" | "tournamentId">,
 ) {
-  stm.run(args);
+	stm.run(args);
 }

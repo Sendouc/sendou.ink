@@ -24,11 +24,11 @@ const addMapResultDeltaStm = sql.prepare(/* sql */ `
 `);
 
 export function addMapResults(
-  results: Array<
-    Pick<MapResult, "losses" | "wins" | "userId" | "mode" | "stageId">
-  >,
+	results: Array<
+		Pick<MapResult, "losses" | "wins" | "userId" | "mode" | "stageId">
+	>,
 ) {
-  for (const result of results) {
-    addMapResultDeltaStm.run(result);
-  }
+	for (const result of results) {
+		addMapResultDeltaStm.run(result);
+	}
 }

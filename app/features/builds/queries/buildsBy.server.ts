@@ -1,16 +1,16 @@
-import invariant from "~/utils/invariant";
 import { sql } from "~/db/sql";
 import type {
-  Build,
-  BuildAbility,
-  BuildWeapon,
-  UserWithPlusTier,
+	Build,
+	BuildAbility,
+	BuildWeapon,
+	UserWithPlusTier,
 } from "~/db/types";
-import { weaponIdToAltId, type ModeShort } from "~/modules/in-game-lists";
+import { type ModeShort, weaponIdToAltId } from "~/modules/in-game-lists";
 import type {
-  BuildAbilitiesTuple,
-  MainWeaponId,
+	BuildAbilitiesTuple,
+	MainWeaponId,
 } from "~/modules/in-game-lists/types";
+import invariant from "~/utils/invariant";
 
 const buildsByWeaponIdStm = sql.prepare(/* sql */ `
 with "Top500Weapon" as (
@@ -183,112 +183,112 @@ order by
 `);
 
 type BuildsByWeaponIdRow = BuildsByUserRow &
-  Pick<UserWithPlusTier, "discordId" | "username" | "plusTier">;
+	Pick<UserWithPlusTier, "discordId" | "username" | "plusTier">;
 
 export function buildsByWeaponId({
-  weaponId,
-  limit,
+	weaponId,
+	limit,
 }: {
-  weaponId: BuildWeapon["weaponSplId"];
-  limit: number;
+	weaponId: BuildWeapon["weaponSplId"];
+	limit: number;
 }) {
-  const [altWeaponId, altWeaponIdTwo] = (() => {
-    const alts = weaponIdToAltId.get(weaponId);
-    // default to impossible weapon id so we can always have same amount of placeholder values
-    if (!alts) return [-1, -1];
-    if (typeof alts === "number") return [alts, -1];
+	const [altWeaponId, altWeaponIdTwo] = (() => {
+		const alts = weaponIdToAltId.get(weaponId);
+		// default to impossible weapon id so we can always have same amount of placeholder values
+		if (!alts) return [-1, -1];
+		if (typeof alts === "number") return [alts, -1];
 
-    invariant(alts.length === 2, "expected 2 alts");
-    return alts;
-  })();
+		invariant(alts.length === 2, "expected 2 alts");
+		return alts;
+	})();
 
-  const rows = buildsByWeaponIdStm.all({
-    weaponId,
-    altWeaponId,
-    altWeaponIdTwo,
-    limit,
-  }) as Array<BuildsByWeaponIdRow>;
+	const rows = buildsByWeaponIdStm.all({
+		weaponId,
+		altWeaponId,
+		altWeaponIdTwo,
+		limit,
+	}) as Array<BuildsByWeaponIdRow>;
 
-  return rows.map(augmentBuild);
+	return rows.map(augmentBuild);
 }
 
 type BuildsByUserRow = Pick<
-  Build,
-  | "id"
-  | "title"
-  | "description"
-  | "modes"
-  | "headGearSplId"
-  | "clothesGearSplId"
-  | "shoesGearSplId"
-  | "updatedAt"
-  | "private"
+	Build,
+	| "id"
+	| "title"
+	| "description"
+	| "modes"
+	| "headGearSplId"
+	| "clothesGearSplId"
+	| "shoesGearSplId"
+	| "updatedAt"
+	| "private"
 > & {
-  weapons: string;
-  abilities: string;
+	weapons: string;
+	abilities: string;
 };
 
 export interface BuildWeaponWithTop500Info {
-  weaponSplId: MainWeaponId;
-  minRank: number | null;
-  maxPower: number | null;
+	weaponSplId: MainWeaponId;
+	minRank: number | null;
+	maxPower: number | null;
 }
 
 export function buildsByUserId({
-  userId,
-  loggedInUserId,
+	userId,
+	loggedInUserId,
 }: {
-  userId: Build["ownerId"];
-  loggedInUserId?: UserWithPlusTier["id"];
+	userId: Build["ownerId"];
+	loggedInUserId?: UserWithPlusTier["id"];
 }) {
-  const rows = buildsByUserIdStm.all({
-    userId,
-    loggedInUserId,
-  }) as Array<BuildsByUserRow>;
+	const rows = buildsByUserIdStm.all({
+		userId,
+		loggedInUserId,
+	}) as Array<BuildsByUserRow>;
 
-  return rows.map(augmentBuild);
+	return rows.map(augmentBuild);
 }
 
 function augmentBuild<T>({
-  weapons: rawWeapons,
-  modes: rawModes,
-  abilities: rawAbilities,
-  ...row
+	weapons: rawWeapons,
+	modes: rawModes,
+	abilities: rawAbilities,
+	...row
 }: T & { modes: Build["modes"]; weapons: string; abilities: string }) {
-  const modes = rawModes ? (JSON.parse(rawModes) as ModeShort[]) : null;
-  const weapons = (
-    JSON.parse(rawWeapons) as Array<BuildWeaponWithTop500Info>
-  ).sort((a, b) => a.weaponSplId - b.weaponSplId);
-  const abilities = JSON.parse(rawAbilities) as Array<
-    Pick<BuildAbility, "ability" | "gearType" | "slotIndex">
-  >;
+	const modes = rawModes ? (JSON.parse(rawModes) as ModeShort[]) : null;
+	const weapons = (
+		JSON.parse(rawWeapons) as Array<BuildWeaponWithTop500Info>
+	).sort((a, b) => a.weaponSplId - b.weaponSplId);
+	const abilities = JSON.parse(rawAbilities) as Array<
+		Pick<BuildAbility, "ability" | "gearType" | "slotIndex">
+	>;
 
-  return {
-    ...row,
-    modes,
-    weapons,
-    abilities: dbAbilitiesToArrayOfArrays(abilities),
-  };
+	return {
+		...row,
+		modes,
+		weapons,
+		abilities: dbAbilitiesToArrayOfArrays(abilities),
+	};
 }
 
 const gearOrder: Array<BuildAbility["gearType"]> = ["HEAD", "CLOTHES", "SHOES"];
 function dbAbilitiesToArrayOfArrays(
-  abilities: Array<Pick<BuildAbility, "ability" | "gearType" | "slotIndex">>,
+	abilities: Array<Pick<BuildAbility, "ability" | "gearType" | "slotIndex">>,
 ): BuildAbilitiesTuple {
-  const sorted = abilities
-    .slice()
-    .sort((a, b) => {
-      if (a.gearType === b.gearType) return a.slotIndex - b.slotIndex;
+	const sorted = abilities
+		.slice()
+		.sort((a, b) => {
+			if (a.gearType === b.gearType) return a.slotIndex - b.slotIndex;
 
-      return gearOrder.indexOf(a.gearType) - gearOrder.indexOf(b.gearType);
-    })
-    .map((a) => a.ability);
+			return gearOrder.indexOf(a.gearType) - gearOrder.indexOf(b.gearType);
+		})
+		.map((a) => a.ability);
 
-  invariant(sorted.length === 12, "expected 12 abilities");
+	invariant(sorted.length === 12, "expected 12 abilities");
 
-  return [
-    [sorted[0], sorted[1], sorted[2], sorted[3]],
-    [sorted[4], sorted[5], sorted[6], sorted[7]],
-    [sorted[8], sorted[9], sorted[10], sorted[11]],
-  ];
+	return [
+		[sorted[0], sorted[1], sorted[2], sorted[3]],
+		[sorted[4], sorted[5], sorted[6], sorted[7]],
+		[sorted[8], sorted[9], sorted[10], sorted[11]],
+	];
 }

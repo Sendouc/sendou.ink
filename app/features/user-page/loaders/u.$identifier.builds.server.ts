@@ -7,36 +7,36 @@ import { notFoundIfFalsy, privatelyCachedJson } from "~/utils/remix";
 import { userParamsSchema } from "../user-page-schemas.server";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const loggedInUser = await getUserId(request);
-  const { identifier } = userParamsSchema.parse(params);
-  const user = notFoundIfFalsy(
-    await UserRepository.identifierToUserId(identifier),
-  );
+	const loggedInUser = await getUserId(request);
+	const { identifier } = userParamsSchema.parse(params);
+	const user = notFoundIfFalsy(
+		await UserRepository.identifierToUserId(identifier),
+	);
 
-  const builds = await BuildRepository.allByUserId({
-    userId: user.id,
-    showPrivate: loggedInUser?.id === user.id,
-  });
+	const builds = await BuildRepository.allByUserId({
+		userId: user.id,
+		showPrivate: loggedInUser?.id === user.id,
+	});
 
-  if (builds.length === 0 && loggedInUser?.id !== user.id) {
-    throw new Response(null, { status: 404 });
-  }
+	if (builds.length === 0 && loggedInUser?.id !== user.id) {
+		throw new Response(null, { status: 404 });
+	}
 
-  return privatelyCachedJson({
-    builds,
-    weaponCounts: calculateWeaponCounts(),
-  });
+	return privatelyCachedJson({
+		builds,
+		weaponCounts: calculateWeaponCounts(),
+	});
 
-  function calculateWeaponCounts() {
-    return builds.reduce(
-      (acc, build) => {
-        for (const weapon of build.weapons) {
-          acc[weapon.weaponSplId] = (acc[weapon.weaponSplId] ?? 0) + 1;
-        }
+	function calculateWeaponCounts() {
+		return builds.reduce(
+			(acc, build) => {
+				for (const weapon of build.weapons) {
+					acc[weapon.weaponSplId] = (acc[weapon.weaponSplId] ?? 0) + 1;
+				}
 
-        return acc;
-      },
-      {} as Record<MainWeaponId, number>,
-    );
-  }
+				return acc;
+			},
+			{} as Record<MainWeaponId, number>,
+		);
+	}
 };

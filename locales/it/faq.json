@@ -1,16 +1,16 @@
 {
-  "q1": "Cos'è il Server Plus?",
+	"q1": "Cos'è il Server Plus?",
 
-  "q2": "Come faccio ad avere una medaglia come premio per il mio evento?",
+	"q2": "Come faccio ad avere una medaglia come premio per il mio evento?",
 
-  "q3": "Come faccio ad aggiornare il mio nome utente o avatar?",
+	"q3": "Come faccio ad aggiornare il mio nome utente o avatar?",
 
-  "q4": "Sono diventato un sostenitore su Patreon, come mai non vedo nessun cambiamento sul sito?",
-  "a4": "Assicurati di aver connesso il tuo account Discord con quello Patreon. Dopo averli sincronizzati, l'aggiornamento dei dati sul sito potrebbe impiegare fino a 2 ore. Se stai avendo problemi, scrivi direttamente a Sendou.",
+	"q4": "Sono diventato un sostenitore su Patreon, come mai non vedo nessun cambiamento sul sito?",
+	"a4": "Assicurati di aver connesso il tuo account Discord con quello Patreon. Dopo averli sincronizzati, l'aggiornamento dei dati sul sito potrebbe impiegare fino a 2 ore. Se stai avendo problemi, scrivi direttamente a Sendou.",
 
-  "q5": "Esiste un app per sendou.ink?",
-  "a5": "No, ma il sito può essere installato come una 'Progressive Web App', che porta un sacco degli stessi benefici come l'uso a schermo pieno, l'icona sulla schermata home e un processo separato dal browser. Cerca 'Come installare progressive web app su *il tuo browser*' per imparare come si fa.",
+	"q5": "Esiste un app per sendou.ink?",
+	"a5": "No, ma il sito può essere installato come una 'Progressive Web App', che porta un sacco degli stessi benefici come l'uso a schermo pieno, l'icona sulla schermata home e un processo separato dal browser. Cerca 'Come installare progressive web app su *il tuo browser*' per imparare come si fa.",
 
-  "q6": "Come faccio ad aggiungere un link per Twitch/Twitter/Youtube al mio profilo?",
-  "a6": "Il sito sincronizza i profili con le tue connessioni al profilo Discord. Per connettere un account a sendou.ink, connettilo e verificalo su Discord, quindi esci e riaccedi qui per aggiornare il profilo."
+	"q6": "Come faccio ad aggiungere un link per Twitch/Twitter/Youtube al mio profilo?",
+	"a6": "Il sito sincronizza i profili con le tue connessioni al profilo Discord. Per connettere un account a sendou.ink, connettilo e verificalo su Discord, quindi esci e riaccedi qui per aggiornare il profilo."
 }

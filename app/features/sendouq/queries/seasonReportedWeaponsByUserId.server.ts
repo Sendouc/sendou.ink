@@ -19,17 +19,17 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function seasonReportedWeaponsByUserId({
-  userId,
-  season,
+	userId,
+	season,
 }: {
-  userId: number;
-  season: number;
+	userId: number;
+	season: number;
 }) {
-  const { starts, ends } = seasonObject(season);
+	const { starts, ends } = seasonObject(season);
 
-  return stm.all({
-    userId,
-    starts: dateToDatabaseTimestamp(starts),
-    ends: dateToDatabaseTimestamp(ends),
-  }) as Array<{ weaponSplId: MainWeaponId; count: number }>;
+	return stm.all({
+		userId,
+		starts: dateToDatabaseTimestamp(starts),
+		ends: dateToDatabaseTimestamp(ends),
+	}) as Array<{ weaponSplId: MainWeaponId; count: number }>;
 }

@@ -28,5 +28,5 @@ const stm = sql.prepare(/* sql*/ `
 export type RecentMatchPlayer = Pick<GroupMember, "groupId" | "userId">;
 
 export function findRecentMatchPlayersByUserId(userId: number) {
-  return stm.all({ userId }) as Array<RecentMatchPlayer>;
+	return stm.all({ userId }) as Array<RecentMatchPlayer>;
 }

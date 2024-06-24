@@ -16,7 +16,7 @@ const stm = sql.prepare(/*sql*/ `
 `);
 
 export function findTieBreakerMapPoolByTournamentId(tournamentId: number) {
-  return stm.all({ tournamentId }) as Array<
-    Pick<MapPoolMap, "stageId" | "mode">
-  >;
+	return stm.all({ tournamentId }) as Array<
+		Pick<MapPoolMap, "stageId" | "mode">
+	>;
 }

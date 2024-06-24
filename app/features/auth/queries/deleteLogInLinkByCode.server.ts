@@ -6,5 +6,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function deleteLogInLinkByCode(code: string) {
-  return stm.run({ code });
+	return stm.run({ code });
 }

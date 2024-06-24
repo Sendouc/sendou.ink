@@ -46,22 +46,22 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function findPreparingGroup(
-  ownGroupId: number,
+	ownGroupId: number,
 ): LookingGroupWithInviteCode {
-  const row = stm.get({ ownGroupId }) as any;
+	const row = stm.get({ ownGroupId }) as any;
 
-  return {
-    id: row.id,
-    createdAt: row.createdAt,
-    chatCode: null,
-    inviteCode: row.inviteCode,
-    members: parseDBJsonArray(row.members).map((member: any) => {
-      const weapons = member.qWeaponPool ? JSON.parse(member.qWeaponPool) : [];
+	return {
+		id: row.id,
+		createdAt: row.createdAt,
+		chatCode: null,
+		inviteCode: row.inviteCode,
+		members: parseDBJsonArray(row.members).map((member: any) => {
+			const weapons = member.qWeaponPool ? JSON.parse(member.qWeaponPool) : [];
 
-      return {
-        ...member,
-        weapons: weapons.length > 0 ? weapons : undefined,
-      };
-    }),
-  };
+			return {
+				...member,
+				weapons: weapons.length > 0 ? weapons : undefined,
+			};
+		}),
+	};
 }

@@ -10,29 +10,29 @@ export type VideoBeingAdded = z.infer<typeof videoSchema>;
 export type VideoMatchBeingAdded = z.infer<typeof videoMatchSchema>;
 
 export interface Vod {
-  id: Video["id"];
-  pov?:
-    | Pick<
-        User,
-        "username" | "discordId" | "discordAvatar" | "customUrl" | "id"
-      >
-    | string;
-  title: Video["title"];
-  type: Video["type"];
-  youtubeDate: Video["youtubeDate"];
-  youtubeId: Video["youtubeId"];
-  matches: Array<VodMatch>;
-  submitterUserId: Video["submitterUserId"];
+	id: Video["id"];
+	pov?:
+		| Pick<
+				User,
+				"username" | "discordId" | "discordAvatar" | "customUrl" | "id"
+		  >
+		| string;
+	title: Video["title"];
+	type: Video["type"];
+	youtubeDate: Video["youtubeDate"];
+	youtubeId: Video["youtubeId"];
+	matches: Array<VodMatch>;
+	submitterUserId: Video["submitterUserId"];
 }
 
 export type VodMatch = Pick<
-  VideoMatch,
-  "id" | "mode" | "stageId" | "startsAt"
+	VideoMatch,
+	"id" | "mode" | "stageId" | "startsAt"
 > & {
-  weapons: Array<MainWeaponId>;
+	weapons: Array<MainWeaponId>;
 };
 
 export type ListVod = Omit<Vod, "youtubeDate" | "matches"> & {
-  weapons: Array<MainWeaponId>;
-  type: Video["type"];
+	weapons: Array<MainWeaponId>;
+	type: Video["type"];
 };
