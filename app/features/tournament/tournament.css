@@ -187,6 +187,8 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	max-width: 150px;
+	display: flex;
+	align-items: center;
 }
 
 .tournament__team-member-name__role {
