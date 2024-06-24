@@ -6,6 +6,7 @@ export const LFG = {
 	POST_FRESHNESS_DAYS: 30 as const,
 	types: [
 		"PLAYER_FOR_TEAM",
+		"PLAYER_FOR_COACH",
 		"TEAM_FOR_PLAYER",
 		"TEAM_FOR_COACH",
 		"COACH_FOR_TEAM",
