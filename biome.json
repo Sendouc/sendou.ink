@@ -4,7 +4,8 @@
 		"ignore": [
 			"./scripts/dicts/**/*",
 			"./scripts/output/**/*",
-			"./app/db/seed/placements.json"
+			"./app/db/seed/placements.json",
+			"./app/features/map-planner/plans.css"
 		]
 	},
 	"linter": {
@@ -39,6 +40,14 @@
 					"level": "error"
 				}
 			}
+		}
+	},
+	"css": {
+		"formatter": {
+			"enabled": true
+		},
+		"linter": {
+			"enabled": true
 		}
 	}
 }
