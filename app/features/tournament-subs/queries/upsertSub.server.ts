@@ -31,5 +31,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function upsertSub(args: Omit<TournamentSub, "createdAt">) {
-  stm.run(args);
+	stm.run(args);
 }

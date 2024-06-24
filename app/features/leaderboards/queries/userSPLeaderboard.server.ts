@@ -1,7 +1,7 @@
 import { sql } from "~/db/sql";
-import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards-constants";
 import type { PlusTier, User } from "~/db/types";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards-constants";
 
 const stm = sql.prepare(/* sql */ `
   select
@@ -36,23 +36,23 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export interface UserSPLeaderboardItem {
-  entryId: number;
-  power: number;
-  id: User["id"];
-  username: User["username"];
-  discordAvatar: User["discordAvatar"];
-  discordId: User["discordId"];
-  customUrl: User["customUrl"];
-  plusTier?: PlusTier["tier"];
-  plusSkippedForSeasonNth: number | null;
-  /** Plus tier player is on track to join */
-  pendingPlusTier?: PlusTier["tier"];
-  placementRank: number;
+	entryId: number;
+	power: number;
+	id: User["id"];
+	username: User["username"];
+	discordAvatar: User["discordAvatar"];
+	discordId: User["discordId"];
+	customUrl: User["customUrl"];
+	plusTier?: PlusTier["tier"];
+	plusSkippedForSeasonNth: number | null;
+	/** Plus tier player is on track to join */
+	pendingPlusTier?: PlusTier["tier"];
+	placementRank: number;
 }
 
 export function userSPLeaderboard(season: number): UserSPLeaderboardItem[] {
-  return (stm.all({ season }) as any[]).map(({ ordinal, ...rest }) => ({
-    ...rest,
-    power: ordinalToSp(ordinal),
-  }));
+	return (stm.all({ season }) as any[]).map(({ ordinal, ...rest }) => ({
+		...rest,
+		power: ordinalToSp(ordinal),
+	}));
 }

@@ -98,77 +98,77 @@ const weaponsStm = sql.prepare(/* sql */ `
 `);
 
 interface SeasonMatchByUserId {
-  id: GroupMatch["id"];
-  alphaGroupId: GroupMatch["alphaGroupId"];
-  bravoGroupId: GroupMatch["bravoGroupId"];
-  winnerGroupIds: Array<GroupMatchMap["winnerGroupId"]>;
-  createdAt: GroupMatch["createdAt"];
-  isLocked: number;
-  spDiff: number | null;
-  groupAlphaMembers: Array<{
-    id: User["id"];
-    username: User["username"];
-    discordId: User["discordId"];
-    discordAvatar: User["discordAvatar"];
-    weaponSplId?: MainWeaponId;
-  }>;
-  groupBravoMembers: Array<{
-    id: User["id"];
-    username: User["username"];
-    discordId: User["discordId"];
-    discordAvatar: User["discordAvatar"];
-    weaponSplId?: MainWeaponId;
-  }>;
+	id: GroupMatch["id"];
+	alphaGroupId: GroupMatch["alphaGroupId"];
+	bravoGroupId: GroupMatch["bravoGroupId"];
+	winnerGroupIds: Array<GroupMatchMap["winnerGroupId"]>;
+	createdAt: GroupMatch["createdAt"];
+	isLocked: number;
+	spDiff: number | null;
+	groupAlphaMembers: Array<{
+		id: User["id"];
+		username: User["username"];
+		discordId: User["discordId"];
+		discordAvatar: User["discordAvatar"];
+		weaponSplId?: MainWeaponId;
+	}>;
+	groupBravoMembers: Array<{
+		id: User["id"];
+		username: User["username"];
+		discordId: User["discordId"];
+		discordAvatar: User["discordAvatar"];
+		weaponSplId?: MainWeaponId;
+	}>;
 }
 
 export function seasonMatchesByUserId({
-  userId,
-  season,
-  page,
+	userId,
+	season,
+	page,
 }: {
-  userId: number;
-  season: number;
-  page: number;
+	userId: number;
+	season: number;
+	page: number;
 }): SeasonMatchByUserId[] {
-  const { starts, ends } = seasonObject(season);
+	const { starts, ends } = seasonObject(season);
 
-  const rows = stm.all({
-    userId,
-    starts: dateToDatabaseTimestamp(starts),
-    // sets can still start a bit after season ends
-    // no season can start within 7 days of another
-    ends: dateToDatabaseTimestamp(add(ends, { days: 7 })),
-    page,
-  }) as any;
+	const rows = stm.all({
+		userId,
+		starts: dateToDatabaseTimestamp(starts),
+		// sets can still start a bit after season ends
+		// no season can start within 7 days of another
+		ends: dateToDatabaseTimestamp(add(ends, { days: 7 })),
+		page,
+	}) as any;
 
-  return rows.map((row: any) => {
-    const weapons = weaponsStm.all({ id: row.id }) as any;
+	return rows.map((row: any) => {
+		const weapons = weaponsStm.all({ id: row.id }) as any;
 
-    const skillDiff = row.memento
-      ? (JSON.parse(row.memento) as ParsedMemento).users[userId]
-          ?.skillDifference
-      : null;
+		const skillDiff = row.memento
+			? (JSON.parse(row.memento) as ParsedMemento).users[userId]
+					?.skillDifference
+			: null;
 
-    return {
-      ...row,
-      spDiff: skillDiff?.calculated ? skillDiff.spDiff : null,
-      winnerGroupIds: parseDBArray(row.winnerGroupIds),
-      groupAlphaMembers: parseDBJsonArray(row.groupAlphaMembers).map(
-        (member: any) => ({
-          ...member,
-          weaponSplId: weapons.find((w: any) => w.userId === member.id)
-            ?.weaponSplId,
-        }),
-      ),
-      groupBravoMembers: parseDBJsonArray(row.groupBravoMembers).map(
-        (member: any) => ({
-          ...member,
-          weaponSplId: weapons.find((w: any) => w.userId === member.id)
-            ?.weaponSplId,
-        }),
-      ),
-    };
-  });
+		return {
+			...row,
+			spDiff: skillDiff?.calculated ? skillDiff.spDiff : null,
+			winnerGroupIds: parseDBArray(row.winnerGroupIds),
+			groupAlphaMembers: parseDBJsonArray(row.groupAlphaMembers).map(
+				(member: any) => ({
+					...member,
+					weaponSplId: weapons.find((w: any) => w.userId === member.id)
+						?.weaponSplId,
+				}),
+			),
+			groupBravoMembers: parseDBJsonArray(row.groupBravoMembers).map(
+				(member: any) => ({
+					...member,
+					weaponSplId: weapons.find((w: any) => w.userId === member.id)
+						?.weaponSplId,
+				}),
+			),
+		};
+	});
 }
 
 const pagesStm = sql.prepare(/* sql */ `
@@ -188,20 +188,20 @@ const pagesStm = sql.prepare(/* sql */ `
 `);
 
 export function seasonMatchesByUserIdPagesCount({
-  userId,
-  season,
+	userId,
+	season,
 }: {
-  userId: number;
-  season: number;
+	userId: number;
+	season: number;
 }): number {
-  const { starts, ends } = seasonObject(season);
+	const { starts, ends } = seasonObject(season);
 
-  const row = pagesStm.get({
-    userId,
-    starts: dateToDatabaseTimestamp(starts),
-    // see above
-    ends: dateToDatabaseTimestamp(add(ends, { days: 7 })),
-  }) as any;
+	const row = pagesStm.get({
+		userId,
+		starts: dateToDatabaseTimestamp(starts),
+		// see above
+		ends: dateToDatabaseTimestamp(add(ends, { days: 7 })),
+	}) as any;
 
-  return Math.ceil((row.count as number) / MATCHES_PER_SEASONS_PAGE);
+	return Math.ceil((row.count as number) / MATCHES_PER_SEASONS_PAGE);
 }

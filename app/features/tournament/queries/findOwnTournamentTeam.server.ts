@@ -20,19 +20,19 @@ const stm = sql.prepare(/*sql*/ `
 `);
 
 type FindOwnTeam =
-  | (Pick<TournamentTeam, "id" | "name" | "inviteCode"> &
-      Pick<TournamentTeamCheckIn, "checkedInAt">)
-  | null;
+	| (Pick<TournamentTeam, "id" | "name" | "inviteCode"> &
+			Pick<TournamentTeamCheckIn, "checkedInAt">)
+	| null;
 
 export function findOwnTournamentTeam({
-  tournamentId,
-  userId,
+	tournamentId,
+	userId,
 }: {
-  tournamentId: number;
-  userId: number;
+	tournamentId: number;
+	userId: number;
 }) {
-  return stm.get({
-    tournamentId,
-    userId,
-  }) as FindOwnTeam;
+	return stm.get({
+		tournamentId,
+		userId,
+	}) as FindOwnTeam;
 }

@@ -1,7 +1,7 @@
 export function up(db) {
-  db.transaction(() => {
-    db.prepare(
-      /*sql*/ `
+	db.transaction(() => {
+		db.prepare(
+			/*sql*/ `
       create table "TournamentMatchPickBanEvent" (
         "type" text not null,
         "stageId" integer not null,
@@ -15,18 +15,18 @@ export function up(db) {
         unique("matchId", "number") on conflict rollback
       ) strict
     `,
-    ).run();
+		).run();
 
-    db.prepare(
-      /* sql */ `create index pick_ban_event_author_id on "TournamentMatchPickBanEvent"("authorId")`,
-    ).run();
-    db.prepare(
-      /* sql */ `create index pick_ban_event_match_id on "TournamentMatchPickBanEvent"("matchId")`,
-    ).run();
+		db.prepare(
+			/* sql */ `create index pick_ban_event_author_id on "TournamentMatchPickBanEvent"("authorId")`,
+		).run();
+		db.prepare(
+			/* sql */ `create index pick_ban_event_match_id on "TournamentMatchPickBanEvent"("matchId")`,
+		).run();
 
-    db.prepare(/* sql */ `alter table "Tournament" add "rules" text`).run();
-    db.prepare(
-      /* sql */ `alter table "TournamentTeam" add "teamId" integer`,
-    ).run();
-  })();
+		db.prepare(/* sql */ `alter table "Tournament" add "rules" text`).run();
+		db.prepare(
+			/* sql */ `alter table "TournamentTeam" add "teamId" integer`,
+		).run();
+	})();
 }

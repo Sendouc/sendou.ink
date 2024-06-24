@@ -14,19 +14,19 @@ const stm = sql.prepare(/*sql*/ `
 `);
 
 export function edit({
-  id,
-  name,
-  customUrl,
-  bio,
-  twitter,
-  css,
+	id,
+	name,
+	customUrl,
+	bio,
+	twitter,
+	css,
 }: Pick<Team, "id" | "name" | "customUrl" | "bio" | "twitter" | "css">) {
-  return stm.get({
-    id,
-    name,
-    customUrl,
-    bio,
-    twitter,
-    css,
-  }) as Team;
+	return stm.get({
+		id,
+		name,
+		customUrl,
+		bio,
+		twitter,
+		css,
+	}) as Team;
 }

@@ -11,6 +11,6 @@ const deleteMapPoolStm = sql.prepare(/*sql*/ `
 `);
 
 export const deleteTeam = sql.transaction((tournamentTeamId: number) => {
-  deleteMapPoolStm.run({ tournamentTeamId });
-  deleteTeamStm.run({ tournamentTeamId });
+	deleteMapPoolStm.run({ tournamentTeamId });
+	deleteTeamStm.run({ tournamentTeamId });
 });

@@ -1,6 +1,6 @@
-import invariant from "~/utils/invariant";
 import { sql } from "~/db/sql";
 import type { Art, ArtTag, UserSubmittedImage } from "~/db/types";
+import invariant from "~/utils/invariant";
 
 const addImgStm = sql.prepare(/* sql */ `
   insert into "UnvalidatedUserSubmittedImage"
@@ -93,72 +93,72 @@ const removeUserMetadataStm = sql.prepare(/* sql */ `
 
 type TagsToAdd = Array<Partial<Pick<ArtTag, "name" | "id">>>;
 type AddNewArtArgs = Pick<Art, "authorId" | "description"> &
-  Pick<UserSubmittedImage, "url" | "validatedAt"> & {
-    linkedUsers: number[];
-    tags: TagsToAdd;
-  };
+	Pick<UserSubmittedImage, "url" | "validatedAt"> & {
+		linkedUsers: number[];
+		tags: TagsToAdd;
+	};
 
 export const addNewArt = sql.transaction((args: AddNewArtArgs) => {
-  const img = addImgStm.get(args) as UserSubmittedImage;
-  const art = addArtStm.get({ ...args, imgId: img.id }) as Art;
+	const img = addImgStm.get(args) as UserSubmittedImage;
+	const art = addArtStm.get({ ...args, imgId: img.id }) as Art;
 
-  for (const userId of args.linkedUsers) {
-    addArtUserMetadataStm.run({ artId: art.id, userId });
-  }
+	for (const userId of args.linkedUsers) {
+		addArtUserMetadataStm.run({ artId: art.id, userId });
+	}
 
-  for (const tag of args.tags) {
-    let tagId = tag.id;
-    if (!tagId) {
-      invariant(tag.name, "tag name must be provided if no id");
+	for (const tag of args.tags) {
+		let tagId = tag.id;
+		if (!tagId) {
+			invariant(tag.name, "tag name must be provided if no id");
 
-      const newTag = addArtTagStm.get({
-        name: tag.name,
-        authorId: args.authorId,
-      }) as ArtTag;
-      tagId = newTag.id;
-    }
+			const newTag = addArtTagStm.get({
+				name: tag.name,
+				authorId: args.authorId,
+			}) as ArtTag;
+			tagId = newTag.id;
+		}
 
-    addTaggedArtStm.run({ artId: art.id, tagId });
-  }
+		addTaggedArtStm.run({ artId: art.id, tagId });
+	}
 });
 
 type EditArtArgs = Pick<Art, "authorId" | "description" | "isShowcase"> & {
-  linkedUsers: number[];
-  artId: number;
-  tags: TagsToAdd;
+	linkedUsers: number[];
+	artId: number;
+	tags: TagsToAdd;
 };
 
 export const editArt = sql.transaction((args: EditArtArgs) => {
-  if (args.isShowcase) {
-    removeIsShowcaseFromAllStm.run({
-      authorId: args.authorId,
-    });
-  }
+	if (args.isShowcase) {
+		removeIsShowcaseFromAllStm.run({
+			authorId: args.authorId,
+		});
+	}
 
-  updateArtStm.run({
-    description: args.description,
-    isShowcase: args.isShowcase,
-    artId: args.artId,
-  });
+	updateArtStm.run({
+		description: args.description,
+		isShowcase: args.isShowcase,
+		artId: args.artId,
+	});
 
-  removeUserMetadataStm.run({ artId: args.artId });
-  for (const userId of args.linkedUsers) {
-    addArtUserMetadataStm.run({ artId: args.artId, userId });
-  }
+	removeUserMetadataStm.run({ artId: args.artId });
+	for (const userId of args.linkedUsers) {
+		addArtUserMetadataStm.run({ artId: args.artId, userId });
+	}
 
-  deleteAllTaggedArtStm.run({ artId: args.artId });
-  for (const tag of args.tags) {
-    let tagId = tag.id;
-    if (!tagId) {
-      invariant(tag.name, "tag name must be provided if no id");
+	deleteAllTaggedArtStm.run({ artId: args.artId });
+	for (const tag of args.tags) {
+		let tagId = tag.id;
+		if (!tagId) {
+			invariant(tag.name, "tag name must be provided if no id");
 
-      const newTag = addArtTagStm.get({
-        name: tag.name,
-        authorId: args.authorId,
-      }) as ArtTag;
-      tagId = newTag.id;
-    }
+			const newTag = addArtTagStm.get({
+				name: tag.name,
+				authorId: args.authorId,
+			}) as ArtTag;
+			tagId = newTag.id;
+		}
 
-    addTaggedArtStm.run({ artId: args.artId, tagId });
-  }
+		addTaggedArtStm.run({ artId: args.artId, tagId });
+	}
 });

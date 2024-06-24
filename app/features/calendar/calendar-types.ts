@@ -1,4 +1,4 @@
 export interface FollowUpBracket {
-  name: string;
-  placements: Array<number>;
+	name: string;
+	placements: Array<number>;
 }

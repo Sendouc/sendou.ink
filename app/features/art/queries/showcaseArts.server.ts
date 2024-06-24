@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
-import type { ListedArt } from "../art-types";
 import type { ArtTag } from "~/db/types";
+import type { ListedArt } from "../art-types";
 
 const showcaseArtsStm = sql.prepare(/* sql */ `
   select
@@ -21,16 +21,16 @@ const showcaseArtsStm = sql.prepare(/* sql */ `
 `);
 
 export function showcaseArts(): ListedArt[] {
-  return showcaseArtsStm.all().map((a: any) => ({
-    id: a.id,
-    url: a.url,
-    author: {
-      commissionsOpen: a.commissionsOpen,
-      discordAvatar: a.discordAvatar,
-      discordId: a.discordId,
-      username: a.username,
-    },
-  }));
+	return showcaseArtsStm.all().map((a: any) => ({
+		id: a.id,
+		url: a.url,
+		author: {
+			commissionsOpen: a.commissionsOpen,
+			discordAvatar: a.discordAvatar,
+			discordId: a.discordId,
+			username: a.username,
+		},
+	}));
 }
 
 const showcaseArtsByTagStm = sql.prepare(/* sql */ `
@@ -55,26 +55,26 @@ const showcaseArtsByTagStm = sql.prepare(/* sql */ `
 `);
 
 export function showcaseArtsByTag(tagId: ArtTag["id"]): ListedArt[] {
-  const encounteredUserIds = new Set<number>();
+	const encounteredUserIds = new Set<number>();
 
-  return showcaseArtsByTagStm
-    .all({ tagId })
-    .filter((row: any) => {
-      if (encounteredUserIds.has(row.userId)) {
-        return false;
-      }
+	return showcaseArtsByTagStm
+		.all({ tagId })
+		.filter((row: any) => {
+			if (encounteredUserIds.has(row.userId)) {
+				return false;
+			}
 
-      encounteredUserIds.add(row.userId);
-      return true;
-    })
-    .map((a: any) => ({
-      id: a.id,
-      url: a.url,
-      author: {
-        commissionsOpen: a.commissionsOpen,
-        discordAvatar: a.discordAvatar,
-        discordId: a.discordId,
-        username: a.username,
-      },
-    }));
+			encounteredUserIds.add(row.userId);
+			return true;
+		})
+		.map((a: any) => ({
+			id: a.id,
+			url: a.url,
+			author: {
+				commissionsOpen: a.commissionsOpen,
+				discordAvatar: a.discordAvatar,
+				discordId: a.discordId,
+				username: a.username,
+			},
+		}));
 }

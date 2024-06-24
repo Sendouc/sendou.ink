@@ -1,6 +1,6 @@
 export function up(db) {
-  db.prepare(
-    /*sql*/ `
+	db.prepare(
+		/*sql*/ `
   create table "XRankPlacement" (
     "id" integer primary key,
     "weaponSplId" integer not null,
@@ -20,14 +20,14 @@ export function up(db) {
     unique("rank", "month", "year", "region", "mode") on conflict rollback
   ) strict
   `,
-  ).run();
+	).run();
 
-  db.prepare(
-    `create index splatoon_placement_player_id on "XRankPlacement"("playerId")`,
-  ).run();
+	db.prepare(
+		`create index splatoon_placement_player_id on "XRankPlacement"("playerId")`,
+	).run();
 
-  db.prepare(
-    /*sql*/ `
+	db.prepare(
+		/*sql*/ `
   create table "SplatoonPlayer" (
     "id" integer primary key,
     "userId" integer unique,
@@ -35,9 +35,9 @@ export function up(db) {
     foreign key ("userId") references "User"("id") on delete cascade
   ) strict
   `,
-  ).run();
+	).run();
 
-  db.prepare(
-    `create index splatoon_player_user_id on "SplatoonPlayer"("userId")`,
-  ).run();
+	db.prepare(
+		`create index splatoon_player_user_id on "SplatoonPlayer"("userId")`,
+	).run();
 }

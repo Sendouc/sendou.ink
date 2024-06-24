@@ -17,21 +17,21 @@ const addCounterpickMapStm = sql.prepare(/* sql */ `
 `);
 
 export const upsertCounterpickMaps = sql.transaction(
-  ({
-    tournamentTeamId,
-    mapPool,
-  }: {
-    tournamentTeamId: TournamentTeam["id"];
-    mapPool: MapPool;
-  }) => {
-    deleteCounterpickMapsByTeamIdStm.run({ tournamentTeamId });
+	({
+		tournamentTeamId,
+		mapPool,
+	}: {
+		tournamentTeamId: TournamentTeam["id"];
+		mapPool: MapPool;
+	}) => {
+		deleteCounterpickMapsByTeamIdStm.run({ tournamentTeamId });
 
-    for (const { stageId, mode } of mapPool.stageModePairs) {
-      addCounterpickMapStm.run({
-        tournamentTeamId,
-        stageId,
-        mode,
-      });
-    }
-  },
+		for (const { stageId, mode } of mapPool.stageModePairs) {
+			addCounterpickMapStm.run({
+				tournamentTeamId,
+				stageId,
+				mode,
+			});
+		}
+	},
 );

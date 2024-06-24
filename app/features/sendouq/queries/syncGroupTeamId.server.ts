@@ -1,5 +1,5 @@
-import invariant from "~/utils/invariant";
 import { sql } from "~/db/sql";
+import invariant from "~/utils/invariant";
 import { FULL_GROUP_SIZE } from "../q-constants";
 
 const memberTeamIdsStm = sql.prepare(/* sql */ `
@@ -16,17 +16,17 @@ const updateStm = sql.prepare(/* sql */ `
 `);
 
 export function syncGroupTeamId(groupId: number) {
-  const teamIds = memberTeamIdsStm
-    .all({ groupId })
-    .map((row: any) => row.teamId);
-  invariant(teamIds.length === FULL_GROUP_SIZE, "Group to sync is not full");
+	const teamIds = memberTeamIdsStm
+		.all({ groupId })
+		.map((row: any) => row.teamId);
+	invariant(teamIds.length === FULL_GROUP_SIZE, "Group to sync is not full");
 
-  const set = new Set(teamIds);
+	const set = new Set(teamIds);
 
-  if (set.size === 1) {
-    const teamId = teamIds[0];
-    updateStm.run({ groupId, teamId });
-  } else {
-    updateStm.run({ groupId, teamId: null });
-  }
+	if (set.size === 1) {
+		const teamId = teamIds[0];
+		updateStm.run({ groupId, teamId });
+	} else {
+		updateStm.run({ groupId, teamId: null });
+	}
 }

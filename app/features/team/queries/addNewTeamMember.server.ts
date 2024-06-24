@@ -12,11 +12,11 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function addNewTeamMember({
-  teamId,
-  userId,
+	teamId,
+	userId,
 }: {
-  teamId: number;
-  userId: number;
+	teamId: number;
+	userId: number;
 }) {
-  stm.run({ teamId, userId });
+	stm.run({ teamId, userId });
 }

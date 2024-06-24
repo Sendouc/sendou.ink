@@ -8,16 +8,16 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export const transferOwnership = sql.transaction(
-  ({
-    teamId,
-    oldOwnerUserId,
-    newOwnerUserId,
-  }: {
-    teamId: number;
-    oldOwnerUserId: number;
-    newOwnerUserId: number;
-  }) => {
-    stm.run({ teamId, userId: oldOwnerUserId, isOwner: 0 });
-    stm.run({ teamId, userId: newOwnerUserId, isOwner: 1 });
-  },
+	({
+		teamId,
+		oldOwnerUserId,
+		newOwnerUserId,
+	}: {
+		teamId: number;
+		oldOwnerUserId: number;
+		newOwnerUserId: number;
+	}) => {
+		stm.run({ teamId, userId: oldOwnerUserId, isOwner: 0 });
+		stm.run({ teamId, userId: newOwnerUserId, isOwner: 1 });
+	},
 );

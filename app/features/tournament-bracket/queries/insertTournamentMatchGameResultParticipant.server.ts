@@ -8,8 +8,8 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function insertTournamentMatchGameResultParticipant(args: {
-  matchGameResultId: number;
-  userId: number;
+	matchGameResultId: number;
+	userId: number;
 }) {
-  stm.run(args);
+	stm.run(args);
 }

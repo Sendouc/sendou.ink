@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
-import type { ListedArt } from "../art-types";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
+import type { ListedArt } from "../art-types";
 
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
@@ -66,24 +66,24 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function artsByUserId(userId: number): ListedArt[] {
-  return stm.all({ userId }).map((a: any) => {
-    const tags = parseDBArray(a.tags) as any[];
-    const linkedUsers = parseDBJsonArray(a.linkedUsers) as any[];
+	return stm.all({ userId }).map((a: any) => {
+		const tags = parseDBArray(a.tags) as any[];
+		const linkedUsers = parseDBJsonArray(a.linkedUsers) as any[];
 
-    return {
-      id: a.id,
-      url: a.url,
-      description: a.description,
-      tags: tags.length > 0 ? tags : undefined,
-      linkedUsers: linkedUsers.length > 0 ? linkedUsers : undefined,
-      author: a.discordId
-        ? {
-            commissionsOpen: a.commissionsOpen,
-            discordAvatar: a.discordAvatar,
-            discordId: a.discordId,
-            username: a.username,
-          }
-        : undefined,
-    };
-  });
+		return {
+			id: a.id,
+			url: a.url,
+			description: a.description,
+			tags: tags.length > 0 ? tags : undefined,
+			linkedUsers: linkedUsers.length > 0 ? linkedUsers : undefined,
+			author: a.discordId
+				? {
+						commissionsOpen: a.commissionsOpen,
+						discordAvatar: a.discordAvatar,
+						discordId: a.discordId,
+						username: a.username,
+					}
+				: undefined,
+		};
+	});
 }

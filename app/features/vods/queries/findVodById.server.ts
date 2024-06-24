@@ -45,33 +45,33 @@ const videoMatchesStm = sql.prepare(/* sql */ `
 `);
 
 export function findVodById(id: Vod["id"]): Vod | null {
-  const video = videoStm.get({ id }) as any;
-  if (!video) return null;
+	const video = videoStm.get({ id }) as any;
+	if (!video) return null;
 
-  const matches = videoMatchesStm.all({ id }) as any[];
+	const matches = videoMatchesStm.all({ id }) as any[];
 
-  return {
-    ...video,
-    pov: resolvePov(matches),
-    matches: matches.map(({ players: _1, playerNames: _2, ...match }) => {
-      return {
-        ...match,
-        weapons: parseDBArray(match.weapons),
-      };
-    }),
-  };
+	return {
+		...video,
+		pov: resolvePov(matches),
+		matches: matches.map(({ players: _1, playerNames: _2, ...match }) => {
+			return {
+				...match,
+				weapons: parseDBArray(match.weapons),
+			};
+		}),
+	};
 }
 
 function resolvePov(matches: any): Vod["pov"] {
-  for (const match of matches) {
-    if (parseDBArray(match.playerNames).length > 0) {
-      return parseDBArray(match.playerNames)[0];
-    }
+	for (const match of matches) {
+		if (parseDBArray(match.playerNames).length > 0) {
+			return parseDBArray(match.playerNames)[0];
+		}
 
-    if (parseDBArray(match.players).length > 0) {
-      return parseDBArray(match.players)[0];
-    }
-  }
+		if (parseDBArray(match.players).length > 0) {
+			return parseDBArray(match.players)[0];
+		}
+	}
 
-  return;
+	return;
 }

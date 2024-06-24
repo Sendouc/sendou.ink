@@ -11,7 +11,7 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function insertTournamentMatchGameResult(
-  args: Omit<Tables["TournamentMatchGameResult"], "id" | "createdAt">,
+	args: Omit<Tables["TournamentMatchGameResult"], "id" | "createdAt">,
 ) {
-  return stm.get(args) as TournamentMatchGameResult;
+	return stm.get(args) as TournamentMatchGameResult;
 }

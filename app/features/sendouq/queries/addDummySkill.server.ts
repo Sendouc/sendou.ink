@@ -16,5 +16,5 @@ const stm = sql.prepare(/* sql */ `
 
 /** Adds a placeholder skill that makes the match locked */
 export function addDummySkill(groupMatchId: number) {
-  stm.run({ groupMatchId });
+	stm.run({ groupMatchId });
 }

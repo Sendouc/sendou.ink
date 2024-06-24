@@ -12,5 +12,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function countArtByUserId(userId: number) {
-  return stm.pluck().get({ userId }) as number;
+	return stm.pluck().get({ userId }) as number;
 }

@@ -1,137 +1,137 @@
 .lfg-post__wide-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  align-items: flex-start;
-  column-gap: var(--s-6);
-  row-gap: var(--s-2);
+	display: grid;
+	grid-template-columns: 1fr;
+	align-items: flex-start;
+	column-gap: var(--s-6);
+	row-gap: var(--s-2);
 }
 
 .lfg-post__wide-layout__left-row {
-  display: flex;
-  gap: var(--s-2);
-  flex-direction: column;
+	display: flex;
+	gap: var(--s-2);
+	flex-direction: column;
 }
 
 @media screen and (min-width: 640px) {
-  .lfg-post__wide-layout {
-    grid-template-columns: 1fr 2fr;
-    row-gap: 0;
-  }
+	.lfg-post__wide-layout {
+		grid-template-columns: 1fr 2fr;
+		row-gap: 0;
+	}
 
-  .lfg-post__wide-layout__left-row {
-    position: sticky;
-    top: 55px;
-  }
+	.lfg-post__wide-layout__left-row {
+		position: sticky;
+		top: 55px;
+	}
 }
 
 .lfg__post-user-name {
-  max-width: 125px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  color: var(--text);
+	max-width: 125px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	color: var(--text);
 }
 
 .lfg__post-team-member-name {
-  max-width: 75px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  font-size: var(--fonts-xs);
-  font-weight: var(--semi-bold);
-  color: var(--text);
+	max-width: 75px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: var(--fonts-xs);
+	font-weight: var(--semi-bold);
+	color: var(--text);
 }
 
 .lfg__post-text-container {
-  position: relative;
-  max-height: 150px;
-  overflow: hidden;
+	position: relative;
+	max-height: 150px;
+	overflow: hidden;
 }
 
 .lfg__post-text-container--expanded {
-  position: relative;
-  margin-bottom: var(--s-6);
+	position: relative;
+	margin-bottom: var(--s-6);
 }
 
 .lfg__post-text {
-  white-space: pre-wrap;
+	white-space: pre-wrap;
 }
 
 .lfg__post-text-cut {
-  background-image: linear-gradient(to bottom, transparent, var(--bg));
-  width: 100%;
-  position: absolute;
-  top: 0;
-  height: 100%;
+	background-image: linear-gradient(to bottom, transparent, var(--bg));
+	width: 100%;
+	position: absolute;
+	top: 0;
+	height: 100%;
 }
 
 .lfg__post-text__show-all-button {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: max-content;
-  margin-left: auto;
-  margin-right: auto;
-  z-index: 99;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: max-content;
+	margin-left: auto;
+	margin-right: auto;
+	z-index: 99;
 }
 
 .lfg__post-text__show-all-button--expanded {
-  bottom: -35px;
+	bottom: -35px;
 }
 
 .lfg-post__pill {
-  font-size: var(--fonts-xxs);
-  font-weight: var(--semi-bold);
-  border-radius: var(--rounded);
-  background-color: var(--bg-lightest);
-  padding: var(--s-0-5) var(--s-2);
-  display: flex;
-  align-items: center;
-  gap: var(--s-0-5);
-  position: relative;
+	font-size: var(--fonts-xxs);
+	font-weight: var(--semi-bold);
+	border-radius: var(--rounded);
+	background-color: var(--bg-lightest);
+	padding: var(--s-0-5) var(--s-2);
+	display: flex;
+	align-items: center;
+	gap: var(--s-0-5);
+	position: relative;
 }
 
 .lfg-post__pill--placeholder {
-  visibility: hidden;
-  width: 37px;
+	visibility: hidden;
+	width: 37px;
 }
 
 .lfg-post__edit-button {
-  font-size: var(--fonts-xxs);
-  font-weight: var(--semi-bold);
-  border-radius: var(--rounded);
-  background-color: var(--bg-lightest);
-  padding: var(--s-0-5) var(--s-2);
-  color: var(--text);
-  display: flex;
-  gap: var(--s-1);
+	font-size: var(--fonts-xxs);
+	font-weight: var(--semi-bold);
+	border-radius: var(--rounded);
+	background-color: var(--bg-lightest);
+	padding: var(--s-0-5) var(--s-2);
+	color: var(--text);
+	display: flex;
+	gap: var(--s-1);
 }
 
 .lfg-post__edit-button > svg {
-  width: 12px;
+	width: 12px;
 }
 
 .lfg-post__tier-pill--end {
-  border-radius: var(--rounded) 0 0 var(--rounded);
+	border-radius: var(--rounded) 0 0 var(--rounded);
 }
 
 .lfg-post__tier-pill--start {
-  border-radius: 0 var(--rounded) var(--rounded) 0;
+	border-radius: 0 var(--rounded) var(--rounded) 0;
 }
 
 .lfg-post__tier {
-  position: absolute;
-  top: -3px;
-  right: 4px;
+	position: absolute;
+	top: -3px;
+	right: 4px;
 }
 
 .lfg-post__tier-pill {
-  width: 60px;
+	width: 60px;
 }
 
 .lfg__filter {
-  padding: var(--s-1-5) var(--s-2);
-  background-color: var(--bg-lighter);
-  border-radius: var(--rounded);
+	padding: var(--s-1-5) var(--s-2);
+	background-color: var(--bg-lighter);
+	border-radius: var(--rounded);
 }

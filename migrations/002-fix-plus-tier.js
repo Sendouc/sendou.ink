@@ -1,10 +1,10 @@
 // add missing min() call to handle multiple results w/ suggests correctly
 
 export function up(db) {
-  db.prepare(`drop view "PlusTier"`).run();
+	db.prepare(`drop view "PlusTier"`).run();
 
-  db.prepare(
-    `
+	db.prepare(
+		`
     create view "PlusTier" as
     select
       "votedId" as "userId",
@@ -49,14 +49,14 @@ export function up(db) {
       group by
         "votedId";
   `,
-  ).run();
+	).run();
 }
 
 export function down(db) {
-  db.prepare(`drop view "PlusTier"`).run();
+	db.prepare(`drop view "PlusTier"`).run();
 
-  db.prepare(
-    `
+	db.prepare(
+		`
   create view "PlusTier" as
   select
     "votedId" as "userId",
@@ -99,5 +99,5 @@ export function down(db) {
     group by
       "votedId";
   `,
-  ).run();
+	).run();
 }

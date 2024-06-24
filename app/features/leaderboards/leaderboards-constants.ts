@@ -6,17 +6,17 @@ export const DEFAULT_LEADERBOARD_MAX_SIZE = 500;
 export const WEAPON_LEADERBOARD_MAX_SIZE = 100;
 
 export const LEADERBOARD_TYPES = [
-  "USER",
-  "TEAM",
-  "TEAM-ALL",
-  ...(weaponCategories.map(
-    (category) => `USER-${category.name}`,
-  ) as `USER-${(typeof weaponCategories)[number]["name"]}`[]),
-  "XP-ALL",
-  ...(rankedModesShort.map(
-    (mode) => `XP-MODE-${mode}`,
-  ) as `XP-MODE-${(typeof rankedModesShort)[number]}`[]),
-  ...(mainWeaponIds.map(
-    (id) => `XP-WEAPON-${id}`,
-  ) as `XP-WEAPON-${(typeof mainWeaponIds)[number]}`[]),
+	"USER",
+	"TEAM",
+	"TEAM-ALL",
+	...(weaponCategories.map(
+		(category) => `USER-${category.name}`,
+	) as `USER-${(typeof weaponCategories)[number]["name"]}`[]),
+	"XP-ALL",
+	...(rankedModesShort.map(
+		(mode) => `XP-MODE-${mode}`,
+	) as `XP-MODE-${(typeof rankedModesShort)[number]}`[]),
+	...(mainWeaponIds.map(
+		(id) => `XP-WEAPON-${id}`,
+	) as `XP-WEAPON-${(typeof mainWeaponIds)[number]}`[]),
 ] as const;

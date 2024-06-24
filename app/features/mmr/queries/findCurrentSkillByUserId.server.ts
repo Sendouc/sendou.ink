@@ -19,14 +19,14 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function findCurrentSkillByUserId({
-  userId,
-  season,
+	userId,
+	season,
 }: {
-  userId: number;
-  season: number;
+	userId: number;
+	season: number;
 }) {
-  return stm.get({ userId, season }) as Pick<
-    Skill,
-    "mu" | "sigma" | "matchesCount"
-  > | null;
+	return stm.get({ userId, season }) as Pick<
+		Skill,
+		"mu" | "sigma" | "matchesCount"
+	> | null;
 }

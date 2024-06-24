@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { getUser } from "~/features/auth/core/user.server";
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
@@ -7,25 +7,25 @@ import { findOwnTournamentTeam } from "../queries/findOwnTournamentTeam.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const user = await getUser(request);
-  if (!user) return null;
+	const user = await getUser(request);
+	if (!user) return null;
 
-  const ownTournamentTeam = findOwnTournamentTeam({
-    tournamentId: tournamentIdFromParams(params),
-    userId: user.id,
-  });
-  if (!ownTournamentTeam)
-    return {
-      mapPool: null,
-      trusterPlayers: null,
-      team: await TeamRepository.findByUserId(user.id),
-    };
+	const ownTournamentTeam = findOwnTournamentTeam({
+		tournamentId: tournamentIdFromParams(params),
+		userId: user.id,
+	});
+	if (!ownTournamentTeam)
+		return {
+			mapPool: null,
+			trusterPlayers: null,
+			team: await TeamRepository.findByUserId(user.id),
+		};
 
-  return {
-    mapPool: findMapPoolByTeamId(ownTournamentTeam.id),
-    trusterPlayers: await QRepository.usersThatTrusted(user.id),
-    team: await TeamRepository.findByUserId(user.id),
-  };
+	return {
+		mapPool: findMapPoolByTeamId(ownTournamentTeam.id),
+		trusterPlayers: await QRepository.usersThatTrusted(user.id),
+		team: await TeamRepository.findByUserId(user.id),
+	};
 };
 
 export type TournamentRegisterPageLoader = typeof loader;

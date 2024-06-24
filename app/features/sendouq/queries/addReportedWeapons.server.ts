@@ -8,13 +8,13 @@ const insertStm = sql.prepare(/* sql */ `
 `);
 
 export const addReportedWeapons = (
-  args: {
-    groupMatchMapId: number;
-    weaponSplId: MainWeaponId;
-    userId: number;
-  }[],
+	args: {
+		groupMatchMapId: number;
+		weaponSplId: MainWeaponId;
+		userId: number;
+	}[],
 ) => {
-  for (const { groupMatchMapId, userId, weaponSplId } of args) {
-    insertStm.run({ groupMatchMapId, userId, weaponSplId });
-  }
+	for (const { groupMatchMapId, userId, weaponSplId } of args) {
+		insertStm.run({ groupMatchMapId, userId, weaponSplId });
+	}
 };

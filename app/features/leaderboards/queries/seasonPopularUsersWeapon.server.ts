@@ -29,23 +29,23 @@ const stm = sql.prepare(/* sql */ `
 export type SeasonPopularUsersWeapon = Record<User["id"], MainWeaponId>;
 
 export function seasonPopularUsersWeapon(
-  season: number,
+	season: number,
 ): SeasonPopularUsersWeapon {
-  const { starts, ends } = seasonObject(season);
+	const { starts, ends } = seasonObject(season);
 
-  const rows = stm.all({
-    season,
-    starts: dateToDatabaseTimestamp(starts),
-    ends: dateToDatabaseTimestamp(ends),
-  }) as Array<{
-    count: number;
-    userId: User["id"];
-    weaponSplId: MainWeaponId;
-  }>;
+	const rows = stm.all({
+		season,
+		starts: dateToDatabaseTimestamp(starts),
+		ends: dateToDatabaseTimestamp(ends),
+	}) as Array<{
+		count: number;
+		userId: User["id"];
+		weaponSplId: MainWeaponId;
+	}>;
 
-  return Object.fromEntries(
-    rows
-      .filter((r) => r.count > MATCHES_COUNT_NEEDED_FOR_LEADERBOARD)
-      .map((r) => [r.userId, r.weaponSplId]),
-  );
+	return Object.fromEntries(
+		rows
+			.filter((r) => r.count > MATCHES_COUNT_NEEDED_FOR_LEADERBOARD)
+			.map((r) => [r.userId, r.weaponSplId]),
+	);
 }

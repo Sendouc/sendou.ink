@@ -5,21 +5,21 @@ import { ScrollRestoration, useLocation } from "@remix-run/react";
 import * as React from "react";
 
 export function ConditionalScrollRestoration() {
-  const isFirstRenderRef = React.useRef(true);
-  const location = useLocation();
+	const isFirstRenderRef = React.useRef(true);
+	const location = useLocation();
 
-  React.useEffect(() => {
-    isFirstRenderRef.current = false;
-  }, []);
+	React.useEffect(() => {
+		isFirstRenderRef.current = false;
+	}, []);
 
-  if (
-    !isFirstRenderRef.current &&
-    location.state != null &&
-    typeof location.state === "object" &&
-    (location.state as { scroll: boolean }).scroll === false
-  ) {
-    return null;
-  }
+	if (
+		!isFirstRenderRef.current &&
+		location.state != null &&
+		typeof location.state === "object" &&
+		(location.state as { scroll: boolean }).scroll === false
+	) {
+		return null;
+	}
 
-  return <ScrollRestoration getKey={(location) => location.pathname} />;
+	return <ScrollRestoration getKey={(location) => location.pathname} />;
 }

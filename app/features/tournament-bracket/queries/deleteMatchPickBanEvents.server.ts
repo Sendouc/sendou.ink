@@ -6,5 +6,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function deleteMatchPickBanEvents({ matchId }: { matchId: number }) {
-  return stm.run({ matchId });
+	return stm.run({ matchId });
 }

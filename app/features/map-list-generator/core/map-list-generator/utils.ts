@@ -4,31 +4,31 @@ import type { MapPool } from "../map-pool";
 import type { MapPoolObject } from "../map-pool-serializer/types";
 
 export function mapPoolToNonEmptyModes(mapPool: MapPool) {
-  const result: ModeShort[] = [];
+	const result: ModeShort[] = [];
 
-  for (const [key, stages] of Object.entries(mapPool.parsed)) {
-    if (stages.length === 0) continue;
+	for (const [key, stages] of Object.entries(mapPool.parsed)) {
+		if (stages.length === 0) continue;
 
-    result.push(key as ModeShort);
-  }
+		result.push(key as ModeShort);
+	}
 
-  return result;
+	return result;
 }
 
 export function mapPoolListToMapPoolObject(
-  mapPoolList: Array<Pick<MapPoolMap, "stageId" | "mode">>,
+	mapPoolList: Array<Pick<MapPoolMap, "stageId" | "mode">>,
 ) {
-  const result: MapPoolObject = {
-    TW: [],
-    SZ: [],
-    TC: [],
-    RM: [],
-    CB: [],
-  };
+	const result: MapPoolObject = {
+		TW: [],
+		SZ: [],
+		TC: [],
+		RM: [],
+		CB: [],
+	};
 
-  for (const { stageId, mode } of mapPoolList) {
-    result[mode].push(stageId);
-  }
+	for (const { stageId, mode } of mapPoolList) {
+		result[mode].push(stageId);
+	}
 
-  return result;
+	return result;
 }

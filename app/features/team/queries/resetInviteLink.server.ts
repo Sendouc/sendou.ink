@@ -9,5 +9,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function resetInviteLink(teamId: number) {
-  stm.run({ teamId, inviteCode: nanoid(INVITE_CODE_LENGTH) });
+	stm.run({ teamId, inviteCode: nanoid(INVITE_CODE_LENGTH) });
 }

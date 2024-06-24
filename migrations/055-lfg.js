@@ -1,7 +1,7 @@
 export function up(db) {
-  db.transaction(() => {
-    db.prepare(
-      /*sql*/ `
+	db.transaction(() => {
+		db.prepare(
+			/*sql*/ `
       create table "LFGPost" (
         "id" integer primary key,
         "type" text not null,
@@ -17,13 +17,13 @@ export function up(db) {
         unique("authorId", "type") on conflict rollback
       ) strict
     `,
-    ).run();
+		).run();
 
-    db.prepare(
-      /*sql*/ `create index lfg_post_author_id on "LFGPost"("authorId")`,
-    ).run();
-    db.prepare(
-      /*sql*/ `create index lfg_post_team_id on "LFGPost"("teamId")`,
-    ).run();
-  })();
+		db.prepare(
+			/*sql*/ `create index lfg_post_author_id on "LFGPost"("authorId")`,
+		).run();
+		db.prepare(
+			/*sql*/ `create index lfg_post_team_id on "LFGPost"("teamId")`,
+		).run();
+	})();
 }

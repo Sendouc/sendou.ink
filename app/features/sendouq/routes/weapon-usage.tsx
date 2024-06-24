@@ -6,17 +6,17 @@ import { weaponUsageStats } from "../queries/weaponUsageStats.server";
 export type WeaponUsageLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = ({ request }: LoaderFunctionArgs) => {
-  const data = parseSearchParams({
-    request,
-    schema: weaponUsageSearchParamsSchema,
-  });
+	const data = parseSearchParams({
+		request,
+		schema: weaponUsageSearchParamsSchema,
+	});
 
-  return {
-    usage: weaponUsageStats({
-      mode: data.modeShort,
-      season: data.season,
-      stageId: data.stageId,
-      userId: data.userId,
-    }),
-  };
+	return {
+		usage: weaponUsageStats({
+			mode: data.modeShort,
+			season: data.season,
+			stageId: data.stageId,
+			userId: data.userId,
+		}),
+	};
 };

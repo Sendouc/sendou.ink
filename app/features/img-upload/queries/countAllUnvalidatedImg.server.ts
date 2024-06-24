@@ -14,5 +14,5 @@ const stm = sql.prepare(/*sql*/ `
 `);
 
 export function countAllUnvalidatedImg() {
-  return (stm.get() as any).count as number;
+	return (stm.get() as any).count as number;
 }

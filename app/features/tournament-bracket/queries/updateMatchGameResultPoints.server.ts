@@ -8,13 +8,13 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function updateMatchGameResultPoints({
-  matchGameResultId,
-  opponentOnePoints,
-  opponentTwoPoints,
+	matchGameResultId,
+	opponentOnePoints,
+	opponentTwoPoints,
 }: {
-  matchGameResultId: number;
-  opponentOnePoints: number;
-  opponentTwoPoints: number;
+	matchGameResultId: number;
+	opponentOnePoints: number;
+	opponentTwoPoints: number;
 }) {
-  stm.run({ id: matchGameResultId, opponentOnePoints, opponentTwoPoints });
+	stm.run({ id: matchGameResultId, opponentOnePoints, opponentTwoPoints });
 }

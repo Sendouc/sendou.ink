@@ -12,54 +12,54 @@ import { validateImage } from "../queries/validateImage";
 import { validateImageSchema } from "../upload-schemas.server";
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUserId(request);
-  const data = await parseRequestFormData({
-    schema: validateImageSchema,
-    request,
-  });
+	const user = await requireUserId(request);
+	const data = await parseRequestFormData({
+		schema: validateImageSchema,
+		request,
+	});
 
-  validate(isMod(user), "Only admins can validate images");
+	validate(isMod(user), "Only admins can validate images");
 
-  validateImage(data.imageId);
+	validateImage(data.imageId);
 
-  return null;
+	return null;
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const user = await requireUserId(request);
+	const user = await requireUserId(request);
 
-  notFoundIfFalsy(isMod(user));
+	notFoundIfFalsy(isMod(user));
 
-  return {
-    image: oneUnvalidatedImage(),
-    unvalidatedImgCount: countAllUnvalidatedImg(),
-  };
+	return {
+		image: oneUnvalidatedImage(),
+		unvalidatedImgCount: countAllUnvalidatedImg(),
+	};
 };
 
 export default function ImageUploadAdminPage() {
-  return (
-    <Main>
-      <ImageValidator />
-    </Main>
-  );
+	return (
+		<Main>
+			<ImageValidator />
+		</Main>
+	);
 }
 
 function ImageValidator() {
-  const data = useLoaderData<typeof loader>();
+	const data = useLoaderData<typeof loader>();
 
-  if (!data.image) {
-    return <>All validated!</>;
-  }
+	if (!data.image) {
+		return <>All validated!</>;
+	}
 
-  return (
-    <>
-      <div>{data.unvalidatedImgCount} left</div>
-      <img src={userSubmittedImage(data.image.url)} alt="" />
-      <Form method="post">
-        <input type="hidden" name="imageId" value={data.image.id} />
-        <SubmitButton>Ok</SubmitButton>
-      </Form>
-      <div>From: {data.image.submitterUserId}</div>
-    </>
-  );
+	return (
+		<>
+			<div>{data.unvalidatedImgCount} left</div>
+			<img src={userSubmittedImage(data.image.url)} alt="" />
+			<Form method="post">
+				<input type="hidden" name="imageId" value={data.image.id} />
+				<SubmitButton>Ok</SubmitButton>
+			</Form>
+			<div>From: {data.image.submitterUserId}</div>
+		</>
+	);
 }

@@ -24,16 +24,16 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function findGroupByInviteCode(inviteCode: string): {
-  id: number;
-  status: Group["status"];
-  members: { id: number; username: string; role: GroupMember["role"] }[];
+	id: number;
+	status: Group["status"];
+	members: { id: number; username: string; role: GroupMember["role"] }[];
 } | null {
-  const row = stm.get({ inviteCode }) as any;
-  if (!row) return null;
+	const row = stm.get({ inviteCode }) as any;
+	if (!row) return null;
 
-  return {
-    id: row.id,
-    status: row.status,
-    members: parseDBJsonArray(row.members),
-  };
+	return {
+		id: row.id,
+		status: row.status,
+		members: parseDBJsonArray(row.members),
+	};
 }

@@ -1,58 +1,58 @@
 import { useTranslation } from "react-i18next";
+import { Theme, useTheme } from "~/features/theme/core/provider";
 import { Button } from "../Button";
+import { Popover } from "../Popover";
 import { MoonIcon } from "../icons/Moon";
 import { SunIcon } from "../icons/Sun";
 import { SunAndMoonIcon } from "../icons/SunAndMoon";
-import { Popover } from "../Popover";
 import { SelectedThemeIcon } from "./SelectedThemeIcon";
-import { Theme, useTheme } from "~/features/theme/core/provider";
 
 const ThemeIcons = {
-  [Theme.LIGHT]: SunIcon,
-  [Theme.DARK]: MoonIcon,
-  auto: SunAndMoonIcon,
+	[Theme.LIGHT]: SunIcon,
+	[Theme.DARK]: MoonIcon,
+	auto: SunAndMoonIcon,
 };
 
 export function ThemeChanger({
-  children,
-  plain,
+	children,
+	plain,
 }: {
-  children?: React.ReactNode;
-  plain?: boolean;
+	children?: React.ReactNode;
+	plain?: boolean;
 }) {
-  const { userTheme, setUserTheme } = useTheme();
-  const { t } = useTranslation();
+	const { userTheme, setUserTheme } = useTheme();
+	const { t } = useTranslation();
 
-  if (!userTheme) {
-    return null;
-  }
+	if (!userTheme) {
+		return null;
+	}
 
-  return (
-    <Popover
-      buttonChildren={children ?? <SelectedThemeIcon />}
-      triggerClassName={plain ? undefined : "layout__header__button"}
-    >
-      <div className="layout__user-popover">
-        {(["auto", Theme.DARK, Theme.LIGHT] as const).map((theme) => {
-          const Icon = ThemeIcons[theme];
-          const selected = userTheme === theme;
-          return (
-            <Button
-              variant="minimal"
-              key={theme}
-              size="tiny"
-              icon={<Icon alt="" />}
-              // TODO: Remove this and find better semantic representation than
-              // just multiple buttons. Maybe radio group?
-              aria-current={selected}
-              className={selected ? undefined : "text-main-forced"}
-              onClick={() => setUserTheme(theme)}
-            >
-              {t(`theme.${theme}`)}
-            </Button>
-          );
-        })}
-      </div>
-    </Popover>
-  );
+	return (
+		<Popover
+			buttonChildren={children ?? <SelectedThemeIcon />}
+			triggerClassName={plain ? undefined : "layout__header__button"}
+		>
+			<div className="layout__user-popover">
+				{(["auto", Theme.DARK, Theme.LIGHT] as const).map((theme) => {
+					const Icon = ThemeIcons[theme];
+					const selected = userTheme === theme;
+					return (
+						<Button
+							variant="minimal"
+							key={theme}
+							size="tiny"
+							icon={<Icon alt="" />}
+							// TODO: Remove this and find better semantic representation than
+							// just multiple buttons. Maybe radio group?
+							aria-current={selected}
+							className={selected ? undefined : "text-main-forced"}
+							onClick={() => setUserTheme(theme)}
+						>
+							{t(`theme.${theme}`)}
+						</Button>
+					);
+				})}
+			</div>
+		</Popover>
+	);
 }
