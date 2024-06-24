@@ -228,7 +228,7 @@ Note: This is only useful if you have access to a production running on Render.c
 
 ### Fix errors from the CI Pipeline
 
-If you change any files and the CI pipeline errors out on certain formatting/linting steps (e.g. the `Prettier` or `Stylelint` step), run this command in the repo's root directory:
+If you change any files and the CI pipeline errors out on certain formatting/linting steps (Biome) run this command in the repo's root directory:
 
 ```sh
 npm run cf
