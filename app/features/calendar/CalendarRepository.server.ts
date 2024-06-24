@@ -418,7 +418,7 @@ type CreateArgs = Pick<
 	isFullTournament: boolean;
 	mapPickingStyle: Tables["Tournament"]["mapPickingStyle"];
 	bracketProgression: TournamentSettings["bracketProgression"] | null;
-	minMembersPerTeam: number;
+	minMembersPerTeam?: number;
 	teamsPerGroup?: number;
 	thirdPlaceMatch?: boolean;
 	autoCheckInAll?: boolean;

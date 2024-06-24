@@ -100,7 +100,7 @@ export const action: ActionFunction = async ({ request }) => {
 		toToolsMode:
 			rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
 		bracketProgression: formValuesToBracketProgression(data),
-		minMembersPerTeam: data.minMembersPerTeam,
+		minMembersPerTeam: data.minMembersPerTeam ?? undefined,
 		teamsPerGroup: data.teamsPerGroup ?? undefined,
 		thirdPlaceMatch: data.thirdPlaceMatch ?? undefined,
 		isRanked: data.isRanked ?? undefined,
@@ -254,7 +254,7 @@ export const newCalendarEventActionSchema = z
 		// tournament format related fields
 		//
 		format: z.enum(FORMATS_SHORT).nullish(),
-		minMembersPerTeam: z.coerce.number().int().min(1).max(4),
+		minMembersPerTeam: z.coerce.number().int().min(1).max(4).nullish(),
 		withUndergroundBracket: z.preprocess(checkboxValueToBoolean, z.boolean()),
 		thirdPlaceMatch: z.preprocess(
 			checkboxValueToBoolean,
