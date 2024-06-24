@@ -391,10 +391,9 @@ function Players({
 			{players.map((player, i) => {
 				const formId = `player-${i + 1}`;
 				const asPlainInput = typeof player === "string";
-				const key = typeof player === "string" ? player : player.id;
 
 				return (
-					<div key={key}>
+					<div key={i}>
 						<div className="stack horizontal md items-center mb-1">
 							<label htmlFor={formId} className="mb-0">
 								{t("forms.team.player.header", { number: i + 1 })}

@@ -1474,7 +1474,7 @@ function FollowUpBrackets({
 				<div className="stack lg">
 					{brackets.map((b, i) => (
 						<FollowUpBracketInputs
-							key={b.name}
+							key={i}
 							teamsPerGroup={teamsPerGroup}
 							onChange={(newBracket) => {
 								setBrackets(
