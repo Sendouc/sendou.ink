@@ -273,13 +273,13 @@ export type LFGType =
 	| "TEAM_FOR_COACH"
 	| "COACH_FOR_TEAM";
 
-export const LFG_TYPES: LFGType[] = [
+export const LFG_TYPES = [
 	"PLAYER_FOR_TEAM",
 	"PLAYER_FOR_COACH",
 	"TEAM_FOR_PLAYER",
 	"TEAM_FOR_COACH",
 	"COACH_FOR_TEAM",
-];
+] as const;
 
 export interface LFGPost {
 	id: GeneratedAlways<number>;
