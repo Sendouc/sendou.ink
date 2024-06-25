@@ -3,6 +3,7 @@
 	"types.PLAYER_FOR_COACH": "Looking for a personal coach",
 	"types.TEAM_FOR_PLAYER": "Looking for players",
 	"types.TEAM_FOR_COACH": "Looking for a team coach",
+	"types.TEAM_FOR_SCRIM": "Looking for scrim partners",
 	"types.COACH_FOR_TEAM": "Offering coaching",
 	"post.lastActive": "last active",
 	"noPosts": "No posts matching the filter",

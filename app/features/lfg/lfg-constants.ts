@@ -10,6 +10,7 @@ export const LFG = {
 export const TEAM_POST_TYPES: Array<Tables["LFGPost"]["type"]> = [
 	"TEAM_FOR_COACH",
 	"TEAM_FOR_PLAYER",
+	"TEAM_FOR_SCRIM",
 ];
 
 export const TIMEZONES = [

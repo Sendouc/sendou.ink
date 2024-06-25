@@ -271,6 +271,7 @@ export type LFGType =
 	| "PLAYER_FOR_COACH"
 	| "TEAM_FOR_PLAYER"
 	| "TEAM_FOR_COACH"
+	| "TEAM_FOR_SCRIM"
 	| "COACH_FOR_TEAM";
 
 export const LFG_TYPES: LFGType[] = [
@@ -278,6 +279,7 @@ export const LFG_TYPES: LFGType[] = [
 	"PLAYER_FOR_COACH",
 	"TEAM_FOR_PLAYER",
 	"TEAM_FOR_COACH",
+	"TEAM_FOR_SCRIM",
 	"COACH_FOR_TEAM",
 ];
 
