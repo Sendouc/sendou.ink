@@ -243,7 +243,7 @@ function LogInButton() {
 	return (
 		<div className="front__nav-item round">
 			<LogInButtonContainer>
-				<button className="front__log-in-button" type="button">
+				<button className="front__log-in-button" type="submit">
 					<LogInIcon size={28} />
 				</button>
 			</LogInButtonContainer>
