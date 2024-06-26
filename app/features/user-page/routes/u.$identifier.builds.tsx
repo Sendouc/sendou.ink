@@ -1,10 +1,19 @@
-import { useLoaderData, useMatches } from "@remix-run/react";
+import { useFetcher, useLoaderData, useMatches } from "@remix-run/react";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
+import { Dialog } from "~/components/Dialog";
+import { FormMessage } from "~/components/FormMessage";
 import { WeaponImage } from "~/components/Image";
+import { Popover } from "~/components/Popover";
+import { SubmitButton } from "~/components/SubmitButton";
 import { LockIcon } from "~/components/icons/Lock";
+import { PlusIcon } from "~/components/icons/Plus";
+import { SortIcon } from "~/components/icons/Sort";
+import { TrashIcon } from "~/components/icons/Trash";
 import { BUILD } from "~/constants";
+import { BUILD_SORT_IDENTIFIERS, type BuildSort } from "~/db/tables";
 import { useUser } from "~/features/auth/core/user";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import type { MainWeaponId } from "~/modules/in-game-lists";
@@ -12,6 +21,7 @@ import { mainWeaponIds } from "~/modules/in-game-lists";
 import { atOrError } from "~/utils/arrays";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { userNewBuildPage } from "~/utils/urls";
+import { DEFAULT_BUILD_SORT } from "../user-page-constants";
 import type { UserPageLoaderData } from "./u.$identifier";
 
 import { action } from "../actions/u.$identifier.builds.server";
@@ -39,6 +49,16 @@ export default function UserBuildsPage() {
 	});
 
 	const isOwnPage = user?.id === parentPageData.id;
+	const [changingSorting, setChangingSorting] = useSearchParamState({
+		defaultValue: false,
+		name: "sorting",
+		revive: (value) => value === "true" && isOwnPage,
+	});
+
+	const closeSortingDialog = React.useCallback(
+		() => setChangingSorting(false),
+		[setChangingSorting],
+	);
 
 	const builds =
 		weaponFilter === "ALL"
@@ -55,23 +75,40 @@ export default function UserBuildsPage() {
 
 	return (
 		<div className="stack lg">
+			{changingSorting ? (
+				<ChangeSortingDialog close={closeSortingDialog} />
+			) : null}
 			{isOwnPage && (
 				<div className="stack sm horizontal items-center justify-end">
+					<Button
+						onClick={() => setChangingSorting(true)}
+						size="tiny"
+						variant="outlined"
+						icon={<SortIcon />}
+					>
+						{t("user:builds.sorting.changeButton")}
+					</Button>
 					{data.builds.length < BUILD.MAX_COUNT ? (
 						<LinkButton
 							to={userNewBuildPage(parentPageData)}
 							size="tiny"
 							testId="new-build-button"
+							icon={<PlusIcon />}
 						>
 							{t("addBuild")}
 						</LinkButton>
 					) : (
-						<>
-							<span className="info-message">{t("reachBuildMaxCount")}</span>
-							<button className="tiny" disabled type="button">
-								{t("addBuild")}
-							</button>
-						</>
+						<Popover
+							buttonChildren={
+								<>
+									<PlusIcon className="button-icon" />
+									{t("addBuild")}
+								</>
+							}
+							triggerClassName="tiny"
+						>
+							{t("reachBuildMaxCount")}
+						</Popover>
 					)}
 				</div>
 			)}
@@ -167,5 +204,148 @@ function BuildsFilters({
 				);
 			})}
 		</div>
+	);
+}
+
+const MISSING_SORT_VALUE = "null";
+function ChangeSortingDialog({ close }: { close: () => void }) {
+	const data = useLoaderData<typeof loader>();
+	const [buildSorting, setBuildSorting] = React.useState<
+		ReadonlyArray<BuildSort | null>
+	>(() => {
+		if (!data.buildSorting) return [...DEFAULT_BUILD_SORT, null];
+		if (data.buildSorting.length === BUILD_SORT_IDENTIFIERS.length)
+			return data.buildSorting;
+
+		return [...data.buildSorting, null];
+	});
+	const { t } = useTranslation(["common", "user"]);
+	const fetcher = useFetcher();
+
+	React.useEffect(() => {
+		if (fetcher.state !== "loading") return;
+
+		close();
+	}, [fetcher.state, close]);
+
+	const canAddMoreSorting = buildSorting.length < BUILD_SORT_IDENTIFIERS.length;
+
+	const changeSorting = (idx: number, newIdentifier: BuildSort | null) => {
+		const newSorting = buildSorting.map((oldIdentifier, i) =>
+			i === idx ? newIdentifier : oldIdentifier,
+		);
+
+		if (canAddMoreSorting && newSorting[newSorting.length - 1] !== null) {
+			newSorting.push(null);
+		}
+
+		setBuildSorting(newSorting);
+	};
+
+	const deleteLastSorting = () => {
+		setBuildSorting((prev) => [...prev.filter(Boolean).slice(0, -1), null]);
+	};
+
+	return (
+		<Dialog isOpen close={close}>
+			<fetcher.Form method="post">
+				<input
+					type="hidden"
+					name="buildSorting"
+					value={JSON.stringify(buildSorting.filter(Boolean))}
+				/>
+				<h2 className="text-lg">{t("user:builds.sorting.header")}</h2>
+				<div className="stack lg">
+					<div className="stack md">
+						<FormMessage type="info">
+							{t("user:builds.sorting.info")}
+						</FormMessage>
+						<Button
+							className="ml-auto"
+							variant="minimal"
+							size="tiny"
+							onClick={() => setBuildSorting([...DEFAULT_BUILD_SORT, null])}
+						>
+							{t("user:builds.sorting.backToDefaults")}
+						</Button>
+						{buildSorting.map((sort, i) => {
+							const isLast = i === buildSorting.length - 1;
+							const isSecondToLast = i === buildSorting.length - 2;
+
+							if (isLast && canAddMoreSorting) {
+								return (
+									<ChangeSortingDialogSelect
+										key={i}
+										identifiers={BUILD_SORT_IDENTIFIERS.filter(
+											(identifier) =>
+												!buildSorting.slice(0, -1).includes(identifier),
+										)}
+										value={sort}
+										changeValue={(newValue) => changeSorting(i, newValue)}
+									/>
+								);
+							}
+
+							return (
+								<div key={i} className="stack horizontal justify-between">
+									<div className="font-bold">
+										{i + 1}) {t(`user:builds.sorting.${sort}`)}
+									</div>
+									{(isLast && !canAddMoreSorting) ||
+									(canAddMoreSorting && isSecondToLast) ? (
+										<Button
+											icon={<TrashIcon />}
+											variant="minimal-destructive"
+											onClick={deleteLastSorting}
+										/>
+									) : null}
+								</div>
+							);
+						})}
+					</div>
+
+					<div className="stack sm horizontal justify-center">
+						<SubmitButton _action="UPDATE_SORTING">
+							{t("common:actions.save")}
+						</SubmitButton>
+						<Button variant="destructive" onClick={close}>
+							{t("common:actions.cancel")}
+						</Button>
+					</div>
+				</div>
+			</fetcher.Form>
+		</Dialog>
+	);
+}
+
+function ChangeSortingDialogSelect({
+	identifiers,
+	value,
+	changeValue,
+}: {
+	identifiers: BuildSort[];
+	value: BuildSort | null;
+	changeValue: (value: BuildSort | null) => void;
+}) {
+	const { t } = useTranslation(["user"]);
+
+	return (
+		<select
+			value={value ?? MISSING_SORT_VALUE}
+			onChange={(e) => {
+				if (e.target.value === MISSING_SORT_VALUE) changeValue(null);
+
+				changeValue(e.target.value as BuildSort);
+			}}
+		>
+			<option value={MISSING_SORT_VALUE}>-</option>
+			{identifiers.map((identifier) => {
+				return (
+					<option key={identifier} value={identifier}>
+						{t(`user:builds.sorting.${identifier}`)}
+					</option>
+				);
+			})}
+		</select>
 	);
 }

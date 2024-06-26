@@ -210,7 +210,10 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
 						</LinkButton>
 						<FormWithConfirm
 							dialogHeading={t("builds:deleteConfirm", { title })}
-							fields={[["buildToDeleteId", id]]}
+							fields={[
+								["buildToDeleteId", id],
+								["_action", "DELETE_BUILD"],
+							]}
 						>
 							<Button
 								className="build__small-text"

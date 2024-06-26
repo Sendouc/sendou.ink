@@ -77,7 +77,6 @@ export async function allByUserId({
 		])
 		.where("Build.ownerId", "=", userId)
 		.$if(!showPrivate, (qb) => qb.where("Build.private", "=", 0))
-		.orderBy("Build.updatedAt", "desc")
 		.execute();
 
 	return rows.map((row) => ({

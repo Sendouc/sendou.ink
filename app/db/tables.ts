@@ -660,6 +660,20 @@ export interface UserMapModePreferences {
 	}>;
 }
 
+export const BUILD_SORT_IDENTIFIERS = [
+	"UPDATED_AT",
+	"TOP_500",
+	"WEAPON_POOL",
+	"WEAPON_IN_GAME_ORDER",
+	"ALPHABETICAL_TITLE",
+	"MODE",
+	"HEADGEAR_ID",
+	"CLOTHES_ID",
+	"SHOES_ID",
+] as const;
+
+export type BuildSort = (typeof BUILD_SORT_IDENTIFIERS)[number];
+
 export interface User {
 	/** 1 = permabanned, timestamp = ban active till then */
 	banned: Generated<number | null>;
@@ -702,6 +716,7 @@ export interface User {
 	qWeaponPool: ColumnType<MainWeaponId[] | null, string | null, string | null>;
 	plusSkippedForSeasonNth: number | null;
 	noScreen: Generated<number>;
+	buildSorting: ColumnType<BuildSort[] | null, string | null, string | null>;
 }
 
 export interface UserResultHighlight {

@@ -2,7 +2,7 @@ import type { ExpressionBuilder, FunctionModule } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db, sql as dbDirect } from "~/db/sql";
-import type { DB, TablesInsertable } from "~/db/tables";
+import type { BuildSort, DB, TablesInsertable } from "~/db/tables";
 import type { User } from "~/db/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { CommonUser } from "~/utils/kysely.server";
@@ -29,6 +29,30 @@ const identifierToUserIdQuery = (identifier: string) =>
 
 export function identifierToUserId(identifier: string) {
 	return identifierToUserIdQuery(identifier).executeTakeFirst();
+}
+
+export async function identifierToBuildFields(identifier: string) {
+	const row = await identifierToUserIdQuery(identifier)
+		.select(({ eb }) => [
+			"User.buildSorting",
+			jsonArrayFrom(
+				eb
+					.selectFrom("UserWeapon")
+					.select("UserWeapon.weaponSplId")
+					.whereRef("UserWeapon.userId", "=", "User.id")
+					.orderBy("UserWeapon.order", "asc"),
+			).as("weapons"),
+		])
+		.executeTakeFirst();
+
+	if (!row) {
+		return null;
+	}
+
+	return {
+		...row,
+		weapons: row.weapons.map((row) => row.weaponSplId),
+	};
 }
 
 export function findByIdentifier(identifier: string) {
@@ -60,6 +84,7 @@ export function findByIdentifier(identifier: string) {
 			"User.commissionText",
 			"User.commissionsOpen",
 			"User.patronTier",
+			"User.buildSorting",
 			"PlusTier.tier as plusTier",
 			jsonArrayFrom(
 				eb
@@ -511,6 +536,17 @@ export function updateResultHighlights(args: UpdateResultHighlightsArgs) {
 				.execute();
 		}
 	});
+}
+
+export function updateBuildSorting({
+	userId,
+	buildSorting,
+}: { userId: number; buildSorting: BuildSort[] | null }) {
+	return db
+		.updateTable("User")
+		.set({ buildSorting: buildSorting ? JSON.stringify(buildSorting) : null })
+		.where("id", "=", userId)
+		.execute();
 }
 
 export type UpdatePatronDataArgs = Array<

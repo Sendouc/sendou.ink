@@ -4,13 +4,14 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { notFoundIfFalsy, privatelyCachedJson } from "~/utils/remix";
+import { sortBuilds } from "../core/build-sorting.server";
 import { userParamsSchema } from "../user-page-schemas.server";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const loggedInUser = await getUserId(request);
 	const { identifier } = userParamsSchema.parse(params);
 	const user = notFoundIfFalsy(
-		await UserRepository.identifierToUserId(identifier),
+		await UserRepository.identifierToBuildFields(identifier),
 	);
 
 	const builds = await BuildRepository.allByUserId({
@@ -22,8 +23,15 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 		throw new Response(null, { status: 404 });
 	}
 
-	return privatelyCachedJson({
+	const sortedBuilds = sortBuilds({
 		builds,
+		buildSorting: user.buildSorting,
+		weaponPool: user.weapons,
+	});
+
+	return privatelyCachedJson({
+		buildSorting: user.buildSorting,
+		builds: sortedBuilds,
 		weaponCounts: calculateWeaponCounts(),
 	});
 

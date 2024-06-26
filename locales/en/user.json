@@ -63,5 +63,19 @@
 	"seasons.noReportedWeapons": "No reported weapons yet",
 	"seasons.clickARow": "Click a row to see weapon usage stats",
 	"seasons.loading": "Loading...",
-	"seasons.matchBeingProcessed": "This match has not been processed yet"
+	"seasons.matchBeingProcessed": "This match has not been processed yet",
+
+	"builds.sorting.changeButton": "Change sorting",
+	"builds.sorting.header": "Change build sorting",
+	"builds.sorting.backToDefaults": "Back to defaults",
+	"builds.sorting.info": "Change how builds are ordered on your profile. Affects both you as well as visitors viewing your builds.",
+	"builds.sorting.UPDATED_AT": "Last updated",
+	"builds.sorting.TOP_500": "X Rank Top 500",
+	"builds.sorting.WEAPON_POOL": "Weapon pool",
+	"builds.sorting.WEAPON_IN_GAME_ORDER": "Weapons in-game order",
+	"builds.sorting.ALPHABETICAL_TITLE": "Title alphabetical",
+	"builds.sorting.MODE": "Mode",
+	"builds.sorting.HEADGEAR_ID": "Headgear in-game order",
+	"builds.sorting.CLOTHES_ID": "Clothing in-game order",
+	"builds.sorting.SHOES_ID": "Shoes in-game order"
 }

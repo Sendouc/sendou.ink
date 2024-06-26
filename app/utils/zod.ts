@@ -166,6 +166,12 @@ export function toArray<T>(value: T | Array<T>) {
 	return [value];
 }
 
+export function emptyArrayToNull(value: unknown) {
+	if (Array.isArray(value) && value.length === 0) return null;
+
+	return value;
+}
+
 export function checkboxValueToBoolean(value: unknown) {
 	if (!value) return false;
 
