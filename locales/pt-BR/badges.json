@@ -6,5 +6,7 @@
   "tournament_other": "Premiado(a) por vencer o(a) {{tournament}} (×{{count}})",
   "forYourEvent": "Quer insígnia(s) para o seu evento?",
   "madeBy": "Insígnias por <2>borzoic</2>",
-  "managedBy": "Gerenciado por/pela {{users}}"
+  "managedBy": "Gerenciado por/pela {{users}}",
+  "own.divider": "Ingínias gerenciadas",
+  "other.divider": "Outras insígnias"
 }
