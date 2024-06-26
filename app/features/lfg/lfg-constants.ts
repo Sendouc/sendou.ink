@@ -1,20 +1,16 @@
-import type { Tables } from "~/db/tables";
+import { LFG_TYPES, type Tables } from "~/db/tables";
 
 export const LFG = {
 	MIN_TEXT_LENGTH: 1,
 	MAX_TEXT_LENGTH: 2_000,
 	POST_FRESHNESS_DAYS: 30 as const,
-	types: [
-		"PLAYER_FOR_TEAM",
-		"TEAM_FOR_PLAYER",
-		"TEAM_FOR_COACH",
-		"COACH_FOR_TEAM",
-	] as const,
+	types: LFG_TYPES,
 };
 
 export const TEAM_POST_TYPES: Array<Tables["LFGPost"]["type"]> = [
 	"TEAM_FOR_COACH",
 	"TEAM_FOR_PLAYER",
+	"TEAM_FOR_SCRIM",
 ];
 
 export const TIMEZONES = [
