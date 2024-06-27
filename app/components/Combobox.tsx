@@ -344,9 +344,10 @@ export function GearCombobox({
 	onChange,
 	gearType,
 	initialGearId,
+	nullable,
 }: Pick<
 	ComboboxProps<ComboboxBaseOption>,
-	"inputName" | "onChange" | "className" | "id" | "required"
+	"inputName" | "onChange" | "className" | "id" | "required" | "nullable"
 > & { gearType: GearType; initialGearId?: number }) {
 	const { t } = useTranslation("gear");
 
@@ -375,6 +376,7 @@ export function GearCombobox({
 			className={className}
 			id={id}
 			required={required}
+			nullable={nullable}
 		/>
 	);
 }

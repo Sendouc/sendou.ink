@@ -59,13 +59,16 @@ export const action: ActionFunction = async ({ request }) => {
 			usersBuilds.some((build) => build.id === data.buildToEditId),
 	);
 
+	const someGearIsMissing =
+		!data["HEAD[value]"] || !data["CLOTHES[value]"] || !data["SHOES[value]"];
+
 	const commonArgs = {
 		title: data.title,
 		description: data.description,
 		abilities: data.abilities as BuildAbilitiesTuple,
-		headGearSplId: data["HEAD[value]"],
-		clothesGearSplId: data["CLOTHES[value]"],
-		shoesGearSplId: data["SHOES[value]"],
+		headGearSplId: (someGearIsMissing ? -1 : data["HEAD[value]"])!,
+		clothesGearSplId: (someGearIsMissing ? -1 : data["CLOTHES[value]"])!,
+		shoesGearSplId: (someGearIsMissing ? -1 : data["SHOES[value]"])!,
 		modes: modesShort.filter((mode) => data[mode]),
 		weaponSplIds: data["weapon[value]"],
 		ownerId: user.id,
@@ -111,24 +114,33 @@ const newBuildActionSchema = z.object({
 		actualNumber,
 		z
 			.number()
-			.refine((val) =>
-				headGearIds.includes(val as (typeof headGearIds)[number]),
+			.optional()
+			.refine(
+				(val) =>
+					val === undefined ||
+					headGearIds.includes(val as (typeof headGearIds)[number]),
 			),
 	),
 	"CLOTHES[value]": z.preprocess(
 		actualNumber,
 		z
 			.number()
-			.refine((val) =>
-				clothesGearIds.includes(val as (typeof clothesGearIds)[number]),
+			.optional()
+			.refine(
+				(val) =>
+					val === undefined ||
+					clothesGearIds.includes(val as (typeof clothesGearIds)[number]),
 			),
 	),
 	"SHOES[value]": z.preprocess(
 		actualNumber,
 		z
 			.number()
-			.refine((val) =>
-				shoesGearIds.includes(val as (typeof shoesGearIds)[number]),
+			.optional()
+			.refine(
+				(val) =>
+					val === undefined ||
+					shoesGearIds.includes(val as (typeof shoesGearIds)[number]),
 			),
 	),
 	abilities: z.preprocess(

@@ -1162,6 +1162,14 @@ dialog::backdrop {
 	place-items: center;
 }
 
+.build__gear-abilities__no-gear {
+	grid-template-columns: repeat(4, max-content);
+	margin: 0 auto;
+	margin-top: 10px;
+	margin-bottom: 1rem;
+	row-gap: 28px;
+}
+
 .build__gear {
 	border-radius: 50%;
 	background-color: var(--bg-darker-very-transparent);

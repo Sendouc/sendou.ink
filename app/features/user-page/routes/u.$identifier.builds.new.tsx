@@ -51,6 +51,7 @@ export default function NewBuildPage() {
 					<input type="hidden" name="buildToEditId" value={buildToEdit.id} />
 				)}
 				<WeaponsSelector />
+				<FormMessage type="info">{t("builds:forms.noGear.info")}</FormMessage>
 				<GearSelector
 					type="HEAD"
 					abilities={abilities}
@@ -255,26 +256,30 @@ function GearSelector({
 	const { buildToEdit, gearIdToAbilities } = useLoaderData<typeof loader>();
 	const { t } = useTranslation("builds");
 
-	const initialGearId = !buildToEdit
-		? undefined
-		: type === "HEAD"
-			? buildToEdit.headGearSplId
-			: type === "CLOTHES"
-				? buildToEdit.clothesGearSplId
-				: buildToEdit.shoesGearSplId;
+	const initialGearId = () => {
+		const gearId = !buildToEdit
+			? undefined
+			: type === "HEAD"
+				? buildToEdit.headGearSplId
+				: type === "CLOTHES"
+					? buildToEdit.clothesGearSplId
+					: buildToEdit.shoesGearSplId;
+
+		if (gearId === -1) return undefined;
+
+		return gearId;
+	};
 
 	return (
 		<div>
-			<Label htmlFor={type} required>
-				{t(`forms.gear.${type}`)}
-			</Label>
+			<Label htmlFor={type}>{t(`forms.gear.${type}`)}</Label>
 			<div>
 				<GearCombobox
 					gearType={type}
 					inputName={type}
 					id={type}
-					required
-					initialGearId={initialGearId}
+					initialGearId={initialGearId()}
+					nullable
 					// onChange only exists to copy abilities from existing gear
 					// actual value of combobox is handled in uncontrolled manner
 					onChange={(opt) => {
