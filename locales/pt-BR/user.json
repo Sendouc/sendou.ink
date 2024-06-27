@@ -37,5 +37,24 @@
 	"forms.info.favoriteBadge": "Por padrão, sua insígnia favorita é mostrada em tamanho maior no seu perfil.",
 
 	"search.info": "Procurar por usuários pelo nome do Discord, Splatoon 3 ou Twitter",
-	"search.noResults": "Nenhum usuário encontrado com o termo '{{query}}'"
+	"search.noResults": "Nenhum usuário encontrado com o termo '{{query}}'",
+
+	"seasons": "Temporadas",
+	"seasons.noQ": "Esse usuário não jogou SendouQ ou torneios ranqueados nessa temporada",
+	"seasons.tabs.weapons": "Armas",
+	"seasons.tabs.stages": "Mapas",
+	"seasons.tabs.self": "Si mesmo(a)",
+	"seasons.tabs.teammates": "Colegas de time",
+	"seasons.tabs.opponents": "Oponentes",
+	"seasons.season": "Temporada",
+	"seasons.season.short": "S",
+	"seasons.win.short": "V",
+	"seasons.loss.short": "D",
+	"seasons.tentative": "Tentativo(a)",
+	"seasons.tentative.explanation": "O placar tem uma quantidade pequena de entradas. Assim que jogadores suficientes terminarem os seus cálculos as tiers do ranking vão recalcular. Para a maioria dos jogadores isso significa que a tier deles vai descer. O SP sempre ficará igual.",
+	"seasons.peak": "Peak",
+	"seasons.noReportedWeapons": "As armas ainda não foram declaradas",
+	"seasons.clickARow": "Clique em uma fileira pra ver as estatísticas de uso da arma",
+	"seasons.loading": "Carregando...",
+	"seasons.matchBeingProcessed": "Essa partida não foi processada ainda"
 }

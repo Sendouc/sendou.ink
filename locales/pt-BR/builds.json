@@ -27,8 +27,16 @@
 
 	"emptyAbilitySlot": "Espaço (Slot) de habilidade vazio",
 
+	"filters.type.ability": "Por habilidade",
+	"filters.type.mode": "Por modo",
+	"filters.type.date": "Por data",
+	"filters.ability.title": "Filtro de habilidade",
+	"filters.mode.title": "Filtro de modo",
+	"filters.date.title": "Filtro de data",
 	"filters.has": "Tem",
 	"filters.does.not.have": "Não tem",
 	"filters.atLeast": "Pelo menos",
-	"filters.atMost": "No máximo"
+	"filters.atMost": "No máximo",
+	"filters.date.since": "Desde a",
+	"filters.date.custom": "Data personalizada"
 }
