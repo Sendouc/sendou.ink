@@ -1343,6 +1343,14 @@ dialog::backdrop {
 	align-items: flex-start;
 }
 
+.menu-container__scrolling {
+	max-height: 300px;
+	overflow-y: auto;
+	scrollbar-color: rgb(83 65 91) transparent;
+	scrollbar-width: thin;
+	scrollbar-gutter: stable;
+}
+
 .menu__item {
 	display: flex;
 	font-size: var(--fonts-xs);
@@ -1372,6 +1380,11 @@ dialog::backdrop {
 .menu__item__disabled {
 	color: var(--text-lighter);
 	cursor: not-allowed;
+}
+
+.menu__item__selected {
+	background-color: var(--theme-transparent);
+	font-weight: var(--extra-bold);
 }
 
 .menu__item__icon {

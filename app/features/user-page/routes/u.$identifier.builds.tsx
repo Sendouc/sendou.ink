@@ -5,13 +5,15 @@ import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { FormMessage } from "~/components/FormMessage";
-import { WeaponImage } from "~/components/Image";
+import { Image, WeaponImage } from "~/components/Image";
+import { Menu, type MenuProps } from "~/components/Menu";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { LockIcon } from "~/components/icons/Lock";
 import { PlusIcon } from "~/components/icons/Plus";
 import { SortIcon } from "~/components/icons/Sort";
 import { TrashIcon } from "~/components/icons/Trash";
+import { UnlockIcon } from "~/components/icons/Unlock";
 import { BUILD } from "~/constants";
 import { BUILD_SORT_IDENTIFIERS, type BuildSort } from "~/db/tables";
 import { useUser } from "~/features/auth/core/user";
@@ -20,7 +22,7 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
 import { atOrError } from "~/utils/arrays";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { userNewBuildPage } from "~/utils/urls";
+import { userNewBuildPage, weaponCategoryUrl } from "~/utils/urls";
 import { DEFAULT_BUILD_SORT } from "../user-page-constants";
 import type { UserPageLoaderData } from "./u.$identifier";
 
@@ -153,6 +155,42 @@ function BuildsFilters({
 	const showPublicPrivateFilters =
 		user?.id === parentPageData.id && privateBuildsCount > 0;
 
+	const WeaponFilterMenuButton = React.forwardRef((props, ref) => (
+		<Button
+			variant={typeof weaponFilter === "number" ? undefined : "outlined"}
+			size="tiny"
+			className="u__build-filter-button"
+			{...props}
+			_ref={ref}
+		>
+			<Image
+				path={weaponCategoryUrl("SHOOTERS")}
+				width={24}
+				height={24}
+				alt=""
+			/>
+			{t("builds:filters.filterByWeapon")}
+		</Button>
+	));
+
+	const weaponFilterMenuItems = mainWeaponIds
+		.map((weaponId) => {
+			const count = data.weaponCounts[weaponId];
+
+			if (!count) return null;
+
+			const item: MenuProps["items"][number] = {
+				id: weaponId,
+				text: `${t(`weapons:MAIN_${weaponId}`)} (${count})`,
+				icon: <WeaponImage weaponSplId={weaponId} variant="build" size={18} />,
+				onClick: () => setWeaponFilter(weaponId),
+				selected: weaponFilter === weaponId,
+			};
+
+			return item;
+		})
+		.filter((item) => item !== null);
+
 	return (
 		<div className="stack horizontal sm flex-wrap">
 			<Button
@@ -170,6 +208,7 @@ function BuildsFilters({
 						variant={weaponFilter === "PUBLIC" ? undefined : "outlined"}
 						size="tiny"
 						className="u__build-filter-button"
+						icon={<UnlockIcon />}
 					>
 						{t("builds:stats.public")} ({publicBuildsCount})
 					</Button>
@@ -185,24 +224,11 @@ function BuildsFilters({
 				</>
 			) : null}
 
-			{mainWeaponIds.map((weaponId) => {
-				const count = data.weaponCounts[weaponId];
-
-				if (!count) return null;
-
-				return (
-					<Button
-						key={weaponId}
-						onClick={() => setWeaponFilter(weaponId)}
-						variant={weaponFilter === weaponId ? undefined : "outlined"}
-						size="tiny"
-						className="u__build-filter-button"
-					>
-						<WeaponImage weaponSplId={weaponId} variant="build" width={20} />
-						{t(`weapons:MAIN_${weaponId}`)} ({count})
-					</Button>
-				);
-			})}
+			<Menu
+				items={weaponFilterMenuItems}
+				button={WeaponFilterMenuButton}
+				scrolling
+			/>
 		</div>
 	);
 }

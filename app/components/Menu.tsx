@@ -2,22 +2,22 @@ import { Menu as HeadlessUIMenu, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import * as React from "react";
 
-export function Menu({
-	button,
-	items,
-	className,
-}: {
+export interface MenuProps {
 	button: React.ElementType;
 	items: {
 		// type: "button"; TODO: type: "link"
 		text: string;
-		id: string;
+		id: string | number;
 		icon?: React.ReactNode;
 		onClick: () => void;
 		disabled?: boolean;
+		selected?: boolean;
 	}[];
 	className?: string;
-}) {
+	scrolling?: boolean;
+}
+
+export function Menu({ button, items, className, scrolling }: MenuProps) {
 	return (
 		<HeadlessUIMenu as="div" className={clsx("menu-container", className)}>
 			<HeadlessUIMenu.Button as={button} />
@@ -30,7 +30,11 @@ export function Menu({
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<HeadlessUIMenu.Items className="menu__items-container">
+				<HeadlessUIMenu.Items
+					className={clsx("menu__items-container", {
+						"menu-container__scrolling": scrolling,
+					})}
+				>
 					{items.map((item) => {
 						return (
 							<HeadlessUIMenu.Item key={item.id} disabled={item.disabled}>
@@ -39,6 +43,7 @@ export function Menu({
 										className={clsx("menu__item", {
 											menu__item__active: active,
 											menu__item__disabled: item.disabled,
+											menu__item__selected: item.selected,
 										})}
 										onClick={item.onClick}
 										data-testid={`menu-item-${item.id}`}

@@ -252,7 +252,7 @@
 .u__build-filter-button {
 	padding: 0 var(--s-1-5) !important;
 	gap: var(--s-1);
-	min-height: 24px;
+	min-height: 32px;
 }
 
 .u__placements {

@@ -41,5 +41,6 @@
 	"filters.atLeast": "At least",
 	"filters.atMost": "At most",
 	"filters.date.since": "Since",
-	"filters.date.custom": "Custom"
+	"filters.date.custom": "Custom",
+	"filters.filterByWeapon": "Filter by weapon"
 }
