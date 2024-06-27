@@ -11,6 +11,7 @@ import type {
 	MainWeaponId,
 } from "~/modules/in-game-lists/types";
 import invariant from "~/utils/invariant";
+import { sortAbilities } from "../core/ability-sorting.server";
 
 const buildsByWeaponIdStm = sql.prepare(/* sql */ `
 with "Top500Weapon" as (
@@ -267,7 +268,7 @@ function augmentBuild<T>({
 		...row,
 		modes,
 		weapons,
-		abilities: dbAbilitiesToArrayOfArrays(abilities),
+		abilities: sortAbilities(dbAbilitiesToArrayOfArrays(abilities)),
 	};
 }
 
