@@ -322,8 +322,20 @@ export function sortGroupsBySkillAndSentiment({
 				return aDiff - bDiff;
 			}
 
-			const aTier = a.tier?.name;
-			const bTier = b.tier?.name;
+			const aTier =
+				a.tier?.name ??
+				resolveGroupSkill({
+					group: a as LookingGroupWithInviteCode,
+					userSkills,
+					intervals,
+				})?.name;
+			const bTier =
+				b.tier?.name ??
+				resolveGroupSkill({
+					group: b as LookingGroupWithInviteCode,
+					userSkills,
+					intervals,
+				})?.name;
 
 			const aTierDiff = tierDiff(aTier);
 			const bTierDiff = tierDiff(bTier);
