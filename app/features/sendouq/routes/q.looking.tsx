@@ -416,10 +416,11 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const user = await getUser(request);
 
-	const isPreview =
+	const isPreview = Boolean(
 		new URL(request.url).searchParams.get("preview") === "true" &&
-		user &&
-		isAtLeastFiveDollarTierPatreon(user);
+			user &&
+			isAtLeastFiveDollarTierPatreon(user),
+	);
 
 	const currentGroup =
 		user && !isPreview ? findCurrentGroupByUserId(user.id) : undefined;
@@ -491,6 +492,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const rangedGroups = addSkillRangeToGroups({
 		groups: censoredGroups,
 		hasLeviathan: isAccurateTiers,
+		isPreview,
 	});
 
 	const sortedGroups = sortGroupsBySkillAndSentiment({

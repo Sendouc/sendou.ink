@@ -375,9 +375,24 @@ const FALLBACK_TIER = { isPlus: false, name: "IRON" } as const;
 export function addSkillRangeToGroups({
 	groups,
 	hasLeviathan,
-}: { groups: DividedGroups; hasLeviathan: boolean }) {
+	isPreview,
+}: { groups: DividedGroups; hasLeviathan: boolean; isPreview: boolean }) {
 	const addRange = (group: LookingGroup) => {
 		if (group.members && group.members.length !== FULL_GROUP_SIZE) return group;
+
+		if (isPreview) {
+			return {
+				...group,
+				tierRange: {
+					range: [
+						{ name: "IRON", isPlus: false },
+						{ name: "LEVIATHAN", isPlus: true },
+					] as [TieredSkill["tier"], TieredSkill["tier"]],
+					diff: 0,
+				},
+				tier: undefined,
+			};
+		}
 
 		const range = tierDifferenceToRangeOrExact({
 			ourTier: groups.own?.tier ?? FALLBACK_TIER,
