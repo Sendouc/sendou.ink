@@ -9,7 +9,7 @@ const abilityFilterSchema = z.object({
 	comparison: z
 		.string()
 		.toUpperCase()
-		.pipe(z.enum(["AT_LEAST", "AT_MOST"]))
+		.pipe(z.enum(["AT_LEAST", "EQUALS", "AT_MOST"]))
 		.optional(),
 });
 

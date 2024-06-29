@@ -121,6 +121,7 @@ function AbilityFilter({
 					data-testid="comparison-select"
 				>
 					<option value="AT_LEAST">{t("builds:filters.atLeast")}</option>
+					<option value="EQUALS">{t("builds:filters.equals")}</option>
 					<option value="AT_MOST">{t("builds:filters.atMost")}</option>
 				</select>
 			) : null}

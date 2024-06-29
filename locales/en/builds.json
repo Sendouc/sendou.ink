@@ -39,6 +39,7 @@
 	"filters.has": "Has",
 	"filters.does.not.have": "Doesn't have",
 	"filters.atLeast": "At least",
+	"filters.equals": "Equals",
 	"filters.atMost": "At most",
 	"filters.date.since": "Since",
 	"filters.date.custom": "Custom",

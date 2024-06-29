@@ -7,7 +7,7 @@ export type AbilityBuildFilter = WithId<{
 	ability: Ability;
 	/** Ability points value or "has"/"doesn't have" */
 	value?: number | boolean;
-	comparison?: "AT_LEAST" | "AT_MOST";
+	comparison?: "AT_LEAST" | "EQUALS" | "AT_MOST";
 }>;
 
 export type ModeBuildFilter = WithId<{
