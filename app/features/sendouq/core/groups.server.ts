@@ -441,6 +441,8 @@ function resolveGroupSkill({
 	userSkills: Record<string, TieredSkill>;
 	intervals: SkillTierInterval[];
 }): TieredSkill["tier"] | undefined {
+	if (!group.members) return;
+
 	const skills = group.members.map(
 		(m) => userSkills[String(m.id)] ?? { ordinal: defaultOrdinal() },
 	);
