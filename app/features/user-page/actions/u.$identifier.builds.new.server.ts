@@ -2,10 +2,9 @@ import { type ActionFunction, redirect } from "@remix-run/node";
 import { z } from "zod";
 import { BUILD } from "~/constants";
 import { requireUser } from "~/features/auth/core/user.server";
-import type { BuildWeaponWithTop500Info } from "~/features/builds";
-import { buildsByUserId } from "~/features/builds";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import { refreshBuildsCacheByWeaponSplIds } from "~/features/builds/core/cached-builds.server";
+import type { BuildWeaponWithTop500Info } from "~/features/builds/queries/buildsBy.server";
 import {
 	clothesGearIds,
 	headGearIds,
@@ -46,9 +45,9 @@ export const action: ActionFunction = async ({ request }) => {
 		schema: newBuildActionSchema,
 	});
 
-	const usersBuilds = buildsByUserId({
+	const usersBuilds = await BuildRepository.allByUserId({
 		userId: user.id,
-		loggedInUserId: user.id,
+		showPrivate: true,
 	});
 
 	if (usersBuilds.length >= BUILD.MAX_COUNT) {

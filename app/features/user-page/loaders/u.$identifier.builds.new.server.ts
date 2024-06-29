@@ -1,7 +1,7 @@
 import { type LoaderFunctionArgs, json } from "@remix-run/node";
 import { z } from "zod";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { buildsByUserId } from "~/features/builds";
+import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import type { Ability } from "~/modules/in-game-lists";
 import { actualNumber, id } from "~/utils/zod";
 
@@ -17,9 +17,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		Object.fromEntries(url.searchParams),
 	);
 
-	const usersBuilds = buildsByUserId({
+	const usersBuilds = await BuildRepository.allByUserId({
 		userId: user.id,
-		loggedInUserId: user.id,
+		showPrivate: true,
 	});
 	const buildToEdit = usersBuilds.find(
 		(b) => params.success && b.id === params.data.buildId,

@@ -8,7 +8,7 @@ import type {
 	UserWithPlusTier,
 } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
-import type { BuildWeaponWithTop500Info } from "~/features/builds";
+import type { BuildWeaponWithTop500Info } from "~/features/builds/queries/buildsBy.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type {
 	Ability as AbilityType,
