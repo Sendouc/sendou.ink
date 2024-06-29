@@ -6,6 +6,7 @@ import { db } from "~/db/sql";
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { notFoundIfFalsy, parseParams } from "~/utils/remix";
+import { userSubmittedImage } from "~/utils/urls";
 import { id } from "~/utils/zod";
 import {
 	handleOptionsRequest,
@@ -36,6 +37,11 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 				"CalendarEvent.name",
 				"CalendarEventDate.startTime",
 				"Tournament.settings",
+				eb
+					.selectFrom("UserSubmittedImage")
+					.select(["UserSubmittedImage.url"])
+					.whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+					.as("logoUrl"),
 				jsonArrayFrom(
 					eb
 						.selectFrom("TournamentTeam")
@@ -60,7 +66,9 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 		name: tournament.name,
 		startTime: databaseTimestampToDate(tournament.startTime).toISOString(),
 		url: `https://sendou.ink/to/${id}/brackets`,
-		logoUrl: `https://sendou.ink${HACKY_resolvePicture(tournament)}`,
+		logoUrl: tournament.logoUrl
+			? userSubmittedImage(tournament.logoUrl)
+			: `https://sendou.ink${HACKY_resolvePicture(tournament)}`,
 		teams: {
 			checkedInCount: tournament.teams.filter((team) => team.checkedInAt)
 				.length,
