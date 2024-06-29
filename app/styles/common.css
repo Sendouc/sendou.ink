@@ -477,6 +477,7 @@ dialog::backdrop {
 	font-weight: var(--semi-bold);
 	padding-inline: var(--s-2);
 	place-items: center;
+	white-space: nowrap;
 }
 
 .sub-nav__container {
