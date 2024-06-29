@@ -42,6 +42,24 @@ export interface GetUserResponse {
 	// } | null;
 }
 
+/** GET /api/calendar/{year}/{week} */
+
+export type GetCalendarWeekResponse = Array<{
+	/**
+	 * @example "In The Zone 30"
+	 */
+	name: string;
+	tournamentId: number | null;
+	/**
+	 * @example "https://sendou.ink/to/9/brackets"
+	 */
+	tournamentUrl: string | null;
+	/**
+	 * @example "2024-01-12T20:00:00.000Z"
+	 */
+	startTime: string;
+}>;
+
 /** GET /api/tournament/{tournamentId} */
 
 export interface GetTournamentResponse {

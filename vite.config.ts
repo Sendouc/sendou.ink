@@ -307,6 +307,10 @@ export default defineConfig(() => {
 							"features/api-public/routes/user.$identifier.ts",
 						);
 						route(
+							"/api/calendar/:year/:week",
+							"features/api-public/routes/calendar.$year.$week.ts",
+						);
+						route(
 							"/api/tournament/:id",
 							"features/api-public/routes/tournament.$id.ts",
 						);
