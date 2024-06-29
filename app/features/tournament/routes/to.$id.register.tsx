@@ -70,8 +70,8 @@ export default function TournamentRegisterPage() {
 	const startsAtEvenHour = tournament.ctx.startTime.getMinutes() === 0;
 
 	const showAvatarPendingApprovalText =
-		!tournament.ctx.logoUrl &&
-		tournament.ctx.avatarImgId &&
+		tournament.ctx.logoUrl &&
+		!tournament.ctx.logoValidatedAt &&
 		tournament.isOrganizer(user);
 
 	return (
@@ -127,8 +127,8 @@ export default function TournamentRegisterPage() {
 			</div>
 			{showAvatarPendingApprovalText ? (
 				<div className="text-warning text-sm font-semi-bold">
-					Tournament logo pending moderator review. Will be shown automatically
-					once approved.
+					Tournament logo pending moderator review. Will be shown publicly once
+					approved.
 				</div>
 			) : null}
 			<TournamentRegisterInfoTabs />

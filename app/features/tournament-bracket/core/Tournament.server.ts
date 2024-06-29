@@ -5,6 +5,7 @@ import { notFoundIfFalsy } from "~/utils/remix";
 import type { Unwrapped } from "~/utils/types";
 import { Tournament } from "./Tournament";
 import { getServerTournamentManager } from "./brackets-manager/manager.server";
+import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 
 const manager = getServerTournamentManager();
 
@@ -45,10 +46,13 @@ function dataMapped({
 		isAdmin(user);
 	const revealInfo = tournamentHasStarted || isOrganizer;
 
+	const defaultLogo = HACKY_resolvePicture({ name: "default" });
+
 	return {
 		data,
 		ctx: {
 			...ctx,
+			logoSrc: isOrganizer || ctx.logoValidatedAt ? ctx.logoSrc : defaultLogo,
 			teams: ctx.teams.map((team) => {
 				const isOwnTeam = team.members.some(
 					(member) => member.userId === user?.id,

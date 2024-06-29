@@ -35,14 +35,26 @@ export async function findById(id: number) {
 			"Tournament.mapPickingStyle",
 			"Tournament.rules",
 			"CalendarEvent.name",
-			"CalendarEvent.avatarImgId",
 			"CalendarEvent.description",
 			"CalendarEventDate.startTime",
 			eb
-				.selectFrom("UserSubmittedImage")
-				.select(["UserSubmittedImage.url"])
-				.whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+				.selectFrom("UnvalidatedUserSubmittedImage")
+				.select(["UnvalidatedUserSubmittedImage.url"])
+				.whereRef(
+					"CalendarEvent.avatarImgId",
+					"=",
+					"UnvalidatedUserSubmittedImage.id",
+				)
 				.as("logoUrl"),
+			eb
+				.selectFrom("UnvalidatedUserSubmittedImage")
+				.select(["UnvalidatedUserSubmittedImage.validatedAt"])
+				.whereRef(
+					"CalendarEvent.avatarImgId",
+					"=",
+					"UnvalidatedUserSubmittedImage.id",
+				)
+				.as("logoValidatedAt"),
 			jsonObjectFrom(
 				eb
 					.selectFrom("User")
