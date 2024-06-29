@@ -54,7 +54,7 @@ export const testTournament = (
 			rules: null,
 			logoUrl: null,
 			logoSrc: "/test.png",
-			avatarImgId: null,
+			logoValidatedAt: null,
 			discordUrl: null,
 			startTime: 1705858842,
 			isFinalized: 0,
