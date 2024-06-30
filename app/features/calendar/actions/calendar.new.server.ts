@@ -104,6 +104,7 @@ export const action: ActionFunction = async ({ request }) => {
 		teamsPerGroup: data.teamsPerGroup ?? undefined,
 		thirdPlaceMatch: data.thirdPlaceMatch ?? undefined,
 		isRanked: data.isRanked ?? undefined,
+		series: data.series ?? undefined,
 		isInvitational: data.isInvitational ?? false,
 		deadlines: data.strictDeadline ? ("STRICT" as const) : ("DEFAULT" as const),
 		enableNoScreenToggle: data.enableNoScreenToggle ?? undefined,
@@ -233,6 +234,12 @@ export const newCalendarEventActionSchema = z
 		),
 		backgroundColor: hexCode.nullish(),
 		textColor: hexCode.nullish(),
+		series: z
+			.string()
+			.trim()
+			.min(1)
+			.max(TOURNAMENT.SERIES_NAME_MAX_LENGTH)
+			.nullish(),
 		avatarImgId: id.nullish(),
 		pool: z.string().optional(),
 		toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),

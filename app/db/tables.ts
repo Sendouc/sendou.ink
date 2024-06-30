@@ -464,6 +464,7 @@ export interface Tournament {
 		string | null
 	>;
 	rules: string | null;
+	series: string | null;
 }
 
 export interface TournamentBadgeOwner {

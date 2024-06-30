@@ -26,6 +26,7 @@ import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
 	BRACKET_NAMES,
+	TOURNAMENT,
 	type TournamentFormatShort,
 } from "~/features/tournament/tournament-constants";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -80,6 +81,8 @@ const useBaseEvent = () => {
 
 	return eventToCopy ?? eventToEdit;
 };
+
+// xxx: allow swiss groups & round robin formats
 
 export default function CalendarNewEventPage() {
 	const baseEvent = useBaseEvent();
@@ -186,6 +189,7 @@ function EventForm() {
 				/>
 			)}
 			<NameInput />
+			{isTournament && <SeriesInput />}
 			<DescriptionTextarea supportsMarkdown={isTournament} />
 			{isTournament ? <RulesTextarea supportsMarkdown /> : null}
 			<DatesInput allowMultiDate={!isTournament} />
@@ -238,6 +242,27 @@ function NameInput() {
 				maxLength={CALENDAR_EVENT.NAME_MAX_LENGTH}
 				defaultValue={eventToEdit?.name}
 			/>
+		</div>
+	);
+}
+
+function SeriesInput() {
+	const { eventToEdit } = useLoaderData<typeof loader>();
+
+	return (
+		<div>
+			<Label htmlFor="series">Series</Label>
+			<input
+				name="series"
+				minLength={1}
+				maxLength={TOURNAMENT.SERIES_NAME_MAX_LENGTH}
+				defaultValue={eventToEdit?.tournament?.ctx.series ?? undefined}
+			/>
+			<FormMessage type="info">
+				Tournament series can be used to group tournaments together to host e.g.
+				a league or multi-day major. All tournaments with the same name will
+				belong in the same group.
+			</FormMessage>
 		</div>
 	);
 }

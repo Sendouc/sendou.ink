@@ -429,6 +429,7 @@ type CreateArgs = Pick<
 	enableNoScreenToggle?: boolean;
 	autonomousSubs?: boolean;
 	regClosesAt?: number;
+	series?: string;
 	rules: string | null;
 	tournamentToCopyId?: number | null;
 	swissGroupCount?: number;
@@ -481,6 +482,7 @@ export async function create(args: CreateArgs) {
 						mapPickingStyle: args.mapPickingStyle,
 						settings: JSON.stringify(settings),
 						rules: args.rules,
+						series: args.series,
 					})
 					.returning("id")
 					.executeTakeFirstOrThrow()
@@ -633,6 +635,7 @@ export async function update(args: UpdateArgs) {
 				.set({
 					settings: JSON.stringify(settings),
 					rules: args.rules,
+					series: args.series,
 				})
 				.where("id", "=", tournamentId)
 				.returning("mapPickingStyle")

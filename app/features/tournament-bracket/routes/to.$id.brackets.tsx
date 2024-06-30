@@ -74,6 +74,8 @@ import {
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
 
+// xxx: handle finalizing rr or swiss groups only
+
 export const action: ActionFunction = async ({ params, request }) => {
 	const user = await requireUser(request);
 	const tournamentId = tournamentIdFromParams(params);

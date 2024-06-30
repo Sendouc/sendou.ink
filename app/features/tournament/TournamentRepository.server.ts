@@ -34,6 +34,7 @@ export async function findById(id: number) {
 			"Tournament.castedMatchesInfo",
 			"Tournament.mapPickingStyle",
 			"Tournament.rules",
+			"Tournament.series",
 			"CalendarEvent.name",
 			"CalendarEvent.description",
 			"CalendarEventDate.startTime",
@@ -82,6 +83,26 @@ export async function findById(id: number) {
 					.where("TournamentSub.tournamentId", "=", id)
 					.groupBy("TournamentSub.visibility"),
 			).as("subCounts"),
+			jsonArrayFrom(
+				eb
+					.selectFrom("Tournament as AnotherTournament")
+					.innerJoin(
+						"CalendarEvent as AnotherCalendarEvent",
+						"AnotherTournament.id",
+						"AnotherCalendarEvent.tournamentId",
+					)
+					.select([
+						"AnotherTournament.id as tournamentId",
+						"AnotherCalendarEvent.name",
+					])
+					.whereRef("AnotherTournament.series", "=", "Tournament.series")
+					.whereRef(
+						"AnotherCalendarEvent.authorId",
+						"=",
+						"CalendarEvent.authorId",
+					)
+					.orderBy("AnotherCalendarEvent.tournamentId asc"),
+			).as("relatedTournaments"),
 			exists(
 				selectFrom("TournamentResult")
 					.where("TournamentResult.tournamentId", "=", id)

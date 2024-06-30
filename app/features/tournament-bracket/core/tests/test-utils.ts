@@ -59,6 +59,8 @@ export const testTournament = (
 			startTime: 1705858842,
 			isFinalized: 0,
 			name: "test",
+			relatedTournaments: [],
+			series: null,
 			castTwitchAccounts: [],
 			subCounts: [],
 			staff: [],

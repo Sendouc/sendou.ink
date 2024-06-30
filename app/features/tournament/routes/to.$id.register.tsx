@@ -1,4 +1,10 @@
-import { Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
+import {
+	Form,
+	Link,
+	NavLink,
+	useFetcher,
+	useLoaderData,
+} from "@remix-run/react";
 import clsx from "clsx";
 import Compressor from "compressorjs";
 import Markdown from "markdown-to-jsx";
@@ -43,6 +49,7 @@ import {
 	navIconUrl,
 	readonlyMapsPage,
 	tournamentJoinPage,
+	tournamentRegisterPage,
 	tournamentSubsPage,
 	userEditProfilePage,
 	userPage,
@@ -125,6 +132,7 @@ export default function TournamentRegisterPage() {
 					</div>
 				</div>
 			</div>
+			<TournamentSeries />
 			{showAvatarPendingApprovalText ? (
 				<div className="text-warning text-sm font-semi-bold">
 					Tournament logo pending moderator review. Will be shown publicly once
@@ -132,6 +140,40 @@ export default function TournamentRegisterPage() {
 				</div>
 			) : null}
 			<TournamentRegisterInfoTabs />
+		</div>
+	);
+}
+
+// xxx: check styling
+function TournamentSeries() {
+	const tournament = useTournament();
+
+	if (!tournament.ctx.series || tournament.ctx.relatedTournaments.length <= 1) {
+		return null;
+	}
+
+	return (
+		<div>
+			<div className="text font-semi-bold text-lighter">
+				Part of {tournament.ctx.series}
+			</div>
+			<div className="stack horizontal md">
+				{tournament.ctx.relatedTournaments.map((relatedTournament) => {
+					return (
+						<NavLink
+							key={relatedTournament.tournamentId}
+							to={tournamentRegisterPage(relatedTournament.tournamentId)}
+							className={({ isActive }) =>
+								clsx("text-xs text-main-forced", {
+									underline: isActive,
+								})
+							}
+						>
+							{relatedTournament.name}
+						</NavLink>
+					);
+				})}
+			</div>
 		</div>
 	);
 }
