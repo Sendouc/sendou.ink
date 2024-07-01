@@ -1,5 +1,17 @@
+.my-combobox__container {
+	display: flex;
+	gap: var(--s-1-5);
+}
+
+.my-combobox__button {
+	background-color: var(--bg-input-darker);
+	border: 2px solid var(--border);
+	border-radius: var(--rounded-sm);
+	padding: 0 var(--s-0-5);
+}
+
 .my-combobox__popover {
-  /** xxx: problem !important ? */
+	/** xxx: problem !important ? */
 	max-height: 300px !important;
 	overflow: auto;
 	background-color: var(--bg-darker);
@@ -8,6 +20,10 @@
 	scrollbar-color: rgb(83 65 91) transparent;
 	scrollbar-width: thin;
 	scrollbar-gutter: stable;
+}
+
+.my-combobox__popover__left-adjusted {
+	margin-left: -41px;
 }
 
 .my-combobox__image {

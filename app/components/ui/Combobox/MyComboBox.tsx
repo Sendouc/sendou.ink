@@ -4,6 +4,7 @@ import type {
 	// ValidationResult,
 } from "react-aria-components";
 import {
+	Button,
 	ComboBox,
 	Header,
 	Input,
@@ -18,10 +19,12 @@ interface MyComboBoxProps<T extends object>
 	// description?: string | null;
 	// errorMessage?: string | ((validation: ValidationResult) => string);
 	children: React.ReactNode | ((item: T) => React.ReactNode);
+	leftButtonChildren?: React.ReactNode;
 }
 
 export function MyComboBox<T extends object>({
 	label,
+	leftButtonChildren,
 	// description,
 	// errorMessage,
 	children,
@@ -30,13 +33,19 @@ export function MyComboBox<T extends object>({
 	return (
 		<ComboBox {...props}>
 			<Label>{label}</Label>
-			<div className="my-combobox-container">
+			<div className="my-combobox__container">
+				{leftButtonChildren ? (
+					<Button className="my-combobox__button">{leftButtonChildren}</Button>
+				) : null}
 				<Input />
-				{/* <Button>▼</Button> */}
 			</div>
 			{/* {description && <Text slot="description">{description}</Text>} */}
 			{/* <FieldError>{errorMessage}</FieldError> */}
-			<Popover className="my-combobox__popover">
+			<Popover
+				className={clsx("my-combobox__popover", {
+					"my-combobox__popover__left-adjusted": Boolean(leftButtonChildren),
+				})}
+			>
 				<ListBox>{children}</ListBox>
 			</Popover>
 		</ComboBox>

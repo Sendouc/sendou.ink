@@ -1,15 +1,40 @@
 import clsx from "clsx";
+import * as React from "react";
 import { Collection, ListBoxItem, Section } from "react-aria-components";
 import { Image, WeaponImage } from "~/components/Image";
-import { weaponCategoryUrl } from "~/utils/urls";
+import type { MainWeaponId } from "~/modules/in-game-lists";
+import {
+	abilityImageUrl,
+	mainWeaponImageUrl,
+	weaponCategoryUrl,
+} from "~/utils/urls";
 import { MyComboBox, MyComboBoxHeader } from "./MyComboBox";
 import { useWeaponOptions } from "./hooks/useWeaponOptions";
 
 export function WeaponComboBox() {
 	const options = useWeaponOptions();
+	const [weaponSplId, setWeaponSplId] = React.useState<MainWeaponId | null>(
+		null,
+	);
 
 	return (
-		<MyComboBox label="Preferred fruit or vegetable" defaultItems={options}>
+		<MyComboBox
+			label="Weapon"
+			defaultItems={options}
+			selectedKey={weaponSplId}
+			onSelectionChange={(val) => setWeaponSplId(val as MainWeaponId)}
+			leftButtonChildren={
+				<Image
+					path={
+						weaponSplId
+							? mainWeaponImageUrl(weaponSplId)
+							: abilityImageUrl("UNKNOWN")
+					}
+					size={32}
+					alt=""
+				/>
+			}
+		>
 			{(section) => (
 				<Section id={section.label}>
 					<MyComboBoxHeader>

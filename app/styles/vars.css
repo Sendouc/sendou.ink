@@ -12,6 +12,8 @@ html {
 	--bg-ability: rgb(3 6 7);
 	--bg-badge: #000;
 	--bg-mode-active: rgb(213 42 190 / 23.4%);
+	--bg-input: #fff;
+	--bg-input-darker: #111125;
 	--abilities-button-bg: rgb(22 23 51);
 	--badge-text: rgb(255 255 255 / 95%);
 	--border: rgb(217 218 234);
@@ -112,6 +114,7 @@ html.dark {
 	--bg-badge: #000;
 	--bg-mode-active: var(--theme-transparent);
 	--bg-input: #1b1a35;
+	--bg-input-darker: #111125;
 	--abilities-button-bg: var(--bg-lighter);
 	--border: rgb(255 255 255 / 10%);
 	--button-text: rgb(0 0 0 / 85%);
