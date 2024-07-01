@@ -17,29 +17,42 @@ import { MyComboBox, MyComboBoxHeader } from "./MyComboBox";
 import { useWeaponFilter } from "./hooks/useWeaponFilter";
 import { useWeaponOptions } from "./hooks/useWeaponOptions";
 
-export function WeaponComboBox() {
+export function WeaponComboBox({
+	value,
+	onChange,
+}: {
+	value?: MainWeaponId | null;
+	onChange?: (weaponId: MainWeaponId | null) => void;
+}) {
 	const categories = useWeaponOptions();
+
+	const selectedKeyToInputValue = (selectedKey: MainWeaponId | null) =>
+		categories
+			.flatMap((category) => category.options)
+			.find((option) => option.id === selectedKey)?.label ?? "";
 
 	const [fieldState, setFieldState] = React.useState<{
 		selectedKey: MainWeaponId | null;
 		inputValue: string;
 	}>({
 		selectedKey: null,
-		inputValue: "",
+		inputValue: value ? selectedKeyToInputValue(value) : "",
 	});
+
+	const selectedKey = value ?? fieldState.selectedKey;
 
 	const filteredOptions = useWeaponFilter(categories, fieldState.inputValue);
 
 	const onSelectionChange = (id: Key | null) => {
+		if (id === selectedKey) return;
+
 		const weaponSplId = id as MainWeaponId | null;
 
 		setFieldState({
-			inputValue:
-				categories
-					.flatMap((category) => category.options)
-					.find((option) => option.id === id)?.label ?? "",
+			inputValue: selectedKeyToInputValue(weaponSplId),
 			selectedKey: weaponSplId,
 		});
+		onChange?.(weaponSplId);
 	};
 
 	const onInputChange = (value: string) => {
@@ -47,21 +60,32 @@ export function WeaponComboBox() {
 			inputValue: value,
 			selectedKey: value === "" ? null : prevState.selectedKey,
 		}));
+		onChange?.(value === "" ? null : selectedKey);
+	};
+
+	const onBlur = () => {
+		if (!selectedKey) return;
+
+		setFieldState({
+			inputValue: selectedKeyToInputValue(selectedKey),
+			selectedKey,
+		});
 	};
 
 	return (
 		<MyComboBox
 			label="Weapon"
 			items={filteredOptions}
-			selectedKey={fieldState.selectedKey}
+			selectedKey={selectedKey}
 			inputValue={fieldState.inputValue}
 			onSelectionChange={onSelectionChange}
 			onInputChange={onInputChange}
+			onBlur={onBlur}
 			rightButtonChildren={
 				<Image
 					path={
-						fieldState.selectedKey
-							? mainWeaponImageUrl(fieldState.selectedKey)
+						selectedKey
+							? mainWeaponImageUrl(selectedKey)
 							: abilityImageUrl("UNKNOWN")
 					}
 					size={32}

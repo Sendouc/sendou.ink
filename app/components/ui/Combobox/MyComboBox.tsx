@@ -31,7 +31,7 @@ export function MyComboBox<T extends object>({
 	...props
 }: MyComboBoxProps<T>) {
 	return (
-		<ComboBox {...props}>
+		<ComboBox menuTrigger="focus" {...props}>
 			<Label>{label}</Label>
 			<div className="my-combobox__container">
 				<Input />

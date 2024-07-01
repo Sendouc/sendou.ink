@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
 import Chart from "~/components/Chart";
-import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Popover } from "~/components/Popover";
@@ -79,6 +78,7 @@ import {
 	isMainOnlyAbility,
 	isStackableAbility,
 } from "../core/utils";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
 
 import "../analyzer.css";
 
@@ -241,15 +241,11 @@ function BuildAnalyzerPage() {
 				<div className="analyzer__left-column">
 					<div className="stack sm items-center w-full">
 						<div className="w-full">
-							<WeaponCombobox
-								inputName="weapon"
-								onChange={(opt) =>
-									opt &&
-									handleChange({
-										newMainWeaponId: Number(opt.value) as MainWeaponId,
-									})
+							<WeaponComboBox
+								value={mainWeaponId}
+								onChange={(newMainWeaponId) =>
+									newMainWeaponId && handleChange({ newMainWeaponId })
 								}
-								fullWidth
 							/>
 						</div>
 					</div>

@@ -10,6 +10,10 @@
 	padding: 0 var(--s-0-5);
 }
 
+.my-combobox__button > picture {
+	min-width: 32px;
+}
+
 .my-combobox__popover {
 	/** xxx: problem !important ? */
 	max-height: 300px !important;
