@@ -67,6 +67,7 @@
 		"nprogress": "^0.2.0",
 		"openskill": "^3.1.0",
 		"react": "^18.3.1",
+		"react-aria-components": "^1.2.1",
 		"react-charts": "^3.0.0-beta.57",
 		"react-dom": "^18.3.1",
 		"react-flip-toolkit": "^7.1.0",

@@ -53,6 +53,7 @@ import "~/styles/layout.css";
 import "~/styles/reset.css";
 import "~/styles/utils.css";
 import "~/styles/vars.css";
+import "~/styles/ui.css";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
 	// // reload on language change so the selected language gets set into the cookie

@@ -1,0 +1,51 @@
+.my-combobox__popover {
+  /** xxx: problem !important ? */
+	max-height: 300px !important;
+	overflow: auto;
+	background-color: var(--bg-darker);
+	border-radius: var(--rounded-sm);
+	border: 2px solid var(--border);
+	scrollbar-color: rgb(83 65 91) transparent;
+	scrollbar-width: thin;
+	scrollbar-gutter: stable;
+}
+
+.my-combobox__image {
+	background-color: var(--bg-lighter);
+	border-radius: 100%;
+}
+
+.my-combobox__header {
+	font-size: var(--fonts-xxs);
+	color: var(--text-lighter);
+	font-weight: var(--semi-bold);
+	letter-spacing: 0.5px;
+	display: flex;
+	border-bottom: 1.5px solid var(--border);
+	gap: var(--s-2);
+	align-items: center;
+	padding-bottom: var(--s-1-5);
+	position: sticky;
+	top: 0;
+	background-color: var(--bg-darker);
+	padding-top: var(--s-1);
+	padding-left: var(--s-2-5);
+}
+
+.my-combobox__weapon__list-box-item {
+	display: flex;
+	align-items: center;
+	gap: var(--s-1-5);
+	font-size: var(--fonts-xs);
+	font-weight: var(--semi-bold);
+	margin-block: var(--s-1-5);
+	padding-left: var(--s-2-5);
+}
+
+.my-combobox__weapon__list-box-item__focused .my-combobox__image {
+	background-color: var(--theme-transparent);
+}
+
+.my-combobox__weapon__list-box-item__selected .my-combobox__image {
+	outline: 1.5px solid var(--theme);
+}
