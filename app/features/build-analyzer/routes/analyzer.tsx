@@ -14,6 +14,7 @@ import { Table } from "~/components/Table";
 import { Tab, Tabs } from "~/components/Tabs";
 import { Toggle } from "~/components/Toggle";
 import { BeakerIcon } from "~/components/icons/Beaker";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
 import { MAX_AP } from "~/constants";
 import { useUser } from "~/features/auth/core/user";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -78,7 +79,6 @@ import {
 	isMainOnlyAbility,
 	isStackableAbility,
 } from "../core/utils";
-import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
 
 import "../analyzer.css";
 
@@ -235,6 +235,8 @@ function BuildAnalyzerPage() {
 			gear.filter((ability) => !ABILITIES_WITHOUT_CHUNKS.has(ability)).length,
 	);
 
+	// xxx: awkward becaues first have to clear sploosh, maybe should make the button to clear work
+
 	return (
 		<Main>
 			<div className="analyzer__container">
@@ -244,7 +246,8 @@ function BuildAnalyzerPage() {
 							<WeaponComboBox
 								value={mainWeaponId}
 								onChange={(newMainWeaponId) =>
-									newMainWeaponId && handleChange({ newMainWeaponId })
+									typeof newMainWeaponId === "number" &&
+									handleChange({ newMainWeaponId })
 								}
 							/>
 						</div>

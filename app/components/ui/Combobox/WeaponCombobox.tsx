@@ -17,12 +17,19 @@ import { MyComboBox, MyComboBoxHeader } from "./MyComboBox";
 import { useWeaponFilter } from "./hooks/useWeaponFilter";
 import { useWeaponOptions } from "./hooks/useWeaponOptions";
 
+// xxx: extract state logic to another hook
 export function WeaponComboBox({
 	value,
 	onChange,
+	disabledWeaponIds,
+	withRightButton = true,
+	label,
 }: {
 	value?: MainWeaponId | null;
 	onChange?: (weaponId: MainWeaponId | null) => void;
+	disabledWeaponIds?: MainWeaponId[];
+	withRightButton?: boolean;
+	label?: string;
 }) {
 	const categories = useWeaponOptions();
 
@@ -36,7 +43,7 @@ export function WeaponComboBox({
 		inputValue: string;
 	}>({
 		selectedKey: null,
-		inputValue: value ? selectedKeyToInputValue(value) : "",
+		inputValue: typeof value === "number" ? selectedKeyToInputValue(value) : "",
 	});
 	const [isOpen, setIsOpen] = React.useState(false);
 
@@ -69,7 +76,7 @@ export function WeaponComboBox({
 	const onBlur = () => {
 		setIsOpen(false);
 
-		if (!selectedKey) return;
+		if (typeof selectedKey !== "number") return;
 
 		setFieldState({
 			inputValue: selectedKeyToInputValue(selectedKey),
@@ -79,7 +86,8 @@ export function WeaponComboBox({
 
 	return (
 		<MyComboBox
-			label="Weapon"
+			label={label}
+			aria-label={!label ? "Weapon" : undefined}
 			items={filteredOptions}
 			selectedKey={selectedKey}
 			inputValue={fieldState.inputValue}
@@ -89,15 +97,17 @@ export function WeaponComboBox({
 			onFocus={() => setIsOpen(true)}
 			onBlur={onBlur}
 			rightButtonChildren={
-				<Image
-					path={
-						selectedKey
-							? mainWeaponImageUrl(selectedKey)
-							: abilityImageUrl("UNKNOWN")
-					}
-					size={32}
-					alt=""
-				/>
+				withRightButton && (
+					<Image
+						path={
+							typeof selectedKey === "number"
+								? mainWeaponImageUrl(selectedKey)
+								: abilityImageUrl("UNKNOWN")
+						}
+						size={32}
+						alt=""
+					/>
+				)
 			}
 		>
 			{(section) => (
@@ -112,25 +122,33 @@ export function WeaponComboBox({
 						{section.label}
 					</MyComboBoxHeader>
 					<Collection items={section.options}>
-						{(item) => (
-							<ListBoxItem
-								className={({ isFocused, isSelected }) =>
-									clsx("my-combobox__weapon__list-box-item", {
-										"my-combobox__weapon__list-box-item__focused": isFocused,
-										"my-combobox__weapon__list-box-item__selected": isSelected,
-									})
-								}
-								textValue={item.label}
-							>
-								<WeaponImage
-									weaponSplId={item.id}
-									size={28}
-									variant="build"
-									className="my-combobox__image"
-								/>
-								{item.label}
-							</ListBoxItem>
-						)}
+						{(item) => {
+							const isDisabled = disabledWeaponIds?.includes(item.id);
+
+							return (
+								<ListBoxItem
+									className={({ isFocused, isSelected }) =>
+										clsx("my-combobox__weapon__list-box-item", {
+											"my-combobox__weapon__list-box-item__focused": isFocused,
+											"my-combobox__weapon__list-box-item__selected":
+												isSelected,
+											"my-combobox__weapon__list-box-item__disabled":
+												isDisabled,
+										})
+									}
+									textValue={item.label}
+									isDisabled={isDisabled}
+								>
+									<WeaponImage
+										weaponSplId={item.id}
+										size={28}
+										variant="build"
+										className="my-combobox__image"
+									/>
+									{item.label}
+								</ListBoxItem>
+							);
+						}}
 					</Collection>
 				</Section>
 			)}

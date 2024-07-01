@@ -68,3 +68,12 @@
 .my-combobox__weapon__list-box-item__selected .my-combobox__image {
 	outline: 1.5px solid var(--theme);
 }
+
+.my-combobox__weapon__list-box-item__disabled {
+	color: var(--text-lighter);
+	font-style: italic;
+}
+
+.my-combobox__weapon__list-box-item__disabled .my-combobox__image {
+	filter: grayscale(100%);
+}

@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
-import { WeaponCombobox } from "~/components/Combobox";
 import { WeaponImage } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { CrossIcon } from "~/components/icons/Cross";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
 import type { Tables } from "~/db/tables";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import { TIERS } from "~/features/mmr/mmr-constants";
@@ -120,36 +120,38 @@ function WeaponFilterFields({
 	changeFilter: (newFilter: LFGFilter) => void;
 }) {
 	return (
-		<div className="stack horizontal sm flex-wrap">
-			<WeaponCombobox
-				inputName="weapon"
-				key={value.length}
-				weaponIdsToOmit={new Set(value)}
+		<div className="stack horizontal md flex-wrap items-end">
+			<WeaponComboBox
+				key={value.join(",")}
+				disabledWeaponIds={value}
 				onChange={(wpn) =>
-					wpn &&
+					typeof wpn === "number" &&
 					changeFilter({
 						_tag: "Weapon",
 						weaponSplIds:
 							value.length >= 10
-								? [...value.slice(1, 10), Number(wpn.value) as MainWeaponId]
-								: [...value, Number(wpn.value) as MainWeaponId],
+								? [...value.slice(1, 10), wpn]
+								: [...value, wpn],
 					})
 				}
+				withRightButton={false}
 			/>
-			{value.map((weapon) => (
-				<Button
-					key={weapon}
-					variant="minimal"
-					onClick={() =>
-						changeFilter({
-							_tag: "Weapon",
-							weaponSplIds: value.filter((weaponId) => weaponId !== weapon),
-						})
-					}
-				>
-					<WeaponImage weaponSplId={weapon} size={32} variant="badge" />
-				</Button>
-			))}
+			<div className="stack horizontal sm">
+				{value.map((weapon) => (
+					<Button
+						key={weapon}
+						variant="minimal"
+						onClick={() =>
+							changeFilter({
+								_tag: "Weapon",
+								weaponSplIds: value.filter((weaponId) => weaponId !== weapon),
+							})
+						}
+					>
+						<WeaponImage weaponSplId={weapon} size={32} variant="badge" />
+					</Button>
+				))}
+			</div>
 		</div>
 	);
 }

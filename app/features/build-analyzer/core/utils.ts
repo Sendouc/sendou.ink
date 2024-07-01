@@ -242,7 +242,8 @@ export function validatedWeaponIdFromSearchParams(
 		return weaponId as MainWeaponId;
 	}
 
-	return weaponCategories[0].weaponIds[0];
+	// using Splattershot as a reasonable default
+	return 40;
 }
 
 function validateAbility(
