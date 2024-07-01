@@ -38,6 +38,7 @@ export function WeaponComboBox({
 		selectedKey: null,
 		inputValue: value ? selectedKeyToInputValue(value) : "",
 	});
+	const [isOpen, setIsOpen] = React.useState(false);
 
 	const selectedKey = value ?? fieldState.selectedKey;
 
@@ -53,9 +54,11 @@ export function WeaponComboBox({
 			selectedKey: weaponSplId,
 		});
 		onChange?.(weaponSplId);
+		setIsOpen(false);
 	};
 
 	const onInputChange = (value: string) => {
+		setIsOpen(true);
 		setFieldState((prevState) => ({
 			inputValue: value,
 			selectedKey: value === "" ? null : prevState.selectedKey,
@@ -64,6 +67,8 @@ export function WeaponComboBox({
 	};
 
 	const onBlur = () => {
+		setIsOpen(false);
+
 		if (!selectedKey) return;
 
 		setFieldState({
@@ -80,6 +85,8 @@ export function WeaponComboBox({
 			inputValue={fieldState.inputValue}
 			onSelectionChange={onSelectionChange}
 			onInputChange={onInputChange}
+			isOpen={isOpen}
+			onFocus={() => setIsOpen(true)}
 			onBlur={onBlur}
 			rightButtonChildren={
 				<Image

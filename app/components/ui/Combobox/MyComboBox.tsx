@@ -20,6 +20,7 @@ interface MyComboBoxProps<T extends object>
 	// errorMessage?: string | ((validation: ValidationResult) => string);
 	children: React.ReactNode | ((item: T) => React.ReactNode);
 	rightButtonChildren?: React.ReactNode;
+	isOpen?: boolean;
 }
 
 export function MyComboBox<T extends object>({
@@ -28,6 +29,7 @@ export function MyComboBox<T extends object>({
 	// description,
 	// errorMessage,
 	children,
+	isOpen,
 	...props
 }: MyComboBoxProps<T>) {
 	return (
@@ -46,6 +48,7 @@ export function MyComboBox<T extends object>({
 					"my-combobox__popover__with-right-button":
 						Boolean(rightButtonChildren),
 				})}
+				isOpen={isOpen}
 			>
 				<ListBox>{children}</ListBox>
 			</Popover>
