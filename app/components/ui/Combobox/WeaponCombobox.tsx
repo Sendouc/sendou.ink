@@ -74,8 +74,8 @@ export function WeaponComboBox() {
 					<MyComboBoxHeader>
 						<Image
 							path={weaponCategoryUrl(section.id)}
-							width={18}
-							height={18}
+							width={20}
+							height={20}
 							alt={section.label}
 						/>
 						{section.label}

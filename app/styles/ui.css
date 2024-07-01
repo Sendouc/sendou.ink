@@ -22,9 +22,14 @@
 	scrollbar-gutter: stable;
 }
 
+.my-combobox__popover__with-right-button {
+	width: 238px;
+}
+
 .my-combobox__image {
 	background-color: var(--bg-lighter);
 	border-radius: 100%;
+	padding: var(--s-0-5);
 }
 
 .my-combobox__header {
@@ -37,8 +42,6 @@
 	gap: var(--s-2);
 	align-items: center;
 	padding-bottom: var(--s-1-5);
-	position: sticky;
-	top: 0;
 	background-color: var(--bg-darker);
 	padding-top: var(--s-1);
 	padding-left: var(--s-2-5);

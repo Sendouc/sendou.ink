@@ -41,7 +41,12 @@ export function MyComboBox<T extends object>({
 			</div>
 			{/* {description && <Text slot="description">{description}</Text>} */}
 			{/* <FieldError>{errorMessage}</FieldError> */}
-			<Popover className="my-combobox__popover">
+			<Popover
+				className={clsx("my-combobox__popover", {
+					"my-combobox__popover__with-right-button":
+						Boolean(rightButtonChildren),
+				})}
+			>
 				<ListBox>{children}</ListBox>
 			</Popover>
 		</ComboBox>
