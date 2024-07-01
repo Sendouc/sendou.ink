@@ -1,6 +1,11 @@
 import clsx from "clsx";
 import * as React from "react";
-import { Collection, ListBoxItem, Section } from "react-aria-components";
+import {
+	Collection,
+	type Key,
+	ListBoxItem,
+	Section,
+} from "react-aria-components";
 import { Image, WeaponImage } from "~/components/Image";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
@@ -9,25 +14,54 @@ import {
 	weaponCategoryUrl,
 } from "~/utils/urls";
 import { MyComboBox, MyComboBoxHeader } from "./MyComboBox";
+import { useWeaponFilter } from "./hooks/useWeaponFilter";
 import { useWeaponOptions } from "./hooks/useWeaponOptions";
 
 export function WeaponComboBox() {
-	const options = useWeaponOptions();
-	const [weaponSplId, setWeaponSplId] = React.useState<MainWeaponId | null>(
-		null,
-	);
+	const categories = useWeaponOptions();
+
+	const [fieldState, setFieldState] = React.useState<{
+		selectedKey: MainWeaponId | null;
+		inputValue: string;
+	}>({
+		selectedKey: null,
+		inputValue: "",
+	});
+
+	const filteredOptions = useWeaponFilter(categories, fieldState.inputValue);
+
+	const onSelectionChange = (id: Key | null) => {
+		const weaponSplId = id as MainWeaponId | null;
+
+		setFieldState({
+			inputValue:
+				categories
+					.flatMap((category) => category.options)
+					.find((option) => option.id === id)?.label ?? "",
+			selectedKey: weaponSplId,
+		});
+	};
+
+	const onInputChange = (value: string) => {
+		setFieldState((prevState) => ({
+			inputValue: value,
+			selectedKey: value === "" ? null : prevState.selectedKey,
+		}));
+	};
 
 	return (
 		<MyComboBox
 			label="Weapon"
-			defaultItems={options}
-			selectedKey={weaponSplId}
-			onSelectionChange={(val) => setWeaponSplId(val as MainWeaponId)}
-			leftButtonChildren={
+			items={filteredOptions}
+			selectedKey={fieldState.selectedKey}
+			inputValue={fieldState.inputValue}
+			onSelectionChange={onSelectionChange}
+			onInputChange={onInputChange}
+			rightButtonChildren={
 				<Image
 					path={
-						weaponSplId
-							? mainWeaponImageUrl(weaponSplId)
+						fieldState.selectedKey
+							? mainWeaponImageUrl(fieldState.selectedKey)
 							: abilityImageUrl("UNKNOWN")
 					}
 					size={32}

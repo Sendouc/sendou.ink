@@ -22,10 +22,6 @@
 	scrollbar-gutter: stable;
 }
 
-.my-combobox__popover__left-adjusted {
-	margin-left: -41px;
-}
-
 .my-combobox__image {
 	background-color: var(--bg-lighter);
 	border-radius: 100%;

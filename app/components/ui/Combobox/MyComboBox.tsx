@@ -19,12 +19,12 @@ interface MyComboBoxProps<T extends object>
 	// description?: string | null;
 	// errorMessage?: string | ((validation: ValidationResult) => string);
 	children: React.ReactNode | ((item: T) => React.ReactNode);
-	leftButtonChildren?: React.ReactNode;
+	rightButtonChildren?: React.ReactNode;
 }
 
 export function MyComboBox<T extends object>({
 	label,
-	leftButtonChildren,
+	rightButtonChildren,
 	// description,
 	// errorMessage,
 	children,
@@ -34,18 +34,14 @@ export function MyComboBox<T extends object>({
 		<ComboBox {...props}>
 			<Label>{label}</Label>
 			<div className="my-combobox__container">
-				{leftButtonChildren ? (
-					<Button className="my-combobox__button">{leftButtonChildren}</Button>
-				) : null}
 				<Input />
+				{rightButtonChildren ? (
+					<Button className="my-combobox__button">{rightButtonChildren}</Button>
+				) : null}
 			</div>
 			{/* {description && <Text slot="description">{description}</Text>} */}
 			{/* <FieldError>{errorMessage}</FieldError> */}
-			<Popover
-				className={clsx("my-combobox__popover", {
-					"my-combobox__popover__left-adjusted": Boolean(leftButtonChildren),
-				})}
-			>
+			<Popover className="my-combobox__popover">
 				<ListBox>{children}</ListBox>
 			</Popover>
 		</ComboBox>
