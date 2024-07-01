@@ -22,6 +22,11 @@ export function Dialog({
 		? (event: React.MouseEvent<HTMLDialogElement, MouseEvent>) => {
 				if (closeOnAnyClick) return close();
 				const rect: DOMRect = ref.current.getBoundingClientRect();
+
+				// https://stackoverflow.com/a/77402711
+				const isFirefoxSelectClick = event.clientY === 0 && event.clientX === 0;
+				if (isFirefoxSelectClick) return;
+
 				const isInDialog =
 					rect.top <= event.clientY &&
 					event.clientY <= rect.top + rect.height &&
