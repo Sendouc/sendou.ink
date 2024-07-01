@@ -81,17 +81,6 @@
 	"staff.role.ORGANIZER": "主催者",
 	"staff.role.STREAMER": "配信者",
 
-	"bracket.winners": "ウィナーズ・ラウンド {{round}}",
-	"bracket.winners.finals": "ウィナーズ・ファイナル",
-	"bracket.losers": "ルーザーズ・ラウンド {{round}}",
-	"bracket.losers.finals": "ルーザーズ・ファイナル",
-	"bracket.single_elim": "ラウンド {{round}}",
-	"bracket.round_robin": "ラウンドロビン {{round}}",
-	"bracket.swiss": "スイスラウンド {{round}}",
-	"bracket.single_elim.finals": "ファイナル",
-	"bracket.grand_finals": "グランド・ファイナル",
-	"bracket.grand_finals.bracket_reset": "ブラケットをリセット",
-
 	"actions.addSub": "サブを追加",
 	"actions.shareLink": "メンバー招待リンクをシェアする: {{inviteLink}}",
 	"actions.sub.prompt_other": "あと {{count}} 人のサブをメンバーに追加できます",

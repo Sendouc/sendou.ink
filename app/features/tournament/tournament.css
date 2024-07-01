@@ -521,6 +521,7 @@
 .tournament__team__set__score {
 	font-size: var(--fonts-xl);
 	font-weight: var(--bold);
+	white-space: nowrap;
 }
 
 .tournament__team__set__round-name {

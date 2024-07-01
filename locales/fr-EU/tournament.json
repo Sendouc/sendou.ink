@@ -68,15 +68,6 @@
 	"admin.actions.REMOVE_MEMBER": "Retirer membre",
 	"admin.actions.DELETE_TEAM": "Effacer l'équipe",
 
-	"bracket.winners": "Manche des gagnants {{round}}",
-	"bracket.winners.finals": "Finale des gagnants",
-	"bracket.losers": "Manche des perdants {{round}}",
-	"bracket.losers.finals": "Finale des perdants",
-	"bracket.single_elim": "Manche {{round}}",
-	"bracket.single_elim.finals": "Finale",
-	"bracket.grand_finals": "Grande Finale",
-	"bracket.grand_finals.bracket_reset": "Bracket Reset",
-
 	"actions.addSub": "Ajouter remplaçant",
 	"actions.shareLink": "Partagez votre lien d'invitation pour ajouter des membres: {{inviteLink}}",
 	"actions.sub.prompt_other": "Vous pouvez encore ajouter {{count}} remplaçants à votre liste",

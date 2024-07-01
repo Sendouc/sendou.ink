@@ -69,15 +69,6 @@
 	"admin.actions.REMOVE_MEMBER": "移除成员",
 	"admin.actions.DELETE_TEAM": "删除队伍",
 
-	"bracket.winners": "胜者组 Round {{round}}",
-	"bracket.winners.finals": "胜者组决赛",
-	"bracket.losers": "败者组 Round {{round}}",
-	"bracket.losers.finals": "败者组决赛",
-	"bracket.single_elim": "单败制 Round {{round}}",
-	"bracket.single_elim.finals": "单败制决赛",
-	"bracket.grand_finals": "总决赛",
-	"bracket.grand_finals.bracket_reset": "加赛",
-
 	"actions.addSub": "添加替补",
 	"actions.shareLink": "分享您的邀请链接以添加成员: {{inviteLink}}",
 	"actions.sub.prompt_other": "您还可以添加 {{count}} 名替补",

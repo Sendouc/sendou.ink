@@ -24,7 +24,6 @@ import {
 } from "../core/sets.server";
 import {
 	tournamentIdFromParams,
-	tournamentRoundI18nKey,
 	tournamentTeamIdFromParams,
 } from "../tournament-utils";
 import { useTournament } from "./to.$id";
@@ -192,6 +191,9 @@ function SetInfo({ set, team }: { set: PlayedSet; team: TournamentDataTeam }) {
 		}
 	};
 
+	const { bracketName, roundNameWithoutMatchIdentifier } =
+		tournament.matchNameById(set.tournamentMatchId);
+
 	return (
 		<div className="tournament__team__set">
 			<div className="tournament__team__set__top-container">
@@ -205,10 +207,7 @@ function SetInfo({ set, team }: { set: PlayedSet; team: TournamentDataTeam }) {
 					})}
 					className="tournament__team__set__round-name"
 				>
-					{t(`tournament:${tournamentRoundI18nKey(set.round)}`, {
-						round: set.round.round,
-					})}{" "}
-					- {set.stageName}
+					{roundNameWithoutMatchIdentifier} - {bracketName}
 				</Link>
 			</div>
 			<div className="overlap-divider">

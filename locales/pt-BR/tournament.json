@@ -80,17 +80,6 @@
 	"staff.role.ORGANIZER": "organizador(a)",
 	"staff.role.STREAMER": "streamer",
 
-	"bracket.winners": "Round dos Vencedores {{round}}",
-	"bracket.winners.finals": "Finais dos Vencedores",
-	"bracket.losers": "Round dos Perdedores {{round}}",
-	"bracket.losers.finals": "Finais dos Perdedores",
-	"bracket.single_elim": "Round {{round}}",
-	"bracket.round_robin": "Round de Grupos {{round}}",
-	"bracket.swiss": "Round Suíço {{round}}",
-	"bracket.single_elim.finals": "Finais",
-	"bracket.grand_finals": "Grandes Finais",
-	"bracket.grand_finals.bracket_reset": "Reset do Bracket",
-
 	"actions.addSub": "Adicionar substituto(a)",
 	"actions.shareLink": "Compartilhe seu link de convite para adicionar membros: {{inviteLink}}",
 	"actions.sub.prompt_other": "Você ainda pode adicionar {{count}} substitutos(as) à sua lista",

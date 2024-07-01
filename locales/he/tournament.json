@@ -69,15 +69,6 @@
 	"admin.actions.REMOVE_MEMBER": "הורדת חבר צוות",
 	"admin.actions.DELETE_TEAM": "מחיקת צוות",
 
-	"bracket.winners": "סיבוב מנצחים {{round}}",
-	"bracket.winners.finals": "גמר המנצחים",
-	"bracket.losers": "סיבוב מפסידים {{round}}",
-	"bracket.losers.finals": "גמר מפסידים",
-	"bracket.single_elim": "סיבוב {{round}}",
-	"bracket.single_elim.finals": "גמר",
-	"bracket.grand_finals": "הגמר הגדול",
-	"bracket.grand_finals.bracket_reset": "מערך אופס",
-
 	"actions.addSub": "הוסיפו ממלא מקום",
 	"actions.shareLink": "שתפו קישור הזמנה להוספת חברי צוות: {{inviteLink}}",
 	"actions.sub.prompt_other": "אתם עדיין יכולים להוסיף {{count}} ממלאי מקום לצוות שלכם",
