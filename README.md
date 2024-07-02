@@ -5,8 +5,19 @@ Competitive Splatoon Platform
 
 ## Selected Features
 
+- Full tournament system
+   - Automatic bracket progression
+   - Single Elimination, Double Elimination, Round Robin, Swiss
+   - Splatoon specific maplists (picked by the organizer or teams)
+   - Counterpicking of different styles
+   - Automatic seeding tool
+   - Ranked tournaments allowing users to climb the leaderboard
+   - View streams of tournament (both participants and the cast)
 - Seasonal ladder system
-- Tournament system featuring many format and automatic bracket progression
+   - Join by yourself or with 1-3 of your mates, get a full group and challenge other teams
+   - View streams of ongoing matches
+   - Maplist generation based on given preferences
+   - Private notes
 - Map planner that lets you draw on maps and insert weapons
 - Map list generation tool
 - Win badges from tournaments, management tools for TOs
@@ -15,6 +26,7 @@ Competitive Splatoon Platform
 - Plus Server for top players "looking for group purposes" voting and suggestion tools.
 - User pages
 - User search
+- "LFG", find make a post to find people to play with
 - Form teams (featuring uploading profile and banner pictures)
 - Object Damage Calculator (how much does each weapon deal vs. different objects)
 - Build Analyzer (exact stats of your builds)
@@ -142,8 +154,6 @@ Some common files:
 - feature-utils.ts
 - feature-constants.ts
 - feature-schemas.server.ts
-
-Note: Currently the project is in progress to migrating this style so that's why not everything is using it yet.
 
 ## Commands
 
