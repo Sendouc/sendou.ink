@@ -19,12 +19,14 @@ import { useWeaponOptions } from "./hooks/useWeaponOptions";
 
 // xxx: extract state logic to another hook
 export function WeaponComboBox({
+	id,
 	value,
 	onChange,
 	disabledWeaponIds,
 	withRightButton = true,
 	label,
 }: {
+	id?: string;
 	value?: MainWeaponId | null;
 	onChange?: (weaponId: MainWeaponId | null) => void;
 	disabledWeaponIds?: MainWeaponId[];
@@ -86,6 +88,7 @@ export function WeaponComboBox({
 
 	return (
 		<MyComboBox
+			id={id}
 			label={label}
 			aria-label={!label ? "Weapon" : undefined}
 			items={filteredOptions}
@@ -121,7 +124,10 @@ export function WeaponComboBox({
 						/>
 						{section.label}
 					</MyComboBoxHeader>
-					<Collection items={section.options}>
+					<Collection
+						items={section.options}
+						dependencies={[disabledWeaponIds?.join(",")]}
+					>
 						{(item) => {
 							const isDisabled = disabledWeaponIds?.includes(item.id);
 

@@ -14,6 +14,10 @@
 	min-width: 32px;
 }
 
+.my-combobox__input.my-combobox__input__wide {
+	width: 248px;
+}
+
 .my-combobox__popover {
 	/** xxx: problem !important ? */
 	max-height: 300px !important;
@@ -24,10 +28,7 @@
 	scrollbar-color: rgb(83 65 91) transparent;
 	scrollbar-width: thin;
 	scrollbar-gutter: stable;
-}
-
-.my-combobox__popover__with-right-button {
-	width: 238px;
+	width: 247px;
 }
 
 .my-combobox__no-results-text {

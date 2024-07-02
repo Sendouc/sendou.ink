@@ -7,7 +7,6 @@ import { Form, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
-import { WeaponCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { WeaponImage } from "~/components/Image";
 import { Label } from "~/components/Label";
@@ -28,6 +27,7 @@ import { findSubsByTournamentId } from "../queries/findSubsByTournamentId.server
 import { upsertSub } from "../queries/upsertSub.server";
 import { TOURNAMENT_SUB } from "../tournament-subs-constants";
 import { subSchema } from "../tournament-subs-schemas.server";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
 
 import "../tournament-subs.css";
 
@@ -274,17 +274,16 @@ function WeaponPoolSelect({
 				</Label>
 				{weapons.length < TOURNAMENT_SUB.WEAPON_POOL_MAX_SIZE ? (
 					<>
-						<WeaponCombobox
-							inputName={id}
+						<WeaponComboBox
 							id={id}
 							onChange={(weapon) => {
 								if (!weapon) return;
-								setWeapons([...weapons, Number(weapon.value) as MainWeaponId]);
+								setWeapons([...weapons, weapon]);
 							}}
 							// empty on selection
 							key={weapons[weapons.length - 1]}
-							weaponIdsToOmit={new Set([...weapons, ...otherWeapons])}
-							fullWidth
+							disabledWeaponIds={[...weapons, ...otherWeapons]}
+							withRightButton={false}
 						/>
 						<FormMessage type="info">{infoText}</FormMessage>
 					</>

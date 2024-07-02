@@ -39,20 +39,18 @@ export function MyComboBox<T extends object>({
 		<ComboBox menuTrigger="focus" {...props}>
 			<Label>{label}</Label>
 			<div className="my-combobox__container">
-				<Input />
+				<Input
+					className={clsx("my-combobox__input", {
+						"my-combobox__input__wide": !rightButtonChildren,
+					})}
+				/>
 				{rightButtonChildren ? (
 					<Button className="my-combobox__button">{rightButtonChildren}</Button>
 				) : null}
 			</div>
 			{/* {description && <Text slot="description">{description}</Text>} */}
 			{/* <FieldError>{errorMessage}</FieldError> */}
-			<Popover
-				className={clsx("my-combobox__popover", {
-					"my-combobox__popover__with-right-button":
-						Boolean(rightButtonChildren),
-				})}
-				isOpen={isOpen}
-			>
+			<Popover className="my-combobox__popover">
 				{showNoResults ? (
 					<div className="my-combobox__no-results-text">No results found</div>
 				) : (
