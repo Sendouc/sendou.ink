@@ -19,8 +19,6 @@
 }
 
 .my-combobox__popover {
-	/** xxx: problem !important ? */
-	max-height: 300px !important;
 	overflow: auto;
 	background-color: var(--bg-darker);
 	border-radius: var(--rounded-sm);

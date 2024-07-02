@@ -12,6 +12,7 @@ import { WeaponImage } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TrashIcon } from "~/components/icons/Trash";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
 import { useUser } from "~/features/auth/core/user";
 import { requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";
@@ -27,7 +28,6 @@ import { findSubsByTournamentId } from "../queries/findSubsByTournamentId.server
 import { upsertSub } from "../queries/upsertSub.server";
 import { TOURNAMENT_SUB } from "../tournament-subs-constants";
 import { subSchema } from "../tournament-subs-schemas.server";
-import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
 
 import "../tournament-subs.css";
 

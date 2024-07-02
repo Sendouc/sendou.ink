@@ -50,7 +50,7 @@ export function MyComboBox<T extends object>({
 			</div>
 			{/* {description && <Text slot="description">{description}</Text>} */}
 			{/* <FieldError>{errorMessage}</FieldError> */}
-			<Popover className="my-combobox__popover">
+			<Popover className="my-combobox__popover" maxHeight={300}>
 				{showNoResults ? (
 					<div className="my-combobox__no-results-text">No results found</div>
 				) : (
