@@ -125,6 +125,7 @@ function BuildAnalyzerPage() {
 		build2,
 		focusedBuild,
 		mainWeaponId,
+		selectedMainWeaponId,
 		handleChange,
 		analyzed,
 		analyzed2,
@@ -235,8 +236,6 @@ function BuildAnalyzerPage() {
 			gear.filter((ability) => !ABILITIES_WITHOUT_CHUNKS.has(ability)).length,
 	);
 
-	// xxx: awkward becaues first have to clear sploosh, maybe should make the button to clear work
-
 	return (
 		<Main>
 			<div className="analyzer__container">
@@ -244,7 +243,7 @@ function BuildAnalyzerPage() {
 					<div className="stack sm items-center w-full">
 						<div className="w-full">
 							<WeaponComboBox
-								value={mainWeaponId}
+								value={selectedMainWeaponId}
 								onChange={(newMainWeaponId) =>
 									typeof newMainWeaponId === "number" &&
 									handleChange({ newMainWeaponId })

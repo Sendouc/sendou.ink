@@ -23,7 +23,10 @@ import {
 export function useAnalyzeBuild() {
 	const [searchParams, setSearchParams] = useSearchParams();
 
-	const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
+	const maybeMainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
+	// splattershot as a reasonable default
+	const mainWeaponId = maybeMainWeaponId ?? 40;
+
 	const build = validatedBuildFromSearchParams(searchParams);
 	const build2 = validatedBuildFromSearchParams(searchParams, "build2", build);
 	const ldeIntensity = validatedLdeIntensityFromSearchParams(searchParams);
@@ -104,6 +107,7 @@ export function useAnalyzeBuild() {
 		focusedBuild: focused === 1 ? build : focused === 2 ? build2 : null,
 		focused,
 		mainWeaponId,
+		selectedMainWeaponId: maybeMainWeaponId,
 		handleChange,
 		analyzed,
 		analyzed2,

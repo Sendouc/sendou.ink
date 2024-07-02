@@ -17,7 +17,7 @@ import {
 	validatedBuildFromSearchParams,
 	validatedWeaponIdFromSearchParams,
 } from "~/features/build-analyzer";
-import { mainWeaponIds, modesShort } from "~/modules/in-game-lists";
+import { modesShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -173,7 +173,6 @@ function PrivateCheckbox() {
 	);
 }
 
-// xxx: remove shot default
 function WeaponsSelector() {
 	const [searchParams] = useSearchParams();
 	const { buildToEdit } = useLoaderData<typeof loader>();
@@ -207,7 +206,9 @@ function WeaponsSelector() {
 									}
 									value={weapon ?? undefined}
 									withRightButton={false}
-									disabledWeaponIds={weapons.filter((w) => w !== weapon)}
+									disabledWeaponIds={weapons
+										.filter((w) => typeof w === "number")
+										.filter((w) => w !== weapon)}
 								/>
 							</div>
 							{i === weapons.length - 1 && (
@@ -215,12 +216,7 @@ function WeaponsSelector() {
 									<Button
 										size="tiny"
 										disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
-										onClick={() =>
-											setWeapons((weapons) => [
-												...weapons,
-												mainWeaponIds.find((id) => !weapons.includes(id))!,
-											])
-										}
+										onClick={() => setWeapons((weapons) => [...weapons, null])}
 										icon={<PlusIcon />}
 										testId="add-weapon-button"
 									/>

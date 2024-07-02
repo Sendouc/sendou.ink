@@ -15,7 +15,6 @@ import {
 	nonDamagingSpecialWeaponIds,
 	specialWeaponIds,
 	subWeaponIds,
-	weaponCategories,
 } from "~/modules/in-game-lists";
 import invariant from "~/utils/invariant";
 import type { Unpacked } from "~/utils/types";
@@ -182,7 +181,8 @@ export function hasEffect({
 
 const DEFAULT_ANY_WEAPON = {
 	type: "MAIN",
-	id: weaponCategories[0].weaponIds[0],
+	// splattershot as a reasonable default
+	id: 40,
 } as const;
 export function validatedAnyWeaponFromSearchParams(
 	searchParams: URLSearchParams,
@@ -228,12 +228,18 @@ export function validatedAnyWeaponFromSearchParams(
 		return { type: "MAIN", id: id as MainWeaponId };
 	}
 
-	return { type: "MAIN", id: validatedWeaponIdFromSearchParams(searchParams) };
+	const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
+
+	if (typeof mainWeaponId === "number") {
+		return { type: "MAIN", id: mainWeaponId };
+	}
+
+	return DEFAULT_ANY_WEAPON;
 }
 
 export function validatedWeaponIdFromSearchParams(
 	searchParams: URLSearchParams,
-): MainWeaponId {
+) {
 	const weaponId = searchParams.get("weapon")
 		? Number(searchParams.get("weapon"))
 		: null;
@@ -243,7 +249,7 @@ export function validatedWeaponIdFromSearchParams(
 	}
 
 	// using Splattershot as a reasonable default
-	return 40;
+	return null;
 }
 
 function validateAbility(
