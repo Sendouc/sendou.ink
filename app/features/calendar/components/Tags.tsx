@@ -23,7 +23,7 @@ export function Tags({
 }) {
 	const { t } = useTranslation();
 
-	if (tags.length === 0) return null;
+	if (tags.length === 0 && !tournamentRankedStatus) return null;
 
 	return (
 		<ul className="calendar__event__tags">

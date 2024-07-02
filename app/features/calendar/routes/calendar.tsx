@@ -426,7 +426,9 @@ function EventsList({
 									if (!calendarEvent.tournamentSettings) return undefined;
 									if (!currentSeason(startTimeDate)) return undefined;
 
-									return calendarEvent.tournamentSettings.isRanked
+									return calendarEvent.tournamentSettings.isRanked &&
+										(!calendarEvent.tournamentSettings.minMembersPerTeam ||
+											calendarEvent.tournamentSettings.minMembersPerTeam === 4)
 										? "RANKED"
 										: "UNRANKED";
 								};
