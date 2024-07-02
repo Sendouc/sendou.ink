@@ -14,6 +14,8 @@ import { useWeaponOptions } from "./hooks/useWeaponOptions";
 
 export function WeaponComboBox({
 	id,
+	name,
+	isRequired,
 	value,
 	onChange,
 	disabledWeaponIds,
@@ -21,6 +23,8 @@ export function WeaponComboBox({
 	label,
 }: {
 	id?: string;
+	name?: string;
+	isRequired?: boolean;
 	value?: MainWeaponId | null;
 	onChange?: (weaponId: MainWeaponId | null) => void;
 	disabledWeaponIds?: MainWeaponId[];
@@ -50,7 +54,9 @@ export function WeaponComboBox({
 	return (
 		<MyComboBox
 			id={id}
+			name={name}
 			label={label}
+			isRequired={isRequired}
 			aria-label={!label ? "Weapon" : undefined}
 			items={filteredOptions}
 			selectedKey={selectedKey}

@@ -4,7 +4,6 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";
-import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
@@ -18,15 +17,14 @@ import {
 	validatedBuildFromSearchParams,
 	validatedWeaponIdFromSearchParams,
 } from "~/features/build-analyzer";
-import { modesShort } from "~/modules/in-game-lists";
+import { mainWeaponIds, modesShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import type {
-	BuildAbilitiesTupleWithUnknown,
-	MainWeaponId,
-} from "~/modules/in-game-lists/types";
+import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { modeImageUrl } from "~/utils/urls";
 
+import { GearCombobox } from "~/components/Combobox";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
 import { action } from "../actions/u.$identifier.builds.new.server";
 import { loader } from "../loaders/u.$identifier.builds.new.server";
 export { loader, action };
@@ -175,6 +173,7 @@ function PrivateCheckbox() {
 	);
 }
 
+// xxx: remove shot default
 function WeaponsSelector() {
 	const [searchParams] = useSearchParams();
 	const { buildToEdit } = useLoaderData<typeof loader>();
@@ -195,20 +194,20 @@ function WeaponsSelector() {
 					return (
 						<div key={i} className="stack horizontal sm items-center">
 							<div>
-								<WeaponCombobox
-									inputName="weapon"
-									id="weapon"
-									className="u__build-form__weapon"
-									required
-									onChange={(opt) =>
-										opt &&
+								<WeaponComboBox
+									name="weapon"
+									isRequired
+									onChange={(newWeaponId) =>
+										typeof newWeaponId === "number" &&
 										setWeapons((weapons) => {
 											const newWeapons = [...weapons];
-											newWeapons[i] = Number(opt.value) as MainWeaponId;
+											newWeapons[i] = newWeaponId;
 											return newWeapons;
 										})
 									}
-									initialWeaponId={weapon ?? undefined}
+									value={weapon ?? undefined}
+									withRightButton={false}
+									disabledWeaponIds={weapons.filter((w) => w !== weapon)}
 								/>
 							</div>
 							{i === weapons.length - 1 && (
@@ -216,7 +215,12 @@ function WeaponsSelector() {
 									<Button
 										size="tiny"
 										disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
-										onClick={() => setWeapons((weapons) => [...weapons, 0])}
+										onClick={() =>
+											setWeapons((weapons) => [
+												...weapons,
+												mainWeaponIds.find((id) => !weapons.includes(id))!,
+											])
+										}
 										icon={<PlusIcon />}
 										testId="add-weapon-button"
 									/>
