@@ -762,25 +762,26 @@ function Match({
 			<Link
 				to={sendouQMatchPage(match.id)}
 				className={clsx("u__season__match", {
-					"u__season__match__with-diff": match.spDiff,
+					"u__season__match__with-sub-section ":
+						match.spDiff || !match.isLocked,
 				})}
 			>
 				{rows}
-				{!match.isLocked ? (
-					<div className="stack horizontal sm text-xs text-lighter items-center justify-center">
-						<AlertIcon className="text-warning w-24px" />
-						{t("user:seasons.matchBeingProcessed")}
-					</div>
-				) : null}
 			</Link>
 			{match.spDiff ? (
-				<div className="u__season__match__sp-diff">
+				<div className="u__season__match__sub-section">
 					{match.spDiff > 0 ? (
 						<span className="text-success">▲</span>
 					) : (
 						<span className="text-warning">▼</span>
 					)}
 					{Math.abs(roundToNDecimalPlaces(match.spDiff))}SP
+				</div>
+			) : null}
+			{!match.isLocked ? (
+				<div className="u__season__match__sub-section">
+					<AlertIcon className="u__season__match__sub-section__icon" />
+					{t("user:seasons.matchBeingProcessed")}
 				</div>
 			) : null}
 		</div>

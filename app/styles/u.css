@@ -362,11 +362,11 @@
 	gap: var(--s-4);
 }
 
-.u__season__match__with-diff {
+.u__season__match__with-sub-section {
 	border-radius: var(--rounded) var(--rounded) 0 0;
 }
 
-.u__season__match__sp-diff {
+.u__season__match__sub-section {
 	border-radius: 0 0 var(--rounded) var(--rounded);
 	background-color: var(--bg-light-variation);
 	font-size: var(--fonts-xs);
@@ -375,6 +375,12 @@
 	display: flex;
 	gap: var(--s-1);
 	justify-content: center;
+	padding-block: var(--s-0-5);
+}
+
+.u__season__match__sub-section__icon {
+	width: 18px;
+	color: var(--theme-warning);
 }
 
 .u__season__match:hover {
