@@ -30,6 +30,15 @@
 	width: 238px;
 }
 
+.my-combobox__no-results-text {
+	color: var(--text-lighter);
+	font-size: var(--fonts-sm);
+	font-weight: var(--semi-bold);
+	text-align: center;
+	font-style: italic;
+	padding-block: var(--s-4);
+}
+
 .my-combobox__image {
 	background-color: var(--bg-lighter);
 	border-radius: 100%;

@@ -58,7 +58,6 @@ interface ComboboxProps<T> {
 	fuseOptions?: IFuseOptions<ComboboxOption<T>>;
 }
 
-// xxx: no results
 export function Combobox<
 	T extends Record<string, string | string[] | null | undefined | number>,
 >({
