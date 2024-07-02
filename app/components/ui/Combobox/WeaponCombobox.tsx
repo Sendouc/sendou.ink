@@ -1,11 +1,5 @@
 import clsx from "clsx";
-import * as React from "react";
-import {
-	Collection,
-	type Key,
-	ListBoxItem,
-	Section,
-} from "react-aria-components";
+import { Collection, ListBoxItem, Section } from "react-aria-components";
 import { Image, WeaponImage } from "~/components/Image";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
@@ -14,10 +8,10 @@ import {
 	weaponCategoryUrl,
 } from "~/utils/urls";
 import { MyComboBox, MyComboBoxHeader } from "./MyComboBox";
+import { useComboboxState } from "./hooks/useComboboxState";
 import { useWeaponFilter } from "./hooks/useWeaponFilter";
 import { useWeaponOptions } from "./hooks/useWeaponOptions";
 
-// xxx: extract state logic to another hook
 export function WeaponComboBox({
 	id,
 	value,
@@ -35,56 +29,23 @@ export function WeaponComboBox({
 }) {
 	const categories = useWeaponOptions();
 
-	const selectedKeyToInputValue = (selectedKey: MainWeaponId | null) =>
+	const valueToLabel = (selectedKey: MainWeaponId | null) =>
 		categories
 			.flatMap((category) => category.options)
 			.find((option) => option.id === selectedKey)?.label ?? "";
 
-	const [fieldState, setFieldState] = React.useState<{
-		selectedKey: MainWeaponId | null;
-		inputValue: string;
-	}>({
-		selectedKey: null,
-		inputValue: typeof value === "number" ? selectedKeyToInputValue(value) : "",
-	});
-	const [isOpen, setIsOpen] = React.useState(false);
+	const {
+		fieldState,
+		isOpen,
+		onBlur,
+		onFocus,
+		onInputChange,
+		onSelectionChange,
+	} = useComboboxState({ valueToLabel, value, onChange });
 
 	const selectedKey = value ?? fieldState.selectedKey;
 
 	const filteredOptions = useWeaponFilter(categories, fieldState.inputValue);
-
-	const onSelectionChange = (id: Key | null) => {
-		if (id === selectedKey) return;
-
-		const weaponSplId = id as MainWeaponId | null;
-
-		setFieldState({
-			inputValue: selectedKeyToInputValue(weaponSplId),
-			selectedKey: weaponSplId,
-		});
-		onChange?.(weaponSplId);
-		setIsOpen(false);
-	};
-
-	const onInputChange = (value: string) => {
-		setIsOpen(true);
-		setFieldState((prevState) => ({
-			inputValue: value,
-			selectedKey: value === "" ? null : prevState.selectedKey,
-		}));
-		onChange?.(value === "" ? null : selectedKey);
-	};
-
-	const onBlur = () => {
-		setIsOpen(false);
-
-		if (typeof selectedKey !== "number") return;
-
-		setFieldState({
-			inputValue: selectedKeyToInputValue(selectedKey),
-			selectedKey,
-		});
-	};
 
 	return (
 		<MyComboBox
@@ -97,7 +58,7 @@ export function WeaponComboBox({
 			onSelectionChange={onSelectionChange}
 			onInputChange={onInputChange}
 			isOpen={isOpen}
-			onFocus={() => setIsOpen(true)}
+			onFocus={onFocus}
 			onBlur={onBlur}
 			rightButtonChildren={
 				withRightButton && (
