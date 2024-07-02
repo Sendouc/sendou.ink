@@ -24,7 +24,7 @@ import type { SendouRouteHandle } from "~/utils/remix";
 import { modeImageUrl } from "~/utils/urls";
 
 import { GearCombobox } from "~/components/Combobox";
-import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
+import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 import { action } from "../actions/u.$identifier.builds.new.server";
 import { loader } from "../loaders/u.$identifier.builds.new.server";
 export { loader, action };

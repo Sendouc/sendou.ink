@@ -12,7 +12,7 @@ import { WeaponImage } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TrashIcon } from "~/components/icons/Trash";
-import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
+import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 import { useUser } from "~/features/auth/core/user";
 import { requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";

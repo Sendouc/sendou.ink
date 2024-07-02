@@ -14,7 +14,7 @@ import { Table } from "~/components/Table";
 import { Tab, Tabs } from "~/components/Tabs";
 import { Toggle } from "~/components/Toggle";
 import { BeakerIcon } from "~/components/icons/Beaker";
-import { WeaponComboBox } from "~/components/ui/Combobox/WeaponCombobox";
+import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 import { MAX_AP } from "~/constants";
 import { useUser } from "~/features/auth/core/user";
 import { useIsMounted } from "~/hooks/useIsMounted";
