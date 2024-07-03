@@ -953,7 +953,9 @@ function RegClosesAtSelect() {
 	const [regClosesAt, setRegClosesAt] = React.useState<RegClosesAtOption>(
 		baseEvent?.tournament?.ctx.settings.regClosesAt
 			? datesToRegClosesAt({
-					startTime: new Date(baseEvent.tournament.ctx.startTime),
+					startTime: databaseTimestampToDate(
+						baseEvent.tournament.ctx.startTime,
+					),
 					regClosesAt: databaseTimestampToDate(
 						baseEvent.tournament.ctx.settings.regClosesAt,
 					),
