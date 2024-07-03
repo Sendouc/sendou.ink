@@ -22,6 +22,7 @@ import { Toggle } from "~/components/Toggle";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { TrashIcon } from "~/components/icons/Trash";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { USER } from "~/constants";
 import type { User } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
@@ -51,7 +52,6 @@ import {
 } from "~/utils/zod";
 import { userParamsSchema } from "../user-page-schemas.server";
 import type { UserPageLoaderData } from "./u.$identifier";
-import { MyLabel } from "~/components/ui/MyLabel";
 
 import "~/styles/u-edit.css";
 

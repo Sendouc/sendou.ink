@@ -16,6 +16,7 @@ import { Main } from "~/components/Main";
 import { Pagination } from "~/components/Pagination";
 import { SubmitButton } from "~/components/SubmitButton";
 import { SearchIcon } from "~/components/icons/Search";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { useUser } from "~/features/auth/core/user";
 import { usePagination } from "~/hooks/usePagination";
 import { joinListToNaturalString } from "~/utils/arrays";
@@ -27,7 +28,6 @@ import {
 	userSubmittedImage,
 } from "~/utils/urls";
 import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
-import { MyLabel } from "~/components/ui/MyLabel";
 
 import "../team.css";
 

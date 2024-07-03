@@ -11,12 +11,12 @@ import { Catcher } from "~/components/Catcher";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { useUser } from "~/features/auth/core/user";
 import { isAdmin, isMod } from "~/permissions";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { SEED_URL, STOP_IMPERSONATING_URL, impersonateUrl } from "~/utils/urls";
-import { MyLabel } from "~/components/ui/MyLabel";
 
 import { action } from "../actions/admin.server";
 import { loader } from "../loaders/admin.server";

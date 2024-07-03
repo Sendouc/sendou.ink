@@ -26,6 +26,7 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TrashIcon } from "~/components/icons/Trash";
 import { UserIcon } from "~/components/icons/User";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { useUser } from "~/features/auth/core/user";
 import { imgTypeToDimensions } from "~/features/img-upload/upload-constants";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
@@ -55,7 +56,6 @@ import {
 	validateCounterPickMapPool,
 } from "../tournament-utils";
 import { useTournament } from "./to.$id";
-import { MyLabel } from "~/components/ui/MyLabel";
 
 import { action } from "../actions/to.$id.register.server";
 import { loader } from "../loaders/to.$id.register.server";

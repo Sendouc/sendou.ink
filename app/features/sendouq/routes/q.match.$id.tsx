@@ -21,7 +21,6 @@ import { useTranslation } from "react-i18next";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
-import { WeaponCombobox as OldWeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, ModeImage, StageImage, WeaponImage } from "~/components/Image";
@@ -35,6 +34,7 @@ import { DiscordIcon } from "~/components/icons/Discord";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import { ScaleIcon } from "~/components/icons/Scale";
 import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { sql } from "~/db/sql";
 import type { GroupMember, ReportedWeapon } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
@@ -108,7 +108,6 @@ import { findMatchById } from "../queries/findMatchById.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
-import { MyLabel } from "~/components/ui/MyLabel";
 
 import "../q.css";
 
@@ -804,8 +803,6 @@ function ReportWeaponsForm() {
 	const [reportingMode, setReportingMode] = React.useState<
 		"ALL" | "MYSELF" | "MY_TEAM"
 	>("MYSELF");
-	const { recentlyReportedWeapons, addRecentlyReportedWeapon } =
-		useRecentlyReportedWeapons();
 
 	const playedMaps = data.match.mapList.filter((m) => m.winnerGroupId);
 	const winners = playedMaps.map((m) =>
@@ -963,26 +960,10 @@ function ReportWeaponsForm() {
 													)}
 												</div>
 												<div className="stack horizontal sm items-center">
-													<WeaponImage
-														weaponSplId={weaponSplId ?? 0}
-														variant="badge"
-														width={32}
-														className={clsx("ml-auto", {
-															invisible: typeof weaponSplId !== "number",
-														})}
-													/>
-													<OldWeaponCombobox
-														inputName="weapon"
+													<WeaponComboBox
 														value={weaponSplId}
-														quickSelectWeaponIds={recentlyReportedWeapons}
-														onChange={(weapon) => {
-															if (!weapon) return;
-
-															const weaponSplId = Number(
-																weapon.value,
-															) as MainWeaponId;
-
-															addRecentlyReportedWeapon(weaponSplId);
+														onChange={(weaponSplId) => {
+															if (typeof weaponSplId !== "number") return;
 
 															setWeaponsUsage((val) => {
 																const result = val.filter(

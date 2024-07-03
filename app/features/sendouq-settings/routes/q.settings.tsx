@@ -22,6 +22,7 @@ import { PuzzleIcon } from "~/components/icons/Puzzle";
 import { SpeakerFilledIcon } from "~/components/icons/SpeakerFilled";
 import { TrashIcon } from "~/components/icons/Trash";
 import { UsersIcon } from "~/components/icons/Users";
+import { MyLabel } from "~/components/ui/MyLabel";
 import type { Preference, Tables, UserMapModePreferences } from "~/db/tables";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
@@ -49,7 +50,6 @@ import {
 	SENDOUQ_WEAPON_POOL_MAX_SIZE,
 } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
-import { MyLabel } from "~/components/ui/MyLabel";
 
 import "../q-settings.css";
 

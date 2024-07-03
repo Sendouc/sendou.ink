@@ -4,6 +4,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";
+import { GearCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
@@ -11,6 +12,8 @@ import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CrossIcon } from "~/components/icons/Cross";
 import { PlusIcon } from "~/components/icons/Plus";
+import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { BUILD } from "~/constants";
 import type { GearType } from "~/db/types";
 import {
@@ -22,9 +25,6 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { modeImageUrl } from "~/utils/urls";
-import { GearCombobox } from "~/components/Combobox";
-import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
-import { MyLabel } from "~/components/ui/MyLabel";
 
 import { action } from "../actions/u.$identifier.builds.new.server";
 import { loader } from "../loaders/u.$identifier.builds.new.server";

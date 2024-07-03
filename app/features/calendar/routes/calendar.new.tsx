@@ -21,6 +21,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { CrossIcon } from "~/components/icons/Cross";
 import { TrashIcon } from "~/components/icons/Trash";
+import { MyLabel } from "~/components/ui/MyLabel";
 import type { Tables } from "~/db/tables";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
@@ -55,7 +56,6 @@ import {
 	validateFollowUpBrackets,
 } from "../calendar-utils";
 import { Tags } from "../components/Tags";
-import { MyLabel } from "~/components/ui/MyLabel";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
