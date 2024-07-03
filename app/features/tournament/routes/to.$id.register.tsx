@@ -55,6 +55,7 @@ import {
 	validateCounterPickMapPool,
 } from "../tournament-utils";
 import { useTournament } from "./to.$id";
+import { MyLabel } from "~/components/ui/MyLabel";
 
 import { action } from "../actions/to.$id.register.server";
 import { loader } from "../loaders/to.$id.register.server";
@@ -717,9 +718,9 @@ function TeamInfo({
 									name="prefersNotToHost"
 									defaultChecked={Boolean(ownTeam?.prefersNotToHost)}
 								/>
-								<label htmlFor="no-host" className="mb-0-forced">
+								<MyLabel htmlFor="no-host">
 									{t("tournament:pre.info.noHost")}
-								</label>
+								</MyLabel>
 							</div>
 
 							{tournament.ctx.settings.enableNoScreenToggle ? (
@@ -731,9 +732,9 @@ function TeamInfo({
 										defaultChecked={Boolean(ownTeam?.noScreen)}
 										data-testid="no-screen-checkbox"
 									/>
-									<label htmlFor="no-screen" className="mb-0-forced">
+									<MyLabel htmlFor="no-screen">
 										{t("tournament:pre.info.noScreen")}
-									</label>
+									</MyLabel>
 								</div>
 							) : null}
 						</div>

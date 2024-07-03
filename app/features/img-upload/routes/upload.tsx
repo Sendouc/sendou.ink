@@ -16,6 +16,7 @@ import { Main } from "~/components/Main";
 import Compressor from "compressorjs";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { requireUser } from "~/features/auth/core/user.server";
 import { findByIdentifier, isTeamOwner } from "~/features/team";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
@@ -154,7 +155,9 @@ export default function FileUploadPage() {
 				</div>
 			</div>
 			<div>
-				<label htmlFor="img-field">{t("common:upload.imageToUpload")}</label>
+				<MyLabel spaced htmlFor="img-field">
+					{t("common:upload.imageToUpload")}
+				</MyLabel>
 				<input
 					id="img-field"
 					className="plain"

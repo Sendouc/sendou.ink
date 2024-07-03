@@ -10,6 +10,7 @@ import { Label } from "~/components/Label";
 import { Redirect } from "~/components/Redirect";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
+import { MyLabel } from "~/components/ui/MyLabel";
 import {
 	PLUS_TIERS,
 	PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH,
@@ -135,7 +136,9 @@ export default function PlusNewSuggestionModalPage() {
 			<Form method="post" className="stack md">
 				<h2 className="plus__modal-title">Adding a new suggestion</h2>
 				<div>
-					<label htmlFor="tier">Tier</label>
+					<MyLabel spaced htmlFor="tier">
+						Tier
+					</MyLabel>
 					<select
 						id="tier"
 						name="tier"
@@ -151,7 +154,9 @@ export default function PlusNewSuggestionModalPage() {
 					</select>
 				</div>
 				<div>
-					<label htmlFor="user">Suggested user</label>
+					<MyLabel spaced htmlFor="user">
+						Suggested user
+					</MyLabel>
 					<UserSearch
 						inputName="userId"
 						onChange={(user) =>

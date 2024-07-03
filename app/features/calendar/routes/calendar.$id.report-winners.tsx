@@ -15,6 +15,7 @@ import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { UserSearch } from "~/components/UserSearch";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { CALENDAR_EVENT_RESULT } from "~/constants";
 import { requireUserId } from "~/features/auth/core/user.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
@@ -395,9 +396,9 @@ function Players({
 				return (
 					<div key={i}>
 						<div className="stack horizontal md items-center mb-1">
-							<label htmlFor={formId} className="mb-0-forced">
+							<MyLabel htmlFor={formId}>
 								{t("forms.team.player.header", { number: i + 1 })}
-							</label>
+							</MyLabel>
 							<Button
 								size="tiny"
 								variant="minimal"

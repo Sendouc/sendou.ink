@@ -3,6 +3,7 @@ import { Ability } from "~/components/Ability";
 import { Button } from "~/components/Button";
 import { ModeImage } from "~/components/Image";
 import { CrossIcon } from "~/components/icons/Cross";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { PATCHES } from "~/constants";
 import { possibleApValues } from "~/features/build-analyzer";
 import type { ModeShort } from "~/modules/in-game-lists";
@@ -173,10 +174,10 @@ function ModeFilter({
 							checked={filter.mode === mode}
 							onChange={() => onChange({ mode })}
 						/>
-						<label htmlFor={inputId(mode)} className="stack horizontal xs mb-0">
+						<MyLabel htmlFor={inputId(mode)} className="stack horizontal xs">
 							<ModeImage mode={mode} size={18} />
 							{t(`game-misc:MODE_LONG_${mode}`)}
-						</label>
+						</MyLabel>
 					</div>
 				);
 			})}
@@ -216,7 +217,7 @@ function DateFilter({
 
 	return (
 		<div className="build__filter build__filter__date">
-			<label className="mb-0-forced">{t("builds:filters.date.since")}</label>
+			<MyLabel>{t("builds:filters.date.since")}</MyLabel>
 			<select
 				className="build__filter__date-select"
 				value={selectValue()}

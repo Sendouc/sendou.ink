@@ -7,6 +7,7 @@ import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CrossIcon } from "~/components/icons/Cross";
+import { MyLabel } from "~/components/ui/MyLabel";
 import type { Tables } from "~/db/tables";
 import { SENDOUQ } from "~/features/sendouq/q-constants";
 import { preferenceEmojiUrl } from "~/utils/urls";
@@ -81,9 +82,9 @@ function Sentiment({
 									checked={sentimentRadio === sentiment}
 									onChange={() => setSentiment(sentimentRadio)}
 								/>
-								<label
+								<MyLabel
 									htmlFor={sentimentRadio}
-									className="mb-0 stack horizontal xs"
+									className="stack horizontal xs"
 								>
 									<img
 										src={preferenceEmojiUrl(
@@ -97,7 +98,7 @@ function Sentiment({
 										width={18}
 									/>
 									{t(`q:privateNote.sentiment.${sentimentRadio}`)}
-								</label>
+								</MyLabel>
 							</div>
 						);
 					},

@@ -16,6 +16,7 @@ import { isAdmin, isMod } from "~/permissions";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { SEED_URL, STOP_IMPERSONATING_URL, impersonateUrl } from "~/utils/urls";
+import { MyLabel } from "~/components/ui/MyLabel";
 
 import { action } from "../actions/admin.server";
 import { loader } from "../loaders/admin.server";
@@ -66,7 +67,7 @@ function Impersonate() {
 		>
 			<h2>Impersonate user</h2>
 			<div>
-				<label>User to log in as</label>
+				<MyLabel spaced>User to log in as</MyLabel>
 				<UserSearch
 					inputName="user"
 					onChange={(newUser) => setUserId(newUser.id)}
@@ -104,14 +105,14 @@ function MigrateUser() {
 			<h2>Migrate user data</h2>
 			<div className="stack horizontal md">
 				<div>
-					<label>Old user</label>
+					<MyLabel spaced>Old user</MyLabel>
 					<UserSearch
 						inputName="old-user"
 						onChange={(newUser) => setOldUserId(newUser.id)}
 					/>
 				</div>
 				<div>
-					<label>New user</label>
+					<MyLabel spaced>New user</MyLabel>
 					<UserSearch
 						inputName="new-user"
 						onChange={(newUser) => setNewUserId(newUser.id)}
@@ -140,11 +141,11 @@ function LinkPlayer() {
 			<h2>Link player</h2>
 			<div className="stack horizontal md">
 				<div>
-					<label>User</label>
+					<MyLabel spaced>User</MyLabel>
 					<UserSearch inputName="user" />
 				</div>
 				<div>
-					<label>Player ID</label>
+					<MyLabel spaced>Player ID</MyLabel>
 					<input type="number" name="playerId" />
 				</div>
 			</div>
@@ -165,7 +166,7 @@ function GiveArtist() {
 			<h2>Add as artist</h2>
 			<div className="stack horizontal md">
 				<div>
-					<label>User</label>
+					<MyLabel spaced>User</MyLabel>
 					<UserSearch inputName="user" />
 				</div>
 			</div>
@@ -186,7 +187,7 @@ function GiveVideoAdder() {
 			<h2>Give video adder</h2>
 			<div className="stack horizontal md">
 				<div>
-					<label>User</label>
+					<MyLabel spaced>User</MyLabel>
 					<UserSearch inputName="user" />
 				</div>
 			</div>
@@ -207,12 +208,12 @@ function ForcePatron() {
 			<h2>Force patron</h2>
 			<div className="stack horizontal md">
 				<div>
-					<label>User</label>
+					<MyLabel spaced>User</MyLabel>
 					<UserSearch inputName="user" />
 				</div>
 
 				<div>
-					<label>Tier</label>
+					<MyLabel spaced>Tier</MyLabel>
 					<select name="patronTier">
 						<option value="1">Support</option>
 						<option value="2">Supporter</option>
@@ -221,7 +222,7 @@ function ForcePatron() {
 				</div>
 
 				<div>
-					<label>Patron till</label>
+					<MyLabel spaced>Patron till</MyLabel>
 					<input name="patronTill" type="date" />
 				</div>
 			</div>
@@ -246,17 +247,17 @@ function BanUser() {
 			<h2 className="text-warning">Ban user</h2>
 			<div className="stack horizontal md">
 				<div>
-					<label>User</label>
+					<MyLabel spaced>User</MyLabel>
 					<UserSearch inputName="user" />
 				</div>
 
 				<div>
-					<label>Banned till</label>
+					<MyLabel spaced>Banned till</MyLabel>
 					<input name="duration" type="datetime-local" />
 				</div>
 
 				<div>
-					<label>Reason</label>
+					<MyLabel spaced>Reason</MyLabel>
 					<input name="reason" type="text" />
 				</div>
 			</div>
@@ -276,7 +277,7 @@ function UnbanUser() {
 		<fetcher.Form className="stack md" method="post">
 			<h2 className="text-warning">Unban user</h2>
 			<div>
-				<label>User</label>
+				<MyLabel spaced>User</MyLabel>
 				<UserSearch inputName="user" />
 			</div>
 			<div className="stack horizontal md">

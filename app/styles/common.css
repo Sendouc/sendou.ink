@@ -228,13 +228,6 @@ input[type="checkbox"] {
 	display: none !important;
 }
 
-label:not([data-rac]) {
-	display: block;
-	font-size: var(--fonts-xs);
-	font-weight: var(--bold);
-	margin-block-end: var(--label-margin);
-}
-
 details summary {
 	cursor: pointer;
 	user-select: none;

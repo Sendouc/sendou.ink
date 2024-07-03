@@ -108,6 +108,7 @@ import { findMatchById } from "../queries/findMatchById.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
+import { MyLabel } from "~/components/ui/MyLabel";
 
 import "../q.css";
 
@@ -870,30 +871,30 @@ function ReportWeaponsForm() {
 			/>
 			<div className="stack horizontal sm justify-between w-max mx-auto">
 				<h3 className="text-md">{t("q:match.report.whoToReport")}</h3>
-				<label className="stack horizontal xs items-center mb-0">
+				<MyLabel className="stack horizontal xs items-center">
 					{t("q:match.report.whoToReport.me")}
 					<input
 						type="radio"
 						checked={reportingMode === "MYSELF"}
 						onChange={() => setReportingMode("MYSELF")}
 					/>
-				</label>
-				<label className="stack horizontal xs items-center mb-0">
+				</MyLabel>
+				<MyLabel className="stack horizontal xs items-center">
 					{t("q:match.report.whoToReport.myTeam")}
 					<input
 						type="radio"
 						checked={reportingMode === "MY_TEAM"}
 						onChange={() => setReportingMode("MY_TEAM")}
 					/>
-				</label>
-				<label className="stack horizontal xs items-center mb-0">
+				</MyLabel>
+				<MyLabel className="stack horizontal xs items-center">
 					{t("q:match.report.whoToReport.everyone")}
 					<input
 						type="radio"
 						checked={reportingMode === "ALL"}
 						onChange={() => setReportingMode("ALL")}
 					/>
-				</label>
+				</MyLabel>
 			</div>
 			<div className="stack md mx-auto">
 				{playedMaps.map((map, i) => {
@@ -1604,9 +1605,9 @@ function MapListMap({
 					}}
 				>
 					<div className="q-match__report-section">
-						<label className="mb-0-forced text-xxs" htmlFor={winnerInputId}>
+						<MyLabel className="text-xxs" htmlFor={winnerInputId}>
 							{t("q:match.report.winnerLabel")}
-						</label>
+						</MyLabel>
 						<WinnerRadioGroup
 							id={winnerInputId}
 							value={winners[i] ?? null}
@@ -1616,9 +1617,9 @@ function MapListMap({
 
 						{showReportedOwnWeapon && onOwnWeaponSelected ? (
 							<>
-								<label className="mb-0-forced text-xxs" htmlFor={weaponInputId}>
+								<MyLabel className="text-xxs" htmlFor={weaponInputId}>
 									{t("q:match.report.weaponLabel")}
-								</label>
+								</MyLabel>
 								<WeaponComboBox
 									id={weaponInputId}
 									value={ownWeapon}

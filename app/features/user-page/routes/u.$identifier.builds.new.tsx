@@ -22,9 +22,10 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { modeImageUrl } from "~/utils/urls";
-
 import { GearCombobox } from "~/components/Combobox";
 import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
+import { MyLabel } from "~/components/ui/MyLabel";
+
 import { action } from "../actions/u.$identifier.builds.new.server";
 import { loader } from "../loaders/u.$identifier.builds.new.server";
 export { loader, action };
@@ -136,9 +137,9 @@ function ModeCheckboxes() {
 			<div className="stack horizontal md">
 				{modesShort.map((mode) => (
 					<div key={mode} className="stack items-center">
-						<label htmlFor={mode}>
+						<MyLabel spaced htmlFor={mode}>
 							<Image alt="" path={modeImageUrl(mode)} width={24} height={24} />
-						</label>
+						</MyLabel>
 						<input
 							id={mode}
 							name={mode}

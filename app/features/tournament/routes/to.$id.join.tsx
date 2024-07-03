@@ -7,6 +7,7 @@ import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";
 import { FriendCodeInput } from "~/components/FriendCodeInput";
 import { SubmitButton } from "~/components/SubmitButton";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
@@ -199,11 +200,11 @@ export default function JoinTeamPage() {
 						) : (
 							<div className="text-lighter text-sm stack horizontal sm items-center">
 								<input id={id} type="checkbox" name="trust" />{" "}
-								<label htmlFor={id} className="mb-0-forced">
+								<MyLabel htmlFor={id}>
 									{t("tournament:join.giveTrust", {
 										name: captain ? captain.username : "",
 									})}
-								</label>
+								</MyLabel>
 							</div>
 						)}
 					</div>

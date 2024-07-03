@@ -28,6 +28,7 @@ import { findSubsByTournamentId } from "../queries/findSubsByTournamentId.server
 import { upsertSub } from "../queries/upsertSub.server";
 import { TOURNAMENT_SUB } from "../tournament-subs-constants";
 import { subSchema } from "../tournament-subs-schemas.server";
+import { MyLabel } from "~/components/ui/MyLabel";
 
 import "../tournament-subs.css";
 
@@ -149,9 +150,9 @@ function VCRadios() {
 						required
 						defaultChecked={data.sub && Boolean(data.sub.canVc)}
 					/>
-					<label htmlFor="vc-true" className="mb-0-forced">
+					<MyLabel spaced={false} htmlFor="vc-true">
 						{t("common:yes")}
-					</label>
+					</MyLabel>
 				</div>
 				<div className="stack horizontal sm items-center">
 					<input
@@ -161,9 +162,9 @@ function VCRadios() {
 						value="off"
 						defaultChecked={data.sub && !data.sub.canVc}
 					/>
-					<label htmlFor="vc-false" className="mb-0-forced">
+					<MyLabel spaced={false} htmlFor="vc-false">
 						{t("common:no")}
-					</label>
+					</MyLabel>
 				</div>
 			</div>
 		</div>
@@ -222,9 +223,9 @@ function VisibilityRadios() {
 									value={id}
 									defaultChecked={data.sub?.visibility === id}
 								/>
-								<label htmlFor={id} className="mb-0-forced">
+								<MyLabel spaced={false} htmlFor={id}>
 									+{tier} {tier !== 1 && "(and above)"}
-								</label>
+								</MyLabel>
 							</div>
 						);
 					})}
@@ -237,9 +238,9 @@ function VisibilityRadios() {
 						required
 						defaultChecked={data.sub?.visibility === "ALL"}
 					/>
-					<label htmlFor="all" className="mb-0-forced">
+					<MyLabel spaced={false} htmlFor="all">
 						{t("tournament:subs.visibility.everyone")}
-					</label>
+					</MyLabel>
 				</div>
 			</div>
 		</div>

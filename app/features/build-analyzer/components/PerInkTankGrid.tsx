@@ -3,6 +3,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Ability } from "~/components/Ability";
 import { Popover } from "~/components/Popover";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { MAX_AP } from "~/constants";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import type { FullInkTankOption } from "../analyzer-types";
@@ -76,9 +77,7 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
 								checked={subsUsedOption === subsUsed}
 								onChange={(e) => setSubsUsed(Number(e.target.value))}
 							/>
-							<label htmlFor={id} className="mb-0-forced">
-								{subsUsedOption}
-							</label>
+							<MyLabel htmlFor={id}>{subsUsedOption}</MyLabel>
 						</div>
 					);
 				})}

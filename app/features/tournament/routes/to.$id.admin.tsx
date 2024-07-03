@@ -13,6 +13,7 @@ import { Redirect } from "~/components/Redirect";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import { TrashIcon } from "~/components/icons/Trash";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { USER } from "~/constants";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
@@ -534,7 +535,9 @@ function TeamActions() {
 			className="stack horizontal sm items-end flex-wrap"
 		>
 			<div>
-				<label htmlFor="action">Action</label>
+				<MyLabel spaced htmlFor="action">
+					Action
+				</MyLabel>
 				<select
 					id="action"
 					name="action"
@@ -552,7 +555,9 @@ function TeamActions() {
 			</div>
 			{selectedAction.inputs.includes("REGISTERED_TEAM") ? (
 				<div>
-					<label htmlFor="teamId">Team</label>
+					<MyLabel spaced htmlFor="teamId">
+						Team
+					</MyLabel>
 					<select
 						id="teamId"
 						name="teamId"
@@ -572,13 +577,17 @@ function TeamActions() {
 			) : null}
 			{selectedAction.inputs.includes("TEAM_NAME") ? (
 				<div>
-					<label htmlFor="teamName">Team name</label>
+					<MyLabel spaced htmlFor="teamName">
+						Team name
+					</MyLabel>
 					<input id="teamName" name="teamName" />
 				</div>
 			) : null}
 			{selectedTeam && selectedAction.inputs.includes("ROSTER_MEMBER") ? (
 				<div>
-					<label htmlFor="memberId">Member</label>
+					<MyLabel spaced htmlFor="memberId">
+						Member
+					</MyLabel>
 					<select id="memberId" name="memberId">
 						{selectedTeam.members.map((member) => (
 							<option key={member.userId} value={member.userId}>
@@ -590,13 +599,17 @@ function TeamActions() {
 			) : null}
 			{selectedAction.inputs.includes("USER") ? (
 				<div>
-					<label htmlFor="user">User</label>
+					<MyLabel spaced htmlFor="user">
+						User
+					</MyLabel>
 					<UserSearch inputName="userId" id="user" />
 				</div>
 			) : null}
 			{selectedAction.inputs.includes("BRACKET") ? (
 				<div>
-					<label htmlFor="bracket">Bracket</label>
+					<MyLabel spaced htmlFor="bracket">
+						Bracket
+					</MyLabel>
 					<select id="bracket" name="bracketIdx">
 						{tournament.brackets.map((bracket, bracketIdx) => (
 							<option key={bracket.name} value={bracketIdx}>
@@ -952,7 +965,9 @@ function BracketReset() {
 		<div>
 			<fetcher.Form method="post" className="stack horizontal sm items-end">
 				<div>
-					<label htmlFor="bracket">Bracket</label>
+					<MyLabel spaced htmlFor="bracket">
+						Bracket
+					</MyLabel>
 					<select
 						id="bracket"
 						name="stageId"
@@ -967,9 +982,9 @@ function BracketReset() {
 					</select>
 				</div>
 				<div>
-					<label htmlFor="bracket-confirmation">
+					<MyLabel spaced htmlFor="bracket-confirmation">
 						Type bracket name (&quot;{bracketToDeleteName}&quot;) to confirm
-					</label>
+					</MyLabel>
 					<Input
 						value={confirmText}
 						onChange={(e) => setConfirmText(e.target.value)}

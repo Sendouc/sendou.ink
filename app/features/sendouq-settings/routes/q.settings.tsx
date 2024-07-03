@@ -49,6 +49,7 @@ import {
 	SENDOUQ_WEAPON_POOL_MAX_SIZE,
 } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
+import { MyLabel } from "~/components/ui/MyLabel";
 
 import "../q-settings.css";
 
@@ -428,7 +429,7 @@ function VoiceChatAbility() {
 
 	return (
 		<div className="stack">
-			<label>{t("q:settings.voiceChat.canVC.header")}</label>
+			<MyLabel spaced>{t("q:settings.voiceChat.canVC.header")}</MyLabel>
 			{(["YES", "NO", "LISTEN_ONLY"] as const).map((option) => {
 				return (
 					<div key={option} className="stack sm horizontal items-center">
@@ -440,9 +441,9 @@ function VoiceChatAbility() {
 							required
 							defaultChecked={data.settings.vc === option}
 						/>
-						<label htmlFor={option} className="mb-0 text-main-forced">
+						<MyLabel htmlFor={option} className="text-main-forced">
 							{label(option)}
-						</label>
+						</MyLabel>
 					</div>
 				);
 			})}
@@ -458,7 +459,7 @@ function Languages() {
 	return (
 		<div className="stack">
 			<input type="hidden" name="languages" value={JSON.stringify(value)} />
-			<label>{t("q:settings.voiceChat.languages.header")}</label>
+			<MyLabel spaced>{t("q:settings.voiceChat.languages.header")}</MyLabel>
 			<select
 				className="w-max"
 				onChange={(e) => {
@@ -658,14 +659,14 @@ function SoundCheckboxes() {
 		<div className="ml-2-5">
 			{sounds.map((sound) => (
 				<div key={sound.code}>
-					<label className="stack horizontal xs items-center">
+					<MyLabel spaced className="stack horizontal xs items-center">
 						<input
 							type="checkbox"
 							checked={soundValues[sound.code]}
 							onChange={() => toggleSound(sound.code)}
 						/>
 						{sound.name}
-					</label>
+					</MyLabel>
 				</div>
 			))}
 		</div>
@@ -802,11 +803,11 @@ function Misc() {
 						id="noScreen"
 						name="noScreen"
 					/>
-					<label className="mb-0-forced" htmlFor="noScreen">
+					<MyLabel htmlFor="noScreen">
 						{t("q:settings.avoid.label", {
 							special: t("weapons:SPECIAL_19"),
 						})}
-					</label>
+					</MyLabel>
 				</div>
 				<div className="mt-6">
 					<SubmitButton

@@ -13,6 +13,7 @@ import { Catcher } from "~/components/Catcher";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { RelativeTime } from "~/components/RelativeTime";
 import { TrashIcon } from "~/components/icons/Trash";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { PLUS_TIERS } from "~/constants";
 import type { PlusSuggestion, User } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
@@ -189,12 +190,16 @@ export default function PlusSuggestionsPage() {
 
 									return (
 										<div key={id} className="plus__radio-container">
-											<label htmlFor={id} className="plus__radio-label">
+											<MyLabel
+												spaced
+												htmlFor={id}
+												className="plus__radio-label"
+											>
 												+{tier}{" "}
 												<span className="plus__users-count">
 													({suggestions.length})
 												</span>
-											</label>
+											</MyLabel>
 											<input
 												id={id}
 												name="tier"

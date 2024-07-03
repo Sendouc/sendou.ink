@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { MyLabel } from "./ui/MyLabel";
 
 type LabelProps = Pick<
 	React.DetailedHTMLProps<
@@ -17,6 +18,7 @@ type LabelProps = Pick<
 	spaced?: boolean;
 };
 
+// TODO: replace with MyLabel
 export function Label({
 	valueLimits,
 	required,
@@ -32,9 +34,9 @@ export function Label({
 				"mb-0-forced": !spaced,
 			})}
 		>
-			<label htmlFor={htmlFor} className={labelClassName}>
+			<MyLabel spaced htmlFor={htmlFor} className={labelClassName}>
 				{children} {required && <span className="text-error">*</span>}
-			</label>
+			</MyLabel>
 			{valueLimits ? (
 				<div className={clsx("label__value", lengthWarning(valueLimits))}>
 					{valueLimits.current}/{valueLimits.max}

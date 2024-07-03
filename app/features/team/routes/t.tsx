@@ -27,6 +27,7 @@ import {
 	userSubmittedImage,
 } from "~/utils/urls";
 import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
+import { MyLabel } from "~/components/ui/MyLabel";
 
 import "../team.css";
 
@@ -173,7 +174,9 @@ function NewTeamDialog() {
 			<Form method="post" className="stack md">
 				<h2 className="text-sm">{t("team:newTeam.header")}</h2>
 				<div className="team-search__form-input-container">
-					<label htmlFor="name">{t("common:forms.name")}</label>
+					<MyLabel spaced htmlFor="name">
+						{t("common:forms.name")}
+					</MyLabel>
 					<input
 						id="name"
 						name="name"

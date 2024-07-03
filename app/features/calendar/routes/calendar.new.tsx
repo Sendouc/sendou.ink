@@ -55,6 +55,7 @@ import {
 	validateFollowUpBrackets,
 } from "../calendar-utils";
 import { Tags } from "../components/Tags";
+import { MyLabel } from "~/components/ui/MyLabel";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
@@ -385,7 +386,8 @@ function DatesInput({ allowMultiDate }: { allowMultiDate?: boolean }) {
 						{datesInputState.map(({ date, key }, i) => {
 							return (
 								<div key={key} className="stack horizontal sm items-center">
-									<label
+									<MyLabel
+										spaced
 										id={`date-input-${key}-label`}
 										className="calendar-new__day-label"
 										htmlFor={`date-input-${key}`}
@@ -393,7 +395,7 @@ function DatesInput({ allowMultiDate }: { allowMultiDate?: boolean }) {
 										{t("calendar:day", {
 											number: i + 1,
 										})}
-									</label>
+									</MyLabel>
 									<DateInput
 										id={`date-input-${key}`}
 										name="date"
@@ -502,7 +504,9 @@ function TagsAdder() {
 				value={JSON.stringify(tags.length > 0 ? tags : null)}
 			/>
 			<div>
-				<label htmlFor={id}>{t("calendar:forms.tags")}</label>
+				<MyLabel spaced htmlFor={id}>
+					{t("calendar:forms.tags")}
+				</MyLabel>
 				<select
 					id={id}
 					className="calendar-new__select"
@@ -559,7 +563,9 @@ function BadgesAdder() {
 		<div className="stack md">
 			{input}
 			<div>
-				<label htmlFor={id}>{t("forms.badges")}</label>
+				<MyLabel spaced htmlFor={id}>
+					{t("forms.badges")}
+				</MyLabel>
 				<select
 					id={id}
 					className="calendar-new__select"
@@ -792,9 +798,9 @@ function RankedToggle() {
 
 	return (
 		<div>
-			<label htmlFor={id} className="w-max">
+			<MyLabel spaced htmlFor={id} className="w-max">
 				Ranked
-			</label>
+			</MyLabel>
 			<Toggle
 				name="isRanked"
 				id={id}
@@ -821,9 +827,9 @@ function EnableNoScreenToggle() {
 
 	return (
 		<div>
-			<label htmlFor={id} className="w-max">
+			<MyLabel spaced htmlFor={id} className="w-max">
 				Splattercolor Screen toggle
-			</label>
+			</MyLabel>
 			<Toggle
 				name="enableNoScreenToggle"
 				id={id}
@@ -848,9 +854,9 @@ function AutonomousSubsToggle() {
 
 	return (
 		<div>
-			<label htmlFor={id} className="w-max">
+			<MyLabel spaced htmlFor={id} className="w-max">
 				Autonomous subs
-			</label>
+			</MyLabel>
 			<Toggle
 				name="autonomousSubs"
 				id={id}
@@ -875,9 +881,9 @@ function RequireIGNToggle() {
 
 	return (
 		<div>
-			<label htmlFor={id} className="w-max">
+			<MyLabel spaced htmlFor={id} className="w-max">
 				Require in-game names
-			</label>
+			</MyLabel>
 			<Toggle
 				name="requireInGameNames"
 				id={id}
@@ -903,9 +909,9 @@ function InvitationalToggle() {
 
 	return (
 		<div>
-			<label htmlFor={id} className="w-max">
+			<MyLabel spaced htmlFor={id} className="w-max">
 				Invitational
-			</label>
+			</MyLabel>
 			<Toggle
 				name="isInvitational"
 				id={id}
@@ -930,9 +936,9 @@ function StrictDeadlinesToggle() {
 
 	return (
 		<div>
-			<label htmlFor={id} className="w-max">
+			<MyLabel spaced htmlFor={id} className="w-max">
 				Strict deadlines
-			</label>
+			</MyLabel>
 			<Toggle
 				name="strictDeadline"
 				id={id}
@@ -964,9 +970,9 @@ function RegClosesAtSelect() {
 
 	return (
 		<div>
-			<label htmlFor={id} className="w-max">
+			<MyLabel spaced htmlFor={id} className="w-max">
 				Registration closes at
-			</label>
+			</MyLabel>
 			<select
 				name="regClosesAt"
 				value={regClosesAt}
@@ -1026,7 +1032,9 @@ function TournamentMapPickingStyleSelect() {
 	return (
 		<>
 			<div>
-				<label htmlFor={id}>Map picking style</label>
+				<MyLabel spaced htmlFor={id}>
+					Map picking style
+				</MyLabel>
 				<select
 					onChange={(e) => setMode(e.target.value as RankedModeShort)}
 					name="toToolsMode"
@@ -1072,7 +1080,9 @@ function TournamentEnabler({
 
 	return (
 		<div>
-			<label htmlFor={id}>Host on sendou.ink</label>
+			<MyLabel spaced htmlFor={id}>
+				Host on sendou.ink
+			</MyLabel>
 			<Toggle
 				name="toToolsEnabled"
 				id={id}
@@ -1117,7 +1127,9 @@ function MapPoolSection() {
 		</>
 	) : (
 		<div>
-			<label htmlFor={id}>{t("common:maps.mapPool")}</label>
+			<MyLabel spaced htmlFor={id}>
+				{t("common:maps.mapPool")}
+			</MyLabel>
 			<AddButton onAdd={() => setIncludeMapPool(true)} id={id} />
 		</div>
 	);
@@ -1378,9 +1390,9 @@ function MemberCountSelect() {
 
 	return (
 		<div>
-			<label htmlFor={id} className="w-max">
+			<MyLabel spaced htmlFor={id} className="w-max">
 				Players count
-			</label>
+			</MyLabel>
 			<select
 				name="minMembersPerTeam"
 				defaultValue={

@@ -19,6 +19,7 @@ import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import { MapPoolEventsCombobox } from "./Combobox";
 import { ArrowLongLeftIcon } from "./icons/ArrowLongLeft";
 import { CrossIcon } from "./icons/Cross";
+import { MyLabel } from "./ui/MyLabel";
 
 export type MapPoolSelectorProps = {
 	mapPool: MapPool;
@@ -386,7 +387,7 @@ function MapPoolTemplateSelect({
 	const { t } = useTranslation(["game-misc", "common"]);
 
 	return (
-		<label className="stack sm">
+		<MyLabel spaced className="stack sm">
 			{t("common:maps.template")}
 			<select
 				value={value}
@@ -420,7 +421,7 @@ function MapPoolTemplateSelect({
 					</optgroup>
 				)}
 			</select>
-		</label>
+		</MyLabel>
 	);
 }
 
@@ -439,7 +440,7 @@ function TemplateEventSelection({
 	const id = React.useId();
 
 	return (
-		<label className="stack sm">
+		<MyLabel spaced className="stack sm">
 			{t("maps.template.event")}
 			<MapPoolEventsCombobox
 				id={id}
@@ -454,6 +455,6 @@ function TemplateEventSelection({
 				}}
 				initialEvent={initialEvent}
 			/>
-		</label>
+		</MyLabel>
 	);
 }

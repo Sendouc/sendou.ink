@@ -51,6 +51,7 @@ import {
 } from "~/utils/zod";
 import { userParamsSchema } from "../user-page-schemas.server";
 import type { UserPageLoaderData } from "./u.$identifier";
+import { MyLabel } from "~/components/ui/MyLabel";
 
 import "~/styles/u-edit.css";
 
@@ -425,7 +426,9 @@ function CountrySelect({
 
 	return (
 		<div>
-			<label htmlFor="country">{t("user:country")}</label>
+			<MyLabel spaced htmlFor="country">
+				{t("user:country")}
+			</MyLabel>
 			<select
 				className="u-edit__country-select"
 				name="country"
@@ -478,7 +481,9 @@ function WeaponPoolSelect({
 		<div className="stack md u-edit__weapon-pool">
 			<input type="hidden" name="weapons" value={JSON.stringify(weapons)} />
 			<div>
-				<label htmlFor="weapon">{t("user:weaponPool")}</label>
+				<MyLabel spaced htmlFor="weapon">
+					{t("user:weaponPool")}
+				</MyLabel>
 				{weapons.length < USER.WEAPON_POOL_MAX_SIZE ? (
 					<WeaponCombobox
 						inputName="weapon"
@@ -599,7 +604,9 @@ function FavBadgeSelect({
 
 	return (
 		<div>
-			<label htmlFor="favoriteBadgeId">{t("user:favoriteBadge")}</label>
+			<MyLabel spaced htmlFor="favoriteBadgeId">
+				{t("user:favoriteBadge")}
+			</MyLabel>
 			<select
 				className=""
 				name="favoriteBadgeId"
@@ -632,9 +639,9 @@ function ShowUniqueDiscordNameToggle({
 
 	return (
 		<div>
-			<label htmlFor="showDiscordUniqueName">
+			<MyLabel spaced htmlFor="showDiscordUniqueName">
 				{t("user:forms.showDiscordUniqueName")}
-			</label>
+			</MyLabel>
 			<Toggle
 				checked={checked}
 				setChecked={setChecked}
@@ -661,7 +668,9 @@ function CommissionsOpenToggle({
 
 	return (
 		<div>
-			<label htmlFor="commissionsOpen">{t("user:forms.commissionsOpen")}</label>
+			<MyLabel spaced htmlFor="commissionsOpen">
+				{t("user:forms.commissionsOpen")}
+			</MyLabel>
 			<Toggle
 				checked={checked}
 				setChecked={setChecked}

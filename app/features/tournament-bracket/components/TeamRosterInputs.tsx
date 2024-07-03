@@ -6,6 +6,7 @@ import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { useUser } from "~/features/auth/core/user";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import { tournamentTeamPage, userPage } from "~/utils/urls";
@@ -341,7 +342,7 @@ function WinnerRadio({
 				disabled={disabled}
 				data-testid={`winner-radio-${team}`}
 			/>
-			<Label className="mb-0 ml-2" htmlFor={`${teamId}-${id}`}>
+			<Label className="ml-2" htmlFor={`${teamId}-${id}`}>
 				Winner
 			</Label>
 		</div>
@@ -462,7 +463,8 @@ function TeamRosterInputsCheckboxes({
 								onChange={() => handlePlayerClick(member.id)}
 								data-testid={`player-checkbox-${i}`}
 							/>{" "}
-							<label
+							<MyLabel
+								spaced
 								className="tournament-bracket__during-match-actions__player-name"
 								htmlFor={`${member.id}-${id}`}
 							>
@@ -471,7 +473,7 @@ function TeamRosterInputsCheckboxes({
 										? inGameNameWithoutDiscriminator(member.inGameName)
 										: member.username}
 								</span>
-							</label>
+							</MyLabel>
 						</div>
 						<Link to={userPage(member)} target="_blank">
 							<Avatar size="xxs" user={member} />

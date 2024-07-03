@@ -20,6 +20,7 @@ import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { UserSearch } from "~/components/UserSearch";
 import { CrossIcon } from "~/components/icons/Cross";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { requireUser } from "~/features/auth/core/user.server";
 import { s3UploadHandler } from "~/features/img-upload";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
@@ -200,7 +201,9 @@ function ImageUpload({
 
 	return (
 		<div>
-			<label htmlFor="img-field">{t("common:upload.imageToUpload")}</label>
+			<MyLabel spaced htmlFor="img-field">
+				{t("common:upload.imageToUpload")}
+			</MyLabel>
 			<input
 				id="img-field"
 				className="plain"
@@ -409,7 +412,9 @@ function LinkedUsers() {
 
 	return (
 		<div>
-			<label htmlFor="user">{t("art:forms.linkedUsers.title")}</label>
+			<MyLabel spaced htmlFor="user">
+				{t("art:forms.linkedUsers.title")}
+			</MyLabel>
 			<input
 				type="hidden"
 				name="linkedUsers"
@@ -469,7 +474,9 @@ function ShowcaseToggle() {
 
 	return (
 		<div>
-			<label htmlFor="isShowcase">{t("art:forms.showcase.title")}</label>
+			<MyLabel spaced htmlFor="isShowcase">
+				{t("art:forms.showcase.title")}
+			</MyLabel>
 			<Toggle
 				checked={checked}
 				setChecked={setChecked}

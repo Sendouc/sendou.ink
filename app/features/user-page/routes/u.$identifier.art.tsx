@@ -3,6 +3,7 @@ import { useLoaderData, useMatches } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { deleteArtSchema } from "~/features/art/art-schemas.server";
 import { ART_SOURCES, type ArtSource } from "~/features/art/art-types";
 import { ArtGrid } from "~/features/art/components/ArtGrid";
@@ -158,9 +159,7 @@ export default function UserArtPage() {
 									checked={type === "ALL"}
 									onChange={() => setType("ALL")}
 								/>
-								<label htmlFor="all" className="mb-0-forced">
-									{t("art:radios.all")}
-								</label>
+								<MyLabel htmlFor="all">{t("art:radios.all")}</MyLabel>
 							</div>
 							<div className="stack xs horizontal items-center">
 								<input
@@ -169,9 +168,7 @@ export default function UserArtPage() {
 									checked={type === "MADE-BY"}
 									onChange={() => setType("MADE-BY")}
 								/>
-								<label htmlFor="made-by" className="mb-0-forced">
-									{t("art:radios.madeBy")}
-								</label>
+								<MyLabel htmlFor="made-by">{t("art:radios.madeBy")}</MyLabel>
 							</div>
 							<div className="stack xs horizontal items-center">
 								<input
@@ -180,9 +177,7 @@ export default function UserArtPage() {
 									checked={type === "MADE-OF"}
 									onChange={() => setType("MADE-OF")}
 								/>
-								<label htmlFor="made-of" className="mb-0-forced">
-									{t("art:radios.madeFor")}
-								</label>
+								<MyLabel htmlFor="made-of">{t("art:radios.madeFor")}</MyLabel>
 							</div>
 						</div>
 					) : null}

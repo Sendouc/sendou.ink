@@ -7,6 +7,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ClipboardIcon } from "~/components/icons/Clipboard";
 import { PlusIcon } from "~/components/icons/Plus";
+import { MyLabel } from "~/components/ui/MyLabel";
 import { useTrusted } from "~/hooks/swr";
 import {
 	SENDOUQ_PREPARING_PAGE,
@@ -49,7 +50,9 @@ export function MemberAdder({
 	return (
 		<div className="stack md flex-wrap justify-center">
 			<div>
-				<label htmlFor="invite">{t("q:looking.groups.adder.inviteLink")}</label>
+				<MyLabel spaced htmlFor="invite">
+					{t("q:looking.groups.adder.inviteLink")}
+				</MyLabel>
 				<div className="stack horizontal sm items-center">
 					<input
 						type="text"
@@ -67,7 +70,9 @@ export function MemberAdder({
 				</div>
 			</div>
 			<fetcher.Form method="post" action={SENDOUQ_PREPARING_PAGE}>
-				<label htmlFor="players">{t("q:looking.groups.adder.quickAdd")}</label>
+				<MyLabel spaced htmlFor="players">
+					{t("q:looking.groups.adder.quickAdd")}
+				</MyLabel>
 				<div className="stack horizontal sm items-center">
 					<TrusterDropdown
 						setTruster={setTruster}
