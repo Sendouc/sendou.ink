@@ -20,7 +20,7 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
-import { Button, LinkButton } from "~/components/Button";
+import { Button } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, ModeImage, StageImage, WeaponImage } from "~/components/Image";
@@ -1121,26 +1121,21 @@ function BottomSection({
 	);
 
 	const rulesButtonElement = (
-		<LinkButton
-			to={SENDOUQ_RULES_PAGE}
-			variant="outlined"
-			size="tiny"
-			icon={<ScaleIcon />}
-		>
+		<Link to={SENDOUQ_RULES_PAGE} className="q-match__square-link">
+			<div className="q-match__square-link__icon-container">
+				<ScaleIcon />
+			</div>
 			{t("q:front.nav.rules.title")}
-		</LinkButton>
+		</Link>
 	);
 
 	const helpdeskButtonElement = (
-		<LinkButton
-			isExternal
-			to={SENDOU_INK_DISCORD_URL}
-			variant="outlined"
-			size="tiny"
-			icon={<DiscordIcon />}
-		>
+		<Link to={SENDOU_INK_DISCORD_URL} className="q-match__square-link">
+			<div className="q-match__square-link__icon-container">
+				<DiscordIcon />
+			</div>
 			{t("q:match.helpdesk")}
-		</LinkButton>
+		</Link>
 	);
 
 	const cancelMatchElement =
@@ -1185,9 +1180,9 @@ function BottomSection({
 				<div className="stack horizontal lg items-center justify-center">
 					{roomJoiningInfoElement}
 					<div className="stack md">
-						{screenLegalityInfoElement}
 						{rulesButtonElement}
 						{helpdeskButtonElement}
+						{screenLegalityInfoElement}
 						{cancelMatchElement}
 					</div>
 				</div>
@@ -1233,13 +1228,13 @@ function BottomSection({
 						invisible: !showMid,
 					})}
 				>
-					<div className="stack md">
-						{roomJoiningInfoElement}
+					<div className="stack horizontal">{roomJoiningInfoElement}</div>
+					<div className="stack horizontal md">
 						{rulesButtonElement}
 						{helpdeskButtonElement}
-						{screenLegalityInfoElement}
-						{cancelMatchElement}
 					</div>
+					{screenLegalityInfoElement}
+					{cancelMatchElement}
 				</div>
 				<div className="q-match__chat-container">
 					{chatRooms.length > 0 ? chatElement : null}
