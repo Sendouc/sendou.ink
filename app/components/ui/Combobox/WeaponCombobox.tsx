@@ -19,6 +19,7 @@ export function WeaponComboBox({
 	value,
 	onChange,
 	disabledWeaponIds,
+	quickSelectWeaponIds,
 	withRightButton = true,
 	label,
 }: {
@@ -28,10 +29,11 @@ export function WeaponComboBox({
 	value?: MainWeaponId | null;
 	onChange?: (weaponId: MainWeaponId | null) => void;
 	disabledWeaponIds?: MainWeaponId[];
+	quickSelectWeaponIds?: MainWeaponId[];
 	withRightButton?: boolean;
 	label?: string;
 }) {
-	const categories = useWeaponOptions();
+	const categories = useWeaponOptions(quickSelectWeaponIds);
 
 	const valueToLabel = (selectedKey: MainWeaponId | null) =>
 		categories
@@ -83,12 +85,14 @@ export function WeaponComboBox({
 			{(section) => (
 				<Section id={section.label}>
 					<MyComboBoxHeader>
-						<Image
-							path={weaponCategoryUrl(section.id)}
-							width={20}
-							height={20}
-							alt={section.label}
-						/>
+						{section.id !== "QUICK" ? (
+							<Image
+								path={weaponCategoryUrl(section.id)}
+								width={20}
+								height={20}
+								alt={section.label}
+							/>
+						) : null}
 						{section.label}
 					</MyComboBoxHeader>
 					<Collection

@@ -138,6 +138,7 @@
 	"weapon.category.SPLATANAS": "Splatanas",
 	"weapon.category.subs": "Subs",
 	"weapon.category.specials": "Specials",
+	"weapon.combobox.recent": "Recent",
 
 	"plans.poweredBy": "Powered by {{name}}",
 	"plans.blueprint": "Blueprint",

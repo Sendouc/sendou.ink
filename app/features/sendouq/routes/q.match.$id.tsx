@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
-import { WeaponCombobox } from "~/components/Combobox";
+import { WeaponCombobox as OldWeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, ModeImage, StageImage, WeaponImage } from "~/components/Image";
@@ -31,7 +31,6 @@ import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
-import { CrossIcon } from "~/components/icons/Cross";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import { ScaleIcon } from "~/components/icons/Scale";
@@ -106,6 +105,7 @@ import { findMatchById } from "../queries/findMatchById.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
+import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 
 import "../q.css";
 
@@ -968,7 +968,7 @@ function ReportWeaponsForm() {
 															invisible: typeof weaponSplId !== "number",
 														})}
 													/>
-													<WeaponCombobox
+													<OldWeaponCombobox
 														inputName="weapon"
 														value={weaponSplId}
 														quickSelectWeaponIds={recentlyReportedWeapons}
@@ -1608,15 +1608,6 @@ function MapListMap({
 						<label className="mb-0 text-theme-secondary">
 							{t("q:match.report.winnerLabel")}
 						</label>
-						<div className="stack items-center">
-							<div
-								className={clsx("q-match__result-dot", {
-									"q-match__result-dot__won": winners[i] === data.groupMemberOf,
-									"q-match__result-dot__lost":
-										winners[i] && winners[i] !== data.groupMemberOf,
-								})}
-							/>
-						</div>
 						<div className="stack sm horizontal items-center">
 							<div className="stack sm horizontal items-center font-semi-bold">
 								<input
@@ -1651,68 +1642,29 @@ function MapListMap({
 								<label className="mb-0 text-theme-secondary">
 									{t("q:match.report.weaponLabel")}
 								</label>
-								<div
-									className={clsx({ invisible: typeof ownWeapon !== "number" })}
-								>
-									{typeof ownWeapon === "number" ? (
-										<WeaponImage
-											weaponSplId={ownWeapon}
-											variant="badge"
-											size={36}
-										/>
-									) : (
-										<WeaponImage
-											weaponSplId={0}
-											variant="badge"
-											size={36}
-											className="invisible"
-										/>
-									)}
-								</div>
-								{typeof ownWeapon === "number" ? (
-									<div className="font-bold stack sm horizontal">
-										{t(`weapons:MAIN_${ownWeapon}`)}
-										<Button
-											size="tiny"
-											icon={<CrossIcon />}
-											variant="minimal-destructive"
-											onClick={() => {
-												const userId = user!.id;
-												const groupMatchMapId = map.id;
+								<WeaponComboBox
+									value={ownWeapon}
+									quickSelectWeaponIds={recentlyReportedWeapons}
+									onChange={(weaponSplId) => {
+										const userId = user!.id;
+										const groupMatchMapId = map.id;
 
-												onOwnWeaponSelected({
-													mapIndex: i,
-													groupMatchMapId,
-													userId,
-												});
-											}}
-										/>
-									</div>
-								) : (
-									<WeaponCombobox
-										inputName="weapon"
-										quickSelectWeaponIds={recentlyReportedWeapons}
-										onChange={(weapon) => {
-											const userId = user!.id;
-											const groupMatchMapId = map.id;
-
-											const weaponSplId = Number(weapon?.value) as MainWeaponId;
-
+										if (typeof weaponSplId === "number") {
 											addRecentlyReportedWeapon?.(weaponSplId);
+										}
 
-											onOwnWeaponSelected(
-												weapon
-													? {
-															weaponSplId,
-															mapIndex: i,
-															groupMatchMapId,
-															userId,
-														}
-													: null,
-											);
-										}}
-									/>
-								)}
+										onOwnWeaponSelected(
+											typeof weaponSplId === "number"
+												? {
+														weaponSplId,
+														mapIndex: i,
+														groupMatchMapId,
+														userId,
+													}
+												: null,
+										);
+									}}
+								/>
 							</>
 						) : null}
 					</div>

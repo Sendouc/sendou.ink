@@ -1,33 +1,49 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { weaponParams } from "~/features/build-analyzer/core/utils";
-import { weaponCategories } from "~/modules/in-game-lists";
+import { type MainWeaponId, weaponCategories } from "~/modules/in-game-lists";
 import { weaponAltNames } from "~/modules/in-game-lists/weapon-alt-names";
 
 const mainWeaponParams = weaponParams().mainWeapons;
 
-export function useWeaponOptions() {
+export function useWeaponOptions(quickSelectWeaponIds?: MainWeaponId[]) {
 	const { t } = useTranslation(["common", "weapons"]);
 
-	const options = React.useMemo(
-		() =>
-			weaponCategories.map((category) => {
-				return {
-					id: category.name,
-					label: t(`common:weapon.category.${category.name}`),
-					options: category.weaponIds.map((weaponId) => {
-						return {
-							id: weaponId,
-							subWeaponId: mainWeaponParams[weaponId].subWeaponId,
-							specialWeaponId: mainWeaponParams[weaponId].specialWeaponId,
-							altNames: normalizeToArray(weaponAltNames.get(weaponId)),
-							label: t(`weapons:MAIN_${weaponId}`),
-						};
-					}),
-				};
-			}),
+	const weaponIdToComboBoxOption = React.useCallback(
+		(weaponId: MainWeaponId) => ({
+			id: weaponId,
+			subWeaponId: mainWeaponParams[weaponId].subWeaponId,
+			specialWeaponId: mainWeaponParams[weaponId].specialWeaponId,
+			altNames: normalizeToArray(weaponAltNames.get(weaponId)),
+			label: t(`weapons:MAIN_${weaponId}`),
+		}),
 		[t],
 	);
+
+	const options = React.useMemo(() => {
+		const result = weaponCategories.map((category) => {
+			return {
+				id: category.name as typeof category.name | "QUICK",
+				label: t(`common:weapon.category.${category.name}`),
+				options: category.weaponIds
+					.filter(
+						(weaponId) =>
+							!quickSelectWeaponIds || !quickSelectWeaponIds.includes(weaponId),
+					)
+					.map(weaponIdToComboBoxOption),
+			};
+		});
+
+		if (quickSelectWeaponIds) {
+			result.unshift({
+				id: "QUICK",
+				label: t("common:weapon.combobox.recent"),
+				options: quickSelectWeaponIds.map(weaponIdToComboBoxOption),
+			});
+		}
+
+		return result;
+	}, [t, quickSelectWeaponIds, weaponIdToComboBoxOption]);
 
 	return options;
 }

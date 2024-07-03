@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { mainWeaponIds, modesShort, stageIds } from "~/modules/in-game-lists";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -16,7 +17,6 @@ import { VODS_PAGE, navIconUrl } from "~/utils/urls";
 import { VodListing } from "../components/VodListing";
 import { findVods } from "../queries/findVods.server";
 import { VODS_PAGE_BATCH_SIZE, videoMatchTypes } from "../vods-constants";
-import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 
 import "../vods.css";
 
