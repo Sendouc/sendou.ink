@@ -21,6 +21,7 @@ export function useComboboxState<T>({
 
 	const selectedKey = value ?? fieldState.selectedKey;
 
+	// xxx: flicker when changing value
 	const onSelectionChange = (id: Key | null) => {
 		if (id === selectedKey) return;
 

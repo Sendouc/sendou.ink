@@ -149,7 +149,7 @@ function VCRadios() {
 						required
 						defaultChecked={data.sub && Boolean(data.sub.canVc)}
 					/>
-					<label htmlFor="vc-true" className="mb-0">
+					<label htmlFor="vc-true" className="mb-0-forced">
 						{t("common:yes")}
 					</label>
 				</div>
@@ -161,7 +161,7 @@ function VCRadios() {
 						value="off"
 						defaultChecked={data.sub && !data.sub.canVc}
 					/>
-					<label htmlFor="vc-false" className="mb-0">
+					<label htmlFor="vc-false" className="mb-0-forced">
 						{t("common:no")}
 					</label>
 				</div>
@@ -222,7 +222,7 @@ function VisibilityRadios() {
 									value={id}
 									defaultChecked={data.sub?.visibility === id}
 								/>
-								<label htmlFor={id} className="mb-0">
+								<label htmlFor={id} className="mb-0-forced">
 									+{tier} {tier !== 1 && "(and above)"}
 								</label>
 							</div>
@@ -237,7 +237,7 @@ function VisibilityRadios() {
 						required
 						defaultChecked={data.sub?.visibility === "ALL"}
 					/>
-					<label htmlFor="all" className="mb-0">
+					<label htmlFor="all" className="mb-0-forced">
 						{t("tournament:subs.visibility.everyone")}
 					</label>
 				</div>

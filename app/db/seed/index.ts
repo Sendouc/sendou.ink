@@ -48,6 +48,7 @@ import {
 	summarizeMaps,
 	summarizePlayerResults,
 } from "~/features/sendouq/core/summarizer.server";
+import type { Side } from "~/features/sendouq/q-types";
 import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
 import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
 import { addMember } from "~/features/sendouq/queries/addMember.server";
@@ -2060,7 +2061,7 @@ async function playedMatches() {
 			["BRAVO", "ALPHA", "BRAVO", "ALPHA", "BRAVO", "ALPHA", "BRAVO"],
 			["ALPHA", "BRAVO", "BRAVO", "ALPHA", "ALPHA", "ALPHA"],
 			["ALPHA", "BRAVO", "ALPHA", "BRAVO", "BRAVO", "BRAVO"],
-		]) as ("ALPHA" | "BRAVO")[];
+		]) as Side[];
 		const winner = winnersArrayToWinner(winners);
 		const finishedMatch = findMatchById(match.id)!;
 

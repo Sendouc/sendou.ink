@@ -158,7 +158,7 @@ export default function UserArtPage() {
 									checked={type === "ALL"}
 									onChange={() => setType("ALL")}
 								/>
-								<label htmlFor="all" className="mb-0">
+								<label htmlFor="all" className="mb-0-forced">
 									{t("art:radios.all")}
 								</label>
 							</div>
@@ -169,7 +169,7 @@ export default function UserArtPage() {
 									checked={type === "MADE-BY"}
 									onChange={() => setType("MADE-BY")}
 								/>
-								<label htmlFor="made-by" className="mb-0">
+								<label htmlFor="made-by" className="mb-0-forced">
 									{t("art:radios.madeBy")}
 								</label>
 							</div>
@@ -180,7 +180,7 @@ export default function UserArtPage() {
 									checked={type === "MADE-OF"}
 									onChange={() => setType("MADE-OF")}
 								/>
-								<label htmlFor="made-of" className="mb-0">
+								<label htmlFor="made-of" className="mb-0-forced">
 									{t("art:radios.madeFor")}
 								</label>
 							</div>

@@ -76,7 +76,7 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
 								checked={subsUsedOption === subsUsed}
 								onChange={(e) => setSubsUsed(Number(e.target.value))}
 							/>
-							<label htmlFor={id} className="mb-0">
+							<label htmlFor={id} className="mb-0-forced">
 								{subsUsedOption}
 							</label>
 						</div>

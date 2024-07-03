@@ -474,6 +474,59 @@
 	background-color: var(--bg-lighter);
 }
 
+.q-match__winner-radios {
+	display: flex;
+}
+
+.q-match__winner-radios__side-text {
+	text-transform: uppercase;
+	font-size: var(--fonts-md);
+}
+
+.q-match__winner-radios__relative-text {
+	text-transform: initial;
+	font-size: var(--fonts-xxs);
+	color: var(--text-lighter);
+}
+
+.q-match__winner-radios__radio {
+	border-style: solid;
+	border-color: var(--border);
+	padding: var(--s-1) var(--s-2);
+	flex: 1 1 0;
+	display: flex;
+	justify-content: center;
+	white-space: nowrap;
+	font-weight: var(--bold);
+}
+
+.q-match__winner-radios__radio__selected {
+	background-color: var(--bg-lighter-solid);
+}
+
+.q-match__winner-radios__radio__focus-visible {
+	outline: 2px solid var(--theme);
+}
+
+.q-match__winner-radios__radio__selected .q-match__winner-radios__relative-us {
+	color: var(--theme-success);
+}
+
+.q-match__winner-radios__radio__selected
+	.q-match__winner-radios__relative-opponent {
+	color: var(--theme-warning);
+}
+
+.q-match__winner-radios__alpha {
+	border-radius: var(--rounded) 0 0 var(--rounded);
+	border-width: 2px 1px 2px 2px;
+}
+
+.q-match__winner-radios__bravo {
+	border-radius: 0 var(--rounded) var(--rounded) 0;
+	border-width: 2px 2px 2px 1px;
+}
+
 @media screen and (min-width: 640px) {
 	.q-match__teams-container {
 		grid-template-columns: 1fr 1fr;

@@ -717,7 +717,7 @@ function TeamInfo({
 									name="prefersNotToHost"
 									defaultChecked={Boolean(ownTeam?.prefersNotToHost)}
 								/>
-								<label htmlFor="no-host" className="mb-0">
+								<label htmlFor="no-host" className="mb-0-forced">
 									{t("tournament:pre.info.noHost")}
 								</label>
 							</div>
@@ -731,7 +731,7 @@ function TeamInfo({
 										defaultChecked={Boolean(ownTeam?.noScreen)}
 										data-testid="no-screen-checkbox"
 									/>
-									<label htmlFor="no-screen" className="mb-0">
+									<label htmlFor="no-screen" className="mb-0-forced">
 										{t("tournament:pre.info.noScreen")}
 									</label>
 								</div>

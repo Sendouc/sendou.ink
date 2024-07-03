@@ -140,6 +140,8 @@
 	"match.report.weaponLabel": "Weapon",
 	"match.sides.alpha": "Alpha",
 	"match.sides.bravo": "Bravo",
+	"match.sides.us": "Us",
+	"match.sides.them": "Them",
 	"match.helpdesk": "Helpdesk",
 	"match.pool": "Pool",
 	"match.password.short": "Pass",

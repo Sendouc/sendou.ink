@@ -510,7 +510,7 @@ function StageWeaponUsageStats(props: {
 				<ModeImage mode={props.modeShort} width={18} />
 				{t(`game-misc:STAGE_${props.stageId}`)}
 			</div>
-			<Tabs compact className="mb-0">
+			<Tabs compact className="mb-0-forced">
 				<Tab active={tab === "SELF"} onClick={() => setTab("SELF")}>
 					{t("user:seasons.tabs.self")}
 				</Tab>

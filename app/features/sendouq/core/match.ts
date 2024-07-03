@@ -1,6 +1,7 @@
 import { SENDOUQ_BEST_OF } from "../q-constants";
+import type { Side } from "../q-types";
 
-export function matchEndedAtIndex(scores: ("ALPHA" | "BRAVO")[]) {
+export function matchEndedAtIndex(scores: Side[]) {
 	let alphaCount = 0;
 	let bravoCount = 0;
 	let matchEndedAt = -1;

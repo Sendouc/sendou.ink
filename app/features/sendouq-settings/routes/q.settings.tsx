@@ -802,7 +802,7 @@ function Misc() {
 						id="noScreen"
 						name="noScreen"
 					/>
-					<label className="mb-0" htmlFor="noScreen">
+					<label className="mb-0-forced" htmlFor="noScreen">
 						{t("q:settings.avoid.label", {
 							special: t("weapons:SPECIAL_19"),
 						})}

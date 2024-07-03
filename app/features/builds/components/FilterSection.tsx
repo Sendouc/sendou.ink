@@ -216,7 +216,7 @@ function DateFilter({
 
 	return (
 		<div className="build__filter build__filter__date">
-			<label className="mb-0">{t("builds:filters.date.since")}</label>
+			<label className="mb-0-forced">{t("builds:filters.date.since")}</label>
 			<select
 				className="build__filter__date-select"
 				value={selectValue()}

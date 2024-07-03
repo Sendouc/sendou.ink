@@ -1,6 +1,7 @@
 import type { MapResult, PlayerResult } from "~/db/types";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import invariant from "~/utils/invariant";
+import type { Side } from "../q-types";
 import { winnersArrayToWinner } from "../q-utils";
 import type { MatchById } from "../queries/findMatchById.server";
 
@@ -10,7 +11,7 @@ export function summarizeMaps({
 	members,
 }: {
 	match: MatchById;
-	winners: ("ALPHA" | "BRAVO")[];
+	winners: Side[];
 	members: { id: number; groupId: number }[];
 }) {
 	const season = currentOrPreviousSeason(new Date())?.nth;
@@ -60,7 +61,7 @@ export function summarizePlayerResults({
 	members,
 }: {
 	match: MatchById;
-	winners: ("ALPHA" | "BRAVO")[];
+	winners: Side[];
 	members: { id: number; groupId: number }[];
 }) {
 	const season = currentOrPreviousSeason(new Date())?.nth;

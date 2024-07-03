@@ -395,7 +395,7 @@ function Players({
 				return (
 					<div key={i}>
 						<div className="stack horizontal md items-center mb-1">
-							<label htmlFor={formId} className="mb-0">
+							<label htmlFor={formId} className="mb-0-forced">
 								{t("forms.team.player.header", { number: i + 1 })}
 							</label>
 							<Button

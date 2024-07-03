@@ -364,7 +364,7 @@ function TransformingPlayerInput({
 	return (
 		<div>
 			<div className="stack horizontal md items-center mb-1">
-				<Label required htmlFor="pov" className="mb-0">
+				<Label required htmlFor="pov" className="mb-0-forced">
 					{t("vods:forms.title.pov")}
 				</Label>
 				<Button

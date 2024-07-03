@@ -13,6 +13,7 @@ import {
 import { accountCreatedInTheLastSixMonths } from "~/utils/users";
 import type { MapPool } from "../map-list-generator/core/map-pool";
 import { SENDOUQ } from "./q-constants";
+import type { Side } from "./q-types";
 
 function groupRedirectLocation(
 	group?: Pick<Group, "status"> & { matchId?: number },
@@ -80,7 +81,7 @@ export function matchIdFromParams(params: Params<string>) {
 	return result;
 }
 
-export function winnersArrayToWinner(winners: ("ALPHA" | "BRAVO")[]) {
+export function winnersArrayToWinner(winners: Side[]) {
 	const alphaCount = winners.filter((winner) => winner === "ALPHA").length;
 	const bravoCount = winners.filter((winner) => winner === "BRAVO").length;
 

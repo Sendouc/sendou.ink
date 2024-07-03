@@ -17,7 +17,7 @@ import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/co
 import invariant from "~/utils/invariant";
 import { averageArray } from "~/utils/number";
 import { SENDOUQ_BEST_OF } from "../q-constants";
-import type { LookingGroupWithInviteCode } from "../q-types";
+import type { LookingGroupWithInviteCode, Side } from "../q-types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
 
@@ -221,7 +221,7 @@ export function compareMatchToReportedScores({
 	previousReporterGroupId,
 }: {
 	match: MatchById;
-	winners: ("ALPHA" | "BRAVO")[];
+	winners: Side[];
 	newReporterGroupId: number;
 	previousReporterGroupId?: number;
 }) {

@@ -315,7 +315,7 @@ function Tags() {
 
 	return (
 		<div className="stack xs items-start">
-			<Label htmlFor="tags" className="mb-0">
+			<Label htmlFor="tags" spaced={false}>
 				{t("art:forms.tags.title")}
 			</Label>
 			<input type="hidden" name="tags" value={JSON.stringify(tags)} />

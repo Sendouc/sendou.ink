@@ -34,6 +34,7 @@ import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import { ScaleIcon } from "~/components/icons/Scale";
+import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 import { sql } from "~/db/sql";
 import type { GroupMember, ReportedWeapon } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
@@ -78,6 +79,7 @@ import {
 	userSubmittedImage,
 } from "~/utils/urls";
 import { GroupCard } from "../components/GroupCard";
+import { WinnerRadioGroup } from "../components/WinnerRadioGroup";
 import { matchEndedAtIndex } from "../core/match";
 import { compareMatchToReportedScores } from "../core/match.server";
 import type { ReportedWeaponForMerging } from "../core/reported-weapons.server";
@@ -93,6 +95,7 @@ import {
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { useRecentlyReportedWeapons } from "../q-hooks";
 import { matchSchema } from "../q-schemas.server";
+import type { Side } from "../q-types";
 import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { addMapResults } from "../queries/addMapResults.server";
@@ -105,7 +108,6 @@ import { findMatchById } from "../queries/findMatchById.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
-import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 
 import "../q.css";
 
@@ -1344,7 +1346,7 @@ function MapList({
 					m.winnerGroupId === data.groupAlpha.id ? "ALPHA" : "BRAVO",
 				)
 		: [];
-	const [winners, setWinners] = React.useState<("ALPHA" | "BRAVO")[]>(
+	const [winners, setWinners] = React.useState<Side[]>(
 		previouslyReportedWinners,
 	);
 
@@ -1449,8 +1451,8 @@ function MapListMap({
 }: {
 	i: number;
 	map: Unpacked<SerializeFrom<typeof loader>["match"]["mapList"]>;
-	winners: ("ALPHA" | "BRAVO")[];
-	setWinners?: (winners: ("ALPHA" | "BRAVO")[]) => void;
+	winners: Side[];
+	setWinners?: (winners: Side[]) => void;
 	canReportScore: boolean;
 	weapons?: (MainWeaponId | null)[] | null;
 	ownWeapon?: MainWeaponId | null;
@@ -1463,7 +1465,7 @@ function MapListMap({
 	const data = useLoaderData<typeof loader>();
 	const { t } = useTranslation(["q", "game-misc", "tournament", "weapons"]);
 
-	const handleReportScore = (i: number, side: "ALPHA" | "BRAVO") => () => {
+	const handleReportScore = (i: number, side: Side) => {
 		const newWinners = [...winners];
 		newWinners[i] = side;
 
@@ -1509,12 +1511,6 @@ function MapListMap({
 		return <>• {t("q:match.won", { side: winnerSide })}</>;
 	};
 
-	const relativeSideText = (side: "ALPHA" | "BRAVO") => {
-		if (!data.groupMemberOf) return "";
-
-		return data.groupMemberOf === side ? " (us)" : " (them)";
-	};
-
 	const modePreferences = data.match.memento?.modePreferences?.[map.mode];
 
 	const userIdToName = (userId: number) => {
@@ -1525,6 +1521,9 @@ function MapListMap({
 
 		return member?.username ?? "";
 	};
+
+	const winnerInputId = `winner-${i}`;
+	const weaponInputId = `weapon-${i}`;
 
 	return (
 		<div key={map.stageId} className="stack xs">
@@ -1605,44 +1604,23 @@ function MapListMap({
 					}}
 				>
 					<div className="q-match__report-section">
-						<label className="mb-0 text-theme-secondary">
+						<label className="mb-0-forced text-xxs" htmlFor={winnerInputId}>
 							{t("q:match.report.winnerLabel")}
 						</label>
-						<div className="stack sm horizontal items-center">
-							<div className="stack sm horizontal items-center font-semi-bold">
-								<input
-									type="radio"
-									name={`winner-${i}`}
-									value="alpha"
-									id={`alpha-${i}`}
-									checked={winners[i] === "ALPHA"}
-									onChange={handleReportScore(i, "ALPHA")}
-								/>
-								<label className="mb-0" htmlFor={`alpha-${i}`}>
-									{`${t("q:match.sides.alpha")}${relativeSideText("ALPHA")}`}
-								</label>
-							</div>
-							<div className="stack sm horizontal items-center font-semi-bold">
-								<input
-									type="radio"
-									name={`winner-${i}`}
-									value="bravo"
-									id={`bravo-${i}`}
-									checked={winners[i] === "BRAVO"}
-									onChange={handleReportScore(i, "BRAVO")}
-								/>
-								<label className="mb-0" htmlFor={`bravo-${i}`}>
-									{`${t("q:match.sides.bravo")}${relativeSideText("BRAVO")}`}
-								</label>
-							</div>
-						</div>
+						<WinnerRadioGroup
+							id={winnerInputId}
+							value={winners[i] ?? null}
+							onChange={(side) => handleReportScore(i, side)}
+							ownSide={data.groupMemberOf}
+						/>
 
 						{showReportedOwnWeapon && onOwnWeaponSelected ? (
 							<>
-								<label className="mb-0 text-theme-secondary">
+								<label className="mb-0-forced text-xxs" htmlFor={weaponInputId}>
 									{t("q:match.report.weaponLabel")}
 								</label>
 								<WeaponComboBox
+									id={weaponInputId}
 									value={ownWeapon}
 									quickSelectWeaponIds={recentlyReportedWeapons}
 									onChange={(weaponSplId) => {
@@ -1791,7 +1769,7 @@ function MapListMapPickInfo({
 	return pickInfo(map.source);
 }
 
-function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {
+function ResultSummary({ winners }: { winners: Side[] }) {
 	const { t } = useTranslation(["q"]);
 	const user = useUser();
 	const data = useLoaderData<typeof loader>();

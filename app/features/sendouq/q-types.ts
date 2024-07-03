@@ -10,6 +10,8 @@ import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
 import type { TieredSkill } from "../mmr/tiered.server";
 import type { GroupForMatch } from "../sendouq-match/QMatchRepository.server";
 
+export type Side = "ALPHA" | "BRAVO";
+
 export type LookingGroup = {
 	id: number;
 	createdAt: Group["createdAt"];

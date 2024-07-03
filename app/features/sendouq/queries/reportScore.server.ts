@@ -1,6 +1,7 @@
 import { sql } from "~/db/sql";
 import type { GroupMatch } from "~/db/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import type { Side } from "../q-types";
 
 const updateMatchStm = sql.prepare(/* sql */ `
   update "GroupMatch"
@@ -28,7 +29,7 @@ export const reportScore = ({
 	matchId,
 }: {
 	reportedByUserId: number;
-	winners: ("ALPHA" | "BRAVO")[];
+	winners: Side[];
 	matchId: number;
 }) => {
 	const updatedMatch = updateMatchStm.get({

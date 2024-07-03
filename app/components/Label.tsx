@@ -27,7 +27,11 @@ export function Label({
 	spaced = true,
 }: LabelProps) {
 	return (
-		<div className={clsx("label__container", className, { "mb-0": !spaced })}>
+		<div
+			className={clsx("label__container", className, {
+				"mb-0-forced": !spaced,
+			})}
+		>
 			<label htmlFor={htmlFor} className={labelClassName}>
 				{children} {required && <span className="text-error">*</span>}
 			</label>
