@@ -906,6 +906,10 @@ dialog::backdrop {
 	gap: var(--s-2);
 }
 
+.stack.sm-row {
+	row-gap: var(--s-2);
+}
+
 .stack.sm-column {
 	column-gap: var(--s-2);
 }
@@ -916,6 +920,10 @@ dialog::backdrop {
 
 .stack.md {
 	gap: var(--s-4);
+}
+
+.stack.md-column {
+	column-gap: var(--s-4);
 }
 
 .stack.md-plus {

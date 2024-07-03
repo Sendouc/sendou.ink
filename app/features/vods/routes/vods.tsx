@@ -6,7 +6,6 @@ import type {
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
-import { WeaponCombobox } from "~/components/Combobox";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { i18next } from "~/modules/i18n/i18next.server";
@@ -17,6 +16,7 @@ import { VODS_PAGE, navIconUrl } from "~/utils/urls";
 import { VodListing } from "../components/VodListing";
 import { findVods } from "../queries/findVods.server";
 import { VODS_PAGE_BATCH_SIZE, videoMatchTypes } from "../vods-constants";
+import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
 
 import "../vods.css";
 
@@ -130,7 +130,7 @@ function Filters({
 	);
 
 	return (
-		<div className="stack sm horizontal flex-wrap">
+		<div className="stack sm-row md-column horizontal flex-wrap">
 			<div>
 				<Label>{t("vods:forms.title.mode")}</Label>
 				<select
@@ -168,13 +168,11 @@ function Filters({
 
 			<div>
 				<Label>{t("vods:forms.title.weapon")}</Label>
-				<WeaponCombobox
-					inputName="weapon"
-					initialWeaponId={weapon}
+				<WeaponComboBox
+					value={weapon}
 					onChange={(selected) => {
-						addToSearchParams("weapon", selected?.value ?? "");
+						addToSearchParams("weapon", selected ? String(selected) : "");
 					}}
-					nullable
 				/>
 			</div>
 

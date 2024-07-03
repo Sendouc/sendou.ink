@@ -36,11 +36,15 @@ export function useComboboxState<T>({
 
 	const onInputChange = (value: string) => {
 		setIsOpen(true);
-		setFieldState((prevState) => ({
+
+		const newSelectedKey = value === "" ? null : selectedKey;
+		setFieldState({
 			inputValue: value,
-			selectedKey: value === "" ? null : prevState.selectedKey,
-		}));
-		onChange?.(value === "" ? null : selectedKey);
+			selectedKey: newSelectedKey,
+		});
+
+		if (newSelectedKey === selectedKey) return;
+		onChange?.(newSelectedKey);
 	};
 
 	const onBlur = () => {
