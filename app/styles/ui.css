@@ -87,6 +87,7 @@
 }
 
 .my-label {
+	display: block;
 	font-size: var(--fonts-xs);
 	font-weight: var(--bold);
 }
