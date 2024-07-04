@@ -284,6 +284,8 @@ function FancyStageBanner({
 		data.mapList.filter((m) => m.bannedByTournamentTeamId).length < 2;
 
 	const waitingForActiveRosterSelectionFor = (() => {
+		if (data.results.length > 0) return null;
+
 		const teamOneMissing = !tournamentTeamToActiveRosterUserIds(
 			teams[0],
 			tournament.minMembersPerTeam,
