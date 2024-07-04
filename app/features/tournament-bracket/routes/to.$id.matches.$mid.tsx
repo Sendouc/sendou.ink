@@ -539,6 +539,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 	const match = notFoundIfFalsy(findMatchById(matchId));
 
+	const isBye = !match.opponentOne || !match.opponentTwo;
+	if (isBye) {
+		throw new Response(null, { status: 404 });
+	}
+
 	const pickBanEvents = match.roundMaps?.pickBan
 		? await TournamentRepository.pickBanEventsByMatchId(match.id)
 		: [];
