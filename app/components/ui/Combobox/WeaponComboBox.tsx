@@ -12,6 +12,8 @@ import { useComboboxState } from "./hooks/useComboboxState";
 import { useWeaponFilter } from "./hooks/useWeaponFilter";
 import { useWeaponOptions } from "./hooks/useWeaponOptions";
 
+// xxx: rename folder still?
+
 export function WeaponComboBox({
 	id,
 	name,

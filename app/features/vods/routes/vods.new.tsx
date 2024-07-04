@@ -8,20 +8,16 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Button } from "~/components/Button";
-import { WeaponCombobox } from "~/components/Combobox";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponComboBox";
 import type { Video, VideoMatch } from "~/db/types";
 import { requireUser } from "~/features/auth/core/user.server";
-import {
-	type MainWeaponId,
-	type StageId,
-	stageIds,
-} from "~/modules/in-game-lists";
+import { type StageId, stageIds } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import {
 	databaseTimestampToDate,
@@ -524,19 +520,18 @@ function Match({
 						<div className="stack sm">
 							{new Array(4).fill(null).map((_, i) => {
 								return (
-									<WeaponCombobox
-										fullWidth
+									<WeaponComboBox
 										key={i}
-										inputName={`player-${i}-weapon`}
-										initialWeaponId={match.weapons[i]}
-										onChange={(selected) => {
-											if (!selected) return;
+										name={`player-${i}-weapon`}
+										value={match.weapons[i]}
+										onChange={(weaponId) => {
+											if (typeof weaponId !== "number") return;
 											const weapons = [...match.weapons];
-											weapons[i] = Number(selected.value) as MainWeaponId;
+											weapons[i] = weaponId;
 
 											onChange({ ...match, weapons });
 										}}
-										required
+										isRequired
 									/>
 								);
 							})}
@@ -547,21 +542,18 @@ function Match({
 								{new Array(4).fill(null).map((_, i) => {
 									const adjustedI = i + 4;
 									return (
-										<WeaponCombobox
-											fullWidth
+										<WeaponComboBox
 											key={i}
-											inputName={`player-${adjustedI}-weapon`}
-											initialWeaponId={match.weapons[adjustedI]}
-											onChange={(selected) => {
-												if (!selected) return;
+											name={`player-${adjustedI}-weapon`}
+											value={match.weapons[adjustedI]}
+											onChange={(weaponId) => {
+												if (typeof weaponId !== "number") return;
 												const weapons = [...match.weapons];
-												weapons[adjustedI] = Number(
-													selected.value,
-												) as MainWeaponId;
+												weapons[adjustedI] = weaponId;
 
 												onChange({ ...match, weapons });
 											}}
-											required
+											isRequired
 										/>
 									);
 								})}
@@ -570,23 +562,17 @@ function Match({
 					</div>
 				) : (
 					<>
-						<Label required htmlFor={id}>
-							{t("vods:forms.title.weapon")}
-						</Label>
-						<WeaponCombobox
-							fullWidth
+						<WeaponComboBox
 							id={id}
-							inputName={`match-${number}-weapon`}
-							initialWeaponId={match.weapons[0]}
-							onChange={(selected) =>
+							name={`match-${number}-weapon`}
+							value={match.weapons[0]}
+							onChange={(weaponId) =>
 								onChange({
 									...match,
-									weapons: selected?.value
-										? [Number(selected.value) as MainWeaponId]
-										: [],
+									weapons: typeof weaponId === "number" ? [weaponId] : [],
 								})
 							}
-							required
+							isRequired
 						/>
 					</>
 				)}
