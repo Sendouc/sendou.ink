@@ -61,7 +61,7 @@ export function WeaponComboBox({
 			isRequired={isRequired}
 			aria-label={!label ? "Weapon" : undefined}
 			items={filteredOptions}
-			selectedKey={selectedKey}
+			selectedKey={selectedKey ?? ""}
 			inputValue={fieldState.inputValue}
 			onSelectionChange={onSelectionChange}
 			onInputChange={onInputChange}
