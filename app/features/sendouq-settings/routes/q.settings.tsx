@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
-import { WeaponCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { ModeImage, WeaponImage } from "~/components/Image";
@@ -22,6 +21,7 @@ import { PuzzleIcon } from "~/components/icons/Puzzle";
 import { SpeakerFilledIcon } from "~/components/icons/SpeakerFilled";
 import { TrashIcon } from "~/components/icons/Trash";
 import { UsersIcon } from "~/components/icons/Users";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponComboBox";
 import { MyLabel } from "~/components/ui/MyLabel";
 import type { Preference, Tables, UserMapModePreferences } from "~/db/tables";
 import { requireUserId } from "~/features/auth/core/user.server";
@@ -32,7 +32,7 @@ import {
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { languagesUnified } from "~/modules/i18n/config";
-import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
+import type { ModeShort } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import { type SendouRouteHandle, parseRequestFormData } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
@@ -531,20 +531,17 @@ function WeaponPool() {
 				<div className="q-settings__weapon-pool-select-container">
 					{weapons.length < SENDOUQ_WEAPON_POOL_MAX_SIZE ? (
 						<div>
-							<WeaponCombobox
-								inputName="weapon"
+							<WeaponComboBox
+								name="weapon"
 								id="weapon"
-								onChange={(weapon) => {
-									if (!weapon) return;
-									setWeapons([
-										...weapons,
-										Number(weapon.value) as MainWeaponId,
-									]);
+								onChange={(weaponId) => {
+									if (typeof weaponId !== "number") return;
+									setWeapons([...weapons, weaponId]);
 								}}
 								// empty on selection
 								key={latestWeapon ?? "empty"}
-								weaponIdsToOmit={new Set(weapons)}
-								fullWidth
+								disabledWeaponIds={weapons}
+								withRightButton={false}
 							/>
 						</div>
 					) : (

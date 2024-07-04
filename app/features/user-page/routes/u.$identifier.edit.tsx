@@ -10,7 +10,6 @@ import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Button } from "~/components/Button";
-import { WeaponCombobox } from "~/components/Combobox";
 import { CustomizedColorsInput } from "~/components/CustomizedColorsInput";
 import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
@@ -22,6 +21,7 @@ import { Toggle } from "~/components/Toggle";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { TrashIcon } from "~/components/icons/Trash";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponComboBox";
 import { MyLabel } from "~/components/ui/MyLabel";
 import { USER } from "~/constants";
 import type { User } from "~/db/types";
@@ -30,7 +30,6 @@ import { requireUser, requireUserId } from "~/features/auth/core/user.server";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { i18next } from "~/modules/i18n/i18next.server";
-import type { MainWeaponId } from "~/modules/in-game-lists";
 import { canAddCustomizedColorsToUserProfile } from "~/permissions";
 import { translatedCountry } from "~/utils/i18n.server";
 import invariant from "~/utils/invariant";
@@ -485,26 +484,26 @@ function WeaponPoolSelect({
 					{t("user:weaponPool")}
 				</MyLabel>
 				{weapons.length < USER.WEAPON_POOL_MAX_SIZE ? (
-					<WeaponCombobox
-						inputName="weapon"
+					<WeaponComboBox
+						name="weapon"
 						id="weapon"
-						onChange={(weapon) => {
-							if (!weapon) return;
+						onChange={(weaponSplId) => {
+							if (typeof weaponSplId !== "number") return;
 							setWeapons([
 								...weapons,
 								{
-									weaponSplId: Number(weapon.value) as MainWeaponId,
+									weaponSplId,
 									isFavorite: 0,
 								},
 							]);
 						}}
 						// empty on selection
 						key={latestWeapon?.weaponSplId ?? "empty"}
-						weaponIdsToOmit={new Set(weapons.map((w) => w.weaponSplId))}
-						fullWidth
+						disabledWeaponIds={weapons.map((w) => w.weaponSplId)}
+						withRightButton={false}
 					/>
 				) : (
-					<span className="text-xs text-warning">
+					<span className="ml-2 text-xs text-warning">
 						{t("user:forms.errors.maxWeapons")}
 					</span>
 				)}
