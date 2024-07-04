@@ -12,7 +12,11 @@
 	cursor: pointer;
 }
 
-.q-settings__radio:hover .q-settings__radio__emoji {
+.q-settings__radio.q-settings__radio__focus-visible {
+	outline: 2px solid var(--theme);
+}
+
+.q-settings__radio__hovered .q-settings__radio__emoji {
 	scale: 1.1;
 }
 
