@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponComboBox";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { mainWeaponIds, modesShort, stageIds } from "~/modules/in-game-lists";
 import type { SendouRouteHandle } from "~/utils/remix";

@@ -33,7 +33,7 @@ import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import { ScaleIcon } from "~/components/icons/Scale";
-import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponComboBox";
 import { MyLabel } from "~/components/ui/MyLabel";
 import { sql } from "~/db/sql";
 import type { GroupMember, ReportedWeapon } from "~/db/types";

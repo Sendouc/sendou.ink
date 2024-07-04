@@ -12,7 +12,7 @@ import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CrossIcon } from "~/components/icons/Cross";
 import { PlusIcon } from "~/components/icons/Plus";
-import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponComboBox";
 import { MyLabel } from "~/components/ui/MyLabel";
 import { BUILD } from "~/constants";
 import type { GearType } from "~/db/types";

@@ -3,7 +3,7 @@ import { Button } from "~/components/Button";
 import { WeaponImage } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { CrossIcon } from "~/components/icons/Cross";
-import { WeaponComboBox } from "~/components/ui/ComboBox/WeaponComboBox";
+import { WeaponComboBox } from "~/components/ui/Combobox/WeaponComboBox";
 import type { Tables } from "~/db/tables";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import { TIERS } from "~/features/mmr/mmr-constants";
