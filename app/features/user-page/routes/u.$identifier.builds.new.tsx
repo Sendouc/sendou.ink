@@ -4,7 +4,6 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";
-import { GearCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
@@ -25,6 +24,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { modeImageUrl } from "~/utils/urls";
+import { GearComboBox } from "~/components/ui/Combobox/GearComboBox";
 
 import { action } from "../actions/u.$identifier.builds.new.server";
 import { loader } from "../loaders/u.$identifier.builds.new.server";
@@ -256,8 +256,7 @@ function GearSelector({
 }) {
 	const { buildToEdit, gearIdToAbilities } = useLoaderData<typeof loader>();
 	const { t } = useTranslation("builds");
-
-	const initialGearId = () => {
+	const [value, setValue] = React.useState<number | undefined>(() => {
 		const gearId = !buildToEdit
 			? undefined
 			: type === "HEAD"
@@ -269,25 +268,22 @@ function GearSelector({
 		if (gearId === -1) return undefined;
 
 		return gearId;
-	};
+	});
 
 	return (
 		<div>
 			<Label htmlFor={type}>{t(`forms.gear.${type}`)}</Label>
 			<div>
-				<GearCombobox
-					gearType={type}
-					inputName={type}
+				<GearComboBox
+					slot={type}
+					name={type}
 					id={type}
-					initialGearId={initialGearId()}
-					nullable
-					// onChange only exists to copy abilities from existing gear
-					// actual value of combobox is handled in uncontrolled manner
-					onChange={(opt) => {
-						if (!opt) return;
+					value={value}
+					onChange={(gearId) => {
+						if (typeof gearId !== "number") return;
 
 						const abilitiesFromExistingGear =
-							gearIdToAbilities[`${type}_${opt.value}`];
+							gearIdToAbilities[`${type}_${gearId}`];
 
 						if (!abilitiesFromExistingGear) return;
 
@@ -302,6 +298,7 @@ function GearSelector({
 						newAbilities[gearIndex] = abilitiesFromExistingGear;
 
 						setAbilities(newAbilities);
+						setValue(gearId);
 					}}
 				/>
 			</div>

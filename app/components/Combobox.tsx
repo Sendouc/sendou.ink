@@ -3,14 +3,10 @@ import clsx from "clsx";
 import Fuse, { type IFuseOptions } from "fuse.js";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import type { GearType } from "~/db/types";
 import type { SerializedMapPoolEvent } from "~/features/calendar/routes/map-pool-events";
 import { useAllEventsWithMapPools } from "~/hooks/swr";
 import {
-	clothesGearIds,
-	headGearIds,
 	mainWeaponIds,
-	shoesGearIds,
 	subWeaponIds,
 	weaponCategories,
 } from "~/modules/in-game-lists";
@@ -21,7 +17,6 @@ import {
 } from "~/modules/in-game-lists/weapon-ids";
 import type { Unpacked } from "~/utils/types";
 import {
-	gearImageUrl,
 	mainWeaponImageUrl,
 	specialWeaponImageUrl,
 	subWeaponImageUrl,
@@ -249,51 +244,6 @@ export function AllWeaponCombobox({
 			onChange={onChange}
 			id={id}
 			fullWidth={fullWidth}
-		/>
-	);
-}
-
-export function GearCombobox({
-	id,
-	required,
-	className,
-	inputName,
-	onChange,
-	gearType,
-	initialGearId,
-	nullable,
-}: Pick<
-	ComboboxProps<ComboboxBaseOption>,
-	"inputName" | "onChange" | "className" | "id" | "required" | "nullable"
-> & { gearType: GearType; initialGearId?: number }) {
-	const { t } = useTranslation("gear");
-
-	const translationPrefix =
-		gearType === "HEAD" ? "H" : gearType === "CLOTHES" ? "C" : "S";
-	const ids =
-		gearType === "HEAD"
-			? headGearIds
-			: gearType === "CLOTHES"
-				? clothesGearIds
-				: shoesGearIds;
-
-	const idToGear = (id: (typeof ids)[number]) => ({
-		value: String(id),
-		label: t(`${translationPrefix}_${id}` as any),
-		imgPath: gearImageUrl(gearType, id),
-	});
-
-	return (
-		<Combobox
-			inputName={inputName}
-			options={ids.map(idToGear)}
-			placeholder={idToGear(ids[0]).label}
-			initialValue={initialGearId ? idToGear(initialGearId as any) : null}
-			onChange={onChange}
-			className={className}
-			id={id}
-			required={required}
-			nullable={nullable}
 		/>
 	);
 }

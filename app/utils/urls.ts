@@ -22,6 +22,7 @@ import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
 	Ability,
 	AbilityWithUnknown,
+	BrandId,
 	BuildAbilitiesTupleWithUnknown,
 	MainWeaponId,
 	SpecialWeaponId,
@@ -372,12 +373,12 @@ export const specialWeaponImageUrl = (specialWeaponSplId: SpecialWeaponId) =>
 	`/static-assets/img/special-weapons/${specialWeaponSplId}`;
 export const abilityImageUrl = (ability: AbilityWithUnknown) =>
 	`/static-assets/img/abilities/${ability}`;
+export const brandImageUrl = (brand: BrandId) =>
+	`/static-assets/img/brands/${brand}`;
 export const modeImageUrl = (mode: ModeShort) =>
 	`/static-assets/img/modes/${mode}`;
 export const stageImageUrl = (stageId: StageId) =>
 	`/static-assets/img/stages/${stageId}`;
-export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
-	`/static-assets/img/layout/${brand}`;
 export const tierImageUrl = (tier: TierName | "CALCULATING") =>
 	`/static-assets/img/tiers/${tier.toLowerCase()}`;
 export const preferenceEmojiUrl = (preference?: Preference) => {

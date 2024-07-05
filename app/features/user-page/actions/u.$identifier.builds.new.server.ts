@@ -58,16 +58,15 @@ export const action: ActionFunction = async ({ request }) => {
 			usersBuilds.some((build) => build.id === data.buildToEditId),
 	);
 
-	const someGearIsMissing =
-		!data["HEAD[value]"] || !data["CLOTHES[value]"] || !data["SHOES[value]"];
+	const someGearIsMissing = !data.HEAD || !data.CLOTHES || !data.SHOES;
 
 	const commonArgs = {
 		title: data.title,
 		description: data.description,
 		abilities: data.abilities as BuildAbilitiesTuple,
-		headGearSplId: (someGearIsMissing ? -1 : data["HEAD[value]"])!,
-		clothesGearSplId: (someGearIsMissing ? -1 : data["CLOTHES[value]"])!,
-		shoesGearSplId: (someGearIsMissing ? -1 : data["SHOES[value]"])!,
+		headGearSplId: (someGearIsMissing ? -1 : data.HEAD)!,
+		clothesGearSplId: (someGearIsMissing ? -1 : data.CLOTHES)!,
+		shoesGearSplId: someGearIsMissing ? -1 : data.SHOES!,
 		modes: modesShort.filter((mode) => data[mode]),
 		weaponSplIds: data.weapon,
 		ownerId: user.id,
@@ -109,7 +108,7 @@ const newBuildActionSchema = z.object({
 		processMany(toArray, removeDuplicatesZod),
 		z.array(weaponSplId).min(1).max(BUILD.MAX_WEAPONS_COUNT),
 	),
-	"HEAD[value]": z.preprocess(
+	HEAD: z.preprocess(
 		actualNumber,
 		z
 			.number()
@@ -120,7 +119,7 @@ const newBuildActionSchema = z.object({
 					headGearIds.includes(val as (typeof headGearIds)[number]),
 			),
 	),
-	"CLOTHES[value]": z.preprocess(
+	CLOTHES: z.preprocess(
 		actualNumber,
 		z
 			.number()
@@ -131,7 +130,7 @@ const newBuildActionSchema = z.object({
 					clothesGearIds.includes(val as (typeof clothesGearIds)[number]),
 			),
 	),
-	"SHOES[value]": z.preprocess(
+	SHOES: z.preprocess(
 		actualNumber,
 		z
 			.number()
