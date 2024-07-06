@@ -4,7 +4,8 @@
 		"ignore": [
 			"./scripts/dicts/**/*",
 			"./scripts/output/**/*",
-			"./app/db/seed/placements.json"
+			"./app/db/seed/placements.json",
+			"./build/**/*"
 		]
 	},
 	"linter": {

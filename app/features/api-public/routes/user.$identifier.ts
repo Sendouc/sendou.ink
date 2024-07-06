@@ -1,16 +1,16 @@
 import { type LoaderFunctionArgs, json } from "@remix-run/node";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
+import { cors } from "remix-utils/cors";
 import { z } from "zod";
 import { db } from "~/db/sql";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { safeNumberParse } from "~/utils/number";
 import { notFoundIfFalsy, parseParams } from "~/utils/remix";
-import type { GetUserResponse } from "../schema";
-import { cors } from "remix-utils/cors";
 import {
 	handleOptionsRequest,
 	requireBearerAuth,
 } from "../api-public-utils.server";
+import type { GetUserResponse } from "../schema";
 
 const paramsSchema = z.object({
 	identifier: z.string(),
