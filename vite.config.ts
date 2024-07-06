@@ -351,5 +351,12 @@ export default defineConfig(() => {
 			}),
 			tsconfigPaths(),
 		],
+		build: {
+			// this is mostly done so that i18n jsons as defined in ./app/modules/i18n/loader.ts
+			// do not end up in the js bundle as minimized strings
+			// if we decide later that this is a useful optimization in some cases then we can
+			// switch the value to a callback one that checks the file path
+			assetsInlineLimit: 0,
+		},
 	};
 });
