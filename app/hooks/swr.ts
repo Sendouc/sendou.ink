@@ -11,6 +11,8 @@ import {
 	getWeaponUsage,
 } from "~/utils/urls";
 
+// TODO: replace with useFetcher after proper errr handling is implemented https://github.com/remix-run/react-router/discussions/10013
+
 const fetcher = (key: string) => async (url: string) => {
 	const res = await fetch(url);
 	if (res.status !== 200) {
