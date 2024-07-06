@@ -25,16 +25,18 @@ export function useGearOptions(slot: GearType) {
 
 	const options = React.useMemo(
 		() =>
-			Object.entries(gear).map(([brandId, gearIds]) => {
-				return {
-					id: brandId as BrandId,
-					label: t(`game-misc:BRAND_${brandId}`),
-					options: gearIds.map((gearId) => ({
-						id: gearId,
-						label: gearIdToTranslated(gearId),
-					})),
-				};
-			}),
+			Object.entries(gear)
+				.map(([brandId, gearIds]) => {
+					return {
+						id: brandId as BrandId,
+						label: t(`game-misc:BRAND_${brandId}`),
+						options: gearIds.map((gearId) => ({
+							id: gearId,
+							label: gearIdToTranslated(gearId),
+						})),
+					};
+				})
+				.filter(({ options }) => options.length > 0),
 		[t, gearIdToTranslated, gear],
 	);
 

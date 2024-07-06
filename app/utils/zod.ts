@@ -172,6 +172,12 @@ export function emptyArrayToNull(value: unknown) {
 	return value;
 }
 
+export function removeMissingValueFromArray(value: unknown) {
+	if (!Array.isArray(value)) return value;
+
+	return value.filter((v) => v !== "");
+}
+
 export function checkboxValueToBoolean(value: unknown) {
 	if (!value) return false;
 

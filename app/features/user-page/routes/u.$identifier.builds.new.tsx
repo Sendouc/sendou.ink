@@ -11,6 +11,7 @@ import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CrossIcon } from "~/components/icons/Cross";
 import { PlusIcon } from "~/components/icons/Plus";
+import { GearComboBox } from "~/components/ui/Combobox/GearComboBox";
 import { WeaponComboBox } from "~/components/ui/Combobox/WeaponComboBox";
 import { MyLabel } from "~/components/ui/MyLabel";
 import { BUILD } from "~/constants";
@@ -24,7 +25,6 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { modeImageUrl } from "~/utils/urls";
-import { GearComboBox } from "~/components/ui/Combobox/GearComboBox";
 
 import { action } from "../actions/u.$identifier.builds.new.server";
 import { loader } from "../loaders/u.$identifier.builds.new.server";
@@ -50,7 +50,6 @@ export default function NewBuildPage() {
 					<input type="hidden" name="buildToEditId" value={buildToEdit.id} />
 				)}
 				<WeaponsSelector />
-				<FormMessage type="info">{t("builds:forms.noGear.info")}</FormMessage>
 				<GearSelector
 					type="HEAD"
 					abilities={abilities}
@@ -66,6 +65,7 @@ export default function NewBuildPage() {
 					abilities={abilities}
 					setAbilities={setAbilities}
 				/>
+				<FormMessage type="info">{t("builds:forms.noGear.info")}</FormMessage>
 				<Abilities abilities={abilities} setAbilities={setAbilities} />
 				<TitleInput />
 				<DescriptionTextarea />
@@ -196,7 +196,7 @@ function WeaponsSelector() {
 							<div>
 								<WeaponComboBox
 									name="weapon"
-									isRequired
+									isRequired={i === 0}
 									onChange={(newWeaponId) =>
 										typeof newWeaponId === "number" &&
 										setWeapons((weapons) => {
@@ -206,7 +206,6 @@ function WeaponsSelector() {
 										})
 									}
 									value={weapon ?? undefined}
-									withRightButton={false}
 									disabledWeaponIds={weapons
 										.filter((w) => typeof w === "number")
 										.filter((w) => w !== weapon)}
@@ -256,16 +255,16 @@ function GearSelector({
 }) {
 	const { buildToEdit, gearIdToAbilities } = useLoaderData<typeof loader>();
 	const { t } = useTranslation("builds");
-	const [value, setValue] = React.useState<number | undefined>(() => {
+	const [value, setValue] = React.useState<number | null>(() => {
 		const gearId = !buildToEdit
-			? undefined
+			? null
 			: type === "HEAD"
 				? buildToEdit.headGearSplId
 				: type === "CLOTHES"
 					? buildToEdit.clothesGearSplId
 					: buildToEdit.shoesGearSplId;
 
-		if (gearId === -1) return undefined;
+		if (gearId === -1) return null;
 
 		return gearId;
 	});
@@ -280,6 +279,8 @@ function GearSelector({
 					id={type}
 					value={value}
 					onChange={(gearId) => {
+						setValue(gearId);
+
 						if (typeof gearId !== "number") return;
 
 						const abilitiesFromExistingGear =
@@ -298,7 +299,6 @@ function GearSelector({
 						newAbilities[gearIndex] = abilitiesFromExistingGear;
 
 						setAbilities(newAbilities);
-						setValue(gearId);
 					}}
 				/>
 			</div>

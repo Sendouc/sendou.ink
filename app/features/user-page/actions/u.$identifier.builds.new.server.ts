@@ -31,6 +31,7 @@ import {
 	id,
 	processMany,
 	removeDuplicates as removeDuplicatesZod,
+	removeMissingValueFromArray,
 	safeJSONParse,
 	shoesMainSlotAbility,
 	stackableAbility,
@@ -105,7 +106,7 @@ const newBuildActionSchema = z.object({
 	CB: z.preprocess(checkboxValueToBoolean, z.boolean()),
 	private: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
 	weapon: z.preprocess(
-		processMany(toArray, removeDuplicatesZod),
+		processMany(toArray, removeMissingValueFromArray, removeDuplicatesZod),
 		z.array(weaponSplId).min(1).max(BUILD.MAX_WEAPONS_COUNT),
 	),
 	HEAD: z.preprocess(
