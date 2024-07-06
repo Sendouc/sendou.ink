@@ -6,7 +6,6 @@ import { i18next } from "~/modules/i18n/i18next.server";
 import { safeNumberParse } from "~/utils/number";
 import { notFoundIfFalsy, parseParams } from "~/utils/remix";
 import type { GetUserResponse } from "../schema";
-("~/modules/i18n");
 import { cors } from "remix-utils/cors";
 import {
 	handleOptionsRequest,
