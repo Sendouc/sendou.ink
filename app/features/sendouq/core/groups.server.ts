@@ -14,6 +14,7 @@ import { FULL_GROUP_SIZE } from "../q-constants";
 import type {
 	DividedGroups,
 	DividedGroupsUncensored,
+	GroupExpiryStatus,
 	LookingGroup,
 	LookingGroupWithInviteCode,
 } from "../q-types";
@@ -459,7 +460,7 @@ function resolveGroupSkill({
 
 export function groupExpiryStatus(
 	group?: Pick<Group, "latestActionAt">,
-): null | "EXPIRING_SOON" | "EXPIRED" {
+): null | GroupExpiryStatus {
 	if (!group) return null;
 
 	// group expires in 30min without actions performed
@@ -479,6 +480,22 @@ export function groupExpiryStatus(
 	}
 
 	return null;
+}
+
+export function censorGroupsIfOwnExpired({
+	groups,
+	ownGroupExpiryStatus,
+}: {
+	groups: DividedGroups;
+	ownGroupExpiryStatus: GroupExpiryStatus | null;
+}): DividedGroups {
+	if (ownGroupExpiryStatus !== "EXPIRED") return groups;
+
+	return {
+		own: groups.own,
+		likesReceived: [],
+		neutral: [],
+	};
 }
 
 const allTiersOrdered = TIERS.flatMap((tier) => [

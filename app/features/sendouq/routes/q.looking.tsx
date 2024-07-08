@@ -55,6 +55,7 @@ import {
 	addSkillRangeToGroups,
 	addSkillsToGroups,
 	censorGroups,
+	censorGroupsIfOwnExpired,
 	divideGroups,
 	groupExpiryStatus,
 	membersNeededForFull,
@@ -502,8 +503,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		userId: user?.id,
 	});
 
+	const expiryStatus = groupExpiryStatus(currentGroup);
+
 	return {
-		groups: sortedGroups,
+		groups: censorGroupsIfOwnExpired({
+			groups: sortedGroups,
+			ownGroupExpiryStatus: expiryStatus,
+		}),
 		role: currentGroup ? currentGroup.role : ("PREVIEWER" as const),
 		chatCode: currentGroup?.chatCode,
 		lastUpdated: new Date().getTime(),

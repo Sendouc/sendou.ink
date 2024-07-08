@@ -69,3 +69,5 @@ export interface DividedGroupsUncensored {
 	neutral: LookingGroupWithInviteCode[];
 	likesReceived: LookingGroupWithInviteCode[];
 }
+
+export type GroupExpiryStatus = "EXPIRING_SOON" | "EXPIRED";
