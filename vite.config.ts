@@ -186,6 +186,11 @@ export default defineConfig(() => {
 							);
 						});
 
+						route(
+							"/org/:slug",
+							"features/tournament-organization/routes/org.$slug.tsx",
+						);
+
 						route("/faq", "features/info/routes/faq.tsx");
 						route("/contributions", "features/info/routes/contributions.tsx");
 						route("/privacy-policy", "features/info/routes/privacy-policy.tsx");

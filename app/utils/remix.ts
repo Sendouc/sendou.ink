@@ -125,7 +125,7 @@ export async function parseFormData<T extends z.ZodTypeAny>({
 	}
 }
 
-/** Parse params with the given schema. Throws HTTP 400 response if fails. */
+/** Parse params with the given schema. Throws HTTP 404 response if fails. */
 export function parseParams<T extends z.ZodTypeAny>({
 	params,
 	schema,
@@ -133,17 +133,12 @@ export function parseParams<T extends z.ZodTypeAny>({
 	params: Params<string>;
 	schema: T;
 }): z.infer<T> {
-	try {
-		return schema.parse(params);
-	} catch (e) {
-		if (e instanceof z.ZodError) {
-			noticeError(e, { params: JSON.stringify(params) });
-			console.error(e);
-			throw new Response(JSON.stringify(e), { status: 400 });
-		}
-
-		throw e;
+	const parsed = schema.safeParse(params);
+	if (!parsed.success) {
+		throw new Response(null, { status: 404 });
 	}
+
+	return parsed.data;
 }
 
 export async function safeParseRequestFormData<T extends z.ZodTypeAny>({

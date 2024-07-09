@@ -145,6 +145,7 @@ export interface CalendarEvent {
 	participantCount: number | null;
 	tags: string | null;
 	tournamentId: number | null;
+	organizationId: number | null;
 	avatarImgId: number | null;
 	avatarMetadata: ColumnType<
 		CalendarEventAvatarMetadata | null,
@@ -628,6 +629,41 @@ export interface TournamentTeamMember {
 	userId: number;
 }
 
+export interface SocialLink {
+	type: "TWITTER" | "TWITCH" | "YOUTUBE" | "MISC";
+	url: string;
+}
+
+export interface TournamentOrganization {
+	id: GeneratedAlways<number>;
+	name: string;
+	slug: string;
+	description: string | null;
+	socials: ColumnType<SocialLink[] | null, string | null, string | null>;
+	avatarImgId: number | null;
+}
+
+type TournamentOrganizationRole = "ADMIN" | "MEMBER" | "ORGANIZER" | "STREAMER";
+
+export interface TournamentOrganizationMember {
+	organizationId: number;
+	userId: number;
+	role: TournamentOrganizationRole;
+	roleDisplayName: string | null;
+}
+
+export interface TournamentOrganizationBadge {
+	organizationId: number;
+	badgeId: number;
+}
+
+// xxx: show Est. May 2021
+export interface TournamentOrganizationSeries {
+	organizationId: number;
+	name: string;
+	substringMatches: ColumnType<string[], string, string>;
+}
+
 export interface TrustRelationship {
 	trustGiverUserId: number;
 	trustReceiverUserId: number;
@@ -853,6 +889,10 @@ export interface DB {
 	TournamentTeam: TournamentTeam;
 	TournamentTeamCheckIn: TournamentTeamCheckIn;
 	TournamentTeamMember: TournamentTeamMember;
+	TournamentOrganization: TournamentOrganization;
+	TournamentOrganizationMember: TournamentOrganizationMember;
+	TournamentOrganizationBadge: TournamentOrganizationBadge;
+	TournamentOrganizationSeries: TournamentOrganizationSeries;
 	TrustRelationship: TrustRelationship;
 	UnvalidatedUserSubmittedImage: UnvalidatedUserSubmittedImage;
 	UnvalidatedVideo: UnvalidatedVideo;
