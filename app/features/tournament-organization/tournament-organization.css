@@ -59,3 +59,30 @@
 	font-size: var(--fonts-lg);
 	margin-block-start: var(--s-1);
 }
+
+.org__section-divider {
+	font-size: var(--fonts-md);
+	font-weight: var(--bold);
+	color: var(--text-lighter);
+	border-bottom: 2px solid var(--border);
+	width: 100%;
+	padding-block: var(--s-1);
+}
+
+.org__event-info {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	font-weight: var(--semi-bold);
+	color: var(--text);
+}
+
+.org__event-info img {
+	border-radius: 100%;
+}
+
+.org__event-info__time {
+	display: block;
+	color: var(--text-lighter);
+	font-size: var(--fonts-sm);
+}

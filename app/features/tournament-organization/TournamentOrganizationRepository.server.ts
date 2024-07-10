@@ -124,6 +124,7 @@ export async function findEventsByMonth({
 			"<=",
 			dateToDatabaseTimestamp(lastDayOfTheMonth),
 		)
+		.orderBy("CalendarEventDate.startTime asc")
 		.execute();
 
 	return events.map((event) => {
