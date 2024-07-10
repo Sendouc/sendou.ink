@@ -1,4 +1,5 @@
 import { getWeek } from "date-fns";
+import type { MonthYear } from "~/features/plus-voting/core";
 
 // TODO: when this lands https://github.com/remix-run/remix/discussions/7768 we can get rid of this (utilizing Kysely plugin to do converting from/to Date for us)
 export function databaseTimestampToDate(timestamp: number) {
@@ -136,4 +137,25 @@ export function getDateAtNextFullHour(date: Date) {
 
 export function dateToYYYYMMDD(date: Date) {
 	return date.toISOString().split("T")[0];
+}
+
+// same as datesOfMonth but contains null at the start to start with monday
+export function nullPaddedDatesOfMonth({ month, year }: MonthYear) {
+	const dates = datesOfMonth({ month, year });
+	const firstDay = dates[0].getDay();
+	const nulls = Array.from(
+		{ length: firstDay === 0 ? 6 : firstDay - 1 },
+		() => null,
+	);
+	return [...nulls, ...dates];
+}
+
+function datesOfMonth({ month, year }: MonthYear) {
+	const dates = [];
+	const date = new Date(Date.UTC(year, month, 1));
+	while (date.getMonth() === month) {
+		dates.push(new Date(date));
+		date.setDate(date.getDate() + 1);
+	}
+	return dates;
 }

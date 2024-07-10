@@ -157,6 +157,8 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 	return CalendarRepository.findAllBetweenTwoTimestamps({ startTime, endTime });
 }
 
+// xxx: add org logos
+
 export default function CalendarPage() {
 	const { t } = useTranslation("calendar");
 	const data = useLoaderData<typeof loader>();

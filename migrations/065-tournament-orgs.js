@@ -1,7 +1,7 @@
 export function up(db) {
 	db.transaction(() => {
 		db.prepare(
-			/* sql */ `alter table "CalendarEvent" add "organizationId" number`,
+			/* sql */ `alter table "CalendarEvent" add "organizationId" integer`,
 		).run();
 		db.prepare(
 			/*sql*/ `create index calendar_event_organization_id on "CalendarEvent"("organizationId")`,
