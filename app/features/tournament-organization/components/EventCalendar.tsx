@@ -17,7 +17,7 @@ export function EventCalendar({ month, year, events }: EventCalendarProps) {
 	const dates = nullPaddedDatesOfMonth({ month, year });
 
 	return (
-		<div className="stack sm">
+		<div className="org__calendar__container">
 			<MonthSelector month={month} year={year} />
 			<div className="org__calendar">
 				{DAY_HEADERS.map((day) => (

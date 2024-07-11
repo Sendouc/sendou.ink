@@ -1,4 +1,5 @@
-import { jsonArrayFrom } from "kysely/helpers/sqlite";
+import { sql } from "kysely";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
@@ -112,6 +113,70 @@ export async function findEventsByMonth({
 				.select(["UserSubmittedImage.url"])
 				.whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
 				.as("logoUrl"),
+			jsonObjectFrom(
+				eb
+					.selectFrom("TournamentResult")
+					.innerJoin(
+						"TournamentTeam",
+						"TournamentTeam.id",
+						"TournamentResult.tournamentTeamId",
+					)
+					.leftJoin("Team", "TournamentTeam.teamId", "Team.id")
+					.leftJoin("UserSubmittedImage as u1", "Team.avatarImgId", "u1.id")
+					.leftJoin(
+						"UserSubmittedImage as u2",
+						"TournamentTeam.avatarImgId",
+						"u2.id",
+					)
+					.select(({ eb: innerEb }) => [
+						"TournamentTeam.name",
+						innerEb.fn.coalesce("u1.url", "u2.url").as("avatarUrl"),
+						jsonArrayFrom(
+							innerEb
+								.selectFrom("TournamentTeamMember")
+								.innerJoin("User", "User.id", "TournamentTeamMember.userId")
+								.select([...COMMON_USER_FIELDS])
+								.whereRef(
+									"TournamentTeamMember.tournamentTeamId",
+									"=",
+									"TournamentTeam.id",
+								)
+								.orderBy("User.id asc"),
+						).as("members"),
+					])
+					.whereRef(
+						"TournamentResult.tournamentId",
+						"=",
+						"CalendarEvent.tournamentId",
+					)
+					.where("TournamentResult.placement", "=", 1),
+			).as("tournamentWinners"),
+			jsonObjectFrom(
+				eb
+					.selectFrom("CalendarEventResultTeam")
+					.select(({ eb: innerEb }) => [
+						"CalendarEventResultTeam.name",
+						sql<null>`null`.as("avatarUrl"),
+						jsonArrayFrom(
+							innerEb
+								.selectFrom("CalendarEventResultPlayer")
+								.innerJoin(
+									"User",
+									"User.id",
+									"CalendarEventResultPlayer.userId",
+								)
+								.select([...COMMON_USER_FIELDS])
+								.whereRef(
+									"CalendarEventResultPlayer.teamId",
+									"=",
+									"CalendarEventResultTeam.id",
+								)
+								.orderBy("User.id asc"),
+						).as("members"),
+					])
+					.whereRef("CalendarEventResultTeam.eventId", "=", "CalendarEvent.id")
+					.where("CalendarEventResultTeam.placement", "=", 1),
+			).as("eventWinners"),
 		])
 		.where("CalendarEvent.organizationId", "=", organizationId)
 		.where(

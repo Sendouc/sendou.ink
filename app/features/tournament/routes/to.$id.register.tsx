@@ -61,6 +61,7 @@ import { loader } from "../loaders/to.$id.register.server";
 
 export { loader, action };
 
+// xxx: tournament org
 export default function TournamentRegisterPage() {
 	const user = useUser();
 	const isMounted = useIsMounted();

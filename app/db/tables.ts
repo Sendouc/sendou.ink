@@ -662,6 +662,7 @@ export interface TournamentOrganizationSeries {
 	organizationId: number;
 	name: string;
 	substringMatches: ColumnType<string[], string, string>;
+	showLeaderboard: Generated<number>;
 }
 
 export interface TrustRelationship {

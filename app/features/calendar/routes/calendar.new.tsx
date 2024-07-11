@@ -81,6 +81,7 @@ const useBaseEvent = () => {
 	return eventToCopy ?? eventToEdit;
 };
 
+// xxx: tournament org
 export default function CalendarNewEventPage() {
 	const baseEvent = useBaseEvent();
 

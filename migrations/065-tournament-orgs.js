@@ -69,6 +69,7 @@ export function up(db) {
         "organizationId" integer not null,
         "name" text not null,
         "substringMatches" text not null,
+				"showLeaderboard" integer not null default 0,
         foreign key ("organizationId") references "TournamentOrganization"("id") on delete cascade
       ) strict
     `,
