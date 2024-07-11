@@ -121,8 +121,8 @@ export async function findEventsByMonth({
 						"TournamentTeam.id",
 						"TournamentResult.tournamentTeamId",
 					)
-					.leftJoin("Team", "TournamentTeam.teamId", "Team.id")
-					.leftJoin("UserSubmittedImage as u1", "Team.avatarImgId", "u1.id")
+					.leftJoin("AllTeam", "TournamentTeam.teamId", "AllTeam.id")
+					.leftJoin("UserSubmittedImage as u1", "AllTeam.avatarImgId", "u1.id")
 					.leftJoin(
 						"UserSubmittedImage as u2",
 						"TournamentTeam.avatarImgId",
@@ -135,7 +135,7 @@ export async function findEventsByMonth({
 							innerEb
 								.selectFrom("TournamentTeamMember")
 								.innerJoin("User", "User.id", "TournamentTeamMember.userId")
-								.select([...COMMON_USER_FIELDS])
+								.select(["User.discordAvatar", "User.discordId"])
 								.whereRef(
 									"TournamentTeamMember.tournamentTeamId",
 									"=",
@@ -165,7 +165,7 @@ export async function findEventsByMonth({
 									"User.id",
 									"CalendarEventResultPlayer.userId",
 								)
-								.select([...COMMON_USER_FIELDS])
+								.select(["User.discordAvatar", "User.discordId"])
 								.whereRef(
 									"CalendarEventResultPlayer.teamId",
 									"=",
