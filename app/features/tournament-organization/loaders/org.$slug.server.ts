@@ -7,6 +7,7 @@ import {
 } from "~/utils/remix";
 import { id } from "~/utils/zod";
 import * as TournamentOrganizationRepository from "../TournamentOrganizationRepository.server";
+import { eventLeaderboards } from "../core/leaderboards.server";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
 	const { slug } = parseParams({ params, schema: paramsSchema });
@@ -81,7 +82,7 @@ async function seriesStuff({
 	});
 
 	return {
-		// leaderboard: ...
+		leaderboard: await eventLeaderboards(events),
 		eventsCount: events.length,
 	};
 }

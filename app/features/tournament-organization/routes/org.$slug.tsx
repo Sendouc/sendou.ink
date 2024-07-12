@@ -3,6 +3,7 @@ import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
+import { NewTabs } from "~/components/NewTabs";
 import { Pagination } from "~/components/Pagination";
 import { Placement } from "~/components/Placement";
 import { databaseTimestampNow, databaseTimestampToDate } from "~/utils/dates";
@@ -27,18 +28,55 @@ export default function TournamentOrganizationPage() {
 			{data.organization.series.length > 0 ? (
 				<SeriesSelector series={data.organization.series} />
 			) : null}
-			<div className="stack lg horizontal">
-				{!data.series ? (
-					<EventCalendar
-						month={data.month}
-						year={data.year}
-						events={data.events}
-					/>
-				) : null}
-				<EventsList showYear={Boolean(data.series)} />
-			</div>
-			{data.series ? <EventsPagination series={data.series} /> : null}
+			{data.series ? <SeriesView /> : <AllTournamentsView />}
 		</Main>
+	);
+}
+
+function AllTournamentsView() {
+	const data = useLoaderData<typeof loader>();
+
+	return (
+		<div className="stack lg horizontal">
+			<EventCalendar month={data.month} year={data.year} events={data.events} />
+			<EventsList />
+		</div>
+	);
+}
+
+function SeriesView() {
+	const data = useLoaderData<typeof loader>();
+
+	return (
+		<NewTabs
+			disappearing
+			tabs={[
+				{
+					label: "Events",
+					number: data.series?.eventsCount,
+				},
+				{
+					label: "Leaderboards",
+					// xxx: todo hidden lb
+					hidden: false,
+				},
+			]}
+			content={[
+				{
+					key: "events",
+					element: (
+						<div className="stack lg">
+							<EventsList showYear />
+							{data.series ? <EventsPagination series={data.series} /> : null}
+						</div>
+					),
+				},
+				{
+					key: "leaderboards",
+					element: <EventLeaderboards />,
+				},
+			]}
+		/>
 	);
 }
 
@@ -206,4 +244,8 @@ function EventsPagination({
 			setPage={setPage}
 		/>
 	);
+}
+
+function EventLeaderboards() {
+	return <div>Lb!</div>;
 }

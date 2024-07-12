@@ -314,6 +314,25 @@ export async function forShowcase() {
 	return [latestWinners, ...next].filter(Boolean);
 }
 
+export function topThreeResultsByTournamentId(tournamentId: number) {
+	return db
+		.selectFrom("TournamentResult")
+		.select(({ eb }) => [
+			"TournamentResult.placement",
+			"TournamentResult.tournamentTeamId",
+			jsonObjectFrom(
+				eb
+					.selectFrom("User")
+					.select([...COMMON_USER_FIELDS])
+					.whereRef("User.id", "=", "TournamentResult.userId"),
+			).as("user"),
+		])
+		.where("tournamentId", "=", tournamentId)
+		.where("TournamentResult.placement", "<=", 3)
+		.$narrowType<{ user: NotNull }>()
+		.execute();
+}
+
 export async function findCastTwitchAccountsByTournamentId(
 	tournamentId: number,
 ) {

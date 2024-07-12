@@ -365,6 +365,7 @@ export async function findResultsByEventId(eventId: number) {
 						"User.username",
 						"User.discordId",
 						"User.discordAvatar",
+						"User.customUrl",
 					])
 					.whereRef(
 						"CalendarEventResultPlayer.teamId",
