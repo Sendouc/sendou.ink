@@ -4,6 +4,7 @@
 import { ScrollRestoration, useLocation } from "@remix-run/react";
 import * as React from "react";
 
+// xxx: deprecate this so we get event pagination to scroll to top
 export function ConditionalScrollRestoration() {
 	const isFirstRenderRef = React.useRef(true);
 	const location = useLocation();

@@ -84,6 +84,7 @@
 	gap: var(--s-2);
 	font-weight: var(--semi-bold);
 	color: var(--text);
+	width: max-content;
 }
 
 .org__event-info img {

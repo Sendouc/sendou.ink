@@ -1,7 +1,9 @@
 import type { SerializeFrom } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
+import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
+import { Pagination } from "~/components/Pagination";
 import { Placement } from "~/components/Placement";
 import { databaseTimestampNow, databaseTimestampToDate } from "~/utils/dates";
 import {
@@ -10,6 +12,7 @@ import {
 	userSubmittedImage,
 } from "~/utils/urls";
 import { EventCalendar } from "../components/EventCalendar";
+import { TOURNAMENT_SERIES_EVENTS_PER_PAGE } from "../tournament-organization-constants";
 
 import "../tournament-organization.css";
 
@@ -20,20 +23,61 @@ export default function TournamentOrganizationPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<Main>
+		<Main className="stack lg">
+			{data.organization.series.length > 0 ? (
+				<SeriesSelector series={data.organization.series} />
+			) : null}
 			<div className="stack lg horizontal">
-				<EventCalendar
-					month={data.month}
-					year={data.year}
-					events={data.events}
-				/>
-				<EventsList />
+				{!data.series ? (
+					<EventCalendar
+						month={data.month}
+						year={data.year}
+						events={data.events}
+					/>
+				) : null}
+				<EventsList showYear={Boolean(data.series)} />
 			</div>
+			{data.series ? <EventsPagination series={data.series} /> : null}
 		</Main>
 	);
 }
 
-function EventsList() {
+function SeriesSelector({
+	series,
+}: {
+	series: SerializeFrom<typeof loader>["organization"]["series"];
+}) {
+	return (
+		<div className="stack horizontal md flex-wrap">
+			<SeriesButton>All tournaments</SeriesButton>
+			{series.map((series) => (
+				<SeriesButton key={series.id} seriesId={series.id}>
+					{series.name}
+				</SeriesButton>
+			))}
+		</div>
+	);
+}
+
+function SeriesButton({
+	children,
+	seriesId,
+}: {
+	children: React.ReactNode;
+	seriesId?: number;
+}) {
+	return (
+		<LinkButton
+			variant="minimal"
+			size="tiny"
+			to={`?series=${seriesId ?? "all"}`}
+		>
+			{children}
+		</LinkButton>
+	);
+}
+
+function EventsList({ showYear }: { showYear?: boolean }) {
 	const data = useLoaderData<typeof loader>();
 
 	const now = databaseTimestampNow();
@@ -47,7 +91,7 @@ function EventsList() {
 			) : null}
 			<div className="stack md">
 				{upcomingEvents.map((event) => (
-					<EventInfo key={event.eventId} event={event} />
+					<EventInfo key={event.eventId} event={event} showYear={showYear} />
 				))}
 			</div>
 			{pastEvents.length > 0 ? (
@@ -55,7 +99,7 @@ function EventsList() {
 			) : null}
 			<div className="stack md">
 				{pastEvents.map((event) => (
-					<EventInfo key={event.eventId} event={event} />
+					<EventInfo key={event.eventId} event={event} showYear={showYear} />
 				))}
 			</div>
 		</div>
@@ -69,8 +113,11 @@ function SectionDivider({ children }: { children: React.ReactNode }) {
 // xxx: winners
 function EventInfo({
 	event,
-}: { event: SerializeFrom<typeof loader>["events"][number] }) {
-	// xxx: fix coercion!
+	showYear,
+}: {
+	event: SerializeFrom<typeof loader>["events"][number];
+	showYear?: boolean;
+}) {
 	return (
 		<div className="stack sm">
 			<Link
@@ -81,7 +128,9 @@ function EventInfo({
 				}
 				className="org__event-info"
 			>
-				<img src={event.logoUrl!} alt={event.name} width={38} height={38} />
+				{event.logoUrl ? (
+					<img src={event.logoUrl} alt={event.name} width={38} height={38} />
+				) : null}
 				<div>
 					<div className="org__event-info__name">{event.name}</div>
 					<time className="org__event-info__time">
@@ -90,6 +139,7 @@ function EventInfo({
 							month: "numeric",
 							hour: "numeric",
 							minute: "numeric",
+							year: showYear ? "numeric" : undefined,
 						})}
 					</time>
 				</div>
@@ -126,9 +176,34 @@ function EventWinners({
 			</div>
 			<div className="stack xs horizontal">
 				{winner.members.map((member) => (
-					<Avatar key={member.id} user={member} size="xxs" />
+					<Avatar key={member.discordId} user={member} size="xxs" />
 				))}
 			</div>
 		</div>
+	);
+}
+
+function EventsPagination({
+	series,
+}: { series: NonNullable<SerializeFrom<typeof loader>["series"]> }) {
+	const [, setSearchParams] = useSearchParams();
+
+	const setPage = (page: number) =>
+		setSearchParams((prev) => {
+			prev.set("page", String(page));
+
+			return prev;
+		});
+
+	return (
+		<Pagination
+			currentPage={series.page}
+			nextPage={() => setPage(series.page + 1)}
+			pagesCount={Math.ceil(
+				series.eventsCount / TOURNAMENT_SERIES_EVENTS_PER_PAGE,
+			)}
+			previousPage={() => setPage(series.page - 1)}
+			setPage={setPage}
+		/>
 	);
 }

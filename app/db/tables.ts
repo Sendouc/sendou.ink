@@ -659,8 +659,10 @@ export interface TournamentOrganizationBadge {
 
 // xxx: show Est. May 2021
 export interface TournamentOrganizationSeries {
+	id: GeneratedAlways<number>;
 	organizationId: number;
 	name: string;
+	description: string | null;
 	substringMatches: ColumnType<string[], string, string>;
 	showLeaderboard: Generated<number>;
 }

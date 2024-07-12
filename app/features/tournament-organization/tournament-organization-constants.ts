@@ -1,0 +1,1 @@
+export const TOURNAMENT_SERIES_EVENTS_PER_PAGE = 20;

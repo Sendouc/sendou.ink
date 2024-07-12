@@ -66,8 +66,10 @@ export function up(db) {
 		db.prepare(
 			/*sql*/ `
       create table "TournamentOrganizationSeries" (
+				"id" integer primary key,
         "organizationId" integer not null,
         "name" text not null,
+				"description" text,
         "substringMatches" text not null,
 				"showLeaderboard" integer not null default 0,
         foreign key ("organizationId") references "TournamentOrganization"("id") on delete cascade

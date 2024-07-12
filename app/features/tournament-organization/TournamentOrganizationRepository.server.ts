@@ -5,6 +5,7 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { mySlugify, userSubmittedImage } from "~/utils/urls";
 import { HACKY_resolvePicture } from "../tournament/tournament-utils";
+import { TOURNAMENT_SERIES_EVENTS_PER_PAGE } from "./tournament-organization-constants";
 
 interface CreateArgs {
 	ownerId: number;
@@ -59,13 +60,19 @@ export function findBySlug(slug: string) {
 			jsonArrayFrom(
 				eb
 					.selectFrom("TournamentOrganizationSeries")
-					.select(["TournamentOrganizationSeries.name"])
+					.select([
+						"TournamentOrganizationSeries.id",
+						"TournamentOrganizationSeries.name",
+						"TournamentOrganizationSeries.substringMatches",
+						"TournamentOrganizationSeries.showLeaderboard",
+						"TournamentOrganization.description",
+					])
 					.whereRef(
 						"TournamentOrganizationSeries.organizationId",
 						"=",
 						"TournamentOrganization.id",
 					),
-			).as("tournamentSeries"),
+			).as("series"),
 			jsonArrayFrom(
 				eb
 					.selectFrom("TournamentOrganizationBadge")
@@ -88,15 +95,8 @@ interface FindEventsByMonthArgs {
 	organizationId: number;
 }
 
-export async function findEventsByMonth({
-	month,
-	year,
-	organizationId,
-}: FindEventsByMonthArgs) {
-	const firstDayOfTheMonth = new Date(year, month, 1);
-	const lastDayOfTheMonth = new Date(year, month + 1, 0);
-
-	const events = await db
+const findEventsBaseQuery = (organizationId: number) =>
+	db
 		.selectFrom("CalendarEvent")
 		.innerJoin(
 			"CalendarEventDate",
@@ -178,7 +178,36 @@ export async function findEventsByMonth({
 					.where("CalendarEventResultTeam.placement", "=", 1),
 			).as("eventWinners"),
 		])
-		.where("CalendarEvent.organizationId", "=", organizationId)
+		.where("CalendarEvent.organizationId", "=", organizationId);
+
+const mapEvent = <
+	T extends {
+		tournamentId: number | null;
+		logoUrl: string | null;
+		name: string;
+	},
+>(
+	event: T,
+) => {
+	return {
+		...event,
+		logoUrl: !event.tournamentId
+			? null
+			: event.logoUrl
+				? userSubmittedImage(event.logoUrl)
+				: HACKY_resolvePicture(event),
+	};
+};
+
+export async function findEventsByMonth({
+	month,
+	year,
+	organizationId,
+}: FindEventsByMonthArgs) {
+	const firstDayOfTheMonth = new Date(year, month, 1);
+	const lastDayOfTheMonth = new Date(year, month + 1, 0);
+
+	const events = await findEventsBaseQuery(organizationId)
 		.where(
 			"CalendarEventDate.startTime",
 			">=",
@@ -192,14 +221,47 @@ export async function findEventsByMonth({
 		.orderBy("CalendarEventDate.startTime asc")
 		.execute();
 
-	return events.map((event) => {
-		return {
-			...event,
-			logoUrl: !event.tournamentId
-				? null
-				: event.logoUrl
-					? userSubmittedImage(event.logoUrl)
-					: HACKY_resolvePicture(event),
-		};
-	});
+	return events.map(mapEvent);
+}
+
+const findSeriesEventsBaseQuery = ({
+	organizationId,
+	substringMatches,
+}: { organizationId: number; substringMatches: string[] }) =>
+	findEventsBaseQuery(organizationId)
+		.where((eb) =>
+			eb.or(
+				substringMatches.map((match) =>
+					eb("CalendarEvent.name", "like", `%${match}%`),
+				),
+			),
+		)
+		.orderBy("CalendarEventDate.startTime desc");
+
+export async function findPaginatedEventsBySeries({
+	organizationId,
+	substringMatches,
+	page,
+}: { organizationId: number; substringMatches: string[]; page: number }) {
+	const events = await findSeriesEventsBaseQuery({
+		organizationId,
+		substringMatches,
+	})
+		.limit(TOURNAMENT_SERIES_EVENTS_PER_PAGE)
+		.offset((page - 1) * TOURNAMENT_SERIES_EVENTS_PER_PAGE)
+		.execute();
+
+	return events.map(mapEvent);
+}
+
+export async function findAllEventsBySeries({
+	organizationId,
+	substringMatches,
+}: { organizationId: number; substringMatches: string[] }) {
+	const events = await findSeriesEventsBaseQuery({
+		organizationId,
+		substringMatches,
+	}).execute();
+
+	return events.map(mapEvent);
 }
