@@ -96,3 +96,26 @@
 	color: var(--text-lighter);
 	font-size: var(--fonts-sm);
 }
+
+.org__leaderboard-list {
+	padding-left: 0;
+	display: flex;
+	gap: var(--s-4);
+	flex-direction: column;
+	width: max-content;
+	margin: 0 auto;
+}
+
+.org__leaderboard-list li::marker {
+	font-size: var(--fonts-lg);
+	font-weight: var(--bold);
+	color: var(--theme);
+	padding-inline-end: var(--s-2);
+}
+
+.org__leaderboard-list__row {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+	padding-inline-start: var(--s-2-5);
+}

@@ -10,6 +10,7 @@ import { databaseTimestampNow, databaseTimestampToDate } from "~/utils/dates";
 import {
 	calendarEventPage,
 	tournamentPage,
+	userPage,
 	userSubmittedImage,
 } from "~/utils/urls";
 import { EventCalendar } from "../components/EventCalendar";
@@ -20,6 +21,8 @@ import "../tournament-organization.css";
 import { loader } from "../loaders/org.$slug.server";
 export { loader };
 
+// xxx: meta
+
 export default function TournamentOrganizationPage() {
 	const data = useLoaderData<typeof loader>();
 
@@ -28,7 +31,11 @@ export default function TournamentOrganizationPage() {
 			{data.organization.series.length > 0 ? (
 				<SeriesSelector series={data.organization.series} />
 			) : null}
-			{data.series ? <SeriesView /> : <AllTournamentsView />}
+			{data.series ? (
+				<SeriesView series={data.series} />
+			) : (
+				<AllTournamentsView />
+			)}
 		</Main>
 	);
 }
@@ -44,39 +51,78 @@ function AllTournamentsView() {
 	);
 }
 
-function SeriesView() {
-	const data = useLoaderData<typeof loader>();
-
+function SeriesView({
+	series,
+}: { series: NonNullable<SerializeFrom<typeof loader>["series"]> }) {
 	return (
-		<NewTabs
-			disappearing
-			tabs={[
-				{
-					label: "Events",
-					number: data.series?.eventsCount,
-				},
-				{
-					label: "Leaderboards",
-					// xxx: todo hidden lb
-					hidden: false,
-				},
-			]}
-			content={[
-				{
-					key: "events",
-					element: (
-						<div className="stack lg">
-							<EventsList showYear />
-							{data.series ? <EventsPagination series={data.series} /> : null}
-						</div>
-					),
-				},
-				{
-					key: "leaderboards",
-					element: <EventLeaderboards />,
-				},
-			]}
-		/>
+		<div className="stack md">
+			<SeriesHeader series={series} />
+			<div>
+				<NewTabs
+					disappearing
+					tabs={[
+						{
+							label: "Events",
+							number: series.eventsCount,
+						},
+						{
+							label: "Leaderboard",
+							// xxx: todo hidden lb
+							hidden: false,
+						},
+					]}
+					content={[
+						{
+							key: "events",
+							element: (
+								<div className="stack lg">
+									<EventsList showYear />
+									<EventsPagination series={series} />
+								</div>
+							),
+						},
+						{
+							key: "leaderboard",
+							element: <EventLeaderboard leaderboard={series.leaderboard} />,
+						},
+					]}
+				/>
+			</div>
+		</div>
+	);
+}
+
+function SeriesHeader({
+	series,
+}: { series: NonNullable<SerializeFrom<typeof loader>["series"]> }) {
+	return (
+		<div className="stack md">
+			<div className="stack horizontal md items-center">
+				{series.logoUrl ? (
+					<img
+						alt=""
+						src={series.logoUrl}
+						width={64}
+						height={64}
+						className="rounded-full"
+					/>
+				) : null}
+				<div>
+					<h2 className="text-lg">{series.name}</h2>
+					<div className="text-lighter text-italic text-xs">
+						Est.{" "}
+						{databaseTimestampToDate(series.established).toLocaleDateString(
+							"en-US",
+							{
+								month: "long",
+								year: "numeric",
+							},
+						)}
+					</div>
+				</div>
+			</div>
+			<div className="text-sm whitespace-pre-wrap">{series.description}</div>
+		</div>
 	);
 }
 
@@ -246,6 +292,46 @@ function EventsPagination({
 	);
 }
 
-function EventLeaderboards() {
-	return <div>Lb!</div>;
+function EventLeaderboard({
+	leaderboard,
+}: {
+	leaderboard: NonNullable<
+		SerializeFrom<typeof loader>["series"]
+	>["leaderboard"];
+}) {
+	return (
+		<ol className="org__leaderboard-list">
+			{leaderboard.map((entry) => (
+				<li key={entry.user.discordId}>
+					<EventLeaderboardRow entry={entry} />
+				</li>
+			))}
+		</ol>
+	);
+}
+
+function EventLeaderboardRow({
+	entry,
+}: {
+	entry: NonNullable<
+		SerializeFrom<typeof loader>["series"]
+	>["leaderboard"][number];
+}) {
+	return (
+		<div className="org__leaderboard-list__row">
+			<Link
+				to={userPage(entry.user)}
+				className="stack horizontal sm items-center font-semi-bold text-main-forced"
+			>
+				<Avatar size="xs" user={entry.user} />
+				{entry.user.username}
+			</Link>
+			<div className="stack sm horizontal items-center text-lighter font-semi-bold">
+				<span className="text-main-forced">{entry.points}p</span>{" "}
+				<Placement placement={1} /> ×{entry.placements.first}
+				<Placement placement={2} /> ×{entry.placements.second}
+				<Placement placement={3} /> ×{entry.placements.third}
+			</div>
+		</div>
+	);
 }

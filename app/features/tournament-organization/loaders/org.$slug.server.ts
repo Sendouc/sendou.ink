@@ -25,6 +25,29 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		await TournamentOrganizationRepository.findBySlug(slug),
 	);
 
+	const seriesInfo = async () => {
+		const series = seriesId
+			? organization.series.find((s) => s.id === seriesId)
+			: null;
+
+		if (!series) return null;
+
+		const stuff = await seriesStuff({
+			organizationId: organization.id,
+			series,
+		});
+
+		if (!stuff) return null;
+
+		return {
+			id: series.id,
+			name: series.name,
+			description: series.description,
+			page,
+			...stuff,
+		};
+	};
+
 	const series = seriesId
 		? organization.series.find((s) => s.id === seriesId)
 		: null;
@@ -42,14 +65,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 					year,
 					organizationId: organization.id,
 				}),
-		series: series
-			? {
-					id: series.id,
-					name: series.name,
-					page,
-					...(await seriesStuff({ organizationId: organization.id, series })),
-				}
-			: null,
+		series: await seriesInfo(),
 		month,
 		year,
 	};
@@ -66,7 +82,7 @@ const searchParamsSchema = z.object({
 	page: z.coerce.number().int().min(1).max(100).optional(),
 });
 
-// xxx: syncCache & clear after tournament finish
+// xxx: syncCache & clear after tournament finish & better name
 async function seriesStuff({
 	organizationId,
 	series,
@@ -81,8 +97,12 @@ async function seriesStuff({
 		substringMatches: series.substringMatches,
 	});
 
+	if (events.length === 0) return null;
+
 	return {
 		leaderboard: await eventLeaderboards(events),
 		eventsCount: events.length,
+		logoUrl: events[0].logoUrl,
+		established: events.at(-1)!.startTime,
 	};
 }
