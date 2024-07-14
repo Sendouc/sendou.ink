@@ -190,6 +190,10 @@ export default defineConfig(() => {
 							"/org/:slug",
 							"features/tournament-organization/routes/org.$slug.tsx",
 						);
+						route(
+							"/org/:slug/edit",
+							"features/tournament-organization/routes/org.$slug.edit.tsx",
+						);
 
 						route("/faq", "features/info/routes/faq.tsx");
 						route("/contributions", "features/info/routes/contributions.tsx");

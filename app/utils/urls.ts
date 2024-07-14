@@ -292,6 +292,9 @@ export const tournamentStreamsPage = (tournamentId: number) => {
 	return `/to/${tournamentId}/streams`;
 };
 
+export const tournamentOrganizationEditPage = (organizationSlug: string) =>
+	`/org/${organizationSlug}/edit`;
+
 export const sendouQInviteLink = (inviteCode: string) =>
 	`${SENDOUQ_PAGE}?${JOIN_CODE_SEARCH_PARAM_KEY}=${inviteCode}`;
 

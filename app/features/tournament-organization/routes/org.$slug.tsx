@@ -7,9 +7,11 @@ import { Main } from "~/components/Main";
 import { NewTabs } from "~/components/NewTabs";
 import { Pagination } from "~/components/Pagination";
 import { Placement } from "~/components/Placement";
+import { EditIcon } from "~/components/icons/Edit";
 import { databaseTimestampNow, databaseTimestampToDate } from "~/utils/dates";
 import {
 	calendarEventPage,
+	tournamentOrganizationEditPage,
 	tournamentPage,
 	userPage,
 	userSubmittedImage,
@@ -29,6 +31,7 @@ export default function TournamentOrganizationPage() {
 
 	return (
 		<Main className="stack lg">
+			<LogoHeader />
 			{data.organization.series.length > 0 ? (
 				<SeriesSelector series={data.organization.series} />
 			) : null}
@@ -38,6 +41,34 @@ export default function TournamentOrganizationPage() {
 				<AllTournamentsView />
 			)}
 		</Main>
+	);
+}
+
+function LogoHeader() {
+	const data = useLoaderData<typeof loader>();
+
+	const canEdit = true;
+
+	return (
+		<div className="stack horizontal sm items-center">
+			<Avatar size="md" />
+			<div className="stack sm">
+				<div className="text-xl font-bold">{data.organization.name}</div>
+				{canEdit ? (
+					<div className="stack items-start">
+						<LinkButton
+							to={tournamentOrganizationEditPage("addle")}
+							icon={<EditIcon />}
+							size="tiny"
+							variant="outlined"
+						>
+							Edit
+						</LinkButton>
+					</div>
+				) : null}
+				<div>desc</div>
+			</div>
+		</div>
 	);
 }
 
