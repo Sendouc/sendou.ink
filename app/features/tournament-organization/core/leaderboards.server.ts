@@ -41,7 +41,6 @@ export async function eventLeaderboards(
 
 	return Array.from(points.values())
 		.sort((a, b) => b.points - a.points)
-		.slice(0, 50)
 		.map((info) => ({ ...info, points: info.points.toFixed(2) }));
 }
 

@@ -1,5 +1,6 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { z } from "zod";
+import { getUser } from "~/features/auth/core/user.server";
 import {
 	notFoundIfFalsy,
 	parseParams,
@@ -8,8 +9,10 @@ import {
 import { id } from "~/utils/zod";
 import * as TournamentOrganizationRepository from "../TournamentOrganizationRepository.server";
 import { eventLeaderboards } from "../core/leaderboards.server";
+import { TOURNAMENT_SERIES_LEADERBOARD_SIZE } from "../tournament-organization-constants";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
+	const user = await getUser(request);
 	const { slug } = parseParams({ params, schema: paramsSchema });
 	const {
 		month = new Date().getMonth(),
@@ -35,6 +38,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		const stuff = await seriesStuff({
 			organizationId: organization.id,
 			series,
+			userId: user?.id,
 		});
 
 		if (!stuff) return null;
@@ -86,11 +90,13 @@ const searchParamsSchema = z.object({
 async function seriesStuff({
 	organizationId,
 	series,
+	userId,
 }: {
 	organizationId: number;
 	series: NonNullable<
 		Awaited<ReturnType<typeof TournamentOrganizationRepository.findBySlug>>
 	>["series"][number];
+	userId?: number;
 }) {
 	const events = await TournamentOrganizationRepository.findAllEventsBySeries({
 		organizationId,
@@ -99,8 +105,26 @@ async function seriesStuff({
 
 	if (events.length === 0) return null;
 
+	const fullLeaderboard = await eventLeaderboards(events);
+	const leaderboard = fullLeaderboard.slice(
+		0,
+		TOURNAMENT_SERIES_LEADERBOARD_SIZE,
+	);
+
+	const ownEntryIdx =
+		userId && !leaderboard.some((entry) => entry.user.id === userId)
+			? fullLeaderboard.findIndex((entry) => entry.user.id === userId)
+			: -1;
+
 	return {
-		leaderboard: await eventLeaderboards(events),
+		leaderboard,
+		ownEntry:
+			ownEntryIdx !== -1
+				? {
+						entry: fullLeaderboard[ownEntryIdx],
+						placement: ownEntryIdx + 1,
+					}
+				: null,
 		eventsCount: events.length,
 		logoUrl: events[0].logoUrl,
 		established: events.at(-1)!.startTime,

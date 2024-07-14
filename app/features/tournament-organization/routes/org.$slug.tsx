@@ -2,6 +2,7 @@ import type { SerializeFrom } from "@remix-run/node";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
+import { Divider } from "~/components/Divider";
 import { Main } from "~/components/Main";
 import { NewTabs } from "~/components/NewTabs";
 import { Pagination } from "~/components/Pagination";
@@ -83,7 +84,12 @@ function SeriesView({
 						},
 						{
 							key: "leaderboard",
-							element: <EventLeaderboard leaderboard={series.leaderboard} />,
+							element: (
+								<EventLeaderboard
+									leaderboard={series.leaderboard}
+									ownEntry={series.ownEntry}
+								/>
+							),
 						},
 					]}
 				/>
@@ -294,19 +300,33 @@ function EventsPagination({
 
 function EventLeaderboard({
 	leaderboard,
+	ownEntry,
 }: {
 	leaderboard: NonNullable<
 		SerializeFrom<typeof loader>["series"]
 	>["leaderboard"];
+	ownEntry?: NonNullable<SerializeFrom<typeof loader>["series"]>["ownEntry"];
 }) {
 	return (
-		<ol className="org__leaderboard-list">
-			{leaderboard.map((entry) => (
-				<li key={entry.user.discordId}>
-					<EventLeaderboardRow entry={entry} />
-				</li>
-			))}
-		</ol>
+		<div className="stack md">
+			{ownEntry ? (
+				<>
+					<ol className="org__leaderboard-list" start={ownEntry.placement}>
+						<li>
+							<EventLeaderboardRow entry={ownEntry.entry} />
+						</li>
+					</ol>
+					<Divider />
+				</>
+			) : null}
+			<ol className="org__leaderboard-list">
+				{leaderboard.map((entry) => (
+					<li key={entry.user.discordId}>
+						<EventLeaderboardRow entry={entry} />
+					</li>
+				))}
+			</ol>
+		</div>
 	);
 }
 
