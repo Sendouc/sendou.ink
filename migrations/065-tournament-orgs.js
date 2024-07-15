@@ -7,6 +7,7 @@ export function up(db) {
 			/*sql*/ `create index calendar_event_organization_id on "CalendarEvent"("organizationId")`,
 		).run();
 
+		// xxx: make slug unique
 		db.prepare(
 			/*sql*/ `
       create table "TournamentOrganization" (
