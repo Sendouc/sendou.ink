@@ -1,19 +1,15 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { z } from "zod";
 import { getUser } from "~/features/auth/core/user.server";
-import {
-	notFoundIfFalsy,
-	parseParams,
-	parseSafeSearchParams,
-} from "~/utils/remix";
+import { parseSafeSearchParams } from "~/utils/remix";
 import { id } from "~/utils/zod";
 import * as TournamentOrganizationRepository from "../TournamentOrganizationRepository.server";
 import { eventLeaderboards } from "../core/leaderboards.server";
 import { TOURNAMENT_SERIES_LEADERBOARD_SIZE } from "../tournament-organization-constants";
+import { organizationFromParams } from "../tournament-organization-utils.server";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
 	const user = await getUser(request);
-	const { slug } = parseParams({ params, schema: paramsSchema });
 	const {
 		month = new Date().getMonth(),
 		year = new Date().getFullYear(),
@@ -24,9 +20,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		schema: searchParamsSchema,
 	}).data ?? {};
 
-	const organization = notFoundIfFalsy(
-		await TournamentOrganizationRepository.findBySlug(slug),
-	);
+	const organization = await organizationFromParams(params);
 
 	const seriesInfo = async () => {
 		const series = seriesId
@@ -74,10 +68,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		year,
 	};
 }
-
-const paramsSchema = z.object({
-	slug: z.string(),
-});
 
 const searchParamsSchema = z.object({
 	month: z.coerce.number().int().min(0).max(11).optional(),

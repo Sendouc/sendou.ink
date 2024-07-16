@@ -1,6 +1,7 @@
 import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
+import type { Tables } from "~/db/tables";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { mySlugify, userSubmittedImage } from "~/utils/urls";
@@ -42,6 +43,7 @@ export function findBySlug(slug: string) {
 			"TournamentOrganization.name",
 			"TournamentOrganization.description",
 			"TournamentOrganization.socials",
+			"TournamentOrganization.slug",
 			jsonArrayFrom(
 				eb
 					.selectFrom("TournamentOrganizationMember")
@@ -227,7 +229,10 @@ export async function findEventsByMonth({
 const findSeriesEventsBaseQuery = ({
 	organizationId,
 	substringMatches,
-}: { organizationId: number; substringMatches: string[] }) =>
+}: {
+	organizationId: number;
+	substringMatches: string[];
+}) =>
 	findEventsBaseQuery(organizationId)
 		.where((eb) =>
 			eb.or(
@@ -242,7 +247,11 @@ export async function findPaginatedEventsBySeries({
 	organizationId,
 	substringMatches,
 	page,
-}: { organizationId: number; substringMatches: string[]; page: number }) {
+}: {
+	organizationId: number;
+	substringMatches: string[];
+	page: number;
+}) {
 	const events = await findSeriesEventsBaseQuery({
 		organizationId,
 		substringMatches,
@@ -257,11 +266,31 @@ export async function findPaginatedEventsBySeries({
 export async function findAllEventsBySeries({
 	organizationId,
 	substringMatches,
-}: { organizationId: number; substringMatches: string[] }) {
+}: {
+	organizationId: number;
+	substringMatches: string[];
+}) {
 	const events = await findSeriesEventsBaseQuery({
 		organizationId,
 		substringMatches,
 	}).execute();
 
 	return events.map(mapEvent);
+}
+
+export function update({
+	id,
+	name,
+	description,
+}: Pick<Tables["TournamentOrganization"], "id" | "name" | "description">) {
+	return db
+		.updateTable("TournamentOrganization")
+		.set({
+			name,
+			description,
+			slug: mySlugify(name),
+		})
+		.where("id", "=", id)
+		.returningAll()
+		.executeTakeFirstOrThrow();
 }

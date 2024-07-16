@@ -69,6 +69,7 @@ export function parseSafeSearchParams<T extends z.ZodTypeAny>({
 	return schema.safeParse(Object.fromEntries(url.searchParams));
 }
 
+// xxx: maybe rename?
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
 	request,
@@ -79,7 +80,10 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 	schema: T;
 	parseAsync?: boolean;
 }): Promise<z.infer<T>> {
-	const formDataObj = formDataToObject(await request.formData());
+	const formDataObj =
+		request.headers.get("Content-Type") === "application/json"
+			? await request.json()
+			: formDataToObject(await request.formData());
 	try {
 		const parsed = parseAsync
 			? await schema.parseAsync(formDataObj)
@@ -201,6 +205,22 @@ export function validate(
 		},
 	);
 }
+
+export type ActionError =
+	| { error: { type: "i18n"; field: string; msg: string } }
+	| { error: { type: "error"; field: string; msg: string } };
+
+export function untranslatedActionError<T extends z.ZodTypeAny>({
+	msg,
+	field,
+}: {
+	msg: string;
+	field: keyof z.infer<T> & string;
+}): ActionError {
+	return { error: { type: "error", msg, field } };
+}
+
+// xxx: implement i18n error
 
 export type Breadcrumb =
 	| {

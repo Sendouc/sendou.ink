@@ -57,7 +57,7 @@ function LogoHeader() {
 				{canEdit ? (
 					<div className="stack items-start">
 						<LinkButton
-							to={tournamentOrganizationEditPage("addle")}
+							to={tournamentOrganizationEditPage(data.organization.slug)}
 							icon={<EditIcon />}
 							size="tiny"
 							variant="outlined"
@@ -66,7 +66,7 @@ function LogoHeader() {
 						</LinkButton>
 					</div>
 				) : null}
-				<div>desc</div>
+				<div>{data.organization.description}</div>
 			</div>
 		</div>
 	);
@@ -85,7 +85,9 @@ function AllTournamentsView() {
 
 function SeriesView({
 	series,
-}: { series: NonNullable<SerializeFrom<typeof loader>["series"]> }) {
+}: {
+	series: NonNullable<SerializeFrom<typeof loader>["series"]>;
+}) {
 	return (
 		<div className="stack md">
 			<SeriesHeader series={series} />
@@ -131,7 +133,9 @@ function SeriesView({
 
 function SeriesHeader({
 	series,
-}: { series: NonNullable<SerializeFrom<typeof loader>["series"]> }) {
+}: {
+	series: NonNullable<SerializeFrom<typeof loader>["series"]>;
+}) {
 	return (
 		<div className="stack md">
 			<div className="stack horizontal md items-center">
@@ -306,7 +310,9 @@ function EventWinners({
 
 function EventsPagination({
 	series,
-}: { series: NonNullable<SerializeFrom<typeof loader>["series"]> }) {
+}: {
+	series: NonNullable<SerializeFrom<typeof loader>["series"]>;
+}) {
 	const [, setSearchParams] = useSearchParams();
 
 	const setPage = (page: number) =>
