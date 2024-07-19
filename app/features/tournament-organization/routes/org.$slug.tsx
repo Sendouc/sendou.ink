@@ -89,17 +89,16 @@ function InfoTabs() {
 				tabs={[
 					{
 						label: "Social links",
-						hidden:
+						disabled:
 							!data.organization.socials ||
 							data.organization.socials.length === 0,
 					},
 					{
 						label: "Members",
-						hidden: false,
 					},
 					{
 						label: "Badges",
-						hidden: data.organization.badges.length === 0,
+						disabled: data.organization.badges.length === 0,
 					},
 				]}
 				content={[
@@ -108,9 +107,6 @@ function InfoTabs() {
 							<SocialLinksList links={data.organization.socials ?? []} />
 						),
 						key: "socials",
-						hidden:
-							!data.organization.socials ||
-							data.organization.socials.length === 0,
 					},
 					{
 						element: <MembersList />,
@@ -119,7 +115,6 @@ function InfoTabs() {
 					{
 						element: <div>Badges</div>,
 						key: "badges",
-						hidden: data.organization.badges.length === 0,
 					},
 				]}
 			/>
