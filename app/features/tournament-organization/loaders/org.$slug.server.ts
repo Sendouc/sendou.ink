@@ -41,6 +41,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			id: series.id,
 			name: series.name,
 			description: series.description,
+			showLeaderboard: series.showLeaderboard,
 			page,
 			...stuff,
 		};

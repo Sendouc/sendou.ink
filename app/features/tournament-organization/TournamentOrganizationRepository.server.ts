@@ -289,6 +289,11 @@ interface UpdateArgs
 			"role" | "roleDisplayName" | "userId"
 		>
 	>;
+	series: Array<
+		Pick<Tables["TournamentOrganizationSeries"], "description" | "name"> & {
+			showLeaderboard: boolean;
+		}
+	>;
 }
 
 export function update({
@@ -297,6 +302,7 @@ export function update({
 	description,
 	socials,
 	members,
+	series,
 }: UpdateArgs) {
 	return db.transaction().execute(async (trx) => {
 		const updatedOrg = await trx
@@ -322,6 +328,24 @@ export function update({
 				members.map((member) => ({
 					organizationId: id,
 					...member,
+				})),
+			)
+			.execute();
+
+		await trx
+			.deleteFrom("TournamentOrganizationSeries")
+			.where("organizationId", "=", id)
+			.execute();
+
+		await trx
+			.insertInto("TournamentOrganizationSeries")
+			.values(
+				series.map((s) => ({
+					organizationId: id,
+					name: s.name,
+					description: s.description,
+					substringMatches: JSON.stringify([s.name.toLowerCase()]),
+					showLeaderboard: Number(s.showLeaderboard),
 				})),
 			)
 			.execute();

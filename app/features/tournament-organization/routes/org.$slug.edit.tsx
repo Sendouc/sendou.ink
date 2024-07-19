@@ -4,6 +4,7 @@ import { z } from "zod";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { Toggle } from "~/components/Toggle";
 import { UserSearch } from "~/components/UserSearch";
 import { AddFieldButton } from "~/components/form/AddFieldButton";
 import { MyForm } from "~/components/form/MyForm";
@@ -135,7 +136,7 @@ export default function TournamentOrganizationEditPage() {
 					defaultFieldValue=""
 				/>
 
-				{/* <SeriesFormField /> */}
+				<SeriesFormField />
 			</MyForm>
 		</Main>
 	);
@@ -235,6 +236,97 @@ function MemberFieldset({ idx }: { idx: number }) {
 						</FormMessage>
 					)}
 				</div>
+				<div className="mt-4 stack items-center">
+					<RemoveFieldButton
+						onClick={() => {
+							remove(idx);
+							clearErrors("members");
+						}}
+					/>
+				</div>
+			</div>
+		</fieldset>
+	);
+}
+
+function SeriesFormField() {
+	const {
+		formState: { errors },
+	} = useFormContext<z.infer<typeof organizationEditSchema>>();
+	const { fields, append } = useFieldArray<
+		z.infer<typeof organizationEditSchema>
+	>({
+		name: "series",
+	});
+
+	const rootError = errors.series?.root;
+
+	return (
+		<div>
+			<Label>Series</Label>
+			<div className="stack md">
+				{fields.map((field, i) => {
+					return <SeriesFieldset key={field.id} idx={i} />;
+				})}
+				<AddFieldButton
+					onClick={() => {
+						append({ description: "", name: "", showLeaderboard: false });
+					}}
+				/>
+				{rootError && (
+					<FormMessage type="error">{rootError.message as string}</FormMessage>
+				)}
+			</div>
+		</div>
+	);
+}
+
+function SeriesFieldset({ idx }: { idx: number }) {
+	const {
+		register,
+		formState: { errors },
+		control,
+		clearErrors,
+	} = useFormContext<z.infer<typeof organizationEditSchema>>();
+	const { remove } = useFieldArray<z.infer<typeof organizationEditSchema>>({
+		name: "series",
+	});
+
+	const seriesErrors = errors.series?.[idx];
+
+	return (
+		<fieldset className="w-min">
+			<legend>#{idx + 1}</legend>
+			<div className="stack sm">
+				<div>
+					<label>Series name</label>
+					<input {...register(`series.${idx}.name` as const)} />
+					{seriesErrors?.name && (
+						<FormMessage type="error">{seriesErrors.name.message}</FormMessage>
+					)}
+				</div>
+
+				<div>
+					<label>Description</label>
+					<textarea {...register(`series.${idx}.description` as const)} />
+					{seriesErrors?.description && (
+						<FormMessage type="error">
+							{seriesErrors.description.message}
+						</FormMessage>
+					)}
+				</div>
+
+				<div>
+					<label>Show leaderboard</label>
+					<Controller
+						control={control}
+						name={`series.${idx}.showLeaderboard` as const}
+						render={({ field: { onChange, value } }) => (
+							<Toggle checked={value} setChecked={onChange} />
+						)}
+					/>
+				</div>
+
 				<div className="mt-4 stack items-center">
 					<RemoveFieldButton
 						onClick={() => {

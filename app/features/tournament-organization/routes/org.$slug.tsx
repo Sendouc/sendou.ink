@@ -178,8 +178,7 @@ function SeriesView({
 						},
 						{
 							label: "Leaderboard",
-							// xxx: todo hidden lb
-							hidden: false,
+							disabled: !series.showLeaderboard,
 						},
 					]}
 					content={[
