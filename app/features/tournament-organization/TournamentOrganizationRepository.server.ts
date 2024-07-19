@@ -67,7 +67,7 @@ export function findBySlug(slug: string) {
 						"TournamentOrganizationSeries.name",
 						"TournamentOrganizationSeries.substringMatches",
 						"TournamentOrganizationSeries.showLeaderboard",
-						"TournamentOrganization.description",
+						"TournamentOrganizationSeries.description",
 					])
 					.whereRef(
 						"TournamentOrganizationSeries.organizationId",
