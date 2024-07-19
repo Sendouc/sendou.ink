@@ -56,8 +56,6 @@ export const organizationEditSchema = z.object({
 				message: "Same member listed twice",
 			},
 		),
-	// xxx: refine at least one admin
-	// xxx: no user twice
 	socials: z
 		.array(
 			z.object({

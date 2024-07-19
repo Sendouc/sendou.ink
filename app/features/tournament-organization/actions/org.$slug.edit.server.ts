@@ -23,10 +23,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 	unauthorizedIfFalsy(canEditTournamentOrganization({ organization, user }));
 
-	if (data.name === "error") {
+	if (
+		!data.members.some(
+			(member) => member.userId === user.id && member.role === "ADMIN",
+		)
+	) {
 		return untranslatedActionError<typeof organizationEditSchema>({
-			msg: "This is an error message",
-			field: "name",
+			msg: "Can't remove yourself as an admin",
+			field: "members.root",
 		});
 	}
 

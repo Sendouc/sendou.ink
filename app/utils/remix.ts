@@ -221,7 +221,7 @@ export function untranslatedActionError<T extends z.ZodTypeAny>({
 	field,
 }: {
 	msg: string;
-	field: keyof z.infer<T> & string;
+	field: (keyof z.infer<T> & string) | `${keyof z.infer<T> & string}.root`;
 }): ActionError {
 	return { error: { type: "error", msg, field } };
 }
