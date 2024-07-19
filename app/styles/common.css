@@ -432,6 +432,7 @@ dialog::backdrop {
 .button-text-paragraph {
 	display: flex;
 	gap: var(--s-1);
+	align-items: flex-end;
 }
 
 .button-text-paragraph > button {

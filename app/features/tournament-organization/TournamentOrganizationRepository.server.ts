@@ -278,19 +278,54 @@ export async function findAllEventsBySeries({
 	return events.map(mapEvent);
 }
 
+interface UpdateArgs
+	extends Pick<
+		Tables["TournamentOrganization"],
+		"id" | "name" | "description" | "socials"
+	> {
+	members: Array<
+		Pick<
+			Tables["TournamentOrganizationMember"],
+			"role" | "roleDisplayName" | "userId"
+		>
+	>;
+}
+
 export function update({
 	id,
 	name,
 	description,
-}: Pick<Tables["TournamentOrganization"], "id" | "name" | "description">) {
-	return db
-		.updateTable("TournamentOrganization")
-		.set({
-			name,
-			description,
-			slug: mySlugify(name),
-		})
-		.where("id", "=", id)
-		.returningAll()
-		.executeTakeFirstOrThrow();
+	socials,
+	members,
+}: UpdateArgs) {
+	return db.transaction().execute(async (trx) => {
+		const updatedOrg = await trx
+			.updateTable("TournamentOrganization")
+			.set({
+				name,
+				description,
+				slug: mySlugify(name),
+				socials: JSON.stringify(socials),
+			})
+			.where("id", "=", id)
+			.returningAll()
+			.executeTakeFirstOrThrow();
+
+		await trx
+			.deleteFrom("TournamentOrganizationMember")
+			.where("organizationId", "=", id)
+			.execute();
+
+		await trx
+			.insertInto("TournamentOrganizationMember")
+			.values(
+				members.map((member) => ({
+					organizationId: id,
+					...member,
+				})),
+			)
+			.execute();
+
+		return updatedOrg;
+	});
 }

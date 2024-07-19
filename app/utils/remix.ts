@@ -26,6 +26,12 @@ export function notFoundIfNullLike<T>(value: T | null | undefined): T {
 	return value;
 }
 
+export function unauthorizedIfFalsy<T>(value: T | null | undefined): T {
+	if (!value) throw new Response(null, { status: 401 });
+
+	return value;
+}
+
 export function badRequestIfFalsy<T>(value: T | null | undefined): T {
 	if (!value) {
 		noticeError(new Error("Value is falsy"));

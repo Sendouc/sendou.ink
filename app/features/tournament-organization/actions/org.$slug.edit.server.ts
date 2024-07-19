@@ -1,11 +1,19 @@
 import { type ActionFunctionArgs, redirect } from "@remix-run/node";
-import { parseRequestFormData, untranslatedActionError } from "~/utils/remix";
+import { requireUser } from "~/features/auth/core/user.server";
+import { valueArrayToDBFormat } from "~/utils/form";
+import {
+	parseRequestFormData,
+	unauthorizedIfFalsy,
+	untranslatedActionError,
+} from "~/utils/remix";
 import { tournamentOrganizationPage } from "~/utils/urls";
 import * as TournamentOrganizationRepository from "../TournamentOrganizationRepository.server";
 import { organizationEditSchema } from "../routes/org.$slug.edit";
+import { canEditTournamentOrganization } from "../tournament-organization-utils";
 import { organizationFromParams } from "../tournament-organization-utils.server";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
+	const user = await requireUser(request);
 	const data = await parseRequestFormData({
 		request,
 		schema: organizationEditSchema,
@@ -13,7 +21,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 	const organization = await organizationFromParams(params);
 
-	// xxx: perms
+	unauthorizedIfFalsy(canEditTournamentOrganization({ organization, user }));
 
 	if (data.name === "error") {
 		return untranslatedActionError<typeof organizationEditSchema>({
@@ -26,6 +34,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		id: organization.id,
 		name: data.name,
 		description: data.description,
+		socials: valueArrayToDBFormat(data.socials),
+		members: data.members,
 	});
 
 	return redirect(tournamentOrganizationPage(newOrganization.slug));

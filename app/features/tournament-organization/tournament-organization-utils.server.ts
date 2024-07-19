@@ -4,14 +4,14 @@ import { notFoundIfFalsy, parseParams } from "~/utils/remix";
 import * as TournamentOrganizationRepository from "./TournamentOrganizationRepository.server";
 
 const organizationParamsSchema = z.object({
-  slug: z.string(),
+	slug: z.string(),
 });
 
 export async function organizationFromParams(
-  params: LoaderFunctionArgs["params"],
+	params: LoaderFunctionArgs["params"],
 ) {
-  const { slug } = parseParams({ params, schema: organizationParamsSchema });
-  return notFoundIfFalsy(
-    await TournamentOrganizationRepository.findBySlug(slug),
-  );
+	const { slug } = parseParams({ params, schema: organizationParamsSchema });
+	return notFoundIfFalsy(
+		await TournamentOrganizationRepository.findBySlug(slug),
+	);
 }

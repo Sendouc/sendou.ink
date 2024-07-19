@@ -17,14 +17,16 @@ export function UserSearch({
 	className,
 	userIdsToOmit,
 	required,
+	onBlur,
 }: {
-	inputName: string;
+	inputName?: string;
 	onChange?: (user: UserSearchUserItem) => void;
 	initialUserId?: number;
 	id?: string;
 	className?: string;
 	userIdsToOmit?: Set<number>;
 	required?: boolean;
+	onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }) {
 	const { t } = useTranslation();
 	const [selectedUser, setSelectedUser] =
@@ -95,6 +97,7 @@ export function UserSearch({
 					data-testid={`${inputName}-combobox-input`}
 					id={id}
 					required={required}
+					onBlur={onBlur}
 				/>
 				<Combobox.Options
 					className={clsx("combobox-options", {

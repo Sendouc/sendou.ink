@@ -21,7 +21,10 @@ import { TOURNAMENT_SERIES_EVENTS_PER_PAGE } from "../tournament-organization-co
 
 import "../tournament-organization.css";
 
+import { useUser } from "~/features/auth/core/user";
+import { SocialLinksList } from "../components/SocialLinksList";
 import { loader } from "../loaders/org.$slug.server";
+import { canEditTournamentOrganization } from "../tournament-organization-utils";
 export { loader };
 
 // xxx: meta
@@ -32,6 +35,7 @@ export default function TournamentOrganizationPage() {
 	return (
 		<Main className="stack lg">
 			<LogoHeader />
+			<InfoTabs />
 			{data.organization.series.length > 0 ? (
 				<SeriesSelector series={data.organization.series} />
 			) : null}
@@ -45,16 +49,18 @@ export default function TournamentOrganizationPage() {
 }
 
 function LogoHeader() {
+	const user = useUser();
 	const data = useLoaderData<typeof loader>();
 
-	const canEdit = true;
-
 	return (
-		<div className="stack horizontal sm items-center">
-			<Avatar size="md" />
+		<div className="stack horizontal md">
+			<Avatar size="lg" />
 			<div className="stack sm">
 				<div className="text-xl font-bold">{data.organization.name}</div>
-				{canEdit ? (
+				{canEditTournamentOrganization({
+					user,
+					organization: data.organization,
+				}) ? (
 					<div className="stack items-start">
 						<LinkButton
 							to={tournamentOrganizationEditPage(data.organization.slug)}
@@ -66,8 +72,84 @@ function LogoHeader() {
 						</LinkButton>
 					</div>
 				) : null}
-				<div>{data.organization.description}</div>
+				<div className="whitespace-pre-wrap text-sm text-lighter">
+					{data.organization.description}
+				</div>
 			</div>
+		</div>
+	);
+}
+
+function InfoTabs() {
+	const data = useLoaderData<typeof loader>();
+
+	return (
+		<div>
+			<NewTabs
+				tabs={[
+					{
+						label: "Social links",
+						hidden:
+							!data.organization.socials ||
+							data.organization.socials.length === 0,
+					},
+					{
+						label: "Members",
+						hidden: false,
+					},
+					{
+						label: "Badges",
+						hidden: data.organization.badges.length === 0,
+					},
+				]}
+				content={[
+					{
+						element: (
+							<SocialLinksList links={data.organization.socials ?? []} />
+						),
+						key: "socials",
+						hidden:
+							!data.organization.socials ||
+							data.organization.socials.length === 0,
+					},
+					{
+						element: <MembersList />,
+						key: "members",
+					},
+					{
+						element: <div>Badges</div>,
+						key: "badges",
+						hidden: data.organization.badges.length === 0,
+					},
+				]}
+			/>
+		</div>
+	);
+}
+
+// xxx: i18n normal role name
+function MembersList() {
+	const data = useLoaderData<typeof loader>();
+
+	return (
+		<div className="stack sm text-sm">
+			{data.organization.members.map((member) => {
+				return (
+					<Link
+						key={member.id}
+						to={userPage(member)}
+						className="stack horizontal xs items-center text-main-forced w-max"
+					>
+						<Avatar user={member} size="xs" />
+						<div>
+							<div>{member.username}</div>
+							<div className="text-lighter text-xs">
+								{member.roleDisplayName ?? member.role}
+							</div>
+						</div>
+					</Link>
+				);
+			})}
 		</div>
 	);
 }

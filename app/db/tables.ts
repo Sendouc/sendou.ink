@@ -629,21 +629,23 @@ export interface TournamentTeamMember {
 	userId: number;
 }
 
-export interface SocialLink {
-	type: "TWITTER" | "TWITCH" | "YOUTUBE" | "MISC";
-	url: string;
-}
-
 export interface TournamentOrganization {
 	id: GeneratedAlways<number>;
 	name: string;
 	slug: string;
 	description: string | null;
-	socials: ColumnType<SocialLink[] | null, string | null, string | null>;
+	socials: ColumnType<string[] | null, string | null, string | null>;
 	avatarImgId: number | null;
 }
 
-type TournamentOrganizationRole = "ADMIN" | "MEMBER" | "ORGANIZER" | "STREAMER";
+export const TOURNAMENT_ORGANIZATION_ROLES = [
+	"ADMIN",
+	"MEMBER",
+	"ORGANIZER",
+	"STREAMER",
+] as const;
+type TournamentOrganizationRole =
+	(typeof TOURNAMENT_ORGANIZATION_ROLES)[number];
 
 export interface TournamentOrganizationMember {
 	organizationId: number;

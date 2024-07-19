@@ -116,3 +116,36 @@
 	gap: var(--s-2);
 	padding-inline-start: var(--s-2-5);
 }
+
+.org__social-link {
+	font-size: var(--fonts-sm);
+	color: var(--text-main);
+	display: flex;
+	gap: var(--s-2);
+	align-items: center;
+	max-width: max-content;
+}
+
+.org__social-link svg {
+	width: 18px;
+}
+
+.org__social-link__icon-container {
+	background-color: var(--bg-lightest);
+	display: grid;
+	place-items: center;
+	border-radius: var(--rounded);
+	padding: var(--s-2);
+}
+
+.org__social-link__icon-container.twitch svg {
+	fill: #9146ff;
+}
+
+.org__social-link__icon-container.youtube svg {
+	fill: #f00;
+}
+
+.org__social-link__icon-container.twitter svg {
+	fill: #1da1f2;
+}
