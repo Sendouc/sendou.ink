@@ -305,7 +305,7 @@ export function update({
 				name,
 				description,
 				slug: mySlugify(name),
-				socials: JSON.stringify(socials),
+				socials: socials ? JSON.stringify(socials) : null,
 			})
 			.where("id", "=", id)
 			.returningAll()
