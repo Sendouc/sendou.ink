@@ -1532,11 +1532,11 @@
 			},
 			{
 				"target": "GreatBarrier_Barrier",
-				"rate": 2.1
+				"rate": 1.4
 			},
 			{
 				"target": "GreatBarrier_WeakPoint",
-				"rate": 1.575
+				"rate": 1.05
 			},
 			{
 				"target": "NiceBall_Armor",
@@ -1595,11 +1595,11 @@
 			},
 			{
 				"target": "GreatBarrier_Barrier",
-				"rate": 2.1
+				"rate": 1.4
 			},
 			{
 				"target": "GreatBarrier_WeakPoint",
-				"rate": 1.575
+				"rate": 1.05
 			},
 			{
 				"target": "NiceBall_Armor",
@@ -4309,11 +4309,11 @@
 			},
 			{
 				"target": "GreatBarrier_Barrier",
-				"rate": 1.5
+				"rate": 1
 			},
 			{
 				"target": "GreatBarrier_WeakPoint",
-				"rate": 1.125
+				"rate": 0.75
 			},
 			{
 				"target": "NiceBall_Armor",
