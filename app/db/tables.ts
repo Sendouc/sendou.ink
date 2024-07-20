@@ -659,7 +659,6 @@ export interface TournamentOrganizationBadge {
 	badgeId: number;
 }
 
-// xxx: show Est. May 2021
 export interface TournamentOrganizationSeries {
 	id: GeneratedAlways<number>;
 	organizationId: number;
