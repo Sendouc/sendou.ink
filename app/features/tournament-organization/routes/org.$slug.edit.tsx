@@ -7,8 +7,8 @@ import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { UserSearch } from "~/components/UserSearch";
 import { AddFieldButton } from "~/components/form/AddFieldButton";
+import { FormFieldset } from "~/components/form/FormFieldset";
 import { MyForm } from "~/components/form/MyForm";
-import { RemoveFieldButton } from "~/components/form/RemoveFieldButton";
 import { TextAreaFormField } from "~/components/form/TextAreaFormField";
 import { TextArrayFormField } from "~/components/form/TextArrayFormField";
 import { TextFormField } from "~/components/form/TextFormField";
@@ -146,7 +146,7 @@ function MembersFormField() {
 	const {
 		formState: { errors },
 	} = useFormContext<z.infer<typeof organizationEditSchema>>();
-	const { fields, append } = useFieldArray<
+	const { fields, append, remove } = useFieldArray<
 		z.infer<typeof organizationEditSchema>
 	>({
 		name: "members",
@@ -159,7 +159,7 @@ function MembersFormField() {
 			<Label>Members</Label>
 			<div className="stack md">
 				{fields.map((field, i) => {
-					return <MemberFieldset key={field.id} idx={i} />;
+					return <MemberFieldset key={field.id} idx={i} remove={remove} />;
 				})}
 				<AddFieldButton
 					onClick={() => {
@@ -176,76 +176,69 @@ function MembersFormField() {
 }
 
 // xxx: use components, fieldset to one and formfields to one each
-function MemberFieldset({ idx }: { idx: number }) {
+function MemberFieldset({
+	idx,
+	remove,
+}: { idx: number; remove: (idx: number) => void }) {
 	const {
 		register,
 		formState: { errors },
 		control,
 		clearErrors,
 	} = useFormContext<z.infer<typeof organizationEditSchema>>();
-	const { remove } = useFieldArray<z.infer<typeof organizationEditSchema>>({
-		name: "members",
-	});
 
 	const memberErrors = errors.members?.[idx];
 
 	return (
-		<fieldset className="w-min">
-			<legend>#{idx + 1}</legend>
-			<div className="stack sm">
-				<div>
-					<label>User</label>
-					<Controller
-						control={control}
-						name={`members.${idx}.userId` as const}
-						render={({ field: { onChange, onBlur, value } }) => (
-							// xxx: check what happens when API is slow, blank input?
-							// xxx: pass ref so can be focused if missing
-							<UserSearch
-								onChange={(newUser) => onChange(newUser.id)}
-								initialUserId={value}
-								onBlur={onBlur}
-							/>
-						)}
-					/>
-					{memberErrors?.userId && (
-						<FormMessage type="error">
-							{memberErrors.userId.message}
-						</FormMessage>
+		<FormFieldset
+			title={`#${idx + 1}`}
+			onRemove={() => {
+				remove(idx);
+				clearErrors("members");
+			}}
+		>
+			<div>
+				<label>User</label>
+				<Controller
+					control={control}
+					name={`members.${idx}.userId` as const}
+					render={({ field: { onChange, onBlur, value } }) => (
+						// xxx: check what happens when API is slow, blank input?
+						// xxx: pass ref so can be focused if missing
+						<UserSearch
+							onChange={(newUser) => onChange(newUser.id)}
+							initialUserId={value}
+							onBlur={onBlur}
+						/>
 					)}
-				</div>
-				<div>
-					<label>Role</label>
-					<select {...register(`members.${idx}.role` as const)}>
-						{TOURNAMENT_ORGANIZATION_ROLES.map((role) => (
-							<option key={role} value={role}>
-								{role}
-							</option>
-						))}
-					</select>
-					{memberErrors?.role && (
-						<FormMessage type="error">{memberErrors.role.message}</FormMessage>
-					)}
-				</div>
-				<div>
-					<label>Role display name</label>
-					<input {...register(`members.${idx}.roleDisplayName` as const)} />
-					{memberErrors?.roleDisplayName && (
-						<FormMessage type="error">
-							{memberErrors.roleDisplayName.message}
-						</FormMessage>
-					)}
-				</div>
-				<div className="mt-4 stack items-center">
-					<RemoveFieldButton
-						onClick={() => {
-							remove(idx);
-							clearErrors("members");
-						}}
-					/>
-				</div>
+				/>
+				{memberErrors?.userId && (
+					<FormMessage type="error">{memberErrors.userId.message}</FormMessage>
+				)}
 			</div>
-		</fieldset>
+			<div>
+				<label>Role</label>
+				<select {...register(`members.${idx}.role` as const)}>
+					{TOURNAMENT_ORGANIZATION_ROLES.map((role) => (
+						<option key={role} value={role}>
+							{role}
+						</option>
+					))}
+				</select>
+				{memberErrors?.role && (
+					<FormMessage type="error">{memberErrors.role.message}</FormMessage>
+				)}
+			</div>
+			<div>
+				<label>Role display name</label>
+				<input {...register(`members.${idx}.roleDisplayName` as const)} />
+				{memberErrors?.roleDisplayName && (
+					<FormMessage type="error">
+						{memberErrors.roleDisplayName.message}
+					</FormMessage>
+				)}
+			</div>
+		</FormFieldset>
 	);
 }
 
@@ -253,7 +246,7 @@ function SeriesFormField() {
 	const {
 		formState: { errors },
 	} = useFormContext<z.infer<typeof organizationEditSchema>>();
-	const { fields, append } = useFieldArray<
+	const { fields, append, remove } = useFieldArray<
 		z.infer<typeof organizationEditSchema>
 	>({
 		name: "series",
@@ -266,7 +259,7 @@ function SeriesFormField() {
 			<Label>Series</Label>
 			<div className="stack md">
 				{fields.map((field, i) => {
-					return <SeriesFieldset key={field.id} idx={i} />;
+					return <SeriesFieldset key={field.id} idx={i} remove={remove} />;
 				})}
 				<AddFieldButton
 					onClick={() => {
@@ -281,61 +274,55 @@ function SeriesFormField() {
 	);
 }
 
-function SeriesFieldset({ idx }: { idx: number }) {
+function SeriesFieldset({
+	idx,
+	remove,
+}: { idx: number; remove: (idx: number) => void }) {
 	const {
 		register,
 		formState: { errors },
 		control,
 		clearErrors,
 	} = useFormContext<z.infer<typeof organizationEditSchema>>();
-	const { remove } = useFieldArray<z.infer<typeof organizationEditSchema>>({
-		name: "series",
-	});
 
 	const seriesErrors = errors.series?.[idx];
 
 	return (
-		<fieldset className="w-min">
-			<legend>#{idx + 1}</legend>
-			<div className="stack sm">
-				<div>
-					<label>Series name</label>
-					<input {...register(`series.${idx}.name` as const)} />
-					{seriesErrors?.name && (
-						<FormMessage type="error">{seriesErrors.name.message}</FormMessage>
-					)}
-				</div>
-
-				<div>
-					<label>Description</label>
-					<textarea {...register(`series.${idx}.description` as const)} />
-					{seriesErrors?.description && (
-						<FormMessage type="error">
-							{seriesErrors.description.message}
-						</FormMessage>
-					)}
-				</div>
-
-				<div>
-					<label>Show leaderboard</label>
-					<Controller
-						control={control}
-						name={`series.${idx}.showLeaderboard` as const}
-						render={({ field: { onChange, value } }) => (
-							<Toggle checked={value} setChecked={onChange} />
-						)}
-					/>
-				</div>
-
-				<div className="mt-4 stack items-center">
-					<RemoveFieldButton
-						onClick={() => {
-							remove(idx);
-							clearErrors("members");
-						}}
-					/>
-				</div>
+		<FormFieldset
+			title={`#${idx + 1}`}
+			onRemove={() => {
+				remove(idx);
+				clearErrors("series");
+			}}
+		>
+			<div>
+				<label>Series name</label>
+				<input {...register(`series.${idx}.name` as const)} />
+				{seriesErrors?.name && (
+					<FormMessage type="error">{seriesErrors.name.message}</FormMessage>
+				)}
 			</div>
-		</fieldset>
+
+			<div>
+				<label>Description</label>
+				<textarea {...register(`series.${idx}.description` as const)} />
+				{seriesErrors?.description && (
+					<FormMessage type="error">
+						{seriesErrors.description.message}
+					</FormMessage>
+				)}
+			</div>
+
+			<div>
+				<label>Show leaderboard</label>
+				<Controller
+					control={control}
+					name={`series.${idx}.showLeaderboard` as const}
+					render={({ field: { onChange, value } }) => (
+						<Toggle checked={value} setChecked={onChange} />
+					)}
+				/>
+			</div>
+		</FormFieldset>
 	);
 }
