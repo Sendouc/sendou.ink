@@ -63,6 +63,15 @@ export async function findByOwnerId({
 	});
 }
 
+export function findByManagersList(userIds: number[]) {
+	return db
+		.selectFrom("Badge")
+		.select(["Badge.id", "Badge.code", "Badge.displayName", "Badge.hue"])
+		.innerJoin("BadgeManager", "Badge.id", "BadgeManager.badgeId")
+		.where("BadgeManager.userId", "in", userIds)
+		.execute();
+}
+
 export function findManagedByUserId(userId: number) {
 	return db
 		.selectFrom("BadgeManager")
