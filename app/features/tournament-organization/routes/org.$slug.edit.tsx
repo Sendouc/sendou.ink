@@ -1,10 +1,9 @@
 import { useLoaderData } from "@remix-run/react";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { UserSearch } from "~/components/UserSearch";
 import { AddFieldButton } from "~/components/form/AddFieldButton";
 import { FormFieldset } from "~/components/form/FormFieldset";
 import { MyForm } from "~/components/form/MyForm";
@@ -13,6 +12,7 @@ import { TextAreaFormField } from "~/components/form/TextAreaFormField";
 import { TextArrayFormField } from "~/components/form/TextArrayFormField";
 import { TextFormField } from "~/components/form/TextFormField";
 import { ToggleFormField } from "~/components/form/ToggleFormField";
+import { UserSearchFormField } from "~/components/form/UserSearchFormField";
 import { TOURNAMENT_ORGANIZATION_ROLES } from "~/db/tables";
 import { wrapToValueStringArrayWithDefault } from "~/utils/form";
 import { mySlugify } from "~/utils/urls";
@@ -178,13 +178,7 @@ function MemberFieldset({
 	idx,
 	remove,
 }: { idx: number; remove: (idx: number) => void }) {
-	const {
-		formState: { errors },
-		control,
-		clearErrors,
-	} = useFormContext<FormFields>();
-
-	const memberErrors = errors.members?.[idx];
+	const { clearErrors } = useFormContext<FormFields>();
 
 	return (
 		<FormFieldset
@@ -194,25 +188,10 @@ function MemberFieldset({
 				clearErrors("members");
 			}}
 		>
-			<div>
-				<label>User</label>
-				<Controller
-					control={control}
-					name={`members.${idx}.userId` as const}
-					render={({ field: { onChange, onBlur, value } }) => (
-						// xxx: check what happens when API is slow, blank input?
-						// xxx: pass ref so can be focused if missing
-						<UserSearch
-							onChange={(newUser) => onChange(newUser.id)}
-							initialUserId={value}
-							onBlur={onBlur}
-						/>
-					)}
-				/>
-				{memberErrors?.userId && (
-					<FormMessage type="error">{memberErrors.userId.message}</FormMessage>
-				)}
-			</div>
+			<UserSearchFormField<FormFields>
+				label="User"
+				name={`members.${idx}.userId` as const}
+			/>
 
 			<SelectFormField<FormFields>
 				label="Role"
