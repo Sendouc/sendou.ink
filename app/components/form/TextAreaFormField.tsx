@@ -1,18 +1,23 @@
 import * as React from "react";
-import { useFormContext, useWatch } from "react-hook-form";
-import type { z } from "zod";
+import {
+	type FieldPath,
+	type FieldValues,
+	get,
+	useFormContext,
+	useWatch,
+} from "react-hook-form";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 
 // xxx: can the generic be forced?
-export function TextAreaFormField<T extends z.ZodTypeAny>({
+export function TextAreaFormField<T extends FieldValues>({
 	label,
 	name,
 	bottomText,
 	maxLength,
 }: {
 	label: string;
-	name: keyof z.infer<T> & string;
+	name: FieldPath<T>;
 	bottomText?: string;
 	maxLength: number;
 }) {
@@ -20,7 +25,7 @@ export function TextAreaFormField<T extends z.ZodTypeAny>({
 	const value = useWatch({ name }) ?? "";
 	const id = React.useId();
 
-	const error = methods.formState.errors[name];
+	const error = get(methods.formState.errors, name);
 
 	return (
 		<div>

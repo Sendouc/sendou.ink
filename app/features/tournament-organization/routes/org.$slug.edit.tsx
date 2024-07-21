@@ -93,6 +93,8 @@ export const organizationEditSchema = z.object({
 		),
 });
 
+type FormFields = z.infer<typeof organizationEditSchema>;
+
 export default function TournamentOrganizationEditPage() {
 	const data = useLoaderData<typeof loader>();
 
@@ -145,10 +147,8 @@ export default function TournamentOrganizationEditPage() {
 function MembersFormField() {
 	const {
 		formState: { errors },
-	} = useFormContext<z.infer<typeof organizationEditSchema>>();
-	const { fields, append, remove } = useFieldArray<
-		z.infer<typeof organizationEditSchema>
-	>({
+	} = useFormContext<FormFields>();
+	const { fields, append, remove } = useFieldArray<FormFields>({
 		name: "members",
 	});
 
@@ -185,7 +185,7 @@ function MemberFieldset({
 		formState: { errors },
 		control,
 		clearErrors,
-	} = useFormContext<z.infer<typeof organizationEditSchema>>();
+	} = useFormContext<FormFields>();
 
 	const memberErrors = errors.members?.[idx];
 
@@ -245,10 +245,8 @@ function MemberFieldset({
 function SeriesFormField() {
 	const {
 		formState: { errors },
-	} = useFormContext<z.infer<typeof organizationEditSchema>>();
-	const { fields, append, remove } = useFieldArray<
-		z.infer<typeof organizationEditSchema>
-	>({
+	} = useFormContext<FormFields>();
+	const { fields, append, remove } = useFieldArray<FormFields>({
 		name: "series",
 	});
 
@@ -283,7 +281,7 @@ function SeriesFieldset({
 		formState: { errors },
 		control,
 		clearErrors,
-	} = useFormContext<z.infer<typeof organizationEditSchema>>();
+	} = useFormContext<FormFields>();
 
 	const seriesErrors = errors.series?.[idx];
 
@@ -303,15 +301,11 @@ function SeriesFieldset({
 				)}
 			</div>
 
-			<div>
-				<label>Description</label>
-				<textarea {...register(`series.${idx}.description` as const)} />
-				{seriesErrors?.description && (
-					<FormMessage type="error">
-						{seriesErrors.description.message}
-					</FormMessage>
-				)}
-			</div>
+			<TextAreaFormField<FormFields>
+				label="Description"
+				name={`series.${idx}.description` as const}
+				maxLength={DESCRIPTION_MAX_LENGTH}
+			/>
 
 			<div>
 				<label>Show leaderboard</label>
