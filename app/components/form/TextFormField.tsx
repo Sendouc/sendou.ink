@@ -1,19 +1,23 @@
 import * as React from "react";
-import { useFormContext } from "react-hook-form";
-import type { z } from "zod";
+import {
+	type FieldPath,
+	type FieldValues,
+	get,
+	useFormContext,
+} from "react-hook-form";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 
 // xxx: can the generic be forced?
-export function TextFormField<T extends z.ZodTypeAny>({
+export function TextFormField<T extends FieldValues>({
 	label,
 	name,
 	bottomText,
-}: { label: string; name: keyof z.infer<T> & string; bottomText?: string }) {
+}: { label: string; name: FieldPath<T>; bottomText?: string }) {
 	const methods = useFormContext();
 	const id = React.useId();
 
-	const error = methods.formState.errors[name];
+	const error = get(methods.formState.errors, name);
 
 	return (
 		<div>

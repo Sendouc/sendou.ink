@@ -119,10 +119,7 @@ export default function TournamentOrganizationEditPage() {
 					})),
 				}}
 			>
-				<TextFormField<typeof organizationEditSchema>
-					label="Name"
-					name="name"
-				/>
+				<TextFormField<FormFields> label="Name" name="name" />
 
 				<TextAreaFormField<typeof organizationEditSchema>
 					label="Description"
@@ -229,15 +226,11 @@ function MemberFieldset({
 					<FormMessage type="error">{memberErrors.role.message}</FormMessage>
 				)}
 			</div>
-			<div>
-				<label>Role display name</label>
-				<input {...register(`members.${idx}.roleDisplayName` as const)} />
-				{memberErrors?.roleDisplayName && (
-					<FormMessage type="error">
-						{memberErrors.roleDisplayName.message}
-					</FormMessage>
-				)}
-			</div>
+
+			<TextFormField<FormFields>
+				label="Role display name"
+				name={`members.${idx}.roleDisplayName` as const}
+			/>
 		</FormFieldset>
 	);
 }
@@ -276,14 +269,7 @@ function SeriesFieldset({
 	idx,
 	remove,
 }: { idx: number; remove: (idx: number) => void }) {
-	const {
-		register,
-		formState: { errors },
-		control,
-		clearErrors,
-	} = useFormContext<FormFields>();
-
-	const seriesErrors = errors.series?.[idx];
+	const { control, clearErrors } = useFormContext<FormFields>();
 
 	return (
 		<FormFieldset
@@ -293,13 +279,10 @@ function SeriesFieldset({
 				clearErrors("series");
 			}}
 		>
-			<div>
-				<label>Series name</label>
-				<input {...register(`series.${idx}.name` as const)} />
-				{seriesErrors?.name && (
-					<FormMessage type="error">{seriesErrors.name.message}</FormMessage>
-				)}
-			</div>
+			<TextFormField<FormFields>
+				label="Series name"
+				name={`series.${idx}.name` as const}
+			/>
 
 			<TextAreaFormField<FormFields>
 				label="Description"
