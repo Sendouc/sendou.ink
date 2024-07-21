@@ -29,21 +29,20 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
 		if (!series) return null;
 
-		const stuff = await seriesStuff({
-			organizationId: organization.id,
-			series,
-			userId: user?.id,
-		});
-
-		if (!stuff) return null;
+		const { leaderboard, ...rest } =
+			(await seriesStuff({
+				organizationId: organization.id,
+				series,
+				userId: user?.id,
+			})) ?? {};
 
 		return {
 			id: series.id,
 			name: series.name,
 			description: series.description,
-			showLeaderboard: series.showLeaderboard,
 			page,
-			...stuff,
+			leaderboard: series.showLeaderboard ? leaderboard : null,
+			...rest,
 		};
 	};
 

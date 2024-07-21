@@ -178,7 +178,7 @@ function SeriesView({
 						},
 						{
 							label: "Leaderboard",
-							disabled: !series.showLeaderboard,
+							disabled: !series.leaderboard,
 						},
 					]}
 					content={[
@@ -193,7 +193,7 @@ function SeriesView({
 						},
 						{
 							key: "leaderboard",
-							element: (
+							element: series.leaderboard && (
 								<EventLeaderboard
 									leaderboard={series.leaderboard}
 									ownEntry={series.ownEntry}
@@ -226,16 +226,18 @@ function SeriesHeader({
 				) : null}
 				<div>
 					<h2 className="text-lg">{series.name}</h2>
-					<div className="text-lighter text-italic text-xs">
-						Est.{" "}
-						{databaseTimestampToDate(series.established).toLocaleDateString(
-							"en-US",
-							{
-								month: "long",
-								year: "numeric",
-							},
-						)}
-					</div>
+					{series.established ? (
+						<div className="text-lighter text-italic text-xs">
+							Est.{" "}
+							{databaseTimestampToDate(series.established).toLocaleDateString(
+								"en-US",
+								{
+									month: "long",
+									year: "numeric",
+								},
+							)}
+						</div>
+					) : null}
 				</div>
 			</div>
 			<div className="text-sm whitespace-pre-wrap">{series.description}</div>
@@ -389,6 +391,8 @@ function EventsPagination({
 }: {
 	series: NonNullable<SerializeFrom<typeof loader>["series"]>;
 }) {
+	if (!series.eventsCount) return null;
+
 	const [, setSearchParams] = useSearchParams();
 
 	const setPage = (page: number) =>
@@ -416,8 +420,8 @@ function EventLeaderboard({
 	ownEntry,
 }: {
 	leaderboard: NonNullable<
-		SerializeFrom<typeof loader>["series"]
-	>["leaderboard"];
+		NonNullable<SerializeFrom<typeof loader>["series"]>["leaderboard"]
+	>;
 	ownEntry?: NonNullable<SerializeFrom<typeof loader>["series"]>["ownEntry"];
 }) {
 	return (
@@ -447,8 +451,8 @@ function EventLeaderboardRow({
 	entry,
 }: {
 	entry: NonNullable<
-		SerializeFrom<typeof loader>["series"]
-	>["leaderboard"][number];
+		NonNullable<SerializeFrom<typeof loader>["series"]>["leaderboard"]
+	>[number];
 }) {
 	return (
 		<div className="org__leaderboard-list__row">
