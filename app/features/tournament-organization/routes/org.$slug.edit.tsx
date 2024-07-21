@@ -4,7 +4,6 @@ import { z } from "zod";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { Toggle } from "~/components/Toggle";
 import { UserSearch } from "~/components/UserSearch";
 import { AddFieldButton } from "~/components/form/AddFieldButton";
 import { FormFieldset } from "~/components/form/FormFieldset";
@@ -12,6 +11,7 @@ import { MyForm } from "~/components/form/MyForm";
 import { TextAreaFormField } from "~/components/form/TextAreaFormField";
 import { TextArrayFormField } from "~/components/form/TextArrayFormField";
 import { TextFormField } from "~/components/form/TextFormField";
+import { ToggleFormField } from "~/components/form/ToggleFormField";
 import { TOURNAMENT_ORGANIZATION_ROLES } from "~/db/tables";
 import { wrapToValueStringArrayWithDefault } from "~/utils/form";
 import { mySlugify } from "~/utils/urls";
@@ -269,7 +269,7 @@ function SeriesFieldset({
 	idx,
 	remove,
 }: { idx: number; remove: (idx: number) => void }) {
-	const { control, clearErrors } = useFormContext<FormFields>();
+	const { clearErrors } = useFormContext<FormFields>();
 
 	return (
 		<FormFieldset
@@ -290,16 +290,10 @@ function SeriesFieldset({
 				maxLength={DESCRIPTION_MAX_LENGTH}
 			/>
 
-			<div>
-				<label>Show leaderboard</label>
-				<Controller
-					control={control}
-					name={`series.${idx}.showLeaderboard` as const}
-					render={({ field: { onChange, value } }) => (
-						<Toggle checked={value} setChecked={onChange} />
-					)}
-				/>
-			</div>
+			<ToggleFormField<FormFields>
+				label="Show leaderboard"
+				name={`series.${idx}.showLeaderboard` as const}
+			/>
 		</FormFieldset>
 	);
 }
