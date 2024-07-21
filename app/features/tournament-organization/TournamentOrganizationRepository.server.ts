@@ -337,18 +337,20 @@ export function update({
 			.where("organizationId", "=", id)
 			.execute();
 
-		await trx
-			.insertInto("TournamentOrganizationSeries")
-			.values(
-				series.map((s) => ({
-					organizationId: id,
-					name: s.name,
-					description: s.description,
-					substringMatches: JSON.stringify([s.name.toLowerCase()]),
-					showLeaderboard: Number(s.showLeaderboard),
-				})),
-			)
-			.execute();
+		if (series.length > 0) {
+			await trx
+				.insertInto("TournamentOrganizationSeries")
+				.values(
+					series.map((s) => ({
+						organizationId: id,
+						name: s.name,
+						description: s.description,
+						substringMatches: JSON.stringify([s.name.toLowerCase()]),
+						showLeaderboard: Number(s.showLeaderboard),
+					})),
+				)
+				.execute();
+		}
 
 		return updatedOrg;
 	});
