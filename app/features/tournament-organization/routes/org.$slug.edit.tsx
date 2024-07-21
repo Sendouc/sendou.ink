@@ -8,6 +8,7 @@ import { UserSearch } from "~/components/UserSearch";
 import { AddFieldButton } from "~/components/form/AddFieldButton";
 import { FormFieldset } from "~/components/form/FormFieldset";
 import { MyForm } from "~/components/form/MyForm";
+import { SelectFormField } from "~/components/form/SelectFormField";
 import { TextAreaFormField } from "~/components/form/TextAreaFormField";
 import { TextArrayFormField } from "~/components/form/TextArrayFormField";
 import { TextFormField } from "~/components/form/TextFormField";
@@ -178,7 +179,6 @@ function MemberFieldset({
 	remove,
 }: { idx: number; remove: (idx: number) => void }) {
 	const {
-		register,
 		formState: { errors },
 		control,
 		clearErrors,
@@ -213,19 +213,15 @@ function MemberFieldset({
 					<FormMessage type="error">{memberErrors.userId.message}</FormMessage>
 				)}
 			</div>
-			<div>
-				<label>Role</label>
-				<select {...register(`members.${idx}.role` as const)}>
-					{TOURNAMENT_ORGANIZATION_ROLES.map((role) => (
-						<option key={role} value={role}>
-							{role}
-						</option>
-					))}
-				</select>
-				{memberErrors?.role && (
-					<FormMessage type="error">{memberErrors.role.message}</FormMessage>
-				)}
-			</div>
+
+			<SelectFormField<FormFields>
+				label="Role"
+				name={`members.${idx}.role` as const}
+				values={TOURNAMENT_ORGANIZATION_ROLES.map((role) => ({
+					value: role,
+					label: role,
+				}))}
+			/>
 
 			<TextFormField<FormFields>
 				label="Role display name"
