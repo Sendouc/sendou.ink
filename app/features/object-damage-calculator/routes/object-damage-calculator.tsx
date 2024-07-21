@@ -22,6 +22,7 @@ import {
 	TORPEDO_ID,
 	WAVE_BREAKER_ID,
 } from "~/modules/in-game-lists";
+import { SUPER_CHUMP_ID } from "~/modules/in-game-lists/weapon-ids";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import type { SendouRouteHandle } from "~/utils/remix";
 import {
@@ -207,6 +208,7 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
 	BulletUmbrellaCanopyWide: mainWeaponImageUrl(6010),
 	BulletUmbrellaCanopyCompact: mainWeaponImageUrl(6020),
 	BulletShelterCanopyFocus: mainWeaponImageUrl(6030),
+	Firework: specialWeaponImageUrl(SUPER_CHUMP_ID),
 };
 
 const damageReceiverAp: Partial<Record<DamageReceiver, JSX.Element>> = {
