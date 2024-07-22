@@ -8,7 +8,10 @@ import { NewTabs } from "~/components/NewTabs";
 import { Pagination } from "~/components/Pagination";
 import { Placement } from "~/components/Placement";
 import { EditIcon } from "~/components/icons/Edit";
+import { useUser } from "~/features/auth/core/user";
+import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { databaseTimestampNow, databaseTimestampToDate } from "~/utils/dates";
+import type { SendouRouteHandle } from "~/utils/remix";
 import {
 	calendarEventPage,
 	tournamentOrganizationEditPage,
@@ -17,15 +20,18 @@ import {
 	userSubmittedImage,
 } from "~/utils/urls";
 import { EventCalendar } from "../components/EventCalendar";
+import { SocialLinksList } from "../components/SocialLinksList";
 import { TOURNAMENT_SERIES_EVENTS_PER_PAGE } from "../tournament-organization-constants";
+import { canEditTournamentOrganization } from "../tournament-organization-utils";
 
 import "../tournament-organization.css";
 
-import { useUser } from "~/features/auth/core/user";
-import { SocialLinksList } from "../components/SocialLinksList";
 import { loader } from "../loaders/org.$slug.server";
-import { canEditTournamentOrganization } from "../tournament-organization-utils";
 export { loader };
+
+export const handle: SendouRouteHandle = {
+	i18n: "badges",
+};
 
 // xxx: meta
 
@@ -113,7 +119,7 @@ function InfoTabs() {
 						key: "members",
 					},
 					{
-						element: <div>Badges</div>,
+						element: <BadgeDisplay badges={data.organization.badges} />,
 						key: "badges",
 					},
 				]}
@@ -313,7 +319,6 @@ function SectionDivider({ children }: { children: React.ReactNode }) {
 	return <div className="org__section-divider">{children}</div>;
 }
 
-// xxx: winners
 function EventInfo({
 	event,
 	showYear,

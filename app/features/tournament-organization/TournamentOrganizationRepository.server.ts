@@ -294,6 +294,7 @@ interface UpdateArgs
 			showLeaderboard: boolean;
 		}
 	>;
+	badges: number[];
 }
 
 export function update({
@@ -303,6 +304,7 @@ export function update({
 	socials,
 	members,
 	series,
+	badges,
 }: UpdateArgs) {
 	return db.transaction().execute(async (trx) => {
 		const updatedOrg = await trx
@@ -347,6 +349,23 @@ export function update({
 						description: s.description,
 						substringMatches: JSON.stringify([s.name.toLowerCase()]),
 						showLeaderboard: Number(s.showLeaderboard),
+					})),
+				)
+				.execute();
+		}
+
+		await trx
+			.deleteFrom("TournamentOrganizationBadge")
+			.where("TournamentOrganizationBadge.organizationId", "=", id)
+			.execute();
+
+		if (badges.length > 0) {
+			await trx
+				.insertInto("TournamentOrganizationBadge")
+				.values(
+					badges.map((badgeId) => ({
+						organizationId: id,
+						badgeId,
 					})),
 				)
 				.execute();

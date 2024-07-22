@@ -1,13 +1,6 @@
 export function up(db) {
 	db.transaction(() => {
 		db.prepare(
-			/* sql */ `alter table "CalendarEvent" add "organizationId" integer`,
-		).run();
-		db.prepare(
-			/*sql*/ `create index calendar_event_organization_id on "CalendarEvent"("organizationId")`,
-		).run();
-
-		db.prepare(
 			/*sql*/ `
       create table "TournamentOrganization" (
         "id" integer primary key,
@@ -33,16 +26,10 @@ export function up(db) {
         "role" text not null,
         "roleDisplayName" text,
         foreign key ("organizationId") references "TournamentOrganization"("id") on delete cascade,
-        foreign key ("userId") references "User"("id") on delete cascade
+        foreign key ("userId") references "User"("id") on delete cascade,
+				unique("organizationId", "userId") on conflict rollback
       ) strict
     `,
-		).run();
-
-		db.prepare(
-			/*sql*/ `create index tournament_organization_member_user_id on "TournamentOrganizationMember"("userId")`,
-		).run();
-		db.prepare(
-			/*sql*/ `create index tournament_organization_member_organization_id on "TournamentOrganizationMember"("organizationId")`,
 		).run();
 
 		db.prepare(
@@ -51,16 +38,10 @@ export function up(db) {
         "organizationId" integer not null,
         "badgeId" integer not null,
         foreign key ("organizationId") references "TournamentOrganization"("id") on delete cascade,
-        foreign key ("badgeId") references "Badge"("id") on delete cascade
+        foreign key ("badgeId") references "Badge"("id") on delete cascade,
+				unique("organizationId", "badgeId") on conflict rollback
       ) strict
     `,
-		).run();
-
-		db.prepare(
-			/*sql*/ `create index tournament_organization_badge_organization_id on "TournamentOrganizationBadge"("organizationId")`,
-		).run();
-		db.prepare(
-			/*sql*/ `create index tournament_organization_badge_badge_id on "TournamentOrganizationBadge"("badgeId")`,
 		).run();
 
 		db.prepare(
@@ -79,6 +60,13 @@ export function up(db) {
 
 		db.prepare(
 			/*sql*/ `create index tournament_organization_series_organization_id on "TournamentOrganizationSeries"("organizationId")`,
+		).run();
+
+		db.prepare(
+			/* sql */ `alter table "CalendarEvent" add "organizationId" integer references "TournamentOrganization"("id") on delete set null`,
+		).run();
+		db.prepare(
+			/*sql*/ `create index calendar_event_organization_id on "CalendarEvent"("organizationId")`,
 		).run();
 	})();
 }

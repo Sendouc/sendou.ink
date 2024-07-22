@@ -41,6 +41,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		socials: valueArrayToDBFormat(data.socials),
 		members: data.members,
 		series: data.series,
+		badges: data.badges,
 	});
 
 	return redirect(tournamentOrganizationPage(newOrganization.slug));

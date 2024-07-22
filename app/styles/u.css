@@ -119,47 +119,6 @@
 	font-weight: var(--bold);
 }
 
-.u__badges {
-	display: flex;
-	max-width: 24rem;
-	align-items: center;
-	padding: var(--s-2);
-	border-radius: var(--rounded);
-	background-color: var(--bg-badge);
-	margin-inline: auto;
-}
-
-.u__small-badges {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	gap: var(--s-3);
-}
-
-.u__badge-explanation {
-	color: var(--text-lighter);
-	font-size: var(--fonts-xs);
-	text-align: center;
-}
-
-.u__small-badge-container {
-	position: relative;
-}
-
-.u__small-badge-count {
-	position: absolute;
-	top: 0;
-	right: 0;
-	margin-top: -8px;
-	margin-right: auto;
-	margin-left: auto;
-	color: var(--theme-vibrant);
-	font-size: var(--fonts-xxxs);
-	font-weight: var(--bold);
-}
-
 .u__results-table-wrapper {
 	width: 100%;
 	overflow-x: auto;

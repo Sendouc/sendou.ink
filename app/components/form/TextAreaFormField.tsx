@@ -9,7 +9,6 @@ import {
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 
-// xxx: can the generic be forced?
 export function TextAreaFormField<T extends FieldValues>({
 	label,
 	name,

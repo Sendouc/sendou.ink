@@ -10,7 +10,6 @@ import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { UserSearch } from "../UserSearch";
 
-// xxx: can the generic be forced?
 export function UserSearchFormField<T extends FieldValues>({
 	label,
 	name,

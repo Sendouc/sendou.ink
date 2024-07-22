@@ -10,7 +10,6 @@ import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Toggle } from "../Toggle";
 
-// xxx: can the generic be forced?
 export function ToggleFormField<T extends FieldValues>({
 	label,
 	name,

@@ -69,6 +69,7 @@ export function findByManagersList(userIds: number[]) {
 		.select(["Badge.id", "Badge.code", "Badge.displayName", "Badge.hue"])
 		.innerJoin("BadgeManager", "Badge.id", "BadgeManager.badgeId")
 		.where("BadgeManager.userId", "in", userIds)
+		.orderBy("Badge.id asc")
 		.execute();
 }
 

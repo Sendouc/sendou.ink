@@ -49,7 +49,7 @@ export function MyForm<T extends z.ZodTypeAny>({
 
 	return (
 		<FormProvider {...methods}>
-			<fetcher.Form className="stack md items-start" onSubmit={onSubmit}>
+			<fetcher.Form className="stack md-plus items-start" onSubmit={onSubmit}>
 				{title ? <h1 className="text-lg">{title}</h1> : null}
 				{children}
 				<SubmitButton state={fetcher.state} className="mt-6">

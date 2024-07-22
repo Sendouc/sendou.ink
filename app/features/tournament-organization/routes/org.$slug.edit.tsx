@@ -1,5 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
@@ -14,13 +14,19 @@ import { TextFormField } from "~/components/form/TextFormField";
 import { ToggleFormField } from "~/components/form/ToggleFormField";
 import { UserSearchFormField } from "~/components/form/UserSearchFormField";
 import { TOURNAMENT_ORGANIZATION_ROLES } from "~/db/tables";
+import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { wrapToValueStringArrayWithDefault } from "~/utils/form";
+import type { SendouRouteHandle } from "~/utils/remix";
 import { mySlugify } from "~/utils/urls";
-import { falsyToNull } from "~/utils/zod";
+import { falsyToNull, id } from "~/utils/zod";
 
 import { action } from "../actions/org.$slug.edit.server";
 import { loader } from "../loaders/org.$slug.edit.server";
 export { loader, action };
+
+export const handle: SendouRouteHandle = {
+	i18n: "badges",
+};
 
 // xxx: translate zod errors?
 
@@ -92,6 +98,7 @@ export const organizationEditSchema = z.object({
 				message: "Duplicate series",
 			},
 		),
+	badges: z.array(id).max(50),
 });
 
 type FormFields = z.infer<typeof organizationEditSchema>;
@@ -118,6 +125,7 @@ export default function TournamentOrganizationEditPage() {
 						description: series.description,
 						showLeaderboard: Boolean(series.showLeaderboard),
 					})),
+					badges: data.organization.badges.map((badge) => badge.id),
 				}}
 			>
 				<TextFormField<FormFields> label="Name" name="name" />
@@ -137,6 +145,8 @@ export default function TournamentOrganizationEditPage() {
 				/>
 
 				<SeriesFormField />
+
+				<BadgesFormField />
 			</MyForm>
 		</Main>
 	);
@@ -173,7 +183,6 @@ function MembersFormField() {
 	);
 }
 
-// xxx: use components, fieldset to one and formfields to one each
 function MemberFieldset({
 	idx,
 	remove,
@@ -193,7 +202,7 @@ function MemberFieldset({
 				name={`members.${idx}.userId` as const}
 			/>
 
-			<SelectFormField<FormFields>
+			<SelectFormField
 				label="Role"
 				name={`members.${idx}.role` as const}
 				values={TOURNAMENT_ORGANIZATION_ROLES.map((role) => ({
@@ -270,5 +279,69 @@ function SeriesFieldset({
 				name={`series.${idx}.showLeaderboard` as const}
 			/>
 		</FormFieldset>
+	);
+}
+
+function BadgesFormField() {
+	const methods = useFormContext<FormFields>();
+
+	return (
+		<div>
+			<Label>Badges</Label>
+			<Controller
+				control={methods.control}
+				name="badges"
+				render={({ field: { onChange, onBlur, value } }) => (
+					<BadgesSelector
+						selectedBadges={value}
+						onBlur={onBlur}
+						onChange={onChange}
+					/>
+				)}
+			/>
+		</div>
+	);
+}
+
+function BadgesSelector({
+	selectedBadges,
+	onChange,
+	onBlur,
+}: {
+	selectedBadges: number[];
+	onChange: (newBadges: number[]) => void;
+	onBlur: () => void;
+}) {
+	const data = useLoaderData<typeof loader>();
+
+	return (
+		<div className="stack md">
+			{selectedBadges.length > 0 ? (
+				<BadgeDisplay
+					badges={data.badgeOptions.filter((badge) =>
+						selectedBadges.includes(badge.id),
+					)}
+					onBadgeRemove={(badgeId) =>
+						onChange(selectedBadges.filter((id) => id !== badgeId))
+					}
+					key={selectedBadges.join(",")}
+				/>
+			) : (
+				<div className="text-lighter text-md font-bold">No badges selected</div>
+			)}
+			<select
+				onBlur={onBlur}
+				onChange={(e) => onChange([Number(e.target.value), ...selectedBadges])}
+			>
+				<option>Select badge to add</option>
+				{data.badgeOptions
+					.filter((badge) => !selectedBadges.includes(badge.id))
+					.map((badge) => (
+						<option key={badge.id} value={badge.id}>
+							{badge.displayName}
+						</option>
+					))}
+			</select>
+		</div>
 	);
 }
