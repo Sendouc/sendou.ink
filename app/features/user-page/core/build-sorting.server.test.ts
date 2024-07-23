@@ -1,8 +1,8 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import { databaseTimestampNow } from "~/utils/dates";
 import { sortBuilds } from "./build-sorting.server";
-import { MainWeaponId } from "~/modules/in-game-lists";
 
 const BuildSorting = suite("sortBuilds()");
 
@@ -103,20 +103,29 @@ BuildSorting("sorts by WEAPON_POOL", () => {
 });
 
 BuildSorting("sorts by WEAPON_POOL (alt kits are same priority)", () => {
-	const mockBuildBuilder = (id: number, weaponIds: MainWeaponId[]): BuildSortingBuildArg => {
+	const mockBuildBuilder = (
+		id: number,
+		weaponIds: MainWeaponId[],
+	): BuildSortingBuildArg => {
 		return mockBuild({
 			id,
-			weapons: weaponIds.map(wepId => ({ weaponSplId: wepId, maxPower: null, minRank: null }))
-		})
-	}; 
+			weapons: weaponIds.map((wepId) => ({
+				weaponSplId: wepId,
+				maxPower: null,
+				minRank: null,
+			})),
+		});
+	};
 
 	const builds1 = [
 		[1, [1000]],
 		[2, [10]],
 		[3, [0]],
 		[4, [11]],
-		[5, [1]]
-	].map(([id, weaponIds]) => mockBuildBuilder(id as number, weaponIds as MainWeaponId[]));
+		[5, [1]],
+	].map(([id, weaponIds]) =>
+		mockBuildBuilder(id as number, weaponIds as MainWeaponId[]),
+	);
 
 	const sortedBuilds1 = sortBuilds({
 		builds: builds1,
@@ -138,13 +147,15 @@ BuildSorting("sorts by WEAPON_POOL (alt kits are same priority)", () => {
 		[4, [2010, 40]],
 		[5, [8001, 8000]],
 		[6, [8020, 201, 8021]],
-		[7, [5010, 46, 50]]
-	].map(([id, weaponIds]) => mockBuildBuilder(id as number, weaponIds as MainWeaponId[]));
+		[7, [5010, 46, 50]],
+	].map(([id, weaponIds]) =>
+		mockBuildBuilder(id as number, weaponIds as MainWeaponId[]),
+	);
 
 	const sortedBuilds2 = sortBuilds({
 		builds: builds2,
 		buildSorting: ["WEAPON_POOL"],
-		weaponPool: [47, 205, 1015]
+		weaponPool: [47, 205, 1015],
 	});
 
 	// Using alt kit ids still acts as the vanilla kit id
