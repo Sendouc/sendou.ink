@@ -2,6 +2,7 @@ import type { BuildSort } from "~/db/tables";
 import type * as BuildRepository from "~/features/builds/BuildRepository.server";
 import { type MainWeaponId, modesShort } from "~/modules/in-game-lists";
 import { DEFAULT_BUILD_SORT } from "../user-page-constants";
+import { weaponIdToBucketId } from "~/modules/in-game-lists/weapon-ids";
 
 interface SortBuildsArgs {
 	builds: Awaited<ReturnType<typeof BuildRepository.allByUserId>>;
@@ -53,10 +54,12 @@ export function sortBuilds({
 		},
 		WEAPON_POOL: (a, b) => {
 			const aLowestWeaponIdx = weaponPool.findIndex((wp) =>
-				a.weapons.map((wpn) => wpn.weaponSplId).includes(wp),
+				a.weapons.map((wpn) => weaponIdToBucketId(wpn.weaponSplId))
+			.includes(weaponIdToBucketId(wp)),
 			);
 			const bLowestWeaponIdx = weaponPool.findIndex((wp) =>
-				b.weapons.map((wpn) => wpn.weaponSplId).includes(wp),
+				b.weapons.map((wpn) => weaponIdToBucketId(wpn.weaponSplId))
+			.includes(weaponIdToBucketId(wp)),
 			);
 
 			if (aLowestWeaponIdx === -1 && bLowestWeaponIdx !== -1) return 1;

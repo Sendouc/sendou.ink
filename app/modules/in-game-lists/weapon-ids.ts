@@ -239,3 +239,7 @@ export const exampleMainWeaponIdWithSpecialWeaponId = (
 		}
 	}
 };
+
+export const weaponIdToBucketId = (
+	id: MainWeaponId
+): number => id - (id % 10);
