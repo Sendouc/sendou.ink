@@ -14,13 +14,20 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		month = new Date().getMonth(),
 		year = new Date().getFullYear(),
 		page = 1,
-		series: seriesId,
+		series: _seriesId,
+		source,
 	} = parseSafeSearchParams({
 		request,
 		schema: searchParamsSchema,
 	}).data ?? {};
 
 	const organization = await organizationFromParams(params);
+
+	const seriesId =
+		_seriesId ??
+		organization.series.find((s) =>
+			s.substringMatches.some((match) => source?.toLowerCase().includes(match)),
+		)?.id;
 
 	const seriesInfo = async () => {
 		const series = seriesId
@@ -74,6 +81,7 @@ const searchParamsSchema = z.object({
 	year: z.coerce.number().int().min(2020).max(2100).optional(),
 	series: id.optional(),
 	page: z.coerce.number().int().min(1).max(100).optional(),
+	source: z.string().optional(),
 });
 
 // xxx: syncCache & clear after tournament finish & better name

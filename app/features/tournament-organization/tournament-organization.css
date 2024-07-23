@@ -44,6 +44,20 @@
 	left: 18px;
 }
 
+.org__calendar__day__many-events {
+	position: absolute;
+	border-radius: var(--rounded);
+	top: 18px;
+	left: 18px;
+	width: 32px;
+	height: 32px;
+	border: 2px solid var(--border);
+	display: grid;
+	place-items: center;
+	font-size: var(--fonts-md);
+	background-color: var(--bg-lightest);
+}
+
 .org__calendar__day__today {
 	color: var(--theme-secondary);
 	font-weight: var(--bold);
@@ -76,6 +90,20 @@
 	border-bottom: 2px solid var(--border);
 	width: 100%;
 	padding-block: var(--s-1);
+}
+
+.org__events-container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-16);
+	overflow-x: auto;
+}
+
+@media screen and (min-width: 768px) {
+	.org__events-container {
+		flex-direction: row;
+		gap: var(--s-8);
+	}
 }
 
 .org__event-info {

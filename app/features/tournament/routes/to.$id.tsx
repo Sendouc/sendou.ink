@@ -24,7 +24,11 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
-import { tournamentPage, userSubmittedImage } from "~/utils/urls";
+import {
+	tournamentOrganizationPage,
+	tournamentPage,
+	userSubmittedImage,
+} from "~/utils/urls";
 import { streamsByTournamentId } from "../core/streams.server";
 import {
 	HACKY_resolvePicture,
@@ -93,16 +97,29 @@ export const handle: SendouRouteHandle = {
 		if (!data) return [];
 
 		return [
+			data.tournament.ctx.organization?.avatarUrl
+				? {
+						imgPath: userSubmittedImage(
+							data.tournament.ctx.organization.avatarUrl,
+						),
+						href: tournamentOrganizationPage({
+							organizationSlug: data.tournament.ctx.organization.slug,
+						}),
+						type: "IMAGE" as const,
+						text: "",
+						rounded: true,
+					}
+				: null,
 			{
 				imgPath: data.tournament.ctx.logoUrl
 					? userSubmittedImage(data.tournament.ctx.logoUrl)
 					: HACKY_resolvePicture(data.tournament.ctx),
 				href: tournamentPage(data.tournament.ctx.id),
-				type: "IMAGE",
+				type: "IMAGE" as const,
 				text: data.tournament.ctx.name,
 				rounded: true,
 			},
-		];
+		].filter((crumb) => crumb !== null);
 	},
 };
 

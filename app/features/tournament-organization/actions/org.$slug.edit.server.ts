@@ -44,5 +44,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		badges: data.badges,
 	});
 
-	return redirect(tournamentOrganizationPage(newOrganization.slug));
+	return redirect(
+		tournamentOrganizationPage({ organizationSlug: newOrganization.slug }),
+	);
 };

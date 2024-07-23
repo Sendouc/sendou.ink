@@ -9,11 +9,17 @@ interface EventCalendarProps {
 	month: number;
 	year: number;
 	events: SerializeFrom<typeof loader>["events"];
+	fallbackLogoUrl: string;
 }
 
 const DAY_HEADERS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-export function EventCalendar({ month, year, events }: EventCalendarProps) {
+export function EventCalendar({
+	month,
+	year,
+	events,
+	fallbackLogoUrl,
+}: EventCalendarProps) {
 	const dates = nullPaddedDatesOfMonth({ month, year });
 
 	return (
@@ -32,7 +38,14 @@ export function EventCalendar({ month, year, events }: EventCalendarProps) {
 							date?.getDate(),
 					);
 
-					return <EventCalendarCell key={i} date={date} events={daysEvents} />;
+					return (
+						<EventCalendarCell
+							key={i}
+							date={date}
+							events={daysEvents}
+							fallbackLogoUrl={fallbackLogoUrl}
+						/>
+					);
 				})}
 			</div>
 		</div>
@@ -42,13 +55,12 @@ export function EventCalendar({ month, year, events }: EventCalendarProps) {
 function EventCalendarCell({
 	date,
 	events,
+	fallbackLogoUrl,
 }: {
 	date: Date | null;
 	events: SerializeFrom<typeof loader>["events"];
+	fallbackLogoUrl: string;
 }) {
-	// xxx: events.length > 0
-	// xxx: logo when non sendou ink event
-
 	return (
 		<div
 			className={clsx("org__calendar__day", {
@@ -63,11 +75,14 @@ function EventCalendarCell({
 			{events.length === 1 ? (
 				<img
 					className="org__calendar__day__logo"
-					src={events[0].logoUrl!}
+					src={events[0].logoUrl ?? fallbackLogoUrl}
 					width={32}
 					height={32}
 					alt={events[0].name}
 				/>
+			) : null}
+			{events.length > 1 ? (
+				<div className="org__calendar__day__many-events">{events.length}</div>
 			) : null}
 		</div>
 	);

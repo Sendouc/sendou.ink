@@ -1,5 +1,6 @@
-import type { SerializeFrom } from "@remix-run/node";
+import type { MetaFunction, SerializeFrom } from "@remix-run/node";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { Divider } from "~/components/Divider";
@@ -12,9 +13,12 @@ import { useUser } from "~/features/auth/core/user";
 import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { databaseTimestampNow, databaseTimestampToDate } from "~/utils/dates";
 import type { SendouRouteHandle } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import {
+	BLANK_IMAGE_URL,
 	calendarEventPage,
 	tournamentOrganizationEditPage,
+	tournamentOrganizationPage,
 	tournamentPage,
 	userPage,
 	userSubmittedImage,
@@ -29,11 +33,68 @@ import "../tournament-organization.css";
 import { loader } from "../loaders/org.$slug.server";
 export { loader };
 
-export const handle: SendouRouteHandle = {
-	i18n: "badges",
+// xxx: make edit children route of this
+
+export const meta: MetaFunction = (args) => {
+	const data = args.data as SerializeFrom<typeof loader>;
+
+	if (!data) return [];
+
+	const title = makeTitle(data.organization.name);
+
+	return [
+		{ title },
+		{
+			property: "og:title",
+			content: title,
+		},
+		{
+			property: "og:description",
+			content: data.organization.description,
+		},
+		{
+			property: "og:type",
+			content: "website",
+		},
+		{
+			property: "og:image",
+			content: data.organization.avatarUrl
+				? userSubmittedImage(data.organization.avatarUrl)
+				: undefined,
+		},
+		{
+			name: "twitter:card",
+			content: "summary",
+		},
+		{
+			name: "twitter:title",
+			content: title,
+		},
+	];
 };
 
-// xxx: meta
+export const handle: SendouRouteHandle = {
+	i18n: ["badges", "org"],
+	breadcrumb: ({ match }) => {
+		const data = match.data as SerializeFrom<typeof loader> | undefined;
+
+		if (!data) return [];
+
+		return [
+			{
+				imgPath: data.organization.avatarUrl
+					? userSubmittedImage(data.organization.avatarUrl)
+					: BLANK_IMAGE_URL,
+				href: tournamentOrganizationPage({
+					organizationSlug: data.organization.slug,
+				}),
+				type: "IMAGE",
+				text: data.organization.name,
+				rounded: true,
+			},
+		];
+	},
+};
 
 export default function TournamentOrganizationPage() {
 	const data = useLoaderData<typeof loader>();
@@ -55,12 +116,20 @@ export default function TournamentOrganizationPage() {
 }
 
 function LogoHeader() {
+	const { t } = useTranslation(["common"]);
 	const user = useUser();
 	const data = useLoaderData<typeof loader>();
 
 	return (
 		<div className="stack horizontal md">
-			<Avatar size="lg" />
+			<Avatar
+				size="lg"
+				url={
+					data.organization.avatarUrl
+						? userSubmittedImage(data.organization.avatarUrl)
+						: undefined
+				}
+			/>
 			<div className="stack sm">
 				<div className="text-xl font-bold">{data.organization.name}</div>
 				{canEditTournamentOrganization({
@@ -74,7 +143,7 @@ function LogoHeader() {
 							size="tiny"
 							variant="outlined"
 						>
-							Edit
+							{t("common:actions.edit")}
 						</LinkButton>
 					</div>
 				) : null}
@@ -87,6 +156,7 @@ function LogoHeader() {
 }
 
 function InfoTabs() {
+	const { t } = useTranslation(["org"]);
 	const data = useLoaderData<typeof loader>();
 
 	return (
@@ -94,16 +164,16 @@ function InfoTabs() {
 			<NewTabs
 				tabs={[
 					{
-						label: "Social links",
+						label: t("org:edit.form.socialLinks.title"),
 						disabled:
 							!data.organization.socials ||
 							data.organization.socials.length === 0,
 					},
 					{
-						label: "Members",
+						label: t("org:edit.form.members.title"),
 					},
 					{
-						label: "Badges",
+						label: t("org:edit.form.badges.title"),
 						disabled: data.organization.badges.length === 0,
 					},
 				]}
@@ -128,8 +198,8 @@ function InfoTabs() {
 	);
 }
 
-// xxx: i18n normal role name
 function MembersList() {
+	const { t } = useTranslation(["org"]);
 	const data = useLoaderData<typeof loader>();
 
 	return (
@@ -145,7 +215,7 @@ function MembersList() {
 						<div>
 							<div>{member.username}</div>
 							<div className="text-lighter text-xs">
-								{member.roleDisplayName ?? member.role}
+								{member.roleDisplayName ?? t(`org:roles.${member.role}`)}
 							</div>
 						</div>
 					</Link>
@@ -159,8 +229,17 @@ function AllTournamentsView() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<div className="stack lg horizontal">
-			<EventCalendar month={data.month} year={data.year} events={data.events} />
+		<div className="org__events-container">
+			<EventCalendar
+				month={data.month}
+				year={data.year}
+				events={data.events}
+				fallbackLogoUrl={
+					data.organization.avatarUrl
+						? userSubmittedImage(data.organization.avatarUrl)
+						: BLANK_IMAGE_URL
+				}
+			/>
 			<EventsList />
 		</div>
 	);
@@ -171,6 +250,8 @@ function SeriesView({
 }: {
 	series: NonNullable<SerializeFrom<typeof loader>["series"]>;
 }) {
+	const { t } = useTranslation(["org"]);
+
 	return (
 		<div className="stack md">
 			<SeriesHeader series={series} />
@@ -179,11 +260,11 @@ function SeriesView({
 					disappearing
 					tabs={[
 						{
-							label: "Events",
+							label: t("org:events.tabs.events"),
 							number: series.eventsCount,
 						},
 						{
-							label: "Leaderboard",
+							label: t("org:events.tabs.leaderboard"),
 							disabled: !series.leaderboard,
 						},
 					]}
@@ -218,6 +299,8 @@ function SeriesHeader({
 }: {
 	series: NonNullable<SerializeFrom<typeof loader>["series"]>;
 }) {
+	const { i18n, t } = useTranslation(["org"]);
+
 	return (
 		<div className="stack md">
 			<div className="stack horizontal md items-center">
@@ -234,9 +317,9 @@ function SeriesHeader({
 					<h2 className="text-lg">{series.name}</h2>
 					{series.established ? (
 						<div className="text-lighter text-italic text-xs">
-							Est.{" "}
+							{t("org:events.established.short")}{" "}
 							{databaseTimestampToDate(series.established).toLocaleDateString(
-								"en-US",
+								i18n.language,
 								{
 									month: "long",
 									year: "numeric",
@@ -256,9 +339,11 @@ function SeriesSelector({
 }: {
 	series: SerializeFrom<typeof loader>["organization"]["series"];
 }) {
+	const { t } = useTranslation(["org"]);
+
 	return (
 		<div className="stack horizontal md flex-wrap">
-			<SeriesButton>All tournaments</SeriesButton>
+			<SeriesButton>{t("org:events.all")}</SeriesButton>
 			{series.map((series) => (
 				<SeriesButton key={series.id} seriesId={series.id}>
 					{series.name}
@@ -286,7 +371,9 @@ function SeriesButton({
 	);
 }
 
+// xxx: calendar sticky position broken
 function EventsList({ showYear }: { showYear?: boolean }) {
+	const { t } = useTranslation(["org"]);
 	const data = useLoaderData<typeof loader>();
 
 	const now = databaseTimestampNow();
@@ -296,7 +383,7 @@ function EventsList({ showYear }: { showYear?: boolean }) {
 	return (
 		<div className="w-full stack xs">
 			{upcomingEvents.length > 0 ? (
-				<SectionDivider>Upcoming events</SectionDivider>
+				<SectionDivider>{t("org:events.upcoming")}</SectionDivider>
 			) : null}
 			<div className="stack md">
 				{upcomingEvents.map((event) => (
@@ -304,7 +391,7 @@ function EventsList({ showYear }: { showYear?: boolean }) {
 				))}
 			</div>
 			{pastEvents.length > 0 ? (
-				<SectionDivider>Past events</SectionDivider>
+				<SectionDivider>{t("org:events.past")}</SectionDivider>
 			) : null}
 			<div className="stack md">
 				{pastEvents.map((event) => (
@@ -326,6 +413,8 @@ function EventInfo({
 	event: SerializeFrom<typeof loader>["events"][number];
 	showYear?: boolean;
 }) {
+	const { i18n } = useTranslation();
+
 	return (
 		<div className="stack sm">
 			<Link
@@ -342,13 +431,16 @@ function EventInfo({
 				<div>
 					<div className="org__event-info__name">{event.name}</div>
 					<time className="org__event-info__time">
-						{databaseTimestampToDate(event.startTime).toLocaleString("en-US", {
-							day: "numeric",
-							month: "numeric",
-							hour: "numeric",
-							minute: "numeric",
-							year: showYear ? "numeric" : undefined,
-						})}
+						{databaseTimestampToDate(event.startTime).toLocaleString(
+							i18n.language,
+							{
+								day: "numeric",
+								month: "numeric",
+								hour: "numeric",
+								minute: "numeric",
+								year: showYear ? "numeric" : undefined,
+							},
+						)}
 					</time>
 				</div>
 			</Link>

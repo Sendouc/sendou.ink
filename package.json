@@ -19,6 +19,7 @@
 		"refresh-prod-db": "tsm scripts/refresh-prod-db.ts && cross-env DB_PATH=db-prod.sqlite3 npm run migrate up",
 		"biome:check": "npx @biomejs/biome check .",
 		"biome:fix": "npx @biomejs/biome check --write .",
+		"biome:fix:unsafe": "npx @biomejs/biome check --write --unsafe .",
 		"typecheck": "tsc --noEmit",
 		"test:unit": "cross-env DB_PATH=:memory: NODE_ENV=test BASE_URL=https://example.com SKALOP_SYSTEM_MESSAGE_URL=http://skalop.test SKALOP_TOKEN=test uvu -r tsm -r tsconfig-paths/register -r ignore-styles -i e2e",
 		"test:e2e": "npx playwright test",

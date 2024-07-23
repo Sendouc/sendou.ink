@@ -81,7 +81,6 @@ const useBaseEvent = () => {
 	return eventToCopy ?? eventToEdit;
 };
 
-// xxx: tournament org
 export default function CalendarNewEventPage() {
 	const baseEvent = useBaseEvent();
 
@@ -188,6 +187,7 @@ function EventForm() {
 			)}
 			<NameInput />
 			<DescriptionTextarea supportsMarkdown={isTournament} />
+			<OrganizationSelect />
 			{isTournament ? <RulesTextarea supportsMarkdown /> : null}
 			<DatesInput allowMultiDate={!isTournament} />
 			{!isTournament ? <BracketUrlInput /> : null}
@@ -273,6 +273,32 @@ function DescriptionTextarea({
 			{supportsMarkdown ? (
 				<FormMessage type="info">Supports Markdown</FormMessage>
 			) : null}
+		</div>
+	);
+}
+
+function OrganizationSelect() {
+	const id = React.useId();
+	const data = useLoaderData<typeof loader>();
+	const baseEvent = useBaseEvent();
+
+	if (data.organizations.length === 0) return null;
+
+	return (
+		<div>
+			<Label htmlFor={id}>Organization</Label>
+			<select
+				id={id}
+				name="organizationId"
+				defaultValue={baseEvent?.organization?.id}
+			>
+				<option>Select an organization</option>
+				{data.organizations.map((org) => (
+					<option key={org.id} value={org.id}>
+						{org.name}
+					</option>
+				))}
+			</select>
 		</div>
 	);
 }

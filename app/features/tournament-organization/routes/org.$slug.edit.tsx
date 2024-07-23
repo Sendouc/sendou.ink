@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { FormMessage } from "~/components/FormMessage";
@@ -17,15 +17,17 @@ import { TOURNAMENT_ORGANIZATION_ROLES } from "~/db/tables";
 import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { wrapToValueStringArrayWithDefault } from "~/utils/form";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { mySlugify } from "~/utils/urls";
+import type { Unpacked } from "~/utils/types";
+import { mySlugify, uploadImagePage } from "~/utils/urls";
 import { falsyToNull, id } from "~/utils/zod";
 
+import { useTranslation } from "react-i18next";
 import { action } from "../actions/org.$slug.edit.server";
 import { loader } from "../loaders/org.$slug.edit.server";
 export { loader, action };
 
 export const handle: SendouRouteHandle = {
-	i18n: "badges",
+	i18n: ["badges", "org"],
 };
 
 // xxx: translate zod errors?
@@ -101,15 +103,25 @@ export const organizationEditSchema = z.object({
 	badges: z.array(id).max(50),
 });
 
-type FormFields = z.infer<typeof organizationEditSchema>;
+type FormFields = z.infer<typeof organizationEditSchema> & {
+	members: Array<
+		Omit<
+			Unpacked<z.infer<typeof organizationEditSchema>["members"]>,
+			"userId"
+		> & {
+			userId: number | null;
+		}
+	>;
+};
 
 export default function TournamentOrganizationEditPage() {
 	const data = useLoaderData<typeof loader>();
+	const { t } = useTranslation(["org", "common"]);
 
 	return (
 		<Main>
 			<MyForm
-				title="Editing tournament organization"
+				title={t("org:edit.form.title")}
 				schema={organizationEditSchema}
 				defaultValues={{
 					name: data.organization.name,
@@ -128,10 +140,20 @@ export default function TournamentOrganizationEditPage() {
 					badges: data.organization.badges.map((badge) => badge.id),
 				}}
 			>
-				<TextFormField<FormFields> label="Name" name="name" />
+				<Link
+					to={uploadImagePage({
+						type: "org-pfp",
+						slug: data.organization.slug,
+					})}
+					className="text-sm font-bold"
+				>
+					{t("org:edit.form.uploadLogo")}
+				</Link>
+
+				<TextFormField<FormFields> label={t("common:forms.name")} name="name" />
 
 				<TextAreaFormField<typeof organizationEditSchema>
-					label="Description"
+					label={t("common:forms.description")}
 					name="description"
 					maxLength={DESCRIPTION_MAX_LENGTH}
 				/>
@@ -139,7 +161,7 @@ export default function TournamentOrganizationEditPage() {
 				<MembersFormField />
 
 				<TextArrayFormField<typeof organizationEditSchema>
-					label="Social links"
+					label={t("org:edit.form.socialLinks.title")}
 					name="socials"
 					defaultFieldValue=""
 				/>
@@ -159,19 +181,19 @@ function MembersFormField() {
 	const { fields, append, remove } = useFieldArray<FormFields>({
 		name: "members",
 	});
+	const { t } = useTranslation(["org"]);
 
 	const rootError = errors.members?.root;
 
 	return (
 		<div>
-			<Label>Members</Label>
+			<Label>{t("org:edit.form.members.title")}</Label>
 			<div className="stack md">
 				{fields.map((field, i) => {
 					return <MemberFieldset key={field.id} idx={i} remove={remove} />;
 				})}
 				<AddFieldButton
 					onClick={() => {
-						// @ts-expect-error xxx: what here?
 						append({ role: "MEMBER", roleDisplayName: null, userId: null });
 					}}
 				/>
@@ -187,6 +209,7 @@ function MemberFieldset({
 	idx,
 	remove,
 }: { idx: number; remove: (idx: number) => void }) {
+	const { t } = useTranslation(["org"]);
 	const { clearErrors } = useFormContext<FormFields>();
 
 	return (
@@ -198,21 +221,21 @@ function MemberFieldset({
 			}}
 		>
 			<UserSearchFormField<FormFields>
-				label="User"
+				label={t("org:edit.form.members.user.title")}
 				name={`members.${idx}.userId` as const}
 			/>
 
 			<SelectFormField
-				label="Role"
+				label={t("org:edit.form.members.role.title")}
 				name={`members.${idx}.role` as const}
 				values={TOURNAMENT_ORGANIZATION_ROLES.map((role) => ({
 					value: role,
-					label: role,
+					label: t(`org:roles.${role}`),
 				}))}
 			/>
 
 			<TextFormField<FormFields>
-				label="Role display name"
+				label={t("org:edit.form.members.roleDisplayName.title")}
 				name={`members.${idx}.roleDisplayName` as const}
 			/>
 		</FormFieldset>
@@ -226,12 +249,13 @@ function SeriesFormField() {
 	const { fields, append, remove } = useFieldArray<FormFields>({
 		name: "series",
 	});
+	const { t } = useTranslation(["org"]);
 
 	const rootError = errors.series?.root;
 
 	return (
 		<div>
-			<Label>Series</Label>
+			<Label>{t("org:edit.form.series.title")}</Label>
 			<div className="stack md">
 				{fields.map((field, i) => {
 					return <SeriesFieldset key={field.id} idx={i} remove={remove} />;
@@ -253,6 +277,7 @@ function SeriesFieldset({
 	idx,
 	remove,
 }: { idx: number; remove: (idx: number) => void }) {
+	const { t } = useTranslation(["org", "common"]);
 	const { clearErrors } = useFormContext<FormFields>();
 
 	return (
@@ -264,18 +289,18 @@ function SeriesFieldset({
 			}}
 		>
 			<TextFormField<FormFields>
-				label="Series name"
+				label={t("org:edit.form.series.seriesName.title")}
 				name={`series.${idx}.name` as const}
 			/>
 
 			<TextAreaFormField<FormFields>
-				label="Description"
+				label={t("common:forms.description")}
 				name={`series.${idx}.description` as const}
 				maxLength={DESCRIPTION_MAX_LENGTH}
 			/>
 
 			<ToggleFormField<FormFields>
-				label="Show leaderboard"
+				label={t("org:edit.form.series.showLeaderboard.title")}
 				name={`series.${idx}.showLeaderboard` as const}
 			/>
 		</FormFieldset>
@@ -283,11 +308,12 @@ function SeriesFieldset({
 }
 
 function BadgesFormField() {
+	const { t } = useTranslation(["org"]);
 	const methods = useFormContext<FormFields>();
 
 	return (
 		<div>
-			<Label>Badges</Label>
+			<Label>{t("org:edit.form.badges.title")}</Label>
 			<Controller
 				control={methods.control}
 				name="badges"
@@ -312,6 +338,7 @@ function BadgesSelector({
 	onChange: (newBadges: number[]) => void;
 	onBlur: () => void;
 }) {
+	const { t } = useTranslation(["org"]);
 	const data = useLoaderData<typeof loader>();
 
 	return (
@@ -327,13 +354,15 @@ function BadgesSelector({
 					key={selectedBadges.join(",")}
 				/>
 			) : (
-				<div className="text-lighter text-md font-bold">No badges selected</div>
+				<div className="text-lighter text-md font-bold">
+					{t("org:edit.form.badges.none")}
+				</div>
 			)}
 			<select
 				onBlur={onBlur}
 				onChange={(e) => onChange([Number(e.target.value), ...selectedBadges])}
 			>
-				<option>Select badge to add</option>
+				<option>{t("org:edit.form.badges.select")}</option>
 				{data.badgeOptions
 					.filter((badge) => !selectedBadges.includes(badge.id))
 					.map((badge) => (

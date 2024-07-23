@@ -175,12 +175,12 @@ function ImageUploadLinks() {
 			<Label>{t("team:forms.fields.uploadImages")}</Label>
 			<ol className="team__image-links-list">
 				<li>
-					<Link to={uploadImagePage("team-pfp")}>
+					<Link to={uploadImagePage({ type: "team-pfp" })}>
 						{t("team:forms.fields.uploadImages.pfp")}
 					</Link>
 				</li>
 				<li>
-					<Link to={uploadImagePage("team-banner")}>
+					<Link to={uploadImagePage({ type: "team-banner" })}>
 						{t("team:forms.fields.uploadImages.banner")}
 					</Link>
 				</li>

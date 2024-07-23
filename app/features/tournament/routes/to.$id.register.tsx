@@ -43,6 +43,7 @@ import {
 	navIconUrl,
 	readonlyMapsPage,
 	tournamentJoinPage,
+	tournamentOrganizationPage,
 	tournamentSubsPage,
 	userEditProfilePage,
 	userPage,
@@ -61,7 +62,6 @@ import { loader } from "../loaders/to.$id.register.server";
 
 export { loader, action };
 
-// xxx: tournament org
 export default function TournamentRegisterPage() {
 	const user = useUser();
 	const isMounted = useIsMounted();
@@ -87,7 +87,52 @@ export default function TournamentRegisterPage() {
 				/>
 				<div>
 					<div className="tournament__title">{tournament.ctx.name}</div>
-					<div className="stack horizontal sm">
+					<div>
+						{tournament.ctx.organization ? (
+							<Link
+								to={tournamentOrganizationPage({
+									organizationSlug: tournament.ctx.organization.slug,
+									tournamentName: tournament.ctx.name,
+								})}
+								className="stack horizontal sm items-center text-xs text-main-forced"
+							>
+								<Avatar
+									url={
+										tournament.ctx.organization.avatarUrl
+											? userSubmittedImage(
+													tournament.ctx.organization.avatarUrl,
+												)
+											: undefined
+									}
+									size="xxs"
+								/>
+								{tournament.ctx.organization.name}
+							</Link>
+						) : (
+							<Link
+								to={userPage(tournament.ctx.author)}
+								className="stack horizontal xs items-center text-lighter"
+							>
+								<UserIcon className="tournament__info__icon" />{" "}
+								{tournament.ctx.author.username}
+							</Link>
+						)}
+					</div>
+					<div className="tournament__by mt-2">
+						<div className="stack horizontal xs items-center">
+							<ClockIcon className="tournament__info__icon" />{" "}
+							{isMounted
+								? tournament.ctx.startTime.toLocaleString(i18n.language, {
+										timeZoneName: "short",
+										minute: startsAtEvenHour ? undefined : "numeric",
+										hour: "numeric",
+										day: "numeric",
+										month: "long",
+									})
+								: null}
+						</div>
+					</div>
+					<div className="stack horizontal sm mt-1">
 						{tournament.ranked ? (
 							<div className="tournament__badge tournament__badge__ranked">
 								Ranked
@@ -101,27 +146,6 @@ export default function TournamentRegisterPage() {
 							{tournament.modesIncluded.map((mode) => (
 								<ModeImage key={mode} mode={mode} size={16} />
 							))}
-						</div>
-					</div>
-					<div className="tournament__by mt-1">
-						<Link
-							to={userPage(tournament.ctx.author)}
-							className="stack horizontal xs items-center text-lighter"
-						>
-							<UserIcon className="tournament__info__icon" />{" "}
-							{tournament.ctx.author.username}
-						</Link>
-						<div className="stack horizontal xs items-center">
-							<ClockIcon className="tournament__info__icon" />{" "}
-							{isMounted
-								? tournament.ctx.startTime.toLocaleString(i18n.language, {
-										timeZoneName: "short",
-										minute: startsAtEvenHour ? undefined : "numeric",
-										hour: "numeric",
-										day: "numeric",
-										month: "long",
-									})
-								: null}
 						</div>
 					</div>
 				</div>

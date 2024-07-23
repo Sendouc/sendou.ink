@@ -4,6 +4,7 @@ import { requireUser } from "~/features/auth/core/user.server";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { tournamentData } from "~/features/tournament-bracket/core/Tournament.server";
+import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { canEditCalendarEvent } from "~/permissions";
 import { validate } from "~/utils/remix";
@@ -78,5 +79,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 				: undefined,
 		title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
 		canCreateTournament: userCanCreateTournament,
+		organizations: await TournamentOrganizationRepository.findByOrganizerUserId(
+			user.id,
+		),
 	});
 };

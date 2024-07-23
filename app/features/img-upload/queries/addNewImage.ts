@@ -22,18 +22,26 @@ const updateTeamBannerStm = sql.prepare(/* sql */ `
   where "id" = @teamId
 `);
 
+const updateOrganizationAvatarStm = sql.prepare(/* sql */ `
+  update "TournamentOrganization"
+  set "avatarImgId" = @avatarImgId
+  where "id" = @organizationId
+`);
+
 export const addNewImage = sql.transaction(
 	({
 		submitterUserId,
 		url,
 		validatedAt,
 		teamId,
+		organizationId,
 		type,
 	}: {
 		submitterUserId: number;
 		url: string;
 		validatedAt: number | null;
-		teamId: number;
+		teamId?: number;
+		organizationId?: number;
 		type: ImageUploadType;
 	}) => {
 		const img = addImgStm.get({
@@ -46,6 +54,8 @@ export const addNewImage = sql.transaction(
 			updateTeamAvatarStm.run({ avatarImgId: img.id, teamId });
 		} else if (type === "team-banner") {
 			updateTeamBannerStm.run({ bannerImgId: img.id, teamId });
+		} else if (type === "org-pfp") {
+			updateOrganizationAvatarStm.run({ avatarImgId: img.id, organizationId });
 		}
 
 		return img;

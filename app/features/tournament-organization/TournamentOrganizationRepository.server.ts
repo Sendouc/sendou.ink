@@ -38,12 +38,18 @@ export function create(args: CreateArgs) {
 export function findBySlug(slug: string) {
 	return db
 		.selectFrom("TournamentOrganization")
+		.leftJoin(
+			"UserSubmittedImage",
+			"UserSubmittedImage.id",
+			"TournamentOrganization.avatarImgId",
+		)
 		.select(({ eb }) => [
 			"TournamentOrganization.id",
 			"TournamentOrganization.name",
 			"TournamentOrganization.description",
 			"TournamentOrganization.socials",
 			"TournamentOrganization.slug",
+			"UserSubmittedImage.url as avatarUrl",
 			jsonArrayFrom(
 				eb
 					.selectFrom("TournamentOrganizationMember")
@@ -89,6 +95,27 @@ export function findBySlug(slug: string) {
 		])
 		.where("TournamentOrganization.slug", "=", slug)
 		.executeTakeFirst();
+}
+
+export function findByOrganizerUserId(userId: number) {
+	return db
+		.selectFrom("TournamentOrganizationMember")
+		.innerJoin(
+			"TournamentOrganization",
+			"TournamentOrganization.id",
+			"TournamentOrganizationMember.organizationId",
+		)
+		.select(["TournamentOrganization.id", "TournamentOrganization.name"])
+		.where("TournamentOrganizationMember.userId", "=", userId)
+		.where((eb) =>
+			eb("TournamentOrganizationMember.role", "=", "ADMIN").or(
+				"TournamentOrganizationMember.role",
+				"=",
+				"ORGANIZER",
+			),
+		)
+		.orderBy("TournamentOrganization.id asc")
+		.execute();
 }
 
 interface FindEventsByMonthArgs {

@@ -37,6 +37,39 @@ export async function findById(id: number) {
 			"CalendarEvent.name",
 			"CalendarEvent.description",
 			"CalendarEventDate.startTime",
+			jsonObjectFrom(
+				eb
+					.selectFrom("TournamentOrganization")
+					.innerJoin(
+						"UserSubmittedImage",
+						"TournamentOrganization.avatarImgId",
+						"UserSubmittedImage.id",
+					)
+					.select(({ eb: innerEb }) => [
+						"TournamentOrganization.id",
+						"TournamentOrganization.name",
+						"TournamentOrganization.slug",
+						"UserSubmittedImage.url as avatarUrl",
+						jsonArrayFrom(
+							innerEb
+								.selectFrom("TournamentOrganizationMember")
+								.select([
+									"TournamentOrganizationMember.userId",
+									"TournamentOrganizationMember.role",
+								])
+								.whereRef(
+									"TournamentOrganizationMember.organizationId",
+									"=",
+									"TournamentOrganization.id",
+								),
+						).as("members"),
+					])
+					.whereRef(
+						"TournamentOrganization.id",
+						"=",
+						"CalendarEvent.organizationId",
+					),
+			).as("organization"),
 			eb
 				.selectFrom("UnvalidatedUserSubmittedImage")
 				.select(["UnvalidatedUserSubmittedImage.url"])

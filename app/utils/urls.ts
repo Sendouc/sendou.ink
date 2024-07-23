@@ -14,7 +14,6 @@ import type {
 import type { ArtSource } from "~/features/art/art-types";
 import type { AuthErrorCode } from "~/features/auth/core/errors";
 import { serializeBuild } from "~/features/build-analyzer";
-import type { ImageUploadType } from "~/features/img-upload";
 import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
@@ -41,7 +40,9 @@ const staticAssetsUrl = ({
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
 const USER_SUBMITTED_IMAGE_ROOT =
-	"https://sendou.nyc3.cdn.digitaloceanspaces.com";
+	process.env.NODE_ENV === "development"
+		? "https://sendou-test.ams3.digitaloceanspaces.com"
+		: "https://sendou.nyc3.cdn.digitaloceanspaces.com";
 export const userSubmittedImage = (fileName: string) =>
 	`${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
 // images with https are not hosted on spaces, this is used for local development
@@ -292,10 +293,13 @@ export const tournamentStreamsPage = (tournamentId: number) => {
 	return `/to/${tournamentId}/streams`;
 };
 
-export const tournamentOrganizationPage = (organizationSlug: string) =>
-	`/org/${organizationSlug}`;
+export const tournamentOrganizationPage = ({
+	organizationSlug,
+	tournamentName,
+}: { organizationSlug: string; tournamentName?: string }) =>
+	`/org/${organizationSlug}${tournamentName ? `?source=${decodeURIComponent(tournamentName)}` : ""}`;
 export const tournamentOrganizationEditPage = (organizationSlug: string) =>
-	`${tournamentOrganizationPage(organizationSlug)}/edit`;
+	`${tournamentOrganizationPage({ organizationSlug })}/edit`;
 
 export const sendouQInviteLink = (inviteCode: string) =>
 	`${SENDOUQ_PAGE}?${JOIN_CODE_SEARCH_PARAM_KEY}=${inviteCode}`;
@@ -339,8 +343,14 @@ export const objectDamageCalculatorPage = (weaponId?: MainWeaponId) =>
 		typeof weaponId === "number" ? `?weapon=${weaponId}` : ""
 	}`;
 
-export const uploadImagePage = (type: ImageUploadType) =>
-	`/upload?type=${type}`;
+export const uploadImagePage = (
+	args:
+		| { type: "team-pfp" | "team-banner" }
+		| { type: "org-pfp"; slug: string },
+) =>
+	args.type === "org-pfp"
+		? `/upload?type=${args.type}&slug=${args.slug}`
+		: `/upload?type=${args.type}`;
 
 export const vodVideoPage = (videoId: number) => `${VODS_PAGE}/${videoId}`;
 

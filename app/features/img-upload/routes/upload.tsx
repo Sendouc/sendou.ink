@@ -1,103 +1,40 @@
-import type {
-	ActionFunctionArgs,
-	LoaderFunctionArgs,
-	UploadHandler,
-} from "@remix-run/node";
-import {
-	unstable_composeUploadHandlers as composeUploadHandlers,
-	unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-	unstable_parseMultipartFormData as parseMultipartFormData,
-	redirect,
-} from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import * as React from "react";
-import { Main } from "~/components/Main";
-
 import Compressor from "compressorjs";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
+import { Main } from "~/components/Main";
 import { requireUser } from "~/features/auth/core/user.server";
 import { findByIdentifier, isTeamOwner } from "~/features/team";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
-import { dateToDatabaseTimestamp } from "~/utils/dates";
 import invariant from "~/utils/invariant";
-import { validate } from "~/utils/remix";
-import { teamPage } from "~/utils/urls";
-import { addNewImage } from "../queries/addNewImage";
 import { countUnvalidatedImg } from "../queries/countUnvalidatedImg.server";
-import { s3UploadHandler } from "../s3.server";
-import {
-	MAX_UNVALIDATED_IMG_COUNT,
-	imgTypeToDimensions,
-	imgTypeToStyle,
-} from "../upload-constants";
+import { imgTypeToDimensions, imgTypeToStyle } from "../upload-constants";
 import type { ImageUploadType } from "../upload-types";
 import { requestToImgType } from "../upload-utils";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-	const user = await requireUser(request);
-	const team = await TeamRepository.findByUserId(user.id);
-
-	const validatedType = requestToImgType(request);
-	validate(validatedType, "Invalid image type");
-
-	validate(team, "You must be on a team to upload images");
-	const detailed = findByIdentifier(team.customUrl);
-	validate(
-		detailed && isTeamOwner({ team: detailed.team, user }),
-		"You must be the team owner to upload images",
-	);
-
-	// TODO: graceful error handling when uploading many images
-	validate(
-		countUnvalidatedImg(user.id) < MAX_UNVALIDATED_IMG_COUNT,
-		"Too many unvalidated images",
-	);
-
-	const uploadHandler: UploadHandler = composeUploadHandlers(
-		s3UploadHandler(),
-		createMemoryUploadHandler(),
-	);
-	const formData = await parseMultipartFormData(request, uploadHandler);
-	const imgSrc = formData.get("img") as string | null;
-	invariant(imgSrc);
-
-	const urlParts = imgSrc.split("/");
-	const fileName = urlParts[urlParts.length - 1];
-	invariant(fileName);
-
-	const shouldAutoValidate = Boolean(user.patronTier);
-
-	addNewImage({
-		submitterUserId: user.id,
-		teamId: team.id,
-		type: validatedType,
-		url: fileName,
-		validatedAt: shouldAutoValidate
-			? dateToDatabaseTimestamp(new Date())
-			: null,
-	});
-
-	if (shouldAutoValidate) {
-		throw redirect(teamPage(team.customUrl));
-	}
-
-	return null;
-};
+import { action } from "../actions/upload.server";
+export { action };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const user = await requireUser(request);
-	const team = await TeamRepository.findByUserId(user.id);
 	const validatedType = requestToImgType(request);
 
-	if (!validatedType || !team) {
+	if (!validatedType) {
 		throw redirect("/");
 	}
 
-	const detailed = findByIdentifier(team.customUrl);
+	if (validatedType === "team-pfp" || validatedType === "team-banner") {
+		const team = await TeamRepository.findByUserId(user.id);
+		if (!team) throw redirect("/");
 
-	if (!detailed || !isTeamOwner({ team: detailed.team, user })) {
-		throw redirect("/");
+		const detailed = findByIdentifier(team.customUrl);
+
+		if (!detailed || !isTeamOwner({ team: detailed.team, user })) {
+			throw redirect("/");
+		}
 	}
 
 	return {
@@ -142,16 +79,18 @@ export default function FileUploadPage() {
 						height,
 					})}
 				</div>
-				<div className="text-sm text-lighter">
-					{t("common:upload.commonExplanation")}{" "}
-					{data.unvalidatedImages ? (
-						<span>
-							{t("common:upload.afterExplanation", {
-								count: data.unvalidatedImages,
-							})}
-						</span>
-					) : null}
-				</div>
+				{data.type === "team-banner" || data.type === "team-pfp" ? (
+					<div className="text-sm text-lighter">
+						{t("common:upload.commonExplanation")}{" "}
+						{data.unvalidatedImages ? (
+							<span>
+								{t("common:upload.afterExplanation", {
+									count: data.unvalidatedImages,
+								})}
+							</span>
+						) : null}
+					</div>
+				) : null}
 			</div>
 			<div>
 				<label htmlFor="img-field">{t("common:upload.imageToUpload")}</label>
