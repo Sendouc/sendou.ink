@@ -27,7 +27,7 @@ import invariant from "~/utils/invariant";
 import {
 	type SendouRouteHandle,
 	parseFormData,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import {
@@ -70,7 +70,7 @@ export const action: ActionFunction = async ({ request }) => {
 			401,
 		);
 
-		const data = await parseRequestFormData({
+		const data = await parseRequestPayload({
 			request,
 			schema: editArtSchema,
 		});

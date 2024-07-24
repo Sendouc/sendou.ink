@@ -75,9 +75,8 @@ export function parseSafeSearchParams<T extends z.ZodTypeAny>({
 	return schema.safeParse(Object.fromEntries(url.searchParams));
 }
 
-// xxx: maybe rename?
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
-export async function parseRequestFormData<T extends z.ZodTypeAny>({
+export async function parseRequestPayload<T extends z.ZodTypeAny>({
 	request,
 	schema,
 	parseAsync,

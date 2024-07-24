@@ -2,7 +2,7 @@ import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
 import { valueArrayToDBFormat } from "~/utils/form";
 import {
-	parseRequestFormData,
+	parseRequestPayload,
 	unauthorizedIfFalsy,
 	untranslatedActionError,
 } from "~/utils/remix";
@@ -14,7 +14,7 @@ import { organizationFromParams } from "../tournament-organization-utils.server"
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: organizationEditSchema,
 	});

@@ -18,7 +18,7 @@ import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { canReportTournamentScore } from "~/permissions";
 import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
 	tournamentBracketsPage,
@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 	const user = await requireUser(request);
 	const matchId = matchIdFromParams(params);
 	const match = notFoundIfFalsy(findMatchById(matchId));
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: matchSchema,
 	});

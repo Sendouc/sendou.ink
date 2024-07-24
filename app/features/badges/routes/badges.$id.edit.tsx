@@ -13,7 +13,7 @@ import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { canEditBadgeManagers, canEditBadgeOwners } from "~/permissions";
 import { atOrError } from "~/utils/arrays";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { badgePage } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
@@ -22,7 +22,7 @@ import { editBadgeActionSchema } from "../badges-schemas.server";
 import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "./badges.$id";
 
 export const action: ActionFunction = async ({ request, params }) => {
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: editBadgeActionSchema,
 	});

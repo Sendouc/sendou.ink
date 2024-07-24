@@ -46,7 +46,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { useTimeoutState } from "~/hooks/useTimeoutState";
 import invariant from "~/utils/invariant";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import {
 	navIconUrl,
 	tournamentBracketsPage,
@@ -58,7 +58,7 @@ import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 
 export const action: ActionFunction = async ({ request, params }) => {
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: seedsActionSchema,
 	});

@@ -24,7 +24,7 @@ import {
 import { isVotingActive } from "~/features/plus-voting/core/voting-time";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import invariant from "~/utils/invariant";
-import { parseRequestFormData } from "~/utils/remix";
+import { parseRequestPayload } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
@@ -47,7 +47,7 @@ const votingActionSchema = z.object({
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: votingActionSchema,
 	});

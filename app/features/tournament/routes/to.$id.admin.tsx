@@ -28,7 +28,7 @@ import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import {
 	badRequestIfFalsy,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
@@ -48,7 +48,7 @@ import { useTournament } from "./to.$id";
 
 export const action: ActionFunction = async ({ request, params }) => {
 	const user = await requireUserId(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: adminActionSchema,
 	});

@@ -32,7 +32,7 @@ import { secondsToMinutesNumberTuple } from "~/utils/number";
 import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
-	parseRequestFormData,
+	parseRequestPayload,
 } from "~/utils/remix";
 import { VODS_PAGE, vodVideoPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
@@ -49,7 +49,7 @@ export const handle: SendouRouteHandle = {
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: videoInputSchema,
 	});

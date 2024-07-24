@@ -2,13 +2,13 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { z } from "zod";
 import { requireUser } from "~/features/auth/core/user.server";
 import { isAdmin } from "~/permissions";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { _action, id } from "~/utils/zod";
 import * as LFGRepository from "../LFGRepository.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema,
 	});

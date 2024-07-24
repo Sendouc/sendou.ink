@@ -29,7 +29,7 @@ import { useWindowSize } from "~/hooks/useWindowSize";
 import invariant from "~/utils/invariant";
 import {
 	type SendouRouteHandle,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import { errorIsSqliteForeignKeyConstraintFailure } from "~/utils/sql";
@@ -104,7 +104,7 @@ export const meta: MetaFunction = () => {
 // and when we return null we just force a refresh
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: lookingSchema,
 	});

@@ -19,7 +19,7 @@ import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { useBaseUrl } from "~/hooks/useBaseUrl";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -54,7 +54,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 	validate(isTeamOwner({ team, user }), "Only team owner can manage roster");
 
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: manageRosterSchema,
 	});

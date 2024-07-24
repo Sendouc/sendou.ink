@@ -17,7 +17,7 @@ import type {
 } from "~/modules/in-game-lists/types";
 import { removeDuplicates } from "~/utils/arrays";
 import { logger } from "~/utils/logger";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import type { Nullish } from "~/utils/types";
 import { userBuildsPage } from "~/utils/urls";
 import {
@@ -40,7 +40,7 @@ import {
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: newBuildActionSchema,
 	});

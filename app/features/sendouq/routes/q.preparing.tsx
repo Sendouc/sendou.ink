@@ -15,7 +15,7 @@ import * as QRepository from "~/features/sendouq/QRepository.server";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import invariant from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -55,7 +55,7 @@ export type SendouQPreparingAction = typeof action;
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: preparingSchema,
 	});

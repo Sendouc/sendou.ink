@@ -4,7 +4,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { isMod } from "~/permissions";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
 import { userSubmittedImage } from "~/utils/urls";
 import { countAllUnvalidatedImg } from "../queries/countAllUnvalidatedImg.server";
 import { oneUnvalidatedImage } from "../queries/oneUnvalidatedImage";
@@ -13,7 +13,7 @@ import { validateImageSchema } from "../upload-schemas.server";
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUserId(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		schema: validateImageSchema,
 		request,
 	});

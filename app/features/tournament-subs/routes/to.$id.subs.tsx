@@ -20,7 +20,7 @@ import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import { useTournament } from "~/features/tournament/routes/to.$id";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentRegisterPage, userPage } from "~/utils/urls";
 import { deleteSub } from "../queries/deleteSub.server";
@@ -36,7 +36,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const user = await requireUser(request);
 	const tournamentId = tournamentIdFromParams(params);
 	const tournament = await tournamentFromDB({ tournamentId, user });
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: deleteSubSchema,
 	});

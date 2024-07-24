@@ -6,13 +6,13 @@ import { requireUserId } from "~/features/auth/core/user.server";
 import { refreshBannedCache } from "~/features/ban/core/banned.server";
 import { isAdmin, isMod } from "~/permissions";
 import { logger } from "~/utils/logger";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { _action, actualNumber } from "~/utils/zod";
 import { plusTiersFromVotingAndLeaderboard } from "../core/plus-tier.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: adminActionSchema,
 	});

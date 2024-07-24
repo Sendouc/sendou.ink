@@ -3,7 +3,7 @@ import { redirect } from "@remix-run/node";
 import { z } from "zod";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { LFG_PAGE } from "~/utils/urls";
 import { falsyToNull, id } from "~/utils/zod";
 import * as LFGRepository from "../LFGRepository.server";
@@ -11,7 +11,7 @@ import { LFG, TEAM_POST_TYPES, TIMEZONES } from "../lfg-constants";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema,
 	});

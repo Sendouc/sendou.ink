@@ -36,7 +36,7 @@ import { joinListToNaturalString } from "~/utils/arrays";
 import invariant from "~/utils/invariant";
 import {
 	type SendouRouteHandle,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -101,7 +101,7 @@ const validateCanJoinQ = async (user: { id: number; discordId: string }) => {
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: frontPageSchema,
 	});
