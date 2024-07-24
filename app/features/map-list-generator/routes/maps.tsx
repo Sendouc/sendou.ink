@@ -170,7 +170,7 @@ function useSearchParamPersistedMapPool() {
 				: {
 						pool: newMapPool.serialized,
 					},
-			{ replace: true, state: { scroll: false } },
+			{ replace: true, preventScrollReset: true },
 		);
 	};
 
@@ -179,7 +179,7 @@ function useSearchParamPersistedMapPool() {
 		newSearchParams.delete("readonly");
 		setSearchParams(newSearchParams, {
 			replace: false,
-			state: { scroll: false },
+			preventScrollReset: true,
 		});
 	};
 

@@ -350,7 +350,7 @@ export default function WeaponsBuildsPage() {
 						className="m-0-auto"
 						size="tiny"
 						to={loadMoreLink()}
-						state={{ scroll: false }}
+						preventScrollReset
 					>
 						{t("common:actions.loadMore")}
 					</LinkButton>
