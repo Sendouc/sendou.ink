@@ -63,7 +63,7 @@ export function useAnalyzeBuild() {
 				effect: newEffects,
 				focused: String(newFocused),
 			},
-			{ replace: true, state: { scroll: false } },
+			{ replace: true, preventScrollReset: true },
 		);
 	};
 

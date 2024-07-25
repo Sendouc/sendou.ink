@@ -1136,11 +1136,36 @@ export class Tournament {
 			});
 	}
 
+	isAdmin(user: OptionalIdObject) {
+		if (!user) return false;
+		if (isAdmin(user)) return true;
+
+		if (
+			this.ctx.organization?.members.some(
+				(member) => member.userId === user.id && member.role === "ADMIN",
+			)
+		) {
+			return true;
+		}
+
+		return this.ctx.author.id === user.id;
+	}
+
 	isOrganizer(user: OptionalIdObject) {
 		if (!user) return false;
 		if (isAdmin(user)) return true;
 
 		if (this.ctx.author.id === user.id) return true;
+
+		if (
+			this.ctx.organization?.members.some(
+				(member) =>
+					member.userId === user.id &&
+					["ADMIN", "ORGANIZER"].includes(member.role),
+			)
+		) {
+			return true;
+		}
 
 		return this.ctx.staff.some(
 			(staff) => staff.id === user.id && staff.role === "ORGANIZER",
@@ -1153,16 +1178,19 @@ export class Tournament {
 
 		if (this.ctx.author.id === user.id) return true;
 
+		if (
+			this.ctx.organization?.members.some(
+				(member) =>
+					member.userId === user.id &&
+					["ADMIN", "ORGANIZER", "STREAMER"].includes(member.role),
+			)
+		) {
+			return true;
+		}
+
 		return this.ctx.staff.some(
 			(staff) =>
 				staff.id === user.id && ["ORGANIZER", "STREAMER"].includes(staff.role),
 		);
-	}
-
-	isAdmin(user: OptionalIdObject) {
-		if (!user) return false;
-		if (isAdmin(user)) return true;
-
-		return this.ctx.author.id === user.id;
 	}
 }

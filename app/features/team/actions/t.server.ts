@@ -1,7 +1,7 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { mySlugify, teamPage } from "~/utils/urls";
 import { allTeams } from "../queries/allTeams.server";
 import { createNewTeam } from "../queries/createNewTeam.server";
@@ -9,7 +9,7 @@ import { createTeamSchema } from "../team-schemas.server";
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUserId(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: createTeamSchema,
 	});

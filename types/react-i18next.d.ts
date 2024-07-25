@@ -11,6 +11,7 @@ import type faq from "../public/locales/en/faq.json";
 import type gameMisc from "../public/locales/en/game-misc.json";
 import type gear from "../public/locales/en/gear.json";
 import type lfg from "../public/locales/en/lfg.json";
+import type org from "../public/locales/en/org.json";
 import type q from "../public/locales/en/q.json";
 import type team from "../public/locales/en/team.json";
 import type tournament from "../public/locales/en/tournament.json";
@@ -39,6 +40,7 @@ declare module "react-i18next" {
 			art: typeof art;
 			q: typeof q;
 			lfg: typeof lfg;
+			org: typeof org;
 		};
 	}
 }

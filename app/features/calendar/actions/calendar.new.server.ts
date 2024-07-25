@@ -68,6 +68,7 @@ export const action: ActionFunction = async ({ request }) => {
 	const startTimes = data.date.map((date) => dateToDatabaseTimestamp(date));
 	const commonArgs = {
 		authorId: user.id,
+		organizationId: data.organizationId ?? null,
 		name: data.name,
 		description: data.description,
 		rules: data.rules,
@@ -182,6 +183,7 @@ export const newCalendarEventActionSchema = z
 	.object({
 		eventToEditId: z.preprocess(actualNumber, id.nullish()),
 		tournamentToCopyId: z.preprocess(actualNumber, id.nullish()),
+		organizationId: z.preprocess(actualNumber, id.nullish()),
 		name: z
 			.string()
 			.min(CALENDAR_EVENT.NAME_MIN_LENGTH)

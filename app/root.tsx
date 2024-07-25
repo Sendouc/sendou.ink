@@ -10,6 +10,7 @@ import {
 	Meta,
 	Outlet,
 	Scripts,
+	ScrollRestoration,
 	type ShouldRevalidateFunction,
 	useLoaderData,
 	useMatches,
@@ -24,7 +25,6 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import { cache, ttl } from "~/utils/cache.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { Catcher } from "./components/Catcher";
-import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { Layout } from "./components/layout";
 import {
 	CUSTOMIZED_CSS_VARS_NAME,
@@ -184,7 +184,7 @@ function Document({
 						{children}
 					</Layout>
 				</React.StrictMode>
-				<ConditionalScrollRestoration />
+				<ScrollRestoration />
 				<Scripts />
 			</body>
 		</html>
@@ -223,6 +223,7 @@ export const namespaceJsonsToPreloadObj: Record<
 	art: true,
 	q: true,
 	lfg: true,
+	org: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 

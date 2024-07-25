@@ -1978,6 +1978,7 @@ export const PADDLING_POOL_257 = () =>
 		},
 		ctx: {
 			id: 27,
+			organization: null,
 			eventId: 1352,
 			settings: {
 				bracketProgression: [
@@ -7884,6 +7885,7 @@ export const PADDLING_POOL_255 = () =>
 		},
 		ctx: {
 			id: 18,
+			organization: null,
 			eventId: 1286,
 			settings: {
 				bracketProgression: [
@@ -14133,6 +14135,7 @@ export const IN_THE_ZONE_32 = () =>
 		},
 		ctx: {
 			id: 11,
+			organization: null,
 			eventId: 1134,
 			settings: {
 				bracketProgression: [

@@ -37,7 +37,7 @@ import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { nullFilledArray, removeDuplicates } from "~/utils/arrays";
 import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
 	SENDOU_INK_BASE_URL,
@@ -78,7 +78,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 	const user = await requireUser(request);
 	const tournamentId = tournamentIdFromParams(params);
 	const tournament = await tournamentFromDB({ tournamentId, user });
-	const data = await parseRequestFormData({ request, schema: bracketSchema });
+	const data = await parseRequestPayload({ request, schema: bracketSchema });
 	const manager = getServerTournamentManager();
 
 	switch (data._action) {

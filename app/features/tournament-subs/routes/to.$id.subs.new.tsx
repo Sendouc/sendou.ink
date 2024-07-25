@@ -20,7 +20,7 @@ import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
 	type SendouRouteHandle,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import { tournamentSubsPage } from "~/utils/urls";
@@ -37,7 +37,7 @@ export const handle: SendouRouteHandle = {
 
 export const action: ActionFunction = async ({ params, request }) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: subSchema,
 	});

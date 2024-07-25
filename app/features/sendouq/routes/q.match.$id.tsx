@@ -62,7 +62,7 @@ import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { safeNumberParse } from "~/utils/number";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
 import { inGameNameWithoutDiscriminator, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
@@ -141,7 +141,7 @@ export const handle: SendouRouteHandle = {
 export const action = async ({ request, params }: ActionFunctionArgs) => {
 	const matchId = matchIdFromParams(params);
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: matchSchema,
 	});

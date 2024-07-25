@@ -1,6 +1,6 @@
-import type { ExpressionBuilder, Transaction } from "kysely";
+import type { Expression, ExpressionBuilder, Transaction } from "kysely";
 import { sql } from "kysely";
-import { jsonArrayFrom } from "kysely/helpers/sqlite";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type {
 	CalendarEventAvatarMetadata,
@@ -57,6 +57,25 @@ const withBadgePrizes = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
 	).as("badgePrizes");
 };
 
+function tournamentOrganization(organizationId: Expression<number | null>) {
+	return jsonObjectFrom(
+		db
+			.selectFrom("TournamentOrganization")
+			.innerJoin(
+				"UserSubmittedImage",
+				"TournamentOrganization.avatarImgId",
+				"UserSubmittedImage.id",
+			)
+			.select([
+				"TournamentOrganization.id",
+				"TournamentOrganization.name",
+				"TournamentOrganization.slug",
+				"UserSubmittedImage.url as avatarUrl",
+			])
+			.whereRef("TournamentOrganization.id", "=", organizationId),
+	);
+}
+
 export async function findById({
 	id,
 	includeMapPool = false,
@@ -80,7 +99,7 @@ export async function findById({
 		)
 		.innerJoin("User", "CalendarEvent.authorId", "User.id")
 		.leftJoin("Tournament", "CalendarEvent.tournamentId", "Tournament.id")
-		.select([
+		.select(({ ref }) => [
 			"CalendarEvent.name",
 			"CalendarEvent.description",
 			"CalendarEvent.discordInviteCode",
@@ -99,6 +118,9 @@ export async function findById({
 			"User.discordId",
 			"User.discordAvatar",
 			hasBadge,
+			tournamentOrganization(ref("CalendarEvent.organizationId")).as(
+				"organization",
+			),
 		])
 		.where("CalendarEvent.id", "=", id)
 		.orderBy("CalendarEventDate.startTime", "asc")
@@ -147,7 +169,7 @@ export async function findAllBetweenTwoTimestamps({
 			(join) =>
 				join.onRef("CalendarEventRanks.id", "=", "CalendarEventDate.id"),
 		)
-		.select(({ eb }) => [
+		.select(({ eb, ref }) => [
 			"CalendarEvent.name",
 			"CalendarEvent.discordUrl",
 			"CalendarEvent.bracketUrl",
@@ -158,6 +180,9 @@ export async function findAllBetweenTwoTimestamps({
 			"CalendarEventDate.startTime",
 			"User.username",
 			"CalendarEventRanks.nthAppearance",
+			tournamentOrganization(ref("CalendarEvent.organizationId")).as(
+				"organization",
+			),
 			eb
 				.selectFrom("UserSubmittedImage")
 				.select(["UserSubmittedImage.url"])
@@ -365,6 +390,7 @@ export async function findResultsByEventId(eventId: number) {
 						"User.username",
 						"User.discordId",
 						"User.discordAvatar",
+						"User.customUrl",
 					])
 					.whereRef(
 						"CalendarEventResultPlayer.teamId",
@@ -411,6 +437,7 @@ type CreateArgs = Pick<
 	| "description"
 	| "discordInviteCode"
 	| "bracketUrl"
+	| "organizationId"
 > & {
 	startTimes: Array<Tables["CalendarEventDate"]["startTime"]>;
 	badges: Array<Tables["CalendarEventBadge"]["badgeId"]>;
@@ -520,6 +547,7 @@ export async function create(args: CreateArgs) {
 				discordInviteCode: args.discordInviteCode,
 				bracketUrl: args.bracketUrl,
 				avatarImgId: args.avatarImgId ?? avatarImgId,
+				organizationId: args.organizationId,
 				avatarMetadata: args.avatarMetadata
 					? JSON.stringify(args.avatarMetadata)
 					: null,
@@ -598,6 +626,7 @@ export async function update(args: UpdateArgs) {
 					? JSON.stringify(args.avatarMetadata)
 					: null,
 				avatarImgId: args.avatarImgId ?? avatarImgId,
+				organizationId: args.organizationId,
 			})
 			.where("id", "=", args.eventId)
 			.returning("tournamentId")
