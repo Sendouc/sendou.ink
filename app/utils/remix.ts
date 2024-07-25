@@ -40,12 +40,6 @@ export function badRequestIfFalsy<T>(value: T | null | undefined): T {
 	return value;
 }
 
-export function unauthorizedIfFalsy<T>(value: T | null | undefined): T {
-	if (!value) throw new Response(null, { status: 401 });
-
-	return value;
-}
-
 export function parseSearchParams<T extends z.ZodTypeAny>({
 	request,
 	schema,

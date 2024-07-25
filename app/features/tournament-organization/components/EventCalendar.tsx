@@ -12,6 +12,7 @@ interface EventCalendarProps {
 	fallbackLogoUrl: string;
 }
 
+// TODO: i18n
 const DAY_HEADERS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export function EventCalendar({
