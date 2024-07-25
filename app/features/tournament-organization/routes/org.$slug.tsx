@@ -33,8 +33,6 @@ import "../tournament-organization.css";
 import { loader } from "../loaders/org.$slug.server";
 export { loader };
 
-// xxx: make edit children route of this
-
 export const meta: MetaFunction = (args) => {
 	const data = args.data as SerializeFrom<typeof loader>;
 

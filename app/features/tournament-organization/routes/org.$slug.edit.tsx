@@ -1,5 +1,6 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
@@ -16,19 +17,14 @@ import { UserSearchFormField } from "~/components/form/UserSearchFormField";
 import { TOURNAMENT_ORGANIZATION_ROLES } from "~/db/tables";
 import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { wrapToValueStringArrayWithDefault } from "~/utils/form";
-import type { SendouRouteHandle } from "~/utils/remix";
 import type { Unpacked } from "~/utils/types";
 import { mySlugify, uploadImagePage } from "~/utils/urls";
 import { falsyToNull, id } from "~/utils/zod";
 
-import { useTranslation } from "react-i18next";
 import { action } from "../actions/org.$slug.edit.server";
 import { loader } from "../loaders/org.$slug.edit.server";
-export { loader, action };
-
-export const handle: SendouRouteHandle = {
-	i18n: ["badges", "org"],
-};
+import { handle, meta } from "../routes/org.$slug";
+export { loader, action, handle, meta };
 
 const DESCRIPTION_MAX_LENGTH = 1_000;
 export const organizationEditSchema = z.object({
