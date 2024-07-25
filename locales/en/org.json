@@ -2,7 +2,7 @@
 	"roles.ADMIN": "Admin",
 	"roles.MEMBER": "Member",
 	"roles.ORGANIZER": "Organizer",
-	"roles.STREAMER": "STREAMER",
+	"roles.STREAMER": "Streamer",
 	"events.established.short": "Est.",
 	"events.all": "All tournaments",
 	"events.past": "Past events",
