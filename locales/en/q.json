@@ -120,6 +120,7 @@
 	"looking.rankCalculating": "Less than {{count}} sets played. Rank is still calculating...",
 	"looking.allTiers": "All tiers",
 	"looking.joinQPrompt": "Join the queue to find a group",
+	"looking.range.or": "or",
 
 	"match.header": "Match #{{number}}",
 	"match.spInfo": "SP will be adjusted after both teams report the same result",

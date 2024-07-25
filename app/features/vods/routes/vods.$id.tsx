@@ -8,9 +8,12 @@ import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Button, LinkButton } from "~/components/Button";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
+import { EditIcon } from "~/components/icons/Edit";
+import { TrashIcon } from "~/components/icons/Trash";
 import { useUser } from "~/features/auth/core/user";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
@@ -33,6 +36,9 @@ import type { Vod } from "../vods-types";
 import { canEditVideo } from "../vods-utils";
 
 import "../vods.css";
+
+import { action } from "../actions/vods.$id.server";
+export { action };
 
 export const handle: SendouRouteHandle = {
 	breadcrumb: ({ match }) => {
@@ -79,7 +85,7 @@ export default function VodPage() {
 	const isMounted = useIsMounted();
 	const [autoplay, setAutoplay] = React.useState(false);
 	const data = useLoaderData<typeof loader>();
-	const { t } = useTranslation(["common"]);
+	const { t } = useTranslation(["common", "vods"]);
 	const user = useUser();
 
 	return (
@@ -118,13 +124,30 @@ export default function VodPage() {
 						povUserId:
 							typeof data.vod.pov === "string" ? undefined : data.vod.pov?.id,
 					}) ? (
-						<LinkButton
-							to={newVodPage(data.vod.id)}
-							size="tiny"
-							testId="edit-vod-button"
-						>
-							{t("common:actions.edit")}
-						</LinkButton>
+						<div className="stack horizontal md">
+							<LinkButton
+								to={newVodPage(data.vod.id)}
+								size="tiny"
+								testId="edit-vod-button"
+								icon={<EditIcon />}
+							>
+								{t("common:actions.edit")}
+							</LinkButton>
+							<FormWithConfirm
+								dialogHeading={t("vods:deleteConfirm", {
+									title: data.vod.title,
+								})}
+							>
+								<Button
+									variant="minimal-destructive"
+									size="tiny"
+									type="submit"
+									icon={<TrashIcon />}
+								>
+									{t("common:actions.delete")}
+								</Button>
+							</FormWithConfirm>
+						</div>
 					) : null}
 				</div>
 			</div>

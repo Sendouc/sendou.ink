@@ -163,10 +163,17 @@ export function GroupCard({
 						<div className="q__group__tier-diff-text">
 							±{group.tierRange.diff}
 						</div>
-						<div className="stack sm horizontal items-center text-lg">
-							<TierImage tier={group.tierRange.range[0]} width={38} />
-							/
-							<TierImage tier={group.tierRange.range[1]} width={38} />
+						<div className="stack items-center">
+							<div className="stack sm horizontal items-center text-sm font-bold">
+								<TierImage tier={group.tierRange.range[0]} width={38} />
+								{t("q:looking.range.or")}
+								<TierImage tier={group.tierRange.range[1]} width={38} />
+							</div>
+							{group.isReplay ? (
+								<div className="text-theme-secondary text-uppercase text-xs font-bold">
+									{t("q:looking.replay")}
+								</div>
+							) : null}
 						</div>
 					</div>
 				) : null}

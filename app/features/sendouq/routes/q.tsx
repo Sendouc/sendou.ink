@@ -136,6 +136,7 @@ export const action: ActionFunction = async ({ request }) => {
 				addMember({
 					groupId: groupInvitedTo.id,
 					userId: user.id,
+					role: "MANAGER",
 				});
 				deleteLikesByGroupId(groupInvitedTo.id);
 
