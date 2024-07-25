@@ -27,7 +27,6 @@ export function UserSearchFormField<T extends FieldValues>({
 				control={methods.control}
 				name={name}
 				render={({ field: { onChange, onBlur, value, ref } }) => (
-					// xxx: pass ref so can be focused if missing
 					<UserSearch
 						onChange={(newUser) => onChange(newUser.id)}
 						initialUserId={value}

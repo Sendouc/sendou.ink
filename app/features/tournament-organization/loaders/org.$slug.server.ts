@@ -84,7 +84,6 @@ const searchParamsSchema = z.object({
 	source: z.string().optional(),
 });
 
-// xxx: syncCache & clear after tournament finish & better name
 async function seriesStuff({
 	organizationId,
 	series,
