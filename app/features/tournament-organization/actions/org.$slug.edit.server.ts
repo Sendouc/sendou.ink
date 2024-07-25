@@ -1,10 +1,11 @@
 import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
+import i18next from "~/modules/i18n/i18next.server";
 import { valueArrayToDBFormat } from "~/utils/form";
 import {
+	actionError,
 	parseRequestPayload,
 	unauthorizedIfFalsy,
-	untranslatedActionError,
 } from "~/utils/remix";
 import { tournamentOrganizationPage } from "~/utils/urls";
 import * as TournamentOrganizationRepository from "../TournamentOrganizationRepository.server";
@@ -18,6 +19,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		request,
 		schema: organizationEditSchema,
 	});
+	const t = await i18next.getFixedT(request, ["org"]);
 
 	const organization = await organizationFromParams(params);
 
@@ -28,8 +30,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 			(member) => member.userId === user.id && member.role === "ADMIN",
 		)
 	) {
-		return untranslatedActionError<typeof organizationEditSchema>({
-			msg: "Can't remove yourself as an admin",
+		return actionError<typeof organizationEditSchema>({
+			msg: t("org:edit.form.errors.noUnadmin"),
 			field: "members.root",
 		});
 	}

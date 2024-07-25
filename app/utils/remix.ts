@@ -211,21 +211,17 @@ export function validate(
 	);
 }
 
-export type ActionError =
-	| { error: { type: "i18n"; field: string; msg: string } }
-	| { error: { type: "error"; field: string; msg: string } };
+export type ActionError = { field: string; msg: string; isError: true };
 
-export function untranslatedActionError<T extends z.ZodTypeAny>({
+export function actionError<T extends z.ZodTypeAny>({
 	msg,
 	field,
 }: {
 	msg: string;
 	field: (keyof z.infer<T> & string) | `${keyof z.infer<T> & string}.root`;
 }): ActionError {
-	return { error: { type: "error", msg, field } };
+	return { msg, field, isError: true };
 }
-
-// xxx: implement i18n error
 
 export type Breadcrumb =
 	| {

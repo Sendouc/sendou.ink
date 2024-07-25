@@ -26,14 +26,9 @@ export function MyForm<T extends z.ZodTypeAny>({
 	});
 
 	React.useEffect(() => {
-		if (!fetcher.data?.error) return;
+		if (!fetcher.data?.isError) return;
 
-		const { error } = fetcher.data as ActionError;
-
-		// xxx: implement translated
-		if (error.type === "i18n") {
-			throw new Error("unimplemented");
-		}
+		const error = fetcher.data as ActionError;
 
 		methods.setError(error.field as any, {
 			message: error.msg,
