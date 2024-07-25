@@ -26,13 +26,13 @@ export function UserSearchFormField<T extends FieldValues>({
 			<Controller
 				control={methods.control}
 				name={name}
-				render={({ field: { onChange, onBlur, value } }) => (
-					// xxx: check what happens when API is slow, blank input?
+				render={({ field: { onChange, onBlur, value, ref } }) => (
 					// xxx: pass ref so can be focused if missing
 					<UserSearch
 						onChange={(newUser) => onChange(newUser.id)}
 						initialUserId={value}
 						onBlur={onBlur}
+						ref={ref}
 					/>
 				)}
 			/>
