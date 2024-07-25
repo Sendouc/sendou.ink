@@ -30,8 +30,6 @@ export const handle: SendouRouteHandle = {
 	i18n: ["badges", "org"],
 };
 
-// xxx: translate zod errors?
-
 const DESCRIPTION_MAX_LENGTH = 1_000;
 export const organizationEditSchema = z.object({
 	name: z

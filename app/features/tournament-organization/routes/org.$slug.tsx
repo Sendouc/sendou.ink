@@ -371,7 +371,6 @@ function SeriesButton({
 	);
 }
 
-// xxx: calendar sticky position broken
 function EventsList({ showYear }: { showYear?: boolean }) {
 	const { t } = useTranslation(["org"]);
 	const data = useLoaderData<typeof loader>();
