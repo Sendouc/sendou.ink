@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import type { User } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
-import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { soundPath } from "~/utils/urls";
@@ -305,7 +304,6 @@ export function useChat({
 	revalidates?: boolean;
 }) {
 	const { revalidate } = useRevalidator();
-	const rootLoaderData = useRootLoaderData();
 	const shouldRevalidate = React.useRef<boolean>();
 	const user = useUser();
 
@@ -327,7 +325,7 @@ export function useChat({
 	React.useEffect(() => {
 		if (rooms.length === 0) return;
 
-		const url = `${rootLoaderData.skalopUrl}?${rooms
+		const url = `${import.meta.env.VITE_SKALOP_WS_URL}?${rooms
 			.map((room) => `room=${room.code}`)
 			.join("&")}`;
 		ws.current = new ReconnectingWebSocket(url, [], {
@@ -388,7 +386,7 @@ export function useChat({
 			wsCurrent?.close();
 			setMessages([]);
 		};
-	}, [rooms, onNewMessage, rootLoaderData.skalopUrl, revalidate]);
+	}, [rooms, onNewMessage, revalidate]);
 
 	React.useEffect(() => {
 		// ping every minute to keep connection alive

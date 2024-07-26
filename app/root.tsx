@@ -90,10 +90,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 			locale,
 			theme: themeSession.getTheme(),
 			baseUrl: process.env.BASE_URL!,
-			skalopUrl: process.env.SKALOP_WS_URL!,
 			publisherId: process.env.PLAYWIRE_PUBLISHER_ID,
 			websiteId: process.env.PLAYWIRE_WEBSITE_ID,
-			loginDisabled: process.env.LOGIN_DISABLED === "true",
 			user: user
 				? {
 						username: user.username,

@@ -23,7 +23,6 @@ import {
 	HACKY_resolveThemeColors,
 } from "~/features/tournament/tournament-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import { languages } from "~/modules/i18n/config";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
@@ -45,7 +44,6 @@ import "~/styles/front.css";
 
 export default function FrontPage() {
 	const data = useLoaderData<typeof loader>();
-	const rootLoaderData = useRootLoaderData();
 	const { userTheme } = useTheme();
 	const [filters, setFilters] = React.useState<[string, string]>(
 		navItems[0]?.filters as [string, string],
@@ -59,11 +57,6 @@ export default function FrontPage() {
 
 	return (
 		<Main className="stack lg">
-			{rootLoaderData.loginDisabled && (
-				<div className="text-center text-warning text-xs">
-					Log-in is temporarily disabled due to problems with the Discord API
-				</div>
-			)}
 			<div className="stack horizontal sm">
 				{data.tournaments.map((tournament) => (
 					<TournamentCard key={tournament.id} tournament={tournament} />
@@ -222,7 +215,6 @@ function TournamentCard({
 }
 
 function LogInButton() {
-	const data = useRootLoaderData();
 	const { t } = useTranslation(["common"]);
 	const user = useUser();
 
@@ -241,8 +233,6 @@ function LogInButton() {
 			</Link>
 		);
 	}
-
-	if (data.loginDisabled) return null;
 
 	return (
 		<div className="front__nav-item round">
