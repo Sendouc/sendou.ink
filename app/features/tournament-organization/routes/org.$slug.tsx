@@ -427,7 +427,7 @@ function EventInfo({
 				) : null}
 				<div>
 					<div className="org__event-info__name">{event.name}</div>
-					<time className="org__event-info__time">
+					<time className="org__event-info__time" suppressHydrationWarning>
 						{databaseTimestampToDate(event.startTime).toLocaleString(
 							i18n.language,
 							{

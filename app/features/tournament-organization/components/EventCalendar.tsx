@@ -2,6 +2,7 @@ import type { SerializeFrom } from "@remix-run/node";
 import clsx from "clsx";
 import { LinkButton } from "~/components/Button";
 import type { MonthYear } from "~/features/plus-voting/core";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate, nullPaddedDatesOfMonth } from "~/utils/dates";
 import type { loader } from "../loaders/org.$slug.server";
 
@@ -22,6 +23,7 @@ export function EventCalendar({
 	fallbackLogoUrl,
 }: EventCalendarProps) {
 	const dates = nullPaddedDatesOfMonth({ month, year });
+	const isMounted = useIsMounted();
 
 	return (
 		<div className="org__calendar__container">
@@ -35,8 +37,9 @@ export function EventCalendar({
 				{dates.map((date, i) => {
 					const daysEvents = events.filter(
 						(event) =>
+							isMounted &&
 							databaseTimestampToDate(event.startTime).getDate() ===
-							date?.getDate(),
+								date?.getDate(),
 					);
 
 					return (
