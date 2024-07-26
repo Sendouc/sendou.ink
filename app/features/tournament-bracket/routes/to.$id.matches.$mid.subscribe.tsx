@@ -3,16 +3,18 @@ import { eventStream } from "remix-utils/sse/server";
 
 import { getUserId } from "~/features/auth/core/user.server";
 import { ignoreTransaction } from "~/utils/newrelic.server";
+import { parseParams } from "~/utils/remix";
 import { emitter } from "../core/emitters.server";
-import {
-	matchIdFromParams,
-	matchSubscriptionKey,
-} from "../tournament-bracket-utils";
+import { matchPageParamsSchema } from "../tournament-bracket-schemas.server";
+import { matchSubscriptionKey } from "../tournament-bracket-utils";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	ignoreTransaction();
 	const loggedInUser = await getUserId(request);
-	const matchId = matchIdFromParams(params);
+	const matchId = parseParams({
+		params,
+		schema: matchPageParamsSchema,
+	}).mid;
 
 	return eventStream(request.signal, (send) => {
 		const handler = (args: { eventId: string; userId: number }) => {

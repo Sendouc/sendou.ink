@@ -133,3 +133,9 @@ export const bracketSchema = z.union([
 		bracketIdx,
 	}),
 ]);
+
+export const matchPageParamsSchema = z.object({ mid: z.coerce.number() });
+
+export const tournamentTeamPageParamsSchema = z.object({
+	tid: z.coerce.number(),
+});

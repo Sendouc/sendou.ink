@@ -17,13 +17,6 @@ export function tournamentIdFromParams(params: Params<string>) {
 	return result;
 }
 
-export function tournamentTeamIdFromParams(params: Params<string>) {
-	const result = Number(params.tid);
-	invariant(!Number.isNaN(result), "tid is not a number");
-
-	return result;
-}
-
 export function modesIncluded(
 	tournament: Pick<Tournament, "mapPickingStyle">,
 ): ModeShort[] {
