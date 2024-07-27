@@ -40,7 +40,7 @@ export async function findById(id: number) {
 			jsonObjectFrom(
 				eb
 					.selectFrom("TournamentOrganization")
-					.innerJoin(
+					.leftJoin(
 						"UserSubmittedImage",
 						"TournamentOrganization.avatarImgId",
 						"UserSubmittedImage.id",

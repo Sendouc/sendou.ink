@@ -61,7 +61,7 @@ function tournamentOrganization(organizationId: Expression<number | null>) {
 	return jsonObjectFrom(
 		db
 			.selectFrom("TournamentOrganization")
-			.innerJoin(
+			.leftJoin(
 				"UserSubmittedImage",
 				"TournamentOrganization.avatarImgId",
 				"UserSubmittedImage.id",
