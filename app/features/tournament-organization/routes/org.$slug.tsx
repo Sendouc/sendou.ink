@@ -487,6 +487,12 @@ function EventsPagination({
 }) {
 	if (!series.eventsCount) return null;
 
+	const pagesCount = Math.ceil(
+		series.eventsCount / TOURNAMENT_SERIES_EVENTS_PER_PAGE,
+	);
+
+	if (pagesCount <= 1) return null;
+
 	const [, setSearchParams] = useSearchParams();
 
 	const setPage = (page: number) =>
@@ -500,9 +506,7 @@ function EventsPagination({
 		<Pagination
 			currentPage={series.page}
 			nextPage={() => setPage(series.page + 1)}
-			pagesCount={Math.ceil(
-				series.eventsCount / TOURNAMENT_SERIES_EVENTS_PER_PAGE,
-			)}
+			pagesCount={pagesCount}
 			previousPage={() => setPage(series.page - 1)}
 			setPage={setPage}
 		/>
