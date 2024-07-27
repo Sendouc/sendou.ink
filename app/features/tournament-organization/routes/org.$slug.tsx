@@ -79,17 +79,23 @@ export const handle: SendouRouteHandle = {
 		if (!data) return [];
 
 		return [
-			{
-				imgPath: data.organization.avatarUrl
-					? userSubmittedImage(data.organization.avatarUrl)
-					: BLANK_IMAGE_URL,
-				href: tournamentOrganizationPage({
-					organizationSlug: data.organization.slug,
-				}),
-				type: "IMAGE",
-				text: data.organization.name,
-				rounded: true,
-			},
+			data.organization.avatarUrl
+				? {
+						imgPath: userSubmittedImage(data.organization.avatarUrl),
+						href: tournamentOrganizationPage({
+							organizationSlug: data.organization.slug,
+						}),
+						type: "IMAGE",
+						text: data.organization.name,
+						rounded: true,
+					}
+				: {
+						type: "TEXT",
+						href: tournamentOrganizationPage({
+							organizationSlug: data.organization.slug,
+						}),
+						text: data.organization.name,
+					},
 		];
 	},
 };
