@@ -136,7 +136,7 @@ const findEventsBaseQuery = (organizationId: number) =>
 			"CalendarEvent.id as eventId",
 			"CalendarEvent.name",
 			"CalendarEvent.tournamentId",
-			"CalendarEventDate.startTime",
+			eb.fn.min("CalendarEventDate.startTime").as("startTime"),
 			eb
 				.selectFrom("UserSubmittedImage")
 				.select(["UserSubmittedImage.url"])
@@ -207,7 +207,8 @@ const findEventsBaseQuery = (organizationId: number) =>
 					.where("CalendarEventResultTeam.placement", "=", 1),
 			).as("eventWinners"),
 		])
-		.where("CalendarEvent.organizationId", "=", organizationId);
+		.where("CalendarEvent.organizationId", "=", organizationId)
+		.groupBy("CalendarEvent.id");
 
 const mapEvent = <
 	T extends {
