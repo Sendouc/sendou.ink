@@ -62,7 +62,12 @@ import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { safeNumberParse } from "~/utils/number";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
+import {
+	notFoundIfFalsy,
+	parseParams,
+	parseRequestPayload,
+	validate,
+} from "~/utils/remix";
 import { inGameNameWithoutDiscriminator, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
@@ -93,8 +98,8 @@ import {
 } from "../core/summarizer.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { useRecentlyReportedWeapons } from "../q-hooks";
-import { matchSchema } from "../q-schemas.server";
-import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
+import { matchSchema, qMatchPageParamsSchema } from "../q-schemas.server";
+import { winnersArrayToWinner } from "../q-utils";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { addMapResults } from "../queries/addMapResults.server";
 import { addPlayerResults } from "../queries/addPlayerResults.server";
@@ -139,7 +144,10 @@ export const handle: SendouRouteHandle = {
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-	const matchId = matchIdFromParams(params);
+	const matchId = parseParams({
+		params,
+		schema: qMatchPageParamsSchema,
+	}).id;
 	const user = await requireUser(request);
 	const data = await parseRequestPayload({
 		request,
@@ -400,7 +408,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const user = await getUserId(request);
-	const matchId = matchIdFromParams(params);
+	const matchId = parseParams({
+		params,
+		schema: qMatchPageParamsSchema,
+	}).id;
 	const match = notFoundIfFalsy(await QMatchRepository.findById(matchId));
 
 	const [groupAlpha, groupBravo] = await Promise.all([
