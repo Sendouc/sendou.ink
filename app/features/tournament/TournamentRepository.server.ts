@@ -325,8 +325,14 @@ export async function basicInfoById(id: number) {
 export async function detailedInfoById(id: number) {
 	return db
 		.selectFrom("Tournament")
-		.select(["Tournament.rules"])
-		.where("id", "=", id)
+		.innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
+		.innerJoin(
+			"CalendarEventDate",
+			"CalendarEvent.id",
+			"CalendarEventDate.eventId",
+		)
+		.select(["Tournament.rules", "CalendarEventDate.startTime"])
+		.where("Tournament.id", "=", id)
 		.executeTakeFirst();
 }
 

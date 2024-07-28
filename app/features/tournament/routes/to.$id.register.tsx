@@ -37,6 +37,7 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
 import { filterOutFalsy } from "~/utils/arrays";
+import { databaseTimestampToDate } from "~/utils/dates";
 import invariant from "~/utils/invariant";
 import {
 	LOG_IN_URL,
@@ -64,13 +65,15 @@ import { loader } from "../loaders/to.$id.register.server";
 export { loader, action };
 
 export default function TournamentRegisterPage() {
+	const data = useLoaderData<TournamentRegisterPageLoader>();
 	const user = useUser();
 	const isMounted = useIsMounted();
 	const { i18n } = useTranslation();
 	const tournament = useTournament();
 	const tournamentNew = useTournamentNew();
 
-	const startsAtEvenHour = tournament.ctx.startTime.getMinutes() === 0;
+	const startsAtEvenHour =
+		databaseTimestampToDate(data.tournament.startTime).getMinutes() === 0;
 
 	const showAvatarPendingApprovalText =
 		tournament.ctx.logoUrl &&
@@ -122,7 +125,9 @@ export default function TournamentRegisterPage() {
 						<div className="stack horizontal xs items-center">
 							<ClockIcon className="tournament__info__icon" />{" "}
 							{isMounted
-								? tournament.ctx.startTime.toLocaleString(i18n.language, {
+								? databaseTimestampToDate(
+										data.tournament.startTime,
+									).toLocaleString(i18n.language, {
 										timeZoneName: "short",
 										minute: startsAtEvenHour ? undefined : "numeric",
 										hour: "numeric",
