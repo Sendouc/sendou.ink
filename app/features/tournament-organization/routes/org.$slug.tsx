@@ -11,6 +11,7 @@ import { Placement } from "~/components/Placement";
 import { EditIcon } from "~/components/icons/Edit";
 import { useUser } from "~/features/auth/core/user";
 import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampNow, databaseTimestampToDate } from "~/utils/dates";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -378,10 +379,20 @@ function SeriesButton({
 function EventsList({ showYear }: { showYear?: boolean }) {
 	const { t } = useTranslation(["org"]);
 	const data = useLoaderData<typeof loader>();
+	const isMounted = useIsMounted();
+
+	if (!isMounted) return null;
 
 	const now = databaseTimestampNow();
-	const pastEvents = data.events.filter((event) => event.startTime < now);
-	const upcomingEvents = data.events.filter((event) => event.startTime >= now);
+
+	const thisMonthsEvents = data.events.filter(
+		(event) =>
+			databaseTimestampToDate(event.startTime).getMonth() === data.month,
+	);
+	const pastEvents = thisMonthsEvents.filter((event) => event.startTime < now);
+	const upcomingEvents = thisMonthsEvents.filter(
+		(event) => event.startTime >= now,
+	);
 
 	return (
 		<div className="w-full stack xs">
