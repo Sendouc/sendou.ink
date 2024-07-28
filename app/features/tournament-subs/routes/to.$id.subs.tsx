@@ -19,7 +19,10 @@ import { useUser } from "~/features/auth/core/user";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
-import { useTournament } from "~/features/tournament/routes/to.$id";
+import {
+	useTournament,
+	useTournamentNew,
+} from "~/features/tournament/routes/to.$id";
 import { parseRequestPayload, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentRegisterPage, userPage } from "~/utils/urls";
@@ -98,6 +101,7 @@ export default function TournamentSubsPage() {
 	const user = useUser();
 	const data = useLoaderData<typeof loader>();
 	const tournament = useTournament();
+	const tournamentNew = useTournamentNew();
 
 	if (tournament.everyBracketOver) {
 		return <Redirect to={tournamentRegisterPage(tournament.ctx.id)} />;
@@ -113,6 +117,16 @@ export default function TournamentSubsPage() {
 			{data.subs.map((sub) => {
 				return <SubInfoSection key={sub.userId} sub={sub} />;
 			})}
+			{data.subs.length === 0 && (
+				<div className="text-lighter text-lg font-semi-bold text-center">
+					No sub posts yet
+				</div>
+			)}
+			{data.subs.length !== tournamentNew.subsCount && (
+				<div className="text-lighter text-xs text-center">
+					Results omitted due to posts' visibility settings
+				</div>
+			)}
 		</div>
 	);
 }

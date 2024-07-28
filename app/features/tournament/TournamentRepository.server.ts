@@ -277,6 +277,11 @@ export async function basicInfoById(id: number) {
 			"CalendarEvent.name",
 			"CalendarEvent.description",
 			"UserSubmittedImage.url as logoUrl",
+			eb
+				.selectFrom("TournamentSub")
+				.select(({ fn }) => fn.countAll<number>().as("count"))
+				.where("TournamentSub.tournamentId", "=", id)
+				.as("subsCount"),
 			jsonObjectFrom(
 				eb
 					.selectFrom("TournamentOrganization")
@@ -298,6 +303,7 @@ export async function basicInfoById(id: number) {
 			).as("organization"),
 		])
 		.where("Tournament.id", "=", id)
+		.$narrowType<{ subsCount: NotNull }>()
 		.executeTakeFirst();
 
 	if (!row) return null;

@@ -23,7 +23,6 @@ import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { assertUnreachable } from "~/utils/types";
 import {
 	tournamentOrganizationPage,
 	tournamentPage,
@@ -178,28 +177,6 @@ export default function TournamentLayout() {
 
 	const onBracketsPage = location.pathname.includes("brackets");
 
-	const subsCount = () =>
-		tournament.ctx.subCounts.reduce((acc, cur) => {
-			if (cur.visibility === "ALL") return acc + cur.count;
-
-			const userPlusTier = user?.plusTier ?? 4;
-
-			switch (cur.visibility) {
-				case "+1": {
-					return userPlusTier === 1 ? acc + cur.count : acc;
-				}
-				case "+2": {
-					return userPlusTier <= 2 ? acc + cur.count : acc;
-				}
-				case "+3": {
-					return userPlusTier <= 3 ? acc + cur.count : acc;
-				}
-				default: {
-					assertUnreachable(cur.visibility);
-				}
-			}
-		}, 0);
-
 	return (
 		<Main bigger={onBracketsPage}>
 			<SubNav>
@@ -214,7 +191,7 @@ export default function TournamentLayout() {
 				</SubNavLink>
 				{!tournament.everyBracketOver && tournament.subsFeatureEnabled && (
 					<SubNavLink to="subs" end={false}>
-						{t("tournament:tabs.subs", { count: subsCount() })}
+						{t("tournament:tabs.subs", { count: data.tournamentNew.subsCount })}
 					</SubNavLink>
 				)}
 				{tournament.hasStarted && !tournament.everyBracketOver ? (
@@ -234,6 +211,7 @@ export default function TournamentLayout() {
 					context={
 						{
 							tournament,
+							tournamentNew: data.tournamentNew,
 							bracketExpanded,
 							setBracketExpanded,
 							streamingParticipants: data.streamingParticipants,
@@ -248,6 +226,7 @@ export default function TournamentLayout() {
 
 type TournamentContext = {
 	tournament: Tournament;
+	tournamentNew: SerializeFrom<typeof loader>["tournamentNew"];
 	bracketExpanded: boolean;
 	streamingParticipants: number[];
 	setBracketExpanded: (expanded: boolean) => void;
@@ -257,6 +236,11 @@ type TournamentContext = {
 
 export function useTournament() {
 	return useOutletContext<TournamentContext>().tournament;
+}
+
+// xxx: rename
+export function useTournamentNew() {
+	return useOutletContext<TournamentContext>().tournamentNew;
 }
 
 export function useBracketExpanded() {
