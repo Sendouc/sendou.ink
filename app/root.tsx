@@ -101,6 +101,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 						isArtist: user.isArtist,
 						isVideoAdder: user.isVideoAdder,
 						inGameName: user.inGameName,
+						// xxx: remove extras here but especially FC
 						friendCode: user.friendCode,
 						languages: user.languages ? user.languages.split(",") : [],
 					}

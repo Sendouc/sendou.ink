@@ -263,6 +263,54 @@ export async function findById(id: number) {
 	};
 }
 
+export async function basicInfoById(id: number) {
+	const row = await db
+		.selectFrom("Tournament")
+		.innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
+		.leftJoin(
+			"UserSubmittedImage",
+			"CalendarEvent.avatarImgId",
+			"UserSubmittedImage.id",
+		)
+		.select(({ eb }) => [
+			"Tournament.id",
+			"CalendarEvent.name",
+			"CalendarEvent.description",
+			"UserSubmittedImage.url as logoUrl",
+			jsonObjectFrom(
+				eb
+					.selectFrom("TournamentOrganization")
+					.leftJoin(
+						"UserSubmittedImage",
+						"TournamentOrganization.avatarImgId",
+						"UserSubmittedImage.id",
+					)
+					.select([
+						"TournamentOrganization.name",
+						"TournamentOrganization.slug",
+						"UserSubmittedImage.url as avatarUrl",
+					])
+					.whereRef(
+						"TournamentOrganization.id",
+						"=",
+						"CalendarEvent.organizationId",
+					),
+			).as("organization"),
+		])
+		.where("Tournament.id", "=", id)
+		.executeTakeFirst();
+
+	if (!row) return null;
+
+	return {
+		...row,
+		logoUrl: undefined,
+		logoSrc: row.logoUrl
+			? userSubmittedImage(row.logoUrl)
+			: `${process.env.BASE_URL}${HACKY_resolvePicture(row)}`,
+	};
+}
+
 export async function findTOSetMapPoolById(tournamentId: number) {
 	return (
 		await db

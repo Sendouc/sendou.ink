@@ -1,14 +1,12 @@
 import type { TFunction } from "i18next";
 import type { TournamentRoundMaps } from "~/db/tables";
 import type { TournamentMatch } from "~/db/types";
-import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import {
 	seededRandom,
 	sourceTypes,
 } from "~/modules/tournament-map-list-generator";
-import { removeDuplicates } from "~/utils/arrays";
 import { sumArray } from "~/utils/number";
 import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
 import type { TournamentLoaderData } from "../tournament/routes/to.$id";
@@ -104,59 +102,6 @@ export function fillWithNullTillPowerOfTwo<T>(arr: T[]) {
 
 	return [...arr, ...new Array(nullsToAdd).fill(null)];
 }
-
-export function everyMatchIsOver(
-	bracket: Pick<TournamentManagerDataSet, "match">,
-) {
-	// winners, losers & grand finals+bracket reset are all different stages
-	const isDoubleElimination =
-		removeDuplicates(bracket.match.map((match) => match.group_id)).length === 3;
-
-	// tournament didn't start yet
-	if (bracket.match.length === 0) return false;
-
-	let lastWinner = -1;
-	for (const [i, match] of bracket.match.entries()) {
-		// special case - bracket reset might not be played depending on who wins in the grands
-		const isLast = i === bracket.match.length - 1;
-		if (isLast && lastWinner === 1 && isDoubleElimination) {
-			continue;
-		}
-		// BYE
-		if (match.opponent1 === null || match.opponent2 === null) {
-			continue;
-		}
-		if (
-			match.opponent1?.result !== "win" &&
-			match.opponent2?.result !== "win"
-		) {
-			return false;
-		}
-
-		lastWinner = match.opponent1?.result === "win" ? 1 : 2;
-	}
-
-	return true;
-}
-
-export function everyBracketOver(tournament: TournamentManagerDataSet) {
-	const stageIds = tournament.stage.map((stage) => stage.id);
-
-	for (const stageId of stageIds) {
-		const matches = tournament.match.filter(
-			(match) => match.stage_id === stageId,
-		);
-
-		if (!everyMatchIsOver({ match: matches })) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-export const bracketHasStarted = (bracket: TournamentManagerDataSet) =>
-	bracket.stage[0] && bracket.stage[0].id !== 0;
 
 export function matchIsLocked({
 	tournament,

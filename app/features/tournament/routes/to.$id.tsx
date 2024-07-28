@@ -21,7 +21,7 @@ import { tournamentDataCached } from "~/features/tournament-bracket/core/Tournam
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
-import type { SendouRouteHandle } from "~/utils/remix";
+import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -29,16 +29,13 @@ import {
 	tournamentPage,
 	userSubmittedImage,
 } from "~/utils/urls";
-import { streamsByTournamentId } from "../core/streams.server";
-import {
-	HACKY_resolvePicture,
-	tournamentIdFromParams,
-} from "../tournament-utils";
+import { tournamentIdFromParams } from "../tournament-utils";
 
 import "../tournament.css";
 import "~/styles/maps.css";
 import "~/styles/calendar-event.css";
 
+// xxx: make never revalidate
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
 	const navigatedToMatchPage =
 		typeof args.nextParams.mid === "string" && args.formMethod !== "POST";
@@ -53,7 +50,7 @@ export const meta: MetaFunction = (args) => {
 
 	if (!data) return [];
 
-	const title = makeTitle(data.tournament.ctx.name);
+	const title = makeTitle(data.tournamentNew.name);
 
 	return [
 		{ title },
@@ -63,7 +60,8 @@ export const meta: MetaFunction = (args) => {
 		},
 		{
 			property: "og:description",
-			content: data.tournament.ctx.description,
+			// xxx: strip markdown?
+			content: data.tournamentNew.description,
 		},
 		{
 			property: "og:type",
@@ -71,7 +69,7 @@ export const meta: MetaFunction = (args) => {
 		},
 		{
 			property: "og:image",
-			content: data.tournament.ctx.logoSrc,
+			content: data.tournamentNew.logoSrc,
 		},
 		// Twitter special snowflake tags, see https://developer.x.com/en/docs/twitter-for-websites/cards/overview/summary
 		{
@@ -97,13 +95,13 @@ export const handle: SendouRouteHandle = {
 		if (!data) return [];
 
 		return [
-			data.tournament.ctx.organization?.avatarUrl
+			data.tournamentNew.organization?.avatarUrl
 				? {
 						imgPath: userSubmittedImage(
-							data.tournament.ctx.organization.avatarUrl,
+							data.tournamentNew.organization.avatarUrl,
 						),
 						href: tournamentOrganizationPage({
-							organizationSlug: data.tournament.ctx.organization.slug,
+							organizationSlug: data.tournamentNew.organization.slug,
 						}),
 						type: "IMAGE" as const,
 						text: "",
@@ -111,12 +109,10 @@ export const handle: SendouRouteHandle = {
 					}
 				: null,
 			{
-				imgPath: data.tournament.ctx.logoUrl
-					? userSubmittedImage(data.tournament.ctx.logoUrl)
-					: HACKY_resolvePicture(data.tournament.ctx),
-				href: tournamentPage(data.tournament.ctx.id),
+				imgPath: data.tournamentNew.logoSrc,
+				href: tournamentPage(data.tournamentNew.id),
 				type: "IMAGE" as const,
-				text: data.tournament.ctx.name,
+				text: data.tournamentNew.name,
 				rounded: true,
 			},
 		].filter((crumb) => crumb !== null);
@@ -143,13 +139,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const showFriendCodes = tournamentStartedInTheLastMonth && isTournamentAdmin;
 
 	return {
+		// xxx: remove
 		tournament,
 		// streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
-		// TODO: resolve directly in the brackets loader: isStreamed: boolean
+		// xxx: remove, resolve directly in the brackets loader: isStreamed: boolean
 		streamingParticipants: [] as number[],
+		// xxx: remove
 		friendCodes: showFriendCodes
 			? await TournamentRepository.friendCodesByTournamentId(tournamentId)
 			: undefined,
+		// xxx: rename
+		tournamentNew: notFoundIfFalsy(
+			await TournamentRepository.basicInfoById(tournamentId),
+		),
 	};
 };
 
