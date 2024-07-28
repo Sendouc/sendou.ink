@@ -142,7 +142,7 @@ export function dateToYYYYMMDD(date: Date) {
 // same as datesOfMonth but contains null at the start to start with monday
 export function nullPaddedDatesOfMonth({ month, year }: MonthYear) {
 	const dates = datesOfMonth({ month, year });
-	const firstDay = dates[0].getUTCDate();
+	const firstDay = dates[0].getUTCDay();
 	const nulls = Array.from(
 		{ length: firstDay === 0 ? 6 : firstDay - 1 },
 		() => null,
