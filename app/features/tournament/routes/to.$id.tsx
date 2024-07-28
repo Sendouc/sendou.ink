@@ -19,8 +19,6 @@ import { getUser } from "~/features/auth/core/user.server";
 import { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { tournamentDataCached } from "~/features/tournament-bracket/core/Tournament.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { isAdmin } from "~/permissions";
-import { databaseTimestampToDate } from "~/utils/dates";
 import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
@@ -126,27 +124,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 	const tournament = await tournamentDataCached({ tournamentId, user });
 
-	const tournamentStartedInTheLastMonth =
-		databaseTimestampToDate(tournament.ctx.startTime) >
-		new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-	const isTournamentAdmin =
-		tournament.ctx.author.id === user?.id ||
-		tournament.ctx.staff.some(
-			(s) => s.role === "ORGANIZER" && s.id === user?.id,
-		) ||
-		isAdmin(user);
-	const showFriendCodes = tournamentStartedInTheLastMonth && isTournamentAdmin;
-
 	return {
 		// xxx: remove
 		tournament,
 		// streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
 		// xxx: remove, resolve directly in the brackets loader: isStreamed: boolean
 		streamingParticipants: [] as number[],
-		// xxx: remove
-		friendCodes: showFriendCodes
-			? await TournamentRepository.friendCodesByTournamentId(tournamentId)
-			: undefined,
 		// xxx: rename
 		tournamentNew: notFoundIfFalsy(
 			await TournamentRepository.basicInfoById(tournamentId),
@@ -181,7 +164,9 @@ export default function TournamentLayout() {
 		<Main bigger={onBracketsPage}>
 			<SubNav>
 				<SubNavLink to="register" data-testid="register-tab" prefetch="intent">
-					{tournament.hasStarted ? "Info" : t("tournament:tabs.register")}
+					{data.tournamentNew.hasStarted
+						? "Info"
+						: t("tournament:tabs.register")}
 				</SubNavLink>
 				<SubNavLink to="brackets" data-testid="brackets-tab" prefetch="render">
 					{t("tournament:tabs.brackets")}
@@ -194,10 +179,10 @@ export default function TournamentLayout() {
 						{t("tournament:tabs.subs", { count: data.tournamentNew.subsCount })}
 					</SubNavLink>
 				)}
-				{tournament.hasStarted && !tournament.everyBracketOver ? (
+				{data.tournamentNew.hasStarted && !tournament.everyBracketOver ? (
 					<SubNavLink to="streams">{t("tournament:tabs.streams")}</SubNavLink>
 				) : null}
-				{tournament.isOrganizer(user) && !tournament.hasStarted && (
+				{tournament.isOrganizer(user) && !data.tournamentNew.hasStarted && (
 					<SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
 				)}
 				{tournament.isOrganizer(user) && !tournament.everyBracketOver && (
@@ -215,7 +200,6 @@ export default function TournamentLayout() {
 							bracketExpanded,
 							setBracketExpanded,
 							streamingParticipants: data.streamingParticipants,
-							friendCodes: data.friendCodes,
 						} satisfies TournamentContext
 					}
 				/>
@@ -231,7 +215,6 @@ type TournamentContext = {
 	streamingParticipants: number[];
 	setBracketExpanded: (expanded: boolean) => void;
 	friendCode?: string;
-	friendCodes?: SerializeFrom<typeof loader>["friendCodes"];
 };
 
 export function useTournament() {
@@ -252,8 +235,4 @@ export function useBracketExpanded() {
 
 export function useStreamingParticipants() {
 	return useOutletContext<TournamentContext>().streamingParticipants;
-}
-
-export function useTournamentFriendCodes() {
-	return useOutletContext<TournamentContext>().friendCodes;
 }

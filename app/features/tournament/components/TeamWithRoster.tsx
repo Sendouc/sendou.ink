@@ -8,7 +8,7 @@ import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tour
 import { databaseTimestampToDate } from "~/utils/dates";
 import { userPage } from "~/utils/urls";
 import { accountCreatedInTheLastSixMonths } from "~/utils/users";
-import { useTournament, useTournamentFriendCodes } from "../routes/to.$id";
+import { useTournament } from "../routes/to.$id";
 
 export function TeamWithRoster({
 	team,
@@ -25,7 +25,6 @@ export function TeamWithRoster({
 }) {
 	const user = useUser();
 	const tournament = useTournament();
-	const friendCodes = useTournamentFriendCodes();
 
 	const teamLogoSrc = tournament.tournamentTeamLogoSrc(team);
 
@@ -54,7 +53,9 @@ export function TeamWithRoster({
 				</div>
 				<ul className="tournament__team-with-roster__members">
 					{team.members.map((member) => {
-						const friendCode = friendCodes?.[member.userId];
+						// xxx: readd friend code
+						// const friendCode = friendCodes?.[member.userId];
+						const friendCode = null;
 						const isSub =
 							databaseTimestampToDate(member.createdAt) >
 							tournament.ctx.startTime;

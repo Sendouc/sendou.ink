@@ -272,11 +272,16 @@ export async function basicInfoById(id: number) {
 			"CalendarEvent.avatarImgId",
 			"UserSubmittedImage.id",
 		)
-		.select(({ eb }) => [
+		.select(({ eb, exists, selectFrom }) => [
 			"Tournament.id",
 			"CalendarEvent.name",
 			"CalendarEvent.description",
 			"UserSubmittedImage.url as logoUrl",
+			exists(
+				selectFrom("TournamentStage")
+					.select("TournamentStage.id")
+					.where("TournamentStage.tournamentId", "=", id),
+			).as("hasStarted"),
 			eb
 				.selectFrom("TournamentSub")
 				.select(({ fn }) => fn.countAll<number>().as("count"))
@@ -452,34 +457,6 @@ export function checkedInTournamentTeamsByBracket({
 		.where("TournamentTeamCheckIn.bracketIdx", "=", bracketIdx)
 		.where("TournamentTeam.tournamentId", "=", tournamentId)
 		.execute();
-}
-
-export async function friendCodesByTournamentId(tournamentId: number) {
-	const values = await db
-		.selectFrom("TournamentTeam")
-		.innerJoin(
-			"TournamentTeamMember",
-			"TournamentTeam.id",
-			"TournamentTeamMember.tournamentTeamId",
-		)
-		.innerJoin(
-			"UserFriendCode",
-			"TournamentTeamMember.userId",
-			"UserFriendCode.userId",
-		)
-		.select(["TournamentTeamMember.userId", "UserFriendCode.friendCode"])
-		.orderBy("UserFriendCode.createdAt asc")
-		.where("TournamentTeam.tournamentId", "=", tournamentId)
-		.execute();
-
-	// later friend code overwrites earlier ones
-	return values.reduce(
-		(acc, cur) => {
-			acc[cur.userId] = cur.friendCode;
-			return acc;
-		},
-		{} as Record<number, string>,
-	);
 }
 
 export function checkIn({
