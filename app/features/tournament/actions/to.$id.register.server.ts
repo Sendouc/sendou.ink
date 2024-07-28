@@ -7,7 +7,6 @@ import {
 	clearTournamentDataCache,
 	tournamentFromDB,
 } from "~/features/tournament-bracket/core/Tournament.server";
-import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { logger } from "~/utils/logger";
 import {
@@ -18,11 +17,11 @@ import {
 } from "~/utils/remix";
 import { booleanToInt } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
+import * as TournamentTeamRepository from "../TournamentTeamRepository.server";
 import { checkIn } from "../queries/checkIn.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { findOwnTournamentTeam } from "../queries/findOwnTournamentTeam.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { registerSchema } from "../tournament-schemas.server";
@@ -116,7 +115,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 			validate(ownTeam.members.some((member) => member.userId === data.userId));
 			validate(data.userId !== user.id);
 
-			const detailedOwnTeam = findOwnTournamentTeam({
+			const detailedOwnTeam = await TournamentTeamRepository.findByMember({
 				tournamentId,
 				userId: user.id,
 			});

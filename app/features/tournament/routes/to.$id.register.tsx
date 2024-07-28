@@ -31,6 +31,7 @@ import { imgTypeToDimensions } from "~/features/img-upload/upload-constants";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { ModeMapPoolPicker } from "~/features/sendouq-settings/components/ModeMapPoolPicker";
 import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
+import { useTrusted } from "~/hooks/swr";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
@@ -352,7 +353,7 @@ function RegistrationForms() {
 				<RegistrationProgress
 					checkedIn={ownTeamCheckedIn}
 					name={ownTeam?.name}
-					mapPool={data?.mapPool ?? undefined}
+					mapPool={data.ownTeam?.mapPool ?? undefined}
 					members={ownTeam?.members}
 				/>
 			) : (
@@ -840,6 +841,7 @@ function FriendCode() {
 	);
 }
 
+// xxx: flash when loads in
 function FillRoster({
 	ownTeam,
 	ownTeamCheckedIn,
@@ -847,11 +849,11 @@ function FillRoster({
 	ownTeam: TournamentDataTeam;
 	ownTeamCheckedIn: boolean;
 }) {
-	const data = useLoaderData<TournamentRegisterPageLoader>();
 	const user = useUser();
 	const tournament = useTournament();
 	const [, copyToClipboard] = useCopyToClipboard();
 	const { t } = useTranslation(["common", "tournament"]);
+	const { trusters } = useTrusted();
 
 	const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
 		tournamentId: tournament.ctx.id,
@@ -876,7 +878,7 @@ function FillRoster({
 		(ownTeamCheckedIn && ownTeamMembers.length > tournament.minMembersPerTeam);
 
 	const playersAvailableToDirectlyAdd = (() => {
-		return (data!.trusterPlayers ?? []).filter((user) => {
+		return (trusters ?? []).filter((user) => {
 			const isNotInTeam = tournament.ctx.teams.every((team) =>
 				team.members.every((member) => member.userId !== user.id),
 			);
@@ -1072,7 +1074,7 @@ function CounterPickMapPoolPicker() {
 	const fetcher = useFetcher();
 	const data = useLoaderData<TournamentRegisterPageLoader>();
 	const [counterPickMaps, setCounterPickMaps] = React.useState(
-		data?.mapPool ?? [],
+		data?.ownTeam?.mapPool ?? [],
 	);
 
 	const counterPickMapPool = new MapPool(counterPickMaps);

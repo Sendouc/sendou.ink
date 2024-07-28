@@ -2,11 +2,45 @@
 
 import type { Transaction } from "kysely";
 import { sql } from "kysely";
+import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { nanoid } from "nanoid";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db/sql";
 import type { DB, Tables } from "~/db/tables";
 import { databaseTimestampNow } from "~/utils/dates";
+
+export function findByMember({
+	tournamentId,
+	userId,
+}: { tournamentId: number; userId: number }) {
+	return db
+		.selectFrom("TournamentTeamMember")
+		.innerJoin(
+			"TournamentTeam",
+			"TournamentTeam.id",
+			"TournamentTeamMember.tournamentTeamId",
+		)
+		.leftJoin(
+			"TournamentTeamCheckIn",
+			"TournamentTeamCheckIn.tournamentTeamId",
+			"TournamentTeam.id",
+		)
+		.select(({ eb }) => [
+			"TournamentTeam.id",
+			"TournamentTeam.name",
+			"TournamentTeamCheckIn.checkedInAt",
+			"TournamentTeam.inviteCode",
+			jsonArrayFrom(
+				eb
+					.selectFrom("MapPoolMap")
+					.select(["MapPoolMap.stageId", "MapPoolMap.mode"])
+					.whereRef("MapPoolMap.tournamentTeamId", "=", "TournamentTeam.id"),
+			).as("mapPool"),
+		])
+		.where("TournamentTeam.id", "=", tournamentId)
+		.where("TournamentTeamMember.userId", "=", userId)
+		.executeTakeFirst();
+}
 
 export function setActiveRoster({
 	teamId,
