@@ -35,12 +35,15 @@ export function EventCalendar({
 					</div>
 				))}
 				{dates.map((date, i) => {
-					const daysEvents = events.filter(
-						(event) =>
+					const daysEvents = events.filter((event) => {
+						const startTimeDate = databaseTimestampToDate(event.startTime);
+
+						return (
 							isMounted &&
-							databaseTimestampToDate(event.startTime).getDate() ===
-								date?.getDate(),
-					);
+							startTimeDate.getDate() === date?.getDate() &&
+							startTimeDate.getMonth() === date.getMonth()
+						);
+					});
 
 					return (
 						<EventCalendarCell
@@ -75,7 +78,7 @@ function EventCalendarCell({
 					date?.getFullYear() === new Date().getFullYear(),
 			})}
 		>
-			<div className="org__calendar__day__date">{date?.getDate()}</div>
+			<div className="org__calendar__day__date">{date?.getUTCDate()}</div>
 			{events.length === 1 ? (
 				<img
 					className="org__calendar__day__logo"
@@ -98,7 +101,7 @@ const monthYearSearchParams = ({ month, year }: MonthYear) =>
 		["year", String(year)],
 	]).toString();
 function MonthSelector({ month, year }: { month: number; year: number }) {
-	const date = new Date(Date.UTC(year, month, 1));
+	const date = new Date(Date.UTC(year, month, 15));
 
 	return (
 		<div className="org__calendar__month-selector">

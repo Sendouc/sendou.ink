@@ -234,8 +234,12 @@ export async function findEventsByMonth({
 	year,
 	organizationId,
 }: FindEventsByMonthArgs) {
-	const firstDayOfTheMonth = new Date(year, month, 1);
-	const lastDayOfTheMonth = new Date(year, month + 1, 0);
+	const firstDayOfTheMonth = new Date(Date.UTC(year, month, 1));
+	const lastDayOfTheMonth = new Date(Date.UTC(year, month + 1, 0));
+
+	// a bit of margin for timezones, filtered in the frontend code
+	firstDayOfTheMonth.setUTCDate(firstDayOfTheMonth.getUTCDate() - 1);
+	lastDayOfTheMonth.setUTCDate(lastDayOfTheMonth.getUTCDate() + 1);
 
 	const events = await findEventsBaseQuery(organizationId)
 		.where(
