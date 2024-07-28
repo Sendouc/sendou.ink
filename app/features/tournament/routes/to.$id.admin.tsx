@@ -76,7 +76,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 			await TournamentTeamRepository.create({
 				ownerInGameName: await inGameNameIfNeeded({
 					tournament,
-					userId: user.id,
+					userId: data.userId,
 				}),
 				team: {
 					name: data.teamName,
@@ -84,7 +84,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 					prefersNotToHost: 0,
 					teamId: null,
 				},
-				userId: user.id,
+				userId: data.userId,
 				tournamentId,
 			});
 
