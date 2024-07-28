@@ -6,9 +6,7 @@ import {
 import { SideNav } from "app/components/layout/SideNav";
 import clsx from "clsx";
 import type * as React from "react";
-import { useMatches } from "react-router";
 import { useUser } from "~/features/auth/core/user";
-import type { RootLoaderData } from "~/root";
 
 export const Main = ({
 	children,
@@ -26,10 +24,11 @@ export const Main = ({
 	style?: React.CSSProperties;
 }) => {
 	const error = useRouteError();
-	const data = useMatches()[0]?.data as RootLoaderData | undefined;
 	const user = useUser();
 	const showLeaderboard =
-		data?.publisherId && !user?.patronTier && !isRouteErrorResponse(error);
+		import.meta.env.VITE_PLAYWIRE_PUBLISHER_ID &&
+		!user?.patronTier &&
+		!isRouteErrorResponse(error);
 
 	const location = useLocation();
 	const isFrontPage = location.pathname === "/";

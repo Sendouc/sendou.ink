@@ -324,6 +324,10 @@ export function useChat({
 
 	React.useEffect(() => {
 		if (rooms.length === 0) return;
+		if (!import.meta.env.VITE_SKALOP_WS_URL) {
+			logger.warn("No WS URL provided");
+			return;
+		}
 
 		const url = `${import.meta.env.VITE_SKALOP_WS_URL}?${rooms
 			.map((room) => `room=${room.code}`)
