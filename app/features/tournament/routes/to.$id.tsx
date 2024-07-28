@@ -131,11 +131,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 	const tournament = await tournamentDataCached({ tournamentId, user });
 
-	const streams =
-		tournament.data.stage.length > 0
-			? await streamsByTournamentId(tournament.ctx)
-			: [];
-
 	const tournamentStartedInTheLastMonth =
 		databaseTimestampToDate(tournament.ctx.startTime) >
 		new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -149,8 +144,9 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 	return {
 		tournament,
-		streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
-		streamsCount: streams.length,
+		// streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
+		// TODO: resolve directly in the brackets loader: isStreamed: boolean
+		streamingParticipants: [] as number[],
 		friendCodes: showFriendCodes
 			? await TournamentRepository.friendCodesByTournamentId(tournamentId)
 			: undefined,
@@ -220,11 +216,7 @@ export default function TournamentLayout() {
 					</SubNavLink>
 				)}
 				{tournament.hasStarted && !tournament.everyBracketOver ? (
-					<SubNavLink to="streams">
-						{t("tournament:tabs.streams", {
-							count: data.streamsCount,
-						})}
-					</SubNavLink>
+					<SubNavLink to="streams">{t("tournament:tabs.streams")}</SubNavLink>
 				) : null}
 				{tournament.isOrganizer(user) && !tournament.hasStarted && (
 					<SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>

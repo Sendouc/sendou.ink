@@ -5,7 +5,7 @@
 	"tabs.register": "Register",
 	"tabs.brackets": "Grupper",
 	"tabs.seeds": "Seedninger",
-	"tabs.streams": "Streams ({{count}})",
+	"tabs.streams": "Streams",
 
 	"pre.steps.header": "Fuldfør disse trin for at spille",
 	"pre.steps.name": "Holdnavn",

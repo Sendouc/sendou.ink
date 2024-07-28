@@ -5,7 +5,7 @@
 	"tabs.register": "Register",
 	"tabs.brackets": "Brackets",
 	"tabs.seeds": "Seeds",
-	"tabs.streams": "Streams ({{count}})",
+	"tabs.streams": "Streams",
 	"tabs.subs": "Subs ({{count}})",
 
 	"pre.steps.header": "Complete these steps to play",

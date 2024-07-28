@@ -5,7 +5,7 @@
 	"tabs.register": "登録",
 	"tabs.brackets": "ブラケット",
 	"tabs.seeds": "シード",
-	"tabs.streams": "配信 ({{count}})",
+	"tabs.streams": "配信",
 	"tabs.subs": "サブ ({{count}})",
 
 	"pre.steps.header": "トーナメント参加のために下記を入力してください",
