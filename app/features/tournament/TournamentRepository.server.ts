@@ -322,6 +322,14 @@ export async function basicInfoById(id: number) {
 	};
 }
 
+export async function detailedInfoById(id: number) {
+	return db
+		.selectFrom("Tournament")
+		.select(["Tournament.rules"])
+		.where("id", "=", id)
+		.executeTakeFirst();
+}
+
 export async function findTOSetMapPoolById(tournamentId: number) {
 	return (
 		await db

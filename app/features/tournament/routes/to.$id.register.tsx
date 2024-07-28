@@ -55,7 +55,7 @@ import {
 	type CounterPickValidationStatus,
 	validateCounterPickMapPool,
 } from "../tournament-utils";
-import { useTournament } from "./to.$id";
+import { useTournament, useTournamentNew } from "./to.$id";
 
 import { action } from "../actions/to.$id.register.server";
 import { loader } from "../loaders/to.$id.register.server";
@@ -67,6 +67,7 @@ export default function TournamentRegisterPage() {
 	const isMounted = useIsMounted();
 	const { i18n } = useTranslation();
 	const tournament = useTournament();
+	const tournamentNew = useTournamentNew();
 
 	const startsAtEvenHour = tournament.ctx.startTime.getMinutes() === 0;
 
@@ -79,34 +80,32 @@ export default function TournamentRegisterPage() {
 		<div className="stack lg">
 			<div className="tournament__logo-container">
 				<img
-					src={tournament.logoSrc}
+					src={tournamentNew.logoSrc}
 					alt=""
 					className="tournament__logo"
 					width={124}
 					height={124}
 				/>
 				<div>
-					<div className="tournament__title">{tournament.ctx.name}</div>
+					<div className="tournament__title">{tournamentNew.name}</div>
 					<div>
-						{tournament.ctx.organization ? (
+						{tournamentNew.organization ? (
 							<Link
 								to={tournamentOrganizationPage({
-									organizationSlug: tournament.ctx.organization.slug,
+									organizationSlug: tournamentNew.organization.slug,
 									tournamentName: tournament.ctx.name,
 								})}
 								className="stack horizontal sm items-center text-xs text-main-forced"
 							>
 								<Avatar
 									url={
-										tournament.ctx.organization.avatarUrl
-											? userSubmittedImage(
-													tournament.ctx.organization.avatarUrl,
-												)
+										tournamentNew.organization.avatarUrl
+											? userSubmittedImage(tournamentNew.organization.avatarUrl)
 											: undefined
 									}
 									size="xxs"
 								/>
-								{tournament.ctx.organization.name}
+								{tournamentNew.organization.name}
 							</Link>
 						) : (
 							<Link
@@ -162,8 +161,10 @@ export default function TournamentRegisterPage() {
 }
 
 function TournamentRegisterInfoTabs() {
+	const data = useLoaderData<TournamentRegisterPageLoader>();
 	const user = useUser();
 	const tournament = useTournament();
+	const tournamentNew = useTournamentNew();
 	const { t } = useTranslation(["tournament"]);
 
 	const teamMemberOf = tournament.teamMemberOfByUser(user);
@@ -171,7 +172,7 @@ function TournamentRegisterInfoTabs() {
 	const isRegularMemberOfATeam = teamMemberOf && !teamOwned;
 
 	const defaultTab = () => {
-		if (tournament.hasStarted || !teamOwned) return 0;
+		if (tournamentNew.hasStarted || !teamOwned) return 0;
 
 		const registerTab = !tournament.ctx.rules ? 1 : 2;
 		return registerTab;
@@ -204,7 +205,7 @@ function TournamentRegisterInfoTabs() {
 					},
 					{
 						label: "Register",
-						hidden: tournament.hasStarted,
+						hidden: Boolean(tournamentNew.hasStarted),
 					},
 				]}
 				disappearing
@@ -229,7 +230,7 @@ function TournamentRegisterInfoTabs() {
 
 								<div className="tournament__info__description">
 									<Markdown options={{ wrapper: React.Fragment }}>
-										{tournament.ctx.description ?? ""}
+										{tournamentNew.description ?? ""}
 									</Markdown>
 								</div>
 								<TOPickedMapPoolInfo />
@@ -239,18 +240,18 @@ function TournamentRegisterInfoTabs() {
 					},
 					{
 						key: "rules",
-						hidden: !tournament.ctx.rules,
+						hidden: !data.tournament.rules,
 						element: (
 							<div className="tournament__info__description">
 								<Markdown options={{ wrapper: React.Fragment }}>
-									{tournament.ctx.rules ?? ""}
+									{data.tournament.rules ?? ""}
 								</Markdown>
 							</div>
 						),
 					},
 					{
 						key: "register",
-						hidden: tournament.hasStarted,
+						hidden: Boolean(tournamentNew.hasStarted),
 						element: (
 							<div className="stack lg">
 								{isRegularMemberOfATeam ? (

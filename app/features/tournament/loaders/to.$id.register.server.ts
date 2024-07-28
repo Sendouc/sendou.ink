@@ -3,28 +3,34 @@ import { getUser } from "~/features/auth/core/user.server";
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket/queries/findMapPoolByTeamId.server";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { notFoundIfFalsy } from "~/utils/remix";
 import { findOwnTournamentTeam } from "../queries/findOwnTournamentTeam.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+	const tournamentId = tournamentIdFromParams(params);
 	const user = await getUser(request);
-	if (!user) return null;
 
-	const ownTournamentTeam = findOwnTournamentTeam({
-		tournamentId: tournamentIdFromParams(params),
-		userId: user.id,
-	});
-	if (!ownTournamentTeam)
-		return {
-			mapPool: null,
-			trusterPlayers: null,
-			team: await TeamRepository.findByUserId(user.id),
-		};
+	const ownTournamentTeam = user
+		? findOwnTournamentTeam({
+				tournamentId: tournamentIdFromParams(params),
+				userId: user.id,
+			})
+		: null;
 
 	return {
-		mapPool: findMapPoolByTeamId(ownTournamentTeam.id),
-		trusterPlayers: await QRepository.usersThatTrusted(user.id),
-		team: await TeamRepository.findByUserId(user.id),
+		mapPool: ownTournamentTeam
+			? findMapPoolByTeamId(ownTournamentTeam.id)
+			: null,
+		trusterPlayers:
+			ownTournamentTeam && user
+				? await QRepository.usersThatTrusted(user.id)
+				: null,
+		team: user ? await TeamRepository.findByUserId(user.id) : null,
+		tournament: notFoundIfFalsy(
+			await TournamentRepository.detailedInfoById(tournamentId),
+		),
 	};
 };
 
