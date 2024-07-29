@@ -1,9 +1,7 @@
-import type { Params } from "@remix-run/react";
 import type { Group } from "~/db/types";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { databaseTimestampToDate } from "~/utils/dates";
-import invariant from "~/utils/invariant";
 import {
 	SENDOUQ_LOOKING_PAGE,
 	SENDOUQ_PAGE,
@@ -71,13 +69,6 @@ export function mapPoolOk(mapPool: MapPool) {
 	}
 
 	return true;
-}
-
-export function matchIdFromParams(params: Params<string>) {
-	const result = Number(params.id);
-	invariant(!Number.isNaN(result), "match id is not a number");
-
-	return result;
 }
 
 export function winnersArrayToWinner(winners: ("ALPHA" | "BRAVO")[]) {

@@ -28,7 +28,7 @@ import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import {
 	badRequestIfFalsy,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
@@ -48,7 +48,7 @@ import { useTournament } from "./to.$id";
 
 export const action: ActionFunction = async ({ request, params }) => {
 	const user = await requireUserId(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: adminActionSchema,
 	});
@@ -76,7 +76,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 			await TournamentTeamRepository.create({
 				ownerInGameName: await inGameNameIfNeeded({
 					tournament,
-					userId: user.id,
+					userId: data.userId,
 				}),
 				team: {
 					name: data.teamName,
@@ -84,7 +84,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 					prefersNotToHost: 0,
 					teamId: null,
 				},
-				userId: user.id,
+				userId: data.userId,
 				tournamentId,
 			});
 

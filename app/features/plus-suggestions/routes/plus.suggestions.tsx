@@ -31,7 +31,7 @@ import {
 } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
 import invariant from "~/utils/invariant";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { userPage } from "~/utils/urls";
@@ -65,7 +65,7 @@ const suggestionActionSchema = z.union([
 ]);
 
 export const action: ActionFunction = async ({ request }) => {
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: suggestionActionSchema,
 	});

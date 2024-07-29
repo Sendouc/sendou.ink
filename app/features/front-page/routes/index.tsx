@@ -1,10 +1,13 @@
-import { Link } from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { Placement } from "~/components/Placement";
 import { GlobeIcon } from "~/components/icons/Globe";
 import { LogInIcon } from "~/components/icons/LogIn";
 import { LogOutIcon } from "~/components/icons/LogOut";
@@ -15,9 +18,13 @@ import { ThemeChanger } from "~/components/layout/ThemeChanger";
 import navItems from "~/components/layout/nav-items.json";
 import { useUser } from "~/features/auth/core/user";
 import { useTheme } from "~/features/theme/core/provider";
-import { useRootLoaderData } from "~/hooks/useRootLoaderData";
+import {
+	HACKY_resolvePicture,
+	HACKY_resolveThemeColors,
+} from "~/features/tournament/tournament-utils";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { languages } from "~/modules/i18n/config";
-import type { RootLoaderData } from "~/root";
+import { databaseTimestampToDate } from "~/utils/dates";
 import {
 	FRONT_BOY_BG_PATH,
 	FRONT_BOY_PATH,
@@ -30,18 +37,13 @@ import {
 	userSubmittedImage,
 } from "~/utils/urls";
 
+import { loader } from "../loaders/index.server";
+export { loader };
+
 import "~/styles/front.css";
-import clsx from "clsx";
-import { Placement } from "~/components/Placement";
-import {
-	HACKY_resolvePicture,
-	HACKY_resolveThemeColors,
-} from "~/features/tournament/tournament-utils";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { databaseTimestampToDate } from "~/utils/dates";
 
 export default function FrontPage() {
-	const data = useRootLoaderData();
+	const data = useLoaderData<typeof loader>();
 	const { userTheme } = useTheme();
 	const [filters, setFilters] = React.useState<[string, string]>(
 		navItems[0]?.filters as [string, string],
@@ -55,11 +57,6 @@ export default function FrontPage() {
 
 	return (
 		<Main className="stack lg">
-			{data.loginDisabled && (
-				<div className="text-center text-warning text-xs">
-					Log-in is temporarily disabled due to problems with the Discord API
-				</div>
-			)}
 			<div className="stack horizontal sm">
 				{data.tournaments.map((tournament) => (
 					<TournamentCard key={tournament.id} tournament={tournament} />
@@ -127,7 +124,7 @@ export default function FrontPage() {
 function TournamentCard({
 	tournament,
 }: {
-	tournament: RootLoaderData["tournaments"][number];
+	tournament: SerializeFrom<typeof loader>["tournaments"][number];
 }) {
 	const { t } = useTranslation(["common"]);
 	const isMounted = useIsMounted();
@@ -218,7 +215,6 @@ function TournamentCard({
 }
 
 function LogInButton() {
-	const data = useRootLoaderData();
 	const { t } = useTranslation(["common"]);
 	const user = useUser();
 
@@ -237,8 +233,6 @@ function LogInButton() {
 			</Link>
 		);
 	}
-
-	if (data.loginDisabled) return null;
 
 	return (
 		<div className="front__nav-item round">

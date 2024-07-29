@@ -1,17 +1,15 @@
 import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import { Outlet, useLoaderData, useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
-import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
 import { Redirect } from "~/components/Redirect";
-import { SPLATOON_3_XP_BADGE_VALUES } from "~/constants";
-import type { Badge as BadgeDBType } from "~/db/types";
 import { useUser } from "~/features/auth/core/user";
 import { canEditBadgeOwners, isMod } from "~/permissions";
 import { BADGES_PAGE } from "~/utils/urls";
 import * as BadgeRepository from "../BadgeRepository.server";
+import { badgeExplanationText } from "../badges-utils";
 import type { BadgesLoaderData } from "./badges";
 
 export interface BadgeDetailsContext {
@@ -85,25 +83,4 @@ export default function BadgeDetailsPage() {
 			</div>
 		</div>
 	);
-}
-
-export function badgeExplanationText(
-	t: TFunction<"badges", undefined>,
-	badge: Pick<BadgeDBType, "displayName" | "code"> & { count?: number },
-) {
-	if (badge.code === "patreon") return t("patreon");
-	if (badge.code === "patreon_plus") {
-		return t("patreon+");
-	}
-	if (
-		badge.code.startsWith("xp") ||
-		SPLATOON_3_XP_BADGE_VALUES.includes(Number(badge.code) as any)
-	) {
-		return t("xp", { xpText: badge.displayName });
-	}
-
-	return t("tournament", {
-		count: badge.count ?? 1,
-		tournament: badge.displayName,
-	}).replace("&#39;", "'");
 }

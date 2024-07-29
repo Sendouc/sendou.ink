@@ -18,7 +18,12 @@ import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { canReportTournamentScore } from "~/permissions";
 import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import {
+	notFoundIfFalsy,
+	parseParams,
+	parseRequestPayload,
+	validate,
+} from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
 	tournamentBracketsPage,
@@ -46,12 +51,14 @@ import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
 import { insertTournamentMatchGameResult } from "../queries/insertTournamentMatchGameResult.server";
 import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 import { updateMatchGameResultPoints } from "../queries/updateMatchGameResultPoints.server";
-import { matchSchema } from "../tournament-bracket-schemas.server";
+import {
+	matchPageParamsSchema,
+	matchSchema,
+} from "../tournament-bracket-schemas.server";
 import {
 	bracketSubscriptionKey,
 	groupNumberToLetter,
 	isSetOverByScore,
-	matchIdFromParams,
 	matchIsLocked,
 	matchSubscriptionKey,
 	tournamentTeamToActiveRosterUserIds,
@@ -61,9 +68,12 @@ import "../tournament-bracket.css";
 
 export const action: ActionFunction = async ({ params, request }) => {
 	const user = await requireUser(request);
-	const matchId = matchIdFromParams(params);
+	const matchId = parseParams({
+		params,
+		schema: matchPageParamsSchema,
+	}).mid;
 	const match = notFoundIfFalsy(findMatchById(matchId));
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: matchSchema,
 	});
@@ -535,7 +545,10 @@ export type TournamentMatchLoaderData = typeof loader;
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const tournamentId = tournamentIdFromParams(params);
-	const matchId = matchIdFromParams(params);
+	const matchId = parseParams({
+		params,
+		schema: matchPageParamsSchema,
+	}).mid;
 
 	const match = notFoundIfFalsy(findMatchById(matchId));
 

@@ -16,7 +16,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import invariant from "~/utils/invariant";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentPage, userEditProfilePage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
@@ -32,7 +32,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const user = await requireUserId(request);
 	const url = new URL(request.url);
 	const inviteCode = url.searchParams.get("code");
-	const data = await parseRequestFormData({ request, schema: joinSchema });
+	const data = await parseRequestPayload({ request, schema: joinSchema });
 	invariant(inviteCode, "code is missing");
 
 	const leanTeam = notFoundIfFalsy(findByInviteCode(inviteCode));

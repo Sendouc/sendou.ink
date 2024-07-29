@@ -18,7 +18,7 @@ import invariant from "~/utils/invariant";
 import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import { newArtPage } from "~/utils/urls";
@@ -31,7 +31,7 @@ export const handle: SendouRouteHandle = {
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUserId(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: deleteArtSchema,
 	});

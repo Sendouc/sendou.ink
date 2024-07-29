@@ -22,7 +22,7 @@ import * as LFGRepository from "~/features/lfg/LFGRepository.server";
 import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
@@ -79,7 +79,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 	validate(isTeamOwner({ team, user }), "You are not the team owner");
 
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: editTeamSchema,
 	});
@@ -175,12 +175,12 @@ function ImageUploadLinks() {
 			<Label>{t("team:forms.fields.uploadImages")}</Label>
 			<ol className="team__image-links-list">
 				<li>
-					<Link to={uploadImagePage("team-pfp")}>
+					<Link to={uploadImagePage({ type: "team-pfp" })}>
 						{t("team:forms.fields.uploadImages.pfp")}
 					</Link>
 				</li>
 				<li>
-					<Link to={uploadImagePage("team-banner")}>
+					<Link to={uploadImagePage({ type: "team-banner" })}>
 						{t("team:forms.fields.uploadImages.banner")}
 					</Link>
 				</li>

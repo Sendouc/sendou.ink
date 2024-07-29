@@ -8,7 +8,7 @@ import { isMod } from "~/permissions";
 import {
 	badRequestIfFalsy,
 	notFoundIfFalsy,
-	parseRequestFormData,
+	parseRequestPayload,
 	validate,
 } from "~/utils/remix";
 import { userSubmittedImage } from "~/utils/urls";
@@ -20,7 +20,7 @@ import { validateImageSchema } from "../upload-schemas.server";
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUserId(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		schema: validateImageSchema,
 		request,
 	});

@@ -458,6 +458,7 @@ function BattlefyInput({
 				id="battlefy"
 				maxLength={USER.BATTLEFY_MAX_LENGTH}
 				defaultValue={parentRouteData.battlefy ?? undefined}
+				leftAddon="https://battlefy.com/users/"
 			/>
 			<FormMessage type="info">{t("user:forms.info.battlefy")}</FormMessage>
 		</div>

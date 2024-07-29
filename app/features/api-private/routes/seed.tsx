@@ -1,7 +1,7 @@
 import type { ActionFunction } from "@remix-run/node";
 import { z } from "zod";
 import { seed } from "~/db/seed";
-import { parseRequestFormData } from "~/utils/remix";
+import { parseRequestPayload } from "~/utils/remix";
 
 const seedSchema = z.object({
 	variation: z
@@ -18,7 +18,7 @@ export const action: ActionFunction = async ({ request }) => {
 		throw new Response(null, { status: 400 });
 	}
 
-	const { variation } = await parseRequestFormData({
+	const { variation } = await parseRequestPayload({
 		request,
 		schema: seedSchema,
 	});

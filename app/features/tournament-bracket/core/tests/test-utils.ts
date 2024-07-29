@@ -51,6 +51,7 @@ export const testTournament = (
 			eventId: 1,
 			id: 1,
 			description: null,
+			organization: null,
 			rules: null,
 			logoUrl: null,
 			logoSrc: "/test.png",

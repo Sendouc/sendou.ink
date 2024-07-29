@@ -6,7 +6,7 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import { refreshBuildsCacheByWeaponSplIds } from "~/features/builds/core/cached-builds.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { logger } from "~/utils/logger";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { userBuildsPage } from "~/utils/urls";
 import {
@@ -21,7 +21,7 @@ import {
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: buildsActionSchema,
 	});

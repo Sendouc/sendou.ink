@@ -48,7 +48,7 @@ export const Layout = React.memo(function Layout({
 	const isFrontPage = location.pathname === "/";
 
 	const showLeaderboard =
-		data?.publisherId &&
+		import.meta.env.VITE_PLAYWIRE_PUBLISHER_ID &&
 		!data?.user?.patronTier &&
 		!location.pathname.includes("plans");
 	return (

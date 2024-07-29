@@ -14,7 +14,7 @@ import {
 import type { UserPageLoaderData } from "~/features/user-page/routes/u.$identifier";
 import { normalizeFormFieldArray } from "~/utils/arrays";
 import invariant from "~/utils/invariant";
-import { parseRequestFormData } from "~/utils/remix";
+import { parseRequestPayload } from "~/utils/remix";
 import { userResultsPage } from "~/utils/urls";
 
 const editHighlightsActionSchema = z.object({
@@ -28,7 +28,7 @@ const editHighlightsActionSchema = z.object({
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: editHighlightsActionSchema,
 	});

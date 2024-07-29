@@ -1,4 +1,3 @@
-import cachified from "@epic-web/cachified";
 import type {
 	LoaderFunctionArgs,
 	MetaFunction,
@@ -10,6 +9,7 @@ import {
 	Meta,
 	Outlet,
 	Scripts,
+	ScrollRestoration,
 	type ShouldRevalidateFunction,
 	useLoaderData,
 	useMatches,
@@ -20,17 +20,10 @@ import NProgress from "nprogress";
 import * as React from "react";
 import { type CustomTypeOptions, useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { cache, ttl } from "~/utils/cache.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { Catcher } from "./components/Catcher";
-import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { Layout } from "./components/layout";
-import {
-	CUSTOMIZED_CSS_VARS_NAME,
-	ONE_HOUR_IN_MS,
-	TEN_MINUTES_IN_MS,
-} from "./constants";
+import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import { getUser } from "./features/auth/core/user.server";
 import { userIsBanned } from "./features/ban/core/banned.server";
 import {
@@ -96,20 +89,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		{
 			locale,
 			theme: themeSession.getTheme(),
-			tournaments: await cachified({
-				key: "tournament-showcase",
-				cache,
-				ttl: ttl(TEN_MINUTES_IN_MS),
-				staleWhileRevalidate: ttl(ONE_HOUR_IN_MS),
-				async getFreshValue() {
-					return TournamentRepository.forShowcase();
-				},
-			}),
-			baseUrl: process.env.BASE_URL!,
-			skalopUrl: process.env.SKALOP_WS_URL!,
-			publisherId: process.env.PLAYWIRE_PUBLISHER_ID,
-			websiteId: process.env.PLAYWIRE_WEBSITE_ID,
-			loginDisabled: process.env.LOGIN_DISABLED === "true",
 			user: user
 				? {
 						username: user.username,
@@ -184,7 +163,7 @@ function Document({
 						{children}
 					</Layout>
 				</React.StrictMode>
-				<ConditionalScrollRestoration />
+				<ScrollRestoration />
 				<Scripts />
 			</body>
 		</html>
@@ -223,6 +202,7 @@ export const namespaceJsonsToPreloadObj: Record<
 	art: true,
 	q: true,
 	lfg: true,
+	org: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 
@@ -485,13 +465,18 @@ const Ramp = React.lazy(() => import("./components/ramp/Ramp"));
 function MyRamp({ data }: { data: RootLoaderData | undefined }) {
 	if (
 		!data ||
-		!data.publisherId ||
-		!data.websiteId ||
 		data.user?.patronTier ||
+		!import.meta.env.VITE_PLAYWIRE_PUBLISHER_ID ||
+		!import.meta.env.VITE_PLAYWIRE_WEBSITE_ID ||
 		typeof window === "undefined"
 	) {
 		return null;
 	}
 
-	return <Ramp publisherId={data.publisherId} id={data.websiteId} />;
+	return (
+		<Ramp
+			publisherId={import.meta.env.VITE_PLAYWIRE_PUBLISHER_ID}
+			id={import.meta.env.VITE_PLAYWIRE_WEBSITE_ID}
+		/>
+	);
 }

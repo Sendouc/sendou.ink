@@ -8,7 +8,9 @@ import { Placement } from "~/components/Placement";
 import { Popover } from "~/components/Popover";
 import { Redirect } from "~/components/Redirect";
 import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
+import { tournamentTeamPageParamsSchema } from "~/features/tournament-bracket/tournament-bracket-schemas.server";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
+import { parseParams } from "~/utils/remix";
 import {
 	teamPage,
 	tournamentMatchPage,
@@ -22,15 +24,15 @@ import {
 	tournamentTeamSets,
 	winCounts,
 } from "../core/sets.server";
-import {
-	tournamentIdFromParams,
-	tournamentTeamIdFromParams,
-} from "../tournament-utils";
+import { tournamentIdFromParams } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 
 export const loader = ({ params }: LoaderFunctionArgs) => {
 	const tournamentId = tournamentIdFromParams(params);
-	const tournamentTeamId = tournamentTeamIdFromParams(params);
+	const tournamentTeamId = parseParams({
+		params,
+		schema: tournamentTeamPageParamsSchema,
+	}).tid;
 
 	const sets = tournamentTeamSets({ tournamentTeamId, tournamentId });
 

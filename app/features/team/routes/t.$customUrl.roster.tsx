@@ -17,9 +17,8 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { useBaseUrl } from "~/hooks/useBaseUrl";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -54,7 +53,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 	validate(isTeamOwner({ team, user }), "Only team owner can manage roster");
 
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: manageRosterSchema,
 	});
@@ -143,7 +142,6 @@ export default function ManageTeamRosterPage() {
 function InviteCodeSection() {
 	const { t } = useTranslation(["common", "team"]);
 	const { team } = useLoaderData<typeof loader>();
-	const baseUrl = useBaseUrl();
 	const [, copyToClipboard] = useCopyToClipboard();
 
 	if (isTeamFull(team)) {
@@ -154,7 +152,7 @@ function InviteCodeSection() {
 		);
 	}
 
-	const inviteLink = `${baseUrl}${joinTeamPage({
+	const inviteLink = `${import.meta.env.VITE_SITE_DOMAIN}${joinTeamPage({
 		customUrl: team.customUrl,
 		inviteCode: team.inviteCode,
 	})}`;

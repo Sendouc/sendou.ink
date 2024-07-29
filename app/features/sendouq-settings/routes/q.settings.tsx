@@ -33,7 +33,7 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { languagesUnified } from "~/modules/i18n/config";
 import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import { type SendouRouteHandle, parseRequestFormData } from "~/utils/remix";
+import { type SendouRouteHandle, parseRequestPayload } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
 	SENDOUQ_PAGE,
@@ -70,7 +70,7 @@ export const handle: SendouRouteHandle = {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
 	const user = await requireUserId(request);
-	const data = await parseRequestFormData({
+	const data = await parseRequestPayload({
 		request,
 		schema: settingsActionSchema,
 	});

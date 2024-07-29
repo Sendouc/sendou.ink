@@ -1,4 +1,3 @@
-import type { Params } from "@remix-run/react";
 import type { TFunction } from "i18next";
 import type { TournamentRoundMaps } from "~/db/tables";
 import type { TournamentMatch } from "~/db/types";
@@ -10,19 +9,11 @@ import {
 	sourceTypes,
 } from "~/modules/tournament-map-list-generator";
 import { removeDuplicates } from "~/utils/arrays";
-import invariant from "~/utils/invariant";
 import { sumArray } from "~/utils/number";
 import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
 import type { TournamentLoaderData } from "../tournament/routes/to.$id";
 import type { Tournament } from "./core/Tournament";
 import type { TournamentDataTeam } from "./core/Tournament.server";
-
-export function matchIdFromParams(params: Params<string>) {
-	const result = Number(params.mid);
-	invariant(!Number.isNaN(result), "mid is not a number");
-
-	return result;
-}
 
 const NUM_MAP = {
 	"1": ["1", "2", "4"],

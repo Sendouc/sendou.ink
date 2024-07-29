@@ -7,6 +7,7 @@ interface NewTabsProps {
 		label: string;
 		number?: number;
 		hidden?: boolean;
+		disabled?: boolean;
 	}[];
 	content: {
 		key: string;
@@ -57,6 +58,7 @@ export function NewTabs(args: NewTabsProps) {
 								key={tab.label}
 								className="tab__button"
 								data-testid={`tab-${tab.label}`}
+								disabled={tab.disabled}
 							>
 								{tab.label}
 								{typeof tab.number === "number" && tab.number !== 0 && (

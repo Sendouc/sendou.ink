@@ -26,16 +26,16 @@ export function notFoundIfNullLike<T>(value: T | null | undefined): T {
 	return value;
 }
 
-export function badRequestIfFalsy<T>(value: T | null | undefined): T {
-	if (!value) {
-		throw new Response(null, { status: 400 });
-	}
+export function unauthorizedIfFalsy<T>(value: T | null | undefined): T {
+	if (!value) throw new Response(null, { status: 401 });
 
 	return value;
 }
 
-export function unauthorizedIfFalsy<T>(value: T | null | undefined): T {
-	if (!value) throw new Response(null, { status: 401 });
+export function badRequestIfFalsy<T>(value: T | null | undefined): T {
+	if (!value) {
+		throw new Response(null, { status: 400 });
+	}
 
 	return value;
 }
@@ -75,7 +75,7 @@ export function parseSafeSearchParams<T extends z.ZodTypeAny>({
 }
 
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
-export async function parseRequestFormData<T extends z.ZodTypeAny>({
+export async function parseRequestPayload<T extends z.ZodTypeAny>({
 	request,
 	schema,
 	parseAsync,
@@ -84,7 +84,10 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
 	schema: T;
 	parseAsync?: boolean;
 }): Promise<z.infer<T>> {
-	const formDataObj = formDataToObject(await request.formData());
+	const formDataObj =
+		request.headers.get("Content-Type") === "application/json"
+			? await request.json()
+			: formDataToObject(await request.formData());
 	try {
 		const parsed = parseAsync
 			? await schema.parseAsync(formDataObj)
@@ -130,7 +133,7 @@ export async function parseFormData<T extends z.ZodTypeAny>({
 	}
 }
 
-/** Parse params with the given schema. Throws HTTP 400 response if fails. */
+/** Parse params with the given schema. Throws HTTP 404 response if fails. */
 export function parseParams<T extends z.ZodTypeAny>({
 	params,
 	schema,
@@ -138,17 +141,12 @@ export function parseParams<T extends z.ZodTypeAny>({
 	params: Params<string>;
 	schema: T;
 }): z.infer<T> {
-	try {
-		return schema.parse(params);
-	} catch (e) {
-		if (e instanceof z.ZodError) {
-			noticeError(e, { params: JSON.stringify(params) });
-			console.error(e);
-			throw new Response(JSON.stringify(e), { status: 400 });
-		}
-
-		throw e;
+	const parsed = schema.safeParse(params);
+	if (!parsed.success) {
+		throw new Response(null, { status: 404 });
 	}
+
+	return parsed.data;
 }
 
 export async function safeParseRequestFormData<T extends z.ZodTypeAny>({
@@ -210,6 +208,18 @@ export function validate(
 			status,
 		},
 	);
+}
+
+export type ActionError = { field: string; msg: string; isError: true };
+
+export function actionError<T extends z.ZodTypeAny>({
+	msg,
+	field,
+}: {
+	msg: string;
+	field: (keyof z.infer<T> & string) | `${keyof z.infer<T> & string}.root`;
+}): ActionError {
+	return { msg, field, isError: true };
 }
 
 export type Breadcrumb =

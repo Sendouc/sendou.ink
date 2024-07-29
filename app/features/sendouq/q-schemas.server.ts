@@ -166,3 +166,7 @@ export const weaponUsageSearchParamsSchema = z.object({
 	stageId,
 	modeShort,
 });
+
+export const qMatchPageParamsSchema = z.object({
+	id,
+});

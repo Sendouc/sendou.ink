@@ -1,9 +1,7 @@
 import { Link, useMatches } from "@remix-run/react";
 import clsx from "clsx";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
-import { Badge } from "~/components/Badge";
 import { Flag } from "~/components/Flag";
 import { Image, WeaponImage } from "~/components/Image";
 import { BattlefyIcon } from "~/components/icons/Battlefy";
@@ -11,11 +9,11 @@ import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
+import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { modesShort } from "~/modules/in-game-lists";
 import invariant from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
-import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
 	modeImageUrl,
@@ -24,7 +22,6 @@ import {
 	topSearchPlayerPage,
 	userSubmittedImage,
 } from "~/utils/urls";
-import { badgeExplanationText } from "../../badges/routes/badges.$id";
 import type { UserPageLoaderData } from "./u.$identifier";
 
 export const handle: SendouRouteHandle = {
@@ -67,7 +64,7 @@ export default function UserInfoPage() {
 			<ExtraInfos />
 			<WeaponPool />
 			<TopPlacements />
-			<BadgeContainer badges={data.badges} key={data.id} />
+			<BadgeDisplay badges={data.badges} key={data.id} />
 			{data.bio && <article>{data.bio}</article>}
 		</div>
 	);
@@ -264,56 +261,5 @@ function TopPlacements() {
 				);
 			})}
 		</Link>
-	);
-}
-
-function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
-	const { t } = useTranslation("badges");
-	const [badges, setBadges] = React.useState(props.badges);
-
-	const [bigBadge, ...smallBadges] = badges;
-	if (!bigBadge) return null;
-
-	const setBadgeFirst = (badge: Unpacked<UserPageLoaderData["badges"]>) => {
-		setBadges(
-			badges.map((b, i) => {
-				if (i === 0) return badge;
-				if (b.code === badge.code) return badges[0];
-
-				return b;
-			}),
-		);
-	};
-
-	return (
-		<div>
-			<div
-				className={clsx("u__badges", {
-					"justify-center": smallBadges.length === 0,
-				})}
-			>
-				<Badge badge={bigBadge} size={125} isAnimated />
-				{smallBadges.length > 0 ? (
-					<div className="u__small-badges">
-						{smallBadges.map((badge) => (
-							<div key={badge.id} className="u__small-badge-container">
-								<Badge
-									badge={badge}
-									onClick={() => setBadgeFirst(badge)}
-									size={48}
-									isAnimated
-								/>
-								{badge.count > 1 ? (
-									<div className="u__small-badge-count">×{badge.count}</div>
-								) : null}
-							</div>
-						))}
-					</div>
-				) : null}
-			</div>
-			<div className="u__badge-explanation">
-				{badgeExplanationText(t, bigBadge)}
-			</div>
-		</div>
 	);
 }

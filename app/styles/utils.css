@@ -154,6 +154,10 @@
 	width: max-content;
 }
 
+.w-min {
+	width: min-content;
+}
+
 .px-4 {
 	padding-inline: var(--s-4);
 }

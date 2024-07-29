@@ -1,0 +1,68 @@
+import clsx from "clsx";
+import { LinkIcon } from "~/components/icons/Link";
+import { TwitchIcon } from "~/components/icons/Twitch";
+import { TwitterIcon } from "~/components/icons/Twitter";
+import { YouTubeIcon } from "~/components/icons/YouTube";
+
+export function SocialLinksList({ links }: { links: string[] }) {
+	return (
+		<div className="stack sm text-sm">
+			{links.map((url, i) => {
+				return <SocialLink key={i} url={url} />;
+			})}
+		</div>
+	);
+}
+
+function SocialLink({ url }: { url: string }) {
+	const type = urlToLinkType(url);
+
+	return (
+		<a href={url} target="_blank" rel="noreferrer" className="org__social-link">
+			<div
+				className={clsx("org__social-link__icon-container", {
+					youtube: type === "youtube",
+					twitter: type === "twitter",
+					twitch: type === "twitch",
+				})}
+			>
+				<SocialLinkIcon url={url} />
+			</div>
+			{url}
+		</a>
+	);
+}
+
+function SocialLinkIcon({ url }: { url: string }) {
+	const type = urlToLinkType(url);
+
+	if (type === "twitter") {
+		return <TwitterIcon />;
+	}
+
+	if (type === "twitch") {
+		return <TwitchIcon />;
+	}
+
+	if (type === "youtube") {
+		return <YouTubeIcon />;
+	}
+
+	return <LinkIcon />;
+}
+
+const urlToLinkType = (url: string) => {
+	if (url.includes("twitter.com") || url.includes("x.com")) {
+		return "twitter";
+	}
+
+	if (url.includes("twitch.tv")) {
+		return "twitch";
+	}
+
+	if (url.includes("youtube.com")) {
+		return "youtube";
+	}
+
+	return null;
+};
