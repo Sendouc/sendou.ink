@@ -69,6 +69,29 @@ export function sortBuilds({
 
 			return aLowestWeaponIdx - bLowestWeaponIdx;
 		},
+		PUBLIC_BUILD: (a, b) => {
+			const aIsPublic = a?.private === 0;
+			const bIsPublic = b?.private === 0;
+			if (aIsPublic && !bIsPublic) {
+				return -1;
+			}
+			if (!aIsPublic && bIsPublic) {
+				return 1;
+			}
+			return 0;
+		},
+		PRIVATE_BUILD: (a, b) => {
+			const aIsPrivate = a?.private === 1;
+			const bIsPrivate = b?.private === 1;
+
+			if (aIsPrivate && !bIsPrivate) {
+				return -1;
+			}
+			if (!aIsPrivate && bIsPrivate) {
+				return 1;
+			}
+			return 0;
+		},
 	};
 
 	return builds.slice().sort((a, b) => {
