@@ -51,7 +51,7 @@ export const organizationEditSchema = z.object({
 				),
 			}),
 		)
-		.max(12)
+		.max(32)
 		.refine(
 			(arr) =>
 				arr.map((x) => x.userId).length ===
