@@ -6,29 +6,27 @@ import { Popover } from "~/components/Popover";
 import { useUser } from "~/features/auth/core/user";
 import { TournamentStream } from "~/features/tournament/components/TournamentStream";
 import {
-	useStreamingParticipants,
 	useTournament,
+	useTournamentNew,
 } from "~/features/tournament/routes/to.$id";
 import type { TournamentStreamsLoader } from "~/features/tournament/routes/to.$id.streams";
-import type { Unpacked } from "~/utils/types";
-import { tournamentMatchPage, tournamentStreamsPage } from "~/utils/urls";
-import type { Bracket } from "../../core/Bracket";
-import type { TournamentData } from "../../core/Tournament.server";
+import {
+	tournamentMatchPage,
+	tournamentStreamsPage,
+	userSubmittedImage,
+} from "~/utils/urls";
+import type { BracketMatchWithParticipantInfo } from "../../tournament-bracket-types";
 
 interface MatchProps {
-	match: Unpacked<TournamentData["data"]["match"]>;
+	match: BracketMatchWithParticipantInfo;
 	isPreview?: boolean;
 	type?: "winners" | "losers" | "grands" | "groups";
 	group?: string;
 	roundNumber: number;
-	showSimulation: boolean;
-	bracket: Bracket;
 }
 
 export function Match(props: MatchProps) {
-	const isBye = !props.match.opponent1 || !props.match.opponent2;
-
-	if (isBye) {
+	if (props.match.bye) {
 		return <div className="bracket__match__bye" />;
 	}
 
@@ -36,18 +34,16 @@ export function Match(props: MatchProps) {
 		<div className="relative">
 			<MatchHeader {...props} />
 			<MatchWrapper {...props}>
-				<MatchRow {...props} side={1} />
+				<MatchRow {...props} idx={0} />
 				<div className="bracket__match__separator" />
-				<MatchRow {...props} side={2} />
+				<MatchRow {...props} idx={1} />
 			</MatchWrapper>
 		</div>
 	);
 }
 
 function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
-	const tournament = useTournament();
-	const streamingParticipants = useStreamingParticipants();
-
+	// xxx: we have match.number or some other way for this?
 	const prefix = () => {
 		if (type === "winners") return "WB ";
 		if (type === "losers") return "LB ";
@@ -56,43 +52,20 @@ function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
 		return "";
 	};
 
-	const isOver =
-		match.opponent1?.result === "win" || match.opponent2?.result === "win";
-	const hasStreams = () => {
-		if (isOver || !match.opponent1?.id || !match.opponent2?.id) return false;
-		if (
-			tournament.ctx.castedMatchesInfo?.castedMatches.some(
-				(cm) => cm.matchId === match.id,
-			)
-		) {
-			return true;
-		}
-
-		const matchParticipants = [match.opponent1.id, match.opponent2.id].flatMap(
-			(teamId) =>
-				tournament.teamById(teamId)?.members.map((m) => m.userId) ?? [],
-		);
-
-		return streamingParticipants.some((p) => matchParticipants.includes(p));
-	};
-	const toBeCasted =
-		!isOver &&
-		tournament.ctx.castedMatchesInfo?.lockedMatches?.includes(match.id);
-
 	return (
 		<div className="bracket__match__header">
 			<div className="bracket__match__header__box">
 				{prefix()}
 				{roundNumber}.{match.number}
 			</div>
-			{toBeCasted ? (
+			{match.stream === "TO_BE_CASTED" ? (
 				<Popover
 					buttonChildren={<>🔒 CAST</>}
 					triggerClassName="bracket__match__header__box bracket__match__header__box__button"
 				>
 					Match is scheduled to be casted
 				</Popover>
-			) : hasStreams() ? (
+			) : match.stream === "LIVE" ? (
 				<Popover
 					buttonChildren={<>🔴 LIVE</>}
 					triggerClassName="bracket__match__header__box bracket__match__header__box__button"
@@ -111,14 +84,14 @@ function MatchWrapper({
 	isPreview,
 	children,
 }: MatchProps & { children: React.ReactNode }) {
-	const tournament = useTournament();
+	const tournament = useTournamentNew();
 
 	if (!isPreview) {
 		return (
 			<Link
 				className="bracket__match"
 				to={tournamentMatchPage({
-					tournamentId: tournament.ctx.id,
+					tournamentId: tournament.id,
 					matchId: match.id,
 				})}
 				data-match-id={match.id}
@@ -131,73 +104,49 @@ function MatchWrapper({
 	return <div className="bracket__match">{children}</div>;
 }
 
-function MatchRow({
-	match,
-	side,
-	isPreview,
-	showSimulation,
-	bracket,
-}: MatchProps & { side: 1 | 2 }) {
+function MatchRow({ match, idx }: MatchProps & { idx: 0 | 1 }) {
 	const user = useUser();
 	const tournament = useTournament();
 
-	const opponentKey = `opponent${side}` as const;
-	const opponent = match[`opponent${side}`];
-
-	const score = () => {
-		if (!match.opponent1?.id || !match.opponent2?.id || isPreview) return null;
-
-		return opponent!.score ?? 0;
-	};
-
-	const isLoser = opponent?.result === "loss";
-
-	const { team, simulated } = (() => {
-		if (opponent?.id) {
-			return { team: tournament.teamById(opponent.id), simulated: false };
-		}
-
-		const simulated = showSimulation
-			? bracket.simulatedMatch(match.id)
-			: undefined;
-		const simulatedOpponent = simulated?.[opponentKey];
-
-		return simulatedOpponent?.id
-			? { team: tournament.teamById(simulatedOpponent.id), simulated: true }
-			: { team: null, simulated: true };
-	})();
+	const isLoser = match.winner && match.winner !== match.participants[idx]?.id;
 
 	const ownTeam = tournament.teamMemberOfByUser(user);
 
-	const logoSrc =
-		!simulated && team ? tournament.tournamentTeamLogoSrc(team) : null;
+	const participant = match.participants[idx];
+	const predictedParticipant = match.predictions?.[idx];
 
 	return (
 		<div
 			className={clsx("stack horizontal", { "text-lighter": isLoser })}
-			data-participant-id={team?.id}
-			title={team?.members.map((m) => m.username).join(", ")}
+			data-participant-id={participant?.id}
+			title={participant?.roster.join(", ")}
 		>
 			<div
 				className={clsx("bracket__match__seed", {
-					"text-lighter-important italic opaque": simulated,
+					"text-lighter-important italic opaque": predictedParticipant,
 				})}
 			>
-				{team?.seed}
+				{participant?.seed ?? predictedParticipant?.seed}
 			</div>
-			{logoSrc ? <Avatar size="xxxs" url={logoSrc} className="mr-1" /> : null}
+			{participant?.avatarUrl ? (
+				<Avatar
+					size="xxxs"
+					url={userSubmittedImage(participant.avatarUrl)}
+					className="mr-1"
+				/>
+			) : null}
 			<div
 				className={clsx("bracket__match__team-name", {
 					"text-theme-secondary":
-						!simulated && ownTeam && ownTeam?.id === team?.id,
-					"text-lighter italic opaque": simulated,
-					"bracket__match__team-name__narrow": logoSrc,
-					invisible: !team,
+						!predictedParticipant && ownTeam && ownTeam?.id === participant?.id,
+					"text-lighter italic opaque": predictedParticipant,
+					"bracket__match__team-name__narrow": participant?.avatarUrl,
+					invisible: !participant && !predictedParticipant,
 				})}
 			>
-				{team?.name ?? "???"}
+				{participant?.name ?? predictedParticipant?.name ?? "???"}
 			</div>{" "}
-			<div className="bracket__match__score">{score()}</div>
+			<div className="bracket__match__score">{match.score?.[idx]}</div>
 		</div>
 	);
 }
@@ -211,7 +160,7 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 		fetcher.load(`/to/${tournament.ctx.id}/streams`);
 	}, [fetcher, tournament.ctx.id]);
 
-	if (!fetcher.data || !match.opponent1?.id || !match.opponent2?.id)
+	if (!fetcher.data || match.participants.some((p) => !p))
 		return (
 			<div className="text-lighter text-center tournament-bracket__stream-popover">
 				Loading streams...
@@ -222,8 +171,8 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 		(cm) => cm.matchId === match.id,
 	)?.twitchAccount;
 
-	const matchParticipants = [match.opponent1.id, match.opponent2.id].flatMap(
-		(teamId) => tournament.teamById(teamId)?.members.map((m) => m.userId) ?? [],
+	const matchParticipants = match.participants.flatMap(
+		(p) => tournament.teamById(p!.id)?.members.map((m) => m.userId) ?? [],
 	);
 
 	const streamsOfThisMatch = fetcher.data.streams.filter(

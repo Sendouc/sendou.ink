@@ -1,5 +1,7 @@
 import * as React from "react";
 
+// xxx: delete
+
 /** Forces the component to rerender periodically*/
 export function useAutoRerender(every?: "second" | "ten seconds") {
 	const [, setNow] = React.useState(new Date().getTime());

@@ -1,5 +1,5 @@
 import type { ActionFunction } from "@remix-run/node";
-import { Link, useRevalidator } from "@remix-run/react";
+import { Link, useLoaderData, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -70,6 +70,9 @@ import {
 	bracketSubscriptionKey,
 	fillWithNullTillPowerOfTwo,
 } from "../tournament-bracket-utils";
+
+import { loader } from "../loaders/to.$id.brackets.server";
+export { loader };
 
 import "../components/Bracket/bracket.css";
 import "../tournament-bracket.css";
@@ -278,6 +281,7 @@ export default function TournamentBracketsPage() {
 	const { revalidate } = useRevalidator();
 	const user = useUser();
 	const tournament = useTournament();
+	const data = useLoaderData<typeof loader>();
 
 	const defaultBracketIdx = () => {
 		if (
@@ -432,9 +436,7 @@ export default function TournamentBracketsPage() {
 						<CompactifyButton />
 					) : null}
 				</div>
-				{bracket.enoughTeams ? (
-					<Bracket bracket={bracket} bracketIdx={bracketIdx} />
-				) : null}
+				{bracket.enoughTeams ? <Bracket bracket={data.bracket} /> : null}
 			</div>
 			{!bracket.enoughTeams ? (
 				<div>

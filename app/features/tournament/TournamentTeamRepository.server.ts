@@ -8,6 +8,7 @@ import { INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db/sql";
 import type { DB, Tables } from "~/db/tables";
 import { databaseTimestampNow } from "~/utils/dates";
+import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 
 export function findByMember({
 	tournamentId,
@@ -40,6 +41,32 @@ export function findByMember({
 		.where("TournamentTeam.id", "=", tournamentId)
 		.where("TournamentTeamMember.userId", "=", userId)
 		.executeTakeFirst();
+}
+
+// xxx: logo
+// xxx: seed
+export function findByTournamentId(tournamentId: number) {
+	return db
+		.selectFrom("TournamentTeam")
+		.select(({ eb }) => [
+			"TournamentTeam.id",
+			"TournamentTeam.name",
+			"TournamentTeam.activeRosterUserIds",
+			jsonArrayFrom(
+				eb
+					.selectFrom("TournamentTeamMember")
+					.innerJoin("User", "User.id", "TournamentTeamMember.userId")
+					.whereRef(
+						"TournamentTeamMember.tournamentTeamId",
+						"=",
+						"TournamentTeam.id",
+					)
+					.select([...COMMON_USER_FIELDS]),
+			).as("roster"),
+		])
+		.where("TournamentTeam.tournamentId", "=", tournamentId)
+		.orderBy(["TournamentTeam.seed asc", "TournamentTeam.createdAt asc"])
+		.execute();
 }
 
 export function setActiveRoster({

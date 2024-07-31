@@ -1,17 +1,29 @@
+import type { SerializeFrom } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import type { Bracket as BracketType } from "../../core/Bracket";
-import { getRounds } from "../../core/rounds";
+import type { TournamentBracketLoader } from "../../loaders/to.$id.brackets.server";
+import type {
+	BracketMatch,
+	BracketMatchWithParticipantInfo,
+	SingleEliminationBracket,
+} from "../../tournament-bracket-types";
 import { Match } from "./Match";
 import { RoundHeader } from "./RoundHeader";
 
 interface EliminationBracketSideProps {
-	bracket: BracketType;
+	rounds: SingleEliminationBracket["rounds"];
+	preview: boolean;
 	type: "winners" | "losers" | "single";
 	isExpanded?: boolean;
 }
 
-export function EliminationBracketSide(props: EliminationBracketSideProps) {
-	const rounds = getRounds(props);
+export function EliminationBracketSide({
+	rounds,
+	preview,
+	type,
+	isExpanded,
+}: EliminationBracketSideProps) {
+	const data = useLoaderData<TournamentBracketLoader>();
 
 	let atLeastOneColumnHidden = false;
 	return (
@@ -20,22 +32,10 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
 			style={{ "--round-count": rounds.length }}
 		>
 			{rounds.flatMap((round, roundIdx) => {
-				const bestOf = round.maps?.count;
-
-				const matches = props.bracket.data.match.filter(
-					(match) => match.round_id === round.id,
-				);
-
-				const someMatchOngoing = matches.some(
-					(match) =>
-						match.opponent1 &&
-						match.opponent2 &&
-						match.opponent1.result !== "win" &&
-						match.opponent2.result !== "win",
-				);
+				const someMatchOngoing = round.matches.some((match) => !match.winner);
 
 				if (
-					!props.isExpanded &&
+					!isExpanded &&
 					// always show at least 2 rounds per side
 					roundIdx < rounds.length - 2 &&
 					!someMatchOngoing
@@ -50,37 +50,28 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
 						className="elim-bracket__round-column"
 						data-round-id={round.id}
 					>
-						<RoundHeader
-							roundId={round.id}
-							name={round.name}
-							bestOf={bestOf}
-							showInfos={someMatchOngoing}
-							maps={round.maps}
-						/>
+						<RoundHeader round={round} showInfos={someMatchOngoing} />
 						<div
 							className={clsx("elim-bracket__round-matches-container", {
 								"elim-bracket__round-matches-container__top-bye":
 									!atLeastOneColumnHidden &&
-									props.type === "winners" &&
-									(!props.bracket.data.match[0].opponent1 ||
-										!props.bracket.data.match[0].opponent2),
+									type === "winners" &&
+									rounds[0].matches[0].bye,
 							})}
 						>
-							{matches.map((match) => (
+							{round.matches.map((match) => (
 								<Match
 									key={match.id}
-									match={match}
+									match={matchWithParticipantInfo(match, data.participants)}
 									roundNumber={round.number}
-									isPreview={props.bracket.preview}
-									showSimulation={round.name !== "Bracket Reset"}
-									bracket={props.bracket}
+									isPreview={preview}
 									type={
-										round.name === "Grand Finals" ||
-										round.name === "Bracket Reset"
+										round.name === "GRAND_FINALS" ||
+										round.name === "BRACKET_RESET"
 											? "grands"
-											: props.type === "winners"
+											: type === "winners"
 												? "winners"
-												: props.type === "losers"
+												: type === "losers"
 													? "losers"
 													: undefined
 									}
@@ -92,4 +83,20 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
 			})}
 		</div>
 	);
+}
+
+// xxx: to different file
+function matchWithParticipantInfo(
+	match: BracketMatch,
+	mapping: SerializeFrom<TournamentBracketLoader>["participants"],
+): BracketMatchWithParticipantInfo {
+	return {
+		...match,
+		participants: match.participants.map((id) =>
+			id ? mapping[id] : null,
+		) as BracketMatchWithParticipantInfo["participants"],
+		predictions: (match.predictions
+			? match.predictions.map((id) => mapping[id])
+			: undefined) as BracketMatchWithParticipantInfo["predictions"],
+	};
 }

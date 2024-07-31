@@ -1,34 +1,34 @@
 import * as React from "react";
 import { useDraggable } from "react-use-draggable-scroll";
 import { useBracketExpanded } from "~/features/tournament/routes/to.$id";
-import type { Bracket as BracketType } from "../../core/Bracket";
+import type { Bracket as BracketType } from "../../tournament-bracket-types";
 import { EliminationBracketSide } from "./Elimination";
-import { RoundRobinBracket } from "./RoundRobin";
-import { SwissBracket } from "./Swiss";
 
 export function Bracket({
 	bracket,
-	bracketIdx,
 }: {
 	bracket: BracketType;
-	bracketIdx: number;
 }) {
 	const { bracketExpanded } = useBracketExpanded();
 
+	// xxx: implement
 	if (bracket.type === "round_robin") {
-		return (
-			<BracketContainer>
-				<RoundRobinBracket bracket={bracket} />
-			</BracketContainer>
-		);
+		throw new Error("Round Robin brackets are not supported yet");
+		// return (
+		// 	<BracketContainer>
+		// 		<RoundRobinBracket bracket={bracket} />
+		// 	</BracketContainer>
+		// );
 	}
 
+	// xxx: implement
 	if (bracket.type === "swiss") {
-		return (
-			<BracketContainer>
-				<SwissBracket bracket={bracket} bracketIdx={bracketIdx} />
-			</BracketContainer>
-		);
+		throw new Error("Swiss brackets are not supported yet");
+		// return (
+		// 	<BracketContainer>
+		// 		<SwissBracket bracket={bracket} bracketIdx={bracketIdx} />
+		// 	</BracketContainer>
+		// );
 	}
 
 	if (bracket.type === "single_elimination") {
@@ -36,7 +36,8 @@ export function Bracket({
 			<BracketContainer scrollable>
 				<EliminationBracketSide
 					type="single"
-					bracket={bracket}
+					rounds={bracket.rounds}
+					preview={bracket.preview}
 					isExpanded={bracketExpanded}
 				/>
 			</BracketContainer>
@@ -47,12 +48,14 @@ export function Bracket({
 		<BracketContainer scrollable>
 			<EliminationBracketSide
 				type="winners"
-				bracket={bracket}
+				rounds={bracket.winners}
+				preview={bracket.preview}
 				isExpanded={bracketExpanded}
 			/>
 			<EliminationBracketSide
 				type="losers"
-				bracket={bracket}
+				rounds={bracket.losers}
+				preview={bracket.preview}
 				isExpanded={bracketExpanded}
 			/>
 		</BracketContainer>
