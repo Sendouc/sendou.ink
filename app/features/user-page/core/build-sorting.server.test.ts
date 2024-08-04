@@ -349,4 +349,71 @@ BuildSorting("sorts by ALPHABETICAL_TITLE and UPDATED_AT (reverse)", () => {
 	assert.equal(sortedBuilds[0].id, 3);
 });
 
+BuildSorting("sorts by PUBLIC_BUILD", () => {
+	const builds = [
+		mockBuild({ id: 1, private: 1 }),
+		mockBuild({ id: 2, private: 1 }),
+		mockBuild({ id: 3, private: 0 }),
+	];
+
+	const sortedBuilds = sortBuilds({
+		builds,
+		buildSorting: ["PUBLIC_BUILD"],
+		weaponPool: [],
+	});
+
+	assert.equal(sortedBuilds[0].id, 3);
+	assert.equal(sortedBuilds[1].id, 1);
+	assert.equal(sortedBuilds[2].id, 2);
+});
+
+BuildSorting("sorts by PRIVATE_BUILD", () => {
+	const builds = [
+		mockBuild({ id: 1, private: 0 }),
+		mockBuild({ id: 2, private: 1 }),
+		mockBuild({ id: 3, private: 1 }),
+	];
+
+	const sortedBuilds = sortBuilds({
+		builds,
+		buildSorting: ["PRIVATE_BUILD"],
+		weaponPool: [],
+	});
+
+	assert.equal(sortedBuilds[0].id, 2);
+	assert.equal(sortedBuilds[1].id, 3);
+	assert.equal(sortedBuilds[2].id, 1);
+});
+
+BuildSorting("sorts by both PUBLIC_BUILD and PRIVATE_BUILD", () => {
+	const builds = [
+		mockBuild({ id: 1, private: 1 }),
+		mockBuild({ id: 2, private: 0 }),
+		mockBuild({ id: 3, private: 1 }),
+		mockBuild({ id: 4, private: 0 }),
+	];
+
+	const sortedBuilds1 = sortBuilds({
+		builds,
+		buildSorting: ["PUBLIC_BUILD", "PRIVATE_BUILD"],
+		weaponPool: [],
+	});
+
+	assert.equal(sortedBuilds1[0].id, 2);
+	assert.equal(sortedBuilds1[1].id, 4);
+	assert.equal(sortedBuilds1[2].id, 1);
+	assert.equal(sortedBuilds1[3].id, 3);
+
+	const sortedBuilds2 = sortBuilds({
+		builds,
+		buildSorting: ["PRIVATE_BUILD", "PUBLIC_BUILD"],
+		weaponPool: [],
+	});
+
+	assert.equal(sortedBuilds2[0].id, 1);
+	assert.equal(sortedBuilds2[1].id, 3);
+	assert.equal(sortedBuilds2[2].id, 2);
+	assert.equal(sortedBuilds2[3].id, 4);
+});
+
 BuildSorting.run();

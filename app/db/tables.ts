@@ -714,6 +714,8 @@ export const BUILD_SORT_IDENTIFIERS = [
 	"HEADGEAR_ID",
 	"CLOTHES_ID",
 	"SHOES_ID",
+	"PUBLIC_BUILD",
+	"PRIVATE_BUILD",
 ] as const;
 
 export type BuildSort = (typeof BUILD_SORT_IDENTIFIERS)[number];
