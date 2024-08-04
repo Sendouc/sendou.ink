@@ -66,7 +66,9 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const user = await requireUser(request);
 
-	const votingMonthYear = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+	const votingMonthYear = rangeToMonthYear(
+		badRequestIfFalsy(nextNonCompletedVoting(new Date())),
+	);
 	const suggestions =
 		await PlusSuggestionRepository.findAllByMonth(votingMonthYear);
 

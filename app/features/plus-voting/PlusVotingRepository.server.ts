@@ -8,6 +8,7 @@ import {
 	nextNonCompletedVoting,
 	rangeToMonthYear,
 } from "~/features/plus-voting/core";
+import invariant from "~/utils/invariant";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
@@ -83,10 +84,11 @@ export async function usersForVoting(loggedInUser: {
 		.where("PlusTier.tier", "=", loggedInUser.plusTier)
 		.execute();
 
+	const votingRange = nextNonCompletedVoting(new Date());
+	invariant(votingRange, "No next voting found");
+
 	const suggestedUsers = (
-		await PlusSuggestionRepository.findAllByMonth(
-			rangeToMonthYear(nextNonCompletedVoting(new Date())),
-		)
+		await PlusSuggestionRepository.findAllByMonth(rangeToMonthYear(votingRange))
 	).filter((suggestion) => suggestion.tier === loggedInUser.plusTier);
 
 	const result: UsersForVoting = [];

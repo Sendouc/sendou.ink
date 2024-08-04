@@ -87,7 +87,9 @@ function useLoadInitialStateFromLocalStorageEffect({
 	>;
 	setVotes: React.Dispatch<React.SetStateAction<PlusVoteFromFE[]>>;
 }) {
-	const { month, year } = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+	const range = nextNonCompletedVoting(new Date());
+	invariant(range, "No next voting found");
+	const { month, year } = rangeToMonthYear(range);
 
 	React.useEffect(() => {
 		const usersForVotingFromLocalStorage =
@@ -182,7 +184,10 @@ function votesToLocalStorage({
 	usersForVoting?: PlusVotingRepository.UsersForVoting;
 	votes: PlusVoteFromFE[];
 }) {
-	const { month, year } = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+	const range = nextNonCompletedVoting(new Date());
+	invariant(range, "No next voting found");
+
+	const { month, year } = rangeToMonthYear(range);
 
 	invariant(usersForVoting);
 	const toLocalStorage: VotingLocalStorageData = {

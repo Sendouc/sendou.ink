@@ -226,7 +226,9 @@ export default function QPage() {
 					<ActiveSeasonInfo season={data.season} />
 				) : data.upcomingSeason ? (
 					<UpcomingSeasonInfo season={data.upcomingSeason} />
-				) : null}
+				) : (
+					<NoUpcomingSeasonInfo />
+				)}
 				<Clocks />
 			</div>
 			{data.season ? (
@@ -575,6 +577,18 @@ function UpcomingSeasonInfo({
 				nth: season.nth,
 				date: dateToString(starts),
 			})}
+		</div>
+	);
+}
+
+function NoUpcomingSeasonInfo() {
+	const { t } = useTranslation(["q"]);
+
+	return (
+		<div className="font-semi-bold text-center text-sm">
+			{t("q:front.upcomingSeason.header")}
+			<br />
+			{t("q:front.noUpcomingSeason")}
 		</div>
 	);
 }

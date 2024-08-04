@@ -29,7 +29,7 @@ export function nextNonCompletedVoting(now: Date) {
 		}
 	}
 
-	throw new Error("No next voting found.");
+	return null;
 }
 
 export function rangeToMonthYear(range: { startDate: Date; endDate: Date }) {

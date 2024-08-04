@@ -24,7 +24,7 @@ import {
 import { isVotingActive } from "~/features/plus-voting/core/voting-time";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import invariant from "~/utils/invariant";
-import { parseRequestPayload } from "~/utils/remix";
+import { badRequestIfFalsy, parseRequestPayload } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
@@ -82,7 +82,7 @@ export const action: ActionFunction = async ({ request }) => {
 		score: PLUS_UPVOTE,
 	});
 
-	const votingRange = nextNonCompletedVoting(new Date());
+	const votingRange = badRequestIfFalsy(nextNonCompletedVoting(new Date()));
 	const { month, year } = rangeToMonthYear(votingRange);
 	await PlusVotingRepository.upsertMany(
 		votesForDb.map((vote) => ({
@@ -122,6 +122,10 @@ function validateVotes({
 }
 
 type PlusVotingLoaderData =
+	// next voting date is not in the system
+	| {
+			type: "noTimeDefinedInfo";
+	  }
 	// voting is not active OR user is not eligible to vote
 	| {
 			type: "timeInfo";
@@ -147,6 +151,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	const now = new Date();
 	const nextVotingRange = nextNonCompletedVoting(now);
+
+	if (!nextVotingRange) {
+		return json<PlusVotingLoaderData>({ type: "noTimeDefinedInfo" });
+	}
+
 	if (!isVotingActive()) {
 		return json<PlusVotingLoaderData>({
 			type: "timeInfo",
@@ -203,6 +212,13 @@ export default function PlusVotingPage() {
 	const data = useLoaderData<PlusVotingLoaderData>();
 
 	switch (data.type) {
+		case "noTimeDefinedInfo": {
+			return (
+				<div className="text-center text-lighter text-sm">
+					Next voting date to be announced
+				</div>
+			);
+		}
 		case "timeInfo": {
 			return <VotingTimingInfo {...data} />;
 		}

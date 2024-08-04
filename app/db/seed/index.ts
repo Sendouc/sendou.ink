@@ -540,7 +540,9 @@ async function thisMonthsSuggestions() {
 	const usersInPlus = (await UserRepository.findAllPlusMembers()).filter(
 		(u) => u.id !== ADMIN_ID,
 	);
-	const { month, year } = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+	const range = nextNonCompletedVoting(new Date());
+	invariant(range, "No next voting found");
+	const { month, year } = rangeToMonthYear(range);
 
 	for (let userId = 150; userId < 190; userId++) {
 		const amountOfSuggestions = faker.helpers.arrayElement([1, 1, 2, 3, 4]);

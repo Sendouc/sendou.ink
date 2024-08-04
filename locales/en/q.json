@@ -28,6 +28,7 @@
 	"front.noFriendCode": "Set friend code before joining the group",
 	"front.upcomingSeason.header": "It's off-season!",
 	"front.upcomingSeason.date": "Join Season {{nth}} starting {{date}}",
+	"front.noUpcomingSeason": "Next season start time to be announced",
 	"front.nav.rules.title": "Rules",
 	"front.nav.rules.description": "Read these before playing",
 	"front.nav.info.title": "Info",
