@@ -4,6 +4,8 @@ import * as AdminRepository from "~/features/admin/AdminRepository.server";
 import { makeArtist } from "~/features/art/queries/makeArtist.server";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { refreshBannedCache } from "~/features/ban/core/banned.server";
+import { FRIEND_CODE_REGEXP } from "~/features/sendouq/q-constants";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { isAdmin, isMod } from "~/permissions";
 import { logger } from "~/utils/logger";
 import { parseRequestPayload, validate } from "~/utils/remix";
@@ -112,6 +114,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 			break;
 		}
+		case "UPDATE_FRIEND_CODE": {
+			validate(isMod(user), "Mod needed", 401);
+
+			await UserRepository.insertFriendCode({
+				friendCode: data.friendCode,
+				submitterUserId: user.id,
+				userId: data.user,
+			});
+
+			break;
+		}
 		default: {
 			assertUnreachable(data);
 		}
@@ -159,6 +172,11 @@ export const adminActionSchema = z.union([
 	}),
 	z.object({
 		_action: _action("UNBAN_USER"),
+		user: z.preprocess(actualNumber, z.number().positive()),
+	}),
+	z.object({
+		_action: _action("UPDATE_FRIEND_CODE"),
+		friendCode: z.string().regex(FRIEND_CODE_REGEXP),
 		user: z.preprocess(actualNumber, z.number().positive()),
 	}),
 ]);

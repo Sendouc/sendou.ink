@@ -8,10 +8,12 @@ import {
 import * as React from "react";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
+import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import { useUser } from "~/features/auth/core/user";
+import { FRIEND_CODE_REGEXP_PATTERN } from "~/features/sendouq/q-constants";
 import { isAdmin, isMod } from "~/permissions";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -39,6 +41,7 @@ export default function AdminPage() {
 			{isMod(user) ? <LinkPlayer /> : null}
 			{isMod(user) ? <GiveArtist /> : null}
 			{isMod(user) ? <GiveVideoAdder /> : null}
+			{isMod(user) ? <UpdateFriendCode /> : null}
 
 			{process.env.NODE_ENV !== "production" || isAdmin(user) ? (
 				<Impersonate />
@@ -193,6 +196,41 @@ function GiveVideoAdder() {
 			<div className="stack horizontal md">
 				<SubmitButton type="submit" _action="VIDEO_ADDER" state={fetcher.state}>
 					Add as video adder
+				</SubmitButton>
+			</div>
+		</fetcher.Form>
+	);
+}
+
+function UpdateFriendCode() {
+	const fetcher = useFetcher();
+
+	return (
+		<fetcher.Form className="stack md" method="post">
+			<h2>Update friend code</h2>
+			<div className="stack horizontal md">
+				<div>
+					<label>User</label>
+					<UserSearch inputName="user" />
+				</div>
+				<div>
+					<label>Friend code</label>
+					<Input
+						leftAddon="SW-"
+						id="friendCode"
+						name="friendCode"
+						pattern={FRIEND_CODE_REGEXP_PATTERN}
+						placeholder="1234-5678-9012"
+					/>
+				</div>
+			</div>
+			<div className="stack horizontal md">
+				<SubmitButton
+					type="submit"
+					_action="UPDATE_FRIEND_CODE"
+					state={fetcher.state}
+				>
+					Submit
 				</SubmitButton>
 			</div>
 		</fetcher.Form>
