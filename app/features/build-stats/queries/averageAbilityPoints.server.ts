@@ -25,5 +25,7 @@ export interface AverageAbilityPointsResult {
 export function averageAbilityPoints(weaponSplId?: MainWeaponId | null) {
 	const stm = typeof weaponSplId === "number" ? findByWeaponIdStm : findAllStm;
 
-	return stm.all({ weaponSplId }) as Array<AverageAbilityPointsResult>;
+	return stm.all({
+		weaponSplId: weaponSplId ?? null,
+	}) as Array<AverageAbilityPointsResult>;
 }

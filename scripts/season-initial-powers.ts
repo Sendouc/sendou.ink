@@ -98,7 +98,10 @@ const skillStm = sql.prepare(/* sql */ `
 const midPoints = Object.entries(groupedSkills).reduce(
 	(acc, [tier, skills]) => {
 		const midPoint = skills[Math.floor(skills.length / 2)];
-		const midPointSkill = skillStm.get(midPoint) as Skill;
+		const midPointSkill = skillStm.get({
+			userId: midPoint.userId,
+			ordinal: midPoint.ordinal,
+		}) as Skill;
 		invariant(midPointSkill, "midPointSkill not found");
 
 		acc[tier as TierName] = midPointSkill;

@@ -8,5 +8,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function chatCodeByGroupId(id: number) {
-	return stm.pluck().get({ id }) as string | undefined;
+	return (stm.get({ id }) as any).chatCode as string | undefined;
 }

@@ -2,7 +2,7 @@ import { sql } from "~/db/sql";
 import type { XRankPlacement } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 
-const smt = sql.prepare(/* sql */ `
+const smt = sql.query(/* sql */ `
   select
     "power",
     "rank",

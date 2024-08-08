@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
 
-const stm = sql.prepare(/* sql */ `
+const stm = sql.query(/* sql */ `
   select
     count(distinct "Art"."id") as "count"
   from
@@ -12,5 +12,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function countArtByUserId(userId: number) {
-	return stm.pluck().get({ userId }) as number;
+	return (stm.get({ userId }) as any).count as number;
 }

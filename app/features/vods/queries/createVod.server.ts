@@ -40,11 +40,11 @@ export const createVod = sql.transaction(
 		},
 	) => {
 		const video = createVideoStm.get({
-			id: args.id,
+			id: args.id ?? null,
 			title: args.title,
 			type: args.type,
 			youtubeDate: args.youtubeDate,
-			eventId: args.eventId,
+			eventId: args.eventId ?? null,
 			youtubeId: args.youtubeId,
 			submitterUserId: args.submitterUserId,
 			validatedAt: args.isValidated
@@ -63,8 +63,8 @@ export const createVod = sql.transaction(
 			for (const [i, weaponSplId] of match.weapons.entries()) {
 				createVideoMatchPlayerStm.run({
 					videoMatchId: videoMatch.id,
-					playerUserId: args.povUserId,
-					playerName: args.povUserName,
+					playerUserId: args.povUserId ?? null,
+					playerName: args.povUserName ?? null,
 					weaponSplId,
 					player: i + 1,
 				});

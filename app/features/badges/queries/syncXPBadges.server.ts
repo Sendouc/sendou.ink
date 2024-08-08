@@ -37,9 +37,8 @@ const addXPBadgeStm = sql.prepare(/* sql */ `
 
 export const syncXPBadges = sql.transaction(() => {
 	for (const value of SPLATOON_3_XP_BADGE_VALUES) {
-		const badgeId = badgeCodeToIdStm
-			.pluck()
-			.get({ code: String(value) }) as number;
+		const badgeId = (badgeCodeToIdStm.get({ code: String(value) }) as any)
+			.id as number;
 
 		invariant(badgeId, `Badge ${value} not found`);
 
