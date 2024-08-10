@@ -8,7 +8,7 @@
 		"deploy": "npm ci && npm run build",
 		"build": "bun run --bun remix vite:build",
 		"dev": "bun run --bun vite --host",
-		"dev:prod": "cross-env DB_PATH=db-prod.sqlite3 npm run dev",
+		"dev:prod": "cross-env DB_PATH=db-prod.sqlite3 bun run dev",
 		"dev:ci": "cp .env.example .env && npm run migrate up && npm run dev",
 		"xxx:TODO": "npm run migrate up",
 		"start": "NODE_ENV=production bun --bun run ./server.ts",

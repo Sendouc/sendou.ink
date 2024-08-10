@@ -216,6 +216,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	}
 
 	return {
+		user: (await UserRepository.findProfileByIdentifier(identifier))!,
 		favoriteBadgeId: user.favoriteBadgeId,
 		discordUniqueName: userToBeEdited.discordUniqueName,
 		countries: Object.entries(countries)
@@ -237,33 +238,33 @@ export default function UserEditPage() {
 	const { t } = useTranslation(["common", "user"]);
 	const [, parentRoute] = useMatches();
 	invariant(parentRoute);
-	const parentRouteData = parentRoute.data as UserPageLoaderData;
+	const layoutData = parentRoute.data as UserPageLoaderData;
 	const data = useLoaderData<typeof loader>();
 
 	return (
 		<div className="half-width">
 			<Form className="u-edit__container" method="post">
 				{canAddCustomizedColorsToUserProfile(user) ? (
-					<CustomizedColorsInput initialColors={parentRouteData.css} />
+					<CustomizedColorsInput initialColors={layoutData.user.css} />
 				) : null}
-				<CustomNameInput parentRouteData={parentRouteData} />
-				<CustomUrlInput parentRouteData={parentRouteData} />
-				<InGameNameInputs parentRouteData={parentRouteData} />
-				<SensSelects parentRouteData={parentRouteData} />
-				<BattlefyInput parentRouteData={parentRouteData} />
-				<CountrySelect parentRouteData={parentRouteData} />
-				<FavBadgeSelect parentRouteData={parentRouteData} />
-				<WeaponPoolSelect parentRouteData={parentRouteData} />
-				<BioTextarea initialValue={parentRouteData.bio} />
+				<CustomNameInput />
+				<CustomUrlInput parentRouteData={layoutData} />
+				<InGameNameInputs />
+				<SensSelects />
+				<BattlefyInput />
+				<CountrySelect />
+				<FavBadgeSelect />
+				<WeaponPoolSelect />
+				<BioTextarea initialValue={data.user.bio} />
 				{data.discordUniqueName ? (
-					<ShowUniqueDiscordNameToggle parentRouteData={parentRouteData} />
+					<ShowUniqueDiscordNameToggle />
 				) : (
 					<input type="hidden" name="showDiscordUniqueName" value="on" />
 				)}
 				{user?.isArtist ? (
 					<>
-						<CommissionsOpenToggle parentRouteData={parentRouteData} />
-						<CommissionTextArea initialValue={parentRouteData.commissionText} />
+						<CommissionsOpenToggle parentRouteData={layoutData} />
+						<CommissionTextArea initialValue={layoutData.user.commissionText} />
 					</>
 				) : (
 					<>
@@ -300,18 +301,15 @@ function CustomUrlInput({
 				id="customUrl"
 				leftAddon="https://sendou.ink/u/"
 				maxLength={USER.CUSTOM_URL_MAX_LENGTH}
-				defaultValue={parentRouteData.customUrl ?? undefined}
+				defaultValue={parentRouteData.user.customUrl ?? undefined}
 			/>
 		</div>
 	);
 }
 
-function CustomNameInput({
-	parentRouteData,
-}: {
-	parentRouteData: UserPageLoaderData;
-}) {
+function CustomNameInput() {
 	const { t } = useTranslation(["user"]);
+	const data = useLoaderData<typeof loader>();
 
 	return (
 		<div className="w-full">
@@ -320,25 +318,22 @@ function CustomNameInput({
 				name="customName"
 				id="customName"
 				maxLength={USER.CUSTOM_NAME_MAX_LENGTH}
-				defaultValue={parentRouteData.customName ?? undefined}
+				defaultValue={data.user.customName ?? undefined}
 			/>
 			<FormMessage type="info">
 				{t("user:forms.customName.info", {
-					discordName: parentRouteData.discordName,
+					discordName: data.user.discordName,
 				})}
 			</FormMessage>
 		</div>
 	);
 }
 
-function InGameNameInputs({
-	parentRouteData,
-}: {
-	parentRouteData: UserPageLoaderData;
-}) {
+function InGameNameInputs() {
 	const { t } = useTranslation(["user"]);
+	const data = useLoaderData<typeof loader>();
 
-	const inGameNameParts = parentRouteData.inGameName?.split("#");
+	const inGameNameParts = data.user.inGameName?.split("#");
 
 	return (
 		<div className="stack items-start">
@@ -369,12 +364,9 @@ const SENS_OPTIONS = [
 	-50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
 	40, 45, 50,
 ];
-function SensSelects({
-	parentRouteData,
-}: {
-	parentRouteData: UserPageLoaderData;
-}) {
+function SensSelects() {
 	const { t } = useTranslation(["user"]);
+	const data = useLoaderData<typeof loader>();
 
 	return (
 		<div className="stack horizontal md">
@@ -383,7 +375,7 @@ function SensSelects({
 				<select
 					id="motionSens"
 					name="motionSens"
-					defaultValue={parentRouteData.motionSens ?? undefined}
+					defaultValue={data.user.motionSens ?? undefined}
 					className="u-edit__sens-select"
 				>
 					<option value="">{"-"}</option>
@@ -400,7 +392,7 @@ function SensSelects({
 				<select
 					id="stickSens"
 					name="stickSens"
-					defaultValue={parentRouteData.stickSens ?? undefined}
+					defaultValue={data.user.stickSens ?? undefined}
 					className="u-edit__sens-select"
 				>
 					<option value="">{"-"}</option>
@@ -415,11 +407,7 @@ function SensSelects({
 	);
 }
 
-function CountrySelect({
-	parentRouteData,
-}: {
-	parentRouteData: UserPageLoaderData;
-}) {
+function CountrySelect() {
 	const { t } = useTranslation(["user"]);
 	const data = useLoaderData<typeof loader>();
 
@@ -430,7 +418,7 @@ function CountrySelect({
 				className="u-edit__country-select"
 				name="country"
 				id="country"
-				defaultValue={parentRouteData.country ?? ""}
+				defaultValue={data.user.country ?? ""}
 			>
 				<option value="" />
 				{data.countries.map((country) => (
@@ -443,12 +431,9 @@ function CountrySelect({
 	);
 }
 
-function BattlefyInput({
-	parentRouteData,
-}: {
-	parentRouteData: UserPageLoaderData;
-}) {
+function BattlefyInput() {
 	const { t } = useTranslation(["user"]);
+	const data = useLoaderData<typeof loader>();
 
 	return (
 		<div className="w-full">
@@ -457,7 +442,7 @@ function BattlefyInput({
 				name="battlefy"
 				id="battlefy"
 				maxLength={USER.BATTLEFY_MAX_LENGTH}
-				defaultValue={parentRouteData.battlefy ?? undefined}
+				defaultValue={data.user.battlefy ?? undefined}
 				leftAddon="https://battlefy.com/users/"
 			/>
 			<FormMessage type="info">{t("user:forms.info.battlefy")}</FormMessage>
@@ -465,12 +450,9 @@ function BattlefyInput({
 	);
 }
 
-function WeaponPoolSelect({
-	parentRouteData,
-}: {
-	parentRouteData: UserPageLoaderData;
-}) {
-	const [weapons, setWeapons] = React.useState(parentRouteData.weapons);
+function WeaponPoolSelect() {
+	const data = useLoaderData<typeof loader>();
+	const [weapons, setWeapons] = React.useState(data.user.weapons);
 	const { t } = useTranslation(["user"]);
 
 	const latestWeapon = weapons[weapons.length - 1];
@@ -581,20 +563,16 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
 	);
 }
 
-function FavBadgeSelect({
-	parentRouteData,
-}: {
-	parentRouteData: UserPageLoaderData;
-}) {
+function FavBadgeSelect() {
 	const data = useLoaderData<typeof loader>();
 	const { t } = useTranslation(["user"]);
 
 	// doesn't make sense to select favorite badge
 	// if user has no badges or only has 1 badge
-	if (parentRouteData.badges.length < 2) return null;
+	if (data.user.badges.length < 2) return null;
 
 	// user's current favorite badge is the initial value
-	const initialBadge = parentRouteData.badges.find(
+	const initialBadge = data.user.badges.find(
 		(badge) => badge.id === data.favoriteBadgeId,
 	);
 
@@ -607,7 +585,7 @@ function FavBadgeSelect({
 				id="favoriteBadgeId"
 				defaultValue={initialBadge?.id}
 			>
-				{parentRouteData.badges.map((badge) => (
+				{data.user.badges.map((badge) => (
 					<option key={badge.id} value={badge.id}>
 						{`${badge.displayName}`}
 					</option>
@@ -620,15 +598,11 @@ function FavBadgeSelect({
 	);
 }
 
-function ShowUniqueDiscordNameToggle({
-	parentRouteData,
-}: {
-	parentRouteData: UserPageLoaderData;
-}) {
+function ShowUniqueDiscordNameToggle() {
 	const { t } = useTranslation(["user"]);
 	const data = useLoaderData<typeof loader>();
 	const [checked, setChecked] = React.useState(
-		Boolean(parentRouteData.showDiscordUniqueName),
+		Boolean(data.user.showDiscordUniqueName),
 	);
 
 	return (
@@ -657,7 +631,7 @@ function CommissionsOpenToggle({
 }) {
 	const { t } = useTranslation(["user"]);
 	const [checked, setChecked] = React.useState(
-		Boolean(parentRouteData.commissionsOpen),
+		Boolean(parentRouteData.user.commissionsOpen),
 	);
 
 	return (

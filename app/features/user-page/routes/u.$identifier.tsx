@@ -3,28 +3,17 @@ import type {
 	MetaFunction,
 	SerializeFrom,
 } from "@remix-run/node";
-import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
-import * as React from "react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { countArtByUserId } from "~/features/art/queries/countArtByUserId.server";
 import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
-import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
-import { userIsBanned } from "~/features/ban/core/banned.server";
-import * as BuildRepository from "~/features/builds/BuildRepository.server";
-import { userTopPlacements } from "~/features/top-search";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { findVods } from "~/features/vods/queries/findVods.server";
-import { canAddCustomizedColorsToUserProfile, isAdmin } from "~/permissions";
-import { databaseTimestampToDate } from "~/utils/dates";
-import invariant from "~/utils/invariant";
 import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
 	USER_SEARCH_PAGE,
-	isCustomUrl,
 	navIconUrl,
 	userArtPage,
 	userBuildsPage,
@@ -34,14 +23,13 @@ import {
 	userSeasonsPage,
 	userVodsPage,
 } from "~/utils/urls";
-import { userParamsSchema } from "../user-page-schemas.server";
 
 import "~/styles/u.css";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	if (!data) return [];
 
-	return [{ title: makeTitle(data.username) }];
+	return [{ title: makeTitle(data.user.username) }];
 };
 
 export const handle: SendouRouteHandle = {
@@ -58,8 +46,8 @@ export const handle: SendouRouteHandle = {
 				type: "IMAGE",
 			},
 			{
-				text: data.username,
-				href: userPage(data),
+				text: data.user.username,
+				href: userPage(data.user),
 				type: "TEXT",
 			},
 		];
@@ -68,37 +56,17 @@ export const handle: SendouRouteHandle = {
 
 export type UserPageLoaderData = SerializeFrom<typeof loader>;
 
-// xxx: called on every tab change
 // xxx: can probably also be optimized (see chara for example)
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const loggedInUser = await getUserId(request);
-	const { identifier } = userParamsSchema.parse(params);
-	const user = notFoundIfFalsy(
-		await UserRepository.findByIdentifier(identifier),
-	);
 
 	return {
-		...user,
-		...userTopPlacements(user.id),
-		discordUniqueName: user.showDiscordUniqueName
-			? user.discordUniqueName
-			: null,
-		banned:
-			isAdmin(loggedInUser) && userIsBanned(user.id)
-				? { banned: user.banned, bannedReason: user.bannedReason }
-				: undefined,
-		css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
-		badges: await BadgeRepository.findByOwnerId({
-			userId: user.id,
-			favoriteBadgeId: user.favoriteBadgeId,
-		}),
-		results: await UserRepository.findResultsByUserId(user.id),
-		buildsCount: await BuildRepository.countByUserId({
-			userId: user.id,
-			showPrivate: user.id === loggedInUser?.id,
-		}),
-		vods: findVods({ userId: user.id }),
-		artCount: countArtByUserId(user.id),
+		user: notFoundIfFalsy(
+			await UserRepository.findLayoutDataByIdentifier(
+				params.identifier!,
+				loggedInUser?.id,
+			),
+		),
 	};
 };
 
@@ -107,115 +75,51 @@ export default function UserPageLayout() {
 	const user = useUser();
 	const { t } = useTranslation(["common", "user"]);
 
-	const isOwnPage = data.id === user?.id;
+	const isOwnPage = data.user.id === user?.id;
 
-	useReplaceWithCustomUrl();
+	const allResultsCount =
+		data.user.calendarEventResultsCount + data.user.tournamentResultsCount;
 
 	return (
 		<Main>
 			<SubNav>
-				<SubNavLink to={userPage(data)}>
+				<SubNavLink to={userPage(data.user)}>
 					{t("common:header.profile")}
 				</SubNavLink>
-				<SubNavLink to={userSeasonsPage({ user: data })}>
+				<SubNavLink to={userSeasonsPage({ user: data.user })}>
 					{t("user:seasons")}
 				</SubNavLink>
 				{isOwnPage && (
-					<SubNavLink to={userEditProfilePage(data)} prefetch="intent">
+					<SubNavLink to={userEditProfilePage(data.user)} prefetch="intent">
 						{t("common:actions.edit")}
 					</SubNavLink>
 				)}
-				{data.results.length > 0 && (
-					<SubNavLink to={userResultsPage(data)}>
-						{t("common:results")} ({data.results.length})
+				{allResultsCount > 0 && (
+					<SubNavLink to={userResultsPage(data.user)}>
+						{t("common:results")} ({allResultsCount})
 					</SubNavLink>
 				)}
-				{(isOwnPage || data.buildsCount > 0) && (
+				{(isOwnPage || data.user.buildsCount > 0) && (
 					<SubNavLink
-						to={userBuildsPage(data)}
+						to={userBuildsPage(data.user)}
 						prefetch="intent"
 						data-testid="builds-tab"
 					>
-						{t("common:pages.builds")} ({data.buildsCount})
+						{t("common:pages.builds")} ({data.user.buildsCount})
 					</SubNavLink>
 				)}
-				{(isOwnPage || data.vods.length > 0) && (
-					<SubNavLink to={userVodsPage(data)}>
-						{t("common:pages.vods")} ({data.vods.length})
+				{(isOwnPage || data.user.vodsCount > 0) && (
+					<SubNavLink to={userVodsPage(data.user)}>
+						{t("common:pages.vods")} ({data.user.vodsCount})
 					</SubNavLink>
 				)}
-				{(isOwnPage || data.artCount > 0) && (
-					<SubNavLink to={userArtPage(data)} end={false}>
-						{t("common:pages.art")} ({data.artCount})
+				{(isOwnPage || data.user.artCount > 0) && (
+					<SubNavLink to={userArtPage(data.user)} end={false}>
+						{t("common:pages.art")} ({data.user.artCount})
 					</SubNavLink>
 				)}
 			</SubNav>
-			<BannedInfo />
 			<Outlet />
 		</Main>
-	);
-}
-
-function useReplaceWithCustomUrl() {
-	const data = useLoaderData<typeof loader>();
-	const location = useLocation();
-
-	React.useEffect(() => {
-		if (!data.customUrl) {
-			return;
-		}
-
-		const identifier = location.pathname.replace("/u/", "").split("/")[0];
-		invariant(identifier);
-
-		if (isCustomUrl(identifier)) {
-			return;
-		}
-
-		window.history.replaceState(
-			null,
-			"",
-			location.pathname
-				.split("/")
-				.map((part) => (part === identifier ? data.customUrl : part))
-				.join("/"),
-		);
-	}, [location, data.customUrl]);
-}
-
-function BannedInfo() {
-	const data = useLoaderData<typeof loader>();
-
-	const { banned, bannedReason } = data.banned ?? {};
-
-	if (!banned) return null;
-
-	const ends = (() => {
-		if (!banned || banned === 1) return null;
-
-		return databaseTimestampToDate(banned);
-	})();
-
-	return (
-		<div className="mb-4">
-			<h2 className="text-warning">Account suspended</h2>
-			{bannedReason ? <div>Reason: {bannedReason}</div> : null}
-			{ends ? (
-				<div suppressHydrationWarning>
-					Ends:{" "}
-					{ends.toLocaleString("en-US", {
-						month: "long",
-						day: "numeric",
-						year: "numeric",
-						hour: "numeric",
-						minute: "numeric",
-					})}
-				</div>
-			) : (
-				<div>
-					Ends: <i>no end time set</i>
-				</div>
-			)}
-		</div>
 	);
 }

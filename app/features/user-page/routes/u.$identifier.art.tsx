@@ -98,7 +98,7 @@ export default function UserArtPage() {
 	});
 	const [, parentRoute] = useMatches();
 	invariant(parentRoute);
-	const userPageData = parentRoute.data as UserPageLoaderData;
+	const layoutData = parentRoute.data as UserPageLoaderData;
 
 	const hasBothArtMadeByAndMadeOf =
 		data.arts.some((a) => a.author) && data.arts.some((a) => !a.author);
@@ -122,7 +122,7 @@ export default function UserArtPage() {
 						? t("art:pendingApproval", { count: data.unvalidatedArtCount })
 						: null}
 				</div>
-				{userPageData.id === user?.id ? (
+				{layoutData.user.id === user?.id ? (
 					<AddArtButton isArtist={Boolean(user.isArtist)} />
 				) : null}
 			</div>
@@ -189,9 +189,9 @@ export default function UserArtPage() {
 				</div>
 			) : null}
 
-			{userPageData.commissionsOpen || userPageData.commissionText ? (
+			{layoutData.user.commissionsOpen || layoutData.user.commissionText ? (
 				<div className="whitespace-pre-wrap">
-					{userPageData.commissionsOpen ? (
+					{layoutData.user.commissionsOpen ? (
 						<span className="art__comms-header">
 							{t("art:commissionsOpen")} {">>>"}
 						</span>
@@ -200,14 +200,14 @@ export default function UserArtPage() {
 							{t("art:commissionsClosed")} {">>>"}
 						</span>
 					)}{" "}
-					{userPageData.commissionText}
+					{layoutData.user.commissionText}
 				</div>
 			) : null}
 
 			<ArtGrid
 				arts={arts}
 				enablePreview
-				canEdit={userPageData.id === user?.id}
+				canEdit={layoutData.user.id === user?.id}
 			/>
 		</div>
 	);

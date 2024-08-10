@@ -1,5 +1,5 @@
 import { type ActionFunction, redirect } from "@remix-run/node";
-import { Form, useMatches } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { FormErrors } from "~/components/FormErrors";
@@ -11,11 +11,12 @@ import {
 	HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME,
 	UserResultsTable,
 } from "~/features/user-page/components/UserResultsTable";
-import type { UserPageLoaderData } from "~/features/user-page/routes/u.$identifier";
 import { normalizeFormFieldArray } from "~/utils/arrays";
-import invariant from "~/utils/invariant";
 import { parseRequestPayload } from "~/utils/remix";
 import { userResultsPage } from "~/utils/urls";
+
+import { loader } from "../loaders/u.$identifier.results.server";
+export { loader };
 
 const editHighlightsActionSchema = z.object({
 	[HIGHLIGHT_CHECKBOX_NAME]: z.optional(
@@ -51,10 +52,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function ResultHighlightsEditPage() {
 	const { t } = useTranslation(["common", "user"]);
-	const [, parentRoute] = useMatches();
-
-	invariant(parentRoute);
-	const userPageData = parentRoute.data as UserPageLoaderData;
+	const data = useLoaderData<typeof loader>();
 
 	return (
 		<Form method="post" className="stack md items-start">
@@ -64,7 +62,7 @@ export default function ResultHighlightsEditPage() {
 					<legend>{t("user:results.highlights.explanation")}</legend>
 					<UserResultsTable
 						id="user-results-highlight-selection"
-						results={userPageData.results}
+						results={data.results}
 						hasHighlightCheckboxes
 					/>
 				</fieldset>

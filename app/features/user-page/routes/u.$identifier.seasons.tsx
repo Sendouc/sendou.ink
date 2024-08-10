@@ -72,11 +72,9 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	);
 	const {
 		info = "weapons",
-		page,
+		page = 1,
 		season = currentOrPreviousSeason(new Date())!.nth,
-	} = parsedSearchParams.success
-		? parsedSearchParams.data
-		: seasonsSearchParamsSchema.parse({});
+	} = parsedSearchParams.success ? parsedSearchParams.data : {};
 
 	const user = notFoundIfFalsy(
 		await UserRepository.identifierToUserId(identifier),
@@ -292,7 +290,7 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
 	const data = useLoaderData<typeof loader>();
 	const [, parentRoute] = useMatches();
 	invariant(parentRoute);
-	const parentRouteData = parentRoute.data as UserPageLoaderData;
+	const layoutData = parentRoute.data as UserPageLoaderData;
 
 	const maxOrdinal = Math.max(...data.skills.map((s) => s.ordinal));
 
@@ -300,7 +298,7 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
 
 	const topTenPlacement = playerTopTenPlacement({
 		season: data.season,
-		userId: parentRouteData.id,
+		userId: layoutData.user.id,
 	});
 
 	return (
@@ -422,7 +420,7 @@ function Stages({
 }) {
 	const data = useLoaderData<typeof loader>();
 	const { t } = useTranslation(["user", "game-misc"]);
-	const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
+	const layoutData = atOrError(useMatches(), -2).data as UserPageLoaderData;
 
 	return (
 		<div className="stack horizontal justify-center md flex-wrap">
@@ -461,7 +459,7 @@ function Stages({
 										modeShort={mode}
 										season={data.season}
 										stageId={id}
-										userId={parentPageData.id}
+										userId={layoutData.user.id}
 									/>
 								</Popover>
 							);
@@ -704,8 +702,8 @@ function Match({
 	const { t } = useTranslation(["user"]);
 	const [, parentRoute] = useMatches();
 	invariant(parentRoute);
-	const userPageData = parentRoute.data as UserPageLoaderData;
-	const userId = userPageData.id;
+	const layoutData = parentRoute.data as UserPageLoaderData;
+	const userId = layoutData.user.id;
 
 	const score = match.winnerGroupIds.reduce(
 		(acc, cur) => [
