@@ -1,14 +1,11 @@
 import MockDate from "mockdate";
-import { suite } from "uvu";
-import * as assert from "uvu/assert";
 import { db } from "~/db/sql";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import * as Test from "~/utils/Test";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { adminActionSchema } from "../actions/admin.server";
 import { action } from "./admin";
-
-const PlusVoting = suite("Plus voting");
+import { expect, test, describe, afterEach } from "bun:test";
 
 const adminAction = Test.wrappedAction<typeof adminActionSchema>({ action });
 
@@ -57,72 +54,71 @@ const createLeaderboard = (userIds: number[]) =>
 		)
 		.execute();
 
-PlusVoting.after.each(() => {
-	MockDate.reset();
-	Test.database.reset();
-});
+describe("Plus voting", () => {
+	afterEach(() => {
+		MockDate.reset();
+		Test.database.reset();
+	});
 
-PlusVoting("gives correct amount of plus tiers", async () => {
-	MockDate.set(new Date("2023-12-12T00:00:00.000Z"));
+	test("gives correct amount of plus tiers", async () => {
+		MockDate.set(new Date("2023-12-12T00:00:00.000Z"));
 
-	await Test.database.insertUsers(10);
-	await PlusVotingRepository.upsertMany(
-		Array.from({ length: 10 }).map((_, i) => {
-			const id = i + 1;
+		await Test.database.insertUsers(10);
+		await PlusVotingRepository.upsertMany(
+			Array.from({ length: 10 }).map((_, i) => {
+				const id = i + 1;
 
-			return voteArgs({
-				score: id <= 5 ? -1 : 1,
-				votedId: id,
-			});
-		}),
-	);
+				return voteArgs({
+					score: id <= 5 ? -1 : 1,
+					votedId: id,
+				});
+			}),
+		);
 
-	await adminAction({ _action: "REFRESH" }, { user: "admin" });
+		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-	assert.equal(await countPlusTierMembers(), 5);
-});
+		expect(await countPlusTierMembers()).toBe(5);
+	});
 
-PlusVoting("60% is the criteria to pass voting", async () => {
-	MockDate.set(new Date("2023-12-12T00:00:00.000Z"));
+	test("60% is the criteria to pass voting", async () => {
+		MockDate.set(new Date("2023-12-12T00:00:00.000Z"));
 
-	await Test.database.insertUsers(10);
+		await Test.database.insertUsers(10);
 
-	// 50%
-	await PlusVotingRepository.upsertMany(
-		Array.from({ length: 10 }).map((_, i) => {
-			return voteArgs({
-				authorId: i + 1,
-				score: i < 5 ? -1 : 1,
-				votedId: 1,
-			});
-		}),
-	);
-	// 60%
-	await PlusVotingRepository.upsertMany(
-		Array.from({ length: 10 }).map((_, i) => {
-			return voteArgs({
-				authorId: i + 1,
-				score: i < 4 ? -1 : 1,
-				votedId: 2,
-			});
-		}),
-	);
+		// 50%
+		await PlusVotingRepository.upsertMany(
+			Array.from({ length: 10 }).map((_, i) => {
+				return voteArgs({
+					authorId: i + 1,
+					score: i < 5 ? -1 : 1,
+					votedId: 1,
+				});
+			}),
+		);
+		// 60%
+		await PlusVotingRepository.upsertMany(
+			Array.from({ length: 10 }).map((_, i) => {
+				return voteArgs({
+					authorId: i + 1,
+					score: i < 4 ? -1 : 1,
+					votedId: 2,
+				});
+			}),
+		);
 
-	await adminAction({ _action: "REFRESH" }, { user: "admin" });
+		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-	const rows = await db
-		.selectFrom("PlusTier")
-		.select(["PlusTier.tier", "PlusTier.userId"])
-		.where("PlusTier.tier", "=", 1)
-		.execute();
+		const rows = await db
+			.selectFrom("PlusTier")
+			.select(["PlusTier.tier", "PlusTier.userId"])
+			.where("PlusTier.tier", "=", 1)
+			.execute();
 
-	assert.equal(rows.length, 1);
-	assert.equal(rows[0].userId, 2);
-});
+		expect(rows.length).toBe(1);
+		expect(rows[0].userId).toBe(2);
+	});
 
-PlusVoting(
-	"combines leaderboard and voting results (after season over)",
-	async () => {
+	test("combines leaderboard and voting results (after season over)", async () => {
 		MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
 
 		await Test.database.insertUsers(2);
@@ -136,13 +132,10 @@ PlusVoting(
 
 		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-		assert.equal(await countPlusTierMembers(), 2);
-	},
-);
+		expect(await countPlusTierMembers()).toBe(2);
+	});
 
-PlusVoting(
-	"skips users from leaderboard with the skip flag for the season",
-	async () => {
+	test("skips users from leaderboard with the skip flag for the season", async () => {
 		MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
 
 		await Test.database.insertUsers(11);
@@ -156,63 +149,60 @@ PlusVoting(
 
 		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-		assert.equal(await countPlusTierMembers(1), 10);
-		assert.equal(await countPlusTierMembers(2), 0);
-	},
-);
+		expect(await countPlusTierMembers(1)).toBe(10);
+		expect(await countPlusTierMembers(2)).toBe(0);
+	});
 
-PlusVoting("plus server skip flag ignored if for past season", async () => {
-	MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
+	test("plus server skip flag ignored if for past season", async () => {
+		MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
 
-	await Test.database.insertUsers(11);
-	await createLeaderboard(Array.from({ length: 11 }).map((_, i) => i + 1));
+		await Test.database.insertUsers(11);
+		await createLeaderboard(Array.from({ length: 11 }).map((_, i) => i + 1));
 
-	await db
-		.updateTable("User")
-		.set({ plusSkippedForSeasonNth: 0 })
-		.where("User.id", "=", 1)
-		.execute();
+		await db
+			.updateTable("User")
+			.set({ plusSkippedForSeasonNth: 0 })
+			.where("User.id", "=", 1)
+			.execute();
 
-	await adminAction({ _action: "REFRESH" }, { user: "admin" });
+		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-	assert.equal(await countPlusTierMembers(1), 10);
-	assert.equal(await countPlusTierMembers(2), 1);
-});
+		expect(await countPlusTierMembers(1)).toBe(10);
+		expect(await countPlusTierMembers(2)).toBe(1);
+	});
 
-PlusVoting("ignores leaderboard while season is ongoing", async () => {
-	MockDate.set(new Date("2024-02-15T00:00:00.000Z"));
+	test("ignores leaderboard while season is ongoing", async () => {
+		MockDate.set(new Date("2024-02-15T00:00:00.000Z"));
 
-	await Test.database.insertUsers(2);
-	await PlusVotingRepository.upsertMany([
-		voteArgs({
-			score: 1,
-			votedId: 1,
-		}),
-	]);
-	await createLeaderboard([2]);
+		await Test.database.insertUsers(2);
+		await PlusVotingRepository.upsertMany([
+			voteArgs({
+				score: 1,
+				votedId: 1,
+			}),
+		]);
+		await createLeaderboard([2]);
 
-	await adminAction({ _action: "REFRESH" }, { user: "admin" });
+		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-	assert.equal(await countPlusTierMembers(), 1);
-	assert.equal(await countPlusTierMembers(2), 0);
-});
+		expect(await countPlusTierMembers()).toBe(1);
+		expect(await countPlusTierMembers(2)).toBe(0);
+	});
 
-PlusVoting("leaderboard gives members to all tiers", async () => {
-	MockDate.set(new Date("2023-11-20T00:00:00.000Z"));
+	test("leaderboard gives members to all tiers", async () => {
+		MockDate.set(new Date("2023-11-20T00:00:00.000Z"));
 
-	await Test.database.insertUsers(60);
-	await createLeaderboard(Array.from({ length: 60 }, (_, i) => i + 1));
+		await Test.database.insertUsers(60);
+		await createLeaderboard(Array.from({ length: 60 }, (_, i) => i + 1));
 
-	await adminAction({ _action: "REFRESH" }, { user: "admin" });
+		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-	assert.ok((await countPlusTierMembers()) > 0);
-	assert.ok((await countPlusTierMembers(2)) > 0);
-	assert.ok((await countPlusTierMembers(3)) > 0);
-});
+		expect(await countPlusTierMembers()).toBeGreaterThan(0);
+		expect(await countPlusTierMembers(2)).toBeGreaterThan(0);
+		expect(await countPlusTierMembers(3)).toBeGreaterThan(0);
+	});
 
-PlusVoting(
-	"gives membership if failed voting and is on the leaderboard",
-	async () => {
+	test("gives membership if failed voting and is on the leaderboard", async () => {
 		MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
 
 		await Test.database.insertUsers(1);
@@ -226,35 +216,33 @@ PlusVoting(
 
 		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-		assert.equal(await countPlusTierMembers(1), 1);
-	},
-);
+		expect(await countPlusTierMembers(1)).toBe(1);
+	});
 
-PlusVoting("members who fails voting drops one tier", async () => {
-	MockDate.set(new Date("2024-02-15T00:00:00.000Z"));
+	test("members who fails voting drops one tier", async () => {
+		MockDate.set(new Date("2024-02-15T00:00:00.000Z"));
 
-	await Test.database.insertUsers(1);
-	await PlusVotingRepository.upsertMany([
-		voteArgs({
-			score: 1,
-			votedId: 1,
-			month: 11,
-			year: 2023,
-		}),
-	]);
+		await Test.database.insertUsers(1);
+		await PlusVotingRepository.upsertMany([
+			voteArgs({
+				score: 1,
+				votedId: 1,
+				month: 11,
+				year: 2023,
+			}),
+		]);
 
-	await PlusVotingRepository.upsertMany([
-		voteArgs({
-			score: -1,
-			votedId: 1,
-			month: 2,
-			year: 2024,
-		}),
-	]);
+		await PlusVotingRepository.upsertMany([
+			voteArgs({
+				score: -1,
+				votedId: 1,
+				month: 2,
+				year: 2024,
+			}),
+		]);
 
-	await adminAction({ _action: "REFRESH" }, { user: "admin" });
+		await adminAction({ _action: "REFRESH" }, { user: "admin" });
 
-	assert.equal(await countPlusTierMembers(2), 1);
+		expect(await countPlusTierMembers(2)).toBe(1);
+	});
 });
-
-PlusVoting.run();

@@ -1,12 +1,8 @@
-import { suite } from "uvu";
-import * as assert from "uvu/assert";
 import {
 	abilityPointCountsToAverages,
 	popularBuilds,
 } from "./build-stats-utils";
-
-const AbilityPointCountsToAverages = suite("abilityPointCountsToAverages()");
-const PopularBuilds = suite("popularBuilds()");
+import { expect, test, describe } from "bun:test";
 
 const commonAbilities = [
 	{
@@ -36,115 +32,113 @@ const allAbilities = [
 	{ ability: "BRU" as const, abilityPointsSum: 57 },
 ];
 
-AbilityPointCountsToAverages("calculates build count", () => {
-	const { weaponBuildsCount } = abilityPointCountsToAverages({
-		allAbilities,
-		weaponAbilities: commonAbilities,
+describe("abilityPointCountsToAverages", () => {
+	test("calculates build count", () => {
+		const { weaponBuildsCount } = abilityPointCountsToAverages({
+			allAbilities,
+			weaponAbilities: commonAbilities,
+		});
+
+		expect(weaponBuildsCount).toBe(2);
 	});
 
-	assert.is(weaponBuildsCount, 2);
-});
+	test("calculates average ap (main only)", () => {
+		const { mainOnlyAbilities } = abilityPointCountsToAverages({
+			allAbilities,
+			weaponAbilities: commonAbilities,
+		});
 
-AbilityPointCountsToAverages("calculates average ap (main only)", () => {
-	const { mainOnlyAbilities } = abilityPointCountsToAverages({
-		allAbilities,
-		weaponAbilities: commonAbilities,
+		expect(
+			mainOnlyAbilities.find((a) => a.name === "T")?.percentage.weapon,
+		).toBe(50);
 	});
 
-	assert.is(
-		mainOnlyAbilities.find((a) => a.name === "T")?.percentage.weapon,
-		50,
-	);
-});
+	test("calculates average ap (stackable)", () => {
+		const { stackableAbilities } = abilityPointCountsToAverages({
+			allAbilities,
+			weaponAbilities: commonAbilities,
+		});
 
-AbilityPointCountsToAverages("calculates average ap (stackable)", () => {
-	const { stackableAbilities } = abilityPointCountsToAverages({
-		allAbilities,
-		weaponAbilities: commonAbilities,
+		expect(
+			stackableAbilities.find((a) => a.name === "SS")?.apAverage.weapon,
+		).toBe(13.5);
 	});
 
-	assert.is(
-		stackableAbilities.find((a) => a.name === "SS")?.apAverage.weapon,
-		13.5,
-	);
+	test("calculates average ap for all builds", () => {
+		const { mainOnlyAbilities } = abilityPointCountsToAverages({
+			allAbilities,
+			weaponAbilities: commonAbilities,
+		});
+
+		expect(mainOnlyAbilities.find((a) => a.name === "T")?.percentage.all).toBe(
+			33.33,
+		);
+	});
 });
 
-AbilityPointCountsToAverages("calculates average ap for all builds", () => {
-	const { mainOnlyAbilities } = abilityPointCountsToAverages({
-		allAbilities,
-		weaponAbilities: commonAbilities,
+describe("popularBuilds", () => {
+	test("calculates popular build", () => {
+		const builds = popularBuilds([
+			...new Array(10).fill(null).map(() => ({
+				abilities: [{ ability: "QR" as const, abilityPoints: 57 }],
+			})),
+			{
+				abilities: [{ ability: "BRU" as const, abilityPoints: 57 }],
+			},
+		]);
+
+		expect(builds.length).toBe(1);
+		expect(builds[0].count).toBe(10);
+		expect(builds[0].abilities[0].ability).toBe("QR");
 	});
 
-	assert.is(
-		mainOnlyAbilities.find((a) => a.name === "T")?.percentage.all,
-		33.33,
-	);
+	test("calculates second most popular build (sorted by count)", () => {
+		const builds = popularBuilds([
+			...new Array(10).fill(null).map(() => ({
+				abilities: [{ ability: "QR" as const, abilityPoints: 57 }],
+			})),
+			...new Array(3).fill(null).map(() => ({
+				abilities: [{ ability: "SS" as const, abilityPoints: 57 }],
+			})),
+			...new Array(5).fill(null).map(() => ({
+				abilities: [{ ability: "SSU" as const, abilityPoints: 57 }],
+			})),
+		]);
+
+		expect(builds.length).toBe(3);
+		expect(builds[1].abilities[0].ability).toBe("SSU");
+	});
+
+	test("sums up abilities", () => {
+		const builds = popularBuilds([
+			{ abilities: [{ ability: "QR" as const, abilityPoints: 57 }] },
+			{
+				abilities: [
+					{ ability: "QR" as const, abilityPoints: 10 },
+					{ ability: "QR" as const, abilityPoints: 47 },
+				],
+			},
+		]);
+
+		expect(builds.length).toBe(1);
+	});
+
+	test("sorts abilities", () => {
+		const builds = popularBuilds([
+			{
+				abilities: [
+					{ ability: "QR" as const, abilityPoints: 10 },
+					{ ability: "SS" as const, abilityPoints: 47 },
+				],
+			},
+			{
+				abilities: [
+					{ ability: "QR" as const, abilityPoints: 10 },
+					{ ability: "SS" as const, abilityPoints: 47 },
+				],
+			},
+		]);
+
+		expect(builds[0].abilities[1].ability).toBe("QR");
+	});
 });
-
-PopularBuilds("calculates popular build", () => {
-	const builds = popularBuilds([
-		...new Array(10).fill(null).map(() => ({
-			abilities: [{ ability: "QR" as const, abilityPoints: 57 }],
-		})),
-		{
-			abilities: [{ ability: "BRU" as const, abilityPoints: 57 }],
-		},
-	]);
-
-	assert.is(builds.length, 1);
-	assert.is(builds[0].count, 10);
-	assert.is(builds[0].abilities[0].ability, "QR");
-});
-
-PopularBuilds("calculates second most popular build (sorted by count)", () => {
-	const builds = popularBuilds([
-		...new Array(10).fill(null).map(() => ({
-			abilities: [{ ability: "QR" as const, abilityPoints: 57 }],
-		})),
-		...new Array(3).fill(null).map(() => ({
-			abilities: [{ ability: "SS" as const, abilityPoints: 57 }],
-		})),
-		...new Array(5).fill(null).map(() => ({
-			abilities: [{ ability: "SSU" as const, abilityPoints: 57 }],
-		})),
-	]);
-
-	assert.is(builds.length, 3);
-	assert.is(builds[1].abilities[0].ability, "SSU");
-});
-
-PopularBuilds("sums up abilities", () => {
-	const builds = popularBuilds([
-		{ abilities: [{ ability: "QR" as const, abilityPoints: 57 }] },
-		{
-			abilities: [
-				{ ability: "QR" as const, abilityPoints: 10 },
-				{ ability: "QR" as const, abilityPoints: 47 },
-			],
-		},
-	]);
-
-	assert.is(builds.length, 1);
-});
-
-PopularBuilds("sorts abilities", () => {
-	const builds = popularBuilds([
-		{
-			abilities: [
-				{ ability: "QR" as const, abilityPoints: 10 },
-				{ ability: "SS" as const, abilityPoints: 47 },
-			],
-		},
-		{
-			abilities: [
-				{ ability: "QR" as const, abilityPoints: 10 },
-				{ ability: "SS" as const, abilityPoints: 47 },
-			],
-		},
-	]);
-
-	assert.is(builds[0].abilities[1].ability, "QR");
-});
-
-AbilityPointCountsToAverages.run();
-PopularBuilds.run();
