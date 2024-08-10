@@ -56,66 +56,6 @@ export async function identifierToBuildFields(identifier: string) {
 	};
 }
 
-// xxx: check usage
-export function findByIdentifier(identifier: string) {
-	return identifierToUserIdQuery(identifier)
-		.leftJoin("PlusTier", "PlusTier.userId", "User.id")
-		.select(({ eb }) => [
-			"User.discordAvatar",
-			"User.discordId",
-			"User.discordName",
-			"User.username",
-			"User.customName",
-			"User.showDiscordUniqueName",
-			"User.discordUniqueName",
-			"User.customUrl",
-			"User.inGameName",
-			"User.twitter",
-			"User.country",
-			"User.bio",
-			"User.motionSens",
-			"User.stickSens",
-			"User.css",
-			"User.twitch",
-			"User.twitter",
-			"User.youtubeId",
-			"User.battlefy",
-			"User.favoriteBadgeId",
-			"User.banned",
-			"User.bannedReason",
-			"User.commissionText",
-			"User.commissionsOpen",
-			"User.patronTier",
-			"User.buildSorting",
-			"PlusTier.tier as plusTier",
-			jsonArrayFrom(
-				eb
-					.selectFrom("UserWeapon")
-					.select(["UserWeapon.weaponSplId", "UserWeapon.isFavorite"])
-					.whereRef("UserWeapon.userId", "=", "User.id")
-					.orderBy("UserWeapon.order", "asc"),
-			).as("weapons"),
-			jsonObjectFrom(
-				eb
-					.selectFrom("TeamMember")
-					.innerJoin("Team", "Team.id", "TeamMember.teamId")
-					.leftJoin(
-						"UserSubmittedImage",
-						"UserSubmittedImage.id",
-						"Team.avatarImgId",
-					)
-					.select([
-						"Team.name",
-						"Team.customUrl",
-						"Team.id",
-						"UserSubmittedImage.url as avatarUrl",
-					])
-					.whereRef("TeamMember.userId", "=", "User.id"),
-			).as("team"),
-		])
-		.executeTakeFirst();
-}
-
 export function findLayoutDataByIdentifier(
 	identifier: string,
 	loggedInUserId?: number,
@@ -185,10 +125,13 @@ export function findLayoutDataByIdentifier(
 		.executeTakeFirst();
 }
 
-export function findProfileByIdentifier(identifier: string) {
-	return identifierToUserIdQuery(identifier)
+export async function findProfileByIdentifier(
+	identifier: string,
+	forceShowDiscordUniqueName?: boolean,
+) {
+	const row = await identifierToUserIdQuery(identifier)
 		.innerJoin("PlusTier", "PlusTier.userId", "User.id")
-		.select(({ eb, fn }) => [
+		.select(({ eb }) => [
 			"User.twitch",
 			"User.twitter",
 			"User.youtubeId",
@@ -201,11 +144,7 @@ export function findProfileByIdentifier(identifier: string) {
 			"User.customName",
 			"User.discordName",
 			"User.showDiscordUniqueName",
-			fn<string | null>("iif", [
-				"User.showDiscordUniqueName",
-				"User.discordUniqueName",
-				sql`null`,
-			]).as("discordUniqueName"),
+			"User.discordUniqueName",
 			"PlusTier.tier as plusTier",
 			jsonArrayFrom(
 				eb
@@ -266,6 +205,18 @@ export function findProfileByIdentifier(identifier: string) {
 			).as("topPlacements"),
 		])
 		.executeTakeFirst();
+
+	if (!row) {
+		return null;
+	}
+
+	return {
+		...row,
+		discordUniqueName:
+			forceShowDiscordUniqueName || row.showDiscordUniqueName
+				? row.discordUniqueName
+				: null,
+	};
 }
 
 export function findBannedStatusByUserId(userId: number) {

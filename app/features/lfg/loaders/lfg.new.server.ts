@@ -11,7 +11,7 @@ import * as LFGRepository from "../LFGRepository.server";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const user = await requireUser(request);
 
-	const userProfileData = await UserRepository.findByIdentifier(
+	const userProfileData = await UserRepository.findProfileByIdentifier(
 		String(user.id),
 	);
 	const userQSettingsData = await QSettingsRepository.settingsByUserId(user.id);

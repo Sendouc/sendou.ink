@@ -209,16 +209,21 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const user = await requireUser(request);
 	const { identifier } = userParamsSchema.parse(params);
 	const userToBeEdited = notFoundIfFalsy(
-		await UserRepository.findByIdentifier(identifier),
+		await UserRepository.findLayoutDataByIdentifier(identifier),
 	);
 	if (user.id !== userToBeEdited.id) {
 		throw redirect(userPage(userToBeEdited));
 	}
 
+	const userProfile = (await UserRepository.findProfileByIdentifier(
+		identifier,
+		true,
+	))!;
+
 	return {
-		user: (await UserRepository.findProfileByIdentifier(identifier))!,
+		user: userProfile,
 		favoriteBadgeId: user.favoriteBadgeId,
-		discordUniqueName: userToBeEdited.discordUniqueName,
+		discordUniqueName: userProfile.discordUniqueName,
 		countries: Object.entries(countries)
 			.map(([code, country]) => ({
 				code,
