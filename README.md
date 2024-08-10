@@ -61,11 +61,12 @@ Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 There is a sequence of commands you need to run:
 
 1. `nvm use` to switch to the correct Node version. If you don't have the correct Node.js version yet it will prompt you to install it via the `nvm install` command. If you have problems with nvm you can also install the latest LTS version of Node.js from [their website](https://nodejs.org/en/).
-2. `npm i` to install the dependencies.
-3. Make a copy of `.env.example` that's called `.env`. Filling additional values is not necessary unless you want to use real Discord authentication or develop the Lohi bot.
-4. `npm run migrate up` to set up the database tables.
-5. `npm run dev` to run the project in development mode.
-6. Navigate to `http://localhost:5173/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
+2. Install latest version of [Bun](https://bun.sh/docs/installation)
+3. `bun install` to install the dependencies.
+4. Make a copy of `.env.example` that's called `.env`. Filling additional values is not necessary unless you want to use real Discord authentication or develop the Lohi bot.
+5. `bun migrate up` to set up the database tables.
+6. `bun run dev` to run the project in development mode.
+7. Navigate to `http://localhost:5173/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
 
 ## Contributing
 
@@ -160,25 +161,25 @@ Some common files:
 ### Update friend code
 
 ```bash
-npx tsx scripts/update-fc.ts 79237403620945920 1234-1234-1234
+bunx scripts/update-fc.ts 79237403620945920 1234-1234-1234
 ```
 
 ### Add new badge to the database
 
 ```bash
-npx tsx scripts/add-badge.ts fire_green "Octofin Eliteboard"
+bunx scripts/add-badge.ts fire_green "Octofin Eliteboard"
 ```
 
 ### Rename display name of a badge
 
 ```bash
-npx tsx scripts/rename-badge.ts 10 "New 4v4 Sundaes"
+bunx scripts/rename-badge.ts 10 "New 4v4 Sundaes"
 ```
 
 ### Add many badge owners
 
 ```bash
-npx tsx scripts/add-badge-winners.ts 10 "750705955909664791,79237403620945920"
+bunx scripts/add-badge-winners.ts 10 "750705955909664791,79237403620945920"
 ```
 
 ### Converting gifs (badges) to thumbnail (.png)
@@ -220,19 +221,19 @@ Note: This is only useful if you have access to a production running on Render.c
 4. Update `CURRENT_PATCH` constants
 5. Update `PATCHES` constant with the late patch + remove the oldest
 6. Update the stage list in `stage-ids.ts` and `create-misc-json.ts`. Add images from Lean's repository and avify them.
-7. `npx tsx scripts/create-misc-json.ts`
-8. `npx tsx scripts/create-gear-json.ts`
-9. `npx tsx scripts/create-analyzer-json.ts`
+7. `bunx scripts/create-misc-json.ts`
+8. `bunx scripts/create-gear-json.ts`
+9. `bunx scripts/create-analyzer-json.ts`
    8a. Double check that no hard-coded special damages changed
-10. `npx tsx scripts/create-object-dmg-json.ts`
+10. `bunx scripts/create-object-dmg-json.ts`
 11. Fill new weapon IDs by category to `weapon-ids.ts` (easy to take from the diff of English weapons.json)
 12. Get gear IDs for each slot from /output folder and update `gear-ids.ts`.
 13. Replace `object-dmg.json` with the `object-dmg.json` in /output folder
 14. Replace `weapon-params.ts` with the `params.json` in /output folder
 15. Delete all images inside `main-weapons`, `main-weapons-outlined`, `main-weapons-outlined-2` and `gear` folders.
 16. Replace with images from Lean's repository.
-17. Run the `npx tsx scripts/replace-img-names.ts` command
-18. Run the `npx tsx scripts/replace-weapon-names.ts` command
+17. Run the `bunx scripts/replace-img-names.ts` command
+18. Run the `bunx scripts/replace-weapon-names.ts` command
 19. Run the .avif generating command in each image folder.
 20. Update manually any languages that use English `gear.json` and `weapons.json` files
 
@@ -241,7 +242,7 @@ Note: This is only useful if you have access to a production running on Render.c
 If you change any files and the CI pipeline errors out on certain formatting/linting steps (Biome) run this command in the repo's root directory:
 
 ```sh
-npm run cf
+bun cf
 ```
 
 Before committing, if for some reason you see an abnormally high amount of files changed, simply run `git add --renormalize .` and it will fix the error.

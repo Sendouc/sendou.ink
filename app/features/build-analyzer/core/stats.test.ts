@@ -1,7 +1,7 @@
+import { describe, expect, test } from "bun:test";
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import { damageTypeToWeaponType } from "../analyzer-constants";
 import { buildStats } from "./stats";
-import { expect, test, describe } from "bun:test";
 
 describe("Analyze build", () => {
 	test("Every main weapon has damage", () => {

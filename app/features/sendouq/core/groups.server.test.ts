@@ -1,5 +1,5 @@
+import { describe, expect, test } from "bun:test";
 import { tierDifferenceToRangeOrExact } from "./groups.server";
-import { expect, test, describe } from "bun:test";
 
 const paramsToExpected = new Map<
 	[

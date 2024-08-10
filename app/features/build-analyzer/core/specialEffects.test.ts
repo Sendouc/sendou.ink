@@ -1,5 +1,5 @@
+import { describe, expect, test } from "bun:test";
 import { applySpecialEffects } from "./specialEffects";
-import { expect, test, describe } from "bun:test";
 
 describe("applySpecialEffects()", () => {
 	test("Adds an effect to empty build", () => {

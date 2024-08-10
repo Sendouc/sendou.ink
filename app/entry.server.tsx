@@ -1,22 +1,22 @@
+import { resolve } from "node:path";
 import { PassThrough } from "node:stream";
 import {
 	type ActionFunctionArgs,
-	createReadableStreamFromReadable,
-	type LoaderFunctionArgs,
 	type EntryContext,
+	type LoaderFunctionArgs,
+	createReadableStreamFromReadable,
 } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
-import { isbot } from "isbot";
-import { renderToPipeableStream } from "react-dom/server";
 import { createInstance } from "i18next";
-import i18next from "~/modules/i18n/i18next.server";
-import { I18nextProvider, initReactI18next } from "react-i18next";
 import Backend from "i18next-fs-backend";
-import { config } from "~/modules/i18n/config"; // your i18n configuration file
-import { resolve } from "node:path";
-import { noticeError, setTransactionName } from "./utils/newrelic.server";
-import { updatePatreonData } from "./modules/patreon";
+import { isbot } from "isbot";
 import cron from "node-cron";
+import { renderToPipeableStream } from "react-dom/server";
+import { I18nextProvider, initReactI18next } from "react-i18next";
+import { config } from "~/modules/i18n/config"; // your i18n configuration file
+import i18next from "~/modules/i18n/i18next.server";
+import { updatePatreonData } from "./modules/patreon";
+import { noticeError, setTransactionName } from "./utils/newrelic.server";
 
 const ABORT_DELAY = 5000;
 

@@ -1,6 +1,6 @@
+import { describe, expect, test } from "bun:test";
 import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 import { buildToAbilityPoints } from "./utils";
-import { expect, describe, test } from "bun:test";
 
 describe("buildToAbilityPoints", () => {
 	const EMPTY_ROW: [

@@ -1,8 +1,8 @@
+import { describe, expect, test } from "bun:test";
 import {
 	abilityPointCountsToAverages,
 	popularBuilds,
 } from "./build-stats-utils";
-import { expect, test, describe } from "bun:test";
 
 const commonAbilities = [
 	{

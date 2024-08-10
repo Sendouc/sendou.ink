@@ -1,9 +1,9 @@
+import { describe, expect, test } from "bun:test";
 import type {
 	AbilityWithUnknown,
 	BuildAbilitiesTupleWithUnknown,
 } from "~/modules/in-game-lists";
 import { getAbilityChunksMapAsArray } from "./abilityChunksCalc";
-import { expect, test, describe } from "bun:test";
 
 // Utility function that performs an order-agnostic check to see
 //  if the abilityChunksArray contains all elements from the expected output.

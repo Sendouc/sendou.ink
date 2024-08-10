@@ -1,3 +1,4 @@
+import { describe, expect, test } from "bun:test";
 import { buildStats } from "~/features/build-analyzer";
 import type {
 	AbilityPoints,
@@ -15,7 +16,6 @@ import type {
 	SubWeaponId,
 } from "~/modules/in-game-lists";
 import { calculateDamage } from "./objectDamage";
-import { expect, test, describe } from "bun:test";
 
 function calculate({
 	mainWeaponId = 10,
