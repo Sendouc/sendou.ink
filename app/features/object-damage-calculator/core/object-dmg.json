@@ -2012,6 +2012,10 @@
 				"rate": 1.1
 			},
 			{
+				"target": "Pogo",
+				"rate": 1.1
+			},
+			{
 				"target": "ShockSonar",
 				"rate": 1.25
 			},
