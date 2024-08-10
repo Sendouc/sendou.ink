@@ -145,6 +145,7 @@ export async function findProfileByIdentifier(
 			"User.discordName",
 			"User.showDiscordUniqueName",
 			"User.discordUniqueName",
+			"User.favoriteBadgeId",
 			"PlusTier.tier as plusTier",
 			jsonArrayFrom(
 				eb
@@ -170,7 +171,6 @@ export async function findProfileByIdentifier(
 					])
 					.whereRef("TeamMember.userId", "=", "User.id"),
 			).as("team"),
-			// xxx: favorite badge sorting
 			jsonArrayFrom(
 				eb
 					.selectFrom("BadgeOwner")
@@ -183,8 +183,7 @@ export async function findProfileByIdentifier(
 						"Badge.hue",
 					])
 					.whereRef("BadgeOwner.userId", "=", "User.id")
-					.groupBy(["BadgeOwner.badgeId", "BadgeOwner.userId"])
-					.orderBy("Badge.id", "asc"),
+					.groupBy(["BadgeOwner.badgeId", "BadgeOwner.userId"]),
 			).as("badges"),
 			jsonArrayFrom(
 				eb
@@ -212,6 +211,18 @@ export async function findProfileByIdentifier(
 
 	return {
 		...row,
+		// TODO: sort in SQL
+		badges: row.badges.sort((a, b) => {
+			if (a.id === row.favoriteBadgeId) {
+				return -1;
+			}
+
+			if (b.id === row.favoriteBadgeId) {
+				return 1;
+			}
+
+			return a.id - b.id;
+		}),
 		discordUniqueName:
 			forceShowDiscordUniqueName || row.showDiscordUniqueName
 				? row.discordUniqueName
