@@ -22,7 +22,10 @@ import {
 	TORPEDO_ID,
 	WAVE_BREAKER_ID,
 } from "~/modules/in-game-lists";
-import { SUPER_CHUMP_ID, TRIPLE_SPLASHDOWN_ID } from "~/modules/in-game-lists/weapon-ids";
+import {
+	SUPER_CHUMP_ID, 
+	TRIPLE_SPLASHDOWN_ID,
+} from "~/modules/in-game-lists/weapon-ids";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import type { SendouRouteHandle } from "~/utils/remix";
 import {
