@@ -1,5 +1,3 @@
-import { suite } from "uvu";
-import * as assert from "uvu/assert";
 import type { UserMapModePreferences } from "~/db/tables";
 import type { StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
@@ -7,19 +5,18 @@ import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/co
 import * as Test from "~/utils/Test";
 import { nullFilledArray } from "~/utils/arrays";
 import { mapLottery, mapModePreferencesToModeList } from "./match.server";
+import { describe, expect, test } from "bun:test";
 
-const MapModePreferencesToModeList = suite("mapModePreferencesToModeList()");
-const MapPoolFromPreferences = suite("mapPoolFromPreferences()");
+describe("mapModePreferencesToModeList()", () => {
+	test("returns default list if no preferences", () => {
+		const modeList = mapModePreferencesToModeList([], []);
 
-MapModePreferencesToModeList("returns default list if no preferences", () => {
-	const modeList = mapModePreferencesToModeList([], []);
+		expect(
+			Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList),
+		).toBeTrue();
+	});
 
-	assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
-});
-
-MapModePreferencesToModeList(
-	"returns default list if equally disliking everything",
-	() => {
+	test("returns default list if equally disliking everything", () => {
 		const dislikingEverything = [
 			{ mode: "TW", preference: "AVOID" } as const,
 			{ mode: "SZ", preference: "AVOID" } as const,
@@ -43,25 +40,23 @@ MapModePreferencesToModeList(
 			],
 		);
 
-		assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
-	},
-);
+		expect(
+			Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList),
+		).toBe(true);
+	});
 
-MapModePreferencesToModeList(
-	"if positive about nothing, choose the most liked (-TW)",
-	() => {
+	test("if positive about nothing, choose the most liked (-TW)", () => {
 		const modeList = mapModePreferencesToModeList(
 			[[{ mode: "SZ", preference: "AVOID" }]],
 			[],
 		);
 
-		assert.ok(Test.arrayContainsSameItems(["TC", "RM", "CB"], modeList));
-	},
-);
+		expect(Test.arrayContainsSameItems(["TC", "RM", "CB"], modeList)).toBe(
+			true,
+		);
+	});
 
-MapModePreferencesToModeList(
-	"only turf war possible to get if least bad option",
-	() => {
+	test("only turf war possible to get if least bad option", () => {
 		const modeList = mapModePreferencesToModeList(
 			[
 				[
@@ -76,110 +71,98 @@ MapModePreferencesToModeList(
 			[],
 		);
 
-		assert.ok(Test.arrayContainsSameItems(["TW"], modeList));
-	},
-);
+		expect(Test.arrayContainsSameItems(["TW"], modeList)).toBe(true);
+	});
 
-MapModePreferencesToModeList("team votes for their preference", () => {
-	const modeList = mapModePreferencesToModeList(
-		[
+	test("team votes for their preference", () => {
+		const modeList = mapModePreferencesToModeList(
 			[
-				{ mode: "SZ", preference: "PREFER" },
-				{ mode: "TC", preference: "PREFER" },
+				[
+					{ mode: "SZ", preference: "PREFER" },
+					{ mode: "TC", preference: "PREFER" },
+				],
+				[{ mode: "TC", preference: "PREFER" }],
+				[{ mode: "TC", preference: "AVOID" }],
+				[{ mode: "TC", preference: "PREFER" }],
 			],
-			[{ mode: "TC", preference: "PREFER" }],
-			[{ mode: "TC", preference: "AVOID" }],
-			[{ mode: "TC", preference: "PREFER" }],
-		],
-		[
-			[{ mode: "TC", preference: "PREFER" }],
-			[{ mode: "TC", preference: "PREFER" }],
-			[{ mode: "TC", preference: "AVOID" }],
-			[{ mode: "TC", preference: "AVOID" }],
-		],
-	);
+			[
+				[{ mode: "TC", preference: "PREFER" }],
+				[{ mode: "TC", preference: "PREFER" }],
+				[{ mode: "TC", preference: "AVOID" }],
+				[{ mode: "TC", preference: "AVOID" }],
+			],
+		);
 
-	assert.ok(Test.arrayContainsSameItems(["SZ", "TC"], modeList));
-});
+		expect(Test.arrayContainsSameItems(["SZ", "TC"], modeList)).toBe(true);
+	});
 
-MapModePreferencesToModeList(
-	"favorite ranked mode sorted first in the array",
-	() => {
-		assert.equal(
+	test("favorite ranked mode sorted first in the array", () => {
+		expect(
 			mapModePreferencesToModeList(
 				[[{ mode: "TC", preference: "PREFER" }]],
 				[],
 			)[0],
-			"TC",
-		);
-	},
-);
+		).toBe("TC");
+	});
 
-MapModePreferencesToModeList(
-	"includes turf war if more prefer than want to avoid",
-	() => {
+	test("includes turf war if more prefer than want to avoid", () => {
 		const modeList = mapModePreferencesToModeList(
 			[[{ mode: "TW", preference: "PREFER" }]],
 			[[{ mode: "SZ", preference: "PREFER" }]],
 		);
 
-		assert.ok(Test.arrayContainsSameItems(["TW", "SZ"], modeList));
-	},
-);
+		expect(Test.arrayContainsSameItems(["TW", "SZ"], modeList)).toBe(true);
+	});
 
-MapModePreferencesToModeList("doesn't include turf war if mixed", () => {
-	const modeList = mapModePreferencesToModeList(
-		[[{ mode: "TW", preference: "PREFER" }]],
-		[[{ mode: "TW", preference: "AVOID" }]],
-	);
+	test("doesn't include turf war if mixed", () => {
+		const modeList = mapModePreferencesToModeList(
+			[[{ mode: "TW", preference: "PREFER" }]],
+			[[{ mode: "TW", preference: "AVOID" }]],
+		);
 
-	assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
+		expect(
+			Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList),
+		).toBe(true);
+	});
 });
 
 const MODES_COUNT = 4;
 const STAGES_PER_MODE = 7;
 
-MapPoolFromPreferences("returns maps even if no preferences", () => {
-	const mapPool = mapLottery([], rankedModesShort);
+describe("mapLottery()", () => {
+	test("returns maps even if no preferences", () => {
+		const mapPool = mapLottery([], rankedModesShort);
 
-	assert.equal(mapPool.stageModePairs.length, STAGES_PER_MODE * MODES_COUNT);
-});
+		expect(mapPool.stageModePairs.length).toBe(STAGES_PER_MODE * MODES_COUNT);
+	});
 
-MapPoolFromPreferences("returns some maps from the map pools", () => {
-	const memberOnePool: UserMapModePreferences["pool"] = rankedModesShort.map(
-		(mode) => ({
-			mode,
-			stages: nullFilledArray(7).map((_, i) => (i + 1) as StageId),
-		}),
-	);
-	const memberTwoPool: UserMapModePreferences["pool"] = rankedModesShort.map(
-		(mode) => ({
-			mode,
-			stages: nullFilledArray(7).map((_, i) => (i + 10) as StageId),
-		}),
-	);
+	test("returns some maps from the map pools", () => {
+		const memberOnePool: UserMapModePreferences["pool"] = rankedModesShort.map(
+			(mode) => ({
+				mode,
+				stages: nullFilledArray(7).map((_, i) => (i + 1) as StageId),
+			}),
+		);
+		const memberTwoPool: UserMapModePreferences["pool"] = rankedModesShort.map(
+			(mode) => ({
+				mode,
+				stages: nullFilledArray(7).map((_, i) => (i + 10) as StageId),
+			}),
+		);
 
-	const pool = mapLottery(
-		[
-			{ modes: [], pool: memberOnePool },
-			{ modes: [], pool: memberTwoPool },
-		],
-		rankedModesShort,
-	);
+		const pool = mapLottery(
+			[
+				{ modes: [], pool: memberOnePool },
+				{ modes: [], pool: memberTwoPool },
+			],
+			rankedModesShort,
+		);
 
-	assert.ok(
-		pool.stageModePairs.some((p) => p.stageId <= 7),
-		"No map from memberOnePool",
-	);
-	assert.ok(
-		pool.stageModePairs.some((p) => p.stageId > 10),
-		"No map from memberTwoPool",
-	);
-});
+		expect(pool.stageModePairs.some((p) => p.stageId <= 7)).toBe(true);
+		expect(pool.stageModePairs.some((p) => p.stageId > 10)).toBe(true);
+	});
 
-MapPoolFromPreferences(
-	"includes modes that were given and nothing else",
-	() => {
+	test("includes modes that were given and nothing else", () => {
 		const memberOnePool: UserMapModePreferences["pool"] = rankedModesShort.map(
 			(mode) => ({
 				mode,
@@ -189,31 +172,28 @@ MapPoolFromPreferences(
 
 		const pool = mapLottery([{ modes: [], pool: memberOnePool }], ["SZ", "TC"]);
 
-		assert.ok(
+		expect(
 			pool.stageModePairs.every((p) => p.mode === "SZ" || p.mode === "TC"),
+		).toBe(true);
+	});
+
+	test("excludes map preferences if mode is avoided", () => {
+		const memberOnePool: UserMapModePreferences["pool"] = [
+			{
+				mode: "SZ",
+				stages: nullFilledArray(7).map((_, i) => (i + 1) as StageId),
+			},
+		];
+
+		const pool = mapLottery(
+			[{ modes: [{ preference: "AVOID", mode: "SZ" }], pool: memberOnePool }],
+			["SZ"],
 		);
-	},
-);
 
-MapPoolFromPreferences("excludes map preferences if mode is avoided", () => {
-	const memberOnePool: UserMapModePreferences["pool"] = [
-		{
-			mode: "SZ",
-			stages: nullFilledArray(7).map((_, i) => (i + 1) as StageId),
-		},
-	];
-
-	const pool = mapLottery(
-		[{ modes: [{ preference: "AVOID", mode: "SZ" }], pool: memberOnePool }],
-		["SZ"],
-	);
-
-	assert.ok(
-		pool.stageModePairs.every((p) =>
-			SENDOUQ_DEFAULT_MAPS.SZ.some((stageId) => stageId === p.stageId),
-		),
-	);
+		expect(
+			pool.stageModePairs.every((p) =>
+				SENDOUQ_DEFAULT_MAPS.SZ.some((stageId) => stageId === p.stageId),
+			),
+		).toBe(true);
+	});
 });
-
-MapModePreferencesToModeList.run();
-MapPoolFromPreferences.run();
