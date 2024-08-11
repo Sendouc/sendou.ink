@@ -1,4 +1,3 @@
-import { resolve } from "node:path";
 import { PassThrough } from "node:stream";
 import {
 	type ActionFunctionArgs,
@@ -8,13 +7,13 @@ import {
 } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { createInstance } from "i18next";
-import Backend from "i18next-fs-backend";
 import { isbot } from "isbot";
 import cron from "node-cron";
 import { renderToPipeableStream } from "react-dom/server";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import { config } from "~/modules/i18n/config"; // your i18n configuration file
 import i18next from "~/modules/i18n/i18next.server";
+import { resources } from "./modules/i18n/resources.server";
 import { updatePatreonData } from "./modules/patreon";
 import { noticeError, setTransactionName } from "./utils/newrelic.server";
 
@@ -43,12 +42,11 @@ export default async function handleRequest(
 
 	await instance
 		.use(initReactI18next) // Tell our instance to use react-i18next
-		.use(Backend) // Setup our backend
 		.init({
 			...config, // spread the configuration
 			lng, // The locale we detected above
 			ns, // The namespaces the routes about to render wants to use
-			backend: { loadPath: resolve("./locales/{{lng}}/{{ns}}.json") },
+			resources,
 		});
 
 	return new Promise((resolve, reject) => {

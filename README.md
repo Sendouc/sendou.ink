@@ -161,25 +161,25 @@ Some common files:
 ### Update friend code
 
 ```bash
-bunx scripts/update-fc.ts 79237403620945920 1234-1234-1234
+bun scripts/update-fc.ts 79237403620945920 1234-1234-1234
 ```
 
 ### Add new badge to the database
 
 ```bash
-bunx scripts/add-badge.ts fire_green "Octofin Eliteboard"
+bun scripts/add-badge.ts fire_green "Octofin Eliteboard"
 ```
 
 ### Rename display name of a badge
 
 ```bash
-bunx scripts/rename-badge.ts 10 "New 4v4 Sundaes"
+bun scripts/rename-badge.ts 10 "New 4v4 Sundaes"
 ```
 
 ### Add many badge owners
 
 ```bash
-bunx scripts/add-badge-winners.ts 10 "750705955909664791,79237403620945920"
+bun scripts/add-badge-winners.ts 10 "750705955909664791,79237403620945920"
 ```
 
 ### Converting gifs (badges) to thumbnail (.png)
@@ -221,19 +221,19 @@ Note: This is only useful if you have access to a production running on Render.c
 4. Update `CURRENT_PATCH` constants
 5. Update `PATCHES` constant with the late patch + remove the oldest
 6. Update the stage list in `stage-ids.ts` and `create-misc-json.ts`. Add images from Lean's repository and avify them.
-7. `bunx scripts/create-misc-json.ts`
-8. `bunx scripts/create-gear-json.ts`
-9. `bunx scripts/create-analyzer-json.ts`
+7. `bun scripts/create-misc-json.ts`
+8. `bun scripts/create-gear-json.ts`
+9. `bun scripts/create-analyzer-json.ts`
    8a. Double check that no hard-coded special damages changed
-10. `bunx scripts/create-object-dmg-json.ts`
+10. `bun scripts/create-object-dmg-json.ts`
 11. Fill new weapon IDs by category to `weapon-ids.ts` (easy to take from the diff of English weapons.json)
 12. Get gear IDs for each slot from /output folder and update `gear-ids.ts`.
 13. Replace `object-dmg.json` with the `object-dmg.json` in /output folder
 14. Replace `weapon-params.ts` with the `params.json` in /output folder
 15. Delete all images inside `main-weapons`, `main-weapons-outlined`, `main-weapons-outlined-2` and `gear` folders.
 16. Replace with images from Lean's repository.
-17. Run the `bunx scripts/replace-img-names.ts` command
-18. Run the `bunx scripts/replace-weapon-names.ts` command
+17. Run the `bun scripts/replace-img-names.ts` command
+18. Run the `bun scripts/replace-weapon-names.ts` command
 19. Run the .avif generating command in each image folder.
 20. Update manually any languages that use English `gear.json` and `weapons.json` files
 
