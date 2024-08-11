@@ -59,13 +59,19 @@ export type UserPageLoaderData = SerializeFrom<typeof loader>;
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const loggedInUser = await getUserId(request);
 
-	return {
-		user: notFoundIfFalsy(
-			await UserRepository.findLayoutDataByIdentifier(
-				params.identifier!,
-				loggedInUser?.id,
-			),
+	const user = notFoundIfFalsy(
+		await UserRepository.findLayoutDataByIdentifier(
+			params.identifier!,
+			loggedInUser?.id,
 		),
+	);
+
+	return {
+		user: {
+			...user,
+			css: undefined,
+		},
+		css: user.css,
 	};
 };
 
