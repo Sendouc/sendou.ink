@@ -56,7 +56,6 @@ export const handle: SendouRouteHandle = {
 
 export type UserPageLoaderData = SerializeFrom<typeof loader>;
 
-// xxx: can probably also be optimized (see chara for example)
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const loggedInUser = await getUserId(request);
 

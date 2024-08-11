@@ -1,5 +1,4 @@
-import { afterEach, describe, expect, test } from "bun:test";
-import MockDate from "mockdate";
+import { afterEach, describe, expect, test, setSystemTime } from "bun:test";
 import { db } from "~/db/sql";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import * as Test from "~/utils/Test";
@@ -56,12 +55,12 @@ const createLeaderboard = (userIds: number[]) =>
 
 describe("Plus voting", () => {
 	afterEach(() => {
-		MockDate.reset();
+		setSystemTime();
 		Test.database.reset();
 	});
 
 	test("gives correct amount of plus tiers", async () => {
-		MockDate.set(new Date("2023-12-12T00:00:00.000Z"));
+		setSystemTime(new Date("2023-12-12T00:00:00.000Z"));
 
 		await Test.database.insertUsers(10);
 		await PlusVotingRepository.upsertMany(
@@ -81,7 +80,7 @@ describe("Plus voting", () => {
 	});
 
 	test("60% is the criteria to pass voting", async () => {
-		MockDate.set(new Date("2023-12-12T00:00:00.000Z"));
+		setSystemTime(new Date("2023-12-12T00:00:00.000Z"));
 
 		await Test.database.insertUsers(10);
 
@@ -119,7 +118,7 @@ describe("Plus voting", () => {
 	});
 
 	test("combines leaderboard and voting results (after season over)", async () => {
-		MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
+		setSystemTime(new Date("2023-11-29T00:00:00.000Z"));
 
 		await Test.database.insertUsers(2);
 		await PlusVotingRepository.upsertMany([
@@ -136,7 +135,7 @@ describe("Plus voting", () => {
 	});
 
 	test("skips users from leaderboard with the skip flag for the season", async () => {
-		MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
+		setSystemTime(new Date("2023-11-29T00:00:00.000Z"));
 
 		await Test.database.insertUsers(11);
 		await createLeaderboard(Array.from({ length: 11 }).map((_, i) => i + 1));
@@ -154,7 +153,7 @@ describe("Plus voting", () => {
 	});
 
 	test("plus server skip flag ignored if for past season", async () => {
-		MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
+		setSystemTime(new Date("2023-11-29T00:00:00.000Z"));
 
 		await Test.database.insertUsers(11);
 		await createLeaderboard(Array.from({ length: 11 }).map((_, i) => i + 1));
@@ -172,7 +171,7 @@ describe("Plus voting", () => {
 	});
 
 	test("ignores leaderboard while season is ongoing", async () => {
-		MockDate.set(new Date("2024-02-15T00:00:00.000Z"));
+		setSystemTime(new Date("2024-02-15T00:00:00.000Z"));
 
 		await Test.database.insertUsers(2);
 		await PlusVotingRepository.upsertMany([
@@ -190,7 +189,7 @@ describe("Plus voting", () => {
 	});
 
 	test("leaderboard gives members to all tiers", async () => {
-		MockDate.set(new Date("2023-11-20T00:00:00.000Z"));
+		setSystemTime(new Date("2023-11-20T00:00:00.000Z"));
 
 		await Test.database.insertUsers(60);
 		await createLeaderboard(Array.from({ length: 60 }, (_, i) => i + 1));
@@ -203,7 +202,7 @@ describe("Plus voting", () => {
 	});
 
 	test("gives membership if failed voting and is on the leaderboard", async () => {
-		MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
+		setSystemTime(new Date("2023-11-29T00:00:00.000Z"));
 
 		await Test.database.insertUsers(1);
 		await PlusVotingRepository.upsertMany([
@@ -220,7 +219,7 @@ describe("Plus voting", () => {
 	});
 
 	test("members who fails voting drops one tier", async () => {
-		MockDate.set(new Date("2024-02-15T00:00:00.000Z"));
+		setSystemTime(new Date("2024-02-15T00:00:00.000Z"));
 
 		await Test.database.insertUsers(1);
 		await PlusVotingRepository.upsertMany([

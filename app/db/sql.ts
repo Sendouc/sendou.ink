@@ -4,19 +4,15 @@ import { BunSqliteDialect } from "kysely-bun-sqlite";
 import invariant from "~/utils/invariant";
 import type { DB } from "./tables";
 
-// xxx: TODO migratedEmptyDb, unit tests
-// const migratedEmptyDb = new Database("db-test.sqlite3").serialize();
-
 invariant(process.env.DB_PATH, "DB_PATH env variable must be set");
-// const isInMemoryDB = process.env.DB_PATH === ":memory:";
 
 export const sql = new Database(process.env.DB_PATH, {
 	strict: true,
 });
 
-sql.exec("PRAGMA journal_mode = WAL");
-sql.exec("PRAGMA foreign_keys = ON");
-sql.exec("PRAGMA busy_timeout = 5000");
+sql.exec("PRAGMA journal_mode = WAL;");
+sql.exec("PRAGMA foreign_keys = ON;");
+sql.exec("PRAGMA busy_timeout = 5000;");
 
 export const db = new Kysely<DB>({
 	dialect: new BunSqliteDialect({
