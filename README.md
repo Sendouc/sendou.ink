@@ -40,9 +40,10 @@ Competitive Splatoon Platform
 - React
 - Remix
 - Sqlite3
+- Bun
 - CSS (plain)
 - E2E tests via Playwright
-- Unit/integration tests via uvu
+- Unit/integration tests via bun:test
 
 ## Screenshots
 
