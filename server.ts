@@ -18,21 +18,16 @@ const remix = createRequestHandler(
 export default {
 	port: Bun.env.PORT || 3000,
 	async fetch(request) {
-		// First we need to send handle static files
 		const { pathname } = new URL(request.url);
 
-		if (pathname === "/health") {
-			return new Response("OK", { status: 200 });
-		}
-
-		// xxx: something better
+		// TODO: infer somehow so this list doesn't need to be maintained
 		if (
 			pathname.startsWith("/assets") ||
 			pathname.startsWith("/static-assets") ||
-			pathname.startsWith("/app.webmanifest") ||
-			pathname.startsWith("/favicon.ico") ||
-			pathname.startsWith("/robots.txt") ||
-			pathname.startsWith("/sw.js")
+			pathname === "/app.webmanifest" ||
+			pathname === "/favicon.ico" ||
+			pathname === "/robots.txt" ||
+			pathname === "/sw.js"
 		) {
 			const file = Bun.file(
 				resolve(__dirname, "./build/client/", `.${pathname}`),
