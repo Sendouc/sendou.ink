@@ -36,7 +36,7 @@ export const loader = async () => {
 };
 
 export default function BadgesPageLayout() {
-	const { t } = useTranslation("badges");
+	const { t } = useTranslation(["badges"]);
 	const data = useLoaderData<typeof loader>();
 	const user = useUser();
 	const [inputValue, setInputValue] = React.useState("");

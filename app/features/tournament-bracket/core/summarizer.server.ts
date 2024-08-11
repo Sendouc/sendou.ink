@@ -1,5 +1,5 @@
 import shuffle from "just-shuffle";
-import type { Rating } from "openskill/dist/types";
+import type { Rating } from "node_modules/openskill/dist/types";
 import type {
 	MapResult,
 	PlayerResult,

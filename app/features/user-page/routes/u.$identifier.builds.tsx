@@ -37,7 +37,7 @@ export const handle: SendouRouteHandle = {
 type BuildFilter = "ALL" | "PUBLIC" | "PRIVATE" | MainWeaponId;
 
 export default function UserBuildsPage() {
-	const { t } = useTranslation("builds");
+	const { t } = useTranslation(["builds", "user"]);
 	const user = useUser();
 	const layoutData = atOrError(useMatches(), -2).data as UserPageLoaderData;
 	const data = useLoaderData<typeof loader>();
@@ -315,7 +315,7 @@ function ChangeSortingDialog({ close }: { close: () => void }) {
 							return (
 								<div key={i} className="stack horizontal justify-between">
 									<div className="font-bold">
-										{i + 1}) {t(`user:builds.sorting.${sort}`)}
+										{i + 1}) {t(`user:builds.sorting.${sort!}`)}
 									</div>
 									{(isLast && !canAddMoreSorting) ||
 									(canAddMoreSorting && isSecondToLast) ? (

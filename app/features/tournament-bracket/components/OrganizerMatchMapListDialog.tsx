@@ -1,4 +1,5 @@
 import type { SerializeFrom } from "@remix-run/node";
+import type { TFunction } from "i18next";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
@@ -66,7 +67,11 @@ export function OrganizerMatchMapListDialog({
 								{number}) {t(`game-misc:MODE_LONG_${map.mode}`)} on{" "}
 								{t(`game-misc:STAGE_${map.stageId}`)}{" "}
 								<span className="text-lighter text-xs italic ml-1">
-									{pickInfoText({ t, teams: [teamOne, teamTwo], map })}
+									{pickInfoText({
+										t: t as unknown as TFunction<["tournament"]>,
+										teams: [teamOne, teamTwo],
+										map,
+									})}
 								</span>
 							</div>
 						);

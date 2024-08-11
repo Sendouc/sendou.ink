@@ -1,5 +1,5 @@
+import type { Rating } from "node_modules/openskill/dist/types";
 import { ordinal } from "openskill";
-import type { Rating } from "openskill/dist/types";
 import type {
 	Group,
 	GroupMatch,

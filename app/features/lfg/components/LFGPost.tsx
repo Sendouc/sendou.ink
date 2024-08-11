@@ -450,7 +450,7 @@ function PostDeleteButton({ id, type }: { id: number; type: Post["type"] }) {
 
 	return (
 		<FormWithConfirm
-			dialogHeading={`Delete post (${t(`lfg:types.${type}`).toLowerCase()})?`}
+			dialogHeading={`Delete post (${(t(`lfg:types.${type}`) as any).toLowerCase()})?`}
 			fields={[
 				["id", id],
 				["_action", "DELETE_POST"],
