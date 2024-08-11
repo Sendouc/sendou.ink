@@ -1,36 +1,10 @@
 import { afterEach, describe, expect, setSystemTime, test } from "bun:test";
-import { db, sql } from "~/db/sql";
+import { db } from "~/db/sql";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
-import { dbInsertUsers, wrappedAction } from "~/utils/Test";
+import { dbInsertUsers, dbReset, wrappedAction } from "~/utils/Test";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { adminActionSchema } from "../actions/admin.server";
 import { action } from "./admin";
-
-const dbReset = () => {
-	const tables = sql
-		.prepare(
-			"SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'migrations';",
-		)
-		.all() as { name: string }[];
-
-	sql.prepare("PRAGMA foreign_keys = OFF").run();
-	for (const table of tables) {
-		sql.prepare(`DELETE FROM "${table.name}"`).run();
-	}
-	sql.prepare("PRAGMA foreign_keys = ON").run();
-};
-
-// const dbInsertUsers = (count: number) =>
-// 	db
-// 		.insertInto("User")
-// 		.values(
-// 			Array.from({ length: count }).map((_, i) => ({
-// 				id: i + 1,
-// 				discordName: `user${i + 1}`,
-// 				discordId: String(i),
-// 			})),
-// 		)
-// 		.execute();
 
 const adminAction = wrappedAction<typeof adminActionSchema>({ action });
 
