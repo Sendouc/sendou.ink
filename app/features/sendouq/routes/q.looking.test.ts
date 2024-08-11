@@ -40,7 +40,7 @@ const SZ_ONLY_PREFERENCE: UserMapModePreferences["modes"] = [
 ];
 
 const prepareGroups = async () => {
-	await Test.database.insertUsers(8);
+	await Test.dbInsertUsers(8);
 	await createGroup([1, 2, 3, 4]);
 	await createGroup([5, 6, 7, 8]);
 	await db
@@ -100,7 +100,7 @@ describe("SendouQ match creation", () => {
 	});
 
 	afterEach(() => {
-		Test.database.reset();
+		Test.dbReset();
 	});
 
 	test("adds pools to memento", async () => {
@@ -174,7 +174,7 @@ describe("SendouQ match creation", () => {
 
 describe("Private user note sorting", () => {
 	beforeEach(async () => {
-		await Test.database.insertUsers(8);
+		await Test.dbInsertUsers(8);
 
 		await createGroup([1]);
 		await createGroup([2]);
@@ -191,7 +191,7 @@ describe("Private user note sorting", () => {
 	});
 
 	afterEach(() => {
-		Test.database.reset();
+		Test.dbReset();
 	});
 
 	const lookingLoader = Test.wrappedLoader<SerializeFrom<typeof loader>>({
