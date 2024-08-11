@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, setSystemTime, test } from "bun:test";
 import { db, sql } from "~/db/sql";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
-import { wrappedAction } from "~/utils/Test";
+import { wrappedAction, dbInsertUsers } from "~/utils/Test";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { adminActionSchema } from "../actions/admin.server";
 import { action } from "./admin";
@@ -20,17 +20,17 @@ const dbReset = () => {
 	sql.prepare("PRAGMA foreign_keys = ON").run();
 };
 
-const dbInsertUsers = (count: number) =>
-	db
-		.insertInto("User")
-		.values(
-			Array.from({ length: count }).map((_, i) => ({
-				id: i + 1,
-				discordName: `user${i + 1}`,
-				discordId: String(i),
-			})),
-		)
-		.execute();
+// const dbInsertUsers = (count: number) =>
+// 	db
+// 		.insertInto("User")
+// 		.values(
+// 			Array.from({ length: count }).map((_, i) => ({
+// 				id: i + 1,
+// 				discordName: `user${i + 1}`,
+// 				discordId: String(i),
+// 			})),
+// 		)
+// 		.execute();
 
 const adminAction = wrappedAction<typeof adminActionSchema>({ action });
 
