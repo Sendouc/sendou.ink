@@ -4,7 +4,12 @@ import { db } from "~/db/sql";
 import type { UserMapModePreferences } from "~/db/tables";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { stageIds } from "~/modules/in-game-lists";
-import * as Test from "~/utils/Test";
+import {
+	dbInsertUsers,
+	dbReset,
+	wrappedAction,
+	wrappedLoader,
+} from "~/utils/Test";
 import invariant from "~/utils/invariant";
 import type { lookingSchema, matchSchema } from "../q-schemas.server";
 import { loader, action as rawLookingAction } from "./q.looking";
@@ -40,7 +45,7 @@ const SZ_ONLY_PREFERENCE: UserMapModePreferences["modes"] = [
 ];
 
 const prepareGroups = async () => {
-	await Test.dbInsertUsers(8);
+	await dbInsertUsers(8);
 	await createGroup([1, 2, 3, 4]);
 	await createGroup([5, 6, 7, 8]);
 	await db
@@ -74,7 +79,7 @@ const insertMapModePreferences = (
 		.execute();
 };
 
-const lookingAction = Test.wrappedAction<typeof lookingSchema>({
+const lookingAction = wrappedAction<typeof lookingSchema>({
 	action: rawLookingAction,
 });
 
@@ -100,7 +105,7 @@ describe("SendouQ match creation", () => {
 	});
 
 	afterEach(() => {
-		Test.dbReset();
+		dbReset();
 	});
 
 	test("adds pools to memento", async () => {
@@ -174,7 +179,7 @@ describe("SendouQ match creation", () => {
 
 describe("Private user note sorting", () => {
 	beforeEach(async () => {
-		await Test.dbInsertUsers(8);
+		await dbInsertUsers(8);
 
 		await createGroup([1]);
 		await createGroup([2]);
@@ -191,13 +196,13 @@ describe("Private user note sorting", () => {
 	});
 
 	afterEach(() => {
-		Test.dbReset();
+		dbReset();
 	});
 
-	const lookingLoader = Test.wrappedLoader<SerializeFrom<typeof loader>>({
+	const lookingLoader = wrappedLoader<SerializeFrom<typeof loader>>({
 		loader,
 	});
-	const matchAction = Test.wrappedAction<typeof matchSchema>({
+	const matchAction = wrappedAction<typeof matchSchema>({
 		action: rawMatchAction,
 		params: { id: "1" },
 	});
