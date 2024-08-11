@@ -250,7 +250,7 @@ export default function UserEditPage() {
 		<div className="half-width">
 			<Form className="u-edit__container" method="post">
 				{canAddCustomizedColorsToUserProfile(user) ? (
-					<CustomizedColorsInput initialColors={layoutData.user.css} />
+					<CustomizedColorsInput initialColors={layoutData.css} />
 				) : null}
 				<CustomNameInput />
 				<CustomUrlInput parentRouteData={layoutData} />

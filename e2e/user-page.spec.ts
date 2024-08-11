@@ -38,7 +38,7 @@ test.describe("User page", () => {
 		await page.getByText("Stick 0 / Motion -5").isVisible();
 	});
 
-	test.only("customizes user page colors", async ({ page }) => {
+	test("customizes user page colors", async ({ page }) => {
 		await seed(page);
 		await impersonate(page);
 		await navigate({
