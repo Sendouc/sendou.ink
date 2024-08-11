@@ -212,7 +212,7 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
 	BulletUmbrellaCanopyCompact: mainWeaponImageUrl(6020),
 	BulletShelterCanopyFocus: mainWeaponImageUrl(6030),
 	Firework: specialWeaponImageUrl(SUPER_CHUMP_ID),
-	Pogo: specialWeaponImageUrl(TRIPLE_SPLASHDOWN_ID),
+	BulletPogo: specialWeaponImageUrl(TRIPLE_SPLASHDOWN_ID),
 };
 
 const damageReceiverAp: Partial<Record<DamageReceiver, JSX.Element>> = {
