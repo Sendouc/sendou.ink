@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { createTournamentMapList } from ".";
 import type { RankedModeShort } from "../in-game-lists";

@@ -1,3 +1,4 @@
+import { describe, expect, test } from "bun:test";
 import {
 	assertRoundRobin,
 	balanceByes,
@@ -5,7 +6,6 @@ import {
 	makeRoundRobinMatches,
 } from "../helpers";
 import { ordering } from "../ordering";
-import { describe, test, expect } from "bun:test";
 
 describe("Round-robin groups", () => {
 	test("should place participants in groups", () => {

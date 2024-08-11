@@ -1,14 +1,14 @@
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import type { SerializeFrom } from "@remix-run/server-runtime";
-import { describe, test, expect, beforeEach, afterEach } from "bun:test";
 import { db } from "~/db/sql";
 import type { UserMapModePreferences } from "~/db/tables";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { stageIds } from "~/modules/in-game-lists";
 import * as Test from "~/utils/Test";
 import invariant from "~/utils/invariant";
 import type { lookingSchema, matchSchema } from "../q-schemas.server";
 import { loader, action as rawLookingAction } from "./q.looking";
 import { action as rawMatchAction } from "./q.match.$id";
-import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
 const createGroup = async (userIds: number[]) => {
 	const group = await db

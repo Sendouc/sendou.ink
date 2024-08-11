@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mergeReportedWeapons } from "./reported-weapons.server";
 

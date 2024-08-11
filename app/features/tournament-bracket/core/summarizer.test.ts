@@ -1,9 +1,9 @@
+import { describe, expect, test } from "bun:test";
 import { ordinal, rating } from "openskill";
-import { describe, test, expect } from "bun:test";
+import invariant from "~/utils/invariant";
 import type { AllMatchResult } from "../queries/allMatchResultsByTournamentId.server";
 import type { TournamentDataTeam } from "./Tournament.server";
 import { tournamentSummary } from "./summarizer.server";
-import invariant from "~/utils/invariant";
 
 describe("tournamentSummary()", () => {
 	const createTeam = (

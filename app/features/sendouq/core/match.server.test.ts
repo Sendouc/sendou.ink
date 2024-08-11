@@ -1,3 +1,4 @@
+import { describe, expect, test } from "bun:test";
 import type { UserMapModePreferences } from "~/db/tables";
 import type { StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
@@ -5,7 +6,6 @@ import { SENDOUQ_DEFAULT_MAPS } from "~/modules/tournament-map-list-generator/co
 import * as Test from "~/utils/Test";
 import { nullFilledArray } from "~/utils/arrays";
 import { mapLottery, mapModePreferencesToModeList } from "./match.server";
-import { describe, expect, test } from "bun:test";
 
 describe("mapModePreferencesToModeList()", () => {
 	test("returns default list if no preferences", () => {

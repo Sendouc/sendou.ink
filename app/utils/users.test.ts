@@ -1,12 +1,12 @@
-import { queryToUserIdentifier, userDiscordIdIsAged } from "./users";
 import {
 	afterEach,
+	beforeEach,
 	describe,
 	expect,
-	test,
 	setSystemTime,
-	beforeEach,
+	test,
 } from "bun:test";
+import { queryToUserIdentifier, userDiscordIdIsAged } from "./users";
 
 describe("queryToUserIdentifier()", () => {
 	test("returns null if no match", () => {

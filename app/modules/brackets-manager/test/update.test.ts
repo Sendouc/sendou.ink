@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from "bun:test";
+import { beforeEach, describe, expect, test } from "bun:test";
 import { Status } from "~/db/types";
 import { InMemoryDatabase } from "~/modules/brackets-memory-db";
 import { BracketsManager } from "../manager";

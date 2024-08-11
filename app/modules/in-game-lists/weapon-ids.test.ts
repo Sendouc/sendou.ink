@@ -1,6 +1,6 @@
+import { describe, expect, test } from "bun:test";
 import type { MainWeaponId } from "./types";
 import { weaponIdToBucketId } from "./weapon-ids";
-import { describe, expect, test } from "bun:test";
 
 describe("weaponIdToBucketId()", () => {
 	test("Each weaponId is mapped to its correct bucket", () => {

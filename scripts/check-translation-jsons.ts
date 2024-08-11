@@ -55,6 +55,9 @@ for (const file of fileNames) {
 	}
 
 	for (const lang of allOtherLanguages) {
+		// .DS_STORE
+		if (lang.startsWith(".")) continue;
+
 		try {
 			const otherRawContent = fs
 				.readFileSync(otherLanguageTranslationPath(lang, file), "utf8")
