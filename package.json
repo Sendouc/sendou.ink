@@ -20,7 +20,7 @@
 		"biome:fix": "bunx @biomejs/biome check --write .",
 		"biome:fix:unsafe": "bunx @biomejs/biome check --write --unsafe .",
 		"typecheck": "tsc --noEmit",
-		"test:unit": "NODE_ENV=test SQL_LOG=none bun test",
+		"test:unit": "NODE_ENV=test SQL_LOG=none SKALOP_SYSTEM_MESSAGE_URL=http://skalop.test bun test",
 		"test:unit:all": "bun test:unit app",
 		"test:e2e": "bunx playwright test",
 		"cf": "bun run biome:fix && bun run test:unit:all && bun run check-translation-jsons && bun run typecheck && bun run test:e2e",
