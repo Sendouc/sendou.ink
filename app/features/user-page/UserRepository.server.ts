@@ -103,14 +103,11 @@ export function findLayoutDataByIdentifier(
 				.selectFrom("Art")
 				.innerJoin("ArtUserMetadata", "ArtUserMetadata.artId", "Art.id")
 				.innerJoin("UserSubmittedImage", "UserSubmittedImage.id", "Art.imgId")
-				// xxx: " count(distinct "Art"."id") as "count"" distinct needed?
-				.select(({ fn }) => fn.countAll<number>().as("count"))
+				.select(({ fn }) => fn.count<number>("Art.id").distinct().as("count"))
 				.where((innerEb) =>
 					innerEb.or([
-						// @ts-expect-error TODO
-						innerEb("Art.authorId", "=", "User.id"),
-						// @ts-expect-error TODO
-						innerEb("ArtUserMetadata.userId", "=", "User.id"),
+						innerEb("Art.authorId", "=", sql.raw<any>("User.id")),
+						innerEb("ArtUserMetadata.userId", "=", sql.raw<any>("User.id")),
 					]),
 				)
 				.as("artCount"),

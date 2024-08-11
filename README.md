@@ -116,6 +116,12 @@ Any questions please ask Sendou!
 7. Send the file to Sendou (or open a pull request if you know how)
 8. Optional: also send an image as .png if you want to show a link preview. The preferred dimensions are 1200 × 630.
 
+## SQL Logging
+
+By default SQL is logged in truncated format. You can adjust this by changing the `SQL_LOG` env var. Possible values are "trunc", "full" and "none".
+
+Note it only logs queries made via Kysely.
+
 ## API
 
 If you want to use the API then please leave an issue explaining your use case. By default, I want to allow open use of the data on the site. It's just not recommended to use the same APIs the web pages use as they are not stable at all and can change at any time without warning.
