@@ -11,11 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version-file: ".nvmrc"
+            bun-version: latest
 
       - name: Cache dependencies
         uses: actions/cache@v2
@@ -25,11 +23,13 @@ jobs:
           restore-keys: npm-
 
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: bun install --frozen-lockfile
 
       - name: Formatter/Linter
-        run: npm run biome:check
+        run: bun run biome:check
       - name: Typecheck
-        run: npm run typecheck
+        run: bun run typecheck
+      -name: Unit tests
+        run: bun run test:unit:all
       - name: Check translations jsons
-        run: npm run check-translation-jsons:no-write
+        run: bun run check-translation-jsons:no-write
