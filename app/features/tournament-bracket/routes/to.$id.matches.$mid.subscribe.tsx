@@ -2,14 +2,12 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { eventStream } from "remix-utils/sse/server";
 
 import { getUserId } from "~/features/auth/core/user.server";
-import { ignoreTransaction } from "~/utils/newrelic.server";
 import { parseParams } from "~/utils/remix";
 import { emitter } from "../core/emitters.server";
 import { matchPageParamsSchema } from "../tournament-bracket-schemas.server";
 import { matchSubscriptionKey } from "../tournament-bracket-utils";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-	ignoreTransaction();
 	const loggedInUser = await getUserId(request);
 	const matchId = parseParams({
 		params,

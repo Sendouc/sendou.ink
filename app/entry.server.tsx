@@ -1,8 +1,6 @@
 import { PassThrough } from "node:stream";
 import {
-	type ActionFunctionArgs,
 	type EntryContext,
-	type LoaderFunctionArgs,
 	createReadableStreamFromReadable,
 } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
@@ -15,7 +13,6 @@ import { config } from "~/modules/i18n/config"; // your i18n configuration file
 import i18next from "~/modules/i18n/i18next.server";
 import { resources } from "./modules/i18n/resources.server";
 import { updatePatreonData } from "./modules/patreon";
-import { noticeError, setTransactionName } from "./utils/newrelic.server";
 
 const ABORT_DELAY = 5000;
 
@@ -25,13 +22,6 @@ export default async function handleRequest(
 	responseHeaders: Headers,
 	remixContext: EntryContext,
 ) {
-	const lastMatch =
-		remixContext.staticHandlerContext.matches[
-			remixContext.staticHandlerContext.matches.length - 1
-		];
-
-	if (lastMatch) setTransactionName(`ssr/${lastMatch.route.id}`);
-
 	const callbackName = isbot(request.headers.get("user-agent"))
 		? "onAllReady"
 		: "onShellReady";
@@ -84,18 +74,6 @@ export default async function handleRequest(
 
 		setTimeout(abort, ABORT_DELAY);
 	});
-}
-
-export async function handleError(
-	error: unknown,
-	{ request }: LoaderFunctionArgs | ActionFunctionArgs,
-) {
-	if (!request.signal.aborted) {
-		if (error instanceof Error) {
-			noticeError(error);
-		}
-		console.error(error);
-	}
 }
 
 // example from https://github.com/BenMcH/remix-rss/blob/main/app/entry.server.tsx

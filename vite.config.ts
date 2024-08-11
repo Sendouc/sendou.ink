@@ -1,4 +1,3 @@
-import { resolve } from "node:path";
 import { vitePlugin as remix } from "@remix-run/dev";
 import { installGlobals } from "@remix-run/node";
 import { defineConfig } from "vite";
@@ -7,24 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 installGlobals();
 
 export default defineConfig(() => {
-	const newRelicDisabled =
-		!process.env.NEW_RELIC_APP_NAME || !process.env.NEW_RELIC_LICENSE_KEY;
 	return {
-		// new relic by defaults logs errors to the console
-		// when we don't have it enabled, this is a workaround to prevent that
-		resolve: newRelicDisabled
-			? {
-					alias: [
-						{
-							find: "newrelic",
-							replacement: resolve(
-								__dirname,
-								"./app/utils/mock-newrelic.server.ts",
-							),
-						},
-					],
-				}
-			: undefined,
 		ssr: {
 			noExternal: ["react-charts", "react-use"],
 		},

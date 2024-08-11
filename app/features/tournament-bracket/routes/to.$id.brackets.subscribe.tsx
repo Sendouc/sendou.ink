@@ -2,12 +2,10 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { eventStream } from "remix-utils/sse/server";
 
 import { tournamentIdFromParams } from "~/features/tournament";
-import { ignoreTransaction } from "~/utils/newrelic.server";
 import { emitter } from "../core/emitters.server";
 import { bracketSubscriptionKey } from "../tournament-bracket-utils";
 
 export const loader = ({ request, params }: LoaderFunctionArgs) => {
-	ignoreTransaction();
 	const tournamentId = tournamentIdFromParams(params);
 
 	return eventStream(request.signal, (send) => {
