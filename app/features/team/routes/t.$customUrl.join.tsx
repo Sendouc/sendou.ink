@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 			team,
 			user,
 			isInTeam: Boolean(
-				(await UserRepository.findByIdentifier(String(user.id)))?.team,
+				(await UserRepository.findProfileByIdentifier(String(user.id)))?.team,
 			),
 		}) === "VALID",
 		"Invite code is invalid",
@@ -68,7 +68,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 		team,
 		user,
 		isInTeam: Boolean(
-			(await UserRepository.findByIdentifier(String(user.id)))?.team,
+			(await UserRepository.findProfileByIdentifier(String(user.id)))?.team,
 		),
 	});
 

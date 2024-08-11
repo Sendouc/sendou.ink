@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Placement } from "~/components/Placement";
 import { Table } from "~/components/Table";
-import type { UserPageLoaderData } from "~/features/user-page/routes/u.$identifier";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
 	calendarEventPage,
@@ -11,9 +10,10 @@ import {
 	tournamentTeamPage,
 	userPage,
 } from "~/utils/urls";
+import type { UserResultsLoaderData } from "../loaders/u.$identifier.results.server";
 
 export type UserResultsTableProps = {
-	results: UserPageLoaderData["results"];
+	results: UserResultsLoaderData["results"];
 	id: string;
 	hasHighlightCheckboxes?: boolean;
 };

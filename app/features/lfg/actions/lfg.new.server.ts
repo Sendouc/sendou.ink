@@ -17,7 +17,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	});
 
 	const identifier = String(user.id);
-	const { team } = (await UserRepository.findByIdentifier(identifier)) ?? {};
+	const { team } =
+		(await UserRepository.findProfileByIdentifier(identifier)) ?? {};
 
 	const shouldIncludeTeam = TEAM_POST_TYPES.includes(data.type);
 

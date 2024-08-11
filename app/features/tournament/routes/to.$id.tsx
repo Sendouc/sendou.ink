@@ -132,7 +132,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 	const tournament = await tournamentDataCached({ tournamentId, user });
 
 	const streams =
-		tournament.data.stage.length > 0
+		tournament.data.stage.length > 0 && !tournament.ctx.isFinalized
 			? await streamsByTournamentId(tournament.ctx)
 			: [];
 

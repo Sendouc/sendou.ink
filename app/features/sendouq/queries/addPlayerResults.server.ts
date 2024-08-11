@@ -31,6 +31,15 @@ const addPlayerResultDeltaStm = sql.prepare(/* sql */ `
 
 export function addPlayerResults(results: Array<PlayerResult>) {
 	for (const result of results) {
-		addPlayerResultDeltaStm.run(result);
+		addPlayerResultDeltaStm.run({
+			ownerUserId: result.ownerUserId,
+			otherUserId: result.otherUserId,
+			mapWins: result.mapWins,
+			mapLosses: result.mapLosses,
+			setWins: result.setWins,
+			setLosses: result.setLosses,
+			type: result.type,
+			season: result.season,
+		});
 	}
 }

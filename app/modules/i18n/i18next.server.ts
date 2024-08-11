@@ -1,8 +1,7 @@
-import { resolve } from "node:path";
 import { createCookie } from "@remix-run/node";
-import Backend from "i18next-fs-backend";
 import { RemixI18Next } from "remix-i18next/server";
 import { config } from "./config";
+import { resources } from "./resources.server";
 
 const TEN_YEARS_IN_SECONDS = 31_536_000 * 10;
 
@@ -20,11 +19,8 @@ export const i18next = new RemixI18Next({
 	},
 	i18next: {
 		...config,
-		backend: {
-			loadPath: resolve("./locales/{{lng}}/{{ns}}.json"),
-		},
+		resources: resources,
 	},
-	backend: Backend,
 });
 
 export default i18next;

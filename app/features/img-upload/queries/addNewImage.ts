@@ -51,11 +51,14 @@ export const addNewImage = sql.transaction(
 		}) as UserSubmittedImage;
 
 		if (type === "team-pfp") {
-			updateTeamAvatarStm.run({ avatarImgId: img.id, teamId });
+			updateTeamAvatarStm.run({ avatarImgId: img.id, teamId: teamId ?? null });
 		} else if (type === "team-banner") {
-			updateTeamBannerStm.run({ bannerImgId: img.id, teamId });
+			updateTeamBannerStm.run({ bannerImgId: img.id, teamId: teamId ?? null });
 		} else if (type === "org-pfp") {
-			updateOrganizationAvatarStm.run({ avatarImgId: img.id, organizationId });
+			updateOrganizationAvatarStm.run({
+				avatarImgId: img.id,
+				organizationId: organizationId ?? null,
+			});
 		}
 
 		return img;

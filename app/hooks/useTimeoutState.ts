@@ -10,7 +10,7 @@ export const useTimeoutState = <T>(
 ] => {
 	const [state, _setState] = React.useState<T>(defaultState);
 	const [currentTimeoutId, setCurrentTimeoutId] = React.useState<
-		NodeJS.Timeout | undefined
+		Timer | undefined
 	>();
 
 	const setState = React.useCallback(

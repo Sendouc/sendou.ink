@@ -45,7 +45,7 @@ export function LFGAddFilterButton({
 		<Menu
 			items={Object.entries(defaultFilters).map(([tag, defaultFilter]) => ({
 				id: tag,
-				text: t(`lfg:filters.${tag}`),
+				text: t(`lfg:filters.${tag as LFGFilter["_tag"]}`),
 				disabled: filters.some((filter) => filter._tag === tag),
 				onClick: () => addFilter(defaultFilter),
 			}))}

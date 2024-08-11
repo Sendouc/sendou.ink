@@ -46,9 +46,9 @@ export const joinTeam = sql.transaction(
 		checkOutTeam?: boolean;
 	}) => {
 		if (whatToDoWithPreviousTeam === "DELETE") {
-			deleteTeamStm.run({ tournamentTeamId: previousTeamId });
+			deleteTeamStm.run({ tournamentTeamId: previousTeamId ?? null });
 		} else if (whatToDoWithPreviousTeam === "LEAVE") {
-			deleteMemberStm.run({ tournamentTeamId: previousTeamId, userId });
+			deleteMemberStm.run({ tournamentTeamId: previousTeamId ?? null, userId });
 		}
 
 		if (!previousTeamId) {

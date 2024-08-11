@@ -1,11 +1,11 @@
 import { useActionData } from "@remix-run/react";
-import type { CustomTypeOptions } from "react-i18next";
 import { useTranslation } from "react-i18next";
+import type { Namespace } from "~/modules/i18n/resources.server";
 
 export function FormErrors({
 	namespace,
 }: {
-	namespace: keyof CustomTypeOptions["resources"];
+	namespace: Namespace;
 }) {
 	const { t } = useTranslation(["common", namespace]);
 	const actionData = useActionData<{ errors?: string[] }>();

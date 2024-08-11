@@ -119,10 +119,10 @@ export const addSummary = sql.transaction(
 				mu: skill.mu,
 				sigma: skill.sigma,
 				ordinal: ordinal(skill),
-				userId: skill.userId,
-				identifier: skill.identifier,
+				userId: skill.userId ?? null,
+				identifier: skill.identifier ?? null,
 				matchesCount: skill.matchesCount,
-				season,
+				season: season ?? null,
 			}) as Skill;
 
 			if (insertedSkill.identifier) {
@@ -142,7 +142,7 @@ export const addSummary = sql.transaction(
 				userId: mapResultDelta.userId,
 				wins: mapResultDelta.wins,
 				losses: mapResultDelta.losses,
-				season,
+				season: season ?? null,
 			});
 		}
 
@@ -155,7 +155,7 @@ export const addSummary = sql.transaction(
 				setWins: playerResultDelta.setWins,
 				setLosses: playerResultDelta.setLosses,
 				type: playerResultDelta.type,
-				season,
+				season: season ?? null,
 			});
 		}
 

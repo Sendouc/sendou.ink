@@ -37,7 +37,7 @@ export const handle: SendouRouteHandle = {
 
 export default function NewBuildPage() {
 	const { buildToEdit } = useLoaderData<typeof loader>();
-	const { t } = useTranslation();
+	const { t } = useTranslation(["builds", "common"]);
 	const [searchParams] = useSearchParams();
 	const [abilities, setAbilities] =
 		React.useState<BuildAbilitiesTupleWithUnknown>(
@@ -72,7 +72,9 @@ export default function NewBuildPage() {
 				<DescriptionTextarea />
 				<ModeCheckboxes />
 				<PrivateCheckbox />
-				<SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
+				<SubmitButton className="mt-4">
+					{t("common:actions.submit")}
+				</SubmitButton>
 			</Form>
 		</div>
 	);

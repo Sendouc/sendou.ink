@@ -99,8 +99,16 @@ type AddNewArtArgs = Pick<Art, "authorId" | "description"> &
 	};
 
 export const addNewArt = sql.transaction((args: AddNewArtArgs) => {
-	const img = addImgStm.get(args) as UserSubmittedImage;
-	const art = addArtStm.get({ ...args, imgId: img.id }) as Art;
+	const img = addImgStm.get({
+		authorId: args.authorId,
+		url: args.url,
+		validatedAt: args.validatedAt,
+	}) as UserSubmittedImage;
+	const art = addArtStm.get({
+		authorId: args.authorId,
+		description: args.description,
+		imgId: img.id,
+	}) as Art;
 
 	for (const userId of args.linkedUsers) {
 		addArtUserMetadataStm.run({ artId: art.id, userId });

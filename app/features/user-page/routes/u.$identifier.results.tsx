@@ -1,4 +1,4 @@
-import { useMatches } from "@remix-run/react";
+import { useLoaderData, useMatches } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Button, LinkButton } from "~/components/Button";
 import { Section } from "~/components/Section";
@@ -9,14 +9,19 @@ import invariant from "~/utils/invariant";
 import { userResultsEditHighlightsPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../../../features/user-page/routes/u.$identifier";
 
+import { loader } from "../loaders/u.$identifier.results.server";
+export { loader };
+
 export default function UserResultsPage() {
 	const user = useUser();
 	const { t } = useTranslation("user");
+	const data = useLoaderData<typeof loader>();
+
 	const [, parentRoute] = useMatches();
 	invariant(parentRoute);
-	const userPageData = parentRoute.data as UserPageLoaderData;
+	const layoutData = parentRoute.data as UserPageLoaderData;
 
-	const highlightedResults = userPageData.results.filter(
+	const highlightedResults = data.results.filter(
 		(result) => result.isHighlight,
 	);
 	const hasHighlightedResults = highlightedResults.length > 0;
@@ -27,11 +32,11 @@ export default function UserResultsPage() {
 		revive: (v) => (!hasHighlightedResults ? true : v === "true"),
 	});
 
-	const resultsToShow = showAll ? userPageData.results : highlightedResults;
+	const resultsToShow = showAll ? data.results : highlightedResults;
 
 	return (
 		<div className="stack lg">
-			{user?.id === userPageData.id ? (
+			{user?.id === layoutData.user.id ? (
 				<LinkButton
 					to={userResultsEditHighlightsPage(user)}
 					className="ml-auto"

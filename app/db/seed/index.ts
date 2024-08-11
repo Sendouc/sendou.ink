@@ -725,7 +725,7 @@ function calendarEvents() {
 				description: faker.lorem.paragraph(),
 				discordInviteCode: faker.lorem.word(),
 				bracketUrl: faker.internet.url(),
-				authorId: id === 1 ? NZAP_TEST_ID : userIds.pop(),
+				authorId: id === 1 ? NZAP_TEST_ID : userIds.pop() ?? null,
 				tags:
 					Math.random() > 0.2
 						? shuffledTags
@@ -1835,7 +1835,7 @@ function arts() {
 					return faker.image.url();
 				}
 
-				return urls.pop();
+				return urls.pop() ?? null;
 			};
 
 			const addedArt = addArtStm.get({
@@ -1859,7 +1859,7 @@ function arts() {
 				) {
 					addArtUserMetadataStm.run({
 						artId: addedArt.id,
-						userId: i === 0 ? NZAP_TEST_ID : allUsers.pop(),
+						userId: i === 0 ? NZAP_TEST_ID : allUsers.pop() ?? null,
 					});
 				}
 			}
@@ -2026,7 +2026,6 @@ async function playedMatches() {
 
 		invariant(groupAlpha !== 0 && groupBravo !== 0, "groups not created");
 
-		// @ts-expect-error creating without memento on purpose
 		const match = createMatch({
 			alphaGroupId: groupAlpha,
 			bravoGroupId: groupBravo,

@@ -461,7 +461,7 @@ function TeamTable({
 	entries: NonNullable<SerializeFrom<typeof loader>["teamLeaderboard"]>;
 	showQualificationDividers?: boolean;
 }) {
-	const { t } = useTranslation("common");
+	const { t } = useTranslation(["common"]);
 	const data = useLoaderData<typeof loader>();
 	const isCurrentSeason = data.season === currentSeason(new Date())?.nth;
 	const showQualificationDividers =

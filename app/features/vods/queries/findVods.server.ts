@@ -63,11 +63,11 @@ export function findVods({
 	const stmToUse = userId ? stmByUser : stm;
 
 	const vods = stmToUse.all({
-		weapon,
-		mode,
-		stageId,
-		type,
-		userId,
+		weapon: weapon ?? null,
+		mode: mode ?? null,
+		stageId: stageId ?? null,
+		type: type ?? null,
+		userId: userId ?? null,
 	}) as any[];
 
 	return vods

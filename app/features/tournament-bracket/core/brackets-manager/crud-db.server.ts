@@ -492,7 +492,7 @@ export class Match {
 
 	update() {
 		match_updateStm.run({
-			id: this.id,
+			id: this.id ?? null,
 			roundId: this.roundId,
 			stageId: this.stageId,
 			groupId: this.groupId,

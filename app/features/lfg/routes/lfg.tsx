@@ -66,7 +66,7 @@ function encodeURLQuery(filters: LFGFilter[]): string {
 }
 
 export default function LFGPage() {
-	const { t } = useTranslation(["common, lfg"]);
+	const { t } = useTranslation(["common", "lfg"]);
 	const user = useUser();
 	const data = useLoaderData<typeof loader>();
 	const [filterFromSearch, setTilterFromSearch] = useSearchParamStateEncoder({

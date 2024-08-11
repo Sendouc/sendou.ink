@@ -4,7 +4,7 @@ import { allSeasons } from "../mmr/season";
 export const userParamsSchema = z.object({ identifier: z.string() });
 
 export const seasonsSearchParamsSchema = z.object({
-	page: z.coerce.number().default(1),
+	page: z.coerce.number().optional(),
 	info: z.enum(["weapons", "stages", "mates", "enemies"]).optional(),
 	season: z.coerce
 		.number()

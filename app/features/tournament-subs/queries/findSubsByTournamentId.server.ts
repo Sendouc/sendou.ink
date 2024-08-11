@@ -58,7 +58,7 @@ export function findSubsByTournamentId({
 	tournamentId: number;
 	userId?: number;
 }): SubByTournamentId[] {
-	const rows = stm.all({ tournamentId, userId }) as any[];
+	const rows = stm.all({ tournamentId, userId: userId ?? null }) as any[];
 
 	return rows.map((row) => ({
 		...row,

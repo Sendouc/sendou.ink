@@ -180,7 +180,7 @@ export function pickInfoText({
 	teams,
 }: {
 	map?: { stageId: StageId; mode: ModeShort; source: TournamentMaplistSource };
-	t: TFunction;
+	t: TFunction<["tournament"]>;
 	teams: [TournamentDataTeam, TournamentDataTeam];
 }) {
 	if (!map) return "";

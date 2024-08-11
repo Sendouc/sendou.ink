@@ -1,6 +1,7 @@
 import type { SerializeFrom } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
+import type { TFunction } from "i18next";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
@@ -378,7 +379,13 @@ function FancyStageBanner({
 								{t(`game-misc:STAGE_${stage.stageId}`)}
 							</span>
 						</h4>
-						<h4>{pickInfoText({ t, teams, map: stage })}</h4>
+						<h4>
+							{pickInfoText({
+								t: t as unknown as TFunction<["tournament"]>,
+								teams,
+								map: stage,
+							})}
+						</h4>
 					</div>
 					{children}
 				</div>

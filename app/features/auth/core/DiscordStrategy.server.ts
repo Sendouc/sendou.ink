@@ -66,7 +66,7 @@ export class DiscordStrategy extends OAuth2Strategy<
 						discordUserDetailsSchema.parse(discordResponses);
 
 					const isAlreadyRegistered = Boolean(
-						await UserRepository.findByIdentifier(user.id),
+						await UserRepository.identifierToUserId(user.id),
 					);
 
 					if (!isAlreadyRegistered && !user.verified) {

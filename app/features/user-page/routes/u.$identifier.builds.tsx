@@ -37,9 +37,9 @@ export const handle: SendouRouteHandle = {
 type BuildFilter = "ALL" | "PUBLIC" | "PRIVATE" | MainWeaponId;
 
 export default function UserBuildsPage() {
-	const { t } = useTranslation("builds");
+	const { t } = useTranslation(["builds", "user"]);
 	const user = useUser();
-	const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
+	const layoutData = atOrError(useMatches(), -2).data as UserPageLoaderData;
 	const data = useLoaderData<typeof loader>();
 	const [weaponFilter, setWeaponFilter] = useSearchParamState<BuildFilter>({
 		defaultValue: "ALL",
@@ -50,7 +50,7 @@ export default function UserBuildsPage() {
 				: mainWeaponIds.find((id) => id === Number(value)),
 	});
 
-	const isOwnPage = user?.id === parentPageData.id;
+	const isOwnPage = user?.id === layoutData.user.id;
 	const [changingSorting, setChangingSorting] = useSearchParamState({
 		defaultValue: false,
 		name: "sorting",
@@ -92,7 +92,7 @@ export default function UserBuildsPage() {
 					</Button>
 					{data.builds.length < BUILD.MAX_COUNT ? (
 						<LinkButton
-							to={userNewBuildPage(parentPageData)}
+							to={userNewBuildPage(layoutData.user)}
 							size="tiny"
 							testId="new-build-button"
 							icon={<PlusIcon />}
@@ -143,7 +143,7 @@ function BuildsFilters({
 	const { t } = useTranslation(["weapons", "builds"]);
 	const data = useLoaderData<typeof loader>();
 	const user = useUser();
-	const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
+	const layoutData = atOrError(useMatches(), -2).data as UserPageLoaderData;
 
 	if (data.builds.length === 0) return null;
 
@@ -153,7 +153,7 @@ function BuildsFilters({
 	const publicBuildsCount = data.builds.length - privateBuildsCount;
 
 	const showPublicPrivateFilters =
-		user?.id === parentPageData.id && privateBuildsCount > 0;
+		user?.id === layoutData.user.id && privateBuildsCount > 0;
 
 	const WeaponFilterMenuButton = React.forwardRef((props, ref) => (
 		<Button
@@ -315,7 +315,7 @@ function ChangeSortingDialog({ close }: { close: () => void }) {
 							return (
 								<div key={i} className="stack horizontal justify-between">
 									<div className="font-bold">
-										{i + 1}) {t(`user:builds.sorting.${sort}`)}
+										{i + 1}) {t(`user:builds.sorting.${sort!}`)}
 									</div>
 									{(isLast && !canAddMoreSorting) ||
 									(canAddMoreSorting && isSecondToLast) ? (

@@ -1,21 +1,19 @@
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import type { SerializeFrom } from "@remix-run/server-runtime";
-import { suite } from "uvu";
-import * as assert from "uvu/assert";
 import { db } from "~/db/sql";
 import type { UserMapModePreferences } from "~/db/tables";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import { stageIds } from "~/modules/in-game-lists";
-import * as Test from "~/utils/Test";
+import {
+	dbInsertUsers,
+	dbReset,
+	wrappedAction,
+	wrappedLoader,
+} from "~/utils/Test";
 import invariant from "~/utils/invariant";
 import type { lookingSchema, matchSchema } from "../q-schemas.server";
 import { loader, action as rawLookingAction } from "./q.looking";
 import { action as rawMatchAction } from "./q.match.$id";
-
-const SendouQMatchCreation = suite("SendouQ match creation");
-const PrivateUserNoteSorting = suite("Private user note sorting");
-
-const lookingAction = Test.wrappedAction<typeof lookingSchema>({
-	action: rawLookingAction,
-});
 
 const createGroup = async (userIds: number[]) => {
 	const group = await db
@@ -47,7 +45,7 @@ const SZ_ONLY_PREFERENCE: UserMapModePreferences["modes"] = [
 ];
 
 const prepareGroups = async () => {
-	await Test.database.insertUsers(8);
+	await dbInsertUsers(8);
 	await createGroup([1, 2, 3, 4]);
 	await createGroup([5, 6, 7, 8]);
 	await db
@@ -81,6 +79,10 @@ const insertMapModePreferences = (
 		.execute();
 };
 
+const lookingAction = wrappedAction<typeof lookingSchema>({
+	action: rawLookingAction,
+});
+
 const createMatch = () =>
 	lookingAction(
 		{
@@ -97,65 +99,68 @@ const findMatch = () =>
 		.where("id", "=", 1)
 		.executeTakeFirstOrThrow();
 
-SendouQMatchCreation.before.each(async () => {
-	await prepareGroups();
-});
-
-SendouQMatchCreation.after.each(() => {
-	Test.database.reset();
-});
-
-SendouQMatchCreation("adds pools to memento", async () => {
-	await createMatch();
-
-	const match = await findMatch();
-	const pools = match.memento?.pools;
-
-	invariant(pools, "pools missing");
-
-	assert.equal(pools.length, 2);
-	assert.ok(pools.some((p) => p.pool[0].stages.includes(1)));
-	assert.ok(pools.some((p) => p.pool[0].stages.includes(19)));
-});
-
-SendouQMatchCreation("doesn't add pool where mode is avoided", async () => {
-	await insertMapModePreferences(1, {
-		modes: [
-			{ mode: "SZ", preference: "AVOID" },
-			{ mode: "TC", preference: "PREFER" },
-		],
-		pool: [
-			{ mode: "SZ", stages: [...stageIds].slice(0, 7) },
-			{ mode: "TC", stages: [...stageIds].slice(0, 7) },
-		],
+describe("SendouQ match creation", () => {
+	beforeEach(async () => {
+		await prepareGroups();
 	});
 
-	await createMatch();
+	afterEach(() => {
+		dbReset();
+	});
 
-	const match = await findMatch();
-	const pools = match.memento?.pools;
+	test("adds pools to memento", async () => {
+		await createMatch();
 
-	invariant(pools, "pools missing");
+		const match = await findMatch();
+		const pools = match.memento?.pools;
 
-	assert.equal(pools.length, 2);
-	assert.ok(
-		pools.find((p) => p.userId === 1)!.pool.every((p) => p.mode !== "SZ"),
-	);
-});
+		invariant(pools, "pools missing");
 
-SendouQMatchCreation("adds mode preferences to memento", async () => {
-	await createMatch();
+		expect(pools.length).toBe(2);
+		expect(pools.some((p) => p.pool[0].stages.includes(1))).toBe(true);
+		expect(pools.some((p) => p.pool[0].stages.includes(19))).toBe(true);
+	});
 
-	const match = await findMatch();
+	test("doesn't add pool where mode is avoided", async () => {
+		await insertMapModePreferences(1, {
+			modes: [
+				{ mode: "SZ", preference: "AVOID" },
+				{ mode: "TC", preference: "PREFER" },
+			],
+			pool: [
+				{
+					mode: "TC",
+					stages: [...stageIds]
+						.filter((stageId) => !BANNED_MAPS.TC.includes(stageId))
+						.slice(0, 7),
+				},
+			],
+		});
 
-	const modePreferences = match.memento?.modePreferences;
+		await createMatch();
 
-	assert.equal(modePreferences?.SZ?.length, 2);
-});
+		const match = await findMatch();
+		const pools = match.memento?.pools;
 
-SendouQMatchCreation(
-	"adds mode preferences to memento including neutral",
-	async () => {
+		invariant(pools, "pools missing");
+
+		expect(pools.length).toBe(2);
+		expect(
+			pools.find((p) => p.userId === 1)!.pool.every((p) => p.mode !== "SZ"),
+		).toBe(true);
+	});
+
+	test("adds mode preferences to memento", async () => {
+		await createMatch();
+
+		const match = await findMatch();
+
+		const modePreferences = match.memento?.modePreferences;
+
+		expect(modePreferences?.SZ?.length).toBe(2);
+	});
+
+	test("adds mode preferences to memento including neutral", async () => {
 		await insertMapModePreferences(2, {
 			modes: [{ mode: "TC", preference: "PREFER" }],
 			pool: [],
@@ -167,78 +172,76 @@ SendouQMatchCreation(
 
 		const modePreferences = match.memento?.modePreferences;
 
-		assert.equal(modePreferences?.SZ?.length, 3);
-		assert.ok(modePreferences?.SZ?.some((p) => !p.preference));
-	},
-);
-
-PrivateUserNoteSorting.before.each(async () => {
-	await Test.database.insertUsers(8);
-
-	await createGroup([1]);
-	await createGroup([2]);
-	await createGroup([3]);
-	await createGroup([4]);
-	await createGroup([5]);
-	await createGroup([6, 7]);
-	await createGroup([8]);
-
-	await db
-		.insertInto("GroupMatch")
-		.values({ alphaGroupId: 2, bravoGroupId: 3 })
-		.execute();
+		expect(modePreferences?.SZ?.length).toBe(3);
+		expect(modePreferences?.SZ?.some((p) => !p.preference)).toBe(true);
+	});
 });
 
-PrivateUserNoteSorting.after.each(() => {
-	Test.database.reset();
-});
+describe("Private user note sorting", () => {
+	beforeEach(async () => {
+		await dbInsertUsers(8);
 
-const lookingLoader = Test.wrappedLoader<SerializeFrom<typeof loader>>({
-	loader,
-});
-const matchAction = Test.wrappedAction<typeof matchSchema>({
-	action: rawMatchAction,
-	params: { id: "1" },
-});
+		await createGroup([1]);
+		await createGroup([2]);
+		await createGroup([3]);
+		await createGroup([4]);
+		await createGroup([5]);
+		await createGroup([6, 7]);
+		await createGroup([8]);
 
-PrivateUserNoteSorting("users with positive note sorted first", async () => {
-	await matchAction(
-		{
-			_action: "ADD_PRIVATE_USER_NOTE",
-			targetId: 5,
-			sentiment: "POSITIVE",
-			comment: "test",
-		},
-		{ user: "admin" },
-	);
+		await db
+			.insertInto("GroupMatch")
+			.values({ alphaGroupId: 2, bravoGroupId: 3 })
+			.execute();
+	});
 
-	const data = await lookingLoader({ user: "admin" });
+	afterEach(() => {
+		dbReset();
+	});
 
-	assert.equal(data.groups.neutral[0].members![0].id, 5);
-});
+	const lookingLoader = wrappedLoader<SerializeFrom<typeof loader>>({
+		loader,
+	});
+	const matchAction = wrappedAction<typeof matchSchema>({
+		action: rawMatchAction,
+		params: { id: "1" },
+	});
 
-PrivateUserNoteSorting("users with negative note sorted last", async () => {
-	await matchAction(
-		{
-			_action: "ADD_PRIVATE_USER_NOTE",
-			targetId: 5,
-			sentiment: "NEGATIVE",
-			comment: "test",
-		},
-		{ user: "admin" },
-	);
+	test("users with positive note sorted first", async () => {
+		await matchAction(
+			{
+				_action: "ADD_PRIVATE_USER_NOTE",
+				targetId: 5,
+				sentiment: "POSITIVE",
+				comment: "test",
+			},
+			{ user: "admin" },
+		);
 
-	const data = await lookingLoader({ user: "admin" });
+		const data = await lookingLoader({ user: "admin" });
 
-	assert.equal(
-		data.groups.neutral[data.groups.neutral.length - 1].members![0].id,
-		5,
-	);
-});
+		expect(data.groups.neutral[0].members![0].id).toBe(5);
+	});
 
-PrivateUserNoteSorting(
-	"group with both negative and positive sentiment sorted last",
-	async () => {
+	test("users with negative note sorted last", async () => {
+		await matchAction(
+			{
+				_action: "ADD_PRIVATE_USER_NOTE",
+				targetId: 5,
+				sentiment: "NEGATIVE",
+				comment: "test",
+			},
+			{ user: "admin" },
+		);
+
+		const data = await lookingLoader({ user: "admin" });
+
+		expect(
+			data.groups.neutral[data.groups.neutral.length - 1].members![0].id,
+		).toBe(5);
+	});
+
+	test("group with both negative and positive sentiment sorted last", async () => {
 		await matchAction(
 			{
 				_action: "ADD_PRIVATE_USER_NOTE",
@@ -260,13 +263,10 @@ PrivateUserNoteSorting(
 
 		const data = await lookingLoader({ user: "admin" });
 
-		assert.ok(
+		expect(
 			data.groups.neutral[data.groups.neutral.length - 1].members?.some(
 				(m) => m.id === 6,
 			),
-		);
-	},
-);
-
-SendouQMatchCreation.run();
-PrivateUserNoteSorting.run();
+		).toBe(true);
+	});
+});

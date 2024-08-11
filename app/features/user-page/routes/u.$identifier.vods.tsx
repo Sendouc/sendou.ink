@@ -1,4 +1,4 @@
-import { useMatches } from "@remix-run/react";
+import { useLoaderData, useMatches } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
@@ -8,6 +8,9 @@ import invariant from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { newVodPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "./u.$identifier";
+
+import { loader } from "../loaders/u.$identifier.vods.server";
+export { loader };
 
 import "~/features/vods/vods.css";
 
@@ -19,16 +22,17 @@ export default function UserVodsPage() {
 	const user = useUser();
 	const [, parentRoute] = useMatches();
 	invariant(parentRoute);
-	const userPageData = parentRoute.data as UserPageLoaderData;
+	const layoutData = parentRoute.data as UserPageLoaderData;
+	const data = useLoaderData<typeof loader>();
 
 	return (
 		<div className="vods__listing__list">
-			{userPageData.id === user?.id ? (
+			{layoutData.user.id === user?.id ? (
 				<div className="stack items-end w-full">
 					<AddVodButton isVideoAdder={user.isVideoAdder} />
 				</div>
 			) : null}
-			{userPageData.vods.map((vod) => (
+			{data.vods.map((vod) => (
 				<VodListing key={vod.id} vod={vod} showUser={false} />
 			))}
 		</div>

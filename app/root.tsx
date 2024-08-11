@@ -18,7 +18,7 @@ import {
 import generalI18next from "i18next";
 import NProgress from "nprogress";
 import * as React from "react";
-import { type CustomTypeOptions, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { Catcher } from "./components/Catcher";
@@ -37,6 +37,7 @@ import { getThemeSession } from "./features/theme/core/session.server";
 import { useIsMounted } from "./hooks/useIsMounted";
 import { DEFAULT_LANGUAGE } from "./modules/i18n/config";
 import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
+import type { Namespace } from "./modules/i18n/resources.server";
 import { COMMON_PREVIEW_IMAGE, SUSPENDED_PAGE } from "./utils/urls";
 
 import "nprogress/nprogress.css";
@@ -181,10 +182,7 @@ function useLoadingIndicator() {
 
 // TODO: this should be an array if we can figure out how to make Typescript
 // enforce that it has every member of keyof CustomTypeOptions["resources"] without duplicating the type manually
-export const namespaceJsonsToPreloadObj: Record<
-	keyof CustomTypeOptions["resources"],
-	boolean
-> = {
+export const namespaceJsonsToPreloadObj: Record<Namespace, boolean> = {
 	common: true,
 	analyzer: true,
 	badges: true,

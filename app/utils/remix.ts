@@ -11,7 +11,6 @@ import { z } from "zod";
 import type navItems from "~/components/layout/nav-items.json";
 import { s3UploadHandler } from "~/features/img-upload";
 import invariant from "./invariant";
-import { noticeError } from "./newrelic.server";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
 	if (!value) throw new Response(null, { status: 404 });
@@ -54,7 +53,6 @@ export function parseSearchParams<T extends z.ZodTypeAny>({
 		return schema.parse(searchParams);
 	} catch (e) {
 		if (e instanceof z.ZodError) {
-			noticeError(e, { searchParams: JSON.stringify(searchParams) });
 			console.error(e);
 			throw new Response(JSON.stringify(e), { status: 400 });
 		}
@@ -96,7 +94,6 @@ export async function parseRequestPayload<T extends z.ZodTypeAny>({
 		return parsed;
 	} catch (e) {
 		if (e instanceof z.ZodError) {
-			noticeError(e, { formData: JSON.stringify(formDataObj) });
 			console.error(e);
 			throw new Response(JSON.stringify(e), { status: 400 });
 		}
@@ -124,7 +121,6 @@ export async function parseFormData<T extends z.ZodTypeAny>({
 		return parsed;
 	} catch (e) {
 		if (e instanceof z.ZodError) {
-			noticeError(e, { formData: JSON.stringify(formDataObj) });
 			console.error(e);
 			throw new Response(JSON.stringify(e), { status: 400 });
 		}
@@ -201,7 +197,6 @@ export function validate(
 ): asserts condition {
 	if (condition) return;
 
-	noticeError(new Error(`Validation error: ${message}`));
 	throw new Response(
 		message ? JSON.stringify({ validationError: message }) : undefined,
 		{

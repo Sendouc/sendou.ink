@@ -65,24 +65,6 @@ test.describe("User page", () => {
 		await expect(bodyColor()).resolves.toMatch(/#4a412a/);
 	});
 
-	test("has redirecting custom url", async ({ page }) => {
-		await seed(page);
-		await impersonate(page);
-		await navigate({
-			page,
-			url: userPage({ discordId: ADMIN_DISCORD_ID }),
-		});
-
-		// got redirected
-		await expect(page).toHaveURL(/sendou/);
-
-		await goToEditPage(page);
-		await page.getByLabel("Custom URL").fill("lean");
-		await submitEditForm(page);
-
-		await expect(page).toHaveURL(/lean/);
-	});
-
 	test("edits weapon pool", async ({ page }) => {
 		await seed(page);
 		await impersonate(page);

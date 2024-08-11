@@ -1,4 +1,4 @@
-import { Link, useMatches } from "@remix-run/react";
+import { Link, useLoaderData, useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
@@ -11,6 +11,7 @@ import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
 import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { modesShort } from "~/modules/in-game-lists";
+import { databaseTimestampToDate } from "~/utils/dates";
 import invariant from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
@@ -24,71 +25,76 @@ import {
 } from "~/utils/urls";
 import type { UserPageLoaderData } from "./u.$identifier";
 
+import { loader } from "../loaders/u.$identifier.index.server";
+export { loader };
+
 export const handle: SendouRouteHandle = {
 	i18n: "badges",
 };
 
 export default function UserInfoPage() {
+	const data = useLoaderData<typeof loader>();
 	const [, parentRoute] = useMatches();
 	invariant(parentRoute);
-	const data = parentRoute.data as UserPageLoaderData;
+	const layoutData = parentRoute.data as UserPageLoaderData;
 
 	return (
 		<div className="u__container">
 			<div className="u__avatar-container">
-				<Avatar user={data} size="lg" className="u__avatar" />
+				<Avatar user={layoutData.user} size="lg" className="u__avatar" />
 				<div>
 					<h2 className="u__name">
-						<div>{data.username}</div>
+						<div>{layoutData.user.username}</div>
 						<div>
-							{data.country ? <Flag countryCode={data.country} tiny /> : null}
+							{data.user.country ? (
+								<Flag countryCode={data.user.country} tiny />
+							) : null}
 						</div>
 					</h2>
 					<TeamInfo />
 				</div>
 				<div className="u__socials">
-					{data.twitch ? (
-						<SocialLink type="twitch" identifier={data.twitch} />
+					{data.user.twitch ? (
+						<SocialLink type="twitch" identifier={data.user.twitch} />
 					) : null}
-					{data.twitter ? (
-						<SocialLink type="twitter" identifier={data.twitter} />
+					{data.user.twitter ? (
+						<SocialLink type="twitter" identifier={data.user.twitter} />
 					) : null}
-					{data.youtubeId ? (
-						<SocialLink type="youtube" identifier={data.youtubeId} />
+					{data.user.youtubeId ? (
+						<SocialLink type="youtube" identifier={data.user.youtubeId} />
 					) : null}
-					{data.battlefy ? (
-						<SocialLink type="battlefy" identifier={data.battlefy} />
+					{data.user.battlefy ? (
+						<SocialLink type="battlefy" identifier={data.user.battlefy} />
 					) : null}
 				</div>
 			</div>
+			<BannedInfo />
 			<ExtraInfos />
 			<WeaponPool />
 			<TopPlacements />
-			<BadgeDisplay badges={data.badges} key={data.id} />
-			{data.bio && <article>{data.bio}</article>}
+			<BadgeDisplay badges={data.user.badges} key={layoutData.user.id} />
+			{data.user.bio && <article>{data.user.bio}</article>}
 		</div>
 	);
 }
 
 function TeamInfo() {
-	const [, parentRoute] = useMatches();
-	invariant(parentRoute);
-	const { team } = parentRoute.data as UserPageLoaderData;
+	const data = useLoaderData<typeof loader>();
 
-	if (!team) return null;
+	if (!data.user.team) return null;
 
 	return (
-		<Link to={teamPage(team.customUrl)} className="u__team">
-			{team.avatarUrl ? (
+		<Link to={teamPage(data.user.team.customUrl)} className="u__team">
+			{data.user.team.avatarUrl ? (
 				<img
 					alt=""
-					src={userSubmittedImage(team.avatarUrl)}
+					src={userSubmittedImage(data.user.team.avatarUrl)}
 					width={24}
 					height={24}
 					className="rounded-full"
 				/>
 			) : null}
-			{team.name}
+			{data.user.team.name}
 		</Link>
 	);
 }
@@ -152,55 +158,53 @@ function SocialLinkIcon({ type }: Pick<SocialLinkProps, "type">) {
 
 function ExtraInfos() {
 	const { t } = useTranslation(["user"]);
-	const [, parentRoute] = useMatches();
-	invariant(parentRoute);
-	const data = parentRoute.data as UserPageLoaderData;
+	const data = useLoaderData<typeof loader>();
 
 	const motionSensText =
-		typeof data.motionSens === "number"
-			? `${t("user:motion")} ${rawSensToString(data.motionSens)}`
+		typeof data.user.motionSens === "number"
+			? `${t("user:motion")} ${rawSensToString(data.user.motionSens)}`
 			: null;
 
 	const stickSensText =
-		typeof data.stickSens === "number"
-			? `${t("user:stick")} ${rawSensToString(data.stickSens)}`
+		typeof data.user.stickSens === "number"
+			? `${t("user:stick")} ${rawSensToString(data.user.stickSens)}`
 			: null;
 
 	if (
-		!data.inGameName &&
-		typeof data.stickSens !== "number" &&
-		!data.discordUniqueName &&
-		!data.plusTier
+		!data.user.inGameName &&
+		typeof data.user.stickSens !== "number" &&
+		!data.user.discordUniqueName &&
+		!data.user.plusTier
 	) {
 		return null;
 	}
 
 	return (
 		<div className="u__extra-infos">
-			{data.discordUniqueName && (
+			{data.user.discordUniqueName && (
 				<div className="u__extra-info">
 					<span className="u__extra-info__heading">
 						<DiscordIcon />
 					</span>{" "}
-					{data.discordUniqueName}
+					{data.user.discordUniqueName}
 				</div>
 			)}
-			{data.inGameName && (
+			{data.user.inGameName && (
 				<div className="u__extra-info">
 					<span className="u__extra-info__heading">{t("user:ign.short")}</span>{" "}
-					{data.inGameName}
+					{data.user.inGameName}
 				</div>
 			)}
-			{typeof data.stickSens === "number" && (
+			{typeof data.user.stickSens === "number" && (
 				<div className="u__extra-info">
 					<span className="u__extra-info__heading">{t("user:sens")}</span>{" "}
 					{[motionSensText, stickSensText].filter(Boolean).join(" / ")}
 				</div>
 			)}
-			{data.plusTier && (
+			{data.user.plusTier && (
 				<div className="u__extra-info">
 					<Image path={navIconUrl("plus")} width={20} height={20} alt="" />{" "}
-					{data.plusTier}
+					{data.user.plusTier}
 				</div>
 			)}
 		</div>
@@ -208,15 +212,13 @@ function ExtraInfos() {
 }
 
 function WeaponPool() {
-	const [, parentRoute] = useMatches();
-	invariant(parentRoute);
-	const data = parentRoute.data as UserPageLoaderData;
+	const data = useLoaderData<typeof loader>();
 
-	if (data.weapons.length === 0) return null;
+	if (data.user.weapons.length === 0) return null;
 
 	return (
 		<div className="stack horizontal sm justify-center">
-			{data.weapons.map((weapon, i) => {
+			{data.user.weapons.map((weapon, i) => {
 				return (
 					<div key={weapon.weaponSplId} className="u__weapon">
 						<WeaponImage
@@ -234,20 +236,20 @@ function WeaponPool() {
 }
 
 function TopPlacements() {
-	const [, parentRoute] = useMatches();
-	invariant(parentRoute);
-	const data = parentRoute.data as UserPageLoaderData;
+	const data = useLoaderData<typeof loader>();
 
-	if (!data.playerId) return null;
+	if (data.user.topPlacements.length === 0) return null;
 
 	return (
 		<Link
-			to={topSearchPlayerPage(data.playerId)}
+			to={topSearchPlayerPage(data.user.topPlacements[0].playerId)}
 			className="u__placements"
 			data-testid="placements-box"
 		>
 			{modesShort.map((mode) => {
-				const placement = data.topPlacements[mode];
+				const placement = data.user.topPlacements.find(
+					(placement) => placement.mode === mode,
+				);
 
 				if (!placement) return null;
 
@@ -261,5 +263,42 @@ function TopPlacements() {
 				);
 			})}
 		</Link>
+	);
+}
+
+function BannedInfo() {
+	const data = useLoaderData<typeof loader>();
+
+	const { banned, bannedReason } = data.banned ?? {};
+
+	if (!banned) return null;
+
+	const ends = (() => {
+		if (!banned || banned === 1) return null;
+
+		return databaseTimestampToDate(banned);
+	})();
+
+	return (
+		<div className="mb-4">
+			<h2 className="text-warning">Account suspended</h2>
+			{bannedReason ? <div>Reason: {bannedReason}</div> : null}
+			{ends ? (
+				<div suppressHydrationWarning>
+					Ends:{" "}
+					{ends.toLocaleString("en-US", {
+						month: "long",
+						day: "numeric",
+						year: "numeric",
+						hour: "numeric",
+						minute: "numeric",
+					})}
+				</div>
+			) : (
+				<div>
+					Ends: <i>no end time set</i>
+				</div>
+			)}
+		</div>
 	);
 }

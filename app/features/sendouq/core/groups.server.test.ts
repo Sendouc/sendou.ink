@@ -1,5 +1,4 @@
-import { suite } from "uvu";
-import * as assert from "uvu/assert";
+import { describe, expect, test } from "bun:test";
 import { tierDifferenceToRangeOrExact } from "./groups.server";
 
 const paramsToExpected = new Map<
@@ -64,29 +63,24 @@ const paramsToExpected = new Map<
 		{ isPlus: false, name: "DIAMOND" },
 	);
 
-const TierDifferenceToRangeOrExact = suite("tierDifferenceToRangeOrExact()");
-
-for (const [input, expected] of paramsToExpected) {
-	TierDifferenceToRangeOrExact(
-		`works for ${JSON.stringify(input)} -> ${JSON.stringify(expected)}`,
-		() => {
+describe("tierDifferenceToRangeOrExact()", () => {
+	for (const [input, expected] of paramsToExpected) {
+		test(`works for ${JSON.stringify(input)} -> ${JSON.stringify(expected)}`, () => {
 			const result = tierDifferenceToRangeOrExact({
 				ourTier: input[0],
 				theirTier: input[1],
 				hasLeviathan: true,
 			}).tier;
-			assert.equal(result, expected);
-		},
-	);
-}
+			expect(result).toEqual(expected);
+		});
+	}
 
-TierDifferenceToRangeOrExact("works before leviathan", () => {
-	const result = tierDifferenceToRangeOrExact({
-		ourTier: { isPlus: true, name: "DIAMOND" },
-		theirTier: { isPlus: false, name: "DIAMOND" },
-		hasLeviathan: false,
-	}).tier;
-	assert.equal(result, { isPlus: false, name: "DIAMOND" });
+	test("works before leviathan", () => {
+		const result = tierDifferenceToRangeOrExact({
+			ourTier: { isPlus: true, name: "DIAMOND" },
+			theirTier: { isPlus: false, name: "DIAMOND" },
+			hasLeviathan: false,
+		}).tier;
+		expect(result).toEqual({ isPlus: false, name: "DIAMOND" });
+	});
 });
-
-TierDifferenceToRangeOrExact.run();

@@ -1,4 +1,4 @@
-import type { ExpressionBuilder, FunctionModule } from "kysely";
+import type { ExpressionBuilder, FunctionModule, NotNull } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db, sql as dbDirect } from "~/db/sql";
@@ -21,10 +21,11 @@ const identifierToUserIdQuery = (identifier: string) =>
 				return eb("User.id", "=", parsedId);
 			}
 
-			return eb.or([
-				eb("User.discordId", "=", identifier),
-				eb("User.customUrl", "=", identifier),
-			]);
+			if (/^\d+$/.test(identifier)) {
+				return eb("User.discordId", "=", identifier);
+			}
+
+			return eb("User.customUrl", "=", identifier);
 		});
 
 export function identifierToUserId(identifier: string) {
@@ -55,36 +56,93 @@ export async function identifierToBuildFields(identifier: string) {
 	};
 }
 
-export function findByIdentifier(identifier: string) {
+export function findLayoutDataByIdentifier(
+	identifier: string,
+	loggedInUserId?: number,
+) {
 	return identifierToUserIdQuery(identifier)
-		.leftJoin("PlusTier", "PlusTier.userId", "User.id")
+		.select((eb) => [
+			...COMMON_USER_FIELDS,
+			"User.commissionText",
+			"User.commissionsOpen",
+			sql<Record<
+				string,
+				string
+			> | null>`IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css", null)`.as(
+				"css",
+			),
+			eb
+				.selectFrom("TournamentResult")
+				.whereRef("TournamentResult.userId", "=", "User.id")
+				.select(({ fn }) => fn.countAll<number>().as("count"))
+				.as("tournamentResultsCount"),
+			eb
+				.selectFrom("CalendarEventResultPlayer")
+				.whereRef("CalendarEventResultPlayer.userId", "=", "User.id")
+				.select(({ fn }) => fn.countAll<number>().as("count"))
+				.as("calendarEventResultsCount"),
+			eb
+				.selectFrom("Build")
+				.select(({ fn }) => fn.countAll<number>().as("count"))
+				.whereRef("Build.ownerId", "=", "User.id")
+				.where((eb) =>
+					eb.or(
+						[
+							eb("Build.private", "=", 0),
+							loggedInUserId ? eb("Build.ownerId", "=", loggedInUserId) : null,
+						].filter((filter) => filter !== null),
+					),
+				)
+				.as("buildsCount"),
+			eb
+				.selectFrom("VideoMatchPlayer")
+				.select(({ fn }) => fn.countAll<number>().as("count"))
+				.whereRef("VideoMatchPlayer.playerUserId", "=", "User.id")
+				.as("vodsCount"),
+			eb
+				.selectFrom("Art")
+				.innerJoin("ArtUserMetadata", "ArtUserMetadata.artId", "Art.id")
+				.innerJoin("UserSubmittedImage", "UserSubmittedImage.id", "Art.imgId")
+				.select(({ fn }) => fn.count<number>("Art.id").distinct().as("count"))
+				.where((innerEb) =>
+					innerEb.or([
+						innerEb("Art.authorId", "=", sql.raw<any>("User.id")),
+						innerEb("ArtUserMetadata.userId", "=", sql.raw<any>("User.id")),
+					]),
+				)
+				.as("artCount"),
+		])
+		.$narrowType<{
+			calendarEventResultsCount: NotNull;
+			tournamentResultsCount: NotNull;
+			buildsCount: NotNull;
+			vodsCount: NotNull;
+			artCount: NotNull;
+		}>()
+		.executeTakeFirst();
+}
+
+export async function findProfileByIdentifier(
+	identifier: string,
+	forceShowDiscordUniqueName?: boolean,
+) {
+	const row = await identifierToUserIdQuery(identifier)
+		.innerJoin("PlusTier", "PlusTier.userId", "User.id")
 		.select(({ eb }) => [
-			"User.discordAvatar",
-			"User.discordId",
-			"User.discordName",
-			"User.username",
-			"User.customName",
-			"User.showDiscordUniqueName",
-			"User.discordUniqueName",
-			"User.customUrl",
-			"User.inGameName",
-			"User.twitter",
-			"User.country",
-			"User.bio",
-			"User.motionSens",
-			"User.stickSens",
-			"User.css",
 			"User.twitch",
 			"User.twitter",
 			"User.youtubeId",
 			"User.battlefy",
+			"User.country",
+			"User.bio",
+			"User.motionSens",
+			"User.stickSens",
+			"User.inGameName",
+			"User.customName",
+			"User.discordName",
+			"User.showDiscordUniqueName",
+			"User.discordUniqueName",
 			"User.favoriteBadgeId",
-			"User.banned",
-			"User.bannedReason",
-			"User.commissionText",
-			"User.commissionsOpen",
-			"User.patronTier",
-			"User.buildSorting",
 			"PlusTier.tier as plusTier",
 			jsonArrayFrom(
 				eb
@@ -110,7 +168,70 @@ export function findByIdentifier(identifier: string) {
 					])
 					.whereRef("TeamMember.userId", "=", "User.id"),
 			).as("team"),
+			jsonArrayFrom(
+				eb
+					.selectFrom("BadgeOwner")
+					.innerJoin("Badge", "Badge.id", "BadgeOwner.badgeId")
+					.select(({ fn }) => [
+						fn.count<number>("BadgeOwner.badgeId").as("count"),
+						"Badge.id",
+						"Badge.displayName",
+						"Badge.code",
+						"Badge.hue",
+					])
+					.whereRef("BadgeOwner.userId", "=", "User.id")
+					.groupBy(["BadgeOwner.badgeId", "BadgeOwner.userId"]),
+			).as("badges"),
+			jsonArrayFrom(
+				eb
+					.selectFrom("SplatoonPlayer")
+					.innerJoin(
+						"XRankPlacement",
+						"XRankPlacement.playerId",
+						"SplatoonPlayer.id",
+					)
+					.select(({ fn }) => [
+						"XRankPlacement.mode",
+						fn.max<number>("XRankPlacement.power").as("power"),
+						fn.min<number>("XRankPlacement.rank").as("rank"),
+						"XRankPlacement.playerId",
+					])
+					.whereRef("SplatoonPlayer.userId", "=", "User.id")
+					.groupBy(["XRankPlacement.mode"]),
+			).as("topPlacements"),
 		])
+		.executeTakeFirst();
+
+	if (!row) {
+		return null;
+	}
+
+	return {
+		...row,
+		// TODO: sort in SQL
+		badges: row.badges.sort((a, b) => {
+			if (a.id === row.favoriteBadgeId) {
+				return -1;
+			}
+
+			if (b.id === row.favoriteBadgeId) {
+				return 1;
+			}
+
+			return a.id - b.id;
+		}),
+		discordUniqueName:
+			forceShowDiscordUniqueName || row.showDiscordUniqueName
+				? row.discordUniqueName
+				: null,
+	};
+}
+
+export function findBannedStatusByUserId(userId: number) {
+	return db
+		.selectFrom("User")
+		.select(["User.banned", "User.bannedReason"])
+		.where("User.id", "=", userId)
 		.executeTakeFirst();
 }
 
