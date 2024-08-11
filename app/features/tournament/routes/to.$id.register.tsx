@@ -832,7 +832,8 @@ function FriendCode() {
 			</section>
 			{user?.friendCode ? (
 				<div className="tournament__section__warning">
-					Is the friend code above wrong? Contact Sendou directly to change it.
+					Is the friend code above wrong? Post a message on our Discord helpdesk
+					to change it.
 				</div>
 			) : null}
 		</div>

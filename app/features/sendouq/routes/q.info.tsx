@@ -217,7 +217,7 @@ function BeforeJoining() {
 				responsibility to make sure it matches the account you will be playing
 				on. Anything else will be considered alting by default which is against
 				the rules. If you need to change friend code after setting it use the
-				helpdesk on our Discord server or contact Sendou directly via DM.
+				helpdesk on our Discord server.
 			</p>
 			<h3>Reading rules</h3>
 			<p>
