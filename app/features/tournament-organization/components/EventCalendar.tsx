@@ -40,8 +40,8 @@ export function EventCalendar({
 
 						return (
 							isMounted &&
-							startTimeDate.getDate() === date?.getDate() &&
-							startTimeDate.getMonth() === date.getMonth()
+							startTimeDate.getDate() === date?.getUTCDate() &&
+							startTimeDate.getMonth() === date.getUTCMonth()
 						);
 					});
 
@@ -68,11 +68,14 @@ function EventCalendarCell({
 	events: SerializeFrom<typeof loader>["events"];
 	fallbackLogoUrl: string;
 }) {
+	const isMounted = useIsMounted();
+
 	return (
 		<div
 			className={clsx("org__calendar__day", {
 				org__calendar__day__previous: !date,
 				org__calendar__day__today:
+					isMounted &&
 					date?.getDate() === new Date().getDate() &&
 					date?.getMonth() === new Date().getMonth() &&
 					date?.getFullYear() === new Date().getFullYear(),
