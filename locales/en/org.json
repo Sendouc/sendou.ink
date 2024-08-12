@@ -13,6 +13,7 @@
 	"edit.form.uploadLogo": "Upload logo",
 	"edit.form.socialLinks.title": "Social links",
 	"edit.form.members.title": "Members",
+	"edit.form.members.info": "\"Admin\" role lets users edit the organization and any tournament registration hosted by the organization. \"Organizer\" and \"Streamer\" give the corresponding role in tournaments. \"Member\" has no special permissions attached to it.",
 	"edit.form.members.user.title": "User",
 	"edit.form.members.role.title": "Role",
 	"edit.form.members.roleDisplayName.title": "Role display name",

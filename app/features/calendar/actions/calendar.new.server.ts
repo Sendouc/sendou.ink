@@ -144,12 +144,16 @@ export const action: ActionFunction = async ({ request }) => {
 				user,
 			});
 			validate(!tournament.hasStarted, "Tournament has already started", 400);
+
+			validate(tournament.isAdmin(user), "Not authorized", 401);
+		} else {
+			// editing regular calendar event
+			validate(
+				canEditCalendarEvent({ user, event: eventToEdit }),
+				"Not authorized",
+				401,
+			);
 		}
-		validate(
-			canEditCalendarEvent({ user, event: eventToEdit }),
-			"Not authorized",
-			401,
-		);
 
 		await CalendarRepository.update({
 			eventId: data.eventToEditId,

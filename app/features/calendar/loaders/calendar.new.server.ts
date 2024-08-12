@@ -49,8 +49,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	};
 
 	const eventToEdit = await eventWithTournament("eventId");
-	const canEditEvent =
-		eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
+	const canEditEvent = (() => {
+		if (!eventToEdit) return false;
+		if (
+			eventToEdit.tournament?.ctx.organization?.members.some(
+				(member) => member.userId === user.id && member.role === "ADMIN",
+			)
+		) {
+			return true;
+		}
+
+		return canEditCalendarEvent({ user, event: eventToEdit });
+	})();
 
 	// no editing tournament after the start
 	if (

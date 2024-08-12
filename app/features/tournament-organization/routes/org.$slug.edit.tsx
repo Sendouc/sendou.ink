@@ -194,6 +194,7 @@ function MembersFormField() {
 				{rootError && (
 					<FormMessage type="error">{rootError.message as string}</FormMessage>
 				)}
+				<FormMessage type="info">{t("org:edit.form.members.info")}</FormMessage>
 			</div>
 		</div>
 	);
