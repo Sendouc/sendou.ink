@@ -35,6 +35,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 			)
 			.select(({ eb }) => [
 				"CalendarEvent.name",
+				"CalendarEvent.organizationId",
 				"CalendarEventDate.startTime",
 				"Tournament.settings",
 				eb
@@ -78,6 +79,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 			name: bp.name,
 			type: bp.type,
 		})),
+		organizationId: tournament.organizationId,
 	};
 
 	return await cors(request, json(result));

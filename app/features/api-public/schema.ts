@@ -84,6 +84,7 @@ export interface GetTournamentResponse {
 		checkedInCount: number;
 	};
 	brackets: TournamentBracket[];
+	organizationId: number | null;
 }
 
 /** GET /api/tournament/{tournamentId}/teams */
@@ -167,6 +168,60 @@ export interface GetTournamentBracketResponse {
 		/** How many rounds? (swiss only) */
 		roundCount?: number;
 	};
+}
+
+/** GET /api/tournament/{tournamentId}/brackets/{bracketIndex}/standings */
+
+export interface GetTournamentBracketStandingsResponse {
+	standings: Array<{
+		tournamentTeamId: number;
+		placement: number;
+		stats?: {
+			setWins: number;
+			setLosses: number;
+			mapWins: number;
+			mapLosses: number;
+			points: number;
+			winsAgainstTied: number;
+			buchholzSets?: number;
+			buchholzMaps?: number;
+		};
+	}>;
+}
+
+/** GET /api/org/{organizationId} */
+
+export interface GetTournamentOrganizationResponse {
+	id: number;
+	/**
+	 * @example "Dapple Productions"
+	 */
+	name: string;
+	description: string | null;
+	/**
+	 * @example "https://sendou.ink/org/dapple-productions"
+	 */
+	url: string;
+	/**
+	 * @example "https://sendou.nyc3.cdn.digitaloceanspaces.com/gBn45bbUMXM6359ZDQS5_-1722059432073.webp"
+	 */
+	logoUrl: string | null;
+	members: Array<TournamentOrganizationMember>;
+	socialLinkUrls: Array<string>;
+}
+
+interface TournamentOrganizationMember {
+	userId: number;
+	/**
+	 * @example "Sendou"
+	 */
+	name: string;
+	/**
+	 * @example "79237403620945920"
+	 */
+	discordId: string;
+	role: "ADMIN" | "MEMBER" | "ORGANIZER" | "STREAMER";
+	roleDisplayName: string | null;
 }
 
 /* ----------------------------------------- */
