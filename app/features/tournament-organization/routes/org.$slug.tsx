@@ -245,7 +245,7 @@ function AllTournamentsView() {
 						: BLANK_IMAGE_URL
 				}
 			/>
-			<EventsList />
+			<EventsList filteredByMonth />
 		</div>
 	);
 }
@@ -376,7 +376,10 @@ function SeriesButton({
 	);
 }
 
-function EventsList({ showYear }: { showYear?: boolean }) {
+function EventsList({
+	showYear,
+	filteredByMonth,
+}: { showYear?: boolean; filteredByMonth?: boolean }) {
 	const { t } = useTranslation(["org"]);
 	const data = useLoaderData<typeof loader>();
 	const isMounted = useIsMounted();
@@ -385,14 +388,14 @@ function EventsList({ showYear }: { showYear?: boolean }) {
 
 	const now = databaseTimestampNow();
 
-	const thisMonthsEvents = data.events.filter(
-		(event) =>
-			databaseTimestampToDate(event.startTime).getMonth() === data.month,
-	);
-	const pastEvents = thisMonthsEvents.filter((event) => event.startTime < now);
-	const upcomingEvents = thisMonthsEvents.filter(
-		(event) => event.startTime >= now,
-	);
+	const events = filteredByMonth
+		? data.events.filter(
+				(event) =>
+					databaseTimestampToDate(event.startTime).getMonth() === data.month,
+			)
+		: data.events;
+	const pastEvents = events.filter((event) => event.startTime < now);
+	const upcomingEvents = events.filter((event) => event.startTime >= now);
 
 	return (
 		<div className="w-full stack xs">
