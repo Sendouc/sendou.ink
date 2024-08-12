@@ -42,6 +42,7 @@
 		"@remix-run/serve": "^2.11.1",
 		"@tldraw/tldraw": "2.3.0",
 		"aws-sdk": "^2.1672.0",
+		"better-sqlite3": "^11.1.2",
 		"clsx": "^2.1.1",
 		"compressorjs": "^1.2.1",
 		"countries-list": "^3.1.1",
@@ -101,5 +102,10 @@
 		"vite": "^5.4.0",
 		"vite-tsconfig-paths": "^5.0.1"
 	},
-	"trustedDependencies": ["@biomejs/biome", "aws-sdk", "protobufjs"]
+	"trustedDependencies": [
+		"@biomejs/biome",
+		"aws-sdk",
+		"better-sqlite3",
+		"protobufjs"
+	]
 }
