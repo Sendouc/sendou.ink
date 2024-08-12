@@ -46,7 +46,7 @@ export default function AdminPage() {
 			{process.env.NODE_ENV !== "production" || isAdmin(user) ? (
 				<Impersonate />
 			) : null}
-			{isAdmin(user) ? <MigrateUser /> : null}
+			{isMod(user) ? <MigrateUser /> : null}
 			{isAdmin(user) ? <ForcePatron /> : null}
 			{isMod(user) ? <BanUser /> : null}
 			{isMod(user) ? <UnbanUser /> : null}

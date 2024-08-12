@@ -22,7 +22,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	switch (data._action) {
 		case "MIGRATE": {
-			validate(isAdmin(user), "Admin needed", 401);
+			validate(isMod(user), "Admin needed", 401);
 
 			await AdminRepository.migrate({
 				oldUserId: data["old-user"],
