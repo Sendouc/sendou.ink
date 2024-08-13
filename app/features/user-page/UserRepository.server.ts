@@ -127,7 +127,7 @@ export async function findProfileByIdentifier(
 	forceShowDiscordUniqueName?: boolean,
 ) {
 	const row = await identifierToUserIdQuery(identifier)
-		.innerJoin("PlusTier", "PlusTier.userId", "User.id")
+		.leftJoin("PlusTier", "PlusTier.userId", "User.id")
 		.select(({ eb }) => [
 			"User.twitch",
 			"User.twitter",
