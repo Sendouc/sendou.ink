@@ -10,7 +10,7 @@
 		"dev": "bun run --bun vite --host",
 		"dev:prod": "DB_PATH=db-prod.sqlite3 bun run dev",
 		"dev:ci": "cp .env.example .env && bun run migrate up && bun run dev",
-		"start": "bun --bun run ./server.ts",
+		"start": "bun run migrate up && bun --bun run ./server.ts",
 		"migrate": "ley",
 		"migrate:reset": "bun scripts/delete-db-files.mjs && bun run migrate up",
 		"check-translation-jsons": "bun scripts/check-translation-jsons.ts",
