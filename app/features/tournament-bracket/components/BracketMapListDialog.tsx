@@ -11,7 +11,10 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import type { TournamentRoundMaps } from "~/db/tables";
-import { useTournament } from "~/features/tournament/routes/to.$id";
+import {
+	useTournament,
+	useTournamentPreparedMaps,
+} from "~/features/tournament/routes/to.$id";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { nullFilledArray } from "~/utils/arrays";
 import invariant from "~/utils/invariant";
@@ -19,43 +22,98 @@ import { assertUnreachable } from "~/utils/types";
 import { calendarEditPage } from "~/utils/urls";
 import type { Bracket } from "../core/Bracket";
 import { getRounds } from "../core/rounds";
-import { generateTournamentRoundMaplist } from "../core/toMapList";
+import {
+	type BracketMapCounts,
+	generateTournamentRoundMaplist,
+} from "../core/toMapList";
+
+// xxx: SZ preference
+// xxx: save in local storage?
+// xxx: on submit close modal, show toast?
 
 export function BracketMapListDialog({
 	isOpen,
 	close,
 	bracket,
 	bracketIdx,
+	isPreparing,
 }: {
 	isOpen: boolean;
 	close: () => void;
 	bracket: Bracket;
 	bracketIdx: number;
+	isPreparing?: boolean;
 }) {
 	const fetcher = useFetcher();
 	const tournament = useTournament();
+	const preparedMaps = useTournamentPreparedMaps()?.[bracketIdx];
 
-	const [roundsWithPickBan, setRoundsWithPickBan] = React.useState<Set<number>>(
-		new Set(),
+	const [countType, setCountType] = React.useState<TournamentRoundMaps["type"]>(
+		preparedMaps?.maps[0].type ?? "BEST_OF",
 	);
-	const [pickBanStyle, setPickBanStyle] =
-		React.useState<TournamentRoundMaps["pickBan"]>();
-	const [countType, setCountType] =
-		React.useState<TournamentRoundMaps["type"]>("BEST_OF");
-	const [maps, setMaps] = React.useState(() =>
-		generateTournamentRoundMaplist({
+
+	const [maps, setMaps] = React.useState(() => {
+		if (preparedMaps) {
+			return new Map(preparedMaps.maps.map((map) => [map.roundId, map]));
+		}
+
+		return generateTournamentRoundMaplist({
 			mapCounts: bracket.defaultRoundBestOfs,
-			roundsWithPickBan,
+			roundsWithPickBan: new Set(),
 			pool: tournament.ctx.toSetMapPool,
 			rounds: bracket.data.round,
 			type: bracket.type,
-			pickBanStyle,
-		}),
-	);
-	const [mapCounts, setMapCounts] = React.useState(
-		() => bracket.defaultRoundBestOfs,
-	);
+			pickBanStyle: null,
+		});
+	});
 	const [hoveredMap, setHoveredMap] = React.useState<string | null>(null);
+
+	const pickBanStyle = Array.from(maps.values()).find(
+		(round) => round.pickBan,
+	)?.pickBan;
+
+	const roundsWithPickBan = new Set(
+		Array.from(maps.entries())
+			.filter(([, round]) => round.pickBan)
+			.map(([roundId]) => roundId),
+	);
+
+	const mapCounts = React.useMemo(() => {
+		const result: BracketMapCounts = new Map();
+
+		for (const [groupId, value] of bracket.defaultRoundBestOfs.entries()) {
+			for (const roundNumber of value.keys()) {
+				const roundId = bracket.data.round.find(
+					(round) => round.group_id === groupId && round.number === roundNumber,
+				)?.id;
+				// xxx: TODO handle differing round counts
+				invariant(
+					typeof roundId === "number",
+					"Expected roundId to be defined",
+				);
+
+				const count = maps.get(roundId)?.count;
+
+				// xxx: is this correct?
+				if (typeof count !== "number") {
+					continue;
+				}
+
+				// xxx: why is this hard-coded best of? - ig to support mix of best / play all but best to comment
+				result.set(
+					groupId,
+					new Map(result.get(groupId)).set(roundNumber, {
+						count,
+						type: "BEST_OF",
+					}),
+				);
+			}
+		}
+
+		invariant(result.size > 0, "Expected result to be defined");
+
+		return result;
+	}, [maps, bracket]);
 
 	const rounds = React.useMemo(() => {
 		if (bracket.type === "round_robin" || bracket.type === "swiss") {
@@ -100,7 +158,6 @@ export function BracketMapListDialog({
 		newPickBanStyle: TournamentRoundMaps["pickBan"],
 	): Set<number> => {
 		if (!newPickBanStyle) {
-			setRoundsWithPickBan(new Set());
 			return new Set();
 		}
 
@@ -110,7 +167,6 @@ export function BracketMapListDialog({
 			newRoundsWithPickBan.add(round.id);
 		}
 
-		setRoundsWithPickBan(newRoundsWithPickBan);
 		return newRoundsWithPickBan;
 	};
 
@@ -149,9 +205,9 @@ export function BracketMapListDialog({
 					name="maps"
 					value={JSON.stringify(
 						Array.from(maps.entries()).map(([key, value]) => ({
+							...value,
 							roundId: key,
 							type: countType,
-							...value,
 						})),
 					)}
 				/>
@@ -177,7 +233,6 @@ export function BracketMapListDialog({
 												mapCountsWithGlobalPickBanStyle(pickBanStyle);
 										}
 
-										setPickBanStyle(pickBanStyle);
 										setMaps(
 											generateTournamentRoundMaplist({
 												mapCounts,
@@ -192,6 +247,11 @@ export function BracketMapListDialog({
 								/>
 								{globalSelections ? (
 									<GlobalMapCountInput
+										defaultValue={
+											// beautiful 🥹
+											mapCounts.values().next().value.values().next().value
+												.count
+										}
 										onSetCount={(newCount) => {
 											const newMapCounts = mapCountsWithGlobalCount(newCount);
 											const newMaps = generateTournamentRoundMaplist({
@@ -203,12 +263,14 @@ export function BracketMapListDialog({
 												pickBanStyle,
 											});
 											setMaps(newMaps);
-											setMapCounts(newMapCounts);
 										}}
 									/>
 								) : null}
 								{globalSelections ? (
-									<GlobalCountTypeSelect onSetCountType={setCountType} />
+									<GlobalCountTypeSelect
+										defaultValue={countType}
+										onSetCountType={setCountType}
+									/>
 								) : null}
 							</div>
 							{tournament.ctx.toSetMapPool.length > 0 ? (
@@ -276,7 +338,6 @@ export function BracketMapListDialog({
 												pickBanStyle,
 											});
 											setMaps(newMaps);
-											setMapCounts(newMapCounts);
 										}}
 										onPickBanChange={
 											pickBanStyle
@@ -290,7 +351,6 @@ export function BracketMapListDialog({
 															newRoundsWithPickBan.delete(round.id);
 														}
 
-														setRoundsWithPickBan(newRoundsWithPickBan);
 														setMaps(
 															generateTournamentRoundMaplist({
 																mapCounts,
@@ -328,10 +388,10 @@ export function BracketMapListDialog({
 								variant="outlined"
 								size="tiny"
 								testId="confirm-finalize-bracket-button"
-								_action="START_BRACKET"
+								_action={isPreparing ? "PREPARE_MAPS" : "START_BRACKET"}
 								className="mx-auto"
 							>
-								Start the bracket
+								{isPreparing ? "Save the maps" : "Start the bracket"}
 							</SubmitButton>
 						)}
 					</>
@@ -342,14 +402,20 @@ export function BracketMapListDialog({
 }
 
 function GlobalMapCountInput({
+	defaultValue = 3,
 	onSetCount,
 }: {
+	defaultValue?: number;
 	onSetCount: (bestOf: number) => void;
 }) {
 	return (
 		<div>
 			<Label htmlFor="count">Count</Label>
-			<select id="count" onChange={(e) => onSetCount(Number(e.target.value))}>
+			<select
+				id="count"
+				onChange={(e) => onSetCount(Number(e.target.value))}
+				defaultValue={defaultValue}
+			>
 				<option value="3">3</option>
 				<option value="5">5</option>
 				<option value="7">7</option>
@@ -359,8 +425,10 @@ function GlobalMapCountInput({
 }
 
 function GlobalCountTypeSelect({
+	defaultValue,
 	onSetCountType,
 }: {
+	defaultValue: TournamentRoundMaps["type"];
 	onSetCountType: (type: TournamentRoundMaps["type"]) => void;
 }) {
 	return (
@@ -371,6 +439,7 @@ function GlobalCountTypeSelect({
 				onChange={(e) =>
 					onSetCountType(e.target.value as TournamentRoundMaps["type"])
 				}
+				defaultValue={defaultValue}
 			>
 				<option value="BEST_OF">Best of</option>
 				<option value="PLAY_ALL">Play all</option>

@@ -16,6 +16,7 @@ import { Placement } from "~/components/Placement";
 import { Popover } from "~/components/Popover";
 import { EyeIcon } from "~/components/icons/Eye";
 import { EyeSlashIcon } from "~/components/icons/EyeSlash";
+import { MapIcon } from "~/components/icons/Map";
 import { sql } from "~/db/sql";
 import { useUser } from "~/features/auth/core/user";
 import { requireUser } from "~/features/auth/core/user.server";
@@ -169,6 +170,32 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 			break;
 		}
+		case "PREPARE_MAPS": {
+			validate(tournament.isOrganizer(user));
+
+			const bracket = tournament.bracketByIdx(data.bracketIdx);
+			invariant(bracket, "Bracket not found");
+
+			validate(
+				!bracket.canBeStarted,
+				"Bracket can already be started, preparing maps no longer possible",
+			);
+			validate(
+				bracket.preview,
+				"Bracket has started, preparing maps no longer possible",
+			);
+
+			await TournamentRepository.upsertPreparedMaps({
+				bracketIdx: data.bracketIdx,
+				tournamentId,
+				maps: {
+					maps: data.maps,
+					authorId: user.id,
+				},
+			});
+
+			break;
+		}
 		case "ADVANCE_BRACKET": {
 			const bracket = tournament.bracketByIdx(data.bracketIdx);
 			validate(bracket, "Bracket not found");
@@ -313,6 +340,9 @@ export default function TournamentBracketsPage() {
 		tournament.hasStarted &&
 		tournament.autonomousSubs;
 
+	const showPrepareMapsButton =
+		tournament.isOrganizer(user) && !bracket.canBeStarted && bracket.preview;
+
 	const waitingForTeamsText = () => {
 		if (bracketIdx > 0 || tournament.regularCheckInStartInThePast) {
 			return t("tournament:bracket.waiting.checkin", {
@@ -431,6 +461,9 @@ export default function TournamentBracketsPage() {
 					{bracket.type !== "round_robin" && !bracket.preview ? (
 						<CompactifyButton />
 					) : null}
+					{showPrepareMapsButton ? (
+						<MapPreparer bracket={bracket} bracketIdx={bracketIdx} />
+					) : null}
 				</div>
 				{bracket.enoughTeams ? (
 					<Bracket bracket={bracket} bracketIdx={bracketIdx} />
@@ -509,6 +542,40 @@ function BracketStarter({
 				onClick={() => setDialogOpen(true)}
 			>
 				Start the bracket
+			</Button>
+		</>
+	);
+}
+
+function MapPreparer({
+	bracket,
+	bracketIdx,
+}: {
+	bracket: BracketType;
+	bracketIdx: number;
+}) {
+	const [dialogOpen, setDialogOpen] = React.useState(false);
+	const isMounted = useIsMounted();
+
+	return (
+		<>
+			{isMounted ? (
+				<BracketMapListDialog
+					isOpen={dialogOpen}
+					close={() => setDialogOpen(false)}
+					bracket={bracket}
+					bracketIdx={bracketIdx}
+					isPreparing
+				/>
+			) : null}
+			<Button
+				size="tiny"
+				variant="outlined"
+				className="ml-auto"
+				icon={<MapIcon />}
+				onClick={() => setDialogOpen(true)}
+			>
+				Prepare maps
 			</Button>
 		</>
 	);

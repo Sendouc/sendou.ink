@@ -144,7 +144,18 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 		tournament.ctx.staff.some(
 			(s) => s.role === "ORGANIZER" && s.id === user?.id,
 		) ||
-		isAdmin(user);
+		isAdmin(user) ||
+		tournament.ctx.organization?.members.some(
+			(m) => m.userId === user?.id && m.role === "ADMIN",
+		);
+	const isTournamentOrganizer =
+		isTournamentAdmin ||
+		tournament.ctx.staff.some(
+			(s) => s.role === "ORGANIZER" && s.id === user?.id,
+		) ||
+		tournament.ctx.organization?.members.some(
+			(m) => m.userId === user?.id && m.role === "ORGANIZER",
+		);
 	const showFriendCodes = tournamentStartedInTheLastMonth && isTournamentAdmin;
 
 	return {
@@ -154,6 +165,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 		friendCodes: showFriendCodes
 			? await TournamentRepository.friendCodesByTournamentId(tournamentId)
 			: undefined,
+		preparedMaps:
+			isTournamentOrganizer && !tournament.ctx.isFinalized
+				? await TournamentRepository.findPreparedMapsById(tournamentId)
+				: null,
 	};
 };
 
@@ -244,6 +259,7 @@ export default function TournamentLayout() {
 							setBracketExpanded,
 							streamingParticipants: data.streamingParticipants,
 							friendCodes: data.friendCodes,
+							preparedMaps: data.preparedMaps,
 						} satisfies TournamentContext
 					}
 				/>
@@ -259,6 +275,7 @@ type TournamentContext = {
 	setBracketExpanded: (expanded: boolean) => void;
 	friendCode?: string;
 	friendCodes?: SerializeFrom<typeof loader>["friendCodes"];
+	preparedMaps: SerializeFrom<typeof loader>["preparedMaps"];
 };
 
 export function useTournament() {
@@ -278,4 +295,8 @@ export function useStreamingParticipants() {
 
 export function useTournamentFriendCodes() {
 	return useOutletContext<TournamentContext>().friendCodes;
+}
+
+export function useTournamentPreparedMaps() {
+	return useOutletContext<TournamentContext>().preparedMaps;
 }
