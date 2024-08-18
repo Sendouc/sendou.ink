@@ -1,19 +1,19 @@
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import { removeDuplicates } from "~/utils/arrays";
-import type { Bracket as BracketType } from "./Bracket";
 
 export function getRounds(args: {
-	bracket: BracketType;
+	bracketData: TournamentManagerDataSet;
 	type: "winners" | "losers" | "single";
 }) {
-	const groupIds = args.bracket.data.group.flatMap((group) => {
+	const groupIds = args.bracketData.group.flatMap((group) => {
 		if (args.type === "winners" && group.number === 2) return [];
 		if (args.type === "losers" && group.number !== 2) return [];
 
 		return group.id;
 	});
 
-	let showingBracketReset = args.bracket.data.round.length > 1;
-	const rounds = args.bracket.data.round
+	let showingBracketReset = args.bracketData.round.length > 1;
+	const rounds = args.bracketData.round
 		.flatMap((round) => {
 			if (
 				typeof round.group_id === "number" &&
@@ -28,7 +28,7 @@ export function getRounds(args: {
 			const isBracketReset = args.type === "winners" && i === rounds.length - 1;
 			const grandFinalsMatch =
 				args.type === "winners"
-					? args.bracket.data.match.find(
+					? args.bracketData.match.find(
 							(match) => match.round_id === rounds[rounds.length - 2]?.id,
 						)
 					: undefined;
@@ -38,7 +38,7 @@ export function getRounds(args: {
 				return false;
 			}
 
-			const matches = args.bracket.data.match.filter(
+			const matches = args.bracketData.match.filter(
 				(match) => match.round_id === round.id,
 			);
 
@@ -51,7 +51,7 @@ export function getRounds(args: {
 
 	const hasThirdPlaceMatch =
 		args.type === "single" &&
-		removeDuplicates(args.bracket.data.match.map((m) => m.group_id)).length > 1;
+		removeDuplicates(args.bracketData.match.map((m) => m.group_id)).length > 1;
 	return rounds.map((round, i) => {
 		const name = () => {
 			if (

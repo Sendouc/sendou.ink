@@ -710,10 +710,13 @@ function MatchHeader() {
 					) {
 						const rounds =
 							bracket.type === "single_elimination"
-								? getRounds({ type: "single", bracket })
+								? getRounds({ type: "single", bracketData: bracket.data })
 								: [
-										...getRounds({ type: "winners", bracket }),
-										...getRounds({ type: "losers", bracket }),
+										...getRounds({
+											type: "winners",
+											bracketData: bracket.data,
+										}),
+										...getRounds({ type: "losers", bracketData: bracket.data }),
 									];
 
 						const round = rounds.find((round) => round.id === match.round_id);

@@ -191,6 +191,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 				maps: {
 					maps: data.maps,
 					authorId: user.id,
+					eliminationTeamCount: data.eliminationTeamCount ?? undefined,
 				},
 			});
 

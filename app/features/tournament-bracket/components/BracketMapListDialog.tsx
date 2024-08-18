@@ -17,10 +17,12 @@ import {
 } from "~/features/tournament/routes/to.$id";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { nullFilledArray } from "~/utils/arrays";
+import { databaseTimestampToDate } from "~/utils/dates";
 import invariant from "~/utils/invariant";
 import { assertUnreachable } from "~/utils/types";
 import { calendarEditPage } from "~/utils/urls";
 import type { Bracket } from "../core/Bracket";
+import type { Tournament } from "../core/Tournament";
 import { getRounds } from "../core/rounds";
 import {
 	type BracketMapCounts,
@@ -48,7 +50,20 @@ export function BracketMapListDialog({
 	const tournament = useTournament();
 	const preparedMaps = useTournamentPreparedMaps()?.[bracketIdx];
 
-	const rounds = bracket.data.round;
+	const bracketTeamsCount = bracket.participantTournamentTeamIds.length;
+	const [eliminationTeamCount, setEliminationTeamCount] = React.useState(() => {
+		return eliminationTeamCountOptions(
+			preparedMaps?.eliminationTeamCount ?? bracketTeamsCount,
+		)[0];
+	});
+
+	const bracketData = teamCountAdjustedBracketData({
+		bracket,
+		tournament,
+		teamCount: eliminationTeamCount,
+	});
+	const rounds = bracketData.round;
+	const defaultRoundBestOfs = bracket.defaultRoundBestOfs(bracketData);
 
 	const [countType, setCountType] = React.useState<TournamentRoundMaps["type"]>(
 		preparedMaps?.maps[0].type ?? "BEST_OF",
@@ -60,7 +75,7 @@ export function BracketMapListDialog({
 		}
 
 		return generateTournamentRoundMaplist({
-			mapCounts: bracket.defaultRoundBestOfs,
+			mapCounts: defaultRoundBestOfs,
 			roundsWithPickBan: new Set(),
 			pool: tournament.ctx.toSetMapPool,
 			rounds,
@@ -83,7 +98,7 @@ export function BracketMapListDialog({
 	const mapCounts = React.useMemo(() => {
 		const result: BracketMapCounts = new Map();
 
-		for (const [groupId, value] of bracket.defaultRoundBestOfs.entries()) {
+		for (const [groupId, value] of defaultRoundBestOfs.entries()) {
 			for (const roundNumber of value.keys()) {
 				const roundId = rounds.find(
 					(round) => round.group_id === groupId && round.number === roundNumber,
@@ -115,7 +130,7 @@ export function BracketMapListDialog({
 		invariant(result.size > 0, "Expected result to be defined");
 
 		return result;
-	}, [maps, bracket, rounds]);
+	}, [maps, defaultRoundBestOfs, rounds]);
 
 	const roundsWithNames = React.useMemo(() => {
 		if (bracket.type === "round_robin" || bracket.type === "swiss") {
@@ -128,21 +143,21 @@ export function BracketMapListDialog({
 		}
 
 		if (bracket.type === "double_elimination") {
-			const winners = getRounds({ type: "winners", bracket });
-			const losers = getRounds({ type: "losers", bracket });
+			const winners = getRounds({ type: "winners", bracketData });
+			const losers = getRounds({ type: "losers", bracketData });
 
 			return [...winners, ...losers];
 		}
 
 		if (bracket.type === "single_elimination") {
-			return getRounds({ type: "single", bracket });
+			return getRounds({ type: "single", bracketData });
 		}
 
 		assertUnreachable(bracket.type);
-	}, [bracket, maps]);
+	}, [bracketData, maps, bracket.type]);
 
 	const mapCountsWithGlobalCount = (newCount: number) => {
-		const newMap = new Map(bracket.defaultRoundBestOfs);
+		const newMap = new Map(defaultRoundBestOfs);
 
 		for (const [groupId, value] of newMap.entries()) {
 			const newGroupMap: typeof value = new Map(value);
@@ -213,7 +228,28 @@ export function BracketMapListDialog({
 						})),
 					)}
 				/>
-				<h2 className="text-lg text-center">{bracket.name}</h2>
+				{isPreparing &&
+				(bracket.type === "single_elimination" ||
+					bracket.type === "double_elimination") ? (
+					<input
+						type="hidden"
+						name="eliminationTeamCount"
+						value={eliminationTeamCount}
+					/>
+				) : null}
+				<div>
+					<h2 className="text-lg text-center">{bracket.name}</h2>
+					{preparedMaps ? (
+						<div
+							className="text-xs text-center text-lighter"
+							suppressHydrationWarning
+						>
+							Prepared by{" "}
+							{authorIdToUsername(tournament, preparedMaps.authorId)} @{" "}
+							{databaseTimestampToDate(preparedMaps.createdAt).toLocaleString()}
+						</div>
+					) : null}
+				</div>
 				{lacksToSetMapPool ? (
 					<div>
 						You need to select map pool in the{" "}
@@ -224,7 +260,7 @@ export function BracketMapListDialog({
 					</div>
 				) : (
 					<>
-						<div className="stack horizontal items-center  justify-between">
+						<div className="stack horizontal items-center justify-between">
 							<div className="stack horizontal lg flex-wrap">
 								<PickBanSelect
 									pickBanStyle={pickBanStyle}
@@ -247,6 +283,34 @@ export function BracketMapListDialog({
 										);
 									}}
 								/>
+								{isPreparing &&
+								(bracket.type === "single_elimination" ||
+									bracket.type === "double_elimination") ? (
+									<EliminationTeamCountSelect
+										count={eliminationTeamCount}
+										realCount={bracketTeamsCount}
+										setCount={(newCount) => {
+											const newBracketData = teamCountAdjustedBracketData({
+												bracket,
+												tournament,
+												teamCount: newCount,
+											});
+
+											setMaps(
+												generateTournamentRoundMaplist({
+													mapCounts:
+														bracket.defaultRoundBestOfs(newBracketData),
+													pool: tournament.ctx.toSetMapPool,
+													rounds: newBracketData.round,
+													type: bracket.type,
+													roundsWithPickBan,
+													pickBanStyle,
+												}),
+											);
+											setEliminationTeamCount(newCount);
+										}}
+									/>
+								) : null}
 								{globalSelections ? (
 									<GlobalMapCountInput
 										defaultValue={
@@ -400,6 +464,75 @@ export function BracketMapListDialog({
 				)}
 			</fetcher.Form>
 		</Dialog>
+	);
+}
+
+function authorIdToUsername(tournament: Tournament, authorId: number) {
+	if (tournament.ctx.author.id === authorId) {
+		return tournament.ctx.author.username;
+	}
+
+	return (
+		tournament.ctx.staff.find((staff) => staff.id === authorId)?.username ??
+		tournament.ctx.organization?.members.find(
+			(member) => member.userId === authorId,
+		)?.username ??
+		"???"
+	);
+}
+
+function teamCountAdjustedBracketData({
+	bracket,
+	tournament,
+	teamCount,
+}: { bracket: Bracket; tournament: Tournament; teamCount: number }) {
+	switch (bracket.type) {
+		// RR & swiss are different because for those the amount of participants won't affect the amount of rounds
+		case "round_robin":
+		case "swiss":
+			return bracket.data;
+		case "single_elimination":
+			return tournament.generateMatchesData(
+				nullFilledArray(teamCount).map((_, i) => i + 1),
+				"single_elimination",
+			);
+		case "double_elimination":
+			return tournament.generateMatchesData(
+				nullFilledArray(teamCount).map((_, i) => i + 1),
+				"double_elimination",
+			);
+	}
+}
+
+const OPTIONS = [8, 16, 32, 64, 128];
+function eliminationTeamCountOptions(currentCount: number) {
+	return OPTIONS.filter((option) => option >= currentCount);
+}
+
+function EliminationTeamCountSelect({
+	count,
+	realCount,
+	setCount,
+}: {
+	count: number;
+	realCount: number;
+	setCount: (count: number) => void;
+}) {
+	return (
+		<div>
+			<Label htmlFor="elimination-team-count">Expected teams</Label>
+			<select
+				id="elimination-team-count"
+				onChange={(e) => setCount(Number(e.target.value))}
+				defaultValue={count}
+			>
+				{eliminationTeamCountOptions(realCount).map((option, i, options) => (
+					<option key={option} value={option}>
+						{option}-{options[i + 1] ? options[i + 1] - 1 : ""}
+					</option>
+				))}
+			</select>
+		</div>
 	);
 }
 

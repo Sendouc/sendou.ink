@@ -475,6 +475,7 @@ export interface PreparedMaps {
 	authorId: number;
 	createdAt: number;
 	maps: Array<TournamentRoundMaps & { roundId: number }>;
+	eliminationTeamCount?: number;
 }
 
 export interface TournamentBadgeOwner {
