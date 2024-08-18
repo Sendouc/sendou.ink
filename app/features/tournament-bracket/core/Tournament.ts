@@ -218,8 +218,7 @@ export class Tournament {
 		if (teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START) {
 			manager.create({
 				tournamentId: virtualTournamentId,
-				// xxx: can this be removed?
-				name: "should not matter",
+				name: "Virtual",
 				type,
 				seeding:
 					type === "round_robin" ? teams : fillWithNullTillPowerOfTwo(teams),

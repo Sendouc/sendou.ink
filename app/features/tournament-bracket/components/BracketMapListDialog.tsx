@@ -111,16 +111,17 @@ export function BracketMapListDialog({
 
 				const count = maps.get(roundId)?.count;
 
-				// xxx: is this correct?
+				// skip rounds in RR and Swiss that don't have maps (only one group has maps)
 				if (typeof count !== "number") {
 					continue;
 				}
 
-				// xxx: why is this hard-coded best of? - ig to support mix of best / play all but best to comment
 				result.set(
 					groupId,
 					new Map(result.get(groupId)).set(roundNumber, {
 						count,
+						// currently "best of" / "play all" is defined per bracket but in future it might be per round
+						// that's why there is this hardcoded default value for now
 						type: "BEST_OF",
 					}),
 				);
@@ -541,7 +542,7 @@ function teamCountAdjustedBracketData({
 	}
 }
 
-const OPTIONS = [8, 16, 32, 64, 128];
+const OPTIONS = [2, 4, 8, 16, 32, 64, 128];
 function eliminationTeamCountOptions(currentCount: number) {
 	return OPTIONS.filter((option) => option >= currentCount);
 }
