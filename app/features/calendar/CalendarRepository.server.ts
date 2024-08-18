@@ -602,6 +602,7 @@ type UpdateArgs = Omit<
 	"createTournament" | "mapPickingStyle" | "isFullTournament"
 > & {
 	eventId: number;
+	resetPreparedMaps: boolean;
 };
 export async function update(args: UpdateArgs) {
 	return db.transaction().execute(async (trx) => {
@@ -662,6 +663,7 @@ export async function update(args: UpdateArgs) {
 				.set({
 					settings: JSON.stringify(settings),
 					rules: args.rules,
+					preparedMaps: args.resetPreparedMaps ? null : undefined,
 				})
 				.where("id", "=", tournamentId)
 				.returning("mapPickingStyle")
