@@ -1,7 +1,7 @@
-import * as React from "react";
-
 import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
+import compare from "just-compare";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
@@ -48,7 +48,7 @@ export function BracketMapListDialog({
 }) {
 	const fetcher = useFetcher();
 	const tournament = useTournament();
-	const preparedMaps = useTournamentPreparedMaps()?.[bracketIdx];
+	const preparedMaps = useBracketPreparedMaps(bracketIdx);
 
 	const bracketTeamsCount = bracket.participantTournamentTeamIds.length;
 	const [eliminationTeamCount, setEliminationTeamCount] = React.useState(() => {
@@ -465,6 +465,43 @@ export function BracketMapListDialog({
 			</fetcher.Form>
 		</Dialog>
 	);
+}
+
+function useBracketPreparedMaps(bracketIdx: number) {
+	const prepared = useTournamentPreparedMaps();
+	const tournament = useTournament();
+
+	const bracketMaps = prepared?.[bracketIdx];
+
+	// maps exactly for this bracket have been prepared, use them
+	if (bracketMaps) {
+		return bracketMaps;
+	}
+
+	const bracketPreparingFor = tournament.bracketByIdx(bracketIdx)!;
+
+	// lets look for an "equivalent" prepared bracket to use
+	// e.g. SoS RR -> 4x SE style the SE brackets can share maps
+	for (const [
+		anotherBracketIdx,
+		bracket,
+	] of tournament.ctx.settings.bracketProgression.entries()) {
+		if (
+			bracket.type === bracketPreparingFor.type &&
+			compare(
+				bracket.sources?.map((s) => s.bracketIdx),
+				bracketPreparingFor.sources?.map((s) => s.bracketIdx),
+			)
+		) {
+			const bracketMaps = prepared?.[anotherBracketIdx];
+
+			if (bracketMaps) {
+				return bracketMaps;
+			}
+		}
+	}
+
+	return null;
 }
 
 function authorIdToUsername(tournament: Tournament, authorId: number) {
