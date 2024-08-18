@@ -48,6 +48,8 @@ export function BracketMapListDialog({
 	const tournament = useTournament();
 	const preparedMaps = useTournamentPreparedMaps()?.[bracketIdx];
 
+	const rounds = bracket.data.round;
+
 	const [countType, setCountType] = React.useState<TournamentRoundMaps["type"]>(
 		preparedMaps?.maps[0].type ?? "BEST_OF",
 	);
@@ -61,7 +63,7 @@ export function BracketMapListDialog({
 			mapCounts: bracket.defaultRoundBestOfs,
 			roundsWithPickBan: new Set(),
 			pool: tournament.ctx.toSetMapPool,
-			rounds: bracket.data.round,
+			rounds,
 			type: bracket.type,
 			pickBanStyle: null,
 		});
@@ -83,7 +85,7 @@ export function BracketMapListDialog({
 
 		for (const [groupId, value] of bracket.defaultRoundBestOfs.entries()) {
 			for (const roundNumber of value.keys()) {
-				const roundId = bracket.data.round.find(
+				const roundId = rounds.find(
 					(round) => round.group_id === groupId && round.number === roundNumber,
 				)?.id;
 				// xxx: TODO handle differing round counts
@@ -113,9 +115,9 @@ export function BracketMapListDialog({
 		invariant(result.size > 0, "Expected result to be defined");
 
 		return result;
-	}, [maps, bracket]);
+	}, [maps, bracket, rounds]);
 
-	const rounds = React.useMemo(() => {
+	const roundsWithNames = React.useMemo(() => {
 		if (bracket.type === "round_robin" || bracket.type === "swiss") {
 			return Array.from(maps.keys()).map((roundId, i) => {
 				return {
@@ -163,7 +165,7 @@ export function BracketMapListDialog({
 
 		const newRoundsWithPickBan = new Set(roundsWithPickBan);
 
-		for (const round of rounds) {
+		for (const round of roundsWithNames) {
 			newRoundsWithPickBan.add(round.id);
 		}
 
@@ -237,7 +239,7 @@ export function BracketMapListDialog({
 											generateTournamentRoundMaplist({
 												mapCounts,
 												pool: tournament.ctx.toSetMapPool,
-												rounds: bracket.data.round,
+												rounds,
 												type: bracket.type,
 												roundsWithPickBan: newRoundsWithPickBan,
 												pickBanStyle,
@@ -257,7 +259,7 @@ export function BracketMapListDialog({
 											const newMaps = generateTournamentRoundMaplist({
 												mapCounts: newMapCounts,
 												pool: tournament.ctx.toSetMapPool,
-												rounds: bracket.data.round,
+												rounds,
 												type: bracket.type,
 												roundsWithPickBan,
 												pickBanStyle,
@@ -283,7 +285,7 @@ export function BracketMapListDialog({
 											generateTournamentRoundMaplist({
 												mapCounts,
 												pool: tournament.ctx.toSetMapPool,
-												rounds: bracket.data.round,
+												rounds,
 												type: bracket.type,
 												roundsWithPickBan,
 												pickBanStyle,
@@ -296,7 +298,7 @@ export function BracketMapListDialog({
 							) : null}
 						</div>
 						<div className="stack horizontal md flex-wrap justify-center">
-							{rounds.map((round) => {
+							{roundsWithNames.map((round) => {
 								const roundMaps = maps.get(round.id);
 								invariant(roundMaps, "Expected maps to be defined");
 
@@ -312,7 +314,7 @@ export function BracketMapListDialog({
 										}
 										onCountChange={(newCount) => {
 											const newMapCounts = new Map(mapCounts);
-											const bracketRound = bracket.data.round.find(
+											const bracketRound = rounds.find(
 												(r) => r.id === round.id,
 											);
 											invariant(bracketRound, "Expected round to be defined");
@@ -332,7 +334,7 @@ export function BracketMapListDialog({
 											const newMaps = generateTournamentRoundMaplist({
 												mapCounts: newMapCounts,
 												pool: tournament.ctx.toSetMapPool,
-												rounds: bracket.data.round,
+												rounds,
 												type: bracket.type,
 												roundsWithPickBan,
 												pickBanStyle,
@@ -355,7 +357,7 @@ export function BracketMapListDialog({
 															generateTournamentRoundMaplist({
 																mapCounts,
 																pool: tournament.ctx.toSetMapPool,
-																rounds: bracket.data.round,
+																rounds,
 																type: bracket.type,
 																roundsWithPickBan: newRoundsWithPickBan,
 																pickBanStyle,
