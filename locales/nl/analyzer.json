@@ -86,6 +86,7 @@
 	"stat.special.autoChargeRate": "{{weapon}} auto laad snelheid",
 	"stat.special.maxRadius": "{{weapon}} golf max radius",
 	"stat.special.maxRadius.explanation": "De afgelegde snelheid van de golf blijft altijd hetzelfde onafhankelijk van de vergrootte radius.",
-	"stat.special.radiusRange": "{{weapon}} zuig radius",
+	"stat.special.radiusRangeMin": "{{weapon}} zuig radius (Minimum)",
+	"stat.special.radiusRangeMax": "{{weapon}} zuig radius (Maximum)",
 	"stat.special.powerUpDuration": "{{weapon}} drank effect duratie"
 }
