@@ -53,7 +53,7 @@
 	"stat.consumption.NORMAL": "攻击次数",
 	"stat.consumption.SWING": "攻击次数",
 	"stat.consumption.SLOSH": "攻击次数",
-  "stat.consumption.VERTICAL_SWING": "蓄力攻击",
+	"stat.consumption.VERTICAL_SWING": "蓄力攻击",
 	"stat.consumption.HORIZONTAL_SWING": "未蓄力攻击",
 	"stat.consumption.TAP_SHOT": "普通攻击",
 	"stat.consumption.FULL_CHARGE": "完全蓄力攻击",
