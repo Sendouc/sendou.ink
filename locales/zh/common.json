@@ -209,7 +209,7 @@
 	"leaderboard.type.USER": "用户",
 	"leaderboard.type.TEAM": "队伍",
 	"leaderboard.type.XP-ALL": "全部",
-	"leaderboard.noPlayers": 目前排行榜暂无玩家",
+	"leaderboard.noPlayers": "目前排行榜暂无玩家",
 	"leaderboard.noTeams": "目前排行榜暂无队伍",
 	"leaderboard.updateInfo": "排行榜每30分钟更新",
 	"leaderboard.qualification": "赛季决赛资格",
