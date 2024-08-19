@@ -23,7 +23,7 @@
 	"forms.customName.info": "如果此栏空着，将会显示您的Discord昵称：\"{{discordName}}\"",
 
 	"results.title": "所有成绩",
-  "results.placing": "排名",
+	"results.placing": "排名",
 	"results.team": "队伍",
 	"results.tournament": "比赛",
 	"results.participants": "参加者",
