@@ -79,7 +79,7 @@
 	"admin.actions.UPDATE_IN_GAME_NAME": "更新玩家游戏ID",
 	"admin.actions.DELETE_LOGO": "删除logo",
 
-  "staff.role.ORGANIZER": "组织者",
+	"staff.role.ORGANIZER": "组织者",
 	"staff.role.STREAMER": "直播者",
 
 	"actions.addSub": "添加替补",
