@@ -27,6 +27,7 @@
 	"pre.info.unregister": "取消报名",
 	"pre.info.unregister.confirm": "取消报名并删除队伍信息？",
 	"pre.info.noHost": "我的队伍倾向于不当房主",
+	"pre.info.noScreen": "我的队伍不希望使用浮墨幕墙",
 
 	"pre.roster.header": "填写阵容",
 	"pre.roster.footer": "需要至少 {{atLeastCount}} 名成员，成员数量上限为 {{maxCount}}",
@@ -35,6 +36,8 @@
 	"pre.roster.delete.header": "要删除的成员",
 
 	"pre.pool.header": "选择地图池",
+	"pre.pool.banned": "禁止",
+	"pre.pool.tiebreaker.short": "决胜局",
 
 	"pre.sub.prompt": "没有队伍？您也可以加入替补列表。",
 
@@ -56,6 +59,7 @@
 	"pickInfo.tiebreaker": "决胜局",
 	"pickInfo.both": "双方都选择",
 	"pickInfo.default": "默认地图",
+	"pickInfo.counterpick": "反选",
 
 	"generator.error": "由于比赛已经开始，您所更改的内容无法保存",
 
@@ -63,11 +67,20 @@
 
 	"admin.download": "下载参赛者",
 	"admin.actions.CHANGE_TEAM_OWNER": "变更队长",
+	"admin.actions.CHANGE_TEAM_NAME": "变更队名",
 	"admin.actions.CHECK_IN": "登入",
 	"admin.actions.CHECK_OUT": "登出",
 	"admin.actions.ADD_MEMBER": "添加成员",
 	"admin.actions.REMOVE_MEMBER": "移除成员",
 	"admin.actions.DELETE_TEAM": "删除队伍",
+	"admin.actions.ADD_TEAM": "登记队伍",
+	"admin.actions.DROP_TEAM_OUT": "移出队伍",
+	"admin.actions.UNDO_DROP_TEAM_OUT": "取消移出",
+	"admin.actions.UPDATE_IN_GAME_NAME": "更新玩家游戏名称",
+	"admin.actions.DELETE_LOGO": "删除logo",
+
+  "staff.role.ORGANIZER": "组织者",
+	"staff.role.STREAMER": "直播者",
 
 	"actions.addSub": "添加替补",
 	"actions.shareLink": "分享您的邀请链接以添加成员: {{inviteLink}}",
@@ -85,8 +98,10 @@
 	"team.seed": "种子",
 	"team.seed.footer": "总共 {{count}} 队",
 	"team.placement": "排名",
+	"team.placement.footer": "Main/UG",
 
 	"bracket.waiting": "至少 {{count}} 支队伍报名后，对战表将显示在这里",
+	"bracket.waiting.checkin": "对战表会在至少 {{count}} 支队伍签到后显示",
 	"bracket.wip": "此对战表为可调整的预览",
 
 	"bracket.progress.thanksForPlaying": "感谢您参与 {{eventName}}！",
@@ -101,6 +116,7 @@
 	"match.pass": "密码",
 	"match.pool": "频道",
 	"match.score": "{{scoreOne}}-{{scoreTwo}} (Bo {{bestOf}})",
+	"match.score.playAll": "{{scoreOne}}-{{scoreTwo}} (全部 {{bestOf}} 场)",
 	"match.action.undoLastScore": "撤销上次比分",
 	"match.action.reopenMatch": "重新开始对战",
 
