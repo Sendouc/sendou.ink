@@ -76,7 +76,7 @@
 	"admin.actions.ADD_TEAM": "登记队伍",
 	"admin.actions.DROP_TEAM_OUT": "移出队伍",
 	"admin.actions.UNDO_DROP_TEAM_OUT": "取消移出",
-	"admin.actions.UPDATE_IN_GAME_NAME": "更新玩家游戏名称",
+	"admin.actions.UPDATE_IN_GAME_NAME": "更新玩家游戏ID",
 	"admin.actions.DELETE_LOGO": "删除logo",
 
   "staff.role.ORGANIZER": "组织者",
