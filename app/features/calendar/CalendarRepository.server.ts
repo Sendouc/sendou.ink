@@ -602,7 +602,6 @@ type UpdateArgs = Omit<
 	"createTournament" | "mapPickingStyle" | "isFullTournament"
 > & {
 	eventId: number;
-	resetPreparedMaps: boolean;
 };
 export async function update(args: UpdateArgs) {
 	return db.transaction().execute(async (trx) => {
@@ -663,7 +662,9 @@ export async function update(args: UpdateArgs) {
 				.set({
 					settings: JSON.stringify(settings),
 					rules: args.rules,
-					preparedMaps: args.resetPreparedMaps ? null : undefined,
+					// when tournament is updated clear the preparedMaps just in case the format changed
+					// in the future though we might want to be smarter with this i.e. only clear if the format really did change
+					preparedMaps: null,
 				})
 				.where("id", "=", tournamentId)
 				.returning("mapPickingStyle")

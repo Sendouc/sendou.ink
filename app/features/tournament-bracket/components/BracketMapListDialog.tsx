@@ -29,8 +29,6 @@ import {
 	generateTournamentRoundMaplist,
 } from "../core/toMapList";
 
-// xxx: SZ preference
-// xxx: save in local storage?
 // xxx: on submit close modal, show toast?
 
 export function BracketMapListDialog({
@@ -52,9 +50,12 @@ export function BracketMapListDialog({
 
 	const bracketTeamsCount = bracket.participantTournamentTeamIds.length;
 	const [eliminationTeamCount, setEliminationTeamCount] = React.useState(() => {
-		return eliminationTeamCountOptions(
-			preparedMaps?.eliminationTeamCount ?? bracketTeamsCount,
-		)[0];
+		return Math.max(
+			eliminationTeamCountOptions(
+				preparedMaps?.eliminationTeamCount ?? bracketTeamsCount,
+			)[0],
+			8,
+		);
 	});
 
 	const bracketData = teamCountAdjustedBracketData({

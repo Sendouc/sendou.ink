@@ -573,7 +573,6 @@ interface UpsertPreparedMapsArgs {
 	bracketIdx: number;
 }
 
-// xxx: what if format changes, then reset preparedMaps? (in calendar event edit page)
 export function upsertPreparedMaps({
 	bracketIdx,
 	maps,

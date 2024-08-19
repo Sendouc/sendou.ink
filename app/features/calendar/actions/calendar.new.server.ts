@@ -49,7 +49,6 @@ import {
 	canCreateTournament,
 	formValuesToBracketProgression,
 } from "../calendar-utils.server";
-import compare from "just-compare";
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
@@ -139,7 +138,6 @@ export const action: ActionFunction = async ({ request }) => {
 		const eventToEdit = badRequestIfFalsy(
 			await CalendarRepository.findById({ id: data.eventToEditId }),
 		);
-		let resetPreparedMaps = false;
 		if (eventToEdit.tournamentId) {
 			const tournament = await tournamentFromDB({
 				tournamentId: eventToEdit.tournamentId,
@@ -148,11 +146,6 @@ export const action: ActionFunction = async ({ request }) => {
 			validate(!tournament.hasStarted, "Tournament has already started", 400);
 
 			validate(tournament.isAdmin(user), "Not authorized", 401);
-
-			// xxx: compare formats
-			if (!compare(false, true)) {
-				resetPreparedMaps = true;
-			}
 		} else {
 			// editing regular calendar event
 			validate(
@@ -165,7 +158,6 @@ export const action: ActionFunction = async ({ request }) => {
 		await CalendarRepository.update({
 			eventId: data.eventToEditId,
 			mapPoolMaps: deserializedMaps,
-			resetPreparedMaps,
 			...commonArgs,
 		});
 
