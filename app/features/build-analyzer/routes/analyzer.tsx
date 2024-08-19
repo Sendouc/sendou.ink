@@ -649,11 +649,22 @@ function BuildAnalyzerPage() {
 								popoverInfo={t("analyzer:stat.special.maxRadius.explanation")}
 							/>
 						)}
-						{analyzed.stats.specialRadiusRange && (
+						{analyzed.stats.specialRadiusRangeMin && (
 							<StatCard
 								context={context}
-								stat={statKeyToTuple("specialRadiusRange")}
-								title={t("analyzer:stat.special.radiusRange", {
+								stat={statKeyToTuple("specialRadiusRangeMin")}
+								title={t("analyzer:stat.special.radiusRangeMin", {
+									weapon: t(
+										`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
+									),
+								})}
+							/>
+						)}
+						{analyzed.stats.specialRadiusRangeMax && (
+							<StatCard
+								context={context}
+								stat={statKeyToTuple("specialRadiusRangeMax")}
+								title={t("analyzer:stat.special.radiusRangeMax", {
 									weapon: t(
 										`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
 									),

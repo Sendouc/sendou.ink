@@ -173,7 +173,8 @@ export function buildStats({
 			specialMoveSpeed: specialMoveSpeed(input),
 			specialAutoChargeRate: specialAutoChargeRate(input),
 			specialMaxRadius: specialMaxRadius(input),
-			specialRadiusRange: specialRadiusRange(input),
+			specialRadiusRangeMin: specialRadiusRangeMin(input),
+			specialRadiusRangeMax: specialRadiusRangeMax(input),
 			specialPowerUpDuration: specialPowerUpDuration(input),
 		},
 	};
@@ -1742,14 +1743,39 @@ function specialMaxRadius(
 	};
 }
 
-function specialRadiusRange(
+function specialRadiusRangeMax(
 	args: StatFunctionInput,
-): AnalyzedBuild["stats"]["specialRadiusRange"] {
+): AnalyzedBuild["stats"]["specialRadiusRangeMax"] {
 	if (
 		!hasEffect({
 			key: "RadiusMax",
 			weapon: args.specialWeaponParams,
-		}) ||
+		})
+	) {
+		return;
+	}
+
+	const SPECIAL_RADIUS_RANGE_KEY = "SPU";
+
+	const radiusMax = abilityPointsToEffects({
+		abilityPoints: apFromMap({
+			abilityPoints: args.abilityPoints,
+			ability: SPECIAL_RADIUS_RANGE_KEY,
+		}),
+		key: "RadiusMax",
+		weapon: args.specialWeaponParams,
+	});
+
+	return {
+		baseValue: radiusMax.baseEffect,
+		value: radiusMax.effect,
+		modifiedBy: SPECIAL_RADIUS_RANGE_KEY,
+	};
+}
+function specialRadiusRangeMin(
+	args: StatFunctionInput,
+): AnalyzedBuild["stats"]["specialRadiusRangeMin"] {
+	if (
 		!hasEffect({
 			key: "RadiusMin",
 			weapon: args.specialWeaponParams,
@@ -1768,22 +1794,10 @@ function specialRadiusRange(
 		key: "RadiusMin",
 		weapon: args.specialWeaponParams,
 	});
-	const radiusMax = abilityPointsToEffects({
-		abilityPoints: apFromMap({
-			abilityPoints: args.abilityPoints,
-			ability: SPECIAL_RADIUS_RANGE_KEY,
-		}),
-		key: "RadiusMax",
-		weapon: args.specialWeaponParams,
-	});
 
 	return {
-		baseValue: `${roundToNDecimalPlaces(
-			radiusMin.baseEffect,
-		)}-${roundToNDecimalPlaces(radiusMax.baseEffect)}`,
-		value: `${roundToNDecimalPlaces(radiusMin.effect)}-${roundToNDecimalPlaces(
-			radiusMax.effect,
-		)}`,
+		baseValue: radiusMin.baseEffect,
+		value: radiusMin.effect,
 		modifiedBy: SPECIAL_RADIUS_RANGE_KEY,
 	};
 }
