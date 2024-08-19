@@ -3,7 +3,7 @@
 	"type.TOURNAMENT": "大会（玩家视角）",
 	"type.MATCHMAKING": "蛮颓比赛/X比赛/占地对战",
 	"type.CAST": "大会（观战视角）",
-  "type.SENDOUQ": "SendouQ",
+	"type.SENDOUQ": "SendouQ",
 	"gameCount": "第 {{count}} 场比赛",
 	"minShort": "分",
 	"secShort": "秒",
