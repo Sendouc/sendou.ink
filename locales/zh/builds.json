@@ -36,7 +36,7 @@
 	"filters.ability.title": "能力筛选器",
 	"filters.mode.title": "模式筛选器",
 	"filters.date.title": "日期筛选器",
-  "filters.has": "包含",
+	"filters.has": "包含",
 	"filters.does.not.have": "不包含",
 	"filters.atLeast": "至少",
 	"filters.atMost": "最多",
