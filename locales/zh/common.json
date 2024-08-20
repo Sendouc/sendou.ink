@@ -222,7 +222,7 @@
 	"chat.systemMsg.scoreConfirmed": "{{name}} 确认比分，本次对战已锁定",
 	"chat.systemMsg.cancelReported": "{{name}} 申请取消对战",
 	"chat.systemMsg.cancelConfirmed": "{{name}} 确认取消对战，本次对战已锁定",
-	"chat.systemMsg.userLeft": "{{name}} 离开了小组",
+	"chat.systemMsg.userLeft": "{{name}} 离开了小队",
 	"chat.newMessages": "新消息",
 
 	"fc.title": "好友码",
