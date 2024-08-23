@@ -53,6 +53,8 @@
 	"stat.consumption.NORMAL": "Skud",
 	"stat.consumption.SWING": "Sving",
 	"stat.consumption.SLOSH": "Plask",
+	"stat.consumption.VERTICAL_SWING": "Opladt sving",
+	"stat.consumption.HORIZONTAL_SWING": "Uopladt sving",
 	"stat.consumption.TAP_SHOT": "Uopladte skud",
 	"stat.consumption.FULL_CHARGE": "Fuldt opladte skud",
 	"stat.consumption.SPLATLING_CHARGE": "Fuldopladte ladninger",
@@ -67,7 +69,8 @@
 	"stat.sub.hp": "Holdbarhed",
 	"stat.sub.qsjBoost": "Bonus 'Quick Super Jump' ved supersspring til beakon",
 	"stat.special.duration": "Varighed af {{weapon}} ",
-	"stat.special.duration.inkStormExplanation": "Blækket spredes over et større område men mængden af blæk øges ikke.",
+	"stat.special.duration.inkStormExplanation": "Det regner med den samme mængde blæk ned på jorden, men blækket spredes over et større område.",
+	"stat.special.duration.killerWail": "Varigheden er kun vist for en stråle, den samlede varighed af specialet er længere, da flere stråler bliver affyret forskudt af hindanen.",
 	"stat.special.damageDistance": "{{weapon}}'s skaderadius",
 	"stat.special.paintRadius": "{{weapon}}'s farvningsradius",
 	"stat.special.shieldHp": "{{weapon}}'s skjoldholdbarhed",
@@ -109,6 +112,10 @@
 	"damage.SPLASH_HORIZONTAL_MIN": "Vandret sving (Minimum)",
 	"damage.SPLASH_HORIZONTAL_MAX": "Vandret sving (Maksimum)",
 	"damage.ROLL_OVER": "Overmalet",
+	"damage.SPLATANA_VERTICAL_DIRECT": "Opladt frontalt",
+	"damage.SPLATANA_VERTICAL": "Opladt (projektil)",
+	"damage.SPLATANA_HORIZONTAL_DIRECT": "Uopladt frontalt",
+	"damage.SPLATANA_HORIZONTAL": "Uopladt (projektil)",
 	"damage.BOMB_DIRECT": "Frontal",
 	"damage.BOMB_NORMAL": "Indirekte",
 	"damage.WAVE": "Bølge",
@@ -150,5 +157,6 @@
 	"dmgHtdExplanation": "Skade = Skade | TfØ = Træffere for at ødelægge (objekt)",
 	"noDmgData": "Der er endnu ikke nogen data for dette våbens skade.",
 	"perInkTankGrid.header_one": "{{weapon}} skud efter at sub-våbnet er brugt {{count}} gange ",
-	"perInkTankGrid.header_other": "{{weapon}} skud efter sub-våbnet er brugt {{count}} gange"
+	"perInkTankGrid.header_other": "{{weapon}} skud efter sub-våbnet er brugt {{count}} gange",
+	"bigBubblerExplanation": "{{weapon}}’s varighed og holdbarhed (HP) forøges på samme tid"
 }

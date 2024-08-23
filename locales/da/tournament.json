@@ -31,7 +31,7 @@
 
 	"pickInfo.team": "Hold {{number}} banevalg",
 	"pickInfo.tiebreaker": "Tiebreak",
-	"pickInfo.both": "Bægge baner valgt",
+	"pickInfo.both": "begge hold valgte",
 	"pickInfo.default": "Turneringsspecifik standardbane valgt",
 
 	"generator.error": "Ændringer, som du har lavet, blev ikke gemt, da turneringen nu er begyndt. ",
