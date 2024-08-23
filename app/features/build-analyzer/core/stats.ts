@@ -1767,8 +1767,8 @@ function specialRadiusRangeMax(
 	});
 
 	return {
-		baseValue: radiusMax.baseEffect,
-		value: radiusMax.effect,
+		baseValue: roundToNDecimalPlaces(radiusMax.baseEffect),
+		value: roundToNDecimalPlaces(radiusMax.effect),
 		modifiedBy: SPECIAL_RADIUS_RANGE_KEY,
 	};
 }
@@ -1796,8 +1796,8 @@ function specialRadiusRangeMin(
 	});
 
 	return {
-		baseValue: radiusMin.baseEffect,
-		value: radiusMin.effect,
+		baseValue: roundToNDecimalPlaces(radiusMin.baseEffect),
+		value: roundToNDecimalPlaces(radiusMin.effect),
 		modifiedBy: SPECIAL_RADIUS_RANGE_KEY,
 	};
 }
