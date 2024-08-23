@@ -299,7 +299,7 @@ export async function findPreparedMapsById(tournamentId: number) {
 				.select("preparedMaps")
 				.where("id", "=", tournamentId)
 				.executeTakeFirst()
-		)?.preparedMaps ?? null
+		)?.preparedMaps ?? undefined
 	);
 }
 

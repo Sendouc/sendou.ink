@@ -35,10 +35,18 @@ const nTeams = (n: number, startingId: number) => {
 	return teams;
 };
 
-export const testTournament = (
-	data: TournamentManagerDataSet,
-	partialCtx?: Partial<TournamentData["ctx"]>,
-) => {
+export const testTournament = ({
+	data = {
+		match: [],
+		group: [],
+		round: [],
+		stage: [],
+	},
+	ctx,
+}: {
+	data?: TournamentManagerDataSet;
+	ctx?: Partial<TournamentData["ctx"]>;
+}) => {
 	const participant = removeDuplicates(
 		data.match
 			.flatMap((m) => [m.opponent1?.id, m.opponent2?.id])
@@ -82,7 +90,7 @@ export const testTournament = (
 				username: "test",
 				id: 1,
 			},
-			...partialCtx,
+			...ctx,
 		},
 	});
 };

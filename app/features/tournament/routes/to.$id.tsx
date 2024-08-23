@@ -168,7 +168,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 		preparedMaps:
 			isTournamentOrganizer && !tournament.ctx.isFinalized
 				? await TournamentRepository.findPreparedMapsById(tournamentId)
-				: null,
+				: undefined,
 	};
 };
 

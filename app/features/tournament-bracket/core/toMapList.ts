@@ -28,6 +28,10 @@ interface GenerateTournamentRoundMaplistArgs {
 	pickBanStyle: TournamentRoundMaps["pickBan"];
 }
 
+export type TournamentRoundMapList = ReturnType<
+	typeof generateTournamentRoundMaplist
+>;
+
 // TODO: future improvement could be slightly biasing against maps that appear in slots that are not guaranteed to be played
 export function generateTournamentRoundMaplist(
 	args: GenerateTournamentRoundMaplistArgs,

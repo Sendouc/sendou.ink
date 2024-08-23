@@ -1,6 +1,5 @@
 import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
-import compare from "just-compare";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
@@ -15,6 +14,7 @@ import {
 	useTournament,
 	useTournamentPreparedMaps,
 } from "~/features/tournament/routes/to.$id";
+import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { nullFilledArray } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -22,10 +22,12 @@ import invariant from "~/utils/invariant";
 import { assertUnreachable } from "~/utils/types";
 import { calendarEditPage } from "~/utils/urls";
 import type { Bracket } from "../core/Bracket";
+import * as PreparedMaps from "../core/PreparedMaps";
 import type { Tournament } from "../core/Tournament";
 import { getRounds } from "../core/rounds";
 import {
 	type BracketMapCounts,
+	type TournamentRoundMapList,
 	generateTournamentRoundMaplist,
 } from "../core/toMapList";
 
@@ -46,15 +48,27 @@ export function BracketMapListDialog({
 }) {
 	const fetcher = useFetcher();
 	const tournament = useTournament();
-	const preparedMaps = useBracketPreparedMaps(bracketIdx);
+	const untrimmedPreparedMaps = useBracketPreparedMaps(bracketIdx);
 
 	const bracketTeamsCount = bracket.participantTournamentTeamIds.length;
+
+	const preparedMaps = !isPreparing
+		? // we are about to start bracket, "trim" prepared map for actual
+			PreparedMaps.trimPreparedEliminationMaps({
+				preparedMaps: untrimmedPreparedMaps,
+				teamCount: bracketTeamsCount,
+			})
+		: untrimmedPreparedMaps;
+
 	const [eliminationTeamCount, setEliminationTeamCount] = React.useState(() => {
+		if (preparedMaps?.eliminationTeamCount) {
+			return preparedMaps.eliminationTeamCount;
+		}
+
+		// at least 8 for somewhat reasonable default
 		return Math.max(
-			eliminationTeamCountOptions(
-				preparedMaps?.eliminationTeamCount ?? bracketTeamsCount,
-			)[0],
-			8,
+			PreparedMaps.eliminationTeamCountOptions(bracketTeamsCount)[0].max,
+			PreparedMaps.eliminationTeamCountOptions(0)[2].max,
 		);
 	});
 
@@ -96,43 +110,11 @@ export function BracketMapListDialog({
 			.map(([roundId]) => roundId),
 	);
 
-	const mapCounts = React.useMemo(() => {
-		const result: BracketMapCounts = new Map();
-
-		for (const [groupId, value] of defaultRoundBestOfs.entries()) {
-			for (const roundNumber of value.keys()) {
-				const roundId = rounds.find(
-					(round) => round.group_id === groupId && round.number === roundNumber,
-				)?.id;
-				// xxx: TODO handle differing round counts
-				invariant(
-					typeof roundId === "number",
-					"Expected roundId to be defined",
-				);
-
-				const count = maps.get(roundId)?.count;
-
-				// skip rounds in RR and Swiss that don't have maps (only one group has maps)
-				if (typeof count !== "number") {
-					continue;
-				}
-
-				result.set(
-					groupId,
-					new Map(result.get(groupId)).set(roundNumber, {
-						count,
-						// currently "best of" / "play all" is defined per bracket but in future it might be per round
-						// that's why there is this hardcoded default value for now
-						type: "BEST_OF",
-					}),
-				);
-			}
-		}
-
-		invariant(result.size > 0, "Expected result to be defined");
-
-		return result;
-	}, [maps, defaultRoundBestOfs, rounds]);
+	const mapCounts = inferMapCounts({
+		bracket,
+		data: bracketData,
+		tournamentRoundMapList: maps,
+	});
 
 	const roundsWithNames = React.useMemo(() => {
 		if (bracket.type === "round_robin" || bracket.type === "swiss") {
@@ -469,41 +451,58 @@ export function BracketMapListDialog({
 	);
 }
 
+function inferMapCounts({
+	bracket,
+	data,
+	tournamentRoundMapList,
+}: {
+	bracket: Bracket;
+	data: TournamentManagerDataSet;
+	tournamentRoundMapList: TournamentRoundMapList;
+}) {
+	const result: BracketMapCounts = new Map();
+
+	for (const [groupId, value] of bracket.defaultRoundBestOfs(data).entries()) {
+		for (const roundNumber of value.keys()) {
+			const roundId = data.round.find(
+				(round) => round.group_id === groupId && round.number === roundNumber,
+			)?.id;
+			// xxx: TODO handle differing round counts
+			invariant(typeof roundId === "number", "Expected roundId to be defined");
+
+			const count = tournamentRoundMapList.get(roundId)?.count;
+
+			// skip rounds in RR and Swiss that don't have maps (only one group has maps)
+			if (typeof count !== "number") {
+				continue;
+			}
+
+			result.set(
+				groupId,
+				new Map(result.get(groupId)).set(roundNumber, {
+					count,
+					// currently "best of" / "play all" is defined per bracket but in future it might be per round
+					// that's why there is this hardcoded default value for now
+					type: "BEST_OF",
+				}),
+			);
+		}
+	}
+
+	invariant(result.size > 0, "Expected result to be defined");
+
+	return result;
+}
+
 function useBracketPreparedMaps(bracketIdx: number) {
 	const prepared = useTournamentPreparedMaps();
 	const tournament = useTournament();
 
-	const bracketMaps = prepared?.[bracketIdx];
-
-	// maps exactly for this bracket have been prepared, use them
-	if (bracketMaps) {
-		return bracketMaps;
-	}
-
-	const bracketPreparingFor = tournament.bracketByIdx(bracketIdx)!;
-
-	// lets look for an "equivalent" prepared bracket to use
-	// e.g. SoS RR -> 4x SE style the SE brackets can share maps
-	for (const [
-		anotherBracketIdx,
-		bracket,
-	] of tournament.ctx.settings.bracketProgression.entries()) {
-		if (
-			bracket.type === bracketPreparingFor.type &&
-			compare(
-				bracket.sources?.map((s) => s.bracketIdx),
-				bracketPreparingFor.sources?.map((s) => s.bracketIdx),
-			)
-		) {
-			const bracketMaps = prepared?.[anotherBracketIdx];
-
-			if (bracketMaps) {
-				return bracketMaps;
-			}
-		}
-	}
-
-	return null;
+	return PreparedMaps.resolvePreparedForTheBracket({
+		bracketIdx,
+		preparedByBracket: prepared,
+		tournament,
+	});
 }
 
 function authorIdToUsername(tournament: Tournament, authorId: number) {
@@ -543,11 +542,6 @@ function teamCountAdjustedBracketData({
 	}
 }
 
-const OPTIONS = [2, 4, 8, 16, 32, 64, 128];
-function eliminationTeamCountOptions(currentCount: number) {
-	return OPTIONS.filter((option) => option >= currentCount);
-}
-
 function EliminationTeamCountSelect({
 	count,
 	realCount,
@@ -565,11 +559,20 @@ function EliminationTeamCountSelect({
 				onChange={(e) => setCount(Number(e.target.value))}
 				defaultValue={count}
 			>
-				{eliminationTeamCountOptions(realCount).map((option, i, options) => (
-					<option key={option} value={option}>
-						{option}-{options[i + 1] ? options[i + 1] - 1 : ""}
-					</option>
-				))}
+				{PreparedMaps.eliminationTeamCountOptions(realCount).map(
+					(teamCountRange) => {
+						const label =
+							teamCountRange.min === teamCountRange.max
+								? teamCountRange.min
+								: `${teamCountRange.min}-${teamCountRange.max}`;
+
+						return (
+							<option key={teamCountRange.max} value={teamCountRange.max}>
+								{label}
+							</option>
+						);
+					},
+				)}
 			</select>
 		</div>
 	);
