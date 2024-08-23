@@ -53,6 +53,8 @@
 	"stat.consumption.NORMAL": "攻击次数",
 	"stat.consumption.SWING": "攻击次数",
 	"stat.consumption.SLOSH": "攻击次数",
+	"stat.consumption.VERTICAL_SWING": "蓄力攻击",
+	"stat.consumption.HORIZONTAL_SWING": "未蓄力攻击",
 	"stat.consumption.TAP_SHOT": "普通攻击",
 	"stat.consumption.FULL_CHARGE": "完全蓄力攻击",
 	"stat.consumption.SPLATLING_CHARGE": "完全蓄力",
@@ -68,6 +70,7 @@
 	"stat.sub.qsjBoost": "超级跳增强",
 	"stat.special.duration": "{{weapon}} 持续时间",
 	"stat.special.duration.inkStormExplanation": "提升涂地距离但墨水总量不变。",
+	"stat.special.duration.killerWail": "数据为一条激光的持续时间，特殊武器的总持续时间会更长，因为激光是依次发射的。",
 	"stat.special.damageDistance": "{{weapon}} 伤害距离",
 	"stat.special.paintRadius": "{{weapon}} 涂地半径",
 	"stat.special.shieldHp": "{{weapon}} 防护罩耐久度",
@@ -76,6 +79,7 @@
 	"stat.special.inkConsumptionPerSecond": "{{weapon}} 墨水消耗量/秒",
 	"stat.special.reticleRadius": "{{weapon}} 瞄准视野半径",
 	"stat.special.throwDistance": "{{weapon}} 投掷距离",
+	"stat.special.moveSpeed": "{{weapon}} 移动速度",
 	"stat.special.autoChargeRate": "{{weapon}} 自动蓄力速度",
 	"stat.special.maxRadius": "{{weapon}} 声波最大半径",
 	"stat.special.maxRadius.explanation": "声波的移动速度保持恒定，不会因为半径变化改变。",
@@ -108,6 +112,10 @@
 	"damage.SPLASH_HORIZONTAL_MIN": "水平溅射 (最小值)",
 	"damage.SPLASH_HORIZONTAL_MAX": "水平溅射 (最大值)",
 	"damage.ROLL_OVER": "滚动",
+	"damage.SPLATANA_VERTICAL_DIRECT": "蓄力直击",
+	"damage.SPLATANA_VERTICAL": "蓄力攻击",
+	"damage.SPLATANA_HORIZONTAL_DIRECT": "未蓄力直击",
+	"damage.SPLATANA_HORIZONTAL": "未蓄力攻击",
 	"damage.BOMB_DIRECT": "直击",
 	"damage.BOMB_NORMAL": "溅射",
 	"damage.WAVE": "声波",
@@ -149,5 +157,6 @@
 	"dmgHtdExplanation": "DMG = 伤害 | HTD = 破坏所需伤害",
 	"noDmgData": "目前没有该武器的伤害数据。请期待后续更新！",
 	"perInkTankGrid.header_one": "{{weapon}} 在 ×{{count}} 副武器使用后的射击数",
-	"perInkTankGrid.header_other": "{{weapon}} 在 ×{{count}} 副武器使用后的射击数"
+	"perInkTankGrid.header_other": "{{weapon}} 在 ×{{count}} 副武器使用后的射击数",
+	"bigBubblerExplanation": "{{weapon}} 的持续时间也会一起增加。"
 }
