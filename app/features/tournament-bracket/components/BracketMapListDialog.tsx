@@ -202,7 +202,7 @@ export function BracketMapListDialog({
 		bracket.type === "round_robin" || bracket.type === "swiss";
 
 	return (
-		<Dialog isOpen={isOpen} close={close} className="w-max">
+		<Dialog isOpen={isOpen} close={close} className="w-full">
 			<fetcher.Form method="post" className="map-list-dialog__container">
 				<input type="hidden" name="bracketIdx" value={bracketIdx} />
 				<input
@@ -826,7 +826,7 @@ function MapListRow({
 	return (
 		<li
 			className={clsx("map-list-dialog__map-list-row", {
-				"text-theme-secondary font-bold": serializedMapMode(map) === hoveredMap,
+				"text-theme-secondary underline": serializedMapMode(map) === hoveredMap,
 			})}
 			onMouseEnter={() => onHoverMap(serializedMapMode(map))}
 		>
