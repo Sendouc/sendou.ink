@@ -2030,6 +2030,7 @@ async function playedMatches() {
 			alphaGroupId: groupAlpha,
 			bravoGroupId: groupBravo,
 			mapList: randomMapList(groupAlpha, groupBravo),
+			memento: { users: {}, groups: {}, pools: [] },
 		});
 
 		// update match createdAt to the past
