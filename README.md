@@ -165,12 +165,6 @@ Some common files:
 
 ## Commands
 
-### Update friend code
-
-```bash
-bun scripts/update-fc.ts 79237403620945920 1234-1234-1234
-```
-
 ### Add new badge to the database
 
 ```bash
