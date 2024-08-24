@@ -14,6 +14,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Menu } from "~/components/Menu";
 import { Placement } from "~/components/Placement";
 import { Popover } from "~/components/Popover";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { EyeIcon } from "~/components/icons/Eye";
 import { EyeSlashIcon } from "~/components/icons/EyeSlash";
 import { MapIcon } from "~/components/icons/Map";
@@ -50,11 +51,13 @@ import {
 import {
 	useBracketExpanded,
 	useTournament,
+	useTournamentPreparedMaps,
 } from "../../tournament/routes/to.$id";
 import { Bracket } from "../components/Bracket";
 import { BracketMapListDialog } from "../components/BracketMapListDialog";
 import { TournamentTeamActions } from "../components/TournamentTeamActions";
 import type { Bracket as BracketType, Standing } from "../core/Bracket";
+import * as PreparedMaps from "../core/PreparedMaps";
 import * as Swiss from "../core/Swiss";
 import type { Tournament } from "../core/Tournament";
 import {
@@ -416,34 +419,33 @@ export default function TournamentBracketsPage() {
 			) : null}
 			{bracket.preview &&
 			bracket.enoughTeams &&
-			tournament.isOrganizer(user) ? (
+			tournament.isOrganizer(user) &&
+			tournament.regularCheckInStartInThePast ? (
 				<div className="stack items-center mb-4">
-					{tournament.regularCheckInStartInThePast ? (
-						<div className="stack sm items-center">
-							<Alert
-								variation="INFO"
-								alertClassName="tournament-bracket__start-bracket-alert"
-								textClassName="stack horizontal md items-center"
-							>
-								{bracket.participantTournamentTeamIds.length}/
-								{totalTeamsAvailableForTheBracket()} teams checked in
-								{bracket.canBeStarted ? (
-									<BracketStarter bracket={bracket} bracketIdx={bracketIdx} />
-								) : null}
-							</Alert>
-							{!bracket.canBeStarted ? (
-								<div className="tournament-bracket__mini-alert">
-									⚠️{" "}
-									{bracketIdx === 0 ? (
-										<>Tournament start time is in the future</>
-									) : (
-										<>Teams pending from the previous bracket</>
-									)}{" "}
-									(blocks starting)
-								</div>
+					<div className="stack sm items-center">
+						<Alert
+							variation="INFO"
+							alertClassName="tournament-bracket__start-bracket-alert"
+							textClassName="stack horizontal md items-center"
+						>
+							{bracket.participantTournamentTeamIds.length}/
+							{totalTeamsAvailableForTheBracket()} teams checked in
+							{bracket.canBeStarted ? (
+								<BracketStarter bracket={bracket} bracketIdx={bracketIdx} />
 							) : null}
-						</div>
-					) : null}
+						</Alert>
+						{!bracket.canBeStarted ? (
+							<div className="tournament-bracket__mini-alert">
+								⚠️{" "}
+								{bracketIdx === 0 ? (
+									<>Tournament start time is in the future</>
+								) : (
+									<>Teams pending from the previous bracket</>
+								)}{" "}
+								(blocks starting)
+							</div>
+						) : null}
+					</div>
 				</div>
 			) : null}
 			<div className="stack horizontal mb-4 sm justify-between items-center">
@@ -526,12 +528,16 @@ function BracketStarter({
 	const [dialogOpen, setDialogOpen] = React.useState(false);
 	const isMounted = useIsMounted();
 
+	const close = React.useCallback(() => {
+		setDialogOpen(false);
+	}, []);
+
 	return (
 		<>
 			{isMounted ? (
 				<BracketMapListDialog
 					isOpen={dialogOpen}
-					close={() => setDialogOpen(false)}
+					close={close}
 					bracket={bracket}
 					bracketIdx={bracketIdx}
 				/>
@@ -557,27 +563,45 @@ function MapPreparer({
 }) {
 	const [dialogOpen, setDialogOpen] = React.useState(false);
 	const isMounted = useIsMounted();
+	const prepared = useTournamentPreparedMaps();
+	const tournament = useTournament();
+
+	const hasPreparedMaps = Boolean(
+		PreparedMaps.resolvePreparedForTheBracket({
+			bracketIdx,
+			preparedByBracket: prepared,
+			tournament,
+		}),
+	);
+
+	const close = React.useCallback(() => {
+		setDialogOpen(false);
+	}, []);
 
 	return (
 		<>
 			{isMounted ? (
 				<BracketMapListDialog
 					isOpen={dialogOpen}
-					close={() => setDialogOpen(false)}
+					close={close}
 					bracket={bracket}
 					bracketIdx={bracketIdx}
 					isPreparing
 				/>
 			) : null}
-			<Button
-				size="tiny"
-				variant="outlined"
-				className="ml-auto"
-				icon={<MapIcon />}
-				onClick={() => setDialogOpen(true)}
-			>
-				Prepare maps
-			</Button>
+			<div className="stack sm horizontal ml-auto">
+				{hasPreparedMaps ? (
+					<CheckmarkIcon className="fill-success w-6" />
+				) : null}
+				<Button
+					size="tiny"
+					variant="outlined"
+					icon={<MapIcon />}
+					onClick={() => setDialogOpen(true)}
+				>
+					Prepare maps
+				</Button>
+			</div>
 		</>
 	);
 }

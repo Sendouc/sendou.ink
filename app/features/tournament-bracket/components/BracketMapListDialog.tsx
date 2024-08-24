@@ -1,4 +1,4 @@
-import { Link, useFetcher } from "@remix-run/react";
+import { type FetcherWithComponents, Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -31,8 +31,6 @@ import {
 	generateTournamentRoundMaplist,
 } from "../core/toMapList";
 
-// xxx: on submit close modal, show toast?
-
 export function BracketMapListDialog({
 	isOpen,
 	close,
@@ -49,6 +47,8 @@ export function BracketMapListDialog({
 	const fetcher = useFetcher();
 	const tournament = useTournament();
 	const untrimmedPreparedMaps = useBracketPreparedMaps(bracketIdx);
+
+	useCloseModalOnSubmit(fetcher, close);
 
 	const bracketTeamsCount = bracket.participantTournamentTeamIds.length;
 
@@ -455,6 +455,17 @@ export function BracketMapListDialog({
 			</fetcher.Form>
 		</Dialog>
 	);
+}
+
+function useCloseModalOnSubmit(
+	fetcher: FetcherWithComponents<unknown>,
+	close: () => void,
+) {
+	React.useEffect(() => {
+		if (fetcher.state !== "loading") return;
+
+		close();
+	}, [fetcher.state, close]);
 }
 
 function inferMapCounts({
