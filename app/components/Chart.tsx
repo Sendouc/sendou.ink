@@ -12,6 +12,7 @@ export default function Chart({
 	headerSuffix,
 	valueSuffix,
 	xAxis,
+  renderCursorLines = false
 }: {
 	options: [
 		{ label: string; data: Array<{ primary: Date; secondary: number }> },
@@ -20,6 +21,7 @@ export default function Chart({
 	headerSuffix?: string;
 	valueSuffix?: string;
 	xAxis: "linear" | "localTime";
+  renderCursorLines?: boolean;
 }) {
 	const { i18n } = useTranslation();
 	const theme = useTheme();
@@ -78,8 +80,8 @@ export default function Chart({
 							/>
 						),
 					},
-					primaryCursor: false,
-					secondaryCursor: false,
+					primaryCursor: renderCursorLines,
+					secondaryCursor: renderCursorLines,
 					primaryAxis,
 					secondaryAxes,
 					dark: theme.htmlThemeClass === Theme.DARK,
