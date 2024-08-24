@@ -52,7 +52,6 @@ export async function findById(id: number) {
 						"TournamentOrganization.name",
 						"TournamentOrganization.slug",
 						"UserSubmittedImage.url as avatarUrl",
-						// xxx: ticket not showing in chat
 						jsonArrayFrom(
 							innerEb
 								.selectFrom("TournamentOrganizationMember")

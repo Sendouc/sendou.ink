@@ -33,8 +33,6 @@ import {
 
 // xxx: on submit close modal, show toast?
 
-// xxx: check that can prepare just counts and pick/ban
-
 export function BracketMapListDialog({
 	isOpen,
 	close,
@@ -475,7 +473,6 @@ function inferMapCounts({
 			const roundId = data.round.find(
 				(round) => round.group_id === groupId && round.number === roundNumber,
 			)?.id;
-			// xxx: TODO handle differing round counts
 			invariant(typeof roundId === "number", "Expected roundId to be defined");
 
 			const count = tournamentRoundMapList.get(roundId)?.count;
