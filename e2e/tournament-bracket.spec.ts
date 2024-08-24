@@ -18,8 +18,6 @@ import {
 } from "~/utils/urls";
 import { startBracket } from "./shared";
 
-// xxx: test prepared maps in SoS, remember map prepared when bracket is in progress and shares between SE brackets
-
 const navigateToMatch = async (page: Page, matchId: number) => {
 	await expect(async () => {
 		await page.locator(`[data-match-id="${matchId}"]`).click();
