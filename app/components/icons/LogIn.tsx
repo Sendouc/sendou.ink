@@ -16,6 +16,7 @@ export function LogInIcon({
 			width={size}
 			height={size}
 		>
+			<title>Login Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

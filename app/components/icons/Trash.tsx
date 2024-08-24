@@ -8,6 +8,7 @@ export function TrashIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			strokeWidth={2}
 		>
+			<title>Trash Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"
