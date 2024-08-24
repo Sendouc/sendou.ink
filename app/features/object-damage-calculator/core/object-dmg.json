@@ -1992,6 +1992,10 @@
 				"rate": 1.3
 			},
 			{
+				"target": "BulletPogo",
+				"rate": 1.1
+			},
+			{
 				"target": "Chariot",
 				"rate": 1.3
 			},
