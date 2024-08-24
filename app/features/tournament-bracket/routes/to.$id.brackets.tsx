@@ -591,13 +591,17 @@ function MapPreparer({
 			) : null}
 			<div className="stack sm horizontal ml-auto">
 				{hasPreparedMaps ? (
-					<CheckmarkIcon className="fill-success w-6" />
+					<CheckmarkIcon
+						className="fill-success w-6"
+						testId="prepared-maps-check-icon"
+					/>
 				) : null}
 				<Button
 					size="tiny"
 					variant="outlined"
 					icon={<MapIcon />}
 					onClick={() => setDialogOpen(true)}
+					testId="prepare-maps-button"
 				>
 					Prepare maps
 				</Button>

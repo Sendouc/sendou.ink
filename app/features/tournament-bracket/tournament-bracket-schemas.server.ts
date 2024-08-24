@@ -122,7 +122,10 @@ export const bracketSchema = z.union([
 		maps: z.preprocess(safeJSONParse, z.array(tournamentRoundMaps)),
 		eliminationTeamCount: z.coerce
 			.number()
-			.refine((val) => PreparedMaps.isValidMaxEliminationTeamCount(val)),
+			.optional()
+			.refine(
+				(val) => !val || PreparedMaps.isValidMaxEliminationTeamCount(val),
+			),
 	}),
 	z.object({
 		_action: _action("ADVANCE_BRACKET"),

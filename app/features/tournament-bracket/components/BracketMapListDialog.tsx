@@ -77,11 +77,13 @@ export function BracketMapListDialog({
 		);
 	});
 
-	const bracketData = teamCountAdjustedBracketData({
-		bracket,
-		tournament,
-		teamCount: eliminationTeamCount,
-	});
+	const bracketData = isPreparing
+		? teamCountAdjustedBracketData({
+				bracket,
+				tournament,
+				teamCount: eliminationTeamCount,
+			})
+		: bracket.data;
 	const rounds = bracketData.round;
 	const defaultRoundBestOfs = bracket.defaultRoundBestOfs(bracketData);
 
