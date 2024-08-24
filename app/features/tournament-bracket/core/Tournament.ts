@@ -164,7 +164,6 @@ export class Tournament {
 					}),
 				);
 			} else {
-				const manager = getTournamentManager();
 				const { teams, relevantMatchesFinished } = sources
 					? this.resolveTeamsFromSources(sources)
 					: {
@@ -184,25 +183,6 @@ export class Tournament {
 						type,
 					});
 
-				if (
-					checkedInTeamsWithReplaysAvoided.length >=
-					TOURNAMENT.ENOUGH_TEAMS_TO_START
-				) {
-					manager.create({
-						tournamentId: this.ctx.id,
-						name,
-						type,
-						seeding:
-							type === "round_robin"
-								? checkedInTeamsWithReplaysAvoided
-								: fillWithNullTillPowerOfTwo(checkedInTeamsWithReplaysAvoided),
-						settings: this.bracketSettings(
-							type,
-							checkedInTeamsWithReplaysAvoided.length,
-						),
-					});
-				}
-
 				this.brackets.push(
 					Bracket.create({
 						id: -1 * bracketIdx,
@@ -210,7 +190,10 @@ export class Tournament {
 						seeding: checkedInTeamsWithReplaysAvoided,
 						preview: true,
 						name,
-						data: manager.get.tournamentData(this.ctx.id),
+						data: this.generateMatchesData(
+							checkedInTeamsWithReplaysAvoided,
+							type,
+						),
 						type,
 						sources,
 						createdAt: null,
@@ -224,6 +207,26 @@ export class Tournament {
 				);
 			}
 		}
+	}
+
+	generateMatchesData(teams: number[], type: TournamentStage["type"]) {
+		const manager = getTournamentManager();
+
+		// we need some number but does not matter what it is as the manager only contains one tournament
+		const virtualTournamentId = 1;
+
+		if (teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START) {
+			manager.create({
+				tournamentId: virtualTournamentId,
+				name: "Virtual",
+				type,
+				seeding:
+					type === "round_robin" ? teams : fillWithNullTillPowerOfTwo(teams),
+				settings: this.bracketSettings(type, teams.length),
+			});
+		}
+
+		return manager.get.tournamentData(virtualTournamentId);
 	}
 
 	private resolveTeamsFromSources(
@@ -808,10 +811,13 @@ export class Tournament {
 					) {
 						const rounds =
 							bracket.type === "single_elimination"
-								? getRounds({ type: "single", bracket })
+								? getRounds({ type: "single", bracketData: bracket.data })
 								: [
-										...getRounds({ type: "winners", bracket }),
-										...getRounds({ type: "losers", bracket }),
+										...getRounds({
+											type: "winners",
+											bracketData: bracket.data,
+										}),
+										...getRounds({ type: "losers", bracketData: bracket.data }),
 									];
 
 						const round = rounds.find((round) => round.id === match.round_id);

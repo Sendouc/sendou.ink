@@ -28,6 +28,10 @@ interface GenerateTournamentRoundMaplistArgs {
 	pickBanStyle: TournamentRoundMaps["pickBan"];
 }
 
+export type TournamentRoundMapList = ReturnType<
+	typeof generateTournamentRoundMaplist
+>;
+
 // TODO: future improvement could be slightly biasing against maps that appear in slots that are not guaranteed to be played
 export function generateTournamentRoundMaplist(
 	args: GenerateTournamentRoundMaplistArgs,
@@ -161,17 +165,42 @@ function modeOrder(
 		return aFreq - bFreq;
 	});
 
+	const biasedModes = modesWithSZBiased(shuffledModes);
+
 	const result: ModeShort[] = [];
 
 	let currentI = 0;
 	while (result.length < count) {
-		result.push(shuffledModes[currentI]);
-		modeFrequency.set(shuffledModes[currentI], iteration);
+		result.push(biasedModes[currentI]);
+		modeFrequency.set(biasedModes[currentI], iteration);
 		currentI++;
-		if (currentI >= shuffledModes.length) {
+		if (currentI >= biasedModes.length) {
 			currentI = 0;
 		}
 	}
+
+	return result;
+}
+
+function modesWithSZBiased(modes: ModeShort[]) {
+	// map list without SZ
+	if (!modes.includes("SZ")) {
+		return modes;
+	}
+
+	// not relevant if there are less than 4 modes
+	if (modes.length < 4) {
+		return modes;
+	}
+
+	if (modes[0] === "SZ" || modes[1] === "SZ" || modes[2] === "SZ") {
+		return modes;
+	}
+
+	const result: ModeShort[] = modes.filter((mode) => mode !== "SZ");
+
+	const szIndex = Math.floor(Math.random() * 3);
+	result.splice(szIndex, 0, "SZ");
 
 	return result;
 }
