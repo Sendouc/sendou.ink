@@ -12,7 +12,7 @@ export default function Chart({
 	headerSuffix,
 	valueSuffix,
 	xAxis,
-  renderCursorLines = false
+  renderCursorLines = false,
 }: {
 	options: [
 		{ label: string; data: Array<{ primary: Date; secondary: number }> },
