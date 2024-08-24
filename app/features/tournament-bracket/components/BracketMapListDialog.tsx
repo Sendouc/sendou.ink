@@ -33,6 +33,8 @@ import {
 
 // xxx: on submit close modal, show toast?
 
+// xxx: check that can prepare just counts and pick/ban
+
 export function BracketMapListDialog({
 	isOpen,
 	close,
@@ -103,11 +105,10 @@ export function BracketMapListDialog({
 			pickBanStyle: null,
 		});
 	});
+	const [pickBanStyle, setPickBanStyle] = React.useState(
+		Array.from(maps.values()).find((round) => round.pickBan)?.pickBan,
+	);
 	const [hoveredMap, setHoveredMap] = React.useState<string | null>(null);
-
-	const pickBanStyle = Array.from(maps.values()).find(
-		(round) => round.pickBan,
-	)?.pickBan;
 
 	const roundsWithPickBan = new Set(
 		Array.from(maps.entries())
@@ -261,6 +262,7 @@ export function BracketMapListDialog({
 												mapCountsWithGlobalPickBanStyle(pickBanStyle);
 										}
 
+										setPickBanStyle(pickBanStyle);
 										setMaps(
 											generateTournamentRoundMaplist({
 												mapCounts,

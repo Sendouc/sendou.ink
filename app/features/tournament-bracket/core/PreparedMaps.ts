@@ -1,6 +1,6 @@
 import compare from "just-compare";
 import type { PreparedMaps } from "~/db/tables";
-import { nullFilledArray } from "~/utils/arrays";
+import { nullFilledArray, removeDuplicates } from "~/utils/arrays";
 import type { Tournament } from "./Tournament";
 
 /** Returns the prepared maps for one exact bracket index OR maps of a "sibling bracket" i.e. bracket that has the same sources  */
@@ -114,21 +114,37 @@ function trimMapsByTeamCount({
 	const actualRounds = tournament.generateMatchesData(
 		nullFilledArray(teamCount).map((_, i) => i + 1),
 		type,
-	);
+	).round;
 
-	const actualRoundsCoutn = actualRounds.round.length;
+	const groupIds = removeDuplicates(preparedMaps.maps.map((r) => r.groupId));
 
-	const trimmedMaps = { ...preparedMaps };
-	if (!trimmedMaps.maps) return trimmedMaps;
+	const result = { ...preparedMaps };
+	for (const groupId of groupIds) {
+		const actualRoundsForGroup = actualRounds.filter(
+			(r) => r.group_id === groupId,
+		);
 
-	// we need to remove rounds from the start
-	const roundsToRemove = trimmedMaps.maps.length - actualRoundsCoutn;
+		const preparedRoundsForGroup = preparedMaps.maps.filter(
+			(r) => r.groupId === groupId,
+		);
 
-	if (roundsToRemove <= 0) {
-		return trimmedMaps;
+		const actualRoundsCount = actualRoundsForGroup.length;
+
+		const trimmedRounds = preparedRoundsForGroup.slice(
+			preparedRoundsForGroup.length - actualRoundsCount,
+		);
+
+		result.maps = result.maps.filter((r) => r.groupId !== groupId);
+		result.maps.push(...trimmedRounds);
 	}
 
-	trimmedMaps.maps = trimmedMaps.maps.slice(roundsToRemove);
+	result.maps.sort((a, b) => {
+		if (a.groupId === b.groupId) {
+			return a.roundId - b.roundId;
+		}
 
-	return trimmedMaps;
+		return a.groupId - b.groupId;
+	});
+
+	return result;
 }
