@@ -20,6 +20,7 @@
 	"roles.MIDLINE": "Midline",
 	"roles.BACKLINE": "Backline",
 	"roles.FLEX": "Flex",
+	"roles.SUB": "Sub",
 	"roles.COACH": "Coach",
 	"forms.fields.teamTwitter": "Team Twitter",
 	"forms.fields.bio": "Bio",
