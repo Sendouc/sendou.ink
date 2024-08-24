@@ -8,7 +8,7 @@ export function StarIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
-       <title>Star Icon</title>
+			<title>Star Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"
