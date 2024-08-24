@@ -52,13 +52,18 @@ export function BracketMapListDialog({
 
 	const bracketTeamsCount = bracket.participantTournamentTeamIds.length;
 
-	const preparedMaps = !isPreparing
-		? // we are about to start bracket, "trim" prepared map for actual
-			PreparedMaps.trimPreparedEliminationMaps({
-				preparedMaps: untrimmedPreparedMaps,
-				teamCount: bracketTeamsCount,
-			})
-		: untrimmedPreparedMaps;
+	const preparedMaps =
+		!isPreparing &&
+		(bracket.type === "single_elimination" ||
+			bracket.type === "double_elimination")
+			? // we are about to start bracket, "trim" prepared map for actual
+				PreparedMaps.trimPreparedEliminationMaps({
+					preparedMaps: untrimmedPreparedMaps,
+					teamCount: bracketTeamsCount,
+					tournament,
+					type: bracket.type,
+				})
+			: untrimmedPreparedMaps;
 
 	const [eliminationTeamCount, setEliminationTeamCount] = React.useState(() => {
 		if (preparedMaps?.eliminationTeamCount) {

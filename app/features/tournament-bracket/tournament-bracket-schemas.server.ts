@@ -9,6 +9,7 @@ import {
 	stageId,
 } from "~/utils/zod";
 import { TOURNAMENT } from "../tournament/tournament-constants";
+import * as PreparedMaps from "./core/PreparedMaps";
 
 const activeRosterPlayerIds = z.preprocess(safeJSONParse, z.array(id));
 
@@ -118,7 +119,9 @@ export const bracketSchema = z.union([
 		_action: _action("PREPARE_MAPS"),
 		bracketIdx,
 		maps: z.preprocess(safeJSONParse, z.array(tournamentRoundMaps)),
-		eliminationTeamCount: z.coerce.number().int().positive().nullish(),
+		eliminationTeamCount: z.coerce
+			.number()
+			.refine((val) => PreparedMaps.isValidMaxEliminationTeamCount(val)),
 	}),
 	z.object({
 		_action: _action("ADVANCE_BRACKET"),

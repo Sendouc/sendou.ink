@@ -1,6 +1,7 @@
 import compare from "just-compare";
 import type { PreparedMaps } from "~/db/tables";
 import type { Tournament } from "./Tournament";
+import { nullFilledArray } from "~/utils/arrays";
 
 /** Returns the prepared maps for one exact bracket index OR maps of a "sibling bracket" i.e. bracket that has the same sources  */
 export function resolvePreparedForTheBracket({
@@ -61,15 +62,23 @@ export function eliminationTeamCountOptions(currentCount: number) {
 	);
 }
 
+/** Validates that given count is a known "max" elimination team count value */
+export function isValidMaxEliminationTeamCount(count: number) {
+	return ELIMINATION_BRACKET_TEAM_RANGES.some(({ max }) => max === count);
+}
+
 interface TrimPreparedEliminationMapsAgs {
 	preparedMaps: PreparedMaps | null;
 	teamCount: number;
+	tournament: Tournament;
+	type: "double_elimination" | "single_elimination";
 }
 
 /** Trim prepared elimination bracket maps to match the actual number. If not prepared or prepared for too few returns null */
 export function trimPreparedEliminationMaps({
 	preparedMaps,
 	teamCount,
+	...rest
 }: TrimPreparedEliminationMapsAgs) {
 	if (!preparedMaps) {
 		// we did not prepare enough maps
@@ -93,12 +102,33 @@ export function trimPreparedEliminationMaps({
 		return preparedMaps;
 	}
 
-	return trimMapsByTeamCount({ preparedMaps, teamCount });
+	return trimMapsByTeamCount({ preparedMaps, teamCount, ...rest });
 }
 
 function trimMapsByTeamCount({
 	preparedMaps,
-	// teamCount,
-}: TrimPreparedEliminationMapsAgs) {
-	return preparedMaps;
+	teamCount,
+	tournament,
+	type,
+}: TrimPreparedEliminationMapsAgs & { preparedMaps: PreparedMaps }) {
+	const actualRounds = tournament.generateMatchesData(
+		nullFilledArray(teamCount).map((_, i) => i + 1),
+		type,
+	);
+
+	const actualRoundsCoutn = actualRounds.round.length;
+
+	const trimmedMaps = { ...preparedMaps };
+	if (!trimmedMaps.maps) return trimmedMaps;
+
+	// we need to remove rounds from the start
+	const roundsToRemove = trimmedMaps.maps.length - actualRoundsCoutn;
+
+	if (roundsToRemove <= 0) {
+		return trimmedMaps;
+	}
+
+	trimmedMaps.maps = trimmedMaps.maps.slice(roundsToRemove);
+
+	return trimmedMaps;
 }

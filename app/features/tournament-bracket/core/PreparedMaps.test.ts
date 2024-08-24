@@ -117,10 +117,21 @@ describe("PreparedMaps - eliminationTeamCountOptions", () => {
 });
 
 describe("PreparedMaps - trimPreparedEliminationMaps", () => {
+	const tournament = testTournament({
+		ctx: {
+			settings: {
+				thirdPlaceMatch: true,
+				bracketProgression: [],
+			},
+		},
+	});
+
 	test("returns null if no prepared maps", () => {
 		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
 			preparedMaps: null,
 			teamCount: 4,
+			tournament,
+			type: "single_elimination",
 		});
 
 		expect(trimmed).toBeNull();
@@ -130,6 +141,8 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
 			preparedMaps: FOUR_TEAM_SE_PREPARED,
 			teamCount: 8,
+			tournament,
+			type: "single_elimination",
 		});
 
 		expect(trimmed).toBeNull();
@@ -143,6 +156,8 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
 			preparedMaps: copy,
 			teamCount: 4,
+			tournament,
+			type: "single_elimination",
 		});
 
 		expect(trimmed).toBeNull();
@@ -152,15 +167,19 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
 			preparedMaps: FOUR_TEAM_SE_PREPARED,
 			teamCount: 4,
+			tournament,
+			type: "single_elimination",
 		});
 
 		expect(trimmed).toBe(FOUR_TEAM_SE_PREPARED);
 	});
 
-	test.todo("trims the maps (SE - 1 extra round)", () => {
+	test("trims the maps (SE - 1 extra round)", () => {
 		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
 			preparedMaps: EIGHT_TEAM_SE_PREPARED,
 			teamCount: 4,
+			tournament,
+			type: "single_elimination",
 		});
 
 		expect(trimmed?.maps.length).toBe(EIGHT_TEAM_SE_PREPARED.maps.length - 1);
@@ -270,7 +289,7 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			},
 		],
 		authorId: 274,
-		eliminationTeamCount: 5,
+		eliminationTeamCount: 4,
 		createdAt: 1724405930,
 	};
 

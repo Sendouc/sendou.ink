@@ -74,7 +74,7 @@
 		"react-hook-form": "^7.52.2",
 		"react-i18next": "^15.0.1",
 		"react-popper": "^2.3.0",
-		"react-responsive-masonry": "^2.3.0",
+		"react-responsive-masonry": "2.2.0",
 		"react-use": "^17.5.1",
 		"react-use-draggable-scroll": "^0.4.7",
 		"reconnecting-websocket": "^4.4.0",
