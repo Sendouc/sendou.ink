@@ -208,22 +208,23 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 		maps: [
 			{
 				roundId: 0,
+				groupId: 0,
 				list: [
 					{
 						mode: "TC",
-						stageId: 14,
+						stageId: 10,
 					},
 					{
-						mode: "CB",
-						stageId: 15,
+						mode: "RM",
+						stageId: 4,
 					},
 					{
 						mode: "SZ",
 						stageId: 18,
 					},
 					{
-						mode: "RM",
-						stageId: 4,
+						mode: "CB",
+						stageId: 13,
 					},
 					{
 						mode: "TC",
@@ -235,26 +236,27 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			},
 			{
 				roundId: 1,
+				groupId: 0,
 				list: [
 					{
-						mode: "TC",
-						stageId: 10,
+						mode: "CB",
+						stageId: 16,
 					},
 					{
-						mode: "CB",
-						stageId: 0,
+						mode: "TC",
+						stageId: 21,
 					},
 					{
 						mode: "SZ",
-						stageId: 7,
+						stageId: 2,
 					},
 					{
 						mode: "RM",
-						stageId: 3,
+						stageId: 12,
 					},
 					{
-						mode: "TC",
-						stageId: 6,
+						mode: "CB",
+						stageId: 14,
 					},
 				],
 				count: 5,
@@ -262,26 +264,27 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			},
 			{
 				roundId: 2,
+				groupId: 1,
 				list: [
 					{
-						mode: "SZ",
-						stageId: 2,
-					},
-					{
 						mode: "TC",
-						stageId: 19,
-					},
-					{
-						mode: "CB",
-						stageId: 8,
+						stageId: 3,
 					},
 					{
 						mode: "RM",
-						stageId: 12,
+						stageId: 0,
 					},
 					{
 						mode: "SZ",
-						stageId: 16,
+						stageId: 7,
+					},
+					{
+						mode: "CB",
+						stageId: 15,
+					},
+					{
+						mode: "TC",
+						stageId: 6,
 					},
 				],
 				count: 5,
@@ -290,25 +293,26 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 		],
 		authorId: 274,
 		eliminationTeamCount: 4,
-		createdAt: 1724405930,
+		createdAt: 1724481143,
 	};
 
 	const EIGHT_TEAM_SE_PREPARED: PreparedMapsType = {
 		maps: [
 			{
 				roundId: 0,
+				groupId: 0,
 				list: [
 					{
 						mode: "CB",
-						stageId: 14,
+						stageId: 0,
+					},
+					{
+						mode: "TC",
+						stageId: 21,
 					},
 					{
 						mode: "SZ",
-						stageId: 16,
-					},
-					{
-						mode: "RM",
-						stageId: 12,
+						stageId: 2,
 					},
 				],
 				count: 3,
@@ -316,26 +320,27 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			},
 			{
 				roundId: 1,
+				groupId: 0,
 				list: [
 					{
-						mode: "TC",
+						mode: "RM",
 						stageId: 3,
 					},
 					{
-						mode: "RM",
-						stageId: 6,
-					},
-					{
 						mode: "SZ",
-						stageId: 7,
+						stageId: 18,
 					},
 					{
 						mode: "CB",
-						stageId: 15,
+						stageId: 13,
 					},
 					{
 						mode: "TC",
 						stageId: 1,
+					},
+					{
+						mode: "RM",
+						stageId: 4,
 					},
 				],
 				count: 5,
@@ -343,26 +348,27 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			},
 			{
 				roundId: 2,
+				groupId: 0,
 				list: [
 					{
-						mode: "SZ",
-						stageId: 8,
-					},
-					{
 						mode: "CB",
-						stageId: 13,
-					},
-					{
-						mode: "RM",
-						stageId: 2,
+						stageId: 15,
 					},
 					{
 						mode: "TC",
-						stageId: 19,
+						stageId: 6,
 					},
 					{
 						mode: "SZ",
-						stageId: 21,
+						stageId: 10,
+					},
+					{
+						mode: "RM",
+						stageId: 12,
+					},
+					{
+						mode: "CB",
+						stageId: 16,
 					},
 				],
 				count: 5,
@@ -370,26 +376,27 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			},
 			{
 				roundId: 3,
+				groupId: 1,
 				list: [
 					{
-						mode: "SZ",
-						stageId: 10,
-					},
-					{
-						mode: "TC",
+						mode: "CB",
 						stageId: 14,
 					},
 					{
+						mode: "SZ",
+						stageId: 7,
+					},
+					{
+						mode: "TC",
+						stageId: 19,
+					},
+					{
 						mode: "RM",
-						stageId: 18,
+						stageId: 2,
 					},
 					{
 						mode: "CB",
-						stageId: 0,
-					},
-					{
-						mode: "SZ",
-						stageId: 16,
+						stageId: 8,
 					},
 				],
 				count: 5,
@@ -397,7 +404,7 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			},
 		],
 		authorId: 274,
-		eliminationTeamCount: 5,
-		createdAt: 1724412027,
+		eliminationTeamCount: 8,
+		createdAt: 1724481176,
 	};
 });

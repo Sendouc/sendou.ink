@@ -474,7 +474,7 @@ export interface Tournament {
 export interface PreparedMaps {
 	authorId: number;
 	createdAt: number;
-	maps: Array<TournamentRoundMaps & { roundId: number }>;
+	maps: Array<TournamentRoundMaps & { roundId: number; groupId: number }>;
 	eliminationTeamCount?: number;
 }
 

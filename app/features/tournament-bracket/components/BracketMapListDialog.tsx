@@ -213,6 +213,7 @@ export function BracketMapListDialog({
 						Array.from(maps.entries()).map(([key, value]) => ({
 							...value,
 							roundId: key,
+							groupId: rounds.find((r) => r.id === key)?.group_id,
 							type: countType,
 						})),
 					)}

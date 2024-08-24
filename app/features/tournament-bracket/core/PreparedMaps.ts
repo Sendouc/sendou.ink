@@ -1,7 +1,7 @@
 import compare from "just-compare";
 import type { PreparedMaps } from "~/db/tables";
-import type { Tournament } from "./Tournament";
 import { nullFilledArray } from "~/utils/arrays";
+import type { Tournament } from "./Tournament";
 
 /** Returns the prepared maps for one exact bracket index OR maps of a "sibling bracket" i.e. bracket that has the same sources  */
 export function resolvePreparedForTheBracket({
