@@ -244,6 +244,7 @@ export function findLeanById(id: number) {
 			...COMMON_USER_FIELDS,
 			"User.isArtist",
 			"User.isVideoAdder",
+			"User.isTournamentOrganizer",
 			"User.patronTier",
 			"User.favoriteBadgeId",
 			"User.languages",

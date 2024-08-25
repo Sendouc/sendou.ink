@@ -68,6 +68,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			await AdminRepository.makeVideoAdderByUserId(data.user);
 			break;
 		}
+		case "TOURNAMENT_ORGANIZER": {
+			validate(isMod(user), "Mod needed", 401);
+
+			await AdminRepository.makeTournamentOrganizerByUserId(data.user);
+			break;
+		}
 		case "LINK_PLAYER": {
 			validate(isMod(user), "Mod needed", 401);
 
@@ -153,6 +159,10 @@ export const adminActionSchema = z.union([
 	}),
 	z.object({
 		_action: _action("VIDEO_ADDER"),
+		user: z.preprocess(actualNumber, z.number().positive()),
+	}),
+	z.object({
+		_action: _action("TOURNAMENT_ORGANIZER"),
 		user: z.preprocess(actualNumber, z.number().positive()),
 	}),
 	z.object({

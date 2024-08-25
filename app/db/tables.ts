@@ -753,6 +753,7 @@ export interface User {
 	inGameName: string | null;
 	isArtist: Generated<number | null>;
 	isVideoAdder: Generated<number | null>;
+	isTournamentOrganizer: Generated<number | null>;
 	languages: string | null;
 	motionSens: number | null;
 	patronSince: number | null;

@@ -11,7 +11,6 @@ import { validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { tournamentBracketsPage } from "~/utils/urls";
 import { canAddNewEvent } from "../calendar-utils";
-import { canCreateTournament } from "../calendar-utils.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const t = await i18next.getFixedT(request);
@@ -72,23 +71,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		);
 	}
 
-	const userCanCreateTournament = canCreateTournament(user);
-
 	return json({
 		managedBadges: await BadgeRepository.findManagedByUserId(user.id),
 		recentEventsWithMapPools:
 			await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),
 		eventToEdit: canEditEvent ? eventToEdit : undefined,
 		eventToCopy:
-			userCanCreateTournament && !eventToEdit
+			user.isTournamentOrganizer && !eventToEdit
 				? await eventWithTournament("copyEventId")
 				: undefined,
 		recentTournaments:
-			userCanCreateTournament && !eventToEdit
+			user.isTournamentOrganizer && !eventToEdit
 				? await CalendarRepository.findRecentTournamentsByAuthorId(user.id)
 				: undefined,
 		title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
-		canCreateTournament: userCanCreateTournament,
 		organizations: await TournamentOrganizationRepository.findByOrganizerUserId(
 			user.id,
 		),

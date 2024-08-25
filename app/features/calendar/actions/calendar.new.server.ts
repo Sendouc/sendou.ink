@@ -45,10 +45,7 @@ import {
 	canAddNewEvent,
 	regClosesAtDate,
 } from "../calendar-utils";
-import {
-	canCreateTournament,
-	formValuesToBracketProgression,
-} from "../calendar-utils.server";
+import { formValuesToBracketProgression } from "../calendar-utils.server";
 
 export const action: ActionFunction = async ({ request }) => {
 	const user = await requireUser(request);
@@ -97,7 +94,9 @@ export const action: ActionFunction = async ({ request }) => {
 					}
 				: undefined,
 		autoValidateAvatar: Boolean(user.patronTier),
-		toToolsEnabled: canCreateTournament(user) ? Number(data.toToolsEnabled) : 0,
+		toToolsEnabled: user.isTournamentOrganizer
+			? Number(data.toToolsEnabled)
+			: 0,
 		toToolsMode:
 			rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
 		bracketProgression: formValuesToBracketProgression(data),

@@ -76,6 +76,14 @@ export function makeVideoAdderByUserId(userId: number) {
 		.execute();
 }
 
+export function makeTournamentOrganizerByUserId(userId: number) {
+	return db
+		.updateTable("User")
+		.set({ isTournamentOrganizer: 1 })
+		.where("User.id", "=", userId)
+		.execute();
+}
+
 export async function linkUserAndPlayer({
 	userId,
 	playerId,
