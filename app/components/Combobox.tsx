@@ -1,9 +1,9 @@
 import {
-	Combobox as HeadlessCombobox,
-	ComboboxInput,
-	ComboboxOption as HeadlessComboboxOption,
-	ComboboxOptions,
 	ComboboxButton,
+	ComboboxInput,
+	ComboboxOptions,
+	Combobox as HeadlessCombobox,
+	ComboboxOption as HeadlessComboboxOption,
 } from "@headlessui/react";
 import clsx from "clsx";
 import Fuse, { type IFuseOptions } from "fuse.js";
