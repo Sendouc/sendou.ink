@@ -172,12 +172,12 @@ function authEnvVars() {
 	if (process.env.NODE_ENV === "production") {
 		invariant(process.env.DISCORD_CLIENT_ID);
 		invariant(process.env.DISCORD_CLIENT_SECRET);
-		invariant(process.env.VITE_SITE_DOMAIN);
+		invariant(process.env.BASE_URL);
 
 		return {
 			DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
 			DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
-			BASE_URL: process.env.VITE_SITE_DOMAIN,
+			BASE_URL: process.env.BASE_URL,
 		};
 	}
 
@@ -185,6 +185,6 @@ function authEnvVars() {
 	return {
 		DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID ?? "",
 		DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET ?? "",
-		BASE_URL: process.env.VITE_SITE_DOMAIN ?? "",
+		BASE_URL: process.env.BASE_URL ?? "",
 	};
 }
