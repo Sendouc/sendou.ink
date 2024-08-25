@@ -8,6 +8,7 @@ export function PickIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Pick Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

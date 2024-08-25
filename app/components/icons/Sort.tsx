@@ -8,6 +8,7 @@ export function SortIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Sort Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

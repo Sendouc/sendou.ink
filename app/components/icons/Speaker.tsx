@@ -8,6 +8,7 @@ export function SpeakerIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Speaker Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

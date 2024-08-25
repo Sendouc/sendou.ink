@@ -8,6 +8,7 @@ export function RefreshArrowsIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Refresh Arrows Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"
