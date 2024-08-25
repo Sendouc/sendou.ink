@@ -39,10 +39,8 @@ const staticAssetsUrl = ({
 
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
-const USER_SUBMITTED_IMAGE_ROOT =
-	process.env.NODE_ENV === "development"
-		? "https://sendou-test.ams3.digitaloceanspaces.com"
-		: "https://sendou.nyc3.cdn.digitaloceanspaces.com";
+const USER_SUBMITTED_IMAGE_ROOT = import.meta.env
+	.VITE_USER_SUBMITTED_IMAGES_URL;
 export const userSubmittedImage = (fileName: string) =>
 	`${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
 // images with https are not hosted on spaces, this is used for local development

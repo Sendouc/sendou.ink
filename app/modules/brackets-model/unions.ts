@@ -57,4 +57,4 @@ export type SeedOrdering =
 /**
  * The possible results of a duel for a participant.
  */
-export type Result = "win" | "draw" | "loss";
+export type Result = "win" | "loss";

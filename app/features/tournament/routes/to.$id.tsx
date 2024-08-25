@@ -241,6 +241,11 @@ export default function TournamentLayout() {
 						})}
 					</SubNavLink>
 				) : null}
+				{tournament.hasStarted ? (
+					<SubNavLink to="standings">
+						{t("tournament:tabs.standings")}
+					</SubNavLink>
+				) : null}
 				{tournament.isOrganizer(user) && !tournament.hasStarted && (
 					<SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
 				)}
