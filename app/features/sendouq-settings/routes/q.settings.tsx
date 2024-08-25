@@ -1,4 +1,4 @@
-import { RadioGroup, Radio } from "@headlessui/react";
+import { Radio, RadioGroup } from "@headlessui/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
