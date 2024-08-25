@@ -1,4 +1,4 @@
-import { Combobox as HeadlessCombobox } from "@headlessui/react";
+import { Combobox as HeadlessCombobox, ComboboxInput, ComboboxOption as HeadlessComboboxOption, ComboboxOptions, ComboboxButton } from "@headlessui/react";
 import clsx from "clsx";
 import Fuse, { type IFuseOptions } from "fuse.js";
 import * as React from "react";
@@ -133,7 +133,7 @@ export function Combobox<
 				// TODO: remove hack that prevents TS from freaking out. probably related: https://github.com/tailwindlabs/headlessui/issues/1895
 				nullable={nullable as true}
 			>
-				<HeadlessCombobox.Input
+				<ComboboxInput
 					onChange={(event) => setQuery(event.target.value)}
 					placeholder={isLoading ? t("actions.loading") : placeholder}
 					className={clsx("combobox-input", className, {
@@ -148,7 +148,7 @@ export function Combobox<
 					onFocus={showComboboxOptions}
 					ref={inputRef}
 				/>
-				<HeadlessCombobox.Options
+				<ComboboxOptions
 					className={clsx("combobox-options", {
 						empty: noMatches,
 						fullWidth,
@@ -166,7 +166,7 @@ export function Combobox<
 						</div>
 					) : (
 						filteredOptions.map((option) => (
-							<HeadlessCombobox.Option
+							<HeadlessComboboxOption
 								key={option.value}
 								value={option}
 								as={React.Fragment}
@@ -185,11 +185,11 @@ export function Combobox<
 										<span className="combobox-item-label">{option.label}</span>
 									</li>
 								)}
-							</HeadlessCombobox.Option>
+							</HeadlessComboboxOption>
 						))
 					)}
-				</HeadlessCombobox.Options>
-				<HeadlessCombobox.Button ref={buttonRef} className="hidden" />
+				</ComboboxOptions>
+				<ComboboxButton ref={buttonRef} className="hidden" />
 			</HeadlessCombobox>
 		</div>
 	);

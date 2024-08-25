@@ -1,4 +1,10 @@
-import { Menu as HeadlessUIMenu, Transition } from "@headlessui/react";
+import {
+	Menu as HeadlessUIMenu,
+	MenuButton,
+	MenuItem,
+	MenuItems,
+	Transition,
+} from "@headlessui/react";
 import clsx from "clsx";
 import * as React from "react";
 
@@ -20,7 +26,7 @@ export interface MenuProps {
 export function Menu({ button, items, className, scrolling }: MenuProps) {
 	return (
 		<HeadlessUIMenu as="div" className={clsx("menu-container", className)}>
-			<HeadlessUIMenu.Button as={button} />
+			<MenuButton as={button} />
 			<Transition
 				as={React.Fragment}
 				enter="transition ease-out duration-100"
@@ -30,14 +36,14 @@ export function Menu({ button, items, className, scrolling }: MenuProps) {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<HeadlessUIMenu.Items
+				<MenuItems
 					className={clsx("menu__items-container", {
 						"menu-container__scrolling": scrolling,
 					})}
 				>
 					{items.map((item) => {
 						return (
-							<HeadlessUIMenu.Item key={item.id} disabled={item.disabled}>
+							<MenuItem key={item.id} disabled={item.disabled}>
 								{({ active }) => (
 									<button
 										className={clsx("menu__item", {
@@ -55,10 +61,10 @@ export function Menu({ button, items, className, scrolling }: MenuProps) {
 										{item.text}
 									</button>
 								)}
-							</HeadlessUIMenu.Item>
+							</MenuItem>
 						);
 					})}
-				</HeadlessUIMenu.Items>
+				</MenuItems>
 			</Transition>
 		</HeadlessUIMenu>
 	);

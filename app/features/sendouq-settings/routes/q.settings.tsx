@@ -1,4 +1,4 @@
-import { RadioGroup } from "@headlessui/react";
+import { RadioGroup, Radio } from "@headlessui/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -324,7 +324,7 @@ function PreferenceRadioGroup({
 			}
 			className="stack horizontal xs"
 		>
-			<RadioGroup.Option value="AVOID">
+			<Radio value="AVOID">
 				{({ checked }) => (
 					<span
 						className={clsx("q-settings__radio", {
@@ -340,8 +340,8 @@ function PreferenceRadioGroup({
 						{t("q:settings.maps.avoid")}
 					</span>
 				)}
-			</RadioGroup.Option>
-			<RadioGroup.Option value="NEUTRAL">
+			</Radio>
+			<Radio value="NEUTRAL">
 				{({ checked }) => (
 					<span
 						className={clsx("q-settings__radio", {
@@ -357,8 +357,8 @@ function PreferenceRadioGroup({
 						{t("q:settings.maps.neutral")}
 					</span>
 				)}
-			</RadioGroup.Option>
-			<RadioGroup.Option value="PREFER">
+			</Radio>
+			<Radio value="PREFER">
 				{({ checked }) => (
 					<span
 						className={clsx("q-settings__radio", {
@@ -374,7 +374,7 @@ function PreferenceRadioGroup({
 						{t("q:settings.maps.prefer")}
 					</span>
 				)}
-			</RadioGroup.Option>
+			</Radio>
 		</RadioGroup>
 	);
 }

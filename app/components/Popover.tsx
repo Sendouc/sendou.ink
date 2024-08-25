@@ -1,4 +1,8 @@
-import { Popover as HeadlessPopover } from "@headlessui/react";
+import {
+	Popover as HeadlessPopover,
+	PopoverButton,
+	PopoverPanel,
+} from "@headlessui/react";
 import type { Placement } from "@popperjs/core";
 import clsx from "clsx";
 import * as React from "react";
@@ -41,18 +45,18 @@ export function Popover({
 
 	return (
 		<HeadlessPopover className={containerClassName}>
-			<HeadlessPopover.Button
+			<PopoverButton
 				// @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
 				ref={setReferenceElement}
 				className={triggerClassName ?? "minimal tiny"}
 				data-testid={triggerTestId}
 			>
 				{buttonChildren}
-			</HeadlessPopover.Button>
+			</PopoverButton>
 
 			{isMounted
 				? createPortal(
-						<HeadlessPopover.Panel
+						<PopoverPanel
 							// @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
 							ref={setPopperElement}
 							className={clsx("popover-content", contentClassName)}
@@ -60,7 +64,7 @@ export function Popover({
 							{...attributes.popper}
 						>
 							{children}
-						</HeadlessPopover.Panel>,
+						</PopoverPanel>,
 						document.body,
 					)
 				: null}

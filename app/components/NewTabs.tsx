@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import clsx from "clsx";
 import * as React from "react";
 
@@ -41,8 +41,8 @@ export function NewTabs(args: NewTabsProps) {
 	const cantSwitchTabs = tabs.filter((t) => !t.hidden).length <= 1;
 
 	return (
-		<Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-			<Tab.List
+		<TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+			<TabList
 				className={clsx("tab__buttons-container", {
 					"overflow-x-auto": scrolling,
 					invisible: cantSwitchTabs && !disappearing,
@@ -67,21 +67,19 @@ export function NewTabs(args: NewTabsProps) {
 							</Tab>
 						);
 					})}
-			</Tab.List>
-			<Tab.Panels
-				className={clsx({ "mt-4": !cantSwitchTabs || !disappearing })}
-			>
+			</TabList>
+			<TabPanels className={clsx({ "mt-4": !cantSwitchTabs || !disappearing })}>
 				{content
 					.filter((c) => !c.hidden)
 					.map((c) => {
 						return (
-							<Tab.Panel key={c.key} unmount={c.unmount}>
+							<TabPanel key={c.key} unmount={c.unmount}>
 								{c.element}
-							</Tab.Panel>
+							</TabPanel>
 						);
 					})}
-			</Tab.Panels>
-		</Tab.Group>
+			</TabPanels>
+		</TabGroup>
 	);
 }
 
@@ -96,8 +94,8 @@ function DividerTabs({
 	const cantSwitchTabs = tabs.filter((t) => !t.hidden).length <= 1;
 
 	return (
-		<Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-			<Tab.List
+		<TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+			<TabList
 				className={clsx("divider-tab__buttons-container", {
 					"overflow-x-auto": scrolling,
 					invisible: cantSwitchTabs && !disappearing,
@@ -124,16 +122,14 @@ function DividerTabs({
 							</React.Fragment>
 						);
 					})}
-			</Tab.List>
-			<Tab.Panels
-				className={clsx({ "mt-4": !cantSwitchTabs || !disappearing })}
-			>
+			</TabList>
+			<TabPanels className={clsx({ "mt-4": !cantSwitchTabs || !disappearing })}>
 				{content
 					.filter((c) => !c.hidden)
 					.map((c) => {
-						return <Tab.Panel key={c.key}>{c.element}</Tab.Panel>;
+						return <TabPanel key={c.key}>{c.element}</TabPanel>;
 					})}
-			</Tab.Panels>
-		</Tab.Group>
+			</TabPanels>
+		</TabGroup>
 	);
 }

@@ -1,4 +1,9 @@
-import { Combobox } from "@headlessui/react";
+import {
+	Combobox,
+	ComboboxInput,
+	ComboboxOption,
+	ComboboxOptions,
+} from "@headlessui/react";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -87,7 +92,7 @@ export const UserSearch = React.forwardRef<
 					}}
 					disabled={initialSelectionIsLoading}
 				>
-					<Combobox.Input
+					<ComboboxInput
 						ref={ref}
 						placeholder={
 							initialSelectionIsLoading
@@ -103,7 +108,7 @@ export const UserSearch = React.forwardRef<
 						required={required}
 						onBlur={onBlur}
 					/>
-					<Combobox.Options
+					<ComboboxOptions
 						className={clsx("combobox-options", {
 							empty: noMatches,
 							hidden: !queryFetcher.data,
@@ -116,7 +121,7 @@ export const UserSearch = React.forwardRef<
 							</div>
 						) : null}
 						{users.map((user, i) => (
-							<Combobox.Option key={user.id} value={user} as={React.Fragment}>
+							<ComboboxOption key={user.id} value={user} as={React.Fragment}>
 								{({ active }) => (
 									<li
 										className={clsx("combobox-item", { active })}
@@ -138,9 +143,9 @@ export const UserSearch = React.forwardRef<
 										</div>
 									</li>
 								)}
-							</Combobox.Option>
+							</ComboboxOption>
 						))}
-					</Combobox.Options>
+					</ComboboxOptions>
 				</Combobox>
 			</div>
 		);
