@@ -48,16 +48,17 @@ export class DiscordStrategy extends OAuth2Strategy<
 
 		super(
 			{
-				authorizationURL: "https://discord.com/api/oauth2/authorize",
-				tokenURL:
+				authorizationEndpoint: "https://discord.com/api/oauth2/authorize",
+				tokenEndpoint:
 					process.env.AUTH_GATEWAY_TOKEN_URL ??
 					"https://discord.com/api/oauth2/token",
-				clientID: envVars.DISCORD_CLIENT_ID,
+				clientId: envVars.DISCORD_CLIENT_ID,
 				clientSecret: envVars.DISCORD_CLIENT_SECRET,
-				callbackURL: new URL("/auth/callback", envVars.BASE_URL).toString(),
+				redirectURI: new URL("/auth/callback", envVars.BASE_URL).toString(),
 			},
-			async ({ accessToken }) => {
+			async ({ tokens }) => {
 				try {
+          const { access_token: accessToken } = tokens;
 					const discordResponses = this.authGatewayEnabled()
 						? await this.fetchProfileViaGateway(accessToken)
 						: await this.fetchProfileViaDiscordApi(accessToken);
