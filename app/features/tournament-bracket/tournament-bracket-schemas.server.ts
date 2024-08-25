@@ -105,7 +105,7 @@ const tournamentRoundMaps = z.object({
 			}),
 		)
 		.nullish(),
-	count: numericEnum([3, 5, 7]),
+	count: numericEnum([1, 3, 5, 7]),
 	type: z.enum(["BEST_OF", "PLAY_ALL"]),
 	pickBan: z.enum(["COUNTERPICK", "BAN_2"]).nullish(),
 });

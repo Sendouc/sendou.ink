@@ -611,6 +611,7 @@ function GlobalMapCountInput({
 				onChange={(e) => onSetCount(Number(e.target.value))}
 				defaultValue={defaultValue}
 			>
+				<option value="1">1</option>
 				<option value="3">3</option>
 				<option value="5">5</option>
 				<option value="7">7</option>
@@ -712,7 +713,7 @@ function RoundMapList({
 			</h3>
 			{editing && includeRoundSpecificSelections ? (
 				<div className="stack xs horizontal">
-					{[3, 5, 7].map((count) => (
+					{[1, 3, 5, 7].map((count) => (
 						<div key={count}>
 							<Label htmlFor={`bo-${count}-${id}`}>Bo{count}</Label>
 							<input
