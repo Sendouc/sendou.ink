@@ -165,7 +165,7 @@ Some common files:
 ## Commands
 
 Prerequisites:
-- Install latest version of [npx tsx](https://tsx.is/getting-started)
+- Install latest version of [tsx](https://tsx.is/getting-started)
 
 ### Add new badge to the database
 
