@@ -193,8 +193,6 @@ export default function TournamentLayout() {
 		}, [tournament]);
 	}
 
-	const onBracketsPage = location.pathname.includes("brackets");
-
 	const subsCount = () =>
 		tournament.ctx.subCounts.reduce((acc, cur) => {
 			if (cur.visibility === "ALL") return acc + cur.count;
@@ -218,7 +216,12 @@ export default function TournamentLayout() {
 		}, 0);
 
 	return (
-		<Main bigger={onBracketsPage}>
+		<Main
+			bigger={
+				location.pathname.includes("brackets") ||
+				location.pathname.includes("standings")
+			}
+		>
 			<SubNav>
 				<SubNavLink to="register" data-testid="register-tab" prefetch="intent">
 					{tournament.hasStarted ? "Info" : t("tournament:tabs.register")}

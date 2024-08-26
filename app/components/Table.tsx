@@ -1,3 +1,7 @@
 export function Table({ children }: { children: React.ReactNode }) {
-	return <table className="my-table">{children}</table>;
+	return (
+		<div className="my-new-table__container">
+			<table className="my-new-table">{children}</table>
+		</div>
+	);
 }

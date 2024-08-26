@@ -332,6 +332,43 @@ select:focus {
 	padding-inline: var(--s-1);
 }
 
+.my-new-table {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0 var(--s-1-5);
+	font-size: var(--fonts-xs);
+	text-align: left;
+	border-color: var(--border);
+}
+
+.my-new-table__container {
+	position: relative;
+	width: 100%;
+	overflow: auto;
+}
+
+.my-new-table > thead {
+	font-size: var(--fonts-xxs);
+}
+
+.my-new-table tr {
+	border-style: solid;
+	border-width: 0px;
+	border-bottom-width: 1px;
+}
+
+.my-new-table tbody tr:hover {
+	background-color: var(--bg-lighter);
+}
+
+.my-new-table > thead > tr > th {
+	padding: var(--s-2);
+}
+
+.my-new-table > tbody > tr > td {
+	padding: var(--s-2);
+}
+
 td > input[type="checkbox"] {
 	vertical-align: middle;
 }

@@ -1,15 +1,25 @@
+import { Link } from "@remix-run/react";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
+import { Flag } from "~/components/Flag";
 import { Placement } from "~/components/Placement";
 import { Table } from "~/components/Table";
-import type { Bracket } from "~/features/tournament-bracket/core/Bracket";
+import { tournamentTeamPage } from "~/utils/urls";
+import * as Standings from "../core/Standings";
 import { useTournament } from "./to.$id";
 
 export default function TournamentStandingsPage() {
 	const tournament = useTournament();
 
-	const bracket = tournament.bracketByIdx(0)!;
-	const standings = bracket.standings;
+	const standings = tournament.standings;
+
+	if (standings.length === 0) {
+		return (
+			<div className="text-center text-lg font-semi-bold text-lighter">
+				No team finished yet, check back later
+			</div>
+		);
+	}
 
 	let lastRenderedPlacement = 0;
 	return (
@@ -19,6 +29,7 @@ export default function TournamentStandingsPage() {
 					<tr>
 						<th>Standing</th>
 						<th>Team</th>
+						<th>Roster</th>
 						<th>Seed</th>
 						<th>SPR</th>
 						<th>Matches</th>
@@ -34,24 +45,52 @@ export default function TournamentStandingsPage() {
 
 						const teamLogoSrc = tournament.tournamentTeamLogoSrc(standing.team);
 
+						const spr = Standings.calculateSPR({
+							standings,
+							teamId: standing.team.id,
+						});
+
 						return (
 							<tr key={standing.team.id}>
-								<td>
+								<td className="text-md">
 									{typeof placement === "number" ? (
-										<Placement placement={placement} />
+										<Placement placement={placement} size={36} />
 									) : null}{" "}
 								</td>
-								<td className="stack horizontal sm items-center">
-									{teamLogoSrc ? <Avatar size="xxs" url={teamLogoSrc} /> : null}{" "}
-									{standing.team.name}
-								</td>
-								<td>{standing.team.seed}</td>
-								<td>0</td>
 								<td>
-									<MatchHistoryRow
-										teamId={standing.team.id}
-										bracket={bracket}
-									/>
+									<Link
+										to={tournamentTeamPage({
+											tournamentId: tournament.ctx.id,
+											tournamentTeamId: standing.team.id,
+										})}
+										className="stack xs horizontal items-center text-main-forced"
+									>
+										{teamLogoSrc ? (
+											<Avatar size="xs" url={teamLogoSrc} />
+										) : null}{" "}
+										{standing.team.name}
+									</Link>
+								</td>
+								<td>
+									{standing.team.members.map((player) => (
+										<div
+											key={player.userId}
+											className="stack xxs horizontal items-center"
+										>
+											{player.country ? (
+												<Flag countryCode={player.country} tiny />
+											) : null}
+											{player.username}
+										</div>
+									))}
+								</td>
+								<td className="text-sm">{standing.team.seed}</td>
+								<td className="text-sm">
+									{spr > 0 ? "+" : ""}
+									{spr}
+								</td>
+								<td>
+									<MatchHistoryRow teamId={standing.team.id} />
 								</td>
 							</tr>
 						);
@@ -62,39 +101,20 @@ export default function TournamentStandingsPage() {
 	);
 }
 
-// xxx: quite a lot of ! here, some helpers?
-function MatchHistoryRow({
-	teamId,
-	bracket,
-}: { teamId: number; bracket: Bracket }) {
+function MatchHistoryRow({ teamId }: { teamId: number }) {
 	const tournament = useTournament();
 
-	const teamMatches = bracket.data.match.filter(
-		(m) =>
-			m.opponent1 &&
-			m.opponent2 &&
-			(m.opponent1?.id === teamId || m.opponent2?.id === teamId),
-	);
+	const teamMatches = Standings.matchesPlayed({
+		tournament,
+		teamId,
+	});
 
 	return (
-		<div className="stack horizontal sm">
+		<div className="stack horizontal xs">
 			{teamMatches.map((match) => {
-				const opponentId = (
-					match.opponent1?.id === teamId
-						? match.opponent2?.id
-						: match.opponent1?.id
-				)!;
-				const team = tournament.teamById(opponentId)!;
-
-				const result = (
-					match.opponent1?.id === teamId
-						? match.opponent1.result
-						: match.opponent2?.result
-				)!;
-
 				return (
-					<MatchResultSquare result={result} key={match.id}>
-						{team.seed}
+					<MatchResultSquare result={match.result} key={match.id}>
+						{match.vsSeed}
 					</MatchResultSquare>
 				);
 			})}
