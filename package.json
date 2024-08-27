@@ -44,7 +44,7 @@
 		"@remix-run/serve": "^2.10.2",
 		"@tldraw/tldraw": "^2.3.0",
 		"aws-sdk": "^2.1655.0",
-		"better-sqlite3": "^11.1.2",
+		"better-sqlite3": "^11.2.1",
 		"clsx": "^2.1.1",
 		"compressorjs": "^1.2.1",
 		"countries-list": "^3.1.0",
