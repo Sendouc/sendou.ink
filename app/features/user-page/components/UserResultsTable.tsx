@@ -21,6 +21,11 @@ export type UserResultsTableProps = {
 export const HIGHLIGHT_CHECKBOX_NAME = "highlightTeamIds";
 export const HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME = "highlightTournamentTeamIds";
 
+// xxx: team logo
+// xxx: tournament logo
+// xxx: pagination?
+// xxx: participation indicator?
+
 export function UserResultsTable({
 	results,
 	id,
@@ -38,7 +43,6 @@ export function UserResultsTable({
 					<th id={placementHeaderId}>{t("results.placing")}</th>
 					<th>{t("results.team")}</th>
 					<th>{t("results.tournament")}</th>
-					<th>{t("results.participants")}</th>
 					<th>{t("results.date")}</th>
 					<th>{t("results.mates")}</th>
 				</tr>
@@ -70,8 +74,13 @@ export function UserResultsTable({
 									/>
 								</td>
 							)}
-							<td className="pl-4" id={placementCellId}>
-								<Placement placement={result.placement} />
+							<td className="pl-4 whitespace-nowrap" id={placementCellId}>
+								<div className="stack horizontal xs items-end">
+									<Placement placement={result.placement} />{" "}
+									<div className="text-lighter">
+										/ {result.participantCount}
+									</div>
+								</div>
 							</td>
 							<td>
 								{result.tournamentId ? (
@@ -104,14 +113,12 @@ export function UserResultsTable({
 									</Link>
 								) : null}
 							</td>
-							<td>{result.participantCount}</td>
 							<td>
-								{/* TODO: can be made better when $narrowNotNull lands */}
-								{databaseTimestampToDate(result.startTime!).toLocaleDateString(
+								{databaseTimestampToDate(result.startTime).toLocaleDateString(
 									i18n.language,
 									{
 										day: "numeric",
-										month: "numeric",
+										month: "long",
 										year: "numeric",
 									},
 								)}
