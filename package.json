@@ -105,11 +105,8 @@
 	},
 	"trustedDependencies": [
 		"@biomejs/biome",
-		"@swc/core",
 		"aws-sdk",
 		"better-sqlite3",
-		"core-js",
-		"esbuild",
 		"protobufjs"
 	]
 }
