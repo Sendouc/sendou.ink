@@ -71,7 +71,7 @@
 	"settings.sounds.groupNewMember": "Nuevo miembro al grupo",
 	"settings.sounds.matchStarted": "Comenzo el partido",
 	"settings.mapPool.notOk": "Elige {{count}} mapas por modo que no evitaste para guardar tus preferencias",
-	"settings.misc.header": "Varios",
+	"settings.misc.header": "Misc",
 	"settings.banned": "Prohibidos",
 	"settings.avoid.label": "Evitar {{special}}",
 	"settings.trusted.header": "Usuarios de confianza",
