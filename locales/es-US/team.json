@@ -20,6 +20,7 @@
 	"roles.MIDLINE": "Centro",
 	"roles.BACKLINE": "Defensor",
 	"roles.FLEX": "Flex",
+	"roles.SUB": "Suplente",
 	"roles.COACH": "Entrenador",
 	"forms.fields.teamTwitter": "Twitter del equipo",
 	"forms.fields.bio": "Bio",
