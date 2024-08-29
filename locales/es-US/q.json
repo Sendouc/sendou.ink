@@ -1,8 +1,8 @@
 {
 	"mapListPreference.NO_PREFERENCE": "Sin preferencia",
-	"mapListPreference.PREFER_ALL_MODES": "Preferir todos los modos",
+	"mapListPreference.PREFER_ALL_MODES": "Preferir todos los estilos",
 	"mapListPreference.PREFER_SZ": "Preferir solo Pintazonas",
-	"mapListPreference.ALL_MODES_ONLY": "Todo los modos",
+	"mapListPreference.ALL_MODES_ONLY": "Todo los estilos",
 	"mapListPreference.SZ_ONLY": "Solo Pintazonas",
 	"mapListPreference.note": "No podrás emparejar con los equipos que seleccionen \"{{optionOne}}\". Considera seleccionar \"{{optionTwo}}\".",
 	"roles.OWNER": "Dueño",
@@ -34,7 +34,7 @@
 	"front.nav.info.title": "Información",
 	"front.nav.info.description": "Qué es SendouQ y como usarlo",
 	"front.nav.settings.title": "Preferencias",
-	"front.nav.settings.description": "Preferencias de mapas, grupos de armas, chat de voz, y sonidos",
+	"front.nav.settings.description": "Preferencias de escenarios, grupos de armas, chat de voz, y sonidos",
 	"front.nav.leaderboards.title": "Tablas de posición",
 	"front.nav.leaderboards.description": "Tablas en SendouQ por individuales y equipos",
 	"front.nav.mySeason.title": "Mi temporada",
@@ -53,7 +53,7 @@
 	"front.preview": "Ver avance de grupos en fila sin unirte",
 	"front.preview.explanation": "Esta función solo es disponible para Patrons a nivel Supporter (o más alto) de sendou.ink",
 
-	"settings.maps.header": "Mapas y modos",
+	"settings.maps.header": "Escenarios y Estilos",
 	"settings.maps.avoid": "Evitar",
 	"settings.maps.prefer": "Preferir",
 	"settings.maps.neutral": "Neutral",
