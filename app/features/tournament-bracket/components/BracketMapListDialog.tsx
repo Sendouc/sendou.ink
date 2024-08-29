@@ -546,7 +546,11 @@ function teamCountAdjustedBracketData({
 		// RR & swiss are different because for those the amount of participants won't affect the amount of rounds
 		case "round_robin":
 		case "swiss":
-			return bracket.data;
+			// 10 to ensure a full bracket gets generated even if registration is underway
+			return tournament.generateMatchesData(
+				nullFilledArray(10).map((_, i) => i + 1),
+				bracket.type,
+			);
 		case "single_elimination":
 			return tournament.generateMatchesData(
 				nullFilledArray(teamCount).map((_, i) => i + 1),
