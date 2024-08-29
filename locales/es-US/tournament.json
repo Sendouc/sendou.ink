@@ -76,6 +76,8 @@
 	"admin.actions.ADD_TEAM": "Registrar equipo",
 	"admin.actions.DROP_TEAM_OUT": "Retirar equipo",
 	"admin.actions.UNDO_DROP_TEAM_OUT": "Anular retiro",
+	"admin.actions.UPDATE_IN_GAME_NAME": "Actualizar IGN de jugador",
+	"admin.actions.DELETE_LOGO": "Borrar logo",
 
 	"staff.role.ORGANIZER": "organizador",
 	"staff.role.STREAMER": "streamer",
@@ -111,7 +113,7 @@
 	"bracket.standings.showMore": "Mostrar más",
 
 	"match.hosts": "{{teamName}} crea la sala",
-	"match.pass": "Pasar",
+	"match.pass": "Contraseña",
 	"match.pool": "Grupo",
 	"match.score": "{{scoreOne}}-{{scoreTwo}} (Mejor de {{bestOf}})",
 	"match.score.playAll": "{{scoreOne}}-{{scoreTwo}} (Jugar todos los {{bestOf}})",
