@@ -7,6 +7,7 @@ export function RefreshIcon({ className }: { className?: string }) {
 			viewBox="0 0 24 24"
 			stroke="currentColor"
 		>
+			<title>Refresh Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

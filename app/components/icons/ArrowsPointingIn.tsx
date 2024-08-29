@@ -8,6 +8,7 @@ export function ArrowsPointingInIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Arrows Pointing In Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

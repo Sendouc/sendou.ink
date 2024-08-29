@@ -217,10 +217,6 @@ export abstract class Bracket {
 	}
 
 	get participantTournamentTeamIds() {
-		// if (this.seeding) {
-		//   return this.seeding.map((seed) => seed.id);
-		// }
-
 		return removeDuplicates(
 			this.data.match
 				.flatMap((match) => [match.opponent1?.id, match.opponent2?.id])
@@ -339,7 +335,7 @@ export abstract class Bracket {
 		}
 	}
 
-	get defaultRoundBestOfs(): BracketMapCounts {
+	defaultRoundBestOfs(_data: TournamentManagerDataSet): BracketMapCounts {
 		throw new Error("not implemented");
 	}
 }
@@ -349,14 +345,12 @@ class SingleEliminationBracket extends Bracket {
 		return "single_elimination";
 	}
 
-	get defaultRoundBestOfs(): BracketMapCounts {
+	defaultRoundBestOfs(data: TournamentManagerDataSet) {
 		const result: BracketMapCounts = new Map();
 
-		const maxRoundNumber = Math.max(
-			...this.data.round.map((round) => round.number),
-		);
-		for (const group of this.data.group) {
-			const roundsOfGroup = this.data.round.filter(
+		const maxRoundNumber = Math.max(...data.round.map((round) => round.number));
+		for (const group of data.group) {
+			const roundsOfGroup = data.round.filter(
 				(round) => round.group_id === group.id,
 			);
 
@@ -498,11 +492,11 @@ class DoubleEliminationBracket extends Bracket {
 		return "double_elimination";
 	}
 
-	get defaultRoundBestOfs(): BracketMapCounts {
+	defaultRoundBestOfs(data: TournamentManagerDataSet) {
 		const result: BracketMapCounts = new Map();
 
-		for (const group of this.data.group) {
-			const roundsOfGroup = this.data.round.filter(
+		for (const group of data.group) {
+			const roundsOfGroup = data.round.filter(
 				(round) => round.group_id === group.id,
 			);
 
@@ -1031,10 +1025,10 @@ class RoundRobinBracket extends Bracket {
 		return "round_robin";
 	}
 
-	get defaultRoundBestOfs() {
+	defaultRoundBestOfs(data: TournamentManagerDataSet) {
 		const result: BracketMapCounts = new Map();
 
-		for (const round of this.data.round) {
+		for (const round of data.round) {
 			if (!result.get(round.group_id)) {
 				result.set(round.group_id, new Map());
 			}
@@ -1404,10 +1398,10 @@ class SwissBracket extends Bracket {
 		return "swiss";
 	}
 
-	get defaultRoundBestOfs() {
+	defaultRoundBestOfs(data: TournamentManagerDataSet) {
 		const result: BracketMapCounts = new Map();
 
-		for (const round of this.data.round) {
+		for (const round of data.round) {
 			if (!result.get(round.group_id)) {
 				result.set(round.group_id, new Map());
 			}

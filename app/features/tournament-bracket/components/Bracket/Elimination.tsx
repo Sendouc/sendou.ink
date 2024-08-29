@@ -11,7 +11,7 @@ interface EliminationBracketSideProps {
 }
 
 export function EliminationBracketSide(props: EliminationBracketSideProps) {
-	const rounds = getRounds(props);
+	const rounds = getRounds({ ...props, bracketData: props.bracket.data });
 
 	let atLeastOneColumnHidden = false;
 	return (

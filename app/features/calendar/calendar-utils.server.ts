@@ -1,17 +1,8 @@
 import type { z } from "zod";
 import type { TournamentSettings } from "~/db/tables";
-import { isAdmin } from "~/permissions";
 import { BRACKET_NAMES } from "../tournament/tournament-constants";
 import type { newCalendarEventActionSchema } from "./actions/calendar.new.server";
 import { validateFollowUpBrackets } from "./calendar-utils";
-
-const usersWithTournamentPerms =
-	process.env.TOURNAMENT_PERMS?.split(",").map(Number) ?? [];
-export function canCreateTournament(user?: { id: number }) {
-	if (!user) return false;
-
-	return isAdmin(user) || usersWithTournamentPerms.includes(user.id);
-}
 
 export function formValuesToBracketProgression(
 	args: z.infer<typeof newCalendarEventActionSchema>,

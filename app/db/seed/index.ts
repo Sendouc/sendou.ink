@@ -102,6 +102,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
 	adminUser,
 	makeAdminPatron,
 	makeAdminVideoAdder,
+	makeAdminTournamentOrganizer,
 	nzapUser,
 	users,
 	fixAdminId,
@@ -249,6 +250,12 @@ function makeAdminPatron() {
 
 function makeAdminVideoAdder() {
 	sql.prepare(`update "User" set "isVideoAdder" = 1 where id = 1`).run();
+}
+
+function makeAdminTournamentOrganizer() {
+	sql
+		.prepare(`update "User" set "isTournamentOrganizer" = 1 where id = 1`)
+		.run();
 }
 
 function adminUserWeaponPool() {
@@ -2030,6 +2037,7 @@ async function playedMatches() {
 			alphaGroupId: groupAlpha,
 			bravoGroupId: groupBravo,
 			mapList: randomMapList(groupAlpha, groupBravo),
+			memento: { users: {}, groups: {}, pools: [] },
 		});
 
 		// update match createdAt to the past

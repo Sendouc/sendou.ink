@@ -8,6 +8,7 @@ export function ClipboardIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Clipboard Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

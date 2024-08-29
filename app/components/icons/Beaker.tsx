@@ -8,6 +8,7 @@ export function BeakerIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Beaker Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

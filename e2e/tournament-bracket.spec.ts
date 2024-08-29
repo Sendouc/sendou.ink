@@ -813,6 +813,36 @@ test.describe("Tournament bracket", () => {
 		await expect(page.getByText("BYE")).toBeVisible();
 	});
 
+	test("prepares maps", async ({ page }) => {
+		const tournamentId = 4;
+
+		await seed(page);
+		await impersonate(page);
+
+		await navigate({
+			page,
+			url: tournamentBracketsPage({ tournamentId }),
+		});
+
+		await page.getByRole("button", { name: "Great White" }).click();
+
+		await page.getByTestId("prepare-maps-button").click();
+
+		await page.getByTestId("confirm-finalize-bracket-button").click();
+
+		await expect(page.getByTestId("prepared-maps-check-icon")).toBeVisible();
+
+		// we did not prepare maps for group stage
+		await page.getByRole("button", { name: "Groups stage" }).click();
+
+		await isNotVisible(page.getByTestId("prepared-maps-check-icon"));
+
+		// should reuse prepared maps from Great White
+		await page.getByRole("button", { name: "Hammerhead" }).click();
+
+		await expect(page.getByTestId("prepared-maps-check-icon")).toBeVisible();
+	});
+
 	for (const pickBan of ["COUNTERPICK", "BAN_2"]) {
 		for (const mapPickingStyle of ["AUTO_SZ", "TO"]) {
 			test(`ban/pick ${pickBan} (${mapPickingStyle})`, async ({ page }) => {

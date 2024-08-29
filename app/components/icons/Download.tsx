@@ -8,6 +8,7 @@ export function DownloadIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Download Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

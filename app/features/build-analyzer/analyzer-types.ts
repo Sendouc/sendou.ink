@@ -280,7 +280,8 @@ export interface AnalyzedBuild {
 		specialMoveSpeed?: Stat;
 		specialAutoChargeRate?: Stat;
 		specialMaxRadius?: Stat;
-		specialRadiusRange?: Stat<string>;
+		specialRadiusRangeMin?: Stat;
+		specialRadiusRangeMax?: Stat;
 		specialPowerUpDuration?: Stat;
 	};
 }

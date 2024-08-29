@@ -41,6 +41,7 @@ export default function AdminPage() {
 			{isMod(user) ? <LinkPlayer /> : null}
 			{isMod(user) ? <GiveArtist /> : null}
 			{isMod(user) ? <GiveVideoAdder /> : null}
+			{isMod(user) ? <GiveTournamentOrganizer /> : null}
 			{isMod(user) ? <UpdateFriendCode /> : null}
 
 			{process.env.NODE_ENV !== "production" || isAdmin(user) ? (
@@ -196,6 +197,31 @@ function GiveVideoAdder() {
 			<div className="stack horizontal md">
 				<SubmitButton type="submit" _action="VIDEO_ADDER" state={fetcher.state}>
 					Add as video adder
+				</SubmitButton>
+			</div>
+		</fetcher.Form>
+	);
+}
+
+function GiveTournamentOrganizer() {
+	const fetcher = useFetcher();
+
+	return (
+		<fetcher.Form className="stack md" method="post">
+			<h2>Give tournament organizer</h2>
+			<div className="stack horizontal md">
+				<div>
+					<label>User</label>
+					<UserSearch inputName="user" />
+				</div>
+			</div>
+			<div className="stack horizontal md">
+				<SubmitButton
+					type="submit"
+					_action="TOURNAMENT_ORGANIZER"
+					state={fetcher.state}
+				>
+					Add as tournament organizer
 				</SubmitButton>
 			</div>
 		</fetcher.Form>

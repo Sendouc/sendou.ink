@@ -1,7 +1,11 @@
-import { Database } from "bun:sqlite";
 import { styleText } from "node:util";
-import { Kysely, type LogEvent, ParseJSONResultsPlugin } from "kysely";
-import { BunSqliteDialect } from "kysely-bun-sqlite";
+import Database from "better-sqlite3";
+import {
+	Kysely,
+	type LogEvent,
+	ParseJSONResultsPlugin,
+	SqliteDialect,
+} from "kysely";
 import { format } from "sql-formatter";
 import invariant from "~/utils/invariant";
 import { roundToNDecimalPlaces } from "~/utils/number";
@@ -13,16 +17,14 @@ const LOG_LEVEL = (["trunc", "full", "none"] as const).find(
 
 invariant(process.env.DB_PATH, "DB_PATH env variable must be set");
 
-export const sql = new Database(process.env.DB_PATH, {
-	strict: true,
-});
+export const sql = new Database(process.env.DB_PATH);
 
-sql.exec("PRAGMA journal_mode = WAL;");
-sql.exec("PRAGMA foreign_keys = ON;");
-sql.exec("PRAGMA busy_timeout = 5000;");
+sql.pragma("journal_mode = WAL");
+sql.pragma("foreign_keys = ON");
+sql.pragma("busy_timeout = 5000");
 
 export const db = new Kysely<DB>({
-	dialect: new BunSqliteDialect({
+	dialect: new SqliteDialect({
 		database: sql,
 	}),
 	log: LOG_LEVEL === "trunc" || LOG_LEVEL === "full" ? logQuery : undefined,

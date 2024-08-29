@@ -146,6 +146,10 @@
 	width: var(--s-4);
 }
 
+.w-6 {
+	width: var(--s-6);
+}
+
 .w-24 {
 	width: var(--s-24);
 }

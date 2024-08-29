@@ -3,10 +3,12 @@ import { type Insertable, type NotNull, type Transaction, sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { nanoid } from "nanoid";
 import { db } from "~/db/sql";
-import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
+import type { CastedMatchesInfo, DB, PreparedMaps, Tables } from "~/db/tables";
 import { Status } from "~/modules/brackets-model";
 import { modesShort } from "~/modules/in-game-lists";
+import { nullFilledArray } from "~/utils/arrays";
 import {
+	databaseTimestampNow,
 	databaseTimestampToDate,
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
@@ -53,9 +55,15 @@ export async function findById(id: number) {
 						jsonArrayFrom(
 							innerEb
 								.selectFrom("TournamentOrganizationMember")
+								.innerJoin(
+									"User",
+									"TournamentOrganizationMember.userId",
+									"User.id",
+								)
 								.select([
 									"TournamentOrganizationMember.userId",
 									"TournamentOrganizationMember.role",
+									"User.username",
 								])
 								.whereRef(
 									"TournamentOrganizationMember.organizationId",
@@ -280,6 +288,18 @@ export async function findTOSetMapPoolById(tournamentId: number) {
 
 		return a.stageId - b.stageId;
 	});
+}
+
+export async function findPreparedMapsById(tournamentId: number) {
+	return (
+		(
+			await db
+				.selectFrom("Tournament")
+				.select("preparedMaps")
+				.where("id", "=", tournamentId)
+				.executeTakeFirst()
+		)?.preparedMaps ?? undefined
+	);
 }
 
 const NEXT_TOURNAMENTS_TO_SHOW_WITH_UPCOMING = 2;
@@ -544,6 +564,38 @@ export function removeStaff({
 		.where("tournamentId", "=", tournamentId)
 		.where("userId", "=", userId)
 		.execute();
+}
+
+interface UpsertPreparedMapsArgs {
+	tournamentId: number;
+	maps: Omit<PreparedMaps, "createdAt">;
+	bracketIdx: number;
+}
+
+export function upsertPreparedMaps({
+	bracketIdx,
+	maps,
+	tournamentId,
+}: UpsertPreparedMapsArgs) {
+	return db.transaction().execute(async (trx) => {
+		const tournament = await trx
+			.selectFrom("Tournament")
+			.select(["Tournament.preparedMaps", "Tournament.settings"])
+			.where("Tournament.id", "=", tournamentId)
+			.executeTakeFirstOrThrow();
+
+		const preparedMaps: Array<PreparedMaps | null> =
+			tournament.preparedMaps ??
+			nullFilledArray(tournament.settings.bracketProgression.length);
+
+		preparedMaps[bracketIdx] = { ...maps, createdAt: databaseTimestampNow() };
+
+		await trx
+			.updateTable("Tournament")
+			.set({ preparedMaps: JSON.stringify(preparedMaps) })
+			.where("Tournament.id", "=", tournamentId)
+			.execute();
+	});
 }
 
 export function updateCastTwitchAccounts({

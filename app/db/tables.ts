@@ -456,8 +456,12 @@ export interface Tournament {
 	settings: ColumnType<TournamentSettings, string, string>;
 	id: GeneratedAlways<number>;
 	mapPickingStyle: TournamentMapPickingStyle;
-	// TODO: remove in migration
-	// showMapListGenerator: Generated<number | null>;
+	/** Maps prepared ahead of time for rounds. Follows settings.bracketProgression order. Null in the spot if not defined yet for that bracket. */
+	preparedMaps: ColumnType<
+		(PreparedMaps | null)[] | null,
+		string | null,
+		string | null
+	>;
 	castTwitchAccounts: ColumnType<string[] | null, string | null, string | null>;
 	castedMatchesInfo: ColumnType<
 		CastedMatchesInfo | null,
@@ -465,6 +469,13 @@ export interface Tournament {
 		string | null
 	>;
 	rules: string | null;
+}
+
+export interface PreparedMaps {
+	authorId: number;
+	createdAt: number;
+	maps: Array<TournamentRoundMaps & { roundId: number; groupId: number }>;
+	eliminationTeamCount?: number;
 }
 
 export interface TournamentBadgeOwner {
@@ -742,6 +753,7 @@ export interface User {
 	inGameName: string | null;
 	isArtist: Generated<number | null>;
 	isVideoAdder: Generated<number | null>;
+	isTournamentOrganizer: Generated<number | null>;
 	languages: string | null;
 	motionSens: number | null;
 	patronSince: number | null;

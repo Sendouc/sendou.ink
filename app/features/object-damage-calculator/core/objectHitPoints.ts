@@ -25,6 +25,7 @@ const INK_VAC_HP = 800;
 const BEAKON_HP = 120;
 const TORPEDO_HP = 20;
 const SUPER_CHUMP_HP = 60;
+const TRIPLE_SPLASHDOWN_HP = 100;
 
 export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
 	const Wsb_Shield = subStats({
@@ -71,5 +72,6 @@ export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
 		Wsb_Flag: BEAKON_HP,
 		Wsb_Sprinkler: SPRINKLER_HP,
 		Firework: SUPER_CHUMP_HP,
+		BulletPogo: TRIPLE_SPLASHDOWN_HP,
 	};
 };

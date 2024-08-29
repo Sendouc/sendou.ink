@@ -23,6 +23,7 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { Tables } from "~/db/tables";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
+import { useUser } from "~/features/auth/core/user";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
 	BRACKET_NAMES,
@@ -133,7 +134,6 @@ function TemplateTournamentForm() {
 
 function EventForm() {
 	const fetcher = useFetcher();
-	const data = useLoaderData<typeof loader>();
 	const { t } = useTranslation();
 	const { eventToEdit, eventToCopy } = useLoaderData<typeof loader>();
 	const baseEvent = useBaseEvent();
@@ -142,6 +142,7 @@ function EventForm() {
 	);
 	const ref = React.useRef<HTMLFormElement>(null);
 	const [avatarImg, setAvatarImg] = React.useState<File | null>(null);
+	const user = useUser();
 
 	const handleSubmit = () => {
 		const formData = new FormData(ref.current!);
@@ -179,12 +180,12 @@ function EventForm() {
 					value={eventToCopy.tournamentId}
 				/>
 			) : null}
-			{data.canCreateTournament && !eventToEdit && (
+			{user?.isTournamentOrganizer && !eventToEdit ? (
 				<TournamentEnabler
 					checked={isTournament}
 					setChecked={setIsTournament}
 				/>
-			)}
+			) : null}
 			<NameInput />
 			<DescriptionTextarea supportsMarkdown={isTournament} />
 			<OrganizationSelect />
@@ -1343,6 +1344,8 @@ function TournamentFormatSelector() {
 						<option value="2">2</option>
 						<option value="3">3</option>
 						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
 					</select>
 				</div>
 			) : null}

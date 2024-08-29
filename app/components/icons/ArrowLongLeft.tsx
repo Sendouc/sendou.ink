@@ -8,6 +8,7 @@ export function ArrowLongLeftIcon({ className }: { className?: string }) {
 			stroke="currentColor"
 			className={className}
 		>
+			<title>Arrow Long Left Icon</title>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"
