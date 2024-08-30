@@ -32,7 +32,7 @@
 
 	"auth.errors.aborted": "logindforsøg afbrudt",
 	"auth.errors.failed": "Loginforsøg fejlet",
-	"auth.errors.discordPermissions": "Før at du kan oprette en profil på Sendou.ink, skal Sendou.ink have adgang til din Discordprofils navn, brugerbillede og sociale forbindelser (de sociale medier, som du har tilknyttet din discordprofil).",
+	"auth.errors.discordPermissions": "Før at du kan oprette en profil på sendou.ink, skal sendou.ink have adgang til din Discordprofils navn, brugerbillede og sociale forbindelser (de sociale medier, som du har tilknyttet din discordprofil).",
 
 	"footer.github.subtitle": "Kildekode",
 	"footer.discord.subtitle": "Hjælp og feedback",
@@ -144,12 +144,12 @@
 	"upload.afterExplanation_one": "Du har {{count}} billede, der afventer moderatorgodkendelse. Billedet vil blive vist automatisk efter det er blevet godkendt.",
 	"upload.afterExplanation_other": "Du har {{count}} billeder, der afventer moderatorgodkendelse. Billederne vil blive vist automatisk efter de er blevet godkendt.",
 
-	"support.intro.first": "Hej! Mit navn er Sendou og Sendou.ink er mit projekt, hvis formål er at stille redskaber og ressourcer til rådighed for Splatoon-fællesskabet. Målet er at hjælpe alle med at nyde og blive bedre til Splatoon. Hvad enten om du lige er startet eller har spillet Splatoon i mange timer.",
+	"support.intro.first": "Hej! Mit navn er Sendou og sendou.ink er mit projekt, hvis formål er at stille redskaber og ressourcer til rådighed for Splatoon-fællesskabet. Målet er at hjælpe alle med at nyde og blive bedre til Splatoon. Hvad enten om du lige er startet eller har spillet Splatoon i mange timer.",
 	"support.intro.second": "Hvis du kan lide, hvad jeg laver på denne hjemmeside, så du støtte mit værk. Denne side beskriver, hvordan du kan støtte mit arbejde og opnå frynsegoder på sendou.ink. Din støtte hjælper mig med at betale for at hoste hjemmesiden, samt sponsorere den tid, som jeg fortsat bruger på at forbedre hjemmesiden.",
 	"support.action": "Støt via Patreon",
 	"support.footer": "Efter at du er blevet en ny patreon til hjemmesiden, så kan du tilknytte <2>din discord-profil til Patreon.com </2>. Derefter vil frynsegoderne træde i kraft indenfor 2 timer. Hvis der er nogle spørgsmål eller problemer, så kontakt venligt Sendou for at hjælp.",
 	"support.perk.supportMyWork": "Du støtter mit arbejde",
-	"support.perk.adFree": "Reklamefri Sendou.ink",
+	"support.perk.adFree": "Reklamefri sendou.ink",
 	"support.perk.nameInFooter": "Discordnavn i bundtekst",
 	"support.perk.discordColorRole": "Discord-farverolle",
 	"support.perk.discordColorRole.extra": "Du kan have en brugerdefineret farverolle på Plus-serveren and sendou.ink’s Discordserver. Brug '/color' kommandoen på Lohi-botten.",
