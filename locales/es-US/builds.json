@@ -17,7 +17,7 @@
 	"deleteConfirm": "¿Borrar build '{{title}}'?",
 
 	"stats.count.title": "Estadísticas de {{count}} builds para {{weapon}}",
-	"stats.ap.title": "Promedios de puntos de potenciador",
+	"stats.ap.title": "Promedios de puntos de potenciadores",
 	"stats.percentage.title": "Frecuencia de potenciadores exclusivas",
 	"stats.all": "Todas",
 	"stats.public": "Público",

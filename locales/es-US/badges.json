@@ -1,6 +1,6 @@
 {
-	"patreon": "Supporter de sendou.ink en Patreon",
-	"patreon+": "Supporter+ de sendou.ink en Patreon",
+	"patreon": "\"Supporter\" de sendou.ink en Patreon",
+	"patreon+": "\"Supporter+\" de sendou.ink en Patreon",
 	"xp": "Recibido por alcanzar {{xpText}}",
 	"tournament_one": "Recibido por ganar {{tournament}}",
 	"tournament_other": "Recibido por ganar {{tournament}} (×{{count}})",
