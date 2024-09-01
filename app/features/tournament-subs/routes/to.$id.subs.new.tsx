@@ -146,9 +146,9 @@ function VCRadios() {
 						type="radio"
 						id="vc-true"
 						name="canVc"
-						value="on"
+						value="1"
 						required
-						defaultChecked={data.sub && Boolean(data.sub.canVc)}
+						defaultChecked={data.sub && data.sub.canVc === 1}
 					/>
 					<label htmlFor="vc-true" className="mb-0">
 						{t("common:yes")}
@@ -159,11 +159,23 @@ function VCRadios() {
 						type="radio"
 						id="vc-false"
 						name="canVc"
-						value="off"
-						defaultChecked={data.sub && !data.sub.canVc}
+						value="0"
+						defaultChecked={data.sub && data.sub.canVc === 0}
 					/>
 					<label htmlFor="vc-false" className="mb-0">
 						{t("common:no")}
+					</label>
+				</div>
+				<div className="stack horizontal sm items-center">
+					<input
+						type="radio"
+						id="vc-listen-only"
+						name="canVc"
+						value="2"
+						defaultChecked={data.sub && data.sub.canVc === 2}
+					/>
+					<label htmlFor="vc-listen-only" className="mb-0">
+						{t("tournament:subs.listenOnlyVC")}
 					</label>
 				</div>
 			</div>

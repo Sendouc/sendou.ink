@@ -150,8 +150,20 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
 
 	const infos = [
 		<div key="vc" className="sub__section__info__vc">
-			<MicrophoneIcon className={sub.canVc ? "text-success" : "text-warning"} />
-			{sub.canVc ? t("tournament:subs.canVC") : t("tournament:subs.noVC")}
+			<MicrophoneIcon
+				className={
+					sub.canVc === 1
+						? "text-success"
+						: sub.canVc === 2
+							? "text-warning"
+							: "text-error"
+				}
+			/>
+			{sub.canVc === 1
+				? t("tournament:subs.canVC")
+				: sub.canVc === 2
+					? t("tournament:subs.listenOnlyVC")
+					: t("tournament:subs.noVC")}
 		</div>,
 	];
 	if (sub.plusTier) {
