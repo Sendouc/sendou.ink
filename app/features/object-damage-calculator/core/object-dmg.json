@@ -599,6 +599,10 @@
 			{
 				"target": "GreatBarrier_WeakPoint",
 				"rate": 1
+			},
+			{
+				"target": "Wsb_Shield",
+				"rate": 1
 			}
 		]
 	},

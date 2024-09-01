@@ -475,7 +475,7 @@ export const weaponParams = {
 			InkConsume: 0.11,
 		},
 		"221": {
-			SpecialPoint: 200,
+			SpecialPoint: 210,
 			subWeaponId: 0,
 			specialWeaponId: 17,
 			overwrites: {
@@ -1247,7 +1247,7 @@ export const weaponParams = {
 			InkConsumeMinCharge: 0.0197,
 		},
 		"3000": {
-			SpecialPoint: 200,
+			SpecialPoint: 210,
 			subWeaponId: 0,
 			specialWeaponId: 14,
 			MoveSpeed: 0.04,
@@ -1267,7 +1267,7 @@ export const weaponParams = {
 			InkConsumeSlosher: 0.07,
 		},
 		"3005": {
-			SpecialPoint: 200,
+			SpecialPoint: 210,
 			subWeaponId: 0,
 			specialWeaponId: 14,
 			MoveSpeed: 0.04,
