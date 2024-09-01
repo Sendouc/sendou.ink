@@ -101,7 +101,7 @@ export function findLayoutDataByIdentifier(
 				.as("vodsCount"),
 			eb
 				.selectFrom("Art")
-				.innerJoin("ArtUserMetadata", "ArtUserMetadata.artId", "Art.id")
+				.leftJoin("ArtUserMetadata", "ArtUserMetadata.artId", "Art.id")
 				.innerJoin("UserSubmittedImage", "UserSubmittedImage.id", "Art.imgId")
 				.select(({ fn }) => fn.count<number>("Art.id").distinct().as("count"))
 				.where((innerEb) =>

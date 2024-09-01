@@ -1,17 +1,10 @@
 import { z } from "zod";
 import { mainWeaponIds } from "~/modules/in-game-lists";
-import {
-	checkboxValueToDbBoolean,
-	dbBoolean,
-	id,
-	processMany,
-	removeDuplicates,
-	safeJSONParse,
-} from "~/utils/zod";
+import { id, processMany, removeDuplicates, safeJSONParse } from "~/utils/zod";
 import { TOURNAMENT_SUB } from "./tournament-subs-constants";
 
 export const subSchema = z.object({
-	canVc: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
+	canVc: z.coerce.number().int().min(0).max(2),
 	bestWeapons: z.preprocess(
 		processMany(safeJSONParse, removeDuplicates),
 		z

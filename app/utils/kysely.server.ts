@@ -19,3 +19,16 @@ export const userChatNameColor = sql<
 >`IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css" ->> 'chat', null)`.as(
 	"chatNameColor",
 );
+
+/** Prevents ParseJSONResultsPlugin from trying to parse this as JSON */
+export function unJsonify<T>(value: T) {
+	if (typeof value !== "string") {
+		return value;
+	}
+
+	if (value.match(/^[\[\{]/) === null) {
+		return value;
+	}
+
+	return `\\${value}`;
+}

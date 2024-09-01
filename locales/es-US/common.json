@@ -139,7 +139,7 @@
 
 	"articles.by": "por {{author}}",
 
-	"theme.light": "Ligero",
+	"theme.light": "Claro",
 	"theme.dark": "Oscuro",
 	"theme.auto": "Auto",
 
@@ -180,9 +180,9 @@
 	"custom.colors.title": "Colores personalizados",
 	"custom.colors.bg": "Fondo",
 	"custom.colors.bg-darker": "Fondo más oscuro",
-	"custom.colors.bg-lighter": "Fondo más ligero",
+	"custom.colors.bg-lighter": "Fondo más claro",
 	"custom.colors.text": "Texto",
-	"custom.colors.text-lighter": "Texto más ligero",
+	"custom.colors.text-lighter": "Texto más claro",
 	"custom.colors.theme": "Tema",
 	"custom.colors.chat": "Nombre en chat",
 

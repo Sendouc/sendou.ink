@@ -266,7 +266,7 @@ export async function findById(id: number) {
 		...result,
 		logoSrc: result.logoUrl
 			? userSubmittedImage(result.logoUrl)
-			: `${process.env.BASE_URL}${HACKY_resolvePicture(result)}`,
+			: `${import.meta.env.VITE_SITE_DOMAIN}${HACKY_resolvePicture(result)}`,
 		participatedUsers: result.participatedUsers.map((user) => user.userId),
 	};
 }

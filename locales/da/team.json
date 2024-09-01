@@ -20,6 +20,7 @@
 	"roles.MIDLINE": "Midlinje",
 	"roles.BACKLINE": "Backline",
 	"roles.FLEX": "Fleksibel",
+	"roles.SUB": "Vikar",
 	"roles.COACH": "Træner",
 	"forms.fields.teamTwitter": "Holdets Twitter",
 	"forms.fields.bio": "Bio",
