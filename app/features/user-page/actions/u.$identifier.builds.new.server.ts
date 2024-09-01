@@ -16,6 +16,7 @@ import type {
 	MainWeaponId,
 } from "~/modules/in-game-lists/types";
 import { removeDuplicates } from "~/utils/arrays";
+import { unJsonify } from "~/utils/kysely.server";
 import { logger } from "~/utils/logger";
 import { parseRequestPayload, validate } from "~/utils/remix";
 import type { Nullish } from "~/utils/types";
@@ -94,10 +95,18 @@ export const action: ActionFunction = async ({ request }) => {
 
 const newBuildActionSchema = z.object({
 	buildToEditId: z.preprocess(actualNumber, id.nullish()),
-	title: z.string().min(BUILD.TITLE_MIN_LENGTH).max(BUILD.TITLE_MAX_LENGTH),
+	title: z
+		.string()
+		.min(BUILD.TITLE_MIN_LENGTH)
+		.max(BUILD.TITLE_MAX_LENGTH)
+		.transform(unJsonify),
 	description: z.preprocess(
 		falsyToNull,
-		z.string().max(BUILD.DESCRIPTION_MAX_LENGTH).nullable(),
+		z
+			.string()
+			.max(BUILD.DESCRIPTION_MAX_LENGTH)
+			.nullable()
+			.transform(unJsonify),
 	),
 	TW: z.preprocess(checkboxValueToBoolean, z.boolean()),
 	SZ: z.preprocess(checkboxValueToBoolean, z.boolean()),

@@ -540,6 +540,7 @@ function BracketStarter({
 					close={close}
 					bracket={bracket}
 					bracketIdx={bracketIdx}
+					key={bracketIdx}
 				/>
 			) : null}
 			<Button
@@ -587,6 +588,7 @@ function MapPreparer({
 					bracket={bracket}
 					bracketIdx={bracketIdx}
 					isPreparing
+					key={bracketIdx}
 				/>
 			) : null}
 			<div className="stack sm horizontal ml-auto">
