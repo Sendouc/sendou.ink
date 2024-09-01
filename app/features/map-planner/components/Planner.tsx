@@ -91,7 +91,6 @@ export default function Planner() {
 					h: size[1],
 					mimeType: null,
 					isAnimated: false,
-					fileSize: 0,
 				},
 				meta: {},
 			};
