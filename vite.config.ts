@@ -91,7 +91,10 @@ export default defineConfig(() => {
 						});
 
 						route("/calendar", "features/calendar/routes/calendar.tsx");
-						route("/calendar/new", "features/calendar/routes/calendar.new.tsx");
+						route(
+							"/calendar/new",
+							"features/tournament-new/routes/calendar.new.tsx",
+						);
 						route("/calendar/:id", "features/calendar/routes/calendar.$id.tsx");
 						route(
 							"/calendar/:id/report-winners",
@@ -115,6 +118,8 @@ export default defineConfig(() => {
 							"/object-damage-calculator",
 							"features/object-damage-calculator/routes/object-damage-calculator.tsx",
 						);
+						route("/to/new", "features/tournament-new/routes/to.new.tsx");
+
 						route("/to/:id", "features/tournament/routes/to.$id.tsx", () => {
 							route("/to/:id", "features/tournament/routes/to.$id.index.tsx");
 							route(

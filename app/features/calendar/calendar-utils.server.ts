@@ -1,11 +1,11 @@
 import type { z } from "zod";
 import type { TournamentSettings } from "~/db/tables";
+import type { newTournamentSchema } from "../tournament-new/tournament-new-schemas";
 import { BRACKET_NAMES } from "../tournament/tournament-constants";
-import type { newCalendarEventActionSchema } from "./actions/calendar.new.server";
 import { validateFollowUpBrackets } from "./calendar-utils";
 
 export function formValuesToBracketProgression(
-	args: z.infer<typeof newCalendarEventActionSchema>,
+	args: z.infer<typeof newTournamentSchema>,
 ) {
 	if (!args.format) return null;
 

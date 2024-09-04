@@ -10,16 +10,16 @@ import { canEditCalendarEvent } from "~/permissions";
 import { validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { tournamentBracketsPage } from "~/utils/urls";
-import { canAddNewEvent } from "../calendar-utils";
 
+// xxx: unify logic with calendar.new.server.ts?
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const t = await i18next.getFixedT(request);
 	const user = await requireUser(request);
 	const url = new URL(request.url);
 
-	validate(canAddNewEvent(user), "Not authorized", 401);
+	validate(user.isTournamentOrganizer, "Not authorized", 401);
 
-	const eventWithTournament = async (key: string) => {
+	const eventWithTournamentFromSearchParams = async (key: string) => {
 		const eventId = Number(url.searchParams.get(key));
 		const event = Number.isNaN(eventId)
 			? undefined
@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		};
 	};
 
-	const eventToEdit = await eventWithTournament("eventId");
+	const eventToEdit = await eventWithTournamentFromSearchParams("eventId");
 	const canEditEvent = (() => {
 		if (!eventToEdit) return false;
 		if (
@@ -76,14 +76,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		recentEventsWithMapPools:
 			await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),
 		eventToEdit: canEditEvent ? eventToEdit : undefined,
-		eventToCopy:
-			user.isTournamentOrganizer && !eventToEdit
-				? await eventWithTournament("copyEventId")
-				: undefined,
-		recentTournaments:
-			user.isTournamentOrganizer && !eventToEdit
-				? await CalendarRepository.findRecentTournamentsByAuthorId(user.id)
-				: undefined,
+		eventToCopy: !eventToEdit
+			? await eventWithTournamentFromSearchParams("copyEventId")
+			: undefined,
+		recentTournaments: !eventToEdit
+			? await CalendarRepository.findRecentTournamentsByAuthorId(user.id)
+			: undefined,
 		title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
 		organizations: await TournamentOrganizationRepository.findByOrganizerUserId(
 			user.id,

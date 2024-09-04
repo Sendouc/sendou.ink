@@ -26,6 +26,7 @@ import { loader } from "../loaders/org.$slug.edit.server";
 import { handle, meta } from "../routes/org.$slug";
 export { loader, action, handle, meta };
 
+// xxx: move to schemas file
 const DESCRIPTION_MAX_LENGTH = 1_000;
 export const organizationEditSchema = z.object({
 	name: z

@@ -3,7 +3,13 @@ import { type Insertable, type NotNull, type Transaction, sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { nanoid } from "nanoid";
 import { db } from "~/db/sql";
-import type { CastedMatchesInfo, DB, PreparedMaps, Tables } from "~/db/tables";
+import type {
+	CalendarEventAvatarMetadata,
+	CastedMatchesInfo,
+	DB,
+	PreparedMaps,
+	Tables,
+} from "~/db/tables";
 import { Status } from "~/modules/brackets-model";
 import { modesShort } from "~/modules/in-game-lists";
 import { nullFilledArray } from "~/utils/arrays";
@@ -12,9 +18,11 @@ import {
 	databaseTimestampToDate,
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
+import invariant from "~/utils/invariant";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 import { userSubmittedImage } from "~/utils/urls";
+import * as CalendarRepository from "../calendar/CalendarRepository.server";
 import { HACKY_resolvePicture } from "./tournament-utils";
 
 export type FindById = NonNullable<Unwrapped<typeof findById>>;
@@ -564,6 +572,146 @@ export function removeStaff({
 		.where("tournamentId", "=", tournamentId)
 		.where("userId", "=", userId)
 		.execute();
+}
+
+type TournamentNewArgs = {
+	settings: Tables["Tournament"]["settings"];
+	mapPickingStyle: Tables["Tournament"]["mapPickingStyle"];
+	rules: Tables["Tournament"]["rules"];
+};
+
+export type CreateArgs = {
+	calendarEvent: CalendarRepository.CreateNewArgs;
+	tournament: TournamentNewArgs;
+	tournamentToCopyId?: number;
+	avatar?: {
+		fileName: string;
+		autoValidate: boolean;
+		metadata: CalendarEventAvatarMetadata;
+	};
+};
+
+export function create(args: CreateArgs) {
+	return db.transaction().execute(async (trx) => {
+		const tournamentId = (
+			await trx
+				.insertInto("Tournament")
+				.values({
+					mapPickingStyle: args.tournament.mapPickingStyle,
+					settings: JSON.stringify(args.tournament.settings),
+					rules: args.tournament.rules,
+				})
+				.returning("id")
+				.executeTakeFirstOrThrow()
+		).id;
+
+		const copiedStaff = args.tournamentToCopyId
+			? await db
+					.selectFrom("TournamentStaff")
+					.select(["role", "userId"])
+					.where("tournamentId", "=", args.tournamentToCopyId)
+					.where("TournamentStaff.userId", "!=", args.calendarEvent.authorId)
+					.execute()
+			: [];
+		if (copiedStaff.length > 0) {
+			await trx
+				.insertInto("TournamentStaff")
+				.columns(["role", "userId", "tournamentId"])
+				.values(
+					copiedStaff.map((staff) => ({
+						role: staff.role,
+						userId: staff.userId,
+						tournamentId: tournamentId!,
+					})),
+				)
+				.execute();
+		}
+
+		const avatarImgId = args.avatar
+			? await createSubmittedImageInTrx({
+					trx,
+					avatarFileName: args.avatar.fileName,
+					autoValidateAvatar: args.avatar.autoValidate,
+					userId: args.calendarEvent.authorId,
+				})
+			: null;
+
+		await CalendarRepository.createNewInTrx(
+			{
+				...args.calendarEvent,
+				avatarMetadata: args.avatar?.metadata ?? null,
+				tournamentId,
+				avatarImgId,
+				isTiebreakerMapPool: args.tournament.mapPickingStyle !== "TO",
+			},
+			trx,
+		);
+
+		return tournamentId;
+	});
+}
+
+type UpdateArgs = {
+	calendarEvent: CalendarRepository.UpdateNewArgs;
+	tournament: Omit<CreateArgs["tournament"], "mapPickingStyle">;
+	avatar: CreateArgs["avatar"];
+};
+
+export function update(args: UpdateArgs) {
+	return db.transaction().execute(async (trx) => {
+		const avatarImgId = args.avatar
+			? await createSubmittedImageInTrx({
+					trx,
+					avatarFileName: args.avatar.fileName,
+					autoValidateAvatar: args.avatar.autoValidate,
+					userId: args.calendarEvent.authorId,
+				})
+			: null;
+
+		const { tournamentId } = await CalendarRepository.updateNewInTrx(
+			{ ...args.calendarEvent, avatarImgId },
+			trx,
+		);
+		invariant(tournamentId, "Tournament id missing from calendar event");
+
+		await trx
+			.updateTable("Tournament")
+			.set({
+				settings: JSON.stringify(args.tournament.settings),
+				rules: args.tournament.rules,
+				// when tournament is updated clear the preparedMaps just in case the format changed
+				// in the future though we might want to be smarter with this i.e. only clear if the format really did change
+				preparedMaps: null,
+			})
+			.where("id", "=", tournamentId)
+			.executeTakeFirstOrThrow();
+
+		return tournamentId;
+	});
+}
+
+async function createSubmittedImageInTrx({
+	trx,
+	autoValidateAvatar,
+	avatarFileName,
+	userId,
+}: {
+	trx: Transaction<DB>;
+	avatarFileName: string;
+	autoValidateAvatar?: boolean;
+	userId: number;
+}) {
+	const result = await trx
+		.insertInto("UnvalidatedUserSubmittedImage")
+		.values({
+			url: avatarFileName,
+			validatedAt: autoValidateAvatar ? databaseTimestampNow() : null,
+			submitterUserId: userId,
+		})
+		.returning("id")
+		.executeTakeFirstOrThrow();
+
+	return result.id;
 }
 
 interface UpsertPreparedMapsArgs {

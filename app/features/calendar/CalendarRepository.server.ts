@@ -741,6 +741,123 @@ function createBadgesInTrx({
 		.execute();
 }
 
+export type CreateNewArgs = Pick<
+	Tables["CalendarEvent"],
+	| "name"
+	| "authorId"
+	| "tags"
+	| "description"
+	| "discordInviteCode"
+	| "bracketUrl"
+	| "organizationId"
+	| "avatarImgId"
+	| "tournamentId"
+	| "avatarMetadata"
+> & {
+	startTimes: Array<Tables["CalendarEventDate"]["startTime"]>;
+	badges: Array<Tables["CalendarEventBadge"]["badgeId"]>;
+	mapPoolMaps?: Array<Pick<Tables["MapPoolMap"], "mode" | "stageId">>;
+};
+
+// xxx: drop new
+export function createNew(args: CreateNewArgs) {
+	return db.transaction().execute(async (trx) => {
+		return createNewInTrx(args, trx);
+	});
+}
+
+export async function createNewInTrx(
+	args: CreateNewArgs & { isTiebreakerMapPool?: boolean },
+	trx: Transaction<DB>,
+) {
+	const { id: eventId } = await trx
+		.insertInto("CalendarEvent")
+		.values({
+			name: args.name,
+			authorId: args.authorId,
+			tags: args.tags,
+			description: args.description,
+			discordInviteCode: args.discordInviteCode,
+			bracketUrl: args.bracketUrl,
+			organizationId: args.organizationId,
+			avatarImgId: args.avatarImgId,
+			tournamentId: args.tournamentId,
+			avatarMetadata: args.avatarMetadata
+				? JSON.stringify(args.avatarMetadata)
+				: null,
+		})
+		.returning("id")
+		.executeTakeFirstOrThrow();
+
+	await createDatesInTrx({ eventId, startTimes: args.startTimes, trx });
+	await createBadgesInTrx({ eventId, badges: args.badges, trx });
+
+	await upsertMapPoolInTrx({
+		trx,
+		eventId,
+		mapPoolMaps: args.mapPoolMaps ?? [],
+		column: args.isTiebreakerMapPool
+			? "tieBreakerCalendarEventId"
+			: "calendarEventId",
+	});
+
+	return eventId;
+}
+
+export type UpdateNewArgs = CreateNewArgs & {
+	eventId: number;
+};
+
+// xxx: drop new
+export function updateNew(args: UpdateNewArgs) {
+	return db.transaction().execute(async (trx) => {
+		return updateNewInTrx(args, trx);
+	});
+}
+
+export async function updateNewInTrx(
+	args: UpdateNewArgs & { isTiebreakerMapPool?: boolean },
+	trx: Transaction<DB>,
+) {
+	const { id: eventId, tournamentId } = await trx
+		.updateTable("CalendarEvent")
+		.set({
+			name: args.name,
+			authorId: args.authorId,
+			tags: args.tags,
+			description: args.description,
+			discordInviteCode: args.discordInviteCode,
+			bracketUrl: args.bracketUrl,
+			organizationId: args.organizationId,
+		})
+		.where("id", "=", args.eventId)
+		.returning(["id", "tournamentId"])
+		.executeTakeFirstOrThrow();
+
+	await trx
+		.deleteFrom("CalendarEventDate")
+		.where("eventId", "=", args.eventId)
+		.execute();
+	await createDatesInTrx({ eventId, startTimes: args.startTimes, trx });
+
+	await trx
+		.deleteFrom("CalendarEventBadge")
+		.where("eventId", "=", args.eventId)
+		.execute();
+	await createBadgesInTrx({ eventId, badges: args.badges, trx });
+
+	await upsertMapPoolInTrx({
+		trx,
+		eventId,
+		mapPoolMaps: args.mapPoolMaps ?? [],
+		column: args.isTiebreakerMapPool
+			? "tieBreakerCalendarEventId"
+			: "calendarEventId",
+	});
+
+	return { eventId, tournamentId };
+}
+
 export function upsertReportedScores(args: {
 	eventId: number;
 	participantCount: number;

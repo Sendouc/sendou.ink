@@ -6,6 +6,7 @@ import type { TournamentFormatShort } from "../tournament/tournament-constants";
 import type { RegClosesAtOption } from "./calendar-constants";
 import type { FollowUpBracket } from "./calendar-types";
 
+// xxx: delete
 export const canAddNewEvent = (user: { discordId: string }) =>
 	userDiscordIdIsAged(user);
 

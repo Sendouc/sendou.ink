@@ -23,7 +23,21 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { Tables } from "~/db/tables";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
-import { useUser } from "~/features/auth/core/user";
+import {
+	CALENDAR_EVENT,
+	REG_CLOSES_AT_OPTIONS,
+	type RegClosesAtOption,
+} from "~/features/calendar/calendar-constants";
+import type { FollowUpBracket } from "~/features/calendar/calendar-types";
+import {
+	bracketProgressionToShortTournamentFormat,
+	calendarEventMaxDate,
+	calendarEventMinDate,
+	datesToRegClosesAt,
+	regClosesAtToDisplayName,
+	validateFollowUpBrackets,
+} from "~/features/calendar/calendar-utils";
+import { Tags } from "~/features/calendar/components/Tags";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
 	BRACKET_NAMES,
@@ -41,27 +55,12 @@ import invariant from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { pathnameFromPotentialURL } from "~/utils/strings";
 import { userSubmittedImage } from "~/utils/urls";
-import {
-	CALENDAR_EVENT,
-	REG_CLOSES_AT_OPTIONS,
-	type RegClosesAtOption,
-} from "../calendar-constants";
-import type { FollowUpBracket } from "../calendar-types";
-import {
-	bracketProgressionToShortTournamentFormat,
-	calendarEventMaxDate,
-	calendarEventMinDate,
-	datesToRegClosesAt,
-	regClosesAtToDisplayName,
-	validateFollowUpBrackets,
-} from "../calendar-utils";
-import { Tags } from "../components/Tags";
 
 import "~/styles/calendar-new.css";
 import "~/styles/maps.css";
 
-import { action } from "../actions/calendar.new.server";
-import { loader } from "../loaders/calendar.new.server";
+import { action } from "../actions/to.new.server";
+import { loader } from "../loaders/to.new.server";
 export { loader, action };
 
 export const meta: MetaFunction = (args) => {
@@ -136,13 +135,8 @@ function EventForm() {
 	const fetcher = useFetcher();
 	const { t } = useTranslation();
 	const { eventToEdit, eventToCopy } = useLoaderData<typeof loader>();
-	const baseEvent = useBaseEvent();
-	const [isTournament, setIsTournament] = React.useState(
-		Boolean(baseEvent?.tournamentId),
-	);
 	const ref = React.useRef<HTMLFormElement>(null);
 	const [avatarImg, setAvatarImg] = React.useState<File | null>(null);
-	const user = useUser();
 
 	const handleSubmit = () => {
 		const formData = new FormData(ref.current!);
@@ -180,38 +174,25 @@ function EventForm() {
 					value={eventToCopy.tournamentId}
 				/>
 			) : null}
-			{user?.isTournamentOrganizer && !eventToEdit ? (
-				<TournamentEnabler
-					checked={isTournament}
-					setChecked={setIsTournament}
-				/>
-			) : null}
 			<NameInput />
-			<DescriptionTextarea supportsMarkdown={isTournament} />
+			<DescriptionTextarea supportsMarkdown />
 			<OrganizationSelect />
-			{isTournament ? <RulesTextarea supportsMarkdown /> : null}
-			<DatesInput allowMultiDate={!isTournament} />
-			{!isTournament ? <BracketUrlInput /> : null}
+			<RulesTextarea supportsMarkdown />
+			<DatesInput allowMultiDate={false} />
 			<DiscordLinkInput />
 			<TagsAdder />
 			<BadgesAdder />
-			{isTournament ? (
-				<AvatarImageInput avatarImg={avatarImg} setAvatarImg={setAvatarImg} />
-			) : null}
-			{isTournament ? (
-				<>
-					<Divider>Tournament settings</Divider>
-					<RegClosesAtSelect />
-					<RankedToggle />
-					<EnableNoScreenToggle />
-					<AutonomousSubsToggle />
-					<RequireIGNToggle />
-					<InvitationalToggle />
-					<StrictDeadlinesToggle />
-				</>
-			) : null}
-			{isTournament ? <TournamentMapPickingStyleSelect /> : <MapPoolSection />}
-			{isTournament ? <TournamentFormatSelector /> : null}
+			<AvatarImageInput avatarImg={avatarImg} setAvatarImg={setAvatarImg} />
+			<Divider>Tournament settings</Divider>
+			<RegClosesAtSelect />
+			<RankedToggle />
+			<EnableNoScreenToggle />
+			<AutonomousSubsToggle />
+			<RequireIGNToggle />
+			<InvitationalToggle />
+			<StrictDeadlinesToggle />
+			<TournamentMapPickingStyleSelect />
+			<TournamentFormatSelector />
 			<Button
 				className="mt-4"
 				onClick={handleSubmit}
@@ -468,26 +449,6 @@ function DatesInput({ allowMultiDate }: { allowMultiDate?: boolean }) {
 					</FormMessage>
 				</div>
 			</fieldset>
-		</div>
-	);
-}
-
-function BracketUrlInput() {
-	const { t } = useTranslation("calendar");
-	const { eventToEdit } = useLoaderData<typeof loader>();
-
-	return (
-		<div>
-			<Label htmlFor="bracketUrl" required>
-				{t("forms.bracketUrl")}
-			</Label>
-			<input
-				name="bracketUrl"
-				type="url"
-				required
-				maxLength={CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH}
-				defaultValue={eventToEdit?.bracketUrl}
-			/>
 		</div>
 	);
 }
@@ -1088,68 +1049,6 @@ function TournamentMapPickingStyleSelect() {
 				</>
 			) : null}
 		</>
-	);
-}
-
-function TournamentEnabler({
-	checked,
-	setChecked,
-}: {
-	checked: boolean;
-	setChecked: (checked: boolean) => void;
-}) {
-	const id = React.useId();
-
-	return (
-		<div>
-			<label htmlFor={id}>Host on sendou.ink</label>
-			<Toggle
-				name="toToolsEnabled"
-				id={id}
-				tiny
-				checked={checked}
-				setChecked={setChecked}
-			/>
-			<FormMessage type="info">
-				Host the full event including bracket and sign ups on sendou.ink
-			</FormMessage>
-		</div>
-	);
-}
-
-function MapPoolSection() {
-	const { t } = useTranslation(["game-misc", "common"]);
-
-	const baseEvent = useBaseEvent();
-	const { recentEventsWithMapPools } = useLoaderData<typeof loader>();
-	const [mapPool, setMapPool] = React.useState<MapPool>(
-		baseEvent?.mapPool ? new MapPool(baseEvent.mapPool) : MapPool.EMPTY,
-	);
-	const [includeMapPool, setIncludeMapPool] = React.useState(
-		Boolean(baseEvent?.mapPool),
-	);
-
-	const id = React.useId();
-
-	return includeMapPool ? (
-		<>
-			<input type="hidden" name="pool" value={mapPool.serialized} />
-
-			<MapPoolSelector
-				className="w-full"
-				mapPool={mapPool}
-				title={t("common:maps.mapPool")}
-				handleRemoval={() => setIncludeMapPool(false)}
-				handleMapPoolChange={setMapPool}
-				recentEvents={recentEventsWithMapPools}
-				allowBulkEdit
-			/>
-		</>
-	) : (
-		<div>
-			<label htmlFor={id}>{t("common:maps.mapPool")}</label>
-			<AddButton onAdd={() => setIncludeMapPool(true)} id={id} />
-		</div>
 	);
 }
 

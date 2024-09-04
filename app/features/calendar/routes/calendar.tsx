@@ -159,6 +159,7 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 	return CalendarRepository.findAllBetweenTwoTimestamps({ startTime, endTime });
 }
 
+// xxx: add new button that is a popover, tournament creation error page?
 export default function CalendarPage() {
 	const { t } = useTranslation("calendar");
 	const data = useLoaderData<typeof loader>();
