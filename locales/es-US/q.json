@@ -28,6 +28,7 @@
 	"front.noFriendCode": "Ingresa clave de amigo antes de unirte al grupo",
 	"front.upcomingSeason.header": "¡Es fuera de temporada!",
 	"front.upcomingSeason.date": "Únete a la Temporada {{nth}} empezando {{date}}",
+
 	"front.noUpcomingSeason": "La empieza de la próxima Temporada está por anunciar",
 	"front.nav.rules.title": "Reglas",
 	"front.nav.rules.description": "Leelas antes de jugar",
@@ -121,6 +122,7 @@
 	"looking.rankCalculating": "Menos de {{count}} sets jugados. Rango aún se está calculando...",
 	"looking.allTiers": "Todos los niveles",
 	"looking.joinQPrompt": "Únete a la fila para encontrar un grupo",
+
 	"looking.range.or": "o",
 
 	"match.header": "Partido #{{number}}",

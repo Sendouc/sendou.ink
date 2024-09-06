@@ -61,11 +61,11 @@ Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 There is a sequence of commands you need to run:
 
 1. `nvm use` to switch to the correct Node version. If you don't have the correct Node.js version yet it will prompt you to install it via the `nvm install` command. If you have problems with nvm you can also install the latest LTS version of Node.js from [their website](https://nodejs.org/en/).
-2. Install latest version of [npx tsx](https://npx tsx.sh/docs/installation)
-3. `npx tsx install` to install the dependencies.
+2. Install latest version of [Bun](https://bun.sh/docs/installation)
+3. `bun install` to install the dependencies.
 4. Make a copy of `.env.example` that's called `.env`. Filling additional values is not necessary unless you want to use real Discord authentication or develop the Lohi bot.
-5. `npx tsx migrate up` to set up the database tables.
-6. `npx tsx run dev` to run the project in development mode.
+5. `bun migrate up` to set up the database tables.
+6. `bun run dev` to run the project in development mode.
 7. Navigate to `http://localhost:5173/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
 
 ## Contributing

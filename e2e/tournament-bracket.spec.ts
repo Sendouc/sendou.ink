@@ -58,6 +58,9 @@ const reportResult = async ({
 		await page.getByTestId("player-checkbox-3").first().click();
 
 		await page.getByTestId("save-active-roster-button").first().click();
+
+		// update went through
+		await expect(page.getByTestId("player-checkbox-0").first()).toBeDisabled();
 	}
 	if (
 		sidesWithMoreThanFourPlayers.includes("last") &&

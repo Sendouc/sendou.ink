@@ -28,7 +28,7 @@ const stm = sql.prepare(/* sql */ `
         'tournamentTeamId',
         "TournamentTeamMember"."tournamentTeamId",
         'inGameName',
-        "User"."inGameName",
+        COALESCE("TournamentTeamMember"."inGameName", "User"."inGameName"),
         'discordId',
         "User"."discordId",
         'customUrl',

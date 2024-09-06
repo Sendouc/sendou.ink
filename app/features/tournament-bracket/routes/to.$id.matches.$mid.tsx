@@ -121,6 +121,8 @@ export const action: ActionFunction = async ({ params, request }) => {
 				})
 			: null;
 
+	let emitMatchUpdate = false;
+	let emitBracketUpdate = false;
 	switch (data._action) {
 		case "REPORT_SCORE": {
 			// they are trying to report score that was already reported
@@ -215,6 +217,9 @@ export const action: ActionFunction = async ({ params, request }) => {
 				}
 			})();
 
+			emitMatchUpdate = true;
+			emitBracketUpdate = true;
+
 			break;
 		}
 		case "SET_ACTIVE_ROSTER": {
@@ -242,6 +247,8 @@ export const action: ActionFunction = async ({ params, request }) => {
 				teamId: data.teamId,
 				activeRosterUserIds: data.roster,
 			});
+
+			emitMatchUpdate = true;
 
 			break;
 		}
@@ -310,6 +317,9 @@ export const action: ActionFunction = async ({ params, request }) => {
 				}
 			})();
 
+			emitMatchUpdate = true;
+			emitBracketUpdate = true;
+
 			break;
 		}
 		case "UPDATE_REPORTED_SCORE": {
@@ -373,6 +383,9 @@ export const action: ActionFunction = async ({ params, request }) => {
 				}
 			})();
 
+			emitMatchUpdate = true;
+			emitBracketUpdate = true;
+
 			break;
 		}
 		case "BAN_PICK": {
@@ -433,6 +446,8 @@ export const action: ActionFunction = async ({ params, request }) => {
 				type: match.roundMaps.pickBan === "BAN_2" ? "BAN" : "PICK",
 			});
 
+			emitMatchUpdate = true;
+
 			break;
 		}
 		case "REOPEN_MATCH": {
@@ -481,6 +496,9 @@ export const action: ActionFunction = async ({ params, request }) => {
 				});
 			})();
 
+			emitMatchUpdate = true;
+			emitBracketUpdate = true;
+
 			break;
 		}
 		case "SET_AS_CASTED": {
@@ -491,6 +509,8 @@ export const action: ActionFunction = async ({ params, request }) => {
 				tournamentId: tournament.ctx.id,
 				twitchAccount: data.twitchAccount,
 			});
+
+			emitBracketUpdate = true;
 
 			break;
 		}
@@ -507,6 +527,8 @@ export const action: ActionFunction = async ({ params, request }) => {
 				tournamentId: tournament.ctx.id,
 			});
 
+			emitMatchUpdate = true;
+
 			break;
 		}
 		case "UNLOCK": {
@@ -517,6 +539,8 @@ export const action: ActionFunction = async ({ params, request }) => {
 				tournamentId: tournament.ctx.id,
 			});
 
+			emitMatchUpdate = true;
+
 			break;
 		}
 		default: {
@@ -524,17 +548,21 @@ export const action: ActionFunction = async ({ params, request }) => {
 		}
 	}
 
-	emitter.emit(matchSubscriptionKey(match.id), {
-		eventId: nanoid(),
-		userId: user.id,
-	});
-	emitter.emit(bracketSubscriptionKey(tournament.ctx.id), {
-		matchId: match.id,
-		scores,
-		isOver:
-			scores[0] === Math.ceil(match.bestOf / 2) ||
-			scores[1] === Math.ceil(match.bestOf / 2),
-	});
+	if (emitMatchUpdate) {
+		emitter.emit(matchSubscriptionKey(match.id), {
+			eventId: nanoid(),
+			userId: user.id,
+		});
+	}
+	if (emitBracketUpdate) {
+		emitter.emit(bracketSubscriptionKey(tournament.ctx.id), {
+			matchId: match.id,
+			scores,
+			isOver:
+				scores[0] === Math.ceil(match.bestOf / 2) ||
+				scores[1] === Math.ceil(match.bestOf / 2),
+		});
+	}
 
 	clearTournamentDataCache(tournamentId);
 

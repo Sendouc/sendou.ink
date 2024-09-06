@@ -115,6 +115,7 @@
 	"match.hosts": "{{teamName}} crea la sala",
 	"match.pass": "Contraseña",
 	"match.pool": "Canal",
+
 	"match.score": "{{scoreOne}}-{{scoreTwo}} (Mejor de {{bestOf}})",
 	"match.score.playAll": "{{scoreOne}}-{{scoreTwo}} (Jugar todos los {{bestOf}})",
 	"match.action.undoLastScore": "Anular resultado previo",

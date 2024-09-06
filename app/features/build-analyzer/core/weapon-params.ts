@@ -462,11 +462,11 @@ export const weaponParams = {
 			BlastParam_DistanceDamage: [
 				{
 					Damage: 700,
-					Distance: 1,
+					Distance: 0.94,
 				},
 				{
 					Damage: 500,
-					Distance: 3.5,
+					Distance: 3.3,
 				},
 			],
 			Jump_DegSwerve: 8,
@@ -475,7 +475,7 @@ export const weaponParams = {
 			InkConsume: 0.11,
 		},
 		"221": {
-			SpecialPoint: 200,
+			SpecialPoint: 210,
 			subWeaponId: 0,
 			specialWeaponId: 17,
 			overwrites: {
@@ -488,11 +488,11 @@ export const weaponParams = {
 			BlastParam_DistanceDamage: [
 				{
 					Damage: 700,
-					Distance: 1,
+					Distance: 0.94,
 				},
 				{
 					Damage: 500,
-					Distance: 3.5,
+					Distance: 3.3,
 				},
 			],
 			Jump_DegSwerve: 8,
@@ -778,7 +778,7 @@ export const weaponParams = {
 			SpecialPoint: 220,
 			subWeaponId: 4,
 			specialWeaponId: 1,
-			MoveSpeed: 0.072,
+			MoveSpeed: 0.066,
 			DamageParam_ValueMax: 380,
 			DamageParam_ValueMin: 190,
 			Variable_Damage_ValueMax: 300,
@@ -793,7 +793,7 @@ export const weaponParams = {
 			SpecialPoint: 190,
 			subWeaponId: 7,
 			specialWeaponId: 19,
-			MoveSpeed: 0.072,
+			MoveSpeed: 0.066,
 			DamageParam_ValueMax: 380,
 			DamageParam_ValueMin: 190,
 			Variable_Damage_ValueMax: 300,
@@ -1247,14 +1247,14 @@ export const weaponParams = {
 			InkConsumeMinCharge: 0.0197,
 		},
 		"3000": {
-			SpecialPoint: 200,
+			SpecialPoint: 210,
 			subWeaponId: 0,
 			specialWeaponId: 14,
 			MoveSpeed: 0.04,
 			DamageParam_ValueDirectMax: 700,
 			DamageParam_ValueDirectMin: 500,
 			InkRecoverStop: 40,
-			InkConsumeSlosher: 0.07,
+			InkConsumeSlosher: 0.076,
 		},
 		"3001": {
 			SpecialPoint: 180,
@@ -1264,17 +1264,17 @@ export const weaponParams = {
 			DamageParam_ValueDirectMax: 700,
 			DamageParam_ValueDirectMin: 500,
 			InkRecoverStop: 40,
-			InkConsumeSlosher: 0.07,
+			InkConsumeSlosher: 0.076,
 		},
 		"3005": {
-			SpecialPoint: 200,
+			SpecialPoint: 210,
 			subWeaponId: 0,
 			specialWeaponId: 14,
 			MoveSpeed: 0.04,
 			DamageParam_ValueDirectMax: 700,
 			DamageParam_ValueDirectMin: 500,
 			InkRecoverStop: 40,
-			InkConsumeSlosher: 0.07,
+			InkConsumeSlosher: 0.076,
 		},
 		"3010": {
 			SpecialPoint: 180,

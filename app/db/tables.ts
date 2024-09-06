@@ -591,6 +591,7 @@ export interface TournamentStage {
 
 export interface TournamentSub {
 	bestWeapons: string;
+	/** 0 = no, 1 = yes, 2 = listen only */
 	canVc: number;
 	createdAt: Generated<number>;
 	message: string | null;
