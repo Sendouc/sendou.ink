@@ -33,6 +33,8 @@ const PROGRAMMERS = [
 	"remmycat",
 	"zenpk",
 	"KaiserOfNone",
+	"ximk",
+	"rikipls",
 ] as const;
 
 const TRANSLATORS: Array<{
@@ -51,11 +53,11 @@ const TRANSLATORS: Array<{
 		language: "de",
 	},
 	{
-		translators: ["KaiserOfNone"],
+		translators: ["KaiserOfNone", "Mario64iscool2"],
 		language: "es-ES",
 	},
 	{
-		translators: ["Hachi Shibaru", "KaiserOfNone"],
+		translators: ["Hachi Shibaru", "KaiserOfNone", "Mario64iscool2"],
 		language: "es-US",
 	},
 	{
