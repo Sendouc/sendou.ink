@@ -47,7 +47,7 @@
 	"search.noResults": "No users found matching '{{query}}'",
 
 	"seasons": "Seasons",
-	"seasons.noQ": "This user has not played SendouQ or ranked tournaments this season",
+	"seasons.noQ": "This user has not played SendouQ this season",
 	"seasons.tabs.weapons": "Weapons",
 	"seasons.tabs.stages": "Stages",
 	"seasons.tabs.self": "Self",

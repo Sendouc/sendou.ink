@@ -47,7 +47,6 @@
 	"search.noResults": "No se encontraron usuarios que coincidan con '{{query}}'",
 
 	"seasons": "Temporadas",
-	"seasons.noQ": "Este usuario no ha jugado en SendouQ o en torneos clasificados esta temporada",
 	"seasons.tabs.weapons": "Armas",
 	"seasons.tabs.stages": "Mapas",
 	"seasons.tabs.self": "Personal",

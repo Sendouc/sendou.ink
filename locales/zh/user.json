@@ -47,7 +47,6 @@
 	"search.noResults": "没有符合 '{{query}}' 的用户",
 
 	"seasons": "赛季",
-	"seasons.noQ": "该用户本赛季还未参加SendouQ或排名比赛",
 	"seasons.tabs.weapons": "武器",
 	"seasons.tabs.stages": "地图",
 	"seasons.tabs.self": "自己",

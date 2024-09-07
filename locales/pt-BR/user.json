@@ -40,7 +40,6 @@
 	"search.noResults": "Nenhum usuário encontrado com o termo '{{query}}'",
 
 	"seasons": "Temporadas",
-	"seasons.noQ": "Esse usuário não jogou SendouQ ou torneios ranqueados nessa temporada",
 	"seasons.tabs.weapons": "Armas",
 	"seasons.tabs.stages": "Mapas",
 	"seasons.tabs.self": "Si mesmo(a)",

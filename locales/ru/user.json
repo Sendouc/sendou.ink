@@ -40,7 +40,6 @@
 	"search.noResults": "Не найден пользователь по запросу '{{query}}'",
 
 	"seasons": "Сезоны",
-	"seasons.noQ": "Данный пользователь не играл в SendouQ или турнирах в этом сезоне",
 	"seasons.tabs.weapons": "Оружие",
 	"seasons.tabs.stages": "Арены",
 	"seasons.tabs.self": "Я",

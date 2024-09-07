@@ -45,7 +45,6 @@
 	"search.noResults": "該当ユーザーが見つかりません '{{query}}'",
 
 	"seasons": "シーズン",
-	"seasons.noQ": "このユーザーは SendouQ、ランクされたトーナメントに今シーズン参加していません",
 	"seasons.tabs.weapons": "武器",
 	"seasons.tabs.stages": "ステージ",
 	"seasons.tabs.self": "自分",

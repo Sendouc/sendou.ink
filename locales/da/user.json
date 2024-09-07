@@ -47,7 +47,6 @@
 	"search.noResults": "Søgningen ’{{query}}’ fandt ingen brugere",
 
 	"seasons": "Sæsoner",
-	"seasons.noQ": "Denne bruger har ikke spillet SendouQ eller rangerede turneringer i denne sæson",
 	"seasons.tabs.weapons": "Våben",
 	"seasons.tabs.stages": "Baner",
 	"seasons.tabs.self": "Self",
