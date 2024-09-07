@@ -197,14 +197,6 @@
 	font-style: italic;
 }
 
-.tournament-bracket__during-match-actions__radio-container__disabled input {
-	opacity: 0.6;
-}
-
-.tournament-bracket__during-match-actions__radio-container__disabled label {
-	color: var(--text-lighter);
-}
-
 .tournament-bracket__during-match-actions__team-players {
 	display: flex;
 	width: 15rem;

@@ -203,7 +203,7 @@ function _TeamRoster({
 						teamId={team.id}
 						onChange={() => setWinnerId?.(team.id)}
 						team={idx + 1}
-						disabled={!bothTeamsHaveActiveRosters}
+						invisible={!bothTeamsHaveActiveRosters}
 					/>
 				) : null}
 				{hasPoints ? (
@@ -291,21 +291,21 @@ function _TeamRosterHeader({
 	);
 }
 
-/** Renders radio button to select winner, or in presentational mode just display the text "Winner" */
+/** Renders radio button to select the winner, or in presentational mode just displays the text "Winner" */
 function WinnerRadio({
 	presentational,
 	teamId,
 	checked,
 	onChange,
 	team,
-	disabled,
+	invisible,
 }: {
 	presentational: boolean;
 	teamId: number;
 	checked: boolean;
 	onChange: () => void;
 	team: number;
-	disabled: boolean;
+	invisible: boolean;
 }) {
 	const id = React.useId();
 
@@ -328,8 +328,7 @@ function WinnerRadio({
 			className={clsx(
 				"tournament-bracket__during-match-actions__radio-container",
 				{
-					"tournament-bracket__during-match-actions__radio-container__disabled":
-						disabled,
+					invisible,
 				},
 			)}
 		>
@@ -338,7 +337,6 @@ function WinnerRadio({
 				id={`${teamId}-${id}`}
 				onChange={onChange}
 				checked={checked}
-				disabled={disabled}
 				data-testid={`winner-radio-${team}`}
 			/>
 			<Label className="mb-0 ml-2" htmlFor={`${teamId}-${id}`}>
