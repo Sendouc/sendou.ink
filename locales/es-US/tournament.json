@@ -11,7 +11,7 @@
 	"pre.steps.header": "Completa estos pasos para jugar",
 	"pre.steps.name": "Nombre de equipo",
 	"pre.steps.roster": "Equipo lleno",
-	"pre.steps.pool": "Grupo de mapas",
+	"pre.steps.pool": "Grupo de escenarios",
 	"pre.steps.check-in": "Check-in",
 	"pre.footer": "Registro puede ser ajustado antes de que empieze el torneo",
 	"pre.logIn": "Ingresa al sitio para registrar",
@@ -63,7 +63,7 @@
 
 	"generator.error": "Cambios no fueron guardados ya que el torneo comenzó",
 
-	"teams.mapsPickedStatus": "Estado de mapas elegidos",
+	"teams.mapsPickedStatus": "Estado de escenarios elegidos",
 
 	"admin.download": "Descarga participantes",
 	"admin.actions.CHANGE_TEAM_OWNER": "Cambiar capitán",
@@ -94,11 +94,11 @@
 	"streams.none": "No hay streams disponibles para este torneo al momento",
 
 	"team.setWins": "Victorias de sets",
-	"team.mapWins": "Victorias de mapas",
+	"team.mapWins": "Victorias de juegos",
 	"team.seed": "Colocado",
 	"team.seed.footer": "de {{count}}",
 	"team.placement": "Colocación",
-	"team.placement.footer": "Main/UG",
+	"team.placement.footer": "Ppal./",
 
 	"bracket.waiting": "Cuadro se muestra aquí cuando al menos {{count}} equipos sean registrados",
 	"bracket.waiting.checkin": "Cuadro se muestra aquí cuando al menos {{count}} equipos se hagan check-in",
@@ -114,7 +114,8 @@
 
 	"match.hosts": "{{teamName}} crea la sala",
 	"match.pass": "Contraseña",
-	"match.pool": "Grupo",
+	"match.pool": "Canal",
+
 	"match.score": "{{scoreOne}}-{{scoreTwo}} (Mejor de {{bestOf}})",
 	"match.score.playAll": "{{scoreOne}}-{{scoreTwo}} (Jugar todos los {{bestOf}})",
 	"match.action.undoLastScore": "Anular resultado previo",

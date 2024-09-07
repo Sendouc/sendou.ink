@@ -39,7 +39,8 @@
 	"forms.errors.invalidCustomUrl.numbers": "Enlace personalizado no puede ser solo numeros",
 	"forms.errors.invalidCustomUrl.strangeCharacter": "Enlace personalizado no puede contener caracteres especiales",
 	"forms.errors.invalidCustomUrl.duplicate": "Alguien ya tiene ese enlace personalizado",
-	"forms.errors.invalidSens": "Sens de giroscopio no se poner sin la sens de palanca.",
+	"forms.errors.invalidSens": "Sens de giroscopio no se poner sin la sens de palanca",
+
 	"forms.info.favoriteBadge": "Tu insignia favorita se muestra en forma grande en tu perfil.",
 	"forms.info.battlefy": "El nombre de tu cuenta de Battlefy se utiliza para la clasificación y verificación en algunos torneos.",
 
@@ -48,7 +49,7 @@
 
 	"seasons": "Temporadas",
 	"seasons.tabs.weapons": "Armas",
-	"seasons.tabs.stages": "Mapas",
+	"seasons.tabs.stages": "Escenarios",
 	"seasons.tabs.self": "Personal",
 	"seasons.tabs.teammates": "Compañeros",
 	"seasons.tabs.opponents": "Oponentes",
@@ -73,7 +74,8 @@
 	"builds.sorting.WEAPON_POOL": "Grupo de armas",
 	"builds.sorting.WEAPON_IN_GAME_ORDER": "Ordenación de armas en juego",
 	"builds.sorting.ALPHABETICAL_TITLE": "Título alfabético",
-	"builds.sorting.MODE": "Modo",
+	"builds.sorting.MODE": "Estilo",
+
 	"builds.sorting.HEADGEAR_ID": "Ordenación de accesorios en juego",
 	"builds.sorting.CLOTHES_ID": "Ordenación de ropa en juego",
 	"builds.sorting.SHOES_ID": "Ordenación de calzados en juego",
