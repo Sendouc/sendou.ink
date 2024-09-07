@@ -2,6 +2,7 @@ import type { ActionFunction } from "@remix-run/node";
 import { Link, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { useCopyToClipboard } from "react-use";
 import { useEventSource } from "remix-utils/sse/react";
@@ -309,6 +310,7 @@ export default function TournamentBracketsPage() {
 	const { revalidate } = useRevalidator();
 	const user = useUser();
 	const tournament = useTournament();
+	const isMounted = useIsMounted();
 
 	const defaultBracketIdx = () => {
 		if (
@@ -345,7 +347,10 @@ export default function TournamentBracketsPage() {
 		tournament.autonomousSubs;
 
 	const showPrepareMapsButton =
-		tournament.isOrganizer(user) && !bracket.canBeStarted && bracket.preview;
+		tournament.isOrganizer(user) &&
+		!bracket.canBeStarted &&
+		bracket.preview &&
+		isMounted;
 
 	const waitingForTeamsText = () => {
 		if (bracketIdx > 0 || tournament.regularCheckInStartInThePast) {
@@ -465,7 +470,10 @@ export default function TournamentBracketsPage() {
 						<CompactifyButton />
 					) : null}
 					{showPrepareMapsButton ? (
-						<MapPreparer bracket={bracket} bracketIdx={bracketIdx} />
+						// Error Boundary because preparing maps is optional, so no need to make the whole page inaccessible if it fails
+						<ErrorBoundary fallback={null}>
+							<MapPreparer bracket={bracket} bracketIdx={bracketIdx} />
+						</ErrorBoundary>
 					) : null}
 				</div>
 				{bracket.enoughTeams ? (
