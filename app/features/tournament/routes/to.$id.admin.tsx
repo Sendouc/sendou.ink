@@ -109,7 +109,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 		}
 		case "CHANGE_TEAM_NAME": {
 			validateIsTournamentOrganizer();
-			validate(!tournament.hasStarted, "Tournament started");
 			const team = tournament.teamById(data.teamId);
 			validate(team, "Invalid team id");
 
@@ -409,7 +408,7 @@ const actions = [
 	{
 		type: "CHANGE_TEAM_NAME",
 		inputs: ["REGISTERED_TEAM", "TEAM_NAME"] as InputType[],
-		when: ["TOURNAMENT_BEFORE_START"],
+		when: [],
 	},
 	{
 		type: "CHANGE_TEAM_OWNER",
