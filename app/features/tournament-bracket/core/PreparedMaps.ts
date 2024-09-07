@@ -1,6 +1,7 @@
 import compare from "just-compare";
 import type { PreparedMaps } from "~/db/tables";
 import { nullFilledArray, removeDuplicates } from "~/utils/arrays";
+import invariant from "~/utils/invariant";
 import type { Tournament } from "./Tournament";
 
 /** Returns the prepared maps for one exact bracket index OR maps of a "sibling bracket" i.e. bracket that has the same sources  */
@@ -130,8 +131,11 @@ function trimMapsByTeamCount({
 
 		const actualRoundsCount = actualRoundsForGroup.length;
 
-		const trimmedRounds = preparedRoundsForGroup.slice(
-			preparedRoundsForGroup.length - actualRoundsCount,
+		const trimmedRounds = roundsWithVirtualIds(
+			preparedRoundsForGroup.slice(
+				preparedRoundsForGroup.length - actualRoundsCount,
+			),
+			actualRoundsForGroup.map((r) => r.id).sort((a, b) => a - b),
 		);
 
 		result.maps = result.maps.filter((r) => r.groupId !== groupId);
@@ -147,4 +151,13 @@ function trimMapsByTeamCount({
 	});
 
 	return result;
+}
+
+function roundsWithVirtualIds<T extends { roundId: number }>(
+	rounds: T[],
+	virtualIds: number[],
+) {
+	invariant(rounds.length === virtualIds.length, "Round id length mismatch");
+
+	return rounds.map((r, i) => ({ ...r, roundId: virtualIds[i] }));
 }

@@ -198,6 +198,38 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 		);
 	});
 
+	test("trimmed rounds have the same round ids (SE)", () => {
+		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
+			preparedMaps: EIGHT_TEAM_SE_PREPARED,
+			teamCount: 4,
+			tournament,
+			type: "single_elimination",
+		});
+
+		const actualBracket = tournament.generateMatchesData(
+			[1, 2, 3, 4],
+			"single_elimination",
+		);
+
+		for (const round of actualBracket.round) {
+			expect(
+				trimmed!.maps.some((map) => map.roundId === round.id),
+				`Round ID ${round.id} not found in the actual bracket`,
+			).toBeTrue();
+		}
+	});
+
+	test("trimmed rounds start with round id 0", () => {
+		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
+			preparedMaps: EIGHT_TEAM_SE_PREPARED,
+			teamCount: 4,
+			tournament,
+			type: "single_elimination",
+		});
+
+		expect(trimmed?.maps[0].roundId).toBe(0);
+	});
+
 	test("trims the maps (SE - disappearing 3rd place match)", () => {
 		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
 			preparedMaps: EIGHT_TEAM_SE_PREPARED,
@@ -237,6 +269,27 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			trimmed?.maps.filter((m) => m.groupId === 2).length,
 			"Finals count is wrong",
 		).toBe(expectedFinalsCount);
+	});
+
+	test("trimmed rounds have the same round ids (DE)", () => {
+		const trimmed = PreparedMaps.trimPreparedEliminationMaps({
+			preparedMaps: EIGHT_TEAM_DE_PREPARED,
+			teamCount: 4,
+			tournament,
+			type: "double_elimination",
+		});
+
+		const actualBracket = tournament.generateMatchesData(
+			[1, 2, 3, 4],
+			"double_elimination",
+		);
+
+		for (const round of actualBracket.round) {
+			expect(
+				trimmed!.maps.some((map) => map.roundId === round.id),
+				`Round ID ${round.id} not found in the actual bracket`,
+			).toBeTrue();
+		}
 	});
 
 	const FOUR_TEAM_SE_PREPARED: PreparedMapsType = {
