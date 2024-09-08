@@ -5,7 +5,7 @@
 	"sideEffects": false,
 	"type": "module",
 	"scripts": {
-		"deploy": "npm ci && npm run build",
+		"deploy": "bun install --frozen-lockfile && bun run build",
 		"build": "remix vite:build",
 		"dev": "remix vite:dev --host",
 		"dev:prod": "DB_PATH=db-prod.sqlite3 bun run dev",
