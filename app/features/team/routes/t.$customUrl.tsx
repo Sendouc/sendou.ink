@@ -128,8 +128,6 @@ export default function TeamPage() {
 	);
 }
 
-// xxx: results
-
 function TeamBanner() {
 	const { team } = useLoaderData<typeof loader>();
 

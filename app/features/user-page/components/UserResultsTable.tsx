@@ -21,11 +21,6 @@ export type UserResultsTableProps = {
 export const HIGHLIGHT_CHECKBOX_NAME = "highlightTeamIds";
 export const HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME = "highlightTournamentTeamIds";
 
-// xxx: team logo
-// xxx: tournament logo
-// xxx: pagination?
-// xxx: participation indicator?
-
 export function UserResultsTable({
 	results,
 	id,
