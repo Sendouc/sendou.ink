@@ -23,6 +23,7 @@ export default function TournamentResultsPage() {
 	}
 
 	let lastRenderedPlacement = 0;
+	let rowDarkerBg = false;
 	return (
 		<div>
 			<Table>
@@ -50,12 +51,16 @@ export default function TournamentResultsPage() {
 					</tr>
 				</thead>
 				<tbody>
-					{standings.map((standing) => {
+					{standings.map((standing, i) => {
 						const placement =
 							lastRenderedPlacement === standing.placement
 								? null
 								: standing.placement;
 						lastRenderedPlacement = standing.placement;
+
+						if (standing.placement !== standings[i - 1]?.placement) {
+							rowDarkerBg = !rowDarkerBg;
+						}
 
 						const teamLogoSrc = tournament.tournamentTeamLogoSrc(standing.team);
 
@@ -65,7 +70,10 @@ export default function TournamentResultsPage() {
 						});
 
 						return (
-							<tr key={standing.team.id}>
+							<tr
+								key={standing.team.id}
+								className={rowDarkerBg ? "bg-darker-transparent" : undefined}
+							>
 								<td className="text-md">
 									{typeof placement === "number" ? (
 										<Placement placement={placement} size={36} />
