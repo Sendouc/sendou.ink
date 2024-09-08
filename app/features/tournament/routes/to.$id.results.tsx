@@ -8,7 +8,7 @@ import { tournamentTeamPage } from "~/utils/urls";
 import * as Standings from "../core/Standings";
 import { useTournament } from "./to.$id";
 
-export default function TournamentStandingsPage() {
+export default function TournamentResultsPage() {
 	const tournament = useTournament();
 
 	const standings = tournament.standings;

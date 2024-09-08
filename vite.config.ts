@@ -142,8 +142,8 @@ export default defineConfig(() => {
 								"features/tournament/routes/to.$id.seeds.tsx",
 							);
 							route(
-								"/to/:id/standings",
-								"features/tournament/routes/to.$id.standings.tsx",
+								"/to/:id/results",
+								"features/tournament/routes/to.$id.results.tsx",
 							);
 							route(
 								"/to/:id/streams",

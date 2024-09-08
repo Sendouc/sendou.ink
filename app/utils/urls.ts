@@ -261,6 +261,8 @@ export const tournamentBracketsPage = ({
 		query.size > 0 ? `?${query.toString()}` : ""
 	}`;
 };
+export const tournamentResultsPage = (tournamentId: number) =>
+	`/to/${tournamentId}/results`;
 export const tournamentBracketsSubscribePage = (tournamentId: number) =>
 	`/to/${tournamentId}/brackets/subscribe`;
 export const tournamentMatchPage = ({

@@ -219,7 +219,7 @@ export default function TournamentLayout() {
 		<Main
 			bigger={
 				location.pathname.includes("brackets") ||
-				location.pathname.includes("standings")
+				location.pathname.includes("results")
 			}
 		>
 			<SubNav>
@@ -245,9 +245,7 @@ export default function TournamentLayout() {
 					</SubNavLink>
 				) : null}
 				{tournament.hasStarted ? (
-					<SubNavLink to="standings">
-						{t("tournament:tabs.standings")}
-					</SubNavLink>
+					<SubNavLink to="results">{t("tournament:tabs.results")}</SubNavLink>
 				) : null}
 				{tournament.isOrganizer(user) && !tournament.hasStarted && (
 					<SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
