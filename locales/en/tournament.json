@@ -5,6 +5,7 @@
 	"tabs.register": "Register",
 	"tabs.brackets": "Brackets",
 	"tabs.seeds": "Seeds",
+	"tabs.results": "Results",
 	"tabs.streams": "Streams ({{count}})",
 	"tabs.subs": "Subs ({{count}})",
 

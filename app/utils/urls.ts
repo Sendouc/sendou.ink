@@ -40,9 +40,7 @@ const staticAssetsUrl = ({
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
 const USER_SUBMITTED_IMAGE_ROOT =
-	process.env.NODE_ENV === "development"
-		? "https://sendou-test.ams3.digitaloceanspaces.com"
-		: "https://sendou.nyc3.cdn.digitaloceanspaces.com";
+	"https://sendou.nyc3.cdn.digitaloceanspaces.com";
 export const userSubmittedImage = (fileName: string) =>
 	`${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
 // images with https are not hosted on spaces, this is used for local development
@@ -71,6 +69,8 @@ export const ipLabsMaps = (pool: string) =>
 export const SPLATOON_3_INK = "https://splatoon3.ink/";
 export const RHODESMAS_FREESOUND_PROFILE_URL =
 	"https://freesound.org/people/rhodesmas/";
+export const SPR_INFO_URL =
+	"https://www.pgstats.com/articles/introducing-spr-and-uf";
 
 export const twitterUrl = (accountName: string) =>
 	`https://twitter.com/${accountName}`;
@@ -263,6 +263,8 @@ export const tournamentBracketsPage = ({
 		query.size > 0 ? `?${query.toString()}` : ""
 	}`;
 };
+export const tournamentResultsPage = (tournamentId: number) =>
+	`/to/${tournamentId}/results`;
 export const tournamentBracketsSubscribePage = (tournamentId: number) =>
 	`/to/${tournamentId}/brackets/subscribe`;
 export const tournamentMatchPage = ({

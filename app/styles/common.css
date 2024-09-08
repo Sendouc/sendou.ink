@@ -314,22 +314,35 @@ select:focus {
 	border-spacing: 0 var(--s-1-5);
 	font-size: var(--fonts-xs);
 	text-align: left;
+	border-color: var(--border);
+}
+
+.my-table__container {
+	position: relative;
+	width: 100%;
+	overflow: auto;
 }
 
 .my-table > thead {
 	font-size: var(--fonts-xxs);
 }
 
-.my-table > tbody > tr:nth-child(2n) {
-	background-color: var(--bg);
+.my-table tr {
+	border-style: solid;
+	border-width: 0px;
+	border-bottom-width: 1px;
+}
+
+.my-table tbody tr:hover {
+	background-color: var(--bg-lighter);
 }
 
 .my-table > thead > tr > th {
-	padding-inline: var(--s-1);
+	padding: var(--s-2);
 }
 
 .my-table > tbody > tr > td {
-	padding-inline: var(--s-1);
+	padding: var(--s-2) var(--s-2-5);
 }
 
 td > input[type="checkbox"] {
@@ -653,6 +666,12 @@ dialog::backdrop {
 	padding: var(--s-0-5);
 	width: 28px;
 	height: 28px;
+}
+
+.info-popover__trigger__tiny {
+	width: 20px;
+	height: 20px;
+	font-size: var(--fonts-xs);
 }
 
 .articles-list {

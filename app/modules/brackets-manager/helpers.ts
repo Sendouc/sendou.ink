@@ -545,8 +545,6 @@ export function byeLoser(opponents: Duel, index: number): ParticipantSlot {
 export function getMatchResult(match: MatchResults): Side | null {
 	if (!isMatchCompleted(match)) return null;
 
-	if (isMatchDrawCompleted(match)) return null;
-
 	if (match.opponent1 === null && match.opponent2 === null) return null;
 
 	let winner: Side | null = null;
@@ -642,20 +640,7 @@ export function isMatchCompleted(match: DeepPartial<MatchResults>): boolean {
 export function isMatchResultCompleted(
 	match: DeepPartial<MatchResults>,
 ): boolean {
-	return isMatchDrawCompleted(match) || isMatchWinCompleted(match);
-}
-
-/**
- * Checks if a match is completed because of a draw.
- *
- * @param match Partial match results.
- */
-export function isMatchDrawCompleted(
-	match: DeepPartial<MatchResults>,
-): boolean {
-	return (
-		match.opponent1?.result === "draw" && match.opponent2?.result === "draw"
-	);
+	return isMatchWinCompleted(match);
 }
 
 /**
@@ -770,17 +755,10 @@ export function getMatchStatus(arg: Duel | MatchResults): Status {
 export function setMatchResults(
 	stored: MatchResults,
 	match: DeepPartial<MatchResults>,
-	inRoundRobin: boolean,
 ): {
 	statusChanged: boolean;
 	resultChanged: boolean;
 } {
-	if (
-		!inRoundRobin &&
-		(match.opponent1?.result === "draw" || match.opponent2?.result === "draw")
-	)
-		throw Error("Having a draw is forbidden in an elimination tournament.");
-
 	const completed = isMatchCompleted(match);
 	const currentlyCompleted = isMatchCompleted(stored);
 
@@ -1127,7 +1105,6 @@ export function setCompleted(
 
 	setResults(stored, match, "win", "loss");
 	setResults(stored, match, "loss", "win");
-	setResults(stored, match, "draw", "draw");
 
 	if (stored.opponent1 && !stored.opponent2) stored.opponent1.result = "win"; // Win against opponent 2 BYE.
 

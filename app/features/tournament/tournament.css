@@ -604,3 +604,22 @@
 	border-bottom: 2px solid var(--theme-transparent);
 	content: "";
 }
+
+.tournament__standings__match-result-square {
+	width: 28px;
+	height: 28px;
+	display: grid;
+	place-items: center;
+	font-size: var(--fonts-xs);
+	font-weight: var(--semi-bold);
+	border: 3px solid var(--theme);
+	border-radius: var(--rounded-sm);
+}
+
+.tournament__standings__match-result-square--win {
+	border-color: var(--theme-success);
+}
+
+.tournament__standings__match-result-square--loss {
+	border-color: var(--theme-error);
+}

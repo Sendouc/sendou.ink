@@ -185,22 +185,6 @@ describe("Create single elimination stage", () => {
 			}),
 		).toThrow("The seeding has a duplicate participant.");
 	});
-
-	test("should throw if trying to set a draw as a result", () => {
-		manager.create({
-			name: "Example",
-			tournamentId: 0,
-			type: "single_elimination",
-			seeding: [1, 2, 3, 4],
-		});
-
-		expect(() =>
-			manager.update.match({
-				id: 0,
-				opponent1: { result: "draw" },
-			}),
-		).toThrow("Having a draw is forbidden in an elimination tournament.");
-	});
 });
 
 describe("Previous and next match update", () => {

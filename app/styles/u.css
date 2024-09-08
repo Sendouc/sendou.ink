@@ -136,7 +136,7 @@
 
 .u__results-players {
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 	padding: 0;
 	gap: var(--s-3);
 	list-style: none;

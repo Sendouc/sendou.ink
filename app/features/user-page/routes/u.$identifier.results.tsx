@@ -1,7 +1,6 @@
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Button, LinkButton } from "~/components/Button";
-import { Section } from "~/components/Section";
 import { useUser } from "~/features/auth/core/user";
 import { UserResultsTable } from "~/features/user-page/components/UserResultsTable";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
@@ -36,21 +35,21 @@ export default function UserResultsPage() {
 
 	return (
 		<div className="stack lg">
-			{user?.id === layoutData.user.id ? (
-				<LinkButton
-					to={userResultsEditHighlightsPage(user)}
-					className="ml-auto"
-					size="tiny"
-				>
-					{t("results.highlights.choose")}
-				</LinkButton>
-			) : null}
-			<Section
-				title={showAll ? t("results.title") : t("results.highlights")}
-				className="u__results-table-wrapper"
-			>
-				<UserResultsTable id="user-results-table" results={resultsToShow} />
-			</Section>
+			<div className="stack horizontal justify-between items-center">
+				<h2 className="text-lg">
+					{showAll ? t("results.title") : t("results.highlights")}
+				</h2>
+				{user?.id === layoutData.user.id ? (
+					<LinkButton
+						to={userResultsEditHighlightsPage(user)}
+						className="ml-auto"
+						size="tiny"
+					>
+						{t("results.highlights.choose")}
+					</LinkButton>
+				) : null}
+			</div>
+			<UserResultsTable id="user-results-table" results={resultsToShow} />
 			{hasHighlightedResults ? (
 				<Button
 					variant="minimal"

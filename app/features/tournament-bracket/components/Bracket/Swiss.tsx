@@ -77,7 +77,7 @@ export function SwissBracket({
 	};
 
 	const roundThatCanBeStartedId = () => {
-		if (!tournament.isOrganizer(user)) return undefined;
+		if (!tournament.isOrganizer(user) || bracket.preview) return undefined;
 
 		for (const round of rounds) {
 			const matches = bracket.data.match.filter(

@@ -323,6 +323,10 @@ test.describe("Tournament bracket", () => {
 		await page.getByTestId("finalize-tournament-button").click();
 		await page.getByTestId("confirm-button").click();
 
+		await page.getByTestId("results-tab").click();
+		// seed performance rating shows up after tournament is finalized
+		await expect(page.getByTestId("spr-header")).toBeVisible();
+
 		await navigate({
 			page,
 			url: userResultsPage({ discordId: ADMIN_DISCORD_ID }),
@@ -424,15 +428,16 @@ test.describe("Tournament bracket", () => {
 		await page.getByTestId("finalize-tournament-button").click();
 		await page.getByTestId("confirm-button").click();
 
-		await expect(page.getByTestId("standing-1")).toBeVisible();
-
 		// not possible to reopen finals match anymore
 		await navigateToMatch(page, 14);
 		await isNotVisible(page.getByTestId("reopen-match-button"));
 		await backToBracket(page);
 
 		// added result to user profile
-		await page.getByTestId("standing-player").first().click();
+		await page.getByTestId("results-tab").click();
+		await page.getByTestId("result-team-name").first().click();
+		await page.getByTestId("team-member-name").first().click();
+
 		await page.getByText("Results").click();
 		await expect(
 			page.getByTestId("tournament-name-cell").first(),

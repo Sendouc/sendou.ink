@@ -3,7 +3,7 @@ import type {
 	MetaFunction,
 	SerializeFrom,
 } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
@@ -78,6 +78,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 export default function UserPageLayout() {
 	const data = useLoaderData<typeof loader>();
 	const user = useUser();
+	const location = useLocation();
 	const { t } = useTranslation(["common", "user"]);
 
 	const isOwnPage = data.user.id === user?.id;
@@ -86,7 +87,7 @@ export default function UserPageLayout() {
 		data.user.calendarEventResultsCount + data.user.tournamentResultsCount;
 
 	return (
-		<Main>
+		<Main bigger={location.pathname.includes("results")}>
 			<SubNav>
 				<SubNavLink to={userPage(data.user)}>
 					{t("common:header.profile")}

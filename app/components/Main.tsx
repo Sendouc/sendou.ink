@@ -40,15 +40,15 @@ export const Main = ({
 				className={
 					classNameOverwrite
 						? clsx(classNameOverwrite, {
-								"half-width": halfWidth,
+								[containerClassName("narrow")]: halfWidth,
 								"pt-8-forced": showLeaderboard,
 							})
 						: clsx(
 								"layout__main",
-								"main",
+								containerClassName("normal"),
 								{
-									"half-width": halfWidth,
-									bigger,
+									[containerClassName("narrow")]: halfWidth,
+									[containerClassName("wide")]: bigger,
 									"pt-8-forced": showLeaderboard,
 								},
 								className,
@@ -60,4 +60,16 @@ export const Main = ({
 			</main>
 		</div>
 	);
+};
+
+export const containerClassName = (width: "narrow" | "normal" | "wide") => {
+	if (width === "narrow") {
+		return "half-width";
+	}
+
+	if (width === "wide") {
+		return "bigger";
+	}
+
+	return "main";
 };

@@ -14,6 +14,7 @@ import { FriendCodeInput } from "~/components/FriendCodeInput";
 import { Image, ModeImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
+import { containerClassName } from "~/components/Main";
 import { MapPoolStages } from "~/components/MapPoolSelector";
 import { NewTabs } from "~/components/NewTabs";
 import { Popover } from "~/components/Popover";
@@ -76,7 +77,7 @@ export default function TournamentRegisterPage() {
 		tournament.isOrganizer(user);
 
 	return (
-		<div className="stack lg">
+		<div className={clsx("stack lg", containerClassName("normal"))}>
 			<div className="tournament__logo-container">
 				<img
 					src={tournament.logoSrc}

@@ -54,12 +54,9 @@ export class BaseUpdater extends BaseGetter {
 		const stage = this.storage.select("stage", stored.stage_id);
 		if (!stage) throw Error("Stage not found.");
 
-		const inRoundRobin = helpers.isRoundRobin(stage);
-
 		const { statusChanged, resultChanged } = helpers.setMatchResults(
 			stored,
 			match,
-			inRoundRobin,
 		);
 		this.applyMatchUpdate(stored);
 
@@ -248,7 +245,7 @@ export class BaseUpdater extends BaseGetter {
 	 * @param match The current match.
 	 */
 	protected propagateByeWinners(match: Match): void {
-		helpers.setMatchResults(match, match, false); // BYE propagation is only in non round-robin stages.
+		helpers.setMatchResults(match, match); // BYE propagation is only in non round-robin stages.
 		this.applyMatchUpdate(match);
 
 		if (helpers.hasBye(match)) this.updateRelatedMatches(match, true, true);

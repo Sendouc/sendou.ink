@@ -380,6 +380,7 @@ export function findResultsByUserId(userId: number) {
 				.where("TournamentResult.userId", "=", userId),
 		)
 		.orderBy("startTime", "desc")
+		.$narrowType<{ startTime: NotNull }>()
 		.execute();
 }
 

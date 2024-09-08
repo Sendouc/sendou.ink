@@ -1,5 +1,5 @@
 import type { ActionFunction } from "@remix-run/node";
-import { Link, useRevalidator } from "@remix-run/react";
+import { useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -7,13 +7,10 @@ import { useTranslation } from "react-i18next";
 import { useCopyToClipboard } from "react-use";
 import { useEventSource } from "remix-utils/sse/react";
 import { Alert } from "~/components/Alert";
-import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { Divider } from "~/components/Divider";
-import { Flag } from "~/components/Flag";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Menu } from "~/components/Menu";
-import { Placement } from "~/components/Placement";
 import { Popover } from "~/components/Popover";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { EyeIcon } from "~/components/icons/Eye";
@@ -37,7 +34,7 @@ import { updateRoundMaps } from "~/features/tournament/queries/updateRoundMaps.s
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { nullFilledArray, removeDuplicates } from "~/utils/arrays";
+import { nullFilledArray } from "~/utils/arrays";
 import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { parseRequestPayload, validate } from "~/utils/remix";
@@ -46,8 +43,6 @@ import {
 	SENDOU_INK_BASE_URL,
 	tournamentBracketsSubscribePage,
 	tournamentJoinPage,
-	tournamentTeamPage,
-	userPage,
 } from "~/utils/urls";
 import {
 	useBracketExpanded,
@@ -57,7 +52,7 @@ import {
 import { Bracket } from "../components/Bracket";
 import { BracketMapListDialog } from "../components/BracketMapListDialog";
 import { TournamentTeamActions } from "../components/TournamentTeamActions";
-import type { Bracket as BracketType, Standing } from "../core/Bracket";
+import type { Bracket as BracketType } from "../core/Bracket";
 import * as PreparedMaps from "../core/PreparedMaps";
 import * as Swiss from "../core/Swiss";
 import type { Tournament } from "../core/Tournament";
@@ -460,9 +455,6 @@ export default function TournamentBracketsPage() {
 					<AddSubsPopOver />
 				) : null}
 			</div>
-			{tournament.ctx.isFinalized || tournament.canFinalize(user) ? (
-				<FinalStandings />
-			) : null}
 			<div className="stack md">
 				<div className="stack horizontal sm">
 					<BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
@@ -677,175 +669,6 @@ function AddSubsPopOver() {
 				</>
 			) : null}
 		</Popover>
-	);
-}
-
-const MAX_PLACEMENT_TO_SHOW = 7;
-
-function FinalStandings() {
-	const tournament = useTournament();
-	const { t } = useTranslation(["tournament"]);
-	const [viewAll, setViewAll] = React.useState(false);
-
-	const standings = tournament.standings.filter(
-		(s) => s.placement <= MAX_PLACEMENT_TO_SHOW,
-	);
-
-	if (standings.length < 2) {
-		console.error("Unexpectedly few standings");
-		return null;
-	}
-
-	let [first, second, third, ...rest] = standings;
-
-	if (third && third.placement === rest[0]?.placement) {
-		rest.unshift(third);
-		third = undefined as unknown as Standing;
-	}
-
-	const onlyTwoTeams = !third;
-
-	const nonTopThreePlacements = viewAll
-		? removeDuplicates(rest.map((s) => s.placement))
-		: [];
-
-	return (
-		<div className="tournament-bracket__standings">
-			{[third, first, second].map((standing, i) => {
-				if (onlyTwoTeams && i === 0) return <div key="placeholder" />;
-				return (
-					<div
-						className="tournament-bracket__standing"
-						key={standing.team.id}
-						data-placement={standing.placement}
-						data-testid={`standing-${standing.placement}`}
-					>
-						<div>
-							<Placement placement={standing.placement} size={40} />
-						</div>
-						<Link
-							to={tournamentTeamPage({
-								tournamentId: tournament.ctx.id,
-								tournamentTeamId: standing.team.id,
-							})}
-							className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big"
-						>
-							{standing.team.name}
-						</Link>
-						<div className="stack horizontal sm flex-wrap justify-center">
-							{standing.team.members.map((player) => {
-								return (
-									<Link
-										to={userPage(player)}
-										key={player.userId}
-										className="stack items-center text-xs"
-										data-testid="standing-player"
-									>
-										<Avatar user={player} size="xxs" />
-									</Link>
-								);
-							})}
-						</div>
-						<div className="stack horizontal sm flex-wrap justify-center">
-							{standing.team.members.map((player) => {
-								return (
-									<div key={player.userId} className="stack items-center">
-										{player.country ? (
-											<Flag countryCode={player.country} tiny />
-										) : null}
-										<Link
-											to={userPage(player)}
-											className="stack items-center text-xs mt-auto"
-										>
-											{player.username}
-										</Link>
-									</div>
-								);
-							})}
-						</div>
-					</div>
-				);
-			})}
-			{nonTopThreePlacements.map((placement) => {
-				return (
-					<React.Fragment key={placement}>
-						<Divider className="tournament-bracket__standings__full-row-taker">
-							<Placement placement={placement} />
-						</Divider>
-						<div className="stack xl horizontal flex-wrap justify-center tournament-bracket__standings__full-row-taker">
-							{standings
-								.filter((s) => s.placement === placement)
-								.map((standing) => {
-									return (
-										<div
-											className="tournament-bracket__standing"
-											key={standing.team.id}
-										>
-											<Link
-												to={tournamentTeamPage({
-													tournamentId: tournament.ctx.id,
-													tournamentTeamId: standing.team.id,
-												})}
-												className="tournament-bracket__standing__team-name"
-											>
-												{standing.team.name}
-											</Link>
-											<div className="stack horizontal sm flex-wrap justify-center">
-												{standing.team.members.map((player) => {
-													return (
-														<Link
-															to={userPage(player)}
-															key={player.userId}
-															className="stack items-center text-xs"
-														>
-															<Avatar user={player} size="xxs" />
-														</Link>
-													);
-												})}
-											</div>
-											<div className="stack horizontal sm flex-wrap justify-center">
-												{standing.team.members.map((player) => {
-													return (
-														<div
-															key={player.userId}
-															className="stack items-center"
-														>
-															{player.country ? (
-																<Flag countryCode={player.country} tiny />
-															) : null}
-															<Link
-																to={userPage(player)}
-																className="stack items-center text-xs mt-auto"
-															>
-																{player.username}
-															</Link>
-														</div>
-													);
-												})}
-											</div>
-										</div>
-									);
-								})}
-						</div>
-					</React.Fragment>
-				);
-			})}
-			{rest.length > 0 ? (
-				<>
-					<div />
-					<Button
-						variant="outlined"
-						className="tournament-bracket__standings__show-more"
-						size="tiny"
-						onClick={() => setViewAll((v) => !v)}
-					>
-						{viewAll
-							? t("tournament:bracket.standings.showLess")
-							: t("tournament:bracket.standings.showMore")}
-					</Button>
-				</>
-			) : null}
-		</div>
 	);
 }
 

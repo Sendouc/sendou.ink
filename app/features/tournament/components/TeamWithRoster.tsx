@@ -96,6 +96,7 @@ export function TeamWithRoster({
 									<Link
 										to={userPage(member)}
 										className="tournament__team-member-name"
+										data-testid="team-member-name"
 									>
 										{name()}
 									</Link>
