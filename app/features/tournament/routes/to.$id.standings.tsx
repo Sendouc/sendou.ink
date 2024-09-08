@@ -31,7 +31,7 @@ export default function TournamentStandingsPage() {
 						<th>Team</th>
 						<th>Roster</th>
 						<th>Seed</th>
-						<th>SPR</th>
+						{tournament.ctx.isFinalized ? <th>SPR</th> : null}
 						<th>Matches</th>
 					</tr>
 				</thead>
@@ -85,10 +85,12 @@ export default function TournamentStandingsPage() {
 									))}
 								</td>
 								<td className="text-sm">{standing.team.seed}</td>
-								<td className="text-sm">
-									{spr > 0 ? "+" : ""}
-									{spr}
-								</td>
+								{tournament.ctx.isFinalized ? (
+									<td className="text-sm">
+										{spr > 0 ? "+" : ""}
+										{spr}
+									</td>
+								) : null}
 								<td>
 									<MatchHistoryRow teamId={standing.team.id} />
 								</td>

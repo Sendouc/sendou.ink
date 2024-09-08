@@ -2,8 +2,6 @@ import type { Standing } from "~/features/tournament-bracket/core/Bracket";
 import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { removeDuplicates } from "~/utils/arrays";
 
-// xxx: SPR wrong when tournament ongoing
-
 /** Calculates SPR (Seed Performance Rating) - see https://www.pgstats.com/articles/introducing-spr-and-uf */
 export function calculateSPR({
 	standings,
