@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import prettier from "prettier";
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -123,16 +122,13 @@ const markdown = createTranslationProgessMarkdown({
 	totalTranslationCounts,
 });
 
-// TODO: migrate to biome
-void prettier.format(markdown, { parser: "markdown" }).then((markdown) => {
-	const translationProgressPath = path.join(
-		__dirname,
-		"..",
-		"translation-progress.md",
-	);
+const translationProgressPath = path.join(
+	__dirname,
+	"..",
+	"translation-progress.md",
+);
 
-	fs.writeFileSync(translationProgressPath, markdown);
-});
+fs.writeFileSync(translationProgressPath, markdown);
 
 function validateNoExtraKeysInOther({
 	english,

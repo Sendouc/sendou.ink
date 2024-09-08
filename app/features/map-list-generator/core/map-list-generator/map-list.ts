@@ -82,7 +82,6 @@ function addAndReturnMap(
 		} as MapPoolObject);
 	}
 
-	/* prettier-ignore */
 	buckets.get(bucketNum)![mode] = buckets
 		.get(bucketNum)!
 		[mode].filter((map) => map !== stageId);
