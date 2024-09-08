@@ -33,18 +33,22 @@ export default function UserResultsPage() {
 
 	const resultsToShow = showAll ? data.results : highlightedResults;
 
-	// xxx: title of highlight, all?
 	return (
 		<div className="stack lg">
-			{user?.id === layoutData.user.id ? (
-				<LinkButton
-					to={userResultsEditHighlightsPage(user)}
-					className="ml-auto"
-					size="tiny"
-				>
-					{t("results.highlights.choose")}
-				</LinkButton>
-			) : null}
+			<div className="stack horizontal justify-between items-center">
+				<h2 className="text-lg">
+					{showAll ? t("results.title") : t("results.highlights")}
+				</h2>
+				{user?.id === layoutData.user.id ? (
+					<LinkButton
+						to={userResultsEditHighlightsPage(user)}
+						className="ml-auto"
+						size="tiny"
+					>
+						{t("results.highlights.choose")}
+					</LinkButton>
+				) : null}
+			</div>
 			<UserResultsTable id="user-results-table" results={resultsToShow} />
 			{hasHighlightedResults ? (
 				<Button
