@@ -342,7 +342,7 @@ select:focus {
 }
 
 .my-table > tbody > tr > td {
-	padding: var(--s-2);
+	padding: var(--s-2) var(--s-2-5);
 }
 
 td > input[type="checkbox"] {

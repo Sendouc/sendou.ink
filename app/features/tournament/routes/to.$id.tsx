@@ -7,7 +7,6 @@ import {
 	Outlet,
 	type ShouldRevalidateFunction,
 	useLoaderData,
-	useLocation,
 	useOutletContext,
 } from "@remix-run/react";
 import * as React from "react";
@@ -178,7 +177,6 @@ export default function TournamentLayout() {
 	const { t } = useTranslation(["tournament"]);
 	const user = useUser();
 	const data = useLoaderData<typeof loader>();
-	const location = useLocation();
 	const tournament = React.useMemo(
 		() => new Tournament(data.tournament),
 		[data],
@@ -216,12 +214,7 @@ export default function TournamentLayout() {
 		}, 0);
 
 	return (
-		<Main
-			bigger={
-				location.pathname.includes("brackets") ||
-				location.pathname.includes("results")
-			}
-		>
+		<Main bigger>
 			<SubNav>
 				<SubNavLink to="register" data-testid="register-tab" prefetch="intent">
 					{tournament.hasStarted ? "Info" : t("tournament:tabs.register")}
