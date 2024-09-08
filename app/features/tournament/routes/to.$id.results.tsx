@@ -34,7 +34,10 @@ export default function TournamentResultsPage() {
 						<th>Roster</th>
 						<th>Seed</th>
 						{tournament.ctx.isFinalized ? (
-							<th className="stack horizontal sm items-center">
+							<th
+								className="stack horizontal sm items-center"
+								data-testid="spr-header"
+							>
 								SPR{" "}
 								<InfoPopover tiny>
 									<a
@@ -86,6 +89,7 @@ export default function TournamentResultsPage() {
 											tournamentTeamId: standing.team.id,
 										})}
 										className="stack xs horizontal items-center text-main-forced"
+										data-testid="result-team-name"
 									>
 										{teamLogoSrc ? (
 											<Avatar size="xs" url={teamLogoSrc} />
