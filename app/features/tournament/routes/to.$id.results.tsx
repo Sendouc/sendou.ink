@@ -2,9 +2,10 @@ import { Link } from "@remix-run/react";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
 import { Flag } from "~/components/Flag";
+import { InfoPopover } from "~/components/InfoPopover";
 import { Placement } from "~/components/Placement";
 import { Table } from "~/components/Table";
-import { tournamentTeamPage } from "~/utils/urls";
+import { SPR_INFO_URL, tournamentTeamPage } from "~/utils/urls";
 import * as Standings from "../core/Standings";
 import { useTournament } from "./to.$id";
 
@@ -31,7 +32,20 @@ export default function TournamentResultsPage() {
 						<th>Team</th>
 						<th>Roster</th>
 						<th>Seed</th>
-						{tournament.ctx.isFinalized ? <th>SPR</th> : null}
+						{tournament.ctx.isFinalized ? (
+							<th className="stack horizontal sm items-center">
+								SPR{" "}
+								<InfoPopover tiny>
+									<a
+										href={SPR_INFO_URL}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										Seed Performance Rating
+									</a>
+								</InfoPopover>
+							</th>
+						) : null}
 						<th>Matches</th>
 					</tr>
 				</thead>

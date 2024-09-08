@@ -4,9 +4,9 @@ import {
 	tournamentRegisterPage,
 	tournamentResultsPage,
 } from "~/utils/urls";
+import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { tournamentIdFromParams } from "../tournament-utils";
-import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
 
 export const loader = ({ params }: LoaderFunctionArgs) => {
 	const tournamentId = tournamentIdFromParams(params);
