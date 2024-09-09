@@ -52,7 +52,8 @@ export function matchesPlayed({
 			(match) =>
 				match.opponent1 &&
 				match.opponent2 &&
-				(match.opponent1?.id === teamId || match.opponent2?.id === teamId),
+				(match.opponent1?.id === teamId || match.opponent2?.id === teamId) &&
+				(match.opponent1.result === "win" || match.opponent2?.result === "win"),
 		),
 	);
 

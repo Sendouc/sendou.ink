@@ -614,6 +614,7 @@
 	font-weight: var(--semi-bold);
 	border: 3px solid var(--theme);
 	border-radius: var(--rounded-sm);
+	color: var(--text);
 }
 
 .tournament__standings__match-result-square--win {

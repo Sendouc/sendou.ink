@@ -5,7 +5,11 @@ import { Flag } from "~/components/Flag";
 import { InfoPopover } from "~/components/InfoPopover";
 import { Placement } from "~/components/Placement";
 import { Table } from "~/components/Table";
-import { SPR_INFO_URL, tournamentTeamPage } from "~/utils/urls";
+import {
+	SPR_INFO_URL,
+	tournamentMatchPage,
+	tournamentTeamPage,
+} from "~/utils/urls";
 import * as Standings from "../core/Standings";
 import { useTournament } from "./to.$id";
 
@@ -141,7 +145,11 @@ function MatchHistoryRow({ teamId }: { teamId: number }) {
 		<div className="stack horizontal xs">
 			{teamMatches.map((match) => {
 				return (
-					<MatchResultSquare result={match.result} key={match.id}>
+					<MatchResultSquare
+						key={match.id}
+						result={match.result}
+						matchId={match.id}
+					>
 						{match.vsSeed}
 					</MatchResultSquare>
 				);
@@ -152,16 +160,23 @@ function MatchHistoryRow({ teamId }: { teamId: number }) {
 
 function MatchResultSquare({
 	result,
+	matchId,
 	children,
-}: { result: "win" | "loss"; children: React.ReactNode }) {
+}: { result: "win" | "loss"; matchId: number; children: React.ReactNode }) {
+	const tournament = useTournament();
+
 	return (
-		<div
+		<Link
+			to={tournamentMatchPage({
+				matchId,
+				tournamentId: tournament.ctx.id,
+			})}
 			className={clsx("tournament__standings__match-result-square", {
 				"tournament__standings__match-result-square--win": result === "win",
 				"tournament__standings__match-result-square--loss": result === "loss",
 			})}
 		>
 			{children}
-		</div>
+		</Link>
 	);
 }
