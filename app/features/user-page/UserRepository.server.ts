@@ -96,7 +96,14 @@ export function findLayoutDataByIdentifier(
 				.as("buildsCount"),
 			eb
 				.selectFrom("VideoMatchPlayer")
-				.select(({ fn }) => fn.countAll<number>().as("count"))
+				.innerJoin(
+					"VideoMatch",
+					"VideoMatch.id",
+					"VideoMatchPlayer.videoMatchId",
+				)
+				.select(({ fn }) =>
+					fn.count<number>("VideoMatch.videoId").distinct().as("count"),
+				)
 				.whereRef("VideoMatchPlayer.playerUserId", "=", "User.id")
 				.as("vodsCount"),
 			eb

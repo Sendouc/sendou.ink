@@ -1,9 +1,11 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useRevalidator } from "@remix-run/react";
+import clsx from "clsx";
 import { nanoid } from "nanoid";
 import * as React from "react";
 import { useEventSource } from "remix-utils/sse/react";
 import { LinkButton } from "~/components/Button";
+import { containerClassName } from "~/components/Main";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";
 import { useUser } from "~/features/auth/core/user";
@@ -63,8 +65,6 @@ import {
 	matchSubscriptionKey,
 	tournamentTeamToActiveRosterUserIds,
 } from "../tournament-bracket-utils";
-import clsx from "clsx";
-import { containerClassName } from "~/components/Main";
 
 import "../tournament-bracket.css";
 
