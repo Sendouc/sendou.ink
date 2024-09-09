@@ -25,11 +25,12 @@ import {
 } from "~/utils/urls";
 import type { UserPageLoaderData } from "./u.$identifier";
 
+import { Popover } from "~/components/Popover";
 import { loader } from "../loaders/u.$identifier.index.server";
 export { loader };
 
 export const handle: SendouRouteHandle = {
-	i18n: "badges",
+	i18n: ["badges", "team"],
 };
 
 export default function UserInfoPage() {
@@ -84,18 +85,68 @@ function TeamInfo() {
 	if (!data.user.team) return null;
 
 	return (
-		<Link to={teamPage(data.user.team.customUrl)} className="u__team">
-			{data.user.team.avatarUrl ? (
-				<img
-					alt=""
-					src={userSubmittedImage(data.user.team.avatarUrl)}
-					width={24}
-					height={24}
-					className="rounded-full"
-				/>
-			) : null}
-			{data.user.team.name}
-		</Link>
+		<div className="stack horizontal sm">
+			<Link to={teamPage(data.user.team.customUrl)} className="u__team">
+				{data.user.team.avatarUrl ? (
+					<img
+						alt=""
+						src={userSubmittedImage(data.user.team.avatarUrl)}
+						width={24}
+						height={24}
+						className="rounded-full"
+					/>
+				) : null}
+				{data.user.team.name}
+			</Link>
+			<SecondaryTeamsPopover />
+		</div>
+	);
+}
+
+function SecondaryTeamsPopover() {
+	const { t } = useTranslation(["team"]);
+
+	const data = useLoaderData<typeof loader>();
+
+	if (data.user.secondaryTeams.length === 0) return null;
+
+	// xxx: focus outline
+	return (
+		<Popover
+			buttonChildren={
+				<span className="text-sm text-main-forced font-bold">+1</span>
+			}
+		>
+			<div className="stack sm">
+				{data.user.secondaryTeams.map((team) => (
+					<div
+						key={team.customUrl}
+						className="stack horizontal md items-center"
+					>
+						<Link
+							to={teamPage(team.customUrl)}
+							className="u__team text-main-forced"
+						>
+							{team.avatarUrl ? (
+								<img
+									alt=""
+									src={userSubmittedImage(team.avatarUrl)}
+									width={24}
+									height={24}
+									className="rounded-full"
+								/>
+							) : null}
+							{team.name}
+						</Link>
+						{team.userTeamRole ? (
+							<div className="text-xxs text-lighter font-bold">
+								{t(`team:roles.${team.userTeamRole}`)}
+							</div>
+						) : null}
+					</div>
+				))}
+			</div>
+		</Popover>
 	);
 }
 

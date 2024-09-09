@@ -6,6 +6,7 @@ import type {
 	SqlBool,
 } from "kysely";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
+import type { TEAM_MEMBER_ROLES } from "~/features/team";
 import type { ParticipantResult } from "~/modules/brackets-model";
 import type {
 	Ability,
@@ -33,13 +34,16 @@ export interface AllTeam {
 	twitter: string | null;
 }
 
+export type MemberRole = (typeof TEAM_MEMBER_ROLES)[number];
+
 export interface AllTeamMember {
 	createdAt: Generated<number>;
 	isOwner: Generated<number>;
 	leftAt: number | null;
-	role: string | null;
+	role: MemberRole | null;
 	teamId: number;
 	userId: number;
+	isMainTeam: number;
 }
 
 export interface Team {
@@ -54,15 +58,6 @@ export interface Team {
 	inviteCode: string;
 	name: string;
 	twitter: string | null;
-}
-
-export interface TeamMember {
-	createdAt: number | null;
-	isOwner: number | null;
-	leftAt: number | null;
-	role: string | null;
-	teamId: number;
-	userId: number;
 }
 
 export interface Art {
@@ -892,7 +887,8 @@ export interface DB {
 	SplatoonPlayer: SplatoonPlayer;
 	TaggedArt: TaggedArt;
 	Team: Team;
-	TeamMember: TeamMember;
+	TeamMember: AllTeamMember;
+	TeamMemberWithSecondary: AllTeamMember;
 	Tournament: Tournament;
 	TournamentStaff: TournamentStaff;
 	TournamentBadgeOwner: TournamentBadgeOwner;

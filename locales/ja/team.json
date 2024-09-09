@@ -34,6 +34,5 @@
 	"validation.SHORT_CODE": "招待コードの長さが正しくありません。URL をすべてコピーしましたか？",
 	"validation.TEAM_FULL": "参加しようとしているチームはすでに満員です。",
 	"validation.INVITE_CODE_WRONG": "招待コードが正しくありません。",
-	"validation.ALREADY_IN_DIFFERENT_TEAM": "すでに別のチームに参加済みです。まず参加済みのチームを抜けてから新しいチームに参加してください。",
 	"validation.VALID": "{{teamName}} に参加しますか?"
 }

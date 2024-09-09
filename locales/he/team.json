@@ -34,6 +34,5 @@
 	"validation.SHORT_CODE": "קוד ההזמנה אינו באורך המתאים. העתקתם את כתובת האתר המלאה?",
 	"validation.TEAM_FULL": "הצוות שאתם מנסים להצטרף אליו מלא.",
 	"validation.INVITE_CODE_WRONG": "קוד ההזמנה שגוי.",
-	"validation.ALREADY_IN_DIFFERENT_TEAM": "הנכם בצוות אחר. עזבו אותו קודם לפני הצטרפות לצוות אחר.",
 	"validation.VALID": "הצטרפו ל-{{teamName}}?"
 }

@@ -40,6 +40,7 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
+import { isAdmin } from "~/permissions";
 
 import "../team.css";
 
@@ -77,7 +78,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 
-	validate(isTeamOwner({ team, user }), "You are not the team owner");
+	validate(
+		isTeamOwner({ team, user }) || isAdmin(user),
+		"You are not the team owner",
+	);
 
 	const data = await parseRequestPayload({
 		request,
@@ -122,7 +126,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	const { team, css } = notFoundIfFalsy(findByIdentifier(customUrl));
 
-	if (!isTeamOwner({ team, user })) {
+	if (!isTeamOwner({ team, user }) && !isAdmin(user)) {
 		throw redirect(teamPage(customUrl));
 	}
 

@@ -36,8 +36,8 @@ import {
 	userPage,
 	userSubmittedImage,
 } from "~/utils/urls";
+import * as TeamRepository from "../TeamRepository.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { leaveTeam } from "../queries/leaveTeam.server";
 import { teamParamsSchema } from "../team-schemas.server";
 import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
 import {
@@ -45,6 +45,7 @@ import {
 	isTeamMember,
 	isTeamOwner,
 } from "../team-utils";
+import { isAdmin } from "~/permissions";
 
 import "../team.css";
 
@@ -68,7 +69,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 		"You are not a regular member of this team",
 	);
 
-	leaveTeam({ userId: user.id, teamId: team.id });
+	await TeamRepository.removeTeamMember({
+		teamId: team.id,
+		userId: user.id,
+	});
 
 	return null;
 };
@@ -205,13 +209,13 @@ function ActionButtons() {
 	const user = useUser();
 	const { team } = useLoaderData<typeof loader>();
 
-	if (!isTeamMember({ user, team })) {
+	if (!isTeamMember({ user, team }) && !isAdmin(user)) {
 		return null;
 	}
 
 	return (
 		<div className="team__action-buttons">
-			{!isTeamOwner({ user, team }) ? (
+			{!isTeamOwner({ user, team }) && isTeamMember({ user, team }) ? (
 				<FormWithConfirm
 					dialogHeading={t("team:leaveTeam.header", { teamName: team.name })}
 					deleteButtonText={t("team:actionButtons.leaveTeam.confirm")}
@@ -225,7 +229,7 @@ function ActionButtons() {
 					</Button>
 				</FormWithConfirm>
 			) : null}
-			{isTeamOwner({ user, team }) ? (
+			{isTeamOwner({ user, team }) || isAdmin(user) ? (
 				<LinkButton
 					size="tiny"
 					to={manageTeamRosterPage(team.customUrl)}
@@ -237,7 +241,7 @@ function ActionButtons() {
 					{t("team:actionButtons.manageRoster")}
 				</LinkButton>
 			) : null}
-			{isTeamOwner({ user, team }) ? (
+			{isTeamOwner({ user, team }) || isAdmin(user) ? (
 				<LinkButton
 					size="tiny"
 					to={editTeamPage(team.customUrl)}

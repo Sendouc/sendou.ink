@@ -31,18 +31,18 @@ const membersStm = sql.prepare(/*sql*/ `
     "User"."discordAvatar",
     "User"."discordId",
     "User"."patronTier",
-    "TeamMember"."role",
-    "TeamMember"."isOwner",
+    "TeamMemberWithSecondary"."role",
+    "TeamMemberWithSecondary"."isOwner",
     json_group_array(
       json_object(
         'weaponSplId', "UserWeapon"."weaponSplId",
         'isFavorite', "UserWeapon"."isFavorite"
       )
     ) as "weapons"
-  from "TeamMember"
-    join "User" on "User"."id" = "TeamMember"."userId"
+  from "TeamMemberWithSecondary"
+    join "User" on "User"."id" = "TeamMemberWithSecondary"."userId"
     left join "UserWeapon" on "UserWeapon"."userId" = "User"."id"
-  where "TeamMember"."teamId" = @teamId
+  where "TeamMemberWithSecondary"."teamId" = @teamId
   group by "User"."id"
   order by "UserWeapon"."order" asc
 `);

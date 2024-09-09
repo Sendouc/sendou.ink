@@ -34,6 +34,5 @@
 	"validation.SHORT_CODE": "邀请码长度不符，请确保您复制了完整的URL。",
 	"validation.TEAM_FULL": "您想要加入的队伍成员已满。",
 	"validation.INVITE_CODE_WRONG": "邀请码有误。",
-	"validation.ALREADY_IN_DIFFERENT_TEAM": "您已经在另一支队伍里了。如想要加入新队伍，请退出该队。",
 	"validation.VALID": "加入 {{teamName}} ？"
 }
