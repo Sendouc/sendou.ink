@@ -63,6 +63,8 @@ import {
 	matchSubscriptionKey,
 	tournamentTeamToActiveRosterUserIds,
 } from "../tournament-bracket-utils";
+import clsx from "clsx";
+import { containerClassName } from "~/components/Main";
 
 import "../tournament-bracket.css";
 
@@ -640,7 +642,7 @@ export default function TournamentMatchPage() {
 	};
 
 	return (
-		<div className="stack lg">
+		<div className={clsx("stack lg", containerClassName("normal"))}>
 			{!data.matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
 			<div className="flex horizontal justify-between items-center">
 				<MatchHeader />
