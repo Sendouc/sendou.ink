@@ -79,7 +79,7 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 .plans__top-section {
 	position: fixed;
 	z-index: 10;
-	top: 3%;
+	top: 25px;
 	left: 50%;
 	display: flex;
 	align-items: center;
@@ -91,10 +91,29 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 	transform: translate(-50%, -42%);
 }
 
-.plans__weapons-section {
+.plans__outline-toggle {
 	position: fixed;
 	z-index: 10;
 	top: 10%;
+	left: 5px;
+}
+
+.plans__outline-toggle > .plans__outline-toggle__button {
+	background-color: grey;
+	font-size: var(--fonts-xs);
+	padding: var(--s-2);
+	color: var(--button-text);
+	width: 140px;
+}
+
+.plans__outline-toggle > .plans__outline-toggle__button__outlined {
+	background-color: var(--theme);
+}
+
+.plans__weapons-section {
+	position: fixed;
+	z-index: 10;
+	top: 15%;
 	width: 150px;
 	max-height: 85vh;
 	border: 1px solid var(--theme-very-transparent);
@@ -160,4 +179,12 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 .plans__quick-actions {
 	display: flex;
 	right: 0;
+}
+
+img[src$="?outline=red"] {
+	--outline-width: 0.1rem;
+	--outline-color: crimson;
+	filter: drop-shadow(0 0 var(--outline-width) var(--outline-color))
+		drop-shadow(0 0 var(--outline-width) var(--outline-color))
+		drop-shadow(0 0 var(--outline-width) var(--outline-color));
 }

@@ -62,6 +62,8 @@
 	"actions.selectAll": "Select All",
 	"actions.search": "Search",
 	"actions.setBg": "Set background",
+	"actions.outlined": "Outlined",
+	"actions.noOutline": "No outline",
 	"actions.join": "Join",
 	"actions.nevermind": "Nevermind",
 	"actions.upload": "Upload",

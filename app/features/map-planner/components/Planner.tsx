@@ -47,6 +47,7 @@ export default function Planner() {
 	const plannerBgParams = usePlannerBg();
 
 	const [editor, setEditor] = React.useState<Editor | null>(null);
+	const [imgOutlined, setImgOutlined] = React.useState(false);
 
 	const handleMount = React.useCallback(
 		(mountedEditor: Editor) => {
@@ -79,6 +80,8 @@ export default function Planner() {
 			// This lets us have multiple copies of an image on the canvas without having all of those take up memory individually"
 			const assetId: TLAssetId = AssetRecordType.createId();
 
+			const srcWithOutline = imgOutlined ? `${src}?outline=red` : src;
+
 			// idk if this is the best solution, but it was the example given and it seems to cope well with lots of shapes at once
 			const imageAsset: TLImageAsset = {
 				id: assetId,
@@ -86,7 +89,7 @@ export default function Planner() {
 				typeName: "asset",
 				props: {
 					name: "img",
-					src: src,
+					src: srcWithOutline,
 					w: size[0],
 					h: size[1],
 					mimeType: null,
@@ -115,7 +118,7 @@ export default function Planner() {
 
 			cb?.();
 		},
-		[editor],
+		[editor, imgOutlined],
 	);
 
 	const handleAddWeapon = React.useCallback(
@@ -228,6 +231,7 @@ export default function Planner() {
 	return (
 		<>
 			<StageBackgroundSelector onAddBackground={handleAddBackgroundImage} />
+			<OutlineToggle outlined={imgOutlined} setImgOutlined={setImgOutlined} />
 			<WeaponImageSelector handleAddWeapon={handleAddWeapon} />
 			<div className="plans__powered-by">
 				<a href={TLDRAW_URL} target="_blank" rel="noreferrer">
@@ -258,6 +262,36 @@ function CustomStylePanel(props: TLUiStylePanelProps) {
 					<DefaultZoomMenu />
 				</div>
 			</div>
+		</div>
+	);
+}
+
+function OutlineToggle({
+	outlined,
+	setImgOutlined,
+}: {
+	outlined?: boolean;
+	setImgOutlined: (outline: boolean) => void;
+}) {
+	const { t } = useTranslation(["common"]);
+
+	const handleClick = () => {
+		setImgOutlined(!outlined);
+	};
+
+	return (
+		<div className="plans__outline-toggle">
+			<Button
+				variant="minimal"
+				onClick={handleClick}
+				className={clsx("plans__outline-toggle__button", {
+					"plans__outline-toggle__button__outlined": outlined,
+				})}
+			>
+				{outlined
+					? t("common:actions.outlined")
+					: t("common:actions.noOutline")}
+			</Button>
 		</div>
 	);
 }
