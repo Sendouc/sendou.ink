@@ -9,6 +9,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	).id;
 
 	return {
-		vods: findVods({ userId }),
+		// TODO: add pagination instead of not showing oldest vods at all
+		vods: findVods({ userId, limit: 100 }),
 	};
 };
