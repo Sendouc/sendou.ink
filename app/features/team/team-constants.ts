@@ -10,13 +10,16 @@ export const TEAM = {
 
 export const TEAM_MEMBER_ROLES = [
 	"CAPTAIN",
+	"CO_CAPTAIN",
 	"FRONTLINE",
+	"SKIRMISHER",
 	"SUPPORT",
 	"MIDLINE",
 	"BACKLINE",
 	"FLEX",
 	"SUB",
 	"COACH",
+	"CHEERLEADER",
 ] as const;
 
 export const TEAMS_PER_PAGE = 40;

@@ -406,6 +406,11 @@
 	outline: 2px solid var(--theme);
 }
 
+.focus-text-decoration:focus-visible {
+	outline: none !important;
+	text-decoration: underline;
+}
+
 .label-no-spacing {
 	--label-margin: 0;
 }

@@ -164,6 +164,7 @@ export async function findProfileByIdentifier(
 						"Team.name",
 						"Team.customUrl",
 						"Team.id",
+						"TeamMember.role as userTeamRole",
 						"UserSubmittedImage.url as avatarUrl",
 					])
 					.whereRef("TeamMember.userId", "=", "User.id"),

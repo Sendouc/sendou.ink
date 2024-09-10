@@ -8,6 +8,15 @@ export const createTeamSchema = z.object({
 	name: z.string().min(TEAM.NAME_MIN_LENGTH).max(TEAM.NAME_MAX_LENGTH),
 });
 
+export const teamProfilePageActionSchema = z.union([
+	z.object({
+		_action: _action("LEAVE_TEAM"),
+	}),
+	z.object({
+		_action: _action("MAKE_MAIN_TEAM"),
+	}),
+]);
+
 export const editTeamSchema = z.union([
 	z.object({
 		_action: _action("DELETE"),

@@ -13,12 +13,10 @@ import {
 } from "~/utils/remix";
 import { teamPage } from "~/utils/urls";
 import * as TeamRepository from "../TeamRepository.server";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { inviteCodeById } from "../queries/inviteCodeById.server";
-import { teamParamsSchema } from "../team-schemas.server";
-import type { DetailedTeam } from "../team-types";
-import { isTeamFull, isTeamMember } from "../team-utils";
 import { TEAM } from "../team-constants";
+import { teamParamsSchema } from "../team-schemas.server";
+import { isTeamFull, isTeamMember } from "../team-utils";
 
 import "../team.css";
 
@@ -26,7 +24,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const user = await requireUser(request);
 	const { customUrl } = teamParamsSchema.parse(params);
 
-	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
+	const team = notFoundIfFalsy(await TeamRepository.findByCustomUrl(customUrl));
 
 	const inviteCode = new URL(request.url).searchParams.get("code") ?? "";
 	const realInviteCode = inviteCodeById(team.id)!;
@@ -62,7 +60,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const user = await requireUser(request);
 	const { customUrl } = teamParamsSchema.parse(params);
 
-	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
+	const team = notFoundIfFalsy(await TeamRepository.findByCustomUrl(customUrl));
 
 	const inviteCode = new URL(request.url).searchParams.get("code") ?? "";
 	const realInviteCode = inviteCodeById(team.id)!;
@@ -99,7 +97,7 @@ function validateInviteCode({
 }: {
 	inviteCode: string;
 	realInviteCode: string;
-	team: DetailedTeam;
+	team: TeamRepository.findByCustomUrl;
 	user?: { id: number; team?: { name: string } };
 	reachedTeamCountLimit: boolean;
 }) {

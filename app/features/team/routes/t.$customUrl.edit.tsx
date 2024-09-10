@@ -19,6 +19,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { requireUserId } from "~/features/auth/core/user.server";
 import * as LFGRepository from "~/features/lfg/LFGRepository.server";
+import { isAdmin } from "~/permissions";
 import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
@@ -34,13 +35,12 @@ import {
 	teamPage,
 	uploadImagePage,
 } from "~/utils/urls";
+import * as TeamRepository from "../TeamRepository.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { edit } from "../queries/edit.server";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
-import { isAdmin } from "~/permissions";
 
 import "../team.css";
 
@@ -76,7 +76,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const user = await requireUserId(request);
 	const { customUrl } = teamParamsSchema.parse(params);
 
-	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
+	const team = notFoundIfFalsy(await TeamRepository.findByCustomUrl(customUrl));
 
 	validate(
 		isTeamOwner({ team, user }) || isAdmin(user),
@@ -97,10 +97,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 		}
 		case "EDIT": {
 			const newCustomUrl = mySlugify(data.name);
-			const existing = findByIdentifier(newCustomUrl);
+			const existingTeam = await TeamRepository.findByCustomUrl(newCustomUrl);
 
 			// can't take someone else's custom url
-			if (existing && existing.team.id !== team.id) {
+			if (existingTeam && existingTeam.id !== team.id) {
 				return {
 					errors: ["forms.errors.duplicateName"],
 				};
@@ -124,13 +124,13 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const user = await requireUserId(request);
 	const { customUrl } = teamParamsSchema.parse(params);
 
-	const { team, css } = notFoundIfFalsy(findByIdentifier(customUrl));
+	const team = notFoundIfFalsy(await TeamRepository.findByCustomUrl(customUrl));
 
 	if (!isTeamOwner({ team, user }) && !isAdmin(user)) {
 		throw redirect(teamPage(customUrl));
 	}
 
-	return { team, css };
+	return { team, css: team.css };
 };
 
 export default function EditTeamPage() {

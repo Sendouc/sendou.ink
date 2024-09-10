@@ -80,6 +80,7 @@ export default function UserInfoPage() {
 }
 
 function TeamInfo() {
+	const { t } = useTranslation(["team"]);
 	const data = useLoaderData<typeof loader>();
 
 	if (!data.user.team) return null;
@@ -91,12 +92,19 @@ function TeamInfo() {
 					<img
 						alt=""
 						src={userSubmittedImage(data.user.team.avatarUrl)}
-						width={24}
-						height={24}
+						width={32}
+						height={32}
 						className="rounded-full"
 					/>
 				) : null}
-				{data.user.team.name}
+				<div>
+					{data.user.team.name}
+					{data.user.team.userTeamRole ? (
+						<div className="text-xxs text-lighter font-bold">
+							{t(`team:roles.${data.user.team.userTeamRole}`)}
+						</div>
+					) : null}
+				</div>
 			</Link>
 			<SecondaryTeamsPopover />
 		</div>
@@ -110,12 +118,12 @@ function SecondaryTeamsPopover() {
 
 	if (data.user.secondaryTeams.length === 0) return null;
 
-	// xxx: focus outline
 	return (
 		<Popover
 			buttonChildren={
-				<span className="text-sm text-main-forced font-bold">+1</span>
+				<span className="text-sm font-bold text-main-forced">+1</span>
 			}
+			triggerClassName="minimal tiny focus-text-decoration"
 		>
 			<div className="stack sm">
 				{data.user.secondaryTeams.map((team) => (

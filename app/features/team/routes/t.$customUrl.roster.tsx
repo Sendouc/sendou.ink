@@ -17,6 +17,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
+import { isAdmin } from "~/permissions";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -29,15 +30,12 @@ import {
 } from "~/utils/urls";
 import * as TeamRepository from "../TeamRepository.server";
 import { editRole } from "../queries/editRole.server";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { inviteCodeById } from "../queries/inviteCodeById.server";
 import { resetInviteLink } from "../queries/resetInviteLink.server";
 import { transferOwnership } from "../queries/transferOwnership.server";
 import { TEAM_MEMBER_ROLES } from "../team-constants";
 import { manageRosterSchema, teamParamsSchema } from "../team-schemas.server";
-import type { DetailedTeamMember } from "../team-types";
 import { isTeamFull, isTeamOwner } from "../team-utils";
-import { isAdmin } from "~/permissions";
 
 import "../team.css";
 
@@ -51,7 +49,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const user = await requireUserId(request);
 
 	const { customUrl } = teamParamsSchema.parse(params);
-	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
+	const team = notFoundIfFalsy(await TeamRepository.findByCustomUrl(customUrl));
 	validate(
 		isTeamOwner({ team, user }) || isAdmin(user),
 		"Only team owner can manage roster",
@@ -126,7 +124,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	const user = await requireUserId(request);
 	const { customUrl } = teamParamsSchema.parse(params);
 
-	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
+	const team = notFoundIfFalsy(await TeamRepository.findByCustomUrl(customUrl));
 
 	if (!isTeamOwner({ team, user }) && !isAdmin(user)) {
 		throw redirect(teamPage(customUrl));
@@ -136,8 +134,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 		team: { ...team, inviteCode: inviteCodeById(team.id)! },
 	};
 };
-
-// xxx: add "Skirmisher"
 
 export default function ManageTeamRosterPage() {
 	return (
@@ -213,7 +209,7 @@ function MemberRow({
 	member,
 	number,
 }: {
-	member: DetailedTeamMember;
+	member: TeamRepository.findByCustomUrl["members"][number];
 	number: number;
 }) {
 	const { team } = useLoaderData<typeof loader>();

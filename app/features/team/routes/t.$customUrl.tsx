@@ -1,10 +1,5 @@
-import type {
-	ActionFunction,
-	LoaderFunctionArgs,
-	MetaFunction,
-	SerializeFrom,
-} from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import type { MetaFunction, SerializeFrom } from "@remix-run/node";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -14,17 +9,15 @@ import { Flag } from "~/components/Flag";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { Placement } from "~/components/Placement";
+import { SubmitButton } from "~/components/SubmitButton";
 import { EditIcon } from "~/components/icons/Edit";
+import { StarIcon } from "~/components/icons/Star";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { UsersIcon } from "~/components/icons/Users";
 import { useUser } from "~/features/auth/core/user";
-import { requireUserId } from "~/features/auth/core/user.server";
-import {
-	type SendouRouteHandle,
-	notFoundIfFalsy,
-	validate,
-} from "~/utils/remix";
+import { isAdmin } from "~/permissions";
+import { removeDuplicates } from "~/utils/arrays";
+import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
 	TEAM_SEARCH_PAGE,
@@ -36,16 +29,12 @@ import {
 	userPage,
 	userSubmittedImage,
 } from "~/utils/urls";
-import * as TeamRepository from "../TeamRepository.server";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { teamParamsSchema } from "../team-schemas.server";
-import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
-import {
-	canAddCustomizedColors,
-	isTeamMember,
-	isTeamOwner,
-} from "../team-utils";
-import { isAdmin } from "~/permissions";
+import type * as TeamRepository from "../TeamRepository.server";
+import { isTeamMember, isTeamOwner } from "../team-utils";
+
+import { action } from "../actions/t.$customUrl.server";
+import { loader } from "../loaders/t.$customUrl.server";
+export { action, loader };
 
 import "../team.css";
 
@@ -56,25 +45,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		{ title: makeTitle(data.team.name) },
 		{ name: "description", content: data.team.bio },
 	];
-};
-
-export const action: ActionFunction = async ({ request, params }) => {
-	const user = await requireUserId(request);
-
-	const { customUrl } = teamParamsSchema.parse(params);
-	const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
-
-	validate(
-		isTeamMember({ user, team }) && !isTeamOwner({ user, team }),
-		"You are not a regular member of this team",
-	);
-
-	await TeamRepository.removeTeamMember({
-		teamId: team.id,
-		userId: user.id,
-	});
-
-	return null;
 };
 
 export const handle: SendouRouteHandle = {
@@ -99,14 +69,6 @@ export const handle: SendouRouteHandle = {
 	},
 };
 
-export const loader = ({ params }: LoaderFunctionArgs) => {
-	const { customUrl } = teamParamsSchema.parse(params);
-
-	const { team, css } = notFoundIfFalsy(findByIdentifier(customUrl));
-
-	return { team, css: canAddCustomizedColors(team) ? css : null };
-};
-
 export default function TeamPage() {
 	const { team } = useLoaderData<typeof loader>();
 
@@ -118,7 +80,7 @@ export default function TeamPage() {
 			</div>
 			<MobileTeamNameCountry />
 			<ActionButtons />
-			{team.results ? <ResultsBanner results={team.results} /> : null}
+			{/* {team.results ? <ResultsBanner results={team.results} /> : null} */}
 			{team.bio ? <article data-testid="team-bio">{team.bio}</article> : null}
 			<div className="stack lg">
 				{team.members.map((member, i) => (
@@ -155,7 +117,11 @@ function TeamBanner() {
 					</div>
 				) : null}
 				<div className="team__banner__flags">
-					{team.countries.map((country) => {
+					{removeDuplicates(
+						team.members
+							.map((member) => member.country)
+							.filter((country) => country !== null),
+					).map((country) => {
 						return <Flag key={country} countryCode={country} />;
 					})}
 				</div>
@@ -174,7 +140,11 @@ function MobileTeamNameCountry() {
 	return (
 		<div className="team__mobile-name-country">
 			<div className="stack horizontal sm">
-				{team.countries.map((country) => {
+				{removeDuplicates(
+					team.members
+						.map((member) => member.country)
+						.filter((country) => country !== null),
+				).map((country) => {
 					return <Flag key={country} countryCode={country} tiny />;
 				})}
 			</div>
@@ -213,12 +183,20 @@ function ActionButtons() {
 		return null;
 	}
 
+	const isMainTeam = team.members.find(
+		(member) => user?.id === member.id && member.isMainTeam,
+	);
+
 	return (
 		<div className="team__action-buttons">
+			{isTeamMember({ user, team }) && !isMainTeam ? (
+				<ChangeMainTeamButton />
+			) : null}
 			{!isTeamOwner({ user, team }) && isTeamMember({ user, team }) ? (
 				<FormWithConfirm
 					dialogHeading={t("team:leaveTeam.header", { teamName: team.name })}
 					deleteButtonText={t("team:actionButtons.leaveTeam.confirm")}
+					fields={[["_action", "LEAVE_TEAM"]]}
 				>
 					<Button
 						size="tiny"
@@ -257,28 +235,46 @@ function ActionButtons() {
 	);
 }
 
-function ResultsBanner({ results }: { results: TeamResultPeek }) {
+function ChangeMainTeamButton() {
+	const { t } = useTranslation(["team"]);
+	const fetcher = useFetcher();
+
 	return (
-		<Link className="team__results" to="results">
-			<div>View {results.count} results</div>
-			<ul className="team__results__placements">
-				{results.placements.map(({ placement, count }) => {
-					return (
-						<li key={placement}>
-							<Placement placement={placement} />×{count}
-						</li>
-					);
-				})}
-			</ul>
-		</Link>
+		<fetcher.Form method="post">
+			<SubmitButton
+				_action="MAKE_MAIN_TEAM"
+				size="tiny"
+				variant="outlined"
+				icon={<StarIcon />}
+			>
+				{t("team:actionButtons.makeMainTeam")}
+			</SubmitButton>
+		</fetcher.Form>
 	);
 }
+
+// function ResultsBanner({ results }: { results: TeamResultPeek }) {
+// 	return (
+// 		<Link className="team__results" to="results">
+// 			<div>View {results.count} results</div>
+// 			<ul className="team__results__placements">
+// 				{results.placements.map(({ placement, count }) => {
+// 					return (
+// 						<li key={placement}>
+// 							<Placement placement={placement} />×{count}
+// 						</li>
+// 					);
+// 				})}
+// 			</ul>
+// 		</Link>
+// 	);
+// }
 
 function MemberRow({
 	member,
 	number,
 }: {
-	member: DetailedTeamMember;
+	member: TeamRepository.findByCustomUrl["members"][number];
 	number: number;
 }) {
 	const { t } = useTranslation(["team"]);
@@ -319,7 +315,9 @@ function MemberRow({
 	);
 }
 
-function MobileMemberCard({ member }: { member: DetailedTeamMember }) {
+function MobileMemberCard({
+	member,
+}: { member: TeamRepository.findByCustomUrl["members"][number] }) {
 	const { t } = useTranslation(["team"]);
 
 	return (

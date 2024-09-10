@@ -18,10 +18,11 @@
 
 .u__team {
 	display: flex;
-	color: var(--text-lighter);
 	font-weight: var(--bold);
+	color: var(--text);
 	gap: var(--s-1-5);
 	grid-area: team;
+	align-items: center;
 }
 
 .u__name {

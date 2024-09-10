@@ -15,8 +15,6 @@ import {
 
 import "../support.css";
 
-// xxx: add many team
-
 export const meta: MetaFunction = () => {
 	return [{ title: makeTitle("Support") }];
 };
@@ -88,6 +86,11 @@ const PERKS = [
 	{
 		tier: 2,
 		name: "previewQ",
+		extraInfo: false,
+	},
+	{
+		tier: 2,
+		name: "joinFive",
 		extraInfo: false,
 	},
 ] as const;

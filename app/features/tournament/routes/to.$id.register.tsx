@@ -20,7 +20,6 @@ import { NewTabs } from "~/components/NewTabs";
 import { Popover } from "~/components/Popover";
 import { Section } from "~/components/Section";
 import { SubmitButton } from "~/components/SubmitButton";
-import { Toggle } from "~/components/Toggle";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ClockIcon } from "~/components/icons/Clock";
 import { CrossIcon } from "~/components/icons/Cross";
@@ -588,17 +587,20 @@ function TeamInfo({
 	const [teamName, setTeamName] = React.useState(ownTeam?.name ?? "");
 	const user = useUser();
 	const ref = React.useRef<HTMLFormElement>(null);
-	const [signUpWithTeam, setSignUpWithTeam] = React.useState(() =>
-		Boolean(tournament.ownedTeamByUser(user)?.team),
+	const [signUpWithTeamId, setSignUpWithTeamId] = React.useState(
+		() => tournament.ownedTeamByUser(user)?.team?.id ?? null,
 	);
 	const [uploadedAvatar, setUploadedAvatar] = React.useState<File | null>(null);
 
-	const handleSignUpWithTeamChange = (checked: boolean) => {
-		if (!checked) {
-			setSignUpWithTeam(false);
-		} else if (data?.team) {
-			setSignUpWithTeam(true);
-			setTeamName(data.team.name);
+	const handleSignUpWithTeamChange = (teamId: number | null) => {
+		if (!teamId) {
+			setSignUpWithTeamId(null);
+		} else {
+			setSignUpWithTeamId(teamId);
+			const teamName = data?.teams.find((team) => team.id === teamId)?.name;
+			invariant(teamName, "team name should exist");
+
+			setTeamName(teamName);
 		}
 	};
 
@@ -624,11 +626,13 @@ function TeamInfo({
 	};
 
 	const avatarUrl = (() => {
-		if (signUpWithTeam) {
-			if (ownTeam?.team?.logoUrl) {
-				return userSubmittedImage(ownTeam.team.logoUrl);
-			}
-			return data?.team?.logoUrl ? userSubmittedImage(data.team.logoUrl) : null;
+		if (signUpWithTeamId) {
+			const teamToSignUpWith = data?.teams.find(
+				(team) => team.id === signUpWithTeamId,
+			);
+			return teamToSignUpWith?.logoUrl
+				? userSubmittedImage(teamToSignUpWith.logoUrl)
+				: null;
 		}
 		if (uploadedAvatar) return URL.createObjectURL(uploadedAvatar);
 		if (ownTeam?.pickupAvatarUrl) {
@@ -640,7 +644,7 @@ function TeamInfo({
 
 	const canEditAvatar =
 		tournament.registrationOpen &&
-		!signUpWithTeam &&
+		!signUpWithTeamId &&
 		uploadedAvatar &&
 		!ownTeam?.pickupAvatarUrl;
 
@@ -671,35 +675,57 @@ function TeamInfo({
 			<section className="tournament__section">
 				<Form method="post" className="stack md items-center" ref={ref}>
 					<input type="hidden" name="_action" value="UPSERT_TEAM" />
-					{signUpWithTeam && data?.team ? (
-						<input type="hidden" name="teamId" value={data.team.id} />
+					{signUpWithTeamId ? (
+						<input type="hidden" name="teamId" value={signUpWithTeamId} />
 					) : null}
-					<div className="stack sm items-center">
-						{data?.team && tournament.registrationOpen ? (
+					<div className="stack sm-plus items-center">
+						{data && data.teams.length > 0 && tournament.registrationOpen ? (
 							<div className="tournament__section__input-container">
-								<Label htmlFor="signUpAsTeam">
-									Sign up as {data.team.name}
-								</Label>
-								<Toggle
-									id="signUpAsTeam"
-									checked={signUpWithTeam}
-									setChecked={handleSignUpWithTeamChange}
-								/>
+								<Label htmlFor="signingUpAs">Team signing up as</Label>
+								<select
+									id="signingUpAs"
+									onChange={(e) => {
+										if (e.target.value === "") {
+											handleSignUpWithTeamChange(null);
+										} else {
+											handleSignUpWithTeamChange(Number(e.target.value));
+										}
+									}}
+								>
+									<option value="">Sign up with pick-up</option>
+									{data.teams.map((team) => {
+										return (
+											<option key={team.id} value={team.id}>
+												{team.name}
+											</option>
+										);
+									})}
+								</select>
 							</div>
 						) : null}
 
-						<div className="tournament__section__input-container">
-							<Label htmlFor="teamName">{t("tournament:pre.steps.name")}</Label>
-							<Input
-								name="teamName"
-								id="teamName"
-								required
-								maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
-								value={teamName}
-								onChange={(e) => setTeamName(e.target.value)}
-								readOnly={!tournament.registrationOpen || signUpWithTeam}
-							/>
-						</div>
+						{!signUpWithTeamId ? (
+							<div className="tournament__section__input-container">
+								<Label htmlFor="teamName">
+									{data && data.teams.length > 0
+										? "Pick-up name"
+										: t("tournament:pre.steps.name")}
+								</Label>
+								<Input
+									name="teamName"
+									id="teamName"
+									required
+									maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
+									value={teamName}
+									onChange={(e) => setTeamName(e.target.value)}
+									readOnly={
+										!tournament.registrationOpen || Boolean(signUpWithTeamId)
+									}
+								/>
+							</div>
+						) : (
+							<input type="hidden" name="teamName" value={teamName} />
+						)}
 						{tournament.registrationOpen || avatarUrl ? (
 							<div className="tournament__section__input-container">
 								<Label htmlFor="logo">Logo</Label>
