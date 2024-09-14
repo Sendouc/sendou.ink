@@ -32,6 +32,5 @@
 	"validation.SHORT_CODE": "Zaproszenie jest złej długości. Czy napewno skopiowałeś/aś pełne URL?",
 	"validation.TEAM_FULL": "Drużyna, do której próbujesz dołączyć, jest pełna.",
 	"validation.INVITE_CODE_WRONG": "Zaproszenie niepoprawne.",
-	"validation.ALREADY_IN_DIFFERENT_TEAM": "Jesteś już na innej drużynie. Opuść ją zanim dołączysz do nowej.",
 	"validation.VALID": "Dołączyć do {{teamName}}?"
 }

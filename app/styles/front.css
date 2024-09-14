@@ -172,3 +172,29 @@
 	background-color: var(--card-text);
 	color: var(--card-bg);
 }
+
+.front__change-log__img {
+	max-height: 300px;
+	border-radius: var(--rounded-sm);
+}
+
+.front__change-log__icon-button {
+	display: flex;
+	flex-direction: row;
+	gap: var(--s-1-5);
+	justify-content: center;
+	align-items: center;
+	font-weight: var(--bold);
+	font-size: var(--fonts-xs);
+	border-radius: 100%;
+	color: var(--text-lighter);
+}
+
+.front__change-log__icon-button:hover {
+	color: var(--theme);
+}
+
+.front__external-link-icon {
+	width: 18px;
+	stroke-width: 2px;
+}

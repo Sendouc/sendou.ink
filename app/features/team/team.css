@@ -158,6 +158,7 @@
 	display: flex;
 	justify-content: center;
 	gap: var(--s-2);
+	flex-wrap: wrap;
 }
 
 .team__results {

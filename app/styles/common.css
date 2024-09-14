@@ -958,6 +958,10 @@ dialog::backdrop {
 	gap: var(--s-12);
 }
 
+.stack.xxl {
+	gap: var(--s-16);
+}
+
 .stack.horizontal {
 	flex-direction: row;
 }

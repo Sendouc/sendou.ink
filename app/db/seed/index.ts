@@ -1545,9 +1545,12 @@ function otherTeams() {
 	);
 
 	for (let i = 3; i < 50; i++) {
-		const teamName = `${capitalize(faker.word.adjective())} ${capitalize(
-			faker.word.noun(),
-		)}`;
+		const teamName =
+			i === 3
+				? "Team Olive"
+				: `${capitalize(faker.word.adjective())} ${capitalize(
+						faker.word.noun(),
+					)}`;
 		const teamCustomUrl = mySlugify(teamName);
 
 		sql

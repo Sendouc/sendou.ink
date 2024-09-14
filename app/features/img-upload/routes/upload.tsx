@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { requireUser } from "~/features/auth/core/user.server";
-import { findByIdentifier, isTeamOwner } from "~/features/team";
+import { isTeamOwner } from "~/features/team";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import invariant from "~/utils/invariant";
 import { countUnvalidatedImg } from "../queries/countUnvalidatedImg.server";
@@ -27,12 +27,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	}
 
 	if (validatedType === "team-pfp" || validatedType === "team-banner") {
-		const team = await TeamRepository.findByUserId(user.id);
+		const team = await TeamRepository.findMainByUserId(user.id);
 		if (!team) throw redirect("/");
 
-		const detailed = findByIdentifier(team.customUrl);
+		const detailedTeam = await TeamRepository.findByCustomUrl(team.customUrl);
 
-		if (!detailed || !isTeamOwner({ team: detailed.team, user })) {
+		if (!detailedTeam || !isTeamOwner({ team: detailedTeam, user })) {
 			throw redirect("/");
 		}
 	}

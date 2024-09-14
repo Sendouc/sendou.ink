@@ -35,6 +35,5 @@
 	"validation.SHORT_CODE": "El código de invitación no tiene la longitud correcta. ¿Copiaste la URL completa?",
 	"validation.TEAM_FULL": "El equipo al que te intentas unir ya esta lleno.",
 	"validation.INVITE_CODE_WRONG": "El código de invitación es incorrecto.",
-	"validation.ALREADY_IN_DIFFERENT_TEAM": "Ya eres parte de otro equipo. Debes salir de este antes de entrar a otro.",
 	"validation.VALID": "¿Entrar a {{teamName}}?"
 }

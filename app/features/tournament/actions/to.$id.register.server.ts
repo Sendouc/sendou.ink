@@ -60,8 +60,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 		case "UPSERT_TEAM": {
 			validate(
 				!data.teamId ||
-					(await TeamRepository.findByUserId(user.id))?.id === data.teamId,
-				"Team id does not match the team you are in",
+					(await TeamRepository.findAllMemberOfByUserId(user.id)).some(
+						(team) => team.id === data.teamId,
+					),
+				"Team id does not match any of the teams you are in",
 			);
 
 			if (ownTeam) {

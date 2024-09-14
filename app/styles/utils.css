@@ -42,6 +42,10 @@
 	color: var(--text-lighter) !important;
 }
 
+.text-theme-transparent {
+	color: var(--theme-transparent);
+}
+
 .text-error {
 	color: var(--theme-error);
 }
@@ -404,6 +408,11 @@
 
 .outline-theme:focus {
 	outline: 2px solid var(--theme);
+}
+
+.focus-text-decoration:focus-visible {
+	outline: none !important;
+	text-decoration: underline;
 }
 
 .label-no-spacing {

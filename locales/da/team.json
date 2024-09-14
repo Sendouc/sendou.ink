@@ -35,6 +35,5 @@
 	"validation.SHORT_CODE": "Invitationskoden har ikke den korrekte længde. Har du kopieret hele URL-adressen? ",
 	"validation.TEAM_FULL": "Holdet, som du prøver at blive medlem af, er fuldt",
 	"validation.INVITE_CODE_WRONG": "Ukorrekt invitationskode",
-	"validation.ALREADY_IN_DIFFERENT_TEAM": "Du er allerede medlem af et hold. Du skal forlade det hold for at blive medlem af et andet.",
 	"validation.VALID": "Bliv medlem af {{teamName}}?"
 }

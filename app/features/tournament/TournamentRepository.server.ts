@@ -208,6 +208,7 @@ export async function findById(id: number) {
 								)
 								.whereRef("AllTeam.id", "=", "TournamentTeam.teamId")
 								.select([
+									"AllTeam.id",
 									"AllTeam.customUrl",
 									"UserSubmittedImage.url as logoUrl",
 									"AllTeam.deletedAt",

@@ -34,6 +34,5 @@
 	"validation.SHORT_CODE": "O código de convite não está no comprimento certo. Você copiou o URL completo?",
 	"validation.TEAM_FULL": "O time que você está tentando se juntar está cheio.",
 	"validation.INVITE_CODE_WRONG": "O código de convite está incorreto.",
-	"validation.ALREADY_IN_DIFFERENT_TEAM": "Você já está em um time diferente. Saia dele primeiro antes de entrar em outro.",
 	"validation.VALID": "Entrar no(a) {{teamName}}?"
 }

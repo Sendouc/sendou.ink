@@ -5,9 +5,14 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
+import { Divider } from "~/components/Divider";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
+import { BSKYLikeIcon } from "~/components/icons/BSKYLike";
+import { BSKYReplyIcon } from "~/components/icons/BSKYReply";
+import { BSKYRepostIcon } from "~/components/icons/BSKYRepost";
+import { ExternalIcon } from "~/components/icons/External";
 import { GlobeIcon } from "~/components/icons/Globe";
 import { LogInIcon } from "~/components/icons/LogIn";
 import { LogOutIcon } from "~/components/icons/LogOut";
@@ -17,6 +22,7 @@ import { SelectedThemeIcon } from "~/components/layout/SelectedThemeIcon";
 import { ThemeChanger } from "~/components/layout/ThemeChanger";
 import navItems from "~/components/layout/nav-items.json";
 import { useUser } from "~/features/auth/core/user";
+import type * as Changelog from "~/features/front-page/core/Changelog.server";
 import { useTheme } from "~/features/theme/core/provider";
 import {
 	HACKY_resolvePicture,
@@ -116,6 +122,7 @@ export default function FrontPage() {
 					</form>
 				</div>
 			) : null}
+			<ChangelogList />
 			<Drawings filters={filters} />
 		</Main>
 	);
@@ -243,6 +250,103 @@ function LogInButton() {
 			</LogInButtonContainer>
 			{t("common:header.login")}
 		</div>
+	);
+}
+
+function ChangelogList() {
+	const data = useLoaderData<typeof loader>();
+
+	if (data.changelog.length === 0) return null;
+
+	return (
+		<div className="stack md">
+			<Divider smallText className="text-uppercase text-xs font-bold">
+				Updates
+			</Divider>
+			{data.changelog.map((item) => (
+				<React.Fragment key={item.id}>
+					<ChangelogItem item={item} />
+					<br />
+				</React.Fragment>
+			))}
+			<a
+				href="https://bsky.app/hashtag/sendouink?author=sendou.ink"
+				target="_blank"
+				rel="noopener noreferrer"
+				className="stack horizontal sm mx-auto text-xs font-bold"
+			>
+				View past updates <ExternalIcon className="front__external-link-icon" />
+			</a>
+		</div>
+	);
+}
+
+const ADMIN_PFP_URL =
+	"https://cdn.discordapp.com/avatars/79237403620945920/6fc41a44b069a0d2152ac06d1e496c6c.webp?size=80";
+
+function ChangelogItem({
+	item,
+}: {
+	item: Changelog.ChangelogItem;
+}) {
+	return (
+		<div className="stack sm horizontal">
+			<Avatar size="sm" url={ADMIN_PFP_URL} />
+			<div className="whitespace-pre-wrap">
+				<div className="font-bold">
+					Sendou{" "}
+					<span className="text-xs text-lighter">{item.createdAtRelative}</span>
+				</div>
+				{item.text}
+				{item.images.length > 0 ? (
+					<div className="mt-4 stack horizontal sm flex-wrap">
+						{item.images.map((image) => (
+							<img
+								key={image.thumb}
+								src={image.thumb}
+								alt=""
+								className="front__change-log__img"
+							/>
+						))}
+					</div>
+				) : null}
+				<div className="mt-4 stack xxl horizontal">
+					<BSKYIconLink count={item.stats.replies} postUrl={item.postUrl}>
+						<BSKYReplyIcon />
+					</BSKYIconLink>
+					<BSKYIconLink count={item.stats.reposts} postUrl={item.postUrl}>
+						<BSKYRepostIcon />
+					</BSKYIconLink>
+					<BSKYIconLink count={item.stats.likes} postUrl={item.postUrl}>
+						<BSKYLikeIcon />
+					</BSKYIconLink>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function BSKYIconLink({
+	children,
+	count,
+	postUrl,
+}: { children: React.ReactNode; count: number; postUrl: string }) {
+	return (
+		<a
+			href={postUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			className="front__change-log__icon-button"
+		>
+			{children}
+			<span
+				className={clsx({
+					invisible: count === 0,
+				})}
+			>
+				{count}
+			</span>
+		</a>
 	);
 }
 

@@ -171,10 +171,30 @@ export async function findProfileByIdentifier(
 						"Team.name",
 						"Team.customUrl",
 						"Team.id",
+						"TeamMember.role as userTeamRole",
 						"UserSubmittedImage.url as avatarUrl",
 					])
 					.whereRef("TeamMember.userId", "=", "User.id"),
 			).as("team"),
+			jsonArrayFrom(
+				eb
+					.selectFrom("TeamMemberWithSecondary")
+					.innerJoin("Team", "Team.id", "TeamMemberWithSecondary.teamId")
+					.leftJoin(
+						"UserSubmittedImage",
+						"UserSubmittedImage.id",
+						"Team.avatarImgId",
+					)
+					.select([
+						"Team.name",
+						"Team.customUrl",
+						"Team.id",
+						"TeamMemberWithSecondary.role as userTeamRole",
+						"UserSubmittedImage.url as avatarUrl",
+					])
+					.whereRef("TeamMemberWithSecondary.userId", "=", "User.id")
+					.where("TeamMemberWithSecondary.isMainTeam", "=", 0),
+			).as("secondaryTeams"),
 			jsonArrayFrom(
 				eb
 					.selectFrom("BadgeOwner")

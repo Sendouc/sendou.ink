@@ -25,11 +25,12 @@ import {
 } from "~/utils/urls";
 import type { UserPageLoaderData } from "./u.$identifier";
 
+import { Popover } from "~/components/Popover";
 import { loader } from "../loaders/u.$identifier.index.server";
 export { loader };
 
 export const handle: SendouRouteHandle = {
-	i18n: "badges",
+	i18n: ["badges", "team"],
 };
 
 export default function UserInfoPage() {
@@ -79,23 +80,90 @@ export default function UserInfoPage() {
 }
 
 function TeamInfo() {
+	const { t } = useTranslation(["team"]);
 	const data = useLoaderData<typeof loader>();
 
 	if (!data.user.team) return null;
 
 	return (
-		<Link to={teamPage(data.user.team.customUrl)} className="u__team">
-			{data.user.team.avatarUrl ? (
-				<img
-					alt=""
-					src={userSubmittedImage(data.user.team.avatarUrl)}
-					width={24}
-					height={24}
-					className="rounded-full"
-				/>
-			) : null}
-			{data.user.team.name}
-		</Link>
+		<div className="stack horizontal sm">
+			<Link
+				to={teamPage(data.user.team.customUrl)}
+				className="u__team"
+				data-testid="main-team-link"
+			>
+				{data.user.team.avatarUrl ? (
+					<img
+						alt=""
+						src={userSubmittedImage(data.user.team.avatarUrl)}
+						width={32}
+						height={32}
+						className="rounded-full"
+					/>
+				) : null}
+				<div>
+					{data.user.team.name}
+					{data.user.team.userTeamRole ? (
+						<div className="text-xxs text-lighter font-bold">
+							{t(`team:roles.${data.user.team.userTeamRole}`)}
+						</div>
+					) : null}
+				</div>
+			</Link>
+			<SecondaryTeamsPopover />
+		</div>
+	);
+}
+
+function SecondaryTeamsPopover() {
+	const { t } = useTranslation(["team"]);
+
+	const data = useLoaderData<typeof loader>();
+
+	if (data.user.secondaryTeams.length === 0) return null;
+
+	return (
+		<Popover
+			buttonChildren={
+				<span
+					className="text-sm font-bold text-main-forced"
+					data-testid="secondary-team-trigger"
+				>
+					+{data.user.secondaryTeams.length}
+				</span>
+			}
+			triggerClassName="minimal tiny focus-text-decoration"
+		>
+			<div className="stack sm">
+				{data.user.secondaryTeams.map((team) => (
+					<div
+						key={team.customUrl}
+						className="stack horizontal md items-center"
+					>
+						<Link
+							to={teamPage(team.customUrl)}
+							className="u__team text-main-forced"
+						>
+							{team.avatarUrl ? (
+								<img
+									alt=""
+									src={userSubmittedImage(team.avatarUrl)}
+									width={24}
+									height={24}
+									className="rounded-full"
+								/>
+							) : null}
+							{team.name}
+						</Link>
+						{team.userTeamRole ? (
+							<div className="text-xxs text-lighter font-bold">
+								{t(`team:roles.${team.userTeamRole}`)}
+							</div>
+						) : null}
+					</div>
+				))}
+			</div>
+		</Popover>
 	);
 }
 

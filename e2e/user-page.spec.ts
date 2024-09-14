@@ -29,7 +29,7 @@ test.describe("User page", () => {
 		await page.getByLabel("R-stick sens").selectOption("0");
 		await page.getByLabel("Motion sens").selectOption("-50");
 		await page.getByLabel("Country").selectOption("SE");
-		await page.getByLabel("Bio").type("My awesome bio");
+		await page.getByLabel("Bio").fill("My awesome bio");
 		await submitEditForm(page);
 
 		await page.getByTestId("flag-SV").isVisible();

@@ -21,11 +21,11 @@ test.describe("VoDs page", () => {
 
 		await page
 			.getByLabel("YouTube URL")
-			.type("https://www.youtube.com/watch?v=o7kWlMZP3lM");
+			.fill("https://www.youtube.com/watch?v=o7kWlMZP3lM");
 
 		await page
 			.getByLabel("Video title")
-			.type("ITZXI Finals - Team Olive vs. Astral [CAMO TENTA PoV]");
+			.fill("ITZXI Finals - Team Olive vs. Astral [CAMO TENTA PoV]");
 
 		await page.getByLabel("Video date").fill("2021-06-20");
 
@@ -49,8 +49,8 @@ test.describe("VoDs page", () => {
 
 		await page.getByTestId("add-match").click();
 
-		await page.getByTestId("match-2-seconds").type("55");
-		await page.getByTestId("match-2-minutes").type("5");
+		await page.getByTestId("match-2-seconds").fill("55");
+		await page.getByTestId("match-2-minutes").fill("5");
 		await page.getByTestId("match-2-mode").selectOption("RM");
 		await page.getByTestId("match-2-stage").selectOption("6");
 		await selectWeapon({
@@ -76,11 +76,11 @@ test.describe("VoDs page", () => {
 
 		await page
 			.getByLabel("YouTube URL")
-			.type("https://www.youtube.com/watch?v=QFk1Gf91SwI");
+			.fill("https://www.youtube.com/watch?v=QFk1Gf91SwI");
 
 		await page
 			.getByLabel("Video title")
-			.type("BIG ! vs Starburst - Splatoon 3 Grand Finals - The Big House 10");
+			.fill("BIG ! vs Starburst - Splatoon 3 Grand Finals - The Big House 10");
 
 		await page.getByLabel("Video date").fill("2022-07-21");
 

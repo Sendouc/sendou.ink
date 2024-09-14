@@ -34,6 +34,5 @@
 	"validation.SHORT_CODE": "Код приглашения неверной длинны. Вы скопировали URL целиком?",
 	"validation.TEAM_FULL": "Команда, в которую вы пытаетесь попасть, уже заполнена.",
 	"validation.INVITE_CODE_WRONG": "Код приглашения неверен.",
-	"validation.ALREADY_IN_DIFFERENT_TEAM": "Вы уже в другой команде. Покиньте эту, прежде чем вступить в новую.",
 	"validation.VALID": "Присоединиться к {{teamName}}?"
 }

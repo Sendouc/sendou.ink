@@ -88,6 +88,11 @@ const PERKS = [
 		name: "previewQ",
 		extraInfo: false,
 	},
+	{
+		tier: 2,
+		name: "joinFive",
+		extraInfo: false,
+	},
 ] as const;
 
 export default function SupportPage() {

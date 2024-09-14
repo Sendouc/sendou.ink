@@ -7,7 +7,7 @@ import {
 } from "@remix-run/node";
 import { z } from "zod";
 import { requireUser } from "~/features/auth/core/user.server";
-import { findByIdentifier, isTeamOwner } from "~/features/team";
+import { isTeamOwner } from "~/features/team";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
 import { canEditTournamentOrganization } from "~/features/tournament-organization/tournament-organization-utils";
@@ -88,12 +88,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 async function validatedTeam(user: { id: number }) {
-	const team = await TeamRepository.findByUserId(user.id);
+	const team = await TeamRepository.findMainByUserId(user.id);
 
 	validate(team, "You must be on a team to upload images");
-	const detailed = findByIdentifier(team.customUrl);
+	const detailedTeam = await TeamRepository.findByCustomUrl(team.customUrl);
 	validate(
-		detailed && isTeamOwner({ team: detailed.team, user }),
+		detailedTeam && isTeamOwner({ team: detailedTeam, user }),
 		"You must be the team owner to upload images",
 	);
 
