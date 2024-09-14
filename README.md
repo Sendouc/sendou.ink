@@ -42,7 +42,7 @@ Competitive Splatoon Platform
 - Sqlite3
 - CSS (plain)
 - E2E tests via Playwright
-- Unit/integration tests via bun:test
+- Unit/integration tests via Vitest
 
 ## Screenshots
 
@@ -61,12 +61,11 @@ Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 There is a sequence of commands you need to run:
 
 1. `nvm use` to switch to the correct Node version. If you don't have the correct Node.js version yet it will prompt you to install it via the `nvm install` command. If you have problems with nvm you can also install the latest LTS version of Node.js from [their website](https://nodejs.org/en/).
-2. Install latest version of [Bun](https://bun.sh/docs/installation)
-3. `bun install` to install the dependencies.
-4. Make a copy of `.env.example` that's called `.env`. Filling additional values is not necessary unless you want to use real Discord authentication or develop the Lohi bot.
-5. `bun migrate up` to set up the database tables.
-6. `bun run dev` to run the project in development mode.
-7. Navigate to `http://localhost:5173/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
+1. `npm install` to install the dependencies.
+1. Make a copy of `.env.example` that's called `.env`. Filling additional values is not necessary unless you want to use real Discord authentication or develop the Lohi bot.
+1. `npm run migrate up` to set up the database tables.
+1. `npm run dev` to run the project in development mode.
+1. Navigate to `http://localhost:5173/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
 
 ## Contributing
 
@@ -241,7 +240,7 @@ Note: This is only useful if you have access to a production running on Render.c
 If you change any files and the CI pipeline errors out on certain formatting/linting steps (Biome) run this command in the repo's root directory:
 
 ```sh
-bun cf:noe2e
+npm run checks
 ```
 
 Before committing, if for some reason you see an abnormally high amount of files changed, simply run `git add --renormalize .` and it will fix the error.
