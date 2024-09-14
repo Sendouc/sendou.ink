@@ -1,8 +1,6 @@
 import type { SerializeFrom } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-// xxx: to server
-import { formatDistance } from "date-fns";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
@@ -43,6 +41,7 @@ import {
 	userPage,
 	userSubmittedImage,
 } from "~/utils/urls";
+import { ExternalIcon } from "~/components/icons/External";
 
 import { loader } from "../loaders/index.server";
 export { loader };
@@ -265,7 +264,7 @@ function ChangelogList() {
 				Updates
 			</Divider>
 			{data.changelog.map((item) => (
-				<React.Fragment key={item.createdAt}>
+				<React.Fragment key={item.id}>
 					<ChangelogItem item={item} />
 					<br />
 				</React.Fragment>
@@ -274,8 +273,9 @@ function ChangelogList() {
 				href="https://bsky.app/hashtag/sendouink?author=sendou.ink"
 				target="_blank"
 				rel="noopener noreferrer"
+				className="stack horizontal sm mx-auto text-xs font-bold"
 			>
-				View past updates
+				View past updates <ExternalIcon className="front__external-link-icon" />
 			</a>
 		</div>
 	);
@@ -284,7 +284,6 @@ function ChangelogList() {
 const ADMIN_PFP_URL =
 	"https://cdn.discordapp.com/avatars/79237403620945920/6fc41a44b069a0d2152ac06d1e496c6c.webp?size=80";
 
-// xxx: style bottom button
 function ChangelogItem({
 	item,
 }: {
@@ -296,11 +295,7 @@ function ChangelogItem({
 			<div className="whitespace-pre-wrap">
 				<div className="font-bold">
 					Sendou{" "}
-					<span className="text-xs text-lighter">
-						{formatDistance(new Date(item.createdAt), new Date(), {
-							addSuffix: true,
-						})}
-					</span>
+					<span className="text-xs text-lighter">{item.createdAtRelative}</span>
 				</div>
 				{item.text}
 				{item.images.length > 0 ? (

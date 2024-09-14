@@ -1,3 +1,4 @@
+import { formatDistance } from "date-fns";
 import { z } from "zod";
 import { logger } from "~/utils/logger";
 
@@ -72,11 +73,12 @@ export async function get() {
 	return result;
 }
 
-type RawPost = z.infer<typeof postsSchema>["feed"][number];
+type RawPost = z.infer<typeof postsSchema>["feed"][number]["post"];
 
 export interface ChangelogItem {
+	id: string;
 	text: string;
-	createdAt: string;
+	createdAtRelative: string;
 	postUrl: string;
 	images: {
 		thumb: string;
@@ -110,11 +112,11 @@ function parsePosts(data: unknown) {
 		throw new Error(`Failed to parse posts: ${result.error.message}`);
 	}
 
-	return result.data.feed;
+	return result.data.feed.map((feed) => feed.post);
 }
 
 function postHasSendouInkTag(post: RawPost) {
-	return post.post.record.facets?.some((facet) =>
+	return post.record.facets?.some((facet) =>
 		facet.features.some(
 			(feature) => feature.tag?.toLowerCase() === "sendouink",
 		),
@@ -123,19 +125,26 @@ function postHasSendouInkTag(post: RawPost) {
 
 function rawPostToChangelogItem(post: RawPost): ChangelogItem {
 	return {
-		text: post.post.record.text.replace("#sendouink", "").trim(),
-		createdAt: post.post.record.createdAt,
-		postUrl: `https://bsky.app/profile/did:plc:3hjmoa7vbx6bsqc3n2vu54v3/post/${post.post.uri.split("/").pop()}`,
+		id: post.uri,
+		text: post.record.text.replace("#sendouink", "").trim(),
+		createdAtRelative: formatDistance(
+			new Date(post.record.createdAt),
+			new Date(),
+			{
+				addSuffix: true,
+			},
+		),
+		postUrl: `https://bsky.app/profile/did:plc:3hjmoa7vbx6bsqc3n2vu54v3/post/${post.uri.split("/").pop()}`,
 		images:
-			post.post.embed?.images?.map((image) => ({
+			post.embed?.images?.map((image) => ({
 				thumb: image.thumb,
 				fullsize: image.fullsize,
 				aspectRatio: image.aspectRatio,
 			})) ?? [],
 		stats: {
-			likes: post.post.likeCount,
-			reposts: post.post.repostCount + post.post.quoteCount,
-			replies: post.post.replyCount,
+			likes: post.likeCount,
+			reposts: post.repostCount + post.quoteCount,
+			replies: post.replyCount,
 		},
 	};
 }

@@ -193,3 +193,8 @@
 .front__change-log__icon-button:hover {
 	color: var(--theme);
 }
+
+.front__external-link-icon {
+	width: 18px;
+	stroke-width: 2px;
+}

@@ -278,20 +278,21 @@ export function deletePrivateUserNote({
 }
 
 export async function usersThatTrusted(userId: number) {
+	const teamIds = await db
+		.selectFrom("TeamMemberWithSecondary")
+		.select("teamId")
+		.where("userId", "=", userId)
+		.execute();
+
 	const rows = await db
-		.selectFrom("TeamMember")
-		.innerJoin("User", "User.id", "TeamMember.userId")
+		.selectFrom("TeamMemberWithSecondary")
+		.innerJoin("User", "User.id", "TeamMemberWithSecondary.userId")
 		.innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
 		.select([...COMMON_USER_FIELDS, "User.inGameName"])
-		.where((eb) =>
-			eb(
-				"TeamMember.teamId",
-				"=",
-				eb
-					.selectFrom("TeamMember")
-					.select("TeamMember.teamId")
-					.where("TeamMember.userId", "=", userId),
-			),
+		.where(
+			"TeamMemberWithSecondary.teamId",
+			"in",
+			teamIds.map((t) => t.teamId),
 		)
 		.union((eb) =>
 			eb

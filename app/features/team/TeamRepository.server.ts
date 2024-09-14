@@ -36,21 +36,6 @@ export function findAllMemberOfByUserId(userId: number) {
 		.execute();
 }
 
-// xxx: results?
-// results: {
-//   count: 23,
-//   placements: [
-//     {
-//       count: 10,
-//       placement: 1,
-//     },
-//     {
-//       count: 5,
-//       placement: 2,
-//     },
-//   ],
-// },
-
 export type findByCustomUrl = NonNullable<
 	Awaited<ReturnType<typeof findByCustomUrl>>
 >;
