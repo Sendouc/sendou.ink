@@ -263,16 +263,14 @@ function GroupMember({
 					{showNote && member.privateNote ? (
 						<Popover
 							buttonChildren={
-								<>
-									<Avatar
-										user={member}
-										size="xs"
-										className={clsx(
-											"q__group-member__avatar",
-											`q__group-member__avatar__${member.privateNote.sentiment}`,
-										)}
-									/>
-								</>
+								<Avatar
+									user={member}
+									size="xs"
+									className={clsx(
+										"q__group-member__avatar",
+										`q__group-member__avatar__${member.privateNote.sentiment}`,
+									)}
+								/>
 							}
 						>
 							{member.privateNote.text}

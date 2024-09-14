@@ -732,7 +732,7 @@ function calendarEvents() {
 				description: faker.lorem.paragraph(),
 				discordInviteCode: faker.lorem.word(),
 				bracketUrl: faker.internet.url(),
-				authorId: id === 1 ? NZAP_TEST_ID : userIds.pop() ?? null,
+				authorId: id === 1 ? NZAP_TEST_ID : (userIds.pop() ?? null),
 				tags:
 					Math.random() > 0.2
 						? shuffledTags
@@ -1869,7 +1869,7 @@ function arts() {
 				) {
 					addArtUserMetadataStm.run({
 						artId: addedArt.id,
-						userId: i === 0 ? NZAP_TEST_ID : allUsers.pop() ?? null,
+						userId: i === 0 ? NZAP_TEST_ID : (allUsers.pop() ?? null),
 					});
 				}
 			}

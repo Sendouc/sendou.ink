@@ -262,8 +262,8 @@ function parametersToMainWeaponResult(
 		MoveSpeedVariable: params.VariableShotParam?.MoveSpeed,
 		DamageParam_ValueMax: DamageParam_ValueMax(),
 		DamageParam_ValueMin: !DamageParam_ValueDirect
-			? params.DamageParam?.ValueMin ??
-				params.spl__BulletStringerParam?.DamageParam?.DirectHitDamageMin
+			? (params.DamageParam?.ValueMin ??
+				params.spl__BulletStringerParam?.DamageParam?.DirectHitDamageMin)
 			: undefined,
 		DamageParam_ValueDirect,
 		...slosherDirectDamage(),

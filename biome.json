@@ -31,7 +31,9 @@
 				}
 			},
 			"a11y": {
-				"useKeyWithClickEvents": "off"
+				"useKeyWithClickEvents": "off",
+				"useSemanticElements": "off",
+				"noLabelWithoutControl": "off"
 			},
 			"complexity": {
 				"useLiteralKeys": {

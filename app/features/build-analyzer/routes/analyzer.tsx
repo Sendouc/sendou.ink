@@ -1752,7 +1752,7 @@ function ConsumptionTable({
 			</Table>
 			{subWeaponId === TORPEDO_ID && (
 				<div className="analyzer__consumption-table-explanation">
-					<> {t("analyzer:torpedoExplanation")}</>
+					{t("analyzer:torpedoExplanation")}
 				</div>
 			)}
 		</>

@@ -307,8 +307,8 @@ export function BracketMapListDialog({
 									<GlobalMapCountInput
 										defaultValue={
 											// beautiful 🥹
-											mapCounts.values().next().value.values().next().value
-												.count
+											mapCounts.values().next().value?.values().next().value
+												?.count
 										}
 										onSetCount={(newCount) => {
 											const newMapCounts = mapCountsWithGlobalCount(newCount);

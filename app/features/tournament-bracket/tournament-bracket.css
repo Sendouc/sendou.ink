@@ -448,7 +448,6 @@
 .tournament-bracket__quick-action {
 	font-size: var(--fonts-xs);
 	color: var(--text);
-	border-color: var(--bg-lightest-solid);
 	background-color: var(--bg);
 	border-radius: var(--rounded);
 	border: 2px solid var(--bg-lightest-solid);
