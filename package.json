@@ -88,7 +88,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
-		"@playwright/test": "^1.47.0",
+		"@playwright/test": "^1.47.1",
 		"@remix-run/dev": "^2.11.2",
 		"@types/better-sqlite3": "^7.6.11",
 		"@types/bun": "^1.1.8",

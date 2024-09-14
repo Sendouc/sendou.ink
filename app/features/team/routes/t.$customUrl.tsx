@@ -246,6 +246,7 @@ function ChangeMainTeamButton() {
 				size="tiny"
 				variant="outlined"
 				icon={<StarIcon />}
+				testId="make-main-team-button"
 			>
 				{t("team:actionButtons.makeMainTeam")}
 			</SubmitButton>
@@ -280,7 +281,10 @@ function MemberRow({
 	const { t } = useTranslation(["team"]);
 
 	return (
-		<div className="team__member">
+		<div
+			className="team__member"
+			data-testid={member.isOwner ? `member-owner-${member.id}` : undefined}
+		>
 			{member.role ? (
 				<span
 					className="team__member__role"

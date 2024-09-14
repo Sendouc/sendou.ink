@@ -61,7 +61,7 @@ test.describe("Tournament", () => {
 
 		await page.getByTestId("tab-Register").click();
 
-		await page.getByLabel("Team name").type("Chimera");
+		await page.getByLabel("Pick-up name").fill("Chimera");
 		await page.getByTestId("save-team-button").click();
 
 		await page.getByTestId("add-player-button").click();

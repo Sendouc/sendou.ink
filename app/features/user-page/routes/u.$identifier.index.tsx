@@ -87,7 +87,11 @@ function TeamInfo() {
 
 	return (
 		<div className="stack horizontal sm">
-			<Link to={teamPage(data.user.team.customUrl)} className="u__team">
+			<Link
+				to={teamPage(data.user.team.customUrl)}
+				className="u__team"
+				data-testid="main-team-link"
+			>
 				{data.user.team.avatarUrl ? (
 					<img
 						alt=""
@@ -121,7 +125,12 @@ function SecondaryTeamsPopover() {
 	return (
 		<Popover
 			buttonChildren={
-				<span className="text-sm font-bold text-main-forced">+1</span>
+				<span
+					className="text-sm font-bold text-main-forced"
+					data-testid="secondary-team-trigger"
+				>
+					+{data.user.secondaryTeams.length}
+				</span>
 			}
 			triggerClassName="minimal tiny focus-text-decoration"
 		>

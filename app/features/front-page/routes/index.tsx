@@ -12,6 +12,7 @@ import { Placement } from "~/components/Placement";
 import { BSKYLikeIcon } from "~/components/icons/BSKYLike";
 import { BSKYReplyIcon } from "~/components/icons/BSKYReply";
 import { BSKYRepostIcon } from "~/components/icons/BSKYRepost";
+import { ExternalIcon } from "~/components/icons/External";
 import { GlobeIcon } from "~/components/icons/Globe";
 import { LogInIcon } from "~/components/icons/LogIn";
 import { LogOutIcon } from "~/components/icons/LogOut";
@@ -41,7 +42,6 @@ import {
 	userPage,
 	userSubmittedImage,
 } from "~/utils/urls";
-import { ExternalIcon } from "~/components/icons/External";
 
 import { loader } from "../loaders/index.server";
 export { loader };
