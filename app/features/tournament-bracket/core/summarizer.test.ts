@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test";
 import { ordinal, rating } from "openskill";
+import { describe, expect, test } from "vitest";
 import invariant from "~/utils/invariant";
 import type { AllMatchResult } from "../queries/allMatchResultsByTournamentId.server";
 import type { TournamentDataTeam } from "./Tournament.server";

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import type { PreparedMaps as PreparedMapsType } from "~/db/tables";
 import * as PreparedMaps from "./PreparedMaps";
 import { testTournament } from "./tests/test-utils";
@@ -108,7 +108,7 @@ describe("PreparedMaps - eliminationTeamCountOptions", () => {
 			PreparedMaps.eliminationTeamCountOptions(3).every(
 				(option) => option.max > 3,
 			),
-		).toBeTrue();
+		).toBe(true);
 	});
 
 	test("returns the option equivalent to the current count", () => {
@@ -215,7 +215,7 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			expect(
 				trimmed!.maps.some((map) => map.roundId === round.id),
 				`Round ID ${round.id} not found in the actual bracket`,
-			).toBeTrue();
+			).toBe(true);
 		}
 	});
 
@@ -288,7 +288,7 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 			expect(
 				trimmed!.maps.some((map) => map.roundId === round.id),
 				`Round ID ${round.id} not found in the actual bracket`,
-			).toBeTrue();
+			).toBe(true);
 		}
 	});
 

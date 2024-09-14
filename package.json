@@ -20,11 +20,9 @@
 		"biome:fix": "bunx @biomejs/biome check --write .",
 		"biome:fix:unsafe": "bunx @biomejs/biome check --write --unsafe .",
 		"typecheck": "tsc --noEmit",
-		"test:unit": "NODE_ENV=test bun test",
-		"test:unit:all": "bun test:unit app",
+		"test:unit": "vitest run",
 		"test:e2e": "bunx playwright test",
-		"cf": "bun run biome:fix && bun run test:unit:all && bun run check-translation-jsons && bun run typecheck && bun run test:e2e",
-		"cf:noe2e": "bun run biome:fix && bun run test:unit:all && bun run check-translation-jsons && bun run typecheck"
+		"cf": "npm run biome:fix && npm run test:unit && npm run check-translation-jsons && npm run typecheck"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.645.0",
@@ -101,7 +99,8 @@
 		"sql-formatter": "^15.4.2",
 		"typescript": "^5.5.4",
 		"vite": "^5.4.3",
-		"vite-tsconfig-paths": "^5.0.1"
+		"vite-tsconfig-paths": "^5.0.1",
+		"vitest": "^2.1.1"
 	},
 	"trustedDependencies": [
 		"@biomejs/biome",

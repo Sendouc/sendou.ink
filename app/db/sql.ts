@@ -15,9 +15,13 @@ const LOG_LEVEL = (["trunc", "full", "none"] as const).find(
 	(val) => val === process.env.SQL_LOG,
 );
 
+const migratedEmptyDb = new Database("db-test.sqlite3").serialize();
+
 invariant(process.env.DB_PATH, "DB_PATH env variable must be set");
 
-export const sql = new Database(process.env.DB_PATH);
+export const sql = new Database(
+	process.env.NODE_ENV === "test" ? migratedEmptyDb : process.env.DB_PATH,
+);
 
 sql.pragma("journal_mode = WAL");
 sql.pragma("foreign_keys = ON");

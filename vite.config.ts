@@ -2,6 +2,7 @@ import { vitePlugin as remix } from "@remix-run/dev";
 import { installGlobals } from "@remix-run/node";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { configDefaults } from "vitest/config";
 
 installGlobals();
 
@@ -356,6 +357,9 @@ export default defineConfig(() => {
 			}),
 			tsconfigPaths(),
 		],
+		test: {
+			exclude: [...configDefaults.exclude, "e2e/**"],
+		},
 		build: {
 			// this is mostly done so that i18n jsons as defined in ./app/modules/i18n/loader.ts
 			// do not end up in the js bundle as minimized strings
