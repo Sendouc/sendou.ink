@@ -30,7 +30,7 @@ import { logger } from "~/utils/logger";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CURRENT_SEASON = 8;
+const CURRENT_SEASON = 9;
 
 type MainWeapon = (typeof weapons)[number];
 type SubWeapon = (typeof subWeapons)[number];
