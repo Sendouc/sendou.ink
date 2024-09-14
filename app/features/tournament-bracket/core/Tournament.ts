@@ -8,8 +8,9 @@ import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { Match, Stage } from "~/modules/brackets-model";
 import type { ModeShort } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
 import { isAdmin } from "~/permissions";
+import { removeDuplicates } from "~/utils/arrays";
 import {
 	databaseTimestampToDate,
 	dateToDatabaseTimestamp,
@@ -498,7 +499,16 @@ export class Tournament {
 				return ["CB"];
 			}
 			default: {
-				return [...rankedModesShort];
+				const pickedModes = removeDuplicates(
+					this.ctx.toSetMapPool.map((map) => map.mode),
+				);
+				if (pickedModes.length === 0) {
+					return [...rankedModesShort];
+				}
+
+				return pickedModes.sort(
+					(a, b) => modesShort.indexOf(a) - modesShort.indexOf(b),
+				);
 			}
 		}
 	}
