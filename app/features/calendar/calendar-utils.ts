@@ -91,6 +91,12 @@ export function regClosesAtDate({
 	if (closesAt === "0") return startTime;
 
 	switch (closesAt) {
+		case "5min":
+			return new Date(startTime.getTime() - 5 * 60 * 1000);
+		case "10min":
+			return new Date(startTime.getTime() - 10 * 60 * 1000);
+		case "15min":
+			return new Date(startTime.getTime() - 15 * 60 * 1000);
 		case "30min":
 			return new Date(startTime.getTime() - 30 * 60 * 1000);
 		case "1h":
@@ -120,6 +126,12 @@ export function regClosesAtToDisplayName(closesAt: RegClosesAtOption) {
 	switch (closesAt) {
 		case "0":
 			return "At the start time";
+		case "5min":
+			return "5 minutes";
+		case "10min":
+			return "10 minutes";
+		case "15min":
+			return "15 minutes";
 		case "30min":
 			return "30 minutes";
 		case "1h":
@@ -154,6 +166,9 @@ export function datesToRegClosesAt({
 }) {
 	const diff = startTime.getTime() - regClosesAt.getTime();
 	if (diff === 0) return "0";
+	if (diff === 5 * 60 * 1000) return "5min";
+	if (diff === 10 * 60 * 1000) return "10min";
+	if (diff === 15 * 60 * 1000) return "15min";
 	if (diff === 30 * 60 * 1000) return "30min";
 	if (diff === 60 * 60 * 1000) return "1h";
 	if (diff === 90 * 60 * 1000) return "1h30min";

@@ -74,6 +74,9 @@ export const CALENDAR_EVENT = {
 
 export const REG_CLOSES_AT_OPTIONS = [
 	"0",
+	"5min",
+	"10min",
+	"15min",
 	"30min",
 	"1h",
 	"1h30min",
