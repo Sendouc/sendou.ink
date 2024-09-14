@@ -10,6 +10,7 @@ const CUSTOM_COLORS = [
 	"text",
 	"text-lighter",
 	"theme",
+	"theme-secondary",
 	"chat",
 ] as const;
 
