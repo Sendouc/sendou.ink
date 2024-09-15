@@ -572,6 +572,27 @@ export interface TournamentRound {
 	maps: ColumnType<TournamentRoundMaps | null, string | null, string | null>;
 }
 
+// xxx: TODO
+export interface DoubleEliminationSettings {
+	foo: "bar";
+}
+export interface SingleEliminationSettings {
+	thirdPlaceMatch: boolean;
+}
+export interface RoundRobinSettings {
+	teamsPerGroup: number;
+}
+export interface SwissSettings {
+	groupCount: number;
+	roundCount: number;
+}
+
+export type TournamentStageSettings =
+	| DoubleEliminationSettings
+	| SingleEliminationSettings
+	| RoundRobinSettings
+	| SwissSettings;
+
 /** A stage is an intermediate phase in a tournament. In essence a bracket. */
 export interface TournamentStage {
 	id: GeneratedAlways<number>;
@@ -582,6 +603,15 @@ export interface TournamentStage {
 	type: "double_elimination" | "single_elimination" | "round_robin" | "swiss";
 	// not Generated<> because SQLite doesn't allow altering tables to add columns with default values :(
 	createdAt: number | null;
+	/** If omitted, stage starts right after the stages leading up to it have been resolved */
+	startTime: number | null;
+	requiresCheckIn: Generated<number>;
+	// xxx: name?
+	newSettings: ColumnType<
+		TournamentStageSettings | null,
+		string | null,
+		string | null
+	>;
 }
 
 export interface TournamentSub {

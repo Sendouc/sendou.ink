@@ -246,12 +246,14 @@ export abstract class Bracket {
 		});
 	}
 
+	// xxx: fix
 	get isUnderground() {
 		return Boolean(
 			this.sources?.flatMap((s) => s.placements).every((p) => p !== 1),
 		);
 	}
 
+	// xxx: fix
 	get isFinals() {
 		return Boolean(this.sources?.some((s) => s.placements.includes(1)));
 	}
