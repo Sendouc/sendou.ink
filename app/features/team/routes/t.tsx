@@ -26,6 +26,7 @@ import {
 	teamPage,
 	userSubmittedImage,
 } from "~/utils/urls";
+import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
 
 import "../team.css";
@@ -85,10 +86,20 @@ export default function TeamSearchPage() {
 		pageSize: TEAMS_PER_PAGE,
 	});
 
+	const canAddNewTeam = () => {
+		if (!user) return false;
+
+		if (isAtLeastFiveDollarTierPatreon(user)) {
+			return data.teamMemberOfCount < TEAM.MAX_TEAM_COUNT_PATRON;
+		}
+
+		return data.teamMemberOfCount < TEAM.MAX_TEAM_COUNT_NON_PATRON;
+	};
+
 	return (
 		<Main className="stack lg">
 			<NewTeamDialog />
-			{user && !data.isMemberOfTeam ? (
+			{canAddNewTeam() ? (
 				<LinkButton
 					size="tiny"
 					to="?new=true"

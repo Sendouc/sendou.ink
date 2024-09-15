@@ -1,10 +1,35 @@
-import type { Transaction } from "kysely";
+import type { Insertable, Transaction } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
+import { nanoid } from "nanoid";
+import { INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db/sql";
-import type { DB } from "~/db/tables";
+import type { DB, Tables } from "~/db/tables";
 import { databaseTimestampNow } from "~/utils/dates";
 import invariant from "~/utils/invariant";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
+
+export function findAllUndisbanded() {
+	return db
+		.selectFrom("Team")
+		.select(({ eb }) => [
+			"Team.customUrl",
+			"Team.name",
+			eb
+				.selectFrom("UserSubmittedImage")
+				.whereRef("UserSubmittedImage.id", "=", "Team.avatarImgId")
+				.select("UserSubmittedImage.url")
+				.as("avatarSrc"),
+			jsonArrayFrom(
+				eb
+					.selectFrom("TeamMemberWithSecondary")
+					.innerJoin("User", "User.id", "TeamMemberWithSecondary.userId")
+					.leftJoin("PlusTier", "PlusTier.userId", "User.id")
+					.select(["User.id", "User.username", "PlusTier.tier as plusTier"])
+					.whereRef("TeamMemberWithSecondary.teamId", "=", "Team.id"),
+			).as("members"),
+		])
+		.execute();
+}
 
 export function findMainByUserId(userId: number) {
 	return db
@@ -99,6 +124,35 @@ export async function teamsByMemberUserId(
 		])
 		.where("userId", "=", userId)
 		.execute();
+}
+
+export async function create(
+	args: Pick<Insertable<Tables["Team"]>, "name" | "customUrl"> & {
+		ownerUserId: number;
+		isMainTeam: boolean;
+	},
+) {
+	return db.transaction().execute(async (trx) => {
+		const team = await trx
+			.insertInto("AllTeam")
+			.values({
+				name: args.name,
+				customUrl: args.customUrl,
+				inviteCode: nanoid(INVITE_CODE_LENGTH),
+			})
+			.returning("id")
+			.executeTakeFirstOrThrow();
+
+		await trx
+			.insertInto("AllTeamMember")
+			.values({
+				userId: args.ownerUserId,
+				teamId: team.id,
+				isOwner: 1,
+				isMainTeam: Number(args.isMainTeam),
+			})
+			.execute();
+	});
 }
 
 export function switchMainTeam({
