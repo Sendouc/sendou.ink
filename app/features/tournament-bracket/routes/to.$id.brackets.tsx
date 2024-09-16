@@ -140,6 +140,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 					}),
 				);
 
+				// xxx: remove
 				// check in teams to the final stage ahead of time so they don't have to do it
 				// separately, but also allow for TO's to check them out if needed
 				if (data.bracketIdx === 0 && tournament.brackets.length > 1) {

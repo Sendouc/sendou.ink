@@ -335,7 +335,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	return null;
 };
 
-// TODO: translations
+// xxx: after start "Edit event info" becomes "Edit format" popup
 export default function TournamentAdminPage() {
 	const { t } = useTranslation(["calendar"]);
 	const tournament = useTournament();

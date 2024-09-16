@@ -582,6 +582,8 @@ export interface SingleEliminationSettings {
 export interface RoundRobinSettings {
 	teamsPerGroup: number;
 }
+
+// xxx: finally show optimal swiss round counts? just in select static
 export interface SwissSettings {
 	groupCount: number;
 	roundCount: number;
