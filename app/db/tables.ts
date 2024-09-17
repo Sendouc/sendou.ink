@@ -572,28 +572,16 @@ export interface TournamentRound {
 	maps: ColumnType<TournamentRoundMaps | null, string | null, string | null>;
 }
 
-// xxx: TODO
-export interface DoubleEliminationSettings {
-	foo: "bar";
+export interface TournamentStageSettings {
+	// SE
+	thirdPlaceMatch?: boolean;
+	// RR
+	teamsPerGroup?: number;
+	// SWISS
+	groupCount?: number;
+	// SWISS
+	roundCount?: number;
 }
-export interface SingleEliminationSettings {
-	thirdPlaceMatch: boolean;
-}
-export interface RoundRobinSettings {
-	teamsPerGroup: number;
-}
-
-// xxx: finally show optimal swiss round counts? just in select static
-export interface SwissSettings {
-	groupCount: number;
-	roundCount: number;
-}
-
-export type TournamentStageSettings =
-	| DoubleEliminationSettings
-	| SingleEliminationSettings
-	| RoundRobinSettings
-	| SwissSettings;
 
 /** A stage is an intermediate phase in a tournament. In essence a bracket. */
 export interface TournamentStage {

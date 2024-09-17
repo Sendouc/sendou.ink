@@ -204,27 +204,20 @@ function EventForm() {
 					<StrictDeadlinesToggle />
 				</>
 			) : null}
-			{isTournament ? <TournamentMapPickingStyleSelect /> : <MapPoolSection />}
 			{isTournament ? (
 				<div className="stack md w-full">
 					<Divider>Tournament format</Divider>
-					<TournamentFormatSelector
-						brackets={[
-							{
-								name: "Groups",
-								requiresCheckIn: false,
-								settings: {
-									teamsPerGroup: 4,
-								},
-								sources: null,
-								startTime: null,
-								type: "round_robin",
-							},
-						]}
-						onChange={(newVal) => console.log(newVal)}
-					/>
+					<TournamentFormatSelector />
 				</div>
 			) : null}
+			{isTournament ? (
+				<div className="stack md w-full items-start">
+					<Divider>Tournament maps</Divider>
+					<TournamentMapPickingStyleSelect />
+				</div>
+			) : (
+				<MapPoolSection />
+			)}
 			<Button
 				className="mt-4"
 				onClick={handleSubmit}

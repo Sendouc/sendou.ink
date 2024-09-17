@@ -7,6 +7,7 @@ export const TOURNAMENT = {
 	ENOUGH_TEAMS_TO_START: 2,
 	MIN_GROUP_SIZE: 3,
 	MAX_GROUP_SIZE: 6,
+	MAX_BRACKETS_PER_TOURNAMENT: 10,
 } as const;
 
 export const BRACKET_NAMES = {
