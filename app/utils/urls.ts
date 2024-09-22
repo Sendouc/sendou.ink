@@ -58,7 +58,6 @@ export const PATREON_HOW_TO_CONNECT_DISCORD_URL =
 export const SENDOU_INK_GITHUB_URL = "https://github.com/Sendouc/sendou.ink";
 export const GITHUB_CONTRIBUTORS_URL =
 	"https://github.com/Sendouc/sendou.ink/graphs/contributors";
-export const TLDRAW_URL = "https://www.tldraw.com/";
 export const BORZOIC_TWITTER = "https://twitter.com/borzoic_";
 export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";

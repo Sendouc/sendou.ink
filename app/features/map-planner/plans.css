@@ -148,15 +148,6 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 	gap: var(--s-1-5);
 }
 
-.plans__powered-by {
-	position: fixed;
-	z-index: 10;
-	right: 0.5%;
-	bottom: 0.5%;
-	color: var(--text-lighter);
-	font-size: var(--fonts-xxxs);
-}
-
 .plans__no-img-text {
 	color: var(--theme-error);
 	font-size: var(--fonts-xs);

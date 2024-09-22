@@ -112,7 +112,6 @@
 	"weapon.category.subs": "Bronie zapasowe",
 	"weapon.category.specials": "Bronie specjalne",
 
-	"plans.poweredBy": "Zasilany przez {{name}}",
 	"plans.blueprint": "Projekt",
 	"plans.bgStyle.OVER": "Overhead",
 	"plans.bgStyle.MINI": "Minimapa (pusta)",
