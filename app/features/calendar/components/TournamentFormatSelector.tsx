@@ -3,6 +3,7 @@ import * as React from "react";
 import { Button } from "~/components/Button";
 import { DateInput } from "~/components/DateInput";
 import { FormMessage } from "~/components/FormMessage";
+import { InfoPopover } from "~/components/InfoPopover";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Toggle } from "~/components/Toggle";
@@ -284,7 +285,10 @@ function TournamentFormatBracketSelector({
 				) : null}
 
 				<div>
-					<Label htmlFor={createId("sources")}>Sources</Label>
+					<div className="stack horizontal sm">
+						<Label htmlFor={createId("sources")}>Sources</Label>{" "}
+						<InfoPopover tiny>xxx: link to docs here</InfoPopover>
+					</div>
 					{/** xxx: If invitational "Participants added by the organizer" */}
 					{isFirstBracket ? (
 						<FormMessage type="info">
@@ -312,16 +316,31 @@ function SourcesSelector({
 	onChange: (sources: EditingSources) => void;
 }) {
 	return (
-		<div>
-			<div>
-				<select>
-					{brackets.map((bracket) => (
-						<option key={bracket.id} value={bracket.id}>
-							{bracket.name}
-						</option>
-					))}
-				</select>
+		<div className="stack md">
+			<div className="stack horizontal sm items-end">
+				<div>
+					<Label>Bracket</Label>
+					<select>
+						{brackets.map((bracket) => (
+							<option key={bracket.id} value={bracket.id}>
+								{bracket.name}
+							</option>
+						))}
+					</select>
+				</div>
+				<div>
+					<Label>Placements</Label>
+					<Input placeholder="1,2,3" />
+				</div>
 			</div>
+			<Button
+				icon={<PlusIcon />}
+				variant="outlined"
+				size="tiny"
+				className="self-start"
+			>
+				Add source
+			</Button>
 		</div>
 	);
 }
