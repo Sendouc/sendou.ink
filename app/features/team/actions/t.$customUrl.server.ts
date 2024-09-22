@@ -19,13 +19,13 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const { customUrl } = teamParamsSchema.parse(params);
 	const team = notFoundIfFalsy(await TeamRepository.findByCustomUrl(customUrl));
 
-	validate(
-		isTeamMember({ user, team }) && !isTeamOwner({ user, team }),
-		"You are not a regular member of this team",
-	);
-
 	switch (data._action) {
 		case "LEAVE_TEAM": {
+			validate(
+				isTeamMember({ user, team }) && !isTeamOwner({ user, team }),
+				"You are not a regular member of this team",
+			);
+
 			await TeamRepository.removeTeamMember({
 				teamId: team.id,
 				userId: user.id,
