@@ -1,5 +1,6 @@
 /** Map list generation logic for "TO pick" as in the map list is defined beforehand by TO and teams don't pick */
 
+import clone from "just-clone";
 import shuffle from "just-shuffle";
 import type {
 	TournamentBracketProgression,
@@ -19,13 +20,14 @@ export type BracketMapCounts = Map<
 	Map<number, { count: number; type: "BEST_OF" }>
 >;
 
-interface GenerateTournamentRoundMaplistArgs {
+export interface GenerateTournamentRoundMaplistArgs {
 	pool: Array<{ mode: ModeShort; stageId: StageId }>;
 	rounds: Round[];
 	mapCounts: BracketMapCounts;
 	type: TournamentBracketProgression[number]["type"];
 	roundsWithPickBan: Set<number>;
 	pickBanStyle: TournamentRoundMaps["pickBan"];
+	flavor: "SZ_FIRST" | null;
 }
 
 export type TournamentRoundMapList = ReturnType<
@@ -63,12 +65,13 @@ export function generateTournamentRoundMaplist(
 
 			assertUnreachable(args.pickBanStyle);
 		};
-		const modes = modeOrder(
-			amountOfMapsToGenerate(),
-			args.pool,
+		const modes = modeOrder({
+			count: amountOfMapsToGenerate(),
+			pool: args.pool,
 			modeFrequency,
 			iteration,
-		);
+			flavor: args.flavor,
+		});
 
 		result.set(round.id, {
 			count,
@@ -150,12 +153,19 @@ function resolveRoundMapCount(
 	return count;
 }
 
-function modeOrder(
-	count: number,
-	pool: GenerateTournamentRoundMaplistArgs["pool"],
-	modeFrequency: Map<ModeShort, number>,
-	iteration: number,
-) {
+function modeOrder({
+	count,
+	pool,
+	modeFrequency,
+	iteration,
+	flavor,
+}: {
+	count: number;
+	pool: GenerateTournamentRoundMaplistArgs["pool"];
+	modeFrequency: Map<ModeShort, number>;
+	iteration: number;
+	flavor: GenerateTournamentRoundMaplistArgs["flavor"];
+}) {
 	const modes = removeDuplicates(pool.map((x) => x.mode));
 	const shuffledModes = shuffle(modes);
 	shuffledModes.sort((a, b) => {
@@ -165,7 +175,7 @@ function modeOrder(
 		return aFreq - bFreq;
 	});
 
-	const biasedModes = modesWithSZBiased(shuffledModes);
+	const biasedModes = modesWithSZBiased({ modes: shuffledModes, flavor });
 
 	const result: ModeShort[] = [];
 
@@ -182,10 +192,24 @@ function modeOrder(
 	return result;
 }
 
-function modesWithSZBiased(modes: ModeShort[]) {
+function modesWithSZBiased({
+	modes,
+	flavor,
+}: {
+	modes: ModeShort[];
+	flavor?: GenerateTournamentRoundMaplistArgs["flavor"];
+}) {
 	// map list without SZ
 	if (!modes.includes("SZ")) {
 		return modes;
+	}
+
+	if (flavor === "SZ_FIRST" && modes.includes("SZ")) {
+		const result: ModeShort[] = clone(modes);
+		const szIndex = result.indexOf("SZ");
+		result.splice(szIndex, 1);
+		result.unshift("SZ");
+		return result;
 	}
 
 	// not relevant if there are less than 4 modes
