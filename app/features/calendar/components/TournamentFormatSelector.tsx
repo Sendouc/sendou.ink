@@ -14,6 +14,16 @@ import type {
 } from "~/db/tables";
 import { TOURNAMENT } from "~/features/tournament";
 
+type EditingSources = Array<
+	Omit<
+		NonNullable<TournamentBracketProgression[number]["sources"]>[number],
+		"bracketIdx"
+	> & { bracketId: string }
+>;
+type SourcesForDB = NonNullable<
+	TournamentBracketProgression[number]["sources"]
+>;
+
 // xxx: id?
 export interface TournamentFormatBracket {
 	id: string;
@@ -22,7 +32,7 @@ export interface TournamentFormatBracket {
 	requiresCheckIn: boolean;
 	startTime: Date | null;
 	settings: TournamentStageSettings;
-	sources: NonNullable<TournamentBracketProgression> | null;
+	sources: EditingSources | null;
 }
 
 export function TournamentFormatSelector() {
@@ -159,22 +169,6 @@ function TournamentFormatBracketSelector({
 				) : null}
 
 				<div>
-					<Label htmlFor={createId("sources")}>Sources</Label>
-					{/** xxx: If invitational "Participants added by the organizer" */}
-					{isFirstBracket ? (
-						<FormMessage type="info">
-							Participants join from sign-up
-						</FormMessage>
-					) : (
-						<SourcesSelector
-							brackets={brackets.filter(
-								(bracket2) => bracket.id !== bracket2.id,
-							)}
-						/>
-					)}
-				</div>
-
-				<div>
 					<Label htmlFor={createId("format")}>Format</Label>
 					<select
 						value={bracket.type}
@@ -288,6 +282,23 @@ function TournamentFormatBracketSelector({
 						</select>
 					</div>
 				) : null}
+
+				<div>
+					<Label htmlFor={createId("sources")}>Sources</Label>
+					{/** xxx: If invitational "Participants added by the organizer" */}
+					{isFirstBracket ? (
+						<FormMessage type="info">
+							Participants join from sign-up
+						</FormMessage>
+					) : (
+						<SourcesSelector
+							brackets={brackets.filter(
+								(bracket2) => bracket.id !== bracket2.id && bracket2.name,
+							)}
+							onChange={(sources) => updateBracket({ sources })}
+						/>
+					)}
+				</div>
 			</div>
 		</div>
 	);
@@ -295,6 +306,22 @@ function TournamentFormatBracketSelector({
 
 function SourcesSelector({
 	brackets,
-}: { brackets: TournamentFormatBracket[] }) {
-	return <div>{JSON.stringify(brackets)}</div>;
+	onChange,
+}: {
+	brackets: TournamentFormatBracket[];
+	onChange: (sources: EditingSources) => void;
+}) {
+	return (
+		<div>
+			<div>
+				<select>
+					{brackets.map((bracket) => (
+						<option key={bracket.id} value={bracket.id}>
+							{bracket.name}
+						</option>
+					))}
+				</select>
+			</div>
+		</div>
+	);
 }

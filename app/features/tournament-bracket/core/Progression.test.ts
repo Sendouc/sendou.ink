@@ -5,6 +5,7 @@
 // - not too much placements relative to teams per group (RR only)
 // - no two brackets with the same name
 // - all brackets have names
+// - no save source bracket twice in the same object
 // - startTime???
 
 import { it } from "vitest";
