@@ -174,17 +174,29 @@ export default function EditTeamPage() {
 
 function ImageUploadLinks() {
 	const { t } = useTranslation(["team"]);
+	const { team } = useLoaderData<typeof loader>();
+
 	return (
 		<div>
 			<Label>{t("team:forms.fields.uploadImages")}</Label>
 			<ol className="team__image-links-list">
 				<li>
-					<Link to={uploadImagePage({ type: "team-pfp" })}>
+					<Link
+						to={uploadImagePage({
+							type: "team-pfp",
+							teamCustomUrl: team.customUrl,
+						})}
+					>
 						{t("team:forms.fields.uploadImages.pfp")}
 					</Link>
 				</li>
 				<li>
-					<Link to={uploadImagePage({ type: "team-banner" })}>
+					<Link
+						to={uploadImagePage({
+							type: "team-banner",
+							teamCustomUrl: team.customUrl,
+						})}
+					>
 						{t("team:forms.fields.uploadImages.banner")}
 					</Link>
 				</li>

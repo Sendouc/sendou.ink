@@ -34,7 +34,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	const team =
 		validatedType === "team-pfp" || validatedType === "team-banner"
-			? await validatedTeam(user)
+			? await validatedTeam({ user, request })
 			: undefined;
 	const organization =
 		validatedType === "org-pfp"
@@ -87,10 +87,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	return null;
 };
 
-async function validatedTeam(user: { id: number }) {
-	const team = await TeamRepository.findMainByUserId(user.id);
+async function validatedTeam({
+	user,
+	request,
+}: { user: { id: number }; request: Request }) {
+	const { team: teamCustomUrl } = parseSearchParams({
+		request,
+		schema: z.object({ team: z.string() }),
+	});
+	const team = await TeamRepository.findByCustomUrl(teamCustomUrl);
 
 	validate(team, "You must be on a team to upload images");
+	validate(
+		team.members.some((member) => member.id === user.id && member.isOwner),
+		"You must be on the team to upload images",
+	);
 	const detailedTeam = await TeamRepository.findByCustomUrl(team.customUrl);
 	validate(
 		detailedTeam && isTeamOwner({ team: detailedTeam, user }),

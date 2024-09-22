@@ -347,12 +347,12 @@ export const objectDamageCalculatorPage = (weaponId?: MainWeaponId) =>
 
 export const uploadImagePage = (
 	args:
-		| { type: "team-pfp" | "team-banner" }
+		| { type: "team-pfp" | "team-banner"; teamCustomUrl: string }
 		| { type: "org-pfp"; slug: string },
 ) =>
 	args.type === "org-pfp"
 		? `/upload?type=${args.type}&slug=${args.slug}`
-		: `/upload?type=${args.type}`;
+		: `/upload?type=${args.type}&team=${args.teamCustomUrl}`;
 
 export const vodVideoPage = (videoId: number) => `${VODS_PAGE}/${videoId}`;
 
