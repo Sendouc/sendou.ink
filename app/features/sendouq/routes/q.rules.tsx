@@ -61,6 +61,13 @@ export default function SendouqRules() {
 				don&apos;t agree then the match should be played out.
 			</div>
 
+			<h2 className="text-lg mt-4">Dodging</h2>
+			<div>
+				Canceling matches is to be used for special cases only. If used
+				excessively for e.g. avoiding to play stronger opponents it can lead to
+				a ban or potential Plus Server admissions being skipped for the season.
+			</div>
+
 			<h2 className="text-lg mt-4">Room hosting</h2>
 			<div>
 				By default the player who says the fastest in the match chat that they
