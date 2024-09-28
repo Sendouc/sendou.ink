@@ -58,6 +58,7 @@ export interface Team {
 	inviteCode: string;
 	name: string;
 	twitter: string | null;
+	bsky: string | null;
 }
 
 export interface Art {
@@ -759,6 +760,7 @@ export interface User {
 	stickSens: number | null;
 	twitch: string | null;
 	twitter: string | null;
+	bsky: string | null;
 	battlefy: string | null;
 	vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
 	youtubeId: string | null;
