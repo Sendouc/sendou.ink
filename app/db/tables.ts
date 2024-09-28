@@ -20,8 +20,9 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 	? ColumnType<S, I | undefined, U>
 	: ColumnType<T, T | undefined, T>;
 
-// xxx: unify
-export interface AllTeam {
+export type MemberRole = (typeof TEAM_MEMBER_ROLES)[number];
+
+export interface Team {
 	avatarImgId: number | null;
 	bannerImgId: number | null;
 	bio: string | null;
@@ -36,9 +37,7 @@ export interface AllTeam {
 	bsky: string | null;
 }
 
-export type MemberRole = (typeof TEAM_MEMBER_ROLES)[number];
-
-export interface AllTeamMember {
+export interface TeamMember {
 	createdAt: Generated<number>;
 	isOwner: Generated<number>;
 	leftAt: number | null;
@@ -46,21 +45,6 @@ export interface AllTeamMember {
 	teamId: number;
 	userId: number;
 	isMainTeam: number;
-}
-
-export interface Team {
-	avatarImgId: number | null;
-	bannerImgId: number | null;
-	bio: string | null;
-	createdAt: number | null;
-	css: ColumnType<Record<string, string> | null, string | null, string | null>;
-	customUrl: string;
-	deletedAt: number | null;
-	id: GeneratedAlways<number>;
-	inviteCode: string;
-	name: string;
-	twitter: string | null;
-	bsky: string | null;
 }
 
 export interface Art {
@@ -852,8 +836,8 @@ export type Tables = { [P in keyof DB]: Selectable<DB[P]> };
 export type TablesInsertable = { [P in keyof DB]: Insertable<DB[P]> };
 
 export interface DB {
-	AllTeam: AllTeam;
-	AllTeamMember: AllTeamMember;
+	AllTeam: Team;
+	AllTeamMember: TeamMember;
 	Art: Art;
 	ArtTag: ArtTag;
 	ArtUserMetadata: ArtUserMetadata;
@@ -891,8 +875,8 @@ export interface DB {
 	SplatoonPlayer: SplatoonPlayer;
 	TaggedArt: TaggedArt;
 	Team: Team;
-	TeamMember: AllTeamMember;
-	TeamMemberWithSecondary: AllTeamMember;
+	TeamMember: TeamMember;
+	TeamMemberWithSecondary: TeamMember;
 	Tournament: Tournament;
 	TournamentStaff: TournamentStaff;
 	TournamentBadgeOwner: TournamentBadgeOwner;
