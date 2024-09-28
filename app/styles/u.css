@@ -97,6 +97,17 @@
 	fill: #de4c5e;
 }
 
+.u__social-link.bsky {
+	border-color: #1285fe;
+	background-color: #1285fe2f;
+	display: grid;
+	place-items: center;
+}
+
+.u__social-link.bsky path {
+	fill: #1285fe;
+}
+
 .u__extra-infos {
 	display: flex;
 	max-width: 24rem;

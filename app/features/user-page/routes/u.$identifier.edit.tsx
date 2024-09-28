@@ -91,6 +91,10 @@ const userEditActionSchema = z
 			falsyToNull,
 			z.string().max(USER.BATTLEFY_MAX_LENGTH).nullable(),
 		),
+		bsky: z.preprocess(
+			falsyToNull,
+			z.string().max(USER.BSKY_MAX_LENGTH).nullable(),
+		),
 		stickSens: z.preprocess(
 			processMany(actualNumber, undefinedToNull),
 			z
@@ -257,6 +261,7 @@ export default function UserEditPage() {
 				<InGameNameInputs />
 				<SensSelects />
 				<BattlefyInput />
+				<BskyInput />
 				<CountrySelect />
 				<FavBadgeSelect />
 				<WeaponPoolSelect />
@@ -451,6 +456,24 @@ function BattlefyInput() {
 				leftAddon="https://battlefy.com/users/"
 			/>
 			<FormMessage type="info">{t("user:forms.info.battlefy")}</FormMessage>
+		</div>
+	);
+}
+
+function BskyInput() {
+	const { t } = useTranslation(["user"]);
+	const data = useLoaderData<typeof loader>();
+
+	return (
+		<div className="w-full">
+			<Label htmlFor="bsky">{t("user:bsky")}</Label>
+			<Input
+				name="bsky"
+				id="bsky"
+				maxLength={USER.BSKY_MAX_LENGTH}
+				defaultValue={data.user.bsky ?? undefined}
+				leftAddon="https://bsky.app/profile/"
+			/>
 		</div>
 	);
 }
