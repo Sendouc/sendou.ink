@@ -20,6 +20,7 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 	? ColumnType<S, I | undefined, U>
 	: ColumnType<T, T | undefined, T>;
 
+// xxx: unify
 export interface AllTeam {
 	avatarImgId: number | null;
 	bannerImgId: number | null;
@@ -32,6 +33,7 @@ export interface AllTeam {
 	inviteCode: string;
 	name: string;
 	twitter: string | null;
+	bsky: string | null;
 }
 
 export type MemberRole = (typeof TEAM_MEMBER_ROLES)[number];

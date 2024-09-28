@@ -97,6 +97,26 @@
 	fill: #1da1f2;
 }
 
+.team__bsky-link {
+	padding: var(--s-1);
+	border: 1px solid;
+	border-radius: 50%;
+	border-color: #1285fe;
+	background-color: #1285fe2f;
+	height: 24.4px;
+	width: 24.4px;
+	display: grid;
+	place-items: center;
+}
+
+.team__bsky-link > svg {
+	width: 0.9rem;
+}
+
+.team__bsky-link path {
+	fill: #1285fe;
+}
+
 .team__banner__avatar {
 	grid-area: avatar;
 	align-self: flex-end;

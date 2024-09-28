@@ -67,6 +67,7 @@ export function findByCustomUrl(customUrl: string) {
 			"Team.id",
 			"Team.name",
 			"Team.twitter",
+			"Team.bsky",
 			"Team.bio",
 			"Team.customUrl",
 			"Team.css",
@@ -138,6 +139,33 @@ export async function create(
 			})
 			.execute();
 	});
+}
+
+export async function update({
+	id,
+	name,
+	customUrl,
+	bio,
+	twitter,
+	bsky,
+	css,
+}: Pick<
+	Insertable<Tables["Team"]>,
+	"id" | "name" | "customUrl" | "bio" | "twitter" | "bsky"
+> & { css: string | null }) {
+	return db
+		.updateTable("AllTeam")
+		.set({
+			name,
+			customUrl,
+			bio,
+			twitter,
+			bsky,
+			css,
+		})
+		.where("id", "=", id)
+		.returningAll()
+		.executeTakeFirstOrThrow();
 }
 
 export function switchMainTeam({
