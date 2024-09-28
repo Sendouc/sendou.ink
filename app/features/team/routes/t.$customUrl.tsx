@@ -10,6 +10,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
+import { BskyIcon } from "~/components/icons/Bsky";
 import { EditIcon } from "~/components/icons/Edit";
 import { StarIcon } from "~/components/icons/Star";
 import { TwitterIcon } from "~/components/icons/Twitter";
@@ -21,6 +22,7 @@ import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
 	TEAM_SEARCH_PAGE,
+	bskyUrl,
 	editTeamPage,
 	manageTeamRosterPage,
 	navIconUrl,
@@ -126,7 +128,7 @@ function TeamBanner() {
 					})}
 				</div>
 				<div className="team__banner__name">
-					{team.name} <TwitterLink testId="twitter-link" />
+					{team.name} <TwitterLink testId="twitter-link" /> <BskyLink />
 				</div>
 			</div>
 			{team.avatarSrc ? <div className="team__banner__avatar__spacer" /> : null}
@@ -151,6 +153,7 @@ function MobileTeamNameCountry() {
 			<div className="team__mobile-team-name">
 				{team.name}
 				<TwitterLink />
+				<BskyLink />
 			</div>
 		</div>
 	);
@@ -170,6 +173,23 @@ function TwitterLink({ testId }: { testId?: string }) {
 			data-testid={testId}
 		>
 			<TwitterIcon />
+		</a>
+	);
+}
+
+function BskyLink() {
+	const { team } = useLoaderData<typeof loader>();
+
+	if (!team.bsky) return null;
+
+	return (
+		<a
+			className="team__bsky-link"
+			href={bskyUrl(team.bsky)}
+			target="_blank"
+			rel="noreferrer"
+		>
+			<BskyIcon />
 		</a>
 	);
 }

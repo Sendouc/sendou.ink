@@ -73,6 +73,8 @@ export const SPR_INFO_URL =
 
 export const twitterUrl = (accountName: string) =>
 	`https://twitter.com/${accountName}`;
+export const bskyUrl = (accountName: string) =>
+	`https://bsky.app/profile/${accountName}`;
 export const twitchUrl = (accountName: string) =>
 	`https://twitch.tv/${accountName}`;
 

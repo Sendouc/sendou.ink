@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { BskyIcon } from "~/components/icons/Bsky";
 import { LinkIcon } from "~/components/icons/Link";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
@@ -24,6 +25,7 @@ function SocialLink({ url }: { url: string }) {
 					youtube: type === "youtube",
 					twitter: type === "twitter",
 					twitch: type === "twitch",
+					bsky: type === "bsky",
 				})}
 			>
 				<SocialLinkIcon url={url} />
@@ -48,6 +50,10 @@ function SocialLinkIcon({ url }: { url: string }) {
 		return <YouTubeIcon />;
 	}
 
+	if (type === "bsky") {
+		return <BskyIcon />;
+	}
+
 	return <LinkIcon />;
 }
 
@@ -62,6 +68,10 @@ const urlToLinkType = (url: string) => {
 
 	if (url.includes("youtube.com")) {
 		return "youtube";
+	}
+
+	if (url.includes("bsky.app")) {
+		return "bsky";
 	}
 
 	return null;
