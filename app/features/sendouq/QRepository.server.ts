@@ -277,13 +277,11 @@ export function deletePrivateUserNote({
 		.execute();
 }
 
-// xxx: sort main team first
-
 export async function usersThatTrusted(userId: number) {
 	const teams = await db
 		.selectFrom("TeamMemberWithSecondary")
 		.innerJoin("Team", "Team.id", "TeamMemberWithSecondary.teamId")
-		.select(["Team.id", "Team.name"])
+		.select(["Team.id", "Team.name", "TeamMemberWithSecondary.isMainTeam"])
 		.where("userId", "=", userId)
 		.execute();
 
@@ -318,5 +316,8 @@ export async function usersThatTrusted(userId: number) {
 
 	const rowsWithoutBanned = rows.filter((row) => !userIsBanned(row.id));
 
-	return { teams, trusters: rowsWithoutBanned };
+	return {
+		teams: teams.sort((a, b) => b.isMainTeam - a.isMainTeam),
+		trusters: rowsWithoutBanned,
+	};
 }
