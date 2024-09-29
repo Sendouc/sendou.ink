@@ -9,7 +9,7 @@ import type { Unpacked } from "~/utils/types";
 import { badgeExplanationText } from "../badges-utils";
 
 interface BadgeDisplayProps {
-	badges: Array<Tables["Badge"] & { count?: number }>;
+	badges: Array<Omit<Tables["Badge"], "authorId"> & { count?: number }>;
 	onBadgeRemove?: (badgeId: number) => void;
 }
 

@@ -1,0 +1,17 @@
+interface BadgeInfo {
+	// The name of the badge as it shows on the web page: "Awarded for winning {displayName}"
+	displayName: string;
+	// The file name of the badge: fileName.png, fileName.avif & fileName.gif
+	fileName: string;
+	// The Discord ID of the person who made the badge
+	authorDiscordId: string;
+}
+
+export const homemadeBadges: BadgeInfo[] = [
+	// EXAMPLE
+	// {
+	// 	displayName: "Example Badge",
+	// 	fileName: "example",
+	// 	authorDiscordId: "123456789012345678",
+	// },
+];
