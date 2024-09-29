@@ -98,7 +98,7 @@ function TrusterDropdown({
 	groupMemberIds: number[];
 }) {
 	const { t } = useTranslation(["q"]);
-	const { trusters } = useTrusted();
+	const { trusters, teams } = useTrusted();
 
 	if (!trusters || trusters.length === 0) {
 		return (
@@ -124,14 +124,32 @@ function TrusterDropdown({
 			}
 			className="q__member-adder__input"
 		>
-			<option value="">{t("q:looking.groups.adder.selectUser")}</option>
-			{trustersNotInGroup.map((player) => {
+			{teams?.map((team) => {
 				return (
-					<option key={player.id} value={player.id}>
-						{player.username}
-					</option>
+					<optgroup label={team.name} key={team.id}>
+						{trustersNotInGroup
+							.filter((player) => player.teamId === team.id)
+							.map((player) => {
+								return (
+									<option key={player.id} value={player.id}>
+										{player.username}
+									</option>
+								);
+							})}
+					</optgroup>
 				);
 			})}
+			<optgroup label={t("q:looking.groups.adder.others")}>
+				{trustersNotInGroup
+					.filter((player) => !player.teamId)
+					.map((player) => {
+						return (
+							<option key={player.id} value={player.id}>
+								{player.username}
+							</option>
+						);
+					})}
+			</optgroup>
 		</select>
 	);
 }
