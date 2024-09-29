@@ -14,4 +14,9 @@ export const homemadeBadges: BadgeInfo[] = [
 	// 	fileName: "example",
 	// 	authorDiscordId: "123456789012345678",
 	// },
+	{
+	 	displayName: "VERSUS THE WORLD",
+	 	fileName: "cookie",
+		authorDiscordId: "528851510222782474",
+	},
 ];
