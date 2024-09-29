@@ -88,7 +88,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			}
 
 			validate(
-				(await QRepository.usersThatTrusted(user.id)).some(
+				(await QRepository.usersThatTrusted(user.id)).trusters.some(
 					(trusterUser) => trusterUser.id === data.id,
 				),
 				"Not trusted",

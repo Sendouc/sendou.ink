@@ -903,7 +903,7 @@ function FillRoster({
 		(ownTeamCheckedIn && ownTeamMembers.length > tournament.minMembersPerTeam);
 
 	const playersAvailableToDirectlyAdd = (() => {
-		return (data!.trusterPlayers ?? []).filter((user) => {
+		return (data!.trusterPlayers?.trusters ?? []).filter((user) => {
 			const isNotInTeam = tournament.ctx.teams.every((team) =>
 				team.members.every((member) => member.userId !== user.id),
 			);
@@ -926,7 +926,10 @@ function FillRoster({
 			<section className="tournament__section stack lg items-center">
 				{playersAvailableToDirectlyAdd.length > 0 && canAddMembers ? (
 					<>
-						<DirectlyAddPlayerSelect players={playersAvailableToDirectlyAdd} />
+						<DirectlyAddPlayerSelect
+							players={playersAvailableToDirectlyAdd}
+							teams={data!.trusterPlayers?.teams ?? []}
+						/>
 						<Divider className="text-uppercase">{t("common:or")}</Divider>
 					</>
 				) : null}
@@ -1015,8 +1018,10 @@ function FillRoster({
 
 function DirectlyAddPlayerSelect({
 	players,
+	teams,
 }: {
-	players: { id: number; username: string }[];
+	players: { id: number; username: string; teamId?: number }[];
+	teams: { id: number; name: string }[];
 }) {
 	const { t } = useTranslation(["tournament", "common"]);
 	const fetcher = useFetcher();
@@ -1029,13 +1034,32 @@ function DirectlyAddPlayerSelect({
 					{t("tournament:pre.roster.addTrusted.header")}
 				</Label>
 				<select id={id} name="userId">
-					{players.map((player) => {
+					{teams.map((team) => {
 						return (
-							<option key={player.id} value={player.id}>
-								{player.username}
-							</option>
+							<optgroup label={team.name} key={team.id}>
+								{players
+									.filter((player) => player.teamId === team.id)
+									.map((player) => {
+										return (
+											<option key={player.id} value={player.id}>
+												{player.username}
+											</option>
+										);
+									})}
+							</optgroup>
 						);
 					})}
+					<optgroup label="Others">
+						{players
+							.filter((player) => !player.teamId)
+							.map((player) => {
+								return (
+									<option key={player.id} value={player.id}>
+										{player.username}
+									</option>
+								);
+							})}
+					</optgroup>
 				</select>
 			</div>
 			<SubmitButton

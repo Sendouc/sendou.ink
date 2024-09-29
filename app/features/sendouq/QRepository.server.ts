@@ -277,10 +277,13 @@ export function deletePrivateUserNote({
 		.execute();
 }
 
+// xxx: sort main team first
+
 export async function usersThatTrusted(userId: number) {
-	const teamIds = await db
+	const teams = await db
 		.selectFrom("TeamMemberWithSecondary")
-		.select("teamId")
+		.innerJoin("Team", "Team.id", "TeamMemberWithSecondary.teamId")
+		.select(["Team.id", "Team.name"])
 		.where("userId", "=", userId)
 		.execute();
 
@@ -288,18 +291,26 @@ export async function usersThatTrusted(userId: number) {
 		.selectFrom("TeamMemberWithSecondary")
 		.innerJoin("User", "User.id", "TeamMemberWithSecondary.userId")
 		.innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
-		.select([...COMMON_USER_FIELDS, "User.inGameName"])
+		.select([
+			...COMMON_USER_FIELDS,
+			"User.inGameName",
+			"TeamMemberWithSecondary.teamId",
+		])
 		.where(
 			"TeamMemberWithSecondary.teamId",
 			"in",
-			teamIds.map((t) => t.teamId),
+			teams.map((t) => t.id),
 		)
 		.union((eb) =>
 			eb
 				.selectFrom("TrustRelationship")
 				.innerJoin("User", "User.id", "TrustRelationship.trustGiverUserId")
 				.innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
-				.select([...COMMON_USER_FIELDS, "User.inGameName"])
+				.select([
+					...COMMON_USER_FIELDS,
+					"User.inGameName",
+					sql.raw<any>("null").as("teamId"),
+				])
 				.where("TrustRelationship.trustReceiverUserId", "=", userId),
 		)
 		.orderBy("User.username asc")
@@ -307,5 +318,5 @@ export async function usersThatTrusted(userId: number) {
 
 	const rowsWithoutBanned = rows.filter((row) => !userIsBanned(row.id));
 
-	return rowsWithoutBanned;
+	return { teams, trusters: rowsWithoutBanned };
 }

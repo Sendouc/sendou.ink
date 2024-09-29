@@ -200,7 +200,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 			);
 			validate(ownTeam);
 			validate(
-				(await QRepository.usersThatTrusted(user.id)).some(
+				(await QRepository.usersThatTrusted(user.id)).trusters.some(
 					(trusterPlayer) => trusterPlayer.id === data.userId,
 				),
 				"No trust given from this user",
