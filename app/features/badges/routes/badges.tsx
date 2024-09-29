@@ -1,5 +1,5 @@
 import type { SerializeFrom } from "@remix-run/node";
-import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "~/components/Badge";
@@ -9,7 +9,7 @@ import { Main } from "~/components/Main";
 import { SearchIcon } from "~/components/icons/Search";
 import { useUser } from "~/features/auth/core/user";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { BADGES_PAGE, FAQ_PAGE, navIconUrl } from "~/utils/urls";
+import { BADGES_DOC_LINK, BADGES_PAGE, navIconUrl } from "~/utils/urls";
 import * as BadgeRepository from "../BadgeRepository.server";
 
 import "~/styles/badges.css";
@@ -97,7 +97,9 @@ export default function BadgesPageLayout() {
 			</div>
 			<div className="badges__general-info-texts">
 				<p>
-					<Link to={FAQ_PAGE}>{t("forYourEvent")}</Link>
+					<a href={BADGES_DOC_LINK} target="_blank" rel="noopener noreferrer">
+						{t("forYourEvent")}
+					</a>
 				</p>
 			</div>
 		</Main>
