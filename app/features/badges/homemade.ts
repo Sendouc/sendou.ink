@@ -19,4 +19,9 @@ export const homemadeBadges: BadgeInfo[] = [
 	 	fileName: "cookie",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "Tristrike Tuesday",
+		fileName: "tristriketuesday",
+	    authorDiscordId: "789943264370884708",
+    },
 ];
