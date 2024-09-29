@@ -115,6 +115,16 @@ function TrusterDropdown({
 		(truster) => !groupMemberIds.includes(truster.id),
 	);
 
+	const othersOptions = trustersNotInGroup
+		.filter((player) => !player.teamId)
+		.map((player) => {
+			return (
+				<option key={player.id} value={player.id}>
+					{player.username}
+				</option>
+			);
+		});
+
 	return (
 		<select
 			name="id"
@@ -139,17 +149,13 @@ function TrusterDropdown({
 					</optgroup>
 				);
 			})}
-			<optgroup label={t("q:looking.groups.adder.others")}>
-				{trustersNotInGroup
-					.filter((player) => !player.teamId)
-					.map((player) => {
-						return (
-							<option key={player.id} value={player.id}>
-								{player.username}
-							</option>
-						);
-					})}
-			</optgroup>
+			{teams && teams.length > 0 ? (
+				<optgroup label={t("q:looking.groups.adder.others")}>
+					{othersOptions}
+				</optgroup>
+			) : (
+				othersOptions
+			)}
 		</select>
 	);
 }

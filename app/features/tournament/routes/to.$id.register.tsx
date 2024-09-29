@@ -1027,6 +1027,16 @@ function DirectlyAddPlayerSelect({
 	const fetcher = useFetcher();
 	const id = React.useId();
 
+	const othersOptions = players
+		.filter((player) => !player.teamId)
+		.map((player) => {
+			return (
+				<option key={player.id} value={player.id}>
+					{player.username}
+				</option>
+			);
+		});
+
 	return (
 		<fetcher.Form method="post" className="stack horizontal sm items-end">
 			<div>
@@ -1049,17 +1059,11 @@ function DirectlyAddPlayerSelect({
 							</optgroup>
 						);
 					})}
-					<optgroup label="Others">
-						{players
-							.filter((player) => !player.teamId)
-							.map((player) => {
-								return (
-									<option key={player.id} value={player.id}>
-										{player.username}
-									</option>
-								);
-							})}
-					</optgroup>
+					{teams && teams.length > 0 ? (
+						<optgroup label="Others">{othersOptions}</optgroup>
+					) : (
+						othersOptions
+					)}
 				</select>
 			</div>
 			<SubmitButton
