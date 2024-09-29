@@ -69,10 +69,12 @@ export interface ArtUserMetadata {
 }
 
 export interface Badge {
+	id: GeneratedAlways<number>;
 	code: string;
 	displayName: string;
 	hue: number | null;
-	id: GeneratedAlways<number>;
+	/** Who made the badge? If null, a legacy badge. */
+	authorId: number | null;
 }
 
 export interface BadgeManager {

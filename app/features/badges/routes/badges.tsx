@@ -1,7 +1,6 @@
 import type { SerializeFrom } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { Trans } from "react-i18next";
 import { useTranslation } from "react-i18next";
 import { Badge } from "~/components/Badge";
 import { Divider } from "~/components/Divider";
@@ -10,7 +9,7 @@ import { Main } from "~/components/Main";
 import { SearchIcon } from "~/components/icons/Search";
 import { useUser } from "~/features/auth/core/user";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { BADGES_PAGE, BORZOIC_TWITTER, navIconUrl } from "~/utils/urls";
+import { BADGES_PAGE, FAQ_PAGE, navIconUrl } from "~/utils/urls";
 import * as BadgeRepository from "../BadgeRepository.server";
 
 import "~/styles/badges.css";
@@ -98,16 +97,8 @@ export default function BadgesPageLayout() {
 			</div>
 			<div className="badges__general-info-texts">
 				<p>
-					<Trans i18nKey="madeBy" t={t}>
-						Badges by{" "}
-						<a href={BORZOIC_TWITTER} target="_blank" rel="noreferrer">
-							borzoic
-						</a>
-					</Trans>
-				</p>
-				{/* <p>
 					<Link to={FAQ_PAGE}>{t("forYourEvent")}</Link>
-				</p> */}
+				</p>
 			</div>
 		</Main>
 	);
