@@ -278,9 +278,10 @@ export function deletePrivateUserNote({
 }
 
 export async function usersThatTrusted(userId: number) {
-	const teamIds = await db
+	const teams = await db
 		.selectFrom("TeamMemberWithSecondary")
-		.select("teamId")
+		.innerJoin("Team", "Team.id", "TeamMemberWithSecondary.teamId")
+		.select(["Team.id", "Team.name", "TeamMemberWithSecondary.isMainTeam"])
 		.where("userId", "=", userId)
 		.execute();
 
@@ -288,24 +289,47 @@ export async function usersThatTrusted(userId: number) {
 		.selectFrom("TeamMemberWithSecondary")
 		.innerJoin("User", "User.id", "TeamMemberWithSecondary.userId")
 		.innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
-		.select([...COMMON_USER_FIELDS, "User.inGameName"])
+		.select([
+			...COMMON_USER_FIELDS,
+			"User.inGameName",
+			"TeamMemberWithSecondary.teamId",
+		])
 		.where(
 			"TeamMemberWithSecondary.teamId",
 			"in",
-			teamIds.map((t) => t.teamId),
+			teams.map((t) => t.id),
 		)
 		.union((eb) =>
 			eb
 				.selectFrom("TrustRelationship")
 				.innerJoin("User", "User.id", "TrustRelationship.trustGiverUserId")
 				.innerJoin("UserFriendCode", "UserFriendCode.userId", "User.id")
-				.select([...COMMON_USER_FIELDS, "User.inGameName"])
+				.select([
+					...COMMON_USER_FIELDS,
+					"User.inGameName",
+					sql.raw<any>("null").as("teamId"),
+				])
 				.where("TrustRelationship.trustReceiverUserId", "=", userId),
 		)
-		.orderBy("User.username asc")
 		.execute();
 
 	const rowsWithoutBanned = rows.filter((row) => !userIsBanned(row.id));
 
-	return rowsWithoutBanned;
+	const teamMemberIds = rowsWithoutBanned
+		.filter((row) => row.teamId)
+		.map((row) => row.id);
+
+	// we want user to show twice if member of two different teams
+	// but we don't want a user from the team to show in teamless section
+	const deduplicatedRows = rowsWithoutBanned.filter(
+		(row) => row.teamId || !teamMemberIds.includes(row.id),
+	);
+
+	// done here at not sql just because it was easier to do here ignoring case
+	deduplicatedRows.sort((a, b) => a.username.localeCompare(b.username));
+
+	return {
+		teams: teams.sort((a, b) => b.isMainTeam - a.isMainTeam),
+		trusters: deduplicatedRows,
+	};
 }
