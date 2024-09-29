@@ -3,7 +3,7 @@ interface BadgeInfo {
 	displayName: string;
 	// The file name of the badge: fileName.png, fileName.avif & fileName.gif
 	fileName: string;
-	// The Discord ID of the person who made the badge
+	// The Discord ID of the person who made the badge (not the person who commissioned it)
 	authorDiscordId: string;
 }
 
