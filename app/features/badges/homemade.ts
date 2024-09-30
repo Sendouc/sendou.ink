@@ -29,4 +29,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "cookie",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "Not Enough Liter",
+		fileName: "custom_e-liter",
+		authorDiscordId: "352207524390240257",
+	},
 ];
