@@ -14,4 +14,9 @@ export const homemadeBadges: BadgeInfo[] = [
 	// 	fileName: "example",
 	// 	authorDiscordId: "123456789012345678",
 	// },
+	{
+		displayName: "Vaporeon Eeveelution",
+		fileName: "vaporeon",
+		authorDiscordId: "313762200286396416",
+	}
 ];
