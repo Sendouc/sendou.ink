@@ -50,6 +50,7 @@ import { actualNumber } from "~/utils/zod";
 import * as CalendarRepository from "../CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 import "~/styles/calendar.css";
 
@@ -164,7 +165,11 @@ export default function CalendarPage() {
 	const data = useLoaderData<typeof loader>();
 	const user = useUser();
 	const isMounted = useIsMounted();
-	const [onlySendouInkEvents, setOnlySendouInkEvents] = React.useState(false);
+	const [onlySendouInkEvents, setOnlySendouInkEvents] = useSearchParamState({
+		defaultValue: false,
+		name: "tournaments",
+		revive: (val) => val === "true",
+	});
 
 	const filteredEvents = onlySendouInkEvents
 		? data.events.filter((event) => event.tournamentId)

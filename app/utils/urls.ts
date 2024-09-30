@@ -94,6 +94,7 @@ export const BUILDS_PAGE = "/builds";
 export const USER_SEARCH_PAGE = "/u";
 export const TEAM_SEARCH_PAGE = "/t";
 export const CALENDAR_PAGE = "/calendar";
+export const CALENDAR_TOURNAMENTS_PAGE = "/calendar?tournaments=true";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
 export const PLANNER_URL = "/plans";
@@ -211,6 +212,21 @@ export const topSearchPage = (args?: {
 		: "/xsearch";
 export const topSearchPlayerPage = (playerId: number) =>
 	`${topSearchPage()}/player/${playerId}`;
+
+export const leaderboardsPage = (args: {
+	season?: number;
+	type?: "USER" | "TEAM";
+}) => {
+	const params = new URLSearchParams();
+	if (args.season) {
+		params.set("season", String(args.season));
+	}
+	if (args.type) {
+		params.set("type", args.type);
+	}
+
+	return `${LEADERBOARDS_PAGE}${params.size > 0 ? `?${params.toString()}` : ""}`;
+};
 
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
 	`/?authError=${errorCode}`;

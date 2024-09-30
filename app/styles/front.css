@@ -1,4 +1,4 @@
-.front__nav-items-container {
+/* .front__nav-items-container {
 	display: flex;
 	margin: 0 auto;
 	gap: var(--s-4) var(--s-4);
@@ -171,6 +171,14 @@
 	padding: var(--s-0-5) var(--s-3);
 	background-color: var(--card-text);
 	color: var(--card-bg);
+}*/
+
+.front-page__container {
+	--card-width: 225px;
+	--card-height: 90px;
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-8);
 }
 
 .front__change-log__img {
@@ -197,4 +205,191 @@
 .front__external-link-icon {
 	width: 18px;
 	stroke-width: 2px;
+}
+
+.front__season-banner {
+	background-color: var(--bg-lightest);
+	border-radius: var(--rounded);
+	padding: var(--s-2) var(--s-3);
+	line-height: 1.35;
+	position: relative;
+	color: var(--text);
+}
+
+.front__season-banner__header {
+	font-size: var(--fonts-xl);
+	font-weight: var(--bold);
+}
+
+.front__season-banner__dates {
+	font-size: var(--fonts-xs);
+	font-weight: var(--semi-bold);
+}
+
+.front__season-banner__img {
+	position: absolute;
+	width: 90px;
+	right: 0;
+	top: -16px;
+}
+
+.front__season-banner__link {
+	background-color: var(--bg-lightest);
+	border-radius: var(--rounded);
+	width: max-content;
+	padding: var(--s-0-5) var(--s-1-5);
+	font-size: var(--fonts-xs);
+	color: var(--text);
+	display: flex;
+	gap: var(--s-2);
+	align-items: center;
+}
+
+.front__season-banner__link svg {
+	width: 24px;
+	transition: all 0.2s ease-out;
+}
+
+.front__season-banner__link:hover svg {
+	translate: 2px;
+}
+
+.front__tournament-cards {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--s-2);
+}
+
+.front__tournament-cards__scroller {
+	display: flex;
+	gap: var(--s-2);
+	overflow-x: auto;
+	padding: var(--s-1-5);
+}
+
+.front__tournament-cards__view-all-card {
+	background-color: var(--bg-lighter);
+	height: var(--card-height);
+	border-radius: var(--rounded);
+	display: grid;
+	place-items: center;
+	padding: var(--s-2);
+	font-size: var(--fonts-xxs);
+	font-weight: var(--bold);
+	text-align: center;
+	color: var(--text);
+	transition: 0.2s ease-out;
+	margin-top: var(--s-1-5);
+}
+
+.front__tournament-cards__view-all-card:hover {
+	background-color: var(--bg-lightest);
+}
+
+.front__tournament-card__container {
+	min-width: var(--card-width);
+	max-width: var(--card-width);
+	height: calc(var(--card-height) + 22px);
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-1);
+}
+
+.front__tournament-card {
+	background-color: var(--bg-lightest);
+	border-radius: var(--rounded);
+	color: var(--text);
+	padding: var(--s-1) var(--s-2) var(--s-2) var(--s-2);
+}
+
+.front__tournament-card:hover .front__tournament-card__tournament-avatar-img {
+	outline: 6px solid var(--theme-transparent);
+}
+
+.front__tournament-card__img-container {
+	background-color: var(--bg);
+	padding: var(--s-1-5);
+	border-radius: 100%;
+	margin-left: -10px;
+	margin-top: -10px;
+}
+
+.front__tournament-card__tournament-avatar-img {
+	border-radius: 100%;
+}
+
+.front__tournament-card__org {
+	display: flex;
+	gap: var(--s-1);
+	font-size: var(--fonts-xxs);
+	color: var(--text-lighter);
+}
+
+.front__tournament-card__time {
+	font-size: var(--fonts-xs);
+	font-weight: var(--semi-bold);
+	color: var(--text-lighter);
+	display: block;
+}
+
+.front__tournament-card__name {
+	text-align: center;
+	font-weight: var(--semi-bold);
+	font-size: var(--fonts-sm);
+}
+
+.front__tournament-card__team-count {
+	font-size: var(--fonts-xxs);
+	font-weight: var(--bold);
+	background-color: var(--bg-lightest);
+	border-radius: var(--rounded-sm);
+	width: max-content;
+	padding: var(--s-0-5) var(--s-1-5);
+	display: flex;
+	gap: var(--s-1);
+}
+
+.front__tournament-card__team-count svg {
+	width: 12px;
+}
+
+.front__tournament-card__ranked {
+	font-size: var(--fonts-xxs);
+	font-weight: var(--bold);
+	background-color: var(--theme-info-transparent);
+	color: var(--theme-info);
+	border-radius: var(--rounded-sm);
+	padding: var(--s-0-5) var(--s-1-5);
+}
+
+.front__result-highlights {
+	display: flex;
+	gap: var(--s-2);
+	overflow-x: auto;
+}
+
+.front__result-highlights__title {
+	font-size: var(--fonts-xs);
+}
+
+.front__leaderboard {
+	min-width: var(--card-width);
+	max-width: var(--card-width);
+	background-color: var(--bg-lightest);
+	border-radius: var(--rounded);
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+	padding: var(--s-2);
+}
+
+.front__leaderboard__view-all {
+	font-size: var(--fonts-xxs);
+	color: var(--text);
+	background-color: var(--bg-lightest);
+	border-radius: var(--rounded);
+	width: max-content;
+	padding-inline: var(--s-2);
+	display: flex;
+	gap: var(--s-1);
 }
