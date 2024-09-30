@@ -15,13 +15,18 @@ export const homemadeBadges: BadgeInfo[] = [
 	// 	authorDiscordId: "123456789012345678",
 	// },
 	{
-		displayName: "VERSUS THE WORLD",
-		fileName: "cookie",
+		displayName: "Break Zach's Bank",
+		fileName: "breakzachsbank",
 		authorDiscordId: "528851510222782474",
 	},
 	{
 		displayName: "Tristrike Tuesday",
 		fileName: "tristriketuesday",
 		authorDiscordId: "789943264370884708",
+	},
+	{
+		displayName: "VERSUS THE WORLD",
+		fileName: "cookie",
+		authorDiscordId: "528851510222782474",
 	},
 ];
