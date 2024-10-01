@@ -303,6 +303,7 @@ export async function findPreparedMapsById(tournamentId: number) {
 	);
 }
 
+// xxx: delete
 const NEXT_TOURNAMENTS_TO_SHOW_WITH_UPCOMING = 2;
 export async function forShowcase() {
 	const rows = await db

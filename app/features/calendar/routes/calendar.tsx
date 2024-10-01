@@ -24,6 +24,7 @@ import { getUserId } from "~/features/auth/core/user.server";
 import { currentSeason } from "~/features/mmr/season";
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
@@ -50,7 +51,6 @@ import { actualNumber } from "~/utils/zod";
 import * as CalendarRepository from "../CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
-import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 import "~/styles/calendar.css";
 

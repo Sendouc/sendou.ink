@@ -5,6 +5,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import invariant from "~/utils/invariant";
 import { tournamentLogoUrl } from "~/utils/urls";
 import { MapPool } from "../map-list-generator/core/map-pool";
+import { currentSeason } from "../mmr/season";
 import { BANNED_MAPS } from "../sendouq-settings/banned-maps";
 import type { TournamentData } from "../tournament-bracket/core/Tournament.server";
 import type { PlayedSet } from "./core/sets.server";
@@ -378,4 +379,18 @@ export function validateCounterPickMapPool(
 	}
 
 	return "VALID";
+}
+
+export function tournamentIsRanked({
+	isSetAsRanked,
+	startTime,
+	minMembersPerTeam,
+}: { isSetAsRanked?: boolean; startTime: Date; minMembersPerTeam: number }) {
+	const seasonIsActive = Boolean(currentSeason(startTime));
+	if (!seasonIsActive) return false;
+
+	// 1v1, 2v2 and 3v3 are always considered "gimmicky"
+	if (minMembersPerTeam !== 4) return false;
+
+	return isSetAsRanked ?? true;
 }

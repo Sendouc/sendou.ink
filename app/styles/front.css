@@ -336,6 +336,10 @@
 	text-align: center;
 	font-weight: var(--semi-bold);
 	font-size: var(--fonts-sm);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: 225px;
+	overflow: hidden;
 }
 
 .front__tournament-card__team-count {
@@ -353,13 +357,21 @@
 	width: 12px;
 }
 
-.front__tournament-card__ranked {
+.front__tournament-card__tag {
 	font-size: var(--fonts-xxs);
 	font-weight: var(--bold);
-	background-color: var(--theme-info-transparent);
-	color: var(--theme-info);
 	border-radius: var(--rounded-sm);
 	padding: var(--s-0-5) var(--s-1-5);
+}
+
+.front__tournament-card__ranked {
+	background-color: var(--theme-info-transparent);
+	color: var(--theme-info);
+}
+
+.front__tournament-card__unranked {
+	background-color: var(--theme-success-transparent);
+	color: var(--theme-success);
 }
 
 .front__result-highlights {

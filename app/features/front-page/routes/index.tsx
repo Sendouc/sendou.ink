@@ -1,45 +1,22 @@
-import type { SerializeFrom } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { Placement } from "~/components/Placement";
 import { BSKYLikeIcon } from "~/components/icons/BSKYLike";
 import { BSKYReplyIcon } from "~/components/icons/BSKYReply";
 import { BSKYRepostIcon } from "~/components/icons/BSKYRepost";
 import { ExternalIcon } from "~/components/icons/External";
-import { GlobeIcon } from "~/components/icons/Globe";
-import { LogInIcon } from "~/components/icons/LogIn";
-import { LogOutIcon } from "~/components/icons/LogOut";
-import { LanguageChanger } from "~/components/layout/LanguageChanger";
-import { LogInButtonContainer } from "~/components/layout/LogInButtonContainer";
-import { SelectedThemeIcon } from "~/components/layout/SelectedThemeIcon";
-import { ThemeChanger } from "~/components/layout/ThemeChanger";
-import navItems from "~/components/layout/nav-items.json";
-import { useUser } from "~/features/auth/core/user";
 import type * as Changelog from "~/features/front-page/core/Changelog.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
-import { useTheme } from "~/features/theme/core/provider";
-import {
-	HACKY_resolvePicture,
-	HACKY_resolveThemeColors,
-} from "~/features/tournament/tournament-utils";
+import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { languages } from "~/modules/i18n/config";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
-	CALENDAR_PAGE,
 	CALENDAR_TOURNAMENTS_PAGE,
-	FRONT_BOY_BG_PATH,
-	FRONT_BOY_PATH,
-	FRONT_GIRL_BG_PATH,
-	FRONT_GIRL_PATH,
-	LOG_OUT_URL,
 	SENDOUQ_PAGE,
 	leaderboardsPage,
 	navIconUrl,
@@ -48,16 +25,19 @@ import {
 	userPage,
 	userSubmittedImage,
 } from "~/utils/urls";
+import type * as ShowcaseTournaments from "../core/ShowcaseTournaments.server";
 
 import { loader } from "../loaders/index.server";
 export { loader };
 
-import "~/styles/front.css";
 import { NewTabs } from "~/components/NewTabs";
 import { ArrowRightIcon } from "~/components/icons/ArrowRight";
 import { UsersIcon } from "~/components/icons/Users";
+import "~/styles/front.css";
 
 // xxx: nav items to left on desktop
+
+// xxx: add mobile only stuff somewhere (log out, theme switch etc.)
 
 export default function FrontPage() {
 	return (
@@ -109,39 +89,77 @@ function SeasonBanner() {
 function TournamentCards() {
 	const data = useLoaderData<typeof loader>();
 
+	if (
+		data.tournaments.participatingFor.length === 0 &&
+		data.tournaments.organizingFor.length === 0 &&
+		data.tournaments.showcase.length === 0
+	) {
+		return null;
+	}
+
 	return (
 		<div>
 			<NewTabs
+				disappearing
 				tabs={[
 					{
 						label: "Signed up for",
+						hidden: data.tournaments.participatingFor.length === 0,
 					},
 					{
 						label: "Organizer for",
+						hidden: data.tournaments.organizingFor.length === 0,
 					},
 					{
 						label: "Discover",
+						hidden: data.tournaments.showcase.length === 0,
 					},
 				]}
 				content={[
 					{
 						key: "your",
+						hidden: data.tournaments.participatingFor.length === 0,
 						element: (
-							<div className="front__tournament-cards">
-								<div className="front__tournament-cards__scroller">
-									{data.tournaments.map((tournament) => (
-										<TournamentCard
-											key={tournament.id}
-											tournament={tournament}
-										/>
-									))}
-								</div>
-								<AllTournamentsLinkCard />
-							</div>
+							<ShowcaseTournamentScroller
+								tournaments={data.tournaments.participatingFor}
+							/>
+						),
+					},
+					{
+						key: "organizer",
+						hidden: data.tournaments.organizingFor.length === 0,
+						element: (
+							<ShowcaseTournamentScroller
+								tournaments={data.tournaments.organizingFor}
+							/>
+						),
+					},
+					{
+						key: "discover",
+						hidden: data.tournaments.showcase.length === 0,
+						element: (
+							<ShowcaseTournamentScroller
+								tournaments={data.tournaments.showcase}
+							/>
 						),
 					},
 				]}
 			/>
+		</div>
+	);
+}
+
+function ShowcaseTournamentScroller({
+	tournaments,
+}: { tournaments: ShowcaseTournaments.ShowcaseTournament[] }) {
+	return (
+		<div className="front__tournament-cards">
+			<div className="front__tournament-cards__scroller">
+				{tournaments.map((tournament) => (
+					<TournamentCard key={tournament.id} tournament={tournament} />
+				))}
+			</div>
+			<AllTournamentsLinkCard />
 		</div>
 	);
 }
@@ -161,7 +179,7 @@ function AllTournamentsLinkCard() {
 
 function TournamentCard({
 	tournament,
-}: { tournament: SerializeFrom<typeof loader>["tournaments"][number] }) {
+}: { tournament: ShowcaseTournaments.ShowcaseTournament }) {
 	const isMounted = useIsMounted();
 	const { i18n } = useTranslation(["common"]);
 
@@ -198,9 +216,11 @@ function TournamentCard({
 							alt=""
 						/>
 					</div>
-					<div className="front__tournament-card__org">
-						<Avatar size="xxxs" /> Dapple Productions
-					</div>
+					{tournament.organization ? (
+						<div className="front__tournament-card__org">
+							{tournament.organization.name}
+						</div>
+					) : null}
 				</div>
 				<div className="front__tournament-card__name">
 					{tournament.name}{" "}
@@ -218,9 +238,17 @@ function TournamentCard({
 			</Link>
 			<div className="stack horizontal xxs justify-end">
 				<div className="front__tournament-card__team-count">
-					<UsersIcon /> 48
+					<UsersIcon /> {tournament.teamsCount}
 				</div>
-				<div className="front__tournament-card__ranked">Ranked</div>
+				{tournament.isRanked ? (
+					<div className="front__tournament-card__tag front__tournament-card__ranked">
+						Ranked
+					</div>
+				) : (
+					<div className="front__tournament-card__tag front__tournament-card__unranked">
+						Unranked
+					</div>
+				)}
 			</div>
 		</div>
 	);
@@ -231,8 +259,6 @@ function ResultHighlights() {
 	const data = useLoaderData<typeof loader>();
 
 	const season = currentOrPreviousSeason(new Date())!;
-
-	console.log({ data });
 
 	return (
 		<div className="front__result-highlights">
@@ -258,7 +284,7 @@ function ResultHighlights() {
 				<Leaderboard
 					entries={data.leaderboards.team.map((entry) => ({
 						avatarUrl: userSubmittedImage(entry.team!.avatarUrl!),
-						name: entry.team?.name,
+						name: entry.team?.name!,
 						power: entry.power,
 						url: teamPage(entry.team!.customUrl!),
 					}))}
