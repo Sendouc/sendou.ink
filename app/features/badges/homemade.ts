@@ -34,4 +34,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "custom_e-liter",
 		authorDiscordId: "352207524390240257",
 	},
+	{
+		displayName: "Blast Away!",
+		fileName: "lunablaster",
+		authorDiscordId: "342369454719631361",
+	},
 ];
