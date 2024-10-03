@@ -39,4 +39,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "lunablaster",
 		authorDiscordId: "342369454719631361",
 	},
+	{
+		displayName: "Original Message Deleted",
+		fileName: "OriginalMessageDeleted",
+		authorDiscordId: "751912670403362836",
+	},
 ];
