@@ -28,6 +28,7 @@ export const homemadeBadges: BadgeInfo[] = [
 		displayName: "VERSUS THE WORLD",
 		fileName: "cookie",
 		authorDiscordId: "528851510222782474",
+
 	},
 	{
 		displayName: "Not Enough Liter",
@@ -44,4 +45,14 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "OriginalMessageDeleted",
 		authorDiscordId: "751912670403362836",
 	},
-];
+	{
+		displayName: "OCE Open",
+		fileName: "ausflag",
+		authorDiscordId: "1170249805373657093",
+	},
+	{
+		displayName: "TableTurf: RISE",
+		fileName: "Tableturf RISE",
+		authorDiscordId: "528851510222782474",
+	},
+]:
