@@ -44,4 +44,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "OriginalMessageDeleted",
 		authorDiscordId: "751912670403362836",
 	},
+	{
+		displayName: "Shiny Wooper Achievement",
+		fileName: "shinywooper",
+		authorDiscordId: "528851510222782474",
+	},
 ];
