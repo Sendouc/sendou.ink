@@ -255,76 +255,6 @@
 	text-align: center;
 }
 
-.layout__side-nav {
-	background: black;
-	display: flex;
-	flex-direction: column;
-	gap: var(--s-6);
-	padding-block: var(--s-3);
-	padding-inline: var(--s-4);
-	min-width: fit-content;
-	-webkit-backdrop-filter: var(--backdrop-filter);
-	backdrop-filter: var(--backdrop-filter);
-	background-color: transparent;
-	overflow: hidden auto;
-	direction: rtl;
-	position: sticky;
-
-	/*
-  Top pixel count needs to be the same as nav height
-  Max height is calculated using the viewport height minus the nav height
-  This is unfortunately needed to avoid the sidebar from overflowing the viewport or navbar
-  Without this, the sidebar would be cut off at the bottom or top or clip into it
-  Will return if a better solution is found that doesnt require a hard coded value
-  */
-	top: 47px;
-	max-height: calc(100vh - 47px);
-	scrollbar-color: rgb(83 65 91) transparent;
-	scrollbar-width: thin;
-	scrollbar-gutter: stable;
-}
-
-/*
-Works on literally every browser except Firefox 
-Firefox scrollbar styling is above in .layout__side-nav
-*/
-.layout__side-nav::-webkit-scrollbar {
-	width: 4px;
-}
-
-.layout__side-nav::-webkit-scrollbar-track {
-	background: black;
-	background-color: transparent;
-}
-
-.layout__side-nav::-webkit-scrollbar-corner {
-	background: black;
-	background-color: transparent;
-}
-
-.layout__side-nav::-webkit-scrollbar-thumb {
-	background-color: rgb(83 65 91);
-	border-radius: 4px;
-}
-
-.layout__side-nav::-webkit-scrollbar-thumb:hover {
-	background-color: rgb(62 49 68);
-}
-
-.layout__side-nav-image-container {
-	display: grid;
-	width: 40px;
-	height: 40px;
-	border-radius: var(--rounded);
-	background-color: var(--bg-lighter);
-	place-items: center;
-	transition: all 0.2s ease-out;
-}
-
-.layout__side-nav-image-container:hover {
-	background-color: var(--theme-transparent);
-}
-
 @media screen and (display-mode: standalone) {
 	.layout__header {
 		align-items: flex-end;
@@ -336,12 +266,6 @@ Firefox scrollbar styling is above in .layout__side-nav
 			env(safe-area-inset-top) +
 			var(--leaderboard-top-spacing)
 		);
-	}
-}
-
-@media screen and (max-width: 950px) {
-	.layout__side-nav {
-		display: none;
 	}
 }
 

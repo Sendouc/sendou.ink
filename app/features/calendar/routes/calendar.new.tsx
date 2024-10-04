@@ -82,6 +82,8 @@ const useBaseEvent = () => {
 	return eventToCopy ?? eventToEdit;
 };
 
+// xxx: remove customize colors
+
 export default function CalendarNewEventPage() {
 	const baseEvent = useBaseEvent();
 

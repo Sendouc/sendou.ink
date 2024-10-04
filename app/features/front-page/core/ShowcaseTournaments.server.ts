@@ -1,12 +1,11 @@
-import type { NotNull } from "kysely";
-import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
-import { db } from "~/db/sql";
+import type { Tables } from "~/db/tables";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { tournamentIsRanked } from "~/features/tournament/tournament-utils";
 import {
 	databaseTimestampToDate,
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import { COMMON_USER_FIELDS, type CommonUser } from "~/utils/kysely.server";
+import type { CommonUser } from "~/utils/kysely.server";
 
 interface ShowcaseTournamentCollection {
 	participatingFor: ShowcaseTournament[];
@@ -29,7 +28,8 @@ export interface ShowcaseTournament {
 	firstPlacer: {
 		teamName: string;
 		logoUrl: string | null;
-		members: CommonUser[];
+		members: (CommonUser & { country: Tables["User"]["country"] })[];
+		notShownMembersCount: number;
 	} | null;
 }
 
@@ -139,7 +139,7 @@ async function cachedParticipationInfo(
 
 // xxx: cache
 async function cachedTournaments() {
-	const tournaments = await tournamentsFromDB();
+	const tournaments = await TournamentRepository.forShowcase();
 
 	const mapped = tournaments.map(mapTournamentFromDB);
 
@@ -160,30 +160,36 @@ function deleteExtraResults(tournaments: ShowcaseTournament[]) {
 
 	const rankedResultsToKeep = rankedResults.slice(0, 4);
 	// min 2, max 6 non ranked results
-	// xxx: validate
 	const nonRankedResultsToKeep = nonRankedResults.slice(
 		0,
-		Math.min(6, Math.max(2, nonRankedResults.length)),
+		6 - rankedResultsToKeep.length,
 	);
 
 	return {
-		results: [...rankedResultsToKeep, ...nonRankedResultsToKeep],
+		results: [...rankedResultsToKeep, ...nonRankedResultsToKeep].sort(
+			(a, b) => b.startTime - a.startTime,
+		),
 		upcoming: nonResults,
 	};
 }
 
-// xxx: don't showcase tournaments without results that started more than 6 hours ago
 function resolveShowcaseTournaments(
 	tournaments: ShowcaseTournament[],
 ): ShowcaseTournament[] {
-	const sorted = tournaments.sort((a, b) => b.teamsCount - a.teamsCount);
+	const happeningDuringNextWeek = tournaments.filter(
+		(tournament) =>
+			tournament.startTime > databaseTimestampSixHoursAgo() &&
+			tournament.startTime < databaseTimestampWeekFromNow(),
+	);
+	const sorted = happeningDuringNextWeek.sort(
+		(a, b) => b.teamsCount - a.teamsCount,
+	);
 
 	const ranked = sorted.filter((tournament) => tournament.isRanked).slice(0, 3);
 	// min 3, max 6 non ranked
-	// xxx: validate
 	const nonRanked = sorted
 		.filter((tournament) => !tournament.isRanked)
-		.slice(0, Math.min(6, Math.max(3, sorted.length)));
+		.slice(0, 6 - ranked.length);
 
 	return [...ranked, ...nonRanked].sort((a, b) => a.startTime - b.startTime);
 }
@@ -193,7 +199,7 @@ async function tournamentsToParticipationInfoMap(
 ): Promise<Map<CommonUser["id"], ParticipationInfo>> {
 	const tournamentIds = tournaments.map((tournament) => tournament.id);
 	const tournamentsWithUsers =
-		await tournamentRelatedUsersFromDB(tournamentIds);
+		await TournamentRepository.relatedUsersByTournamentIds(tournamentIds);
 
 	const result: Map<CommonUser["id"], ParticipationInfo> = new Map();
 
@@ -232,8 +238,10 @@ async function tournamentsToParticipationInfoMap(
 	return result;
 }
 
+const MEMBERS_TO_SHOW = 5;
+
 function mapTournamentFromDB(
-	tournament: Awaited<ReturnType<typeof tournamentsFromDB>>[number],
+	tournament: TournamentRepository.ForShowcase,
 ): ShowcaseTournament {
 	return {
 		id: tournament.id,
@@ -256,146 +264,40 @@ function mapTournamentFromDB(
 			tournament.firstPlacers.length > 0
 				? {
 						teamName: tournament.firstPlacers[0].teamName,
-						logoUrl: null,
-						members: tournament.firstPlacers.map((firstPlacer) => ({
-							customUrl: firstPlacer.customUrl,
-							discordAvatar: firstPlacer.discordAvatar,
-							discordId: firstPlacer.discordId,
-							id: firstPlacer.id,
-							username: firstPlacer.username,
-						})),
+						logoUrl:
+							tournament.firstPlacers[0].teamLogoUrl ??
+							tournament.firstPlacers[0].pickupAvatarUrl,
+						members: tournament.firstPlacers
+							.slice(0, MEMBERS_TO_SHOW)
+							.map((firstPlacer) => ({
+								customUrl: firstPlacer.customUrl,
+								discordAvatar: firstPlacer.discordAvatar,
+								discordId: firstPlacer.discordId,
+								id: firstPlacer.id,
+								username: firstPlacer.username,
+								country: firstPlacer.country,
+							})),
+						notShownMembersCount:
+							tournament.firstPlacers.length > MEMBERS_TO_SHOW
+								? tournament.firstPlacers.length - MEMBERS_TO_SHOW
+								: 0,
 					}
 				: null,
 	};
 }
 
-// xxx: to repo?
-function tournamentsFromDB() {
-	return db
-		.selectFrom("Tournament")
-		.innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
-		.innerJoin(
-			"CalendarEventDate",
-			"CalendarEvent.id",
-			"CalendarEventDate.eventId",
-		)
-		.select((eb) => [
-			"Tournament.id",
-			"Tournament.settings",
-			"CalendarEvent.name",
-			"CalendarEventDate.startTime",
-			eb
-				.selectFrom("TournamentTeam")
-				// xxx: what if tournament is happening? then count is wrong
-				// .innerJoin(
-				// 	"TournamentTeamCheckIn",
-				// 	"TournamentTeam.id",
-				// 	"TournamentTeamCheckIn.tournamentTeamId",
-				// )
-				.whereRef("TournamentTeam.tournamentId", "=", "Tournament.id")
-				.select(({ fn }) => [fn.countAll<number>().as("teamsCount")])
-				.as("teamsCount"),
-			eb
-				.selectFrom("UserSubmittedImage")
-				.select(["UserSubmittedImage.url"])
-				.whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
-				.as("logoUrl"),
-			jsonObjectFrom(
-				eb
-					.selectFrom("TournamentOrganization")
-					.select([
-						"TournamentOrganization.name",
-						"TournamentOrganization.slug",
-					])
-					.whereRef(
-						"TournamentOrganization.id",
-						"=",
-						"CalendarEvent.organizationId",
-					),
-			).as("organization"),
-			jsonArrayFrom(
-				eb
-					.selectFrom("TournamentResult")
-					.innerJoin("User", "TournamentResult.userId", "User.id")
-					.innerJoin(
-						"TournamentTeam",
-						"TournamentResult.tournamentTeamId",
-						"TournamentTeam.id",
-					)
-					.whereRef("TournamentResult.tournamentId", "=", "Tournament.id")
-					.where("TournamentResult.placement", "=", 1)
-					.select([
-						...COMMON_USER_FIELDS,
-						"TournamentTeam.name as teamName",
-						// xxx: logoUrl
-					]),
-			).as("firstPlacers"),
-		])
-		.where("CalendarEventDate.startTime", ">", databaseTimestampWeekAgo())
-		.orderBy("CalendarEventDate.startTime asc")
-		.$narrowType<{ teamsCount: NotNull }>()
-		.execute();
-}
-
-// xxx: to repo?
-function tournamentRelatedUsersFromDB(tournamentIds: number[]) {
-	return db
-		.selectFrom("Tournament")
-		.innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
-		.select((eb) => [
-			"Tournament.id",
-			"CalendarEvent.authorId",
-			jsonArrayFrom(
-				eb
-					.selectFrom("TournamentStaff")
-					.select(["TournamentStaff.userId"])
-					.whereRef("TournamentStaff.tournamentId", "=", "Tournament.id")
-					.where("TournamentStaff.role", "=", "ORGANIZER"),
-			).as("staff"),
-			jsonArrayFrom(
-				eb
-					.selectFrom("TournamentOrganization")
-					.innerJoin(
-						"TournamentOrganizationMember",
-						"TournamentOrganization.id",
-						"TournamentOrganizationMember.organizationId",
-					)
-					.select(["TournamentOrganizationMember.userId"])
-					.whereRef(
-						"TournamentOrganization.id",
-						"=",
-						"CalendarEvent.organizationId",
-					)
-					.where("TournamentOrganizationMember.role", "in", [
-						"ADMIN",
-						"ORGANIZER",
-					]),
-			).as("organizationMembers"),
-			jsonArrayFrom(
-				eb
-					.selectFrom("TournamentTeam")
-					.innerJoin(
-						"TournamentTeamMember",
-						"TournamentTeamMember.tournamentTeamId",
-						"TournamentTeam.id",
-					)
-					.select(["TournamentTeamMember.userId"])
-					.whereRef("TournamentTeam.tournamentId", "=", "Tournament.id"),
-			).as("teamMembers"),
-		])
-		.where("Tournament.id", "in", tournamentIds)
-		.$narrowType<{
-			staff: NotNull;
-			organizationMembers: NotNull;
-			teamMembers: NotNull;
-		}>()
-		.execute();
-}
-
-function databaseTimestampWeekAgo() {
+function databaseTimestampWeekFromNow() {
 	const now = new Date();
 
-	now.setDate(now.getDate() - 7);
+	now.setDate(now.getDate() + 7);
+
+	return dateToDatabaseTimestamp(now);
+}
+
+function databaseTimestampSixHoursAgo() {
+	const now = new Date();
+
+	now.setHours(now.getHours() - 6);
 
 	return dateToDatabaseTimestamp(now);
 }

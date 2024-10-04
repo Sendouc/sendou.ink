@@ -4,12 +4,17 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Divider } from "~/components/Divider";
+import { Flag } from "~/components/Flag";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { NewTabs } from "~/components/NewTabs";
+import { ArrowRightIcon } from "~/components/icons/ArrowRight";
 import { BSKYLikeIcon } from "~/components/icons/BSKYLike";
 import { BSKYReplyIcon } from "~/components/icons/BSKYReply";
 import { BSKYRepostIcon } from "~/components/icons/BSKYRepost";
 import { ExternalIcon } from "~/components/icons/External";
+import { UsersIcon } from "~/components/icons/Users";
+import navItems from "~/components/layout/nav-items.json";
 import type * as Changelog from "~/features/front-page/core/Changelog.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
@@ -30,9 +35,6 @@ import type * as ShowcaseTournaments from "../core/ShowcaseTournaments.server";
 import { loader } from "../loaders/index.server";
 export { loader };
 
-import { NewTabs } from "~/components/NewTabs";
-import { ArrowRightIcon } from "~/components/icons/ArrowRight";
-import { UsersIcon } from "~/components/icons/Users";
 import "~/styles/front.css";
 
 // xxx: nav items to left on desktop
@@ -42,11 +44,39 @@ import "~/styles/front.css";
 export default function FrontPage() {
 	return (
 		<Main className="front-page__container">
+			<DesktopSideNav />
 			<SeasonBanner />
 			<TournamentCards />
 			<ResultHighlights />
 			<ChangelogList />
 		</Main>
+	);
+}
+
+function DesktopSideNav() {
+	const { t } = useTranslation(["common"]);
+
+	return (
+		<nav className="front-page__side-nav">
+			{navItems.map((item) => {
+				return (
+					<Link
+						to={`/${item.url}`}
+						key={item.name}
+						prefetch={item.prefetch ? "render" : undefined}
+						className="front-page__side-nav-item"
+					>
+						<Image
+							path={navIconUrl(item.name)}
+							height={20}
+							width={20}
+							alt={item.name}
+						/>
+						{<div>{t(`common:pages.${item.name}` as any)}</div>}
+					</Link>
+				);
+			})}
+		</nav>
 	);
 }
 
@@ -86,6 +116,7 @@ function SeasonBanner() {
 	);
 }
 
+// xxx: outline cut off
 function TournamentCards() {
 	const data = useLoaderData<typeof loader>();
 
@@ -154,7 +185,7 @@ function ShowcaseTournamentScroller({
 }: { tournaments: ShowcaseTournaments.ShowcaseTournament[] }) {
 	return (
 		<div className="front__tournament-cards">
-			<div className="front__tournament-cards__scroller">
+			<div className="front__tournament-cards__spacer overflow-x-auto">
 				{tournaments.map((tournament) => (
 					<TournamentCard key={tournament.id} tournament={tournament} />
 				))}
@@ -164,7 +195,7 @@ function ShowcaseTournamentScroller({
 	);
 }
 
-// xxx: only first tab..?
+// xxx: drag to scroll? (example from bracket)
 function AllTournamentsLinkCard() {
 	return (
 		<Link
@@ -189,15 +220,20 @@ function TournamentCard({
 		return databaseTimestampToDate(tournament.startTime).toLocaleString(
 			i18n.language,
 			{
-				month: "numeric",
+				month: "short",
 				day: "numeric",
 				hour: "numeric",
+				weekday: "short",
 			},
 		);
 	};
 
 	return (
-		<div className="front__tournament-card__container">
+		<div
+			className={clsx("front__tournament-card__container", {
+				"front__tournament-card__container__tall": tournament.firstPlacer,
+			})}
+		>
 			<Link
 				to={tournamentPage(tournament.id)}
 				className="front__tournament-card"
@@ -235,6 +271,9 @@ function TournamentCard({
 						{time()}
 					</time>
 				</div>
+				{tournament.firstPlacer ? (
+					<TournamentFirstPlacers firstPlacer={tournament.firstPlacer} />
+				) : null}
 			</Link>
 			<div className="stack horizontal xxs justify-end">
 				<div className="front__tournament-card__team-count">
@@ -254,48 +293,109 @@ function TournamentCard({
 	);
 }
 
-// xxx: on mobile tournament results on a different line?
+function TournamentFirstPlacers({
+	firstPlacer,
+}: {
+	firstPlacer: NonNullable<
+		ShowcaseTournaments.ShowcaseTournament["firstPlacer"]
+	>;
+}) {
+	return (
+		<div className="front__tournament-card__first-placers">
+			<div className="stack xs horizontal items-center text-xs">
+				{firstPlacer.logoUrl ? (
+					<img
+						src={userSubmittedImage(firstPlacer.logoUrl)}
+						alt=""
+						width={24}
+						className="rounded-full"
+					/>
+				) : null}{" "}
+				<div className="stack items-start">
+					{firstPlacer.teamName}
+					<div className="text-xxxs text-lighter font-bold">WINNER</div>
+				</div>
+			</div>
+			<div className="text-xxs stack items-start mt-1">
+				{firstPlacer.members.map((member) => (
+					<div key={member.id} className="stack horizontal xs items-center">
+						{member.country ? <Flag tiny countryCode={member.country} /> : null}
+						{member.username}{" "}
+					</div>
+				))}
+				{firstPlacer.notShownMembersCount > 0 ? (
+					<div className="font-bold text-lighter">
+						+{firstPlacer.notShownMembersCount}
+					</div>
+				) : null}
+			</div>
+		</div>
+	);
+}
+
 function ResultHighlights() {
 	const data = useLoaderData<typeof loader>();
 
 	const season = currentOrPreviousSeason(new Date())!;
 
+	const recentResults = (
+		<>
+			<h2 className="front__result-highlights__title front__result-highlights__title__tournaments">
+				Recent results
+			</h2>
+			<div className="front__tournament-cards__spacer">
+				{data.tournaments.results.map((tournament) => (
+					<TournamentCard key={tournament.id} tournament={tournament} />
+				))}
+			</div>
+		</>
+	);
+
 	return (
-		<div className="front__result-highlights">
-			<div className="stack sm text-center">
-				<h2 className="front__result-highlights__title">Top players</h2>
-				<Leaderboard
-					entries={data.leaderboards.user.map((entry) => ({
-						avatarUrl: `https://cdn.discordapp.com/avatars/${entry.discordId}/${
-							entry.discordAvatar
-						}.webp?size=80`,
-						name: entry.username,
-						power: entry.power,
-						url: userPage(entry),
-					}))}
-					fullLeaderboardUrl={leaderboardsPage({
-						season: season.nth,
-						type: "USER",
-					})}
-				/>
+		<>
+			<div className="front__result-highlights">
+				<div className="stack sm text-center">
+					<h2 className="front__result-highlights__title">Top players</h2>
+					<Leaderboard
+						entries={data.leaderboards.user.map((entry) => ({
+							avatarUrl: `https://cdn.discordapp.com/avatars/${entry.discordId}/${
+								entry.discordAvatar
+							}.webp?size=80`,
+							name: entry.username,
+							power: entry.power,
+							url: userPage(entry),
+						}))}
+						fullLeaderboardUrl={leaderboardsPage({
+							season: season.nth,
+							type: "USER",
+						})}
+					/>
+				</div>
+				<div className="stack sm text-center">
+					<h2 className="front__result-highlights__title">Top teams</h2>
+					<Leaderboard
+						entries={data.leaderboards.team.map((entry) => ({
+							avatarUrl: userSubmittedImage(entry.team!.avatarUrl!),
+							name: entry.team?.name!,
+							power: entry.power,
+							url: teamPage(entry.team!.customUrl!),
+						}))}
+						fullLeaderboardUrl={leaderboardsPage({
+							season: season.nth,
+							type: "TEAM",
+						})}
+					/>
+				</div>
+				<div className="stack sm text-center mobile-hidden">
+					{recentResults}
+				</div>
 			</div>
-			<div className="stack sm text-center">
-				<h2 className="front__result-highlights__title">Top teams</h2>
-				<Leaderboard
-					entries={data.leaderboards.team.map((entry) => ({
-						avatarUrl: userSubmittedImage(entry.team!.avatarUrl!),
-						name: entry.team?.name!,
-						power: entry.power,
-						url: teamPage(entry.team!.customUrl!),
-					}))}
-					fullLeaderboardUrl={leaderboardsPage({
-						season: season.nth,
-						type: "TEAM",
-					})}
-				/>
+			<div className="front__result-highlights">
+				<div className="stack sm text-center desktop-hidden">
+					{recentResults}
+				</div>
 			</div>
-			<h2 className="front__result-highlights__title">Recent results</h2>
-		</div>
+		</>
 	);
 }
 
@@ -321,12 +421,12 @@ function Leaderboard({
 						key={entry.url}
 						className="stack sm horizontal items-center text-main-forced"
 					>
-						<div>{index + 1}</div>
+						<div className="mx-1">{index + 1}</div>
 						<Avatar url={entry.avatarUrl} size="xs" />
 						<div className="stack items-start">
 							<div className="font-bold text-sm">{entry.name}</div>
 							<div className="text-xs font-semi-bold text-lighter">
-								{entry.power}
+								{entry.power.toFixed(2)}
 							</div>
 						</div>
 					</Link>

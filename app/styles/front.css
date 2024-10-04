@@ -173,6 +173,40 @@
 	color: var(--card-bg);
 }*/
 
+.front-page__side-nav {
+	display: none;
+	position: fixed;
+	left: 15px;
+	top: 66px;
+	flex-direction: column;
+	gap: var(--s-3);
+}
+
+.front-page__side-nav picture {
+	background-color: var(--bg-lightest);
+	border-radius: var(--rounded);
+	padding: var(--s-1);
+}
+
+.front-page__side-nav-item {
+	display: flex;
+	color: var(--text);
+	font-size: var(--fonts-xs);
+	font-weight: var(--bold);
+	gap: var(--s-1-5);
+	align-items: center;
+}
+
+.front-page__side-nav-item:hover picture {
+	background-color: var(--theme-transparent);
+}
+
+@media screen and (min-width: 1130px) and (min-height: 900px) {
+	.front-page__side-nav {
+		display: flex;
+	}
+}
+
 .front-page__container {
 	--card-width: 225px;
 	--card-height: 90px;
@@ -260,11 +294,10 @@
 	gap: var(--s-2);
 }
 
-.front__tournament-cards__scroller {
+.front__tournament-cards__spacer {
 	display: flex;
 	gap: var(--s-2);
-	overflow-x: auto;
-	padding: var(--s-1-5);
+	height: 100%;
 }
 
 .front__tournament-cards__view-all-card {
@@ -279,7 +312,8 @@
 	text-align: center;
 	color: var(--text);
 	transition: 0.2s ease-out;
-	margin-top: var(--s-1-5);
+	min-width: 90px;
+	max-width: 90px;
 }
 
 .front__tournament-cards__view-all-card:hover {
@@ -295,11 +329,18 @@
 	gap: var(--s-1);
 }
 
+.front__tournament-card__container__tall {
+	height: 100%;
+}
+
 .front__tournament-card {
 	background-color: var(--bg-lightest);
 	border-radius: var(--rounded);
 	color: var(--text);
 	padding: var(--s-1) var(--s-2) var(--s-2) var(--s-2);
+	height: 100%;
+	min-width: var(--card-width);
+	max-width: var(--card-width);
 }
 
 .front__tournament-card:hover .front__tournament-card__tournament-avatar-img {
@@ -374,6 +415,12 @@
 	color: var(--theme-success);
 }
 
+.front__tournament-card__first-placers {
+	margin-inline: auto;
+	margin-top: var(--s-5);
+	width: max-content;
+}
+
 .front__result-highlights {
 	display: flex;
 	gap: var(--s-2);
@@ -382,6 +429,11 @@
 
 .front__result-highlights__title {
 	font-size: var(--fonts-xs);
+}
+
+.front__result-highlights__title__tournaments {
+	align-self: flex-start;
+	margin-inline-start: 65px;
 }
 
 .front__leaderboard {
@@ -404,4 +456,5 @@
 	padding-inline: var(--s-2);
 	display: flex;
 	gap: var(--s-1);
+	padding: var(--s-0-5) var(--s-1-5);
 }
