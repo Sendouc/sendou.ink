@@ -49,4 +49,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "shinywooper",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "A Special Tournament",
+		fileName: "chara_special",
+		authorDiscordId: "1081428018666422313",
+	},
 ];
