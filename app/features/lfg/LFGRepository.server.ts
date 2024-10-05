@@ -54,8 +54,8 @@ export async function posts(user?: { id: number; plusTier: number | null }) {
 						"UserSubmittedImage.url as avatarUrl",
 						jsonArrayFrom(
 							innerEb
-								.selectFrom(["TeamMember"])
-								.innerJoin("User", "User.id", "TeamMember.userId")
+								.selectFrom("TeamMemberWithSecondary")
+								.innerJoin("User", "User.id", "TeamMemberWithSecondary.userId")
 								.leftJoin("PlusTier", "PlusTier.userId", "User.id")
 								.select(({ eb: innestEb }) => [
 									...COMMON_USER_FIELDS,
@@ -73,7 +73,7 @@ export async function posts(user?: { id: number; plusTier: number | null }) {
 											]),
 									).as("weaponPool"),
 								])
-								.whereRef("TeamMember.teamId", "=", "Team.id"),
+								.whereRef("TeamMemberWithSecondary.teamId", "=", "Team.id"),
 						).as("members"),
 					])
 					.whereRef("Team.id", "=", "LFGPost.teamId"),
