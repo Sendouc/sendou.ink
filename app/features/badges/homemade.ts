@@ -25,6 +25,11 @@ export const homemadeBadges: BadgeInfo[] = [
 		authorDiscordId: "789943264370884708",
 	},
 	{
+		displayName: "Prize Fight",
+		fileName: "prizefight",
+		authorDiscordId: "789943264370884708",
+	},
+	{
 		displayName: "Break Zach's Bank",
 		fileName: "breakzachsbank",
 		authorDiscordId: "528851510222782474",
