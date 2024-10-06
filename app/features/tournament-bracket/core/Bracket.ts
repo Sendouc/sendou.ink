@@ -543,6 +543,8 @@ class DoubleEliminationBracket extends Bracket {
 	}
 
 	get standings(): Standing[] {
+		if (!this.enoughTeams) return [];
+
 		const losersGroupId = this.data.group.find((g) => g.number === 2)?.id;
 
 		const teams: { id: number; lostAt: number }[] = [];
@@ -609,12 +611,18 @@ class DoubleEliminationBracket extends Bracket {
 			grandFinalMatches[0].opponent1 &&
 			(noLosersRounds || grandFinalMatches[0].opponent1.result === "win")
 		) {
+			const loser =
+				grandFinalMatches[0].opponent1.result === "win"
+					? "opponent2"
+					: "opponent1";
+			const winner = loser === "opponent1" ? "opponent2" : "opponent1";
+
 			const loserTeam = this.tournament.teamById(
-				grandFinalMatches[0].opponent2!.id!,
+				grandFinalMatches[0][loser]!.id!,
 			);
 			invariant(loserTeam, "Loser team not found");
 			const winnerTeam = this.tournament.teamById(
-				grandFinalMatches[0].opponent1.id!,
+				grandFinalMatches[0][winner]!.id!,
 			);
 			invariant(winnerTeam, "Winner team not found");
 
