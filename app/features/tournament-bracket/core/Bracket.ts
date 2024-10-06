@@ -123,7 +123,14 @@ export abstract class Bracket {
 						(match.opponent1 && !match.opponent1.id) ||
 						(match.opponent2 && !match.opponent2.id)
 					) {
-						matchesToResolve = true;
+						const isBracketReset =
+							this.type === "double_elimination" &&
+							match.id === this.data.match[this.data.match.length - 1].id;
+
+						if (!isBracketReset) {
+							matchesToResolve = true;
+						}
+
 						continue;
 					}
 					// BYE
