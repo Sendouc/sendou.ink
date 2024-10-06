@@ -378,6 +378,13 @@ class SingleEliminationBracket extends Bracket {
 			};
 
 			for (const round of roundsOfGroup) {
+				const atLeastOneNonByeMatch = data.match.some(
+					(match) =>
+						match.round_id === round.id && match.opponent1 && match.opponent2,
+				);
+
+				if (!atLeastOneNonByeMatch) continue;
+
 				if (!result.get(group.id)) {
 					result.set(group.id, new Map());
 				}
@@ -523,6 +530,13 @@ class DoubleEliminationBracket extends Bracket {
 			};
 
 			for (const round of roundsOfGroup) {
+				const atLeastOneNonByeMatch = data.match.some(
+					(match) =>
+						match.round_id === round.id && match.opponent1 && match.opponent2,
+				);
+
+				if (!atLeastOneNonByeMatch) continue;
+
 				if (!result.get(group.id)) {
 					result.set(group.id, new Map());
 				}
