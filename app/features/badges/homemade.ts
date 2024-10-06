@@ -89,4 +89,9 @@ export const homemadeBadges: BadgeInfo[] = [
     filename: "getcoupled",
     authorDiscordId: "418496741088690177",
   },
+  {
+    displayName: "Pinch Zach's Bank",
+    filename: "pinchzachsbank",
+    authorDiscordId: "528851510222782474",
+  },
 ];
