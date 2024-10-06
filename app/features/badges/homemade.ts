@@ -84,4 +84,14 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "lone_sailor",
 		authorDiscordId: "354880982890971136",
 	},
+  {
+    displayName: "Get Coupled",
+    filename: "getcoupled",
+    authorDiscordId: "418496741088690177",
+  },
+  {
+    displayName: "Pinch Zach's Bank",
+    filename: "pinchzachsbank",
+    authorDiscordId: "528851510222782474",
+  },
 ];
