@@ -1,5 +1,9 @@
 // @ts-nocheck
 
+// xxx: delete nav-items filters
+
+// xxx: delete
+
 import { logger } from "~/utils/logger";
 
 interface HSL {

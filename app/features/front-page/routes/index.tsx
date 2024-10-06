@@ -41,6 +41,10 @@ import "~/styles/front.css";
 
 // xxx: add mobile only stuff somewhere (log out, theme switch etc.)
 
+// xxx: custom style for search bars?
+
+// xxx: maybe some svg waves to the top banner?
+
 export default function FrontPage() {
 	return (
 		<Main className="front-page__container">
@@ -424,7 +428,7 @@ function Leaderboard({
 						<div className="mx-1">{index + 1}</div>
 						<Avatar url={entry.avatarUrl} size="xs" />
 						<div className="stack items-start">
-							<div className="font-bold text-sm">{entry.name}</div>
+							<div className="front__leaderboard__name">{entry.name}</div>
 							<div className="text-xs font-semi-bold text-lighter">
 								{entry.power.toFixed(2)}
 							</div>

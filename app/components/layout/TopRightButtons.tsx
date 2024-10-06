@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { LinkButton } from "../Button";
 import { HeartIcon } from "../icons/Heart";
+import { AnythingAdder } from "./AnythingAdder";
 import { LanguageChanger } from "./LanguageChanger";
 import { ThemeChanger } from "./ThemeChanger";
 import { UserItem } from "./UserItem";
@@ -30,6 +31,7 @@ export function _TopRightButtons({
 			) : null}
 			<LanguageChanger />
 			<ThemeChanger />
+			<AnythingAdder />
 			{!isErrored ? <UserItem /> : null}
 		</div>
 	);

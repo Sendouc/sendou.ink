@@ -447,6 +447,15 @@
 	padding: var(--s-2);
 }
 
+.front__leaderboard__name {
+	font-size: var(--fonts-sm);
+	font-weight: var(--bold);
+	white-space: nowrap;
+	max-width: 140px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
 .front__leaderboard__view-all {
 	font-size: var(--fonts-xxs);
 	color: var(--text);

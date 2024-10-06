@@ -1368,6 +1368,10 @@ dialog::backdrop {
 	align-items: flex-start;
 }
 
+.menu__items-container__opens-left {
+	right: 0;
+}
+
 .menu-container__scrolling {
 	max-height: 300px;
 	overflow-y: auto;
@@ -1414,6 +1418,11 @@ dialog::backdrop {
 
 .menu__item__icon {
 	width: 18px;
+}
+
+.menu__item__img {
+	min-width: 24px;
+	min-height: 24px;
 }
 
 .discord-icon {
