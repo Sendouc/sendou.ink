@@ -543,6 +543,8 @@ class DoubleEliminationBracket extends Bracket {
 	}
 
 	get standings(): Standing[] {
+		if (!this.enoughTeams) return [];
+
 		const losersGroupId = this.data.group.find((g) => g.number === 2)?.id;
 
 		const teams: { id: number; lostAt: number }[] = [];
