@@ -20,6 +20,11 @@ export const homemadeBadges: BadgeInfo[] = [
 		authorDiscordId: "789943264370884708",
 	},
 	{
+		displayName: "Treetop Tussle: Gold Edition",
+		fileName: "treegold",
+		authorDiscordId: "789943264370884708",
+	},
+	{
 		displayName: "Break Zach's Bank",
 		fileName: "breakzachsbank",
 		authorDiscordId: "528851510222782474",
