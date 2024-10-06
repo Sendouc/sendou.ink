@@ -41,8 +41,13 @@ export const homemadeBadges: BadgeInfo[] = [
 	},
 	{
 		displayName: "Original Message Deleted",
-		fileName: "OriginalMessageDeleted",
+		fileName: "original-message-deleted",
 		authorDiscordId: "751912670403362836",
+	},
+	{
+		displayName: "Shiny Wooper Achievement",
+		fileName: "shinywooper",
+		authorDiscordId: "528851510222782474",
 	},
 	{
 		displayName: "OCE Open",
