@@ -49,4 +49,14 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "shinywooper",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "OCE Open",
+		fileName: "ausflag",
+		authorDiscordId: "1170249805373657093",
+	},
+	{
+		displayName: "TableTurf: RISE",
+		fileName: "tableturf-rise",
+		authorDiscordId: "528851510222782474",
+	},
 ];
