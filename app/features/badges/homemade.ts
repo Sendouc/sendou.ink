@@ -64,4 +64,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "chara_special",
 		authorDiscordId: "1081428018666422313",
 	},
+	{
+		displayName: "Dolphin Showdown",
+		fileName: "dolphin",
+		authorDiscordId: "528851510222782474",
+	},
 ];
