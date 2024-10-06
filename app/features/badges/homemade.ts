@@ -28,7 +28,6 @@ export const homemadeBadges: BadgeInfo[] = [
 		displayName: "VERSUS THE WORLD",
 		fileName: "cookie",
 		authorDiscordId: "528851510222782474",
-
 	},
 	{
 		displayName: "Not Enough Liter",
@@ -52,7 +51,7 @@ export const homemadeBadges: BadgeInfo[] = [
 	},
 	{
 		displayName: "TableTurf: RISE",
-		fileName: "Tableturf RISE",
+		fileName: "tableturf-rise",
 		authorDiscordId: "528851510222782474",
 	},
-]:
+];
