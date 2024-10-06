@@ -136,6 +136,7 @@ export function MatchActions({
 					<input type="hidden" name="position" value={position} />
 					{!revising && (
 						<ReportScoreButtons
+							key={scores.join("-")}
 							winnerIdx={winnerId ? winningTeamIdx() : undefined}
 							points={showPoints ? points : undefined}
 							winnerOfSetName={winnerOfSetName()}
@@ -211,7 +212,9 @@ function ReportScoreButtons({
 	const user = useUser();
 	const tournament = useTournament();
 	const confirmCheckId = React.useId();
+	const pointConfirmCheckId = React.useId();
 	const [endConfirmation, setEndConfirmation] = React.useState(false);
+	const [pointConfirmation, setPointConfirmation] = React.useState(false);
 
 	if (matchLocked) {
 		return (
@@ -263,12 +266,21 @@ function ReportScoreButtons({
 		return "text-warning";
 	};
 
+	const lowPoints = points?.every((point) => point < 10);
+	const submitButtonDisabled = () => {
+		if (wouldEndSet && !endConfirmation) return true;
+		if (lowPoints && !pointConfirmation) return true;
+
+		return false;
+	};
+
 	return (
 		<div className="stack md items-center">
 			{wouldEndSet ? (
 				<div className="stack horizontal sm items-center">
 					<input
 						type="checkbox"
+						checked={endConfirmation}
 						onChange={(e) => setEndConfirmation(e.target.checked)}
 						id={confirmCheckId}
 						data-testid="end-confirmation"
@@ -281,11 +293,25 @@ function ReportScoreButtons({
 					</Label>
 				</div>
 			) : null}
+			{lowPoints ? (
+				<div className="stack horizontal sm items-center">
+					<input
+						type="checkbox"
+						checked={pointConfirmation}
+						onChange={(e) => setPointConfirmation(e.target.checked)}
+						id={pointConfirmCheckId}
+					/>
+					<Label spaced={false} htmlFor={pointConfirmCheckId}>
+						Confirm reporting of low score value (
+						{points!.map((p) => `${p}p`).join(" & ")})
+					</Label>
+				</div>
+			) : null}
 			<SubmitButton
 				size="tiny"
 				_action="REPORT_SCORE"
 				testId="report-score-button"
-				disabled={wouldEndSet && !endConfirmation}
+				disabled={submitButtonDisabled()}
 			>
 				{wouldEndSet ? "Report & end set" : "Report"}
 			</SubmitButton>
