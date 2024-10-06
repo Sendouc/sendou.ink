@@ -49,4 +49,19 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "shinywooper",
 		authorDiscordId: "528851510222782474",
 	},
+  {
+		displayName: "Raid Weekend",
+		fileName: "Raid_Weekend",
+		authorDiscordId: "354880982890971136",
+	},
+  {
+		displayName: "It's Dangerous To Go Alone Master Bracket",
+		fileName: "idtgamb",
+		authorDiscordId: "354880982890971136",
+	},
+  {
+		displayName: "Lone Sailor",
+		fileName: "lone_sailor",
+		authorDiscordId: "354880982890971136",
+	},
 ];
