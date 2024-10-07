@@ -968,10 +968,15 @@ interface StatChartProps {
 }
 
 function StatChartPopover(props: StatChartProps) {
+	const { t } = useTranslation(["analyzer"]);
+
 	return (
 		<Popover
 			buttonChildren={
-				<BeakerIcon className="analyzer__stat-popover-trigger__icon" />
+				<BeakerIcon
+					className="analyzer__stat-popover-trigger__icon"
+					title={t("analyzer:button.showChart")}
+				/>
 			}
 			contentClassName="analyzer__stat-popover"
 			triggerClassName={
