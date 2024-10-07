@@ -84,4 +84,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "lone_sailor",
 		authorDiscordId: "354880982890971136",
 	},
+	{
+		displayName: "Junior's Draft",
+		fileName: "jrs_draft",
+		authorDiscordId: "118724226994667523",
+	},
 ];
