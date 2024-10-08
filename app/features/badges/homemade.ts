@@ -98,5 +98,10 @@ export const homemadeBadges: BadgeInfo[] = [
 		displayName: "Scrap Bin",
 		fileName: "cc_smidge",
 		authorDiscordId: "148874365105078272",
+  },
+  {
+		displayName: "Paraflinch",
+		fileName: "paraflinch",
+		authorDiscordId: "528851510222782474",
 	},
 ];
