@@ -89,4 +89,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "jrs_draft",
 		authorDiscordId: "118724226994667523",
 	},
+	{
+		displayName: "Paraflinch",
+		fileName: "paraflinch",
+		authorDiscordId: "528851510222782474",
+	},
 ];
