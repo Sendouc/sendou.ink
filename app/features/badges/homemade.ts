@@ -41,7 +41,7 @@ export const homemadeBadges: BadgeInfo[] = [
 	},
 	{
 		displayName: "Tristrike Tuesday",
-		fileName: "tristriketuesnew",
+		fileName: "tristriketuesday",
 		authorDiscordId: "789943264370884708",
 	},
 	{
