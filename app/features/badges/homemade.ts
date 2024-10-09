@@ -94,4 +94,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "paraflinch",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "GHOST TYPE RUSH",
+		fileName: "gengar",
+		authorDiscordId: "528851510222782474",
+	},
 ];
