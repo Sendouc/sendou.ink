@@ -31,5 +31,7 @@ jobs:
         run: npm run biome:check
       - name: Typecheck
         run: npm run typecheck
+      - name: Unit tests
+        run: npm run test:unit
       - name: Check translations jsons
         run: npm run check-translation-jsons:no-write

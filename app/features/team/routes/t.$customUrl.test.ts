@@ -55,6 +55,8 @@ describe("Secondary teams", () => {
 	});
 
 	it("first team created becomes main team", async () => {
+		await createTeamAction({ name: "Team 1" }, { user: "regular" });
+
 		const { team, secondaryTeams } = await loadTeams();
 
 		expect(team!.name).toBe("Team 1");
