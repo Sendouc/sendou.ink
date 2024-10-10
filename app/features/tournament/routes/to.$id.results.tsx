@@ -92,7 +92,7 @@ export default function TournamentResultsPage() {
 											tournamentId: tournament.ctx.id,
 											tournamentTeamId: standing.team.id,
 										})}
-										className="stack xs horizontal items-center text-main-forced"
+										className="tournament__standings__team-name"
 										data-testid="result-team-name"
 									>
 										{teamLogoSrc ? (

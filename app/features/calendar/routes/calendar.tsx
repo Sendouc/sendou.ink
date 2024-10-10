@@ -394,7 +394,7 @@ function EventsList({
 				}
 
 				const sectionWeekday = daysDate.toLocaleString(i18n.language, {
-					weekday: "long",
+					weekday: "short",
 				});
 
 				return (
@@ -418,7 +418,7 @@ function EventsList({
 								const eventWeekday = databaseTimestampToDate(
 									calendarEvent.startTime,
 								).toLocaleString(i18n.language, {
-									weekday: "long",
+									weekday: "short",
 								});
 
 								const startTimeDate = databaseTimestampToDate(
