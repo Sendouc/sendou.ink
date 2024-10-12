@@ -98,5 +98,5 @@ export const homemadeBadges: BadgeInfo[] = [
 		displayName: "Power Pair Showdown",
 		fileName: "pps",
 		authorDiscordId: "188719458498510848",
-	}
+	},
 ];
