@@ -114,4 +114,19 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "DAYTONA Speedweeks 25 2nd",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "Shark Tank",
+		fileName: "shark tank 1st",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Shark Tank (Silver)",
+		fileName: "shark tank 2nd",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Shark Tank (Bronze)",
+		fileName: "shark tank 3rd",
+		authorDiscordId: "528851510222782474",
+	},
 ];
