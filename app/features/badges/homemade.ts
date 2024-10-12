@@ -94,4 +94,14 @@ export const homemadeBadges: BadgeInfo[] = [
     filename: "pinchzachsbank",
     authorDiscordId: "528851510222782474",
   },
+  {
+    displayName: "Pou Basket",
+    filename: "pou",
+    authorDiscordId: "285896534380511234",
+  },
+  {
+    displayName: "Blue Pou Achievement",
+    filename: "pou_b",
+    authorDiscordId: "285896534380511234",
+  },
 ];
