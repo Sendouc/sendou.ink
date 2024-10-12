@@ -119,4 +119,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "pps",
 		authorDiscordId: "188719458498510848",
 	},
+	{
+		displayName: "Splat'n'Go",
+		fileName: "splat-n-go",
+		authorDiscordId: "570323825669963972",
+	},
 ];
