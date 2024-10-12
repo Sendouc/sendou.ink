@@ -94,7 +94,8 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "paraflinch",
 		authorDiscordId: "528851510222782474",
 	},
-	{   displayName: "Power Pair Showdown",
+	{
+		displayName: "Power Pair Showdown",
 		fileName: "pps",
 		authorDiscordId: "188719458498510848",
 	},
