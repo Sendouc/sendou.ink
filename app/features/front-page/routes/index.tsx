@@ -37,11 +37,7 @@ export { loader };
 
 import "~/styles/front.css";
 
-// xxx: nav items to left on desktop
-
 // xxx: add mobile only stuff somewhere (log out, theme switch etc.)
-
-// xxx: custom style for search bars?
 
 // xxx: maybe some svg waves to the top banner?
 
@@ -189,7 +185,7 @@ function ShowcaseTournamentScroller({
 }: { tournaments: ShowcaseTournaments.ShowcaseTournament[] }) {
 	return (
 		<div className="front__tournament-cards">
-			<div className="front__tournament-cards__spacer overflow-x-auto">
+			<div className="front__tournament-cards__spacer overflow-x-scroll">
 				{tournaments.map((tournament) => (
 					<TournamentCard key={tournament.id} tournament={tournament} />
 				))}
@@ -316,7 +312,9 @@ function TournamentFirstPlacers({
 					/>
 				) : null}{" "}
 				<div className="stack items-start">
-					{firstPlacer.teamName}
+					<span className="front__tournament-card__first-placers__team-name">
+						{firstPlacer.teamName}
+					</span>
 					<div className="text-xxxs text-lighter font-bold">WINNER</div>
 				</div>
 			</div>
@@ -357,7 +355,7 @@ function ResultHighlights() {
 
 	return (
 		<>
-			<div className="front__result-highlights">
+			<div className="front__result-highlights overflow-x-auto">
 				<div className="stack sm text-center">
 					<h2 className="front__result-highlights__title">Top players</h2>
 					<Leaderboard
@@ -404,7 +402,6 @@ function ResultHighlights() {
 }
 
 // xxx: TODO: calc in backend
-// xxx: countries?
 interface LeaderboardEntry {
 	name: string;
 	url: string;

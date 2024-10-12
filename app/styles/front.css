@@ -421,10 +421,16 @@
 	width: max-content;
 }
 
+.front__tournament-card__first-placers__team-name {
+	max-width: 200px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .front__result-highlights {
 	display: flex;
 	gap: var(--s-2);
-	overflow-x: auto;
 }
 
 .front__result-highlights__title {

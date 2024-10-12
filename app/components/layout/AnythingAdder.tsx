@@ -18,8 +18,6 @@ const FilterMenuButton = React.forwardRef<
 
 // xxx: handle not allowed to add
 
-// xxx: remove adding from other places?
-
 export function AnythingAdder() {
 	const user = useUser();
 	const navigate = useNavigate();

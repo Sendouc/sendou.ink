@@ -340,6 +340,16 @@
 
 .overflow-x-auto {
 	overflow-x: auto;
+	scrollbar-color: rgb(83 65 91) transparent;
+	scrollbar-width: thin;
+	scrollbar-gutter: stable;
+}
+
+.overflow-x-scroll {
+	overflow-x: scroll;
+	scrollbar-color: rgb(83 65 91) transparent;
+	scrollbar-width: thin;
+	scrollbar-gutter: stable;
 }
 
 .relative {
