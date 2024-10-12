@@ -98,3 +98,4 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "pps",
 		authorDiscordId: "188719458498510848",
 	},
+];
