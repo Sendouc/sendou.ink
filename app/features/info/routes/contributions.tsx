@@ -150,7 +150,7 @@ export default function ContributionsPage() {
 				</li>
 				<li>
 					<a href={ANTARISKA_TWITTER} target="_blank" rel="noreferrer">
-						Antariska
+						Antariska, yaga & harryXYZ
 					</a>{" "}
 					- {t("contributions:antariska")}
 				</li>

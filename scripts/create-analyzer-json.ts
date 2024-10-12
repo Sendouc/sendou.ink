@@ -484,6 +484,15 @@ function parametersToSpecialWeaponResult(params: any) {
 		resultUnwrapped.SplashAroundPaintRadius = undefined;
 	}
 
+	// Bubble Patch 7.2.0 change hack
+	if (resultUnwrapped.MaxFieldHP) {
+		resultUnwrapped.MaxFieldHP = {
+			High: 28800,
+			Low: 24000,
+			Mid: 26400,
+		};
+	}
+
 	const isUltraStamp = () => !!params.SwingBigBlastParam;
 	const isCrabTank = () => !!params.CannonParam;
 	const isKraken = () => !!params.BodyParam?.DamageJumpValue;

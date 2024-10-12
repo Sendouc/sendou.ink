@@ -447,7 +447,9 @@ export class Tournament {
 			case "round_robin":
 				return {
 					groupCount: Math.ceil(
-						participantsCount / (this.ctx.settings.teamsPerGroup ?? 4),
+						participantsCount /
+							(this.ctx.settings.teamsPerGroup ??
+								TOURNAMENT.DEFAULT_TEAM_COUNT_PER_RR_GROUP),
 					),
 					seedOrdering: ["groups.seed_optimized"],
 				};

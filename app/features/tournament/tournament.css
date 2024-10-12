@@ -1,3 +1,7 @@
+.tournament__placeholder {
+	min-height: 100vh;
+}
+
 .tournament__action-section {
 	padding: var(--s-0-5) var(--s-6) var(--s-6) var(--s-6);
 	border-radius: var(--rounded);
@@ -623,4 +627,13 @@
 
 .tournament__standings__match-result-square--loss {
 	border-color: var(--theme-error);
+}
+
+.tournament__standings__team-name {
+	min-width: 125px;
+	word-break: break-word;
+	display: flex;
+	gap: var(--s-1-5);
+	align-items: center;
+	color: var(--text);
 }

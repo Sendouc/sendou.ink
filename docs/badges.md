@@ -26,20 +26,26 @@ Any badge to be added has to follow these rules. Badges that do not follow the r
 
 1. First badge needs to be made
 - 3D artists can use [picoCAD](https://johanpeitz.itch.io/picocad)
+- Some quick guide to picoCAD can be found pinned in the #badges Discord channel
 - Others can use the "[badges" Discord channel](https://discord.gg/sendou) to inquire about a commission
 - Read rules from above carefully at this point and ask if you do not understand something
 2. Create needed files
-- .gif file, black solid background. Create via [picoCAD Web Viewer](https://lucatronica.github.io/picocad-web-viewer/)
-- .png file. TODO: info on how to ceate
-- .avif file. Create via e.g. [Squoosh](https://squoosh.app/) from the .png file
+- .gif file (animated), black solid background. Create via [picoCAD Web Viewer](https://lucatronica.github.io/picocad-web-viewer/)
+- .png file (static). TODO: info on how to ceate
+- .avif file (static). Create via e.g. [Squoosh](https://squoosh.app/) from the .png file
 - All files should be squares. 512x512 is a good size for example
 3. Make a pull request to the project
-- You can request someone to help you on the ["development" Discord channel](https://discord.gg/sendou)
+- If you don't know how a pull request is made you can ask someone you know that is familiar with GitHub or refer to the guide pinned in the #badges Discord channel
 - In the PR add the 3 needed files to public/static-assets/badges folder:
 
 ![alt text](img/badges-1.png)
 
-- Also update app/features/badges/homemade.ts file (read the comments to understand each value):
+- Also update app/features/badges/homemade.ts file (read the comments to understand each value)
+- Note the file name should not contain spaces or big letters:
+
+❌ paddling pool.gif  
+❌ PaddlingPool.gif  
+✅ paddling-pool.gif
 
 ![alt text](img/badges-2.png)
 
