@@ -458,7 +458,7 @@ function EventsList({
 														to={tournamentOrganizationPage({
 															organizationSlug: calendarEvent.organization.slug,
 														})}
-														className="stack horizontal sm items-center text-xs text-main-forced"
+														className="stack horizontal xs items-center text-xs text-main-forced"
 													>
 														<Avatar
 															url={
