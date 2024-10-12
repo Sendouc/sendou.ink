@@ -106,27 +106,27 @@ export const homemadeBadges: BadgeInfo[] = [
 	},
 	{
 		displayName: "DAYTONA Speedweeks '25",
-		fileName: "DAYTONA Speedweeks 25 1st",
+		fileName: "daytonaspeedweeks1st",
 		authorDiscordId: "528851510222782474",
 	},
 	{
 		displayName: "DAYTONA Speedweeks '25 (2nd place)",
-		fileName: "DAYTONA Speedweeks 25 2nd",
+		fileName: "daytonaspeedweeks2nd",
 		authorDiscordId: "528851510222782474",
 	},
 	{
-		displayName: "Shark Tank",
-		fileName: "shark tank 1st",
+		displayName: "Shark Tank (Gold)",
+		fileName: "sharktank1st",
 		authorDiscordId: "528851510222782474",
 	},
 	{
 		displayName: "Shark Tank (Silver)",
-		fileName: "shark tank 2nd",
+		fileName: "sharktank2nd",
 		authorDiscordId: "528851510222782474",
 	},
 	{
 		displayName: "Shark Tank (Bronze)",
-		fileName: "shark tank 3rd",
+		fileName: "sharktank3rd",
 		authorDiscordId: "528851510222782474",
 	},
 ];
