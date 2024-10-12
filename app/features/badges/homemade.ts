@@ -94,4 +94,24 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "paraflinch",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "GHOST TYPE RUSH",
+		fileName: "gengar",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "GHOST TYPE RUSH SHINY EDITION",
+		fileName: "gengarshiny",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "DAYTONA Speedweeks '25",
+		fileName: "DAYTONA Speedweeks 25 1st",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "DAYTONA Speedweeks '25 (2nd place)",
+		fileName: "DAYTONA Speedweeks 25 2nd",
+		authorDiscordId: "528851510222782474",
+	},
 ];
