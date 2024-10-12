@@ -84,24 +84,24 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "lone_sailor",
 		authorDiscordId: "354880982890971136",
 	},
-  {
-    displayName: "Get Coupled",
-    filename: "getcoupled",
-    authorDiscordId: "418496741088690177",
-  },
-  {
-    displayName: "Pinch Zach's Bank",
-    filename: "pinchzachsbank",
-    authorDiscordId: "528851510222782474",
-  },
-  {
-    displayName: "Pou Basket",
-    filename: "pou",
-    authorDiscordId: "285896534380511234",
-  },
-  {
-    displayName: "Blue Pou Achievement",
-    filename: "pou_b",
-    authorDiscordId: "285896534380511234",
-  },
+	{
+		displayName: "Get Coupled",
+		filename: "getcoupled",
+		authorDiscordId: "418496741088690177",
+	},
+	{
+		displayName: "Pinch Zach's Bank",
+		filename: "pinchzachsbank",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Pou Basket",
+		filename: "pou",
+		authorDiscordId: "285896534380511234",
+	},
+	{
+		displayName: "Blue Pou Achievement",
+		filename: "pou_b",
+		authorDiscordId: "285896534380511234",
+	},
 ];
