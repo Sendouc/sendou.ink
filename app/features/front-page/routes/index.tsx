@@ -392,7 +392,7 @@ function ResultHighlights() {
 					{recentResults}
 				</div>
 			</div>
-			<div className="front__result-highlights">
+			<div className="front__result-highlights overflow-x-auto">
 				<div className="stack sm text-center desktop-hidden">
 					{recentResults}
 				</div>

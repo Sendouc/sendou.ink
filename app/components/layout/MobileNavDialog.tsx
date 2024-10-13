@@ -18,6 +18,8 @@ import { SelectedThemeIcon } from "./SelectedThemeIcon";
 import { ThemeChanger } from "./ThemeChanger";
 
 // xxx: hamburger fab should show if no side nav
+// xxx: popover hidden underneath
+
 export function MobileNavDialog({
 	isOpen,
 	close,
