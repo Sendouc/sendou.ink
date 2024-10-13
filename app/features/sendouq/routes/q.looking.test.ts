@@ -204,8 +204,9 @@ describe("Private user note sorting", () => {
 	});
 	const matchAction = wrappedAction<typeof matchSchema>({
 		action: rawMatchAction,
-		params: { id: "1" },
 	});
+
+	const matchActionParams = { id: "1" };
 
 	test("users with positive note sorted first", async () => {
 		await matchAction(
@@ -215,7 +216,7 @@ describe("Private user note sorting", () => {
 				sentiment: "POSITIVE",
 				comment: "test",
 			},
-			{ user: "admin" },
+			{ user: "admin", params: matchActionParams },
 		);
 
 		const data = await lookingLoader({ user: "admin" });
@@ -231,7 +232,7 @@ describe("Private user note sorting", () => {
 				sentiment: "NEGATIVE",
 				comment: "test",
 			},
-			{ user: "admin" },
+			{ user: "admin", params: matchActionParams },
 		);
 
 		const data = await lookingLoader({ user: "admin" });
@@ -249,7 +250,7 @@ describe("Private user note sorting", () => {
 				sentiment: "POSITIVE",
 				comment: "test",
 			},
-			{ user: "admin" },
+			{ user: "admin", params: matchActionParams },
 		);
 		await matchAction(
 			{
@@ -258,7 +259,7 @@ describe("Private user note sorting", () => {
 				sentiment: "NEGATIVE",
 				comment: "test",
 			},
-			{ user: "admin" },
+			{ user: "admin", params: matchActionParams },
 		);
 
 		const data = await lookingLoader({ user: "admin" });

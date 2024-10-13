@@ -7,6 +7,8 @@ export const TOURNAMENT = {
 	ENOUGH_TEAMS_TO_START: 2,
 	MIN_GROUP_SIZE: 3,
 	MAX_GROUP_SIZE: 6,
+	// just a fallback, normally this should be set by user explicitly
+	DEFAULT_TEAM_COUNT_PER_RR_GROUP: 4,
 } as const;
 
 export const BRACKET_NAMES = {

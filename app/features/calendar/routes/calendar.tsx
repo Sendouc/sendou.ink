@@ -394,7 +394,7 @@ function EventsList({
 				}
 
 				const sectionWeekday = daysDate.toLocaleString(i18n.language, {
-					weekday: "long",
+					weekday: "short",
 				});
 
 				return (
@@ -418,7 +418,7 @@ function EventsList({
 								const eventWeekday = databaseTimestampToDate(
 									calendarEvent.startTime,
 								).toLocaleString(i18n.language, {
-									weekday: "long",
+									weekday: "short",
 								});
 
 								const startTimeDate = databaseTimestampToDate(
@@ -458,7 +458,7 @@ function EventsList({
 														to={tournamentOrganizationPage({
 															organizationSlug: calendarEvent.organization.slug,
 														})}
-														className="stack horizontal sm items-center text-xs text-main-forced"
+														className="stack horizontal xs items-center text-xs text-main-forced"
 													>
 														<Avatar
 															url={

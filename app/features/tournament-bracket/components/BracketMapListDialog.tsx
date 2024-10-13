@@ -14,6 +14,7 @@ import {
 	useTournament,
 	useTournamentPreparedMaps,
 } from "~/features/tournament/routes/to.$id";
+import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { nullFilledArray } from "~/utils/arrays";
@@ -576,9 +577,11 @@ function teamCountAdjustedBracketData({
 			// always has the same amount of rounds even if 0 participants
 			return bracket.data;
 		case "round_robin":
-			// 10 to ensure a full bracket gets generated even if registration is underway
+			// ensure a full bracket (no bye round) gets generated even if registration is underway
 			return tournament.generateMatchesData(
-				nullFilledArray(10).map((_, i) => i + 1),
+				nullFilledArray(TOURNAMENT.DEFAULT_TEAM_COUNT_PER_RR_GROUP).map(
+					(_, i) => i + 1,
+				),
 				bracket.type,
 			);
 		case "single_elimination":
