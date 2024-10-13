@@ -31,7 +31,6 @@ import {
 	checkboxValueToBoolean,
 	date,
 	falsyToNull,
-	hexCode,
 	id,
 	processMany,
 	removeDuplicates,
@@ -86,13 +85,6 @@ export const action: ActionFunction = async ({ request }) => {
 		avatarFileName,
 		// reused avatar either via edit or template
 		avatarImgId: data.avatarImgId ?? undefined,
-		avatarMetadata:
-			data.backgroundColor && data.textColor
-				? {
-						backgroundColor: data.backgroundColor,
-						textColor: data.textColor,
-					}
-				: undefined,
 		autoValidateAvatar: Boolean(user.patronTier),
 		toToolsEnabled: user.isTournamentOrganizer
 			? Number(data.toToolsEnabled)
@@ -236,8 +228,6 @@ export const newCalendarEventActionSchema = z
 			processMany(safeJSONParse, removeDuplicates),
 			z.array(id).nullable(),
 		),
-		backgroundColor: hexCode.nullish(),
-		textColor: hexCode.nullish(),
 		avatarImgId: id.nullish(),
 		pool: z.string().optional(),
 		toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),

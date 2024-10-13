@@ -81,8 +81,6 @@ const useBaseEvent = () => {
 	return eventToCopy ?? eventToEdit;
 };
 
-// xxx: remove customize colors
-
 export default function CalendarNewEventPage() {
 	const baseEvent = useBaseEvent();
 
@@ -637,12 +635,6 @@ function AvatarImageInput({
 	setAvatarImg: (img: File | null) => void;
 }) {
 	const baseEvent = useBaseEvent();
-	const [backgroundColor, setBackgroundColor] = React.useState(
-		baseEvent?.avatarMetadata?.backgroundColor ?? "#000000",
-	);
-	const [textColor, setTextColor] = React.useState(
-		baseEvent?.avatarMetadata?.textColor ?? "#FFFFFF",
-	);
 	const [showPrevious, setShowPrevious] = React.useState(true);
 
 	if (
@@ -669,13 +661,6 @@ function AvatarImageInput({
 						Edit logo
 					</Button>
 				</div>
-				<TournamentLogoColorInputsWithShowcase
-					backgroundColor={backgroundColor}
-					setBackgroundColor={setBackgroundColor}
-					textColor={textColor}
-					setTextColor={setTextColor}
-					avatarUrl={logoImgUrl}
-				/>
 			</div>
 		);
 	}
@@ -725,14 +710,6 @@ function AvatarImageInput({
 						alt=""
 						className="calendar-new__avatar-preview"
 					/>
-
-					<TournamentLogoColorInputsWithShowcase
-						backgroundColor={backgroundColor}
-						setBackgroundColor={setBackgroundColor}
-						textColor={textColor}
-						setTextColor={setTextColor}
-						avatarUrl={URL.createObjectURL(avatarImg)}
-					/>
 				</div>
 			)}
 			<FormMessage type="info">
@@ -749,64 +726,6 @@ function AvatarImageInput({
 					Cancel changing avatar image
 				</Button>
 			)}
-		</div>
-	);
-}
-
-function TournamentLogoColorInputsWithShowcase({
-	backgroundColor,
-	setBackgroundColor,
-	textColor,
-	setTextColor,
-	avatarUrl,
-}: {
-	backgroundColor: string;
-	setBackgroundColor: (color: string) => void;
-	textColor: string;
-	setTextColor: (color: string) => void;
-	avatarUrl: string;
-}) {
-	return (
-		<div>
-			<div
-				style={{ backgroundColor }}
-				className="calendar-new__showcase-preview"
-			>
-				<img
-					src={avatarUrl}
-					alt=""
-					className="calendar-new__avatar-preview__small"
-				/>
-				<div style={{ color: textColor }} className="mt-4">
-					Choose a combination that is easy to read
-					<div className="text-xs">
-						(otherwise will be excluded from front page promotion)
-					</div>
-				</div>
-			</div>
-
-			<div className="mt-2 stack horizontal items-center justify-center sm">
-				<Label htmlFor="backgroundColor" spaced={false}>
-					BG
-				</Label>
-				<input
-					type="color"
-					className="plain"
-					name="backgroundColor"
-					value={backgroundColor}
-					onChange={(e) => setBackgroundColor(e.target.value)}
-				/>
-				<Label htmlFor="textColor" spaced={false}>
-					Text
-				</Label>
-				<input
-					type="color"
-					className="plain"
-					name="textColor"
-					value={textColor}
-					onChange={(e) => setTextColor(e.target.value)}
-				/>
-			</div>
 		</div>
 	);
 }

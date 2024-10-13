@@ -131,6 +131,7 @@ export interface CalendarEvent {
 	tournamentId: number | null;
 	organizationId: number | null;
 	avatarImgId: number | null;
+	// TODO: remove in migration
 	avatarMetadata: ColumnType<
 		CalendarEventAvatarMetadata | null,
 		string | null,
