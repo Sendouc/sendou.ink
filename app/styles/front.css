@@ -67,7 +67,7 @@
 }
 
 .front__season-banner {
-	background-color: var(--bg-lightest);
+	background: linear-gradient(to right, var(--bg-lightest), var(--bg-darker));
 	border-radius: var(--rounded);
 	padding: var(--s-2) var(--s-3);
 	line-height: 1.35;

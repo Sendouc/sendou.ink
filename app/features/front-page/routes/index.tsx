@@ -43,8 +43,6 @@ import "~/styles/front.css";
 
 // xxx: add log out somewhere
 
-// xxx: maybe some svg waves to the top banner?
-
 export default function FrontPage() {
 	return (
 		<Main className="front-page__container">
@@ -205,7 +203,6 @@ function ShowcaseTournamentScroller({
 	);
 }
 
-// xxx: drag to scroll? (example from bracket)
 function AllTournamentsLinkCard() {
 	return (
 		<Link

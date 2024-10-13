@@ -370,13 +370,22 @@ export function forShowcase() {
 			"CalendarEventDate.startTime",
 			eb
 				.selectFrom("TournamentTeam")
-				// xxx: what if tournament is happening? then count is wrong
-				// .innerJoin(
-				// 	"TournamentTeamCheckIn",
-				// 	"TournamentTeam.id",
-				// 	"TournamentTeamCheckIn.tournamentTeamId",
-				// )
+				.leftJoin("TournamentTeamCheckIn", (join) =>
+					join
+						.on("TournamentTeamCheckIn.bracketIdx", "is", null)
+						.onRef(
+							"TournamentTeamCheckIn.tournamentTeamId",
+							"=",
+							"TournamentTeam.id",
+						),
+				)
 				.whereRef("TournamentTeam.tournamentId", "=", "Tournament.id")
+				.where((eb) =>
+					eb.or([
+						eb("TournamentTeamCheckIn.checkedInAt", "is not", null),
+						eb("CalendarEventDate.startTime", ">", databaseTimestampNow()),
+					]),
+				)
 				.select(({ fn }) => [fn.countAll<number>().as("teamsCount")])
 				.as("teamsCount"),
 			eb
