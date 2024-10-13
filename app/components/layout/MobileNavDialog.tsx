@@ -17,6 +17,7 @@ import { LogInButtonContainer } from "./LogInButtonContainer";
 import { SelectedThemeIcon } from "./SelectedThemeIcon";
 import { ThemeChanger } from "./ThemeChanger";
 
+// xxx: hamburger fab should show if no side nav
 export function MobileNavDialog({
 	isOpen,
 	close,
@@ -55,7 +56,7 @@ export function MobileNavDialog({
 					</ThemeChanger>
 					{t(`common:theme.${userTheme ?? "auto"}`)}
 				</div>
-				<LogInButton />
+				<LogInButton close={close} />
 				{navItems.map((item) => (
 					<Link
 						to={`/${item.url}`}
@@ -80,13 +81,17 @@ export function MobileNavDialog({
 	);
 }
 
-function LogInButton() {
+function LogInButton({ close }: { close: () => void }) {
 	const { t } = useTranslation(["common"]);
 	const user = useUser();
 
 	if (user) {
 		return (
-			<Link to={userPage(user)} className="layout__mobile-nav__nav-item round">
+			<Link
+				to={userPage(user)}
+				className="layout__mobile-nav__nav-item round"
+				onClick={close}
+			>
 				<Avatar
 					user={user}
 					alt={t("common:header.loggedInAs", {

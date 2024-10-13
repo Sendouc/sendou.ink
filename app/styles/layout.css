@@ -91,14 +91,16 @@
 	right: 25px;
 	bottom: 25px;
 	border-radius: 100%;
-	width: 3.5rem;
-	height: 3.5rem;
+	width: 3.75rem;
+	height: 3.75rem;
 	backdrop-filter: var(--backdrop-filter);
 	background-color: transparent;
+	border-color: var(--theme-transparent);
+	display: none;
 }
 
 .layout__hamburger-fab svg {
-	width: 2rem;
+	width: 2.25rem;
 	stroke-width: 2px;
 }
 
@@ -303,7 +305,7 @@
 	}
 
 	.layout__hamburger-fab {
-		display: initial;
+		display: grid;
 	}
 
 	.layout__header__right-container {
@@ -356,7 +358,7 @@
 	font-size: 13px;
 	flex-wrap: wrap;
 	justify-content: center;
-	animation: smooth-appear 1s ease-out forwards;
+	animation: smooth-appear 0.75s ease-out forwards;
 	margin-top: 27.5px;
 	opacity: 0.25;
 }
