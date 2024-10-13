@@ -3,6 +3,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
+import { Button } from "~/components/Button";
 import { Divider } from "~/components/Divider";
 import { Flag } from "~/components/Flag";
 import { Image } from "~/components/Image";
@@ -13,8 +14,10 @@ import { BSKYLikeIcon } from "~/components/icons/BSKYLike";
 import { BSKYReplyIcon } from "~/components/icons/BSKYReply";
 import { BSKYRepostIcon } from "~/components/icons/BSKYRepost";
 import { ExternalIcon } from "~/components/icons/External";
+import { LogOutIcon } from "~/components/icons/LogOut";
 import { UsersIcon } from "~/components/icons/Users";
 import navItems from "~/components/layout/nav-items.json";
+import { useUser } from "~/features/auth/core/user";
 import type * as Changelog from "~/features/front-page/core/Changelog.server";
 import {
 	currentOrPreviousSeason,
@@ -26,6 +29,7 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
 	CALENDAR_TOURNAMENTS_PAGE,
+	LOG_OUT_URL,
 	SENDOUQ_PAGE,
 	leaderboardsPage,
 	navIconUrl,
@@ -41,8 +45,6 @@ export { loader };
 
 import "~/styles/front.css";
 
-// xxx: add log out somewhere
-
 export default function FrontPage() {
 	return (
 		<Main className="front-page__container">
@@ -56,6 +58,7 @@ export default function FrontPage() {
 }
 
 function DesktopSideNav() {
+	const user = useUser();
 	const { t } = useTranslation(["common"]);
 
 	return (
@@ -78,6 +81,19 @@ function DesktopSideNav() {
 					</Link>
 				);
 			})}
+			{user ? (
+				<form method="post" action={LOG_OUT_URL}>
+					<Button
+						size="tiny"
+						variant="minimal"
+						icon={<LogOutIcon />}
+						type="submit"
+						className="front-page__side-nav__log-out"
+					>
+						{t("common:header.logout")}
+					</Button>
+				</form>
+			) : null}
 		</nav>
 	);
 }

@@ -4,7 +4,7 @@ import navItems from "~/components/layout/nav-items.json";
 import { useUser } from "~/features/auth/core/user";
 import { useTheme } from "~/features/theme/core/provider";
 import { languages } from "~/modules/i18n/config";
-import { navIconUrl, userPage } from "~/utils/urls";
+import { LOG_OUT_URL, navIconUrl, userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 import { Dialog } from "../Dialog";
@@ -12,6 +12,7 @@ import { Image } from "../Image";
 import { CrossIcon } from "../icons/Cross";
 import { GlobeIcon } from "../icons/Globe";
 import { LogInIcon } from "../icons/LogIn";
+import { LogOutIcon } from "../icons/LogOut";
 import { LanguageChanger } from "./LanguageChanger";
 import { LogInButtonContainer } from "./LogInButtonContainer";
 import { SelectedThemeIcon } from "./SelectedThemeIcon";
@@ -19,11 +20,13 @@ import { ThemeChanger } from "./ThemeChanger";
 
 // xxx: hamburger fab should show if no side nav
 // xxx: popover hidden underneath
+// xxx: desktop map dialog since side nav is no longer everywhere
 
 export function MobileNavDialog({
 	isOpen,
 	close,
 }: { isOpen: boolean; close: () => void }) {
+	const user = useUser();
 	const { userTheme } = useTheme();
 	const { t, i18n } = useTranslation(["common"]);
 
@@ -79,6 +82,20 @@ export function MobileNavDialog({
 					</Link>
 				))}
 			</div>
+			{user ? (
+				<div className="mt-6 w-max mx-auto">
+					<form method="post" action={LOG_OUT_URL}>
+						<Button
+							size="tiny"
+							variant="outlined"
+							icon={<LogOutIcon />}
+							type="submit"
+						>
+							{t("common:header.logout")}
+						</Button>
+					</form>
+				</div>
+			) : null}
 		</Dialog>
 	);
 }

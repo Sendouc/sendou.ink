@@ -22,6 +22,29 @@
 	align-items: center;
 }
 
+.front-page__side-nav__log-out {
+	display: flex;
+	color: var(--text);
+	font-size: var(--fonts-xs);
+	font-weight: var(--bold);
+	gap: var(--s-1-5);
+	align-items: center;
+	color: var(--text-lighter) !important;
+}
+
+.front-page__side-nav__log-out svg {
+	background-color: var(--bg-lightest);
+	border-radius: var(--rounded);
+	padding: var(--s-1);
+	min-width: 28px;
+	margin-inline-end: 0 !important;
+	padding: var(--s-1-5);
+}
+
+.front-page__side-nav__log-out path {
+	margin-inline-end: -1px;
+}
+
 .front-page__side-nav-item:hover picture {
 	background-color: var(--theme-transparent);
 }

@@ -241,7 +241,6 @@ function NameInput() {
 	);
 }
 
-// xxx: extra margin with the formMessage
 function DescriptionTextarea({
 	supportsMarkdown,
 }: {
