@@ -6,10 +6,12 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import type { RootLoaderData } from "~/root";
 import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix";
 import { SUPPORT_PAGE } from "~/utils/urls";
-import { LinkButton } from "../Button";
+import { Button, LinkButton } from "../Button";
 import { Image } from "../Image";
+import { HamburgerIcon } from "../icons/Hamburger";
 import { HeartIcon } from "../icons/Heart";
 import { Footer } from "./Footer";
+import { MobileNavDialog } from "./MobileNavDialog";
 import { TopRightButtons } from "./TopRightButtons";
 
 function useBreadcrumbs() {
@@ -41,6 +43,7 @@ export const Layout = React.memo(function Layout({
 	data?: RootLoaderData;
 	isErrored?: boolean;
 }) {
+	const [mobileNavDialogOpen, setMobileNavDialogOpen] = React.useState(false);
 	const { t } = useTranslation(["common"]);
 	const location = useLocation();
 	const breadcrumbs = useBreadcrumbs();
@@ -53,6 +56,18 @@ export const Layout = React.memo(function Layout({
 		!location.pathname.includes("plans");
 	return (
 		<div className="layout__container">
+			<MobileNavDialog
+				isOpen={mobileNavDialogOpen}
+				close={() => setMobileNavDialogOpen(false)}
+			/>
+			{isFrontPage ? (
+				<Button
+					icon={<HamburgerIcon />}
+					className="layout__hamburger-fab"
+					variant="outlined"
+					onClick={() => setMobileNavDialogOpen(true)}
+				/>
+			) : null}
 			<header className="layout__header layout__item_size">
 				<div className="layout__breadcrumb-container">
 					<Link to="/" className="layout__breadcrumb logo">
@@ -97,6 +112,14 @@ export const Layout = React.memo(function Layout({
 						data && typeof data?.user?.patronTier !== "number",
 					)}
 				/>
+				{!isFrontPage ? (
+					<Button
+						icon={<HamburgerIcon />}
+						className="layout__hamburger-button"
+						variant="minimal"
+						onClick={() => setMobileNavDialogOpen(true)}
+					/>
+				) : null}
 			</header>
 			{showLeaderboard ? <MyRampUnit /> : null}
 			{children}
