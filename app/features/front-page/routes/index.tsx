@@ -16,7 +16,11 @@ import { ExternalIcon } from "~/components/icons/External";
 import { UsersIcon } from "~/components/icons/Users";
 import navItems from "~/components/layout/nav-items.json";
 import type * as Changelog from "~/features/front-page/core/Changelog.server";
-import { currentOrPreviousSeason } from "~/features/mmr/season";
+import {
+	currentOrPreviousSeason,
+	nextSeason,
+	previousSeason,
+} from "~/features/mmr/season";
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -80,10 +84,15 @@ function DesktopSideNav() {
 	);
 }
 
-// xxx: if over, advertise SQ season finale event?
 function SeasonBanner() {
 	const { i18n } = useTranslation();
-	const season = currentOrPreviousSeason(new Date())!;
+	const season = nextSeason(new Date()) ?? currentOrPreviousSeason(new Date())!;
+	const _previousSeason = previousSeason(new Date());
+
+	const isInFuture = new Date() < season.starts;
+	const isShowingPreviousSeason = _previousSeason?.nth === season.nth;
+
+	if (isShowingPreviousSeason) return null;
 
 	return (
 		<div className="stack xs">
@@ -109,7 +118,8 @@ function SeasonBanner() {
 			<Link to={SENDOUQ_PAGE} className="front__season-banner__link">
 				<div className="stack horizontal xs items-center">
 					<Image path={navIconUrl("sendouq")} width={24} alt="" />
-					Particate now! <ArrowRightIcon />
+					{isInFuture ? <>Prepare now!</> : <>Particate now!</>}{" "}
+					<ArrowRightIcon />
 				</div>
 			</Link>
 		</div>
