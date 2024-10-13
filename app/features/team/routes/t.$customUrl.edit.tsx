@@ -95,6 +95,11 @@ export const action: ActionFunction = async ({ request, params }) => {
 			const newCustomUrl = mySlugify(data.name);
 			const existingTeam = await TeamRepository.findByCustomUrl(newCustomUrl);
 
+			validate(
+				newCustomUrl.length > 0,
+				"Team name can't be only special characters",
+			);
+
 			// can't take someone else's custom url
 			if (existingTeam && existingTeam.id !== team.id) {
 				return {
