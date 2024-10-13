@@ -23,7 +23,6 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { Tables } from "~/db/tables";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
-import { useUser } from "~/features/auth/core/user";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
 	BRACKET_NAMES,
@@ -138,13 +137,10 @@ function EventForm() {
 	const fetcher = useFetcher();
 	const { t } = useTranslation();
 	const { eventToEdit, eventToCopy } = useLoaderData<typeof loader>();
-	const baseEvent = useBaseEvent();
-	const [isTournament, setIsTournament] = React.useState(
-		Boolean(baseEvent?.tournamentId),
-	);
+
 	const ref = React.useRef<HTMLFormElement>(null);
 	const [avatarImg, setAvatarImg] = React.useState<File | null>(null);
-	const user = useUser();
+	const data = useLoaderData<typeof loader>();
 
 	const handleSubmit = () => {
 		const formData = new FormData(ref.current!);
@@ -182,25 +178,22 @@ function EventForm() {
 					value={eventToCopy.tournamentId}
 				/>
 			) : null}
-			{user?.isTournamentOrganizer && !eventToEdit ? (
-				<TournamentEnabler
-					checked={isTournament}
-					setChecked={setIsTournament}
-				/>
+			{data.isAddingTournament ? (
+				<input type="hidden" name="toToolsEnabled" value="on" />
 			) : null}
 			<NameInput />
-			<DescriptionTextarea supportsMarkdown={isTournament} />
+			<DescriptionTextarea supportsMarkdown={data.isAddingTournament} />
 			<OrganizationSelect />
-			{isTournament ? <RulesTextarea supportsMarkdown /> : null}
-			<DatesInput allowMultiDate={!isTournament} />
-			{!isTournament ? <BracketUrlInput /> : null}
+			{data.isAddingTournament ? <RulesTextarea supportsMarkdown /> : null}
+			<DatesInput allowMultiDate={!data.isAddingTournament} />
+			{!data.isAddingTournament ? <BracketUrlInput /> : null}
 			<DiscordLinkInput />
 			<TagsAdder />
 			<BadgesAdder />
-			{isTournament ? (
+			{data.isAddingTournament ? (
 				<AvatarImageInput avatarImg={avatarImg} setAvatarImg={setAvatarImg} />
 			) : null}
-			{isTournament ? (
+			{data.isAddingTournament ? (
 				<>
 					<Divider>Tournament settings</Divider>
 					<RegClosesAtSelect />
@@ -212,8 +205,12 @@ function EventForm() {
 					<StrictDeadlinesToggle />
 				</>
 			) : null}
-			{isTournament ? <TournamentMapPickingStyleSelect /> : <MapPoolSection />}
-			{isTournament ? <TournamentFormatSelector /> : null}
+			{data.isAddingTournament ? (
+				<TournamentMapPickingStyleSelect />
+			) : (
+				<MapPoolSection />
+			)}
+			{data.isAddingTournament ? <TournamentFormatSelector /> : null}
 			<Button
 				className="mt-4"
 				onClick={handleSubmit}
@@ -246,6 +243,7 @@ function NameInput() {
 	);
 }
 
+// xxx: extra margin with the formMessage
 function DescriptionTextarea({
 	supportsMarkdown,
 }: {
@@ -1090,32 +1088,6 @@ function TournamentMapPickingStyleSelect() {
 				</>
 			) : null}
 		</>
-	);
-}
-
-function TournamentEnabler({
-	checked,
-	setChecked,
-}: {
-	checked: boolean;
-	setChecked: (checked: boolean) => void;
-}) {
-	const id = React.useId();
-
-	return (
-		<div>
-			<label htmlFor={id}>Host on sendou.ink</label>
-			<Toggle
-				name="toToolsEnabled"
-				id={id}
-				tiny
-				checked={checked}
-				setChecked={setChecked}
-			/>
-			<FormMessage type="info">
-				Host the full event including bracket and sign ups on sendou.ink
-			</FormMessage>
-		</div>
 	);
 }
 

@@ -37,7 +37,7 @@ export { loader };
 
 import "~/styles/front.css";
 
-// xxx: add mobile only stuff somewhere (log out, theme switch etc.)
+// xxx: add log out somewhere
 
 // xxx: maybe some svg waves to the top banner?
 

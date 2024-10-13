@@ -93,7 +93,10 @@ export const BADGES_PAGE = "/badges";
 export const BUILDS_PAGE = "/builds";
 export const USER_SEARCH_PAGE = "/u";
 export const TEAM_SEARCH_PAGE = "/t";
+export const NEW_TEAM_PAGE = "/t?new=true";
 export const CALENDAR_PAGE = "/calendar";
+export const CALENDAR_NEW_PAGE = "/calendar/new";
+export const TOURNAMENT_NEW_PAGE = "/calendar/new?tournament=true";
 export const CALENDAR_TOURNAMENTS_PAGE = "/calendar?tournaments=true";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
@@ -231,6 +234,8 @@ export const impersonateUrl = (idToLogInAs: number) =>
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
 export const plusSuggestionPage = (tier?: string | number) =>
 	`/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
+export const plusSuggestionsNewPage = (tier?: string | number) =>
+	`/plus/suggestions/new${tier ? `?tier=${tier}` : ""}`;
 
 export const weaponBuildPage = (weaponSlug: string) =>
 	`${BUILDS_PAGE}/${weaponSlug}`;

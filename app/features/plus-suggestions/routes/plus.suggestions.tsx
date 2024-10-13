@@ -38,7 +38,7 @@ import {
 } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
-import { userPage } from "~/utils/urls";
+import { plusSuggestionsNewPage, userPage } from "~/utils/urls";
 import { _action, actualNumber } from "~/utils/zod";
 
 export const meta: MetaFunction = () => {
@@ -230,7 +230,7 @@ export default function PlusSuggestionsPage() {
 							{canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
 								// TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
 								<LinkButton
-									to={`new${tierVisible ? `?tier=${tierVisible}` : ""}`}
+									to={plusSuggestionsNewPage(tierVisible)}
 									prefetch="render"
 									size="tiny"
 								>

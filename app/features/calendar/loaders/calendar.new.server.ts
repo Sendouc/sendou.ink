@@ -72,6 +72,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	}
 
 	return json({
+		isAddingTournament: Boolean(
+			user.isTournamentOrganizer &&
+				(url.searchParams.has("tournament") ||
+					url.searchParams.has("copyEventId")),
+		),
 		managedBadges: await BadgeRepository.findManagedByUserId(user.id),
 		recentEventsWithMapPools:
 			await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),
