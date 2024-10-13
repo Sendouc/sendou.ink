@@ -48,7 +48,7 @@ async function loadTeams() {
 
 describe("Secondary teams", () => {
 	beforeEach(async () => {
-		await dbInsertUsers(2);
+		await dbInsertUsers();
 	});
 	afterEach(() => {
 		dbReset();

@@ -15,6 +15,26 @@ export const homemadeBadges: BadgeInfo[] = [
 	// 	authorDiscordId: "123456789012345678",
 	// },
 	{
+		displayName: "Treetop Tussle",
+		fileName: "tree",
+		authorDiscordId: "789943264370884708",
+	},
+	{
+		displayName: "Treetop Tussle: Gold Edition",
+		fileName: "treegold",
+		authorDiscordId: "789943264370884708",
+	},
+	{
+		displayName: "Prize Fight",
+		fileName: "prizefight",
+		authorDiscordId: "789943264370884708",
+	},
+	{
+		displayName: "Prize Fight: Gold Edition",
+		fileName: "prizefightgold",
+		authorDiscordId: "789943264370884708",
+	},
+	{
 		displayName: "Break Zach's Bank",
 		fileName: "breakzachsbank",
 		authorDiscordId: "528851510222782474",
@@ -93,5 +113,15 @@ export const homemadeBadges: BadgeInfo[] = [
 		displayName: "Paraflinch",
 		fileName: "paraflinch",
 		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Power Pair Showdown",
+		fileName: "pps",
+		authorDiscordId: "188719458498510848",
+	},
+	{
+		displayName: "Splat'n'Go",
+		fileName: "splat-n-go",
+		authorDiscordId: "570323825669963972",
 	},
 ];
