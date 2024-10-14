@@ -1,6 +1,9 @@
+import cachified from "@epic-web/cachified";
+import { ONE_HOUR_IN_MS, TWO_HOURS_IN_MS } from "~/constants";
 import type { Tables } from "~/db/tables";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { tournamentIsRanked } from "~/features/tournament/tournament-utils";
+import { cache, ttl } from "~/utils/cache.server";
 import {
 	databaseTimestampToDate,
 	dateToDatabaseTimestamp,
@@ -73,6 +76,10 @@ const emptyParticipationInfo = (): ParticipationInfo => ({
 	organizers: new Set(),
 });
 
+export function clearParticipationInfoMap() {
+	participationInfoMap = null;
+}
+
 export function addToParticipationInfoMap({
 	userId,
 	tournamentId,
@@ -137,13 +144,21 @@ async function cachedParticipationInfo(
 	return participation.get(userId) ?? emptyParticipationInfo();
 }
 
-// xxx: cache
 async function cachedTournaments() {
-	const tournaments = await TournamentRepository.forShowcase();
+	return cachified({
+		key: "front-tournaments-list",
+		cache,
+		ttl: ttl(ONE_HOUR_IN_MS),
+		staleWhileRevalidate: ttl(TWO_HOURS_IN_MS),
+		async getFreshValue() {
+			console.time("tournaments");
+			const tournaments = await TournamentRepository.forShowcase();
 
-	const mapped = tournaments.map(mapTournamentFromDB);
+			const mapped = tournaments.map(mapTournamentFromDB);
 
-	return deleteExtraResults(mapped);
+			return deleteExtraResults(mapped);
+		},
+	});
 }
 
 function deleteExtraResults(tournaments: ShowcaseTournament[]) {

@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { CalendarEventTag } from "~/db/types";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
 	clearTournamentDataCache,
@@ -154,6 +155,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 		if (eventToEdit.tournamentId) {
 			clearTournamentDataCache(eventToEdit.tournamentId);
+			ShowcaseTournaments.clearParticipationInfoMap();
 		}
 
 		throw redirect(calendarEventPage(data.eventToEditId));
@@ -170,6 +172,10 @@ export const action: ActionFunction = async ({ request }) => {
 		mapPickingStyle: mapPickingStyle(),
 		...commonArgs,
 	});
+
+	if (data.toToolsEnabled) {
+		ShowcaseTournaments.clearParticipationInfoMap();
+	}
 
 	throw redirect(calendarEventPage(createdEventId));
 };

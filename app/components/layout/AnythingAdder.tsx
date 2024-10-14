@@ -26,8 +26,6 @@ const FilterMenuButton = React.forwardRef<
 	);
 });
 
-// xxx: handle not allowed to add
-
 // xxx: for mobile
 
 export function AnythingAdder() {

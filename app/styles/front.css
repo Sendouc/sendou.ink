@@ -49,6 +49,7 @@
 	background-color: var(--theme-transparent);
 }
 
+/** Reference to .layout__hamburger-fab **/
 @media screen and (min-width: 1130px) and (min-height: 900px) {
 	.front-page__side-nav {
 		display: flex;
@@ -96,6 +97,7 @@
 	line-height: 1.35;
 	position: relative;
 	color: var(--text);
+	border: 2.5px solid var(--bg-lightest-solid);
 }
 
 .front__season-banner__header {

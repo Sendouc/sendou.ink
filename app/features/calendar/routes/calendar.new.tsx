@@ -23,6 +23,7 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { Tables } from "~/db/tables";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
+import { useUser } from "~/features/auth/core/user";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
 	BRACKET_NAMES,
@@ -54,6 +55,7 @@ import {
 	regClosesAtToDisplayName,
 	validateFollowUpBrackets,
 } from "../calendar-utils";
+import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
 
 import "~/styles/calendar-new.css";
@@ -83,6 +85,29 @@ const useBaseEvent = () => {
 
 export default function CalendarNewEventPage() {
 	const baseEvent = useBaseEvent();
+	const user = useUser();
+	const data = useLoaderData<typeof loader>();
+
+	if (!user || !canAddNewEvent(user)) {
+		return (
+			<Main className="stack items-center">
+				<Alert variation="WARNING">
+					You can't add a new event at this time (Discord account too young)
+				</Alert>
+			</Main>
+		);
+	}
+
+	if (data.isAddingTournament && !user.isTournamentOrganizer) {
+		return (
+			<Main className="stack items-center">
+				<Alert variation="WARNING">
+					No permissions to add tournament. Access to tournaments beta can be
+					applied from Discord helpdesk for established TO&apos;s.
+				</Alert>
+			</Main>
+		);
+	}
 
 	return (
 		<Main className="calendar-new__container">

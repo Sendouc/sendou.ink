@@ -1,5 +1,10 @@
 [
 	{
+		"name": "settings",
+		"url": "settings",
+		"prefetch": true
+	},
+	{
 		"name": "sendouq",
 		"url": "q",
 		"prefetch": false

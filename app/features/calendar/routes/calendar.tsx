@@ -19,7 +19,6 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { UsersIcon } from "~/components/icons/Users";
-import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
 import { currentSeason } from "~/features/mmr/season";
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
@@ -49,7 +48,6 @@ import {
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import * as CalendarRepository from "../CalendarRepository.server";
-import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
 
 import "~/styles/calendar.css";
@@ -163,7 +161,6 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 export default function CalendarPage() {
 	const { t } = useTranslation("calendar");
 	const data = useLoaderData<typeof loader>();
-	const user = useUser();
 	const isMounted = useIsMounted();
 	const [onlySendouInkEvents, setOnlySendouInkEvents] = useSearchParamState({
 		defaultValue: false,
@@ -190,8 +187,8 @@ export default function CalendarPage() {
 		<Main classNameOverwrite="stack lg main layout__main">
 			<WeekLinks />
 			<EventsToReport />
-			<div className="stack md">
-				<div className="stack horizontal justify-between">
+			<div>
+				<div className="stack horizontal justify-end">
 					<div className="stack horizontal sm items-center">
 						<Toggle
 							id="onlySendouInk"
@@ -203,11 +200,6 @@ export default function CalendarPage() {
 							Only sendou.ink events
 						</Label>
 					</div>
-					{user && canAddNewEvent(user) && (
-						<LinkButton to="new" size="tiny" className="w-max">
-							{t("addNew")}
-						</LinkButton>
-					)}
 				</div>
 				{isMounted ? (
 					<>

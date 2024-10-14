@@ -1,5 +1,6 @@
 import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
+import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import i18next from "~/modules/i18n/i18next.server";
 import { valueArrayToDBFormat } from "~/utils/form";
 import {
@@ -45,6 +46,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		series: data.series,
 		badges: data.badges,
 	});
+
+	// in case members changed
+	ShowcaseTournaments.clearParticipationInfoMap();
 
 	return redirect(
 		tournamentOrganizationPage({ organizationSlug: newOrganization.slug }),

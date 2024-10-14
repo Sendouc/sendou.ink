@@ -75,7 +75,7 @@ export const action: ActionFunction = async ({ request }) => {
 		...votingMonthYear,
 	});
 
-	throw redirect(plusSuggestionPage(data.tier));
+	throw redirect(plusSuggestionPage({ tier: data.tier }));
 };
 
 export default function PlusCommentModalPage() {

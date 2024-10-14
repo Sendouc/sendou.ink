@@ -18,7 +18,6 @@ import { LogInButtonContainer } from "./LogInButtonContainer";
 import { SelectedThemeIcon } from "./SelectedThemeIcon";
 import { ThemeChanger } from "./ThemeChanger";
 
-// xxx: hamburger fab should show if no side nav
 // xxx: popover hidden underneath
 // xxx: desktop map dialog since side nav is no longer everywhere
 

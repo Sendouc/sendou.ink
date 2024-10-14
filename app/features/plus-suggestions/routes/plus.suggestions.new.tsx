@@ -90,7 +90,7 @@ export const action: ActionFunction = async ({ request }) => {
 		...votingMonthYear,
 	});
 
-	throw redirect(plusSuggestionPage(data.tier));
+	throw redirect(plusSuggestionPage({ tier: data.tier }));
 };
 
 export default function PlusNewSuggestionModalPage() {
@@ -121,7 +121,7 @@ export default function PlusNewSuggestionModalPage() {
 		}) ||
 		!targetPlusTier
 	) {
-		return <Redirect to={plusSuggestionPage()} />;
+		return <Redirect to={plusSuggestionPage({ showAlert: true })} />;
 	}
 
 	const selectedUserErrorMessage = getSelectedUserErrorMessage({

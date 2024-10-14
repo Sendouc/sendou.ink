@@ -10,6 +10,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
+import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import {
 	clearTournamentDataCache,
 	tournamentFromDB,
@@ -95,6 +96,13 @@ export const action: ActionFunction = async ({ request, params }) => {
 			userId: user.id,
 		}),
 	});
+
+	ShowcaseTournaments.addToParticipationInfoMap({
+		tournamentId,
+		type: "participant",
+		userId: user.id,
+	});
+
 	if (data.trust) {
 		const inviterUserId = teamToJoin.members.find(
 			(member) => member.isOwner,

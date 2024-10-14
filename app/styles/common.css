@@ -831,10 +831,10 @@ dialog::backdrop {
 	font-size: var(--fonts-sm);
 	font-weight: var(--semi-bold);
 	gap: var(--s-2);
-	line-height: 1.4;
 	margin-inline: auto;
 	padding-block: var(--s-1-5);
 	padding-inline: var(--s-3) var(--s-4);
+	text-align: center;
 }
 
 .alert.tiny {

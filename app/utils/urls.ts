@@ -37,6 +37,19 @@ const staticAssetsUrl = ({
 }) =>
 	`https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
 
+export const discordAvatarUrl = ({
+	discordId,
+	discordAvatar,
+	size,
+}: {
+	discordId: string;
+	discordAvatar: string;
+	size: "lg" | "sm";
+}) =>
+	`https://cdn.discordapp.com/avatars/${discordId}/${
+		discordAvatar
+	}.webp${size === "lg" ? "?size=240" : "?size=80"}`;
+
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
 export const BADGES_DOC_LINK =
@@ -232,8 +245,19 @@ export const authErrorUrl = (errorCode: AuthErrorCode) =>
 export const impersonateUrl = (idToLogInAs: number) =>
 	`/auth/impersonate?id=${idToLogInAs}`;
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
-export const plusSuggestionPage = (tier?: string | number) =>
-	`/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
+export const plusSuggestionPage = ({
+	tier,
+	showAlert,
+}: { tier?: string | number; showAlert?: boolean } = {}) => {
+	const params = new URLSearchParams();
+	if (tier) {
+		params.set("tier", String(tier));
+	}
+	if (showAlert) {
+		params.set("alert", "true");
+	}
+	return `/plus/suggestions${params.toString() ? `?${params.toString()}` : ""}`;
+};
 export const plusSuggestionsNewPage = (tier?: string | number) =>
 	`/plus/suggestions/new${tier ? `?tier=${tier}` : ""}`;
 

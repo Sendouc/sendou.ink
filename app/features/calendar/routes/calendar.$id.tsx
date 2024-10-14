@@ -23,6 +23,7 @@ import { Table } from "~/components/Table";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { clearTournamentDataCache } from "~/features/tournament-bracket/core/Tournament.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -80,6 +81,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 	if (event.tournamentId) {
 		clearTournamentDataCache(event.tournamentId);
+		ShowcaseTournaments.clearParticipationInfoMap();
 	}
 
 	throw redirect(CALENDAR_PAGE);

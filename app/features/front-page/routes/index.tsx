@@ -28,19 +28,18 @@ import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
+	BLANK_IMAGE_URL,
 	CALENDAR_TOURNAMENTS_PAGE,
 	LOG_OUT_URL,
 	SENDOUQ_PAGE,
 	leaderboardsPage,
 	navIconUrl,
-	teamPage,
 	tournamentPage,
-	userPage,
 	userSubmittedImage,
 } from "~/utils/urls";
 import type * as ShowcaseTournaments from "../core/ShowcaseTournaments.server";
+import { type LeaderboardEntry, loader } from "../loaders/index.server";
 
-import { loader } from "../loaders/index.server";
 export { loader };
 
 import "~/styles/front.css";
@@ -382,14 +381,7 @@ function ResultHighlights() {
 				<div className="stack sm text-center">
 					<h2 className="front__result-highlights__title">Top players</h2>
 					<Leaderboard
-						entries={data.leaderboards.user.map((entry) => ({
-							avatarUrl: `https://cdn.discordapp.com/avatars/${entry.discordId}/${
-								entry.discordAvatar
-							}.webp?size=80`,
-							name: entry.username,
-							power: entry.power,
-							url: userPage(entry),
-						}))}
+						entries={data.leaderboards.user}
 						fullLeaderboardUrl={leaderboardsPage({
 							season: season.nth,
 							type: "USER",
@@ -399,12 +391,7 @@ function ResultHighlights() {
 				<div className="stack sm text-center">
 					<h2 className="front__result-highlights__title">Top teams</h2>
 					<Leaderboard
-						entries={data.leaderboards.team.map((entry) => ({
-							avatarUrl: userSubmittedImage(entry.team!.avatarUrl!),
-							name: entry.team?.name!,
-							power: entry.power,
-							url: teamPage(entry.team!.customUrl!),
-						}))}
+						entries={data.leaderboards.team}
 						fullLeaderboardUrl={leaderboardsPage({
 							season: season.nth,
 							type: "TEAM",
@@ -424,14 +411,6 @@ function ResultHighlights() {
 	);
 }
 
-// xxx: TODO: calc in backend
-interface LeaderboardEntry {
-	name: string;
-	url: string;
-	avatarUrl: string;
-	power: number;
-}
-
 function Leaderboard({
 	entries,
 	fullLeaderboardUrl,
@@ -446,7 +425,7 @@ function Leaderboard({
 						className="stack sm horizontal items-center text-main-forced"
 					>
 						<div className="mx-1">{index + 1}</div>
-						<Avatar url={entry.avatarUrl} size="xs" />
+						<Avatar url={entry.avatarUrl ?? BLANK_IMAGE_URL} size="xs" />
 						<div className="stack items-start">
 							<div className="front__leaderboard__name">{entry.name}</div>
 							<div className="text-xs font-semi-bold text-lighter">
