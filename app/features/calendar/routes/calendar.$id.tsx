@@ -82,6 +82,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 	if (event.tournamentId) {
 		clearTournamentDataCache(event.tournamentId);
 		ShowcaseTournaments.clearParticipationInfoMap();
+		ShowcaseTournaments.clearCachedTournaments();
 	}
 
 	throw redirect(CALENDAR_PAGE);

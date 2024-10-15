@@ -131,6 +131,7 @@ export const SENDOUQ_STREAMS_PAGE = "/q/streams";
 export const TIERS_PAGE = "/tiers";
 export const SUSPENDED_PAGE = "/suspended";
 export const LFG_PAGE = "/lfg";
+export const SETTINGS_PAGE = "/settings";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =

@@ -90,14 +90,33 @@
 	stroke-width: 2px;
 }
 
+@property --l {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 50%;
+}
+
 .front__season-banner {
-	background: linear-gradient(to right, var(--bg-lightest), var(--bg-darker));
+	/*  needed for firefox to have a valid output */
+	--l: 50%;
+
+	background: linear-gradient(
+		to right,
+		var(--bg-lightest),
+		var(--l),
+		var(--bg-darker)
+	);
 	border-radius: var(--rounded);
 	padding: var(--s-2) var(--s-3);
 	line-height: 1.35;
 	position: relative;
 	color: var(--text);
 	border: 2.5px solid var(--bg-lightest-solid);
+	transition: --l 0.2s ease-out;
+}
+
+.front__season-banner:hover {
+	--l: 75%;
 }
 
 .front__season-banner__header {

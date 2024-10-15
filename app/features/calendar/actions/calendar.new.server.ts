@@ -175,6 +175,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	if (data.toToolsEnabled) {
 		ShowcaseTournaments.clearParticipationInfoMap();
+		ShowcaseTournaments.clearCachedTournaments();
 	}
 
 	throw redirect(calendarEventPage(createdEventId));

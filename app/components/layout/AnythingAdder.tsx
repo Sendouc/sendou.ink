@@ -26,8 +26,6 @@ const FilterMenuButton = React.forwardRef<
 	);
 });
 
-// xxx: for mobile
-
 export function AnythingAdder() {
 	const user = useUser();
 	const navigate = useNavigate();

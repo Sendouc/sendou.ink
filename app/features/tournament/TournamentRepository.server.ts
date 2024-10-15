@@ -300,8 +300,9 @@ export async function findPreparedMapsById(tournamentId: number) {
 
 export function relatedUsersByTournamentIds(tournamentIds: number[]) {
 	return db
-		.selectFrom("Tournament")
-		.innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
+		.selectFrom("CalendarEventDate")
+		.innerJoin("CalendarEvent", "CalendarEventDate.eventId", "CalendarEvent.id")
+		.innerJoin("Tournament", "CalendarEvent.tournamentId", "Tournament.id")
 		.select((eb) => [
 			"Tournament.id",
 			"CalendarEvent.authorId",

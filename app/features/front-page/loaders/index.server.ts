@@ -20,7 +20,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const user = await getUserId(request);
 
 	const [tournaments, changelog, leaderboards] = await Promise.all([
-		// xxx: can it be made faster?
 		ShowcaseTournaments.frontPageTournamentsByUserId(user?.id ?? null),
 		cachified({
 			key: "front-changelog",
