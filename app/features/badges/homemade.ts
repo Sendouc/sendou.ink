@@ -152,7 +152,7 @@ export const homemadeBadges: BadgeInfo[] = [
 	{
 		displayName: "Power Pair Showdown",
 		fileName: "pps",
-		authorDiscordId: "188719458498510848",
+		authorDiscordId: "789943264370884708",
 	},
 	{
 		displayName: "Splat'n'Go",
