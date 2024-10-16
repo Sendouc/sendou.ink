@@ -159,4 +159,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "splat-n-go",
 		authorDiscordId: "570323825669963972",
 	},
+  {
+    displayName: "Rocket Science",
+    fileName: "rocket-science",
+    authorDiscordId: "565712290020589569",
+  },
 ];
