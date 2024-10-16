@@ -159,4 +159,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "splat-n-go",
 		authorDiscordId: "570323825669963972",
 	},
+	{
+		displayName: "Dodge Rollers",
+		fileName: "splat_dualie",
+		authorDiscordId: "218883697007394816",
+	},
 ];
