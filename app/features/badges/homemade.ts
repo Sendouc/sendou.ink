@@ -159,4 +159,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "splat-n-go",
 		authorDiscordId: "570323825669963972",
 	},
+	{
+		displayName: "Heaven 2 Ocean Qualifer",
+		fileName: "heaven2ocean",
+		authorDiscordId: "528851510222782474",
+	},
 ];
