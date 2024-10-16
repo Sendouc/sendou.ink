@@ -159,4 +159,44 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "splat-n-go",
 		authorDiscordId: "570323825669963972",
 	},
+	{
+		displayName: "Breeze LAN (1st)",
+		fileName: "breeze",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Breeze LAN (2nd)",
+		fileName: "breeze2",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Breeze LAN (3rd)",
+		fileName: "breeze3",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Splat Vibes LAN",
+		fileName: "vibesfirst",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Splat Vibes LAN (Top 4)",
+		fileName: "vibessecond",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Splat Legacy LAN",
+		fileName: "splatlegacy",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Ink Practice",
+		fileName: "inkpractice",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Breeze LAN (Salmon Run)",
+		fileName: "breezesr",
+		authorDiscordId: "342369454719631361",
+	},
 ];
