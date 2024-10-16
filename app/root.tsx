@@ -18,6 +18,7 @@ import {
 import generalI18next from "i18next";
 import NProgress from "nprogress";
 import * as React from "react";
+import { ErrorBoundary as ClientErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -474,9 +475,11 @@ function MyRamp({ data }: { data: RootLoaderData | undefined }) {
 	}
 
 	return (
-		<Ramp
-			publisherId={import.meta.env.VITE_PLAYWIRE_PUBLISHER_ID}
-			id={import.meta.env.VITE_PLAYWIRE_WEBSITE_ID}
-		/>
+		<ClientErrorBoundary fallback={null}>
+			<Ramp
+				publisherId={import.meta.env.VITE_PLAYWIRE_PUBLISHER_ID}
+				id={import.meta.env.VITE_PLAYWIRE_WEBSITE_ID}
+			/>
+		</ClientErrorBoundary>
 	);
 }

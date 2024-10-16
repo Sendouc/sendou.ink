@@ -1,6 +1,7 @@
 import { Link, useLocation, useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type { RootLoaderData } from "~/root";
@@ -155,5 +156,9 @@ function MyRampUnit() {
 		return <div className="top-leaderboard" />;
 	}
 
-	return <RampUnit type="leaderboard_atf" cssClass="top-leaderboard" />;
+	return (
+		<ErrorBoundary fallback={null}>
+			<RampUnit type="leaderboard_atf" cssClass="top-leaderboard" />
+		</ErrorBoundary>
+	);
 }

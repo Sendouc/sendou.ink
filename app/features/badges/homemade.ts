@@ -104,4 +104,59 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "lone_sailor",
 		authorDiscordId: "354880982890971136",
 	},
+	{
+		displayName: "Junior's Draft",
+		fileName: "jrs_draft",
+		authorDiscordId: "118724226994667523",
+	},
+	{
+		displayName: "Paraflinch",
+		fileName: "paraflinch",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "GHOST TYPE RUSH",
+		fileName: "gengar",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "GHOST TYPE RUSH SHINY EDITION",
+		fileName: "gengarshiny",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "DAYTONA Speedweeks '25",
+		fileName: "daytonaspeedweeks1st",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "DAYTONA Speedweeks '25 (2nd place)",
+		fileName: "daytonaspeedweeks2nd",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Shark Tank (Gold)",
+		fileName: "sharktank1st",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Shark Tank (Silver)",
+		fileName: "sharktank2nd",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Shark Tank (Bronze)",
+		fileName: "sharktank3rd",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Power Pair Showdown",
+		fileName: "pps",
+		authorDiscordId: "188719458498510848",
+	},
+	{
+		displayName: "Splat'n'Go",
+		fileName: "splat-n-go",
+		authorDiscordId: "570323825669963972",
+	},
 ];

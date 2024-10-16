@@ -113,6 +113,7 @@ export default class Ramp extends React.Component {
 
 	componentWillUnmount() {
 		window.ramp.que.push(() => {
+			if (!this.unitToAdd) return;
 			cleanUp(this.unitToAdd.selectorId);
 		});
 	}

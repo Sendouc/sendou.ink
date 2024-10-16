@@ -30,6 +30,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 				teamId: team.id,
 				userId: user.id,
 			});
+
 			break;
 		}
 		case "MAKE_MAIN_TEAM": {
@@ -37,6 +38,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 				userId: user.id,
 				teamId: team.id,
 			});
+
 			break;
 		}
 		default: {

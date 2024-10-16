@@ -18,7 +18,6 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { requireUserId } from "~/features/auth/core/user.server";
-import * as LFGRepository from "~/features/lfg/LFGRepository.server";
 import { isAdmin } from "~/permissions";
 import {
 	type SendouRouteHandle,
@@ -36,7 +35,6 @@ import {
 	uploadImagePage,
 } from "~/utils/urls";
 import * as TeamRepository from "../TeamRepository.server";
-import { deleteTeam } from "../queries/deleteTeam.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
@@ -89,14 +87,18 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 	switch (data._action) {
 		case "DELETE": {
-			await LFGRepository.deletePostsByTeamId(team.id);
-			deleteTeam(team.id);
+			await TeamRepository.del(team.id);
 
 			throw redirect(TEAM_SEARCH_PAGE);
 		}
 		case "EDIT": {
 			const newCustomUrl = mySlugify(data.name);
 			const existingTeam = await TeamRepository.findByCustomUrl(newCustomUrl);
+
+			validate(
+				newCustomUrl.length > 0,
+				"Team name can't be only special characters",
+			);
 
 			// can't take someone else's custom url
 			if (existingTeam && existingTeam.id !== team.id) {
