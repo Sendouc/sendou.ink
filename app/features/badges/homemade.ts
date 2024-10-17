@@ -110,6 +110,16 @@ export const homemadeBadges: BadgeInfo[] = [
 		authorDiscordId: "118724226994667523",
 	},
 	{
+		displayName: "Supply Closet",
+		fileName: "cc_smudge",
+		authorDiscordId: "148874365105078272",
+	},
+	{
+		displayName: "Scrap Bin",
+		fileName: "cc_smidge",
+		authorDiscordId: "148874365105078272",
+  	},
+  	{
 		displayName: "Paraflinch",
 		fileName: "paraflinch",
 		authorDiscordId: "528851510222782474",
