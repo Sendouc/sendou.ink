@@ -32,7 +32,7 @@ import type {
 	MainWeaponId,
 } from "~/modules/in-game-lists/types";
 import invariant from "~/utils/invariant";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { modeImageUrl } from "~/utils/urls";
 import type { UserPageLoaderData } from "./u.$identifier";
 

@@ -1,7 +1,7 @@
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { VodListing } from "~/features/vods/components/VodListing";
 import invariant from "~/utils/invariant";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 
 import { loader } from "../loaders/u.$identifier.vods.server";
 export { loader };

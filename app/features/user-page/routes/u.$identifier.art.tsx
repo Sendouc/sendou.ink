@@ -18,7 +18,7 @@ import {
 	notFoundIfFalsy,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { userParamsSchema } from "../user-page-schemas.server";
 import type { UserPageLoaderData } from "./u.$identifier";
 

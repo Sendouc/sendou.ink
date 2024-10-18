@@ -17,7 +17,11 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import invariant from "~/utils/invariant";
-import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
+import {
+	notFoundIfFalsy,
+	parseRequestPayload,
+	validate,
+} from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentPage, userEditProfilePage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";

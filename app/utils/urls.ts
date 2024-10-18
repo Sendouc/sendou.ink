@@ -272,6 +272,8 @@ export const weaponBuildPopularPage = (weaponSlug: string) =>
 export const calendarEventPage = (eventId: number) => `/calendar/${eventId}`;
 export const calendarEditPage = (eventId?: number) =>
 	`/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
+export const tournamentEditPage = (eventId: number) =>
+	`${calendarEditPage(eventId)}&tournament=true`;
 export const calendarReportWinnersPage = (eventId: number) =>
 	`/calendar/${eventId}/report-winners`;
 export const tournamentPage = (tournamentId: number) => `/to/${tournamentId}`;
@@ -464,6 +466,9 @@ export const winnersImageUrl = ({
 	season: number;
 	placement: number;
 }) => `/static-assets/img/winners/${season}/${placement}`;
+
+export const sqHeaderGuyImageUrl = (season: number) =>
+	`/static-assets/img/sq-header/${season}`;
 
 export const stageMinimapImageUrlWithEnding = ({
 	stageId,

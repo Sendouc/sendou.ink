@@ -36,7 +36,7 @@ import {
 	badRequestIfFalsy,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { userPage } from "~/utils/urls";

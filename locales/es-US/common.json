@@ -141,8 +141,6 @@
 
 	"plans.blueprint": "Planos",
 	"plans.bgStyle.OVER": "Vista aérea",
-	"plans.bgStyle.MINI": "Mapa (vacio)",
-	"plans.bgStyle.ITEMS": "Mapa",
 
 	"articles.by": "por {{author}}",
 
@@ -224,9 +222,5 @@
 	"chat.systemMsg.userLeft": "{{name}} se salió del grupo",
 	"chat.newMessages": "Nuevo mensajes",
 
-	"fc.title": "Clave de amigo",
-
-	"showcase.register": "Registrar",
-	"showcase.bracket": "Cuadro del torneo",
-	"showcase.liveNow": "¡En vivo!"
+	"fc.title": "Clave de amigo"
 }

@@ -25,7 +25,7 @@ import {
 	parseFormData,
 	uploadImageIfSubmitted,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { calendarEventPage } from "~/utils/urls";
 import {
 	actualNumber,

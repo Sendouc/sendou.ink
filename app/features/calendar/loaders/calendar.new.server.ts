@@ -7,7 +7,7 @@ import { tournamentData } from "~/features/tournament-bracket/core/Tournament.se
 import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { canEditCalendarEvent } from "~/permissions";
-import { validate } from "~/utils/remix";
+import { validate } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { tournamentBracketsPage } from "~/utils/urls";
 import { canAddNewEvent } from "../calendar-utils";

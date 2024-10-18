@@ -20,7 +20,7 @@ import { SearchIcon } from "~/components/icons/Search";
 import { useUser } from "~/features/auth/core/user";
 import { usePagination } from "~/hooks/usePagination";
 import { joinListToNaturalString } from "~/utils/arrays";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	TEAM_SEARCH_PAGE,
 	navIconUrl,

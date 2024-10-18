@@ -15,7 +15,7 @@ import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { modesShort } from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
 import invariant from "~/utils/invariant";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { rawSensToString } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {

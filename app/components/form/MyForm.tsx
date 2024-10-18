@@ -4,7 +4,7 @@ import * as React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import type { z } from "zod";
-import type { ActionError } from "~/utils/remix";
+import type { ActionError } from "~/utils/remix.server";
 import { SubmitButton } from "../SubmitButton";
 
 export function MyForm<T extends z.ZodTypeAny>({

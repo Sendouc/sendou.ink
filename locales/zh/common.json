@@ -141,8 +141,6 @@
 
 	"plans.blueprint": "蓝图",
 	"plans.bgStyle.OVER": "俯视图",
-	"plans.bgStyle.MINI": "小地图（空白）",
-	"plans.bgStyle.ITEMS": "小地图",
 
 	"articles.by": "作者 {{author}}",
 
@@ -224,9 +222,5 @@
 	"chat.systemMsg.userLeft": "{{name}} 离开了小队",
 	"chat.newMessages": "新消息",
 
-	"fc.title": "好友码",
-
-	"showcase.register": "报名",
-	"showcase.bracket": "对战表",
-	"showcase.liveNow": "直播中！"
+	"fc.title": "好友码"
 }

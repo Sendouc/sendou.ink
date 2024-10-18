@@ -119,6 +119,7 @@
 	max-width: 48rem;
 	margin: 0 auto;
 	padding-inline: var(--s-3);
+	min-height: 75vh;
 }
 
 .half-width {

@@ -1,7 +1,7 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
-import { parseRequestPayload, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix.server";
 import { mySlugify, teamPage } from "~/utils/urls";
 import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 import * as TeamRepository from "../TeamRepository.server";

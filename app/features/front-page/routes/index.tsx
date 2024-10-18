@@ -14,7 +14,9 @@ import { BSKYLikeIcon } from "~/components/icons/BSKYLike";
 import { BSKYReplyIcon } from "~/components/icons/BSKYReply";
 import { BSKYRepostIcon } from "~/components/icons/BSKYRepost";
 import { ExternalIcon } from "~/components/icons/External";
+import { KeyIcon } from "~/components/icons/Key";
 import { LogOutIcon } from "~/components/icons/LogOut";
+import { SearchIcon } from "~/components/icons/Search";
 import { UsersIcon } from "~/components/icons/Users";
 import navItems from "~/components/layout/nav-items.json";
 import { useUser } from "~/features/auth/core/user";
@@ -34,6 +36,7 @@ import {
 	SENDOUQ_PAGE,
 	leaderboardsPage,
 	navIconUrl,
+	sqHeaderGuyImageUrl,
 	tournamentPage,
 	userSubmittedImage,
 } from "~/utils/urls";
@@ -98,7 +101,7 @@ function DesktopSideNav() {
 }
 
 function SeasonBanner() {
-	const { i18n } = useTranslation();
+	const { t, i18n } = useTranslation(["front"]);
 	const season = nextSeason(new Date()) ?? currentOrPreviousSeason(new Date())!;
 	const _previousSeason = previousSeason(new Date());
 
@@ -110,7 +113,9 @@ function SeasonBanner() {
 	return (
 		<div className="stack xs">
 			<Link to={SENDOUQ_PAGE} className="front__season-banner">
-				<div className="front__season-banner__header">Season {season.nth}</div>
+				<div className="front__season-banner__header">
+					{t("front:sq.season", { nth: season.nth })}
+				</div>
 				<div className="front__season-banner__dates">
 					{season.starts.toLocaleDateString(i18n.language, {
 						month: "long",
@@ -122,16 +127,20 @@ function SeasonBanner() {
 						day: "numeric",
 					})}
 				</div>
-				<img
-					alt=""
+				<Image
 					className="front__season-banner__img"
-					src="http://localhost:5173/static-assets/img/robot.png"
+					path={sqHeaderGuyImageUrl(season.nth)}
+					alt=""
 				/>
 			</Link>
 			<Link to={SENDOUQ_PAGE} className="front__season-banner__link">
 				<div className="stack horizontal xs items-center">
 					<Image path={navIconUrl("sendouq")} width={24} alt="" />
-					{isInFuture ? <>Prepare now!</> : <>Particate now!</>}{" "}
+					{isInFuture ? (
+						<>{t("front:sq.prepare")}</>
+					) : (
+						<>{t("front:sq.participate")}</>
+					)}
 					<ArrowRightIcon />
 				</div>
 			</Link>
@@ -139,8 +148,8 @@ function SeasonBanner() {
 	);
 }
 
-// xxx: outline cut off
 function TournamentCards() {
+	const { t } = useTranslation(["front"]);
 	const data = useLoaderData<typeof loader>();
 
 	if (
@@ -155,18 +164,22 @@ function TournamentCards() {
 		<div>
 			<NewTabs
 				disappearing
+				padded={false}
 				tabs={[
 					{
-						label: "Signed up for",
+						label: t("front:showcase.tabs.signedUp"),
 						hidden: data.tournaments.participatingFor.length === 0,
+						icon: <UsersIcon />,
 					},
 					{
-						label: "Organizer for",
+						label: t("front:showcase.tabs.organizer"),
 						hidden: data.tournaments.organizingFor.length === 0,
+						icon: <KeyIcon />,
 					},
 					{
-						label: "Discover",
+						label: t("front:showcase.tabs.discover"),
 						hidden: data.tournaments.showcase.length === 0,
+						icon: <SearchIcon />,
 					},
 				]}
 				content={[
@@ -210,7 +223,11 @@ function ShowcaseTournamentScroller({
 		<div className="front__tournament-cards">
 			<div className="front__tournament-cards__spacer overflow-x-scroll">
 				{tournaments.map((tournament) => (
-					<TournamentCard key={tournament.id} tournament={tournament} />
+					<TournamentCard
+						key={tournament.id}
+						tournament={tournament}
+						topSpaced
+					/>
 				))}
 			</div>
 			<AllTournamentsLinkCard />
@@ -219,22 +236,28 @@ function ShowcaseTournamentScroller({
 }
 
 function AllTournamentsLinkCard() {
+	const { t } = useTranslation(["front"]);
+
 	return (
 		<Link
 			to={CALENDAR_TOURNAMENTS_PAGE}
-			className="front__tournament-cards__view-all-card"
+			className="front__tournament-cards__view-all-card mt-4"
 		>
 			<Image path={navIconUrl("medal")} size={36} alt="" />
-			View all tournaments
+			{t("front:showcase.viewAll")}
 		</Link>
 	);
 }
 
 function TournamentCard({
 	tournament,
-}: { tournament: ShowcaseTournaments.ShowcaseTournament }) {
+	topSpaced,
+}: {
+	tournament: ShowcaseTournaments.ShowcaseTournament;
+	topSpaced?: boolean;
+}) {
 	const isMounted = useIsMounted();
-	const { i18n } = useTranslation(["common"]);
+	const { t, i18n } = useTranslation(["front", "common"]);
 
 	const time = () => {
 		if (!isMounted) return "Placeholder";
@@ -254,6 +277,7 @@ function TournamentCard({
 		<div
 			className={clsx("front__tournament-card__container", {
 				"front__tournament-card__container__tall": tournament.firstPlacer,
+				"mt-4": topSpaced,
 			})}
 		>
 			<Link
@@ -303,11 +327,11 @@ function TournamentCard({
 				</div>
 				{tournament.isRanked ? (
 					<div className="front__tournament-card__tag front__tournament-card__ranked">
-						Ranked
+						{t("front:showcase.card.ranked")}
 					</div>
 				) : (
 					<div className="front__tournament-card__tag front__tournament-card__unranked">
-						Unranked
+						{t("front:showcase.card.unranked")}
 					</div>
 				)}
 			</div>
@@ -322,6 +346,8 @@ function TournamentFirstPlacers({
 		ShowcaseTournaments.ShowcaseTournament["firstPlacer"]
 	>;
 }) {
+	const { t } = useTranslation(["front"]);
+
 	return (
 		<div className="front__tournament-card__first-placers">
 			<div className="stack xs horizontal items-center text-xs">
@@ -337,7 +363,9 @@ function TournamentFirstPlacers({
 					<span className="front__tournament-card__first-placers__team-name">
 						{firstPlacer.teamName}
 					</span>
-					<div className="text-xxxs text-lighter font-bold">WINNER</div>
+					<div className="text-xxxs text-lighter font-bold text-uppercase">
+						{t("front:showcase.card.winner")}
+					</div>
 				</div>
 			</div>
 			<div className="text-xxs stack items-start mt-1">
@@ -358,14 +386,24 @@ function TournamentFirstPlacers({
 }
 
 function ResultHighlights() {
+	const { t } = useTranslation(["front"]);
 	const data = useLoaderData<typeof loader>();
+
+	// should not happen
+	if (
+		!data.leaderboards.team.length ||
+		!data.leaderboards.user.length ||
+		!data.tournaments.results.length
+	) {
+		return null;
+	}
 
 	const season = currentOrPreviousSeason(new Date())!;
 
 	const recentResults = (
 		<>
 			<h2 className="front__result-highlights__title front__result-highlights__title__tournaments">
-				Recent results
+				{t("front:showcase.results")}
 			</h2>
 			<div className="front__tournament-cards__spacer">
 				{data.tournaments.results.map((tournament) => (
@@ -379,7 +417,9 @@ function ResultHighlights() {
 		<>
 			<div className="front__result-highlights overflow-x-auto">
 				<div className="stack sm text-center">
-					<h2 className="front__result-highlights__title">Top players</h2>
+					<h2 className="front__result-highlights__title">
+						{t("front:leaderboards.topPlayers")}
+					</h2>
 					<Leaderboard
 						entries={data.leaderboards.user}
 						fullLeaderboardUrl={leaderboardsPage({
@@ -389,7 +429,9 @@ function ResultHighlights() {
 					/>
 				</div>
 				<div className="stack sm text-center">
-					<h2 className="front__result-highlights__title">Top teams</h2>
+					<h2 className="front__result-highlights__title">
+						{t("front:leaderboards.topTeams")}
+					</h2>
 					<Leaderboard
 						entries={data.leaderboards.team}
 						fullLeaderboardUrl={leaderboardsPage({
@@ -415,6 +457,8 @@ function Leaderboard({
 	entries,
 	fullLeaderboardUrl,
 }: { entries: LeaderboardEntry[]; fullLeaderboardUrl: string }) {
+	const { t } = useTranslation(["front"]);
+
 	return (
 		<div className="stack xs items-center">
 			<div className="front__leaderboard">
@@ -437,13 +481,14 @@ function Leaderboard({
 			</div>
 			<Link to={fullLeaderboardUrl} className="front__leaderboard__view-all">
 				<Image path={navIconUrl("leaderboards")} size={16} alt="" />
-				View full leaderboard
+				{t("front:leaderboards.viewFull")}
 			</Link>
 		</div>
 	);
 }
 
 function ChangelogList() {
+	const { t } = useTranslation(["front"]);
 	const data = useLoaderData<typeof loader>();
 
 	if (data.changelog.length === 0) return null;
@@ -451,7 +496,7 @@ function ChangelogList() {
 	return (
 		<div className="stack md">
 			<Divider smallText className="text-uppercase text-xs font-bold">
-				Updates
+				{t("front:updates.header")}
 			</Divider>
 			{data.changelog.map((item) => (
 				<React.Fragment key={item.id}>
@@ -465,7 +510,8 @@ function ChangelogList() {
 				rel="noopener noreferrer"
 				className="stack horizontal sm mx-auto text-xs font-bold"
 			>
-				View past updates <ExternalIcon className="front__external-link-icon" />
+				{t("front:updates.viewPast")}{" "}
+				<ExternalIcon className="front__external-link-icon" />
 			</a>
 		</div>
 	);

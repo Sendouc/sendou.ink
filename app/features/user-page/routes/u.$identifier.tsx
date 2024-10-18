@@ -10,7 +10,7 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
+import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import {
 	USER_SEARCH_PAGE,

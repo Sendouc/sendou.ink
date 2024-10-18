@@ -120,8 +120,6 @@
 
 	"plans.blueprint": "Entwurf",
 	"plans.bgStyle.OVER": "Vogelperspektive",
-	"plans.bgStyle.MINI": "Mini-Karte (leer)",
-	"plans.bgStyle.ITEMS": "Mini-Karte",
 
 	"articles.by": "von {{author}}",
 

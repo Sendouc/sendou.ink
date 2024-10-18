@@ -31,6 +31,14 @@
 	"header.language": "Language",
 	"header.loggedInAs": "Logged in as {{userName}}",
 	"header.theme": "Theme",
+	"header.adder.tournament": "Tournament",
+	"header.adder.calendarEvent": "Calendar event",
+	"header.adder.build": "Build",
+	"header.adder.team": "Team",
+	"header.adder.lfgPost": "LFG post",
+	"header.adder.art": "Art",
+	"header.adder.vod": "VoD",
+	"header.adder.plusSuggestion": "Plus suggestion",
 
 	"auth.errors.aborted": "Login Aborted",
 	"auth.errors.failed": "Login Failed",
@@ -144,8 +152,7 @@
 
 	"plans.blueprint": "Blueprint",
 	"plans.bgStyle.OVER": "Overhead",
-	"plans.bgStyle.MINI": "Minimap (blank)",
-	"plans.bgStyle.ITEMS": "Minimap",
+	"plans.bgStyle.MINI": "Minimap",
 
 	"articles.by": "by {{author}}",
 
@@ -229,9 +236,5 @@
 	"chat.systemMsg.userLeft": "{{name}} left the group",
 	"chat.newMessages": "New messages",
 
-	"fc.title": "Friend code",
-
-	"showcase.register": "Register",
-	"showcase.bracket": "Bracket",
-	"showcase.liveNow": "Live now!"
+	"fc.title": "Friend code"
 }

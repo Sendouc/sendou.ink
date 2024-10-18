@@ -4,7 +4,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type { RootLoaderData } from "~/root";
-import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix";
+import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix.server";
 import { Button } from "../Button";
 import { Image } from "../Image";
 import { HamburgerIcon } from "../icons/Hamburger";

@@ -34,7 +34,7 @@ import {
 	getWeekStartsAtMondayDay,
 	weekNumberToDate,
 } from "~/utils/dates";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import {
@@ -402,7 +402,7 @@ function EventsList({
 									{t("pastEvents.dividerText")}
 								</Divider>
 							) : null}
-							<div className="calendar__event__date main">
+							<div className="calendar__event__date">
 								{daysDate.toLocaleDateString(i18n.language, {
 									weekday: "long",
 									day: "numeric",
@@ -417,6 +417,9 @@ function EventsList({
 								).toLocaleString(i18n.language, {
 									weekday: "short",
 								});
+
+								const isOneVsOne =
+									calendarEvent.tournamentSettings?.minMembersPerTeam === 1;
 
 								const startTimeDate = databaseTimestampToDate(
 									calendarEvent.startTime,
@@ -435,7 +438,7 @@ function EventsList({
 								return (
 									<section
 										key={calendarEvent.eventDateId}
-										className="calendar__event main stack md"
+										className="calendar__event stack md"
 									>
 										<div className="stack sm">
 											<div className="calendar__event__top-info-container">
@@ -522,10 +525,15 @@ function EventsList({
 														calendarEvent.participantCounts.teams > 0 ? (
 															<div className="calendar__event__participant-counts">
 																<UsersIcon />{" "}
-																{t("count.teams", {
-																	count: calendarEvent.participantCounts.teams,
-																})}{" "}
-																/{" "}
+																{!isOneVsOne ? (
+																	<>
+																		{t("count.teams", {
+																			count:
+																				calendarEvent.participantCounts.teams,
+																		})}{" "}
+																		/{" "}
+																	</>
+																) : null}
 																{t("count.players", {
 																	count:
 																		calendarEvent.participantCounts.players,

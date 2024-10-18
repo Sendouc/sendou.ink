@@ -31,7 +31,7 @@ import {
 	parseFormData,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import {
 	artPage,
 	conditionalUserSubmittedImage,

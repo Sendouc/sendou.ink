@@ -22,7 +22,7 @@ import {
 	badRequestIfFalsy,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { plusSuggestionPage } from "~/utils/urls";
 import { actualNumber, trimmedString } from "~/utils/zod";
 import type { PlusSuggestionsLoaderData } from "./plus.suggestions";

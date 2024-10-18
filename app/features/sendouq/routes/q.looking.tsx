@@ -31,7 +31,7 @@ import {
 	type SendouRouteHandle,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { errorIsSqliteForeignKeyConstraintFailure } from "~/utils/sql";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";

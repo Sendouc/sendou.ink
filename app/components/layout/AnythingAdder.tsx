@@ -1,5 +1,6 @@
 import { useNavigate } from "@remix-run/react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core/user";
 import {
 	CALENDAR_NEW_PAGE,
@@ -20,13 +21,19 @@ const FilterMenuButton = React.forwardRef<
 	React.ButtonHTMLAttributes<HTMLButtonElement>
 >((props, ref) => {
 	return (
-		<button className="layout__header__button" {...props} ref={ref}>
+		<button
+			className="layout__header__button"
+			{...props}
+			ref={ref}
+			data-testid="anything-adder-menu-button"
+		>
 			<PlusIcon className="layout__header__button__icon" />
 		</button>
 	);
 });
 
 export function AnythingAdder() {
+	const { t } = useTranslation(["common"]);
 	const user = useUser();
 	const navigate = useNavigate();
 
@@ -37,49 +44,49 @@ export function AnythingAdder() {
 	const items: MenuProps["items"] = [
 		{
 			id: "tournament",
-			text: "Tournament",
+			text: t("header.adder.tournament"),
 			imagePath: navIconUrl("medal"),
 			onClick: () => navigate(TOURNAMENT_NEW_PAGE),
 		},
 		{
 			id: "calendarEvent",
-			text: "Calendar event",
+			text: t("header.adder.calendarEvent"),
 			imagePath: navIconUrl("calendar"),
 			onClick: () => navigate(CALENDAR_NEW_PAGE),
 		},
 		{
 			id: "builds",
-			text: "Build",
+			text: t("header.adder.build"),
 			imagePath: navIconUrl("builds"),
 			onClick: () => navigate(userNewBuildPage(user)),
 		},
 		{
 			id: "team",
-			text: "Team",
+			text: t("header.adder.team"),
 			imagePath: navIconUrl("t"),
 			onClick: () => navigate(NEW_TEAM_PAGE),
 		},
 		{
 			id: "lfgPost",
-			text: "LFG post",
+			text: t("header.adder.lfgPost"),
 			imagePath: navIconUrl("lfg"),
 			onClick: () => navigate(lfgNewPostPage()),
 		},
 		{
 			id: "art",
-			text: "Art",
+			text: t("header.adder.art"),
 			imagePath: navIconUrl("art"),
 			onClick: () => navigate(newArtPage()),
 		},
 		{
 			id: "vods",
-			text: "VoD",
+			text: t("header.adder.vod"),
 			imagePath: navIconUrl("vods"),
 			onClick: () => navigate(newVodPage()),
 		},
 		{
 			id: "plus",
-			text: "Plus suggestion",
+			text: t("header.adder.plusSuggestion"),
 			imagePath: navIconUrl("plus"),
 			onClick: () => navigate(plusSuggestionsNewPage()),
 		},

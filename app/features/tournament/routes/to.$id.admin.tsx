@@ -33,11 +33,11 @@ import {
 	badRequestIfFalsy,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import {
-	calendarEditPage,
 	calendarEventPage,
+	tournamentEditPage,
 	tournamentPage,
 } from "~/utils/urls";
 import * as TournamentRepository from "../TournamentRepository.server";
@@ -393,7 +393,7 @@ export default function TournamentAdminPage() {
 			{tournament.isAdmin(user) && !tournament.hasStarted ? (
 				<div className="stack horizontal items-end">
 					<LinkButton
-						to={calendarEditPage(tournament.ctx.eventId)}
+						to={tournamentEditPage(tournament.ctx.eventId)}
 						size="tiny"
 						variant="outlined"
 						testId="edit-event-info-button"

@@ -35,7 +35,7 @@ import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
 	parseRequestPayload,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { VODS_PAGE, vodVideoPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { createVod, updateVodByReplacing } from "../queries/createVod.server";

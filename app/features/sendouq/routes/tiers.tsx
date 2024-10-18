@@ -10,7 +10,7 @@ import {
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["q"],

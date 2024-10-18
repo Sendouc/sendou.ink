@@ -564,6 +564,13 @@ dialog::backdrop {
 	border-bottom: 2px solid var(--border);
 }
 
+.tab__buttons-container svg {
+	--icon-size: 16px;
+	width: var(--icon-size);
+	height: var(--icon-size);
+	margin-inline-end: var(--s-1-5);
+}
+
 .tab__button {
 	background-color: transparent;
 	border: none;

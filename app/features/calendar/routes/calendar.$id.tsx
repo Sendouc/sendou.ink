@@ -38,7 +38,7 @@ import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import {
 	CALENDAR_PAGE,

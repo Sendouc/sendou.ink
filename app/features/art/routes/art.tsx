@@ -13,7 +13,7 @@ import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { CrossIcon } from "~/components/icons/Cross";
 import i18next from "~/modules/i18n/i18next.server";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { artPage, navIconUrl } from "~/utils/urls";
 import { ArtGrid } from "../components/ArtGrid";

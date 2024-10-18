@@ -38,7 +38,7 @@ import {
 	getDateWithHoursOffset,
 } from "~/utils/dates";
 import invariant from "~/utils/invariant";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { pathnameFromPotentialURL } from "~/utils/strings";
 import { userSubmittedImage } from "~/utils/urls";
 import {
@@ -112,7 +112,7 @@ export default function CalendarNewEventPage() {
 	return (
 		<Main className="calendar-new__container">
 			<div className="stack md">
-				<TemplateTournamentForm />
+				{data.isAddingTournament ? <TemplateTournamentForm /> : null}
 				<EventForm key={baseEvent?.eventId} />
 			</div>
 		</Main>
@@ -128,7 +128,7 @@ function TemplateTournamentForm() {
 	return (
 		<>
 			<div>
-				<Form className="stack horizontal sm">
+				<Form className="stack horizontal sm flex-wrap">
 					<select
 						className="w-max"
 						name="copyEventId"
@@ -142,7 +142,7 @@ function TemplateTournamentForm() {
 								{event.name} (
 								{databaseTimestampToDate(event.startTime).toLocaleDateString(
 									"en-US",
-									{ month: "long", day: "numeric", year: "numeric" },
+									{ month: "numeric", day: "numeric" },
 								)}
 								)
 							</option>

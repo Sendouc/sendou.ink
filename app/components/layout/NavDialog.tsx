@@ -18,8 +18,12 @@ export function NavDialog({
 	const user = useUser();
 	const { t } = useTranslation(["common"]);
 
+	if (!isOpen) {
+		return null;
+	}
+
 	return (
-		<Dialog isOpen={isOpen} className="layout__overlay-nav__dialog">
+		<Dialog isOpen className="layout__overlay-nav__dialog">
 			<Button
 				icon={<CrossIcon />}
 				variant="minimal-destructive"

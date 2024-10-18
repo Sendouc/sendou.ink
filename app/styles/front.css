@@ -183,6 +183,7 @@
 	transition: 0.2s ease-out;
 	min-width: 90px;
 	max-width: 90px;
+	border: 2.5px solid var(--bg-lightest-solid);
 }
 
 .front__tournament-cards__view-all-card:hover {

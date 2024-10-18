@@ -18,7 +18,7 @@ import { useSearchParamState } from "~/hooks/useSearchParamState";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
 import { atOrError } from "~/utils/arrays";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { weaponCategoryUrl } from "~/utils/urls";
 import { DEFAULT_BUILD_SORT } from "../user-page-constants";
 import type { UserPageLoaderData } from "./u.$identifier";
@@ -84,6 +84,7 @@ export default function UserBuildsPage() {
 						size="tiny"
 						variant="outlined"
 						icon={<SortIcon />}
+						testId="change-sorting-button"
 					>
 						{t("user:builds.sorting.changeButton")}
 					</Button>

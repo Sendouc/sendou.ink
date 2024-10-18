@@ -16,7 +16,7 @@ import {
 	parseFormData,
 	uploadImageIfSubmitted,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { booleanToInt } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
 import { checkIn } from "../queries/checkIn.server";
