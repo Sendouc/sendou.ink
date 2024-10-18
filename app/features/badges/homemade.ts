@@ -159,4 +159,15 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "splat-n-go",
 		authorDiscordId: "570323825669963972",
 	},
+	{
+		displayName: "Supply Closet (Smudge)",
+		fileName: "cc-smudge",
+		authorDiscordId: "148874365105078272",
+	},
+	{
+		displayName: "Scrap Bin (Smidge)",
+		fileName: "cc-smidge",
+		authorDiscordId: "148874365105078272",
+	}
+
 ];
