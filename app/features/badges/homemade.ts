@@ -164,4 +164,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "heaven2ocean",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "Seabattle",
+		fileName: "seabattle",
+		authorDiscordId: "528851510222782474",
+	},
 ];
