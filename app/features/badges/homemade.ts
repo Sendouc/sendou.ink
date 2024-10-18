@@ -159,4 +159,19 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "splat-n-go",
 		authorDiscordId: "570323825669963972",
 	},
+	{
+		displayName: "Minus One Cup",
+		fileName: "minus-one-cup",
+		authorDiscordId: "569271521776762896",
+	},
+	{
+		displayName: "Minus One Cup (Coach)",
+		fileName: "minus-one-cup-coach",
+		authorDiscordId: "569271521776762896",
+	},
+	{
+		displayName: "Minus One Open",
+		fileName: "minus-one-open",
+		authorDiscordId: "569271521776762896",
+	},
 ];
