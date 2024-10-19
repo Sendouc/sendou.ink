@@ -24,6 +24,7 @@ import {
 	PATCHES,
 } from "~/constants";
 import { safeJSONParse } from "~/utils/json";
+import { isRevalidation } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import type { Unpacked } from "~/utils/types";
 import {
@@ -41,7 +42,6 @@ import {
 import type { BuildFiltersFromSearchParams } from "../builds-schemas.server";
 import type { AbilityBuildFilter, BuildFilter } from "../builds-types";
 import { FilterSection } from "../components/FilterSection";
-import { isRevalidation } from "~/utils/remix";
 
 import { loader } from "../loaders/builds.$slug.server";
 export { loader };
