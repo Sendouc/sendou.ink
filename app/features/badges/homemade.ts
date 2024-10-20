@@ -159,4 +159,19 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "splat-n-go",
 		authorDiscordId: "570323825669963972",
 	},
+	{
+		displayName: "Karot's Tourneys (100 KT Power)",
+		fileName: "ktlow",
+		authorDiscordId: "1170249805373657093",
+	},
+	{
+		displayName: "Karot's Tourneys (500 KT Power)",
+		fileName: "ktmed",
+		authorDiscordId: "1170249805373657093",
+	},
+	{
+		displayName: "Karot's Tourneys (999 KT Power)",
+		fileName: "kthigh",
+		authorDiscordId: "1170249805373657093",
+	},
 ];
