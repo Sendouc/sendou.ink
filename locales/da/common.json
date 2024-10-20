@@ -124,8 +124,6 @@
 
 	"plans.blueprint": "Blåtryk",
 	"plans.bgStyle.OVER": "Set ovenfra",
-	"plans.bgStyle.MINI": "Kort (blankt)",
-	"plans.bgStyle.ITEMS": "Kort",
 
 	"articles.by": "af {{author}}",
 

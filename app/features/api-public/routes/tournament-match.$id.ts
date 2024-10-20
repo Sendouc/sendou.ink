@@ -6,7 +6,7 @@ import { db } from "~/db/sql";
 import { resolveMapList } from "~/features/tournament-bracket/core/mapList.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import i18next from "~/modules/i18n/i18next.server";
-import { notFoundIfFalsy, parseParams } from "~/utils/remix";
+import { notFoundIfFalsy, parseParams } from "~/utils/remix.server";
 import { id } from "~/utils/zod";
 import {
 	handleOptionsRequest,

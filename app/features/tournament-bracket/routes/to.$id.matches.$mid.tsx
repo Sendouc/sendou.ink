@@ -25,7 +25,7 @@ import {
 	parseParams,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import {
 	tournamentBracketsPage,

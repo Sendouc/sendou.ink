@@ -7,6 +7,7 @@ import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import { z } from "zod";
+import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
@@ -35,7 +36,7 @@ import {
 	badRequestIfFalsy,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { userPage } from "~/utils/urls";
@@ -191,6 +192,12 @@ export default function PlusSuggestionsPage() {
 			<div className="plus__container">
 				<div className="stack md">
 					<SuggestedForInfo />
+					{searchParams.get("alert") === "true" ? (
+						<Alert variation="WARNING">
+							You do not have permissions to suggest or suggesting is not
+							possible right now
+						</Alert>
+					) : null}
 					<div className="stack lg">
 						<div
 							className={clsx("plus__top-container", {
@@ -227,16 +234,6 @@ export default function PlusSuggestionsPage() {
 									);
 								})}
 							</div>
-							{canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
-								// TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
-								<LinkButton
-									to={`new${tierVisible ? `?tier=${tierVisible}` : ""}`}
-									prefetch="render"
-									size="tiny"
-								>
-									Suggest
-								</LinkButton>
-							) : null}
 						</div>
 						<div className="stack lg">
 							{visibleSuggestions.map((suggestion) => {

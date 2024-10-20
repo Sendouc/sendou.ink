@@ -34,9 +34,11 @@ test.describe("Team search page", () => {
 	test("creates new team", async ({ page }) => {
 		await seed(page);
 		await impersonate(page, NZAP_TEST_ID);
-		await navigate({ page, url: TEAM_SEARCH_PAGE });
+		await navigate({ page, url: "/" });
 
-		await page.getByTestId("new-team-button").click();
+		await page.getByTestId("anything-adder-menu-button").click();
+		await page.getByTestId("menu-item-team").click();
+
 		await expect(page).toHaveURL(/new=true/);
 		await page.getByTestId("new-team-name-input").fill("Chimera");
 		await submit(page);

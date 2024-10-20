@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { CalendarEventTag } from "~/db/types";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
 	clearTournamentDataCache,
@@ -24,14 +25,13 @@ import {
 	parseFormData,
 	uploadImageIfSubmitted,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { calendarEventPage } from "~/utils/urls";
 import {
 	actualNumber,
 	checkboxValueToBoolean,
 	date,
 	falsyToNull,
-	hexCode,
 	id,
 	processMany,
 	removeDuplicates,
@@ -86,13 +86,6 @@ export const action: ActionFunction = async ({ request }) => {
 		avatarFileName,
 		// reused avatar either via edit or template
 		avatarImgId: data.avatarImgId ?? undefined,
-		avatarMetadata:
-			data.backgroundColor && data.textColor
-				? {
-						backgroundColor: data.backgroundColor,
-						textColor: data.textColor,
-					}
-				: undefined,
 		autoValidateAvatar: Boolean(user.patronTier),
 		toToolsEnabled: user.isTournamentOrganizer
 			? Number(data.toToolsEnabled)
@@ -162,6 +155,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 		if (eventToEdit.tournamentId) {
 			clearTournamentDataCache(eventToEdit.tournamentId);
+			ShowcaseTournaments.clearParticipationInfoMap();
 		}
 
 		throw redirect(calendarEventPage(data.eventToEditId));
@@ -178,6 +172,11 @@ export const action: ActionFunction = async ({ request }) => {
 		mapPickingStyle: mapPickingStyle(),
 		...commonArgs,
 	});
+
+	if (data.toToolsEnabled) {
+		ShowcaseTournaments.clearParticipationInfoMap();
+		ShowcaseTournaments.clearCachedTournaments();
+	}
 
 	throw redirect(calendarEventPage(createdEventId));
 };
@@ -236,8 +235,6 @@ export const newCalendarEventActionSchema = z
 			processMany(safeJSONParse, removeDuplicates),
 			z.array(id).nullable(),
 		),
-		backgroundColor: hexCode.nullish(),
-		textColor: hexCode.nullish(),
 		avatarImgId: id.nullish(),
 		pool: z.string().optional(),
 		toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),

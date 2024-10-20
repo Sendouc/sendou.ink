@@ -53,7 +53,7 @@ import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
 import invariant from "~/utils/invariant";
 import { cutToNDecimalPlaces, roundToNDecimalPlaces } from "~/utils/number";
-import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
+import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix.server";
 import { TIERS_PAGE, sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
 import {
 	seasonsSearchParamsSchema,

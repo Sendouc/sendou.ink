@@ -37,7 +37,7 @@ import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { nullFilledArray } from "~/utils/arrays";
 import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
-import { parseRequestPayload, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import {
 	SENDOU_INK_BASE_URL,
