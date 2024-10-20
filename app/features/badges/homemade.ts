@@ -173,7 +173,7 @@ export const homemadeBadges: BadgeInfo[] = [
 		displayName: "Karot's Tourneys (999 KT Power)",
 		fileName: "kthigh",
 		authorDiscordId: "1170249805373657093",
-	}, 
+	},
 	{
 		displayName: "Heaven 2 Ocean Qualifer",
 		fileName: "heaven2ocean",
