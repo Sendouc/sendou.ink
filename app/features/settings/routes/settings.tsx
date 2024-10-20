@@ -16,10 +16,12 @@ export const handle: SendouRouteHandle = {
 };
 
 export default function SettingsPage() {
+	const { t } = useTranslation(["common"]);
+
 	return (
 		<Main halfWidth>
 			<div className="stack md">
-				<h2 className="text-lg">Settings</h2>
+				<h2 className="text-lg">{t("common:pages.settings")}</h2>
 				<LanguageSelector />
 				<ThemeSelector />
 			</div>
@@ -28,6 +30,7 @@ export default function SettingsPage() {
 }
 
 function LanguageSelector() {
+	const { t } = useTranslation(["common"]);
 	const { i18n } = useTranslation();
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
@@ -41,7 +44,7 @@ function LanguageSelector() {
 
 	return (
 		<div>
-			<Label htmlFor="lang">Language</Label>
+			<Label htmlFor="lang">{t("common:header.language")}</Label>
 			<select
 				id="lang"
 				defaultValue={i18n.language}
@@ -69,12 +72,12 @@ function addUniqueParam(
 }
 
 function ThemeSelector() {
-	const { t } = useTranslation();
+	const { t } = useTranslation(["common"]);
 	const { userTheme, setUserTheme } = useTheme();
 
 	return (
 		<div>
-			<Label htmlFor="theme">Theme</Label>
+			<Label htmlFor="theme">{t("common:header.theme")}</Label>
 			<select
 				id="theme"
 				defaultValue={userTheme ?? "auto"}
@@ -83,7 +86,7 @@ function ThemeSelector() {
 				{(["auto", Theme.DARK, Theme.LIGHT] as const).map((theme) => {
 					return (
 						<option key={theme} value={theme}>
-							{t(`theme.${theme}`)}
+							{t(`common:theme.${theme}`)}
 						</option>
 					);
 				})}

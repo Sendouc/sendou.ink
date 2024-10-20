@@ -29,6 +29,7 @@ import {
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	BLANK_IMAGE_URL,
 	CALENDAR_TOURNAMENTS_PAGE,
@@ -46,6 +47,10 @@ import { type LeaderboardEntry, loader } from "../loaders/index.server";
 export { loader };
 
 import "~/styles/front.css";
+
+export const handle: SendouRouteHandle = {
+	i18n: ["front"],
+};
 
 export default function FrontPage() {
 	return (
