@@ -169,4 +169,9 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "seabattle",
 		authorDiscordId: "528851510222782474",
 	},
+	{
+		displayName: "Dodge Rollers",
+		fileName: "splat_dualie",
+		authorDiscordId: "218883697007394816",
+	},
 ];
