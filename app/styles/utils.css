@@ -166,6 +166,10 @@
 	width: min-content;
 }
 
+.p-1-5 {
+	padding: var(--s-1-5);
+}
+
 .px-4 {
 	padding-inline: var(--s-4);
 }
@@ -283,7 +287,11 @@
 }
 
 .mx-auto {
-	margin: 0 auto;
+	margin-inline: auto;
+}
+
+.mx-1 {
+	margin-inline: var(--s-1);
 }
 
 .mx-2 {
@@ -332,6 +340,16 @@
 
 .overflow-x-auto {
 	overflow-x: auto;
+	scrollbar-color: rgb(83 65 91) transparent;
+	scrollbar-width: thin;
+	scrollbar-gutter: stable;
+}
+
+.overflow-x-scroll {
+	overflow-x: scroll;
+	scrollbar-color: rgb(83 65 91) transparent;
+	scrollbar-width: thin;
+	scrollbar-gutter: stable;
 }
 
 .relative {

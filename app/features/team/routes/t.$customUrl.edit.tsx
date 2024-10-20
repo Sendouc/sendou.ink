@@ -24,7 +24,7 @@ import {
 	notFoundIfFalsy,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {

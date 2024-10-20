@@ -21,7 +21,7 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {

@@ -3,7 +3,7 @@ import { cors } from "remix-utils/cors";
 import { z } from "zod";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { databaseTimestampToDate, weekNumberToDate } from "~/utils/dates";
-import { parseParams } from "~/utils/remix";
+import { parseParams } from "~/utils/remix.server";
 import {
 	handleOptionsRequest,
 	requireBearerAuth,

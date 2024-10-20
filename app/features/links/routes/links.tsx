@@ -3,7 +3,7 @@ import { Main } from "~/components/Main";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { YouTubeIcon } from "~/components/icons/YouTube";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { LINKS_PAGE, navIconUrl } from "~/utils/urls";
 import links from "../links.json";
 

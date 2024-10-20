@@ -18,7 +18,7 @@ import { UsersIcon } from "~/components/icons/Users";
 import { useUser } from "~/features/auth/core/user";
 import { isAdmin } from "~/permissions";
 import { removeDuplicates } from "~/utils/arrays";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import {
 	TEAM_SEARCH_PAGE,

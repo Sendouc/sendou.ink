@@ -1,7 +1,7 @@
 import type { ActionFunction } from "@remix-run/node";
 import { z } from "zod";
 import { seed } from "~/db/seed";
-import { parseRequestPayload } from "~/utils/remix";
+import { parseRequestPayload } from "~/utils/remix.server";
 
 const seedSchema = z.object({
 	variation: z

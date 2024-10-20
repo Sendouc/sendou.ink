@@ -10,7 +10,7 @@ import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { teamPage } from "~/utils/urls";
 import * as TeamRepository from "../TeamRepository.server";
 import { inviteCodeById } from "../queries/inviteCodeById.server";
