@@ -229,4 +229,14 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "breezesr",
 		authorDiscordId: "342369454719631361",
 	},
+	{
+		displayName: "Scrap Bin (Smidge)",
+		fileName: "cc-smidge",
+		authorDiscordId: "148874365105078272",
+	},
+	{
+		displayName: "Supply Closet (Smudge)",
+		fileName: "cc-smudge",
+		authorDiscordId: "148874365105078272",
+	},
 ];
