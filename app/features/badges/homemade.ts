@@ -170,6 +170,11 @@ export const homemadeBadges: BadgeInfo[] = [
 		authorDiscordId: "528851510222782474",
 	},
 	{
+		displayName: "Dodge Rollers",
+		fileName: "splat_dualie",
+		authorDiscordId: "218883697007394816",
+	},
+	{
 		displayName: "Breeze LAN (1st)",
 		fileName: "breeze",
 		authorDiscordId: "342369454719631361",
