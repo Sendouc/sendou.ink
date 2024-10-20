@@ -37,6 +37,19 @@ const staticAssetsUrl = ({
 }) =>
 	`https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
 
+export const discordAvatarUrl = ({
+	discordId,
+	discordAvatar,
+	size,
+}: {
+	discordId: string;
+	discordAvatar: string;
+	size: "lg" | "sm";
+}) =>
+	`https://cdn.discordapp.com/avatars/${discordId}/${
+		discordAvatar
+	}.webp${size === "lg" ? "?size=240" : "?size=80"}`;
+
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
 export const BADGES_DOC_LINK =
@@ -93,7 +106,11 @@ export const BADGES_PAGE = "/badges";
 export const BUILDS_PAGE = "/builds";
 export const USER_SEARCH_PAGE = "/u";
 export const TEAM_SEARCH_PAGE = "/t";
+export const NEW_TEAM_PAGE = "/t?new=true";
 export const CALENDAR_PAGE = "/calendar";
+export const CALENDAR_NEW_PAGE = "/calendar/new";
+export const TOURNAMENT_NEW_PAGE = "/calendar/new?tournament=true";
+export const CALENDAR_TOURNAMENTS_PAGE = "/calendar?tournaments=true";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
 export const PLANNER_URL = "/plans";
@@ -114,6 +131,7 @@ export const SENDOUQ_STREAMS_PAGE = "/q/streams";
 export const TIERS_PAGE = "/tiers";
 export const SUSPENDED_PAGE = "/suspended";
 export const LFG_PAGE = "/lfg";
+export const SETTINGS_PAGE = "/settings";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -127,10 +145,6 @@ export const SECOND_PLACEMENT_ICON_PATH =
 	"/static-assets/svg/placements/second.svg";
 export const THIRD_PLACEMENT_ICON_PATH =
 	"/static-assets/svg/placements/third.svg";
-export const FRONT_BOY_PATH = "/static-assets/img/layout/front-boy";
-export const FRONT_GIRL_PATH = "/static-assets/img/layout/front-girl";
-export const FRONT_BOY_BG_PATH = "/static-assets/img/layout/front-boy-bg";
-export const FRONT_GIRL_BG_PATH = "/static-assets/img/layout/front-girl-bg";
 
 export const soundPath = (fileName: string) =>
 	`/static-assets/sounds/${fileName}.wav`;
@@ -212,13 +226,41 @@ export const topSearchPage = (args?: {
 export const topSearchPlayerPage = (playerId: number) =>
 	`${topSearchPage()}/player/${playerId}`;
 
+export const leaderboardsPage = (args: {
+	season?: number;
+	type?: "USER" | "TEAM";
+}) => {
+	const params = new URLSearchParams();
+	if (args.season) {
+		params.set("season", String(args.season));
+	}
+	if (args.type) {
+		params.set("type", args.type);
+	}
+
+	return `${LEADERBOARDS_PAGE}${params.size > 0 ? `?${params.toString()}` : ""}`;
+};
+
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
 	`/?authError=${errorCode}`;
 export const impersonateUrl = (idToLogInAs: number) =>
 	`/auth/impersonate?id=${idToLogInAs}`;
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
-export const plusSuggestionPage = (tier?: string | number) =>
-	`/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
+export const plusSuggestionPage = ({
+	tier,
+	showAlert,
+}: { tier?: string | number; showAlert?: boolean } = {}) => {
+	const params = new URLSearchParams();
+	if (tier) {
+		params.set("tier", String(tier));
+	}
+	if (showAlert) {
+		params.set("alert", "true");
+	}
+	return `/plus/suggestions${params.toString() ? `?${params.toString()}` : ""}`;
+};
+export const plusSuggestionsNewPage = (tier?: string | number) =>
+	`/plus/suggestions/new${tier ? `?tier=${tier}` : ""}`;
 
 export const weaponBuildPage = (weaponSlug: string) =>
 	`${BUILDS_PAGE}/${weaponSlug}`;
@@ -230,6 +272,8 @@ export const weaponBuildPopularPage = (weaponSlug: string) =>
 export const calendarEventPage = (eventId: number) => `/calendar/${eventId}`;
 export const calendarEditPage = (eventId?: number) =>
 	`/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
+export const tournamentEditPage = (eventId: number) =>
+	`${calendarEditPage(eventId)}&tournament=true`;
 export const calendarReportWinnersPage = (eventId: number) =>
 	`/calendar/${eventId}/report-winners`;
 export const tournamentPage = (tournamentId: number) => `/to/${tournamentId}`;
@@ -422,6 +466,9 @@ export const winnersImageUrl = ({
 	season: number;
 	placement: number;
 }) => `/static-assets/img/winners/${season}/${placement}`;
+
+export const sqHeaderGuyImageUrl = (season: number) =>
+	`/static-assets/img/sq-header/${season}`;
 
 export const stageMinimapImageUrlWithEnding = ({
 	stageId,

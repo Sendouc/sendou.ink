@@ -23,7 +23,7 @@ import {
 	type SendouRouteHandle,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { tournamentSubsPage } from "~/utils/urls";
 import { findSubsByTournamentId } from "../queries/findSubsByTournamentId.server";
 import { upsertSub } from "../queries/upsertSub.server";

@@ -408,7 +408,6 @@ function WeaponImageSelector({
 }
 
 const LAST_STAGE_ID_WITH_IMAGES = 23;
-const LAST_STAGE_ID_WITH_OBJECT_IMAGE = 17;
 function StageBackgroundSelector({
 	onAddBackground,
 }: {
@@ -422,21 +421,10 @@ function StageBackgroundSelector({
 	const [stageId, setStageId] = React.useState<StageId>(stageIds[0]);
 	const [mode, setMode] = React.useState<ModeShort>("SZ");
 	const [backgroundStyle, setBackgroundStyle] =
-		React.useState<StageBackgroundStyle>("ITEMS");
-
-	const availableImageTypes = (stageId: number): StageBackgroundStyle[] => {
-		if (stageId > LAST_STAGE_ID_WITH_OBJECT_IMAGE) {
-			return ["MINI", "OVER"];
-		}
-
-		return ["ITEMS", "MINI", "OVER"];
-	};
+		React.useState<StageBackgroundStyle>("MINI");
 
 	const handleStageIdChange = (stageId: StageId) => {
 		setStageId(stageId);
-		if (!availableImageTypes(stageId).includes(backgroundStyle)) {
-			setBackgroundStyle(availableImageTypes(stageId)[0]);
-		}
 	};
 
 	return (
@@ -477,7 +465,7 @@ function StageBackgroundSelector({
 					setBackgroundStyle(e.target.value as StageBackgroundStyle)
 				}
 			>
-				{availableImageTypes(stageId).map((style) => {
+				{(["MINI", "OVER"] as const).map((style) => {
 					return (
 						<option key={style} value={style}>
 							{t(`common:plans.bgStyle.${style}`)}

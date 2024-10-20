@@ -61,13 +61,13 @@ import { animate } from "~/utils/flip";
 import invariant from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { safeNumberParse } from "~/utils/number";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	notFoundIfFalsy,
 	parseParams,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { inGameNameWithoutDiscriminator, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";

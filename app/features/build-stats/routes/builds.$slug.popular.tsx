@@ -12,7 +12,10 @@ import { Main } from "~/components/Main";
 import { ONE_HOUR_IN_MS } from "~/constants";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { cache, ttl } from "~/utils/cache.server";
-import { type SendouRouteHandle, notFoundIfNullLike } from "~/utils/remix";
+import {
+	type SendouRouteHandle,
+	notFoundIfNullLike,
+} from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
 import {

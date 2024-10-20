@@ -24,7 +24,7 @@ import {
 	notFoundIfFalsy,
 	safeParseRequestFormData,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import type { Unpacked } from "~/utils/types";
 import { calendarEventPage } from "~/utils/urls";
 import { actualNumber, id, safeJSONParse, toArray } from "~/utils/zod";
