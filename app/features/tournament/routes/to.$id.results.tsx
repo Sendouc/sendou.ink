@@ -13,6 +13,8 @@ import {
 import * as Standings from "../core/Standings";
 import { useTournament } from "./to.$id";
 
+// xxx: results of different brackets
+
 export default function TournamentResultsPage() {
 	const tournament = useTournament();
 

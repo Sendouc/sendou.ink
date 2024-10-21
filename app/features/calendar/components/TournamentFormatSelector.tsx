@@ -15,15 +15,19 @@ import type {
 } from "~/db/tables";
 import { TOURNAMENT } from "~/features/tournament";
 
-type EditingSources = Array<
-	Omit<
-		NonNullable<TournamentBracketProgression[number]["sources"]>[number],
-		"bracketIdx"
-	> & { bracketId: string }
->;
-type SourcesForDB = NonNullable<
-	TournamentBracketProgression[number]["sources"]
->;
+// type EditingSources = Array<
+// 	Omit<
+// 		NonNullable<TournamentBracketProgression[number]["sources"]>[number],
+// 		"bracketIdx"
+// 	> & { bracketId: string }
+// >;
+interface EditingSource {
+	bracketId: string;
+	placements: string;
+}
+// type SourcesForDB = NonNullable<
+// 	TournamentBracketProgression[number]["sources"]
+// >;
 
 // xxx: id?
 export interface TournamentFormatBracket {
@@ -33,7 +37,7 @@ export interface TournamentFormatBracket {
 	requiresCheckIn: boolean;
 	startTime: Date | null;
 	settings: TournamentStageSettings;
-	sources: EditingSources | null;
+	source: EditingSource | null;
 }
 
 export function TournamentFormatSelector() {
@@ -48,7 +52,7 @@ export function TournamentFormatSelector() {
 			settings: {
 				thirdPlaceMatch: false,
 			},
-			sources: null,
+			source: null,
 		},
 	]);
 
@@ -64,7 +68,7 @@ export function TournamentFormatSelector() {
 						settings: {
 							thirdPlaceMatch: false,
 						},
-						sources: null,
+						source: null,
 					}
 				: { ...brackets.at(-1)!, id: nanoid(), name: "" };
 
@@ -286,10 +290,11 @@ function TournamentFormatBracketSelector({
 
 				<div>
 					<div className="stack horizontal sm">
-						<Label htmlFor={createId("sources")}>Sources</Label>{" "}
+						<Label htmlFor={createId("source")}>Source</Label>{" "}
 						<InfoPopover tiny>xxx: link to docs here</InfoPopover>
 					</div>
 					{/** xxx: If invitational "Participants added by the organizer" */}
+					{/** xxx: Allow many brackets joining from sign-up */}
 					{isFirstBracket ? (
 						<FormMessage type="info">
 							Participants join from sign-up
@@ -299,7 +304,8 @@ function TournamentFormatBracketSelector({
 							brackets={brackets.filter(
 								(bracket2) => bracket.id !== bracket2.id && bracket2.name,
 							)}
-							onChange={(sources) => updateBracket({ sources })}
+							source={bracket.source}
+							onChange={(source) => updateBracket({ source })}
 						/>
 					)}
 				</div>
@@ -310,37 +316,52 @@ function TournamentFormatBracketSelector({
 
 function SourcesSelector({
 	brackets,
+	source,
 	onChange,
 }: {
 	brackets: TournamentFormatBracket[];
-	onChange: (sources: EditingSources) => void;
+	source: EditingSource | null;
+	onChange: (sources: EditingSource) => void;
 }) {
+	const id = React.useId();
+
+	const createId = (label: string) => {
+		return `${id}-${label}`;
+	};
+
 	return (
-		<div className="stack md">
-			<div className="stack horizontal sm items-end">
-				<div>
-					<Label>Bracket</Label>
-					<select>
-						{brackets.map((bracket) => (
-							<option key={bracket.id} value={bracket.id}>
-								{bracket.name}
-							</option>
-						))}
-					</select>
-				</div>
-				<div>
-					<Label>Placements</Label>
-					<Input placeholder="1,2,3" />
-				</div>
+		<div className="stack horizontal sm items-end">
+			<div>
+				<Label htmlFor={createId("bracket")}>Bracket</Label>
+				<select
+					id={createId("bracket")}
+					value={source?.bracketId ?? brackets[0].id}
+					onChange={(e) =>
+						onChange({ placements: "", ...source, bracketId: e.target.value })
+					}
+				>
+					{brackets.map((bracket) => (
+						<option key={bracket.id} value={bracket.id}>
+							{bracket.name}
+						</option>
+					))}
+				</select>
 			</div>
-			<Button
-				icon={<PlusIcon />}
-				variant="outlined"
-				size="tiny"
-				className="self-start"
-			>
-				Add source
-			</Button>
+			<div>
+				<Label htmlFor={createId("placements")}>Placements</Label>
+				<Input
+					id={createId("placements")}
+					placeholder="1,2,3"
+					value={source?.placements ?? ""}
+					onChange={(e) =>
+						onChange({
+							bracketId: brackets[0].id,
+							...source,
+							placements: e.target.value,
+						})
+					}
+				/>
+			</div>
 		</div>
 	);
 }

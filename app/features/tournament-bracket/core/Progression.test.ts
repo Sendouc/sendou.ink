@@ -5,7 +5,8 @@
 // - not too much placements relative to teams per group (RR only)
 // - no two brackets with the same name
 // - all brackets have names
-// - no save source bracket twice in the same object
+// - no same source bracket twice in the same object
+// - many starting brackets https://discord.com/channels/299182152161951744/1288567178836312194/1288567178836312194
 // - startTime???
 
 import { it } from "vitest";
