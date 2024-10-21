@@ -140,6 +140,7 @@ export async function findProfileByIdentifier(
 			"User.twitter",
 			"User.youtubeId",
 			"User.battlefy",
+			"User.bsky",
 			"User.country",
 			"User.bio",
 			"User.motionSens",
@@ -586,6 +587,7 @@ type UpdateProfileArgs = Pick<
 	| "stickSens"
 	| "inGameName"
 	| "battlefy"
+	| "bsky"
 	| "css"
 	| "favoriteBadgeId"
 	| "showDiscordUniqueName"
@@ -628,6 +630,7 @@ export function updateProfile(args: UpdateProfileArgs) {
 				inGameName: args.inGameName,
 				css: args.css,
 				battlefy: args.battlefy,
+				bsky: args.bsky,
 				favoriteBadgeId: args.favoriteBadgeId,
 				showDiscordUniqueName: args.showDiscordUniqueName,
 				commissionText: args.commissionText,

@@ -76,15 +76,17 @@ export const findMatchById = (id: number) => {
 		roundMaps,
 		opponentOne: JSON.parse(row.opponentOne) as Match["opponent1"],
 		opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
-		players: parseDBArray(row.players) as Array<{
-			id: User["id"];
-			username: User["username"];
-			tournamentTeamId: TournamentTeamMember["tournamentTeamId"];
-			inGameName: User["inGameName"];
-			discordId: User["discordId"];
-			customUrl: User["customUrl"];
-			discordAvatar: User["discordAvatar"];
-			chatNameColor: string | null;
-		}>,
+		players: (
+			parseDBArray(row.players) as Array<{
+				id: User["id"];
+				username: User["username"];
+				tournamentTeamId: TournamentTeamMember["tournamentTeamId"];
+				inGameName: User["inGameName"];
+				discordId: User["discordId"];
+				customUrl: User["customUrl"];
+				discordAvatar: User["discordAvatar"];
+				chatNameColor: string | null;
+			}>
+		).filter((player) => player.id),
 	};
 };

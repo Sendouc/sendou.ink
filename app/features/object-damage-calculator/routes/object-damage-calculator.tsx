@@ -27,7 +27,7 @@ import {
 	TRIPLE_SPLASHDOWN_ID,
 } from "~/modules/in-game-lists/weapon-ids";
 import { damageTypeTranslationString } from "~/utils/i18next";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	OBJECT_DAMAGE_CALCULATOR_URL,
 	mainWeaponImageUrl,

@@ -5,7 +5,7 @@ import { z } from "zod";
 import { db } from "~/db/sql";
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { notFoundIfFalsy, parseParams } from "~/utils/remix";
+import { notFoundIfFalsy, parseParams } from "~/utils/remix.server";
 import { userSubmittedImage } from "~/utils/urls";
 import { id } from "~/utils/zod";
 import {

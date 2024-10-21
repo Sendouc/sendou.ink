@@ -18,14 +18,13 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { requireUserId } from "~/features/auth/core/user.server";
-import * as LFGRepository from "~/features/lfg/LFGRepository.server";
 import { isAdmin } from "~/permissions";
 import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -36,8 +35,6 @@ import {
 	uploadImagePage,
 } from "~/utils/urls";
 import * as TeamRepository from "../TeamRepository.server";
-import { deleteTeam } from "../queries/deleteTeam.server";
-import { edit } from "../queries/edit.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
@@ -90,14 +87,18 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 	switch (data._action) {
 		case "DELETE": {
-			await LFGRepository.deletePostsByTeamId(team.id);
-			deleteTeam(team.id);
+			await TeamRepository.del(team.id);
 
 			throw redirect(TEAM_SEARCH_PAGE);
 		}
 		case "EDIT": {
 			const newCustomUrl = mySlugify(data.name);
 			const existingTeam = await TeamRepository.findByCustomUrl(newCustomUrl);
+
+			validate(
+				newCustomUrl.length > 0,
+				"Team name can't be only special characters",
+			);
 
 			// can't take someone else's custom url
 			if (existingTeam && existingTeam.id !== team.id) {
@@ -106,7 +107,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 				};
 			}
 
-			const editedTeam = edit({
+			const editedTeam = await TeamRepository.update({
 				id: team.id,
 				customUrl: newCustomUrl,
 				...data,
@@ -158,6 +159,7 @@ export default function EditTeamPage() {
 				) : null}
 				<NameInput />
 				<TwitterInput />
+				<BlueskyInput />
 				<BioTextarea />
 				<SubmitButton
 					className="mt-4"
@@ -244,6 +246,26 @@ function TwitterInput() {
 				value={value}
 				onChange={(e) => setValue(pathnameFromPotentialURL(e.target.value))}
 				testId="twitter-input"
+			/>
+		</div>
+	);
+}
+
+function BlueskyInput() {
+	const { t } = useTranslation(["team"]);
+	const { team } = useLoaderData<typeof loader>();
+	const [value, setValue] = React.useState(team.bsky ?? "");
+
+	return (
+		<div>
+			<Label htmlFor="bsky">{t("team:forms.fields.teamBsky")}</Label>
+			<Input
+				leftAddon="https://bsky.app/profile/"
+				id="bsky"
+				name="bsky"
+				maxLength={TEAM.BSKY_MAX_LENGTH}
+				value={value}
+				onChange={(e) => setValue(e.target.value)}
 			/>
 		</div>
 	);

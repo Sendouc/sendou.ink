@@ -29,7 +29,6 @@ import {
 } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import {
-	TLDRAW_URL,
 	mainWeaponImageUrl,
 	outlinedMainWeaponImageUrl,
 	specialWeaponImageUrl,
@@ -42,7 +41,6 @@ import { Image } from "../../../components/Image";
 import type { StageBackgroundStyle } from "../plans-types";
 
 export default function Planner() {
-	const { t } = useTranslation(["common"]);
 	const { i18n } = useTranslation();
 	const plannerBgParams = usePlannerBg();
 
@@ -233,11 +231,6 @@ export default function Planner() {
 			<StageBackgroundSelector onAddBackground={handleAddBackgroundImage} />
 			<OutlineToggle outlined={imgOutlined} setImgOutlined={setImgOutlined} />
 			<WeaponImageSelector handleAddWeapon={handleAddWeapon} />
-			<div className="plans__powered-by">
-				<a href={TLDRAW_URL} target="_blank" rel="noreferrer">
-					{t("common:plans.poweredBy", { name: "tldraw" })}
-				</a>
-			</div>
 			<div style={{ position: "fixed", inset: 0 }}>
 				<Tldraw
 					onMount={handleMount}
@@ -414,8 +407,7 @@ function WeaponImageSelector({
 	);
 }
 
-const LAST_STAGE_ID_WITH_IMAGES = 22;
-const LAST_STAGE_ID_WITH_OBJECT_IMAGE = 17;
+const LAST_STAGE_ID_WITH_IMAGES = 23;
 function StageBackgroundSelector({
 	onAddBackground,
 }: {
@@ -429,21 +421,10 @@ function StageBackgroundSelector({
 	const [stageId, setStageId] = React.useState<StageId>(stageIds[0]);
 	const [mode, setMode] = React.useState<ModeShort>("SZ");
 	const [backgroundStyle, setBackgroundStyle] =
-		React.useState<StageBackgroundStyle>("ITEMS");
-
-	const availableImageTypes = (stageId: number): StageBackgroundStyle[] => {
-		if (stageId > LAST_STAGE_ID_WITH_OBJECT_IMAGE) {
-			return ["MINI", "OVER"];
-		}
-
-		return ["ITEMS", "MINI", "OVER"];
-	};
+		React.useState<StageBackgroundStyle>("MINI");
 
 	const handleStageIdChange = (stageId: StageId) => {
 		setStageId(stageId);
-		if (!availableImageTypes(stageId).includes(backgroundStyle)) {
-			setBackgroundStyle(availableImageTypes(stageId)[0]);
-		}
 	};
 
 	return (
@@ -484,7 +465,7 @@ function StageBackgroundSelector({
 					setBackgroundStyle(e.target.value as StageBackgroundStyle)
 				}
 			>
-				{availableImageTypes(stageId).map((style) => {
+				{(["MINI", "OVER"] as const).map((style) => {
 					return (
 						<option key={style} value={style}>
 							{t(`common:plans.bgStyle.${style}`)}

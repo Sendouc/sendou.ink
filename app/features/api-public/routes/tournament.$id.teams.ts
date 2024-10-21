@@ -5,7 +5,7 @@ import { z } from "zod";
 import { db } from "~/db/sql";
 import i18next from "~/modules/i18n/i18next.server";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { parseParams } from "~/utils/remix";
+import { parseParams } from "~/utils/remix.server";
 import { userSubmittedImage } from "~/utils/urls";
 import { id } from "~/utils/zod";
 import {

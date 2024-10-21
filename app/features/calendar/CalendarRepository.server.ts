@@ -2,12 +2,7 @@ import type { Expression, ExpressionBuilder, Transaction } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
-import type {
-	CalendarEventAvatarMetadata,
-	DB,
-	Tables,
-	TournamentSettings,
-} from "~/db/tables";
+import type { DB, Tables, TournamentSettings } from "~/db/tables";
 import type { CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { databaseTimestampNow, dateToDatabaseTimestamp } from "~/utils/dates";
@@ -108,7 +103,6 @@ export async function findById({
 			"CalendarEvent.tags",
 			"CalendarEvent.tournamentId",
 			"CalendarEvent.participantCount",
-			"CalendarEvent.avatarMetadata",
 			"CalendarEvent.avatarImgId",
 			"Tournament.mapPickingStyle",
 			"User.id as authorId",
@@ -461,7 +455,6 @@ type CreateArgs = Pick<
 	swissGroupCount?: number;
 	swissRoundCount?: number;
 	avatarFileName?: string;
-	avatarMetadata?: CalendarEventAvatarMetadata;
 	avatarImgId?: number;
 	autoValidateAvatar?: boolean;
 };
@@ -548,9 +541,6 @@ export async function create(args: CreateArgs) {
 				bracketUrl: args.bracketUrl,
 				avatarImgId: args.avatarImgId ?? avatarImgId,
 				organizationId: args.organizationId,
-				avatarMetadata: args.avatarMetadata
-					? JSON.stringify(args.avatarMetadata)
-					: null,
 				tournamentId,
 			})
 			.returning("id")
@@ -622,9 +612,6 @@ export async function update(args: UpdateArgs) {
 				description: args.description,
 				discordInviteCode: args.discordInviteCode,
 				bracketUrl: args.bracketUrl,
-				avatarMetadata: args.avatarMetadata
-					? JSON.stringify(args.avatarMetadata)
-					: null,
 				avatarImgId: args.avatarImgId ?? avatarImgId,
 				organizationId: args.organizationId,
 			})

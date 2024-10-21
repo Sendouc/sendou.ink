@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db/sql";
 import type { DB, Tables } from "~/db/tables";
+import * as LFGRepository from "~/features/lfg/LFGRepository.server";
 import { databaseTimestampNow } from "~/utils/dates";
 import invariant from "~/utils/invariant";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
@@ -67,6 +68,7 @@ export function findByCustomUrl(customUrl: string) {
 			"Team.id",
 			"Team.name",
 			"Team.twitter",
+			"Team.bsky",
 			"Team.bio",
 			"Team.customUrl",
 			"Team.css",
@@ -106,6 +108,7 @@ export async function teamsByMemberUserId(
 		.select([
 			"TeamMemberWithSecondary.teamId as id",
 			"TeamMemberWithSecondary.isOwner",
+			"TeamMemberWithSecondary.isMainTeam",
 		])
 		.where("userId", "=", userId)
 		.execute();
@@ -140,6 +143,33 @@ export async function create(
 	});
 }
 
+export async function update({
+	id,
+	name,
+	customUrl,
+	bio,
+	twitter,
+	bsky,
+	css,
+}: Pick<
+	Insertable<Tables["Team"]>,
+	"id" | "name" | "customUrl" | "bio" | "twitter" | "bsky"
+> & { css: string | null }) {
+	return db
+		.updateTable("AllTeam")
+		.set({
+			name,
+			customUrl,
+			bio,
+			twitter,
+			bsky,
+			css,
+		})
+		.where("id", "=", id)
+		.returningAll()
+		.executeTakeFirstOrThrow();
+}
+
 export function switchMainTeam({
 	userId,
 	teamId,
@@ -168,6 +198,52 @@ export function switchMainTeam({
 			})
 			.where("userId", "=", userId)
 			.where("teamId", "=", teamId)
+			.execute();
+	});
+}
+
+export function del(teamId: number) {
+	return db.transaction().execute(async (trx) => {
+		const members = await trx
+			.selectFrom("TeamMember")
+			.select(["TeamMember.userId"])
+			.where("teamId", "=", teamId)
+			.execute();
+
+		// switch main team to another if they at least one secondary team
+		for (const member of members) {
+			const currentTeams = await teamsByMemberUserId(member.userId, trx);
+
+			const teamToSwitchTo = currentTeams.find((team) => team.id !== teamId);
+
+			if (!teamToSwitchTo) continue;
+
+			await trx
+				.updateTable("AllTeamMember")
+				.set({
+					isMainTeam: 1,
+				})
+				.where("userId", "=", member.userId)
+				.where("teamId", "=", teamToSwitchTo.id)
+				.execute();
+		}
+
+		await trx
+			.updateTable("AllTeamMember")
+			.set({
+				isMainTeam: 0,
+			})
+			.where("AllTeamMember.teamId", "=", teamId)
+			.execute();
+
+		await LFGRepository.deletePostsByTeamId(teamId, trx);
+
+		await trx
+			.updateTable("AllTeam")
+			.set({
+				deletedAt: databaseTimestampNow(),
+			})
+			.where("id", "=", teamId)
 			.execute();
 	});
 }
@@ -217,8 +293,9 @@ export function removeTeamMember({
 		invariant(teamToLeave, "User is not a member of this team");
 		invariant(!teamToLeave.isOwner, "Owner cannot leave the team");
 
+		const wasMainTeam = teamToLeave.isMainTeam;
 		const newMainTeam = currentTeams.find((team) => team.id !== teamId);
-		if (newMainTeam) {
+		if (wasMainTeam && newMainTeam) {
 			await trx
 				.updateTable("AllTeamMember")
 				.set({
@@ -233,6 +310,7 @@ export function removeTeamMember({
 			.updateTable("AllTeamMember")
 			.set({
 				leftAt: databaseTimestampNow(),
+				isMainTeam: 0,
 			})
 			.where("userId", "=", userId)
 			.where("teamId", "=", teamId)

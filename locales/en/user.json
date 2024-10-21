@@ -14,6 +14,7 @@
 	"discordExplanation": "Username, profile picture, YouTube, Twitter and Twitch accounts come from your Discord account. See <1>FAQ</1> for more information.",
 	"favoriteBadge": "Favorite Badge",
 	"battlefy": "Battlefy account name",
+	"bsky": "Bluesky account name",
 
 	"forms.showDiscordUniqueName": "Show Discord username",
 	"forms.showDiscordUniqueName.info": "Show your unique Discord name ({{discordUniqueName}}) publicly?",

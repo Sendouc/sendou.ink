@@ -6,7 +6,7 @@ import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories, weaponIdIsNotAlt } from "~/modules/in-game-lists";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import {
 	BUILDS_PAGE,

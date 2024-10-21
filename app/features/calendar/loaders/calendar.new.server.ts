@@ -7,7 +7,7 @@ import { tournamentData } from "~/features/tournament-bracket/core/Tournament.se
 import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { canEditCalendarEvent } from "~/permissions";
-import { validate } from "~/utils/remix";
+import { validate } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { tournamentBracketsPage } from "~/utils/urls";
 import { canAddNewEvent } from "../calendar-utils";
@@ -72,6 +72,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	}
 
 	return json({
+		isAddingTournament: Boolean(
+			url.searchParams.has("tournament") || url.searchParams.has("copyEventId"),
+		),
 		managedBadges: await BadgeRepository.findManagedByUserId(user.id),
 		recentEventsWithMapPools:
 			await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),

@@ -2483,9 +2483,9 @@ export const weaponParams = {
 		"2": {
 			overwrites: {
 				MaxFieldHP: {
-					High: 36864,
-					Low: 30720,
-					Mid: 33792,
+					High: 28800,
+					Low: 24000,
+					Mid: 26400,
 				},
 				MaxHP: {
 					High: 18432,

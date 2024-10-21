@@ -18,9 +18,12 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { useUser } from "~/features/auth/core/user";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import { tournamentIdFromParams } from "~/features/tournament";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import {
+	clearTournamentDataCache,
+	tournamentFromDB,
+} from "~/features/tournament-bracket/core/Tournament.server";
 import { useTournament } from "~/features/tournament/routes/to.$id";
-import { parseRequestPayload, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentRegisterPage, userPage } from "~/utils/urls";
 import { deleteSub } from "../queries/deleteSub.server";
@@ -51,6 +54,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 		tournamentId,
 		userId: data.userId,
 	});
+
+	clearTournamentDataCache(tournamentId);
 
 	return null;
 };

@@ -15,7 +15,7 @@ import { UserSearch } from "~/components/UserSearch";
 import { useUser } from "~/features/auth/core/user";
 import { FRIEND_CODE_REGEXP_PATTERN } from "~/features/sendouq/q-constants";
 import { isAdmin, isMod } from "~/permissions";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { SEED_URL, STOP_IMPERSONATING_URL, impersonateUrl } from "~/utils/urls";
 

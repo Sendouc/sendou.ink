@@ -4,7 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Flag } from "~/components/Flag";
 import { Image, WeaponImage } from "~/components/Image";
+import { Popover } from "~/components/Popover";
 import { BattlefyIcon } from "~/components/icons/Battlefy";
+import { BskyIcon } from "~/components/icons/Bsky";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
@@ -13,10 +15,11 @@ import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { modesShort } from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
 import invariant from "~/utils/invariant";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { rawSensToString } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
+	bskyUrl,
 	modeImageUrl,
 	navIconUrl,
 	teamPage,
@@ -25,7 +28,6 @@ import {
 } from "~/utils/urls";
 import type { UserPageLoaderData } from "./u.$identifier";
 
-import { Popover } from "~/components/Popover";
 import { loader } from "../loaders/u.$identifier.index.server";
 export { loader };
 
@@ -66,6 +68,9 @@ export default function UserInfoPage() {
 					) : null}
 					{data.user.battlefy ? (
 						<SocialLink type="battlefy" identifier={data.user.battlefy} />
+					) : null}
+					{data.user.bsky ? (
+						<SocialLink type="bsky" identifier={data.user.bsky} />
 					) : null}
 				</div>
 			</div>
@@ -168,7 +173,7 @@ function SecondaryTeamsPopover() {
 }
 
 interface SocialLinkProps {
-	type: "youtube" | "twitter" | "twitch" | "battlefy";
+	type: "youtube" | "twitter" | "twitch" | "battlefy" | "bsky";
 	identifier: string;
 }
 
@@ -176,7 +181,7 @@ export function SocialLink({
 	type,
 	identifier,
 }: {
-	type: "youtube" | "twitter" | "twitch" | "battlefy";
+	type: SocialLinkProps["type"];
 	identifier: string;
 }) {
 	const href = () => {
@@ -189,6 +194,8 @@ export function SocialLink({
 				return `https://www.youtube.com/channel/${identifier}`;
 			case "battlefy":
 				return `https://battlefy.com/users/${identifier}`;
+			case "bsky":
+				return bskyUrl(identifier);
 			default:
 				assertUnreachable(type);
 		}
@@ -201,6 +208,7 @@ export function SocialLink({
 				twitter: type === "twitter",
 				twitch: type === "twitch",
 				battlefy: type === "battlefy",
+				bsky: type === "bsky",
 			})}
 			href={href()}
 		>
@@ -219,6 +227,8 @@ function SocialLinkIcon({ type }: Pick<SocialLinkProps, "type">) {
 			return <YouTubeIcon />;
 		case "battlefy":
 			return <BattlefyIcon />;
+		case "bsky":
+			return <BskyIcon />;
 		default:
 			assertUnreachable(type);
 	}

@@ -124,7 +124,7 @@ describe("Plus voting", () => {
 	test("combines leaderboard and voting results (after season over)", async () => {
 		vi.setSystemTime(new Date("2023-11-29T00:00:00.000Z"));
 
-		await dbInsertUsers(2);
+		await dbInsertUsers();
 		await PlusVotingRepository.upsertMany([
 			voteArgs({
 				score: 1,
@@ -177,7 +177,7 @@ describe("Plus voting", () => {
 	test("ignores leaderboard while season is ongoing", async () => {
 		vi.setSystemTime(new Date("2024-02-15T00:00:00.000Z"));
 
-		await dbInsertUsers(2);
+		await dbInsertUsers();
 		await PlusVotingRepository.upsertMany([
 			voteArgs({
 				score: 1,

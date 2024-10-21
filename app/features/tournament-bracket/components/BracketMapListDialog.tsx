@@ -14,6 +14,7 @@ import {
 	useTournament,
 	useTournamentPreparedMaps,
 } from "~/features/tournament/routes/to.$id";
+import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { nullFilledArray } from "~/utils/arrays";
@@ -65,6 +66,7 @@ export function BracketMapListDialog({
 				})
 			: untrimmedPreparedMaps;
 
+	const [szFirst, setSzFirst] = React.useState(false);
 	const [eliminationTeamCount, setEliminationTeamCount] = React.useState(() => {
 		if (preparedMaps?.eliminationTeamCount) {
 			return preparedMaps.eliminationTeamCount;
@@ -91,6 +93,8 @@ export function BracketMapListDialog({
 		preparedMaps?.maps[0].type ?? "BEST_OF",
 	);
 
+	const flavor = szFirst ? "SZ_FIRST" : null;
+
 	const [maps, setMaps] = React.useState(() => {
 		if (preparedMaps) {
 			return new Map(preparedMaps.maps.map((map) => [map.roundId, map]));
@@ -103,6 +107,7 @@ export function BracketMapListDialog({
 			rounds,
 			type: bracket.type,
 			pickBanStyle: null,
+			flavor,
 		});
 	});
 	const [pickBanStyle, setPickBanStyle] = React.useState(
@@ -271,6 +276,7 @@ export function BracketMapListDialog({
 												type: bracket.type,
 												roundsWithPickBan: newRoundsWithPickBan,
 												pickBanStyle,
+												flavor,
 											}),
 										);
 									}}
@@ -297,6 +303,7 @@ export function BracketMapListDialog({
 													type: bracket.type,
 													roundsWithPickBan,
 													pickBanStyle,
+													flavor,
 												}),
 											);
 											setEliminationTeamCount(newCount);
@@ -319,6 +326,7 @@ export function BracketMapListDialog({
 												type: bracket.type,
 												roundsWithPickBan,
 												pickBanStyle,
+												flavor,
 											});
 											setMaps(newMaps);
 										}}
@@ -328,6 +336,25 @@ export function BracketMapListDialog({
 									<GlobalCountTypeSelect
 										defaultValue={countType}
 										onSetCountType={setCountType}
+									/>
+								) : null}
+								{tournament.ctx.mapPickingStyle === "TO" ? (
+									<SZFirstToggle
+										szFirst={szFirst}
+										setSzFirst={(newSzFirst) => {
+											setSzFirst(newSzFirst);
+											setMaps(
+												generateTournamentRoundMaplist({
+													mapCounts,
+													pool: tournament.ctx.toSetMapPool,
+													rounds,
+													type: bracket.type,
+													roundsWithPickBan,
+													pickBanStyle,
+													flavor: newSzFirst ? "SZ_FIRST" : null,
+												}),
+											);
+										}}
 									/>
 								) : null}
 							</div>
@@ -345,6 +372,7 @@ export function BracketMapListDialog({
 												type: bracket.type,
 												roundsWithPickBan,
 												pickBanStyle,
+												flavor,
 											}),
 										)
 									}
@@ -394,6 +422,7 @@ export function BracketMapListDialog({
 												type: bracket.type,
 												roundsWithPickBan,
 												pickBanStyle,
+												flavor,
 											});
 											setMaps(newMaps);
 										}}
@@ -417,6 +446,7 @@ export function BracketMapListDialog({
 																type: bracket.type,
 																roundsWithPickBan: newRoundsWithPickBan,
 																pickBanStyle,
+																flavor,
 															}),
 														);
 													}
@@ -547,9 +577,11 @@ function teamCountAdjustedBracketData({
 			// always has the same amount of rounds even if 0 participants
 			return bracket.data;
 		case "round_robin":
-			// 10 to ensure a full bracket gets generated even if registration is underway
+			// ensure a full bracket (no bye round) gets generated even if registration is underway
 			return tournament.generateMatchesData(
-				nullFilledArray(10).map((_, i) => i + 1),
+				nullFilledArray(TOURNAMENT.DEFAULT_TEAM_COUNT_PER_RR_GROUP).map(
+					(_, i) => i + 1,
+				),
 				bracket.type,
 			);
 		case "single_elimination":
@@ -674,6 +706,21 @@ function PickBanSelect({
 				<option value="COUNTERPICK">Counterpick</option>
 				<option value="BAN_2">Ban 2</option>
 			</select>
+		</div>
+	);
+}
+
+function SZFirstToggle({
+	szFirst,
+	setSzFirst,
+}: {
+	szFirst: boolean;
+	setSzFirst: (szFirst: boolean) => void;
+}) {
+	return (
+		<div className="stack items-center">
+			<Label htmlFor="sz-first">SZ first</Label>
+			<Toggle id="sz-first" checked={szFirst} setChecked={setSzFirst} />
 		</div>
 	);
 }

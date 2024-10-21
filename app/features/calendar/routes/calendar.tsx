@@ -19,11 +19,11 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { UsersIcon } from "~/components/icons/Users";
-import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
 import { currentSeason } from "~/features/mmr/season";
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
@@ -34,7 +34,7 @@ import {
 	getWeekStartsAtMondayDay,
 	weekNumberToDate,
 } from "~/utils/dates";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import {
@@ -48,7 +48,6 @@ import {
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import * as CalendarRepository from "../CalendarRepository.server";
-import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
 
 import "~/styles/calendar.css";
@@ -162,9 +161,12 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
 export default function CalendarPage() {
 	const { t } = useTranslation("calendar");
 	const data = useLoaderData<typeof loader>();
-	const user = useUser();
 	const isMounted = useIsMounted();
-	const [onlySendouInkEvents, setOnlySendouInkEvents] = React.useState(false);
+	const [onlySendouInkEvents, setOnlySendouInkEvents] = useSearchParamState({
+		defaultValue: false,
+		name: "tournaments",
+		revive: (val) => val === "true",
+	});
 
 	const filteredEvents = onlySendouInkEvents
 		? data.events.filter((event) => event.tournamentId)
@@ -185,8 +187,8 @@ export default function CalendarPage() {
 		<Main classNameOverwrite="stack lg main layout__main">
 			<WeekLinks />
 			<EventsToReport />
-			<div className="stack md">
-				<div className="stack horizontal justify-between">
+			<div>
+				<div className="stack horizontal justify-end">
 					<div className="stack horizontal sm items-center">
 						<Toggle
 							id="onlySendouInk"
@@ -198,11 +200,6 @@ export default function CalendarPage() {
 							Only sendou.ink events
 						</Label>
 					</div>
-					{user && canAddNewEvent(user) && (
-						<LinkButton to="new" size="tiny" className="w-max">
-							{t("addNew")}
-						</LinkButton>
-					)}
 				</div>
 				{isMounted ? (
 					<>
@@ -394,7 +391,7 @@ function EventsList({
 				}
 
 				const sectionWeekday = daysDate.toLocaleString(i18n.language, {
-					weekday: "long",
+					weekday: "short",
 				});
 
 				return (
@@ -405,7 +402,7 @@ function EventsList({
 									{t("pastEvents.dividerText")}
 								</Divider>
 							) : null}
-							<div className="calendar__event__date main">
+							<div className="calendar__event__date">
 								{daysDate.toLocaleDateString(i18n.language, {
 									weekday: "long",
 									day: "numeric",
@@ -418,8 +415,11 @@ function EventsList({
 								const eventWeekday = databaseTimestampToDate(
 									calendarEvent.startTime,
 								).toLocaleString(i18n.language, {
-									weekday: "long",
+									weekday: "short",
 								});
+
+								const isOneVsOne =
+									calendarEvent.tournamentSettings?.minMembersPerTeam === 1;
 
 								const startTimeDate = databaseTimestampToDate(
 									calendarEvent.startTime,
@@ -438,7 +438,7 @@ function EventsList({
 								return (
 									<section
 										key={calendarEvent.eventDateId}
-										className="calendar__event main stack md"
+										className="calendar__event stack md"
 									>
 										<div className="stack sm">
 											<div className="calendar__event__top-info-container">
@@ -458,7 +458,7 @@ function EventsList({
 														to={tournamentOrganizationPage({
 															organizationSlug: calendarEvent.organization.slug,
 														})}
-														className="stack horizontal sm items-center text-xs text-main-forced"
+														className="stack horizontal xs items-center text-xs text-main-forced"
 													>
 														<Avatar
 															url={
@@ -525,10 +525,15 @@ function EventsList({
 														calendarEvent.participantCounts.teams > 0 ? (
 															<div className="calendar__event__participant-counts">
 																<UsersIcon />{" "}
-																{t("count.teams", {
-																	count: calendarEvent.participantCounts.teams,
-																})}{" "}
-																/{" "}
+																{!isOneVsOne ? (
+																	<>
+																		{t("count.teams", {
+																			count:
+																				calendarEvent.participantCounts.teams,
+																		})}{" "}
+																		/{" "}
+																	</>
+																) : null}
 																{t("count.players", {
 																	count:
 																		calendarEvent.participantCounts.players,

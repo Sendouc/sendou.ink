@@ -2,9 +2,9 @@ import type {
 	TournamentBracketProgression,
 	TournamentStage,
 } from "~/db/tables";
-import { currentSeason } from "~/features/mmr/season";
 import { TOURNAMENT } from "~/features/tournament";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
+import { tournamentIsRanked } from "~/features/tournament/tournament-utils";
 import type { TournamentManagerDataSet } from "~/modules/brackets-manager/types";
 import type { Match, Stage } from "~/modules/brackets-model";
 import type { ModeShort } from "~/modules/in-game-lists";
@@ -447,7 +447,9 @@ export class Tournament {
 			case "round_robin":
 				return {
 					groupCount: Math.ceil(
-						participantsCount / (this.ctx.settings.teamsPerGroup ?? 4),
+						participantsCount /
+							(this.ctx.settings.teamsPerGroup ??
+								TOURNAMENT.DEFAULT_TEAM_COUNT_PER_RR_GROUP),
 					),
 					seedOrdering: ["groups.seed_optimized"],
 				};
@@ -463,13 +465,11 @@ export class Tournament {
 	}
 
 	get ranked() {
-		const seasonIsActive = Boolean(currentSeason(this.ctx.startTime));
-		if (!seasonIsActive) return false;
-
-		// 1v1, 2v2 and 3v3 are always considered "gimmicky"
-		if (this.minMembersPerTeam !== 4) return false;
-
-		return this.ctx.settings.isRanked ?? true;
+		return tournamentIsRanked({
+			isSetAsRanked: this.ctx.settings.isRanked,
+			startTime: this.ctx.startTime,
+			minMembersPerTeam: this.minMembersPerTeam,
+		});
 	}
 
 	get minMembersPerTeam() {

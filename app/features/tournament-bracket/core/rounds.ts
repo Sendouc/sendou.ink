@@ -76,11 +76,19 @@ export function getRounds(args: {
 			const namePrefix =
 				args.type === "winners" ? "WB " : args.type === "losers" ? "LB " : "";
 
-			const isFinals = i === rounds.length - (args.type === "winners" ? 3 : 1);
+			const finalsOffSet = () => {
+				if (args.type !== "winners") return 1;
+				if (showingBracketReset) return 3;
+				return 2;
+			};
+			const isFinals = i === rounds.length - finalsOffSet();
 
-			const semisOffSet =
-				args.type === "winners" ? 4 : hasThirdPlaceMatch ? 3 : 2;
-			const isSemis = i === rounds.length - semisOffSet;
+			const semisOffSet = () => {
+				if (args.type !== "winners") return hasThirdPlaceMatch ? 3 : 2;
+				if (showingBracketReset) return 4;
+				return 3;
+			};
+			const isSemis = i === rounds.length - semisOffSet();
 
 			return `${namePrefix}${
 				isFinals ? "Finals" : isSemis ? "Semis" : `Round ${i + 1}`

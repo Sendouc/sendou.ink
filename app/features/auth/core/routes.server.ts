@@ -4,7 +4,7 @@ import { isbot } from "isbot";
 import { z } from "zod";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { canAccessLohiEndpoint, canPerformAdminActions } from "~/permissions";
-import { parseSearchParams, validate } from "~/utils/remix";
+import { parseSearchParams, validate } from "~/utils/remix.server";
 import { ADMIN_PAGE, authErrorUrl } from "~/utils/urls";
 import { createLogInLink } from "../queries/createLogInLink.server";
 import { deleteLogInLinkByCode } from "../queries/deleteLogInLinkByCode.server";

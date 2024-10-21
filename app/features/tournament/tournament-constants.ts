@@ -8,6 +8,8 @@ export const TOURNAMENT = {
 	MIN_GROUP_SIZE: 3,
 	MAX_GROUP_SIZE: 6,
 	MAX_BRACKETS_PER_TOURNAMENT: 10,
+	// just a fallback, normally this should be set by user explicitly
+	DEFAULT_TEAM_COUNT_PER_RR_GROUP: 4,
 } as const;
 
 export const BRACKET_NAMES = {

@@ -10,7 +10,7 @@ import { Redirect } from "~/components/Redirect";
 import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
 import { tournamentTeamPageParamsSchema } from "~/features/tournament-bracket/tournament-bracket-schemas.server";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
-import { parseParams } from "~/utils/remix";
+import { parseParams } from "~/utils/remix.server";
 import {
 	teamPage,
 	tournamentMatchPage,

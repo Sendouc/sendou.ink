@@ -33,7 +33,7 @@ import {
 	getDateWithHoursOffset,
 } from "~/utils/dates";
 import invariant from "~/utils/invariant";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { pathnameFromPotentialURL } from "~/utils/strings";
 import { userSubmittedImage } from "~/utils/urls";
 import {
@@ -47,6 +47,7 @@ import {
 	datesToRegClosesAt,
 	regClosesAtToDisplayName,
 } from "../calendar-utils";
+import { canAddNewEvent } from "../calendar-utils";
 import { Tags } from "../components/Tags";
 
 import "~/styles/calendar-new.css";
@@ -77,11 +78,34 @@ const useBaseEvent = () => {
 
 export default function CalendarNewEventPage() {
 	const baseEvent = useBaseEvent();
+	const user = useUser();
+	const data = useLoaderData<typeof loader>();
+
+	if (!user || !canAddNewEvent(user)) {
+		return (
+			<Main className="stack items-center">
+				<Alert variation="WARNING">
+					You can't add a new event at this time (Discord account too young)
+				</Alert>
+			</Main>
+		);
+	}
+
+	if (data.isAddingTournament && !user.isTournamentOrganizer) {
+		return (
+			<Main className="stack items-center">
+				<Alert variation="WARNING">
+					No permissions to add tournaments. Access to tournaments beta can be
+					applied from Discord helpdesk for established TO&apos;s.
+				</Alert>
+			</Main>
+		);
+	}
 
 	return (
 		<Main className="calendar-new__container">
 			<div className="stack md">
-				<TemplateTournamentForm />
+				{data.isAddingTournament ? <TemplateTournamentForm /> : null}
 				<EventForm key={baseEvent?.eventId} />
 			</div>
 		</Main>
@@ -97,7 +121,7 @@ function TemplateTournamentForm() {
 	return (
 		<>
 			<div>
-				<Form className="stack horizontal sm">
+				<Form className="stack horizontal sm flex-wrap">
 					<select
 						className="w-max"
 						name="copyEventId"
@@ -111,7 +135,7 @@ function TemplateTournamentForm() {
 								{event.name} (
 								{databaseTimestampToDate(event.startTime).toLocaleDateString(
 									"en-US",
-									{ month: "long", day: "numeric", year: "numeric" },
+									{ month: "numeric", day: "numeric" },
 								)}
 								)
 							</option>
@@ -129,13 +153,9 @@ function EventForm() {
 	const fetcher = useFetcher();
 	const { t } = useTranslation();
 	const { eventToEdit, eventToCopy } = useLoaderData<typeof loader>();
-	const baseEvent = useBaseEvent();
-	const [isTournament, setIsTournament] = React.useState(
-		Boolean(baseEvent?.tournamentId ?? true),
-	);
 	const ref = React.useRef<HTMLFormElement>(null);
 	const [avatarImg, setAvatarImg] = React.useState<File | null>(null);
-	const user = useUser();
+	const data = useLoaderData<typeof loader>();
 
 	const handleSubmit = () => {
 		const formData = new FormData(ref.current!);
@@ -173,25 +193,22 @@ function EventForm() {
 					value={eventToCopy.tournamentId}
 				/>
 			) : null}
-			{user?.isTournamentOrganizer && !eventToEdit ? (
-				<TournamentEnabler
-					checked={isTournament}
-					setChecked={setIsTournament}
-				/>
+			{data.isAddingTournament ? (
+				<input type="hidden" name="toToolsEnabled" value="on" />
 			) : null}
 			<NameInput />
-			<DescriptionTextarea supportsMarkdown={isTournament} />
+			<DescriptionTextarea supportsMarkdown={data.isAddingTournament} />
 			<OrganizationSelect />
-			{isTournament ? <RulesTextarea supportsMarkdown /> : null}
-			<DatesInput allowMultiDate={!isTournament} />
-			{!isTournament ? <BracketUrlInput /> : null}
+			{data.isAddingTournament ? <RulesTextarea supportsMarkdown /> : null}
+			<DatesInput allowMultiDate={!data.isAddingTournament} />
+			{!data.isAddingTournament ? <BracketUrlInput /> : null}
 			<DiscordLinkInput />
 			<TagsAdder />
 			<BadgesAdder />
-			{isTournament ? (
+			{data.isAddingTournament ? (
 				<AvatarImageInput avatarImg={avatarImg} setAvatarImg={setAvatarImg} />
 			) : null}
-			{isTournament ? (
+			{data.isAddingTournament ? (
 				<>
 					<Divider>Tournament settings</Divider>
 					<MemberCountSelect />
@@ -204,13 +221,7 @@ function EventForm() {
 					<StrictDeadlinesToggle />
 				</>
 			) : null}
-			{isTournament ? (
-				<div className="stack md w-full">
-					<Divider>Tournament format</Divider>
-					<TournamentFormatSelector />
-				</div>
-			) : null}
-			{isTournament ? (
+			{data.isAddingTournament ? (
 				<div className="stack md w-full items-start">
 					<Divider>Tournament maps</Divider>
 					<TournamentMapPickingStyleSelect />
@@ -218,6 +229,12 @@ function EventForm() {
 			) : (
 				<MapPoolSection />
 			)}
+			{data.isAddingTournament ? (
+				<div className="stack md w-full">
+					<Divider>Tournament format</Divider>
+					<TournamentFormatSelector />
+				</div>
+			) : null}
 			<Button
 				className="mt-4"
 				onClick={handleSubmit}
@@ -643,12 +660,6 @@ function AvatarImageInput({
 	setAvatarImg: (img: File | null) => void;
 }) {
 	const baseEvent = useBaseEvent();
-	const [backgroundColor, setBackgroundColor] = React.useState(
-		baseEvent?.avatarMetadata?.backgroundColor ?? "#000000",
-	);
-	const [textColor, setTextColor] = React.useState(
-		baseEvent?.avatarMetadata?.textColor ?? "#FFFFFF",
-	);
 	const [showPrevious, setShowPrevious] = React.useState(true);
 
 	if (
@@ -675,13 +686,6 @@ function AvatarImageInput({
 						Edit logo
 					</Button>
 				</div>
-				<TournamentLogoColorInputsWithShowcase
-					backgroundColor={backgroundColor}
-					setBackgroundColor={setBackgroundColor}
-					textColor={textColor}
-					setTextColor={setTextColor}
-					avatarUrl={logoImgUrl}
-				/>
 			</div>
 		);
 	}
@@ -731,14 +735,6 @@ function AvatarImageInput({
 						alt=""
 						className="calendar-new__avatar-preview"
 					/>
-
-					<TournamentLogoColorInputsWithShowcase
-						backgroundColor={backgroundColor}
-						setBackgroundColor={setBackgroundColor}
-						textColor={textColor}
-						setTextColor={setTextColor}
-						avatarUrl={URL.createObjectURL(avatarImg)}
-					/>
 				</div>
 			)}
 			<FormMessage type="info">
@@ -755,64 +751,6 @@ function AvatarImageInput({
 					Cancel changing avatar image
 				</Button>
 			)}
-		</div>
-	);
-}
-
-function TournamentLogoColorInputsWithShowcase({
-	backgroundColor,
-	setBackgroundColor,
-	textColor,
-	setTextColor,
-	avatarUrl,
-}: {
-	backgroundColor: string;
-	setBackgroundColor: (color: string) => void;
-	textColor: string;
-	setTextColor: (color: string) => void;
-	avatarUrl: string;
-}) {
-	return (
-		<div>
-			<div
-				style={{ backgroundColor }}
-				className="calendar-new__showcase-preview"
-			>
-				<img
-					src={avatarUrl}
-					alt=""
-					className="calendar-new__avatar-preview__small"
-				/>
-				<div style={{ color: textColor }} className="mt-4">
-					Choose a combination that is easy to read
-					<div className="text-xs">
-						(otherwise will be excluded from front page promotion)
-					</div>
-				</div>
-			</div>
-
-			<div className="mt-2 stack horizontal items-center justify-center sm">
-				<Label htmlFor="backgroundColor" spaced={false}>
-					BG
-				</Label>
-				<input
-					type="color"
-					className="plain"
-					name="backgroundColor"
-					value={backgroundColor}
-					onChange={(e) => setBackgroundColor(e.target.value)}
-				/>
-				<Label htmlFor="textColor" spaced={false}>
-					Text
-				</Label>
-				<input
-					type="color"
-					className="plain"
-					name="textColor"
-					value={textColor}
-					onChange={(e) => setTextColor(e.target.value)}
-				/>
-			</div>
 		</div>
 	);
 }
@@ -1094,32 +1032,6 @@ function TournamentMapPickingStyleSelect() {
 				</>
 			) : null}
 		</>
-	);
-}
-
-function TournamentEnabler({
-	checked,
-	setChecked,
-}: {
-	checked: boolean;
-	setChecked: (checked: boolean) => void;
-}) {
-	const id = React.useId();
-
-	return (
-		<div>
-			<label htmlFor={id}>Host on sendou.ink</label>
-			<Toggle
-				name="toToolsEnabled"
-				id={id}
-				tiny
-				checked={checked}
-				setChecked={setChecked}
-			/>
-			<FormMessage type="info">
-				Host the full event including bracket and sign ups on sendou.ink
-			</FormMessage>
-		</div>
 	);
 }
 

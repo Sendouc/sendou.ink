@@ -46,7 +46,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { useTimeoutState } from "~/hooks/useTimeoutState";
 import invariant from "~/utils/invariant";
-import { parseRequestPayload, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix.server";
 import {
 	navIconUrl,
 	tournamentBracketsPage,

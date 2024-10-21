@@ -18,7 +18,7 @@ import {
 	parseSearchParams,
 	unauthorizedIfFalsy,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { teamPage, tournamentOrganizationPage } from "~/utils/urls";
 import { addNewImage } from "../queries/addNewImage";
 import { countUnvalidatedImg } from "../queries/countUnvalidatedImg.server";

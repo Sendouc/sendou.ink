@@ -32,6 +32,10 @@ export const editTeamSchema = z.union([
 			falsyToNull,
 			z.string().max(TEAM.TWITTER_MAX_LENGTH).nullable(),
 		),
+		bsky: z.preprocess(
+			falsyToNull,
+			z.string().max(TEAM.BSKY_MAX_LENGTH).nullable(),
+		),
 		css: z.preprocess(falsyToNull, z.string().refine(jsonParseable).nullable()),
 	}),
 ]);

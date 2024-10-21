@@ -7,6 +7,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Input } from "~/components/Input";
@@ -16,6 +17,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import type { Video, VideoMatch } from "~/db/types";
+import { useUser } from "~/features/auth/core/user";
 import { requireUser } from "~/features/auth/core/user.server";
 import {
 	type MainWeaponId,
@@ -33,7 +35,7 @@ import {
 	type SendouRouteHandle,
 	notFoundIfFalsy,
 	parseRequestPayload,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { VODS_PAGE, vodVideoPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { createVod, updateVodByReplacing } from "../queries/createVod.server";
@@ -137,6 +139,15 @@ export default function NewVodPage() {
 			youtubeDate: dateToDatabaseTimestamp(new Date()),
 		},
 	);
+	const user = useUser();
+
+	if (!user || !user.isVideoAdder) {
+		return (
+			<Main className="stack items-center">
+				<Alert variation="WARNING">{t("vods:gainPerms")}</Alert>
+			</Main>
+		);
+	}
 
 	return (
 		<Form method="post">

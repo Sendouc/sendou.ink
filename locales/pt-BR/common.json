@@ -136,11 +136,8 @@
 	"weapon.category.subs": "Armas secundárias",
 	"weapon.category.specials": "Especiais",
 
-	"plans.poweredBy": "Distribuído por {{name}}",
 	"plans.blueprint": "Planta",
 	"plans.bgStyle.OVER": "Visão aérea",
-	"plans.bgStyle.MINI": "Minimapa (vazio)",
-	"plans.bgStyle.ITEMS": "Minimapa",
 
 	"articles.by": "por/pela {{author}}",
 
@@ -220,9 +217,5 @@
 	"chat.systemMsg.cancelConfirmed": "{{name}} confirmou o cancelamento da partida. A partida foi trancada",
 	"chat.systemMsg.userLeft": "{{name}} deixou o grupo",
 
-	"fc.title": "Código de amigo",
-
-	"showcase.register": "Cadastrar-se",
-	"showcase.bracket": "Bracket",
-	"showcase.liveNow": "Ao vivo agora!"
+	"fc.title": "Código de amigo"
 }

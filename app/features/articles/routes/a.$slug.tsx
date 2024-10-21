@@ -9,8 +9,8 @@ import Markdown from "markdown-to-jsx";
 import * as React from "react";
 import { Main } from "~/components/Main";
 import invariant from "~/utils/invariant";
-import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
+import { notFoundIfFalsy } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import {
 	ARTICLES_MAIN_PAGE,
