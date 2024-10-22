@@ -173,8 +173,8 @@ export const homemadeBadges: BadgeInfo[] = [
 		displayName: "Minus One Open",
 		fileName: "minus-one-open",
 		authorDiscordId: "569271521776762896",
-  },
-  {
+	},
+	{
 		displayName: "Karot's Tourneys (100 KT Power)",
 		fileName: "ktlow",
 		authorDiscordId: "1170249805373657093",
