@@ -12,6 +12,7 @@ import { nanoid } from "nanoid";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher } from "react-router-dom";
+import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Combobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
@@ -20,6 +21,7 @@ import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { UserSearch } from "~/components/UserSearch";
 import { CrossIcon } from "~/components/icons/Cross";
+import { useUser } from "~/features/auth/core/user";
 import { requireUser } from "~/features/auth/core/user.server";
 import { s3UploadHandler } from "~/features/img-upload";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
@@ -29,7 +31,7 @@ import {
 	parseFormData,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import {
 	artPage,
 	conditionalUserSubmittedImage,
@@ -139,6 +141,7 @@ export default function NewArtPage() {
 	const { t } = useTranslation(["common", "art"]);
 	const ref = React.useRef<HTMLFormElement>(null);
 	const fetcher = useFetcher();
+	const user = useUser();
 
 	const handleSubmit = () => {
 		const formData = new FormData(ref.current!);
@@ -157,6 +160,14 @@ export default function NewArtPage() {
 
 		return !img && !data.art;
 	};
+
+	if (!user || !user.isArtist) {
+		return (
+			<Main className="stack items-center">
+				<Alert variation="WARNING">{t("art:gainPerms")}</Alert>
+			</Main>
+		);
+	}
 
 	return (
 		<Main halfWidth>

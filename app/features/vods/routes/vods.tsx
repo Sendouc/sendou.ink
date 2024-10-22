@@ -11,7 +11,7 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { mainWeaponIds, modesShort, stageIds } from "~/modules/in-game-lists";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { VODS_PAGE, navIconUrl } from "~/utils/urls";
 import { VodListing } from "../components/VodListing";

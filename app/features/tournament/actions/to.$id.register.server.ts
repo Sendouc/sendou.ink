@@ -1,5 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
+import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
@@ -15,7 +16,7 @@ import {
 	parseFormData,
 	uploadImageIfSubmitted,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { booleanToInt } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
 import { checkIn } from "../queries/checkIn.server";
@@ -110,6 +111,12 @@ export const action: ActionFunction = async ({ request, params }) => {
 					tournamentId,
 					avatarFileName,
 				});
+
+				ShowcaseTournaments.addToParticipationInfoMap({
+					tournamentId,
+					type: "participant",
+					userId: user.id,
+				});
 			}
 			break;
 		}
@@ -131,6 +138,12 @@ export const action: ActionFunction = async ({ request, params }) => {
 			);
 
 			deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
+
+			ShowcaseTournaments.removeFromParticipationInfoMap({
+				tournamentId,
+				type: "participant",
+				userId: data.userId,
+			});
 			break;
 		}
 		case "LEAVE_TEAM": {
@@ -145,6 +158,12 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 			deleteTeamMember({
 				tournamentTeamId: teamMemberOf.id,
+				userId: user.id,
+			});
+
+			ShowcaseTournaments.removeFromParticipationInfoMap({
+				tournamentId,
+				type: "participant",
 				userId: user.id,
 			});
 
@@ -220,6 +239,13 @@ export const action: ActionFunction = async ({ request, params }) => {
 					userId: data.userId,
 				}),
 			});
+
+			ShowcaseTournaments.addToParticipationInfoMap({
+				tournamentId,
+				type: "participant",
+				userId: data.userId,
+			});
+
 			break;
 		}
 		case "UNREGISTER": {
@@ -227,6 +253,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 			validate(!ownTeamCheckedIn, "You cannot unregister after checking in");
 
 			deleteTeam(ownTeam.id);
+
+			ShowcaseTournaments.clearParticipationInfoMap();
+
 			break;
 		}
 		case "DELETE_LOGO": {

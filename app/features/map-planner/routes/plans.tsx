@@ -3,7 +3,7 @@ import { lazy } from "react";
 import { useTranslation } from "react-i18next";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import { PLANNER_URL, navIconUrl } from "~/utils/urls";
 

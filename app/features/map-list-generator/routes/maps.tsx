@@ -20,7 +20,7 @@ import * as CalendarRepository from "~/features/calendar/CalendarRepository.serv
 import { i18next } from "~/modules/i18n/i18next.server";
 import { type ModeWithStage, stageIds } from "~/modules/in-game-lists";
 import invariant from "~/utils/invariant";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import {
 	MAPS_URL,

@@ -157,11 +157,81 @@ export const homemadeBadges: BadgeInfo[] = [
 	{
 		displayName: "Power Pair Showdown",
 		fileName: "pps",
-		authorDiscordId: "188719458498510848",
+		authorDiscordId: "789943264370884708",
 	},
 	{
 		displayName: "Splat'n'Go",
 		fileName: "splat-n-go",
 		authorDiscordId: "570323825669963972",
+	},
+	{
+		displayName: "Karot's Tourneys (100 KT Power)",
+		fileName: "ktlow",
+		authorDiscordId: "1170249805373657093",
+	},
+	{
+		displayName: "Karot's Tourneys (500 KT Power)",
+		fileName: "ktmed",
+		authorDiscordId: "1170249805373657093",
+	},
+	{
+		displayName: "Karot's Tourneys (999 KT Power)",
+		fileName: "kthigh",
+		authorDiscordId: "1170249805373657093",
+	},
+	{
+		displayName: "Heaven 2 Ocean Qualifer",
+		fileName: "heaven2ocean",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Seabattle",
+		fileName: "seabattle",
+		authorDiscordId: "528851510222782474",
+	},
+	{
+		displayName: "Dodge Rollers",
+		fileName: "splat_dualie",
+		authorDiscordId: "218883697007394816",
+	},
+	{
+		displayName: "Breeze LAN (1st)",
+		fileName: "breeze",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Breeze LAN (2nd)",
+		fileName: "breeze2",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Breeze LAN (3rd)",
+		fileName: "breeze3",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Splat Vibes LAN",
+		fileName: "vibesfirst",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Splat Vibes LAN (Top 4)",
+		fileName: "vibessecond",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Splat Legacy LAN",
+		fileName: "splatlegacy",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Ink Practice",
+		fileName: "inkpractice",
+		authorDiscordId: "342369454719631361",
+	},
+	{
+		displayName: "Breeze LAN (Salmon Run)",
+		fileName: "breezesr",
+		authorDiscordId: "342369454719631361",
 	},
 ];

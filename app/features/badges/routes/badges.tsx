@@ -8,7 +8,7 @@ import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
 import { SearchIcon } from "~/components/icons/Search";
 import { useUser } from "~/features/auth/core/user";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import { BADGES_DOC_LINK, BADGES_PAGE, navIconUrl } from "~/utils/urls";
 import * as BadgeRepository from "../BadgeRepository.server";
 

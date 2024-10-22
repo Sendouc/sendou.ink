@@ -8,7 +8,7 @@ import { FRIEND_CODE_REGEXP } from "~/features/sendouq/q-constants";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { isAdmin, isMod } from "~/permissions";
 import { logger } from "~/utils/logger";
-import { parseRequestPayload, validate } from "~/utils/remix";
+import { parseRequestPayload, validate } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import { _action, actualNumber } from "~/utils/zod";
 import { plusTiersFromVotingAndLeaderboard } from "../core/plus-tier.server";

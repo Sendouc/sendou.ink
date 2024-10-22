@@ -129,8 +129,6 @@
 
 	"plans.blueprint": "план",
 	"plans.bgStyle.OVER": "Вид сверху",
-	"plans.bgStyle.MINI": "Миникарта (пустая)",
-	"plans.bgStyle.ITEMS": "Миникарта",
 
 	"articles.by": "от {{author}}",
 

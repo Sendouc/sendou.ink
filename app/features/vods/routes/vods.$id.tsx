@@ -19,7 +19,7 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";
-import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
+import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import {

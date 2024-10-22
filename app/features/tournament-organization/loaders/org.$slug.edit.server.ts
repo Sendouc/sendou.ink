@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
-import { unauthorizedIfFalsy } from "~/utils/remix";
+import { unauthorizedIfFalsy } from "~/utils/remix.server";
 import { canEditTournamentOrganization } from "../tournament-organization-utils";
 import { organizationFromParams } from "../tournament-organization-utils.server";
 
