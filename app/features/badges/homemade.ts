@@ -20,6 +20,11 @@ export const homemadeBadges: BadgeInfo[] = [
 			authorDiscordId: "789943264370884708",
 		},
 		{
+			displayName: "TFS Tourneys",
+			fileName: "tfstourney",
+			authorDiscordId: "789943264370884708",
+		},
+		{
 			displayName: "Treetop Tussle",
 			fileName: "tree",
 			authorDiscordId: "789943264370884708",
