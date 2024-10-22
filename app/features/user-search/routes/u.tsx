@@ -9,7 +9,10 @@ import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
 import { SearchIcon } from "~/components/icons/Search";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { type SendouRouteHandle, parseSearchParams } from "~/utils/remix";
+import {
+	type SendouRouteHandle,
+	parseSearchParams,
+} from "~/utils/remix.server";
 import { USER_SEARCH_PAGE, navIconUrl, userPage } from "~/utils/urls";
 import { queryToUserIdentifier } from "~/utils/users";
 

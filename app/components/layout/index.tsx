@@ -5,12 +5,12 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useTranslation } from "react-i18next";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type { RootLoaderData } from "~/root";
-import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix";
-import { SUPPORT_PAGE } from "~/utils/urls";
-import { LinkButton } from "../Button";
+import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix.server";
+import { Button } from "../Button";
 import { Image } from "../Image";
-import { HeartIcon } from "../icons/Heart";
+import { HamburgerIcon } from "../icons/Hamburger";
 import { Footer } from "./Footer";
+import { NavDialog } from "./NavDialog";
 import { TopRightButtons } from "./TopRightButtons";
 
 function useBreadcrumbs() {
@@ -42,7 +42,7 @@ export const Layout = React.memo(function Layout({
 	data?: RootLoaderData;
 	isErrored?: boolean;
 }) {
-	const { t } = useTranslation(["common"]);
+	const [navDialogOpen, setNavDialogOpen] = React.useState(false);
 	const location = useLocation();
 	const breadcrumbs = useBreadcrumbs();
 
@@ -54,6 +54,15 @@ export const Layout = React.memo(function Layout({
 		!location.pathname.includes("plans");
 	return (
 		<div className="layout__container">
+			<NavDialog isOpen={navDialogOpen} close={() => setNavDialogOpen(false)} />
+			{isFrontPage ? (
+				<Button
+					icon={<HamburgerIcon />}
+					className="layout__hamburger-fab"
+					variant="outlined"
+					onClick={() => setNavDialogOpen(true)}
+				/>
+			) : null}
 			<header className="layout__header layout__item_size">
 				<div className="layout__breadcrumb-container">
 					<Link to="/" className="layout__breadcrumb logo">
@@ -70,33 +79,13 @@ export const Layout = React.memo(function Layout({
 							<BreadcrumbLink key={breadcrumb.href} data={breadcrumb} />,
 						];
 					})}
-					{isFrontPage ? (
-						<>
-							<div className="layout__breadcrumb-separator mobile-hidden">
-								-
-							</div>
-							<div className="layout__breadcrumb mobile-hidden">
-								{t("common:websiteSubtitle")}
-							</div>
-							{data && typeof data?.user?.patronTier !== "number" ? (
-								<LinkButton
-									to={SUPPORT_PAGE}
-									size="tiny"
-									icon={<HeartIcon />}
-									variant="outlined"
-									className="ml-auto desktop-hidden"
-								>
-									{t("common:pages.support")}
-								</LinkButton>
-							) : null}
-						</>
-					) : null}
 				</div>
 				<TopRightButtons
 					isErrored={isErrored}
 					showSupport={Boolean(
-						data && typeof data?.user?.patronTier !== "number",
+						data && typeof data?.user?.patronTier !== "number" && isFrontPage,
 					)}
+					openNavDialog={() => setNavDialogOpen(true)}
 				/>
 			</header>
 			{showLeaderboard ? <MyRampUnit /> : null}
@@ -138,7 +127,9 @@ function BreadcrumbLink({ data }: { data: Breadcrumb }) {
 						height={24}
 					/>
 				)}
-				{data.text}
+				<span className="layout__breadcrumb__text-mobile-hidden">
+					{data.text}
+				</span>
 			</Link>
 		);
 	}

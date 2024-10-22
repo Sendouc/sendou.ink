@@ -138,8 +138,6 @@
 
 	"plans.blueprint": "計画",
 	"plans.bgStyle.OVER": "頭上マップ",
-	"plans.bgStyle.MINI": "ミニマップ (障害物なし)",
-	"plans.bgStyle.ITEMS": "ミニマップ",
 
 	"articles.by": "作者: {{author}}",
 
@@ -220,9 +218,5 @@
 	"chat.systemMsg.userLeft": "{{name}} がグループから出ました",
 	"chat.newMessages": "新着メッセージ",
 
-	"fc.title": "フレンドコード",
-
-	"showcase.register": "登録する",
-	"showcase.bracket": "ブラケット",
-	"showcase.liveNow": "只今ライブ!"
+	"fc.title": "フレンドコード"
 }

@@ -24,7 +24,8 @@ import {
 	PATCHES,
 } from "~/constants";
 import { safeJSONParse } from "~/utils/json";
-import type { SendouRouteHandle } from "~/utils/remix";
+import { isRevalidation } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import type { Unpacked } from "~/utils/types";
 import {
 	BUILDS_PAGE,
@@ -57,6 +58,8 @@ const filterOutMeaninglessFilters = (
 	);
 };
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
+	if (isRevalidation(args)) return true;
+
 	const oldLimit = args.currentUrl.searchParams.get("limit");
 	const newLimit = args.nextUrl.searchParams.get("limit");
 

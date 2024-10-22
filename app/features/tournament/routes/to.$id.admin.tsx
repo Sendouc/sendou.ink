@@ -19,6 +19,7 @@ import { USER } from "~/constants";
 import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { userIsBanned } from "~/features/ban/core/banned.server";
+import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import {
 	clearTournamentDataCache,
@@ -32,11 +33,11 @@ import {
 	badRequestIfFalsy,
 	parseRequestPayload,
 	validate,
-} from "~/utils/remix";
+} from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import {
-	calendarEditPage,
 	calendarEventPage,
+	tournamentEditPage,
 	tournamentPage,
 } from "~/utils/urls";
 import * as TournamentRepository from "../TournamentRepository.server";
@@ -88,6 +89,12 @@ export const action: ActionFunction = async ({ request, params }) => {
 				},
 				userId: data.userId,
 				tournamentId,
+			});
+
+			ShowcaseTournaments.addToParticipationInfoMap({
+				tournamentId,
+				type: "participant",
+				userId: data.userId,
 			});
 
 			break;
@@ -192,6 +199,13 @@ export const action: ActionFunction = async ({ request, params }) => {
 				userId: data.memberId,
 				teamId: team.id,
 			});
+
+			ShowcaseTournaments.removeFromParticipationInfoMap({
+				tournamentId,
+				type: "participant",
+				userId: data.memberId,
+			});
+
 			break;
 		}
 		case "ADD_MEMBER": {
@@ -227,6 +241,13 @@ export const action: ActionFunction = async ({ request, params }) => {
 					userId: data.userId,
 				}),
 			});
+
+			ShowcaseTournaments.addToParticipationInfoMap({
+				tournamentId,
+				type: "participant",
+				userId: data.userId,
+			});
+
 			break;
 		}
 		case "DELETE_TEAM": {
@@ -236,23 +257,44 @@ export const action: ActionFunction = async ({ request, params }) => {
 			validate(!tournament.hasStarted, "Tournament has started");
 
 			deleteTeam(team.id);
+
+			ShowcaseTournaments.clearParticipationInfoMap();
+
 			break;
 		}
 		case "ADD_STAFF": {
 			validateIsTournamentAdmin();
+
 			await TournamentRepository.addStaff({
 				role: data.role,
 				tournamentId: tournament.ctx.id,
 				userId: data.userId,
 			});
+
+			if (data.role === "ORGANIZER") {
+				ShowcaseTournaments.addToParticipationInfoMap({
+					tournamentId,
+					type: "organizer",
+					userId: data.userId,
+				});
+			}
+
 			break;
 		}
 		case "REMOVE_STAFF": {
 			validateIsTournamentAdmin();
+
 			await TournamentRepository.removeStaff({
 				tournamentId: tournament.ctx.id,
 				userId: data.userId,
 			});
+
+			ShowcaseTournaments.removeFromParticipationInfoMap({
+				tournamentId,
+				type: "organizer",
+				userId: data.userId,
+			});
+
 			break;
 		}
 		case "UPDATE_CAST_TWITCH_ACCOUNTS": {
@@ -351,7 +393,7 @@ export default function TournamentAdminPage() {
 			{tournament.isAdmin(user) && !tournament.hasStarted ? (
 				<div className="stack horizontal items-end">
 					<LinkButton
-						to={calendarEditPage(tournament.ctx.eventId)}
+						to={tournamentEditPage(tournament.ctx.eventId)}
 						size="tiny"
 						variant="outlined"
 						testId="edit-event-info-button"

@@ -1,6 +1,10 @@
 import type { ActionFunction } from "@remix-run/node";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { notFoundIfFalsy, parseRequestPayload, validate } from "~/utils/remix";
+import {
+	notFoundIfFalsy,
+	parseRequestPayload,
+	validate,
+} from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import * as TeamRepository from "../TeamRepository.server";
 import {

@@ -5,7 +5,7 @@ import { z } from "zod";
 import { db } from "~/db/sql";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { safeNumberParse } from "~/utils/number";
-import { notFoundIfFalsy, parseParams } from "~/utils/remix";
+import { notFoundIfFalsy, parseParams } from "~/utils/remix.server";
 import {
 	handleOptionsRequest,
 	requireBearerAuth,

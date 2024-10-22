@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { i18next } from "~/modules/i18n/i18next.server";
 import { removeDuplicates } from "~/utils/arrays";
-import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
+import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix.server";
 import { makeTitle } from "~/utils/strings";
 import {
 	navIconUrl,

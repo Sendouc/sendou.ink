@@ -8,7 +8,8 @@ import {
 } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Button, LinkButton } from "~/components/Button";
+import { Alert } from "~/components/Alert";
+import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { FormErrors } from "~/components/FormErrors";
 import { Input } from "~/components/Input";
@@ -19,7 +20,7 @@ import { SearchIcon } from "~/components/icons/Search";
 import { useUser } from "~/features/auth/core/user";
 import { usePagination } from "~/hooks/usePagination";
 import { joinListToNaturalString } from "~/utils/arrays";
-import type { SendouRouteHandle } from "~/utils/remix";
+import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	TEAM_SEARCH_PAGE,
 	navIconUrl,
@@ -52,7 +53,6 @@ export const handle: SendouRouteHandle = {
 
 export default function TeamSearchPage() {
 	const { t } = useTranslation(["team"]);
-	const user = useUser();
 	const [inputValue, setInputValue] = React.useState("");
 	const data = useLoaderData<typeof loader>();
 
@@ -86,29 +86,9 @@ export default function TeamSearchPage() {
 		pageSize: TEAMS_PER_PAGE,
 	});
 
-	const canAddNewTeam = () => {
-		if (!user) return false;
-
-		if (isAtLeastFiveDollarTierPatreon(user)) {
-			return data.teamMemberOfCount < TEAM.MAX_TEAM_COUNT_PATRON;
-		}
-
-		return data.teamMemberOfCount < TEAM.MAX_TEAM_COUNT_NON_PATRON;
-	};
-
 	return (
 		<Main className="stack lg">
 			<NewTeamDialog />
-			{canAddNewTeam() ? (
-				<LinkButton
-					size="tiny"
-					to="?new=true"
-					className="ml-auto"
-					testId="new-team-button"
-				>
-					{t("team:newTeam.button")}
-				</LinkButton>
-			) : null}
 			<Input
 				className="team-search__input"
 				icon={<SearchIcon className="team-search__icon" />}
@@ -174,10 +154,31 @@ function NewTeamDialog() {
 	const { t } = useTranslation(["common", "team"]);
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
+	const user = useUser();
+	const data = useLoaderData<typeof loader>();
 
 	const isOpen = searchParams.get("new") === "true";
 
 	const close = () => navigate(TEAM_SEARCH_PAGE);
+
+	const canAddNewTeam = () => {
+		if (!user) return false;
+
+		if (isAtLeastFiveDollarTierPatreon(user)) {
+			return data.teamMemberOfCount < TEAM.MAX_TEAM_COUNT_PATRON;
+		}
+
+		return data.teamMemberOfCount < TEAM.MAX_TEAM_COUNT_NON_PATRON;
+	};
+
+	if (isOpen && !canAddNewTeam()) {
+		return (
+			<Alert variation="WARNING">
+				You can't add another team (max 2 for non-supporters and 5 for
+				supporters).
+			</Alert>
+		);
+	}
 
 	return (
 		<Dialog isOpen={isOpen} close={close} className="text-center">
