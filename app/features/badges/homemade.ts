@@ -15,8 +15,8 @@ export const homemadeBadges: BadgeInfo[] = [
 	// 	authorDiscordId: "123456789012345678",
 	// },
 	{
-			displayName: "Tristrike Tuesdays: All Modes (Silver Bracket)",
-			fileName: "sigma",
+			displayName: "Liftoff",
+			fileName: "liftoff",
 			authorDiscordId: "789943264370884708",
 		},
 		{
