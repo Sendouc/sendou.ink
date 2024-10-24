@@ -229,4 +229,19 @@ export const homemadeBadges: BadgeInfo[] = [
 		fileName: "breezesr",
 		authorDiscordId: "342369454719631361",
 	},
+  {
+		displayName: "Frostbite Ascent",
+		fileName: "frostbitegold2x",
+		authorDiscordId: "354880982890971136",
+	},
+	{
+		displayName: "Frostbite Ascent (Top Bracket)",
+		fileName: "frostbitesilver2x",
+		authorDiscordId: "354880982890971136",
+	},
+	{
+		displayName: "Frostbite Ascent (Top 8)",
+		fileName: "frostbitebase2x",
+		authorDiscordId: "354880982890971136",
+	},
 ];
