@@ -52,8 +52,9 @@ export class FriendsPage {
 		);
 	}
 
+	/** Scoped to the page content: the mobile friends panel still shows the same name for a frame after navigating here from it. */
 	friendButton(name: string) {
-		return this.page.getByRole("button", { name });
+		return this.page.getByRole("main").getByRole("button", { name });
 	}
 
 	friend(name: string) {

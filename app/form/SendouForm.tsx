@@ -9,6 +9,7 @@ import * as v from "valibot";
 import type { SendouButtonProps } from "~/components/elements/Button";
 import { FormMessage } from "~/components/FormMessage";
 import { SubmitButton } from "~/components/SubmitButton";
+import { holdRevalidationsDuring } from "~/features/chat/revalidation-scope";
 import { FormField as FormFieldComponent } from "./FormField";
 import { getFormFieldMetadata } from "./fields";
 import styles from "./SendouForm.module.css";
@@ -505,11 +506,13 @@ function createFormActions({
 		const submitted = revalidateRoot
 			? { ...values, revalidateRoot: true }
 			: values;
-		fetcher.submit(submitted as Record<string, string>, {
-			method: "post",
-			action,
-			encType: "application/json",
-		});
+		void holdRevalidationsDuring(() =>
+			fetcher.submit(submitted as Record<string, string>, {
+				method: "post",
+				action,
+				encType: "application/json",
+			}),
+		);
 	};
 
 	const setClientError = (name: string, error: string | undefined) => {

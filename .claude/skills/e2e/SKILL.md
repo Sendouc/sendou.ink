@@ -85,6 +85,13 @@ When a failure needs full DOM snapshots to understand, re-run just that test wit
 ### Re-render races
 Live events run on an in-process event bus per worker server (SSE, see `app/features/events`), so cross-worker crosstalk cannot cause flakes. Google Fonts are also blocked at the context level so font swaps never reflow the page mid-test. Re-renders from the test's own action revalidations can still swallow a React Aria press (press start registers, press end never fires — no POST); `waitForPOSTResponse` retries for this, so route flows through it rather than adding sleeps.
 
+Other known sources, each handled once in the helpers or page objects:
+- YouTube is stubbed at the context level (a fake `iframe_api`, everything else aborted): the real player loads from the internet at its own pace and, arriving mid-test, closed an open select on the VoD form
+- dnd-kit stops every click in the document for 50ms after a drop; drag helpers end with `waitForDropToSettle` so the next click lands
+- A tab or link clicked before hydration (after a raw `page.reload()`, say) loads the target as a new document and the click after it is lost; reload through the page object's `reload()` which waits for hydration
+- Popovers close on navigation in a passive effect, so for a frame the old panel and the new page both show the same names; scope locators to `main` where a name can appear in both
+- React Router drops a fetcher's redirect when a navigation (a revalidation included) started after the submission; broadcast revalidations are jittered up to 1.5s after a live event, so one could land mid-submission and the action silently did nothing. `holdRevalidationsDuring` (used by `useActionSubmit` and `SendouForm`) defers them until the submission settles
+
 ## Test pattern reference
 
 Every test builds its own data with factories and drives the UI through page objects:
@@ -112,7 +119,7 @@ Key rules:
 - Use `navigate()` instead of `page.goto()` — it waits for hydration (page objects' `goto()` methods wrap it)
 - Use `submit()` instead of clicking submit buttons directly — it waits for the POST response
 - Use `impersonate(page, userId?)` to authenticate. Default is admin (ADMIN_ID); prefer N-ZAP (`NZAP_TEST_ID`) when the flow doesn't need admin rights
-- Avoid `page.waitForTimeout` — use assertions or `waitFor` patterns instead
+- Avoid `page.waitForTimeout` — use assertions or `waitFor` patterns instead (the one exception is `waitForDropToSettle`, dnd-kit's post-drop window has nothing observable to wait on)
 - Import `test` from `./helpers/playwright` (not from `@playwright/test`) — it includes worker port fixtures and the database reset
 - Factory writes must be followed by a helper that talks to the server (`navigate`, `impersonate`, `submit`) or the test fails with "writes the server never saw"
 

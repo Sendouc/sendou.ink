@@ -182,7 +182,7 @@ test.describe("Tournament bracket", () => {
 
 		// past the 26min limit of a Bo3
 		await page.clock.fastForward("30:00");
-		await page.reload();
+		await brackets.reload();
 
 		match = await brackets.openMatch(matchId);
 

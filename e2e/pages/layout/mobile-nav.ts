@@ -72,7 +72,10 @@ export class MobileNav {
 	private async settleAnimations() {
 		await this.page.evaluate(() =>
 			Promise.all(
-				document.getAnimations().map((animation) => animation.finished),
+				document.getAnimations().map((animation) =>
+					// a cancelled animation (its element gone, or another taking its place) is as settled as a finished one
+					animation.finished.catch(() => {}),
+				),
 			),
 		);
 	}

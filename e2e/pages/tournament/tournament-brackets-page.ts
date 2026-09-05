@@ -2,6 +2,7 @@ import type { Page } from "@playwright/test";
 import { tournamentBracketsPage } from "~/features/tournament-bracket/tournament-bracket-urls";
 import {
 	expect,
+	expectIsHydrated,
 	modalClickConfirmButton,
 	navigate,
 	submit,
@@ -47,6 +48,11 @@ export class TournamentBracketsPage {
 			page: this.page,
 			url: tournamentBracketsPage({ tournamentId, bracketIdx }),
 		});
+	}
+
+	async reload() {
+		await this.page.reload();
+		await expectIsHydrated(this.page);
 	}
 
 	teamName(name: string) {
@@ -152,6 +158,8 @@ export class TournamentBracketsPage {
 				this.page.getByTestId("back-to-bracket-button"),
 			).toBeVisible();
 		}).toPass();
+		// a click that beat hydration loads the match page as a new document
+		await expectIsHydrated(this.page);
 		return new TournamentMatchPage(this.page);
 	}
 

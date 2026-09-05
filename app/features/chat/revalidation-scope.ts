@@ -11,12 +11,49 @@ let pendingRevalidations = 0;
 let oldestPendingStartedAt: number | null = null;
 let revalidationGeneration = 0;
 let scheduledBroadcast: { scope: RevalidateScope | null } | null = null;
+let heldSubmissions = 0;
+let deferredRevalidation: {
+	revalidate: () => Promise<void>;
+	scope: RevalidateScope | null;
+} | null = null;
+
+/**
+ * Runs a fetcher submission, holding broadcast revalidations back until it has settled (its
+ * redirect followed). React Router drops a fetcher's redirect when a navigation started after
+ * the submission, and a revalidation is one: a broadcast landing mid-flight would leave the
+ * user on the page with nothing happening. The held revalidation runs once, afterwards.
+ */
+export async function holdRevalidationsDuring(submission: () => Promise<void>) {
+	heldSubmissions++;
+	try {
+		await submission();
+	} finally {
+		heldSubmissions--;
+		if (heldSubmissions === 0 && deferredRevalidation) {
+			const { revalidate, scope } = deferredRevalidation;
+			deferredRevalidation = null;
+			revalidateWithScope(revalidate, scope ?? undefined);
+		}
+	}
+}
 
 /** Runs a broadcast triggered revalidation, remembering its scope while in flight so `shouldRevalidate` can skip loaders the broadcast cannot have changed. */
 export function revalidateWithScope(
 	revalidate: () => Promise<void>,
 	scope: RevalidateScope | undefined,
 ) {
+	if (heldSubmissions > 0) {
+		// like an absorbed broadcast, a deferred revalidation of a different scope widens to unscoped
+		const widens =
+			deferredRevalidation !== null &&
+			deferredRevalidation.scope !== (scope ?? null);
+		deferredRevalidation = {
+			revalidate,
+			scope: widens ? null : (scope ?? null),
+		};
+		return;
+	}
+
 	forgetStalePendingRevalidations();
 
 	if (!scope) {

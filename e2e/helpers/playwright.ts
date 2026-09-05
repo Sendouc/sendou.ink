@@ -32,6 +32,17 @@ declare global {
 	}
 }
 
+/** `YT.Player` that never readies, so a VoD form behaves as it does before the real one loads. */
+const YOUTUBE_IFRAME_API_STUB = `
+window.YT = {
+	Player: class {
+		getCurrentTime() { return 0; }
+		destroy() {}
+	},
+};
+window.onYouTubeIframeAPIReady?.();
+`;
+
 export const MOBILE_VIEWPORT = { width: 375, height: 667 };
 export const TABLET_VIEWPORT = { width: 768, height: 1024 };
 
@@ -78,6 +89,18 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
 		await context.route(
 			/^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
 			(route) => route.abort(),
+		);
+		// The VoD pages embed a YouTube player, which loads from the internet
+		// (player, ads, telemetry) at a pace of its own. Under load it landed
+		// mid-test, and the frame arriving closed the select being filled in.
+		// A stub player API keeps the pages off the network.
+		await context.route(/^https:\/\/www\.youtube\.com\//, (route) =>
+			new URL(route.request().url()).pathname === "/iframe_api"
+				? route.fulfill({
+						contentType: "text/javascript",
+						body: YOUTUBE_IFRAME_API_STUB,
+					})
+				: route.abort(),
 		);
 		await use(context);
 	},
@@ -468,6 +491,14 @@ async function expectRouterIdle(page: Page) {
 			{ cause: error },
 		);
 	}
+}
+
+/** dnd-kit stops every click in the document for this long after a drop (`PointerSensor.detach`). */
+const DND_KIT_CLICK_SUPPRESSION_MS = 50;
+
+/** Waits out dnd-kit's post-drop click suppression, which nothing observable marks the end of. Call after the `mouse.up()` of a drag. */
+export async function waitForDropToSettle(page: Page) {
+	await page.waitForTimeout(2 * DND_KIT_CLICK_SUPPRESSION_MS);
 }
 
 /** Asserts the page rendered rather than the error boundary catching something. */
