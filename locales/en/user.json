@@ -123,7 +123,7 @@
 	"widgets.description.top-500-weapons-splatanas": "Show splatanas you've reached top 500 with",
 	"widgets.description.x-rank-peaks": "Show your peak X Rank placement for each mode, optionally select division",
 	"widgets.description.builds": "Display your 3 most recent builds",
-	"widgets.description.weapon-pool": "Display your weapon pool with favorite selection",
+	"widgets.description.weapon-pool": "Display your match profile weapon pool (edit on settings page)",
 	"widgets.description.sens": "Show your sensitivity settings and controller of choice",
 	"widgets.description.art": "Display your 3 most recent art pieces",
 	"widgets.description.commissions": "Show your commission status and details",
