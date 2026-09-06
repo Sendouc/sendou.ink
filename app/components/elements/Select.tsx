@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { ChevronsUpDown, Search, X } from "lucide-react";
 import * as React from "react";
+import { flushSync } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { SendouBottomTexts } from "~/components/elements/BottomTexts";
 import { SendouButton } from "~/components/elements/Button";
@@ -276,6 +277,21 @@ export function SendouSelect<T extends object>({
 		scrollIntoView(targetKey);
 	};
 
+	/**
+	 * Focus has to move while the tap that opened the popover is still fresh,
+	 * so it happens as the popover toggles rather than on the next frame.
+	 * iOS Safari can still refuse it, hence the retry.
+	 */
+	const focusPopoverContent = () => {
+		const target = search ? searchInputRef.current : listboxRef.current;
+		if (!target) return;
+
+		target.focus();
+		if (document.activeElement !== target) {
+			requestAnimationFrame(() => target.focus());
+		}
+	};
+
 	const onTriggerKeyDown = (event: React.KeyboardEvent) => {
 		if (event.key === "ArrowDown" || event.key === "ArrowUp") {
 			event.preventDefault();
@@ -344,21 +360,20 @@ export function SendouSelect<T extends object>({
 
 		const next = event.newState === "open";
 		if (next === open) return;
-		setOpenState(next);
-		onOpenChange?.(next);
 
 		if (next) {
 			focusStore.set(currentKey);
-			// the toggle event's render mounts the options synchronously, so they
-			// are registered by the time this runs
-			requestAnimationFrame(() => {
-				if (search) {
-					searchInputRef.current?.focus();
-				} else {
-					listboxRef.current?.focus();
-				}
-				scrollIntoView(currentKey);
-			});
+		}
+		// focus moves into the popover right after this, so its content cannot
+		// wait for React to schedule the render
+		flushSync(() => setOpenState(next));
+		onOpenChange?.(next);
+
+		if (next) {
+			focusPopoverContent();
+			// the options mount with the render this toggle triggers, so they are
+			// registered by the time the next frame runs
+			requestAnimationFrame(() => scrollIntoView(currentKey));
 		} else {
 			setSearchValue("");
 			focusStore.set(null);
