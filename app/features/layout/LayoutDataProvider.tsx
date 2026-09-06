@@ -7,6 +7,7 @@ import { LAYOUT_DATA_ROUTE } from "~/utils/urls";
 import type { loader } from "./routes/api.layout";
 
 const TEN_MINUTES = 10 * 60 * 1000;
+const ONE_MINUTE = 60 * 1000;
 
 interface LayoutData {
 	/** `null` when the server has no session, `undefined` when it has not said. */
@@ -46,12 +47,16 @@ export function LayoutDataProvider({
 	// a ref so a poll elsewhere does not re-run the effect and restart the interval before it fires
 	const isLoadingRef = React.useRef(isLoading);
 	isLoadingRef.current = isLoading;
+	const lastRefreshedAtRef = React.useRef(0);
 
 	React.useEffect(() => {
 		const loadIfIdle = () => {
-			if (!isLoadingRef.current) {
-				void refresh();
-			}
+			if (isLoadingRef.current) return;
+			// alt-tabbing back is not worth a full app shell rebuild if one just happened
+			if (Date.now() - lastRefreshedAtRef.current < ONE_MINUTE) return;
+
+			lastRefreshedAtRef.current = Date.now();
+			void refresh();
 		};
 
 		const handleVisibilityChange = () => {
