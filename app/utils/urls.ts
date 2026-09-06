@@ -177,6 +177,19 @@ export const OG_IMAGE_PAGES = [
 
 export type OgImagePage = (typeof OG_IMAGE_PAGES)[number];
 
+/** Icons that can stand in for a page or a feature, e.g. next to a changelog entry. */
+export const NAV_ICONS = [
+	...OG_IMAGE_PAGES,
+	"medal",
+	"t",
+	"u",
+	"associations",
+	"badges",
+	"luti",
+] as const;
+
+export type NavIcon = (typeof NAV_ICONS)[number];
+
 /** Preview image shown when a page is shared on Discord, Bluesky etc. */
 export const ogImageUrl = (page: OgImagePage | "default") =>
 	`${STATIC_ASSETS_URL}/img/og/${page}.png`;

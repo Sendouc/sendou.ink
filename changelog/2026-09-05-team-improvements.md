@@ -1,5 +1,5 @@
 ---
-navItem: calendar
+navItem: t
 type: feature
 ---
 Team scheduling improvements

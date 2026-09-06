@@ -1,4 +1,5 @@
 ---
+navItem: u
 type: feature
 ---
 One weapon pool instead of two

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import * as v from "valibot";
-import { OG_IMAGE_PAGES } from "~/utils/urls";
+import { NAV_ICONS } from "~/utils/urls";
 import { CHANGELOG_FOLDER_PATH } from "../changelog-constants";
 import type { ChangelogGraphicEntry } from "../components/ChangelogGraphic";
 
@@ -11,7 +11,7 @@ const RESOLVED_CHANGELOG_DIR = path.resolve(CHANGELOG_FOLDER_PATH);
 
 const BULLET_LINE_PATTERN = /^[-*]\s+/;
 
-const navItemSchema = v.picklist(OG_IMAGE_PAGES);
+const navItemSchema = v.picklist(NAV_ICONS);
 
 const frontmatterSchema = v.object({
 	navItem: v.optional(v.union([navItemSchema, v.array(navItemSchema)])),

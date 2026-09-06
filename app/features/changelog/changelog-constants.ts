@@ -1,9 +1,9 @@
-import type { OgImagePage } from "~/utils/urls";
+import type { NavIcon } from "~/utils/urls";
 
 export const CHANGELOG_FOLDER_PATH = "changelog";
 
 /** Discord emoji shortcode per nav item (server-uploaded or built-in), so the generated post is copy-pasteable. */
-export const DISCORD_EMOJI_NAMES: Record<OgImagePage, string> = {
+export const DISCORD_EMOJI_NAMES: Record<NavIcon, string> = {
 	settings: "settings",
 	sendouq: "sendouq",
 	analyzer: "analyzer",
@@ -25,6 +25,11 @@ export const DISCORD_EMOJI_NAMES: Record<OgImagePage, string> = {
 	"tier-list-maker": "tier_list_maker",
 	links: "links",
 	maps: "maps",
+	medal: "medal",
+	t: "t",
+	u: "u",
+	associations: "associations",
+	badges: "badges",
 };
 
 /** Stands in for the sendou.ink logo, used by entries without a nav item. */

@@ -1,4 +1,5 @@
 ---
+navItem: u
 type: feature
 ---
 New profile widgets

@@ -1,5 +1,5 @@
 ---
-navItem: calendar
+navItem: t
 type: feature
 ---
 Team schedule heatmap view (new deault)

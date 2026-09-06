@@ -8,14 +8,14 @@ import {
 	GraphicSectionDivider,
 	GraphicTitle,
 } from "~/features/img-export/components/Graphic";
-import { navIconUrl, type OgImagePage } from "~/utils/urls";
+import { type NavIcon, navIconUrl } from "~/utils/urls";
 import styles from "./ChangelogGraphic.module.css";
 
 const GRAPHIC_WIDTH = 560;
 
 export interface ChangelogGraphicEntry {
 	/** Nav icons shown next to the entry; omitted = sendou.ink logo */
-	navItems?: OgImagePage[];
+	navItems?: NavIcon[];
 	type: "feature" | "bug";
 	headline: string;
 	bullets?: string[];
