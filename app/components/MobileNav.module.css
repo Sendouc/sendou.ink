@@ -11,6 +11,11 @@
 	background: none;
 	color: inherit;
 	z-index: 19;
+
+	--mobile-nav-height: calc(
+		var(--layout-nav-height) +
+		env(safe-area-inset-bottom)
+	);
 }
 
 @media screen and (min-width: 600px) {
@@ -23,7 +28,7 @@
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-	height: calc(var(--layout-nav-height) + env(safe-area-inset-bottom));
+	height: var(--mobile-nav-height);
 	background-color: var(--color-bg-nav);
 	border-top: 1.5px solid var(--color-border);
 	padding: 0 var(--s-4);
@@ -95,14 +100,14 @@
 
 .panel {
 	position: fixed;
-	inset: auto 0 var(--layout-nav-height) 0;
+	inset: auto 0 var(--mobile-nav-height) 0;
 	margin: 0;
 	padding: 0;
 	border: none;
 	width: 100%;
 	max-width: none;
 	max-height: none;
-	height: calc((100% - var(--layout-nav-height)) * 0.85);
+	height: calc((100% - var(--mobile-nav-height)) * 0.85);
 	background: none;
 	color: var(--color-text);
 	overflow: hidden;
@@ -118,13 +123,12 @@
 	& > .panelDialog {
 		background-color: var(--color-bg);
 		border-radius: var(--radius-box) var(--radius-box) 0 0;
-		padding-block-end: env(safe-area-inset-bottom);
 		animation: slide-up 200ms ease-out;
 	}
 
 	&::backdrop {
 		inset: 0;
-		bottom: var(--layout-nav-height);
+		bottom: var(--mobile-nav-height);
 		background-color: rgba(0, 0, 0, 0.25);
 		backdrop-filter: blur(10px);
 		animation: fade-in 200ms ease-out;
@@ -170,13 +174,13 @@
 
 .menuOverlay {
 	position: fixed;
-	inset: 0 0 var(--layout-nav-height) 0;
+	inset: 0 0 var(--mobile-nav-height) 0;
 	margin: 0;
 	padding: 0;
 	border: none;
 	width: 100%;
 	max-width: none;
-	height: calc(100% - var(--layout-nav-height));
+	height: calc(100% - var(--mobile-nav-height));
 	max-height: none;
 	background-color: var(--color-bg);
 	color: var(--color-text);
@@ -245,7 +249,6 @@
 	list-style: none;
 	margin: 0;
 	padding: var(--s-4);
-	padding-block-end: calc(env(safe-area-inset-bottom) + var(--s-4));
 
 	& a:not(:first-child) {
 		padding-block: var(--s-2);

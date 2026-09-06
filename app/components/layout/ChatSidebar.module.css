@@ -28,10 +28,6 @@
 	.chatHeader {
 		padding-block-start: env(safe-area-inset-top);
 	}
-
-	.sidebar {
-		padding-block-end: env(safe-area-inset-bottom);
-	}
 }
 
 .closeButton {
