@@ -103,7 +103,7 @@ export function BuildCard({
 		>
 			<div>
 				<div className={styles.topRow}>
-					{modes && modes.length > 0 && (
+					{modes && modes.length > 0 ? (
 						<div className={styles.modes}>
 							{modes.map((mode) => (
 								<Image
@@ -117,7 +117,7 @@ export function BuildCard({
 								/>
 							))}
 						</div>
-					)}
+					) : null}
 					<h2 className={styles.title} data-testid="build-title">
 						{title}
 					</h2>
@@ -159,11 +159,11 @@ export function BuildCard({
 				{weapons.map((weapon) => (
 					<RoundWeaponImage key={weapon.weaponSplId} weapon={weapon} />
 				))}
-				{weapons.length === 1 && (
+				{weapons.length === 1 ? (
 					<div className={styles.weaponText}>
 						{t(`weapons:MAIN_${weapons[0].weaponSplId}` as any)}
 					</div>
-				)}
+				) : null}
 			</div>
 			<div
 				className={clsx(styles.gearAbilities, {
@@ -219,7 +219,7 @@ export function BuildCard({
 						{description}
 					</SendouPopover>
 				) : null}
-				{canEdit && (
+				{canEdit ? (
 					<>
 						<LinkButton
 							shape="circle"
@@ -248,7 +248,7 @@ export function BuildCard({
 							/>
 						</FormWithConfirm>
 					</>
-				)}
+				) : null}
 			</div>
 		</div>
 	);

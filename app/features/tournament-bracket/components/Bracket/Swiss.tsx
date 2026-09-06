@@ -98,7 +98,7 @@ export function SwissBracket({
 	return (
 		<div className="stack xl">
 			<div className="stack lg">
-				{groups.length > 1 && (
+				{groups.length > 1 ? (
 					<div className="stack horizontal">
 						{groups.map((g) => (
 							<SendouButton
@@ -118,7 +118,7 @@ export function SwissBracket({
 							</SendouButton>
 						))}
 					</div>
-				)}
+				) : null}
 				<div className="stack lg">
 					{rounds.map((round, roundI) => {
 						const matches = bracket.data.match.filter(

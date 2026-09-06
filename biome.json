@@ -221,6 +221,10 @@
 		{
 			"includes": ["**", "!app/utils/kysely.server.ts"],
 			"plugins": ["./biome-plugins/no-kysely-sqlite-helpers.grit"]
+		},
+		{
+			"includes": ["app/**"],
+			"plugins": ["./biome-plugins/no-and-conditional-rendering.grit"]
 		}
 	]
 }

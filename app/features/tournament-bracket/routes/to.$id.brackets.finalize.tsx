@@ -293,9 +293,9 @@ function NewBadgeReceiversSelector({
 									<div className="stack horizontal sm items-end">
 										<ParticipationPill setResults={member.setResults} />
 									</div>
-									{i !== standingToReceive?.members.length - 1 && (
+									{i !== standingToReceive?.members.length - 1 ? (
 										<Divider className="mt-3" />
-									)}
+									) : null}
 								</div>
 							);
 						})}

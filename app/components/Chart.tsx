@@ -296,7 +296,7 @@ export default function Chart({
 					},
 				}}
 			/>
-			{tooltipData && (
+			{tooltipData ? (
 				<div
 					className={styles.tooltip}
 					style={{
@@ -324,7 +324,7 @@ export default function Chart({
 						</div>
 					))}
 				</div>
-			)}
+			) : null}
 		</div>
 	);
 }

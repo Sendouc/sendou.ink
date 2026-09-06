@@ -424,12 +424,12 @@ function SeriesView({
 						</div>
 					</SendouTabPanel>
 					<SendouTabPanel id="leaderboard">
-						{hasLeaderboard && (
+						{hasLeaderboard ? (
 							<EventLeaderboard
 								leaderboard={series.leaderboard!}
 								ownEntry={series.ownEntry}
 							/>
-						)}
+						) : null}
 					</SendouTabPanel>
 				</SendouTabs>
 			</div>

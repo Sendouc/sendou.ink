@@ -61,9 +61,9 @@ export default function NotificationsPage() {
 									seen: Number(!unseenIds.has(notification.id)),
 								}}
 							/>
-							{i !== data.notifications.length - 1 && (
+							{i !== data.notifications.length - 1 ? (
 								<NotificationItemDivider />
-							)}
+							) : null}
 						</React.Fragment>
 					))}
 				</NotificationsList>

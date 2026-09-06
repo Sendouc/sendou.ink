@@ -92,7 +92,9 @@ function TeamLFGPost({
 					<div className="stack horizontal items-center justify-between">
 						<PostTeamLogoHeader team={post.team} />
 						<div className="stack horizontal items-center sm">
-							{isHydrated && <PostTimezonePill timezone={post.timezone} />}
+							{isHydrated ? (
+								<PostTimezonePill timezone={post.timezone} />
+							) : null}
 							{post.languages ? (
 								<PostLanguagePill languages={post.languages} />
 							) : null}
@@ -273,12 +275,12 @@ function PostPills({
 				invisible: !isHydrated,
 			})}
 		>
-			{typeof timezone === "string" && isHydrated && (
+			{typeof timezone === "string" && isHydrated ? (
 				<PostTimezonePill timezone={timezone} />
-			)}
-			{!isHydrated && <PostTimezonePillPlaceholder />}
+			) : null}
+			{!isHydrated ? <PostTimezonePillPlaceholder /> : null}
 			{languages ? <PostLanguagePill languages={languages} /> : null}
-			{canEdit && <PostEditButton id={postId} />}
+			{canEdit ? <PostEditButton id={postId} /> : null}
 		</div>
 	);
 }

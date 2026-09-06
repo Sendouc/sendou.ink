@@ -128,7 +128,7 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
 			<SendouButton onClick={handleCreateMaplist} isDisabled={disabled}>
 				{t("common:maps.createMapList")}
 			</SendouButton>
-			{mapList && (
+			{mapList ? (
 				<>
 					<ol className={styles.mapList}>
 						{mapList.map(({ mode, stageId }, i) => (
@@ -163,7 +163,7 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
 						{t("common:actions.copyToClipboard")}
 					</SendouButton>
 				</>
-			)}
+			) : null}
 		</div>
 	);
 }

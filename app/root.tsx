@@ -259,7 +259,7 @@ function Document({
 				<Fonts />
 			</head>
 			<body>
-				{IS_E2E_TEST_RUN && <HydrationTestIndicator />}
+				{IS_E2E_TEST_RUN ? <HydrationTestIndicator /> : null}
 				<React.StrictMode>
 					<SearchParamsProvider>
 						<SendouToastRegion />

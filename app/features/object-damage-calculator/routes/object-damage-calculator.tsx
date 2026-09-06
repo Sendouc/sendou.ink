@@ -321,7 +321,9 @@ function DamageReceiversGrid({
 						</div>
 						<div className="stack horizontal sm justify-center items-center">
 							{t(`analyzer:damage.${damage.type}` as any)}
-							{damage.objectShredder && <Ability ability="OS" size="TINY" />}
+							{damage.objectShredder ? (
+								<Ability ability="OS" size="TINY" />
+							) : null}
 						</div>
 					</div>
 				))}
@@ -332,8 +334,9 @@ function DamageReceiversGrid({
 								<div>
 									<Label htmlFor="ap">
 										<div className={styles.apLabel}>
-											{abilityPoints !== "0" &&
-												damageReceiverAp[damageToReceiver.receiver]}
+											{abilityPoints !== "0"
+												? damageReceiverAp[damageToReceiver.receiver]
+												: null}
 										</div>
 									</Label>
 									<SendouPopover

@@ -37,7 +37,7 @@ export function UserResultsTable({
 		<Table>
 			<thead>
 				<tr>
-					{hasHighlightCheckboxes && <th />}
+					{hasHighlightCheckboxes ? <th /> : null}
 					<th id={placementHeaderId}>{t("results.placing")}</th>
 					<th>{t("results.tournament")}</th>
 					<th>{t("results.date")}</th>
@@ -59,7 +59,7 @@ export function UserResultsTable({
 
 					return (
 						<tr key={rowId}>
-							{hasHighlightCheckboxes && (
+							{hasHighlightCheckboxes ? (
 								<td>
 									<input
 										value={result.teamId}
@@ -73,7 +73,7 @@ export function UserResultsTable({
 										defaultChecked={Boolean(result.isHighlight)}
 									/>
 								</td>
-							)}
+							) : null}
 							<td className="pl-4 whitespace-nowrap" id={placementCellId}>
 								<div className="stack horizontal xs items-end">
 									<Placement placement={result.placement} />{" "}

@@ -356,7 +356,7 @@ function Groups() {
 							<SendouTab id="groups" number={neutralGroups.length}>
 								{t("q:looking.columns.groups")}
 							</SendouTab>
-							{isMobile && (
+							{isMobile ? (
 								<SendouTab
 									id="received"
 									number={groupsReceivedLikesFrom.length}
@@ -367,12 +367,12 @@ function Groups() {
 											: "q:looking.columns.invitations",
 									)}
 								</SendouTab>
-							)}
-							{isMobile && data.ownGroup && (
+							) : null}
+							{isMobile && data.ownGroup ? (
 								<SendouTab id="own" number={data.ownGroup.members.length}>
 									{t("q:looking.columns.myGroup")}
 								</SendouTab>
-							)}
+							) : null}
 						</SendouTabList>
 						<SendouTabPanel id="groups">
 							<div className="stack sm">

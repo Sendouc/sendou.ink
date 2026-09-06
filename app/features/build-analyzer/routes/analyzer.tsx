@@ -167,7 +167,7 @@ function BuildAnalyzerPage() {
 	};
 
 	const mainWeaponCategoryItems = [
-		analyzed.stats.shotSpreadAir && (
+		analyzed.stats.shotSpreadAir ? (
 			<StatCard
 				context={context}
 				key="jumpShotSpread"
@@ -175,8 +175,8 @@ function BuildAnalyzerPage() {
 				title={t("analyzer:stat.jumpShotSpread")}
 				suffix="°"
 			/>
-		),
-		typeof analyzed.stats.shotSpreadGround === "number" && (
+		) : null,
+		typeof analyzed.stats.shotSpreadGround === "number" ? (
 			<StatCard
 				context={context}
 				key="groundShotSpread"
@@ -184,9 +184,9 @@ function BuildAnalyzerPage() {
 				title={t("analyzer:stat.groundShotSpread")}
 				suffix="°"
 			/>
-		),
+		) : null,
 		// Squeezer
-		analyzed.stats.shotAutofireSpreadAir && (
+		analyzed.stats.shotAutofireSpreadAir ? (
 			<StatCard
 				context={context}
 				key="shotAutofireSpreadAir"
@@ -194,8 +194,8 @@ function BuildAnalyzerPage() {
 				title={t("analyzer:stat.shotAutofireSpreadAir")}
 				suffix="°"
 			/>
-		),
-		typeof analyzed.stats.shotAutofireSpreadGround === "number" && (
+		) : null,
+		typeof analyzed.stats.shotAutofireSpreadGround === "number" ? (
 			<StatCard
 				context={context}
 				key="shotAutofireSpreadGround"
@@ -203,7 +203,7 @@ function BuildAnalyzerPage() {
 				title={t("analyzer:stat.shotAutofireSpreadGround")}
 				suffix="°"
 			/>
-		),
+		) : null,
 
 		...INK_CONSUME_TYPES.filter(
 			(type) => analyzed.stats[`mainWeaponInkConsumptionPercentage_${type}`],
@@ -216,7 +216,7 @@ function BuildAnalyzerPage() {
 				suffix="%"
 			/>
 		)),
-		typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
+		typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" ? (
 			<StatCard
 				context={context}
 				key="whiteInkSeconds"
@@ -224,8 +224,8 @@ function BuildAnalyzerPage() {
 				title={t("analyzer:stat.whiteInk")}
 				suffix={t("analyzer:suffix.seconds")}
 			/>
-		),
-		typeof analyzed.weapon.brellaCanopyHp === "number" && (
+		) : null,
+		typeof analyzed.weapon.brellaCanopyHp === "number" ? (
 			<StatCard
 				context={context}
 				key="brellaCanopyHp"
@@ -233,8 +233,8 @@ function BuildAnalyzerPage() {
 				title={t("analyzer:stat.canopyHp")}
 				suffix={t("analyzer:suffix.hp")}
 			/>
-		),
-		typeof analyzed.weapon.fullChargeSeconds === "number" && (
+		) : null,
+		typeof analyzed.weapon.fullChargeSeconds === "number" ? (
 			<StatCard
 				context={context}
 				key="fullChargeSeconds"
@@ -242,8 +242,8 @@ function BuildAnalyzerPage() {
 				title={t("analyzer:stat.fullChargeSeconds")}
 				suffix={t("analyzer:suffix.seconds")}
 			/>
-		),
-		typeof analyzed.weapon.maxChargeHoldSeconds === "number" && (
+		) : null,
+		typeof analyzed.weapon.maxChargeHoldSeconds === "number" ? (
 			<StatCard
 				context={context}
 				key="maxChargeHoldSeconds"
@@ -251,7 +251,7 @@ function BuildAnalyzerPage() {
 				title={t("analyzer:stat.maxChargeHoldSeconds")}
 				suffix={t("analyzer:suffix.seconds")}
 			/>
-		),
+		) : null,
 	].filter(Boolean);
 
 	// a primary slot-only ability (e.g. Ninja Squid) or Ability Doubler alone leaves abilityPoints at 0
@@ -313,47 +313,46 @@ function BuildAnalyzerPage() {
 										{t("analyzer:compare")}
 									</SendouTab>
 								</SendouTabList>
-								{[1, 2].map(
-									(buildIndex) =>
-										focusedBuild && (
-											<SendouTabPanel
-												id={`build-${buildIndex}`}
-												key={`build-${buildIndex}`}
-											>
-												<AbilitiesSelector
-													selectedAbilities={focusedBuild}
-													onChange={(newBuild) => {
-														const firstBuildIsEmpty = build
+								{[1, 2].map((buildIndex) =>
+									focusedBuild ? (
+										<SendouTabPanel
+											id={`build-${buildIndex}`}
+											key={`build-${buildIndex}`}
+										>
+											<AbilitiesSelector
+												selectedAbilities={focusedBuild}
+												onChange={(newBuild) => {
+													const firstBuildIsEmpty = build
+														.flat()
+														.every((ability) => ability === "UNKNOWN");
+
+													const buildWasEmptied =
+														!firstBuildIsEmpty &&
+														newBuild
 															.flat()
-															.every((ability) => ability === "UNKNOWN");
+															.every((ability) => ability === "UNKNOWN") &&
+														focused === 1;
 
-														const buildWasEmptied =
-															!firstBuildIsEmpty &&
-															newBuild
-																.flat()
-																.every((ability) => ability === "UNKNOWN") &&
-															focused === 1;
-
-														// otherwise build2 would be duplicated
-														if (buildWasEmptied) {
-															handleChange({
-																newBuild: build2,
-																newBuild2: newBuild,
-																newFocused: 1,
-															});
-															return;
-														}
-
+													// otherwise build2 would be duplicated
+													if (buildWasEmptied) {
 														handleChange({
-															[focused === 1 || firstBuildIsEmpty
-																? "newBuild"
-																: "newBuild2"]: newBuild,
-															newFocused: firstBuildIsEmpty ? 1 : undefined,
+															newBuild: build2,
+															newBuild2: newBuild,
+															newFocused: 1,
 														});
-													}}
-												/>
-											</SendouTabPanel>
-										),
+														return;
+													}
+
+													handleChange({
+														[focused === 1 || firstBuildIsEmpty
+															? "newBuild"
+															: "newBuild2"]: newBuild,
+														newFocused: firstBuildIsEmpty ? 1 : undefined,
+													});
+												}}
+											/>
+										</SendouTabPanel>
+									) : null,
 								)}
 								<SendouTabPanel id="build-compare">
 									<APCompare
@@ -382,16 +381,16 @@ function BuildAnalyzerPage() {
 							}
 							effects={allEffects}
 						/>
-						{showAbilityChunksRequired && (
+						{showAbilityChunksRequired ? (
 							<AbilityChunksRequired build={build} />
-						)}
+						) : null}
 					</div>
 					<div className={styles.patch}>
 						{t("analyzer:patch")} {CURRENT_PATCH}
 					</div>
 				</div>
 				<div className="stack md">
-					{mainWeaponCategoryItems.length > 0 && (
+					{mainWeaponCategoryItems.length > 0 ? (
 						<StatCategory
 							title={t("analyzer:stat.category.main")}
 							summaryRightContent={
@@ -410,7 +409,7 @@ function BuildAnalyzerPage() {
 						>
 							{mainWeaponCategoryItems}
 						</StatCategory>
-					)}
+					) : null}
 
 					<StatCategory
 						title={t("analyzer:stat.category.sub")}
@@ -438,67 +437,67 @@ function BuildAnalyzerPage() {
 							title={t("analyzer:stat.whiteInk")}
 							suffix={t("analyzer:suffix.seconds")}
 						/>
-						{analyzed.stats.subVelocity && (
+						{analyzed.stats.subVelocity ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("subVelocity")}
 								title={t("analyzer:stat.sub.velocity")}
 							/>
-						)}
-						{analyzed.stats.subFirstPhaseDuration && (
+						) : null}
+						{analyzed.stats.subFirstPhaseDuration ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("subFirstPhaseDuration")}
 								title={t("analyzer:stat.sub.firstPhaseDuration")}
 								suffix={t("analyzer:suffix.seconds")}
 							/>
-						)}
-						{analyzed.stats.subSecondPhaseDuration && (
+						) : null}
+						{analyzed.stats.subSecondPhaseDuration ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("subSecondPhaseDuration")}
 								title={t("analyzer:stat.sub.secondPhaseDuration")}
 								suffix={t("analyzer:suffix.seconds")}
 							/>
-						)}
-						{analyzed.stats.subMarkingTimeInSeconds && (
+						) : null}
+						{analyzed.stats.subMarkingTimeInSeconds ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("subMarkingTimeInSeconds")}
 								title={t("analyzer:stat.sub.markingTimeInSeconds")}
 								suffix={t("analyzer:suffix.seconds")}
 							/>
-						)}
-						{analyzed.stats.subMarkingRadius && (
+						) : null}
+						{analyzed.stats.subMarkingRadius ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("subMarkingRadius")}
 								title={t("analyzer:stat.sub.markingRadius")}
 							/>
-						)}
-						{analyzed.stats.subExplosionRadius && (
+						) : null}
+						{analyzed.stats.subExplosionRadius ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("subExplosionRadius")}
 								title={t("analyzer:stat.sub.explosionRadius")}
 							/>
-						)}
-						{analyzed.stats.subHp && (
+						) : null}
+						{analyzed.stats.subHp ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("subHp")}
 								title={t("analyzer:stat.sub.hp")}
 								suffix={t("analyzer:suffix.hp")}
 							/>
-						)}
-						{analyzed.stats.subQsjBoost && (
+						) : null}
+						{analyzed.stats.subQsjBoost ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("subQsjBoost")}
 								title={t("analyzer:stat.sub.qsjBoost")}
 								suffix={t("analyzer:abilityPoints.short")}
 							/>
-						)}
+						) : null}
 					</StatCategory>
 
 					<StatCategory
@@ -567,7 +566,7 @@ function BuildAnalyzerPage() {
 									/>
 								))
 							: null}
-						{analyzed.stats.specialDurationInSeconds && (
+						{analyzed.stats.specialDurationInSeconds ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialDurationInSeconds")}
@@ -585,8 +584,8 @@ function BuildAnalyzerPage() {
 											: undefined
 								}
 							/>
-						)}
-						{analyzed.stats.specialDamageDistance && (
+						) : null}
+						{analyzed.stats.specialDamageDistance ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialDamageDistance")}
@@ -596,8 +595,8 @@ function BuildAnalyzerPage() {
 									),
 								})}
 							/>
-						)}
-						{analyzed.stats.specialPaintRadius && (
+						) : null}
+						{analyzed.stats.specialPaintRadius ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialPaintRadius")}
@@ -607,8 +606,8 @@ function BuildAnalyzerPage() {
 									),
 								})}
 							/>
-						)}
-						{analyzed.stats.specialFieldHp && (
+						) : null}
+						{analyzed.stats.specialFieldHp ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialFieldHp")}
@@ -619,8 +618,8 @@ function BuildAnalyzerPage() {
 								})}
 								suffix={t("analyzer:suffix.hp")}
 							/>
-						)}
-						{analyzed.stats.specialDeviceHp && (
+						) : null}
+						{analyzed.stats.specialDeviceHp ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialDeviceHp")}
@@ -631,8 +630,8 @@ function BuildAnalyzerPage() {
 								})}
 								suffix={t("analyzer:suffix.hp")}
 							/>
-						)}
-						{analyzed.stats.specialHookInkConsumptionPercentage && (
+						) : null}
+						{analyzed.stats.specialHookInkConsumptionPercentage ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialHookInkConsumptionPercentage")}
@@ -643,8 +642,8 @@ function BuildAnalyzerPage() {
 								})}
 								suffix="%"
 							/>
-						)}
-						{analyzed.stats.specialInkConsumptionPerSecondPercentage && (
+						) : null}
+						{analyzed.stats.specialInkConsumptionPerSecondPercentage ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple(
@@ -657,8 +656,8 @@ function BuildAnalyzerPage() {
 								})}
 								suffix="%"
 							/>
-						)}
-						{analyzed.stats.specialReticleRadius && (
+						) : null}
+						{analyzed.stats.specialReticleRadius ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialReticleRadius")}
@@ -668,8 +667,8 @@ function BuildAnalyzerPage() {
 									),
 								})}
 							/>
-						)}
-						{analyzed.stats.specialThrowDistance && (
+						) : null}
+						{analyzed.stats.specialThrowDistance ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialThrowDistance")}
@@ -679,8 +678,8 @@ function BuildAnalyzerPage() {
 									),
 								})}
 							/>
-						)}
-						{analyzed.stats.specialMoveSpeed && (
+						) : null}
+						{analyzed.stats.specialMoveSpeed ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialMoveSpeed")}
@@ -690,8 +689,8 @@ function BuildAnalyzerPage() {
 									),
 								})}
 							/>
-						)}
-						{analyzed.stats.specialAutoChargeRate && (
+						) : null}
+						{analyzed.stats.specialAutoChargeRate ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialAutoChargeRate")}
@@ -701,8 +700,8 @@ function BuildAnalyzerPage() {
 									),
 								})}
 							/>
-						)}
-						{analyzed.stats.specialMaxRadius && (
+						) : null}
+						{analyzed.stats.specialMaxRadius ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialMaxRadius")}
@@ -713,8 +712,8 @@ function BuildAnalyzerPage() {
 								})}
 								popoverInfo={t("analyzer:stat.special.maxRadius.explanation")}
 							/>
-						)}
-						{analyzed.stats.specialRadiusRangeMin && (
+						) : null}
+						{analyzed.stats.specialRadiusRangeMin ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialRadiusRangeMin")}
@@ -724,8 +723,8 @@ function BuildAnalyzerPage() {
 									),
 								})}
 							/>
-						)}
-						{analyzed.stats.specialRadiusRangeMax && (
+						) : null}
+						{analyzed.stats.specialRadiusRangeMax ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialRadiusRangeMax")}
@@ -735,8 +734,8 @@ function BuildAnalyzerPage() {
 									),
 								})}
 							/>
-						)}
-						{analyzed.stats.specialPowerUpDuration && (
+						) : null}
+						{analyzed.stats.specialPowerUpDuration ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("specialPowerUpDuration")}
@@ -747,7 +746,7 @@ function BuildAnalyzerPage() {
 								})}
 								suffix={t("analyzer:suffix.seconds")}
 							/>
-						)}
+						) : null}
 					</StatCategory>
 					<StatCategory
 						title={t("analyzer:stat.category.subDef")}
@@ -787,7 +786,7 @@ function BuildAnalyzerPage() {
 						/>
 					</StatCategory>
 
-					{analyzed.stats.subWeaponDefenseDamages.length > 0 && (
+					{analyzed.stats.subWeaponDefenseDamages.length > 0 ? (
 						<StatCategory
 							title={t("analyzer:stat.category.subWeaponDefenseDamages")}
 							containerClassName={styles.tableContainer}
@@ -814,9 +813,9 @@ function BuildAnalyzerPage() {
 								multiShots={analyzed.weapon.multiShots}
 							/>
 						</StatCategory>
-					)}
+					) : null}
 
-					{analyzed.stats.damages.length > 0 && (
+					{analyzed.stats.damages.length > 0 ? (
 						<StatCategory
 							title={t("analyzer:stat.category.damage")}
 							containerClassName={styles.tableContainer}
@@ -826,9 +825,9 @@ function BuildAnalyzerPage() {
 								multiShots={analyzed.weapon.multiShots}
 							/>
 						</StatCategory>
-					)}
+					) : null}
 
-					{analyzed.stats.specialWeaponDamages.length > 0 && (
+					{analyzed.stats.specialWeaponDamages.length > 0 ? (
 						<StatCategory
 							title={t("analyzer:stat.category.special.damage", {
 								specialWeapon: t(
@@ -839,9 +838,9 @@ function BuildAnalyzerPage() {
 						>
 							<DamageTable values={analyzed.stats.specialWeaponDamages} />
 						</StatCategory>
-					)}
+					) : null}
 
-					{analyzed.stats.fullInkTankOptions.length > 0 && (
+					{analyzed.stats.fullInkTankOptions.length > 0 ? (
 						<StatCategory
 							title={t("analyzer:stat.category.actionsPerInkTank")}
 							containerClassName={styles.tableContainer}
@@ -863,7 +862,7 @@ function BuildAnalyzerPage() {
 								<PerInkTankGrid weaponSplId={mainWeaponId} />
 							</div>
 						</StatCategory>
-					)}
+					) : null}
 
 					<StatCategory
 						title={t("analyzer:stat.category.movement")}
@@ -890,34 +889,34 @@ function BuildAnalyzerPage() {
 							stat={statKeyToTuple("runSpeed")}
 							title={t("analyzer:stat.runSpeed")}
 						/>
-						{analyzed.stats.shootingRunSpeed && (
+						{analyzed.stats.shootingRunSpeed ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("shootingRunSpeed")}
 								title={t("analyzer:stat.shootingRunSpeed")}
 							/>
-						)}
-						{analyzed.stats.shootingRunSpeedCharging && (
+						) : null}
+						{analyzed.stats.shootingRunSpeedCharging ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("shootingRunSpeedCharging")}
 								title={t("analyzer:stat.shootingRunSpeedCharging")}
 							/>
-						)}
-						{analyzed.stats.shootingRunSpeedFullCharge && (
+						) : null}
+						{analyzed.stats.shootingRunSpeedFullCharge ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("shootingRunSpeedFullCharge")}
 								title={t("analyzer:stat.shootingRunSpeedFullCharge")}
 							/>
-						)}
-						{analyzed.stats.shootingRunSpeedSecondaryMode && (
+						) : null}
+						{analyzed.stats.shootingRunSpeedSecondaryMode ? (
 							<StatCard
 								context={context}
 								stat={statKeyToTuple("shootingRunSpeedSecondaryMode")}
 								title={t("analyzer:stat.shootingRunSpeedSecondaryMode")}
 							/>
-						)}
+						) : null}
 						<StatCard
 							context={context}
 							stat={statKeyToTuple("squidSurgeChargeFrames")}
@@ -989,7 +988,7 @@ function BuildAnalyzerPage() {
 							}
 						/>
 					</StatCategory>
-					{objectShredderSelected && (
+					{objectShredderSelected ? (
 						<Link
 							className={styles.noticeableLink}
 							to={objectDamageCalculatorPage(mainWeaponId)}
@@ -1002,7 +1001,7 @@ function BuildAnalyzerPage() {
 							/>
 							{t("analyzer:objCalcAd")}
 						</Link>
-					)}
+					) : null}
 					{user && focusedBuild && !buildIsEmpty(focusedBuild) ? (
 						<Link
 							className={styles.noticeableLink}
@@ -1443,9 +1442,9 @@ function StatCategory({
 				{summaryRightContent}
 			</summary>
 			<div className={containerClassName}>{children}</div>
-			{textBelow && (
+			{textBelow ? (
 				<div className={styles.statCategoryExplanation}>{textBelow}</div>
-			)}
+			) : null}
 		</details>
 	);
 }
@@ -1540,7 +1539,7 @@ function StatCard({
 			<div className={styles.statCardTitleAndValueContainer}>
 				<h2 className={styles.statCardTitle}>
 					{title}{" "}
-					{popoverInfo && (
+					{popoverInfo ? (
 						<SendouPopover
 							trigger={
 								<SendouButton className={styles.statCardPopoverTrigger}>
@@ -1550,7 +1549,7 @@ function StatCard({
 						>
 							{popoverInfo}
 						</SendouPopover>
-					)}
+					) : null}
 				</h2>
 				<div className={styles.statCardValues}>
 					<div className={styles.statCardValue}>
@@ -1684,9 +1683,9 @@ function DamageTable({
 			<thead>
 				<tr>
 					<th>{t("analyzer:damage.header.type")}</th>
-					{showDistanceColumn && (
+					{showDistanceColumn ? (
 						<th>{t("analyzer:damage.header.distance")}</th>
-					)}
+					) : null}
 					{damageIsSubWeaponDamage(firstRow) ? (
 						<th>
 							{comparisonValues
@@ -1694,7 +1693,9 @@ function DamageTable({
 								: t("analyzer:damage.header.baseDamage")}
 						</th>
 					) : null}
-					{showDamageColumn && <th>{t("analyzer:damage.header.damage")}</th>}
+					{showDamageColumn ? (
+						<th>{t("analyzer:damage.header.damage")}</th>
+					) : null}
 					{showPopovers ? <th /> : null}
 				</tr>
 			</thead>
@@ -1731,27 +1732,27 @@ function DamageTable({
 									) : null}
 								</div>
 							</td>
-							{showDistanceColumn && (
+							{showDistanceColumn ? (
 								<td>
 									{typeof val.distance === "number"
 										? val.distance
 										: val.distance?.join("-")}
 								</td>
-							)}
-							{damageIsSubWeaponDamage(val) && <td>{val.baseValue}</td>}
-							{showDamageColumn && (
+							) : null}
+							{damageIsSubWeaponDamage(val) ? <td>{val.baseValue}</td> : null}
+							{showDamageColumn ? (
 								<td>
 									{damage(val)}
 									{comparisonVal ? `/${damage(comparisonVal)}` : null}{" "}
-									{val.shotsToSplat && (
+									{val.shotsToSplat ? (
 										<span className={styles.shotsToSplat}>
 											{t("analyzer:damage.toSplat", {
 												count: val.shotsToSplat,
 											})}
 										</span>
-									)}
+									) : null}
 								</td>
-							)}
+							) : null}
 							{showPopovers ? (
 								<td className={styles.popoverCell}>
 									{renderPopover(val, (val as SubWeaponDamage).subWeaponId) ? (
@@ -1858,11 +1859,11 @@ function ConsumptionTable({
 					})}
 				</tbody>
 			</Table>
-			{subWeaponId === TORPEDO_ID && (
+			{subWeaponId === TORPEDO_ID ? (
 				<div className={styles.consumptionTableExplanation}>
 					{t("analyzer:torpedoExplanation")}
 				</div>
-			)}
+			) : null}
 		</>
 	);
 }

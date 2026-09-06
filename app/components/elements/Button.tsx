@@ -59,10 +59,11 @@ export function SendouButton({
 			}}
 			className={buttonClassName({ className, variant, size, shape })}
 		>
-			{icon &&
-				React.cloneElement(icon, {
-					className: iconClassName(icon.props.className, children, size),
-				})}
+			{icon
+				? React.cloneElement(icon, {
+						className: iconClassName(icon.props.className, children, size),
+					})
+				: null}
 			{children}
 		</button>
 	);
@@ -112,10 +113,11 @@ export function LinkButton({
 				data-testid={testId}
 				aria-label={ariaLabel}
 			>
-				{icon &&
-					React.cloneElement(icon, {
-						className: iconClassName(icon.props.className, children, size),
-					})}
+				{icon
+					? React.cloneElement(icon, {
+							className: iconClassName(icon.props.className, children, size),
+						})
+					: null}
 				{children}
 			</a>
 		);
@@ -132,10 +134,11 @@ export function LinkButton({
 			onClick={onClick}
 			aria-label={ariaLabel}
 		>
-			{icon &&
-				React.cloneElement(icon, {
-					className: iconClassName(icon.props.className, children, size),
-				})}
+			{icon
+				? React.cloneElement(icon, {
+						className: iconClassName(icon.props.className, children, size),
+					})
+				: null}
 			{children}
 		</Link>
 	);

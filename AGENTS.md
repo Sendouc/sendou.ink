@@ -34,7 +34,7 @@
 - state management is done via plain `useState` and React Context API
 - avoid using `useEffect`
 - all texts should be provided translations via the i18next library's `useTranslations` hook's `t` function
-- instead of `&&` operator for conditional rendering, use the ternary operator
+- instead of `&&` operator for conditional rendering, use the ternary operator; enforced by the `no-and-conditional-rendering` Biome plugin
 - for localized user-readable time strings use `<LocaleTime />`, `<LocaleTimeRange>` or `useFormatDistanceToNow`. If needed use `useDateTimeFormat` directly. NEVER use e.g. `toLocaleString` directly as it does not include users' language selection.
 
 ## Forms

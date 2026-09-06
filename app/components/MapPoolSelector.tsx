@@ -82,15 +82,15 @@ export function MapPoolSelector({
 
 	return (
 		<fieldset className={className}>
-			{Boolean(title) && <legend>{title}</legend>}
-			{Boolean(handleRemoval || allowBulkEdit) && (
+			{title ? <legend>{title}</legend> : null}
+			{handleRemoval || allowBulkEdit ? (
 				<div className="stack horizontal sm justify-end">
-					{handleRemoval && (
+					{handleRemoval ? (
 						<SendouButton variant="minimal" onClick={handleRemoval}>
 							{t("actions.remove")}
 						</SendouButton>
-					)}
-					{allowBulkEdit && (
+					) : null}
+					{allowBulkEdit ? (
 						<SendouButton
 							variant="minimal-destructive"
 							isDisabled={mapPool.isEmpty()}
@@ -98,16 +98,16 @@ export function MapPoolSelector({
 						>
 							{t("actions.clear")}
 						</SendouButton>
-					)}
+					) : null}
 				</div>
-			)}
+			) : null}
 			<div className="stack md">
-				{allowBulkEdit && (
+				{allowBulkEdit ? (
 					<MapPoolTemplateSelect
 						value={template}
 						handleChange={handleTemplateChange}
 					/>
-				)}
+				) : null}
 				{info}
 				<MapPoolStages
 					mapPool={mapPool}
@@ -275,9 +275,8 @@ export function MapPoolStages({
 										</button>
 									);
 								})}
-							{!isPresentational &&
-								allowBulkEdit &&
-								(mapPool.hasStage(stageId) ? (
+							{!isPresentational && allowBulkEdit ? (
+								mapPool.hasStage(stageId) ? (
 									<SendouButton
 										shape="circle"
 										key="clear"
@@ -297,7 +296,8 @@ export function MapPoolStages({
 										aria-label={t("common:actions.selectAll")}
 										size="small"
 									/>
-								))}
+								)
+							) : null}
 						</div>
 					</div>
 				</div>
@@ -358,7 +358,7 @@ function MapPoolTemplateSelect({
 						</option>
 					))}
 				</optgroup>
-				{recentEvents && recentEvents.length > 0 && (
+				{recentEvents && recentEvents.length > 0 ? (
 					<optgroup label={t("common:maps.template.yourRecentEvents")}>
 						{recentEvents.map((event) => (
 							<option key={event.id} value={`recent-event:${event.id}`}>
@@ -366,7 +366,7 @@ function MapPoolTemplateSelect({
 							</option>
 						))}
 					</optgroup>
-				)}
+				) : null}
 			</select>
 		</label>
 	);

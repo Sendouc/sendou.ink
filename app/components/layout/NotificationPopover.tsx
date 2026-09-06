@@ -116,7 +116,9 @@ export function NotificationContent({
 									seen: Number(!stickyUnseenIds.has(notification.id)),
 								}}
 							/>
-							{i !== notifications.length - 1 && <NotificationItemDivider />}
+							{i !== notifications.length - 1 ? (
+								<NotificationItemDivider />
+							) : null}
 						</React.Fragment>
 					))}
 				</NotificationsList>
