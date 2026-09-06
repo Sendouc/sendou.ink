@@ -99,6 +99,20 @@
 				"useSymbolDescription": "error",
 				"useGroupedAccessorPairs": "error",
 				"useSpreadOverApply": "error",
+				"useCollapsedIf": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"useConsistentObjectDefinitions": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"useThrowNewError": "error",
+				"useShorthandAssign": "error",
+				"useFragmentSyntax": "error",
+				"noSubstr": "error",
+				"useUnifiedTypeSignatures": "error",
+				"useReadonlyClassProperties": "error",
 				"useFilenamingConvention": {
 					"level": "error",
 					"options": {
@@ -122,7 +136,16 @@
 				"useWhile": {
 					"fix": "safe",
 					"level": "error"
-				}
+				},
+				"noUselessStringConcat": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"noDivRegex": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"noUselessCatchBinding": "error"
 			},
 			"performance": {
 				"noSyncScripts": "error"

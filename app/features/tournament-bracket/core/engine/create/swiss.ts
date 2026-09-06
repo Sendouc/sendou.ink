@@ -86,7 +86,7 @@ function firstRoundMatches({
 				id: matchId++,
 				groupId: groupIdx,
 				stageId: 0,
-				roundId: roundId,
+				roundId,
 				number: i + 1,
 				opponent1: {
 					id: upper,
@@ -103,7 +103,7 @@ function firstRoundMatches({
 				id: matchId++,
 				groupId: groupIdx,
 				stageId: 0,
-				roundId: roundId,
+				roundId,
 				number: upperHalf.length + 1,
 				opponent1: {
 					id: bye,

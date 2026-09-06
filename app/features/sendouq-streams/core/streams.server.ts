@@ -22,7 +22,7 @@ export function cachedStreams() {
 
 	return cachified({
 		key: SENDOUQ_STREAMS_KEY,
-		cache: cache,
+		cache,
 		ttl: ttl(IN_MILLISECONDS.HALF_HOUR),
 		async getFreshValue() {
 			return streamedMatches({

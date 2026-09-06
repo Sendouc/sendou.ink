@@ -15,7 +15,7 @@ export function compressToBase64(
 	const base64 = btoa(binary);
 	if (!options?.urlSafe) return base64;
 
-	return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+	return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/[=]+$/, "");
 }
 
 /**

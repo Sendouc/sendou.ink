@@ -114,13 +114,13 @@ export class Tournament {
 	ctx;
 	/** See {@link TournamentArgs.participatedUsers}, null when this view did not get them. */
 	readonly participatedUserIds: number[] | null;
-	private args;
-	private data;
-	private _brackets: Array<Bracket | undefined> = [];
+	private readonly args;
+	private readonly data;
+	private readonly _brackets: Array<Bracket | undefined> = [];
 	private _allBrackets: Bracket[] | undefined;
 	private _derivedMeta: BracketDerivedMeta[] | undefined;
 	private _bracketsMeta: BracketMeta[] | undefined;
-	private bracketIdxsBeingBuilt = new Set<number>();
+	private readonly bracketIdxsBeingBuilt = new Set<number>();
 
 	constructor(args: TournamentArgs) {
 		const { data, ctx, bracketsMeta, brackets } = args;

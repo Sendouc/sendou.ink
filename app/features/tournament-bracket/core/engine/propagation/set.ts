@@ -123,5 +123,5 @@ function sideOfTeam(match: MatchData, teamId: number): 0 | 1 {
 	if (match.opponent1?.id === teamId) return 0;
 	if (match.opponent2?.id === teamId) return 1;
 
-	throw Error(`Team id ${teamId} is not in the match`);
+	throw new Error(`Team id ${teamId} is not in the match`);
 }

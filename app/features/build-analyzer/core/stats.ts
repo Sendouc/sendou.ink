@@ -201,7 +201,7 @@ function specialPoint({
 
 	const { effect } = abilityPointsToEffects({
 		abilityPoints: apFromMap({
-			abilityPoints: abilityPoints,
+			abilityPoints,
 			ability: SPECIAL_POINT_ABILITY,
 		}),
 		key: "IncreaseRt_Special",
@@ -252,7 +252,7 @@ function specialLost(
 
 	const { baseEffect, effect } = abilityPointsToEffects({
 		abilityPoints: apFromMap({
-			abilityPoints: abilityPoints,
+			abilityPoints,
 			ability: SPECIAL_SAVED_AFTER_DEATH_ABILITY,
 		}),
 		key: "SpecialGaugeRt_Restart",

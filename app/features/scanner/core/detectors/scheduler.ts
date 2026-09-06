@@ -102,8 +102,8 @@ interface DetectorState {
 }
 
 export class DetectorScheduler {
-	#options: SchedulerOptions;
-	#states = new Map<string, DetectorState>();
+	readonly #options: SchedulerOptions;
+	readonly #states = new Map<string, DetectorState>();
 	#maxT = Number.NEGATIVE_INFINITY;
 	#lastActivityT = Number.NEGATIVE_INFINITY;
 	#matchOpenUntilT = Number.NEGATIVE_INFINITY;

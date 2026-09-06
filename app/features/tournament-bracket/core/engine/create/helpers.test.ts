@@ -339,9 +339,9 @@ function assertRoundRobin(input: number[], output: [number, number][][]): void {
 	const matchPerRound = Math.floor(n / 2);
 	const roundCount = n % 2 === 0 ? n - 1 : n;
 
-	if (output.length !== roundCount) throw Error("Round count is wrong");
+	if (output.length !== roundCount) throw new Error("Round count is wrong");
 	if (!output.every((round) => round.length === matchPerRound))
-		throw Error("Not every round has the good number of matches");
+		throw new Error("Not every round has the good number of matches");
 
 	const checkAllOpponents = Object.fromEntries(
 		input.map((element) => [element, new Set<number>()]),
@@ -351,22 +351,22 @@ function assertRoundRobin(input: number[], output: [number, number][][]): void {
 		const checkUnique = new Set<number>();
 
 		for (const match of round) {
-			if (match.length !== 2) throw Error("One match is not a pair");
+			if (match.length !== 2) throw new Error("One match is not a pair");
 
 			if (checkUnique.has(match[0]))
-				throw Error("This team is already playing");
+				throw new Error("This team is already playing");
 			checkUnique.add(match[0]);
 
 			if (checkUnique.has(match[1]))
-				throw Error("This team is already playing");
+				throw new Error("This team is already playing");
 			checkUnique.add(match[1]);
 
 			if (checkAllOpponents[match[0]].has(match[1]))
-				throw Error("The team has already matched this team");
+				throw new Error("The team has already matched this team");
 			checkAllOpponents[match[0]].add(match[1]);
 
 			if (checkAllOpponents[match[1]].has(match[0]))
-				throw Error("The team has already matched this team");
+				throw new Error("The team has already matched this team");
 			checkAllOpponents[match[1]].add(match[0]);
 		}
 	}
@@ -380,9 +380,9 @@ function assertAbDivisionRoundRobin(
 	const roundCount = Math.max(divisionA.length, divisionB.length);
 	const matchesPerRound = Math.min(divisionA.length, divisionB.length);
 
-	if (output.length !== roundCount) throw Error("Round count is wrong");
+	if (output.length !== roundCount) throw new Error("Round count is wrong");
 	if (!output.every((round) => round.length === matchesPerRound))
-		throw Error("Not every round has the good number of matches");
+		throw new Error("Not every round has the good number of matches");
 
 	const aSet = new Set(divisionA);
 	const bSet = new Set(divisionB);
@@ -392,26 +392,28 @@ function assertAbDivisionRoundRobin(
 		const playingInRound = new Set<number>();
 
 		for (const match of round) {
-			if (match.length !== 2) throw Error("One match is not a pair");
+			if (match.length !== 2) throw new Error("One match is not a pair");
 
 			const [a, b] = match;
 
-			if (!aSet.has(a)) throw Error(`${a} is not a division A participant`);
-			if (!bSet.has(b)) throw Error(`${b} is not a division B participant`);
+			if (!aSet.has(a)) throw new Error(`${a} is not a division A participant`);
+			if (!bSet.has(b)) throw new Error(`${b} is not a division B participant`);
 
-			if (playingInRound.has(a)) throw Error("This team is already playing");
+			if (playingInRound.has(a))
+				throw new Error("This team is already playing");
 			playingInRound.add(a);
 
-			if (playingInRound.has(b)) throw Error("This team is already playing");
+			if (playingInRound.has(b))
+				throw new Error("This team is already playing");
 			playingInRound.add(b);
 
 			const pairingKey = `${a}-${b}`;
 			if (seenPairings.has(pairingKey))
-				throw Error("The teams have already been paired");
+				throw new Error("The teams have already been paired");
 			seenPairings.add(pairingKey);
 		}
 	}
 
 	if (seenPairings.size !== divisionA.length * divisionB.length)
-		throw Error("Not every A vs B pairing was generated");
+		throw new Error("Not every A vs B pairing was generated");
 }

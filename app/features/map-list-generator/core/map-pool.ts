@@ -15,7 +15,7 @@ export type DbMapPoolList = Array<
 >;
 
 export class MapPool {
-	private source: string | ReadonlyMapPoolObject;
+	private readonly source: string | ReadonlyMapPoolObject;
 	private asSerialized?: string;
 	private asObject?: ReadonlyMapPoolObject;
 

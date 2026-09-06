@@ -77,8 +77,8 @@ export type TimelineAction =
 	| { action: "dropped"; reason: "low-confidence" };
 
 export class TimelineBuilder {
-	#events: DetectedEvent[] = [];
-	#options: TimelineOptions;
+	readonly #events: DetectedEvent[] = [];
+	readonly #options: TimelineOptions;
 
 	constructor(options: Partial<TimelineOptions> = {}) {
 		this.#options = { ...DEFAULT_TIMELINE_OPTIONS, ...options };

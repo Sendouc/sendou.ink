@@ -103,7 +103,7 @@ function compute_max_saturation(a: number, b: number): number {
 		const f1 = wl * l_dS + wm * m_dS + ws * s_dS;
 		const f2 = wl * l_dS2 + wm * m_dS2 + ws * s_dS2;
 
-		S = S - (f * f1) / (f1 * f1 - 0.5 * f * f2);
+		S -= (f * f1) / (f1 * f1 - 0.5 * f * f2);
 	}
 
 	return S;

@@ -31,10 +31,10 @@ export class Propagator {
 		);
 
 		const stage = this.store.stageById(match.stageId);
-		if (!stage) throw Error("Stage not found.");
+		if (!stage) throw new Error("Stage not found.");
 
 		const group = this.store.groupById(match.groupId);
-		if (!group) throw Error("Group not found.");
+		if (!group) throw new Error("Group not found.");
 
 		const matchLocation = helpers.getMatchLocation(stage.type, group.number);
 
@@ -48,10 +48,10 @@ export class Propagator {
 		force?: boolean,
 	): void {
 		if (!force && matchStatus(this.store.data, stored.id) === "PENDING")
-			throw Error("The match is locked.");
+			throw new Error("The match is locked.");
 
 		const stage = this.store.stageById(stored.stageId);
-		if (!stage) throw Error("Stage not found.");
+		if (!stage) throw new Error("Stage not found.");
 
 		const resultChanged = helpers.setMatchResults(
 			stored,
@@ -137,7 +137,7 @@ export class Propagator {
 		winnerSide?: Side,
 	): void {
 		if (matchLocation === "final_group") {
-			if (!nextMatches[0]) throw Error("First next match is null.");
+			if (!nextMatches[0]) throw new Error("First next match is null.");
 			setNextOpponent(nextMatches[0], "opponent1", match, "opponent1");
 			setNextOpponent(nextMatches[0], "opponent2", match, "opponent2");
 			this.store.markMatchChanged(nextMatches[0]);
@@ -157,7 +157,7 @@ export class Propagator {
 		}
 
 		if (nextMatches.length !== 2) return;
-		if (!nextMatches[1]) throw Error("Second next match is null.");
+		if (!nextMatches[1]) throw new Error("Second next match is null.");
 
 		// Second match is the consolation final (SE) or a loser bracket match (DE).
 		if (matchLocation === "single_bracket") {
@@ -193,7 +193,7 @@ export class Propagator {
 
 	getRoundPositionalInfo(roundId: number): RoundPositionalInfo {
 		const round = this.store.roundById(roundId);
-		if (!round) throw Error("Round not found.");
+		if (!round) throw new Error("Round not found.");
 
 		return {
 			roundNumber: round.number,
@@ -228,7 +228,7 @@ export class Propagator {
 			case "final_group":
 				return this.getNextMatchesFinal(match, roundNumber, roundCount);
 			default:
-				throw Error("Unknown bracket kind.");
+				throw new Error("Unknown bracket kind.");
 		}
 	}
 
@@ -378,7 +378,7 @@ export class Propagator {
 	/** The only bracket in single elimination, the winner bracket in double elimination. */
 	private getUpperBracket(stageId: number): GroupData {
 		const winnerBracket = this.store.groupByNumber(stageId, 1);
-		if (!winnerBracket) throw Error("Winner bracket not found.");
+		if (!winnerBracket) throw new Error("Winner bracket not found.");
 		return winnerBracket;
 	}
 
@@ -386,7 +386,7 @@ export class Propagator {
 	private participantCount(stageId: number): number {
 		const upperBracket = this.getUpperBracket(stageId);
 		const firstRound = this.store.roundByNumber(upperBracket.id, 1);
-		if (!firstRound) throw Error("First round not found.");
+		if (!firstRound) throw new Error("First round not found.");
 
 		return this.store.matchCountInRound(firstRound.id) * 2;
 	}
@@ -424,11 +424,11 @@ export class Propagator {
 	): MatchData {
 		const round = this.store.roundByNumber(groupId, roundNumber);
 
-		if (!round) throw Error("Round not found.");
+		if (!round) throw new Error("Round not found.");
 
 		const match = this.store.matchByNumber(round.id, matchNumber);
 
-		if (!match) throw Error("Match not found.");
+		if (!match) throw new Error("Match not found.");
 
 		return match;
 	}

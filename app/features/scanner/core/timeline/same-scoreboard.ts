@@ -81,10 +81,12 @@ export function sameScoreboardMatch(a: unknown, b: unknown): boolean {
 	// are distinctive per match — near-zero overlap means a different board
 	const pa = paints(da);
 	const pb = paints(db);
-	if (pa.length >= PAINT_MIN_READ && pb.length >= PAINT_MIN_READ) {
-		if (multisetOverlap(pa, pb) < Math.min(pa.length, pb.length) / 2)
-			return false;
-	}
+	if (
+		pa.length >= PAINT_MIN_READ &&
+		pb.length >= PAINT_MIN_READ &&
+		multisetOverlap(pa, pb) < Math.min(pa.length, pb.length) / 2
+	)
+		return false;
 
 	return true;
 }

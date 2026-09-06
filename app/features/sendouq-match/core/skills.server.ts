@@ -41,7 +41,7 @@ export async function calculateMatchSkills({
 
 		for (const [index, userId] of winner.entries()) {
 			newSkills.push({
-				groupMatchId: groupMatchId,
+				groupMatchId,
 				identifier: null,
 				mu: winnerTeamNew[index].mu,
 				season,
@@ -52,7 +52,7 @@ export async function calculateMatchSkills({
 
 		for (const [index, userId] of loser.entries()) {
 			newSkills.push({
-				groupMatchId: groupMatchId,
+				groupMatchId,
 				identifier: null,
 				mu: loserTeamNew[index].mu,
 				season,
@@ -75,7 +75,7 @@ export async function calculateMatchSkills({
 		);
 
 		newSkills.push({
-			groupMatchId: groupMatchId,
+			groupMatchId,
 			identifier: winnerTeamIdentifier,
 			mu: winnerGroupNew.mu,
 			season,
@@ -83,7 +83,7 @@ export async function calculateMatchSkills({
 			userId: null,
 		});
 		newSkills.push({
-			groupMatchId: groupMatchId,
+			groupMatchId,
 			identifier: loserTeamIdentifier,
 			mu: loserGroupNew.mu,
 			season,

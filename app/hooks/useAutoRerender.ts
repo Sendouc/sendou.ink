@@ -58,8 +58,7 @@ function getTickStore(everyMs: number, alignToMs: number): TickStore {
  * Rerenders periodically, returning the latest tick's `Date`: consume it so React Compiler can't memoize the
  * rerender away. Components on the same interval and `alignTo` share one timer, ticking at exactly `alignTo + N*interval`.
  */
-export function useAutoRerender(): Date;
-export function useAutoRerender(every: "second" | "ten seconds"): Date;
+export function useAutoRerender(every?: "second" | "ten seconds"): Date;
 export function useAutoRerender(
 	every: "minute",
 	options: AutoRerenderOptions,

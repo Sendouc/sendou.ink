@@ -408,7 +408,7 @@ function DamageRateInfoSection({
 		damageMultipliers[String(weaponId)]?.find((m) => m.target === target);
 
 	return (
-		<Fragment>
+		<>
 			<tr>
 				<td
 					colSpan={visibleWeaponIds.length + 1}
@@ -467,7 +467,7 @@ function DamageRateInfoSection({
 					</tr>
 				);
 			})}
-		</Fragment>
+		</>
 	);
 }
 

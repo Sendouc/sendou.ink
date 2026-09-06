@@ -63,7 +63,7 @@ export class StageCreator {
 		slots: ParticipantSlot[],
 	): void {
 		const groupId = this.insertGroup({
-			stageId: stageId,
+			stageId,
 			number,
 		});
 
@@ -87,7 +87,7 @@ export class StageCreator {
 		slotsB: ParticipantSlot[],
 	): void {
 		const groupId = this.insertGroup({
-			stageId: stageId,
+			stageId,
 			number,
 		});
 
@@ -105,7 +105,7 @@ export class StageCreator {
 	): StandardBracketResults {
 		const roundCount = helpers.getUpperBracketRoundCount(slots.length);
 		const groupId = this.insertGroup({
-			stageId: stageId,
+			stageId,
 			number,
 		});
 
@@ -139,7 +139,7 @@ export class StageCreator {
 		const ordered = ordering[method](losers[losersId++]);
 
 		const groupId = this.insertGroup({
-			stageId: stageId,
+			stageId,
 			number,
 		});
 
@@ -179,7 +179,7 @@ export class StageCreator {
 		duels: Duel[],
 	): void {
 		const groupId = this.insertGroup({
-			stageId: stageId,
+			stageId,
 			number,
 		});
 
@@ -196,8 +196,8 @@ export class StageCreator {
 	): void {
 		const roundId = this.insertRound({
 			number: roundNumber,
-			stageId: stageId,
-			groupId: groupId,
+			stageId,
+			groupId,
 		});
 
 		for (let i = 0; i < matchCount; i++) {
@@ -225,9 +225,9 @@ export class StageCreator {
 
 		this.insertMatch({
 			number: matchNumber,
-			stageId: stageId,
-			groupId: groupId,
-			roundId: roundId,
+			stageId,
+			groupId,
+			roundId,
 			opponent1,
 			opponent2,
 			winnerSide: null,
@@ -235,11 +235,10 @@ export class StageCreator {
 	}
 
 	/** No ordering for major rounds (the first round must be ordered beforehand), LB minor rounds use the given method. */
-	getCurrentDuels(previousDuels: Duel[], currentDuelCount: number): Duel[];
 	getCurrentDuels(
 		previousDuels: Duel[],
 		currentDuelCount: number,
-		major: true,
+		major?: true,
 	): Duel[];
 	getCurrentDuels(
 		previousDuels: Duel[],

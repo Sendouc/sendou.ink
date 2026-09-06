@@ -127,7 +127,7 @@ export function Trophy({
 
 			try {
 				viewer.setState(JSON.parse(modelState));
-			} catch (_) {
+			} catch {
 				setError(true);
 				return;
 			}

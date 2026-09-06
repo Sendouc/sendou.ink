@@ -43,13 +43,13 @@ interface QueuedFrame {
 }
 
 export class AnalyzerClient {
-	#worker: Worker;
+	readonly #worker: Worker;
 	#ready = false;
 	#busy = false;
-	#onResult: ResultHandler;
-	#onError: ErrorHandler;
-	#onDone: DoneHandler | undefined;
-	#readyPromise: Promise<void>;
+	readonly #onResult: ResultHandler;
+	readonly #onError: ErrorHandler;
+	readonly #onDone: DoneHandler | undefined;
+	readonly #readyPromise: Promise<void>;
 	#rejectReady: ((error: Error) => void) | undefined;
 	#idleWaiters: (() => void)[] = [];
 	#chunk: PendingChunk | null = null;

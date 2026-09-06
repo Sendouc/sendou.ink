@@ -19,7 +19,7 @@ interface QueuedToast {
 
 class ToastQueue {
 	private toasts: QueuedToast[] = [];
-	private listeners = new Set<() => void>();
+	private readonly listeners = new Set<() => void>();
 	private counter = 0;
 
 	add(content: SendouToast, options?: { timeout?: number }) {

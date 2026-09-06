@@ -37,10 +37,10 @@ function getRoundRobinGroups(creator: StageCreator): ParticipantSlot[][] {
 		creator.settings.groupCount === undefined ||
 		!Number.isInteger(creator.settings.groupCount)
 	)
-		throw Error("You must specify a group count for round-robin stages.");
+		throw new Error("You must specify a group count for round-robin stages.");
 
 	if (creator.settings.groupCount <= 0)
-		throw Error("You must provide a strictly positive group count.");
+		throw new Error("You must provide a strictly positive group count.");
 
 	const slots = creator.getSlots();
 	const ordered = ordering["groups.seed_optimized"](
@@ -59,19 +59,21 @@ function getAbDivisionGroups(creator: StageCreator): {
 		creator.settings.groupCount === undefined ||
 		!Number.isInteger(creator.settings.groupCount)
 	)
-		throw Error("You must specify a group count for round-robin stages.");
+		throw new Error("You must specify a group count for round-robin stages.");
 
 	if (creator.settings.groupCount <= 0)
-		throw Error("You must provide a strictly positive group count.");
+		throw new Error("You must provide a strictly positive group count.");
 
 	const abDivisions = creator.input.abDivisions;
 	if (!abDivisions)
-		throw Error("abDivisions must be provided when hasAbDivisions is enabled.");
+		throw new Error(
+			"abDivisions must be provided when hasAbDivisions is enabled.",
+		);
 
 	const slots = creator.getSlots();
 
 	if (abDivisions.length !== slots.length)
-		throw Error("abDivisions length must match the seeding length.");
+		throw new Error("abDivisions length must match the seeding length.");
 
 	const divisionA: ParticipantSlot[] = [];
 	const divisionB: ParticipantSlot[] = [];
@@ -79,13 +81,13 @@ function getAbDivisionGroups(creator: StageCreator): {
 	for (let i = 0; i < slots.length; i++) {
 		const slot = slots[i];
 		if (slot === null)
-			throw Error("BYEs are not supported with A/B divisions.");
+			throw new Error("BYEs are not supported with A/B divisions.");
 
 		const division = abDivisions[i];
 		if (division === 0) divisionA.push(slot);
 		else if (division === 1) divisionB.push(slot);
 		else
-			throw Error(
+			throw new Error(
 				`Participant at seed ${i + 1} is missing an A/B division assignment.`,
 			);
 	}

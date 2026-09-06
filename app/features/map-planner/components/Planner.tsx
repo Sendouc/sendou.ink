@@ -287,11 +287,11 @@ export default function Planner() {
 				type: "image",
 				x: point[0],
 				y: point[1],
-				isLocked: isLocked,
+				isLocked,
 				id: shapeId,
 				meta: meta ?? {},
 				props: {
-					assetId: assetId,
+					assetId,
 					w: size[0],
 					h: size[1],
 				},

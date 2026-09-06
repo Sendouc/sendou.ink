@@ -13,7 +13,10 @@ import type { ServerEvent } from "./events-types";
 class FakeEventSource {
 	static instances: FakeEventSource[] = [];
 
-	private listeners = new Map<string, Set<(event: MessageEvent) => void>>();
+	private readonly listeners = new Map<
+		string,
+		Set<(event: MessageEvent) => void>
+	>();
 
 	url: string;
 

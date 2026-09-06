@@ -207,7 +207,7 @@ function NewBadgeReceiversSelector({
 					tournament.minMembersPerTeam === newOwnerStanding.members.length;
 
 				newReceivers.push({
-					badgeId: badgeId,
+					badgeId,
 					tournamentTeamId: newOwnerTournamentTeamId,
 					userIds: defaultSelected
 						? newOwnerStanding.members.map((m) => m.userId)

@@ -82,7 +82,7 @@ export class Store {
 	/** Records that a match row of this store was mutated. */
 	markMatchChanged(match: MatchData): void {
 		if (this.matchesById.get(match.id) !== match)
-			throw Error("Match is not a row of this store.");
+			throw new Error("Match is not a row of this store.");
 
 		this.changedMatchIds.add(match.id);
 	}

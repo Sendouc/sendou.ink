@@ -435,7 +435,7 @@ export function getBracketProgressionLabel(
 		while (j < prefix.length && j < name.length && prefix[j] === name[j]) {
 			j++;
 		}
-		prefix = prefix.substring(0, j);
+		prefix = prefix.slice(0, j);
 		if (prefix === "") break;
 	}
 

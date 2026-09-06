@@ -111,7 +111,7 @@ const NAME_GREEK = "ια"; // ι: "Rιppιng_H", α: "◇Dαrz™" (special-symb
  * Scoreboard-names only (not death-tag) until attested, like NAME_GREEK.
  */
 const NAME_SYMBOLS =
-	"′‘’‚‛…″“”„←→↑↓⇒⇔˜€∞√∀⊂⊃∴∵∂№♭♀♂◎◇◆△▲▽▼†※™" + "『』【】〈〉《》〔〕々〆〇〃～";
+	"′‘’‚‛…″“”„←→↑↓⇒⇔˜€∞√∀⊂⊃∴∵∂№♭♀♂◎◇◆△▲▽▼†※™『』【】〈〉《》〔〕々〆〇〃～";
 
 /**
  * Render the key char but emit it as the value: in-game names show "•" as a

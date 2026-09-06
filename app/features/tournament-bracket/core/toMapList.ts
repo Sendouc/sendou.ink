@@ -142,9 +142,9 @@ function sortRounds(
 				doubleEliminationGroupRank(b.groupId);
 			if (rankDiff !== 0) return rankDiff;
 		}
-		if (type === "single_elimination") {
-			// finals and 3rd place match last
-			if (a.groupId !== b.groupId) return a.groupId - b.groupId;
+		// finals and 3rd place match last
+		if (type === "single_elimination" && a.groupId !== b.groupId) {
+			return a.groupId - b.groupId;
 		}
 
 		return a.number - b.number;

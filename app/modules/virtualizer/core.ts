@@ -25,11 +25,11 @@ export interface VirtualItem {
  */
 export class VirtualizerCore {
 	private count: number;
-	private estimatedSize: number;
-	private gap: number;
-	private overscan: number;
-	private measuredSizes = new Map<number, number>();
-	private offsets: number[] = [];
+	private readonly estimatedSize: number;
+	private readonly gap: number;
+	private readonly overscan: number;
+	private readonly measuredSizes = new Map<number, number>();
+	private readonly offsets: number[] = [];
 	/** Entries of `offsets` before this index are up to date. */
 	private validOffsets = 0;
 

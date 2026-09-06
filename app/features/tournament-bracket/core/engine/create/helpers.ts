@@ -80,11 +80,12 @@ export function makeAbDivisionGroups<T>(
 	divisionB: T[],
 	groupCount: number,
 ): { a: T[]; b: T[] }[] {
-	if (groupCount <= 0) throw Error("Group count must be strictly positive.");
+	if (groupCount <= 0)
+		throw new Error("Group count must be strictly positive.");
 
 	if (divisionA.length !== divisionB.length) {
 		if (groupCount !== 1)
-			throw Error(
+			throw new Error(
 				"Uneven A/B divisions are only supported with a single group.",
 			);
 
@@ -92,7 +93,7 @@ export function makeAbDivisionGroups<T>(
 	}
 
 	if (divisionA.length % groupCount !== 0)
-		throw Error("Pool size must be divisible by group count.");
+		throw new Error("Pool size must be divisible by group count.");
 
 	const aOrdered = ordering["groups.seed_optimized"](divisionA, groupCount);
 	const bOrdered = ordering["groups.seed_optimized"](divisionB, groupCount);
@@ -152,14 +153,16 @@ export function ensureValidSize(
 	participantCount: number,
 ): void {
 	if (participantCount < 2)
-		throw Error("Impossible to create a stage with less than 2 participants.");
+		throw new Error(
+			"Impossible to create a stage with less than 2 participants.",
+		);
 
 	if (stageType === "round_robin") {
 		return;
 	}
 
 	if (!Number.isInteger(Math.log2(participantCount)))
-		throw Error(
+		throw new Error(
 			"The library only supports a participant count which is a power of two.",
 		);
 }

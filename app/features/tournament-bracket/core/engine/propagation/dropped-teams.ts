@@ -32,7 +32,7 @@ export function endDroppedTeamMatches(
 		})();
 
 		const stored = store.matchById(match.id);
-		if (!stored) throw Error("Match not found.");
+		if (!stored) throw new Error("Match not found.");
 
 		propagator.updateMatch(
 			stored,

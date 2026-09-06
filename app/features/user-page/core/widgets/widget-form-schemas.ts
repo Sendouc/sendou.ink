@@ -206,7 +206,7 @@ function pastedTierListUrlToSearchParams(value: string) {
 	if (!value.includes("/tier-list-maker")) return value;
 
 	try {
-		return new URL(value, "https://sendou.ink").search.substring(1);
+		return new URL(value, "https://sendou.ink").search.slice(1);
 	} catch {
 		return value;
 	}

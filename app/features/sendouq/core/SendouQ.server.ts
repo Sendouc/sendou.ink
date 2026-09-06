@@ -57,10 +57,10 @@ const SECONDS_TILL_STALE =
 
 class SendouQClass {
 	groups;
-	#recentMatches;
-	#isAccurateTiers;
-	#userSkills;
-	#intervals;
+	readonly #recentMatches;
+	readonly #isAccurateTiers;
+	readonly #userSkills;
+	readonly #intervals;
 	usersInQueue;
 
 	constructor(

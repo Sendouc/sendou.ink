@@ -38,7 +38,7 @@ const videoMatchSchema = v.object({
 			"Invalid time format. Use HH:MM:SS or MM:SS",
 		),
 	),
-	stageId: stageId,
+	stageId,
 	mode: modeShort,
 	weapons: v.array(weaponSplId),
 });

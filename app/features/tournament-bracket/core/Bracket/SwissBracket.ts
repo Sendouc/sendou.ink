@@ -274,7 +274,7 @@ export class SwissBracket extends Bracket {
 					teamId: winner.id,
 					setWins: 1,
 					setLosses: 0,
-					mapWins: mapWins,
+					mapWins,
 					mapLosses: 0,
 				});
 			}
