@@ -118,6 +118,7 @@ export function GlobalSearch() {
 		<>
 			<Link
 				to={globalSearchSearchParams.href("", { search: "open" })}
+				defaultShouldRevalidate={false}
 				preventScrollReset
 				className={styles.searchButton}
 			>

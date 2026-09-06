@@ -357,6 +357,7 @@ function DiscoverFeatures() {
 								type: "weapons",
 								weapon: weapon.weaponSplId,
 							})}
+							defaultShouldRevalidate={false}
 							className={styles.weaponPill}
 						>
 							<WeaponImage
