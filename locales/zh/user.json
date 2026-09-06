@@ -73,6 +73,7 @@
 	"widgets.remove": "移除",
 	"widgets.maxReached": "已达到小组件上限",
 	"widgets.emptyError": "",
+	"widgets.saveError": "",
 	"widgets.search": "搜索小组件...",
 	"widgets.category.misc": "其他",
 	"widgets.category.trophies": "",

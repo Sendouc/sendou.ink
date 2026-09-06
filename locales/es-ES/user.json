@@ -76,6 +76,7 @@
 	"widgets.remove": "Quitar",
 	"widgets.maxReached": "Límite máximo de widgets alcanzado",
 	"widgets.emptyError": "",
+	"widgets.saveError": "",
 	"widgets.search": "Buscar widgets...",
 	"widgets.category.misc": "Miscelánea",
 	"widgets.category.trophies": "Trofeos",

@@ -75,6 +75,7 @@
 	"widgets.remove": "Remove",
 	"widgets.maxReached": "Maximum widgets reached",
 	"widgets.emptyError": "Your profile needs at least one widget",
+	"widgets.saveError": "Saving failed. Reload the page and try again.",
 	"widgets.search": "Search widgets...",
 	"widgets.category.misc": "Miscellaneous",
 	"widgets.category.trophies": "Trophies",

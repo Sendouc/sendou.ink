@@ -57,7 +57,7 @@ export default function EditWidgetsPage() {
 	const { t } = useTranslation(["user", "common"]);
 	const data = useLoaderData<typeof loader>();
 	const isHydrated = useHydrated();
-	const fetcher = useFetcher();
+	const fetcher = useFetcher<{ fieldErrors?: Record<string, string> }>();
 
 	const [, parentRoute] = useMatches();
 	invariant(parentRoute);
@@ -89,6 +89,9 @@ export default function EditWidgetsPage() {
 		const def = findWidgetById(w.id);
 		return def?.slot === "side";
 	});
+
+	const saveRejected =
+		fetcher.state === "idle" && Boolean(fetcher.data?.fieldErrors);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -208,6 +211,10 @@ export default function EditWidgetsPage() {
 					{emptySaveAttempted && selectedWidgets.length === 0 ? (
 						<FormMessage type="error" spaced={false}>
 							{t("user:widgets.emptyError")}
+						</FormMessage>
+					) : saveRejected ? (
+						<FormMessage type="error" spaced={false}>
+							{t("user:widgets.saveError")}
 						</FormMessage>
 					) : null}
 				</div>
