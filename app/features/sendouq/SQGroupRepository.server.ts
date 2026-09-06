@@ -325,6 +325,31 @@ export async function deleteLikesAndSuggestionsByGroupId(
 	await deleteSuggestionsByGroupId(groupId, trx);
 }
 
+/** Clears what the departing member is responsible for: every challenge the group received (the roster the other group challenged is gone) plus the challenges and suggestions that member made themselves. */
+async function deleteLikesAndSuggestionsOnLeave(
+	{ groupId, userId }: { groupId: number; userId: number },
+	trx: Transaction<DB>,
+) {
+	await trx
+		.deleteFrom("GroupLike")
+		.where((eb) =>
+			eb.or([
+				eb("GroupLike.targetGroupId", "=", groupId),
+				eb.and([
+					eb("GroupLike.likerGroupId", "=", groupId),
+					eb("GroupLike.createdByUserId", "=", userId),
+				]),
+			]),
+		)
+		.execute();
+
+	await trx
+		.deleteFrom("GroupSuggestion")
+		.where("GroupSuggestion.suggesterGroupId", "=", groupId)
+		.where("GroupSuggestion.createdByUserId", "=", userId)
+		.execute();
+}
+
 export function morphGroups({
 	survivingGroupId,
 	otherGroupId,
@@ -836,7 +861,7 @@ export function deleteAllLikesByGroupId(groupId: number) {
 	return db.transaction().execute((trx) => deleteLikesByGroupId(groupId, trx));
 }
 
-/** Removes the user from their group (deleting it if they were last). A ready check the group was in is called off; returns the ids of the groups that were in it. */
+/** Removes the user from their group (deleting it if they were last). A ready check the group was in is called off; returns the ids of the groups that were in it. Challenges the group received and challenges/suggestions the leaver made are cleared. */
 export function leaveGroup(userId: number) {
 	return db.transaction().execute(async (trx) => {
 		const userGroup = await trx
@@ -907,6 +932,11 @@ export function leaveGroup(userId: number) {
 		if (match) {
 			throw new SendouQError("Can't leave group when already in a match");
 		}
+
+		await deleteLikesAndSuggestionsOnLeave(
+			{ groupId: userGroup.id, userId },
+			trx,
+		);
 
 		await syncTeamId(userGroup.id, trx);
 
