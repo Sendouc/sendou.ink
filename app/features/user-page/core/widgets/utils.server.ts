@@ -24,6 +24,7 @@ export function cachedUserSQLeaderboardTopData() {
 		key: SQ_LEADERBOARD_TOP_CACHE_KEY,
 		cache,
 		ttl: ttl(IN_MILLISECONDS.TWO_HOURS),
+		staleWhileRevalidate: ttl(IN_MILLISECONDS.TWO_DAYS),
 		getFreshValue: userSQLeaderboardTopData,
 	});
 }
