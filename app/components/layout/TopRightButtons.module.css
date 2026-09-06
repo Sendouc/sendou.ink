@@ -24,17 +24,11 @@
 			display: block;
 		}
 	}
-
-	@container (max-width: 475px) {
-		.searchAndAddContainer {
-			grid-template-columns: 2fr 1fr;
-		}
-	}
 }
 
 .searchAndAddContainer {
 	display: grid;
-	grid-template-columns: 2fr max-content;
+	grid-template-columns: 1fr max-content;
 	gap: var(--s-2);
 }
 
@@ -83,10 +77,4 @@
 	display: grid;
 	place-items: center;
 	pointer-events: none;
-}
-
-@media screen and (max-width: 1000px) {
-	.searchAndAddContainer {
-		grid-template-columns: 1fr 1fr;
-	}
 }

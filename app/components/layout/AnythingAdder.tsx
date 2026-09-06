@@ -23,7 +23,6 @@ import {
 	SendouMenuItem,
 	type SendouMenuItemProps,
 } from "../elements/Menu";
-import styles from "./AnythingAdder.module.css";
 
 export function AnythingAdder() {
 	const { t } = useTranslation(["common"]);
@@ -118,12 +117,9 @@ export function AnythingAdder() {
 				<SendouButton
 					size="small"
 					icon={<Plus />}
-					className={styles.button}
 					data-testid="anything-adder-menu-button"
 				>
-					<span
-						className={styles.label}
-					>{`${t("common:actions.addNew")}…`}</span>
+					{`${t("common:actions.addNew")}…`}
 				</SendouButton>
 			}
 		>
