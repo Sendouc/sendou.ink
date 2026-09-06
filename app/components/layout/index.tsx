@@ -29,6 +29,7 @@ import { useUnseenFriendRequests } from "~/hooks/useUnseenFriendRequests";
 import { useVisualViewportHeight } from "~/hooks/useVisualViewportHeight";
 import { useSearchParam } from "~/modules/search-params/hooks";
 import type { RootLoaderData } from "~/root";
+import { generateIdenticon } from "~/utils/identicon";
 import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix.server";
 import {
 	EVENTS_PAGE,
@@ -39,7 +40,7 @@ import {
 	teamPage,
 	userPage,
 } from "~/utils/urls";
-import { Avatar, generateIdenticon } from "../Avatar";
+import { Avatar } from "../Avatar";
 import { SendouButton, type SendouButtonProps } from "../elements/Button";
 import { SendouModal } from "../elements/Dialog";
 import { isOwnToggle } from "../elements/Popover";
@@ -614,7 +615,6 @@ function SideNavCollapseButton({
 
 function PageIcon({ crumb }: { crumb: Breadcrumb }) {
 	const [isErrored, setIsErrored] = React.useState(false);
-	const isClient = useHydrated();
 
 	if (crumb.type !== "IMAGE") {
 		return null;
@@ -631,8 +631,8 @@ function PageIcon({ crumb }: { crumb: Breadcrumb }) {
 	};
 
 	const identiconSrc =
-		isErrored && isClient && crumb.identiconInput
-			? generateIdenticon(crumb.identiconInput, 28, 7)
+		isErrored && crumb.identiconInput
+			? generateIdenticon(crumb.identiconInput)
 			: null;
 
 	return (
