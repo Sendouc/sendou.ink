@@ -162,7 +162,7 @@
 	"match.action.pickerThem": "Ellos",
 	"match.action.pickerBoth": "Ambos",
 	"match.action.pickBanPrompt": "Haz tu selección arriba",
-	"match.action.pickBanWaiting": "Esperando a que el capitán de {{teamName}} haga su selección",
+	"match.action.pickBanWaiting": "",
 	"match.action.picking": "Eligiendo",
 	"match.action.banning": "Baneando",
 	"match.cancelRequested.subtitle": "{{teamName}} ha solicitado cancelar el set",

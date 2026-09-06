@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
 	send: vi.fn(),
+	sendPersisted: vi.fn(),
 	notifyNotificationsChanged: vi.fn(),
 	notifyRoomsChangedByRoomIds: vi.fn(),
 }));
@@ -273,6 +274,77 @@ describe("Tournament match page", () => {
 			});
 
 			expect(res).toBe(null);
+		});
+	});
+
+	describe("pick/ban", () => {
+		/** Two maps more than the set's length, so both teams get to ban one. */
+		const BAN_2_MAPS = {
+			count: 3,
+			type: "BEST_OF",
+			pickBan: "BAN_2",
+			list: ([1, 2, 3, 4, 5] as const).map((stageId) => ({
+				mode: "SZ" as const,
+				stageId,
+			})),
+		} satisfies TournamentFactory.RoundMaps;
+
+		let pickBanParams: { id: string; mid: string };
+		/** Not the captain of the team whose turn it is to ban. */
+		let banningTeamMemberId: number;
+		let otherTeamMemberId: number;
+
+		const banAction = (user: number) =>
+			tournamentMatchAction(
+				{ _action: "BAN_PICK", mode: "SZ", stageId: 1 },
+				{ user, params: pickBanParams },
+			);
+
+		beforeEach(async () => {
+			const tournament = await TournamentFactory.create({
+				authorId: organizerId,
+			});
+			const teamA = await createTournamentTeam(
+				tournament.id,
+				users.ids(ROSTER_SIZE),
+			);
+			await createTournamentTeam(
+				tournament.id,
+				users.ids(ROSTER_SIZE * 2).slice(ROSTER_SIZE),
+			);
+
+			const [match] = await TournamentFactory.startBracket(tournament.id, {
+				maps: BAN_2_MAPS,
+			});
+			pickBanParams = { id: String(tournament.id), mid: String(match.id) };
+
+			const data = await tournamentMatchLoader({ params: pickBanParams });
+			const teamABansFirst = data.match.opponentTwo?.id === teamA.id;
+
+			// second member of a team, so never its captain
+			banningTeamMemberId = teamABansFirst
+				? users.id(2)
+				: users.id(ROSTER_SIZE + 2);
+			otherTeamMemberId = teamABansFirst
+				? users.id(ROSTER_SIZE + 2)
+				: users.id(2);
+		});
+
+		test("lets a team member who is not the captain ban", async () => {
+			const res = await banAction(banningTeamMemberId);
+
+			expect(res).toBe(null);
+
+			const data = await tournamentMatchLoader({ params: pickBanParams });
+			expect(data.pickBanEvents.length).toBe(1);
+			expect(data.pickBanEvents[0].type).toBe("BAN");
+			expect(data.pickBanEvents[0].stageId).toBe(1);
+		});
+
+		test("returns error if a member of the team not in turn bans", async () => {
+			const res = await banAction(otherTeamMemberId);
+
+			assertResponseErrored(res, "Unauthorized");
 		});
 	});
 

@@ -1,6 +1,7 @@
 import type { ActionFunction } from "react-router";
 import { db } from "~/db/sql";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
+import type { PersistedSystemMessageType } from "~/features/chat/chat-types";
 import * as ReportedWeaponRepository from "~/features/sendouq-match/ReportedWeaponRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
@@ -348,9 +349,10 @@ export const action: ActionFunction = async ({ params, request }) => {
 			errorToastIfFalsy(turnOfResult, "Not time to pick/ban");
 			const pickerTeamId = turnOfResult.teamId;
 			const actionType = turnOfResult.action;
+			const pickerTeam = pickerTeamId === teamOne.id ? teamOne : teamTwo;
 			errorToastIfFalsy(
 				tournament.isOrganizer(user) ||
-					tournament.ownedTeamByUser(user)?.id === pickerTeamId,
+					pickerTeam.memberUserIds.includes(user.id),
 				"Unauthorized",
 			);
 
@@ -434,6 +436,15 @@ export const action: ActionFunction = async ({ params, request }) => {
 					return null;
 				}
 				throw error;
+			}
+
+			const chatMessageType = pickBanChatMessageType(actionType);
+			if (match.chatRoomId && chatMessageType) {
+				void ChatSystemMessage.sendPersisted({
+					roomId: match.chatRoomId,
+					type: chatMessageType,
+					authorUserId: user.id,
+				});
 			}
 
 			if (match.roundMaps.pickBan === "CUSTOM" && match.roundMaps.customFlow) {
@@ -731,6 +742,28 @@ function matchResultsRoom(
 		bracketIdx,
 		groupId: showsOneGroupAtATime(type) ? match.groupId : null,
 	});
+}
+
+/** What the match chat reports the pick/ban as, so both teams see who on the picking team acted. */
+function pickBanChatMessageType(
+	actionType: PickBan.TurnOfResult["action"],
+): PersistedSystemMessageType | null {
+	switch (actionType) {
+		case "PICK":
+		case "PICK_NO_MODE_REPEAT":
+			return "MAP_PICKED";
+		case "BAN":
+			return "MAP_BANNED";
+		case "MODE_PICK":
+			return "MODE_PICKED";
+		case "MODE_BAN":
+			return "MODE_BANNED";
+		// the server's own step, never a team's turn
+		case "ROLL":
+			return null;
+		default:
+			assertUnreachable(actionType);
+	}
 }
 
 function canReportTournamentScore({

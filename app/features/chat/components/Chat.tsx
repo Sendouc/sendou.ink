@@ -86,6 +86,15 @@ export function Chat({
 			case "MAP_PICKED": {
 				return t("common:chat.systemMsg.mapPicked", { name });
 			}
+			case "MAP_BANNED": {
+				return t("common:chat.systemMsg.mapBanned", { name });
+			}
+			case "MODE_PICKED": {
+				return t("common:chat.systemMsg.modePicked", { name });
+			}
+			case "MODE_BANNED": {
+				return t("common:chat.systemMsg.modeBanned", { name });
+			}
 			default: {
 				return null;
 			}
