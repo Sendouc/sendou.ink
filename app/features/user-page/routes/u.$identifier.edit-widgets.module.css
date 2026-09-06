@@ -113,6 +113,16 @@
 	font-size: var(--font-sm);
 }
 
+.dragHandle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	color: var(--color-text-high);
+	line-height: 1;
+	flex-shrink: 0;
+}
+
 .widgetFooter {
 	display: flex;
 	align-items: center;

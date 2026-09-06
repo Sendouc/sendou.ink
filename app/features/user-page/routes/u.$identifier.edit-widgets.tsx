@@ -518,7 +518,7 @@ function DraggableWidgetItem({
 		>
 			<div className={styles.widgetHeader}>
 				<span className={styles.widgetName} {...listeners}>
-					☰
+					<span className={styles.dragHandle}>☰</span>
 					<WidgetNavIcon navItem={widgetDef?.navItem} />
 					{t(`user:widget.${widget.id}` as const)}
 				</span>
