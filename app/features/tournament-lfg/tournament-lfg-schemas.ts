@@ -37,7 +37,6 @@ export const joinQueueFormSchema = v.object({
 export const updateGroupFormSchema = v.object({
 	_action: stringConstant("UPDATE_GROUP"),
 	note: noteFieldSchema,
-	stayAsSub: stayAsSubFieldSchema,
 });
 
 export const lookingSchema = v.union([
@@ -67,6 +66,10 @@ export const lookingSchema = v.union([
 		userId: id,
 	}),
 	updateGroupFormSchema,
+	v.object({
+		_action: _action("SET_STAY_AS_SUB"),
+		stayAsSub: v.boolean(),
+	}),
 	v.object({
 		_action: _action("LEAVE_GROUP"),
 	}),

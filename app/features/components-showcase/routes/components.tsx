@@ -605,6 +605,12 @@ function SwitchSection({ id }: { id: string }) {
 					</SendouSwitch>
 				</ComponentRow>
 
+				<ComponentRow label="Small">
+					<SendouSwitch size="small" isSelected={isOn} onChange={setIsOn}>
+						Toggle me
+					</SendouSwitch>
+				</ComponentRow>
+
 				<ComponentRow label="Without Label">
 					<SendouSwitch aria-label="Toggle without label" />
 				</ComponentRow>

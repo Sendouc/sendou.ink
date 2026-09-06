@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type * as React from "react";
 import styles from "./Switch.module.css";
 
@@ -7,6 +8,7 @@ interface SendouSwitchProps {
 	defaultSelected?: boolean;
 	onChange?: (isSelected: boolean) => void;
 	isDisabled?: boolean;
+	size?: "small";
 	"aria-label"?: string;
 	"data-testid"?: string;
 	children?: React.ReactNode;
@@ -18,12 +20,16 @@ export function SendouSwitch({
 	defaultSelected,
 	onChange,
 	isDisabled,
+	size,
 	"aria-label": ariaLabel,
 	"data-testid": testId,
 	children,
 }: SendouSwitchProps) {
 	return (
-		<label className={styles.root} data-testid={testId}>
+		<label
+			className={clsx(styles.root, { [styles.small]: size === "small" })}
+			data-testid={testId}
+		>
 			<input
 				id={id}
 				type="checkbox"

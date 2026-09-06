@@ -1,7 +1,8 @@
-import { subDays } from "date-fns";
+import { addDays, subDays } from "date-fns";
 import { ADMIN_ID } from "~/features/admin/admin-constants";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { expect, impersonate, isNotVisible, test } from "./helpers/playwright";
+import { TournamentLookingPage } from "./pages/tournament/tournament-looking-page";
 import { TournamentSubsPage } from "./pages/tournament/tournament-subs-page";
 
 const SUB_NAME = "Subby Sam";
@@ -43,5 +44,33 @@ test.describe("Tournament LFG", () => {
 
 		await expect(subs.locators.noPostsText).toBeVisible();
 		await expect(subs.locators.addPostButton).toBeVisible();
+	});
+
+	test("player changes their sub preference without leaving the queue", async ({
+		page,
+		factories,
+	}) => {
+		// registration is open (start time in the future) so the groups view is shown
+		const tournament = await factories.TournamentFactory.create({
+			authorId: ADMIN_ID,
+			startTimes: [dateToDatabaseTimestamp(addDays(new Date(), 1))],
+		});
+		const sub = await factories.UserFactory.create({
+			discordName: SUB_NAME,
+		});
+
+		await impersonate(page, sub.id);
+
+		const looking = new TournamentLookingPage(page);
+		await looking.goto(tournament.id);
+
+		await looking.joinQueueForm.submit();
+
+		await expect(looking.locators.stayAsSubSwitch).not.toBeChecked();
+
+		await looking.toggleStayAsSub();
+
+		await looking.goto(tournament.id);
+		await expect(looking.locators.stayAsSubSwitch).toBeChecked();
 	});
 });

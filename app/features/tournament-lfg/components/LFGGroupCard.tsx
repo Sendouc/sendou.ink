@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Mic, Star, Trash, Volume2, VolumeX } from "lucide-react";
+import { Edit, Mic, Star, Trash, Volume2, VolumeX } from "lucide-react";
 import * as React from "react";
 import { Flipped } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import { Avatar } from "~/components/Avatar";
 import { Divider } from "~/components/Divider";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouPopover } from "~/components/elements/Popover";
+import { SendouSwitch } from "~/components/elements/Switch";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, WeaponImage } from "~/components/Image";
 import { NoteAvatar } from "~/components/NoteAvatar";
@@ -19,6 +20,7 @@ import {
 	useUserCardData,
 } from "~/features/user-card/components/UserCard";
 import { SendouForm } from "~/form/SendouForm";
+import { useActionSubmit } from "~/hooks/useActionSubmit";
 import { useMainContentWidth } from "~/hooks/useMainContentWidth";
 import type { UnifiedLanguageCode } from "~/modules/i18n/config";
 import { languagesUnified } from "~/modules/i18n/config";
@@ -103,8 +105,8 @@ export function LFGGroupCard({
 					))}
 				</div>
 				{isOwnGroup ? (
-					<LFGTeamNote
-						key={`${group.note ?? ""}-${currentMember?.isStayAsSub ?? false}`}
+					<LFGOwnGroupControls
+						key={group.note ?? ""}
 						note={group.note}
 						editable={group.usersRole === "OWNER"}
 						isStayAsSub={currentMember?.isStayAsSub ?? false}
@@ -249,7 +251,7 @@ function LFGGroupMemberRow({
 	);
 }
 
-function LFGTeamNote({
+function LFGOwnGroupControls({
 	note,
 	editable,
 	isStayAsSub,
@@ -260,60 +262,67 @@ function LFGTeamNote({
 	isStayAsSub: boolean;
 	memberCount: number;
 }) {
-	const { t } = useTranslation(["common", "q"]);
+	const { t } = useTranslation(["q"]);
 	const [editing, setEditing] = React.useState(false);
 
 	if (editing) {
 		return (
-			<LFGEditGroupForm
-				note={note}
-				isStayAsSub={isStayAsSub}
-				memberCount={memberCount}
-				stopEditing={() => setEditing(false)}
-			/>
+			<LFGEditGroupForm note={note} stopEditing={() => setEditing(false)} />
 		);
 	}
 
-	if (note) {
-		return (
-			<div className="text-lighter text-center text-xs mt-1">
-				{note}{" "}
+	return (
+		<div className="stack sm">
+			{note ? (
+				<div className="text-lighter text-center text-xs">{note}</div>
+			) : null}
+			<div className="stack horizontal sm items-center">
+				{memberCount === 1 ? (
+					<LFGStayAsSubSwitch isStayAsSub={isStayAsSub} />
+				) : null}
 				{editable ? (
 					<SendouButton
 						size="miniscule"
-						variant="minimal"
+						variant="outlined"
+						icon={<Edit />}
 						onClick={() => setEditing(true)}
-						className="mt-2 ml-auto"
+						className="ml-auto"
 					>
-						{t("q:looking.groups.editNote")}
+						{note
+							? t("q:looking.groups.editNote")
+							: t("q:looking.groups.addNote")}
 					</SendouButton>
 				) : null}
 			</div>
-		);
-	}
+		</div>
+	);
+}
 
-	if (!editable) return null;
+/** Changes the sub preference in place so the group keeps its spot in the list. */
+function LFGStayAsSubSwitch({ isStayAsSub }: { isStayAsSub: boolean }) {
+	const { t } = useTranslation(["forms"]);
+	const { submit, fetcher } = useActionSubmit(lookingSchema, {
+		encType: "application/json",
+	});
+
+	const submitted = fetcher.json as { stayAsSub: boolean } | undefined;
 
 	return (
-		<SendouButton
-			variant="minimal"
-			size="miniscule"
-			onClick={() => setEditing(true)}
+		<SendouSwitch
+			size="small"
+			isSelected={submitted?.stayAsSub ?? isStayAsSub}
+			onChange={(stayAsSub) => submit("SET_STAY_AS_SUB", { stayAsSub })}
 		>
-			{t("q:looking.groups.addNote")}
-		</SendouButton>
+			{t("forms:labels.stayAsSub")}
+		</SendouSwitch>
 	);
 }
 
 function LFGEditGroupForm({
 	note,
-	isStayAsSub,
-	memberCount,
 	stopEditing,
 }: {
 	note: string | null;
-	isStayAsSub: boolean;
-	memberCount: number;
 	stopEditing: () => void;
 }) {
 	const { t } = useTranslation(["common"]);
@@ -321,7 +330,7 @@ function LFGEditGroupForm({
 	return (
 		<SendouForm
 			schema={updateGroupFormSchema}
-			defaultValues={{ note: note ?? undefined, stayAsSub: isStayAsSub }}
+			defaultValues={{ note: note ?? undefined }}
 			submitButtonText={t("common:actions.save")}
 			secondarySubmit={
 				<SendouButton
@@ -333,12 +342,7 @@ function LFGEditGroupForm({
 				</SendouButton>
 			}
 		>
-			{({ FormField }) => (
-				<>
-					<FormField name="note" />
-					{memberCount === 1 ? <FormField name="stayAsSub" /> : null}
-				</>
-			)}
+			{({ FormField }) => <FormField name="note" />}
 		</SendouForm>
 	);
 }

@@ -70,3 +70,9 @@
 	overflow: hidden;
 	white-space: nowrap;
 }
+
+.small {
+	--height: var(--selector-size-xs);
+
+	font-size: var(--font-2xs);
+}
