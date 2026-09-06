@@ -124,6 +124,11 @@
 	font-size: var(--font-sm);
 }
 
+.widgetIcon {
+	display: flex;
+	flex-shrink: 0;
+}
+
 .dragHandle {
 	display: flex;
 	align-items: center;

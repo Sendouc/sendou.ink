@@ -580,7 +580,15 @@ function DraggableWidgetItem({
 function WidgetNavIcon({ navItem }: { navItem?: string }) {
 	if (!navItem) return null;
 
-	return <Image path={navIconUrl(navItem)} alt="" width={18} height={18} />;
+	return (
+		<Image
+			path={navIconUrl(navItem)}
+			alt=""
+			width={18}
+			height={18}
+			containerClassName={styles.widgetIcon}
+		/>
+	);
 }
 
 const WIDGET_DESCRIPTION_PARAMS: Record<string, Record<string, unknown>> = {
