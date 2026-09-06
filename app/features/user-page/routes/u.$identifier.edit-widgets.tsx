@@ -22,6 +22,7 @@ import { Link, useFetcher, useLoaderData, useMatches } from "react-router";
 import * as R from "remeda";
 import * as v from "valibot";
 import { SendouButton } from "~/components/elements/Button";
+import { Image } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { MainSlotIcon } from "~/components/icons/MainSlot";
 import { SideSlotIcon } from "~/components/icons/SideSlot";
@@ -39,7 +40,7 @@ import { useUnsavedChangesChecker } from "~/form/UnsavedChangesGuard";
 import { useHydrated } from "~/hooks/useHydrated";
 import { useHasRole } from "~/modules/permissions/hooks";
 import invariant from "~/utils/invariant";
-import { SUPPORT_PAGE, userPage } from "~/utils/urls";
+import { navIconUrl, SUPPORT_PAGE, userPage } from "~/utils/urls";
 import { action } from "../actions/u.$identifier.edit-widgets.server";
 import { SubPageHeader } from "../components/SubPageHeader";
 import { WidgetSettingsForm } from "../components/WidgetSettingsForm";
@@ -304,6 +305,7 @@ function AvailableWidgetsList({
 								<div key={widget.id} className={styles.widgetCard}>
 									<div className={styles.widgetHeader}>
 										<span className={styles.widgetName}>
+											<WidgetNavIcon navItem={widget.navItem} />
 											{t(`user:widget.${widget.id}` as const)}
 										</span>
 										{isLocked ? (
@@ -516,7 +518,9 @@ function DraggableWidgetItem({
 		>
 			<div className={styles.widgetHeader}>
 				<span className={styles.widgetName} {...listeners}>
-					☰ {t(`user:widget.${widget.id}` as const)}
+					☰
+					<WidgetNavIcon navItem={widgetDef?.navItem} />
+					{t(`user:widget.${widget.id}` as const)}
 				</span>
 				<div className={styles.widgetActions}>
 					{hasSettings ? (
@@ -552,6 +556,12 @@ function DraggableWidgetItem({
 			) : null}
 		</div>
 	);
+}
+
+function WidgetNavIcon({ navItem }: { navItem?: string }) {
+	if (!navItem) return null;
+
+	return <Image path={navIconUrl(navItem)} alt="" width={18} height={18} />;
 }
 
 const WIDGET_DESCRIPTION_PARAMS: Record<string, Record<string, unknown>> = {

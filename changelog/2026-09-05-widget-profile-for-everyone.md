@@ -6,6 +6,7 @@ New user profile page now out for everyone and the default
 
 - Default layout roughly equivalent to old page: weapon pool, X Rank peaks, badges, bio, teams, verified social links, sensitivity and member number
 - Customize the widgets to build your own personal page
+- Edit widget page now show icons of the page they relate to on the widget editing page
 - Leaving the widget editor with unsaved changes will now warn you
 - Still Supporter exclusive: custom colors and some widgets (markdown bio, links, favorite stage, game badges, unverified peak XP and supporter since). Supporters also get more widget slots: 6 main and 7 side instead of 4 and 5.
 - Bios written in markdown now render formatted on the Plus Server voting page too

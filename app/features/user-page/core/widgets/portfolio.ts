@@ -37,7 +37,7 @@ export const ALL_WIDGETS = {
 			schema: bioMdSchema,
 			defaultSettings: { bio: "" },
 		}),
-		defineWidget({ id: "organizations", slot: "side" }),
+		defineWidget({ id: "organizations", slot: "side", navItem: "medal" }),
 		defineWidget({ id: "patron-since", slot: "side", supporterOnly: true }),
 		defineWidget({ id: "join-date", slot: "side" }),
 		defineWidget({
@@ -49,12 +49,13 @@ export const ALL_WIDGETS = {
 		defineWidget({
 			id: "favorite-stage",
 			slot: "side",
+			navItem: "maps",
 			supporterOnly: true,
 			schema: favoriteStageSchema,
 			defaultSettings: { stageId: 1 },
 		}),
 		defineWidget({ id: "weapon-pool", slot: "main" }),
-		defineWidget({ id: "lfg-posts", slot: "main" }),
+		defineWidget({ id: "lfg-posts", slot: "main", navItem: "lfg" }),
 		defineWidget({
 			id: "sens",
 			slot: "side",
@@ -65,11 +66,12 @@ export const ALL_WIDGETS = {
 				stickSens: 0,
 			},
 		}),
-		defineWidget({ id: "commissions", slot: "side" }),
+		defineWidget({ id: "commissions", slot: "side", navItem: "art" }),
 		defineWidget({ id: "social-links", slot: "side" }),
 		defineWidget({
 			id: "links",
 			slot: "side",
+			navItem: "links",
 			supporterOnly: true,
 			schema: linksSchema,
 			defaultSettings: { links: [] },
@@ -77,6 +79,7 @@ export const ALL_WIDGETS = {
 		defineWidget({
 			id: "tier-list",
 			slot: "side",
+			navItem: "tier-list-maker",
 			schema: tierListSchema,
 			defaultSettings: { searchParams: "" },
 		}),
@@ -97,29 +100,33 @@ export const ALL_WIDGETS = {
 			defaultSettings: { content: "" },
 		}),
 	],
-	trophies: [defineWidget({ id: "trophies-owned", slot: "main" })],
+	trophies: [
+		defineWidget({ id: "trophies-owned", slot: "main", navItem: "trophies" }),
+	],
 	badges: [
 		defineWidget({
 			id: "badges-owned",
 			slot: "main",
+			navItem: "badges",
 			schema: badgesOwnedSchema,
 			defaultSettings: { favoriteBadgeIds: [] },
 		}),
-		defineWidget({ id: "badges-authored", slot: "main" }),
-		defineWidget({ id: "badges-managed", slot: "main" }),
+		defineWidget({ id: "badges-authored", slot: "main", navItem: "badges" }),
+		defineWidget({ id: "badges-managed", slot: "main", navItem: "badges" }),
 	],
-	teams: [defineWidget({ id: "teams", slot: "side" })],
+	teams: [defineWidget({ id: "teams", slot: "side", navItem: "t" })],
 	friends: [defineWidget({ id: "friends", slot: "side" })],
 	sendouq: [
-		defineWidget({ id: "peak-sp", slot: "side" }),
-		defineWidget({ id: "top-10-seasons", slot: "side" }),
-		defineWidget({ id: "top-100-seasons", slot: "side" }),
+		defineWidget({ id: "peak-sp", slot: "side", navItem: "sendouq" }),
+		defineWidget({ id: "top-10-seasons", slot: "side", navItem: "sendouq" }),
+		defineWidget({ id: "top-100-seasons", slot: "side", navItem: "sendouq" }),
 	],
 	xrank: [
-		defineWidget({ id: "peak-xp", slot: "side" }),
+		defineWidget({ id: "peak-xp", slot: "side", navItem: "xsearch" }),
 		defineWidget({
 			id: "peak-xp-unverified",
 			slot: "side",
+			navItem: "xsearch",
 			supporterOnly: true,
 			schema: peakXpUnverifiedSchema,
 			defaultSettings: { peakXp: 2000, division: "tentatek" },
@@ -127,38 +134,85 @@ export const ALL_WIDGETS = {
 		defineWidget({
 			id: "peak-xp-weapon",
 			slot: "side",
+			navItem: "xsearch",
 			schema: peakXpWeaponSchema,
 			defaultSettings: { weaponSplId: 0 },
 		}),
 		defineWidget({
 			id: "x-rank-peaks",
 			slot: "main",
+			navItem: "xsearch",
 			schema: xRankPeaksSchema,
 			defaultSettings: { division: "both" },
 		}),
-		defineWidget({ id: "top-500-weapons", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-shooters", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-blasters", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-rollers", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-brushes", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-chargers", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-sloshers", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-splatlings", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-dualies", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-brellas", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-stringers", slot: "side" }),
-		defineWidget({ id: "top-500-weapons-splatanas", slot: "side" }),
+		defineWidget({ id: "top-500-weapons", slot: "side", navItem: "xsearch" }),
+		defineWidget({
+			id: "top-500-weapons-shooters",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-blasters",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-rollers",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-brushes",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-chargers",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-sloshers",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-splatlings",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-dualies",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-brellas",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-stringers",
+			slot: "side",
+			navItem: "xsearch",
+		}),
+		defineWidget({
+			id: "top-500-weapons-splatanas",
+			slot: "side",
+			navItem: "xsearch",
+		}),
 	],
 	tournaments: [
-		defineWidget({ id: "highlighted-results", slot: "side" }),
-		defineWidget({ id: "placement-results", slot: "side" }),
+		defineWidget({ id: "highlighted-results", slot: "side", navItem: "medal" }),
+		defineWidget({ id: "placement-results", slot: "side", navItem: "medal" }),
 	],
-	vods: [defineWidget({ id: "videos", slot: "main" })],
-	builds: [defineWidget({ id: "builds", slot: "main" })],
+	vods: [defineWidget({ id: "videos", slot: "main", navItem: "vods" })],
+	builds: [defineWidget({ id: "builds", slot: "main", navItem: "builds" })],
 	art: [
 		defineWidget({
 			id: "art",
 			slot: "main",
+			navItem: "art",
 			schema: artSchema,
 			defaultSettings: { source: "ALL" },
 		}),
@@ -254,6 +308,7 @@ function defineWidget<
 	id: Id;
 	slot: Slot;
 	supporterOnly?: true;
+	navItem?: string;
 	schema: S;
 	defaultSettings: v.InferOutput<S>;
 }): typeof def;
@@ -265,6 +320,7 @@ function defineWidget<
 	id: Id;
 	slot: Slot;
 	supporterOnly?: true;
+	navItem?: string;
 	schema?: never;
 }): typeof def;
 function defineWidget(def: Record<string, unknown>) {
