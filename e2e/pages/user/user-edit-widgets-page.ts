@@ -52,7 +52,7 @@ export class UserEditWidgetsPage {
 		await this.locators.badgesSelector.selectOption(String(badgeId));
 	}
 
-	/** Fills the bio widget's settings, expanded right after adding it. */
+	/** Fills the bio widget's settings, expanded after adding it or opening them. */
 	async fillBio(text: string) {
 		await this.page.getByLabel("Bio").fill(text);
 	}

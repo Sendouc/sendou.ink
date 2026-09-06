@@ -59,8 +59,11 @@ describe("PlusVotingRepository.findAllUsersForVoting", () => {
 		expect(bio).toBeNull();
 	});
 
-	test("returns no bio for an empty bio widget", async () => {
-		const bio = await bioOf([{ id: "bio", settings: { bio: "" } }]);
+	test.each([
+		{ why: "unset", value: null },
+		{ why: "empty string", value: "" },
+	])("returns no bio for a bio widget with an $why bio", async ({ value }) => {
+		const bio = await bioOf([{ id: "bio", settings: { bio: value } }]);
 
 		expect(bio).toBeNull();
 	});

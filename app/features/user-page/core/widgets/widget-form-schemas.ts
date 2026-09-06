@@ -12,7 +12,7 @@ import {
 	select,
 	selectDynamic,
 	stageSelect,
-	textArea,
+	textAreaOptional,
 	textField,
 	weaponSelect,
 } from "~/form/fields";
@@ -21,14 +21,14 @@ import { GAME_BADGE_IDS } from "~/modules/in-game-lists/game-badge-ids";
 import { USER } from "../../user-page-constants";
 
 export const bioSchema = v.object({
-	bio: textArea({
+	bio: textAreaOptional({
 		label: "labels.bio",
 		maxLength: USER.BIO_MAX_LENGTH,
 	}),
 });
 
 export const bioMdSchema = v.object({
-	bio: textArea({
+	bio: textAreaOptional({
 		label: "labels.bio",
 		bottomText: "bottomTexts.bioMarkdown",
 		maxLength: USER.BIO_MD_MAX_LENGTH,

@@ -60,7 +60,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		select
 			"eligible"."id",
 			3,
-			json_object('id', 'bio', 'settings', json_object('bio', coalesce("eligible"."bio", '')))
+			json_object('id', 'bio', 'settings', json_object('bio', "eligible"."bio"))
 		from "eligible"
 		union all
 		select

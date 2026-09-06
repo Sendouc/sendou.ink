@@ -70,8 +70,6 @@ test.describe("User page", () => {
 		const editWidgets = new UserEditWidgetsPage(page);
 		await editWidgets.goto(NZAP_TEST_DISCORD_ID);
 
-		// the default layout's bio widget is empty, and an empty bio blocks saving
-		await editWidgets.removeWidget("bio");
 		await editWidgets.openWidgetSettings("badges-owned");
 		await editWidgets.selectFavoriteBadge(firstBadge.id);
 		await editWidgets.save();
@@ -100,7 +98,6 @@ test.describe("User page", () => {
 		const editWidgets = new UserEditWidgetsPage(page);
 		await editWidgets.goto(ADMIN_DISCORD_ID);
 
-		await editWidgets.removeWidget("bio");
 		await editWidgets.openWidgetSettings("badges-owned");
 		await editWidgets.selectFavoriteBadge(badges[0].id);
 		await expect(editWidgets.locators.badgeDisplay).toBeVisible();
@@ -313,8 +310,7 @@ test.describe("User page", () => {
 
 		const editWidgets = await userPage.openEditWidgets();
 		// the default layout is what an untouched profile starts editing from
-		await editWidgets.removeWidget("bio");
-		await editWidgets.addWidget("bio");
+		await editWidgets.openWidgetSettings("bio");
 		await editWidgets.fillBio("Reformed Hydra main");
 		await editWidgets.save();
 
