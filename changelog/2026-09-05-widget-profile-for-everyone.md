@@ -4,7 +4,7 @@ type: feature
 ---
 New user profile page now out for everyone and the default
 
-- Default layout roughly equivalent to old page: weapon pool, X Rank peaks, badges, bio, teams, verified social links, sensitivity and member number
+- Default layout roughly equivalent to old page: weapon pool, X Rank peaks, badges, bio, teams, sensitivity and member number
 - Customize the widgets to build your own personal page
 - Edit widget page now show icons of the page they relate to on the widget editing page
 - Leaving the widget editor with unsaved changes will now warn you
