@@ -7,14 +7,16 @@ import { createFormHelpers } from "../../helpers/playwright-form";
 /** `/to/:id/looking` — the groups view shown while registration is still open. */
 export class TournamentLookingPage {
 	private readonly page: Page;
+	private readonly stayAsSubSwitchLabel;
 	readonly joinQueueForm;
 	readonly locators;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.joinQueueForm = createFormHelpers(page, joinQueueFormSchema);
+		this.stayAsSubSwitchLabel = page.getByTestId("stay-as-sub-switch");
 		this.locators = {
-			stayAsSubSwitch: page.getByRole("switch", { name: "Stay as sub" }),
+			stayAsSubSwitch: this.stayAsSubSwitchLabel.getByRole("switch"),
 		};
 	}
 
@@ -25,7 +27,7 @@ export class TournamentLookingPage {
 	toggleStayAsSub() {
 		return waitForPOSTResponse(this.page, () =>
 			// the switch input itself is visually hidden behind its indicator
-			this.locators.stayAsSubSwitch.click({ force: true }),
+			this.stayAsSubSwitchLabel.click(),
 		);
 	}
 }

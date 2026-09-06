@@ -310,6 +310,7 @@ function LFGStayAsSubSwitch({ isStayAsSub }: { isStayAsSub: boolean }) {
 	return (
 		<SendouSwitch
 			size="small"
+			data-testid="stay-as-sub-switch"
 			isSelected={submitted?.stayAsSub ?? isStayAsSub}
 			onChange={(stayAsSub) => submit("SET_STAY_AS_SUB", { stayAsSub })}
 		>
