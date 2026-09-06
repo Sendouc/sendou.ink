@@ -29,7 +29,7 @@
 }
 
 .tag {
-	color: var(--color-text-inverse);
+	color: var(--color-text-on-light);
 }
 
 .overflowTag {
@@ -37,20 +37,12 @@
 	color: var(--color-text-high);
 }
 
-:global(html.light) .tag {
-	color: var(--color-text);
-}
-
 .tagDeleteButton {
 	margin-left: auto;
 
 	& > svg {
 		width: 0.85rem !important;
-		color: var(--color-text-inverse);
+		color: var(--color-text-on-light);
 		margin-inline: var(--s-1) 0 !important;
 	}
-}
-
-:global(html.light) .tagDeleteButton > svg {
-	color: var(--color-text);
 }

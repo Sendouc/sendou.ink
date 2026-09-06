@@ -184,6 +184,8 @@ html,
 	--color-text: var(--color-base-0);
 	--color-text-high: var(--color-base-3);
 	--color-text-inverse: var(--color-base-7);
+	--color-text-on-light: oklch(17% var(--_base-c-7) var(--_base-h));
+	--color-text-on-dark: oklch(100% var(--_base-c-0) var(--_base-h));
 
 	--color-bg: var(--color-base-7);
 	--color-bg-high: var(--color-base-6);

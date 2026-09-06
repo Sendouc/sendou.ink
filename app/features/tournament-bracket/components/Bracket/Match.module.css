@@ -65,10 +65,12 @@
 
 .matchTimerWarning {
 	background-color: var(--color-warning);
+	color: var(--color-text-on-light);
 }
 
 .matchTimerError {
 	background-color: var(--color-error);
+	color: var(--color-text-on-status);
 }
 
 .match {
