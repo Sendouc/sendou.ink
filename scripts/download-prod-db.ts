@@ -123,6 +123,7 @@ async function main() {
 		fs.rmSync(stagedPath, { force: true });
 		throw new Error(
 			`Snapshot failed verification, no checkout was touched. The archive is kept at ${archivePath}\n${(error as Error).message}`,
+			{ cause: error },
 		);
 	}
 

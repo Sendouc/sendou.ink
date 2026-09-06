@@ -3,8 +3,8 @@ import * as SkillRepository from "~/features/mmr/SkillRepository.server";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 
 export class SendouQError extends Error {
-	constructor(message: string) {
-		super(message);
+	constructor(message: string, options?: ErrorOptions) {
+		super(message, options);
 		this.name = "SendouQError";
 	}
 }

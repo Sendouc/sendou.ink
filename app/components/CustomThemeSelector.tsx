@@ -3,10 +3,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
 import type { CustomTheme } from "~/db/tables-json";
-import {
-	CUSTOM_THEME_VARS,
-	type CustomThemeVar,
-} from "~/features/theme/theme-constants";
+import { CUSTOM_THEME_VARS } from "~/features/theme/theme-constants";
 import { useCopyToClipboard } from "~/hooks/useCopyToClipboard";
 import {
 	ACCENT_CHROMA_MULTIPLIERS,
@@ -308,9 +305,9 @@ export function CustomThemeSelector({
 
 	const handleReset = () => {
 		setThemeInput(DEFAULT_THEME_INPUT);
-		CUSTOM_THEME_VARS.forEach((varDef: CustomThemeVar) => {
+		for (const varDef of CUSTOM_THEME_VARS) {
 			document.documentElement.style.removeProperty(varDef);
-		});
+		}
 		onReset();
 	};
 

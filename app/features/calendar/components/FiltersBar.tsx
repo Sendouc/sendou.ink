@@ -45,7 +45,7 @@ export function FiltersBar() {
 	};
 
 	const modesFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.modes.length < modesShortWithSpecial.length) {
 			parts.push(filters.modes.join(", "));
 		}
@@ -57,7 +57,7 @@ export function FiltersBar() {
 	};
 
 	const eventTypeFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.games.length < gamesShort.length) {
 			parts.push(filters.games.join(", "));
 		}
@@ -89,7 +89,7 @@ export function FiltersBar() {
 	};
 
 	const tagsFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.tagsIncluded.length > 0) {
 			parts.push(`+${filters.tagsIncluded.length}`);
 		}
@@ -101,7 +101,7 @@ export function FiltersBar() {
 	};
 
 	const organizersFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.orgsIncluded.length > 0) {
 			parts.push(`+${filters.orgsIncluded.length}`);
 		}
@@ -115,7 +115,7 @@ export function FiltersBar() {
 	};
 
 	const timeAndSizeFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.preferredStartTime !== "ANY") {
 			parts.push(
 				t(

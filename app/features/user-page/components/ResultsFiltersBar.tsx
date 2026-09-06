@@ -383,7 +383,7 @@ function YearSelect({
 const selectableYears = () => {
 	const currentYear = new Date().getFullYear();
 
-	const result = [];
+	const result: number[] = [];
 	for (let year = currentYear; year >= RESULTS_FIRST_YEAR; year--) {
 		result.push(year);
 	}

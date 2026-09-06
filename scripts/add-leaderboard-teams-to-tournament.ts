@@ -22,8 +22,10 @@ invariant(
 async function loadTournament() {
 	try {
 		return await tournamentFromDB(tournamentId);
-	} catch {
-		throw new Error(`Tournament with id ${tournamentId} not found`);
+	} catch (error) {
+		throw new Error(`Tournament with id ${tournamentId} not found`, {
+			cause: error,
+		});
 	}
 }
 

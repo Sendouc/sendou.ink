@@ -330,7 +330,7 @@ function generateWithInput(
 
 	function isNotFollowingModeOrder(stage: StageValidatorInput) {
 		let currentIndex = 0;
-		for (let i = 0; i < mapList.length; i++) {
+		for (const _ of mapList) {
 			currentIndex++;
 			if (currentIndex === input.modesIncluded.length) currentIndex = 0;
 		}

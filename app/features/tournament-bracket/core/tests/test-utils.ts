@@ -29,7 +29,7 @@ export const tournamentCtxTeam = (
 };
 
 const nTeams = (n: number, startingId: number) => {
-	const teams = [];
+	const teams: TournamentData["ctx"]["teams"] = [];
 	for (let i = 0; i < n; i++) {
 		teams.push(tournamentCtxTeam(i + 1, tournamentCtxTeam(i + startingId)));
 	}

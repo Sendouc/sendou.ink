@@ -1,6 +1,13 @@
 const PREP_TIME_MINUTES = 6.5;
 const MINUTES_PER_GAME = 6.5;
 
+type GameMarker = {
+	gameNumber: number;
+	percentage: number;
+	gameStartMinute: number;
+	maxMinute: number;
+};
+
 /** Acceptable max duration of a match in minutes (preparation time + game time). */
 export function totalMatchTime(maxGamesCount: number): number {
 	return PREP_TIME_MINUTES + MINUTES_PER_GAME * maxGamesCount;
@@ -15,14 +22,9 @@ export function progressPercentage(
 }
 
 /** Position of each game on the match timeline as a percentage. */
-export function gameMarkers(maxGamesCount: number): Array<{
-	gameNumber: number;
-	percentage: number;
-	gameStartMinute: number;
-	maxMinute: number;
-}> {
+export function gameMarkers(maxGamesCount: number): GameMarker[] {
 	const totalMinutes = totalMatchTime(maxGamesCount);
-	const markers = [];
+	const markers: GameMarker[] = [];
 
 	for (let i = 1; i <= maxGamesCount; i++) {
 		const gameStartMinute = PREP_TIME_MINUTES + MINUTES_PER_GAME * (i - 1);

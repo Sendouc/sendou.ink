@@ -191,21 +191,9 @@ function calculateGrid({
 	subsUsed: number;
 }) {
 	const result: ("N/A" | ShotCellData)[][] = [];
-	for (
-		let issAPIndex = 0;
-		issAPIndex < AP_VALUES_TO_SHOW.length;
-		issAPIndex++
-	) {
-		const issAP = AP_VALUES_TO_SHOW[issAPIndex];
-
+	for (const issAP of AP_VALUES_TO_SHOW) {
 		const row: ("N/A" | ShotCellData)[] = [];
-		for (
-			let ismAPIndex = 0;
-			ismAPIndex < AP_VALUES_TO_SHOW.length;
-			ismAPIndex++
-		) {
-			const ismAP = AP_VALUES_TO_SHOW[ismAPIndex];
-
+		for (const ismAP of AP_VALUES_TO_SHOW) {
 			if (!apsArePossible(issAP, ismAP)) {
 				row.push("N/A" as const);
 				continue;

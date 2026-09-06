@@ -417,7 +417,9 @@ async function organizedTournament(
 		startTimes: [dateToDatabaseTimestamp(addHours(new Date(), 2))],
 	});
 
-	const teams = [];
+	const teams: Awaited<
+		ReturnType<typeof factories.TournamentTeamFactory.create>
+	>[] = [];
 	for (let teamNth = 0; teamNth < teamCount; teamNth++) {
 		const roster = await factories.UserFactory.createMany(ROSTER_SIZE);
 		teams.push(

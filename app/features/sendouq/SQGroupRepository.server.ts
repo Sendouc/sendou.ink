@@ -792,7 +792,7 @@ export function insertLike({
 				.execute();
 		} catch (error) {
 			if (errorIsSqliteForeignKeyConstraintFailure(error)) {
-				throw new SendouQError(error.message);
+				throw new SendouQError(error.message, { cause: error });
 			}
 			throw error;
 		}
@@ -829,7 +829,7 @@ export function insertSuggestion({
 				.execute();
 		} catch (error) {
 			if (errorIsSqliteForeignKeyConstraintFailure(error)) {
-				throw new SendouQError(error.message);
+				throw new SendouQError(error.message, { cause: error });
 			}
 			throw error;
 		}

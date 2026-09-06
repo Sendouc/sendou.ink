@@ -73,6 +73,7 @@ function parseEntryFile(fileName: string): ChangelogGraphicEntry {
 			`Invalid frontmatter in changelog entry "${fileName}": ${
 				error instanceof v.ValiError ? error.message : String(error)
 			}`,
+			{ cause: error },
 		);
 	}
 

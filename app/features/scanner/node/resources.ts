@@ -25,7 +25,10 @@ async function loadAtlasLazy(name: string): Promise<() => GlyphSet | null> {
 	const meta = JSON.parse(readFileSync(json, "utf8")) as AtlasMeta;
 	const image = await readImage(png);
 	let set: GlyphSet | null = null;
-	return () => (set ??= loadGlyphSet(image, meta));
+	return () => {
+		set ??= loadGlyphSet(image, meta);
+		return set;
+	};
 }
 
 /** Planner stage signatures; the (CPU) tile slicing runs on first access. */
@@ -36,7 +39,10 @@ async function loadPlannerStagesLazy(): Promise<() => PlannerStage[] | null> {
 	const manifest = JSON.parse(readFileSync(json, "utf8")) as PlannerManifest;
 	const atlas = await readImage(png);
 	let stages: PlannerStage[] | null = null;
-	return () => (stages ??= loadPlannerStages(atlas, manifest));
+	return () => {
+		stages ??= loadPlannerStages(atlas, manifest);
+		return stages;
+	};
 }
 
 /** Requires loadOpenCV() to have resolved. */

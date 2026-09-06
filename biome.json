@@ -34,7 +34,12 @@
 					"level": "error"
 				},
 				"noSkippedTests": "error",
-				"noParametersOnlyUsedInRecursion": "error"
+				"noParametersOnlyUsedInRecursion": "error",
+				"useArraySortCompare": "error",
+				"noEvolvingTypes": "error",
+				"noReturnAssign": "error",
+				"noNestedPromises": "error",
+				"noUnusedExpressions": "error"
 			},
 			"correctness": {
 				"noUndeclaredVariables": "error",
@@ -113,6 +118,10 @@
 				"noSubstr": "error",
 				"useUnifiedTypeSignatures": "error",
 				"useReadonlyClassProperties": "error",
+				"useForOf": "error",
+				"useErrorCause": "error",
+				"useThrowOnlyError": "error",
+				"noNamespace": "error",
 				"useFilenamingConvention": {
 					"level": "error",
 					"options": {
@@ -145,7 +154,8 @@
 					"fix": "safe",
 					"level": "error"
 				},
-				"noUselessCatchBinding": "error"
+				"noUselessCatchBinding": "error",
+				"noForEach": "error"
 			},
 			"performance": {
 				"noSyncScripts": "error"
@@ -178,6 +188,16 @@
 				"rules": {
 					"style": {
 						"useFilenamingConvention": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["types/**/*.d.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noNamespace": "off"
 					}
 				}
 			}

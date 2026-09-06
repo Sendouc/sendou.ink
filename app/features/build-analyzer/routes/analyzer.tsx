@@ -1196,7 +1196,10 @@ function subDefenseGraphOptions({
 			.map((d) => damageToKey(d)),
 	);
 
-	const result = [];
+	const result: Array<{
+		label: string;
+		data: Array<{ primary: number; secondary: number }>;
+	}> = [];
 
 	for (const key of distanceKeys) {
 		const distance = key.split(",")[0];

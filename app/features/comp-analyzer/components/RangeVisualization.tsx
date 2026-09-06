@@ -165,13 +165,13 @@ function TrajectoryChart({
 
 	const groundY = yScale(0);
 
-	const xTicks = [];
+	const xTicks: number[] = [];
 	const xStep = Math.ceil(maxRange / 5);
 	for (let x = 0; x <= maxRange; x += xStep) {
 		xTicks.push(x);
 	}
 
-	const yTicks = [];
+	const yTicks: number[] = [];
 	const yStep = Math.ceil((maxY - minY) / 4);
 	for (let y = Math.ceil(minY); y <= maxY; y += yStep) {
 		yTicks.push(y);

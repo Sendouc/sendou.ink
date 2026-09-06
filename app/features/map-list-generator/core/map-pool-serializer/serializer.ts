@@ -7,7 +7,7 @@ import type { MapPoolObject, ReadonlyMapPoolObject } from "./types";
 export function mapPoolToSerializedString(
 	mapPool: ReadonlyMapPoolObject,
 ): string {
-	const serializedModes = [];
+	const serializedModes: string[] = [];
 
 	for (const mode of modesShort) {
 		const stages = mapPool[mode];

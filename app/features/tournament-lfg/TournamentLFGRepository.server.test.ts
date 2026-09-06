@@ -246,8 +246,8 @@ describe("startLooking", () => {
 
 		const roomsChangedUserIds = await startLooking(team.id);
 
-		expect(roomsChangedUserIds.sort()).toEqual(
-			[users.id(1), users.id(2)].sort(),
+		expect(roomsChangedUserIds.sort(byId)).toEqual(
+			[users.id(1), users.id(2)].sort(byId),
 		);
 
 		const chatRoomId = await chatRoomIdOf(team.id);
@@ -390,8 +390,8 @@ describe("mergeTeams", () => {
 			maxGroupSize: 4,
 		});
 
-		expect(roomsChangedUserIds.sort()).toEqual(
-			[users.id(1), users.id(2)].sort(),
+		expect(roomsChangedUserIds.sort(byId)).toEqual(
+			[users.id(1), users.id(2)].sort(byId),
 		);
 	});
 
@@ -664,3 +664,5 @@ describe("findAllSubsByTournamentId", () => {
 		expect(subs).toHaveLength(0);
 	});
 });
+
+const byId = (a: number, b: number) => a - b;

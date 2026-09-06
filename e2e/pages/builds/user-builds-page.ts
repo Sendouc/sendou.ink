@@ -55,7 +55,7 @@ export class UserBuildsPage {
 		await this.locators.changeSortingButton.click();
 
 		const dialog = this.page.getByRole("dialog");
-		for (let i = 0; i < DEFAULT_BUILD_SORT.length; i++) {
+		for (const _ of DEFAULT_BUILD_SORT) {
 			await dialog.getByTestId("delete-sorting-button").click();
 		}
 		await dialog.getByRole("combobox").selectOption(sort);

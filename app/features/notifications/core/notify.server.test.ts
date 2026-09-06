@@ -257,7 +257,9 @@ describe("notify()", () => {
 		expect(user10Notifications).toHaveLength(2);
 		expect(user11Notifications).toHaveLength(2);
 
-		const types = user10Notifications.map((n) => n.type).sort();
+		const types = user10Notifications
+			.map((n) => n.type)
+			.sort((a, b) => a.localeCompare(b));
 		expect(types).toEqual(["SCRIM_CANCELED", "SCRIM_SCHEDULED"]);
 	});
 

@@ -168,7 +168,7 @@ export function nullPaddedDatesOfMonth({ month, year }: MonthYear) {
 }
 
 function datesOfMonth({ month, year }: MonthYear) {
-	const dates = [];
+	const dates: Date[] = [];
 	const date = new Date(Date.UTC(year, month, 1));
 	while (date.getUTCMonth() === month) {
 		dates.push(new Date(date));

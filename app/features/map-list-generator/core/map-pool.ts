@@ -42,11 +42,12 @@ export class MapPool {
 			return this.asSerialized;
 		}
 
-		// biome-ignore lint/suspicious/noAssignInExpressions: biome migration
-		return (this.asSerialized =
+		this.asSerialized =
 			typeof this.source === "string"
 				? this.source
-				: mapPoolToSerializedString(this.source));
+				: mapPoolToSerializedString(this.source);
+
+		return this.asSerialized;
 	}
 
 	get parsed(): ReadonlyMapPoolObject {
@@ -54,11 +55,12 @@ export class MapPool {
 			return this.asObject;
 		}
 
-		// biome-ignore lint/suspicious/noAssignInExpressions: biome migration
-		return (this.asObject =
+		this.asObject =
 			typeof this.source === "string"
 				? serializedStringToMapPool(this.source)
-				: this.source);
+				: this.source;
+
+		return this.asObject;
 	}
 
 	get dbList(): DbMapPoolList {

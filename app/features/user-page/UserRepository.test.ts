@@ -323,7 +323,9 @@ describe("UserRepository", () => {
 					{},
 				);
 
-				const teams = [];
+				const teams: Awaited<
+					ReturnType<typeof TournamentTeamFactory.create>
+				>[] = [];
 				for (const user of [topUser, topMate, lowUser, lowMate]) {
 					teams.push(
 						await TournamentTeamFactory.create(
@@ -586,7 +588,9 @@ describe("UserRepository", () => {
 			const tomorrow = await UserRepository.findAllPatronsForFooter();
 
 			expect(ids(today)).not.toEqual(ids(tomorrow));
-			expect(ids(today).sort()).toEqual(ids(tomorrow).sort());
+			expect(ids(today).sort((a, b) => a - b)).toEqual(
+				ids(tomorrow).sort((a, b) => a - b),
+			);
 		});
 	});
 });

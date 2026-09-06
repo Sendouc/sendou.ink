@@ -336,8 +336,8 @@ describe("TournamentTeamRepository", () => {
 				TournamentTeamRepository.deleteById(team.id),
 			);
 
-			expect(roomsChangedUserIds.sort()).toEqual(
-				[ownerId(), memberId()].sort(),
+			expect(roomsChangedUserIds.sort(byId)).toEqual(
+				[ownerId(), memberId()].sort(byId),
 			);
 		});
 
@@ -393,3 +393,5 @@ describe("TournamentTeamRepository", () => {
 		});
 	});
 });
+
+const byId = (a: number, b: number) => a - b;

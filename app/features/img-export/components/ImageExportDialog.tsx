@@ -117,11 +117,13 @@ function ImageExportDialogContent({
 
 		let cancelled = false;
 
-		import("@zumer/snapdom").then(({ preCache }) => {
-			if (cancelled || !frameRef.current) return;
+		import("@zumer/snapdom")
+			.then(({ preCache }) => {
+				if (cancelled || !frameRef.current) return;
 
-			preCache(frameRef.current).catch(() => {});
-		});
+				return preCache(frameRef.current);
+			})
+			.catch(() => {});
 
 		return () => {
 			cancelled = true;

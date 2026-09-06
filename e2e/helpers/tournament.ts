@@ -172,7 +172,9 @@ export async function createTeams(
 	tournamentId: number,
 	seeds: TeamSeed[],
 ) {
-	const teams = [];
+	const teams: Awaited<
+		ReturnType<typeof factories.TournamentTeamFactory.create>
+	>[] = [];
 	for (const [i, seed] of seeds.entries()) {
 		const presetMembers = seed.members ?? [];
 		const rosterSize = seed.rosterSize ?? ROSTER_SIZE;

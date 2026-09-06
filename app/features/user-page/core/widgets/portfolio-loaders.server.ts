@@ -8,6 +8,7 @@ import * as LFGRepository from "~/features/lfg/LFGRepository.server";
 import * as LiveStreamRepository from "~/features/live-streams/LiveStreamRepository.server";
 import { BANNED_MAPS } from "~/features/match-profile/banned-maps";
 import * as MatchProfileRepository from "~/features/match-profile/MatchProfileRepository.server";
+import type { TierName } from "~/features/mmr/mmr-constants";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
 import { userSkills as _userSkills } from "~/features/mmr/tiered.server";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
@@ -54,7 +55,12 @@ export const WIDGET_LOADERS = {
 			return null;
 		}
 
-		let peakData = null;
+		let peakData: {
+			peakSp: number;
+			tierName: TierName;
+			isPlus: boolean;
+			season: number;
+		} | null = null;
 		let maxOrdinal = Number.NEGATIVE_INFINITY;
 
 		for (const season of seasonsParticipatedIn) {

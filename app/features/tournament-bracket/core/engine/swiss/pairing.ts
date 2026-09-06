@@ -185,7 +185,7 @@ export function pairUp(players: SwissPairingTeam[]) {
 	const scoreSums = [
 		...new Set(
 			scoreGroups.flatMap((s, i, a) => {
-				const sums = [];
+				const sums: number[] = [];
 				for (let j = i; j < a.length; j++) {
 					sums.push(s + a[j]);
 				}
@@ -243,8 +243,7 @@ function generateWeightedPairs({
 	for (let i = 0; i < playerArray.length; i++) {
 		const curr = playerArray[i];
 		const next = playerArray.slice(i + 1);
-		for (let j = 0; j < next.length; j++) {
-			const opp = next[j];
+		for (const opp of next) {
 			let wt =
 				75 - 75 / (scoreGroups.indexOf(Math.min(curr.score, opp.score)) + 2);
 			wt +=

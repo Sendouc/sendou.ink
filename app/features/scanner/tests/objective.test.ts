@@ -17,7 +17,7 @@ import { createScoreboardDetector } from "../core/detectors/scoreboard/index";
 import { createScoreboardBattleLogReplayDetector } from "../core/detectors/scoreboard-battle-log-replay/index";
 import { createScoreboardOwnDetector } from "../core/detectors/scoreboard-own/index";
 import type { DetectedEvent, Detector } from "../core/detectors/types";
-import { hueDistance, hueOf } from "../core/ink-color";
+import { hueDistance, hueOf, type InkRgb } from "../core/ink-color";
 import {
 	type Fixture,
 	isFieldSkipped,
@@ -143,7 +143,7 @@ test("cast fixture pair: team ink hues identify sides across camera swaps", asyn
 	].map((name) => fixtures.find((fixture) => fixture.name === name));
 	assert.ok(pair[0] && pair[1], "cast fixture pair missing");
 
-	const colors = [];
+	const colors: Array<readonly [InkRgb, InkRgb]> = [];
 	for (const fixture of pair) {
 		const { events } = await runDetectorOnFixture(detector, fixture!);
 		const teamColor = (

@@ -443,9 +443,7 @@ function isExcessiveCombo(combo: DamageCombo): boolean {
 	);
 	const totalDamage = combo.totalDamage;
 
-	for (let i = 0; i < flatDamages.length; i++) {
-		const damage = flatDamages[i];
-
+	for (const damage of flatDamages) {
 		const reducedDamage = totalDamage - damage;
 		if (reducedDamage >= LETHAL_DAMAGE) {
 			return true;

@@ -115,8 +115,10 @@ async function analyzeFrame(
 	// ship back the exact analyzed pixels (lossless, capture resolution) so the
 	// UI never re-grabs a later frame — encoded at most once per frame
 	let encoded: Promise<Blob> | null = null;
-	const frameBlob = () =>
-		(encoded ??= canvas.convertToBlob({ type: "image/png" }));
+	const frameBlob = () => {
+		encoded ??= canvas.convertToBlob({ type: "image/png" });
+		return encoded;
+	};
 
 	try {
 		for (const detector of detectors) {

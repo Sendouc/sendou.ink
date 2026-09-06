@@ -67,8 +67,8 @@ for (const file of fileNames) {
 			let otherLanguageContent: Record<string, string>;
 			try {
 				otherLanguageContent = JSON.parse(otherRawContent);
-			} catch {
-				throw new Error(`failed to parse ${lang}/${file}`);
+			} catch (error) {
+				throw new Error(`failed to parse ${lang}/${file}`, { cause: error });
 			}
 
 			const otherLanguageContentKeys = getKeysWithoutSuffix(
@@ -276,7 +276,7 @@ function MDOverviewTable({
 		(name) => name !== "weapons.json" && name !== "gear.json",
 	);
 
-	const rows = [];
+	const rows: string[] = [];
 
 	rows.push(
 		`| Language | Total | ${relevantFiles.map(MD.inlineCode).join(" | ")} |`,
@@ -285,7 +285,7 @@ function MDOverviewTable({
 	rows.push(`| :-- | :-: | ${relevantFiles.map(() => ":-:").join(" | ")} |`);
 
 	for (const [lang, missingKeysObj] of Object.entries(missingTranslations)) {
-		const cells = [];
+		const cells: string[] = [];
 
 		cells.push(MD.strong(lang));
 

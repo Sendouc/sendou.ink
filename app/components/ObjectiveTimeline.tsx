@@ -252,7 +252,7 @@ export function ObjectiveTimeline({
 
 /** One tick every 25 up to the top of the data, none below zero so the control gutter stays clean. */
 function countAxisTicks(max: number) {
-	const ticks = [];
+	const ticks: Array<{ value: number }> = [];
 	for (let value = 0; value <= max; value += COUNT_TICK_STEP) {
 		ticks.push({ value });
 	}

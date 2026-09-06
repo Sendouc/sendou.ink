@@ -467,7 +467,7 @@ async function registerTeams({
 	registeredAt?: Date;
 	mapPool?: () => MapPool;
 }) {
-	const teams = [];
+	const teams: Awaited<ReturnType<typeof TournamentTeamFactory.create>>[] = [];
 	for (const [i, roster] of rosters.entries()) {
 		teams.push(
 			await TournamentTeamFactory.create(
