@@ -9,7 +9,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import * as TournamentLFGRepository from "~/features/tournament-lfg/TournamentLFGRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { errorToastIfFalsy, notFoundIfNullish } from "~/utils/remix.server";
 import { tournamentPage, tournamentRegisterPage } from "~/utils/urls";
 import { tournamentJoinSearchParams } from "../tournament-search-params";

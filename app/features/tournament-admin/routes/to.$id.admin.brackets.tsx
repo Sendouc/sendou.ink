@@ -12,7 +12,7 @@ import { useTournament } from "~/features/tournament/tournament-context";
 import * as Progression from "~/features/tournament-bracket/core/Progression";
 import { SendouForm } from "~/form/SendouForm";
 import { useActionSubmit } from "~/hooks/useActionSubmit";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { tournamentAdminPage } from "~/utils/urls";
 import {
 	bracketProgressionFormSchema,

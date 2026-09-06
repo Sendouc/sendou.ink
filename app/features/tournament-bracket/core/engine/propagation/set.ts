@@ -1,4 +1,4 @@
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { isSetOverByScore, matchEndedEarly } from "../status";
 import type { BracketData, EngineResult, MatchData, Side } from "../types";
 import { reportResult } from "./report-result";

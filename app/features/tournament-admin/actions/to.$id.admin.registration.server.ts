@@ -16,7 +16,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import * as TournamentLFGRepository from "~/features/tournament-lfg/TournamentLFGRepository.server";
 import { parseFormDataWithImages } from "~/form/parse.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { errorToastIfFalsy } from "~/utils/remix.server";
 import { tournamentAdminPage } from "~/utils/urls";

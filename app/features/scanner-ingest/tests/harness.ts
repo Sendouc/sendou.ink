@@ -26,7 +26,7 @@ import type {
 	StageId,
 } from "~/modules/in-game-lists/types";
 import { databaseTimestampToJavascriptTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { wrappedAction, wrappedLoader } from "~/utils/Test";
 import { action } from "../actions/scanner-ingest.server";
 import type {

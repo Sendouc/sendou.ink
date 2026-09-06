@@ -11,7 +11,7 @@ import {
 import { resolveMatchMapList } from "~/features/tournament-match/core/mapList.server";
 import { reportScore } from "~/features/tournament-match/core/reportScore.server";
 import * as TournamentMatchRepository from "~/features/tournament-match/TournamentMatchRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import * as Engine from "./core/engine";
 import { executeBracketOperation } from "./core/executeBracketOperation.server";
 import {

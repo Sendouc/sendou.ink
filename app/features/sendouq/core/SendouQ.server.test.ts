@@ -14,7 +14,7 @@ import {
 } from "~/features/mmr/tiered.server";
 import * as SQMatchRepository from "~/features/sendouq-match/SQMatchRepository.server";
 import type { ModeShort, StageId } from "~/modules/in-game-lists/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import * as SQGroupRepository from "../SQGroupRepository.server";
 import { refreshSendouQInstance, SendouQ } from "./SendouQ.server";
 

@@ -1,5 +1,5 @@
 import * as XRankPlacementRepository from "~/features/top-search/XRankPlacementRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { defineFactory } from "../core/defineFactory";
 import { faker } from "../core/faker";
 import * as SplatoonFaker from "../core/SplatoonFaker";

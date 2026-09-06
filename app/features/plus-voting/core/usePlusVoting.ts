@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Tables } from "~/db/tables";
 import type * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { useHydrated } from "~/hooks/useHydrated";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "../plus-voting-constants";
 import type { PlusVoteFromFE } from "./types";

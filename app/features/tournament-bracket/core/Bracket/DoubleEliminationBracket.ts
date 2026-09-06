@@ -4,7 +4,7 @@ import type {
 	BracketData,
 	RoundData,
 } from "~/features/tournament-bracket/core/engine/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { BracketMapCounts } from "../toMapList";
 import { Bracket, type Standing } from "./Bracket";
 import { cumulativeEliminationsByRound } from "./utils";

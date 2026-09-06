@@ -29,7 +29,7 @@ import { modesShort } from "~/modules/in-game-lists/modes";
 import { isSupporter } from "~/modules/permissions/utils";
 import { nullFilledArray, nullifyingAvg } from "~/utils/arrays";
 import { databaseTimestampNow, dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	commonUserSelect,
 	concatUserSubmittedImagePrefix,

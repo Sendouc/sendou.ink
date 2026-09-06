@@ -8,7 +8,7 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import * as TournamentMatchRepository from "~/features/tournament-match/TournamentMatchRepository.server";
 import { refreshTentativeTiersCache } from "~/features/tournament-organization/core/tentativeTiers.server";
 import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import type {
 	TournamentBadgeReceivers,

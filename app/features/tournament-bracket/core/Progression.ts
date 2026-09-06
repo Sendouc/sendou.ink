@@ -6,7 +6,7 @@ import {
 	databaseTimestampToDate,
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import invariant from "../../../utils/invariant";
+import { invariant } from "../../../utils/invariant";
 
 export interface DBSource {
 	bracketIdx: number;

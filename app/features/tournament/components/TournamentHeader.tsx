@@ -8,7 +8,7 @@ import { LinkButton } from "~/components/elements/Button";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { LocaleTime } from "~/components/LocaleTime";
 import { ShareUrlButton } from "~/components/ShareUrlButton";
-import TimePopover from "~/components/TimePopover";
+import { TimePopover } from "~/components/TimePopover";
 import { UserLink } from "~/components/UserLink";
 import { useUser } from "~/features/auth/core/user";
 import type { Tournament } from "~/features/tournament-bracket/core/Tournament";

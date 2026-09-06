@@ -21,7 +21,7 @@ import {
 	tournamentLogoWithDefault,
 } from "~/utils/kysely.server";
 import { db } from "../../db/sql";
-import invariant from "../../utils/invariant";
+import { invariant } from "../../utils/invariant";
 import type { Unwrapped } from "../../utils/types";
 import type { AssociationVisibility } from "../associations/associations-types";
 import * as Scrim from "./core/Scrim";

@@ -13,7 +13,7 @@ import type {
 } from "../../core/detectors/minimap/index";
 import { SPECTATOR_SLOTS } from "../../core/detectors/minimap/rois";
 import type { DetectedEvent } from "../../core/detectors/types";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 const ALPHA: MainWeaponId[] = [40, 1001, 2010, 3030];
 const BRAVO: MainWeaponId[] = [50, 210, 4010, 8000];

@@ -7,7 +7,7 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as XRankPlacementRepository from "~/features/top-search/XRankPlacementRepository.server";
 import * as TrophyRepository from "~/features/trophies/TrophyRepository.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 
 /**
  * For a user switching Discord accounts: moves the new account's data onto the old user and deletes

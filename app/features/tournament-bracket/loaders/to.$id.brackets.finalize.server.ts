@@ -12,7 +12,7 @@ import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { tournamentFromParams } from "~/features/tournament-bracket/core/Tournament.server";
 import { tournamentBracketsPage } from "~/features/tournament-bracket/tournament-bracket-urls";
 import * as TournamentMatchRepository from "~/features/tournament-match/TournamentMatchRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SerializeFrom } from "~/utils/remix";
 
 export type FinalizeTournamentLoaderData = SerializeFrom<typeof loader>;

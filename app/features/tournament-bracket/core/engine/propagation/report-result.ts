@@ -1,4 +1,4 @@
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { BracketData, EngineResult, ReportResultInput } from "../types";
 import { Store } from "./store";
 import { Propagator } from "./traversal";

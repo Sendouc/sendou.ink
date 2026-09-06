@@ -9,7 +9,7 @@ import {
 	testTournament,
 	tournamentCtxTeam,
 } from "~/features/tournament-bracket/core/tests/test-utils";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	matchesPlayedByTeamId,
 	reNumberPlacements,

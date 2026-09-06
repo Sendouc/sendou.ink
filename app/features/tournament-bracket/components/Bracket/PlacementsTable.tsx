@@ -4,7 +4,7 @@ import * as React from "react";
 import { Link } from "react-router";
 import { tournamentBracketsPage } from "~/features/tournament-bracket/tournament-bracket-urls";
 import { useActionSubmit } from "~/hooks/useActionSubmit";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { SendouButton } from "../../../../components/elements/Button";
 import { logger } from "../../../../utils/logger";
 import { tournamentTeamPage } from "../../../../utils/urls";

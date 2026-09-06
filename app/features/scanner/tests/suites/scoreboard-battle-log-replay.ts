@@ -21,7 +21,7 @@ import {
 	runDetectorOnFixture,
 } from "../../node/fixtures";
 import { loadScoreboardResources } from "../../node/resources";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 export async function runScoreboardBattleLogReplaySuite(
 	shard: number,

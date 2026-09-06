@@ -1,6 +1,6 @@
 import * as R from "remeda";
 import { describe, expect, test } from "vitest";
-import invariant from "../../../utils/invariant";
+import { invariant } from "../../../utils/invariant";
 import * as Engine from "./engine";
 import { createResolved } from "./engine/create";
 import type { BracketData, MatchData } from "./engine/types";

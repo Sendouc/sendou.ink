@@ -4,7 +4,7 @@ import type {
 	ScannerMatch,
 	ScannerMatchPlayer,
 } from "../../core/scanner-match";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 const TEAM_A = ["Sendou", "Kiver", "Brian", "Zed"];
 const TEAM_B = ["Gos", "Noah", "Alice", "Bob"];

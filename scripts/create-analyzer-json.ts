@@ -21,7 +21,7 @@ import {
 	subWeaponIds,
 	weaponIdToBaseWeaponId,
 } from "~/modules/in-game-lists/weapon-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import {
 	LANG_JSONS_TO_CREATE,

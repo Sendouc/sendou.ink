@@ -12,7 +12,7 @@ import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server"
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { hasPermission } from "~/modules/permissions/utils";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import * as ChatRepository from "./ChatRepository.server";
 import * as ChatRoomResolver from "./ChatRoomResolver.server";
 import { setupSqMatch } from "./tests/fixtures";

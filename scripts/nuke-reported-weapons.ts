@@ -1,7 +1,7 @@
 import { db } from "~/db/sql";
 import * as Seasons from "~/features/mmr/core/Seasons";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 
 const discordId = process.argv[2]?.trim();

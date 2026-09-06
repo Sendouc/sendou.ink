@@ -6,7 +6,7 @@
 
 import assert from "node:assert/strict";
 import { frameEvictionIndex } from "../../worker/frame-queue";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 test("evicts the oldest of a backlog too short to thin", () => {
 	assert.equal(frameEvictionIndex([]), 0);

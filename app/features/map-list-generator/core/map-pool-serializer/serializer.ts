@@ -1,4 +1,4 @@
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { modesShort } from "../../../../modules/in-game-lists/modes";
 import { stageIds } from "../../../../modules/in-game-lists/stage-ids";
 import type { StageId } from "../../../../modules/in-game-lists/types";

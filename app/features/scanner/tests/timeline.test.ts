@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import type { ScoreboardData } from "../core/detectors/scoreboard/index";
 import type { DetectedEvent } from "../core/detectors/types";
 import { TimelineBuilder } from "../core/timeline/index";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 function event(
 	t: number,

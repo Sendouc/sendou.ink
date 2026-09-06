@@ -27,7 +27,7 @@ import {
 	runDetectorOnFixture,
 } from "../node/fixtures";
 import { loadScoreboardResources } from "../node/resources";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 await loadOpenCV();
 const resources = await loadScoreboardResources();

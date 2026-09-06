@@ -7,7 +7,7 @@ import { Link } from "react-router";
 import * as R from "remeda";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
-import Chart from "~/components/Chart";
+import { Chart } from "~/components/Chart";
 import { SendouSwitch } from "~/components/elements/Switch";
 import {
 	SendouTab,
@@ -45,7 +45,7 @@ import {
 	TOXIC_MIST_ID,
 } from "~/modules/in-game-lists/weapon-ids";
 import { nullFilledArray } from "~/utils/arrays";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {

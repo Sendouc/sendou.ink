@@ -8,7 +8,7 @@ import {
 } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
 import { useHydrated } from "~/hooks/useHydrated";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { FormMessage } from "./FormMessage";
 import { SubmitButton } from "./SubmitButton";
 

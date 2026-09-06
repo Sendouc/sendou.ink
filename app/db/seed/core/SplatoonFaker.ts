@@ -20,7 +20,7 @@ import {
 	canonicalWeaponSplId,
 	mainWeaponIds,
 } from "~/modules/in-game-lists/weapon-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { faker } from "./faker";
 
 const STACKABLE_ABILITIES = abilities

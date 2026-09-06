@@ -18,7 +18,7 @@ import {
 	CRAB_TANK_ID,
 	SPLASH_WALL_ID,
 } from "~/modules/in-game-lists/weapon-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { HitPoints } from "../calculator-types";
 
 const WAVE_BREAKER_HP = 480;

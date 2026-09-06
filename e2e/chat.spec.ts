@@ -1,7 +1,7 @@
 import { sub } from "date-fns";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
 import { FULL_GROUP_SIZE } from "~/features/sendouq/q-constants";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { sendouQMatchPage } from "~/utils/urls";
 import {
 	chatHistoryStatus,

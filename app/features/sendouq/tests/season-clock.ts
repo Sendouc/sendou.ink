@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, vi } from "vitest";
 import * as Seasons from "~/features/mmr/core/Seasons";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 
 const startedSeasons = Seasons.list.filter(
 	(season) => season.starts.getTime() <= Date.now(),

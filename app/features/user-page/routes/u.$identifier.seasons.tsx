@@ -10,7 +10,7 @@ import {
 	useLocation,
 	useMatches,
 } from "react-router";
-import Chart from "~/components/Chart";
+import { Chart } from "~/components/Chart";
 import { EmptyState } from "~/components/EmptyState";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
@@ -39,7 +39,7 @@ import {
 	userSeasonsStatsPage,
 } from "~/features/user-page/user-page-urls";
 import { useSearchParam } from "~/modules/search-params/hooks";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	resolveAvatarUrl,

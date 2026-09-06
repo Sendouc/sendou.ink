@@ -1,6 +1,6 @@
 import blossom from "edmonds-blossom-fixed";
 import * as R from "remeda";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { err, ok, type Result } from "~/utils/result";
 import { swissRoundCount } from "../create/settings";
 import type {

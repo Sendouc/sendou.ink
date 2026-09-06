@@ -1,4 +1,4 @@
-import TimePopover from "~/components/TimePopover";
+import { TimePopover } from "~/components/TimePopover";
 
 interface MatchBannerScheduledTimeProps {
 	time: Date;

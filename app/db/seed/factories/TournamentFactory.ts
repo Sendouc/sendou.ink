@@ -17,7 +17,7 @@ import {
 import { resolveMatchMapList } from "~/features/tournament-match/core/mapList.server";
 import { reportScore } from "~/features/tournament-match/core/reportScore.server";
 import * as TournamentMatchRepository from "~/features/tournament-match/TournamentMatchRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { defineFactory } from "../core/defineFactory";
 import { eventDefaults } from "./CalendarEventFactory";
 import * as TournamentTeamFactory from "./TournamentTeamFactory";

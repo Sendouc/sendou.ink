@@ -5,7 +5,7 @@ import { sendouUpload } from "../components/sendou-upload";
 import type { MinimapData } from "../core/detectors/minimap/index";
 import type { ScoreboardData } from "../core/detectors/scoreboard/index";
 import type { DetectedEvent } from "../core/detectors/types";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 const ALPHA: MainWeaponId[] = [40, 1001, 2010, 3030];
 const BRAVO: MainWeaponId[] = [50, 210, 4010, 8000];

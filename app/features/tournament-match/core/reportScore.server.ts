@@ -5,7 +5,7 @@ import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { tournamentTeamToActiveRosterUserIds } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { serializeMaplistSource } from "~/modules/tournament-map-list-generator/source";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { errorToastIfFalsy } from "~/utils/remix.server";
 import { errorIsSqliteUniqueConstraintFailure, toDBBoolean } from "~/utils/sql";
 import type { FindMatchById } from "../TournamentMatchRepository.server";

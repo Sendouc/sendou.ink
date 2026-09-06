@@ -4,7 +4,7 @@ import { Link, useLoaderData } from "react-router";
 import { LocaleTime } from "~/components/LocaleTime";
 import { Main } from "~/components/Main";
 import { Markdown } from "~/components/Markdown";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	ARTICLES_MAIN_PAGE,

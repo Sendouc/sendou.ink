@@ -3,7 +3,7 @@ import * as R from "remeda";
 import type { PreparedMaps } from "~/db/tables-json";
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import { nullFilledArray } from "~/utils/arrays";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { Bracket } from "./Bracket";
 import * as Engine from "./engine";
 import type { BracketData } from "./engine/types";

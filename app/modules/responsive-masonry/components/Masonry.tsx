@@ -19,7 +19,7 @@ interface MasonryState {
 	children?: React.ReactNode | React.ReactNode[];
 }
 
-class Masonry extends React.Component<MasonryProps, MasonryState> {
+export class Masonry extends React.Component<MasonryProps, MasonryState> {
 	static defaultProps: Partial<MasonryProps> = {
 		columnsCount: 3,
 		gutter: "0",
@@ -166,5 +166,3 @@ class Masonry extends React.Component<MasonryProps, MasonryState> {
 		);
 	}
 }
-
-export default Masonry;

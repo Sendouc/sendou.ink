@@ -12,7 +12,7 @@ import {
 	dateToDatabaseTimestamp,
 	dayMonthYearToDatabaseTimestamp,
 } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	type CommonUser,
 	commonUserJsonObject,

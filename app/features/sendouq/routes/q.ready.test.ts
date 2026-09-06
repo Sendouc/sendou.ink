@@ -11,7 +11,7 @@ import * as SQGroupFactory from "~/db/seed/factories/SQGroupFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import * as Seasons from "~/features/mmr/core/Seasons";
 import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { wrappedAction, wrappedLoader } from "~/utils/Test";
 import { SENDOUQ_LOOKING_PAGE } from "~/utils/urls";
 import * as ReadyCheck from "../core/ready-check.server";

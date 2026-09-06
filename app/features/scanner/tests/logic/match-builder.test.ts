@@ -25,7 +25,7 @@ import {
 	invalidObjectiveEvents,
 } from "../../core/match-builder";
 import type { ScannerLobby } from "../../scanner-types";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 const NAMES = ["w1", "w2", "w3", "w4", "l1", "l2", "l3", "l4"];
 const ALPHA: MainWeaponId[] = [40, 1001, 2010, 3030];

@@ -8,7 +8,7 @@ import { SendouForm } from "~/form/SendouForm";
 import { useHydrated } from "~/hooks/useHydrated";
 import { useHasRole } from "~/modules/permissions/hooks";
 import { countryCodeToTranslatedName } from "~/utils/i18n";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { FAQ_PAGE, userPage } from "~/utils/urls";
 import { action } from "../actions/u.$identifier.edit.server";

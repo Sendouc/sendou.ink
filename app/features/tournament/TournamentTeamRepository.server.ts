@@ -9,7 +9,7 @@ import type { ModeShort, StageId } from "~/modules/in-game-lists/types";
 import { flatZip } from "~/utils/arrays";
 import { databaseTimestampNow, dateToDatabaseTimestamp } from "~/utils/dates";
 import { shortNanoid } from "~/utils/id";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	jsonArrayFrom,
 	tournamentLogoWithDefault,

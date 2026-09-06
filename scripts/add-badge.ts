@@ -1,5 +1,5 @@
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 
 const code = process.argv[2]?.trim();

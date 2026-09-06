@@ -14,7 +14,7 @@ import {
 	databaseTimestampToJavascriptTimestamp,
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { AVAILABILITY } from "../availability-constants";
 import type {
 	BusyBlock,

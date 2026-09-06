@@ -41,7 +41,7 @@ import { USER } from "~/features/user-page/user-page-constants";
 import { useUnsavedChangesChecker } from "~/form/UnsavedChangesGuard";
 import { useHydrated } from "~/hooks/useHydrated";
 import { useHasRole } from "~/modules/permissions/hooks";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { navIconUrl, SUPPORT_PAGE, userPage } from "~/utils/urls";
 import { action } from "../actions/u.$identifier.edit-widgets.server";
 import { SubPageHeader } from "../components/SubPageHeader";

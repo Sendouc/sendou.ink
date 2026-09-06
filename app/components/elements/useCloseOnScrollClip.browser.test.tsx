@@ -1,7 +1,7 @@
 import * as React from "react";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { render } from "vitest-browser-react";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { useCloseOnScrollClip } from "./useCloseOnScrollClip";
 
 const PAGE_HEIGHT = 5000;

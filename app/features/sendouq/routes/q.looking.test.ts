@@ -13,7 +13,7 @@ import * as Seasons from "~/features/mmr/core/Seasons";
 import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server";
 import { stageIds } from "~/modules/in-game-lists/stage-ids";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { wrappedAction } from "~/utils/Test";
 import * as ReadyCheck from "../core/ready-check.server";
 import { refreshSendouQInstance } from "../core/SendouQ.server";

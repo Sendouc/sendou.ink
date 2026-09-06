@@ -91,7 +91,7 @@ const TLDRAW_OPTIONS: Partial<TldrawOptions> = {
 const MAIN_WEAPON_URL_PATTERN = /main-weapons-outlined\/(\d+)/;
 const SPECIAL_WEAPON_URL_PATTERN = /special-weapons\/(\d+)/;
 
-export default function Planner() {
+export function Planner() {
 	const { t, i18n } = useTranslation(["common"]);
 	const { htmlThemeClass } = useTheme();
 

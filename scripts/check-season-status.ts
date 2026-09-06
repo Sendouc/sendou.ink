@@ -1,6 +1,6 @@
 import { db } from "~/db/sql";
 import * as Seasons from "~/features/mmr/core/Seasons";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 
 const rawNth = process.argv[2]?.trim();

@@ -15,7 +15,7 @@ import {
 import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import type { TournamentSummary } from "~/features/tournament-bracket/core/summarizer.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { withUserId } from "~/utils/Test";
 import * as SQMatchRepository from "./SQMatchRepository.server";
 

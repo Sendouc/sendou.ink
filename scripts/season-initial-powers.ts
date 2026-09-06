@@ -4,7 +4,7 @@ import type { Tables } from "~/db/tables";
 import { TIERS, type TierName } from "~/features/mmr/mmr-constants";
 import * as SkillRepository from "~/features/mmr/SkillRepository.server";
 import { freshUserSkills } from "~/features/mmr/tiered.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 
 const rawNth = process.argv[2]?.trim();

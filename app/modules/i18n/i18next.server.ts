@@ -14,7 +14,7 @@ import {
 	type RouterContextProvider,
 } from "react-router";
 import { createI18nextMiddleware } from "remix-i18next";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { config } from "./config";
 import { resources } from "./resources.server";
 

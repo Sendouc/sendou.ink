@@ -9,7 +9,7 @@ import {
 } from "~/features/plus-voting/core";
 import { parseFormData } from "~/form/parse.server";
 import { requirePermission } from "~/modules/permissions/guards.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { badRequestIfFalsy } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import { suggestionActionSchema } from "../plus-suggestions-schemas";

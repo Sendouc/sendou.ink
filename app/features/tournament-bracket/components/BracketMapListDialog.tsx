@@ -33,7 +33,7 @@ import * as PickBan from "~/features/tournament-bracket/core/PickBan";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort, StageId } from "~/modules/in-game-lists/types";
 import { nullFilledArray } from "~/utils/arrays";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { assertUnreachable } from "~/utils/types";
 import { SendouButton } from "../../../components/elements/Button";
 import { logger } from "../../../utils/logger";

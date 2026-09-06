@@ -17,7 +17,7 @@ export interface CompatTestContext {
 	): Promise<void>;
 }
 
-export default function test(
+export function test(
 	name: string,
 	fn: (t: CompatTestContext) => void | Promise<void>,
 ): void {

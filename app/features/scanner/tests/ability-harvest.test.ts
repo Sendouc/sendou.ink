@@ -20,7 +20,7 @@ import {
 } from "../core/detectors/death/index";
 import { SCOREBOARD_EVENT_TYPE } from "../core/detectors/scoreboard/index";
 import type { DetectedEvent } from "../core/detectors/types";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 const GRID_A: AbilityWithUnknown[][] = [
 	["ISM", "ISM", "ISM", "ISM"],

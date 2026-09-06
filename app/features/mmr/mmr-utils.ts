@@ -5,7 +5,7 @@ import {
 	rating,
 	type Team,
 } from "openskill";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { TierName } from "./mmr-constants";
 import { SP_BASE, SP_PER_ORDINAL, TIERS } from "./mmr-constants";
 

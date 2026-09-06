@@ -3,7 +3,7 @@ import {
 	type BuildSort,
 	DEFAULT_BUILD_SORT,
 } from "~/features/user-page/user-page-constants";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { userBuildsPage } from "~/utils/urls";
 import {
 	modalClickConfirmButton,

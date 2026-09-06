@@ -4,7 +4,7 @@ import type { DB } from "~/db/tables";
 import type { TournamentRoundMaps } from "~/db/tables-json";
 import type { Side } from "~/features/tournament-bracket/core/engine/types";
 import type { ModeShort, StageId } from "~/modules/in-game-lists/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	commonUserSelect,
 	jsonArrayFrom,

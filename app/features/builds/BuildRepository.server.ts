@@ -11,7 +11,7 @@ import type {
 import { canonicalWeaponSplId } from "~/modules/in-game-lists/weapon-ids";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { LimitReachedError } from "~/utils/errors";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { commonUserJsonObject, jsonArrayFrom } from "~/utils/kysely.server";
 import { MAIN_SLOT_AP } from "../build-analyzer/analyzer-constants";
 import {

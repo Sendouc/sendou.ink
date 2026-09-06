@@ -36,7 +36,7 @@ import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { useHasPermission } from "~/modules/permissions/hooks";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import { databaseTimestampToDate } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { EVENTS_PAGE } from "~/utils/urls";
 import { action } from "../actions/t.$customUrl.schedule.server";

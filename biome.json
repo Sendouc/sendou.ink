@@ -122,6 +122,7 @@
 				"useErrorCause": "error",
 				"useThrowOnlyError": "error",
 				"noNamespace": "error",
+				"noDefaultExport": "error",
 				"useFilenamingConvention": {
 					"level": "error",
 					"options": {
@@ -198,6 +199,27 @@
 				"rules": {
 					"style": {
 						"noNamespace": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": [
+				"app/features/*/routes/**",
+				"app/modules/*/routes/**",
+				"app/root.tsx",
+				"app/routes.ts",
+				"app/entry.server.tsx",
+				"*.config.ts",
+				"knip.ts",
+				"e2e/global-setup.ts",
+				"e2e/global-teardown.ts",
+				"scripts/**"
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"noDefaultExport": "off"
 					}
 				}
 			}

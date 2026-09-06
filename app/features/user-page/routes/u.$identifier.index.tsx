@@ -13,7 +13,7 @@ import { Flag } from "~/components/Flag";
 import { useUser } from "~/features/auth/core/user";
 import { UserCard } from "~/features/user-card/components/UserCard";
 import { countryCodeToTranslatedName } from "~/utils/i18n";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { MutualFriends } from "../components/MutualFriends";
 import type { UserPageNavItem } from "../components/UserPageIconNav";

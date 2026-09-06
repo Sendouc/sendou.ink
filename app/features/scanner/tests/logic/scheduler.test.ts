@@ -8,7 +8,7 @@ import {
 	DetectorScheduler,
 	type SchedulingInfo,
 } from "../../core/detectors/scheduler";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 const OPTS = {
 	refineIntervalS: 0.1,

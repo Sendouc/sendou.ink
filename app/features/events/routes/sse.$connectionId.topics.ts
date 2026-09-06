@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs } from "react-router";
 import * as v from "valibot";
 import { requireUser } from "~/features/auth/core/user.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { parseRequestPayload } from "~/utils/remix.server";
 import * as SseConnections from "../core/SseConnections.server";
 import * as TopicAccess from "../core/TopicAccess.server";

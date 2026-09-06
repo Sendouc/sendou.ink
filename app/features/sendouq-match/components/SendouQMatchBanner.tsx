@@ -19,7 +19,7 @@ import { useUser } from "~/features/auth/core/user";
 import { SENDOUQ_BEST_OF } from "~/features/sendouq/q-constants";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { databaseTimestampToDate } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { resolveGroupNames } from "../core/match-timeline";
 import * as SendouQMatch from "../core/SendouQMatch";
 import type { SendouQMatchLoaderData } from "../loaders/q.match.$id.server";

@@ -12,7 +12,7 @@ import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
 import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	FULL_GROUP_SIZE,
 	SENDOUQ,

@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { abilitiesShort } from "~/modules/in-game-lists/abilities";
 import { brandIds } from "~/modules/in-game-lists/brand-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	LANG_JSONS_TO_CREATE,
 	loadLangDicts,

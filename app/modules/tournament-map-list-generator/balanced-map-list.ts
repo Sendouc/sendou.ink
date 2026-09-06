@@ -1,5 +1,5 @@
 import { stageIds } from "~/modules/in-game-lists/stage-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { seededRandom } from "~/utils/random";
 import { err, ok, type Result } from "~/utils/result";

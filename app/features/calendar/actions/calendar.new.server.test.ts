@@ -5,7 +5,7 @@ import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentOrganizationFactory from "~/db/seed/factories/TournamentOrganizationFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { wrappedAction } from "~/utils/Test";
 import type { calendarNewSchemaServer } from "../calendar-new-schemas.server";
 import { defaultBracketsFormValues } from "../calendar-progression-form";

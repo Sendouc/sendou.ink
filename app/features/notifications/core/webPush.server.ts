@@ -20,4 +20,4 @@ if (
 	logger.info("VAPID env vars not set, push notifications will not work");
 }
 
-export default webPush;
+export { webPush };

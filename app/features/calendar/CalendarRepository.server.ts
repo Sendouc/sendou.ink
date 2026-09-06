@@ -22,7 +22,7 @@ import {
 	databaseTimestampToJavascriptTimestamp,
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	commonUserSelect,
 	concatUserSubmittedImagePrefix,

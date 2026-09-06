@@ -3,7 +3,7 @@ import {
 	nextNonCompletedVoting,
 	rangeToMonthYear,
 } from "~/features/plus-voting/core";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { defineFactory } from "../core/defineFactory";
 import { faker } from "../core/faker";
 

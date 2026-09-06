@@ -24,7 +24,7 @@ ChartJS.register(
 	Tooltip,
 );
 
-export default function Chart({
+export function Chart({
 	options,
 	containerClassName,
 	headerSuffix,

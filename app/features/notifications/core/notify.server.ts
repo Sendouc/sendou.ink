@@ -10,7 +10,7 @@ import { logger } from "../../../utils/logger";
 import * as NotificationRepository from "../NotificationRepository.server";
 import type { Notification } from "../notifications-types";
 import { notificationLink, notificationMeta } from "../notifications-utils";
-import webPush, { webPushEnabled } from "./webPush.server";
+import { webPush, webPushEnabled } from "./webPush.server";
 
 const NOTIFICATION_URGENCY: Record<Notification["type"], Urgency> = {
 	SQ_ADDED_TO_GROUP: "high",

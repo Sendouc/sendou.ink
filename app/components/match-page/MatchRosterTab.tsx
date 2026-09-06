@@ -14,7 +14,7 @@ import {
 	useUserCardData,
 } from "~/features/user-card/components/UserCard";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { CommonUser } from "~/utils/kysely.server";
 import { tierImageUrl } from "~/utils/urls";
 import { SendouTabPanel } from "../elements/Tabs";

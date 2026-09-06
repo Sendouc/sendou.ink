@@ -5,7 +5,7 @@ import type {
 	ModeWithStage,
 	StageId,
 } from "~/modules/in-game-lists/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { err, ok, unwrapOr } from "~/utils/result";
 import type { MapPool } from "./map-pool";
 import type { ReadonlyMapPoolObject } from "./map-pool-serializer/types";

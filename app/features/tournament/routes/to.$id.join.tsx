@@ -7,7 +7,7 @@ import { FriendCodeInput } from "~/components/FriendCodeInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useUser } from "~/features/auth/core/user";
 import { useTournament } from "~/features/tournament/tournament-context";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { assertUnreachable } from "~/utils/types";
 import {
 	tournamentRegisterPage,

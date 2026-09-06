@@ -8,7 +8,7 @@ import { SendouAnchoredPopover } from "./elements/Popover";
 import { LocaleTime } from "./LocaleTime";
 import styles from "./TimePopover.module.css";
 
-export default function TimePopover({
+export function TimePopover({
 	date,
 	options = {
 		minute: "numeric",

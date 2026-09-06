@@ -8,7 +8,7 @@ import {
 	nextNonCompletedVoting,
 	rangeToMonthYear,
 } from "~/features/plus-voting/core";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { commonUserSelect } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 import * as PlusVoting from "./core/PlusVoting";

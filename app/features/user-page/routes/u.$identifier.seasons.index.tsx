@@ -15,7 +15,7 @@ import type {
 } from "~/features/sendouq-match/SQMatchRepository.server";
 import { useSearchParamPagination } from "~/hooks/useSearchParamPagination";
 import { databaseTimestampToDate } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { roundToNDecimalPlaces } from "~/utils/number";
 import { sendouQMatchPage, tournamentTeamPage } from "~/utils/urls";
 import {

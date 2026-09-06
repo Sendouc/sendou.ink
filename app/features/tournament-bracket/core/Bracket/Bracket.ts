@@ -6,7 +6,7 @@ import type {
 	BracketData,
 	RoundData,
 } from "~/features/tournament-bracket/core/engine/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import * as AbDivisions from "../AbDivisions";
 import * as Engine from "../engine";

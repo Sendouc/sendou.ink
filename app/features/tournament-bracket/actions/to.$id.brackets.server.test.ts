@@ -12,7 +12,7 @@ import * as UserFactory from "~/db/seed/factories/UserFactory";
 import type { TournamentSettings } from "~/db/tables-json";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import type { bracketSchema } from "~/features/tournament-bracket/tournament-bracket-schemas";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { wrappedAction } from "~/utils/Test";
 import { action } from "./to.$id.brackets.server";
 

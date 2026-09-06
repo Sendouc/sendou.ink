@@ -5,7 +5,7 @@ import type {
 	SpecialWeaponId,
 } from "~/modules/in-game-lists/types";
 import { weaponIdToBaseWeaponId } from "~/modules/in-game-lists/weapon-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { Unpacked } from "~/utils/types";
 import type {
 	AbilityPoints,

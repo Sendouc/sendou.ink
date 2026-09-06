@@ -19,7 +19,7 @@ import {
 	validateBadgeReceivers,
 	validateTrophyReceiver,
 } from "~/features/tournament-bracket/tournament-bracket-utils";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import {
 	errorToast,

@@ -22,7 +22,7 @@ vi.mock("./webPush.server", () => ({
 	get webPushEnabled() {
 		return mockWebPushEnabled.value;
 	},
-	default: {
+	webPush: {
 		sendNotification: mockSendNotification,
 	},
 }));

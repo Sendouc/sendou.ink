@@ -28,7 +28,11 @@ export const handle: SendouRouteHandle = {
 	}),
 };
 
-const Planner = lazy(() => import("~/features/map-planner/components/Planner"));
+const Planner = lazy(() =>
+	import("~/features/map-planner/components/Planner").then((module) => ({
+		default: module.Planner,
+	})),
+);
 
 export default function MapPlannerPage() {
 	const isHydrated = useHydrated();

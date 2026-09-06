@@ -15,7 +15,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { tournamentChannel } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { tournamentMatchChannel } from "~/features/tournament-match/tournament-match-utils";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { errorToastIfFalsy, parseRequestPayload } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";

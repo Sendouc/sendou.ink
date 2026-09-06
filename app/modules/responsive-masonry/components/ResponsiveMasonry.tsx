@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useMediaQuery } from "~/hooks/useMediaQuery";
-import Masonry from "./Masonry";
+import { Masonry } from "./Masonry";
 
 const THREE_COLUMNS_QUERY = "(width >= 900px)";
 const TWO_COLUMNS_QUERY = "(width >= 750px)";

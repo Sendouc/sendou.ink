@@ -37,7 +37,7 @@ import * as AbDivisions from "~/features/tournament-bracket/core/AbDivisions";
 import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import type { TournamentTeamFull } from "~/features/tournament-bracket/core/Tournament.server";
 import { UserCard } from "~/features/user-card/components/UserCard";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { ordinalToRoundedSp } from "../../mmr/mmr-utils";
 import { adminSeedsActionSchema } from "../tournament-admin-schemas";

@@ -22,7 +22,7 @@ import {
 	TORPEDO_ID,
 	ZIPCASTER_ID,
 } from "~/modules/in-game-lists/weapon-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { cutToNDecimalPlaces, roundToNDecimalPlaces } from "~/utils/number";
 import { assertUnreachable } from "~/utils/types";
 import {

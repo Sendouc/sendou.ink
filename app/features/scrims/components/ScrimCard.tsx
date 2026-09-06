@@ -22,7 +22,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { ModeImage } from "~/components/Image";
 import { LocaleTime } from "~/components/LocaleTime";
 import { NoteAvatar } from "~/components/NoteAvatar";
-import TimePopover from "~/components/TimePopover";
+import { TimePopover } from "~/components/TimePopover";
 import { useUser } from "~/features/auth/core/user";
 import {
 	UserCard,

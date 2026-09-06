@@ -12,7 +12,7 @@ import { useCopyToClipboard } from "~/hooks/useCopyToClipboard";
 import { stageIds } from "~/modules/in-game-lists/stage-ids";
 import type { ModeWithStage } from "~/modules/in-game-lists/types";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { ipLabsMaps, MAPS_URL, navIconUrl } from "~/utils/urls";

@@ -6,7 +6,7 @@ import { userIsBanned } from "~/features/ban/core/banned.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { parseFormData } from "~/form/parse.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { errorToast, errorToastIfFalsy } from "~/utils/remix.server";
 import { toDBBoolean } from "~/utils/sql";
 import { scrimsPage } from "~/utils/urls";

@@ -2,7 +2,7 @@ import * as R from "remeda";
 import type { Standing } from "~/features/tournament-bracket/core/Bracket";
 import * as Progression from "~/features/tournament-bracket/core/Progression";
 import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { getBracketProgressionLabel } from "../tournament-utils";
 
 const MATCH_SIDES = ["opponent1", "opponent2"] as const;

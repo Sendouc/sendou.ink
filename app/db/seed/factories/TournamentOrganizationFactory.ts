@@ -1,6 +1,6 @@
 import type { Tables } from "~/db/tables";
 import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { defineFactory } from "../core/defineFactory";
 import * as ImageFactory from "./ImageFactory";
 

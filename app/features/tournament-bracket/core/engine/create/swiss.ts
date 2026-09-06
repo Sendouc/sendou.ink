@@ -1,6 +1,6 @@
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import { nullFilledArray } from "~/utils/arrays";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type {
 	BracketData,
 	MatchData,
