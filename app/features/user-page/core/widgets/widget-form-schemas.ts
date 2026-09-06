@@ -12,6 +12,7 @@ import {
 	select,
 	selectDynamic,
 	stageSelect,
+	textArea,
 	textAreaOptional,
 	textField,
 	weaponSelect,

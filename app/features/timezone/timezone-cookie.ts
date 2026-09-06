@@ -9,7 +9,7 @@ const ianaTimezone = v.pipe(
 	v.maxLength(100),
 	v.check((value) => {
 		try {
-			new Intl.DateTimeFormat("en-US", { timeZone: value });
+			Intl.DateTimeFormat("en-US", { timeZone: value });
 			return true;
 		} catch {
 			return false;

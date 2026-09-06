@@ -19,7 +19,34 @@
 			"suspicious": {
 				"noExplicitAny": "off",
 				"noArrayIndexKey": "off",
-				"noConsole": { "level": "error" }
+				"noConsole": { "level": "error" },
+				"noDeprecatedImports": "error",
+				"noVar": "error",
+				"noForIn": "error",
+				"useGuardForIn": "error",
+				"noConstantBinaryExpressions": "error",
+				"noUnassignedVariables": "error",
+				"noDuplicatedSpreadProps": "error",
+				"noUnknownAttribute": "error",
+				"useErrorMessage": "error",
+				"useNumberToFixedDigitsArgument": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"noSkippedTests": "error",
+				"noParametersOnlyUsedInRecursion": "error"
+			},
+			"correctness": {
+				"noUndeclaredVariables": "error",
+				"noUnusedInstantiation": "error",
+				"noNestedComponentDefinitions": "error",
+				"noReactPropAssignments": "error",
+				"noGlobalDirnameFilename": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"useSingleJsDocAsterisk": "error",
+				"noUndeclaredDependencies": "error"
 			},
 			"style": {
 				"noNonNullAssertion": "off",
@@ -43,7 +70,43 @@
 				"useSingleVarDeclarator": "error",
 				"useNumberNamespace": "error",
 				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+				"noUselessElse": "error",
+				"noEnum": "error",
+				"noCommonJs": "error",
+				"noParameterProperties": "error",
+				"noMultiAssign": "error",
+				"noMultilineString": "error",
+				"noYodaExpression": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"useTrimStartEnd": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"useObjectSpread": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"useNodeAssertStrict": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"useCollapsedElseIf": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"useSymbolDescription": "error",
+				"useGroupedAccessorPairs": "error",
+				"useSpreadOverApply": "error",
+				"useFilenamingConvention": {
+					"level": "error",
+					"options": {
+						"filenameCases": ["kebab-case", "PascalCase", "camelCase"],
+						"strictCase": false,
+						"requireAscii": true
+					}
+				}
 			},
 			"a11y": {
 				"useKeyWithClickEvents": "off",
@@ -55,7 +118,14 @@
 					"fix": "safe",
 					"level": "error"
 				},
-				"noImportantStyles": "off"
+				"noImportantStyles": "off",
+				"useWhile": {
+					"fix": "safe",
+					"level": "error"
+				}
+			},
+			"performance": {
+				"noSyncScripts": "error"
 			}
 		}
 	},
@@ -74,6 +144,21 @@
 		}
 	},
 	"overrides": [
+		{
+			"includes": [
+				"app/features/*/routes/**",
+				"app/modules/*/routes/**",
+				"app/features/*/loaders/**",
+				"app/features/*/actions/**"
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"useFilenamingConvention": "off"
+					}
+				}
+			}
+		},
 		{
 			"includes": ["app/**", "!app/modules/search-params/**"],
 			"plugins": ["./biome-plugins/no-raw-search-params.grit"]
