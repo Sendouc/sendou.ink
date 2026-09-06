@@ -19,7 +19,8 @@ import {
 } from "~/form/fields";
 import type { FormObjectSchema, SelectOption } from "~/form/types";
 import { GAME_BADGE_IDS } from "~/modules/in-game-lists/game-badge-ids";
-import { USER } from "../../user-page-constants";
+import { superRefine } from "~/utils/schema";
+import { SENS_OPTIONS, USER } from "../../user-page-constants";
 
 export const bioSchema = v.object({
 	bio: textAreaOptional({
@@ -47,11 +48,18 @@ export const xRankPeaksSchema = v.object({
 	}),
 });
 
-export const timezoneSchema = v.object({
-	timezone: selectDynamic({
-		label: "labels.timezone",
+export const timezoneSchema = v.pipe(
+	v.object({
+		timezone: selectDynamic({
+			label: "labels.timezone",
+		}),
 	}),
-});
+	superRefine((data, ctx) => {
+		if (TIMEZONES.includes(data.timezone)) return;
+
+		ctx.addIssue({ message: "Invalid timezone", path: ["timezone"] });
+	}),
+);
 
 export const TIMEZONE_OPTIONS: SelectOption[] = TIMEZONES.map((tz) => ({
 	value: tz,
@@ -67,8 +75,9 @@ export const favoriteStageSchema = v.object({
 export const peakXpUnverifiedSchema = v.object({
 	peakXp: numberField({
 		label: "labels.peakXp",
-		minLength: 4,
 		maxLength: 4,
+		min: USER.PEAK_XP_MIN,
+		max: USER.PEAK_XP_MAX,
 	}),
 	division: select({
 		label: "labels.division",
@@ -87,6 +96,8 @@ export const peakXpWeaponSchema = v.object({
 
 const CONTROLLERS = ["s1-pro-con", "s2-pro-con", "grip", "handheld"] as const;
 
+const sensValueSchema = v.nullable(v.picklist(SENS_OPTIONS));
+
 export const sensSchema = v.object({
 	controller: select({
 		label: "labels.controller",
@@ -94,10 +105,9 @@ export const sensSchema = v.object({
 			value: controller,
 			label: `options.controller.${controller}` as const,
 		})),
-		initialValue: "s2-pro-con",
 	}),
-	motionSens: customField({ initialValue: null }, v.nullable(v.number())),
-	stickSens: customField({ initialValue: null }, v.nullable(v.number())),
+	motionSens: customField({ initialValue: null }, sensValueSchema),
+	stickSens: customField({ initialValue: null }, sensValueSchema),
 });
 
 export const artSchema = v.object({

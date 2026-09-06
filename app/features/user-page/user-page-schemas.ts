@@ -180,12 +180,15 @@ export const widgetsEditSchema = (isSupporter: boolean) => {
 				v.minLength(1),
 				v.maxLength(max.main + max.side),
 				v.check((widgets) => {
+					const seenIds = new Set<string>();
 					let mainCount = 0;
 					let sideCount = 0;
 					for (const w of widgets) {
 						const def = findWidgetById(w.id);
 						if (!def) return false;
 						if (def.supporterOnly && !isSupporter) return false;
+						if (seenIds.has(w.id)) return false;
+						seenIds.add(w.id);
 						if (def.slot === "main") mainCount++;
 						else sideCount++;
 					}

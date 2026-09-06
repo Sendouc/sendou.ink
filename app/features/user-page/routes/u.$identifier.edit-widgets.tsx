@@ -35,6 +35,7 @@ import {
 	findWidgetById,
 	maxWidgetsPerSlot,
 } from "~/features/user-page/core/widgets/portfolio";
+import type { WidgetId } from "~/features/user-page/core/widgets/types";
 import { getWidgetFormSchema } from "~/features/user-page/core/widgets/widget-form-schemas";
 import { USER } from "~/features/user-page/user-page-constants";
 import { useUnsavedChangesChecker } from "~/form/UnsavedChangesGuard";
@@ -291,7 +292,7 @@ function AvailableWidgetsList({
 		if (!searchLower) return true;
 
 		return [
-			t(`user:widget.${widget.id}` as const),
+			t(widgetNameKey(widget.id)),
 			t(
 				`user:widgets.description.${widget.id}` as const,
 				widgetDescriptionParams(widget.id),
@@ -338,7 +339,7 @@ function AvailableWidgetsList({
 									<div className={styles.widgetHeader}>
 										<span className={styles.widgetName}>
 											<WidgetNavIcon navItem={widget.navItem} />
-											{t(`user:widget.${widget.id}` as const)}
+											{t(widgetNameKey(widget.id))}
 										</span>
 										{isLocked ? (
 											<Link
@@ -452,7 +453,7 @@ function SelectedWidgetsList({
 				</SortableContext>
 			</div>
 
-			<div className={styles.slotSection}>
+			<div className={`${styles.slotSection} ${styles.sideSlotSection}`}>
 				<div className={styles.slotHeader}>
 					<span className="stack horizontal xs">
 						<SideSlotIcon size={24} /> {t("user:widgets.sideSlot")}
@@ -556,7 +557,7 @@ function DraggableWidgetItem({
 				<span className={styles.widgetName} {...listeners}>
 					<span className={styles.dragHandle}>☰</span>
 					<WidgetNavIcon navItem={widgetDef?.navItem} />
-					{t(`user:widget.${widget.id}` as const)}
+					{t(widgetNameKey(widget.id))}
 				</span>
 				<div className={styles.widgetActions}>
 					{hasSettings ? (
@@ -606,6 +607,18 @@ function WidgetNavIcon({ navItem }: { navItem?: string }) {
 			containerClassName={styles.widgetIcon}
 		/>
 	);
+}
+
+/** Widgets whose name is shared with another one, spelled out so the editor lists stay unambiguous. */
+const EDITOR_WIDGET_NAME_KEYS = {
+	"bio-md": "user:widgets.editorName.bio-md",
+	"game-badges-small": "user:widgets.editorName.game-badges-small",
+} as const;
+
+function widgetNameKey(widgetId: WidgetId) {
+	return widgetId in EDITOR_WIDGET_NAME_KEYS
+		? EDITOR_WIDGET_NAME_KEYS[widgetId as keyof typeof EDITOR_WIDGET_NAME_KEYS]
+		: (`user:widget.${widgetId}` as const);
 }
 
 const WIDGET_DESCRIPTION_PARAMS: Record<string, Record<string, unknown>> = {

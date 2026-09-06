@@ -10,7 +10,7 @@ import {
 	TIMEZONE_OPTIONS,
 } from "../core/widgets/widget-form-schemas";
 import type { loader } from "../loaders/u.$identifier.edit-widgets.server";
-import { USER } from "../user-page-constants";
+import { SENS_OPTIONS, USER } from "../user-page-constants";
 import { GameBadgeSelectField } from "./GameBadgeSelectField";
 
 export function WidgetSettingsForm({
@@ -143,11 +143,6 @@ function FavoriteBadgesField() {
 		/>
 	);
 }
-
-const SENS_OPTIONS = [
-	-50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
-	40, 45, 50,
-];
 
 function SensFields() {
 	const { t } = useTranslation(["user"]);

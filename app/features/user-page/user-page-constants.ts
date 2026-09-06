@@ -16,7 +16,15 @@ export const USER = {
 	GAME_BADGES_SMALL_MAX: 4,
 	COUNTDOWN_TITLE_MAX_LENGTH: 50,
 	MARKDOWN_WIDGET_MAX_LENGTH: 2000,
+	PEAK_XP_MIN: 1000,
+	PEAK_XP_MAX: 6000,
 };
+
+/** In-game sensitivity values (-5.0 to +5.0 in 0.5 steps), stored multiplied by ten. */
+export const SENS_OPTIONS = [
+	-50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
+	40, 45, 50,
+] as const;
 
 export const SPL2_JOIN_ORDER_CUTOFF = 13_589;
 

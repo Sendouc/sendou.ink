@@ -246,7 +246,7 @@ export const DEFAULT_WIDGETS: StoredWidget[] = [
 	{ id: "teams" },
 	{
 		id: "sens",
-		settings: { controller: "s2-pro-con", motionSens: null, stickSens: null },
+		settings: { controller: "s1-pro-con", motionSens: null, stickSens: null },
 	},
 	{ id: "join-date" },
 ];
