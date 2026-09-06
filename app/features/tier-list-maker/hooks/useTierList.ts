@@ -121,12 +121,12 @@ export function useTierList() {
 			return;
 		}
 
-		const activeItem = parseItemFromId(String(active.id));
-		if (!activeItem) return;
+		const draggedItem = parseItemFromId(String(active.id));
+		if (!draggedItem) return;
 
 		const overId = over.id;
 
-		const activeContainer = findContainer(activeItem);
+		const activeContainer = findContainer(draggedItem);
 		const overItem = parseItemFromId(String(overId));
 		const overContainer = String(overId).startsWith("tier-")
 			? String(overId)
@@ -160,9 +160,9 @@ export function useTierList() {
 				activeItems.filter(
 					(item) =>
 						!(
-							item.id === activeItem.id &&
-							item.type === activeItem.type &&
-							item.nth === activeItem.nth
+							item.id === draggedItem.id &&
+							item.type === draggedItem.type &&
+							item.nth === draggedItem.nth
 						),
 				),
 			);
@@ -172,7 +172,7 @@ export function useTierList() {
 		newOverItems.splice(
 			overIndex === -1 ? newOverItems.length : overIndex,
 			0,
-			activeItem,
+			draggedItem,
 		);
 		newTierItems.set(overContainer, newOverItems);
 

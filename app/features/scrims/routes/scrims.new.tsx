@@ -5,7 +5,7 @@ import type * as v from "valibot";
 import { SendouDatePicker } from "~/components/elements/DatePicker";
 import { Label } from "~/components/Label";
 import type { CustomFieldRenderProps } from "~/form";
-import { FormField } from "~/form/FormField";
+import { FormField as UntypedFormField } from "~/form/FormField";
 import { FormFieldWrapper } from "~/form/fields/FormFieldWrapper";
 import { SendouForm, useFormFieldContext } from "~/form/SendouForm";
 import { errorMessageId } from "~/form/utils";
@@ -301,5 +301,5 @@ function MapsTournamentFormField() {
 
 	if (values.maps !== "TOURNAMENT") return null;
 
-	return <FormField name="mapsTournamentId" />;
+	return <UntypedFormField name="mapsTournamentId" />;
 }

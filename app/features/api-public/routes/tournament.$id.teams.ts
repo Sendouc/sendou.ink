@@ -29,7 +29,7 @@ const paramsSchema = v.object({
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const t = await getFixedTForLanguage("en", ["game-misc"]);
-	const { id } = parseParams({
+	const { id: tournamentId } = parseParams({
 		params,
 		schema: paramsSchema,
 	});
@@ -41,10 +41,10 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			exists(
 				selectFrom("TournamentStage")
 					.select("TournamentStage.id")
-					.where("TournamentStage.tournamentId", "=", id),
+					.where("TournamentStage.tournamentId", "=", tournamentId),
 			).as("hasStarted"),
 		])
-		.where("Tournament.id", "=", id)
+		.where("Tournament.id", "=", tournamentId)
 		.executeTakeFirst();
 
 	const teams = await db
@@ -128,13 +128,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 					.whereRef("MapPoolMap.tournamentTeamId", "=", "TournamentTeam.id"),
 			).as("mapPool"),
 		])
-		.where("TournamentTeam.tournamentId", "=", id)
+		.where("TournamentTeam.tournamentId", "=", tournamentId)
 		.where("TournamentTeam.isPlaceholder", "=", 0)
 		.orderBy("TournamentTeam.createdAt", "asc")
 		.execute();
 
 	const friendCodes =
-		await TournamentRepository.findFriendCodesByTournamentId(id);
+		await TournamentRepository.findFriendCodesByTournamentId(tournamentId);
 
 	const seedByTeamId =
 		tournament?.hasStarted && tournament.settings
@@ -145,7 +145,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		return {
 			id: team.id,
 			name: team.name,
-			url: `https://sendou.ink/to/${id}/teams/${team.id}`,
+			url: `https://sendou.ink/to/${tournamentId}/teams/${team.id}`,
 			teamPageUrl:
 				team.team?.customUrl && !team.team.deletedAt
 					? `https://sendou.ink/t/${team.team.customUrl}`

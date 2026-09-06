@@ -20,7 +20,9 @@ describe("swiss standings - losses against tied", () => {
 
 		const standing = tournament
 			.bracketByIdx(0)
-			?.standings.find((standing) => standing.team.id === TEAM_THIS_IS_FINE_ID);
+			?.standings.find(
+				(candidate) => candidate.team.id === TEAM_THIS_IS_FINE_ID,
+			);
 
 		invariant(standing, "Standing not found");
 
@@ -85,7 +87,7 @@ describe("swiss standings - losses against tied", () => {
 
 		const standing = tournament
 			.bracketByIdx(0)
-			?.standings.find((standing) => standing.team.id === TEAM_ERROR_404_ID);
+			?.standings.find((candidate) => candidate.team.id === TEAM_ERROR_404_ID);
 		invariant(standing, "Standing not found");
 
 		expect(standing.stats?.lossesAgainstTied).toBe(0); // they lost against "Tidy Tidings" but that team dropped out before final round
@@ -150,7 +152,7 @@ describe("swiss standings - losses against tied", () => {
 
 		const standing = tournament
 			.bracketByIdx(0)
-			?.standings.find((standing) => standing.team.id === 1);
+			?.standings.find((candidate) => candidate.team.id === 1);
 		invariant(standing, "Standing not found");
 
 		expect(standing.stats?.lossesAgainstTied).toBe(0);

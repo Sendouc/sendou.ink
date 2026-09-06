@@ -738,10 +738,10 @@ function StageBackgroundSelector({
 		setParams,
 	] = useSearchParamsTyped(plansSearchParams);
 
-	const handleStageIdChange = (stageId: StageId) => {
+	const handleStageIdChange = (newStageId: StageId) => {
 		setParams({
-			stage: stageId,
-			water: stageId === stagesObj.MAHI_MAHI_RESORT ? waterLevel : "up",
+			stage: newStageId,
+			water: newStageId === stagesObj.MAHI_MAHI_RESORT ? waterLevel : "up",
 		});
 	};
 
@@ -755,10 +755,10 @@ function StageBackgroundSelector({
 			>
 				{stageIds
 					.filter((id) => id <= LAST_STAGE_ID_WITH_IMAGES)
-					.map((stageId) => {
+					.map((optionStageId) => {
 						return (
-							<option value={stageId} key={stageId}>
-								{t(`game-misc:STAGE_${stageId}`)}
+							<option value={optionStageId} key={optionStageId}>
+								{t(`game-misc:STAGE_${optionStageId}`)}
 							</option>
 						);
 					})}
@@ -768,10 +768,10 @@ function StageBackgroundSelector({
 				value={mode}
 				onChange={(e) => setParams({ mode: e.target.value as ModeShort })}
 			>
-				{modesShort.map((mode) => {
+				{modesShort.map((optionMode) => {
 					return (
-						<option key={mode} value={mode}>
-							{t(`game-misc:MODE_LONG_${mode}`)}
+						<option key={optionMode} value={optionMode}>
+							{t(`game-misc:MODE_LONG_${optionMode}`)}
 						</option>
 					);
 				})}

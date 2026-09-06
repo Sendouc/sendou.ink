@@ -11,12 +11,12 @@ import { SP_BASE, SP_PER_ORDINAL, TIERS } from "./mmr-constants";
 
 const TAU = 0.3;
 
-export function ordinalToSp(ordinal: number) {
-	return toTwoDecimals(ordinal * SP_PER_ORDINAL + SP_BASE);
+export function ordinalToSp(ordinalValue: number) {
+	return toTwoDecimals(ordinalValue * SP_PER_ORDINAL + SP_BASE);
 }
 
-export function ordinalToRoundedSp(ordinal: number) {
-	return Math.round(ordinalToSp(ordinal));
+export function ordinalToRoundedSp(ordinalValue: number) {
+	return Math.round(ordinalToSp(ordinalValue));
 }
 
 function toTwoDecimals(value: number) {

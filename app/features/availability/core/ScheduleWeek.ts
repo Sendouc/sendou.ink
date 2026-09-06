@@ -54,7 +54,7 @@ export function weekNumber(range: TimeRange, timezone: string) {
  */
 export function memberRow({
 	userId,
-	days,
+	days: weekDays,
 	timezone,
 	reportedWeeks,
 	range,
@@ -82,7 +82,7 @@ export function memberRow({
 		return {
 			userId,
 			reported: false,
-			days: days.map((day) => ({
+			days: weekDays.map((day) => ({
 				ranges: [] as Array<TimeRange>,
 				busy: busyOfDay(day),
 			})),
@@ -101,7 +101,7 @@ export function memberRow({
 	return {
 		userId,
 		reported: true,
-		days: days.map((day) => ({
+		days: weekDays.map((day) => ({
 			ranges: slots.filter(
 				(slot) =>
 					Availability.dateInTimezone(slot.startsAt, timezone) === day.date,
@@ -115,7 +115,7 @@ export function memberRow({
 					from: week.timezone,
 					to: timezone,
 				});
-				const dayIndex = days.findIndex((day) => day.date === noteDate);
+				const dayIndex = weekDays.findIndex((day) => day.date === noteDate);
 
 				return dayIndex === -1 ? [] : [{ dayIndex, text: note.text }];
 			}),

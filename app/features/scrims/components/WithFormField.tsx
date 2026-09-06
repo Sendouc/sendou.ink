@@ -114,7 +114,7 @@ export function WithFormField({
 	];
 
 	const handleSelectionChange = (key: SelectKey | null) => {
-		const option = options.find((option) => option.key === key);
+		const option = options.find((candidate) => candidate.key === key);
 		if (!option) return;
 
 		setPickupFieldsKey(option.key);

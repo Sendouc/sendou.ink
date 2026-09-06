@@ -350,7 +350,7 @@ function rosterUserIds({
 		]);
 	}
 
-	const team = teams.find((team) => team.id === from.teamId);
+	const team = teams.find((candidate) => candidate.id === from.teamId);
 	if (!team) return [];
 
 	return R.unique([

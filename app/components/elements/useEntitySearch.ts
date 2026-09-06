@@ -94,7 +94,7 @@ export function useEntitySearch<TItem extends { id: number }>({
 
 	const onSelectionChange = (key: number) => {
 		setSelectedKey(key);
-		const item = realItems.find((item) => item.id === key);
+		const item = realItems.find((candidate) => candidate.id === key);
 		if (item) {
 			onChange?.(item);
 		}

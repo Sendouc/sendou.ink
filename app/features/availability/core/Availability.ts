@@ -65,9 +65,9 @@ export function isoWeekNumber(timestamp: number, timezone: string) {
 }
 
 /** Whether the two week starts name the same week: closer than timezones can set them apart (hours, never days). */
-export function isSameWeek(weekStartsAt: number, rangeStartsAt: number) {
+export function isSameWeek(weekStart: number, rangeStartsAt: number) {
 	return (
-		Math.abs(weekStartsAt - rangeStartsAt) <
+		Math.abs(weekStart - rangeStartsAt) <
 		AVAILABILITY.WEEK_MATCH_MAX_DISTANCE_SECONDS
 	);
 }

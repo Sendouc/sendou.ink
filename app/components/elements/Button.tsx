@@ -150,8 +150,8 @@ function buttonClassName({
 	size,
 	shape,
 }: Pick<SendouButtonProps, "className" | "variant" | "size" | "shape">) {
-	const variantToClassname = (variant: ButtonVariant) => {
-		switch (variant) {
+	const variantToClassname = (buttonVariant: ButtonVariant) => {
+		switch (buttonVariant) {
 			case "primary":
 				// the base look, no extra class needed
 				return null;
@@ -172,7 +172,7 @@ function buttonClassName({
 			case "minimal-destructive":
 				return styles.minimalDestructive;
 			default:
-				return assertUnreachable(variant);
+				return assertUnreachable(buttonVariant);
 		}
 	};
 

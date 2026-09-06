@@ -90,7 +90,7 @@ for (const file of fileNames) {
 			});
 
 			const missingKeys = englishContentKeys.filter(
-				(key) => !otherLanguageContentKeys.includes(key),
+				(missingKey) => !otherLanguageContentKeys.includes(missingKey),
 			);
 
 			if (key === "weapons" || key === "gear") {
@@ -264,11 +264,11 @@ function MDCompletionStatus({
 }
 
 function MDOverviewTable({
-	totalTranslationCounts,
+	totalTranslationCounts: keyCountsByFile,
 }: {
 	totalTranslationCounts: Record<string, number>;
 }) {
-	const totalKeysCount = Object.values(totalTranslationCounts).reduce(
+	const totalKeysCount = Object.values(keyCountsByFile).reduce(
 		(a, b) => a + b,
 		0,
 	);
@@ -313,7 +313,7 @@ function MDOverviewTable({
 
 			cells.push(
 				MDCompletionStatus({
-					totalCount: totalTranslationCounts[fileKey],
+					totalCount: keyCountsByFile[fileKey],
 					missingCount: missingKeysInFile.length,
 				}),
 			);
@@ -326,7 +326,7 @@ function MDOverviewTable({
 }
 
 function createTranslationProgessMarkdown({
-	totalTranslationCounts,
+	totalTranslationCounts: keyCountsByFile,
 }: {
 	totalTranslationCounts: Record<string, number>;
 }) {
@@ -341,5 +341,5 @@ If you want to contribute by adding missing translations, make sure to read the 
 
 Key: 🟢 = Done, 🟡 = In progress, 🔴 = Not started
 
-${MDOverviewTable({ totalTranslationCounts })}`;
+${MDOverviewTable({ totalTranslationCounts: keyCountsByFile })}`;
 }

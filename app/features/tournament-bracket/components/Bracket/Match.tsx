@@ -246,10 +246,10 @@ function MatchRow({
 			return { team: tournament.teamById(opponent.id), simulated: false };
 		}
 
-		const simulated = showSimulation
+		const simulatedMatch = showSimulation
 			? bracket.simulatedMatch(match.id)
 			: undefined;
-		const simulatedOpponent = simulated?.[opponentKey];
+		const simulatedOpponent = simulatedMatch?.[opponentKey];
 
 		return simulatedOpponent?.id
 			? { team: tournament.teamById(simulatedOpponent.id), simulated: true }

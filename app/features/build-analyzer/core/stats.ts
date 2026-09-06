@@ -247,8 +247,8 @@ function specialLost(
 		? OWN_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST
 		: 0;
 
-	const specialSavedAfterDeathForDisplay = (effect: number) =>
-		Number(((1.0 - effect) * 100).toFixed(2));
+	const specialSavedAfterDeathForDisplay = (ratio: number) =>
+		Number(((1.0 - ratio) * 100).toFixed(2));
 
 	const { baseEffect, effect } = abilityPointsToEffects({
 		abilityPoints: apFromMap({
@@ -698,12 +698,12 @@ function subWeaponDefenseDamages(
 								distance: [
 									Math.min(
 										...secondHalfValues.map(
-											(value) => value.distance as number,
+											(halfValue) => halfValue.distance as number,
 										),
 									),
 									Math.max(
 										...secondHalfValues.map(
-											(value) => value.distance as number,
+											(halfValue) => halfValue.distance as number,
 										),
 									),
 								],
@@ -716,10 +716,14 @@ function subWeaponDefenseDamages(
 								subWeaponId: id,
 								distance: [
 									Math.min(
-										...firstHalfValues.map((value) => value.distance as number),
+										...firstHalfValues.map(
+											(halfValue) => halfValue.distance as number,
+										),
 									),
 									Math.max(
-										...firstHalfValues.map((value) => value.distance as number),
+										...firstHalfValues.map(
+											(halfValue) => halfValue.distance as number,
+										),
 									),
 								],
 								baseValue: firstHalfValues[0].baseValue,
@@ -1294,16 +1298,16 @@ export function subStats(
 			weapon: args.subWeaponParams,
 		});
 
-		const toValue = (effect: number) => {
+		const toValue = (rawEffect: number) => {
 			switch (type) {
 				case "NO_CHANGE":
-					return roundToNDecimalPlaces(effect);
+					return roundToNDecimalPlaces(rawEffect);
 				case "SUB_VELOCITY":
-					return roundToNDecimalPlaces(effect, 3);
+					return roundToNDecimalPlaces(rawEffect, 3);
 				case "HP":
-					return roundToNDecimalPlaces(hpDivided(effect), 1);
+					return roundToNDecimalPlaces(hpDivided(rawEffect), 1);
 				case "TIME":
-					return framesToSeconds(effect);
+					return framesToSeconds(rawEffect);
 				default:
 					assertUnreachable(type);
 			}

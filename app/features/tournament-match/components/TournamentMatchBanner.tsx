@@ -89,7 +89,7 @@ export function TournamentMatchBanner({
 			: undefined;
 
 	const activeRosterByTeamId = (tournamentTeamId: number) => {
-		const team = teams.find((t) => t?.id === tournamentTeamId);
+		const team = teams.find((candidate) => candidate?.id === tournamentTeamId);
 		if (!team) return null;
 
 		const activeRosterUserIds = team.activeRosterUserIds;

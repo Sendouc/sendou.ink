@@ -77,7 +77,7 @@ const validateCanUpdatePost = async ({
 	user: { id: number; plusTier: number | null };
 }) => {
 	const posts = await LFGRepository.findAllPosts(user);
-	const post = posts.find((post) => post.id === postId);
+	const post = posts.find((candidate) => candidate.id === postId);
 	errorToastIfFalsy(post, "Post to update not found");
 	requirePermission(post, "EDIT");
 };

@@ -203,8 +203,8 @@ describe("SearchParams.define", () => {
 
 	test("supports SP.custom codecs with total decode", () => {
 		const isoDate = SearchParams.codec(v.date(), {
-			decode: (value) => {
-				const date = new Date(value);
+			decode: (raw) => {
+				const date = new Date(raw);
 				return Number.isNaN(date.getTime()) ? undefined : date;
 			},
 			encode: (date) => date.toISOString(),

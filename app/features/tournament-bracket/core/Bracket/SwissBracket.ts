@@ -161,7 +161,7 @@ export class SwissBracket extends Bracket {
 				opponentSets?: TeamTrackRecord;
 				opponentMaps?: TeamTrackRecord;
 			}) => {
-				const team = teams.find((team) => team.id === teamId);
+				const team = teams.find((candidate) => candidate.id === teamId);
 				if (team) {
 					team.setWins += setWins;
 					team.setLosses += setLosses;
@@ -259,7 +259,7 @@ export class SwissBracket extends Bracket {
 				}
 
 				const round = this.data.round.find(
-					(round) => round.id === match.roundId,
+					(candidate) => candidate.id === match.roundId,
 				);
 				const mapWins =
 					round?.maps?.type === "PLAY_ALL"

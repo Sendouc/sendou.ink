@@ -99,12 +99,12 @@ export const ServerConfig = {
 /** Adds a validation issue unless `a` and `b` are both set or both unset. */
 function requireTogether(
 	ctx: ValidationCtx,
-	values: Record<string, unknown>,
+	parsedValues: Record<string, unknown>,
 	a: string,
 	b: string,
 ) {
-	const aSet = Boolean(values[a]);
-	const bSet = Boolean(values[b]);
+	const aSet = Boolean(parsedValues[a]);
+	const bSet = Boolean(parsedValues[b]);
 	if (aSet === bSet) return;
 
 	const present = aSet ? a : b;

@@ -83,8 +83,8 @@ export async function findMatchById(id: number) {
 				eb
 					.selectFrom("TournamentTeamMember")
 					.innerJoin("User", "User.id", "TournamentTeamMember.userId")
-					.select((eb) => [
-						...commonUserSelect(eb, { inTournament: true }),
+					.select((memberEb) => [
+						...commonUserSelect(memberEb, { inTournament: true }),
 						"TournamentTeamMember.tournamentTeamId",
 						sql<
 							string | null
@@ -448,8 +448,8 @@ export async function findUserParticipationByTournamentId(
 	tournamentId: number,
 ) {
 	return db
-		.with("playerMatches", (db) =>
-			db
+		.with("playerMatches", (cte) =>
+			cte
 				.selectFrom("TournamentMatchGameResultParticipant as Participant")
 				.innerJoin(
 					"TournamentMatchGameResult as GameResult",
@@ -556,7 +556,7 @@ export function findByTournamentTeamId(tournamentTeamId: number) {
 								"otherTeam.id",
 							),
 					)
-					.select((eb) => [...commonUserSelect(eb), "User.country"])
+					.select((playerEb) => [...commonUserSelect(playerEb), "User.country"])
 					.whereRef(
 						"TournamentMatchGameResult.matchId",
 						"=",

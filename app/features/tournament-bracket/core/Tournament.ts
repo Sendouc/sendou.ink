@@ -238,8 +238,8 @@ export class Tournament {
 
 	/** Division the given bracket belongs to, or null if the tournament has no divisions. */
 	leagueDivisionOfBracket(bracketIdx: number): number | null {
-		const division = this.leagueDivisions.find((division) =>
-			this.bracketIdxsOfDivision(division.idx).includes(bracketIdx),
+		const division = this.leagueDivisions.find((candidate) =>
+			this.bracketIdxsOfDivision(candidate.idx).includes(bracketIdx),
 		);
 
 		return division?.idx ?? null;
@@ -1002,19 +1002,19 @@ export class Tournament {
 
 					if (bracket.type === "round_robin") {
 						const group = bracket.data.group.find(
-							(group) => group.id === match.groupId,
+							(candidate) => candidate.id === match.groupId,
 						);
 						const round = bracket.data.round.find(
-							(round) => round.id === match.roundId,
+							(candidate) => candidate.id === match.roundId,
 						);
 
 						roundName = `Groups ${group?.number ? groupNumberToLetters(group.number) : ""}${round?.number ?? ""}.${match.number}`;
 					} else if (bracket.type === "swiss") {
 						const group = bracket.data.group.find(
-							(group) => group.id === match.groupId,
+							(candidate) => candidate.id === match.groupId,
 						);
 						const round = bracket.data.round.find(
-							(round) => round.id === match.roundId,
+							(candidate) => candidate.id === match.roundId,
 						);
 
 						const oneGroupOnly = bracket.data.group.length === 1;
@@ -1035,7 +1035,9 @@ export class Tournament {
 										...getRounds({ type: "losers", bracketData: bracket.data }),
 									];
 
-						const round = rounds.find((round) => round.id === match.roundId);
+						const round = rounds.find(
+							(candidate) => candidate.id === match.roundId,
+						);
 
 						if (round) {
 							const specifier = () => {
@@ -1070,14 +1072,14 @@ export class Tournament {
 			}
 		}
 
-		const roundNameWithoutMatchIdentifier = (roundName?: string) => {
-			if (!roundName) return;
+		const roundNameWithoutMatchIdentifier = (name?: string) => {
+			if (!name) return;
 
-			if (roundName.includes("Semis")) {
-				return roundName.replace(/\d/g, "").trim();
+			if (name.includes("Semis")) {
+				return name.replace(/\d/g, "").trim();
 			}
 
-			return roundName.split(".")[0];
+			return name.split(".")[0];
 		};
 
 		return {
@@ -1159,10 +1161,10 @@ export class Tournament {
 					const otherTeamBusyWithPreviousMatch =
 						bracket.type === "round_robin" &&
 						bracket.data.match.find(
-							(match) =>
-								(match.opponent1?.id === otherTeam.id ||
-									match.opponent2?.id === otherTeam.id) &&
-								!match.winnerSide,
+							(candidate) =>
+								(candidate.opponent1?.id === otherTeam.id ||
+									candidate.opponent2?.id === otherTeam.id) &&
+								!candidate.winnerSide,
 						)?.id !== match.id;
 
 					if (otherTeamBusyWithPreviousMatch) {
@@ -1277,11 +1279,11 @@ export class Tournament {
 	matchCanBeReopened(matchId: number) {
 		if (this.ctx.isFinalized) return false;
 
-		const allMatches = this.brackets.flatMap((bracket) =>
+		const allMatches = this.brackets.flatMap((eachBracket) =>
 			// preview matches have no real ids and don't block anything
-			bracket.preview ? [] : bracket.data.match,
+			eachBracket.preview ? [] : eachBracket.data.match,
 		);
-		const match = allMatches.find((match) => match.id === matchId);
+		const match = allMatches.find((candidate) => candidate.id === matchId);
 		if (!match) {
 			logger.error("matchCanBeReopened: Match not found");
 			return false;
@@ -1316,11 +1318,12 @@ export class Tournament {
 		}
 
 		const anotherMatchBlocking = this.followingMatches(matchId).some(
-			(match) =>
+			(followingMatch) =>
 				// swiss rounds are generated one by one so a following match blocks even if not started
 				bracket.type === "swiss" ||
-				(match.opponent1?.score && match.opponent1.score > 0) ||
-				(match.opponent2?.score && match.opponent2.score > 0),
+				(followingMatch.opponent1?.score &&
+					followingMatch.opponent1.score > 0) ||
+				(followingMatch.opponent2?.score && followingMatch.opponent2.score > 0),
 		);
 
 		return !anotherMatchBlocking;
@@ -1358,14 +1361,14 @@ export class Tournament {
 	/** Later matches of the same bracket & stage sharing a participant with the given match. */
 	followingMatches(matchId: number) {
 		const match = this.brackets
-			.flatMap((bracket) => bracket.data.match)
-			.find((match) => match.id === matchId);
+			.flatMap((eachBracket) => eachBracket.data.match)
+			.find((candidate) => candidate.id === matchId);
 		if (!match) {
 			logger.error("followingMatches: Match not found");
 			return [];
 		}
-		const bracket = this.brackets.find((bracket) =>
-			bracket.data.match.some((match) => match.id === matchId),
+		const bracket = this.brackets.find((candidate) =>
+			candidate.data.match.some((bracketMatch) => bracketMatch.id === matchId),
 		);
 		if (!bracket) {
 			logger.error("followingMatches: Bracket not found");

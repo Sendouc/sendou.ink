@@ -97,9 +97,12 @@ const removeMemberAction = ({
 		},
 	);
 
-const createTournamentTeam = (tournamentId: number, memberUserIds: number[]) =>
+const createTournamentTeam = (
+	forTournamentId: number,
+	memberUserIds: number[],
+) =>
 	TournamentTeamFactory.create(
-		{ tournamentId, memberUserIds },
+		{ tournamentId: forTournamentId, memberUserIds },
 		{ isCheckedIn: true },
 	);
 

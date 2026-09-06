@@ -128,40 +128,42 @@ function parseArgs(argv: string[]): {
 	outPath: string;
 	collectTelemetry: boolean;
 } | null {
-	let videoPath: string | undefined;
-	let fps = DEFAULT_FPS;
-	let start = 0;
-	let duration: number | undefined;
-	let outPath: string | undefined;
-	let collectTelemetry = false;
+	let parsedVideoPath: string | undefined;
+	let parsedFps = DEFAULT_FPS;
+	let parsedStart = 0;
+	let parsedDuration: number | undefined;
+	let parsedOutPath: string | undefined;
+	let parsedCollectTelemetry = false;
 	// biome-ignore lint/style/useForOf: the index advances inside the loop to consume flag values
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i]!;
-		if (arg === "--fps") fps = Number(argv[++i]);
-		else if (arg === "--start") start = Number(argv[++i]);
-		else if (arg === "--duration") duration = Number(argv[++i]);
-		else if (arg === "--out") outPath = argv[++i];
-		else if (arg === "--telemetry") collectTelemetry = true;
-		else if (!arg.startsWith("--") && videoPath === undefined) videoPath = arg;
+		if (arg === "--fps") parsedFps = Number(argv[++i]);
+		else if (arg === "--start") parsedStart = Number(argv[++i]);
+		else if (arg === "--duration") parsedDuration = Number(argv[++i]);
+		else if (arg === "--out") parsedOutPath = argv[++i];
+		else if (arg === "--telemetry") parsedCollectTelemetry = true;
+		else if (!arg.startsWith("--") && parsedVideoPath === undefined)
+			parsedVideoPath = arg;
 		else return null;
 	}
 	if (
-		videoPath === undefined ||
-		Number.isNaN(fps) ||
-		fps <= 0 ||
-		Number.isNaN(start) ||
-		(duration !== undefined && Number.isNaN(duration))
+		parsedVideoPath === undefined ||
+		Number.isNaN(parsedFps) ||
+		parsedFps <= 0 ||
+		Number.isNaN(parsedStart) ||
+		(parsedDuration !== undefined && Number.isNaN(parsedDuration))
 	) {
 		return null;
 	}
 	return {
-		videoPath,
-		fps,
-		start,
-		duration,
+		videoPath: parsedVideoPath,
+		fps: parsedFps,
+		start: parsedStart,
+		duration: parsedDuration,
 		outPath:
-			outPath ?? `${basename(videoPath).replace(/\.[^.]+$/, "")}-events.csv`,
-		collectTelemetry,
+			parsedOutPath ??
+			`${basename(parsedVideoPath).replace(/\.[^.]+$/, "")}-events.csv`,
+		collectTelemetry: parsedCollectTelemetry,
 	};
 }
 

@@ -205,10 +205,10 @@ function resolveFreshTeamPickedMapList(
 	const tieBreakerMapPool =
 		args.mapPickingStyle === "AUTO_ALL" ? args.tieBreakerMapPool : [];
 
-	const pickBanCount = (pickBan: PickBan.Type, count: number) => {
+	const pickBanCount = (pickBan: PickBan.Type, baseCount: number) => {
 		switch (pickBan) {
 			case "BAN_2":
-				return count + 2;
+				return baseCount + 2;
 			case "COUNTERPICK":
 			case "COUNTERPICK_MODE_REPEAT_OK":
 				return 1;

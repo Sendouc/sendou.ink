@@ -256,7 +256,7 @@ export const timeString = v.pipe(
 );
 
 const abilityNameToType = (val: string) =>
-	abilities.find((ability) => ability.name === val)?.type;
+	abilities.find((candidate) => candidate.name === val)?.type;
 export const headMainSlotAbility = v.pipe(
 	v.string(),
 	v.check(

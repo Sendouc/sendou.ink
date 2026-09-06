@@ -226,7 +226,9 @@ function NewBadgeReceiversSelector({
 
 				const newUserIds = isSelected
 					? [...receiver.userIds, userId]
-					: receiver.userIds.filter((id) => id !== userId);
+					: receiver.userIds.filter(
+							(receiverUserId) => receiverUserId !== userId,
+						);
 
 				return {
 					...receiver,

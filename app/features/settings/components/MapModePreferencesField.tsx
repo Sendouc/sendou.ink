@@ -66,7 +66,7 @@ export function MapModePreferencesField({
 			<div className="stack items-center">
 				{modesShort.map((modeShort) => {
 					const preference = value.modes.find(
-						(preference) => preference.mode === modeShort,
+						(candidate) => candidate.mode === modeShort,
 					);
 
 					return (
@@ -74,8 +74,11 @@ export function MapModePreferencesField({
 							<ModeImage mode={modeShort} width={32} />
 							<PreferenceRadioGroup
 								preference={preference?.preference}
-								onPreferenceChange={(preference) =>
-									handleModePreferenceChange({ mode: modeShort, preference })
+								onPreferenceChange={(newPreference) =>
+									handleModePreferenceChange({
+										mode: modeShort,
+										preference: newPreference,
+									})
 								}
 								aria-label={`Select preference towards ${modeShort}`}
 							/>

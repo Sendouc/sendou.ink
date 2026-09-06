@@ -235,7 +235,7 @@ function DayEventsColumn({
 	date,
 	month,
 	year,
-	isToday,
+	isToday: isCurrentDay,
 	eventTimes,
 }: {
 	date: number;
@@ -247,8 +247,8 @@ function DayEventsColumn({
 	const eventTimesCollapsed = useCollapsableEvents(eventTimes);
 
 	return (
-		<div data-today-column={isToday || undefined}>
-			<DayHeader date={date} month={month} year={year} isToday={isToday} />
+		<div data-today-column={isCurrentDay || undefined}>
+			<DayHeader date={date} month={month} year={year} isToday={isCurrentDay} />
 			<div className={styles.dayEvents}>
 				{eventTimesCollapsed.map((eventTime, i) => {
 					return (

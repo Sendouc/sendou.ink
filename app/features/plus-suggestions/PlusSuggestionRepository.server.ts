@@ -33,7 +33,7 @@ export async function findAllByMonth(args: MonthYear & { tier?: number }) {
 			jsonObjectFrom(
 				eb
 					.selectFrom("User")
-					.select((eb) => commonUserSelect(eb))
+					.select((userEb) => commonUserSelect(userEb))
 					.whereRef("PlusSuggestion.suggestedId", "=", "User.id"),
 			).as("suggested"),
 		])

@@ -328,7 +328,7 @@ function ChangeSortingDialogSelect({
 }
 
 function WeaponFilterMenu({
-	mainWeaponIds,
+	mainWeaponIds: weaponIds,
 	counts,
 	weaponFilter,
 	setWeaponFilter,
@@ -359,7 +359,7 @@ function WeaponFilterMenu({
 				</SendouButton>
 			}
 		>
-			{mainWeaponIds.map((weaponId) => {
+			{weaponIds.map((weaponId) => {
 				const count = counts[weaponId];
 
 				if (!count) return null;

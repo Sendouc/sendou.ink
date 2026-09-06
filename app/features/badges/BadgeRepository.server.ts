@@ -25,7 +25,7 @@ const withAuthor = (eb: ExpressionBuilder<DB, "Badge">) => {
 	return jsonObjectFrom(
 		eb
 			.selectFrom("User")
-			.select((eb) => commonUserSelect(eb))
+			.select((userEb) => commonUserSelect(userEb))
 			.whereRef("User.id", "=", "Badge.authorId"),
 	).as("author");
 };
@@ -35,7 +35,7 @@ const withManagers = (eb: ExpressionBuilder<DB, "Badge">) => {
 		eb
 			.selectFrom("BadgeManager")
 			.innerJoin("User", "BadgeManager.userId", "User.id")
-			.select((eb) => ["userId", ...commonUserSelect(eb)])
+			.select((managerEb) => ["userId", ...commonUserSelect(managerEb)])
 			.whereRef("BadgeManager.badgeId", "=", "Badge.id"),
 	).as("managers");
 };

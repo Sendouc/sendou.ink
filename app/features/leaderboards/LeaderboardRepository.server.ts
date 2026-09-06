@@ -74,7 +74,7 @@ const teamLeaderboardBySeasonQuery = (season: number) =>
 				eb
 					.selectFrom("SkillTeamUser")
 					.innerJoin("User", "SkillTeamUser.userId", "User.id")
-					.select((eb) => commonUserSelect(eb))
+					.select((memberEb) => commonUserSelect(memberEb))
 					.whereRef("SkillTeamUser.skillId", "=", "Entry.entryId"),
 			).as("members"),
 			jsonArrayFrom(
@@ -92,12 +92,12 @@ const teamLeaderboardBySeasonQuery = (season: number) =>
 						"UserSubmittedImage.id",
 						"Team.avatarImgId",
 					)
-					.select((eb) => [
+					.select((teamEb) => [
 						"Team.id",
 						"Team.name",
-						concatUserSubmittedImagePrefix(eb.ref("UserSubmittedImage.url")).as(
-							"avatarUrl",
-						),
+						concatUserSubmittedImagePrefix(
+							teamEb.ref("UserSubmittedImage.url"),
+						).as("avatarUrl"),
 						"Team.customUrl",
 						"TeamMemberWithSecondary.isMainTeam",
 						"TeamMemberWithSecondary.userId",
@@ -341,12 +341,24 @@ function xpLeaderboardQuery(where?: {
 								.$if(typeof where?.weaponSplId === "number", (qb) =>
 									qb.where("Better.weaponSplId", "=", where!.weaponSplId!),
 								)
-								.where((eb) =>
-									eb.or([
-										eb("Better.power", ">", eb.ref("XRankPlacement.power")),
-										eb.and([
-											eb("Better.power", "=", eb.ref("XRankPlacement.power")),
-											eb("Better.id", "<", eb.ref("XRankPlacement.id")),
+								.where((betterEb) =>
+									betterEb.or([
+										betterEb(
+											"Better.power",
+											">",
+											betterEb.ref("XRankPlacement.power"),
+										),
+										betterEb.and([
+											betterEb(
+												"Better.power",
+												"=",
+												betterEb.ref("XRankPlacement.power"),
+											),
+											betterEb(
+												"Better.id",
+												"<",
+												betterEb.ref("XRankPlacement.id"),
+											),
 										]),
 									]),
 								),
@@ -477,8 +489,8 @@ export async function findSeasonPopularUsersWeapon(
 		.where("ReportedWeapon.createdAt", "<=", endsTs);
 
 	const rows = await db
-		.with("q1", (db) =>
-			db
+		.with("q1", (cte) =>
+			cte
 				.selectFrom(sendouqWeapons.unionAll(tournamentWeapons).as("merged"))
 				.select(({ fn, ref }) => [
 					sql<number>`${ref("merged.packedUserWeapon")} / ${sql.lit(

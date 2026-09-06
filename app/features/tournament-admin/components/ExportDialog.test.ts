@@ -4,14 +4,14 @@ import { scopedAndSortedTeams } from "./ExportDialog";
 
 function team(
 	id: number,
-	checkIns: TournamentTeamFull["checkIns"],
+	teamCheckIns: TournamentTeamFull["checkIns"],
 ): TournamentTeamFull {
 	return {
 		id,
 		name: `Team ${id}`,
 		seed: id,
 		createdAt: id,
-		checkIns,
+		checkIns: teamCheckIns,
 	} as unknown as TournamentTeamFull;
 }
 

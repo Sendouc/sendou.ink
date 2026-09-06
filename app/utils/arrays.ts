@@ -38,16 +38,16 @@ export function diff<T extends string | number>(arr1: T[], arr2: T[]): T[] {
 	const arr1Counts = countElements(arr1);
 	const arr2Counts = countElements(arr2);
 
-	const diff = new Map<T, number>();
+	const counts = new Map<T, number>();
 
 	for (const [element, count] of arr2Counts) {
 		const diffCount = Math.max(count - (arr1Counts.get(element) ?? 0), 0);
-		diff.set(element, diffCount);
+		counts.set(element, diffCount);
 	}
 
 	const result: T[] = [];
 
-	for (const [element, count] of diff) {
+	for (const [element, count] of counts) {
 		for (let i = 0; i < count; i++) {
 			result.push(element);
 		}

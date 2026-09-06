@@ -238,7 +238,9 @@ function UpdateTrophyTab() {
 	const data = useLoaderData<typeof loader>();
 	const [selectedId, setSelectedId] = React.useState<number | null>(null);
 
-	const selectedTrophy = data.editableTrophies.find((t) => t.id === selectedId);
+	const selectedTrophy = data.editableTrophies.find(
+		(candidate) => candidate.id === selectedId,
+	);
 
 	return (
 		<div className={styles.updateContainer}>

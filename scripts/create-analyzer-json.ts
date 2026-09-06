@@ -205,7 +205,7 @@ function splitIntoBaseStatsAndKits(
 		for (const prop of nonKitProps) {
 			const firstVal = JSON.stringify(firstVariant[prop]);
 			const allSame = variants.every(
-				(v) => JSON.stringify(v.params[prop]) === firstVal,
+				(variant) => JSON.stringify(variant.params[prop]) === firstVal,
 			);
 			if (allSame && firstVariant[prop] !== undefined) {
 				(sharedProps as any)[prop] = firstVariant[prop];
@@ -988,15 +988,16 @@ function unwrapSubSpecialSpecUpList(result: any) {
 		Object.entries(result).flatMap((entries) => {
 			const [key, value]: any = entries;
 			if (Array.isArray(value)) {
-				return value.map((v: any) => {
+				return value.map((entry: any) => {
 					if (
-						!v.SpecUpType ||
-						(v.Value.Low === v.Value.Mid && v.Value.Mid === v.Value.High)
+						!entry.SpecUpType ||
+						(entry.Value.Low === entry.Value.Mid &&
+							entry.Value.Mid === entry.Value.High)
 					) {
 						return [];
 					}
 
-					return [v.SpecUpType, v.Value];
+					return [entry.SpecUpType, entry.Value];
 				});
 			}
 
@@ -1254,8 +1255,8 @@ function writeTranslationsJsons(arr: TranslationArray) {
 	}
 }
 
-function logWeaponIds(weapons: Record<number, WeaponKit>) {
-	logger.info(JSON.stringify(Object.keys(weapons).map(Number)));
+function logWeaponIds(weaponKits: Record<number, WeaponKit>) {
+	logger.info(JSON.stringify(Object.keys(weaponKits).map(Number)));
 }
 
 void main();

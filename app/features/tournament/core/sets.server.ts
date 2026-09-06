@@ -95,7 +95,8 @@ export function tournamentTeamSets({
 }): PlayedSet[] {
 	return sets.map((set) => {
 		const round =
-			allRounds.find((round) => round.stageId === set.stageId) ?? allRounds[0];
+			allRounds.find((candidate) => candidate.stageId === set.stageId) ??
+			allRounds[0];
 
 		const resolveRound = () => {
 			if (round.stageType === "round_robin" || round.stageType === "swiss") {
@@ -111,11 +112,11 @@ export function tournamentTeamSets({
 			const maxRoundNumberOfGroup = Math.max(
 				...allRounds
 					.filter(
-						(round) =>
-							round.groupNumber === set.groupNumber &&
-							round.stageId === set.stageId,
+						(candidate) =>
+							candidate.groupNumber === set.groupNumber &&
+							candidate.stageId === set.stageId,
 					)
-					.map((round) => round.roundNumber),
+					.map((candidate) => candidate.roundNumber),
 			);
 
 			if (set.roundNumber === maxRoundNumberOfGroup) {

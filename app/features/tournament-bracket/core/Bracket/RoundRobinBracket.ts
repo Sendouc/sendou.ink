@@ -160,7 +160,7 @@ export class RoundRobinBracket extends Bracket {
 				mapLosses?: number;
 				koCount?: number;
 			}) => {
-				const team = teams.find((team) => team.id === teamId);
+				const team = teams.find((candidate) => candidate.id === teamId);
 				if (team) {
 					team.setWins += setWins;
 					team.setLosses += setLosses;

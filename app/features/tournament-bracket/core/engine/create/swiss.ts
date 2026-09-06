@@ -120,13 +120,13 @@ function firstRoundMatches({
 		if (!seeding) return [];
 		if (groupCount === 1) return [seeding.map((id) => id!)];
 
-		const groups: number[][] = nullFilledArray(groupCount).map(() => []);
+		const seedingGroups: number[][] = nullFilledArray(groupCount).map(() => []);
 
 		for (let i = 0; i < seeding.length; i++) {
 			const groupIndex = i % groupCount;
-			groups[groupIndex].push(seeding[i]!);
+			seedingGroups[groupIndex].push(seeding[i]!);
 		}
 
-		return groups;
+		return seedingGroups;
 	}
 }

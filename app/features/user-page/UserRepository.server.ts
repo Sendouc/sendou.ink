@@ -106,7 +106,7 @@ export async function findBuildFieldsByUserId(userId: number) {
 
 	return {
 		...row,
-		weapons: row.weapons.map((row) => row.weaponSplId),
+		weapons: row.weapons.map((weapon) => weapon.weaponSplId),
 	};
 }
 
@@ -140,11 +140,13 @@ export function findLayoutDataById(userId: number, loggedInUserId?: number) {
 				.selectFrom("Build")
 				.select(({ fn }) => fn.countAll<number>().as("count"))
 				.whereRef("Build.ownerId", "=", "User.id")
-				.where((eb) =>
-					eb.or(
+				.where((buildEb) =>
+					buildEb.or(
 						[
-							eb("Build.isPrivate", "=", 0),
-							loggedInUserId ? eb("Build.ownerId", "=", loggedInUserId) : null,
+							buildEb("Build.isPrivate", "=", 0),
+							loggedInUserId
+								? buildEb("Build.ownerId", "=", loggedInUserId)
+								: null,
 						].filter((filter) => filter !== null),
 					),
 				)
@@ -220,16 +222,16 @@ export async function findProfileByUserId(userId: number) {
 						"UserSubmittedImage.id",
 						"Team.avatarImgId",
 					)
-					.select((eb) => [
+					.select((teamEb) => [
 						"Team.name",
 						"Team.customUrl",
 						"Team.id",
 						"TeamMemberWithSecondary.isMainTeam",
 						"TeamMemberWithSecondary.role as userTeamRole",
 						"TeamMemberWithSecondary.customRole as userTeamCustomRole",
-						concatUserSubmittedImagePrefix(eb.ref("UserSubmittedImage.url")).as(
-							"avatarUrl",
-						),
+						concatUserSubmittedImagePrefix(
+							teamEb.ref("UserSubmittedImage.url"),
+						).as("avatarUrl"),
 					])
 					.whereRef("TeamMemberWithSecondary.userId", "=", "User.id"),
 			).as("teams"),
@@ -418,11 +420,11 @@ export function findModInfoById(id: number) {
 				eb
 					.selectFrom("ModNote")
 					.innerJoin("User", "User.id", "ModNote.authorId")
-					.select((eb) => [
+					.select((modNoteEb) => [
 						"ModNote.id as noteId",
 						"ModNote.text",
 						"ModNote.createdAt",
-						...commonUserSelect(eb),
+						...commonUserSelect(modNoteEb),
 					])
 					.where("ModNote.isDeleted", "=", 0)
 					.where("ModNote.userId", "=", id)
@@ -432,11 +434,11 @@ export function findModInfoById(id: number) {
 				eb
 					.selectFrom("BanLog")
 					.innerJoin("User", "User.id", "BanLog.bannedByUserId")
-					.select((eb) => [
+					.select((banLogEb) => [
 						"BanLog.banned",
 						"BanLog.bannedReason",
 						"BanLog.createdAt",
-						...commonUserSelect(eb),
+						...commonUserSelect(banLogEb),
 					])
 					.where("BanLog.userId", "=", id)
 					.orderBy("BanLog.createdAt", "desc"),
@@ -794,8 +796,8 @@ export function findResultsByUserId(
 			eb
 				.selectFrom("CalendarEventResultPlayer")
 				.leftJoin("User", "User.id", "CalendarEventResultPlayer.userId")
-				.select((eb) => [
-					...commonUserSelect(eb),
+				.select((mateEb) => [
+					...commonUserSelect(mateEb),
 					"CalendarEventResultPlayer.name",
 				])
 				.whereRef(
@@ -803,10 +805,10 @@ export function findResultsByUserId(
 					"=",
 					"CalendarEventResultTeam.id",
 				)
-				.where((eb) =>
-					eb.or([
-						eb("CalendarEventResultPlayer.userId", "is", null),
-						eb("CalendarEventResultPlayer.userId", "!=", userId),
+				.where((mateEb) =>
+					mateEb.or([
+						mateEb("CalendarEventResultPlayer.userId", "is", null),
+						mateEb("CalendarEventResultPlayer.userId", "!=", userId),
 					]),
 				),
 		).as("mates"),
@@ -833,8 +835,8 @@ export function findResultsByUserId(
 			eb
 				.selectFrom("TournamentResult as TournamentResult2")
 				.innerJoin("User", "User.id", "TournamentResult2.userId")
-				.select((eb) => [
-					...commonUserSelect(eb),
+				.select((mateEb) => [
+					...commonUserSelect(mateEb),
 					sql<string | null>`null`.as("name"),
 				])
 				.whereRef(

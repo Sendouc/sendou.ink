@@ -11,8 +11,8 @@ export function Markdown({ children }: { children: string }) {
 	const sanitized = children
 		.replace(DANGEROUS_HTML_TAGS_REGEX, "")
 		.replace(/style\s*=\s*("[^"]*"|'[^']*')/gi, (_match, value) => {
-			const sanitized = value.replace(CSS_URL_REGEX, "");
-			return `style=${sanitized}`;
+			const withoutUrls = value.replace(CSS_URL_REGEX, "");
+			return `style=${withoutUrls}`;
 		})
 		.replace(/ +$/gm, "");
 

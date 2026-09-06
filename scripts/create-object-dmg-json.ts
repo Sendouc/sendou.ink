@@ -81,10 +81,10 @@ type DamageRateHistoryRow = {
 };
 
 const weaponParamsToWeaponIds = (
-	params: typeof weapons | typeof subWeapons | typeof specialWeapons,
+	weaponParams: typeof weapons | typeof subWeapons | typeof specialWeapons,
 	key: string,
 ) => {
-	return params
+	return weaponParams
 		.filter((param) => {
 			return (
 				param.DefaultDamageRateInfoRow === key ||

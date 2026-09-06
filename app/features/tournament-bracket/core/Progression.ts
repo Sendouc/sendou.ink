@@ -994,8 +994,8 @@ function resolveMainBracketProgression(
 	const result = [startBracketIdx];
 	const visited = new Set([startBracketIdx]);
 	while (true) {
-		const bracket = brackets.findIndex((bracket) =>
-			bracket.sources?.some(
+		const bracket = brackets.findIndex((candidate) =>
+			candidate.sources?.some(
 				(source) =>
 					// empty array is the swiss early advance case
 					(source.placements.includes(1) || source.placements.length === 0) &&

@@ -191,9 +191,9 @@ function TeamActionsMenu({ team }: { team: TeamLoaderData["team"] }) {
 	}
 
 	const submitAction = (
-		action: "LEAVE_TEAM" | "MAKE_MAIN_TEAM" | "DELETE_TEAM",
+		actionToSubmit: "LEAVE_TEAM" | "MAKE_MAIN_TEAM" | "DELETE_TEAM",
 	) => {
-		submit(action);
+		submit(actionToSubmit);
 		setConfirming(null);
 	};
 

@@ -37,14 +37,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		schema: qMatchPageParamsSchema,
 	}).id;
 	const user = requireUser();
-	const result = await parseFormData({
+	const parsed = await parseFormData({
 		request,
 		schema: matchSchema,
 	});
-	if (!result.success) {
-		return { fieldErrors: result.fieldErrors };
+	if (!parsed.success) {
+		return { fieldErrors: parsed.fieldErrors };
 	}
-	const data = result.data;
+	const data = parsed.data;
 
 	const match = notFoundIfNullish(await SQMatchRepository.findById(matchId));
 	const isStaff = user.roles.includes("STAFF");

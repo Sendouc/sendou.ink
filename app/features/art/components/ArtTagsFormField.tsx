@@ -106,7 +106,7 @@ export function ArtTagsFormField({
 							tags={existingTags}
 							disabledKeys={value
 								.map((tag) => tag.id)
-								.filter((id) => id !== undefined)}
+								.filter((tagId) => tagId !== undefined)}
 							onSelectionChange={(tagName) =>
 								onChange([
 									...value,

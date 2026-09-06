@@ -102,14 +102,14 @@ export function reopenMatch(
 }
 
 function findMatch(data: BracketData, matchId: number): MatchData {
-	const match = data.match.find((match) => match.id === matchId);
+	const match = data.match.find((candidate) => candidate.id === matchId);
 	invariant(match, "Match not found");
 	return match;
 }
 
 function findMatchWithMaps(data: BracketData, matchId: number) {
 	const match = findMatch(data, matchId);
-	const round = data.round.find((round) => round.id === match.roundId);
+	const round = data.round.find((candidate) => candidate.id === match.roundId);
 	invariant(round?.maps, "Round of the match has no maps");
 
 	return { match, maps: round.maps };

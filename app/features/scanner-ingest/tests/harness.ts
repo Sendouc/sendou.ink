@@ -140,7 +140,7 @@ export async function sendouqWorld(
 		},
 		scanned: (
 			map: { mode: ModeShort; stageId: StageId; index: number },
-			options?: ScannedOptions,
+			scannedOptions?: ScannedOptions,
 		) =>
 			scannedGame(
 				{
@@ -150,7 +150,7 @@ export async function sendouqWorld(
 					winnerNames: ALPHA_NAMES,
 					loserNames: BRAVO_NAMES,
 				},
-				options,
+				scannedOptions,
 			),
 	};
 }

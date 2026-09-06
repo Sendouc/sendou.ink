@@ -93,7 +93,7 @@ export function BuildCard({
 	} = build;
 
 	const isNoGear = [headGearSplId, clothesGearSplId, shoesGearSplId].some(
-		(id) => typeof id !== "number",
+		(gearSplId) => typeof gearSplId !== "number",
 	);
 
 	return (

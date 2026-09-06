@@ -812,12 +812,12 @@ describe("tournamentNameParts", () => {
 
 describe("bracketProgressionLabel", () => {
 	const bracket = (
-		bracket: Partial<ParsedBracket> & Pick<ParsedBracket, "type">,
+		overrides: Partial<ParsedBracket> & Pick<ParsedBracket, "type">,
 	): ParsedBracket => ({
-		name: bracket.type,
+		name: overrides.type,
 		requiresCheckIn: false,
 		settings: {},
-		...bracket,
+		...overrides,
 	});
 
 	test("returns the short code for a single stage", () => {

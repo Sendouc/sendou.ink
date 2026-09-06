@@ -26,7 +26,7 @@ export function matchStatuses(data: BracketData): Map<number, MatchStatus> {
 
 /** Prefer {@link matchStatuses} when many matches of the same bracket are needed. */
 export function matchStatus(data: BracketData, matchId: number): MatchStatus {
-	const match = data.match.find((match) => match.id === matchId);
+	const match = data.match.find((candidate) => candidate.id === matchId);
 	if (!match) throw new Error(`Match not found: ${matchId}`);
 
 	return resolveStatus(match, bracketContext(data));
@@ -155,8 +155,9 @@ function isWaitingForPreviousRound(
 
 function hasFinishedRound(opponentId: number, roundMatches: MatchData[]) {
 	const match = roundMatches.find(
-		(match) =>
-			match.opponent1?.id === opponentId || match.opponent2?.id === opponentId,
+		(candidate) =>
+			candidate.opponent1?.id === opponentId ||
+			candidate.opponent2?.id === opponentId,
 	);
 
 	// no match in the round = they sat the round out

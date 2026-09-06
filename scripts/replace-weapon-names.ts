@@ -80,9 +80,9 @@ async function main() {
 			}
 
 			const weapon = (weapons as Array<{ __RowId: string; Id: number }>).find(
-				(weapon) =>
-					file.includes(`${weapon.__RowId}.`) ||
-					file.includes(`${weapon.__RowId}_`),
+				(candidate) =>
+					file.includes(`${candidate.__RowId}.`) ||
+					file.includes(`${candidate.__RowId}_`),
 			);
 
 			if (!weapon) {

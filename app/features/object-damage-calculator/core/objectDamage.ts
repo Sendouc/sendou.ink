@@ -155,7 +155,7 @@ function resolveFilteredDamages({
 	const damageWithMultishots = (dmg: Damage, multiShots: number) => {
 		// initially only Dread Wringer
 		const isAsymmetric = analyzed.stats.damages.some(
-			(dmg) => dmg.type === "DIRECT_SECONDARY_MIN",
+			(candidate) => candidate.type === "DIRECT_SECONDARY_MIN",
 		);
 
 		if (!isAsymmetric) return dmg.value * multiShots;
@@ -166,7 +166,7 @@ function resolveFilteredDamages({
 				: "DIRECT_SECONDARY_MIN";
 
 		const secondaryDamage = analyzed.stats.damages.find(
-			(dmg) => dmg.type === otherKey,
+			(candidate) => candidate.type === otherKey,
 		);
 		invariant(secondaryDamage, "secondary damage not found");
 
@@ -261,7 +261,7 @@ export function calculateDamage({
 						}
 
 						const result = filteredDamages.find(
-							(damage) => damage.type === toCombine?.combineWith,
+							(candidate) => candidate.type === toCombine?.combineWith,
 						)?.value;
 
 						invariant(result);

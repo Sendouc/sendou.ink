@@ -498,7 +498,7 @@ test.describe("Scrim fit indicator", () => {
 		const withoutSchedule = memberUserIds[memberUserIds.length - 1];
 
 		for (const userId of memberUserIds.filter(
-			(userId) => userId !== withoutSchedule,
+			(candidate) => candidate !== withoutSchedule,
 		)) {
 			await factories.AvailabilityWeekFactory.create({
 				userId,

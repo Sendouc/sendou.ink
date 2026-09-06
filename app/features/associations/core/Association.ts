@@ -27,9 +27,9 @@ export function isVisible(args: IsVisibleArgs) {
 		}
 	}
 
-	const isPublic = currentVisibility.includes(null);
+	const visibleToEveryone = currentVisibility.includes(null);
 
-	if (isPublic) return true;
+	if (visibleToEveryone) return true;
 
 	if (
 		currentVisibility.includes("FRIENDS") &&

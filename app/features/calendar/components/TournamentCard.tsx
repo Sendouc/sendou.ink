@@ -185,10 +185,10 @@ function TournamentFirstPlacers({
 		return (
 			<div className={styles.firstPlacers}>
 				<div className="stack md items-start">
-					{firstPlacers.map((placer) => (
+					{firstPlacers.map((firstPlacer) => (
 						<TournamentFirstPlacerTeamNameOnly
-							key={placer.div ?? placer.teamName}
-							placer={placer}
+							key={firstPlacer.div ?? firstPlacer.teamName}
+							placer={firstPlacer}
 							censored={censored}
 						/>
 					))}

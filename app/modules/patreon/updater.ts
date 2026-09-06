@@ -126,7 +126,7 @@ function parsePatronData({
 
 		const tier = [TIER_4_ID, TIER_3_ID, TIER_2_ID, TIER_1_ID].find((id) =>
 			patron.relationships.currently_entitled_tiers.data.some(
-				(tier) => tier.id === id,
+				(entitled) => entitled.id === id,
 			),
 		);
 

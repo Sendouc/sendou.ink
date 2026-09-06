@@ -181,14 +181,14 @@ export const handle: SendouRouteHandle = {
 
 function Document({
 	children,
-	data,
+	data: rootData,
 }: {
 	children: React.ReactNode;
 	data?: RootLoaderData;
 }) {
 	const { htmlThemeClass } = useTheme();
 	const { i18n } = useTranslation();
-	const locale = data?.locale ?? DEFAULT_LANGUAGE;
+	const locale = rootData?.locale ?? DEFAULT_LANGUAGE;
 	const customThemeStyle = useCustomThemeVars();
 
 	useChangeLanguage(locale);
@@ -198,7 +198,7 @@ function Document({
 
 	const htmlStyle: Record<string, string | number> = {
 		...Object.fromEntries(customThemeStyle),
-		...(data?.user?.roles.includes("MINOR_SUPPORT")
+		...(rootData?.user?.roles.includes("MINOR_SUPPORT")
 			? { "--layout-fuse-bottom-height": "0px" }
 			: {}),
 	};
@@ -210,7 +210,7 @@ function Document({
 			className={clsx(htmlThemeClass, "scrollbar")}
 			style={htmlStyle}
 			data-fuse={
-				Config.fuseEnabled && !data?.user?.roles.includes("MINOR_SUPPORT")
+				Config.fuseEnabled && !rootData?.user?.roles.includes("MINOR_SUPPORT")
 					? "true"
 					: undefined
 			}
@@ -220,8 +220,8 @@ function Document({
 				<meta charSet="utf-8" />
 				{Config.fuseEnabled &&
 				// check for data so supporters don't see ads on error page
-				data &&
-				!data.user?.roles.includes("MINOR_SUPPORT") ? (
+				rootData &&
+				!rootData.user?.roles.includes("MINOR_SUPPORT") ? (
 					<script
 						async
 						src="https://cdn.fuseplatform.net/publift/tags/2/4242/fuse.js"
@@ -240,7 +240,7 @@ function Document({
 				<meta name="theme-color" content="#010115" />
 				<Meta />
 				<Links />
-				{data?.i18nPreloadUrls?.map((url) => (
+				{rootData?.i18nPreloadUrls?.map((url) => (
 					<link
 						key={url}
 						rel="preload"
@@ -250,8 +250,8 @@ function Document({
 					/>
 				))}
 				<ThemeHead />
-				{data?.devFaviconColors ? (
-					<DevFavicon colors={data.devFaviconColors} />
+				{rootData?.devFaviconColors ? (
+					<DevFavicon colors={rootData.devFaviconColors} />
 				) : null}
 				<link rel="manifest" href="/app.webmanifest" />
 				<PWALinks />
@@ -263,11 +263,11 @@ function Document({
 					<SearchParamsProvider>
 						<SendouToastRegion />
 						<UnsavedChangesGuard />
-						<MyFuse data={data} />
-						<ChatProvider user={data?.user}>
-							<NotificationsProvider user={data?.user}>
-								<LayoutDataProvider data={data}>
-									<Layout data={data}>{children}</Layout>
+						<MyFuse data={rootData} />
+						<ChatProvider user={rootData?.user}>
+							<NotificationsProvider user={rootData?.user}>
+								<LayoutDataProvider data={rootData}>
+									<Layout data={rootData}>{children}</Layout>
 								</LayoutDataProvider>
 							</NotificationsProvider>
 						</ChatProvider>
@@ -353,10 +353,12 @@ function useCustomThemeVars() {
 	const styles: Map<string, number> = new Map();
 
 	for (const match of matches) {
-		const data = match.loaderData as { customTheme?: CustomTheme } | undefined;
+		const loaderData = match.loaderData as
+			| { customTheme?: CustomTheme }
+			| undefined;
 
-		if (data?.customTheme) {
-			for (const [key, value] of Object.entries(data.customTheme)) {
+		if (loaderData?.customTheme) {
+			for (const [key, value] of Object.entries(loaderData.customTheme)) {
 				// Skips size and border variables for themes that arent the user's own
 				if (
 					match.id !== "root" &&
@@ -374,7 +376,7 @@ function useCustomThemeVars() {
 }
 
 export default function App() {
-	const data = useLoaderData<RootLoaderData>();
+	const rootData = useLoaderData<RootLoaderData>();
 
 	// Move overflow:hidden from html to body to allow position: sticky and position: fixed
 	// elements to work properly when a React Aria Component disabled scrolling
@@ -416,10 +418,10 @@ export default function App() {
 
 	return (
 		<ThemeProvider
-			specifiedTheme={isTheme(data.theme) ? data.theme : null}
+			specifiedTheme={isTheme(rootData.theme) ? rootData.theme : null}
 			themeSource="user-preference"
 		>
-			<Document data={data}>
+			<Document data={rootData}>
 				<Outlet />
 			</Document>
 		</ThemeProvider>
@@ -719,8 +721,8 @@ function PWALinks() {
 	);
 }
 
-function MyFuse({ data }: { data: RootLoaderData | undefined }) {
-	if (!data || data.user?.roles.includes("MINOR_SUPPORT")) {
+function MyFuse({ data: rootData }: { data: RootLoaderData | undefined }) {
+	if (!rootData || rootData.user?.roles.includes("MINOR_SUPPORT")) {
 		return null;
 	}
 

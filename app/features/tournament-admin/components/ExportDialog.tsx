@@ -252,7 +252,7 @@ function RadioRow<T extends string>({
 						name={groupName}
 						value={option.value}
 						checked={value === option.value}
-						onChange={(value) => onChange(value as T)}
+						onChange={(newValue) => onChange(newValue as T)}
 					>
 						{option.label}
 					</SendouChipRadio>

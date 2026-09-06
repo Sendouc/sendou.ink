@@ -1703,10 +1703,12 @@ function DamageTable({
 				{values.map((val, i) => {
 					if (val.type.includes("SECONDARY")) return null;
 
-					const damage = (val: AnalyzedBuild["stats"]["damages"][number]) =>
-						multiShots && damageTypeToWeaponType[val.type] === "MAIN"
-							? multiShotValues(val).join(" + ")
-							: val.value;
+					const damage = (
+						damageValue: AnalyzedBuild["stats"]["damages"][number],
+					) =>
+						multiShots && damageTypeToWeaponType[damageValue.type] === "MAIN"
+							? multiShotValues(damageValue).join(" + ")
+							: damageValue.value;
 
 					const typeRowName = damageIsSubWeaponDamage(val)
 						? `weapons:SUB_${val.subWeaponId}`

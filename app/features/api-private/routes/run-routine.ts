@@ -16,7 +16,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		...daily,
 		...weekly,
 		...everyTwoMinutes,
-	].find((routine) => routine.name === routineName);
+	].find((candidate) => candidate.name === routineName);
 
 	if (!routine) {
 		throw new Response(`Unknown routine: ${routineName}`, { status: 400 });

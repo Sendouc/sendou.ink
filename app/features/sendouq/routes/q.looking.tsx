@@ -416,7 +416,7 @@ function Groups() {
 										(l) => l.groupId === group.id,
 									)!;
 
-									const action = () => {
+									const likeAction = () => {
 										if (!isFullGroup) return "GROUP_UP";
 
 										if (like.isRechallenge) return "MATCH_UP_RECHALLENGE";
@@ -427,7 +427,7 @@ function Groups() {
 										<GroupCard
 											key={group.id}
 											group={group}
-											action={action()}
+											action={likeAction()}
 											suggestable={isSuggestable(group.id)}
 											trail={trailOf(group.id)}
 											isSuggested={suggestedGroupIds.has(group.id)}
@@ -456,7 +456,7 @@ function Groups() {
 								(l) => l.groupId === group.id,
 							)!;
 
-							const action = () => {
+							const likeAction = () => {
 								if (!isFullGroup) return "GROUP_UP";
 
 								if (like.isRechallenge) return "MATCH_UP_RECHALLENGE";
@@ -467,7 +467,7 @@ function Groups() {
 								<GroupCard
 									key={group.id}
 									group={group}
-									action={action()}
+									action={likeAction()}
 									suggestable={isSuggestable(group.id)}
 									trail={trailOf(group.id)}
 									isSuggested={suggestedGroupIds.has(group.id)}

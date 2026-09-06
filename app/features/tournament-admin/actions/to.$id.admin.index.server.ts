@@ -186,7 +186,7 @@ async function dropTeamOut({
 				data: bracketData,
 				droppedTeamId: teamId,
 			});
-			const changedChatRoomIds = await BracketRepository.applyMatchChanges(
+			const chatRoomIds = await BracketRepository.applyMatchChanges(
 				{
 					previousData: bracketData,
 					result: droppedResult,
@@ -195,7 +195,10 @@ async function dropTeamOut({
 				trx,
 			);
 
-			return { endedMatchIds: droppedResult.endedMatchIds, changedChatRoomIds };
+			return {
+				endedMatchIds: droppedResult.endedMatchIds,
+				changedChatRoomIds: chatRoomIds,
+			};
 		});
 
 	// after the commit so the refetch it prompts can not read the pre-commit state

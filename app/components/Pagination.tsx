@@ -48,8 +48,8 @@ export function Pagination({
 							mobileOnly={page.mobileOnly}
 							onOpen={() => setJumpToIndex(index)}
 							onClose={() => setJumpToIndex(null)}
-							onJump={(page) => {
-								setPage(page);
+							onJump={(jumpPage) => {
+								setPage(jumpPage);
 								setJumpToIndex(null);
 							}}
 						/>

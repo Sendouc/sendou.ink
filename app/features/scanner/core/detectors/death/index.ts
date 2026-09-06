@@ -502,26 +502,28 @@ export function createDeathDetector(
 			};
 			line1 = readLine(SPLAT_LINE1_ROI, weaponGlyphs);
 			line2 = readLine(WEAPON_LINE_ROI, weaponGlyphs);
-			for (const t of DEATH_MESSAGE_TEMPLATES) {
-				if (isJaTemplate(t)) continue;
-				const constReading = t.weaponLine === 1 ? line2.text : line1.text;
-				const score = closestEntry(constReading, [t.constText])?.score ?? 0;
+			for (const candidate of DEATH_MESSAGE_TEMPLATES) {
+				if (isJaTemplate(candidate)) continue;
+				const constReading =
+					candidate.weaponLine === 1 ? line2.text : line1.text;
+				const score =
+					closestEntry(constReading, [candidate.constText])?.score ?? 0;
 				if (score > line1Score) {
 					line1Score = score;
-					template = t;
+					template = candidate;
 				}
 			}
 			// JA line reads cost ~2x, so they only run when no Latin template owns the frame
 			if (jaGlyphs && line1Score < LATIN_DECISIVE_SCORE) {
 				jaWeaponLine = readLine(JA_WEAPON_LINE_ROI, jaGlyphs);
 				jaConstLine = readLine(JA_CONST_LINE_ROI, jaGlyphs);
-				for (const t of DEATH_MESSAGE_TEMPLATES) {
-					if (!isJaTemplate(t)) continue;
+				for (const candidate of DEATH_MESSAGE_TEMPLATES) {
+					if (!isJaTemplate(candidate)) continue;
 					const score =
-						closestEntry(jaConstLine.text, [t.constText])?.score ?? 0;
+						closestEntry(jaConstLine.text, [candidate.constText])?.score ?? 0;
 					if (score > line1Score) {
 						line1Score = score;
-						template = t;
+						template = candidate;
 					}
 				}
 			}

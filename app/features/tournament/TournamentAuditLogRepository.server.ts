@@ -127,13 +127,13 @@ export function findByTournamentId({
 			jsonObjectFrom(
 				eb
 					.selectFrom("User")
-					.select((eb) => commonUserSelect(eb))
+					.select((userEb) => commonUserSelect(userEb))
 					.whereRef("User.id", "=", "TournamentAuditLog.actorUserId"),
 			).as("actor"),
 			jsonObjectFrom(
 				eb
 					.selectFrom("User")
-					.select((eb) => commonUserSelect(eb))
+					.select((userEb) => commonUserSelect(userEb))
 					.whereRef("User.id", "=", "TournamentAuditLog.subjectUserId"),
 			).as("subject"),
 			jsonObjectFrom(

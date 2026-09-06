@@ -162,11 +162,11 @@ function SeasonNav({
 				>
 					{t("user:seasons.tabs.sets")}
 				</SendouTab>
-				{STAT_TABS.map(({ info, labelKey }) => (
+				{STAT_TABS.map(({ info: tabInfo, labelKey }) => (
 					<SendouTab
-						key={info}
-						id={info}
-						href={userSeasonsStatsPage({ user, season, info })}
+						key={tabInfo}
+						id={tabInfo}
+						href={userSeasonsStatsPage({ user, season, info: tabInfo })}
 						routerOptions={routerOptions}
 					>
 						{t(`user:seasons.tabs.${labelKey}`)}

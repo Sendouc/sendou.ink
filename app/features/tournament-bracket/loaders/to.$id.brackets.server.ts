@@ -100,8 +100,8 @@ function resolveBracketIdx(
 	divisionIdx: number | null,
 ) {
 	const visibleBrackets = tournament.visibleBracketsMetaOfDivision(divisionIdx);
-	const isVisible = (idx: number) =>
-		visibleBrackets.some((bracket) => bracket.idx === idx);
+	const isVisible = (bracketIdx: number) =>
+		visibleBrackets.some((bracket) => bracket.idx === bracketIdx);
 
 	if (idx !== null && isVisible(idx)) {
 		return idx;

@@ -402,7 +402,9 @@ function TournamentMatchRosterTab({
 	}
 
 	function handleSubbedOutChange(teamId: number, subbedOut: number[]) {
-		const team = [teamOne, teamTwo].find((t) => t?.id === teamId);
+		const team = [teamOne, teamTwo].find(
+			(candidate) => candidate?.id === teamId,
+		);
 		if (!team) return;
 
 		const activeRoster = team.memberUserIds.filter(

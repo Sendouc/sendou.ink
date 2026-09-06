@@ -125,7 +125,7 @@ const withCreator = (eb: ExpressionBuilder<DB, "Trophy">) => {
 	return jsonObjectFrom(
 		eb
 			.selectFrom("User")
-			.select((eb) => commonUserSelect(eb))
+			.select((userEb) => commonUserSelect(userEb))
 			.whereRef("User.id", "=", "Trophy.creatorId"),
 	).as("creator");
 };
@@ -134,7 +134,7 @@ const withManager = (eb: ExpressionBuilder<DB, "Trophy">) => {
 	return jsonObjectFrom(
 		eb
 			.selectFrom("User")
-			.select((eb) => commonUserSelect(eb))
+			.select((userEb) => commonUserSelect(userEb))
 			.whereRef("User.id", "=", "Trophy.managerId"),
 	).as("manager");
 };
@@ -153,9 +153,9 @@ const withOwners = (eb: ExpressionBuilder<DB, "Trophy">) => {
 		eb
 			.selectFrom("TrophyOwner")
 			.innerJoin("User", "TrophyOwner.userId", "User.id")
-			.select((eb) => [
-				eb.fn.count<number>("TrophyOwner.trophyId").as("count"),
-				...commonUserSelect(eb),
+			.select((ownerEb) => [
+				ownerEb.fn.count<number>("TrophyOwner.trophyId").as("count"),
+				...commonUserSelect(ownerEb),
 			])
 			.whereRef("TrophyOwner.trophyId", "=", "Trophy.id")
 			.groupBy("User.id")
@@ -168,7 +168,10 @@ const withSpecialOwners = (eb: ExpressionBuilder<DB, "Trophy">) => {
 		eb
 			.selectFrom("SpecialTrophyOwner")
 			.innerJoin("User", "SpecialTrophyOwner.userId", "User.id")
-			.select((eb) => [eb.val(1).as("count"), ...commonUserSelect(eb)])
+			.select((ownerEb) => [
+				ownerEb.val(1).as("count"),
+				...commonUserSelect(ownerEb),
+			])
 			.whereRef("SpecialTrophyOwner.trophyId", "=", "Trophy.id")
 			.orderBy("User.id", "asc"),
 	).as("specialOwners");

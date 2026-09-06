@@ -490,9 +490,9 @@ function SeriesSelector({
 	return (
 		<div className="stack horizontal md flex-wrap">
 			<SeriesButton>{t("org:events.all")}</SeriesButton>
-			{series.map((series) => (
-				<SeriesButton key={series.id} seriesId={series.id}>
-					{series.name}
+			{series.map((eachSeries) => (
+				<SeriesButton key={eachSeries.id} seriesId={eachSeries.id}>
+					{eachSeries.name}
 				</SeriesButton>
 			))}
 		</div>

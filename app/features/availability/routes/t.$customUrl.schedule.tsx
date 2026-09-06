@@ -172,7 +172,7 @@ function ScheduleGrid({ week }: { week: WeekData }) {
 	});
 
 	const rows = week.members.flatMap((row) => {
-		const member = members.find((member) => member.id === row.userId);
+		const member = members.find((candidate) => candidate.id === row.userId);
 
 		return member ? [{ ...row, member }] : [];
 	});
@@ -244,7 +244,7 @@ function ScheduleCell({
 	day: MemberWeekRow["days"][number];
 	dayIndex: number;
 }) {
-	const note = row.notes.find((note) => note.dayIndex === dayIndex);
+	const note = row.notes.find((candidate) => candidate.dayIndex === dayIndex);
 
 	return (
 		<td data-testid={`schedule-cell-${row.userId}-${dayIndex}`}>

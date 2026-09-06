@@ -140,8 +140,8 @@ function millisToColor(millis: number) {
 	return "red";
 }
 
-function formatSql(sql: string, params: readonly unknown[]) {
-	const formatted = format(sql);
+function formatSql(query: string, params: readonly unknown[]) {
+	const formatted = format(query);
 
 	const lines = formatted.split("\n");
 
@@ -154,10 +154,10 @@ function formatSql(sql: string, params: readonly unknown[]) {
 	return `${lines.slice(0, 10).join("\n")}\n... (${linesNotShown} more lines) ...\n`;
 }
 
-function addParams(sql: string, params: readonly unknown[]) {
+function addParams(query: string, params: readonly unknown[]) {
 	const coloredParams = params.map((param) =>
 		styleText("yellow", JSON.stringify(param)),
 	);
 
-	return sql.replace(/\?/g, () => coloredParams.shift() || "");
+	return query.replace(/\?/g, () => coloredParams.shift() || "");
 }

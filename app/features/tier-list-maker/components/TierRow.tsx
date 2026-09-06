@@ -51,7 +51,9 @@ export function TierRow({ tier }: TierRowProps) {
 		isDragging: activeItem !== null,
 	});
 
-	const tierIndex = state.tiers.findIndex((t) => t.id === tier.id);
+	const tierIndex = state.tiers.findIndex(
+		(candidate) => candidate.id === tier.id,
+	);
 	const isFirstTier = tierIndex === 0;
 	const isLastTier = tierIndex === state.tiers.length - 1;
 

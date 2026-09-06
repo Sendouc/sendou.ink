@@ -34,38 +34,38 @@ export function usePlusVoting(
 	}
 
 	const addVote = React.useCallback((type: "upvote" | "downvote") => {
-		setState((state) => {
-			if (!state) return state;
+		setState((current) => {
+			if (!current) return current;
 
-			const votedId = state.usersForVoting[state.votes.length]?.user.id;
-			if (!votedId) return state;
+			const votedId = current.usersForVoting[current.votes.length]?.user.id;
+			if (!votedId) return current;
 
 			const newVotes = [
-				...state.votes,
+				...current.votes,
 				{ votedId, score: type === "upvote" ? PLUS_UPVOTE : PLUS_DOWNVOTE },
 			];
 
 			votesToLocalStorage({
-				usersForVoting: state.usersForVoting,
+				usersForVoting: current.usersForVoting,
 				votes: newVotes,
 			});
 
-			return { ...state, votes: newVotes };
+			return { ...current, votes: newVotes };
 		});
 	}, []);
 
 	const undoLast = React.useCallback(() => {
-		setState((state) => {
-			if (!state) return state;
+		setState((current) => {
+			if (!current) return current;
 
-			const newVotes = state.votes.slice(0, -1);
+			const newVotes = current.votes.slice(0, -1);
 
 			votesToLocalStorage({
-				usersForVoting: state.usersForVoting,
+				usersForVoting: current.usersForVoting,
 				votes: newVotes,
 			});
 
-			return { ...state, votes: newVotes };
+			return { ...current, votes: newVotes };
 		});
 	}, []);
 
@@ -168,14 +168,14 @@ function previousUser({
 }) {
 	if (!usersForVoting) return;
 
-	const previousUser = usersForVoting?.[votes.length - 1];
-	if (!previousUser) return;
+	const lastVotedUser = usersForVoting?.[votes.length - 1];
+	if (!lastVotedUser) return;
 
 	const previousScore = votes[votes.length - 1]?.score;
 	invariant(previousScore);
 
 	return {
-		...previousUser,
+		...lastVotedUser,
 		score: previousScore,
 	};
 }

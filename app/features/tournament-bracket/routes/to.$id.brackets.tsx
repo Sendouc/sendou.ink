@@ -142,9 +142,12 @@ function TournamentBracketsView() {
 	const showSecondaryActionsRow =
 		tournament.canFinalize(user) || censored || canToggle;
 
-	const waitingForTeamsText = (bracket: BracketType, bracketIdx: number) => {
+	const waitingForTeamsText = (
+		bracketToDescribe: BracketType,
+		bracketIdx: number,
+	) => {
 		if (bracketIdx > 0) {
-			return bracket.requiresCheckIn
+			return bracketToDescribe.requiresCheckIn
 				? t("tournament:bracket.waiting.checkin", {
 						count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
 					})
@@ -164,9 +167,9 @@ function TournamentBracketsView() {
 		});
 	};
 
-	const teamsSourceText = (bracket: BracketType) => {
+	const teamsSourceText = (bracketToDescribe: BracketType) => {
 		const progression = tournament.ctx.settings.bracketProgression;
-		const sources = progression[bracket.idx].sources;
+		const sources = progression[bracketToDescribe.idx].sources;
 		if (!sources || sources.length === 0) return null;
 
 		const sourceDescriptions = Progression.sortedSourcesForSeeding(

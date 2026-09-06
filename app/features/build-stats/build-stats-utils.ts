@@ -13,11 +13,10 @@ const toBuildsCount = (counts: AverageAbilityPointsResult[]) =>
 	counts.reduce((acc, cur) => acc + cur.abilityPointsSum, 0) / MAX_AP;
 
 const toAbilityPoints = (
-	abilities: AverageAbilityPointsResult[],
+	results: AverageAbilityPointsResult[],
 	ability: Ability,
 ) =>
-	abilities.find((current) => current.ability === ability)?.abilityPointsSum ??
-	0;
+	results.find((current) => current.ability === ability)?.abilityPointsSum ?? 0;
 
 export function abilityPointCountsToAverages({
 	allAbilities,
@@ -97,20 +96,26 @@ export function abilityPointCountsToAverages({
 export function popularBuilds(rows: Array<PopularBuildsRow>) {
 	let previousCount: number;
 	return rows.map(({ abilitiesSignature, count }) => {
-		const abilities = abilitiesSignature.split(",").map((serializedAbility) => {
-			const [ability, points] = serializedAbility.split("_");
-			invariant(ability, "ability is not defined");
-			invariant(points, "count is not defined");
-			return {
-				ability: ability as Ability,
-				count: isStackableAbility(ability as Ability)
-					? Number(points)
-					: undefined,
-			};
-		});
+		const parsedAbilities = abilitiesSignature
+			.split(",")
+			.map((serializedAbility) => {
+				const [ability, points] = serializedAbility.split("_");
+				invariant(ability, "ability is not defined");
+				invariant(points, "count is not defined");
+				return {
+					ability: ability as Ability,
+					count: isStackableAbility(ability as Ability)
+						? Number(points)
+						: undefined,
+				};
+			});
 
 		const displayCount = previousCount === count ? null : count;
 		previousCount = count;
-		return { abilities, count: displayCount, id: abilitiesSignature };
+		return {
+			abilities: parsedAbilities,
+			count: displayCount,
+			id: abilitiesSignature,
+		};
 	});
 }

@@ -93,10 +93,10 @@ export async function findById(id: number) {
 									"TournamentOrganizationMember.userId",
 									"User.id",
 								)
-								.select((eb) => [
+								.select((memberEb) => [
 									"TournamentOrganizationMember.userId",
 									"TournamentOrganizationMember.role",
-									...commonUserSelect(eb),
+									...commonUserSelect(memberEb),
 									"User.pronouns",
 									"User.isTournamentOrganizer",
 									"User.patronTier",
@@ -128,15 +128,18 @@ export async function findById(id: number) {
 			jsonObjectFrom(
 				eb
 					.selectFrom("User")
-					.select((eb) => [...commonUserSelect(eb), "User.pronouns"])
+					.select((authorEb) => [
+						...commonUserSelect(authorEb),
+						"User.pronouns",
+					])
 					.whereRef("User.id", "=", "CalendarEvent.authorId"),
 			).as("author"),
 			jsonArrayFrom(
 				eb
 					.selectFrom("TournamentStaff")
 					.innerJoin("User", "TournamentStaff.userId", "User.id")
-					.select((eb) => [
-						...commonUserSelect(eb),
+					.select((staffEb) => [
+						...commonUserSelect(staffEb),
 						"User.pronouns",
 						"TournamentStaff.role",
 					])
@@ -533,8 +536,11 @@ export async function findTeamsFullByTournamentId(tournamentId: number) {
 								> /*sql*/`case when json_extract("Tournament"."settings", '$.isRanked') = 1 then 'RANKED' else 'UNRANKED' end`,
 							),
 					)
-					.select((eb) => [
-						...commonUserSelect(eb, { idAs: "userId", inTournament: true }),
+					.select((memberEb) => [
+						...commonUserSelect(memberEb, {
+							idAs: "userId",
+							inTournament: true,
+						}),
 						"User.country",
 						"User.tournamentName",
 						"SeedingSkill.ordinal",
@@ -584,12 +590,12 @@ export async function findTeamsFullByTournamentId(tournamentId: number) {
 						"UserSubmittedImage.id",
 					)
 					.whereRef("AllTeam.id", "=", "TournamentTeam.teamId")
-					.select((eb) => [
+					.select((teamEb) => [
 						"AllTeam.id",
 						"AllTeam.customUrl",
-						concatUserSubmittedImagePrefix(eb.ref("UserSubmittedImage.url")).as(
-							"logoUrl",
-						),
+						concatUserSubmittedImagePrefix(
+							teamEb.ref("UserSubmittedImage.url"),
+						).as("logoUrl"),
 						"AllTeam.deletedAt",
 					]),
 			).as("team"),
@@ -603,11 +609,11 @@ export async function findTeamsFullByTournamentId(tournamentId: number) {
 
 	return teams.map((team) => ({
 		...team,
-		members: team.members.map(({ ordinal, ...member }) => member),
+		members: team.members.map((member) => R.omit(member, ["ordinal"])),
 		avgSeedingSkillOrdinal: nullifyingAvg(
 			team.members
 				.map((member) => member.ordinal)
-				.filter((ordinal) => typeof ordinal === "number"),
+				.filter((memberOrdinal) => typeof memberOrdinal === "number"),
 		),
 	}));
 }
@@ -873,16 +879,16 @@ export function findAllForShowcase() {
 					)
 					.whereRef("TournamentResult.tournamentId", "=", "Tournament.id")
 					.where("TournamentResult.placement", "=", 1)
-					.select((eb) => [
-						...commonUserSelect(eb, { inTournament: true }),
+					.select((placerEb) => [
+						...commonUserSelect(placerEb, { inTournament: true }),
 						"User.country",
 						"TournamentResult.div",
 						"TournamentTeam.name as teamName",
-						concatUserSubmittedImagePrefix(eb.ref("TeamAvatar.url")).as(
+						concatUserSubmittedImagePrefix(placerEb.ref("TeamAvatar.url")).as(
 							"teamLogoUrl",
 						),
 						concatUserSubmittedImagePrefix(
-							eb.ref("TournamentTeamAvatar.url"),
+							placerEb.ref("TournamentTeamAvatar.url"),
 						).as("pickupAvatarUrl"),
 					]),
 			).as("firstPlacers"),

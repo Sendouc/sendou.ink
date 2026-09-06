@@ -399,8 +399,8 @@ function StartingBracketDialog() {
 												value={startingBracketIdx}
 												onChange={(e) => {
 													const newBracketIdx = Number(e.target.value);
-													setTeamStartingBrackets((teamStartingBrackets) =>
-														teamStartingBrackets.map((t) =>
+													setTeamStartingBrackets((current) =>
+														current.map((t) =>
 															t.tournamentTeamId === team.id
 																? { ...t, startingBracketIdx: newBracketIdx }
 																: t,
@@ -572,8 +572,8 @@ function AbDivisionsDialog() {
 																rawValue === "unassigned"
 																	? null
 																	: (Number(rawValue) as 0 | 1);
-															setTeamAbDivisions((teamAbDivisions) =>
-																teamAbDivisions.map((t) =>
+															setTeamAbDivisions((current) =>
+																current.map((t) =>
 																	t.tournamentTeamId === team.id
 																		? { ...t, abDivision: newDivision }
 																		: t,

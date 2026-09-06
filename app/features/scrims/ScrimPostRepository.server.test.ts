@@ -304,7 +304,7 @@ describe("findUserScrims", () => {
 		});
 
 		const scrims = await ScrimPostRepository.findUserScrims(users.id(2));
-		const scrim = scrims.find((scrim) => scrim.id === id);
+		const scrim = scrims.find((candidate) => candidate.id === id);
 
 		expect(scrim?.status).toBe("booked");
 		expect(scrim?.startsAt).toBe(bookedAt);

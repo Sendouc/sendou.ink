@@ -660,16 +660,16 @@ function setResults({
 	results: AllMatchResult[];
 	teams: TeamsArg;
 }) {
-	const setResults = new Map<number, WinLossParticipationArray>();
+	const resultsByUserId = new Map<number, WinLossParticipationArray>();
 
 	const addToMap = (
 		userId: number,
 		result: WinLossParticipationArray[number],
 	) => {
-		const existing = setResults.get(userId) ?? [];
+		const existing = resultsByUserId.get(userId) ?? [];
 		existing.push(result);
 
-		setResults.set(userId, existing);
+		resultsByUserId.set(userId, existing);
 	};
 
 	for (const match of results) {
@@ -693,7 +693,7 @@ function setResults({
 		for (const subUserId of subbedOut) addToMap(subUserId, null);
 	}
 
-	return setResults;
+	return resultsByUserId;
 }
 
 function teamIdToMembersUserIds(teams: TeamsArg, teamId: number) {

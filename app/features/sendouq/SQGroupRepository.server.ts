@@ -564,21 +564,21 @@ export async function findFriendsAndTeammates(userId: number) {
 			eb
 				.selectFrom("Friendship")
 				.innerJoin("User", (join) =>
-					join.on((eb) =>
-						eb.or([
-							eb.and([
-								eb("Friendship.userOneId", "=", userId),
-								eb("User.id", "=", eb.ref("Friendship.userTwoId")),
+					join.on((joinEb) =>
+						joinEb.or([
+							joinEb.and([
+								joinEb("Friendship.userOneId", "=", userId),
+								joinEb("User.id", "=", joinEb.ref("Friendship.userTwoId")),
 							]),
-							eb.and([
-								eb("Friendship.userTwoId", "=", userId),
-								eb("User.id", "=", eb.ref("Friendship.userOneId")),
+							joinEb.and([
+								joinEb("Friendship.userTwoId", "=", userId),
+								joinEb("User.id", "=", joinEb.ref("Friendship.userOneId")),
 							]),
 						]),
 					),
 				)
-				.select((eb) => [
-					...commonUserSelect(eb),
+				.select((friendEb) => [
+					...commonUserSelect(friendEb),
 					"User.inGameName",
 					sql<any>`null`.as("teamId"),
 					sql<Tables["TeamMember"]["role"]>`null`.as("role"),
@@ -1153,8 +1153,8 @@ export function deleteReadyCheck(
 	{ id, markMissedMembers }: { id: number; markMissedMembers: boolean },
 	trx?: Transaction<DB>,
 ) {
-	const run = (trx: Transaction<DB>) =>
-		deleteReadyCheckInTrx({ id, markMissedMembers }, trx);
+	const run = (transaction: Transaction<DB>) =>
+		deleteReadyCheckInTrx({ id, markMissedMembers }, transaction);
 
 	return trx ? run(trx) : db.transaction().execute(run);
 }

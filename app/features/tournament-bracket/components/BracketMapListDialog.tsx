@@ -219,13 +219,16 @@ export function BracketMapListDialog({
 		}
 
 		if (bracket.type === "single_elimination") {
-			const rounds = getRounds({ type: "single", bracketData });
+			const singleElimRounds = getRounds({ type: "single", bracketData });
 
-			const hasThirdPlaceMatch = rounds.some((round) => round.groupId === 1);
+			const hasThirdPlaceMatch = singleElimRounds.some(
+				(round) => round.groupId === 1,
+			);
 
-			if (!thirdPlaceMatchLinked || !hasThirdPlaceMatch) return rounds;
+			if (!thirdPlaceMatchLinked || !hasThirdPlaceMatch)
+				return singleElimRounds;
 
-			return rounds
+			return singleElimRounds
 				.filter((round) => round.groupId !== 1)
 				.map((round) =>
 					round.name === "Finals"
@@ -1058,10 +1061,10 @@ function RoundMapList({
 										number={i + 1}
 										onHoverMap={onHoverMap}
 										hoveredMap={hoveredMap}
-										onMapChange={(map) => {
+										onMapChange={(newMap) => {
 											onRoundMapListChange({
 												...maps,
-												list: maps.list?.map((m, j) => (i === j ? map : m)),
+												list: maps.list?.map((m, j) => (i === j ? newMap : m)),
 											});
 										}}
 									/>

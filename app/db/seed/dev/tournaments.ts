@@ -567,7 +567,7 @@ function rosterBuilder(users: SeededUsers, teams: SeededTeams) {
 					memberUserIds.push(shuffled.pop()!);
 				}
 
-				const pin = pinned.find((pin) => pin.teamIdx === i);
+				const pin = pinned.find((candidate) => candidate.teamIdx === i);
 				if (pin) {
 					memberUserIds.unshift(pin.userId);
 				}

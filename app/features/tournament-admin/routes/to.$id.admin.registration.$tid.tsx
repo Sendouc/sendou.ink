@@ -271,17 +271,23 @@ function RegistrationFields({ team }: { team: TournamentTeamFull | null }) {
 							options={
 								{
 									// the Captain dropdown labels by name instead of "Player N"
-									onUserSelected: (user) => {
-										if (!user) return;
-										setUsernames((prev) => ({ ...prev, [user.id]: user.name }));
-										if (requireInGameNames && user.inGameName) {
-											setValue(`${itemName}.inGameName`, user.inGameName);
+									onUserSelected: (selectedUser) => {
+										if (!selectedUser) return;
+										setUsernames((prev) => ({
+											...prev,
+											[selectedUser.id]: selectedUser.name,
+										}));
+										if (requireInGameNames && selectedUser.inGameName) {
+											setValue(
+												`${itemName}.inGameName`,
+												selectedUser.inGameName,
+											);
 										}
 										// saved as is, so it must show the user's current name or saving would clear it
 										if (canEditTournamentNames) {
 											setValue(
 												`${itemName}.tournamentName`,
-												user.tournamentName,
+												selectedUser.tournamentName,
 											);
 										}
 									},

@@ -461,8 +461,8 @@ export async function findResultsByEventId(eventId: number) {
 				eb
 					.selectFrom("CalendarEventResultPlayer")
 					.leftJoin("User", "User.id", "CalendarEventResultPlayer.userId")
-					.select((eb) => [
-						...commonUserSelect(eb),
+					.select((playerEb) => [
+						...commonUserSelect(playerEb),
 						"CalendarEventResultPlayer.name",
 					])
 					.whereRef(

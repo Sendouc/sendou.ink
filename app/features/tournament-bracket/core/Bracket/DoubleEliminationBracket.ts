@@ -26,7 +26,7 @@ export class DoubleEliminationBracket extends Bracket {
 				if (group.number === 3) return 5;
 				if (group.number === 2) {
 					const lastRoundNumber = Math.max(
-						...roundsOfGroup.map((round) => round.number),
+						...roundsOfGroup.map((each) => each.number),
 					);
 
 					if (round.number === lastRoundNumber) return 5;
@@ -235,13 +235,10 @@ export class DoubleEliminationBracket extends Bracket {
 
 			return minGroupId + 1;
 		};
-		const placementsToRoundsIds = (
-			data: BracketData,
-			losersGroupId: number,
-		) => {
+		const placementsToRoundsIds = (data: BracketData, groupId: number) => {
 			const firstRoundIsOnlyByes = () => {
 				const losersMatches = data.match.filter(
-					(match) => match.groupId === losersGroupId,
+					(match) => match.groupId === groupId,
 				);
 
 				const fistRoundId = Math.min(...losersMatches.map((m) => m.roundId));
@@ -256,7 +253,7 @@ export class DoubleEliminationBracket extends Bracket {
 			};
 
 			const losersRounds = data.round.filter(
-				(round) => round.groupId === losersGroupId,
+				(round) => round.groupId === groupId,
 			);
 			const orderedRoundsIds = losersRounds
 				.map((round) => round.id)

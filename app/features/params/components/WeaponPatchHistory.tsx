@@ -77,7 +77,7 @@ export function WeaponPatchHistoryByKit({
 }) {
 	const { t } = useTranslation(["params"]);
 
-	const kitIds = kits.map((kit) => kit.weaponId);
+	const kitIds = kits.map((weaponKit) => weaponKit.weaponId);
 
 	const [kit, setKit] = useSearchParam(weaponParamsSearchParams, "kit");
 	const selectedWeaponId =
@@ -92,7 +92,8 @@ export function WeaponPatchHistoryByKit({
 	);
 
 	const selectedKit =
-		kits.find((kit) => kit.weaponId === selectedWeaponId) ?? kits[0];
+		kits.find((candidate) => candidate.weaponId === selectedWeaponId) ??
+		kits[0];
 
 	const patches = selectedKit.patches
 		.map((patch) => ({

@@ -42,10 +42,10 @@ export function resolvePreparedForTheBracket({
 			depth === targetDepth &&
 			R.isDeepEqual(bracket.settings, bracketPreparingFor.settings)
 		) {
-			const bracketMaps = preparedByBracket?.[anotherBracketIdx];
+			const siblingMaps = preparedByBracket?.[anotherBracketIdx];
 
-			if (bracketMaps) {
-				return bracketMaps;
+			if (siblingMaps) {
+				return siblingMaps;
 			}
 		}
 	}

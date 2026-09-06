@@ -616,6 +616,7 @@ interface ArrayItemCustomRenderProps {
  * own item must go through `useFormValue`; callbacks read the array via the store so a skipped render never acts on stale values.
  */
 // biome-ignore lint/nursery/useReactFunctionComponentDefinition: memo() takes a function expression
+// biome-ignore lint/suspicious/noShadow: the function expression is named for devtools, it is the same component
 const ArrayItemCustomRender = React.memo(function ArrayItemCustomRender({
 	arrayName,
 	index,

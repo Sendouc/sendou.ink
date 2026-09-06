@@ -1098,12 +1098,12 @@ function withoutReplayReads<
 function dominantAnchor(anchors: readonly number[]): number {
 	const sorted = anchors.toSorted((a, b) => a - b);
 	let best = sorted[0]!;
-	let bestCount = 0;
+	let bestRunLength = 0;
 	let lo = 0;
 	for (let hi = 0; hi < sorted.length; hi++) {
 		while (sorted[hi]! - sorted[lo]! > REPLAY_ANCHOR_TOLERANCE_SECONDS) lo++;
-		if (hi - lo + 1 > bestCount) {
-			bestCount = hi - lo + 1;
+		if (hi - lo + 1 > bestRunLength) {
+			bestRunLength = hi - lo + 1;
 			best = sorted[Math.floor((lo + hi) / 2)]!;
 		}
 	}

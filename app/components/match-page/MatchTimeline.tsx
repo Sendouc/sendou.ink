@@ -541,7 +541,11 @@ function ScoreboardTable({
 	);
 }
 
-function ScoreboardBuildPopover({ abilities }: { abilities: string[][] }) {
+function ScoreboardBuildPopover({
+	abilities: buildAbilities,
+}: {
+	abilities: string[][];
+}) {
 	const { t } = useTranslation(["common"]);
 
 	return (
@@ -557,7 +561,7 @@ function ScoreboardBuildPopover({ abilities }: { abilities: string[][] }) {
 			}
 		>
 			<div className={styles.scoreboardAbilities}>
-				{abilities.map((row, i) => (
+				{buildAbilities.map((row, i) => (
 					<div key={i} className={styles.scoreboardAbilityRow}>
 						{row.map((ability, j) => (
 							<Ability

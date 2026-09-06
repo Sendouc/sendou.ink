@@ -115,7 +115,7 @@ export const usersListForPost = async ({
 
 	const teamId = from.teamId;
 	const team = (await TeamRepository.findAllByMemberUserId(authorId)).find(
-		(team) => team.id === teamId,
+		(candidate) => candidate.id === teamId,
 	);
 	errorToastIfFalsy(team, "User is not a member of this team");
 

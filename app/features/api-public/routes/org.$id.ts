@@ -14,7 +14,7 @@ const paramsSchema = v.object({
 });
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-	const { id } = parseParams({ params, schema: paramsSchema });
+	const { id: organizationId } = parseParams({ params, schema: paramsSchema });
 
 	const organization = notFoundIfNullish(
 		await db
@@ -45,10 +45,14 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 							"TournamentOrganizationMember.role",
 							"TournamentOrganizationMember.roleDisplayName",
 						])
-						.where("TournamentOrganizationMember.organizationId", "=", id),
+						.where(
+							"TournamentOrganizationMember.organizationId",
+							"=",
+							organizationId,
+						),
 				).as("members"),
 			])
-			.where("TournamentOrganization.id", "=", id)
+			.where("TournamentOrganization.id", "=", organizationId)
 			.executeTakeFirst(),
 	);
 

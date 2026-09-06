@@ -136,11 +136,11 @@ export function WeaponSelect<
 					className={idx === 0 ? "pt-0-5" : undefined}
 					key={key}
 				>
-					{weapons.map(({ weapon, name }) => (
+					{weapons.map(({ weapon, name: weaponName }) => (
 						<SendouSelectItem
 							key={weapon.anyWeaponId}
 							id={weapon.anyWeaponId}
-							textValue={name}
+							textValue={weaponName}
 							isDisabled={
 								includeSubSpecial
 									? false
@@ -172,9 +172,9 @@ export function WeaponSelect<
 								)}
 								<span
 									className={styles.weaponLabel}
-									data-testid={`weapon-select-option-${name}`}
+									data-testid={`weapon-select-option-${weaponName}`}
 								>
-									{name}
+									{weaponName}
 								</span>
 							</div>
 						</SendouSelectItem>

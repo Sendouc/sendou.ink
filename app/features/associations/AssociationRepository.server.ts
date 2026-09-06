@@ -60,8 +60,8 @@ const baseFindQuery = (options: FindOptions) =>
 						.selectFrom("AssociationMember")
 						.innerJoin("User", "User.id", "AssociationMember.userId")
 						.whereRef("AssociationMember.associationId", "=", "Association.id")
-						.select((eb) => [
-							...commonUserSelect(eb),
+						.select((memberEb) => [
+							...commonUserSelect(memberEb),
 							"AssociationMember.role",
 						]),
 				).as("members"),

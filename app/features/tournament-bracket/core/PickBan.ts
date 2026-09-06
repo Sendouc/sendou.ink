@@ -96,7 +96,7 @@ export function turnOf({
 			const latestWinner = results[results.length - 1]?.winnerTeamId;
 			invariant(latestWinner, "turnOf: No winner found");
 
-			const team = teams.find((team) => latestWinner !== team.id);
+			const team = teams.find((candidate) => latestWinner !== candidate.id);
 			invariant(team, "turnOf: No result found");
 
 			return { teamId: team.id, action: "PICK" };
@@ -602,11 +602,11 @@ export function mapsListWithLegality(args: MapListWithStatusesArgs) {
 			: new Set();
 
 	const result = mapPool.map((map) => {
-		const isLegal =
+		const mapIsLegal =
 			!unavailableStagesSet.has(map.stageId) &&
 			!unavailableModesSet.has(map.mode);
 
-		return { ...map, isLegal };
+		return { ...map, isLegal: mapIsLegal };
 	});
 
 	const everythingBanned = result.every((map) => !map.isLegal);
@@ -709,7 +709,7 @@ function unavailableModes({
 			: null;
 		const noModeRepeatModes =
 			currentStep?.action === "PICK_NO_MODE_REPEAT"
-				? results.map((result) => result.mode)
+				? results.map((pastResult) => pastResult.mode)
 				: [];
 
 		return new Set([
@@ -722,9 +722,9 @@ function unavailableModes({
 	// COUNTERPICK: can't pick the same mode last won on
 	const result = new Set(
 		results
-			.filter((result) => result.winnerTeamId === pickerTeamId)
+			.filter((pastResult) => pastResult.winnerTeamId === pickerTeamId)
 			.slice(-1)
-			.map((result) => result.mode),
+			.map((pastResult) => pastResult.mode),
 	);
 
 	return result;

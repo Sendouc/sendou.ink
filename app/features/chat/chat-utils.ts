@@ -25,9 +25,9 @@ export function soundCodeToLocalStorageKey(soundCode: string) {
 
 export function soundEnabled(soundCode: string) {
 	const localStorageKey = soundCodeToLocalStorageKey(soundCode);
-	const soundEnabled = localStorage.getItem(localStorageKey);
+	const stored = localStorage.getItem(localStorageKey);
 
-	return !soundEnabled || soundEnabled === "true";
+	return !stored || stored === "true";
 }
 
 export function playMessageSound(type: SystemMessageType | undefined) {

@@ -76,10 +76,10 @@ export async function findBySlug(slug: string) {
 				eb
 					.selectFrom("TournamentOrganizationMember")
 					.innerJoin("User", "User.id", "TournamentOrganizationMember.userId")
-					.select((eb) => [
+					.select((memberEb) => [
 						"TournamentOrganizationMember.role",
 						"TournamentOrganizationMember.roleDisplayName",
-						...commonUserSelect(eb),
+						...commonUserSelect(memberEb),
 					])
 					.whereRef(
 						"TournamentOrganizationMember.organizationId",

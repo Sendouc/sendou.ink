@@ -125,14 +125,14 @@ function Stages({
 						<StageImage stageId={id} height={48} className="rounded" />
 						{modesShort.map((mode) => {
 							const stats = stages[id]?.[mode];
-							const winPercentage = stats
+							const winRate = stats
 								? cutToNDecimalPlaces(
 										(stats.wins / (stats.wins + stats.losses)) * 100,
 									)
 								: "";
 							const infoText = `${t(`game-misc:MODE_SHORT_${mode}`)} ${t(
 								`game-misc:STAGE_${id}`,
-							)} ${winPercentage}${winPercentage ? "%" : ""}`;
+							)} ${winRate}${winRate ? "%" : ""}`;
 
 							return (
 								<SendouPopover

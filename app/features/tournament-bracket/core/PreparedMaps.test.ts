@@ -125,10 +125,10 @@ describe("PreparedMaps - resolvePreparedForTheBracket", () => {
 	});
 
 	test("returns null if the sibling does not have third place match while this one does", () => {
-		const tournament = getTestTournament(false);
+		const tournamentWithoutThirdPlace = getTestTournament(false);
 
 		const prepared = PreparedMaps.resolvePreparedForTheBracket({
-			tournament,
+			tournament: tournamentWithoutThirdPlace,
 			bracketIdx: 1,
 			preparedByBracket: [
 				null,
@@ -945,7 +945,7 @@ describe("PreparedMaps - trimPreparedEliminationMaps", () => {
 });
 
 describe("PreparedMaps - eliminationTeamCountPrefill", () => {
-	const teams = ({
+	const teamsOf = ({
 		count,
 		firstId = 1,
 		memberCount = 4,
@@ -957,7 +957,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 		nullFilledArray(count).map((_, i) =>
 			tournamentCtxTeam(firstId + i, {
 				memberUserIds: nullFilledArray(memberCount).map(
-					(_, memberIdx) => (firstId + i) * 10 + memberIdx,
+					(_member, memberIdx) => (firstId + i) * 10 + memberIdx,
 				),
 			}),
 		);
@@ -1005,7 +1005,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 		const tournament = tournamentWith({
 			bracketProgression: DOUBLE_ELIMINATION_ONLY,
 			startsAt: subHours(new Date(), 1),
-			teams: teams({ count: 12 }),
+			teams: teamsOf({ count: 12 }),
 		});
 
 		expect(
@@ -1019,8 +1019,8 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 			startsAt: addMinutes(new Date(), 30),
 			regClosesAt: subMinutes(new Date(), 10),
 			teams: [
-				...teams({ count: 12 }),
-				...teams({ count: 5, firstId: 13, memberCount: 2 }),
+				...teamsOf({ count: 12 }),
+				...teamsOf({ count: 5, firstId: 13, memberCount: 2 }),
 			],
 		});
 
@@ -1034,7 +1034,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 			bracketProgression: DOUBLE_ELIMINATION_ONLY,
 			startsAt: addHours(new Date(), 5),
 			isInvitational: true,
-			teams: teams({ count: 8 }),
+			teams: teamsOf({ count: 8 }),
 		});
 
 		expect(
@@ -1048,8 +1048,8 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 			startsAt: addMinutes(new Date(), 30),
 			isInvitational: true,
 			teams: [
-				...teams({ count: 7 }),
-				...teams({ count: 2, firstId: 8, memberCount: 2 }),
+				...teamsOf({ count: 7 }),
+				...teamsOf({ count: 2, firstId: 8, memberCount: 2 }),
 			],
 		});
 
@@ -1062,7 +1062,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 		const tournament = tournamentWith({
 			bracketProgression: DOUBLE_ELIMINATION_ONLY,
 			startsAt: addHours(new Date(), 3),
-			teams: teams({ count: 12 }),
+			teams: teamsOf({ count: 12 }),
 		});
 
 		expect(
@@ -1074,7 +1074,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 		const tournament = tournamentWith({
 			bracketProgression: DOUBLE_ELIMINATION_ONLY,
 			startsAt: addMinutes(new Date(), 45),
-			teams: teams({ count: 12 }),
+			teams: teamsOf({ count: 12 }),
 		});
 
 		expect(
@@ -1086,7 +1086,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 		const tournament = tournamentWith({
 			bracketProgression: DOUBLE_ELIMINATION_ONLY,
 			startsAt: addMinutes(new Date(), 45),
-			teams: teams({ count: 15 }),
+			teams: teamsOf({ count: 15 }),
 		});
 
 		expect(
@@ -1112,7 +1112,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 				},
 			],
 			startsAt: subHours(new Date(), 1),
-			teams: teams({ count: 16 }),
+			teams: teamsOf({ count: 16 }),
 		});
 
 		expect(
@@ -1145,7 +1145,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 			],
 			startsAt: subHours(new Date(), 1),
 			// 8 of the registered teams never checked in, so they are not in the started bracket
-			teams: teams({ count: 20 }),
+			teams: teamsOf({ count: 20 }),
 			data: startedGroups,
 		});
 
@@ -1184,7 +1184,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 				},
 			],
 			startsAt: subHours(new Date(), 1),
-			teams: teams({ count: 16 }),
+			teams: teamsOf({ count: 16 }),
 		});
 
 		expect(
@@ -1205,7 +1205,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 				},
 			],
 			startsAt: subHours(new Date(), 1),
-			teams: teams({ count: 16 }),
+			teams: teamsOf({ count: 16 }),
 		});
 
 		expect(
@@ -1231,7 +1231,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 				},
 			],
 			startsAt: subHours(new Date(), 1),
-			teams: teams({ count: 16 }),
+			teams: teamsOf({ count: 16 }),
 		});
 
 		expect(
@@ -1250,7 +1250,7 @@ describe("PreparedMaps - eliminationTeamCountPrefill", () => {
 				},
 			],
 			startsAt: subHours(new Date(), 1),
-			teams: teams({ count: 16 }),
+			teams: teamsOf({ count: 16 }),
 		});
 
 		expect(

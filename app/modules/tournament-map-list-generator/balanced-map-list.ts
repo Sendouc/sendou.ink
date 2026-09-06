@@ -128,9 +128,8 @@ function generateWithInput(
 
 		for (const stage of sorted[1].maps.stageModePairs) {
 			const alreadyIncludedStage = result.find(
-				(alreadyIncludedStage) =>
-					alreadyIncludedStage.stageId === stage.stageId &&
-					alreadyIncludedStage.mode === stage.mode,
+				(candidate) =>
+					candidate.stageId === stage.stageId && candidate.mode === stage.mode,
 			);
 
 			if (alreadyIncludedStage) {
@@ -203,16 +202,16 @@ function generateWithInput(
 	}
 
 	function validateInput(
-		input: TournamentMaplistInput,
+		args: TournamentMaplistInput,
 	): MapListGenerationError | null {
-		const everyMapIsOfIncludedMode = input.teams.every((team) =>
+		const everyMapIsOfIncludedMode = args.teams.every((team) =>
 			team.maps.stageModePairs.every((pair) =>
-				input.modesIncluded.includes(pair.mode),
+				args.modesIncluded.includes(pair.mode),
 			),
 		);
 		if (!everyMapIsOfIncludedMode) return "MAPS_FOR_MODES_NOT_INCLUDED";
 
-		for (const team of input.teams) {
+		for (const team of args.teams) {
 			const stringified = team.maps.stageModePairs.map(
 				(p) => `${p.stageId}-${p.mode}`,
 			);

@@ -180,10 +180,10 @@ function DamageTypesSelect({
 				handleChange({ newDamageType: e.target.value as DamageType })
 			}
 		>
-			{allDamageTypes.map((damageType) => {
+			{allDamageTypes.map((optionDamageType) => {
 				return (
-					<option key={damageType} value={damageType}>
-						{t(`analyzer:damage.${damageType}` as any)}
+					<option key={optionDamageType} value={optionDamageType}>
+						{t(`analyzer:damage.${optionDamageType}` as any)}
 					</option>
 				);
 			})}

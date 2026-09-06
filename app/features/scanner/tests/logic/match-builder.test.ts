@@ -82,7 +82,7 @@ function scoreboard(
 		lobby = "PRIVATE" as ScannerLobby | null,
 		mode = "SZ" as ModeShort | null,
 		stage = 0 as StageId | null,
-		weapons = ALL as (MainWeaponId | null)[],
+		weapons: weaponIds = ALL as (MainWeaponId | null)[],
 		povIndex = 0 as number | null,
 		matchScores = [100, 47] as [number | null, number | null],
 	} = {},
@@ -92,7 +92,7 @@ function scoreboard(
 		mode,
 		stage,
 		matchScores,
-		players: weapons.map((weaponId, i) => ({
+		players: weaponIds.map((weaponId, i) => ({
 			name: NAMES[i] ?? `p${i}`,
 			weaponId,
 			paint: 1000,

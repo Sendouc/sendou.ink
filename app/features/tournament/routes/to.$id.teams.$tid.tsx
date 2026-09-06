@@ -57,7 +57,7 @@ export default function TournamentTeamPage() {
 	const data = useLoaderData<typeof loader>();
 	const tournament = useTournament();
 	const teamIndex = tournament.ctx.teams.findIndex(
-		(t) => t.id === data.tournamentTeamId,
+		(candidate) => candidate.id === data.tournamentTeamId,
 	);
 	const team = data.team;
 

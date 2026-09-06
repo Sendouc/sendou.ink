@@ -486,8 +486,8 @@ export function ScreenshotPage() {
 		if (!inspectKey) return;
 		setInspectKey(null);
 		claimInspectFrame(inspectKey).then(
-			(frame) => {
-				if (frame) void analyze(frame);
+			(claimedFrame) => {
+				if (claimedFrame) void analyze(claimedFrame);
 				else
 					setError(
 						"Inspected frame did not arrive — go back to the other tab and press Inspect again",

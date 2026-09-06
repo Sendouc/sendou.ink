@@ -124,9 +124,12 @@ export function weaponIdToArrayWithAlts(weaponId: MainWeaponId) {
 
 	const regularId = altWeaponIdToId.get(weaponId);
 	if (regularId !== undefined) {
-		const altId = weaponIdToAltId.get(regularId);
-		if (altId !== undefined) {
-			return [regularId, ...(Array.isArray(altId) ? altId : [altId])];
+		const regularAltId = weaponIdToAltId.get(regularId);
+		if (regularAltId !== undefined) {
+			return [
+				regularId,
+				...(Array.isArray(regularAltId) ? regularAltId : [regularAltId]),
+			];
 		}
 	}
 

@@ -97,16 +97,16 @@ function cachedLeaderboards(): Promise<{
 					.filter((entry) => entry.team)
 					.slice(0, ENTRIES_PER_LEADERBOARD)
 					.map((entry) => {
-						const team = entry.team as Pick<
+						const entryTeam = entry.team as Pick<
 							Tables["Team"],
 							"id" | "name" | "customUrl"
 						> & { avatarUrl: string | null };
 
 						return {
 							power: entry.power,
-							name: team.name,
-							url: teamPage(team.customUrl),
-							avatarUrl: team.avatarUrl,
+							name: entryTeam.name,
+							url: teamPage(entryTeam.customUrl),
+							avatarUrl: entryTeam.avatarUrl,
 						};
 					}),
 			};

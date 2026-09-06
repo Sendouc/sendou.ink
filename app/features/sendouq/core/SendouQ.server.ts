@@ -560,7 +560,7 @@ function matchMapPools(match: DBMatch) {
 				.filter((mode) => mode.preference === "AVOID")
 				.map((mode) => mode.mode);
 			const pool = preferences.pool.filter(
-				(pool) => !avoidedModes.includes(pool.mode),
+				(candidate) => !avoidedModes.includes(candidate.mode),
 			);
 			if (pool.length === 0) return [];
 

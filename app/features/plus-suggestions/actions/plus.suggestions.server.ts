@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request }) => {
 				await PlusSuggestionRepository.findAllByMonth(votingMonthYear);
 
 			const suggestion = suggestions.find((s) =>
-				s.entries.some((entry) => entry.id === data.suggestionId),
+				s.entries.some((candidate) => candidate.id === data.suggestionId),
 			);
 			invariant(suggestion);
 			const entry = suggestion.entries.find((e) => e.id === data.suggestionId);

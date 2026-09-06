@@ -65,6 +65,7 @@ function TestComponent() {
 }
 
 // biome-ignore lint/nursery/useReactFunctionComponentDefinition: memo() takes a function expression
+// biome-ignore lint/suspicious/noShadow: the function expression is named for devtools, it is the same component
 const ViewOnly = React.memo(function ViewOnly() {
 	const [view] = useSearchParam(definition, "view");
 	viewRenders++;

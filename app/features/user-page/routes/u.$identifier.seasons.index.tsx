@@ -194,9 +194,9 @@ function TournamentResult({ result }: { result: SeasonTournamentResult }) {
 					{result.tournamentName}
 				</div>
 				<ul className={styles.seasonMatchSetResults}>
-					{result.setResults.filter(Boolean).map((result, i) => (
-						<li key={i} data-is-win={String(result === "W")}>
-							{result}
+					{result.setResults.filter(Boolean).map((setResult, i) => (
+						<li key={i} data-is-win={String(setResult === "W")}>
+							{setResult}
 						</li>
 					))}
 				</ul>

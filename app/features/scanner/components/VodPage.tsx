@@ -374,8 +374,8 @@ export function VodPage({
 				setMethod("webcodecs");
 				const { duration } = probe;
 				const chunkSpan = duration / clients.length;
-				const chunks = clients.map((client, i) => ({
-					client,
+				const chunks = clients.map((scanClient, i) => ({
+					client: scanClient,
 					tStart: i * chunkSpan,
 					tEnd: i === clients.length - 1 ? duration : (i + 1) * chunkSpan,
 					t: i * chunkSpan,
@@ -414,15 +414,15 @@ export function VodPage({
 						chunk.client
 							.scanChunk(
 								{ file, chunkIndex, tStart: chunk.tStart, tEnd: chunk.tEnd },
-								(progress) => {
-									chunk.t = progress.t;
-									chunk.telemetry = progress.telemetry;
-									if (progress.preview) {
+								(chunkProgress) => {
+									chunk.t = chunkProgress.t;
+									chunk.telemetry = chunkProgress.telemetry;
+									if (chunkProgress.preview) {
 										// show one chunk at a time: the earliest still running
 										if (chunks.find((c) => !c.done) === chunk) {
-											drawPreview(previewRef.current, progress.preview);
+											drawPreview(previewRef.current, chunkProgress.preview);
 										}
-										progress.preview.close();
+										chunkProgress.preview.close();
 									}
 									pushUiUpdate();
 								},

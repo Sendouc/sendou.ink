@@ -254,7 +254,7 @@ describe("trophy list tiers", () => {
 	});
 
 	function createTrophyTournament({
-		trophyId,
+		trophyId: forTrophyId,
 		tier,
 		startInDays,
 	}: {
@@ -266,7 +266,7 @@ describe("trophy list tiers", () => {
 			{
 				authorId,
 				startTimes: [dateToDatabaseTimestamp(daysFromNow(startInDays))],
-				trophyId,
+				trophyId: forTrophyId,
 			},
 			tier ? { tier } : undefined,
 		);

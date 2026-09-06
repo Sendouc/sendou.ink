@@ -428,8 +428,8 @@ describe("MapList.generate()", () => {
 
 				const maps = gen.next({ amount: 5 }).value;
 
-				const stageIds = maps.map((m) => m.stageId);
-				const uniqueStageIds = new Set(stageIds);
+				const pickedStageIds = maps.map((m) => m.stageId);
+				const uniqueStageIds = new Set(pickedStageIds);
 
 				expect(uniqueStageIds.size).toBe(5);
 			}
@@ -452,8 +452,8 @@ describe("MapList.generate()", () => {
 
 				const maps = gen.next({ amount: 7 }).value;
 
-				const stageIds = maps.map((m) => m.stageId);
-				const uniqueStageIds = new Set(stageIds);
+				const pickedStageIds = maps.map((m) => m.stageId);
+				const uniqueStageIds = new Set(pickedStageIds);
 
 				expect(uniqueStageIds.size).toBe(7);
 			}

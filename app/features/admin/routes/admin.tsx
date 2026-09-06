@@ -89,7 +89,9 @@ function FriendCodeLookUp() {
 				schema={friendCodeSearchSchema}
 				defaultValues={{ friendCode: friendCode ?? "" }}
 				submitButtonText="Search"
-				onApply={({ friendCode }) => setFriendCode(friendCode)}
+				onApply={({ friendCode: newFriendCode }) =>
+					setFriendCode(newFriendCode)
+				}
 			>
 				{({ FormField }) => <FormField name="friendCode" />}
 			</SendouForm>

@@ -43,7 +43,7 @@ for (const fixture of fixtures) {
 			fixture,
 		);
 		const events = allEvents.filter(
-			(event) => event.type === "Objective",
+			(candidate) => candidate.type === "Objective",
 		) as DetectedEvent<ObjectiveData>[];
 		const expectPositive = fixture.expected.event === "Objective";
 

@@ -190,8 +190,8 @@ const baseFindQuery = db
 			eb
 				.selectFrom("ScrimPostUser")
 				.innerJoin("User", "ScrimPostUser.userId", "User.id")
-				.select((eb) => [
-					...commonUserSelect(eb),
+				.select((userEb) => [
+					...commonUserSelect(userEb),
 					"User.inGameName",
 					"ScrimPostUser.isOwner",
 				])
@@ -223,8 +223,8 @@ const baseFindQuery = db
 						innerEb
 							.selectFrom("ScrimPostRequestUser")
 							.innerJoin("User", "ScrimPostRequestUser.userId", "User.id")
-							.select((eb) => [
-								...commonUserSelect(eb),
+							.select((requestUserEb) => [
+								...commonUserSelect(requestUserEb),
 								"User.inGameName",
 								"ScrimPostRequestUser.isOwner",
 							])
@@ -665,7 +665,7 @@ export async function findPendingOverlapsForUsers({
 
 	for (const post of rows
 		.map(mapDBRowToScrimPost)
-		.filter((post) => !Scrim.isAccepted(post))) {
+		.filter((candidate) => !Scrim.isAccepted(candidate))) {
 		if (post.id === excludePostId) continue;
 
 		const postInvolvesUser = post.users.some((u) => userIdSet.has(u.id));

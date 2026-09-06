@@ -40,8 +40,8 @@ export function useRosterFit({
 
 	const team =
 		teamId !== undefined
-			? data.teams.find((team) => team.id === teamId)
-			: (data.teams.find((team) => team.isMainTeam) ?? data.teams[0]);
+			? data.teams.find((candidate) => candidate.id === teamId)
+			: (data.teams.find((candidate) => candidate.isMainTeam) ?? data.teams[0]);
 	const schedules = data.availability.windows.find(
 		(window) => window.id === post.id,
 	);
@@ -52,7 +52,7 @@ export function useRosterFit({
 		starts: at ? [at] : requestStarts({ post, now: data.availability.now }),
 		members: roster.flatMap((member) => {
 			const schedule = schedules.members.find(
-				(schedule) => schedule.userId === member.id,
+				(candidate) => candidate.userId === member.id,
 			);
 
 			return schedule ? [schedule] : [];

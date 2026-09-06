@@ -39,7 +39,8 @@
 				"noEvolvingTypes": "error",
 				"noReturnAssign": "error",
 				"noNestedPromises": "error",
-				"noUnusedExpressions": "error"
+				"noUnusedExpressions": "error",
+				"noShadow": "error"
 			},
 			"correctness": {
 				"noUndeclaredVariables": "error",
