@@ -25,9 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const data = result.data;
 	const type = data.type as Tables["LFGPost"]["type"];
 
-	const identifier = String(user.id);
-	const { team } =
-		(await UserRepository.findProfileByIdentifier(identifier)) ?? {};
+	const { team } = (await UserRepository.findProfileByUserId(user.id)) ?? {};
 
 	const shouldIncludeTeam = TEAM_POST_TYPES.includes(type);
 

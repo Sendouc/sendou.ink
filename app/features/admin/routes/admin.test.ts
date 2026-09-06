@@ -275,15 +275,15 @@ describe("Account migration", () => {
 	});
 
 	test("migrates a blank account", async () => {
-		expect(await UserRepository.findProfileByIdentifier("0")).toBeDefined();
-		expect(await UserRepository.findProfileByIdentifier("1")).toBeDefined();
+		expect(await UserRepository.findIdByIdentifier("0")).toBeDefined();
+		expect(await UserRepository.findIdByIdentifier("1")).toBeDefined();
 
 		await migrateUserAction();
 
-		const oldUser = await UserRepository.findProfileByIdentifier("0"); // these are discord ids
-		const newUser = await UserRepository.findProfileByIdentifier("1");
+		const oldUser = await UserRepository.findIdByIdentifier("0"); // these are discord ids
+		const newUser = await UserRepository.findIdByIdentifier("1");
 
-		expect(oldUser).toBeNull();
+		expect(oldUser).toBeUndefined();
 		expect(newUser?.id).toBe(users.id(1)); // took the old user's id
 	});
 
@@ -354,7 +354,7 @@ describe("Account migration", () => {
 			users.id(1),
 		);
 
-		expect(await UserRepository.findProfileByIdentifier("0")).toBeNull();
+		expect(await UserRepository.findIdByIdentifier("0")).toBeUndefined();
 		expect(migratedUser.weaponPool).toEqual([
 			{ weaponSplId: 1, isFavorite: 1, isTenStar: 0 },
 		]);
@@ -369,8 +369,8 @@ describe("Account migration", () => {
 
 		await migrateUserAction();
 
-		const oldUser = await UserRepository.findProfileByIdentifier("0");
-		expect(oldUser).toBeNull();
+		const oldUser = await UserRepository.findIdByIdentifier("0");
+		expect(oldUser).toBeUndefined();
 
 		for (const id of [users.id(1), users.id(2)]) {
 			const buildsAfter = await BuildRepository.findAllByUserId(id);

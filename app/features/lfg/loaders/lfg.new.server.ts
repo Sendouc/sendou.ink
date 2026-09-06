@@ -9,9 +9,7 @@ import { lfgNewSearchParams } from "../lfg-search-params";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const user = requireUser();
 
-	const userProfileData = await UserRepository.findProfileByIdentifier(
-		String(user.id),
-	);
+	const userProfileData = await UserRepository.findProfileByUserId(user.id);
 	const userMatchProfile = await MatchProfileRepository.findSettingsByUserId(
 		user.id,
 	);

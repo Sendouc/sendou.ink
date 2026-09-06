@@ -2,7 +2,10 @@ import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
 import { Outlet, useLoaderData, useLocation } from "react-router";
 import { Main } from "~/components/Main";
+import { userArtPage } from "~/features/art/art-urls";
 import { useUser } from "~/features/auth/core/user";
+import { userPageMiddleware } from "~/features/user-page/user-page-middleware.server";
+import { userSeasonsPage } from "~/features/user-page/user-page-urls";
 import { useHasRole } from "~/modules/permissions/hooks";
 import { metaTags } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
@@ -15,16 +18,15 @@ import {
 	userVodsPage,
 } from "~/utils/urls";
 import type { UserPageNavItem } from "../components/UserPageIconNav";
-
 import {
 	loader,
 	type UserPageLoaderData,
 } from "../loaders/u.$identifier.server";
+import type { Route } from "./+types/u.$identifier";
 
 export { loader };
 
-import { userArtPage } from "~/features/art/art-urls";
-import { userSeasonsPage } from "~/features/user-page/user-page-urls";
+export const middleware: Route.MiddlewareFunction[] = [userPageMiddleware];
 
 export const meta: MetaFunction<typeof loader> = (args) => {
 	if (!args.loaderData) return [];

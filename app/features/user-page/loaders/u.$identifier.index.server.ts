@@ -1,12 +1,9 @@
-import type { LoaderFunctionArgs } from "react-router";
 import * as UserCardRepository from "~/features/user-card/UserCardRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { notFoundIfNullish } from "~/utils/remix.server";
+import { userPageUserId } from "~/features/user-page/user-page-context.server";
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-	const { id: userId } = notFoundIfNullish(
-		await UserRepository.findIdByIdentifier(params.identifier!),
-	);
+export const loader = async () => {
+	const userId = userPageUserId();
 
 	const userCards = await UserCardRepository.findAllByUserIds({
 		userIds: [userId],

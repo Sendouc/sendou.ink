@@ -54,8 +54,6 @@ import {
 	USER,
 } from "./user-page-constants";
 
-export const userParamsSchema = v.object({ identifier: v.string() });
-
 export const userEditProfileBaseSchema = v.object({
 	customAvatar: image({
 		label: "labels.profileCustomAvatar",

@@ -1323,20 +1323,23 @@ export function buildCases(fx: Fixtures): {
 	add("UserRepository.findIdByIdentifier", fx.heavyUser, (user) =>
 		UserRepository.findIdByIdentifier(user.identifier),
 	);
+	add("UserRepository.findPageUserByIdentifier", fx.heavyUser, (user) =>
+		UserRepository.findPageUserByIdentifier(user.identifier),
+	);
 	add("UserRepository.findCountriesByUserIds", fx.skillBatch, (skillBatch) =>
 		UserRepository.findCountriesByUserIds(skillBatch.userIds),
 	);
 	add("UserRepository.findPlusTiersByUserIds", fx.skillBatch, (skillBatch) =>
 		UserRepository.findPlusTiersByUserIds(skillBatch.userIds),
 	);
-	add("UserRepository.findBuildFieldsByIdentifier", fx.heavyUser, (user) =>
-		UserRepository.findBuildFieldsByIdentifier(user.identifier),
+	add("UserRepository.findBuildFieldsByUserId", fx.heavyUser, (user) =>
+		UserRepository.findBuildFieldsByUserId(user.id),
 	);
-	add("UserRepository.findLayoutDataByIdentifier", fx.heavyUser, (user) =>
-		UserRepository.findLayoutDataByIdentifier(user.identifier, user.id),
+	add("UserRepository.findLayoutDataById", fx.heavyUser, (user) =>
+		UserRepository.findLayoutDataById(user.id, user.id),
 	);
-	add("UserRepository.findProfileByIdentifier", fx.heavyUser, (user) =>
-		UserRepository.findProfileByIdentifier(user.identifier),
+	add("UserRepository.findProfileByUserId", fx.heavyUser, (user) =>
+		UserRepository.findProfileByUserId(user.id),
 	);
 	add("UserRepository.findStoredWidgetsByUserId", fx.heavyUser, (user) =>
 		UserRepository.findStoredWidgetsByUserId(user.id),

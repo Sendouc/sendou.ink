@@ -1,26 +1,19 @@
-import { type LoaderFunctionArgs, redirect } from "react-router";
-import * as v from "valibot";
+import { redirect } from "react-router";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as TrophyRepository from "~/features/trophies/TrophyRepository.server";
 import { canAccessTrophies } from "~/features/trophies/trophies-utils";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { notFoundIfNullish } from "~/utils/remix.server";
+import { userPageUser } from "~/features/user-page/user-page-context.server";
 import { userPage } from "~/utils/urls";
-import { userParamsSchema } from "../user-page-schemas";
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async () => {
 	const user = requireUser();
-	const { identifier } = v.parse(userParamsSchema, params);
-	const userToBeEdited = notFoundIfNullish(
-		await UserRepository.findLayoutDataByIdentifier(identifier),
-	);
+	const userToBeEdited = userPageUser();
 	if (user.id !== userToBeEdited.id) {
 		throw redirect(userPage(userToBeEdited));
 	}
 
-	const userProfile = (await UserRepository.findProfileByIdentifier(
-		identifier,
-	))!;
+	const userProfile = (await UserRepository.findProfileByUserId(user.id))!;
 	const friendCodeResult = await UserRepository.findCurrentFriendCodeByUserId(
 		user.id,
 	);

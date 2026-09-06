@@ -49,6 +49,13 @@ export function findIdByIdentifier(identifier: string) {
 	return userByIdentifierQuery(identifier).executeTakeFirst();
 }
 
+/** Identity of the user a `/u/:identifier` page is about, incl. what their canonical page URL needs. */
+export function findPageUserByIdentifier(identifier: string) {
+	return userByIdentifierQuery(identifier)
+		.select(["User.discordId", "User.customUrl"])
+		.executeTakeFirst();
+}
+
 /** Country codes of the given users keyed by user id, users without a country set absent. */
 export async function findCountriesByUserIds(userIds: number[]) {
 	if (userIds.length === 0) return new Map<number, string>();
@@ -77,8 +84,10 @@ export async function findPlusTiersByUserIds(userIds: number[]) {
 	return new Map(rows.map((row) => [row.userId, row.tier]));
 }
 
-export async function findBuildFieldsByIdentifier(identifier: string) {
-	const row = await userByIdentifierQuery(identifier)
+export async function findBuildFieldsByUserId(userId: number) {
+	const row = await db
+		.selectFrom("User")
+		.where("User.id", "=", userId)
 		.select(({ eb }) => [
 			"User.buildSorting",
 			jsonArrayFrom(
@@ -101,11 +110,10 @@ export async function findBuildFieldsByIdentifier(identifier: string) {
 	};
 }
 
-export function findLayoutDataByIdentifier(
-	identifier: string,
-	loggedInUserId?: number,
-) {
-	return userByIdentifierQuery(identifier)
+export function findLayoutDataById(userId: number, loggedInUserId?: number) {
+	return db
+		.selectFrom("User")
+		.where("User.id", "=", userId)
 		.leftJoin("PlusTier", "PlusTier.userId", "User.id")
 		.select((eb) => [
 			...commonUserSelect(eb),
@@ -182,8 +190,10 @@ export function findLayoutDataByIdentifier(
 		.executeTakeFirst();
 }
 
-export async function findProfileByIdentifier(identifier: string) {
-	const row = await userByIdentifierQuery(identifier)
+export async function findProfileByUserId(userId: number) {
+	const row = await db
+		.selectFrom("User")
+		.where("User.id", "=", userId)
 		.leftJoin("PlusTier", "PlusTier.userId", "User.id")
 		.select(({ eb }) => [
 			"User.twitch",

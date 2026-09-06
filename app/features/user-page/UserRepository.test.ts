@@ -24,13 +24,13 @@ describe("UserRepository", () => {
 	});
 
 	test("updates user name when upserting", async () => {
-		await UserRepository.upsert({
+		const { id } = await UserRepository.upsert({
 			discordId: "1",
 			discordName: "TestUser",
 			discordAvatar: null,
 		});
 
-		const user = await UserRepository.findLayoutDataByIdentifier("1");
+		const user = await UserRepository.findLayoutDataById(id);
 
 		expect(user?.username).toBe("TestUser");
 
@@ -40,7 +40,7 @@ describe("UserRepository", () => {
 			discordAvatar: null,
 		});
 
-		const updatedUser = await UserRepository.findLayoutDataByIdentifier("1");
+		const updatedUser = await UserRepository.findLayoutDataById(id);
 		expect(updatedUser?.username).toBe("UpdatedUser");
 	});
 
