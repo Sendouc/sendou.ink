@@ -1,4 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
+import { getDefaultMapWeights } from "~/features/sendouq/core/default-maps.server";
+import { SENDOUQ_BEST_OF } from "~/features/sendouq/q-constants";
 import type { StageId } from "~/modules/in-game-lists/types";
 import * as Test from "~/utils/Test";
 import {
@@ -10,9 +12,6 @@ import {
 vi.mock("~/features/sendouq/core/default-maps.server", () => ({
 	getDefaultMapWeights: vi.fn(),
 }));
-
-import { getDefaultMapWeights } from "~/features/sendouq/core/default-maps.server";
-import { SENDOUQ_BEST_OF } from "~/features/sendouq/q-constants";
 
 describe("mapModePreferencesToModeList()", () => {
 	test("returns default list if no preferences", () => {

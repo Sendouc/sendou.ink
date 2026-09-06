@@ -25,6 +25,7 @@ import { Main } from "~/components/Main";
 import { DAYS_SHOWN_AT_A_TIME } from "~/features/calendar/calendar-constants";
 import { useCollapsableEvents } from "~/features/calendar/calendar-hooks";
 import { calendarSearchParams } from "~/features/calendar/calendar-search-params";
+import { calendarIcalFeed } from "~/features/calendar/calendar-urls";
 import { dragToScroll } from "~/hooks/useDragToScroll";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import { metaTags, ogPageImage } from "~/utils/remix";
@@ -36,11 +37,9 @@ import { daysForCalendar } from "../calendar-utils";
 import { FiltersBar } from "../components/FiltersBar";
 import { TournamentCard } from "../components/TournamentCard";
 import { type CalendarLoaderData, loader } from "../loaders/calendar.server";
+import styles from "./calendar.module.css";
 
 export { action, loader };
-
-import { calendarIcalFeed } from "~/features/calendar/calendar-urls";
-import styles from "./calendar.module.css";
 
 export const meta: MetaFunction = (args) => {
 	return metaTags({

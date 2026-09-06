@@ -9,17 +9,14 @@ export const loader = async () => {
 
 	const arts = await ArtRepository.findArtsByUserId(userId);
 
-	const tagCounts = arts.reduce(
-		(acc, art) => {
-			if (!art.tags) return acc;
+	const tagCounts = arts.reduce<Record<string, number>>((acc, art) => {
+		if (!art.tags) return acc;
 
-			for (const tag of art.tags) {
-				acc[tag.name] = (acc[tag.name] ?? 0) + 1;
-			}
-			return acc;
-		},
-		{} as Record<string, number>,
-	);
+		for (const tag of art.tags) {
+			acc[tag.name] = (acc[tag.name] ?? 0) + 1;
+		}
+		return acc;
+	}, {});
 
 	const tagCountsSortedArr = Object.entries(tagCounts).sort(
 		(a, b) => b[1] - a[1],

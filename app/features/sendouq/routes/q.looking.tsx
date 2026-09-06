@@ -46,10 +46,9 @@ import {
 	sqGroupChannel,
 } from "../q-constants";
 import { qLookingSearchParams } from "../q-search-params";
+import styles from "./q.looking.module.css";
 
 export { action, loader };
-
-import styles from "./q.looking.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["user", "q"],

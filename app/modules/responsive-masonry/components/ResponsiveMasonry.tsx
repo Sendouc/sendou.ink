@@ -7,11 +7,11 @@ import { Masonry } from "./Masonry";
 const THREE_COLUMNS_QUERY = "(width >= 900px)";
 const TWO_COLUMNS_QUERY = "(width >= 750px)";
 
-const MasonryResponsive = ({
+function MasonryResponsive({
 	children,
 }: {
 	children: React.ReactNode | React.ReactNode[];
-}) => {
+}) {
 	const columnsCount = useColumnsCount();
 
 	return (
@@ -24,7 +24,7 @@ const MasonryResponsive = ({
 			)}
 		</div>
 	);
-};
+}
 
 export function ResponsiveMasonry({ children }: { children: React.ReactNode }) {
 	return (

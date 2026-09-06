@@ -1060,13 +1060,10 @@ export async function findFriendCodesByTournamentId(tournamentId: number) {
 		.execute();
 
 	// later friend code overwrites earlier ones
-	return values.reduce(
-		(acc, cur) => {
-			acc[cur.userId] = cur.friendCode;
-			return acc;
-		},
-		{} as Record<number, string>,
-	);
+	return values.reduce<Record<number, string>>((acc, cur) => {
+		acc[cur.userId] = cur.friendCode;
+		return acc;
+	}, {});
 }
 
 export function updateProgression({

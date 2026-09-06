@@ -40,12 +40,11 @@ import { UserCard } from "~/features/user-card/components/UserCard";
 import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { ordinalToRoundedSp } from "../../mmr/mmr-utils";
+import { loader } from "../loaders/to.$id.admin.seeds.server";
 import { adminSeedsActionSchema } from "../tournament-admin-schemas";
 import styles from "./to.$id.admin.seeds.module.css";
 
 export { action } from "../actions/to.$id.admin.seeds.server";
-
-import { loader } from "../loaders/to.$id.admin.seeds.server";
 
 export { loader };
 

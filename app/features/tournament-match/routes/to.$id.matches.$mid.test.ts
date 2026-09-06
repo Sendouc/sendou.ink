@@ -1,13 +1,5 @@
-import { beforeEach, describe, expect, test, vi } from "vitest";
-
-vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
-	send: vi.fn(),
-	sendPersisted: vi.fn(),
-	notifyNotificationsChanged: vi.fn(),
-	notifyRoomsChangedByRoomIds: vi.fn(),
-}));
-
 import type * as v from "valibot";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentTeamFactory from "~/db/seed/factories/TournamentTeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
@@ -21,6 +13,13 @@ import {
 	wrappedLoader,
 } from "~/utils/Test";
 import { action, loader } from "./to.$id.matches.$mid";
+
+vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
+	send: vi.fn(),
+	sendPersisted: vi.fn(),
+	notifyNotificationsChanged: vi.fn(),
+	notifyRoomsChangedByRoomIds: vi.fn(),
+}));
 
 const tournamentMatchAction = wrappedAction<typeof matchSchema>({
 	action,

@@ -72,6 +72,13 @@ import { allI18nNamespaces } from "./utils/i18n";
 import { isRevalidation, metaTags, type SerializeFrom } from "./utils/remix";
 import { requestContextMiddleware } from "./utils/request-context-middleware.server";
 import { APP_ICON_URL, pwaSplashScreenImageUrl } from "./utils/urls";
+import "~/styles/fonts.css";
+import "~/styles/vars.css";
+import "~/styles/normalize.css";
+import "~/styles/common.css";
+import "~/styles/utils.css";
+import "~/styles/flags.css";
+import "nprogress/nprogress.css";
 
 const PRELOAD_TRANSLATION_TIMEOUT_MS = 3000;
 
@@ -83,14 +90,6 @@ export const middleware: Route.MiddlewareFunction[] = [
 	i18nMiddleware,
 	timezoneMiddleware,
 ];
-
-import "~/styles/fonts.css";
-import "~/styles/vars.css";
-import "~/styles/normalize.css";
-import "~/styles/common.css";
-import "~/styles/utils.css";
-import "~/styles/flags.css";
-import "nprogress/nprogress.css";
 
 // anchors the loading bar to the header (between the sidebars); at module scope so
 // even the very first navigation's NProgress.start doesn't render over the sidebar
@@ -427,7 +426,7 @@ export default function App() {
 	);
 }
 
-export const ErrorBoundary = () => {
+export function ErrorBoundary() {
 	return (
 		<ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
 			<Document>
@@ -435,7 +434,7 @@ export const ErrorBoundary = () => {
 			</Document>
 		</ThemeProvider>
 	);
-};
+}
 
 function HydrationTestIndicator() {
 	const isHydrated = useHydrated();

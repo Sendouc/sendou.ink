@@ -4,6 +4,7 @@ import { useLoaderData } from "react-router";
 import { Ability } from "~/components/Ability";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { MAX_AP } from "~/features/build-analyzer/analyzer-constants";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	BUILDS_PAGE,
@@ -16,13 +17,10 @@ import {
 	ogPageImage,
 	type SerializeFrom,
 } from "../../../utils/remix";
-
 import { loader } from "../loaders/builds.$slug.stats.server";
+import styles from "./builds.$slug.stats.module.css";
 
 export { loader };
-
-import { MAX_AP } from "~/features/build-analyzer/analyzer-constants";
-import styles from "./builds.$slug.stats.module.css";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
 	if (!args.loaderData) return [];

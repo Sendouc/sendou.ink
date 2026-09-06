@@ -1,4 +1,5 @@
 import { ordinal } from "openskill";
+import * as R from "remeda";
 import { db } from "~/db/sql";
 import type { Tables } from "~/db/tables";
 import { TIERS, type TierName } from "~/features/mmr/mmr-constants";
@@ -79,7 +80,7 @@ const getAllSkills = async () => {
 				? skills
 				: skills.slice(0, 2);
 
-		const bestTier = toConsider.reduce(
+		const bestTier = toConsider.reduce<null | { name: TierName; idx: number }>(
 			(acc, cur, idx) => {
 				const seasonsSkill = cur[member.userId!];
 				if (!seasonsSkill || seasonsSkill.approximate) {
@@ -95,7 +96,7 @@ const getAllSkills = async () => {
 					? { name: seasonsSkill.tier.name, idx }
 					: acc;
 			},
-			null as null | { name: TierName; idx: number },
+			null,
 		);
 
 		if (bestTier) {
@@ -114,20 +115,12 @@ const skillsToConsider = allSkills.filter((s) =>
 	Object.values(TIER_TO_NEW_TIER).includes(s.tier.name),
 );
 
-const groupedSkills = skillsToConsider.reduce(
-	(acc, skill) => {
-		const { tier } = skill;
-		if (!acc[tier.name]) {
-			acc[tier.name] = [];
-		}
-		acc[tier.name].push(skill);
-		return acc;
-	},
-	{} as Record<TierName, typeof skillsToConsider>,
-);
+const groupedSkills = R.groupBy(skillsToConsider, (skill) => skill.tier.name);
 
 const midPoints = {} as Record<TierName, Tables["Skill"]>;
 for (const [tier, skills] of Object.entries(groupedSkills)) {
+	invariant(skills, "skills not found");
+
 	const midPoint = skills[Math.floor(skills.length / 2)];
 	const midPointSkill = await db
 		.selectFrom("Skill")

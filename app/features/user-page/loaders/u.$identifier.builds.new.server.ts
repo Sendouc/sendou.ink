@@ -24,16 +24,15 @@ export const loader = async ({ url }: LoaderFunctionArgs) => {
 	};
 
 	function resolveGearIdToAbilities() {
-		return usersBuilds.reduce(
-			(acc, build) => {
-				acc[`HEAD_${build.headGearSplId}`] = build.abilities[0];
-				acc[`CLOTHES_${build.clothesGearSplId}`] = build.abilities[1];
-				acc[`SHOES_${build.shoesGearSplId}`] = build.abilities[2];
+		return usersBuilds.reduce<
+			Record<string, [Ability, Ability, Ability, Ability]>
+		>((acc, build) => {
+			acc[`HEAD_${build.headGearSplId}`] = build.abilities[0];
+			acc[`CLOTHES_${build.clothesGearSplId}`] = build.abilities[1];
+			acc[`SHOES_${build.shoesGearSplId}`] = build.abilities[2];
 
-				return acc;
-			},
-			{} as Record<string, [Ability, Ability, Ability, Ability]>,
-		);
+			return acc;
+		}, {});
 	}
 };
 

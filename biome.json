@@ -160,6 +160,22 @@
 			},
 			"performance": {
 				"noSyncScripts": "error"
+			},
+			"nursery": {
+				"useImportsFirst": "error",
+				"useReactFunctionComponentDefinition": "error",
+				"useControlLabel": "error",
+				"useIframeSandbox": "error",
+				"useArraySome": "error",
+				"useReduceTypeParameter": "error",
+				"noUnnecessaryTemplateExpression": {
+					"fix": "safe",
+					"level": "error"
+				},
+				"noJsxLeakedDollar": "error",
+				"noJsxNamespace": "error",
+				"noNegationInEqualityCheck": "error",
+				"noExtendNative": "error"
 			}
 		}
 	},
@@ -189,6 +205,35 @@
 				"rules": {
 					"style": {
 						"useFilenamingConvention": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.ts"],
+			"linter": {
+				"rules": {
+					"nursery": {
+						"useReactFunctionComponentDefinition": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["e2e/**"],
+			"linter": {
+				"rules": {
+					"nursery": {
+						"noPlaywrightPagePause": "error",
+						"noPlaywrightWaitForTimeout": "error",
+						"noPlaywrightMissingAwait": "error",
+						"noPlaywrightUselessAwait": "error",
+						"noPlaywrightWaitForNavigation": "error",
+						"noPlaywrightElementHandle": "error",
+						"noPlaywrightEval": "error",
+						"noPlaywrightNetworkidle": "error",
+						"noPlaywrightWaitForSelector": "error",
+						"usePlaywrightValidDescribeCallback": "error"
 					}
 				}
 			}
@@ -234,6 +279,18 @@
 		},
 		{
 			"includes": ["**/*.test.ts", "**/*.test.tsx"],
+			"linter": {
+				"rules": {
+					"nursery": {
+						"useConsistentTestIt": {
+							"level": "error",
+							"options": { "function": "test", "withinDescribe": "test" }
+						},
+						"useTestHooksOnTop": "error",
+						"useTestHooksInOrder": "error"
+					}
+				}
+			},
 			"plugins": ["./biome-plugins/no-raw-db-writes-in-tests.grit"]
 		},
 		{

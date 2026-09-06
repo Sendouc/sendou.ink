@@ -603,7 +603,10 @@ export class Tournament {
 		usesRegularCheckIn: boolean;
 		requiresCheckIn: boolean;
 	}) {
-		return teams.reduce(
+		return teams.reduce<{
+			checkedInTeams: number[];
+			notCheckedInTeams: number[];
+		}>(
 			(acc, cur) => {
 				const team = this.teamById(cur);
 				invariant(team, "Team not found");
@@ -640,10 +643,7 @@ export class Tournament {
 
 				return acc;
 			},
-			{ checkedInTeams: [], notCheckedInTeams: [] } as {
-				checkedInTeams: number[];
-				notCheckedInTeams: number[];
-			},
+			{ checkedInTeams: [], notCheckedInTeams: [] },
 		);
 	}
 

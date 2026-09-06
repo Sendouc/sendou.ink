@@ -15,7 +15,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 		// a badge the org no longer manages stays deletable
 		for (const badge of organization.badges) {
-			if (!result.find((b) => b.id === badge.id)) {
+			if (!result.some((b) => b.id === badge.id)) {
 				result.push(badge);
 			}
 		}

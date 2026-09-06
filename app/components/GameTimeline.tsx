@@ -108,6 +108,7 @@ export function GameTimeline({
 }
 
 /** Memoized so scrubbing re-renders only the overlay, not the chart canvas. */
+// biome-ignore lint/nursery/useReactFunctionComponentDefinition: memo() takes a function expression
 const TimelineCharts = memo(function TimelineCharts({
 	objectiveEvents,
 	playerStatusSamples,

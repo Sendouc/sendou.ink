@@ -235,13 +235,15 @@ function generateWithInput(
 			return true;
 		}
 
-		const teamsMapsLeftNotPicked =
-			[...input.teams[0].maps, ...input.teams[1].maps].filter(
-				(stage) =>
-					!mapList.some(
-						(map) => map.stageId === stage.stageId && map.mode === stage.mode,
-					),
-			).length > 0;
+		const teamsMapsLeftNotPicked = [
+			...input.teams[0].maps,
+			...input.teams[1].maps,
+		].some(
+			(stage) =>
+				!mapList.some(
+					(map) => map.stageId === stage.stageId && map.mode === stage.mode,
+				),
+		);
 		if (!teamsMapsLeftNotPicked) return true;
 
 		return false;

@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { Check, Download, Funnel, Megaphone, Star } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
@@ -39,12 +40,9 @@ import { LUTI_DIVS } from "../scrims-constants";
 import { type newRequestSchema, scrimsActionSchema } from "../scrims-schemas";
 import { scrimsSearchParams } from "../scrims-search-params";
 import type { LutiDiv, ScrimFilters, ScrimPost } from "../scrims-types";
+import styles from "./scrims.module.css";
 
 export { action, loader };
-
-import { Check, Download, Funnel, Megaphone, Star } from "lucide-react";
-
-import styles from "./scrims.module.css";
 
 export type NewRequestFormFields = v.InferOutput<typeof newRequestSchema>;
 

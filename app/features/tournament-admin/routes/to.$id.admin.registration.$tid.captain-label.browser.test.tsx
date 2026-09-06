@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
+import TournamentAdminRegistrationPage from "./to.$id.admin.registration.$tid";
 
 const { mockTournament } = vi.hoisted(() => ({
 	mockTournament: {
@@ -33,8 +34,6 @@ vi.mock(
 	"~/features/tournament-admin/loaders/to.$id.admin.registration.$tid.server",
 	() => ({ loader: vi.fn() }),
 );
-
-import TournamentAdminRegistrationPage from "./to.$id.admin.registration.$tid";
 
 const GREY = {
 	type: "user" as const,

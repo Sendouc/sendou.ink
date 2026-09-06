@@ -180,6 +180,7 @@ function MapButton({
 				onAnimationEnd={wiggle ? onWiggleEnd : undefined}
 				disabled={disabled || banned}
 				type="button"
+				aria-label={t(`game-misc:STAGE_${stageId}`)}
 				data-testid={testId}
 			/>
 			{selected ? (

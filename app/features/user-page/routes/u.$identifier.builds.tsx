@@ -31,10 +31,9 @@ import {
 import type { UserPageLoaderData } from "../loaders/u.$identifier.server";
 import { DEFAULT_BUILD_SORT } from "../user-page-constants";
 import { userBuildsSearchParams } from "../user-page-search-params";
+import styles from "./u.$identifier.builds.module.css";
 
 export { action, loader };
-
-import styles from "./u.$identifier.builds.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["weapons", "builds", "gear", "analyzer"],

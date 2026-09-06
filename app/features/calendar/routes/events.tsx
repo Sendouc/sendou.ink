@@ -19,11 +19,10 @@ import {
 } from "../calendar-search-params";
 import type { EventsLoaderData } from "../loaders/events.server";
 import { loader } from "../loaders/events.server";
-
-export { action, loader };
-
 import type { Route } from "./+types/events";
 import styles from "./events.module.css";
+
+export { action, loader };
 
 export const middleware: Route.MiddlewareFunction[] = [timezoneMiddleware];
 

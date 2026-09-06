@@ -64,6 +64,7 @@ function TestComponent() {
 	);
 }
 
+// biome-ignore lint/nursery/useReactFunctionComponentDefinition: memo() takes a function expression
 const ViewOnly = React.memo(function ViewOnly() {
 	const [view] = useSearchParam(definition, "view");
 	viewRenders++;

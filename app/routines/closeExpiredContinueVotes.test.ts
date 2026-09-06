@@ -1,17 +1,16 @@
 import { sub } from "date-fns";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-
-vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
-	send: vi.fn(),
-	notifyNotificationsChanged: vi.fn(),
-}));
-
 import * as GroupMatchContinueVoteFactory from "~/db/seed/factories/GroupMatchContinueVoteFactory";
 import * as SQMatchFactory from "~/db/seed/factories/SQMatchFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import { FULL_GROUP_SIZE } from "~/features/sendouq/q-constants";
 import { CloseExpiredContinueVotesRoutine } from "./closeExpiredContinueVotes";
+
+vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
+	send: vi.fn(),
+	notifyNotificationsChanged: vi.fn(),
+}));
 
 const users = UserFactory.pool();
 /** The two SendouQ groups: the first FULL_GROUP_SIZE users against the rest. */

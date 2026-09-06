@@ -55,11 +55,10 @@ import { ScheduleHeatmap } from "../components/ScheduleHeatmap";
 import { WeekToggle } from "../components/WeekToggle";
 import type { TeamScheduleLoaderData } from "../loaders/t.$customUrl.schedule.server";
 import { loader } from "../loaders/t.$customUrl.schedule.server";
-
-export { action, loader };
-
 import type { Route } from "./+types/t.$customUrl.schedule";
 import styles from "./t.$customUrl.schedule.module.css";
+
+export { action, loader };
 
 export const middleware: Route.MiddlewareFunction[] = [timezoneMiddleware];
 

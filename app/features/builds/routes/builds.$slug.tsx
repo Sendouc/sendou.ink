@@ -41,12 +41,10 @@ import {
 } from "../builds-constants";
 import { buildsSearchParams } from "../builds-search-params";
 import type { AbilityCondition } from "../builds-types";
-
 import { loader } from "../loaders/builds.$slug.server";
+import styles from "./builds.$slug.module.css";
 
 export { loader };
-
-import styles from "./builds.$slug.module.css";
 
 export const shouldRevalidate = buildsSearchParams.shouldRevalidate;
 

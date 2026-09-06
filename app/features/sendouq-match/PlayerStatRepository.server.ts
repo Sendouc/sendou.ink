@@ -102,24 +102,23 @@ export async function findSeasonStagesByUserId({
 		.where("season", "=", season)
 		.execute();
 
-	return rows.reduce(
-		(acc, cur) => {
-			if (!acc[cur.stageId]) acc[cur.stageId] = {};
-
-			acc[cur.stageId]![cur.mode] = {
-				wins: cur.wins,
-				losses: cur.losses,
-			};
-
-			return acc;
-		},
-		{} as Partial<
+	return rows.reduce<
+		Partial<
 			Record<
 				StageId,
 				Partial<Record<ModeShort, { wins: number; losses: number }>>
 			>
-		>,
-	);
+		>
+	>((acc, cur) => {
+		if (!acc[cur.stageId]) acc[cur.stageId] = {};
+
+		acc[cur.stageId]![cur.mode] = {
+			wins: cur.wins,
+			losses: cur.losses,
+		};
+
+		return acc;
+	}, {});
 }
 
 /** Mates or enemies for a user in a given season, ordered by most maps played together. */

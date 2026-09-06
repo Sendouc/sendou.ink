@@ -14,10 +14,9 @@ import { MemberAdder } from "../components/MemberAdder";
 import { loader } from "../loaders/q.preparing.server";
 import { preparingSchema } from "../q-action-schemas";
 import { FULL_GROUP_SIZE, sqGroupChannel } from "../q-constants";
+import styles from "./q.preparing.module.css";
 
 export { action, loader };
-
-import styles from "./q.preparing.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["q", "user"],

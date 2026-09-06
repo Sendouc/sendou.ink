@@ -1,4 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
+import { cachedUserSQLeaderboardTopData } from "./utils.server";
 
 // One finished season, one user sitting at rank 5 (so: top-10 AND top-100).
 vi.mock("~/features/mmr/core/Seasons", () => ({
@@ -7,8 +8,6 @@ vi.mock("~/features/mmr/core/Seasons", () => ({
 vi.mock("~/features/leaderboards/LeaderboardRepository.server", () => ({
 	findUserSPLeaderboard: async () => [{ id: 100, placementRank: 5 }],
 }));
-
-import { cachedUserSQLeaderboardTopData } from "./utils.server";
 
 describe("SendouQ leaderboard widget cache", () => {
 	test("counts a season once when the cache is filled concurrently", async () => {

@@ -12,12 +12,10 @@ import { useUser } from "~/features/auth/core/user";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { BADGES_DOC_LINK, BADGES_PAGE, navIconUrl } from "~/utils/urls";
 import { metaTags } from "../../../utils/remix";
-
 import { type BadgesLoaderData, loader } from "../loaders/badges.server";
+import styles from "./badges.module.css";
 
 export { loader };
-
-import styles from "./badges.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: "badges",

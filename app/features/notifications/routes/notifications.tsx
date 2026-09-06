@@ -15,10 +15,9 @@ import {
 	useMarkNotificationsAsSeen,
 	useStickyUnseenIds,
 } from "../notifications-hooks";
+import styles from "./notifications.module.css";
 
 export { loader };
-
-import styles from "./notifications.module.css";
 
 export const meta: MetaFunction = (args) => {
 	return metaTags({

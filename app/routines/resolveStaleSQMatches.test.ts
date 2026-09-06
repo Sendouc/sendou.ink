@@ -1,26 +1,28 @@
 import { sub } from "date-fns";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-
-vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
-	send: vi.fn(),
-	notifyNotificationsChanged: vi.fn(),
-}));
-vi.mock("~/features/mmr/tiered.server", () => ({
-	refreshUserSkills: vi.fn(),
-}));
-vi.mock("~/features/sendouq/core/SendouQ.server", () => ({
-	refreshSendouQInstance: vi.fn(),
-}));
-vi.mock("~/features/sendouq-streams/core/streams.server", () => ({
-	refreshStreamsCache: vi.fn(),
-}));
-
 import * as SQMatchFactory from "~/db/seed/factories/SQMatchFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import { FULL_GROUP_SIZE } from "~/features/sendouq/q-constants";
 import * as SQMatchRepository from "~/features/sendouq-match/SQMatchRepository.server";
 import { ResolveStaleSQMatchesRoutine } from "./resolveStaleSQMatches";
+
+vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
+	send: vi.fn(),
+	notifyNotificationsChanged: vi.fn(),
+}));
+
+vi.mock("~/features/mmr/tiered.server", () => ({
+	refreshUserSkills: vi.fn(),
+}));
+
+vi.mock("~/features/sendouq/core/SendouQ.server", () => ({
+	refreshSendouQInstance: vi.fn(),
+}));
+
+vi.mock("~/features/sendouq-streams/core/streams.server", () => ({
+	refreshStreamsCache: vi.fn(),
+}));
 
 const users = UserFactory.pool();
 /** The two SendouQ groups: the first FULL_GROUP_SIZE users against the rest. */

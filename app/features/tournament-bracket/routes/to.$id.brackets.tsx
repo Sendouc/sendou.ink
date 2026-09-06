@@ -37,6 +37,7 @@ import {
 	TournamentProvider,
 	useTournament,
 } from "~/features/tournament/tournament-context";
+import { tournamentJoinPage } from "~/features/tournament/tournament-urls";
 import { useHydrated } from "~/hooks/useHydrated";
 import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
 import { useSearchParam } from "~/modules/search-params/hooks";
@@ -65,15 +66,13 @@ import {
 	tournamentBracketChannel,
 	tournamentChannel,
 } from "../tournament-bracket-utils";
+import styles from "./to.$id.brackets.module.css";
 
 export { action, loader };
 
 export const handle: SendouRouteHandle = {
 	mainBreakout: true,
 };
-
-import { tournamentJoinPage } from "~/features/tournament/tournament-urls";
-import styles from "./to.$id.brackets.module.css";
 
 export default function TournamentBracketsPage() {
 	const data = useLoaderData<TournamentBracketsLoaderData>();

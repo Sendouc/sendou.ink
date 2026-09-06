@@ -42,11 +42,11 @@ import {
 	joinQueueFormSchema,
 	lookingSchema,
 } from "../tournament-lfg-schemas";
+import styles from "./to.$id.looking.module.css";
 
 export { action } from "../actions/to.$id.looking.server";
-export { loader };
 
-import styles from "./to.$id.looking.module.css";
+export { loader };
 
 export const handle: SendouRouteHandle = {
 	i18n: ["q", "tournament", "forms", "common", "user"],

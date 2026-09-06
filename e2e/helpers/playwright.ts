@@ -392,10 +392,11 @@ export async function submit(page: Page, target?: string | Locator) {
 	// page twice. Waiting on the rendered search rather than the browser's URL
 	// covers the commit those remounts land in, which trails the history entry
 	// — otherwise the second remount tears down whatever the test opens next.
-	await page.waitForSelector(
-		'[data-testid="hydrated"]:not([data-location-search*="__success"]):not([data-location-search*="__error"])',
-		{ state: "attached", timeout: 5_000 },
-	);
+	await page
+		.locator(
+			'[data-testid="hydrated"]:not([data-location-search*="__success"]):not([data-location-search*="__error"])',
+		)
+		.waitFor({ state: "attached", timeout: 5_000 });
 }
 
 export async function waitForPOSTResponse(page: Page, cb: () => Promise<void>) {
@@ -474,10 +475,9 @@ async function expectRouterIdle(page: Page) {
 	// A submit's redirect plus the target page's loaders can exceed the default
 	// expect timeout when the full suite is loading all workers.
 	try {
-		await page.waitForSelector(
-			'[data-testid="hydrated"][data-router-idle="true"]',
-			{ state: "attached", timeout: 15_000 },
-		);
+		await page
+			.locator('[data-testid="hydrated"][data-router-idle="true"]')
+			.waitFor({ state: "attached", timeout: 15_000 });
 	} catch (error) {
 		// data-router-busy names what is still in flight, which the attribute
 		// assertion's own message does not
@@ -498,6 +498,7 @@ const DND_KIT_CLICK_SUPPRESSION_MS = 50;
 
 /** Waits out dnd-kit's post-drop click suppression, which nothing observable marks the end of. Call after the `mouse.up()` of a drag. */
 export async function waitForDropToSettle(page: Page) {
+	// biome-ignore lint/nursery/noPlaywrightWaitForTimeout: the suppression window has no observable end
 	await page.waitForTimeout(2 * DND_KIT_CLICK_SUPPRESSION_MS);
 }
 

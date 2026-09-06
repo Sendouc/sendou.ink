@@ -19,10 +19,9 @@ import { GroupLeaver } from "../components/GroupLeaver";
 import { loader } from "../loaders/q.ready.server";
 import { readySchema } from "../q-action-schemas";
 import { sqGroupChannel } from "../q-constants";
+import styles from "./q.ready.module.css";
 
 export { action, loader };
-
-import styles from "./q.ready.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["q", "user"],

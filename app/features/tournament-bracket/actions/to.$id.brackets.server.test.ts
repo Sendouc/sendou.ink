@@ -1,11 +1,4 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-
-vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
-	send: vi.fn(),
-	notifyNotificationsChanged: vi.fn(),
-	notifyRoomsChangedByRoomIds: vi.fn(),
-}));
-
 import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentTeamFactory from "~/db/seed/factories/TournamentTeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
@@ -15,6 +8,12 @@ import type { bracketSchema } from "~/features/tournament-bracket/tournament-bra
 import { invariant } from "~/utils/invariant";
 import { wrappedAction } from "~/utils/Test";
 import { action } from "./to.$id.brackets.server";
+
+vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
+	send: vi.fn(),
+	notifyNotificationsChanged: vi.fn(),
+	notifyRoomsChangedByRoomIds: vi.fn(),
+}));
 
 const bracketsAction = wrappedAction<typeof bracketSchema>({
 	action,

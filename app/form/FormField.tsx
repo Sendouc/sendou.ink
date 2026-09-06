@@ -615,6 +615,7 @@ interface ArrayItemCustomRenderProps {
  * Memoized so an edit re-renders only the item whose slice changed. Anything the render reads outside its
  * own item must go through `useFormValue`; callbacks read the array via the store so a skipped render never acts on stale values.
  */
+// biome-ignore lint/nursery/useReactFunctionComponentDefinition: memo() takes a function expression
 const ArrayItemCustomRender = React.memo(function ArrayItemCustomRender({
 	arrayName,
 	index,

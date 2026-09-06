@@ -2,7 +2,7 @@ import clsx from "clsx";
 import type * as React from "react";
 import styles from "./Main.module.css";
 
-export const Main = ({
+export function Main({
 	children,
 	className,
 	classNameOverwrite,
@@ -20,7 +20,7 @@ export const Main = ({
 	breakoutContainer?: boolean;
 	style?: React.CSSProperties;
 	testId?: string;
-}) => {
+}) {
 	return (
 		<main
 			className={
@@ -45,7 +45,7 @@ export const Main = ({
 			{children}
 		</main>
 	);
-};
+}
 
 export { styles as mainStyles };
 

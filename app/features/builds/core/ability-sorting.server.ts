@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import {
 	abilities,
 	mainOnlyAbilitiesShort,
@@ -7,13 +8,10 @@ import type {
 	BuildAbilitiesTuple,
 } from "~/modules/in-game-lists/types";
 
-const abilityToIndex = abilities.reduce(
-	(acc, ability, index) => {
-		acc[ability.name] = index;
-		return acc;
-	},
-	{} as Record<Ability, number>,
-);
+const abilityToIndex = R.mapToObj(abilities, (ability, index) => [
+	ability.name,
+	index,
+]);
 
 const mainOnlyAbilitiesSet = new Set(mainOnlyAbilitiesShort);
 
