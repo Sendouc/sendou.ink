@@ -43,6 +43,15 @@
 	.grid {
 		grid-template-columns: 1fr 1fr;
 	}
+
+	.selected {
+		position: sticky;
+		top: var(--layout-sticky-top);
+		align-self: start;
+		max-height: calc(100dvh - var(--layout-sticky-top) - var(--s-4));
+		overflow-y: auto;
+		scrollbar-gutter: stable;
+	}
 }
 
 .available,

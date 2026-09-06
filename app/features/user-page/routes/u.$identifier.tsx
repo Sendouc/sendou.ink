@@ -73,6 +73,8 @@ export const handle: SendouRouteHandle = {
 	},
 };
 
+const WIDE_LAYOUT_SUB_PAGES = ["results", "edit-widgets"];
+
 export default function UserPageLayout() {
 	const data = useLoaderData<typeof loader>();
 	const user = useUser();
@@ -137,7 +139,11 @@ export default function UserPageLayout() {
 	];
 
 	return (
-		<Main bigger={location.pathname.includes("results")}>
+		<Main
+			bigger={WIDE_LAYOUT_SUB_PAGES.some((subPage) =>
+				location.pathname.includes(subPage),
+			)}
+		>
 			<Outlet context={{ navItems }} />
 		</Main>
 	);
