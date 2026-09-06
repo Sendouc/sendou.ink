@@ -282,7 +282,23 @@ function AvailableWidgetsList({
 		Object.keys(widgetsByCategory) as Array<keyof typeof widgetsByCategory>
 	).sort((a, b) => a.localeCompare(b));
 
-	const searchLower = searchValue.toLowerCase();
+	const searchLower = searchValue.trim().toLowerCase();
+
+	const widgetMatchesSearch = (
+		widget: (typeof ALL_WIDGETS)[keyof typeof ALL_WIDGETS][number],
+		categoryName: string,
+	) => {
+		if (!searchLower) return true;
+
+		return [
+			t(`user:widget.${widget.id}` as const),
+			t(
+				`user:widgets.description.${widget.id}` as const,
+				widgetDescriptionParams(widget.id),
+			),
+			categoryName,
+		].some((text) => text.toLowerCase().includes(searchLower));
+	};
 
 	return (
 		<div>
@@ -294,19 +310,16 @@ function AvailableWidgetsList({
 				placeholder={t("user:widgets.search")}
 			/>
 			{categoryKeys.map((category) => {
+				const categoryName = t(`user:widgets.category.${category}`);
 				const filteredWidgets = widgetsByCategory[category]!.filter((widget) =>
-					(t(`user:widget.${widget.id}` as const) as string)
-						.toLowerCase()
-						.includes(searchLower),
+					widgetMatchesSearch(widget, categoryName),
 				);
 
 				if (filteredWidgets.length === 0) return null;
 
 				return (
 					<div key={category} className={styles.categoryGroup}>
-						<div className={styles.categoryTitle}>
-							{t(`user:widgets.category.${category}`)}
-						</div>
+						<div className={styles.categoryTitle}>{categoryName}</div>
 						{filteredWidgets.map((widget) => {
 							const isSelected = selectedWidgets.some(
 								(w) => w.id === widget.id,
