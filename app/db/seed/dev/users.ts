@@ -1,3 +1,4 @@
+import { addDays } from "date-fns";
 import type { UserMapModePreferences } from "~/db/tables-json";
 import { ADMIN_DISCORD_ID } from "~/features/admin/admin-constants";
 import { BANNED_MAPS } from "~/features/match-profile/banned-maps";
@@ -21,6 +22,8 @@ import * as showcaseNames from "../core/showcaseNames";
 import * as UserFactory from "../factories/UserFactory";
 
 const SHOWCASE_COUNT = 100;
+/** Latest finished LUTI the seeded divisions are from. */
+const LUTI_SEASON = 17;
 const CROWD_COUNT = 396;
 
 export type SeededUsers = {
@@ -83,6 +86,8 @@ export async function seedUsers(): Promise<SeededUsers> {
 		{
 			patronTier: 2,
 			roles: ["VIDEO_ADDER", "TOURNAMENT_ORGANIZER", "ARTIST"],
+			div: "2",
+			divSeason: LUTI_SEASON,
 			matchProfile: {
 				mapModePreferences: fakePreferences(),
 				vc: "YES",
@@ -246,20 +251,30 @@ export function nzapWidgets(): StoredWidget[] {
 	return [
 		{ id: "bio-md", settings: { bio: showcaseNames.maxLengthBio() } },
 		{ id: "teams" },
-		{ id: "organizations" },
-		{ id: "patron-since" },
+		{ id: "live-stream" },
+		{ id: "luti-div" },
+		{
+			id: "countdown",
+			settings: { title: "Next LAN", date: addDays(new Date(), 42) },
+		},
+		{
+			id: "markdown",
+			settings: {
+				content:
+					"## Looking for\n\n- **Scrims** on weekdays\n- A *support* player\n\nDM me on Discord!",
+			},
+		},
 		{
 			id: "sens",
 			settings: { controller: "s2-pro-con", motionSens: 50, stickSens: 5 },
 		},
-		{ id: "timezone", settings: { timezone: "Europe/Stockholm" } },
 		{ id: "social-links" },
 		{ id: "weapon-pool" },
+		{ id: "map-mode-preferences" },
 		{ id: "badges-owned", settings: { favoriteBadgeIds: [] } },
 		{ id: "trophies-owned" },
 		{ id: "art", settings: { source: "ALL" } },
 		{ id: "x-rank-peaks", settings: { division: "both" } },
-		{ id: "highlighted-results" },
 	];
 }
 
@@ -283,6 +298,7 @@ function showcaseOptions(): Parameters<typeof UserFactory.create>[1] {
 			faker.number.float(1) < 0.6
 				? faker.helpers.arrayElement(LUTI_DIVS)
 				: undefined,
+		divSeason: LUTI_SEASON,
 		card: {
 			shortBio: faker.number.float(1) < 0.6 ? faker.lorem.sentence() : null,
 			bannerPresetImg: fakeBannerPresetImg(),

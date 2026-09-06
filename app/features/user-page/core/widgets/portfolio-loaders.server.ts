@@ -5,6 +5,8 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as FriendRepository from "~/features/friends/FriendRepository.server";
 import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
 import * as LFGRepository from "~/features/lfg/LFGRepository.server";
+import * as LiveStreamRepository from "~/features/live-streams/LiveStreamRepository.server";
+import { BANNED_MAPS } from "~/features/match-profile/banned-maps";
 import * as MatchProfileRepository from "~/features/match-profile/MatchProfileRepository.server";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
 import { userSkills as _userSkills } from "~/features/mmr/tiered.server";
@@ -15,6 +17,7 @@ import * as TrophyRepository from "~/features/trophies/TrophyRepository.server";
 import { canAccessTrophies } from "~/features/trophies/trophies-utils";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as VodRepository from "~/features/vods/VodRepository.server";
+import { modesShort } from "~/modules/in-game-lists/modes";
 import { weaponCategories } from "~/modules/in-game-lists/weapon-ids";
 import type { ExtractWidgetSettings } from "./types";
 import { cachedUserSQLeaderboardTopData } from "./utils.server";
@@ -313,6 +316,31 @@ export const WIDGET_LOADERS = {
 	},
 	friends: async (userId: number) => {
 		return FriendRepository.findFriendsByUserId(userId);
+	},
+	"luti-div": async (userId: number) => {
+		return UserRepository.findDivByUserId(userId);
+	},
+	"map-mode-preferences": async (userId: number) => {
+		const preferences =
+			await MatchProfileRepository.findMapModePreferencesByUserId(userId);
+		if (!preferences) return [];
+
+		return modesShort.flatMap((mode) => {
+			const preference = preferences.modes.find(
+				(m) => m.mode === mode,
+			)?.preference;
+			if (preference === "AVOID") return [];
+
+			const stages = (
+				preferences.pool.find((p) => p.mode === mode)?.stages ?? []
+			).filter((stageId) => !BANNED_MAPS[mode].includes(stageId));
+			if (stages.length === 0) return [];
+
+			return { mode, stages };
+		});
+	},
+	"live-stream": async (userId: number) => {
+		return LiveStreamRepository.findByUserId(userId);
 	},
 };
 

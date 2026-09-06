@@ -3,9 +3,10 @@ import { Link2 as LinkIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { BuildCard } from "~/components/BuildCard";
+import { Divider } from "~/components/Divider";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouPopover } from "~/components/elements/Popover";
-import { Image, StageImage, WeaponImage } from "~/components/Image";
+import { Image, ModeImage, StageImage, WeaponImage } from "~/components/Image";
 import { BskyIcon } from "~/components/icons/Bsky";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitchIcon } from "~/components/icons/Twitch";
@@ -36,6 +37,7 @@ import type {
 	ModeShort,
 	StageId,
 } from "~/modules/in-game-lists/types";
+import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
 import { logger } from "~/utils/logger";
 import type { SerializeFrom } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
@@ -50,10 +52,12 @@ import {
 	modeImageUrl,
 	navIconUrl,
 	teamPage,
+	twitchUrl,
 	userBuildsPage,
 	userResultsPage,
 	userVodsPage,
 } from "~/utils/urls";
+import * as Countdown from "../core/widgets/countdown";
 import type { LoadedWidget } from "../core/widgets/types";
 import styles from "./Widget.module.css";
 
@@ -279,6 +283,37 @@ export function Widget({
 				return widget.data.length === 0 ? null : (
 					<FriendsWidget friends={widget.data} />
 				);
+			case "luti-div":
+				if (!widget.data) return null;
+				return (
+					<BigValue
+						value={`Div ${widget.data.div}`}
+						footer={
+							widget.data.divSeason
+								? t("user:widget.luti-div.season", {
+										season: widget.data.divSeason,
+									})
+								: undefined
+						}
+					/>
+				);
+			case "map-mode-preferences":
+				return widget.data.length === 0 ? null : (
+					<MapModePreferencesWidget rows={widget.data} />
+				);
+			case "live-stream":
+				if (!widget.data) return null;
+				return <LiveStreamWidget stream={widget.data} />;
+			case "countdown":
+				return (
+					<CountdownWidget title={widget.data.title} date={widget.data.date} />
+				);
+			case "markdown":
+				return widget.data.content ? (
+					<article>
+						<Markdown>{widget.data.content}</Markdown>
+					</article>
+				) : null;
 			default:
 				assertUnreachable(widget);
 		}
@@ -973,6 +1008,113 @@ function GameBadgesDisplay({ badgeIds }: { badgeIds: string[] }) {
 					</SendouPopover>
 				);
 			})}
+		</div>
+	);
+}
+
+function MapModePreferencesWidget({
+	rows,
+}: {
+	rows: Extract<LoadedWidget, { id: "map-mode-preferences" }>["data"];
+}) {
+	return (
+		<div className={styles.mapModePreferences}>
+			{rows.map((row) => (
+				<div key={row.mode} className="stack sm">
+					<Divider>
+						<ModeImage mode={row.mode} size={32} />
+					</Divider>
+					<div className={styles.mapModePreferenceStages}>
+						{row.stages.map((stageId) => (
+							<StageImage
+								key={stageId}
+								stageId={stageId}
+								width={80}
+								className="rounded-sm"
+							/>
+						))}
+					</div>
+				</div>
+			))}
+		</div>
+	);
+}
+
+function LiveStreamWidget({
+	stream,
+}: {
+	stream: NonNullable<Extract<LoadedWidget, { id: "live-stream" }>["data"]>;
+}) {
+	const { t } = useTranslation(["user"]);
+
+	return (
+		<a
+			href={twitchUrl(stream.twitch)}
+			target="_blank"
+			rel="noreferrer"
+			className={styles.liveStream}
+		>
+			<img
+				src={twitchThumbnailUrlToSrc(stream.thumbnailUrl)}
+				alt=""
+				className={styles.liveStreamThumbnail}
+				loading="lazy"
+			/>
+			<div className={styles.liveStreamInfo}>
+				<span className={styles.liveBadge}>
+					{t("user:widget.live-stream.live")}
+				</span>
+				<span>
+					{t("user:widget.live-stream.viewers", {
+						count: stream.viewerCount,
+					})}
+				</span>
+				<span className={styles.liveStreamName}>{stream.twitch}</span>
+			</div>
+		</a>
+	);
+}
+
+const COUNTDOWN_UNITS_FAR = ["days", "hours", "minutes"] as const;
+const COUNTDOWN_UNITS_NEAR = ["hours", "minutes", "seconds"] as const;
+
+/** Comes out of the JSON column as an ISO string even though the settings type says `Date`. */
+function CountdownWidget({
+	title,
+	date,
+}: {
+	title: string;
+	date: Date | string;
+}) {
+	const { t } = useTranslation(["user"]);
+	const now = useAutoRerender("second");
+	const target = new Date(date);
+	const remaining = Countdown.remainingUntil(now, target);
+
+	return (
+		<div className="stack sm items-center">
+			{title ? <div className={styles.countdownTitle}>{title}</div> : null}
+			{remaining ? (
+				<div className={styles.countdown}>
+					{(remaining.days > 0
+						? COUNTDOWN_UNITS_FAR
+						: COUNTDOWN_UNITS_NEAR
+					).map((unit) => (
+						<div key={unit} className={styles.countdownPart}>
+							<div className={styles.widgetValueMain}>{remaining[unit]}</div>
+							<div className={styles.widgetValueFooter}>
+								{t(`user:widget.countdown.${unit}` as const)}
+							</div>
+						</div>
+					))}
+				</div>
+			) : (
+				<LocaleTime
+					date={target}
+					options={{ day: "numeric", month: "numeric", year: "numeric" }}
+					className={styles.widgetValueMain}
+				/>
+			)}
 		</div>
 	);
 }

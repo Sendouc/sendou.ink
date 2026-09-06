@@ -712,7 +712,7 @@ export async function findLatestFinalizedLeagueParticipants(args: {
 			"CalendarEvent.id",
 			"CalendarEventDate.eventId",
 		)
-		.select(["Tournament.id", "Tournament.settings"])
+		.select(["Tournament.id", "Tournament.settings", "CalendarEvent.name"])
 		.where("CalendarEvent.organizationId", "=", args.organizationId)
 		.where("CalendarEvent.name", "like", `${args.namePrefix}%`)
 		.where("Tournament.isFinalized", "=", 1)
@@ -742,6 +742,7 @@ export async function findLatestFinalizedLeagueParticipants(args: {
 
 	return {
 		tournamentId: league.id,
+		name: league.name,
 		bracketProgression: league.settings.bracketProgression,
 		participants,
 	};

@@ -23,6 +23,15 @@ export function findSettingsByUserId(userId: number) {
 		.executeTakeFirstOrThrow();
 }
 
+export function findMapModePreferencesByUserId(userId: number) {
+	return db
+		.selectFrom("User")
+		.select("User.mapModePreferences")
+		.where("User.id", "=", userId)
+		.executeTakeFirstOrThrow()
+		.then((row) => row.mapModePreferences);
+}
+
 /** Match profile weapon pool of one user, with ten-star status. */
 export function findWeaponPoolByUserId(userId: number) {
 	return db

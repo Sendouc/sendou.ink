@@ -263,6 +263,7 @@
 	"options.controller.grip": "Joy-Con Grip",
 	"options.controller.handheld": "Handheld",
 	"labels.tierListUrl": "Tier List URL",
+	"labels.title": "Title",
 	"labels.plusTier": "Tier",
 	"labels.comment": "Comment",
 	"errors.plusAlreadySuggested": "This user has already been suggested",

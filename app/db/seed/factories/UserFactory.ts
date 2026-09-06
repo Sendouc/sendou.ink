@@ -45,6 +45,8 @@ type Options = {
 	ban?: Omit<Parameters<typeof AdminRepository.banUser>[0], "userId">;
 	/** Division the user played their last season in. */
 	div?: NonNullable<Tables["User"]["div"]>;
+	/** LUTI season `div` is from, only applied together with it. */
+	divSeason?: number;
 	/** User card fields, submitted as the user themselves. */
 	card?: Partial<CardArgs>;
 	/** Replaces the user's widgets, i.e. their profile layout, in place of the default one. */
@@ -320,6 +322,7 @@ export async function grant(
 		matchProfile,
 		ban,
 		div,
+		divSeason,
 		card,
 		widgets,
 		preferences,
@@ -363,7 +366,9 @@ export async function grant(
 	}
 
 	if (div) {
-		await UserRepository.updateManyDivs([{ userId, div }]);
+		await UserRepository.updateManyDivs([
+			{ userId, div, divSeason: divSeason ?? null },
+		]);
 	}
 
 	if (widgets) {

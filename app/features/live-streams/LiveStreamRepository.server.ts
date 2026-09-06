@@ -25,6 +25,21 @@ export function insertTournamentStreamers(
 		.execute();
 }
 
+/** The user's ongoing Splatoon 3 Twitch stream, `undefined` when they are not live. */
+export function findByUserId(userId: number) {
+	return db
+		.selectFrom("LiveStream")
+		.select([
+			"LiveStream.twitch",
+			"LiveStream.viewerCount",
+			"LiveStream.thumbnailUrl",
+		])
+		.where("LiveStream.userId", "=", userId)
+		.where("LiveStream.twitch", "is not", null)
+		.$narrowType<{ twitch: string }>()
+		.executeTakeFirst();
+}
+
 export function findXRankStreams() {
 	return db
 		.selectFrom("LiveStream")

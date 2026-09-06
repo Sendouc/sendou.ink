@@ -93,6 +93,15 @@ function WidgetFormFields({ widgetId }: { widgetId: string }) {
 			return <FormField name="links" />;
 		case "tier-list":
 			return <FormField name="searchParams" />;
+		case "countdown":
+			return (
+				<div className="stack md">
+					<FormField name="title" />
+					<FormField name="date" />
+				</div>
+			);
+		case "markdown":
+			return <FormField name="content" />;
 		case "badges-owned":
 			return <FavoriteBadgesField />;
 		case "game-badges":

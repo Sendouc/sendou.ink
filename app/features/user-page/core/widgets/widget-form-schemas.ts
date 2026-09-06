@@ -1,3 +1,4 @@
+import { addYears } from "date-fns";
 import * as v from "valibot";
 import { ART_SOURCES } from "~/features/art/art-types";
 import { BADGE } from "~/features/badges/badges-constants";
@@ -6,6 +7,7 @@ import {
 	array,
 	badges,
 	customField,
+	datetime,
 	numberField,
 	select,
 	selectDynamic,
@@ -154,6 +156,27 @@ export const gameBadgesSmallSchema = v.object({
 	),
 });
 
+const COUNTDOWN_MAX_YEARS_AHEAD = 10;
+
+export const countdownSchema = v.object({
+	title: textField({
+		label: "labels.title",
+		maxLength: USER.COUNTDOWN_TITLE_MAX_LENGTH,
+	}),
+	date: datetime({
+		label: "labels.date",
+		max: () => addYears(new Date(), COUNTDOWN_MAX_YEARS_AHEAD),
+	}),
+});
+
+export const markdownSchema = v.object({
+	content: textArea({
+		label: "labels.text",
+		bottomText: "bottomTexts.bioMarkdown",
+		maxLength: USER.MARKDOWN_WIDGET_MAX_LENGTH,
+	}),
+});
+
 const WIDGET_FORM_SCHEMAS: Record<string, FormObjectSchema> = {
 	bio: bioSchema,
 	"bio-md": bioMdSchema,
@@ -169,6 +192,8 @@ const WIDGET_FORM_SCHEMAS: Record<string, FormObjectSchema> = {
 	"badges-owned": badgesOwnedSchema,
 	"game-badges": gameBadgesSchema,
 	"game-badges-small": gameBadgesSmallSchema,
+	countdown: countdownSchema,
+	markdown: markdownSchema,
 };
 
 export function getWidgetFormSchema(widgetId: string) {

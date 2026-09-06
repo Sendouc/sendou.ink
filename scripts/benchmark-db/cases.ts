@@ -433,12 +433,20 @@ export function buildCases(fx: Fixtures): {
 		LFGRepository.findByAuthorUserId(authorId),
 	);
 
+	add("LiveStreamRepository.findByUserId", fx.heavyUser, (user) =>
+		LiveStreamRepository.findByUserId(user.id),
+	);
 	addStatic("LiveStreamRepository.findXRankStreams", () =>
 		LiveStreamRepository.findXRankStreams(),
 	);
 
 	add("MatchProfileRepository.findSettingsByUserId", fx.heavyUser, (user) =>
 		MatchProfileRepository.findSettingsByUserId(user.id),
+	);
+	add(
+		"MatchProfileRepository.findMapModePreferencesByUserId",
+		fx.heavyUser,
+		(user) => MatchProfileRepository.findMapModePreferencesByUserId(user.id),
 	);
 	add("MatchProfileRepository.findWeaponPoolByUserId", fx.heavyUser, (user) =>
 		MatchProfileRepository.findWeaponPoolByUserId(user.id),
@@ -1384,6 +1392,9 @@ export function buildCases(fx: Fixtures): {
 	);
 	add("UserRepository.findPatronStartedAtByUserId", fx.heavyUser, (user) =>
 		UserRepository.findPatronStartedAtByUserId(user.id),
+	);
+	add("UserRepository.findDivByUserId", fx.heavyUser, (user) =>
+		UserRepository.findDivByUserId(user.id),
 	);
 	add("UserRepository.findJoinOrderByUserId", fx.heavyUser, (user) =>
 		UserRepository.findJoinOrderByUserId(user.id),

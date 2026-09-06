@@ -70,6 +70,14 @@ export const parseLutiDivFromName = (name: string): LutiDiv | null => {
 		: null;
 };
 
+/** The season number of a LUTI name like "LUTI: Season 15 - Division 2", or `null`. */
+export const parseLutiSeasonFromName = (name: string): number | null => {
+	const match = name.match(/\bseason\s*(\d+)\b/i);
+	if (!match) return null;
+
+	return Number(match[1]);
+};
+
 export const serializeLutiDiv = (div: LutiDiv): number => {
 	if (div === "X") return 0;
 

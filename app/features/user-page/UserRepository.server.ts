@@ -1120,6 +1120,19 @@ export async function findPatronStartedAtByUserId(userId: number) {
 	)?.patronStartedAt;
 }
 
+/** Division and season of the last LUTI the user placed in, `null` when they never have. */
+export async function findDivByUserId(userId: number) {
+	const row = await db
+		.selectFrom("User")
+		.select(["User.div", "User.divSeason"])
+		.where("id", "=", userId)
+		.executeTakeFirst();
+
+	if (!row?.div) return null;
+
+	return { div: row.div, divSeason: row.divSeason };
+}
+
 export async function findJoinOrderByUserId(userId: number) {
 	const row = await db
 		.selectFrom("User")
@@ -1251,15 +1264,15 @@ export function updateOwnProfile(args: UpdateProfileArgs) {
 
 /** Bulk-sets each user's latest LUTI division. Used by the `ComputeLutiDivs` routine. */
 export function updateManyDivs(
-	updates: Array<{ userId: number; div: string }>,
+	updates: Array<{ userId: number; div: string; divSeason: number | null }>,
 ) {
 	if (updates.length === 0) return;
 
 	return db.transaction().execute(async (trx) => {
-		for (const { userId, div } of updates) {
+		for (const { userId, div, divSeason } of updates) {
 			await trx
 				.updateTable("User")
-				.set({ div })
+				.set({ div, divSeason })
 				.where("id", "=", userId)
 				.execute();
 		}

@@ -999,6 +999,8 @@ export interface User {
 	hiddenCardStats: JSONColumnTypeNullable<Array<HideableUserCardStat>>;
 	/** Div in the latest finished LUTI (e.g. "2" or "X"). Must have been in a team that did not drop and the user played at least one match (got result as well) */
 	div: string | null;
+	/** LUTI season `div` was earned in. */
+	divSeason: number | null;
 	/** Peak XP as indicated by the user. Should have either `takoroka` or `tentatek` key defined but not both. */
 	unverifiedPeakXP: JSONColumnTypeNullable<PeakXP>;
 	/** Division the user card's XP is taken from. `null` when the user has not picked one, showing their highest XP across both. */

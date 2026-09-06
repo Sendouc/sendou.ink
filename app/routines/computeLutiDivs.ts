@@ -1,4 +1,7 @@
-import { parseLutiDivFromName } from "../features/scrims/scrims-utils";
+import {
+	parseLutiDivFromName,
+	parseLutiSeasonFromName,
+} from "../features/scrims/scrims-utils";
 import * as TournamentRepository from "../features/tournament/TournamentRepository.server";
 import { LUTI_ORGANIZATION_ID } from "../features/tournament-organization/tournament-organization-constants";
 import * as UserRepository from "../features/user-page/UserRepository.server";
@@ -22,6 +25,14 @@ export const ComputeLutiDivsRoutine = new Routine({
 			});
 		if (!league) return;
 
+		const divSeason = parseLutiSeasonFromName(league.name);
+		if (!divSeason) {
+			logger.warn(
+				`ComputeLutiDivs: could not parse season from league name "${league.name}", skipping the run`,
+			);
+			return;
+		}
+
 		const divByBracketIdx = new Map<number, string | null>();
 		const divOfBracket = (bracketIdx: number) => {
 			if (!divByBracketIdx.has(bracketIdx)) {
@@ -38,12 +49,12 @@ export const ComputeLutiDivsRoutine = new Routine({
 			return divByBracketIdx.get(bracketIdx)!;
 		};
 
-		const updates: Array<{ userId: number; div: string }> = [];
+		const updates: Parameters<typeof UserRepository.updateManyDivs>[0] = [];
 		for (const participant of league.participants) {
 			const div = divOfBracket(participant.startingBracketIdx ?? 0);
 			if (!div) continue;
 
-			updates.push({ userId: participant.userId, div });
+			updates.push({ userId: participant.userId, div, divSeason });
 		}
 
 		await UserRepository.updateManyDivs(updates);

@@ -263,6 +263,7 @@
 	"options.controller.grip": "Joy-Con 握把",
 	"options.controller.handheld": "手提模式",
 	"labels.tierListUrl": "自制强度榜 URL",
+	"labels.title": "",
 	"labels.plusTier": "级别",
 	"labels.comment": "评论",
 	"errors.plusAlreadySuggested": "此用户已被推荐过",

@@ -263,6 +263,7 @@
 	"options.controller.grip": "Soporte para Joy-Con",
 	"options.controller.handheld": "Modo portátil",
 	"labels.tierListUrl": "URL de Tier List",
+	"labels.title": "",
 	"labels.plusTier": "Tier",
 	"labels.comment": "Comentario",
 	"errors.plusAlreadySuggested": "Este usuario ya ha sido sugerido",

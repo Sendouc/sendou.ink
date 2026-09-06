@@ -263,6 +263,7 @@
 	"options.controller.grip": "",
 	"options.controller.handheld": "",
 	"labels.tierListUrl": "",
+	"labels.title": "",
 	"labels.plusTier": "",
 	"labels.comment": "Comentário",
 	"errors.plusAlreadySuggested": "",
