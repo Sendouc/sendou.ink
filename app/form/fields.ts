@@ -40,18 +40,6 @@ import type {
 	TrophyOption,
 } from "./types";
 
-const httpUrlSchema = v.pipe(
-	v.string(),
-	v.url(),
-	v.check((value) => {
-		try {
-			return ["http:", "https:"].includes(new URL(value).protocol);
-		} catch {
-			return false;
-		}
-	}, "Only http(s) URLs are allowed."),
-);
-
 export const formRegistry = new WeakMap<object, FormField>();
 
 /** Clones the schema first so shared instances (e.g. `id`, `stageId`) each get their own registry entry. */
@@ -165,11 +153,6 @@ type TextFieldArgs = WithTypedTranslationKeys<
 export function textFieldOptional(
 	args: TextFieldArgs,
 ): v.GenericSchema<string | null, string | null> {
-	// validated as a plain string, so unlike other optional text fields it has no null fallback and its key stays required
-	if (args.validate === "url") {
-		return registerTextField(httpUrlSchema, args, false, false) as never;
-	}
-
 	return registerTextField(
 		safeNullableStringSchema({ min: args.minLength, max: args.maxLength }),
 		args,
@@ -179,12 +162,12 @@ export function textFieldOptional(
 }
 
 export function textField(args: TextFieldArgs): v.GenericSchema<string> {
-	const schema =
-		args.validate === "url"
-			? httpUrlSchema
-			: safeStringSchema({ min: args.minLength, max: args.maxLength });
-
-	return registerTextField(schema, args, true, false) as never;
+	return registerTextField(
+		safeStringSchema({ min: args.minLength, max: args.maxLength }),
+		args,
+		true,
+		false,
+	) as never;
 }
 
 function registerTextField<T extends v.GenericSchema<any, string | null>>(
@@ -213,6 +196,16 @@ function textFieldRefined<T extends v.GenericSchema<any, string | null>>(
 	>,
 ): v.GenericSchema<any, string | null> {
 	let result: v.GenericSchema<any, string | null> = schema;
+
+	if (args.validate === "url") {
+		result = v.pipe(
+			result,
+			v.check(
+				(val) => val === null || isHttpUrl(val),
+				"forms:errors.invalidUrl",
+			),
+		);
+	}
 
 	if (args.regExp) {
 		result = v.pipe(
@@ -244,6 +237,15 @@ function textFieldRefined<T extends v.GenericSchema<any, string | null>>(
 	}
 
 	return result;
+}
+
+/** Only http(s) is allowed so that e.g. a `javascript:` URL can never end up in a rendered link. */
+function isHttpUrl(value: string) {
+	try {
+		return ["http:", "https:"].includes(new URL(value).protocol);
+	} catch {
+		return false;
+	}
 }
 
 export function inGameName(

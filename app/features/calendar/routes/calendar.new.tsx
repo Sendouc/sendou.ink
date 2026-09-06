@@ -198,9 +198,9 @@ function useDefaultValues() {
 				? databaseTimestampToDate(data.eventToEdit.startTimes[0])
 				: getDateAtNextFullHour(new Date())
 			: null,
-		// tournaments hide this field, so seed a valid URL for the url-format validation (the action coalesces to the same default)
+		// tournaments hide this field, the action coalesces the empty value to the default
 		bracketUrl: data.isAddingTournament
-			? "https://sendou.ink"
+			? ""
 			: (data.eventToEdit?.bracketUrl ?? ""),
 		discordInviteCode: baseEvent?.discordInviteCode ?? "",
 		tags: baseEvent?.tags ?? [],

@@ -5,6 +5,7 @@ import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentOrganizationFactory from "~/db/seed/factories/TournamentOrganizationFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import invariant from "~/utils/invariant";
 import { wrappedAction } from "~/utils/Test";
 import type { calendarNewSchemaServer } from "../calendar-new-schemas.server";
 import { defaultBracketsFormValues } from "../calendar-progression-form";
@@ -125,5 +126,86 @@ describe("calendar new action: editing an event with badge prizes", () => {
 		);
 
 		expect(await badgePrizeIds(tournament.eventId)).toEqual([badge.id]);
+	});
+});
+
+describe("calendar new action: bracket URL", () => {
+	beforeEach(async () => {
+		await UserFactory.createRegular(null, { roles: ["TOURNAMENT_ORGANIZER"] });
+	});
+
+	const newEventFields = (
+		overrides: Partial<Parameters<typeof editAction>[0]>,
+	) => ({
+		toToolsEnabled: false,
+		name: "In The Zone",
+		description: "",
+		organizationId: "",
+		rules: "",
+		date: [addDays(new Date(), 7).toISOString() as never],
+		startTime: null,
+		bracketUrl: "",
+		discordInviteCode: "",
+		tags: [],
+		badges: [],
+		trophyId: null,
+		avatarImgId: null,
+		regClosesAt: "0" as const,
+		minMembersPerTeam: "4" as const,
+		maxMembersPerTeam: undefined,
+		toToolsMode: "TO" as const,
+		pool: "",
+		...defaultBracketsFormValues(),
+		isRanked: true,
+		enableNoScreenToggle: true,
+		enableSubs: true,
+		autonomousSubs: true,
+		requireInGameNames: false,
+		isInvitational: false,
+		isTest: false,
+		isDraft: false,
+		requireSendouQParticipation: false,
+		...overrides,
+	});
+
+	test.each([
+		{
+			why: "missing",
+			bracketUrl: "",
+			expectedError: "forms:errors.bracketUrlRequired",
+		},
+		{
+			why: "javascript: protocol",
+			bracketUrl: "javascript:alert(1)",
+			expectedError: "forms:errors.invalidUrl",
+		},
+	])("rejects bracket URL ($why)", async ({ bracketUrl, expectedError }) => {
+		const res = await editAction(newEventFields({ bracketUrl }), {
+			user: "regular",
+		});
+
+		expect(res.fieldErrors.bracketUrl).toBe(expectedError);
+	});
+
+	test("tournament with no bracket URL gets the default one", async () => {
+		const res = await editAction(
+			newEventFields({
+				toToolsEnabled: true,
+				date: [],
+				startTime: addDays(new Date(), 7).toISOString() as never,
+			}),
+			{ user: "regular" },
+		);
+
+		expect(res.fieldErrors).toBeUndefined();
+
+		const location =
+			res instanceof Response ? res.headers.get("Location") : null;
+		invariant(location, "expected a redirect to the created event");
+
+		const created = await CalendarRepository.findById(
+			Number(location.split("/").at(-1)),
+		);
+		expect(created?.bracketUrl).toBe("https://sendou.ink");
 	});
 });
