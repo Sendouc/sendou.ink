@@ -22,6 +22,7 @@ import { Link, useFetcher, useLoaderData, useMatches } from "react-router";
 import * as R from "remeda";
 import * as v from "valibot";
 import { SendouButton } from "~/components/elements/Button";
+import { FormMessage } from "~/components/FormMessage";
 import { Image } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { MainSlotIcon } from "~/components/icons/MainSlot";
@@ -69,6 +70,7 @@ export default function EditWidgetsPage() {
 		Array<Tables["UserWidget"]["widget"]>
 	>(data.currentWidgets);
 	const [expandedWidgetId, setExpandedWidgetId] = useState<string | null>(null);
+	const [emptySaveAttempted, setEmptySaveAttempted] = useState(false);
 
 	const hasUnsavedChangesRef = useRef<
 		Parameters<typeof useUnsavedChangesChecker>[0]["current"]
@@ -144,6 +146,11 @@ export default function EditWidgetsPage() {
 	};
 
 	const handleSubmit = () => {
+		if (selectedWidgets.length === 0) {
+			setEmptySaveAttempted(true);
+			return;
+		}
+
 		const invalidWidgetIds = computeInvalidWidgetIds(selectedWidgets);
 		const firstInvalid = selectedWidgets.find((w) =>
 			invalidWidgetIds.has(w.id),
@@ -198,6 +205,11 @@ export default function EditWidgetsPage() {
 					<SendouButton onClick={handleSubmit}>
 						{t("common:actions.save")}
 					</SendouButton>
+					{emptySaveAttempted && selectedWidgets.length === 0 ? (
+						<FormMessage type="error" spaced={false}>
+							{t("user:widgets.emptyError")}
+						</FormMessage>
+					) : null}
 				</div>
 			</header>
 

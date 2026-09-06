@@ -11,4 +11,12 @@ describe("widgetsEditSchema", () => {
 
 		expect(result.success).toBe(true);
 	});
+
+	test("rejects an empty widget list", () => {
+		const result = v.safeParse(widgetsEditSchema(false), {
+			widgets: JSON.stringify([]),
+		});
+
+		expect(result.success).toBe(false);
+	});
 });

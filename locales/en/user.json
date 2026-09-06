@@ -74,6 +74,7 @@
 	"widgets.add": "Add",
 	"widgets.remove": "Remove",
 	"widgets.maxReached": "Maximum widgets reached",
+	"widgets.emptyError": "Your profile needs at least one widget",
 	"widgets.search": "Search widgets...",
 	"widgets.category.misc": "Miscellaneous",
 	"widgets.category.trophies": "Trophies",

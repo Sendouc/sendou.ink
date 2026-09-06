@@ -74,6 +74,7 @@
 	"widgets.add": "",
 	"widgets.remove": "",
 	"widgets.maxReached": "",
+	"widgets.emptyError": "",
 	"widgets.search": "",
 	"widgets.category.misc": "",
 	"widgets.category.trophies": "",

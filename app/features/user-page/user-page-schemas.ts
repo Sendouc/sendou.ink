@@ -177,6 +177,7 @@ export const widgetsEditSchema = (isSupporter: boolean) => {
 			safeJSONParse,
 			v.pipe(
 				v.array(widgetSettingsSchema),
+				v.minLength(1),
 				v.maxLength(max.main + max.side),
 				v.check((widgets) => {
 					let mainCount = 0;
