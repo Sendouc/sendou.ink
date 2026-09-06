@@ -74,6 +74,7 @@
 	"widgets.side": "Lateral",
 	"widgets.add": "Añadir",
 	"widgets.remove": "Quitar",
+	"widgets.added": "",
 	"widgets.maxReached": "Límite máximo de widgets alcanzado",
 	"widgets.emptyError": "",
 	"widgets.saveError": "",

@@ -343,7 +343,11 @@ function AvailableWidgetsList({
 												isDisabled={isSelected || isMaxReached}
 												testId={`add-widget-${widget.id}`}
 											>
-												{t("user:widgets.add")}
+												{isSelected
+													? t("user:widgets.added")
+													: isMaxReached
+														? t("user:widgets.maxReached")
+														: t("user:widgets.add")}
 											</SendouButton>
 										)}
 									</div>
