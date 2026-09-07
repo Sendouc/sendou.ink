@@ -219,7 +219,7 @@ export const WIDGET_LOADERS = {
 		return VodRepository.findByUserId(userId, 3);
 	},
 	"lfg-posts": async (userId: number) => {
-		return LFGRepository.findByAuthorUserId(userId);
+		return LFGRepository.findByAuthorUserId(userId, getUser());
 	},
 	"top-500-weapons": async (userId: number) => {
 		const placements =
