@@ -73,7 +73,6 @@
 .popover {
 	position: fixed;
 	position-area: block-end;
-	position-try-fallbacks: flip-block;
 	width: anchor-size(width);
 	min-width: anchor-size(width);
 	/* fills the space the position-area leaves (its containing block), less the

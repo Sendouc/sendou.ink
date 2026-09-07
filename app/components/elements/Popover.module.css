@@ -9,7 +9,6 @@
 .content {
 	position: fixed;
 	position-area: block-end;
-	position-try-fallbacks: flip-block;
 	justify-self: anchor-center;
 	margin: var(--s-2) 0;
 	max-width: min(20rem, calc(100vw - var(--s-4)));
@@ -40,7 +39,6 @@
 
 	&[data-placement="right"] {
 		position-area: inline-end;
-		position-try-fallbacks: flip-inline;
 		justify-self: unset;
 		align-self: anchor-center;
 	}

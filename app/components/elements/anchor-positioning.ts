@@ -19,20 +19,22 @@ export type AnchorPlacement =
 	| "bottom start"
 	| "bottom end";
 
-/** The `position-area` of each block side, per placement. "right" has no block side to pick. */
-const POSITION_AREAS: Partial<
-	Record<AnchorPlacement, { below: string; above: string }>
+/** The `position-area` of the side each placement asks for, and of the opposite one. */
+const POSITION_AREAS: Record<
+	AnchorPlacement,
+	{ preferred: string; flipped: string }
 > = {
-	top: { below: "block-end", above: "block-start" },
-	bottom: { below: "block-end", above: "block-start" },
+	top: { preferred: "block-start", flipped: "block-end" },
+	bottom: { preferred: "block-end", flipped: "block-start" },
 	"bottom start": {
-		below: "block-end span-inline-end",
-		above: "block-start span-inline-end",
+		preferred: "block-end span-inline-end",
+		flipped: "block-start span-inline-end",
 	},
 	"bottom end": {
-		below: "block-end span-inline-start",
-		above: "block-start span-inline-start",
+		preferred: "block-end span-inline-start",
+		flipped: "block-start span-inline-start",
 	},
+	right: { preferred: "inline-end", flipped: "inline-start" },
 };
 
 /**
@@ -40,12 +42,14 @@ const POSITION_AREAS: Partial<
  * there for as long as it stays open.
  *
  * Where CSS anchor positioning is supported it only pins the `position-area`,
- * the CSS handles the rest. `position-try-fallbacks` cannot do the picking on
- * its own: it flips only when a side overflows, so a popover capped to the
- * space it has never flips, and one taller than both sides overflows either
- * way and so stays put. Browsers without anchor positioning (Chrome < 125,
- * Safari < 26, Firefox < 147), where the popover would land in the top left
- * corner of the viewport, get positioned here in full.
+ * the CSS handles the rest. `position-try-fallbacks` is deliberately not used:
+ * it flips only when a side overflows, so a popover capped to the space it has
+ * never flips, and on iOS 26 a popover carrying it locks up the page for good
+ * when it leaves the top layer during a navigation. Presumably an iOS 26 WebKit
+ * bug, so a pure CSS solution is worth retrying once it is fixed upstream, but
+ * verify it in the iOS simulator before deploying. Browsers without anchor
+ * positioning (Chrome < 125, Safari < 26, Firefox < 147), where the popover
+ * would land in the top left corner of the viewport, get positioned here in full.
  */
 export function useAnchorPositioning({
 	isOpen,
@@ -71,27 +75,28 @@ export function useAnchorPositioning({
 		const popover = popoverRef.current;
 		if (!isOpen || !popover) return;
 
-		const positionArea = POSITION_AREAS[placement];
 		const anchorPositioned = CSS.supports("anchor-name: --a");
-		if (anchorPositioned && !positionArea) return;
 
 		/** Picked on the first measurement, so growing or shrinking content cannot move the popover. */
-		let below: boolean | null = null;
+		let fitsPreferred: boolean | null = null;
 
 		const position = () => {
 			const anchor = getAnchorRef.current();
 			// a popover shown after this effect (a controlled one) measures as hidden
 			if (!anchor || !popover.matches(":popover-open")) return;
 
-			below ??= opensBelow(popover, anchor, placement);
-			popover.dataset.side = below ? "below" : "above";
+			fitsPreferred ??= preferredSideFits(popover, anchor, placement);
+			const below = placement === "top" ? !fitsPreferred : fitsPreferred;
+			if (placement !== "right") {
+				popover.dataset.side = below ? "below" : "above";
+			}
 
-			if (positionArea && anchorPositioned) {
+			if (anchorPositioned) {
+				const area = POSITION_AREAS[placement];
 				popover.style.setProperty(
 					"position-area",
-					below ? positionArea.below : positionArea.above,
+					fitsPreferred ? area.preferred : area.flipped,
 				);
-				popover.style.setProperty("position-try-fallbacks", "none");
 				return;
 			}
 
@@ -127,27 +132,36 @@ export function useAnchorPositioning({
 			contentObserver?.disconnect();
 			delete popover.dataset.side;
 			popover.style.removeProperty("position-area");
-			popover.style.removeProperty("position-try-fallbacks");
 			applyStyles(popover, {});
 		};
 	}, [isOpen, popoverRef, placement, matchAnchorWidth, constrainHeight]);
 }
 
-/** Keeps to the side the placement asks for, taking the roomier one when the content does not fit there. */
-function opensBelow(
+/** Whether to keep to the side the placement asks for; the roomier one is taken when the content does not fit there. */
+function preferredSideFits(
 	popover: HTMLElement,
 	anchor: Element,
 	placement: AnchorPlacement,
 ) {
-	const { above, below } = spaceAroundAnchor(
-		anchor.getBoundingClientRect(),
-		getComputedStyle(popover),
-	);
+	const anchorRect = anchor.getBoundingClientRect();
+	const computed = getComputedStyle(popover);
 
-	const prefersBelow = placement !== "top";
-	return naturalHeight(popover) <= (prefersBelow ? below : above)
-		? prefersBelow
-		: below > above;
+	if (placement === "right") {
+		const spaceInlineStart = anchorRect.left - VIEWPORT_PADDING;
+		const spaceInlineEnd =
+			window.innerWidth - anchorRect.right - VIEWPORT_PADDING;
+		const [preferred, other] =
+			computed.direction === "rtl"
+				? [spaceInlineStart, spaceInlineEnd]
+				: [spaceInlineEnd, spaceInlineStart];
+		const width = popover.getBoundingClientRect().width;
+		return width <= preferred || preferred >= other;
+	}
+
+	const { above, below } = spaceAroundAnchor(anchorRect, computed);
+	const [preferred, other] =
+		placement === "top" ? [above, below] : [below, above];
+	return naturalHeight(popover) <= preferred || preferred >= other;
 }
 
 /**
