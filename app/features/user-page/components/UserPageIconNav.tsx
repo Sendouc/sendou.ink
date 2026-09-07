@@ -35,7 +35,7 @@ export function UserPageIconNav({ items }: { items: UserPageNavItem[] }) {
 					aria-label={
 						item.count !== undefined
 							? `${item.label} (${item.count})`
-							: item.label
+							: undefined
 					}
 				>
 					<Image
@@ -44,6 +44,7 @@ export function UserPageIconNav({ items }: { items: UserPageNavItem[] }) {
 						height={24}
 						alt=""
 					/>
+					<span className={styles.label}>{item.label}</span>
 				</NavLink>
 			))}
 		</nav>
