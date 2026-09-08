@@ -149,6 +149,8 @@
 	"controllers.s1-pro-con": "Switch 1 Pro Controller",
 	"controllers.s2-pro-con": "Switch 2 Pro Controller",
 	"controllers.grip": "Joy-Con Grip",
+	"controllers.s1-split-joycon": "Switch 1 Split Joy-Con",
+	"controllers.s2-split-joycon": "Switch 2 Split Joy-Con",
 	"controllers.handheld": "Handheld",
 	"stickSens": "R-stick sens",
 	"motionSens": "Motion sens",

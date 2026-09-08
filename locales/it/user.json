@@ -150,6 +150,8 @@
 	"controllers.s1-pro-con": "",
 	"controllers.s2-pro-con": "",
 	"controllers.grip": "",
+	"controllers.s1-split-joycon": "",
+	"controllers.s2-split-joycon": "",
 	"controllers.handheld": "",
 	"stickSens": "Sensitività Joystick Dx",
 	"motionSens": "Sensitività Giroscopio",

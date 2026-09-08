@@ -94,7 +94,14 @@ export const peakXpWeaponSchema = v.object({
 	}),
 });
 
-const CONTROLLERS = ["s1-pro-con", "s2-pro-con", "grip", "handheld"] as const;
+const CONTROLLERS = [
+	"s1-pro-con",
+	"s2-pro-con",
+	"grip",
+	"s1-split-joycon",
+	"s2-split-joycon",
+	"handheld",
+] as const;
 
 const sensValueSchema = v.nullable(v.picklist(SENS_OPTIONS));
 

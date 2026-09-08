@@ -261,6 +261,8 @@
 	"options.controller.s1-pro-con": "Switch 1 Pro Controller",
 	"options.controller.s2-pro-con": "Switch 2 Pro Controller",
 	"options.controller.grip": "Joy-Con Grip",
+	"options.controller.s1-split-joycon": "Switch 1 Split Joy-Con",
+	"options.controller.s2-split-joycon": "Switch 2 Split Joy-Con",
 	"options.controller.handheld": "Handheld",
 	"labels.tierListUrl": "Tier List URL",
 	"labels.title": "Title",
