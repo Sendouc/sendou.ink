@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import { Ban } from "lucide-react";
 import {
+	type ColorScheme,
 	PicoCAD2Context,
 	PicoCAD2Viewer,
 	type RenderStats,
@@ -14,6 +15,7 @@ import {
 	useState,
 } from "react";
 import { TierPill } from "~/components/TierPill";
+import { useTheme } from "~/features/theme/core/provider";
 import { IS_E2E_TEST_RUN } from "~/utils/e2e";
 import { decompressTrophyModel } from "../trophies-utils";
 import style from "./Trophy.module.css";
@@ -106,6 +108,7 @@ export function Trophy({
 	}
 
 	const modelState = decompressTrophyModel(model);
+	const colorScheme = useTrophyColorScheme();
 
 	// stable ref callback identity, else React re-attaches and rebuilds the viewer every render
 	const canvasRef = useCallback(
@@ -122,6 +125,7 @@ export function Trophy({
 				canvas,
 				context,
 				resolution: { width: 128, height: 128, scale: 4 },
+				colorScheme,
 			});
 			viewerRef.current = viewer;
 
@@ -175,6 +179,7 @@ export function Trophy({
 			preview,
 			staticOnSoftwareRendering,
 			disableCameraControls,
+			colorScheme,
 		],
 	);
 
@@ -237,6 +242,13 @@ export function Trophy({
 			{cornerPill}
 		</div>
 	);
+}
+
+function useTrophyColorScheme(): ColorScheme {
+	const { userTheme, htmlThemeClass } = useTheme();
+	if (userTheme === "auto") return "auto";
+
+	return htmlThemeClass || "auto";
 }
 
 let softwareRenderingDetected: boolean | undefined;
