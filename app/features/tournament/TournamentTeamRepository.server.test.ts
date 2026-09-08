@@ -359,6 +359,71 @@ describe("TournamentTeamRepository", () => {
 		});
 	});
 
+	describe("findAllRegistrationsByUserIds", () => {
+		const WINDOW_STARTS_AT = 1_700_000_000;
+		const DAY_IN_SECONDS = 60 * 60 * 24;
+		const WINDOW_ENDS_AT = WINDOW_STARTS_AT + 7 * DAY_IN_SECONDS;
+
+		const registerAt = async (startTime: number) => {
+			const tournament = await TournamentFactory.create({
+				authorId: organizerId(),
+				startTimes: [startTime],
+			});
+			await TournamentTeamFactory.create({
+				tournamentId: tournament.id,
+				memberUserIds: [ownerId(), memberId()],
+			});
+
+			return tournament.id;
+		};
+
+		const registrationsInWindow = (excludeTournamentId?: number) =>
+			TournamentTeamRepository.findAllRegistrationsByUserIds({
+				userIds: [memberId()],
+				startsAt: WINDOW_STARTS_AT,
+				endsAt: WINDOW_ENDS_AT,
+				excludeTournamentId,
+			});
+
+		test("leaves out the registrations starting outside the window", async () => {
+			await registerAt(WINDOW_STARTS_AT + DAY_IN_SECONDS);
+			await registerAt(WINDOW_STARTS_AT - DAY_IN_SECONDS);
+			await registerAt(WINDOW_ENDS_AT + DAY_IN_SECONDS);
+
+			const registrations = await registrationsInWindow();
+
+			expect(registrations).toHaveLength(1);
+			expect(registrations[0].userId).toBe(memberId());
+			expect(registrations[0].startsAt).toBe(WINDOW_STARTS_AT + DAY_IN_SECONDS);
+		});
+
+		test("leaves out the excluded tournament", async () => {
+			const excludedTournamentId = await registerAt(
+				WINDOW_STARTS_AT + DAY_IN_SECONDS,
+			);
+			await registerAt(WINDOW_STARTS_AT + 2 * DAY_IN_SECONDS);
+
+			const registrations = await registrationsInWindow(excludedTournamentId);
+
+			expect(registrations).toHaveLength(1);
+			expect(registrations[0].startsAt).toBe(
+				WINDOW_STARTS_AT + 2 * DAY_IN_SECONDS,
+			);
+		});
+
+		test("returns nothing when no user ids are given", async () => {
+			await registerAt(WINDOW_STARTS_AT + DAY_IN_SECONDS);
+
+			expect(
+				await TournamentTeamRepository.findAllRegistrationsByUserIds({
+					userIds: [],
+					startsAt: WINDOW_STARTS_AT,
+					endsAt: WINDOW_ENDS_AT,
+				}),
+			).toEqual([]);
+		});
+	});
+
 	describe("findRecentlyPlayedMapsByIds", () => {
 		test("leaves out the games of the match the maps are resolved for", async () => {
 			// an in-progress set's map list is regenerated when its cache entry is lost, so counting its

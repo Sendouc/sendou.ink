@@ -93,11 +93,6 @@ export async function findByTournamentId(
 						"TournamentStage.id",
 						"TournamentMatch.stageId",
 					)
-					.leftJoin(
-						"TournamentMatchGameResult",
-						"TournamentMatch.id",
-						"TournamentMatchGameResult.matchId",
-					)
 					.select([
 						"TournamentMatch.id",
 						"TournamentMatch.stageId",
@@ -111,7 +106,6 @@ export async function findByTournamentId(
 						serializedOpponentWithKos("opponentTwo").as("opponent2"),
 					])
 					.where("TournamentStage.tournamentId", "=", tournamentId)
-					.groupBy("TournamentMatch.id")
 					.orderBy("TournamentMatch.stageId", "asc")
 					.orderBy("TournamentMatch.id", "asc"),
 			).as("match"),
@@ -121,20 +115,23 @@ export async function findByTournamentId(
 	return { stage, group, round, match };
 }
 
-/** Opponent JSON with `totalKos` summed over the match's game results, `null` for BYEs. */
+/** Opponent JSON with `totalKos` counted over the match's game results, `null` for BYEs. */
 function serializedOpponentWithKos(
 	column: "opponentOne" | "opponentTwo",
 ): RawBuilder<ParticipantResult | null> {
+	const opponent = kyselySql.ref(`TournamentMatch.${column}`);
+
+	// a correlated count is answered by the (matchId, winnerTeamId, ko) index alone; the
+	// left join + group by it replaces read every game result row of the tournament
 	return kyselySql<ParticipantResult | null>`json_set(
-		${kyselySql.ref(`TournamentMatch.${column}`)},
+		${opponent},
 		'$.totalKos',
-		sum(
-			case
-				when "TournamentMatchGameResult"."ko" = 1
-					and "TournamentMatchGameResult"."winnerTeamId" = ${kyselySql.ref(`TournamentMatch.${column}`)} ->> '$.id'
-				then 1
-				else 0
-			end
+		(
+			select count(*)
+			from "TournamentMatchGameResult"
+			where "TournamentMatchGameResult"."matchId" = "TournamentMatch"."id"
+				and "TournamentMatchGameResult"."winnerTeamId" = ${opponent} ->> '$.id'
+				and "TournamentMatchGameResult"."ko" = 1
 		)
 	)`;
 }

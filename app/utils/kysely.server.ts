@@ -4,6 +4,7 @@ import {
 	type Expression,
 	type ExpressionBuilder,
 	type RawBuilder,
+	type SqlBool,
 	sql,
 } from "kysely";
 import type {
@@ -19,6 +20,8 @@ import {
 } from "~/db/json-selections";
 import { db } from "~/db/sql";
 import type { DB, Tables } from "~/db/tables";
+import * as Seasons from "~/features/mmr/core/Seasons";
+import { dateToDatabaseTimestamp } from "./dates";
 import { IS_E2E_TEST_RUN } from "./e2e";
 import { safeNumberParse } from "./number";
 
@@ -49,6 +52,16 @@ export function userByIdentifierQuery(identifier: string) {
  */
 export function peakXpOverallSql<T extends number | null = number | null>() {
 	return sql<T>`"SplatoonPlayer"."peakXp" ->> '$.overall'`;
+}
+
+/**
+ * Filter keeping only the `GroupMember` rows that can belong to season `nth`'s matches.
+ * `"GroupMember"` must be in scope at the call site.
+ */
+export function groupMemberOfSeasonSql(nth: number) {
+	const { starts, ends } = Seasons.nthToGroupMembershipDateRange(nth);
+
+	return sql<SqlBool>`"GroupMember"."createdAt" between ${dateToDatabaseTimestamp(starts)} and ${dateToDatabaseTimestamp(ends)}`;
 }
 
 type CommonUserSelectOptions = {

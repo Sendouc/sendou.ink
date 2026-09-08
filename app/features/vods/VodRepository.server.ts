@@ -1,4 +1,10 @@
-import { sql } from "kysely";
+import {
+	type Expression,
+	type ExpressionBuilder,
+	type SelectQueryBuilder,
+	type SqlBool,
+	sql,
+} from "kysely";
 import * as R from "remeda";
 import { db } from "~/db/sql";
 import type { Tables } from "~/db/tables";
@@ -30,31 +36,24 @@ export async function findByUserId(userId: Tables["User"]["id"], limit = 100) {
 	return findVods({ userId, limit });
 }
 
-export async function findVods({
-	weapon,
-	mode,
-	stageId,
-	type,
-	userId,
-	limit = VODS_PAGE_BATCH_SIZE,
-	offset = 0,
-}: {
+type VodFilters = {
 	weapon?: MainWeaponId;
 	mode?: ModeShort;
 	stageId?: StageId;
 	type?: Tables["Video"]["type"];
 	userId?: number;
+};
+
+/** Page of the vods matching the filters, newest first, with the weapons and players of their matching match rows. */
+export async function findVods({
+	limit = VODS_PAGE_BATCH_SIZE,
+	offset = 0,
+	...filters
+}: VodFilters & {
 	limit?: number;
 	offset?: number;
 }) {
-	let query = db
-		.selectFrom("Video")
-		.leftJoin("VideoMatch", "VideoMatch.videoId", "Video.id")
-		.leftJoin(
-			"VideoMatchPlayer",
-			"VideoMatch.id",
-			"VideoMatchPlayer.videoMatchId",
-		)
+	const result = await vodsWithMatches()
 		.selectAll("Video")
 		.select(({ fn, ref, eb }) => [
 			sql<
@@ -72,32 +71,20 @@ export async function findVods({
 					.select((playerEb) => commonUserSelect(playerEb))
 					.whereRef("User.id", "=", "VideoMatchPlayer.playerUserId"),
 			).as("players"),
-		]);
-	if (userId) {
-		query = query.where("VideoMatchPlayer.playerUserId", "=", userId);
-	} else {
-		if (type) {
-			query = query.where("Video.type", "=", type);
-		}
-		if (mode) {
-			query = query.where("VideoMatch.mode", "=", mode);
-		}
-		if (stageId) {
-			query = query.where("VideoMatch.stageId", "=", stageId);
-		}
-	}
-	if (weapon) {
-		query = query.where(
-			"VideoMatchPlayer.weaponSplId",
+		])
+		.where(vodFilters(filters))
+		// the page is resolved by id first: with the limit on this read, the aggregates
+		// of every matching vod would be computed before it applies
+		.where(
+			"Video.id",
 			"in",
-			weaponIdToArrayWithAlts(weapon),
-		);
-	}
-	const result = await query
+			filteredVideoIds(filters)
+				.orderBy("Video.youtubePublishedAt", "desc")
+				.limit(limit)
+				.offset(offset),
+		)
 		.groupBy("Video.id")
 		.orderBy("Video.youtubePublishedAt", "desc")
-		.limit(limit)
-		.offset(offset)
 		.execute();
 
 	const vods = result.map((value) => {
@@ -110,50 +97,13 @@ export async function findVods({
 	return vods;
 }
 
-export async function countVods({
-	weapon,
-	mode,
-	stageId,
-	type,
-	userId,
-}: {
-	weapon?: MainWeaponId;
-	mode?: ModeShort;
-	stageId?: StageId;
-	type?: Tables["Video"]["type"];
-	userId?: number;
-}) {
-	let query = db
-		.selectFrom("Video")
-		.leftJoin("VideoMatch", "VideoMatch.videoId", "Video.id")
-		.leftJoin(
-			"VideoMatchPlayer",
-			"VideoMatch.id",
-			"VideoMatchPlayer.videoMatchId",
-		)
-		.select(({ fn }) => fn.count<number>("Video.id").distinct().as("count"));
-	if (userId) {
-		query = query.where("VideoMatchPlayer.playerUserId", "=", userId);
-	} else {
-		if (type) {
-			query = query.where("Video.type", "=", type);
-		}
-		if (mode) {
-			query = query.where("VideoMatch.mode", "=", mode);
-		}
-		if (stageId) {
-			query = query.where("VideoMatch.stageId", "=", stageId);
-		}
-	}
-	if (weapon) {
-		query = query.where(
-			"VideoMatchPlayer.weaponSplId",
-			"in",
-			weaponIdToArrayWithAlts(weapon),
-		);
-	}
+/** How many vods match the filters. */
+export async function countVods(filters: VodFilters) {
+	const result = await db
+		.selectFrom(filteredVideoIds(filters).as("filtered"))
+		.select(({ fn }) => fn.countAll<number>().as("count"))
+		.executeTakeFirstOrThrow();
 
-	const result = await query.executeTakeFirstOrThrow();
 	return result.count;
 }
 
@@ -345,4 +295,92 @@ async function save(
 
 export function deleteById(id: number) {
 	return db.deleteFrom("UnvalidatedVideo").where("id", "=", id).execute();
+}
+
+const vodsWithMatches = () =>
+	db
+		.selectFrom("Video")
+		.leftJoin("VideoMatch", "VideoMatch.videoId", "Video.id")
+		.leftJoin(
+			"VideoMatchPlayer",
+			"VideoMatch.id",
+			"VideoMatchPlayer.videoMatchId",
+		);
+
+type VodsWithMatchesDB =
+	ReturnType<typeof vodsWithMatches> extends SelectQueryBuilder<
+		infer JoinedDB,
+		any,
+		any
+	>
+		? JoinedDB
+		: never;
+
+type VodsTables = "Video" | "VideoMatch" | "VideoMatchPlayer";
+
+/** Conditions the filters put on the match rows. `userId` makes the vod's own filters moot: it is the user's vods regardless. */
+function vodFilters({ weapon, mode, stageId, type, userId }: VodFilters) {
+	return (eb: ExpressionBuilder<VodsWithMatchesDB, VodsTables>) => {
+		const conditions: Expression<SqlBool>[] = [];
+		if (userId) {
+			conditions.push(eb("VideoMatchPlayer.playerUserId", "=", userId));
+		} else {
+			if (type) {
+				conditions.push(eb("Video.type", "=", type));
+			}
+			if (mode) {
+				conditions.push(eb("VideoMatch.mode", "=", mode));
+			}
+			if (stageId) {
+				conditions.push(eb("VideoMatch.stageId", "=", stageId));
+			}
+		}
+		if (weapon) {
+			conditions.push(
+				eb(
+					"VideoMatchPlayer.weaponSplId",
+					"in",
+					weaponIdToArrayWithAlts(weapon),
+				),
+			);
+		}
+
+		return eb.and(conditions);
+	};
+}
+
+/**
+ * Ids of the vods matching the filters, joined only as far as a filter reads: inner joins
+ * let a player level filter start from the player rows' index instead of walking every vod.
+ */
+function filteredVideoIds(filters: VodFilters) {
+	const { type, userId, mode, stageId, weapon } = filters;
+	const filtersPlayers = Boolean(userId || weapon);
+	const filtersMatches = !filtersPlayers && Boolean(mode || stageId);
+
+	return db
+		.selectFrom("Video")
+		.select("Video.id")
+		.distinct()
+		.$if(Boolean(type) && !userId, (qb) => qb.where("Video.type", "=", type!))
+		.$if(filtersPlayers, (qb) =>
+			qb
+				.innerJoin("VideoMatch", "VideoMatch.videoId", "Video.id")
+				.innerJoin(
+					"VideoMatchPlayer",
+					"VideoMatch.id",
+					"VideoMatchPlayer.videoMatchId",
+				)
+				.where(vodFilters(filters)),
+		)
+		.$if(filtersMatches, (qb) =>
+			qb
+				.innerJoin("VideoMatch", "VideoMatch.videoId", "Video.id")
+				.leftJoin(
+					"VideoMatchPlayer",
+					"VideoMatch.id",
+					"VideoMatchPlayer.videoMatchId",
+				)
+				.where(vodFilters(filters)),
+		);
 }

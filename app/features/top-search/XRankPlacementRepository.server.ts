@@ -159,6 +159,7 @@ export async function findPlacementsByUserId(
 	return result.length ? result : null;
 }
 
+/** Every month with placements, newest first. */
 export async function findAllMonthYears() {
 	return await db
 		.selectFrom("XRankPlacement")

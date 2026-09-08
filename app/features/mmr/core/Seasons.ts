@@ -1,9 +1,16 @@
-import { addHours } from "date-fns";
+import { addHours, subDays } from "date-fns";
 import { Config } from "~/config";
 import { IS_E2E_TEST_RUN } from "~/utils/e2e";
 
 /** How long past a season's end its matches can still resolve: 24h stale match routine after a buzzer-beater creation, plus up to an hour of scheduling lag. */
 const REPORTING_GRACE_HOURS = 25;
+
+/**
+ * How far before a season's reporting range the `GroupMember` rows of its matches can have been created.
+ * No membership in the database has ever preceded its season's start (90+ days of margin), so this is
+ * insurance for a group formed just before a boundary rather than a bound on how long a group lives.
+ */
+const GROUP_LIFETIME_MAX_DAYS = 7;
 
 /** Seasons (`nth` from 0) with their start and end dates. Outside production the list is a test set that keeps a season always open. */
 export const list =
@@ -168,6 +175,19 @@ export function nthToReportingDateRange(nth: number) {
 	return {
 		starts,
 		ends: addHours(ends, REPORTING_GRACE_HOURS),
+	};
+}
+
+/**
+ * When the members of the season's SendouQ matches joined their groups: the reporting range
+ * widened by {@link GROUP_LIFETIME_MAX_DAYS}.
+ */
+export function nthToGroupMembershipDateRange(nth: number) {
+	const { starts, ends } = nthToReportingDateRange(nth);
+
+	return {
+		starts: subDays(starts, GROUP_LIFETIME_MAX_DAYS),
+		ends,
 	};
 }
 

@@ -85,19 +85,18 @@ export async function findAllOpenRoomIdsByUserId(
 			.where("GroupMember.createdAt", ">", joinedSince)
 			.where(openRoom("GroupMatch.chatRoomId"))
 			.execute(),
-		tournamentTeamIds.length === 0
-			? []
-			: db
-					.selectFrom("TournamentMatch")
-					.select("TournamentMatch.chatRoomId as id")
-					.where((eb) =>
-						eb.or([
-							eb(opponentTeamId("opponentOne"), "in", tournamentTeamIds),
-							eb(opponentTeamId("opponentTwo"), "in", tournamentTeamIds),
-						]),
-					)
-					.where(openRoom("TournamentMatch.chatRoomId"))
-					.execute(),
+		// a column per query so each opponent's expression index is used directly,
+		// mirroring the alpha/bravo split above
+		...(["opponentOne", "opponentTwo"] as const).map((column) =>
+			tournamentTeamIds.length === 0
+				? []
+				: db
+						.selectFrom("TournamentMatch")
+						.select("TournamentMatch.chatRoomId as id")
+						.where(opponentTeamId(column), "in", tournamentTeamIds)
+						.where(openRoom("TournamentMatch.chatRoomId"))
+						.execute(),
+		),
 		db
 			.selectFrom("TournamentTeamMember")
 			.innerJoin(

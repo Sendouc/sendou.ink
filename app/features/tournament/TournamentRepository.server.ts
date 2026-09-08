@@ -203,13 +203,7 @@ export async function findById(id: number) {
 										"=",
 										"TournamentTeamMember.userId",
 									)
-									.on(
-										"SeedingSkill.type",
-										"=",
-										sql<
-											Tables["SeedingSkill"]["type"]
-										> /*sql*/`case when json_extract("Tournament"."settings", '$.isRanked') = 1 then 'RANKED' else 'UNRANKED' end`,
-									),
+									.on("SeedingSkill.type", "=", seedingSkillType(id)),
 							)
 							.select(({ fn }) =>
 								fn.avg<number>("SeedingSkill.ordinal").as("v"),
@@ -500,7 +494,6 @@ export type TeamFull = Unwrapped<typeof findTeamsFullByTournamentId>;
 export async function findTeamsFullByTournamentId(tournamentId: number) {
 	const teams = await db
 		.selectFrom("TournamentTeam")
-		.innerJoin("Tournament", "Tournament.id", "TournamentTeam.tournamentId")
 		.leftJoin(
 			"UserSubmittedImage as PickupAvatar",
 			"TournamentTeam.avatarImgId",
@@ -528,13 +521,7 @@ export async function findTeamsFullByTournamentId(tournamentId: number) {
 					.leftJoin("SeedingSkill", (join) =>
 						join
 							.onRef("User.id", "=", "SeedingSkill.userId")
-							.on(
-								"SeedingSkill.type",
-								"=",
-								sql<
-									Tables["SeedingSkill"]["type"]
-								> /*sql*/`case when json_extract("Tournament"."settings", '$.isRanked') = 1 then 'RANKED' else 'UNRANKED' end`,
-							),
+							.on("SeedingSkill.type", "=", seedingSkillType(tournamentId)),
 					)
 					.select((memberEb) => [
 						...commonUserSelect(memberEb, {
@@ -1884,4 +1871,11 @@ async function trophyTier(
 		.executeTakeFirst();
 
 	return tournament?.tier ?? null;
+}
+
+/** Which seeding skill the tournament ranks by, resolved once: inline in the join it parsed the settings JSON per member row. */
+function seedingSkillType(tournamentId: number) {
+	return sql<
+		Tables["SeedingSkill"]["type"]
+	>`(select case when json_extract("settings", '$.isRanked') = 1 then 'RANKED' else 'UNRANKED' end from "Tournament" where "id" = ${tournamentId})`;
 }

@@ -11,6 +11,7 @@ import type {
 import {
 	commonUserSelect,
 	concatUserSubmittedImagePrefix,
+	groupMemberOfSeasonSql,
 	jsonArrayFrom,
 	latestSkillPerSeason,
 	skillCountsAsSeasonSet,
@@ -208,6 +209,7 @@ export async function hasEnoughSqMatchesByUserId(userId: number) {
 				.onRef("Skill.userId", "=", "GroupMember.userId"),
 		)
 		.where("GroupMember.userId", "=", userId)
+		.where(groupMemberOfSeasonSql(season.nth))
 		.where(
 			"GroupMatch.createdAt",
 			">",

@@ -126,6 +126,31 @@ describe("findVods", () => {
 	});
 });
 
+describe("countVods", () => {
+	beforeEach(async () => {
+		await users.create(5);
+		await seedVodsOfEveryFilter();
+	});
+
+	test.each([
+		["by weapon", () => ({ weapon: 1000 as const }), 2],
+		["by mode", () => ({ mode: "SZ" as const }), 2],
+		["by stageId", () => ({ stageId: 1 as const }), 2],
+		["by type", () => ({ type: "CAST" as const }), 1],
+		["by user", () => ({ userId: users.id(1) }), 1],
+		["without filters", () => ({}), 3],
+	])(
+		"agrees with the rows findVods returns (%s)",
+		async (_why, filters, expected) => {
+			const rows = await VodRepository.findVods({ ...filters(), limit: 100 });
+			const count = await VodRepository.countVods(filters());
+
+			expect(rows).toHaveLength(expected);
+			expect(count).toBe(rows.length);
+		},
+	);
+});
+
 describe("findVodById", () => {
 	beforeEach(async () => {
 		await users.create(5);
@@ -418,3 +443,27 @@ describe("deleteById", () => {
 		expect(secondResult).not.toBeNull();
 	});
 });
+
+/** One vod per `countVods` filter case, each matching some of the filters but never all of them. */
+async function seedVodsOfEveryFilter() {
+	await VodFactory.create({
+		submitterUserId: users.id(1),
+		type: "TOURNAMENT",
+		pov: { type: "USER", userId: users.id(1) },
+		matches: [{ mode: "SZ", stageId: 1, startsAt: "0:00", weapons: [1000] }],
+	});
+	await VodFactory.create({
+		submitterUserId: users.id(1),
+		type: "CAST",
+		matches: [
+			{ mode: "SZ", stageId: 2, startsAt: "0:00", weapons: [2000] },
+			{ mode: "TC", stageId: 1, startsAt: "5:00", weapons: [1000] },
+		],
+	});
+	await VodFactory.create({
+		submitterUserId: users.id(2),
+		type: "SCRIM",
+		pov: { type: "USER", userId: users.id(2) },
+		matches: [{ mode: "TC", stageId: 3, startsAt: "0:00", weapons: [0] }],
+	});
+}

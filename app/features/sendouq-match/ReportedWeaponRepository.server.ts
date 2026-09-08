@@ -9,6 +9,7 @@ import type {
 	StageId,
 } from "~/modules/in-game-lists/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { groupMemberOfSeasonSql } from "~/utils/kysely.server";
 import { assertUnreachable } from "~/utils/types";
 
 export async function upsertOwn({
@@ -302,6 +303,7 @@ export async function findAllWeaponUsageStats({
 				.as("weaponUserGroupId"),
 		])
 		.where("GroupMember.userId", "=", userId)
+		.where(groupMemberOfSeasonSql(season))
 		.where((eb) =>
 			eb.or([
 				eb("GroupMatch.alphaGroupId", "=", eb.ref("GroupMember.groupId")),

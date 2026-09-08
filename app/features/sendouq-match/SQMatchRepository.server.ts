@@ -31,6 +31,7 @@ import { invariant } from "~/utils/invariant";
 import {
 	commonUserSelect,
 	concatUserSubmittedImagePrefix,
+	groupMemberOfSeasonSql,
 	jsonArrayFrom,
 	jsonObjectFrom,
 	matchProfileWeapons,
@@ -700,6 +701,7 @@ export async function findSeasonCanceledMatchesByUserId({
 			).as("cancelReports"),
 		])
 		.where("GroupMember.userId", "=", userId)
+		.where(groupMemberOfSeasonSql(season))
 		.where("GroupMatch.createdAt", ">=", dateToDatabaseTimestamp(starts))
 		.where("GroupMatch.createdAt", "<=", dateToDatabaseTimestamp(ends))
 		.orderBy("GroupMatch.createdAt", "desc")

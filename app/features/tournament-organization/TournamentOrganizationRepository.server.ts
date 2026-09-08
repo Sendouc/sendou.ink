@@ -437,22 +437,14 @@ export function findAllUnfinalizedEvents(organizationId: number) {
 		.execute();
 }
 
-const findSeriesEventsBaseQuery = ({
-	organizationId,
-	substringMatches,
-}: {
-	organizationId: number;
-	substringMatches: string[];
-}) =>
-	findEventsBaseQuery(organizationId)
-		.where((eb) =>
-			eb.or(
-				substringMatches.map((match) =>
-					eb("CalendarEvent.name", "like", `%${match}%`),
-				),
+const nameMatchesSeries =
+	(substringMatches: string[]) =>
+	(eb: ExpressionBuilder<DB, "CalendarEvent">) =>
+		eb.or(
+			substringMatches.map((match) =>
+				eb("CalendarEvent.name", "like", `%${match}%`),
 			),
-		)
-		.orderBy("CalendarEventDate.startsAt", "desc");
+		);
 
 export async function findPaginatedEventsBySeries({
 	organizationId,
@@ -463,12 +455,27 @@ export async function findPaginatedEventsBySeries({
 	substringMatches: string[];
 	page: number;
 }) {
-	const events = await findSeriesEventsBaseQuery({
-		organizationId,
-		substringMatches,
-	})
+	// the page is resolved by id first: with the limit on the full read, the winners
+	// of every event of the series would be aggregated before it applies
+	const pageEventIds = db
+		.selectFrom("CalendarEvent")
+		.innerJoin(
+			"CalendarEventDate",
+			"CalendarEventDate.eventId",
+			"CalendarEvent.id",
+		)
+		.select("CalendarEvent.id")
+		.where("CalendarEvent.organizationId", "=", organizationId)
+		.where("CalendarEvent.hidden", "=", 0)
+		.where(nameMatchesSeries(substringMatches))
+		.groupBy("CalendarEvent.id")
+		.orderBy(({ fn }) => fn.min("CalendarEventDate.startsAt"), "desc")
 		.limit(TOURNAMENT_SERIES_EVENTS_PER_PAGE)
-		.offset((page - 1) * TOURNAMENT_SERIES_EVENTS_PER_PAGE)
+		.offset((page - 1) * TOURNAMENT_SERIES_EVENTS_PER_PAGE);
+
+	const events = await findEventsBaseQuery(organizationId)
+		.where("CalendarEvent.id", "in", pageEventIds)
+		.orderBy("CalendarEventDate.startsAt", "desc")
 		.execute();
 
 	return events.map(mapEvent);
@@ -500,13 +507,7 @@ export async function findAllEventsBySeries({
 		])
 		.where("CalendarEvent.organizationId", "=", organizationId)
 		.where("CalendarEvent.hidden", "=", 0)
-		.where((eb) =>
-			eb.or(
-				substringMatches.map((match) =>
-					eb("CalendarEvent.name", "like", `%${match}%`),
-				),
-			),
-		)
+		.where(nameMatchesSeries(substringMatches))
 		.groupBy("CalendarEvent.id")
 		.orderBy("CalendarEventDate.startsAt", "desc")
 		.execute();

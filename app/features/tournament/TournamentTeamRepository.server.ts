@@ -982,43 +982,48 @@ export function findAllRegistrationsByUserIds({
 }) {
 	if (userIds.length === 0) return Promise.resolve([]);
 
-	return db
-		.selectFrom("TournamentTeamMember")
-		.innerJoin(
-			"TournamentTeam",
-			"TournamentTeam.id",
-			"TournamentTeamMember.tournamentTeamId",
-		)
-		.innerJoin("Tournament", "Tournament.id", "TournamentTeam.tournamentId")
-		.innerJoin("CalendarEvent", "CalendarEvent.tournamentId", "Tournament.id")
-		.innerJoin(
-			"CalendarEventDate",
-			"CalendarEventDate.eventId",
-			"CalendarEvent.id",
-		)
-		.select((eb) => [
-			"TournamentTeamMember.userId",
-			"CalendarEvent.name",
-			"CalendarEvent.organizationId",
-			"CalendarEventDate.startsAt",
-			"Tournament.settings",
-			eb
-				.selectFrom("TournamentTeam as RegisteredTeam")
-				.select(({ fn }) => fn.countAll<number>().as("count"))
-				.whereRef("RegisteredTeam.tournamentId", "=", "Tournament.id")
-				.where("RegisteredTeam.isPlaceholder", "=", 0)
-				.as("teamCount"),
-		])
-		.$narrowType<{ teamCount: NotNull }>()
-		.where("TournamentTeamMember.userId", "in", userIds)
-		.where("TournamentTeam.droppedOut", "=", 0)
-		.where("CalendarEvent.hidden", "=", 0)
-		.where("CalendarEventDate.startsAt", ">=", startsAt)
-		.where("CalendarEventDate.startsAt", "<=", endsAt)
-		.$if(typeof excludeTournamentId === "number", (qb) =>
-			qb.where("Tournament.id", "!=", excludeTournamentId!),
-		)
-		.execute();
+	return (
+		db
+			.selectFrom("CalendarEventDate")
+			// cross join pins the join order: the date window is indexed and far narrower
+			// than the users' registration histories the planner walks otherwise
+			.crossJoin("CalendarEvent")
+			.innerJoin("Tournament", "Tournament.id", "CalendarEvent.tournamentId")
+			.innerJoin(
+				"TournamentTeam",
+				"TournamentTeam.tournamentId",
+				"Tournament.id",
+			)
+			.innerJoin(
+				"TournamentTeamMember",
+				"TournamentTeamMember.tournamentTeamId",
+				"TournamentTeam.id",
+			)
+			.select((eb) => [
+				"TournamentTeamMember.userId",
+				"CalendarEvent.name",
+				"CalendarEvent.organizationId",
+				"CalendarEventDate.startsAt",
+				"Tournament.settings",
+				eb
+					.selectFrom("TournamentTeam as RegisteredTeam")
+					.select(({ fn }) => fn.countAll<number>().as("count"))
+					.whereRef("RegisteredTeam.tournamentId", "=", "Tournament.id")
+					.where("RegisteredTeam.isPlaceholder", "=", 0)
+					.as("teamCount"),
+			])
+			.$narrowType<{ teamCount: NotNull }>()
+			.whereRef("CalendarEvent.id", "=", "CalendarEventDate.eventId")
+			.where("TournamentTeamMember.userId", "in", userIds)
+			.where("TournamentTeam.droppedOut", "=", 0)
+			.where("CalendarEvent.hidden", "=", 0)
+			.where("CalendarEventDate.startsAt", ">=", startsAt)
+			.where("CalendarEventDate.startsAt", "<=", endsAt)
+			.$if(typeof excludeTournamentId === "number", (qb) =>
+				qb.where("Tournament.id", "!=", excludeTournamentId!),
+			)
+			.execute()
+	);
 }
 
 /** Invite code of one team, the secret the tournament layout data does not carry. */

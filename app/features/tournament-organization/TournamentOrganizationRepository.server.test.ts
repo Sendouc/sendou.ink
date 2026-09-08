@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import { beforeEach, describe, expect, test } from "vitest";
 import * as CalendarEventFactory from "~/db/seed/factories/CalendarEventFactory";
 import * as CalendarEventResultFactory from "~/db/seed/factories/CalendarEventResultFactory";
@@ -10,6 +11,7 @@ import {
 } from "~/utils/dates";
 import * as TournamentOrganizationRepository from "./TournamentOrganizationRepository.server";
 import { seedOrgEventWithParticipants } from "./test-utils";
+import { TOURNAMENT_SERIES_EVENTS_PER_PAGE } from "./tournament-organization-constants";
 
 const users = UserFactory.pool();
 
@@ -107,6 +109,76 @@ describe("findEventsByMonth", () => {
 		});
 
 		expect(events).toHaveLength(1);
+	});
+});
+
+describe("findPaginatedEventsBySeries", () => {
+	const NEWEST_EVENT_STARTED_AT = 1_700_000_000;
+	const DAY_IN_SECONDS = 60 * 60 * 24;
+	const EVENT_COUNT = TOURNAMENT_SERIES_EVENTS_PER_PAGE + 1;
+
+	beforeEach(async () => {
+		await users.create(1);
+	});
+
+	/** One event per day going back from the newest, so `Low Ink #0` is the newest of the series. */
+	const seedSeries = async (organizationId: number) => {
+		for (const nth of R.range(0, EVENT_COUNT)) {
+			await CalendarEventFactory.create({
+				authorId: users.id(1),
+				organizationId,
+				name: `Low Ink #${nth}`,
+				startTimes: [NEWEST_EVENT_STARTED_AT - nth * DAY_IN_SECONDS],
+			});
+		}
+	};
+
+	const eventsOnPage = (organizationId: number, page: number) =>
+		TournamentOrganizationRepository.findPaginatedEventsBySeries({
+			organizationId,
+			substringMatches: ["Low Ink"],
+			page,
+		});
+
+	test("pages the events of the series newest first", async () => {
+		const org = await TournamentOrganizationFactory.create({
+			ownerId: users.id(1),
+		});
+		await seedSeries(org.id);
+
+		const firstPage = await eventsOnPage(org.id, 1);
+		const secondPage = await eventsOnPage(org.id, 2);
+
+		expect(firstPage.map((event) => event.name)).toEqual(
+			R.range(0, TOURNAMENT_SERIES_EVENTS_PER_PAGE).map(
+				(nth) => `Low Ink #${nth}`,
+			),
+		);
+		expect(secondPage.map((event) => event.name)).toEqual([
+			`Low Ink #${EVENT_COUNT - 1}`,
+		]);
+	});
+
+	test("leaves out the events of other series", async () => {
+		const org = await TournamentOrganizationFactory.create({
+			ownerId: users.id(1),
+		});
+		await CalendarEventFactory.create({
+			authorId: users.id(1),
+			organizationId: org.id,
+			name: "Low Ink #1",
+			startTimes: [NEWEST_EVENT_STARTED_AT],
+		});
+		await CalendarEventFactory.create({
+			authorId: users.id(1),
+			organizationId: org.id,
+			name: "Paddling Pool #1",
+			startTimes: [NEWEST_EVENT_STARTED_AT],
+		});
+
+		const events = await eventsOnPage(org.id, 1);
+
+		expect(events.map((event) => event.name)).toEqual(["Low Ink #1"]);
 	});
 });
 
