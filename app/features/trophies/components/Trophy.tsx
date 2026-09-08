@@ -130,6 +130,10 @@ export function Trophy({
 				canvas,
 				context,
 				resolution: { width: 128, height: 128, scale: 4 },
+				clampCameraDistance: {
+					enabled: true,
+					minimumDistance: 3,
+				},
 				colorScheme,
 			});
 			viewerRef.current = viewer;
@@ -140,6 +144,17 @@ export function Trophy({
 				setError(true);
 				return;
 			}
+
+			viewer.setResolution(128, 128, 4);
+			viewer.leftTag = null;
+			viewer.rightTag = null;
+			viewer.animation.loop = true;
+			viewer.animation.speed = 1;
+			viewer.clampCameraDistance = { enabled: true, minimumDistance: 3 };
+			viewer.maxFps = fps;
+			viewer.cameraMode = "spin";
+			viewer.cameraModeSpeed = 5;
+			viewer.animation.setTime(0);
 
 			// render loops starve the main thread on software WebGL, so e2e (always CPU) and surfaces
 			// showing many trophies without GPU acceleration draw a single static frame
@@ -163,10 +178,6 @@ export function Trophy({
 				};
 			}
 
-			viewer.maxFps = fps;
-			viewer.cameraMode = "spin";
-			viewer.cameraModeSpeed = 5;
-			viewer.animation.setTime(0);
 			viewer.startRenderLoop(false);
 
 			if (disableCameraControls) return;
