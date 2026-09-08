@@ -58,6 +58,22 @@ export function analyzeTrophyModel(model: string): TrophyModelAnalysis | null {
 	}
 }
 
+export function stripDisabledEffects(model: string): string {
+	try {
+		const state: ModelState = JSON.parse(model);
+		if (!isRecord(state)) return model;
+
+		const extras: Record<string, unknown> = {};
+		for (const [key, effect] of Object.entries(state.extras ?? {})) {
+			if (effect?.enabled === true) extras[key] = effect;
+		}
+
+		return JSON.stringify({ ...state, extras });
+	} catch {
+		return model;
+	}
+}
+
 /** Animations toggle meshes, so draw call and poly metrics show the peak across frames. */
 export function mergePeakRenderStats(
 	previous: RenderStats | null,
@@ -137,4 +153,8 @@ function countEnabledEffects(state: ModelState) {
 	return Object.values(state.extras ?? {}).filter(
 		(effect) => effect?.enabled === true,
 	).length;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
