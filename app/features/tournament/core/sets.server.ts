@@ -46,46 +46,6 @@ export interface PlayedSet {
 	};
 }
 
-export function winCounts(sets: PlayedSet[]) {
-	let setsWon = 0;
-	let totalSets = 0;
-	let mapsWon = 0;
-	let totalMaps = 0;
-
-	for (const set of sets) {
-		let mapsWonThisSet = 0;
-		let totalMapsThisSet = 0;
-
-		for (const map of set.maps) {
-			if (map.result === "win") {
-				mapsWonThisSet++;
-			}
-			totalMapsThisSet++;
-		}
-
-		totalSets++;
-		if (set.result === "win") {
-			setsWon++;
-		}
-
-		mapsWon += mapsWonThisSet;
-		totalMaps += totalMapsThisSet;
-	}
-
-	return {
-		sets: {
-			won: setsWon,
-			total: totalSets,
-			percentage: totalSets === 0 ? 0 : Math.round((setsWon / totalSets) * 100),
-		},
-		maps: {
-			won: mapsWon,
-			total: totalMaps,
-			percentage: totalMaps === 0 ? 0 : Math.round((mapsWon / totalMaps) * 100),
-		},
-	};
-}
-
 export function tournamentTeamSets({
 	sets,
 	allRounds,

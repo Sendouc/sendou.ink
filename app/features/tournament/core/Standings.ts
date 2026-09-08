@@ -85,7 +85,16 @@ export type MatchPlayed = {
 	id: number;
 	vsSeed: number;
 	result: "win" | "loss";
+	/** Maps won by the team and by its opponent. */
+	score: [team: number, opponent: number];
 	bracketIdx: number;
+};
+
+export type TeamRecord = {
+	setWins: number;
+	setLosses: number;
+	mapWins: number;
+	mapLosses: number;
 };
 
 /**
@@ -131,11 +140,45 @@ export function matchesPlayedByTeamId(
 					id: match.id,
 					vsSeed: seedOf(opponentId),
 					result: match.winnerSide === side ? "win" : "loss",
+					score: [
+						match[side]?.score ?? 0,
+						match[side === "opponent1" ? "opponent2" : "opponent1"]?.score ?? 0,
+					],
 					bracketIdx: bracket.idx,
 				});
 				result.set(teamId, played);
 			}
 		}
+	}
+
+	return result;
+}
+
+/** Set and map record of every team over the matches it played, keyed by tournament team id. Teams that played no match are absent. */
+export function recordByTeamId(
+	tournament: Tournament,
+): Map<number, TeamRecord> {
+	const result = new Map<number, TeamRecord>();
+
+	for (const [teamId, matches] of matchesPlayedByTeamId(tournament)) {
+		const record: TeamRecord = {
+			setWins: 0,
+			setLosses: 0,
+			mapWins: 0,
+			mapLosses: 0,
+		};
+
+		for (const match of matches) {
+			if (match.result === "win") {
+				record.setWins++;
+			} else {
+				record.setLosses++;
+			}
+			record.mapWins += match.score[0];
+			record.mapLosses += match.score[1];
+		}
+
+		result.set(teamId, record);
 	}
 
 	return result;

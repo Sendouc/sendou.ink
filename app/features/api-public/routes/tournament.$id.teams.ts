@@ -4,12 +4,14 @@ import * as v from "valibot";
 import { db } from "~/db/sql";
 import type { TournamentSettings } from "~/db/tables-json";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
+import * as Standings from "~/features/tournament/core/Standings";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import {
 	seedsByStartingBracket,
 	sortTeamsBySeeding,
 } from "~/features/tournament/tournament-utils";
 import * as Progression from "~/features/tournament-bracket/core/Progression";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import { getFixedTForLanguage } from "~/modules/i18n/i18next.server";
 import { nullifyingAvg } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -26,6 +28,13 @@ import type { GetTournamentTeamsResponse } from "../schema";
 const paramsSchema = v.object({
 	id,
 });
+
+const ZERO_STATS: Standings.TeamRecord = {
+	setWins: 0,
+	setLosses: 0,
+	mapWins: 0,
+	mapLosses: 0,
+};
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const t = await getFixedTForLanguage("en", ["game-misc"]);
@@ -141,6 +150,20 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			? seedsOfStartedTournament({ teams, settings: tournament.settings })
 			: null;
 
+	const fullTournament = tournament?.hasStarted
+		? await tournamentFromDB(tournamentId)
+		: null;
+	const placementByTeamId = fullTournament
+		? new Map(
+				Standings.flattenStandings(
+					Standings.tournamentStandings(fullTournament),
+				).map((standing) => [standing.team.id, standing.placement]),
+			)
+		: null;
+	const statsByTeamId = fullTournament
+		? Standings.recordByTeamId(fullTournament)
+		: null;
+
 	const result: GetTournamentTeamsResponse = teams.map((team) => {
 		return {
 			id: team.id,
@@ -151,6 +174,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 					? `https://sendou.ink/t/${team.team.customUrl}`
 					: null,
 			seed: seedByTeamId ? (seedByTeamId.get(team.id) ?? null) : team.seed,
+			placement: placementByTeamId?.get(team.id) ?? null,
+			stats: statsByTeamId ? (statsByTeamId.get(team.id) ?? ZERO_STATS) : null,
 			registeredAt: databaseTimestampToDate(team.createdAt).toISOString(),
 			checkedIn: Boolean(team.checkedInAt),
 			seedingPower: {

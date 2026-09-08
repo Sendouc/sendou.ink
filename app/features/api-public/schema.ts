@@ -149,6 +149,15 @@ export type GetTournamentTeamsResponse = Array<{
 	/** @example "https://sendou.nyc3.cdn.digitaloceanspaces.com/pickup-logo-uReSb1b1XS3TWGLCKMDUD-1719054364813.webp" */
 	logoUrl: string | null;
 	seed: number | null;
+	/** Overall placement in the tournament. Null while the team is still playing. @example 5 */
+	placement: number | null;
+	/** Sets and maps the team has won and lost across every bracket it played. Null before the tournament has started. */
+	stats: {
+		setWins: number;
+		setLosses: number;
+		mapWins: number;
+		mapLosses: number;
+	} | null;
 	mapPool: Array<StageWithMode> | null;
 	/** Non-resetting MMR used for autoseeding: average of the members' seeding power. Ranked and unranked tournaments feed separate values. */
 	seedingPower: {

@@ -25,6 +25,7 @@ import {
 	tournamentTeamPage,
 } from "~/utils/urls";
 import { TeamWithRoster } from "../components/TeamWithRoster";
+import type * as Standings from "../core/Standings";
 import type { TournamentTeamCompsLoaderData } from "../loaders/to.$id.teams.$tid.comps.server";
 import {
 	loader,
@@ -78,8 +79,9 @@ export default function TournamentTeamPage() {
 					</Link>
 				) : null}
 			</div>
-			{data.winCounts.sets.total > 0 ? (
+			{data.record ? (
 				<StatSquares
+					record={data.record}
 					seed={teamIndex + 1}
 					teamsCount={tournament.ctx.teams.length}
 				/>
@@ -95,9 +97,11 @@ export default function TournamentTeamPage() {
 }
 
 function StatSquares({
+	record,
 	seed,
 	teamsCount,
 }: {
+	record: Standings.TeamRecord;
 	seed: number;
 	teamsCount: number;
 }) {
@@ -105,6 +109,8 @@ function StatSquares({
 	const data = useLoaderData<typeof loader>();
 
 	const { placement, undergroundPlacement, division } = data;
+	const setsTotal = record.setWins + record.setLosses;
+	const mapsTotal = record.mapWins + record.mapLosses;
 
 	return (
 		<div className={styles.teamStats}>
@@ -113,10 +119,10 @@ function StatSquares({
 					{t("tournament:team.setWins")}
 				</div>
 				<div className={styles.teamStatMain}>
-					{data.winCounts.sets.won} / {data.winCounts.sets.total}
+					{record.setWins} / {setsTotal}
 				</div>
 				<div className={styles.teamStatSub}>
-					{data.winCounts.sets.percentage}%
+					{winPercentage(record.setWins, setsTotal)}%
 				</div>
 			</div>
 
@@ -125,10 +131,10 @@ function StatSquares({
 					{t("tournament:team.mapWins")}
 				</div>
 				<div className={styles.teamStatMain}>
-					{data.winCounts.maps.won} / {data.winCounts.maps.total}
+					{record.mapWins} / {mapsTotal}
 				</div>
 				<div className={styles.teamStatSub}>
-					{data.winCounts.maps.percentage}%
+					{winPercentage(record.mapWins, mapsTotal)}%
 				</div>
 			</div>
 
@@ -162,6 +168,10 @@ function StatSquares({
 			</div>
 		</div>
 	);
+}
+
+function winPercentage(won: number, total: number) {
+	return total === 0 ? 0 : Math.round((won / total) * 100);
 }
 
 function RunImageExport() {

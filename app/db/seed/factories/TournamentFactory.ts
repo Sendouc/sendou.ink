@@ -9,6 +9,7 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import * as BracketRepository from "~/features/tournament-bracket/BracketRepository.server";
 import * as Engine from "~/features/tournament-bracket/core/engine";
+import { executeBracketOperation } from "~/features/tournament-bracket/core/executeBracketOperation.server";
 import { finalizeTournament } from "~/features/tournament-bracket/core/finalizeTournament.server";
 import {
 	clearTournamentDataCache,
@@ -274,6 +275,32 @@ export async function playMatches(
 	clearTournamentDataCache(tournamentId);
 
 	return played;
+}
+
+/**
+ * Force-ends every match with both teams known, the higher seed winning with no maps reported, like the
+ * organizer's end set button. One pass only, same as {@link playMatches}.
+ */
+export async function endSets(tournamentId: number): Promise<PlayedMatch[]> {
+	const tournament = await tournamentFromDB(tournamentId);
+
+	const ended = playableMatches(tournament);
+	for (const match of ended) {
+		await executeBracketOperation({
+			tournamentId,
+			tournament,
+			operation: (bracketData) =>
+				Engine.endSet(bracketData, {
+					matchId: match.id,
+					winnerTeamId: match.winnerTeamId,
+				}),
+			endDroppedTeams: false,
+		});
+	}
+
+	clearTournamentDataCache(tournamentId);
+
+	return ended;
 }
 
 /** Next swiss round per group, like the organizer's advance button. Returns whether a round was left to generate. */

@@ -55,6 +55,33 @@ const startedTournamentWithNoShow = async () => {
 	return { tournament };
 };
 
+/** Four one-player teams whose first round the organizer force-ends with no maps reported. */
+const tournamentWithWalkovers = async () => {
+	const tournament = await TournamentFactory.create({
+		authorId: users.id(1),
+		minMembersPerTeam: 1,
+	});
+
+	for (const userId of users.ids()) {
+		await TournamentTeamFactory.create(
+			{ tournamentId: tournament.id, memberUserIds: [userId] },
+			{ isCheckedIn: true },
+		);
+	}
+
+	await TournamentFactory.startBracket(tournament.id);
+	await TournamentFactory.endSets(tournament.id);
+
+	return { tournament };
+};
+
+/** Four one-player teams through a single elimination bracket, the higher seed winning every map. */
+const playedTournament = () =>
+	TournamentFactory.createPlayed(
+		{ authorId: users.id(1), minMembersPerTeam: 1 },
+		{ teamRosters: users.ids().map((userId) => [userId]) },
+	);
+
 describe("GET /api/tournament/:id/teams", () => {
 	beforeEach(async () => {
 		await users.create(4);
@@ -98,5 +125,56 @@ describe("GET /api/tournament/:id/teams", () => {
 		const teams = await fetchTeams(tournament.id);
 
 		expect(teams.map((team) => team.seed)).toEqual([1, null, 2]);
+	});
+
+	test("has no placement or stats before the tournament has started", async () => {
+		const { tournament } = await registeredPlayer();
+
+		const teams = await fetchTeams(tournament.id);
+
+		expect(teams[0].placement).toBeNull();
+		expect(teams[0].stats).toBeNull();
+	});
+
+	test("gives a team that did not check in zero stats and no placement", async () => {
+		const { tournament } = await startedTournamentWithNoShow();
+
+		const teams = await fetchTeams(tournament.id);
+
+		expect(teams[1].placement).toBeNull();
+		expect(teams[1].stats).toEqual({
+			setWins: 0,
+			setLosses: 0,
+			mapWins: 0,
+			mapLosses: 0,
+		});
+	});
+
+	test("counts a walkover with no maps reported as a set win with no maps", async () => {
+		const { tournament } = await tournamentWithWalkovers();
+
+		const teams = await fetchTeams(tournament.id);
+
+		expect(teams.map((team) => team.stats)).toEqual([
+			{ setWins: 1, setLosses: 0, mapWins: 0, mapLosses: 0 },
+			{ setWins: 1, setLosses: 0, mapWins: 0, mapLosses: 0 },
+			{ setWins: 0, setLosses: 1, mapWins: 0, mapLosses: 0 },
+			{ setWins: 0, setLosses: 1, mapWins: 0, mapLosses: 0 },
+		]);
+	});
+
+	test("reports set wins, map wins and placement once a tournament has been played", async () => {
+		const tournament = await playedTournament();
+
+		const teams = await fetchTeams(tournament.id);
+
+		expect(
+			teams.map((team) => ({ placement: team.placement, ...team.stats })),
+		).toEqual([
+			{ placement: 1, setWins: 2, setLosses: 0, mapWins: 4, mapLosses: 0 },
+			{ placement: 2, setWins: 1, setLosses: 1, mapWins: 2, mapLosses: 2 },
+			{ placement: 3, setWins: 0, setLosses: 1, mapWins: 0, mapLosses: 2 },
+			{ placement: 3, setWins: 0, setLosses: 1, mapWins: 0, mapLosses: 2 },
+		]);
 	});
 });

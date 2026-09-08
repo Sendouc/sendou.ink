@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { addHours } from "date-fns";
+import { addHours, subHours } from "date-fns";
 import { ADMIN_ID } from "~/features/admin/admin-constants";
 import { FULL_GROUP_SIZE } from "~/features/sendouq/q-constants";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
@@ -9,6 +9,7 @@ import { ApiPage } from "./pages/api/api-page";
 import { TournamentTeamPage } from "./pages/tournament/tournament-team-page";
 
 const ROSTER_SIZE = 4;
+const TEAM_COUNT = 4;
 const TOKEN_LENGTH = 20;
 
 const authorized = (token: string) => ({
@@ -95,6 +96,56 @@ test.describe("Public API", () => {
 		expect(data.lobby).toBe("sendouq");
 		expect(data.tournamentId).toBeNull();
 		expect(data.bracketIdx).toBeNull();
+	});
+
+	test("returns set wins, map wins and placement of tournament teams", async ({
+		page,
+		factories,
+	}) => {
+		const players = await factories.UserFactory.createMany(
+			TEAM_COUNT * ROSTER_SIZE,
+		);
+		const teamRosters = Array.from({ length: TEAM_COUNT }, (_, i) =>
+			players.slice(i * ROSTER_SIZE, (i + 1) * ROSTER_SIZE).map((p) => p.id),
+		);
+		const tournament = await factories.TournamentFactory.createPlayed(
+			{
+				authorId: ADMIN_ID,
+				startTimes: [dateToDatabaseTimestamp(subHours(new Date(), 2))],
+			},
+			{ teamRosters },
+		);
+		const token = await readToken(factories, ADMIN_ID);
+
+		await impersonate(page);
+
+		const response = await page.request.fetch(
+			`/api/tournament/${tournament.id}/teams`,
+			{ headers: authorized(token) },
+		);
+
+		expect(response.status()).toBe(200);
+		const teams = await response.json();
+		const winner = teams.find(
+			(team: { id: number }) => team.id === tournament.teams[0].id,
+		);
+		expect(winner.placement).toBe(1);
+		expect(winner.stats).toEqual({
+			setWins: 2,
+			setLosses: 0,
+			mapWins: 4,
+			mapLosses: 0,
+		});
+		const firstRoundLoser = teams.find(
+			(team: { id: number }) => team.id === tournament.teams[3].id,
+		);
+		expect(firstRoundLoser.placement).toBe(3);
+		expect(firstRoundLoser.stats).toEqual({
+			setWins: 0,
+			setLosses: 1,
+			mapWins: 0,
+			mapLosses: 2,
+		});
 	});
 });
 
