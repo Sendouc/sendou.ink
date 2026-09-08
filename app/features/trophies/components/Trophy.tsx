@@ -148,8 +148,12 @@ export function Trophy({
 				IS_E2E_TEST_RUN ||
 				(staticOnSoftwareRendering && isSoftwareRendering())
 			) {
-				viewer.draw();
-				viewer.dispose();
+				viewer.whenReady().then(() => {
+					if (viewerRef.current !== viewer) return;
+					viewer.draw();
+					viewer.dispose();
+					viewerRef.current = null;
+				});
 				return;
 			}
 
