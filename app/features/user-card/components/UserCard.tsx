@@ -33,7 +33,6 @@ import { lfgSearchParams } from "~/features/lfg/lfg-search-params";
 import type { XRankPlacementRegion } from "~/features/top-search/top-search-types";
 import { userCardEditPage } from "~/features/user-card/user-card-urls";
 import { MutualFriends } from "~/features/user-page/components/MutualFriends";
-import { ReportUserDialog } from "~/features/user-report/components/ReportUserDialog";
 import { useActionSubmit } from "~/hooks/useActionSubmit";
 import { useLayoutSize } from "~/hooks/useLayoutSize";
 import type { BrandId } from "~/modules/in-game-lists/types";
@@ -56,8 +55,19 @@ import type {
 	UserCardFriendship,
 	UserCardStat,
 } from "../user-card-types";
-import { AddPrivateNoteDialog } from "./AddPrivateNoteDialog";
 import styles from "./UserCard.module.css";
+
+// lazy so the form stack (SendouForm, dnd-kit, search fields) stays out of every page that renders a user card
+const AddPrivateNoteDialog = React.lazy(() =>
+	import("./AddPrivateNoteDialog").then((module) => ({
+		default: module.AddPrivateNoteDialog,
+	})),
+);
+const ReportUserDialog = React.lazy(() =>
+	import("~/features/user-report/components/ReportUserDialog").then(
+		(module) => ({ default: module.ReportUserDialog }),
+	),
+);
 
 const TENTATEK_BRAND_ID: BrandId = "B10";
 
@@ -164,19 +174,23 @@ export function UserCard({
 				/>
 			</SendouPopover>
 			{isNoteDialogOpen ? (
-				<AddPrivateNoteDialog
-					userId={data.id}
-					username={data.username}
-					note={data.privateNote}
-					onClose={() => setIsNoteDialogOpen(false)}
-				/>
+				<React.Suspense>
+					<AddPrivateNoteDialog
+						userId={data.id}
+						username={data.username}
+						note={data.privateNote}
+						onClose={() => setIsNoteDialogOpen(false)}
+					/>
+				</React.Suspense>
 			) : null}
 			{isReportDialogOpen ? (
-				<ReportUserDialog
-					userId={data.id}
-					username={data.username}
-					onClose={() => setIsReportDialogOpen(false)}
-				/>
+				<React.Suspense>
+					<ReportUserDialog
+						userId={data.id}
+						username={data.username}
+						onClose={() => setIsReportDialogOpen(false)}
+					/>
+				</React.Suspense>
 			) : null}
 			<FormWithConfirm
 				isOpen={isDeleteConfirmOpen}
