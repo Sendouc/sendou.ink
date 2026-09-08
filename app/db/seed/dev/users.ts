@@ -269,7 +269,7 @@ export function nzapWidgets(): StoredWidget[] {
 			settings: { controller: "s2-pro-con", motionSens: 50, stickSens: 5 },
 		},
 		{ id: "social-links" },
-		{ id: "weapon-pool" },
+		{ id: "weapon-pool", settings: { weaponPool: [] } },
 		{ id: "map-mode-preferences" },
 		{ id: "badges-owned", settings: { favoriteBadgeIds: [] } },
 		{ id: "trophies-owned" },

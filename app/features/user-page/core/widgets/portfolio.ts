@@ -19,6 +19,7 @@ import {
 	sensSchema,
 	tierListSchema,
 	timezoneSchema,
+	weaponPoolWidgetSchema,
 	xRankPeaksSchema,
 } from "./widget-form-schemas";
 
@@ -54,7 +55,12 @@ export const ALL_WIDGETS = {
 			schema: favoriteStageSchema,
 			defaultSettings: { stageId: 1 },
 		}),
-		defineWidget({ id: "weapon-pool", slot: "main" }),
+		defineWidget({
+			id: "weapon-pool",
+			slot: "main",
+			schema: weaponPoolWidgetSchema,
+			defaultSettings: { weaponPool: [] },
+		}),
 		defineWidget({ id: "lfg-posts", slot: "main", navItem: "lfg" }),
 		defineWidget({
 			id: "sens",
@@ -239,7 +245,7 @@ export const ALL_WIDGETS = {
  * showed before it was widget based.
  */
 export const DEFAULT_WIDGETS: StoredWidget[] = [
-	{ id: "weapon-pool" },
+	{ id: "weapon-pool", settings: { weaponPool: [] } },
 	{ id: "x-rank-peaks", settings: { division: "both" } },
 	{ id: "badges-owned", settings: { favoriteBadgeIds: [] } },
 	{ id: "bio", settings: { bio: null } },

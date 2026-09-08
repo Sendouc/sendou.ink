@@ -75,6 +75,7 @@
 	"errors.noOnlySpecialCharacters": "Name can't be only special characters",
 	"errors.customRoleRequired": "Enter a name for the custom role",
 	"labels.weaponPool": "Weapon pool",
+	"bottomTexts.weaponPoolWidget": "Leave empty to show your match profile weapon pool",
 	"placeholders.chatMessage": "Press enter to send",
 	"placeholders.weaponPoolFull": "Pool full - remove a weapon to add more",
 	"placeholders.vodStartTimestamp": "10:22",

@@ -881,6 +881,12 @@ export function buildCases(fx: Fixtures): {
 		XRankPlacementRepository.isPlayerLinkedByUserId(xrank.userId),
 	);
 	add(
+		"XRankPlacementRepository.findTenStarWeaponSplIdsByUserId",
+		fx.xrank,
+		(xrank) =>
+			XRankPlacementRepository.findTenStarWeaponSplIdsByUserId(xrank.userId),
+	);
+	add(
 		"XRankPlacementRepository.findPeakVerifiedXpByUserId",
 		fx.xrank,
 		(xrank) =>

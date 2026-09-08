@@ -519,7 +519,7 @@ describe("UserRepository", () => {
 	describe("UserRepository.findStoredWidgetsByUserId", () => {
 		const sixMainWidgets: Parameters<typeof UserFactory.create>[1] = {
 			widgets: [
-				{ id: "weapon-pool" },
+				{ id: "weapon-pool", settings: { weaponPool: [] } },
 				{ id: "trophies-owned" },
 				{ id: "badges-owned", settings: { favoriteBadgeIds: [] } },
 				{ id: "badges-authored" },

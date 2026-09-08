@@ -85,6 +85,8 @@ function WidgetFormFields({ widgetId }: { widgetId: string }) {
 			);
 		case "peak-xp-weapon":
 			return <FormField name="weaponSplId" />;
+		case "weapon-pool":
+			return <FormField name="weaponPool" />;
 		case "sens":
 			return <SensFields />;
 		case "art":

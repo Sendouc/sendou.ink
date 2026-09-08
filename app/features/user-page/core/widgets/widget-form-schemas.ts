@@ -15,6 +15,7 @@ import {
 	textArea,
 	textAreaOptional,
 	textField,
+	weaponPool,
 	weaponSelect,
 } from "~/form/fields";
 import type { FormObjectSchema, SelectOption } from "~/form/types";
@@ -91,6 +92,14 @@ export const peakXpUnverifiedSchema = v.object({
 export const peakXpWeaponSchema = v.object({
 	weaponSplId: weaponSelect({
 		label: "labels.weapon",
+	}),
+});
+
+export const weaponPoolWidgetSchema = v.object({
+	weaponPool: weaponPool({
+		label: "labels.weaponPool",
+		bottomText: "bottomTexts.weaponPoolWidget",
+		maxCount: USER.WEAPON_POOL_WIDGET_MAX,
 	}),
 });
 
@@ -203,6 +212,7 @@ const WIDGET_FORM_SCHEMAS: Record<string, FormObjectSchema> = {
 	"favorite-stage": favoriteStageSchema,
 	"peak-xp-unverified": peakXpUnverifiedSchema,
 	"peak-xp-weapon": peakXpWeaponSchema,
+	"weapon-pool": weaponPoolWidgetSchema,
 	sens: sensSchema,
 	art: artSchema,
 	links: linksSchema,

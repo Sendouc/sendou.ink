@@ -75,6 +75,7 @@
 	"errors.noOnlySpecialCharacters": "",
 	"errors.customRoleRequired": "",
 	"labels.weaponPool": "Armes jouées",
+	"bottomTexts.weaponPoolWidget": "",
 	"placeholders.chatMessage": "Appuyer sur entrer pour envoyer",
 	"placeholders.weaponPoolFull": "",
 	"placeholders.vodStartTimestamp": "",

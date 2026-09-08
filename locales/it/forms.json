@@ -75,6 +75,7 @@
 	"errors.noOnlySpecialCharacters": "",
 	"errors.customRoleRequired": "",
 	"labels.weaponPool": "Pool armi",
+	"bottomTexts.weaponPoolWidget": "",
 	"placeholders.chatMessage": "Premi Invio per inviare",
 	"placeholders.weaponPoolFull": "",
 	"placeholders.vodStartTimestamp": "",

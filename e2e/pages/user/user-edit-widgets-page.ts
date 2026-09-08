@@ -52,6 +52,16 @@ export class UserEditWidgetsPage {
 		await this.locators.badgesSelector.selectOption(String(badgeId));
 	}
 
+	/** Adds one weapon to the weapon pool widget's settings, expanded after opening them. */
+	async selectWeaponPoolWeapon(weaponName: string) {
+		await this.page.getByTestId("weapon-select").click();
+		await this.page.getByPlaceholder("Search weapons...").fill(weaponName);
+		await this.page
+			.getByRole("listbox")
+			.getByTestId(`weapon-select-option-${weaponName}`)
+			.click();
+	}
+
 	/** Fills the bio widget's settings, expanded after adding it or opening them. */
 	async fillBio(text: string) {
 		await this.page.getByLabel("Bio").fill(text);

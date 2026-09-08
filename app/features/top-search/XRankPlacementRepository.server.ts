@@ -82,6 +82,17 @@ export async function isPlayerLinkedByUserId(userId: number): Promise<boolean> {
 	return Boolean(player);
 }
 
+/** Weapons the user has a ten-star badge for, from their linked X Rank placements. */
+export async function findTenStarWeaponSplIdsByUserId(userId: number) {
+	const rows = await db
+		.selectFrom("TenStarWeapon")
+		.select("TenStarWeapon.weaponSplId")
+		.where("TenStarWeapon.userId", "=", userId)
+		.execute();
+
+	return rows.map((row) => row.weaponSplId);
+}
+
 /** From the linked player's denormalized `SplatoonPlayer.peakXp` (see {@link refreshAllPeakXp}); `null` without one. */
 export async function findPeakVerifiedXpByUserId(
 	userId: Tables["User"]["id"],

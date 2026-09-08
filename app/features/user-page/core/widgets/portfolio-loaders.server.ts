@@ -299,8 +299,22 @@ export const WIDGET_LOADERS = {
 	commissions: async (userId: number) => {
 		return UserRepository.findCommissionsByUserId(userId);
 	},
-	"weapon-pool": async (userId: number) => {
-		return MatchProfileRepository.findWeaponPoolByUserId(userId);
+	"weapon-pool": async (
+		userId: number,
+		settings: ExtractWidgetSettings<"weapon-pool">,
+	) => {
+		if (settings.weaponPool.length === 0) {
+			return MatchProfileRepository.findWeaponPoolByUserId(userId);
+		}
+
+		const tenStarWeaponSplIds =
+			await XRankPlacementRepository.findTenStarWeaponSplIdsByUserId(userId);
+
+		return settings.weaponPool.map((weapon) => ({
+			weaponSplId: weapon.id,
+			isFavorite: weapon.isFavorite ? 1 : 0,
+			isTenStar: tenStarWeaponSplIds.includes(weapon.id) ? 1 : 0,
+		}));
 	},
 	"social-links": async (userId: number) => {
 		return UserRepository.findSocialLinksByUserId(userId);

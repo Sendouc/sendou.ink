@@ -3,7 +3,7 @@ import { widgetsAvailableTo } from "./portfolio";
 import type { StoredWidget } from "./types";
 
 const MAIN_WIDGETS: StoredWidget[] = [
-	{ id: "weapon-pool" },
+	{ id: "weapon-pool", settings: { weaponPool: [] } },
 	{ id: "trophies-owned" },
 	{ id: "badges-owned", settings: { favoriteBadgeIds: [] } },
 	{ id: "badges-authored" },

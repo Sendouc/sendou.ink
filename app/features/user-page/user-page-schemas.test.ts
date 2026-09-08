@@ -54,6 +54,30 @@ describe("widgetsEditSchema", () => {
 				settings: { controller: "s1-pro-con", motionSens: 51, stickSens: null },
 			},
 		},
+		{
+			why: "the same weapon twice in the weapon pool widget",
+			widget: {
+				id: "weapon-pool",
+				settings: {
+					weaponPool: [
+						{ id: 40, isFavorite: false },
+						{ id: 40, isFavorite: true },
+					],
+				},
+			},
+		},
+		{
+			why: "more weapons than the weapon pool widget allows",
+			widget: {
+				id: "weapon-pool",
+				settings: {
+					weaponPool: [0, 10, 20, 30, 40, 50, 60, 70].map((id) => ({
+						id,
+						isFavorite: false,
+					})),
+				},
+			},
+		},
 	])("rejects $why", ({ widget }) => {
 		const result = v.safeParse(widgetsEditSchema(true), {
 			widgets: JSON.stringify([widget]),
@@ -79,6 +103,17 @@ describe("widgetsEditSchema", () => {
 			widget: {
 				id: "sens",
 				settings: { controller: "s1-pro-con", motionSens: -25, stickSens: 5 },
+			},
+		},
+		{
+			why: "an empty weapon pool widget list",
+			widget: { id: "weapon-pool", settings: { weaponPool: [] } },
+		},
+		{
+			why: "a weapon pool widget list with a favorite",
+			widget: {
+				id: "weapon-pool",
+				settings: { weaponPool: [{ id: 40, isFavorite: true }] },
 			},
 		},
 	])("accepts $why", ({ widget }) => {

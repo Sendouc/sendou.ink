@@ -215,6 +215,33 @@ test.describe("User page", () => {
 		}
 	});
 
+	test("shows the weapon pool widget's own list over the match profile pool", async ({
+		page,
+		factories,
+	}) => {
+		await factories.UserFactory.grant(ADMIN_ID, {
+			matchProfile: {
+				weaponPool: [{ id: 1100, isFavorite: false }],
+			},
+		});
+
+		await impersonate(page);
+
+		const editWidgetsPage = new UserEditWidgetsPage(page);
+		await editWidgetsPage.goto(ADMIN_DISCORD_ID);
+		await editWidgetsPage.openWidgetSettings("weapon-pool");
+		await editWidgetsPage.selectWeaponPoolWeapon("Luna Blaster");
+		await editWidgetsPage.selectWeaponPoolWeapon("Splattershot");
+		await editWidgetsPage.save();
+
+		const userPage = new UserPage(page);
+		await userPage.goto(ADMIN_DISCORD_ID);
+
+		await expect(userPage.weaponPoolImage(200, 1)).toBeVisible();
+		await expect(userPage.weaponPoolImage(40, 2)).toBeVisible();
+		await isNotVisible(userPage.weaponPoolImage(1100, 1));
+	});
+
 	test("chooses result highlights which the results list then shows by default", async ({
 		page,
 		factories,

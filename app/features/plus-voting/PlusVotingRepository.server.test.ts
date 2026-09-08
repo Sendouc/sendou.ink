@@ -54,7 +54,9 @@ describe("PlusVotingRepository.findAllUsersForVoting", () => {
 	});
 
 	test("returns no bio for a user without a bio widget", async () => {
-		const bio = await bioOf([{ id: "weapon-pool" }]);
+		const bio = await bioOf([
+			{ id: "weapon-pool", settings: { weaponPool: [] } },
+		]);
 
 		expect(bio).toBeNull();
 	});
