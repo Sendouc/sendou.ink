@@ -118,8 +118,8 @@ importers:
         specifier: 7.3.1
         version: 7.3.1
       picocad2-web:
-        specifier: 2.0.0
-        version: 2.0.0
+        specifier: 2.0.1
+        version: 2.0.1
       qrcode.react:
         specifier: 4.2.0
         version: 4.2.0(react@19.2.8)
@@ -3716,8 +3716,8 @@ packages:
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
 
-  picocad2-web@2.0.0:
-    resolution: {integrity: sha512-H4V0G4K8H3GwjPDUsi5MylO8Lg0ClqTNyuHty6hZjgPwI0M6EbPvA2KT6TyCL+mZjlN+ehyaNrv/j3q0pS/Wfg==}
+  picocad2-web@2.0.1:
+    resolution: {integrity: sha512-bY+KjKGb6eH+c8AT4C0nAIW7WIZmKf4SMPDemDiLvnFdhrTVcVPEiTdNXsKHmnUN8eP2y+8ZrDezNtkTL3u/kQ==}
     engines: {node: '>=18.0.0'}
 
   picocolors@1.1.1:
@@ -7951,7 +7951,7 @@ snapshots:
 
   pathe@2.0.3: {}
 
-  picocad2-web@2.0.0:
+  picocad2-web@2.0.1:
     dependencies:
       gl-matrix: 3.4.4
       twgl.js: 7.0.0
