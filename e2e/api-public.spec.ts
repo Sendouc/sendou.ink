@@ -1,8 +1,11 @@
 import type { Page } from "@playwright/test";
 import { addHours, subHours } from "date-fns";
 import { ADMIN_ID } from "~/features/admin/admin-constants";
+import type { GetTournamentTeamsResponse } from "~/features/api-public/schema";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { FULL_GROUP_SIZE } from "~/features/sendouq/q-constants";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { invariant } from "~/utils/invariant";
 import type { Factories } from "./helpers/factories";
 import { expect, impersonate, test } from "./helpers/playwright";
 import { ApiPage } from "./pages/api/api-page";
@@ -146,6 +149,31 @@ test.describe("Public API", () => {
 			mapWins: 0,
 			mapLosses: 2,
 		});
+	});
+
+	test("hides private team fields from a read token that does not organize the tournament", async ({
+		page,
+		factories,
+	}) => {
+		const { tournamentId, token } = await organizedTournament(factories, {
+			withPrivateTeamInfo: true,
+		});
+		const outsider = await factories.UserFactory.create();
+		const outsiderToken = await readToken(factories, outsider.id);
+
+		// signed in as the outsider, so the fields organizers see can only come from the token
+		await impersonate(page, outsider.id);
+
+		const asOrganizer = await fetchTeams(page, token, tournamentId);
+		const asOutsider = await fetchTeams(page, outsiderToken, tournamentId);
+
+		expect(asOrganizer[0].mapPool).toHaveLength(2);
+		expect(asOrganizer[0].logoUrl).toEqual(expect.any(String));
+		expect(asOrganizer[0].members[0].friendCode).toEqual(expect.any(String));
+
+		expect(asOutsider[0].mapPool).toBeNull();
+		expect(asOutsider[0].logoUrl).toBeNull();
+		expect(asOutsider[0].members[0].friendCode).toBeNull();
 	});
 });
 
@@ -353,7 +381,6 @@ test.describe("Public API - Write endpoints", () => {
 			tournamentId,
 			name: "Api Pickup",
 		});
-		expect(createdTeam).toBeTruthy();
 		expect(createdTeam.members).toHaveLength(ROSTER_SIZE);
 
 		const editResponse = await page.request.fetch(
@@ -459,7 +486,10 @@ test.describe("Public API - Write endpoints", () => {
 /** A tournament the admin organizes, with teams registered and a write token to manage it with. */
 async function organizedTournament(
 	factories: Factories,
-	{ teamCount = 1 }: { teamCount?: number } = {},
+	{
+		teamCount = 1,
+		withPrivateTeamInfo = false,
+	}: { teamCount?: number; withPrivateTeamInfo?: boolean } = {},
 ) {
 	await factories.UserFactory.grant(ADMIN_ID, { roles: ["API_ACCESSER"] });
 
@@ -477,6 +507,10 @@ async function organizedTournament(
 			await factories.TournamentTeamFactory.create({
 				tournamentId: tournament.id,
 				memberUserIds: roster.map((user) => user.id),
+				hasAvatar: withPrivateTeamInfo,
+				mapPool: withPrivateTeamInfo
+					? new MapPool({ TW: [], SZ: [1, 2], TC: [], RM: [], CB: [] })
+					: undefined,
 			}),
 		);
 	}
@@ -494,19 +528,26 @@ async function organizedTournament(
 	};
 }
 
-async function teamByName(
-	page: Page,
-	token: string,
-	{ tournamentId, name }: { tournamentId: number; name: string },
-) {
+async function fetchTeams(page: Page, token: string, tournamentId: number) {
 	const response = await page.request.fetch(
 		`/api/tournament/${tournamentId}/teams`,
 		{ headers: authorized(token) },
 	);
 	expect(response.status()).toBe(200);
-	const teams = await response.json();
 
-	return teams.find((team: { name: string }) => team.name === name);
+	return (await response.json()) as GetTournamentTeamsResponse;
+}
+
+async function teamByName(
+	page: Page,
+	token: string,
+	{ tournamentId, name }: { tournamentId: number; name: string },
+) {
+	const teams = await fetchTeams(page, token, tournamentId);
+	const team = teams.find((candidate) => candidate.name === name);
+	invariant(team, `No team named ${name} in tournament ${tournamentId}`);
+
+	return team;
 }
 
 async function readToken(factories: Factories, userId: number) {

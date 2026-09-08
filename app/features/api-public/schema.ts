@@ -146,7 +146,7 @@ export type GetTournamentTeamsResponse = Array<{
 	url: string;
 	/** URL for the global team page. @example "https://sendou.ink/t/moonlight" */
 	teamPageUrl: string | null;
-	/** @example "https://sendou.nyc3.cdn.digitaloceanspaces.com/pickup-logo-uReSb1b1XS3TWGLCKMDUD-1719054364813.webp" */
+	/** Pickup team logos are only shown before the tournament starts to organizers and the team's own members. @example "https://sendou.nyc3.cdn.digitaloceanspaces.com/pickup-logo-uReSb1b1XS3TWGLCKMDUD-1719054364813.webp" */
 	logoUrl: string | null;
 	seed: number | null;
 	/** Overall placement in the tournament. Null while the team is still playing. @example 5 */
@@ -158,6 +158,7 @@ export type GetTournamentTeamsResponse = Array<{
 		mapWins: number;
 		mapLosses: number;
 	} | null;
+	/** Only shown before the tournament starts to organizers and the team's own members. */
 	mapPool: Array<StageWithMode> | null;
 	/** Non-resetting MMR used for autoseeding: average of the members' seeding power. Ranked and unranked tournaments feed separate values. */
 	seedingPower: {
@@ -179,8 +180,8 @@ export type GetTournamentTeamsResponse = Array<{
 		inGameName: string | null;
 		/** User's pronouns. @example { "subject": "he", "object": "him" } */
 		pronouns: Pronouns | null;
-		/** Switch friend code used for identification purposes. @example "1234-5678-9101" */
-		friendCode: string;
+		/** Switch friend code used for identification purposes. Only shown to the tournament's organizers and only for 30 days after the start (120 days for leagues). @example "1234-5678-9101" */
+		friendCode: string | null;
 		/** @example "2024-01-12T20:00:00.000Z" */
 		joinedAt: string;
 	}>;

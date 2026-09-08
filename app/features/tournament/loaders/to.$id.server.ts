@@ -5,6 +5,7 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import {
 	bracketsMetaCached,
+	canSeeTournamentFriendCodes,
 	requireTournamentVisible,
 	type TournamentLayoutData,
 	tournamentDataCached,
@@ -41,15 +42,10 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const tournament = await tournamentDataCached(tournamentId);
 	requireTournamentVisible({ ctx: tournament.ctx, user });
 
-	// leagues run for many weeks, so their friend codes stay visible for longer
-	const friendCodeVisibilityDays = tournament.ctx.settings.isLeague ? 120 : 30;
-	const tournamentStartedRecently = isAfter(
-		databaseTimestampToDate(tournament.ctx.startsAt),
-		subDays(new Date(), friendCodeVisibilityDays),
-	);
-	const showFriendCodes =
-		tournamentStartedRecently &&
-		hasPermission(tournament.ctx, "ORGANIZE", user);
+	const showFriendCodes = canSeeTournamentFriendCodes({
+		ctx: tournament.ctx,
+		user,
+	});
 
 	const showVods =
 		tournament.ctx.isFinalized &&

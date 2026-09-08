@@ -3,6 +3,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import * as v from "valibot";
 import { db } from "~/db/sql";
 import type { TournamentSettings } from "~/db/tables-json";
+import { getUser } from "~/features/auth/core/user.server";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
 import * as Standings from "~/features/tournament/core/Standings";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
@@ -11,7 +12,13 @@ import {
 	sortTeamsBySeeding,
 } from "~/features/tournament/tournament-utils";
 import * as Progression from "~/features/tournament-bracket/core/Progression";
-import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import {
+	canSeeTournamentFriendCodes,
+	isTournamentTeamInfoRevealed,
+	requireTournamentVisible,
+	tournamentDataCached,
+	tournamentFromDB,
+} from "~/features/tournament-bracket/core/Tournament.server";
 import { getFixedTForLanguage } from "~/modules/i18n/i18next.server";
 import { nullifyingAvg } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -38,23 +45,16 @@ const ZERO_STATS: Standings.TeamRecord = {
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const t = await getFixedTForLanguage("en", ["game-misc"]);
+	const user = getUser();
 	const { id: tournamentId } = parseParams({
 		params,
 		schema: paramsSchema,
 	});
 
-	const tournament = await db
-		.selectFrom("Tournament")
-		.select(({ exists, selectFrom }) => [
-			"Tournament.settings",
-			exists(
-				selectFrom("TournamentStage")
-					.select("TournamentStage.id")
-					.where("TournamentStage.tournamentId", "=", tournamentId),
-			).as("hasStarted"),
-		])
-		.where("Tournament.id", "=", tournamentId)
-		.executeTakeFirst();
+	const tournament = await tournamentDataCached(tournamentId);
+	requireTournamentVisible({ ctx: tournament.ctx, user });
+	const hasStarted = tournament.data.stage.length > 0;
+	const revealInfo = isTournamentTeamInfoRevealed({ tournament, user });
 
 	const teams = await db
 		.selectFrom("TournamentTeam")
@@ -142,15 +142,18 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		.orderBy("TournamentTeam.createdAt", "asc")
 		.execute();
 
-	const friendCodes =
-		await TournamentRepository.findFriendCodesByTournamentId(tournamentId);
+	const friendCodes = canSeeTournamentFriendCodes({
+		ctx: tournament.ctx,
+		user,
+	})
+		? await TournamentRepository.findFriendCodesByTournamentId(tournamentId)
+		: null;
 
-	const seedByTeamId =
-		tournament?.hasStarted && tournament.settings
-			? seedsOfStartedTournament({ teams, settings: tournament.settings })
-			: null;
+	const seedByTeamId = hasStarted
+		? seedsOfStartedTournament({ teams, settings: tournament.ctx.settings })
+		: null;
 
-	const fullTournament = tournament?.hasStarted
+	const fullTournament = hasStarted
 		? await tournamentFromDB(tournamentId)
 		: null;
 	const placementByTeamId = fullTournament
@@ -165,6 +168,10 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		: null;
 
 	const result: GetTournamentTeamsResponse = teams.map((team) => {
+		const isOwnTeam = team.members.some((member) => member.userId === user?.id);
+		const showTeamInfo = revealInfo || isOwnTeam;
+		const pickupAvatarUrl = showTeamInfo ? team.avatarUrl : null;
+
 		return {
 			id: team.id,
 			name: team.name,
@@ -198,13 +205,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 					captain: member.role === "OWNER",
 					inGameName: member.inGameName,
 					pronouns: member.pronouns,
-					friendCode: friendCodes[member.userId],
+					friendCode: friendCodes?.[member.userId] ?? null,
 					joinedAt: databaseTimestampToDate(member.createdAt).toISOString(),
 				};
 			}),
-			logoUrl: team.team?.logoUrl ?? team.avatarUrl,
+			logoUrl: team.team?.logoUrl ?? pickupAvatarUrl,
 			mapPool:
-				team.mapPool.length > 0
+				showTeamInfo && team.mapPool.length > 0
 					? team.mapPool.map((map) => {
 							return {
 								mode: map.mode,

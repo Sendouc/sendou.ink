@@ -2,19 +2,25 @@ import { beforeEach, describe, expect, test } from "vitest";
 import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentTeamFactory from "~/db/seed/factories/TournamentTeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
-import { withUserId, wrappedLoader } from "~/utils/Test";
+import { type TestUser, withUserId, wrappedLoader } from "~/utils/Test";
 import type { GetTournamentTeamsResponse } from "../schema";
 import { loader } from "./tournament.$id.teams";
 
 const TEAM_NAME = "Team Olive";
 
 const users = UserFactory.pool();
+const organizerId = () => users.id(1);
+const captainId = () => users.id(2);
+const outsiderId = () => users.id(3);
 
 const teamsLoader = wrappedLoader<Response>({ loader });
 
-const fetchTeams = async (tournamentId: number) => {
+/** Fetches as the owner of the API token, or anonymously when no user is given. */
+const fetchTeams = async (tournamentId: number, user?: TestUser) => {
 	const response = await teamsLoader({
+		user,
 		params: { id: String(tournamentId) },
 	});
 
@@ -75,6 +81,25 @@ const tournamentWithWalkovers = async () => {
 	return { tournament };
 };
 
+/** A team of the captain with a pickup logo and a map pool, both hidden before the start. */
+const teamWithHiddenInfo = async (tournamentArgs?: { isDraft?: boolean }) => {
+	const tournament = await TournamentFactory.create({
+		authorId: organizerId(),
+		...tournamentArgs,
+	});
+	await TournamentTeamFactory.create(
+		{
+			tournamentId: tournament.id,
+			memberUserIds: [captainId()],
+			hasAvatar: true,
+			mapPool: new MapPool({ TW: [], SZ: [1, 2], TC: [3, 4], RM: [], CB: [] }),
+		},
+		{ isCheckedIn: true },
+	);
+
+	return { tournament };
+};
+
 /** Four one-player teams through a single elimination bracket, the higher seed winning every map. */
 const playedTournament = () =>
 	TournamentFactory.createPlayed(
@@ -85,6 +110,54 @@ const playedTournament = () =>
 describe("GET /api/tournament/:id/teams", () => {
 	beforeEach(async () => {
 		await users.create(4);
+	});
+
+	test("responds 404 for a draft tournament to anyone but its organizers", async () => {
+		const { tournament } = await teamWithHiddenInfo({ isDraft: true });
+
+		await expect(fetchTeams(tournament.id, outsiderId())).rejects.toThrow(
+			"404",
+		);
+		expect(await fetchTeams(tournament.id, organizerId())).toHaveLength(1);
+	});
+
+	test("shows friend codes only to the organizers", async () => {
+		const { tournament } = await teamWithHiddenInfo();
+
+		const asOrganizer = await fetchTeams(tournament.id, organizerId());
+		const asOutsider = await fetchTeams(tournament.id, outsiderId());
+
+		expect(asOrganizer[0].members[0].friendCode).toEqual(expect.any(String));
+		expect(asOutsider[0].members[0].friendCode).toBeNull();
+	});
+
+	test("hides map pools and pickup logos before the start from everyone but organizers and the team itself", async () => {
+		const { tournament } = await teamWithHiddenInfo();
+
+		const asOrganizer = await fetchTeams(tournament.id, organizerId());
+		const asCaptain = await fetchTeams(tournament.id, captainId());
+		const asOutsider = await fetchTeams(tournament.id, outsiderId());
+
+		expect(asOrganizer[0].mapPool).toHaveLength(4);
+		expect(asOrganizer[0].logoUrl).toEqual(expect.any(String));
+		expect(asCaptain[0].mapPool).toHaveLength(4);
+		expect(asCaptain[0].logoUrl).toEqual(expect.any(String));
+		expect(asOutsider[0].mapPool).toBeNull();
+		expect(asOutsider[0].logoUrl).toBeNull();
+	});
+
+	test("reveals map pools and pickup logos to everyone once the tournament has started", async () => {
+		const { tournament } = await teamWithHiddenInfo();
+		await TournamentTeamFactory.create(
+			{ tournamentId: tournament.id, memberUserIds: [users.id(4)] },
+			{ isCheckedIn: true },
+		);
+		await TournamentFactory.startBracket(tournament.id);
+
+		const asOutsider = await fetchTeams(tournament.id, outsiderId());
+
+		expect(asOutsider[0].mapPool).toHaveLength(4);
+		expect(asOutsider[0].logoUrl).toEqual(expect.any(String));
 	});
 
 	test("returns the tournament name organizers gave a player instead of their username", async () => {

@@ -52,13 +52,10 @@ export const apiAuthMiddleware: MiddlewareFn = async ({ request }, next) => {
 		return Response.json({ error: "Write token required" }, { status: 403 });
 	}
 
-	if (request.method === "POST") {
-		const user = await UserRepository.findLeanById(tokenInfo.userId);
-		if (!user) {
-			return Response.json({ error: "User not found" }, { status: 401 });
-		}
-		return userAsyncLocalStorage.run({ user }, () => next());
+	const user = await UserRepository.findLeanById(tokenInfo.userId);
+	if (!user) {
+		return Response.json({ error: "User not found" }, { status: 401 });
 	}
 
-	return next();
+	return userAsyncLocalStorage.run({ user }, () => next());
 };

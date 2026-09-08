@@ -1,4 +1,4 @@
-import { sub } from "date-fns";
+import { isAfter, sub, subDays } from "date-fns";
 import { type Params, redirect } from "react-router";
 import { ServerConfig } from "~/config.server";
 import {
@@ -152,6 +152,42 @@ export function requireTournamentVisible({
 	if (hasPermission(ctx, "ORGANIZE", user)) return;
 
 	throw new Response(null, { status: 404 });
+}
+
+type TournamentFriendCodeCtx = Pick<
+	TournamentData["ctx"],
+	"permissions" | "settings" | "startsAt"
+>;
+
+/** Organizers see the participants' friend codes only for a while after the start. Leagues run for many weeks, so theirs stay visible for longer. */
+export function canSeeTournamentFriendCodes({
+	ctx,
+	user,
+}: {
+	ctx: TournamentFriendCodeCtx;
+	user: OptionalIdObject;
+}) {
+	const friendCodeVisibilityDays = ctx.settings.isLeague ? 120 : 30;
+	const tournamentStartedRecently = isAfter(
+		databaseTimestampToDate(ctx.startsAt),
+		subDays(new Date(), friendCodeVisibilityDays),
+	);
+
+	return tournamentStartedRecently && hasPermission(ctx, "ORGANIZE", user);
+}
+
+/** Pickup avatars and map pools of teams are only revealed to organizers (and the team itself) before the start. */
+export function isTournamentTeamInfoRevealed({
+	tournament,
+	user,
+}: {
+	tournament: Pick<TournamentData, "ctx" | "data">;
+	user: OptionalIdObject;
+}) {
+	return (
+		tournament.data.stage.length > 0 ||
+		hasPermission(tournament.ctx, "ORGANIZE", user)
+	);
 }
 
 /** Guards a single `_action` branch; whole-route guards use {@link tournamentFromParams} with `for: "organizer"`. */
@@ -367,9 +403,7 @@ export async function tournamentTeamsFullCached({
 }) {
 	const ctx = notFoundIfNullish(await tournamentDataCached(tournamentId));
 
-	// pickup avatars and map pools are only revealed to organizers before the start
-	const revealInfo =
-		ctx.data.stage.length > 0 || hasPermission(ctx.ctx, "ORGANIZE", user);
+	const revealInfo = isTournamentTeamInfoRevealed({ tournament: ctx, user });
 
 	if (ServerConfig.disableCache) {
 		return censoredTeams({
