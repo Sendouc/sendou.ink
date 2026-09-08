@@ -68,6 +68,7 @@ export default function EventsPage() {
 			<MySchedule
 				key={data.mySchedule.weeks[0].weekStartsAt}
 				data={data.mySchedule}
+				teams={data.myTeams}
 			/>
 			<div>
 				<div className={styles.eventsListHeader}>

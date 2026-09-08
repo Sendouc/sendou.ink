@@ -3,6 +3,7 @@ import { NZAP_TEST_ID } from "~/db/seed/constants";
 import { ADMIN_ID } from "~/features/admin/admin-constants";
 import * as Availability from "~/features/availability/core/Availability";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { weekDates, weekRange } from "./helpers/availability";
 import {
 	expect,
 	impersonate,
@@ -11,13 +12,16 @@ import {
 	setTimezoneCookie,
 	test,
 } from "./helpers/playwright";
+import { createNamedUsers } from "./helpers/sidebar";
 import { EventsPage } from "./pages/calendar/events-page";
+import { FriendsPage } from "./pages/friends/friends-page";
 import { TeamSchedulePage } from "./pages/team/team-schedule-page";
 
 const JOINED_TOURNAMENT_NAME = "Joined Tournament";
 const ORGANIZED_TOURNAMENT_NAME = "Organized Tournament";
 const WEDNESDAY = 2;
 const DAY_SECONDS = 24 * 60 * 60;
+const ALL_FRIENDS = "All friends";
 
 test.describe("Events", () => {
 	test("filters between tabs and navigates to an event", async ({
@@ -274,3 +278,106 @@ test.describe("My schedule", () => {
 		await expect(page.getByText("Availability saved")).toBeAttached();
 	});
 });
+
+test.describe("Schedule visibility", () => {
+	test("stops friends seeing the schedule, then opens it up to a team joined later", async ({
+		page,
+		factories,
+	}) => {
+		const [teammate] = await createNamedUsers(factories, ["Teammate"]);
+		// N-ZAP is a friend and deliberately not a teammate, so only the friends toggle reaches them
+		await factories.FriendshipFactory.create({
+			userOneId: ADMIN_ID,
+			userTwoId: NZAP_TEST_ID,
+		});
+		await factories.AvailabilityWeekFactory.create({
+			userId: ADMIN_ID,
+			weekStartsAt: weekRange().startsAt,
+			timezone: MACHINE_TIMEZONE,
+			slots: [daySlot(WEDNESDAY, "18:00", "22:00")],
+		});
+
+		const friends = new FriendsPage(page);
+		await impersonate(page, NZAP_TEST_ID);
+		await setTimezoneCookie(page);
+		await friends.goto();
+
+		await expect(friends.scheduleButton(ADMIN_ID)).toBeVisible();
+
+		const events = new EventsPage(page);
+		await impersonate(page, ADMIN_ID);
+		await events.goto();
+
+		// nothing restricted yet, so the editor says nothing about who is left out
+		await isNotVisible(events.locators.notSharedWith);
+
+		await events.setScheduleVisibility({ uncheck: [ALL_FRIENDS] });
+
+		await expect(events.locators.visibilityButton).toHaveText("Limited");
+		await expect(events.locators.notSharedWith).toHaveText(
+			"· Not shared with friends",
+		);
+
+		await impersonate(page, NZAP_TEST_ID);
+		await friends.goto();
+
+		await isNotVisible(friends.scheduleButton(ADMIN_ID));
+
+		// joined after the visibility was saved, so it starts outside the allow-list
+		const team = await factories.TeamFactory.create({
+			name: "Team Olive",
+			memberUserIds: [teammate.id, ADMIN_ID],
+		});
+
+		const schedule = new TeamSchedulePage(page);
+		await impersonate(page, teammate.id);
+		await setTimezoneCookie(page);
+		await schedule.goto(team.customUrl);
+		await schedule.locators.gridViewTab.click();
+
+		await isNotVisible(schedule.cellRange(ADMIN_ID, WEDNESDAY));
+
+		await impersonate(page, ADMIN_ID);
+		await events.goto();
+
+		// the team joined after the save is outside the allow-list, and named as such
+		await expect(events.locators.notSharedWith).toHaveText(
+			"· Not shared with friends and Team Olive",
+		);
+
+		await events.setScheduleVisibility({ check: ["Team Olive"] });
+
+		await expect(events.locators.notSharedWith).toHaveText(
+			"· Not shared with friends",
+		);
+
+		await impersonate(page, teammate.id);
+		await schedule.goto(team.customUrl);
+		await schedule.locators.gridViewTab.click();
+
+		await expect(schedule.cellRange(ADMIN_ID, WEDNESDAY)).toBeVisible();
+
+		// adding the team did not quietly restore the friends sharing the dialog opened with
+		await impersonate(page, NZAP_TEST_ID);
+		await friends.goto();
+
+		await isNotVisible(friends.scheduleButton(ADMIN_ID));
+	});
+});
+
+function daySlot(dayIndex: number, start: string, end: string) {
+	const date = weekDates()[dayIndex];
+
+	return {
+		startsAt: Availability.localToTimestamp({
+			date,
+			time: start,
+			timezone: MACHINE_TIMEZONE,
+		}),
+		endsAt: Availability.localToTimestamp({
+			date,
+			time: end,
+			timezone: MACHINE_TIMEZONE,
+		}),
+	};
+}

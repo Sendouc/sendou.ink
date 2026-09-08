@@ -5,12 +5,11 @@ import {
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
 import type { SerializeFrom } from "~/utils/remix";
-import * as AvailabilityRepository from "../AvailabilityRepository.server";
 import { AVAILABILITY } from "../availability-constants";
 import type { TimeRange, WindowSchedule } from "../availability-types";
 import * as Availability from "./Availability";
-import * as Commitments from "./Commitments.server";
 import * as ScheduleWeek from "./ScheduleWeek";
+import * as VisibleSchedules from "./VisibleSchedules.server";
 
 const DAY_SECONDS = 24 * 60 * 60;
 
@@ -27,9 +26,11 @@ export type RosterScheduleData = SerializeFrom<
 export async function rosterScheduleData({
 	userIds,
 	timezone,
+	viewerId,
 }: {
 	userIds: Array<number>;
 	timezone: string;
+	viewerId: number;
 }) {
 	const now = new Date();
 	const horizon = {
@@ -40,10 +41,11 @@ export async function rosterScheduleData({
 		).endsAt,
 	};
 
-	const [reportedWeeks, busyByUserId] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({ userIds, ...horizon }),
-		Commitments.busyBlocksByUserIds({ userIds, ...horizon }),
-	]);
+	const { reportedWeeks, busyByUserId } = await VisibleSchedules.findByUserIds({
+		userIds,
+		viewerId,
+		...horizon,
+	});
 
 	const weeks = R.range(0, AVAILABILITY.WEEK_HORIZON).map((weekOffset) =>
 		weekView({
@@ -118,9 +120,12 @@ function weekView({ range, timezone }: { range: TimeRange; timezone: string }) {
 export async function windowSchedules({
 	windows,
 	userIds,
+	viewerId,
 }: {
 	windows: Array<TimeRange & { id: number }>;
 	userIds: Array<number>;
+	/** Null when logged out, which the scrims page is viewable as. */
+	viewerId: number | null;
 }) {
 	// the horizon's last week starts at the current week's start at the latest, so nothing inside it reaches this far
 	const horizonEndsAt = dateToDatabaseTimestamp(
@@ -130,17 +135,20 @@ export async function windowSchedules({
 		(window) => window.startsAt < horizonEndsAt,
 	);
 
-	if (withinHorizon.length === 0 || userIds.length === 0) return [];
+	if (withinHorizon.length === 0 || userIds.length === 0 || viewerId === null) {
+		return [];
+	}
 
 	const range = {
 		startsAt: Math.min(...withinHorizon.map((window) => window.startsAt)),
 		endsAt: Math.max(...withinHorizon.map((window) => window.endsAt)),
 	};
 
-	const [reportedWeeks, busyByUserId] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({ userIds, ...range }),
-		Commitments.busyBlocksByUserIds({ userIds, ...range }),
-	]);
+	const { reportedWeeks, busyByUserId } = await VisibleSchedules.findByUserIds({
+		userIds,
+		viewerId,
+		...range,
+	});
 
 	return withinHorizon.map((window) => ({
 		id: window.id,

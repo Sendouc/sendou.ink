@@ -18,8 +18,8 @@ import type {
 	TimeRange,
 } from "../availability-types";
 import * as Availability from "../core/Availability";
-import * as Commitments from "../core/Commitments.server";
 import * as ScheduleWeek from "../core/ScheduleWeek";
+import * as VisibleSchedules from "../core/VisibleSchedules.server";
 
 export type TeamScheduleLoaderData = SerializeFrom<typeof loader>;
 
@@ -52,15 +52,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			timezone,
 		).endsAt,
 	};
-	const [reportedWeeks, busyByUserId, teamEvents] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({
+	const [{ reportedWeeks, busyByUserId }, teamEvents] = await Promise.all([
+		VisibleSchedules.findByUserIds({
 			userIds: members.map((member) => member.id),
+			viewerId: user.id,
 			...horizon,
 		}),
-		Commitments.busyBlocksByUserIds({
-			userIds: members.map((member) => member.id),
-			...horizon,
-		}),
+		// team events are the team's own data, visible to every member no matter what they share
 		AvailabilityRepository.findTeamEventsByTeamId({
 			teamId: team.id,
 			...horizon,

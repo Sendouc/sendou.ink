@@ -1,3 +1,6 @@
+/** Value of the "all friends" option in the schedule visibility picker, where the other options are team ids. */
+export const SCHEDULE_VISIBILITY_FRIENDS_VALUE = "FRIENDS";
+
 export const AVAILABILITY = {
 	/** Granularity availability is entered and rendered at. */
 	SLOT_STEP_MINUTES: 30,

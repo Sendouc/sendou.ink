@@ -56,6 +56,8 @@ export interface UserPreferences {
 	weaponReportDefaultOpen?: boolean;
 	/** Start of the week the schedule sidebar nudge was last dismissed for, so it stays gone until the horizon rolls over. */
 	scheduleNudgeDismissedWeekStartsAt?: number;
+	/** Who may see the user's schedule. Missing = everyone. Once set it is an allow-list, so a team joined later stays hidden until added. */
+	scheduleVisibility?: { friends: boolean; teamIds: Array<number> };
 }
 
 export type Pronouns = {

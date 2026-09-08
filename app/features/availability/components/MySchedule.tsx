@@ -1,4 +1,4 @@
-import { Users } from "lucide-react";
+import { Eye, EyeOff, Users } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { FetcherWithComponents } from "react-router";
@@ -13,20 +13,37 @@ import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import { teamSchedulePage } from "~/utils/urls";
 import { saveWeekSchema } from "../availability-schemas";
 import { scheduleWeekSearchParams } from "../availability-search-params";
-import type { AvailabilityEditorWeek } from "../availability-types";
+import type {
+	AvailabilityEditorWeek,
+	ScheduleAudienceTeam,
+} from "../availability-types";
+import { scheduleAudiencesHiddenFrom } from "../availability-utils";
 import type { MyScheduleData } from "../core/MySchedule.server";
 import styles from "./MySchedule.module.css";
+import { ScheduleVisibilityDialog } from "./ScheduleVisibilityDialog";
 import { WeekAvailabilityEditor } from "./WeekAvailabilityEditor";
 import { WeekToggle } from "./WeekToggle";
 
 /** The events page's "My schedule": editor with current/next week toggle, "Copy last week" prefill and save. */
-export function MySchedule({ data }: { data: MyScheduleData }) {
+export function MySchedule({
+	data,
+	teams,
+}: {
+	data: MyScheduleData;
+	teams: Array<ScheduleAudienceTeam>;
+}) {
 	const { t } = useTranslation(["schedule"]);
 	const user = useUser();
 	const [{ week }, setParams] = useSearchParamsTyped(scheduleWeekSearchParams);
 	const [weeks, setWeeks] = React.useState<Array<AvailabilityEditorWeek>>(() =>
 		data.weeks.map((editorWeek) => editorWeek.days),
 	);
+	const [visibilityDialogOpen, setVisibilityDialogOpen] = React.useState(false);
+	const hiddenFrom = scheduleAudiencesHiddenFrom({
+		visibility: user?.preferences.scheduleVisibility,
+		teams,
+	});
+	const isRestricted = hiddenFrom.friends || hiddenFrom.teams.length > 0;
 	const { submit, fetcher, state } = useActionSubmit(saveWeekSchema, {
 		encType: "application/json",
 	});
@@ -107,6 +124,17 @@ export function MySchedule({ data }: { data: MyScheduleData }) {
 							{t("schedule:editor.teamSchedule")}
 						</LinkButton>
 					) : null}
+					<SendouButton
+						variant="minimal"
+						size="miniscule"
+						icon={isRestricted ? <EyeOff /> : <Eye />}
+						onClick={() => setVisibilityDialogOpen(true)}
+						testId="schedule-visibility-button"
+					>
+						{isRestricted
+							? t("schedule:visibility.limited")
+							: t("schedule:visibility.button")}
+					</SendouButton>
 				</div>
 				<WeekToggle
 					name="my-schedule-week"
@@ -142,6 +170,10 @@ export function MySchedule({ data }: { data: MyScheduleData }) {
 					range: commitment.range,
 					name: commitment.name ?? t("schedule:commitment.scrim"),
 				}))}
+				notSharedWith={[
+					...(hiddenFrom.friends ? [t("schedule:visibility.friends")] : []),
+					...hiddenFrom.teams.map((team) => team.name),
+				]}
 				onChange={(value) =>
 					setWeeks(
 						weeks.map((days, index) => (index === weekIndex ? value : days)),
@@ -170,6 +202,12 @@ export function MySchedule({ data }: { data: MyScheduleData }) {
 					{t("schedule:editor.saveWeek")}
 				</SendouButton>
 			</div>
+			{visibilityDialogOpen ? (
+				<ScheduleVisibilityDialog
+					teams={teams}
+					close={() => setVisibilityDialogOpen(false)}
+				/>
+			) : null}
 		</section>
 	);
 }

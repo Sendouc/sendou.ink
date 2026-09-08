@@ -152,6 +152,15 @@ export function buildCases(fx: Fixtures): {
 	);
 
 	add(
+		"AvailabilityRepository.findScheduleVisibleUserIds",
+		both(fx.manyUserIds, fx.heavyUser),
+		([userIds, user]) =>
+			AvailabilityRepository.findScheduleVisibleUserIds({
+				userIds,
+				viewerId: user.id,
+			}),
+	);
+	add(
 		"AvailabilityRepository.findAllWeeksByUserIds",
 		both(fx.manyUserIds, fx.availabilityWindow),
 		([userIds, window]) =>

@@ -12,7 +12,7 @@
 	"editor.title": "My availability",
 	"editor.teamSchedule": "Team schedule",
 	"editor.timesInYourTimezone": "Times in your time zone",
-	"editor.visibility": "Visible to your teammates and friends",
+	"editor.notSharedWith": "Not shared with {{audiences}}",
 	"events.title": "Team events",
 	"events.add": "Add event",
 	"events.addDialogTitle": "Add team event",
@@ -50,5 +50,10 @@
 	"picker.andOthers": "{{amount}} more",
 	"picker.legend.full": "{{players}}+ free",
 	"picker.legend.oneShort": "{{players}} free (sub?)",
-	"scrims.availableOfRoster": "{{amount}}/{{total}} available"
+	"scrims.availableOfRoster": "{{amount}}/{{total}} available",
+	"visibility.button": "Visibility",
+	"visibility.dialogTitle": "Who can see your schedule?",
+	"visibility.allFriends": "All friends",
+	"visibility.limited": "Limited",
+	"visibility.friends": "friends"
 }

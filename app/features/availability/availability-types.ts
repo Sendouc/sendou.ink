@@ -19,6 +19,12 @@ export interface PlayableWindow extends TimeRange {
 	userIds: Array<number>;
 }
 
+/** One team the schedule can be shared with, as the visibility picker lists it. */
+export interface ScheduleAudienceTeam {
+	id: number;
+	name: string;
+}
+
 /** A span within one editor day in minutes from midnight. `end` may pass 1440 for a range crossing midnight. */
 export interface DayTimeRange {
 	start: number;

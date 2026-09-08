@@ -1,23 +1,24 @@
 import { addWeeks } from "date-fns";
 import * as R from "remeda";
-import * as AvailabilityRepository from "../AvailabilityRepository.server";
 import { AVAILABILITY } from "../availability-constants";
 import type { ScheduleWeekView } from "../availability-types";
 import * as Availability from "./Availability";
-import * as Commitments from "./Commitments.server";
 import * as ScheduleWeek from "./ScheduleWeek";
+import * as VisibleSchedules from "./VisibleSchedules.server";
 
 /**
  * Reportable weeks keyed by user id, free time only (commitments subtracted). Users who reported
- * neither week are left out; the friends page sorts and shows its calendar icon by the missing key.
- * The caller guarantees everyone asked about is a friend or teammate of the viewer.
+ * neither week, and those not sharing their schedule with the viewer, are left out; the friends
+ * page sorts and shows its calendar icon by the missing key.
  */
 export async function findByUserIds({
 	userIds,
 	timezone,
+	viewerId,
 }: {
 	userIds: Array<number>;
 	timezone: string;
+	viewerId: number;
 }): Promise<Map<number, Array<ScheduleWeekView>>> {
 	const now = new Date();
 
@@ -29,10 +30,11 @@ export async function findByUserIds({
 		endsAt: ranges[ranges.length - 1].endsAt,
 	};
 
-	const [reportedWeeks, busyByUserId] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({ userIds, ...horizon }),
-		Commitments.busyBlocksByUserIds({ userIds, ...horizon }),
-	]);
+	const { reportedWeeks, busyByUserId } = await VisibleSchedules.findByUserIds({
+		userIds,
+		viewerId,
+		...horizon,
+	});
 
 	const weeks = ranges.map((range, index) => ({
 		range,

@@ -463,5 +463,6 @@
 	"labels.profileHiddenTrophies": "Trofeos ocultos",
 	"bottomTexts.trophyModel": "El estado del modelo 3D exportado desde el",
 	"errors.trophyNameTaken": "Ya existe un trofeo con este nombre",
-	"errors.trophyWithBadges": "No se pueden combinar trofeo e insignias"
+	"errors.trophyWithBadges": "No se pueden combinar trofeo e insignias",
+	"labels.scheduleSharedWith": ""
 }

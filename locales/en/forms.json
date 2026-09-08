@@ -463,5 +463,6 @@
 	"labels.profileHiddenTrophies": "Hidden trophies",
 	"bottomTexts.trophyModel": "The 3D model state exported from the",
 	"errors.trophyNameTaken": "A trophy with this name already exists",
-	"errors.trophyWithBadges": "Cannot combine trophy and badges"
+	"errors.trophyWithBadges": "Cannot combine trophy and badges",
+	"labels.scheduleSharedWith": "Shared with"
 }

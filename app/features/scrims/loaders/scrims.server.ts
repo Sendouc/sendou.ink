@@ -70,6 +70,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		availability: await rosterAvailability({
 			posts: dividedPosts.neutral,
 			teams,
+			viewerId: user?.id ?? null,
 		}),
 		filters,
 		canSaveAsDefault:
@@ -85,9 +86,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 async function rosterAvailability({
 	posts,
 	teams,
+	viewerId,
 }: {
 	posts: Array<ScrimPost>;
 	teams: Awaited<ReturnType<typeof TeamRepository.findAllByMemberUserId>>;
+	viewerId: number | null;
 }) {
 	const userIds = R.unique(
 		teams.flatMap((team) =>
@@ -105,6 +108,7 @@ async function rosterAvailability({
 				...postSpan({ post, now }),
 			})),
 			userIds,
+			viewerId,
 		}),
 	};
 }

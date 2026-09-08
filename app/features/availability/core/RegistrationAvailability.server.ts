@@ -1,12 +1,11 @@
 import { addWeeks, subWeeks } from "date-fns";
 import type { Tables } from "~/db/tables";
 import { databaseTimestampToDate } from "~/utils/dates";
-import * as AvailabilityRepository from "../AvailabilityRepository.server";
 import { AVAILABILITY } from "../availability-constants";
 import type { TimeRange } from "../availability-types";
 import * as Availability from "./Availability";
-import * as Commitments from "./Commitments.server";
 import { estimatedEndsAt } from "./TournamentDuration.server";
+import * as VisibleSchedules from "./VisibleSchedules.server";
 
 export type RegistrationAvailability = Awaited<
 	ReturnType<typeof registrationAvailability>
@@ -21,6 +20,7 @@ export async function registrationAvailability({
 	tournament,
 	userIds,
 	timezone,
+	viewerId,
 }: {
 	tournament: {
 		id: number;
@@ -33,6 +33,7 @@ export async function registrationAvailability({
 	};
 	userIds: Array<number>;
 	timezone: string;
+	viewerId: number;
 }) {
 	const startDate = databaseTimestampToDate(tournament.startsAt);
 
@@ -55,14 +56,13 @@ export async function registrationAvailability({
 		endsAt: await estimatedEndsAt(tournament),
 	};
 
-	const [weeks, busyByUserId] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({ userIds, ...window }),
-		Commitments.busyBlocksByUserIds({
+	const { reportedWeeks: weeks, busyByUserId } =
+		await VisibleSchedules.findByUserIds({
 			userIds,
+			viewerId,
 			...window,
 			excludeTournamentId: tournament.id,
-		}),
-	]);
+		});
 
 	const windowDates = [
 		Availability.dateInTimezone(window.startsAt, timezone),

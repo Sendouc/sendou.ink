@@ -12,7 +12,7 @@
 	"editor.title": "",
 	"editor.teamSchedule": "",
 	"editor.timesInYourTimezone": "",
-	"editor.visibility": "",
+	"editor.notSharedWith": "",
 	"events.title": "",
 	"events.add": "",
 	"events.addDialogTitle": "",
@@ -50,5 +50,10 @@
 	"picker.andOthers": "",
 	"picker.legend.full": "",
 	"picker.legend.oneShort": "",
-	"scrims.availableOfRoster": ""
+	"scrims.availableOfRoster": "",
+	"visibility.button": "",
+	"visibility.dialogTitle": "",
+	"visibility.allFriends": "",
+	"visibility.limited": "",
+	"visibility.friends": ""
 }

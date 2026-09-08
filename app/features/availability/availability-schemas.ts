@@ -57,9 +57,19 @@ export const dismissScheduleNudgeSchema = v.object({
 	revalidateRoot: v.optional(v.nullable(v.literal(true))),
 });
 
+export const saveScheduleVisibilitySchema = v.object({
+	_action: stringConstant("SAVE_SCHEDULE_VISIBILITY"),
+	sharedWith: checkboxGroupDynamic({
+		label: "labels.scheduleSharedWith",
+		minLength: 0,
+	}),
+	revalidateRoot: v.optional(v.nullable(v.literal(true))),
+});
+
 export const eventsActionSchema = v.union([
 	saveWeekSchema,
 	dismissScheduleNudgeSchema,
+	saveScheduleVisibilitySchema,
 ]);
 
 const teamEventDurationItems = [

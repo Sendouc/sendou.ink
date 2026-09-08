@@ -9,13 +9,86 @@ import {
 } from "~/utils/kysely.server";
 import { AVAILABILITY } from "./availability-constants";
 import type { TimeRange } from "./availability-types";
+import { sharesScheduleWith } from "./availability-utils";
 
 /** Longest week (DST included). Weeks are indexed by start, so overlapping a window means looking this far back. */
 const WEEK_MAX_SECONDS = 169 * 60 * 60;
 
 /**
+ * Of `userIds`, those whose schedule the viewer may see, in the order given. Without the
+ * `scheduleVisibility` preference a schedule is visible to everyone; once set it is an allow-list
+ * of friends and teams (secondary memberships count), and the viewer has to be an allowed friend
+ * or share one of the allowed teams. The viewer always sees their own.
+ */
+export async function findScheduleVisibleUserIds({
+	userIds,
+	viewerId,
+}: {
+	userIds: Array<number>;
+	viewerId: number;
+}): Promise<Array<number>> {
+	if (userIds.length === 0) return [];
+
+	const rows = await db
+		.selectFrom("User")
+		.select((eb) => [
+			"User.id",
+			"User.preferences",
+			eb
+				.exists(
+					eb
+						.selectFrom("Friendship")
+						.select("Friendship.id")
+						.where((innerEb) =>
+							innerEb.or([
+								innerEb.and([
+									innerEb("Friendship.userOneId", "=", viewerId),
+									innerEb("Friendship.userTwoId", "=", innerEb.ref("User.id")),
+								]),
+								innerEb.and([
+									innerEb("Friendship.userTwoId", "=", viewerId),
+									innerEb("Friendship.userOneId", "=", innerEb.ref("User.id")),
+								]),
+							]),
+						),
+				)
+				.as("isFriend"),
+			jsonArrayFrom(
+				eb
+					.selectFrom("TeamMemberWithSecondary as theirs")
+					.innerJoin("TeamMemberWithSecondary as viewers", (join) =>
+						join
+							.onRef("viewers.teamId", "=", "theirs.teamId")
+							.on("viewers.userId", "=", viewerId),
+					)
+					.select("theirs.teamId")
+					.whereRef("theirs.userId", "=", "User.id"),
+			).as("sharedTeams"),
+		])
+		.where("User.id", "in", userIds)
+		.execute();
+
+	const visible = new Set(
+		rows
+			.filter(
+				(row) =>
+					row.id === viewerId ||
+					sharesScheduleWith({
+						visibility: row.preferences?.scheduleVisibility,
+						isFriend: Boolean(row.isFriend),
+						sharedTeamIds: row.sharedTeams.map((team) => team.teamId),
+					}),
+			)
+			.map((row) => row.id),
+	);
+
+	return userIds.filter((userId) => visible.has(userId));
+}
+
+/**
  * Reported weeks of the given users overlapping the window, with slots and day notes. A week
- * without slots means "unavailable all week"; no week at all means nothing was reported.
+ * without slots means "unavailable all week"; no week at all means nothing was reported. Callers
+ * pass only ids {@link findScheduleVisibleUserIds} handed back.
  */
 export function findAllWeeksByUserIds({
 	userIds,

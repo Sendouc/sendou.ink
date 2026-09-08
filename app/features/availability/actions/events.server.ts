@@ -3,12 +3,16 @@ import type { ActionFunction } from "react-router";
 import * as R from "remeda";
 import { requireUser } from "~/features/auth/core/user.server";
 import { resolveNotifications } from "~/features/notifications/core/resolve.server";
+import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { getViewerTimezone } from "~/features/timezone/timezone-context.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { errorToastIfFalsy, parseRequestPayload } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import * as AvailabilityRepository from "../AvailabilityRepository.server";
-import { AVAILABILITY } from "../availability-constants";
+import {
+	AVAILABILITY,
+	SCHEDULE_VISIBILITY_FRIENDS_VALUE,
+} from "../availability-constants";
 import { eventsActionSchema } from "../availability-schemas";
 import * as Availability from "../core/Availability";
 
@@ -90,6 +94,26 @@ export const action: ActionFunction = async ({ request }) => {
 					addWeeks(now, 1),
 					timezone,
 				),
+			});
+
+			break;
+		}
+		case "SAVE_SCHEDULE_VISIBILITY": {
+			// intersecting with the actual memberships is the validation, and prunes teams left since
+			const teams = await TeamRepository.findAllMemberOfByUserId(user.id);
+			const sharedWith = new Set(data.sharedWith);
+
+			const friends = sharedWith.has(SCHEDULE_VISIBILITY_FRIENDS_VALUE);
+			const teamIds = teams
+				.filter((team) => sharedWith.has(String(team.id)))
+				.map((team) => team.id);
+
+			await UserRepository.updateOwnPreferences({
+				// sharing with everyone stays the unset default, so that teams joined later are shared with too
+				scheduleVisibility:
+					friends && teams.length > 0 && teamIds.length === teams.length
+						? undefined
+						: { friends, teamIds },
 			});
 
 			break;

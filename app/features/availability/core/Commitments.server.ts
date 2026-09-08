@@ -15,6 +15,8 @@ import { estimatedEndsAtWith } from "./TournamentDuration.server";
  * {@link TournamentDuration.estimateSeconds}), accepted scrims (start + assumed length) and team
  * events (actual span). Leagues are not blocks, their matches are scheduled separately.
  * `excludeTournamentId` leaves one tournament out, for "busy elsewhere" views of that tournament.
+ * Busy blocks are part of the schedule, so callers pass only ids
+ * {@link AvailabilityRepository.findScheduleVisibleUserIds} handed back.
  */
 export async function busyBlocksByUserIds({
 	userIds,

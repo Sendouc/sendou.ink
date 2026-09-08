@@ -463,5 +463,6 @@
 	"labels.profileHiddenTrophies": "",
 	"bottomTexts.trophyModel": "",
 	"errors.trophyNameTaken": "",
-	"errors.trophyWithBadges": ""
+	"errors.trophyWithBadges": "",
+	"labels.scheduleSharedWith": ""
 }

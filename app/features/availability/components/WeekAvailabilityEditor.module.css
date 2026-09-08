@@ -133,6 +133,11 @@
 	color: var(--color-text-high);
 }
 
+.notSharedWith {
+	color: var(--color-warning-high);
+	font-weight: var(--weight-semi);
+}
+
 .addChip {
 	display: inline-flex;
 	align-items: center;

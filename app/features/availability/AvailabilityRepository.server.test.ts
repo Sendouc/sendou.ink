@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import { actAs } from "~/db/seed/core/actAs";
 import * as AvailabilityWeekFactory from "~/db/seed/factories/AvailabilityWeekFactory";
+import * as FriendshipFactory from "~/db/seed/factories/FriendshipFactory";
 import * as TeamEventFactory from "~/db/seed/factories/TeamEventFactory";
 import * as TeamFactory from "~/db/seed/factories/TeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
+import type { UserPreferences } from "~/db/tables-json";
 import * as AvailabilityRepository from "./AvailabilityRepository.server";
 import * as Availability from "./core/Availability";
 
@@ -661,6 +663,105 @@ describe("AvailabilityRepository.deleteTeamEvent", () => {
 			await AvailabilityRepository.findTeamEventsByTeamId({
 				teamId: team.id,
 				...WINDOW,
+			}),
+		).toEqual([]);
+	});
+});
+
+describe("AvailabilityRepository.findScheduleVisibleUserIds", () => {
+	const targetId = () => users.id(1);
+	const viewerId = () => users.id(2);
+
+	const restrict = (
+		scheduleVisibility: NonNullable<UserPreferences["scheduleVisibility"]> = {
+			friends: false,
+			teamIds: [],
+		},
+	) => UserFactory.grant(targetId(), { preferences: { scheduleVisibility } });
+
+	const visibleToViewer = async () =>
+		AvailabilityRepository.findScheduleVisibleUserIds({
+			userIds: [targetId()],
+			viewerId: viewerId(),
+		});
+
+	beforeEach(async () => {
+		await users.create(2);
+	});
+
+	test("shows the schedule of a user who never restricted it", async () => {
+		expect(await visibleToViewer()).toEqual([targetId()]);
+	});
+
+	test("hides the schedule of a user sharing with nobody", async () => {
+		await restrict();
+
+		expect(await visibleToViewer()).toEqual([]);
+	});
+
+	test("shows the viewer their own schedule however they restricted it", async () => {
+		await restrict();
+
+		expect(
+			await AvailabilityRepository.findScheduleVisibleUserIds({
+				userIds: [targetId()],
+				viewerId: targetId(),
+			}),
+		).toEqual([targetId()]);
+	});
+
+	test("shows a friend the schedule when sharing with friends", async () => {
+		await FriendshipFactory.create({
+			userOneId: targetId(),
+			userTwoId: viewerId(),
+		});
+		await restrict({ friends: true, teamIds: [] });
+
+		expect(await visibleToViewer()).toEqual([targetId()]);
+	});
+
+	test("hides the schedule from a friend when not sharing with friends", async () => {
+		await FriendshipFactory.create({
+			userOneId: targetId(),
+			userTwoId: viewerId(),
+		});
+		await restrict({ friends: false, teamIds: [] });
+
+		expect(await visibleToViewer()).toEqual([]);
+	});
+
+	test("shows a teammate the schedule when their team is shared with", async () => {
+		const team = await TeamFactory.create({
+			memberUserIds: [targetId(), viewerId()],
+		});
+		await restrict({ friends: false, teamIds: [team.id] });
+
+		expect(await visibleToViewer()).toEqual([targetId()]);
+	});
+
+	test("hides the schedule from a teammate whose team is not shared with", async () => {
+		await TeamFactory.create({ memberUserIds: [targetId(), viewerId()] });
+		await restrict({ friends: false, teamIds: [] });
+
+		expect(await visibleToViewer()).toEqual([]);
+	});
+
+	test("counts a secondary team as a shared team", async () => {
+		await TeamFactory.create({ memberUserIds: [targetId()] });
+		const secondary = await TeamFactory.create({
+			memberUserIds: [viewerId(), targetId()],
+			isMainTeam: false,
+		});
+		await restrict({ friends: false, teamIds: [secondary.id] });
+
+		expect(await visibleToViewer()).toEqual([targetId()]);
+	});
+
+	test("returns nothing when asked about nobody", async () => {
+		expect(
+			await AvailabilityRepository.findScheduleVisibleUserIds({
+				userIds: [],
+				viewerId: viewerId(),
 			}),
 		).toEqual([]);
 	});
