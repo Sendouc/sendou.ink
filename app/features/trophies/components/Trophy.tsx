@@ -79,6 +79,7 @@ export function Trophy({
 	staticOnSoftwareRendering,
 	pill,
 	onRenderStats,
+	colorScheme: forcedColorScheme,
 }: {
 	model: string;
 	className?: string;
@@ -90,6 +91,7 @@ export function Trophy({
 	staticOnSoftwareRendering?: boolean;
 	pill?: React.ReactNode;
 	onRenderStats?: (stats: RenderStats) => void;
+	colorScheme?: ColorScheme;
 }) {
 	const ctxValue = useContext(TrophyCtx);
 	const context = ctxValue?.context;
@@ -108,7 +110,8 @@ export function Trophy({
 	}
 
 	const modelState = decompressTrophyModel(model);
-	const colorScheme = useTrophyColorScheme();
+	const siteColorScheme = useTrophyColorScheme();
+	const colorScheme = forcedColorScheme ?? siteColorScheme;
 
 	// stable ref callback identity, else React re-attaches and rebuilds the viewer every render
 	const canvasRef = useCallback(
