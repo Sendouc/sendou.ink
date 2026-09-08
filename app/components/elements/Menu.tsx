@@ -225,12 +225,7 @@ export function SendouMenuItem(props: SendouMenuItemProps) {
 			event.preventDefault();
 			return;
 		}
-		// leaving the top layer inside the click that navigates locks up the iOS PWA
-		if (props.href) {
-			requestAnimationFrame(menu.close);
-		} else {
-			menu.close();
-		}
+		menu.close();
 		props.onAction?.();
 	};
 
