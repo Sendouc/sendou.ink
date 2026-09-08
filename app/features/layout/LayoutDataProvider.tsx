@@ -19,12 +19,10 @@ interface LayoutData {
 interface LayoutDataContextValue extends LayoutData {
 	/** Refetches the app shell data, without touching the page's own loaders. */
 	refresh: () => void;
-	isRefreshing: boolean;
 }
 
 const LayoutDataContext = React.createContext<LayoutDataContextValue>({
 	refresh: () => {},
-	isRefreshing: false,
 });
 
 /**
@@ -44,14 +42,11 @@ export function LayoutDataProvider({
 		refresh,
 	} = useBackgroundResource<SerializeFrom<typeof loader>>(LAYOUT_DATA_ROUTE);
 
-	// a ref so a poll elsewhere does not re-run the effect and restart the interval before it fires
-	const isLoadingRef = React.useRef(isLoading);
-	isLoadingRef.current = isLoading;
 	const lastRefreshedAtRef = React.useRef(0);
 
 	React.useEffect(() => {
 		const loadIfIdle = () => {
-			if (isLoadingRef.current) return;
+			if (isLoading()) return;
 			// alt-tabbing back is not worth a full app shell rebuild if one just happened
 			if (Date.now() - lastRefreshedAtRef.current < ONE_MINUTE) return;
 
@@ -72,7 +67,7 @@ export function LayoutDataProvider({
 			document.removeEventListener("visibilitychange", handleVisibilityChange);
 			clearInterval(interval);
 		};
-	}, [refresh]);
+	}, [refresh, isLoading]);
 
 	const newest = useNewestOf(data, polledData);
 
@@ -85,7 +80,6 @@ export function LayoutDataProvider({
 	const value: LayoutDataContextValue = {
 		...newest,
 		refresh,
-		isRefreshing: isLoading,
 	};
 
 	return (

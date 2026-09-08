@@ -2,7 +2,7 @@ import * as React from "react";
 import { useFetchers, useLocation, useNavigation } from "react-router";
 import {
 	useEventStreamCatchUp,
-	useEventsReadyState,
+	useEventsConnected,
 	useServerEventListener,
 } from "~/features/events/events-hooks";
 import { useBackgroundResource } from "~/hooks/useBackgroundResource";
@@ -39,10 +39,10 @@ export function NotificationsProvider({
 	const { data, refresh } = useBackgroundResource<SerializeFrom<typeof loader>>(
 		NOTIFICATIONS_DATA_ROUTE,
 	);
-	const readyState = useEventsReadyState();
+	const connected = useEventsConnected();
 
 	const loggedIn = Boolean(user);
-	const eventsDown = loggedIn && readyState !== "CONNECTED";
+	const eventsDown = loggedIn && !connected;
 
 	React.useEffect(() => {
 		if (!loggedIn) return;
