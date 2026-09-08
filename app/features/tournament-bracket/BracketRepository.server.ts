@@ -453,6 +453,7 @@ export async function insertRoundMatches(
 
 /** DELETEs a round's matches (swiss unadvance). */
 export async function deleteRoundMatches(args: {
+	stageId: number;
 	groupId: number;
 	roundId: number;
 }): Promise<void> {
@@ -460,6 +461,7 @@ export async function deleteRoundMatches(args: {
 		const matches = await trx
 			.selectFrom("TournamentMatch")
 			.select(["TournamentMatch.chatRoomId"])
+			.where("stageId", "=", args.stageId)
 			.where("groupId", "=", args.groupId)
 			.where("roundId", "=", args.roundId)
 			.execute();
@@ -470,6 +472,7 @@ export async function deleteRoundMatches(args: {
 
 		await trx
 			.deleteFrom("TournamentMatch")
+			.where("stageId", "=", args.stageId)
 			.where("groupId", "=", args.groupId)
 			.where("roundId", "=", args.roundId)
 			.execute();
