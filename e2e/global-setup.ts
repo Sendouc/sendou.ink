@@ -21,7 +21,6 @@ const BUILD_INPUTS = [
 	"package.json",
 	"pnpm-lock.yaml",
 	"vite.config.ts",
-	"react-router.config.ts",
 ];
 
 declare global {
