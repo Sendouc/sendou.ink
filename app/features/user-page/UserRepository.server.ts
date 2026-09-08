@@ -762,7 +762,7 @@ const nameLikeExpr = (column: string, name: string) => {
 	return sql<boolean>`${sql.ref(column)} like ${pattern} escape '\\'`;
 };
 
-export function findResultsByUserId(
+export async function findResultsByUserId(
 	userId: number,
 	{
 		limit,
@@ -773,95 +773,144 @@ export function findResultsByUserId(
 		offset?: number;
 	} = {},
 ) {
+	const page =
+		limit !== undefined
+			? await findResultPageKeys(userId, filters, { limit, offset })
+			: null;
+
 	const calendarEventResultsQuery = baseCalendarEventResultsQuery(
 		userId,
 		filters,
-	).select(({ eb, fn }) => [
-		"CalendarEvent.id as eventId",
-		sql<number>`null`.as("tournamentId"),
-		"CalendarEventResultTeam.placement",
-		"CalendarEvent.participantCount",
-		sql<Tables["TournamentResult"]["setResults"]>`null`.as("setResults"),
-		sql<string | null>`null`.as("div"),
-		sql<string | null>`null`.as("logoUrl"),
-		"CalendarEvent.name as eventName",
-		"CalendarEventResultTeam.id as teamId",
-		"CalendarEventResultTeam.name as teamName",
-		fn<number | null>("iif", ["UserResultHighlight.userId", sql`1`, sql`0`]).as(
-			"isHighlight",
-		),
-		sql<number | null>`null`.as("tier"),
-		withMaxEventStartTime(eb),
-		jsonArrayFrom(
-			eb
-				.selectFrom("CalendarEventResultPlayer")
-				.leftJoin("User", "User.id", "CalendarEventResultPlayer.userId")
-				.select((mateEb) => [
-					...commonUserSelect(mateEb),
-					"CalendarEventResultPlayer.name",
-				])
-				.whereRef(
-					"CalendarEventResultPlayer.teamId",
-					"=",
-					"CalendarEventResultTeam.id",
-				)
-				.where((mateEb) =>
-					mateEb.or([
-						mateEb("CalendarEventResultPlayer.userId", "is", null),
-						mateEb("CalendarEventResultPlayer.userId", "!=", userId),
-					]),
-				),
-		).as("mates"),
-	]);
+	)
+		.$if(page !== null, (qb) =>
+			qb.where("CalendarEventResultTeam.id", "in", page!.calendarEventTeamIds),
+		)
+		.select(({ eb, fn }) => [
+			"CalendarEvent.id as eventId",
+			sql<number>`null`.as("tournamentId"),
+			"CalendarEventResultTeam.placement",
+			"CalendarEvent.participantCount",
+			sql<Tables["TournamentResult"]["setResults"]>`null`.as("setResults"),
+			sql<string | null>`null`.as("div"),
+			sql<string | null>`null`.as("logoUrl"),
+			"CalendarEvent.name as eventName",
+			"CalendarEventResultTeam.id as teamId",
+			"CalendarEventResultTeam.name as teamName",
+			fn<number | null>("iif", [
+				"UserResultHighlight.userId",
+				sql`1`,
+				sql`0`,
+			]).as("isHighlight"),
+			sql<number | null>`null`.as("tier"),
+			withMaxEventStartTime(eb),
+			jsonArrayFrom(
+				eb
+					.selectFrom("CalendarEventResultPlayer")
+					.leftJoin("User", "User.id", "CalendarEventResultPlayer.userId")
+					.select((mateEb) => [
+						...commonUserSelect(mateEb),
+						"CalendarEventResultPlayer.name",
+					])
+					.whereRef(
+						"CalendarEventResultPlayer.teamId",
+						"=",
+						"CalendarEventResultTeam.id",
+					)
+					.where((mateEb) =>
+						mateEb.or([
+							mateEb("CalendarEventResultPlayer.userId", "is", null),
+							mateEb("CalendarEventResultPlayer.userId", "!=", userId),
+						]),
+					),
+			).as("mates"),
+		]);
 
-	const tournamentResultsQuery = baseTournamentResultsQuery(
-		userId,
-		filters,
-	).select(({ eb }) => [
-		sql<number>`null`.as("eventId"),
-		"TournamentResult.tournamentId",
-		"TournamentResult.placement",
-		"TournamentResult.participantCount",
-		"TournamentResult.setResults",
-		"TournamentResult.div",
-		tournamentLogoOrNull(eb).as("logoUrl"),
-		"CalendarEvent.name as eventName",
-		"TournamentTeam.id as teamId",
-		"TournamentTeam.name as teamName",
-		"TournamentResult.isHighlight",
-		RESULT_TIER.as("tier"),
-		withMaxEventStartTime(eb),
-		jsonArrayFrom(
-			eb
-				.selectFrom("TournamentResult as TournamentResult2")
-				.innerJoin("User", "User.id", "TournamentResult2.userId")
-				.select((mateEb) => [
-					...commonUserSelect(mateEb),
-					sql<string | null>`null`.as("name"),
-				])
-				.whereRef(
-					"TournamentResult2.tournamentTeamId",
-					"=",
-					"TournamentResult.tournamentTeamId",
-				)
-				.where("TournamentResult2.userId", "!=", userId),
-		).as("mates"),
-	]);
+	const tournamentResultsQuery = baseTournamentResultsQuery(userId, filters)
+		.$if(page !== null, (qb) =>
+			qb.where(
+				"TournamentResult.tournamentTeamId",
+				"in",
+				page!.tournamentTeamIds,
+			),
+		)
+		.select(({ eb }) => [
+			sql<number>`null`.as("eventId"),
+			"TournamentResult.tournamentId",
+			"TournamentResult.placement",
+			"TournamentResult.participantCount",
+			"TournamentResult.setResults",
+			"TournamentResult.div",
+			tournamentLogoOrNull(eb).as("logoUrl"),
+			"CalendarEvent.name as eventName",
+			"TournamentTeam.id as teamId",
+			"TournamentTeam.name as teamName",
+			"TournamentResult.isHighlight",
+			RESULT_TIER.as("tier"),
+			withMaxEventStartTime(eb),
+			jsonArrayFrom(
+				eb
+					.selectFrom("TournamentResult as TournamentResult2")
+					.innerJoin("User", "User.id", "TournamentResult2.userId")
+					.select((mateEb) => [
+						...commonUserSelect(mateEb),
+						sql<string | null>`null`.as("name"),
+					])
+					.whereRef(
+						"TournamentResult2.tournamentTeamId",
+						"=",
+						"TournamentResult.tournamentTeamId",
+					)
+					.where("TournamentResult2.userId", "!=", userId),
+			).as("mates"),
+		]);
 
-	let query = calendarEventResultsQuery
+	return calendarEventResultsQuery
 		.unionAll(tournamentResultsQuery)
 		.orderBy("startsAt", "desc")
-		.$narrowType<{ startsAt: NotNull }>();
+		.$narrowType<{ startsAt: NotNull }>()
+		.execute();
+}
 
-	if (limit !== undefined) {
-		query = query.limit(limit);
-	}
+/**
+ * Identities of the results on one page, newest first. Resolved on their own because the
+ * per-row columns of {@link findResultsByUserId} (mates, logos) would otherwise be computed
+ * for the user's every result before the sort and limit.
+ */
+async function findResultPageKeys(
+	userId: number,
+	filters: ResultsFilters,
+	{ limit, offset }: { limit: number; offset?: number },
+) {
+	const rows = await baseCalendarEventResultsQuery(userId, filters)
+		.select((eb) => [
+			sql<number | null>`"CalendarEventResultTeam"."id"`.as(
+				"calendarEventTeamId",
+			),
+			sql<number | null>`null`.as("tournamentTeamId"),
+			withMaxEventStartTime(eb),
+		])
+		.unionAll(
+			baseTournamentResultsQuery(userId, filters).select((eb) => [
+				sql<number | null>`null`.as("calendarEventTeamId"),
+				sql<number | null>`"TournamentResult"."tournamentTeamId"`.as(
+					"tournamentTeamId",
+				),
+				withMaxEventStartTime(eb),
+			]),
+		)
+		.orderBy("startsAt", "desc")
+		.limit(limit)
+		.$if(offset !== undefined, (qb) => qb.offset(offset!))
+		.execute();
 
-	if (offset !== undefined) {
-		query = query.offset(offset);
-	}
-
-	return query.execute();
+	return {
+		calendarEventTeamIds: rows.flatMap((row) =>
+			row.calendarEventTeamId !== null ? [row.calendarEventTeamId] : [],
+		),
+		tournamentTeamIds: rows.flatMap((row) =>
+			row.tournamentTeamId !== null ? [row.tournamentTeamId] : [],
+		),
+	};
 }
 
 export async function countResultsByUserId(

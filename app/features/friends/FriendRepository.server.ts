@@ -70,31 +70,45 @@ function withLfgJoins<QB extends SelectQueryBuilder<any, any, any>>(qb: QB) {
 		.leftJoin("TournamentTeamMember", (join) =>
 			join
 				.onRef("TournamentTeamMember.userId", "=", "User.id")
-				.on("TournamentTeamMember.isLooking", "=", 1),
+				.on("TournamentTeamMember.isLooking", "=", 1)
+				.on((eb) =>
+					eb.exists(
+						eb
+							.selectFrom("TournamentTeam as LookingTeam")
+							.innerJoin(
+								"Tournament as LookingTournament",
+								"LookingTournament.id",
+								"LookingTeam.tournamentId",
+							)
+							.select("LookingTeam.id")
+							.whereRef(
+								"LookingTeam.id",
+								"=",
+								"TournamentTeamMember.tournamentTeamId",
+							)
+							.where((innerEb) =>
+								innerEb.or([
+									innerEb(
+										sql`json_extract("LookingTournament"."settings", '$.regClosesAt')`,
+										"is",
+										null,
+									),
+									innerEb(
+										sql<number>`json_extract("LookingTournament"."settings", '$.regClosesAt')`,
+										">",
+										nowTimestamp,
+									),
+								]),
+							),
+					),
+				),
 		)
 		.leftJoin(
 			"TournamentTeam",
 			"TournamentTeam.id",
 			"TournamentTeamMember.tournamentTeamId",
 		)
-		.leftJoin("Tournament", (join) =>
-			join
-				.onRef("Tournament.id", "=", "TournamentTeam.tournamentId")
-				.on((eb) =>
-					eb.or([
-						eb(
-							sql`json_extract("Tournament"."settings", '$.regClosesAt')`,
-							"is",
-							null,
-						),
-						eb(
-							sql<number>`json_extract("Tournament"."settings", '$.regClosesAt')`,
-							">",
-							nowTimestamp,
-						),
-					]),
-				),
-		)
+		.leftJoin("Tournament", "Tournament.id", "TournamentTeam.tournamentId")
 		.leftJoin("CalendarEvent", "CalendarEvent.tournamentId", "Tournament.id")
 		.leftJoin(
 			"CalendarEventDate",

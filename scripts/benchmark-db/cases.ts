@@ -1368,6 +1368,12 @@ export function buildCases(fx: Fixtures): {
 	add("UserRepository.findResultsByUserId", fx.heavyUser, (user) =>
 		UserRepository.findResultsByUserId(user.id, {}),
 	);
+	add("UserRepository.findResultsByUserId.page", fx.heavyUser, (user) =>
+		UserRepository.findResultsByUserId(user.id, { limit: 25, offset: 25 }),
+	);
+	add("UserRepository.findResultsByUserId.widget", fx.heavyUser, (user) =>
+		UserRepository.findResultsByUserId(user.id, { limit: 3 }),
+	);
 	add("UserRepository.countResultsByUserId", fx.heavyUser, (user) =>
 		UserRepository.countResultsByUserId(user.id),
 	);

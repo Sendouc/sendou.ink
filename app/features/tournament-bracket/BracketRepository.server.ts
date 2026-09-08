@@ -163,6 +163,13 @@ export function insertBracket(args: {
 			.returning(["id"])
 			.executeTakeFirstOrThrow();
 
+		// no team can join once a bracket has started, so none is looking for members anymore
+		await trx
+			.updateTable("TournamentTeam")
+			.set({ isLooking: 0 })
+			.where("tournamentId", "=", args.tournamentId)
+			.execute();
+
 		if (
 			args.bracket.group.length === 0 ||
 			args.bracket.round.length === 0 ||

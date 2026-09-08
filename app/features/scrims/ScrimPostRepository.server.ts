@@ -715,16 +715,12 @@ export async function findUserScrims(userId: number): Promise<SidebarScrim[]> {
 	const rows = await baseFindQuery
 		.where("ScrimPost.canceledAt", "is", null)
 		.where(bookedStartsAt, ">=", now)
-		.where((eb) =>
-			eb.or([
-				eb.exists(
-					eb
-						.selectFrom("ScrimPostUser")
-						.select("ScrimPostUser.scrimPostId")
-						.whereRef("ScrimPostUser.scrimPostId", "=", "ScrimPost.id")
-						.where("ScrimPostUser.userId", "=", userId),
-				),
-				eb.exists(
+		.where("ScrimPost.id", "in", (eb) =>
+			eb
+				.selectFrom("ScrimPostUser")
+				.select("ScrimPostUser.scrimPostId")
+				.where("ScrimPostUser.userId", "=", userId)
+				.union(
 					eb
 						.selectFrom("ScrimPostRequest")
 						.innerJoin(
@@ -733,10 +729,8 @@ export async function findUserScrims(userId: number): Promise<SidebarScrim[]> {
 							"ScrimPostRequest.id",
 						)
 						.select("ScrimPostRequest.scrimPostId")
-						.whereRef("ScrimPostRequest.scrimPostId", "=", "ScrimPost.id")
 						.where("ScrimPostRequestUser.userId", "=", userId),
 				),
-			]),
 		)
 		.orderBy(bookedStartsAt, "asc")
 		.execute();
