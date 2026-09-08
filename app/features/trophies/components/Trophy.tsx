@@ -80,6 +80,7 @@ export function Trophy({
 	pill,
 	onRenderStats,
 	colorScheme: forcedColorScheme,
+	fps = 60,
 }: {
 	model: string;
 	className?: string;
@@ -92,6 +93,7 @@ export function Trophy({
 	pill?: React.ReactNode;
 	onRenderStats?: (stats: RenderStats) => void;
 	colorScheme?: ColorScheme;
+	fps?: number;
 }) {
 	const ctxValue = useContext(TrophyCtx);
 	const context = ctxValue?.context;
@@ -157,6 +159,7 @@ export function Trophy({
 				};
 			}
 
+			viewer.maxFps = fps;
 			viewer.cameraMode = "spin";
 			viewer.cameraModeSpeed = 5;
 			viewer.animation.setTime(0);
@@ -183,6 +186,7 @@ export function Trophy({
 			staticOnSoftwareRendering,
 			disableCameraControls,
 			colorScheme,
+			fps,
 		],
 	);
 
