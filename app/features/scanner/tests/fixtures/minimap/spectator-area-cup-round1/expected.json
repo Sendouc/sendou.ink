@@ -5,7 +5,6 @@
     "spectator": true,
     "teammates": [
       {
-        "slot": "up",
         "name": "リビア",
         "abilities": [
           "SSU",
@@ -18,7 +17,6 @@
         "specialReady": false
       },
       {
-        "slot": "right",
         "name": "がらっこ",
         "abilities": [
           "LDE",
@@ -31,7 +29,6 @@
         "specialReady": false
       },
       {
-        "slot": "down",
         "name": "ーロたべる",
         "abilities": [
           "OG",
@@ -44,7 +41,6 @@
         "specialReady": false
       },
       {
-        "slot": "left",
         "name": "ももドラグーン",
         "abilities": [
           "LDE",

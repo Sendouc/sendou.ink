@@ -3,7 +3,12 @@
  * same layout as browser ImageData (Node builds it from @napi-rs/canvas).
  */
 
-import { CANONICAL_HEIGHT, CANONICAL_WIDTH, type Roi } from "./canonical";
+import {
+	CANONICAL_HEIGHT,
+	CANONICAL_WIDTH,
+	detectContentBox,
+	type Roi,
+} from "./canonical";
 import { getCV, type Mat, meanOf, minMaxLoc } from "./cv";
 
 export type { Roi };
@@ -21,24 +26,32 @@ export function toMat(frame: FrameData): Mat {
 	return cv.matFromImageData(frame as unknown as ImageData);
 }
 
-/** Normalizes any frame to the canonical 1920x1080 RGBA mat all ROI constants assume. New mat; caller owns both. */
+/**
+ * Normalizes any frame to the canonical 1920x1080 RGBA mat all ROI constants
+ * assume: black bars around the picture are cropped away first
+ * (detectContentBox), then the picture is resized. New mat; caller owns both.
+ * `src` must be continuous (a fresh mat, not a ROI view).
+ */
 export function normalizeFrame(src: Mat): Mat {
 	const cv = getCV();
 	const dst = new cv.Mat();
-	if (src.cols === CANONICAL_WIDTH && src.rows === CANONICAL_HEIGHT) {
-		src.copyTo(dst);
-		return dst;
+	const box = detectContentBox(src.cols, src.rows, src.data as Uint8Array);
+	const picture = box ? cropRoi(src, box) : src;
+	if (picture.cols === CANONICAL_WIDTH && picture.rows === CANONICAL_HEIGHT) {
+		picture.copyTo(dst);
+	} else {
+		const interpolation =
+			picture.cols > CANONICAL_WIDTH ? cv.INTER_AREA : cv.INTER_CUBIC;
+		cv.resize(
+			picture,
+			dst,
+			new cv.Size(CANONICAL_WIDTH, CANONICAL_HEIGHT),
+			0,
+			0,
+			interpolation,
+		);
 	}
-	const interpolation =
-		src.cols > CANONICAL_WIDTH ? cv.INTER_AREA : cv.INTER_CUBIC;
-	cv.resize(
-		src,
-		dst,
-		new cv.Size(CANONICAL_WIDTH, CANONICAL_HEIGHT),
-		0,
-		0,
-		interpolation,
-	);
+	if (box) picture.delete();
 	return dst;
 }
 

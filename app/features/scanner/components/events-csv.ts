@@ -113,7 +113,7 @@ function formatMinimapPlayers(data: MinimapData): string {
 		`${label} ${p.name ?? "?"} · ${mainWeaponLabel(p.weaponId as MainWeaponId | null) ?? "?"} · ${formatMinimapAbilities(p.abilities)}` +
 		`${p.dead ? " · splatted" : ""}${p.specialReady ? " · special" : ""}`;
 	return [
-		...data.teammates.map((p) => fmt(p.slot, p)),
+		...data.teammates.map((p, i) => fmt(p.self ? "self" : `ally${i + 1}`, p)),
 		...data.enemies.map((p, i) => fmt(`enemy${i + 1}`, p)),
 	].join("; ");
 }
@@ -234,7 +234,7 @@ function eventCells(event: CsvEvent): Cell[] {
 		}
 		case MINIMAP_EVENT_TYPE: {
 			const d = event.data as MinimapData;
-			const self = d.teammates.find((p) => p.slot === "self");
+			const self = d.teammates.find((p) => p.self);
 			return [
 				...base,
 				"", // lobby

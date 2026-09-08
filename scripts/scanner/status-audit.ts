@@ -41,7 +41,6 @@ import {
 	type MinimapEnemy,
 	type MinimapTeammate,
 } from "../../app/features/scanner/core/detectors/minimap/index";
-import type { CardSlot } from "../../app/features/scanner/core/detectors/minimap/rois";
 import {
 	OBJECTIVE_EVENT_TYPE,
 	type ObjectiveData,
@@ -94,8 +93,6 @@ const SCOREBOARD_TYPES = new Set([
 	SCOREBOARD_BATTLE_LOG_EVENT_TYPE,
 	SCOREBOARD_BATTLE_LOG_REPLAY_EVENT_TYPE,
 ]);
-
-const CARD_SLOTS = new Set<CardSlot>(["up", "left", "right", "self", "down"]);
 
 const MODE_BY_LABEL = new Map<string, ModeShort>(
 	modesShort.map((mode) => [modeLabel(mode) ?? mode, mode]),
@@ -358,8 +355,8 @@ function parseMinimapCell(cell: string, stageCell: string): MinimapData {
 		const rawName = spaceAt === -1 ? "" : head.slice(spaceAt + 1);
 		const name = rawName === "?" || rawName === "" ? null : rawName;
 		const player = { name, weaponId, abilities, dead, specialReady };
-		if (CARD_SLOTS.has(label as CardSlot)) {
-			teammates.push({ slot: label as CardSlot, ...player });
+		if (label === "self" || /^ally[1-4]$/.test(label)) {
+			teammates.push({ self: label === "self", ...player });
 		} else if (/^enemy[1-4]$/.test(label)) {
 			enemies.push(player);
 		} else {

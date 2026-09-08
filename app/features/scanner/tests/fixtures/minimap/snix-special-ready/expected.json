@@ -4,7 +4,7 @@
     "stage": 3,
     "teammates": [
       {
-        "slot": "up",
+        "self": false,
         "name": "こむぎこをこねたユウ",
         "abilities": [
           "CB",
@@ -17,7 +17,7 @@
         "specialReady": false
       },
       {
-        "slot": "left",
+        "self": false,
         "name": "Snix",
         "abilities": [
           "CB",
@@ -30,7 +30,7 @@
         "specialReady": true
       },
       {
-        "slot": "right",
+        "self": false,
         "name": "スライムLv.13",
         "abilities": [
           "ISS",
@@ -43,7 +43,7 @@
         "specialReady": false
       },
       {
-        "slot": "self",
+        "self": true,
         "name": "Sendou",
         "abilities": [
           "CB",

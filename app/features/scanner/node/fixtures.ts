@@ -34,7 +34,8 @@ interface ExpectedPlayer {
 }
 
 interface ExpectedMinimapTeammate {
-	slot?: "up" | "left" | "right" | "self" | "down";
+	/** the POV player's own card */
+	self?: boolean;
 	name?: string | null;
 	/** informational for the human corrector; tests compare weaponId */
 	weaponLabel?: string | null;
@@ -119,7 +120,7 @@ interface ExpectedScoreboard {
 		weaponLabels?: [(string | null)[], (string | null)[]];
 		/** Minimap only: casted 8-player spectator map screen (not parsed yet) */
 		spectator?: boolean;
-		/** Minimap only: own-team callout cards in slot order */
+		/** Minimap only: own-team callout cards in drawn order */
 		teammates?: ExpectedMinimapTeammate[];
 		/** Minimap only: enemy panel rows, top to bottom */
 		enemies?: ExpectedMinimapEnemy[];

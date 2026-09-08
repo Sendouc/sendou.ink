@@ -42,7 +42,6 @@ import type { DetectedEvent, Detector, GateResult } from "../types";
 import {
 	badgeRoi,
 	CARD_LAYOUTS,
-	type CardSlot,
 	CROSS_MIN_FRACTION,
 	CROSS_MIN_LAPLACIAN,
 	CROSS_SATURATION_MIN,
@@ -61,6 +60,8 @@ import {
 	GATE_SPAWN_DARK_PROBES,
 	GATE_SPECTATOR_X_BRIGHT,
 	GATE_SPECTATOR_X_DARK,
+	GATE_SPECTATOR_X_MIRRORED_BRIGHT,
+	GATE_SPECTATOR_X_MIRRORED_DARK,
 	MINIMAP_ABILITY_INK_THRESHOLD,
 	MINIMAP_WEAPON_INK_THRESHOLD,
 	NAME_BIN_THRESHOLD,
@@ -72,7 +73,6 @@ import {
 	SPECIAL_READY_WEAPON_MIN_SCORE,
 	SPECTATOR_ENEMY_DX,
 	SPECTATOR_NAME_TEXT_HEIGHTS,
-	SPECTATOR_SLOTS,
 	spectatorCardLayout,
 	WEAPON_BLEED_MIN_CORNER_MEAN,
 	WEAPON_MIN_SCORE,
@@ -80,8 +80,8 @@ import {
 import { matchStage, plannerSignature, type StageMatch } from "./stage";
 
 export interface MinimapTeammate {
-	/** which callout card: super-jump slot, or the POV player's own card */
-	slot: CardSlot;
+	/** the POV player's own card (bottom-left on the overlay); never on the spectator screen */
+	self: boolean;
 	/** card name; null when covered by a respawn cross-out or unreadable */
 	name: string | null;
 	/** sendou main-weapon id; null when unreadable/covered */
@@ -114,7 +114,7 @@ export interface MinimapData {
 	 * column reported as teammates, bravo (right) as enemy rows, both with names
 	 */
 	spectator: boolean;
-	/** own-team callout cards; a slot missing from the frame is omitted */
+	/** own-team callout cards in drawn order; a card missing from the frame is omitted */
 	teammates: MinimapTeammate[];
 	/** enemy panel rows, top to bottom */
 	enemies: MinimapEnemy[];
@@ -264,9 +264,20 @@ export function createMinimapDetector(
 		);
 	}
 
-	/** Spectator screen: the X jump-button disc beside the 8th player card. */
+	/** Spectator screen: the X jump-button disc beside the 8th player card, in whichever column carries the face buttons. */
 	function spectatorGate(gray: Mat): GateResult {
-		return probeGate(gray, GATE_SPECTATOR_X_DARK, GATE_SPECTATOR_X_BRIGHT);
+		const right = probeGate(
+			gray,
+			GATE_SPECTATOR_X_DARK,
+			GATE_SPECTATOR_X_BRIGHT,
+		);
+		if (right.pass) return right;
+		const left = probeGate(
+			gray,
+			GATE_SPECTATOR_X_MIRRORED_DARK,
+			GATE_SPECTATOR_X_MIRRORED_BRIGHT,
+		);
+		return left.score > right.score ? left : right;
 	}
 
 	function gate(frame: Mat): GateResult {
@@ -395,6 +406,7 @@ export function createMinimapDetector(
 		const sideSubTiles: [Roi[], Roi[]] = [[], []];
 		const cardDebug: Record<string, unknown>[] = [];
 		for (const dx of [0, SPECTATOR_ENEMY_DX]) {
+			const isTeammate = dx === 0;
 			for (let row = 0; row < 4; row++) {
 				const layout = spectatorCardLayout(row, dx);
 				const presence = meanBrightness(lap, layout.name);
@@ -402,7 +414,7 @@ export function createMinimapDetector(
 					cardDebug.push({ dx, row, presence, skipped: true });
 					continue;
 				}
-				sideSubTiles[dx === 0 ? 0 : 1].push(layout.subTile);
+				sideSubTiles[isTeammate ? 0 : 1].push(layout.subTile);
 				const crossFraction = saturatedFraction(hsv, layout.cross);
 				const crossLap = meanBrightness(lap, layout.cross);
 				const occluded =
@@ -469,8 +481,8 @@ export function createMinimapDetector(
 					dead: occluded,
 					specialReady: lightSurface,
 				};
-				if (dx === 0) {
-					teammates.push({ slot: SPECTATOR_SLOTS[row]!, ...fields });
+				if (isTeammate) {
+					teammates.push({ self: false, ...fields });
 				} else {
 					enemies.push(fields);
 				}
@@ -543,10 +555,10 @@ export function createMinimapDetector(
 		const sideSubTiles: [Roi[], Roi[]] = [[], []];
 		const cardDebug: Record<string, unknown>[] = [];
 		for (const layout of CARD_LAYOUTS) {
-			// presence: the card is crisp UI, absent slots show blurred scene
+			// presence: the card is crisp UI, an absent card shows blurred scene
 			const presence = meanBrightness(lap, layout.name);
 			if (presence < PRESENCE_MIN_LAPLACIAN) {
-				cardDebug.push({ slot: layout.slot, presence, skipped: true });
+				cardDebug.push({ self: layout.self, presence, skipped: true });
 				continue;
 			}
 			const crossFraction = saturatedFraction(hsv, layout.cross);
@@ -599,7 +611,7 @@ export function createMinimapDetector(
 				);
 			}
 			cardDebug.push({
-				slot: layout.slot,
+				self: layout.self,
 				presence,
 				crossFraction,
 				crossLap,
@@ -623,7 +635,7 @@ export function createMinimapDetector(
 			if (!hasEvidence) continue;
 			sideSubTiles[0].push(layout.subTile);
 			teammates.push({
-				slot: layout.slot,
+				self: layout.self,
 				name,
 				weaponId: matched ? toMainWeaponId(matched.id) : null,
 				abilities,

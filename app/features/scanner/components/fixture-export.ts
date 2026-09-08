@@ -122,7 +122,7 @@ function buildExpectedJson(
 					}),
 					...(minimap.spectator && { spectator: true }),
 					teammates: minimap.teammates.map((p) => ({
-						slot: p.slot,
+						self: p.self,
 						name: p.name,
 						weaponLabel: mainWeaponLabel(p.weaponId),
 						weaponId: p.weaponId,

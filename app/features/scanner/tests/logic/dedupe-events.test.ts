@@ -11,7 +11,6 @@ import type {
 	MinimapEnemy,
 	MinimapTeammate,
 } from "../../core/detectors/minimap/index";
-import { SPECTATOR_SLOTS } from "../../core/detectors/minimap/rois";
 import type { DetectedEvent } from "../../core/detectors/types";
 import { test } from "../node-test-compat";
 
@@ -20,7 +19,6 @@ const BRAVO: MainWeaponId[] = [50, 210, 4010, 8000];
 
 function teammate(
 	weaponId: MainWeaponId | null,
-	i: number,
 	{
 		name = null as string | null,
 		abilities = [] as (AbilityWithUnknown | null)[],
@@ -28,7 +26,7 @@ function teammate(
 	} = {},
 ): MinimapTeammate {
 	return {
-		slot: SPECTATOR_SLOTS[i]!,
+		self: false,
 		name,
 		weaponId,
 		abilities,
@@ -48,7 +46,7 @@ function minimap(
 	t: number,
 	{
 		stage = 0 as StageId | null,
-		teammates = ALPHA.map((id, i) => teammate(id, i)),
+		teammates = ALPHA.map((id) => teammate(id)),
 		enemies = BRAVO.map((id) => enemy(id)),
 	} = {},
 ): DetectedEvent {
@@ -91,7 +89,7 @@ test("a changed ability read keeps both minimaps", () => {
 		minimap(70),
 		minimap(73, {
 			teammates: ALPHA.map((id, i) =>
-				teammate(id, i, { abilities: i === 0 ? ["ISM"] : [] }),
+				teammate(id, { abilities: i === 0 ? ["ISM"] : [] }),
 			),
 		}),
 	]);
@@ -102,7 +100,7 @@ test("a changed dead state keeps both minimaps", () => {
 	const kept = withoutRepeatEvents([
 		minimap(70),
 		minimap(73, {
-			teammates: ALPHA.map((id, i) => teammate(id, i, { dead: i === 0 })),
+			teammates: ALPHA.map((id, i) => teammate(id, { dead: i === 0 })),
 		}),
 	]);
 	assert.equal(kept.length, 2);

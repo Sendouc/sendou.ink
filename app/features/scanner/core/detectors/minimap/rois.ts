@@ -8,12 +8,9 @@
  */
 import type { Roi } from "../../canonical";
 
-/** "self" and "down" never coexist: the POV overlay has no down slot (the
- * player's own card replaces it), the spectator grid has no self card. */
-export type CardSlot = "up" | "left" | "right" | "self" | "down";
-
 export interface CardLayout {
-	slot: CardSlot;
+	/** the POV player's own card (bottom-left, replacing the down jump slot); the spectator grid has none */
+	self: boolean;
 	/** name text band (BlitzMain caps ~29px plus outline/descender margin) */
 	name: Roi;
 	/** main-weapon silhouette box (icons render ~31-48px tall) */
@@ -32,7 +29,7 @@ export interface CardLayout {
  */
 export const CARD_LAYOUTS: readonly CardLayout[] = [
 	{
-		slot: "up",
+		self: false,
 		name: { x: 872, y: 46, w: 300, h: 44 },
 		weapon: { x: 860, y: 83, w: 84, h: 54 },
 		subTile: { x: 932, y: 98, w: 38, h: 41 },
@@ -44,7 +41,7 @@ export const CARD_LAYOUTS: readonly CardLayout[] = [
 		cross: { x: 925, y: 78, w: 60, h: 32 },
 	},
 	{
-		slot: "left",
+		self: false,
 		name: { x: 198, y: 492, w: 300, h: 44 },
 		weapon: { x: 193, y: 529, w: 84, h: 54 },
 		subTile: { x: 265, y: 544, w: 38, h: 41 },
@@ -56,7 +53,7 @@ export const CARD_LAYOUTS: readonly CardLayout[] = [
 		cross: { x: 258, y: 524, w: 60, h: 32 },
 	},
 	{
-		slot: "right",
+		self: false,
 		name: { x: 1550, y: 492, w: 300, h: 44 },
 		weapon: { x: 1545, y: 529, w: 84, h: 54 },
 		subTile: { x: 1617, y: 544, w: 38, h: 41 },
@@ -68,7 +65,7 @@ export const CARD_LAYOUTS: readonly CardLayout[] = [
 		cross: { x: 1610, y: 524, w: 60, h: 32 },
 	},
 	{
-		slot: "self",
+		self: true,
 		name: { x: 126, y: 942, w: 300, h: 46 },
 		weapon: { x: 118, y: 985, w: 94, h: 55 },
 		subTile: { x: 193, y: 995, w: 38, h: 36 },
@@ -197,7 +194,10 @@ export const GATE_BRIGHT_MIN_MAX = 210;
 /**
  * Spectator gate: casts often cover the overlay's corner chrome, so gate on the
  * X jump-button disc beside the 8th card (center (1424,712) ±4px). Measured
- * bright>=249 / dark<=65 against the shared 210/85 thresholds.
+ * bright>=249 / dark<=65 against the shared 210/85 thresholds. The button
+ * glyphs also come mirrored — face buttons down the left column, D-pad down
+ * the right — with the card grid unchanged, so the disc is probed one column
+ * over as well (GATE_SPECTATOR_X_MIRRORED_*; bright 255 / dark<=56 there).
  */
 export const GATE_SPECTATOR_X_BRIGHT: readonly Roi[] = [
 	{ x: 1418, y: 706, w: 12, h: 12 },
@@ -218,19 +218,20 @@ export const GATE_SPECTATOR_X_DARK: readonly Roi[] = [
  * left is alpha, right bravo. No struck/special-ready fixture attested yet, so
  * those probes reuse overlay thresholds untuned.
  */
-export const SPECTATOR_SLOTS: readonly CardSlot[] = [
-	"up",
-	"right",
-	"down",
-	"left",
-];
 export const SPECTATOR_ENEMY_DX = 1348;
+export const GATE_SPECTATOR_X_MIRRORED_BRIGHT: readonly Roi[] =
+	GATE_SPECTATOR_X_BRIGHT.map(mirrorToLeftColumn);
+export const GATE_SPECTATOR_X_MIRRORED_DARK: readonly Roi[] =
+	GATE_SPECTATOR_X_DARK.map(mirrorToLeftColumn);
+function mirrorToLeftColumn(roi: Roi): Roi {
+	return { ...roi, x: roi.x - SPECTATOR_ENEMY_DX };
+}
 const SPECTATOR_ROW_PITCH = 120;
 
 export function spectatorCardLayout(
 	row: number,
 	dx: number,
-): Omit<CardLayout, "slot"> {
+): Omit<CardLayout, "self"> {
 	const dy = SPECTATOR_ROW_PITCH * row;
 	return {
 		name: { x: 198 + dx, y: 306 + dy, w: 310, h: 44 },

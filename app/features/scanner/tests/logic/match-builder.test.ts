@@ -11,7 +11,6 @@ import type {
 	MinimapEnemy,
 	MinimapTeammate,
 } from "../../core/detectors/minimap/index";
-import { SPECTATOR_SLOTS } from "../../core/detectors/minimap/rois";
 import type { ObjectiveData } from "../../core/detectors/objective/index";
 import type { PlayerStatusData } from "../../core/detectors/objective/player-status";
 import type { StripWeaponsData } from "../../core/detectors/objective/strip-weapons";
@@ -135,9 +134,9 @@ function battleLogScoreboard(
 	return { type: "ScoreboardBattleLog", t, confidence: 0.9, data };
 }
 
-function teammate(weaponId: MainWeaponId | null, i: number): MinimapTeammate {
+function teammate(weaponId: MainWeaponId | null): MinimapTeammate {
 	return {
-		slot: SPECTATOR_SLOTS[i]!,
+		self: false,
 		name: null,
 		weaponId,
 		abilities: [],
@@ -172,7 +171,7 @@ function minimap(
 		stage,
 		spectator,
 		teammates: alpha.map((id, i) => ({
-			...teammate(id, i),
+			...teammate(id),
 			dead: dead[0].includes(i),
 			specialReady: specialReady[0].includes(i),
 		})),
@@ -1276,10 +1275,10 @@ test("minimap enemy-card weapons vote the strip assignment too", () => {
 
 test("pov diamond cards map to scoreboard rows by name", () => {
 	const cards = [
-		{ ...teammate(ALPHA[1]!, 0), name: "w2", dead: true },
-		{ ...teammate(ALPHA[0]!, 1), name: "w1" },
-		{ ...teammate(ALPHA[3]!, 2), name: "w4" },
-		{ ...teammate(ALPHA[2]!, 3), name: "w3" },
+		{ ...teammate(ALPHA[1]!), name: "w2", dead: true },
+		{ ...teammate(ALPHA[0]!), name: "w1" },
+		{ ...teammate(ALPHA[3]!), name: "w4" },
+		{ ...teammate(ALPHA[2]!), name: "w3" },
 	];
 	const data: MinimapData = {
 		stage: 0 as StageId,

@@ -194,7 +194,11 @@ sequenceDiagram
   language at once (`core/localized-entries.ts`, generated) and events carry
   sendou ids. English display names come from `components/labels.ts`.
 - ROI coordinates live in each detector's `rois.ts`, in canonical 1920×1080
-  space; every frame is normalized to that size first.
+  space; every frame is normalized to that size first — black bars around the
+  picture (letterbox/pillarbox, or a scene drawing the game smaller than its
+  canvas) are cropped away before the resize (`detectContentBox` in
+  `core/canonical.ts`; a bar must be level and ≥1% deep, since the Recent
+  Battles screen's own scanline-textured edge is dark but neither).
 - New event types implement `Detector` (`core/detectors/types.ts`): a cheap
   `gate(mat)` at sample rate plus `parse(mat, t)` when the gate fires.
   Register in `core/detectors/registry.ts`.

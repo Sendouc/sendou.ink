@@ -43,6 +43,7 @@ import {
 	stageLabel,
 	weaponLabel,
 } from "./labels";
+import { drawNormalizedCanvas } from "./normalized-canvas";
 import { ScannerDropzone } from "./ScannerChrome";
 import styles from "./ScreenshotPage.module.css";
 
@@ -448,13 +449,7 @@ export function ScreenshotPage() {
 			const bitmap = await createImageBitmap(file);
 
 			// normalized frame for local crop display, same as the pipeline does
-			const norm = document.createElement("canvas");
-			norm.width = CANONICAL_WIDTH;
-			norm.height = CANONICAL_HEIGHT;
-			norm
-				.getContext("2d")!
-				.drawImage(bitmap, 0, 0, CANONICAL_WIDTH, CANONICAL_HEIGHT);
-			setFrame(norm);
+			setFrame(drawNormalizedCanvas(bitmap, bitmap.width, bitmap.height));
 
 			resultRef.current = (r) => {
 				setResults((prev) => ({ ...prev, [r.detector]: r }));
@@ -762,7 +757,7 @@ export function ScreenshotPage() {
 										{data.teammates
 											.map(
 												(p) =>
-													`${p.slot}: ${p.name ?? "?"} (${mainWeaponLabel(p.weaponId) ?? "?"})${playerFlags(p)}`,
+													`${p.self ? "self: " : ""}${p.name ?? "?"} (${mainWeaponLabel(p.weaponId) ?? "?"})${playerFlags(p)}`,
 											)
 											.join(", ") || "—"}
 									</Stat>
@@ -779,10 +774,10 @@ export function ScreenshotPage() {
 								</div>
 								{!data.spectator ? (
 									<div className={styles.detailCrops}>
-										{minimap.CARD_LAYOUTS.map((card) => (
+										{minimap.CARD_LAYOUTS.map((card, i) => (
 											<LabeledCrop
-												key={card.slot}
-												label={`slot ${card.slot}`}
+												key={i}
+												label={card.self ? "self card" : `card ${i + 1}`}
 												frame={frame}
 												roi={card.name}
 											/>

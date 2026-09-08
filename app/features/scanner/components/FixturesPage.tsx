@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { type ReactNode, useEffect, useState } from "react";
 import { useSearchParam } from "~/modules/search-params/hooks";
 import { mainWeaponImageUrl, SCANNER_PAGE } from "~/utils/urls";
-import { CANONICAL_HEIGHT, CANONICAL_WIDTH, type Roi } from "../core/canonical";
+import type { Roi } from "../core/canonical";
 import type { PlayerStatusLayout } from "../core/detectors/objective/player-status";
 import * as objective from "../core/detectors/objective/rois";
 import type { FixtureListItem } from "../routes/scanner.fixtures";
@@ -10,6 +10,7 @@ import { scannerSearchParams } from "../scanner-search-params";
 import { newInspectKey, putInspectFrame } from "../store/inspect";
 import styles from "./FixturesPage.module.css";
 import { mainWeaponLabel } from "./labels";
+import { drawNormalizedCanvas } from "./normalized-canvas";
 import { formatTimer, RoiCrop } from "./ScreenshotPage";
 
 const FIXTURES_ENDPOINT = "/scanner/fixtures";
@@ -223,13 +224,9 @@ function useNormalizedFrame(
 		const image = new Image();
 		image.onload = () => {
 			if (cancelled) return;
-			const canvas = document.createElement("canvas");
-			canvas.width = CANONICAL_WIDTH;
-			canvas.height = CANONICAL_HEIGHT;
-			canvas
-				.getContext("2d")!
-				.drawImage(image, 0, 0, CANONICAL_WIDTH, CANONICAL_HEIGHT);
-			setFrame(canvas);
+			setFrame(
+				drawNormalizedCanvas(image, image.naturalWidth, image.naturalHeight),
+			);
 		};
 		image.src = url;
 		return () => {

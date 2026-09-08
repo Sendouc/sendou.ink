@@ -10,7 +10,6 @@ import {
 	type MinimapEnemy,
 	type MinimapTeammate,
 } from "../core/detectors/minimap/index";
-import type { CardSlot } from "../core/detectors/minimap/rois";
 import {
 	EventCardMeta,
 	EventCardShell,
@@ -45,22 +44,14 @@ function AbilityRow({
 	);
 }
 
-/** `up` needs no rotation, `self` renders a dot instead of a chevron */
-const SLOT_ROTATION_CLASS: Record<CardSlot, string | undefined> = {
-	up: undefined,
-	down: styles.down,
-	left: styles.left,
-	right: styles.right,
-	self: undefined,
-};
-
-function TeammateMarker({ slot }: { slot: CardSlot }) {
-	if (slot === "self") {
+/** the POV player's own card renders a dot, allies a jump chevron */
+function TeammateMarker({ self }: { self: boolean }) {
+	if (self) {
 		return <span className={styles.slotMarker}>●</span>;
 	}
 	return (
-		<span className={clsx(styles.slotMarker, SLOT_ROTATION_CLASS[slot])}>
-			<ChevronUp strokeWidth={3.5} aria-label={slot} role="img" />
+		<span className={styles.slotMarker}>
+			<ChevronUp strokeWidth={3.5} aria-label="ally" role="img" />
 		</span>
 	);
 }
@@ -143,10 +134,10 @@ export function MinimapCard(props: {
 			<EventCardTeams>
 				<EventCardTeam>
 					<h3>Team</h3>
-					{data.teammates.map((p) => (
+					{data.teammates.map((p, i) => (
 						<PlayerRow
-							key={p.slot}
-							marker={<TeammateMarker slot={p.slot} />}
+							key={i}
+							marker={<TeammateMarker self={p.self} />}
 							player={p}
 						/>
 					))}

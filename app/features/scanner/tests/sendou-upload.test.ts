@@ -55,10 +55,10 @@ test("weapons are padded to 4 slots per team so uneven rosters keep the team spl
 	const data: MinimapData = {
 		stage: 0,
 		spectator: true,
-		teammates: (["up", "left", "right"] as const).map((slot, i) => ({
-			slot,
+		teammates: ALPHA.slice(0, 3).map((weaponId) => ({
+			self: false,
 			name: null,
-			weaponId: ALPHA[i]!,
+			weaponId,
 			abilities: [],
 			dead: false,
 			specialReady: false,

@@ -94,7 +94,7 @@ for (const fixture of fixtures) {
 
 		for (const [i, want] of (expected.teammates ?? []).entries()) {
 			await t.test(
-				`teammate ${i} (${want.slot ?? "?"})`,
+				`teammate ${i}`,
 				{ skip: skip(fixture, `teammates.${i}`) },
 				() => {
 					const got = event.data.teammates[i];
@@ -105,7 +105,7 @@ for (const fixture of fixtures) {
 					const cardDebug = JSON.stringify(
 						(event.debug?.cards as unknown[])?.[i],
 					);
-					if (want.slot !== undefined) assert.equal(got.slot, want.slot);
+					if (want.self !== undefined) assert.equal(got.self, want.self);
 					if (
 						want.name !== undefined &&
 						!isFieldSkipped(fixture, `teammates.${i}.name`)
