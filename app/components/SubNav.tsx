@@ -47,7 +47,6 @@ export function SubNavLink({
 			className={(state) =>
 				clsx(styles.linkContainer, {
 					[styles.active]: controlled ? active : state.isActive,
-					pending: state.isPending,
 				})
 			}
 			end={end}

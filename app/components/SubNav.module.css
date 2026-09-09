@@ -63,10 +63,6 @@
 	background-color: var(--color-bg-high);
 }
 
-.container.compact .link {
-	padding: var(--s-1) var(--s-2);
-}
-
 .linkContainer.active > .borderGuy {
 	visibility: initial;
 }
