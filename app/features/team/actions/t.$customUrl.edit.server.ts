@@ -26,6 +26,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const result = await parseFormDataWithImages({
 		request,
 		schema: editTeamActionSchema,
+		isCurrentImgId: (imgId) =>
+			imgId === team.avatarImgId || imgId === team.bannerImgId,
 	});
 
 	if (!result.success) {

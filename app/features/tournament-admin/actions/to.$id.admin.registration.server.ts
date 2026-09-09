@@ -38,6 +38,8 @@ export const upsertRegistrationAction = async (
 	const result = await parseFormDataWithImages({
 		request,
 		schema: adminRegistrationFormSchemaServer({ tournament }),
+		// the team's own logo, or one imported along with a team of another tournament
+		isCurrentImgId: TournamentTeamRepository.isPickupAvatarImgId,
 	});
 	if (!result.success) {
 		return { fieldErrors: result.fieldErrors };

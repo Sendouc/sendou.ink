@@ -359,6 +359,33 @@ export async function findById(
 	};
 }
 
+/** Logo image ids of the given event and of the given tournament's event: what the new event form may keep when editing or copying. */
+export async function findAvatarImgIds({
+	eventId,
+	tournamentId,
+}: {
+	eventId?: number;
+	tournamentId?: number;
+}) {
+	if (!eventId && !tournamentId) return [];
+
+	const rows = await db
+		.selectFrom("CalendarEvent")
+		.select("CalendarEvent.avatarImgId")
+		.where((eb) =>
+			eb.or([
+				...(eventId ? [eb("CalendarEvent.id", "=", eventId)] : []),
+				...(tournamentId
+					? [eb("CalendarEvent.tournamentId", "=", tournamentId)]
+					: []),
+			]),
+		)
+		.where("CalendarEvent.avatarImgId", "is not", null)
+		.execute();
+
+	return rows.flatMap((row) => (row.avatarImgId ? [row.avatarImgId] : []));
+}
+
 /**
  * Past year's tournaments the user organized (author, organization ADMIN/ORGANIZER or staff
  * ORGANIZER), newest first. Latest event per series only, the next newest filling spare spots.

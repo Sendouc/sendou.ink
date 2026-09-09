@@ -5,7 +5,7 @@ import { databaseTimestampNow } from "~/utils/dates";
 import { concatUserSubmittedImagePrefix } from "~/utils/kysely.server";
 import { IMAGES_TO_VALIDATE_AT_ONCE } from "./upload-constants";
 
-/** Unvalidated image with its calendar event data. */
+/** Unvalidated image's submitter with its calendar event data. */
 export function findById(id: number) {
 	return db
 		.selectFrom("UnvalidatedUserSubmittedImage")
@@ -14,7 +14,10 @@ export function findById(id: number) {
 			"CalendarEvent.avatarImgId",
 			"UnvalidatedUserSubmittedImage.id",
 		)
-		.select(["CalendarEvent.tournamentId"])
+		.select([
+			"UnvalidatedUserSubmittedImage.submitterUserId",
+			"CalendarEvent.tournamentId",
+		])
 		.where("UnvalidatedUserSubmittedImage.id", "=", id)
 		.executeTakeFirst();
 }

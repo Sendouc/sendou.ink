@@ -15,19 +15,37 @@ import { MAX_UNVALIDATED_IMG_COUNT } from "./upload-constants";
  * Resolves a SendouForm `image` field value to the image id the caller stores on its FK column:
  * `null` → `null`, `EXISTING` → the unchanged `imgId`, `NEW` → uploads to S3 and inserts an
  * unvalidated image row (auto-validated for supporters or when `autoValidate` is set).
+ *
+ * An `EXISTING` id is client-supplied, so it is only accepted when the user uploaded that image
+ * themselves or `isCurrentImgId` vouches for it; otherwise anyone could attach (and, via the
+ * entity's image cleanup, delete) another user's image.
  */
 export async function imageFieldValueToImgId({
 	value,
 	user,
 	autoValidate = false,
+	isCurrentImgId,
 }: {
 	value: ImageFieldValue;
 	user: AuthenticatedUser;
 	/** Bypass the moderator queue (e.g. trusted org logos). */
 	autoValidate?: boolean;
+	/** Whether the entity being edited already holds this image, letting co-editors keep one someone else uploaded. */
+	isCurrentImgId?: (imgId: number) => boolean | Promise<boolean>;
 }): Promise<number | null> {
 	if (!value) return null;
-	if (value.type === "EXISTING") return value.imgId;
+	if (value.type === "EXISTING") {
+		errorToastIfFalsy(
+			await canKeepExistingImage({
+				imgId: value.imgId,
+				userId: user.id,
+				isCurrentImgId,
+			}),
+			"Image does not belong to you",
+		);
+
+		return value.imgId;
+	}
 
 	const shouldAutoValidate = autoValidate || user.roles.includes("SUPPORTER");
 
@@ -61,4 +79,20 @@ export async function imageFieldValueToImgId({
 	});
 
 	return img.id;
+}
+
+async function canKeepExistingImage({
+	imgId,
+	userId,
+	isCurrentImgId,
+}: {
+	imgId: number;
+	userId: number;
+	isCurrentImgId?: (imgId: number) => boolean | Promise<boolean>;
+}) {
+	if (await isCurrentImgId?.(imgId)) return true;
+
+	const image = await ImageRepository.findById(imgId);
+
+	return image?.submitterUserId === userId;
 }

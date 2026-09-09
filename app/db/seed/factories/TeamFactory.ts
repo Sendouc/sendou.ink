@@ -23,6 +23,8 @@ type Options = {
 	mapModePreferences?: UserMapModePreferences;
 	/** Roles of the members, keyed by user id, saved as the roster page saves them. Members left out keep none. */
 	roles?: Record<number, MemberRole>;
+	/** Members who may edit the team like the owner does, saved as the roster page saves them. */
+	managerUserIds?: number[];
 };
 
 /** First of `memberUserIds` is the owner, the rest join like in production (within the non-patron team limit). */
@@ -50,17 +52,23 @@ export const { create } = defineFactory({
 	},
 	applyOptions: async (
 		team,
-		{ hasAvatar, avatarUrl, mapModePreferences, roles }: Options,
+		{
+			hasAvatar,
+			avatarUrl,
+			mapModePreferences,
+			roles,
+			managerUserIds,
+		}: Options,
 	) => {
-		if (roles) {
+		if (roles || managerUserIds) {
 			await TeamRepository.updateRoster({
 				teamId: team.id,
 				members: team.memberUserIds.map((userId, index) => ({
 					userId,
-					role: roles[userId] ?? null,
+					role: roles?.[userId] ?? null,
 					customRole: null,
 					roleType: null,
-					isManager: false,
+					isManager: managerUserIds?.includes(userId) ?? false,
 					order: index,
 				})),
 				kickedUserIds: [],

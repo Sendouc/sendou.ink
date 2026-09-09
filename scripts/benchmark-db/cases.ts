@@ -270,6 +270,12 @@ export function buildCases(fx: Fixtures): {
 		}),
 	);
 	add(
+		"CalendarRepository.findAvatarImgIds",
+		both(fx.heavyCalendarEventId, fx.heavyTournamentId),
+		([eventId, tournamentId]) =>
+			CalendarRepository.findAvatarImgIds({ eventId, tournamentId }),
+	);
+	add(
 		"CalendarRepository.findRecentTournamentsByOrganizerUserId",
 		fx.calendarAuthorId,
 		(authorId) =>
@@ -1254,6 +1260,9 @@ export function buildCases(fx: Fixtures): {
 		fx.heavyTournamentTeamId,
 		(tournamentTeamId) =>
 			TournamentTeamRepository.findInviteCodeById(tournamentTeamId),
+	);
+	add("TournamentTeamRepository.isPickupAvatarImgId", fx.imageId, (imageId) =>
+		TournamentTeamRepository.isPickupAvatarImgId(imageId),
 	);
 	add(
 		"TournamentTeamRepository.findRecentlyPlayedMapsByIds",

@@ -42,6 +42,13 @@ export const action: ActionFunction = async ({ request }) => {
 	const result = await parseFormDataWithImages({
 		request,
 		schema: calendarNewSchemaServer,
+		isCurrentImgId: async (imgId, submitted) =>
+			(
+				await CalendarRepository.findAvatarImgIds({
+					eventId: submitted.eventToEditId,
+					tournamentId: submitted.tournamentToCopyId,
+				})
+			).includes(imgId),
 	});
 	if (!result.success) {
 		return { fieldErrors: result.fieldErrors };

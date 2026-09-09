@@ -12,9 +12,14 @@ import { organizationFromParams } from "../tournament-organization-utils.server"
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
 	const user = requireUser();
+	const organization = await organizationFromParams(params);
+
+	requirePermission(organization, "EDIT");
+
 	const result = await parseFormDataWithImages({
 		request,
 		schema: organizationEditFormSchema,
+		isCurrentImgId: (imgId) => imgId === organization.avatarImgId,
 	});
 
 	if (!result.success) {
@@ -24,10 +29,6 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 	const data = result.data;
 
 	const t = getServerTFunction(["org"]);
-
-	const organization = await organizationFromParams(params);
-
-	requirePermission(organization, "EDIT");
 
 	if (
 		!data.members.some(

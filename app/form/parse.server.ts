@@ -63,13 +63,22 @@ type ResolvedImages<T> = T extends unknown
  * {@link parseFormData} plus every `image()` field resolved to the image id for the FK column via
  * {@link imageFieldValueToImgId} (uploading new, keeping unchanged, clearing removed). The schema may be an
  * object or a union of objects (e.g. `_action` discriminated).
+ *
+ * A kept (`EXISTING`) image must be the user's own upload unless `isCurrentImgId` says the edited
+ * entity already holds it; forms that only ever keep the user's own images can leave it out.
  */
 export async function parseFormDataWithImages<T extends AnySchema>({
 	request,
 	schema,
+	isCurrentImgId,
 }: {
 	request: Request;
 	schema: T;
+	/** Whether the edited entity already holds this image (given the parsed form data to find the entity by). */
+	isCurrentImgId?: (
+		imgId: number,
+		data: v.InferOutput<T>,
+	) => boolean | Promise<boolean>;
 }): Promise<ParseResult<ResolvedImages<v.InferOutput<T>>>> {
 	const result = await parseFormData({ request, schema });
 	if (!result.success) return result;
@@ -83,6 +92,9 @@ export async function parseFormDataWithImages<T extends AnySchema>({
 				value: data[key] as ImageFieldValue,
 				user,
 				autoValidate,
+				isCurrentImgId: isCurrentImgId
+					? (imgId) => isCurrentImgId(imgId, result.data)
+					: undefined,
 			});
 		}
 	}

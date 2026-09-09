@@ -1,5 +1,7 @@
 import { sub } from "date-fns";
 import { beforeEach, describe, expect, test } from "vitest";
+import * as CalendarEventFactory from "~/db/seed/factories/CalendarEventFactory";
+import * as ImageFactory from "~/db/seed/factories/ImageFactory";
 import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentOrganizationFactory from "~/db/seed/factories/TournamentOrganizationFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
@@ -186,5 +188,52 @@ describe("findRecentTournamentsByOrganizerUserId", () => {
 		await seedTournament({ name: "Low Ink February", startedDaysAgo: 1 });
 
 		expect(await recentTournamentNames()).toEqual(["Low Ink February"]);
+	});
+});
+
+describe("findAvatarImgIds", () => {
+	const authorId = () => users.id(1);
+
+	beforeEach(async () => {
+		await users.create(1);
+	});
+
+	test("returns the logos of the edited event and of the copied tournament's event", async () => {
+		const copiedLogo = await ImageFactory.create({
+			submitterUserId: authorId(),
+		});
+		const tournamentToCopy = await TournamentFactory.create({
+			authorId: authorId(),
+			avatarImgId: copiedLogo.id,
+		});
+		const editedLogo = await ImageFactory.create({
+			submitterUserId: authorId(),
+		});
+		const eventToEdit = await CalendarEventFactory.create({
+			authorId: authorId(),
+			avatarImgId: editedLogo.id,
+		});
+		await CalendarEventFactory.create({
+			authorId: authorId(),
+			hasAvatar: true,
+		});
+
+		const imgIds = await CalendarRepository.findAvatarImgIds({
+			eventId: eventToEdit.id,
+			tournamentId: tournamentToCopy.id,
+		});
+
+		expect(imgIds.toSorted((a, b) => a - b)).toEqual(
+			[copiedLogo.id, editedLogo.id].toSorted((a, b) => a - b),
+		);
+	});
+
+	test("returns nothing when neither an event nor a tournament is given", async () => {
+		await CalendarEventFactory.create({
+			authorId: authorId(),
+			hasAvatar: true,
+		});
+
+		expect(await CalendarRepository.findAvatarImgIds({})).toEqual([]);
 	});
 });

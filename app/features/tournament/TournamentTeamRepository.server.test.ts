@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, test } from "vitest";
+import * as ImageFactory from "~/db/seed/factories/ImageFactory";
 import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentTeamFactory from "~/db/seed/factories/TournamentTeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import type { TournamentSettings } from "~/db/tables-json";
+import { invariant } from "~/utils/invariant";
 import { withUserId } from "~/utils/Test";
 import * as TournamentTeamRepository from "./TournamentTeamRepository.server";
 
@@ -455,6 +457,37 @@ describe("TournamentTeamRepository", () => {
 				{ mode: "SZ", stageId: 1 },
 				{ mode: "SZ", stageId: 1 },
 			]);
+		});
+	});
+
+	describe("isPickupAvatarImgId", () => {
+		test("tells a team's pickup logo apart from an image no team uses", async () => {
+			const tournament = await TournamentFactory.create({
+				authorId: organizerId(),
+			});
+			await TournamentTeamFactory.create({
+				tournamentId: tournament.id,
+				memberUserIds: [ownerId()],
+				hasAvatar: true,
+			});
+			const unusedImage = await ImageFactory.create({
+				submitterUserId: ownerId(),
+			});
+			const pickupAvatarImgId = (
+				await db
+					.selectFrom("TournamentTeam")
+					.select("TournamentTeam.avatarImgId")
+					.where("TournamentTeam.tournamentId", "=", tournament.id)
+					.executeTakeFirstOrThrow()
+			).avatarImgId;
+			invariant(pickupAvatarImgId, "Expected the team to have a logo");
+
+			expect(
+				await TournamentTeamRepository.isPickupAvatarImgId(pickupAvatarImgId),
+			).toBe(true);
+			expect(
+				await TournamentTeamRepository.isPickupAvatarImgId(unusedImage.id),
+			).toBe(false);
 		});
 	});
 });

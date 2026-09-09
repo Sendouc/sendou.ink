@@ -1037,6 +1037,17 @@ export async function findInviteCodeById(tournamentTeamId: number) {
 	return row?.inviteCode ?? null;
 }
 
+/** Whether some team of some tournament has this image as its pickup logo; organizers copy those when importing teams. */
+export async function isPickupAvatarImgId(imgId: number) {
+	const row = await db
+		.selectFrom("TournamentTeam")
+		.select("TournamentTeam.id")
+		.where("TournamentTeam.avatarImgId", "=", imgId)
+		.executeTakeFirst();
+
+	return Boolean(row);
+}
+
 export function findByInviteCode(inviteCode: string) {
 	return db
 		.selectFrom("TournamentTeam")
