@@ -1,10 +1,11 @@
 /**
  * PlayerStatus: per-player state off the eight squid/octo icons flanking the
  * timer, emitted alongside each Objective read (same frame, same `time`).
- * Three pixel-class fractions decide a slot (calibration in rois.ts): alive =
- * saturated team-ink body; special held = bright pale wash that PULSES (bright
- * frames light the shoulder probe, trough frames only read pale); splatted =
- * unsaturated grey X with none of the three. Three geometries, named by which
+ * Pixel-class fractions decide a slot (calibration in rois.ts): alive =
+ * saturated team-ink body; special held = pale team-tinted wash that PULSES
+ * (bright frames light the shoulder probe, trough frames only read tinted);
+ * splatted = neutral grey plate under a grey X, ink-poor and untinted whatever
+ * the backdrop brightness. Three geometries, named by which
  * side sits at the packed pitch: "even", "narrow-right" (usual spectator HUD;
  * S3 POV draws it too) and "narrow-left" (right column nearly coincides with
  * even's). Camera badges prove a broadcast, but broadcasts can hide them, so a
@@ -27,7 +28,6 @@ import {
 	STATUS_COMB_MAX_SHIFT,
 	STATUS_COMB_SIDE_SPANS,
 	STATUS_DEAD_MAX_BODY_INK,
-	STATUS_DEAD_MAX_BODY_PALE,
 	STATUS_DEAD_MAX_SHOULDER_GLOW,
 	STATUS_DPAD_PROBES_EVEN,
 	STATUS_DPAD_PROBES_NARROW_LEFT,
@@ -58,6 +58,9 @@ import {
 	STATUS_SLOT_CENTERS_NARROW_LEFT,
 	STATUS_SLOT_CENTERS_NARROW_RIGHT,
 	STATUS_STICKY_FLIP_COMB_MIN,
+	STATUS_TINT_MIN_SPREAD,
+	STATUS_TINT_MIN_VALUE,
+	STATUS_WASH_MIN_BODY_TINT,
 	STATUS_WHITE_MAX_SPREAD,
 	STATUS_WHITE_MIN_VALUE,
 } from "./rois";
@@ -109,6 +112,7 @@ interface SlotRead {
 	confidence: number;
 	bodyInk: number;
 	bodyPale: number;
+	bodyTint: number;
 	shoulderGlow: number;
 	shoulderPaleGlow: number;
 }
@@ -157,6 +161,7 @@ export function parsePlayerStatus(
 				: "badges",
 			bodyInk: reads.map((read) => Number(read.bodyInk.toFixed(2))),
 			bodyPale: reads.map((read) => Number(read.bodyPale.toFixed(2))),
+			bodyTint: reads.map((read) => Number(read.bodyTint.toFixed(2))),
 			shoulderGlow: reads.map((read) => Number(read.shoulderGlow.toFixed(2))),
 			shoulderPaleGlow: reads.map((read) =>
 				Number(read.shoulderPaleGlow.toFixed(2)),
@@ -197,6 +202,7 @@ function readSlots(
 			return classifySlot(
 				body.ink,
 				body.pale,
+				body.tint,
 				shoulder.glow,
 				shoulder.paleGlow,
 				layout,
@@ -347,35 +353,43 @@ function sideDecisiveness(reads: SlotRead[]): number {
 
 /**
  * State from the class fractions; confidence scales with distance to the
- * nearest boundary (1 at twice the threshold / at zero). On narrow layouts the
- * wash replaces the body's ink, so an ink-heavy body means backdrop leak unless
- * strongly pale too (graded STATUS_READY_*WASH* guards), and only unsaturated
- * glow counts (STATUS_GLOW_MAX_SPREAD). A pale backdrop can still light a DEAD
- * icon's shoulder, so narrow ready reads also need the wash's pale body and the
+ * nearest boundary (1 at twice the threshold / at zero). An ink-poor body is a
+ * splat or a wash, and its tint tells them apart: the wash is a pale team tint
+ * at every pulse phase while the splat is neutral grey — even when a blown-out
+ * backdrop turns the plate near-white, or the trough dims the wash under both
+ * ready floors. On narrow layouts the wash replaces the body's ink, so an
+ * ink-heavy body means backdrop leak unless strongly pale too (graded
+ * STATUS_READY_*WASH* guards), and only unsaturated glow counts
+ * (STATUS_GLOW_MAX_SPREAD). A pale backdrop can still light a DEAD icon's
+ * shoulder, so narrow ready reads also need the wash's pale body and the
  * narrow dead read trusts the body classes alone.
  */
 function classifySlot(
 	bodyInk: number,
 	bodyPale: number,
+	bodyTint: number,
 	shoulderGlow: number,
 	shoulderPaleGlow: number,
 	layout: PlayerStatusLayout,
 ): SlotRead {
 	const washGlow = layout === "even" ? shoulderGlow : shoulderPaleGlow;
+	const inkPoor = bodyInk <= STATUS_DEAD_MAX_BODY_INK;
+	const tinted = bodyTint >= STATUS_WASH_MIN_BODY_TINT;
 	const dead =
-		bodyInk <= STATUS_DEAD_MAX_BODY_INK &&
-		(layout !== "even" || washGlow <= STATUS_DEAD_MAX_SHOULDER_GLOW) &&
-		bodyPale <= STATUS_DEAD_MAX_BODY_PALE;
+		inkPoor &&
+		!tinted &&
+		(layout !== "even" || washGlow <= STATUS_DEAD_MAX_SHOULDER_GLOW);
 	const washedBody =
 		bodyInk <= STATUS_READY_CLEAN_WASH_MAX_BODY_INK ||
 		(bodyInk <= STATUS_READY_WASH_MAX_BODY_INK &&
 			bodyPale >= STATUS_READY_INKY_WASH_MIN_BODY_PALE);
 	const special =
 		!dead &&
-		(washGlow >= STATUS_READY_MIN_SHOULDER_GLOW ||
-			bodyPale >= STATUS_READY_MIN_BODY_PALE) &&
-		(layout === "even" ||
-			(washedBody && bodyPale >= STATUS_READY_MIN_WASH_BODY_PALE));
+		((inkPoor && tinted) ||
+			((washGlow >= STATUS_READY_MIN_SHOULDER_GLOW ||
+				bodyPale >= STATUS_READY_MIN_BODY_PALE) &&
+				(layout === "even" ||
+					(washedBody && bodyPale >= STATUS_READY_MIN_WASH_BODY_PALE))));
 	const confidence = dead
 		? Math.min(
 				1,
@@ -387,6 +401,7 @@ function classifySlot(
 					Math.max(
 						washGlow / (STATUS_READY_MIN_SHOULDER_GLOW * 2),
 						bodyPale / (STATUS_READY_MIN_BODY_PALE * 2),
+						inkPoor ? bodyTint / (STATUS_WASH_MIN_BODY_TINT * 2) : 0,
 					),
 				)
 			: Math.min(1, bodyInk / (STATUS_DEAD_MAX_BODY_INK * 2));
@@ -396,16 +411,17 @@ function classifySlot(
 		confidence,
 		bodyInk,
 		bodyPale,
+		bodyTint,
 		shoulderGlow,
 		shoulderPaleGlow,
 	};
 }
 
-/** Ink, glow, and pale pixel fractions of a ROI (see rois.ts for the classes). */
+/** Ink, glow, pale, and tint pixel fractions of a ROI (see rois.ts for the classes). */
 function classFractions(
 	frame: Mat,
 	roi: Roi,
-): { ink: number; glow: number; paleGlow: number; pale: number } {
+): { ink: number; glow: number; paleGlow: number; pale: number; tint: number } {
 	const crop = copyRoi(frame, roi);
 	const { data } = crop;
 	const channels = crop.channels();
@@ -413,6 +429,7 @@ function classFractions(
 	let glow = 0;
 	let paleGlow = 0;
 	let pale = 0;
+	let tint = 0;
 	let count = 0;
 	for (let i = 0; i < data.length; i += channels) {
 		const r = data[i]!;
@@ -427,6 +444,12 @@ function classFractions(
 		}
 		if (value >= STATUS_PALE_MIN_VALUE && spread <= STATUS_PALE_MAX_SPREAD)
 			pale++;
+		if (
+			value >= STATUS_TINT_MIN_VALUE &&
+			spread > STATUS_TINT_MIN_SPREAD &&
+			spread < STATUS_INK_MIN_SPREAD
+		)
+			tint++;
 		count++;
 	}
 	crop.delete();
@@ -435,6 +458,7 @@ function classFractions(
 		glow: glow / count,
 		paleGlow: paleGlow / count,
 		pale: pale / count,
+		tint: tint / count,
 	};
 }
 

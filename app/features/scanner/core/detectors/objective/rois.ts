@@ -189,15 +189,33 @@ export const STATUS_PALE_MIN_VALUE = 185;
 export const STATUS_PALE_MAX_SPREAD = 70;
 
 /**
- * Splatted: body ink under the floor (dead <=0.20 vs alive >=0.26) and the
- * body-pale guard keeping the wash out across its pulse (wash >=0.22 vs dead
- * <=0.15 under the 2026-08-22 VoD's skylight). Even reads add the shoulder-glow
+ * Tinted pixel: bright-ish and unsaturated, but not neutral. The special-ready
+ * wash is a pale team tint (lavender, pink, ...) at every pulse phase, while a
+ * splatted icon is a neutral grey plate under a grey X — and under a blown-out
+ * backdrop that plate reads near-white, so brightness alone cannot tell them
+ * apart. Spread floor sits above chroma-subsampling noise on grey (splats
+ * <=0.19 tinted) and the value floor above the dimmed plate.
+ */
+export const STATUS_TINT_MIN_VALUE = 100;
+export const STATUS_TINT_MIN_SPREAD = 12;
+
+/**
+ * Splatted: body ink under the floor (dead <=0.20 vs alive >=0.26) and a
+ * neutral body (STATUS_WASH_MIN_BODY_TINT). Even reads add the shoulder-glow
  * guard (ready >=0.40 vs dead <=0.03); on narrow layouts backdrop leak past a
  * shrunken X reads 0.26-0.35 there, so only the body classes decide.
  */
 export const STATUS_DEAD_MAX_BODY_INK = 0.23;
 export const STATUS_DEAD_MAX_SHOULDER_GLOW = 0.2;
-export const STATUS_DEAD_MAX_BODY_PALE = 0.15;
+
+/**
+ * Wash body: tinted past this on an ink-poor body means the special-ready
+ * wash at any pulse phase (bright frames and the dim trough alike), under it
+ * a splat. Splats read <=0.19 (SWS26 splat on a blown-out white sky: 0.07 at
+ * pale 0.80), ink-poor washes >=0.45 (SWS26 even-layout trough: 0.57 at pale
+ * 0.13, shoulder glow 0.20 — under both ready floors).
+ */
+export const STATUS_WASH_MIN_BODY_TINT = 0.3;
 
 /** Special ready: shoulder glow past this (attested >=0.40 vs <=0.06). */
 export const STATUS_READY_MIN_SHOULDER_GLOW = 0.25;

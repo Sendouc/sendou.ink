@@ -101,7 +101,9 @@ sequenceDiagram
   badge-less frame scores the geometries on how decisively the bodies
   read and sticks with the established layout unless another wins
   clearly — the special-ready wash also pulses, so its dim trough is told
-  apart from a splat by its pale body, and a narrow-layout ready read
+  apart from a splat by its team tint: a splat is a neutral grey plate under
+  a grey X, which a blown-out backdrop turns near-white while a wash stays
+  tinted at every pulse phase, and a narrow-layout ready read
   must also see a washed (ink-poor) body: pale backdrop or the lead
   banner leaking past an icon edge fakes the shoulder glow on the
   overhead map view's badge-less strip), with
