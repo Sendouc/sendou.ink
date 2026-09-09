@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useFetcher } from "react-router";
 import type { SearchLoaderData } from "~/features/search/routes/search";
+import { searchSearchParams } from "~/features/search/search-search-params";
 import { Avatar } from "../Avatar";
 import {
 	SearchSelect,
@@ -30,7 +31,12 @@ export function UserSearch({
 	const initialUser = useInitialUser(initialUserId);
 
 	const search = useEntitySearch<UserSearchResult>({
-		buildUrl: (query) => `/search?q=${query}&type=users&limit=6`,
+		buildUrl: (query) =>
+			searchSearchParams.href("/search", {
+				q: query,
+				type: "users",
+				limit: 6,
+			}),
 		parseResults: (data, query) => parseUserResults(data, query, initialUser),
 		initialItem: initialUser,
 		initialSelectedId: initialUserId,

@@ -67,10 +67,14 @@ async function getAllStreams() {
 }
 
 async function getStreamsChunk(cursor?: string): Promise<StreamsResponse> {
+	const searchParams = new URLSearchParams({
+		game_id: SPLATOON_3_TWITCH_GAME_ID,
+		first: "100",
+		after: cursor ?? "",
+	});
+
 	const res = await twitchFetch(
-		`https://api.twitch.tv/helix/streams?game_id=${SPLATOON_3_TWITCH_GAME_ID}&first=100&after=${
-			cursor ?? ""
-		}`,
+		`https://api.twitch.tv/helix/streams?${searchParams}`,
 	);
 
 	const parsed = v.safeParse(streamsSchema, await res.json());

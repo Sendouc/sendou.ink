@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useFetcher } from "react-router";
 import type { SearchLoaderData } from "~/features/search/routes/search";
+import { searchSearchParams } from "~/features/search/search-search-params";
 import {
 	SearchSelect,
 	type SearchSelectFieldProps,
@@ -29,7 +30,12 @@ export function OrganizationSearch({
 	const initialOrganization = useInitialOrganization(initialOrganizationId);
 
 	const search = useEntitySearch<OrganizationSearchResult>({
-		buildUrl: (query) => `/search?q=${query}&type=organizations&limit=6`,
+		buildUrl: (query) =>
+			searchSearchParams.href("/search", {
+				q: query,
+				type: "organizations",
+				limit: 6,
+			}),
 		parseResults: (data, query) =>
 			parseOrganizationResults(data, query, initialOrganization),
 		initialItem: initialOrganization,

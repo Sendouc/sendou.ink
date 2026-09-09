@@ -1,5 +1,6 @@
 import type * as React from "react";
 import type { SearchLoaderData } from "~/features/search/routes/search";
+import { searchSearchParams } from "~/features/search/search-search-params";
 import {
 	SearchSelect,
 	type SearchSelectFieldProps,
@@ -28,7 +29,12 @@ export function TeamSearch({
 	...rest
 }: TeamSearchProps) {
 	const search = useEntitySearch<TeamSearchResult>({
-		buildUrl: (query) => `/search?q=${query}&type=teams&limit=6`,
+		buildUrl: (query) =>
+			searchSearchParams.href("/search", {
+				q: query,
+				type: "teams",
+				limit: 6,
+			}),
 		parseResults: parseTeamResults,
 		initialItem: initialTeam as TeamSearchResult | undefined,
 		initialSelectedId: initialTeam?.id,
