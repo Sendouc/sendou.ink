@@ -72,7 +72,6 @@
 	"widgets.main": "Main",
 	"widgets.side": "Side",
 	"widgets.add": "Add",
-	"widgets.remove": "Remove",
 	"widgets.added": "Added",
 	"widgets.maxReached": "Slot full",
 	"widgets.emptyError": "Your profile needs at least one widget",

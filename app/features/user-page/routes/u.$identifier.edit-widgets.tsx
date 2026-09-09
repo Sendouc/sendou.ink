@@ -14,7 +14,7 @@ import {
 	useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Search as SearchIcon } from "lucide-react";
+import { Search as SearchIcon, Trash } from "lucide-react";
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -575,11 +575,12 @@ function DraggableWidgetItem({
 					<SendouButton
 						size="miniscule"
 						variant="minimal-destructive"
+						shape="circle"
+						icon={<Trash />}
+						aria-label={`${t("common:actions.remove")} ${t(widgetNameKey(widget.id))}`}
 						onClick={() => onRemove(widget.id)}
 						testId={`remove-widget-${widget.id}`}
-					>
-						{t("user:widgets.remove")}
-					</SendouButton>
+					/>
 				</div>
 			</div>
 

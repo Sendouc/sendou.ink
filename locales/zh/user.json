@@ -70,7 +70,6 @@
 	"widgets.main": "主要",
 	"widgets.side": "侧边",
 	"widgets.add": "添加",
-	"widgets.remove": "移除",
 	"widgets.added": "",
 	"widgets.maxReached": "已达到小组件上限",
 	"widgets.emptyError": "",
