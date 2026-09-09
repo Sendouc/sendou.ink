@@ -399,6 +399,7 @@ export async function findAllBannedUsers() {
 	return result;
 }
 
+/** Bans the user, logging it unless it's an automatic ban. Revokes their API tokens. */
 export function banUser({
 	userId,
 	banned,
@@ -433,6 +434,8 @@ export function banUser({
 				})
 				.execute();
 		}
+
+		await trx.deleteFrom("ApiToken").where("userId", "=", userId).execute();
 	});
 }
 

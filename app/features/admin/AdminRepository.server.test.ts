@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, test } from "vitest";
+import * as ApiTokenFactory from "~/db/seed/factories/ApiTokenFactory";
 import * as BuildFactory from "~/db/seed/factories/BuildFactory";
 import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentOrganizationFactory from "~/db/seed/factories/TournamentOrganizationFactory";
 import * as TrophyFactory from "~/db/seed/factories/TrophyFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
+import * as ApiRepository from "~/features/api/ApiRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { databaseTimestampNow } from "~/utils/dates";
 import * as AdminRepository from "./AdminRepository.server";
@@ -321,6 +323,29 @@ describe("banUser", () => {
 		expect(modInfo?.banLogs).toHaveLength(2);
 		expect(modInfo?.banLogs[0].bannedReason).toBe("First ban");
 		expect(modInfo?.banLogs[1].bannedReason).toBe("Updated ban reason");
+	});
+
+	test("revokes the banned user's API tokens", async () => {
+		await ApiTokenFactory.create({ userId: users.id(1), type: "read" });
+		await ApiTokenFactory.create({ userId: users.id(1), type: "write" });
+		await ApiTokenFactory.create({ userId: users.id(2), type: "read" });
+
+		await AdminRepository.banUser({
+			userId: users.id(1),
+			banned: 1,
+			bannedReason: "Test ban",
+			bannedByUserId: users.id(2),
+		});
+
+		expect(
+			await ApiRepository.findTokenByUserId(users.id(1), "read"),
+		).toBeUndefined();
+		expect(
+			await ApiRepository.findTokenByUserId(users.id(1), "write"),
+		).toBeUndefined();
+		expect(
+			await ApiRepository.findTokenByUserId(users.id(2), "read"),
+		).toBeDefined();
 	});
 });
 

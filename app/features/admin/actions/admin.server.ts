@@ -1,5 +1,6 @@
 import type { ActionFunctionArgs } from "react-router";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
+import { refreshApiTokensCache } from "~/features/api-public/api-public-utils.server";
 import { requireUser } from "~/features/auth/core/user.server";
 import { refreshBannedCache } from "~/features/ban/core/banned.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
@@ -136,6 +137,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			});
 
 			await refreshBannedCache();
+			await refreshApiTokensCache();
 
 			sendUserBannedWebhook({
 				bannedUser,

@@ -1,4 +1,5 @@
 import { userAsyncLocalStorage } from "~/features/auth/core/user-context.server";
+import { userIsBanned } from "~/features/ban/core/banned.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { getTokenInfo } from "./api-public-utils.server";
 
@@ -46,6 +47,10 @@ export const apiAuthMiddleware: MiddlewareFn = async ({ request }, next) => {
 	const tokenInfo = getTokenInfo(token);
 	if (!tokenInfo) {
 		return Response.json({ error: "Invalid token" }, { status: 401 });
+	}
+
+	if (userIsBanned(tokenInfo.userId)) {
+		return Response.json({ error: "User is banned" }, { status: 403 });
 	}
 
 	if (request.method === "POST" && tokenInfo.type !== "write") {
