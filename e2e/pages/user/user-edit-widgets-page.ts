@@ -64,7 +64,7 @@ export class UserEditWidgetsPage {
 
 	/** Fills the bio widget's settings, expanded after adding it or opening them. */
 	async fillBio(text: string) {
-		await this.page.getByLabel("Bio").fill(text);
+		await this.page.getByRole("textbox", { name: "Bio" }).fill(text);
 	}
 
 	async save() {
