@@ -109,7 +109,13 @@ function ChatButton({
 				testId="chat-toggle-button"
 			/>
 			{unreadCount ? (
-				<span className={styles.chatUnreadBadge}>{unreadCount}</span>
+				<span
+					className={styles.chatUnreadBadge}
+					role="status"
+					aria-label={`${unreadCount} unread chat ${unreadCount === 1 ? "message" : "messages"}`}
+				>
+					{unreadCount}
+				</span>
 			) : null}
 		</>
 	);
