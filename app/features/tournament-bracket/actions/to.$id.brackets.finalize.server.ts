@@ -68,11 +68,18 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		if (!trophyReceiverValid) errorToast("Invalid trophy receiver");
 	}
 
-	await finalizeTournament({
+	const finalized = await finalizeTournament({
 		tournament,
 		badgeReceivers: data.badgeReceivers ?? undefined,
 		trophyReceiver: trophyReceiver ?? undefined,
 	});
+
+	if (!finalized) {
+		return successToastWithRedirect({
+			url: tournamentBracketsPage({ tournamentId }),
+			message: "Tournament was already finalized",
+		});
+	}
 
 	if (data.badgeReceivers) {
 		logger.info(

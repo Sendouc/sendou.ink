@@ -18,7 +18,11 @@ import { summaryRatingTargets, tournamentSummary } from "./summarizer.server";
 import type { Tournament } from "./Tournament";
 import { clearTournamentDataCache } from "./Tournament.server";
 
-/** Results, skills, badges, trophies and leaderboard entries of a fully played tournament. */
+/**
+ * Results, skills, badges, trophies and leaderboard entries of a fully played tournament.
+ *
+ * @returns false if an overlapping request finalized the tournament first, meaning nothing was written
+ */
 export async function finalizeTournament({
 	tournament,
 	badgeReceivers,
@@ -68,9 +72,10 @@ export async function finalizeTournament({
 	});
 
 	const tournamentSummaryString = `Tournament id: ${tournamentId}, mapResultDeltas.lenght: ${summary.mapResultDeltas.length}, playerResultDeltas.length ${summary.playerResultDeltas.length}, tournamentResults.length ${summary.tournamentResults.length}, skills.length ${summary.skills.length}, seedingSkills.length ${summary.seedingSkills.length}`;
+	let finalized: boolean;
 	if (!tournament.isTest) {
 		logger.info(`Inserting tournament summary. ${tournamentSummaryString}`);
-		await TournamentRepository.finalize({
+		finalized = await TournamentRepository.finalize({
 			tournamentId,
 			summary,
 			season,
@@ -81,7 +86,14 @@ export async function finalizeTournament({
 		logger.info(
 			`Did not insert tournament summary. ${tournamentSummaryString}`,
 		);
-		await TournamentRepository.finalizeWithoutSummary(tournamentId);
+		finalized = await TournamentRepository.finalizeWithoutSummary(tournamentId);
+	}
+
+	// an overlapping request already finalized this tournament, its side effects are its own
+	if (!finalized) {
+		logger.info(`Tournament ${tournamentId} was already finalized`);
+		clearTournamentDataCache(tournamentId);
+		return false;
 	}
 
 	await SavedCalendarEventRepository.deleteByTournamentId(tournamentId);
@@ -99,6 +111,8 @@ export async function finalizeTournament({
 	}
 
 	clearTournamentDataCache(tournamentId);
+
+	return true;
 }
 
 async function updateSeriesTierHistory(tournament: Tournament) {

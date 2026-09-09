@@ -1,6 +1,7 @@
 import { sub } from "date-fns";
 import {
 	type Insertable,
+	type Kysely,
 	type NotNull,
 	type SqlBool,
 	sql,
@@ -1402,6 +1403,9 @@ const SUMMARY_INSERT_CHUNK_SIZE = 1000;
 /**
  * Finalizes a tournament, recording the full summary: skills, seeding skills, map/player
  * result deltas, badge owners and placements. See {@link finalizeWithoutSummary} for test tournaments.
+ *
+ * Returns false without writing anything if the tournament was already finalized, so that
+ * overlapping requests can't apply the additive summary deltas twice.
  */
 export function finalize({
 	tournamentId,
@@ -1419,6 +1423,8 @@ export function finalize({
 	const seasonValue = season ?? null;
 
 	return db.transaction().execute(async (trx) => {
+		if (!(await claimFinalization(trx, tournamentId))) return false;
+
 		const skillTeamUsers: Array<{ skillId: number; userId: number }> = [];
 		for (const skill of summary.skills) {
 			invariant(seasonValue !== null, "Season missing for skill");
@@ -1626,21 +1632,35 @@ export function finalize({
 			await trx.insertInto("TournamentResult").values(chunk).execute();
 		}
 
-		await trx
-			.updateTable("Tournament")
-			.set({ isFinalized: 1 })
-			.where("id", "=", tournamentId)
-			.execute();
+		return true;
 	});
 }
 
-/** Marks a test tournament as finalized without recording any summary stats. See {@link finalize}. */
+/**
+ * Marks a test tournament as finalized without recording any summary stats. See {@link finalize}.
+ *
+ * Returns false if the tournament was already finalized.
+ */
 export function finalizeWithoutSummary(tournamentId: number) {
-	return db
+	return claimFinalization(db, tournamentId);
+}
+
+/**
+ * Flips `isFinalized` on, atomically. False means another finalization got there first, in which
+ * case the caller must not apply any summary of its own.
+ */
+async function claimFinalization(
+	trx: Kysely<DB> | Transaction<DB>,
+	tournamentId: number,
+) {
+	const result = await trx
 		.updateTable("Tournament")
 		.set({ isFinalized: 1 })
 		.where("id", "=", tournamentId)
-		.execute();
+		.where("isFinalized", "=", 0)
+		.executeTakeFirst();
+
+	return result.numUpdatedRows > 0n;
 }
 
 /** How close to its start time a tournament counts as happening right now. */

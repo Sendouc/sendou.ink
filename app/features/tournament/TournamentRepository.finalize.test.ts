@@ -245,6 +245,40 @@ describe("TournamentRepository.finalize", () => {
 		expect(second.matchesCount).toBe(8);
 	});
 
+	test("a second finalize of the same tournament is a no-op", async () => {
+		const { id: tournamentId } = await createTournament();
+		const summary = emptySummary([
+			{
+				userId: users.id(1),
+				identifier: null,
+				mu: 25,
+				sigma: 8.333,
+				matchesCount: 5,
+			},
+		]);
+
+		const first = await TournamentRepository.finalize({
+			tournamentId,
+			season: 1,
+			summary,
+		});
+		const second = await TournamentRepository.finalize({
+			tournamentId,
+			season: 1,
+			summary,
+		});
+
+		const skills = await db
+			.selectFrom("Skill")
+			.select("matchesCount")
+			.where("tournamentId", "=", tournamentId)
+			.execute();
+
+		expect(first).toBe(true);
+		expect(second).toBe(false);
+		expect(skills).toEqual([{ matchesCount: 5 }]);
+	});
+
 	test("finalizes a tournament with more player result deltas than fit in one insert statement", async () => {
 		const { id: tournamentId } = await createTournament();
 		const playerResultDeltas = playerResultDeltasForEveryPair(users.ids());
