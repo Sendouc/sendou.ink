@@ -48,6 +48,7 @@ import {
 	PENALTY_PROBE_MAX_STD,
 	PENALTY_PROBE_ROIS,
 	PENALTY_ROIS,
+	PENALTY_SINGLE_PROBE_MIN_CONF,
 	PENALTY_TEXT_HEIGHT,
 	PLATE_PROBE_ROIS,
 	SCORE_BIN_THRESHOLDS,
@@ -269,18 +270,22 @@ export function createObjectiveDetector(
 		return { value: best.value, reading: best.reading };
 	}
 
-	/** Penalty pill: presence probes first, then the white "+N" digits. */
+	/**
+	 * Penalty pill: presence probes at the rounded ends first, then the white
+	 * "+N" digits. A nameplate badge can cover one end, so a lone pill-like
+	 * probe still reads but the digits must be confident on their own.
+	 */
 	function readPenalty(
 		frame: Mat,
 		gray: Mat,
 		side: 0 | 1,
 	): BannerScoreRead | null {
 		if (!penaltySet) return null;
-		const pillLike = PENALTY_PROBE_ROIS[side].every((roi) => {
+		const pillLikeProbes = PENALTY_PROBE_ROIS[side].filter((roi) => {
 			const { mean, std } = meanStd(gray, roi);
 			return mean <= PENALTY_PROBE_MAX_MEAN && std <= PENALTY_PROBE_MAX_STD;
-		});
-		if (!pillLike) return null;
+		}).length;
+		if (pillLikeProbes === 0) return null;
 		const band = minChannel(frame, PENALTY_ROIS[side]);
 		const raw = recognizeText(band, penaltySet, {
 			binThreshold: PENALTY_BIN_THRESHOLD,
@@ -288,7 +293,14 @@ export function createObjectiveDetector(
 			minCharScore: 0.3,
 		});
 		band.delete();
-		return trailingDigitRun(raw, penaltySet);
+		const read = trailingDigitRun(raw, penaltySet);
+		if (
+			pillLikeProbes < PENALTY_PROBE_ROIS[side].length &&
+			read.confidence < PENALTY_SINGLE_PROBE_MIN_CONF
+		) {
+			return null;
+		}
+		return read;
 	}
 
 	/** Plate fill over the probe strip; saturated = team-color style = in control (CONTROL_PLATE_MIN_SATURATION). */

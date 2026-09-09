@@ -92,19 +92,27 @@ export const PENALTY_BIN_THRESHOLD = 170;
 export const PENALTY_PROBE_MAX_MEAN = 165;
 export const PENALTY_PROBE_MAX_STD = 30;
 
+/**
+ * A spectated player's in-world nameplate badge can cover one rounded end (SWS26
+ * cast), so a single pill-like probe still reads the digits but they must carry
+ * the read alone: attested pills >=0.91, probe-less lookalikes <=0.35.
+ */
+export const PENALTY_SINGLE_PROBE_MIN_CONF = 0.8;
+
 /** Control = saturated plate fill: even deep blue keeps ~130 spread; attested fills >=112 vs <=19. */
 export const CONTROL_PLATE_MIN_SATURATION = 60;
 
 // Player-status icon strips: eight squid/octo icons flank the timer (alive =
 // team-ink body, special held = pale wash, splatted = grey X). Three geometries
-// named by which side sits at the packed pitch: "even" draws small icons at
-// ~99px on both sides; the spectator HUD draws bigger icons (gauge digits
-// top-RIGHT, camera badges below) at per-side pitches (~98 left vs ~76 right =
-// "narrow-right"). Nothing is mirror-symmetric (even inner icons sit 108px left
-// / 130px right of center), so centers are measured per side. Spectator icons
-// ride ~20px left of their badge centers; the outer-right center sits past the
-// measured icon (~1313) because splat X's lean into inked backdrop on the left
-// while alive bodies extend right (dead <=0.16 vs alive >=0.33 at 1320).
+// named by which side sits at the packed pitch: "even" draws both sides at
+// ~88px (the SWS26 broadcast draws it badges and all; the S2 POV fixture's
+// ~99px strip still reads at these centers); the spectator HUD draws bigger
+// icons (gauge digits top-RIGHT, camera badges below) at per-side pitches (~98
+// left vs ~76 right = "narrow-right"). Nothing is mirror-symmetric, so centers
+// are measured per side. Spectator icons ride ~20px left of their badge
+// centers; the narrow outer-right center sits past the measured icon (~1313)
+// because splat X's lean into inked backdrop on the left while alive bodies
+// extend right (dead <=0.16 vs alive >=0.33 at 1320).
 //
 // The spectator strip MIRRORS its pitches when the broadcast specs the other
 // team (AREA CUP VoD): "narrow-left", badges and all. Its right column lands
@@ -121,8 +129,8 @@ export const STATUS_SLOT_CENTERS_EVEN: readonly [
 	readonly number[],
 	readonly number[],
 ] = [
-	[554, 653, 752, 852],
-	[1090, 1190, 1288, 1388],
+	[571, 657, 750, 839],
+	[1090, 1178, 1267, 1355],
 ];
 export const STATUS_SLOT_CENTERS_NARROW_RIGHT: readonly [
 	readonly number[],
@@ -204,13 +212,14 @@ export const STATUS_READY_MIN_BODY_PALE = 0.3;
  * Narrow-layout ready guard: the wash REPLACES body ink, so an ink-heavy body
  * means backdrop leak (the overhead view's left column sits ~12px off, sliding
  * probes onto pale buildings / the lead banner: ink >=0.44). Graded: clean
- * washes ink <=0.28; inky washes (0.316/0.344) still read strongly pale
+ * washes ink <=0.303 (SWS26 pale pink on orange; nearest alive 0.33 has no
+ * wash signal); inky washes (0.316/0.344) still read strongly pale
  * (>=0.399) while the Um'ami POV leak read ink 0.36 / pale 0.269. Even ready
  * icons light IN team color (ink up to 0.68), so narrow only. Margins are THIN
- * (ink 0.344 vs 0.4; pale 0.399 vs 0.35) — re-measure before moving any.
+ * (ink 0.303 vs 0.32, 0.344 vs 0.4; pale 0.399 vs 0.35) — re-measure before moving any.
  */
 export const STATUS_READY_WASH_MAX_BODY_INK = 0.4;
-export const STATUS_READY_CLEAN_WASH_MAX_BODY_INK = 0.3;
+export const STATUS_READY_CLEAN_WASH_MAX_BODY_INK = 0.32;
 export const STATUS_READY_INKY_WASH_MIN_BODY_PALE = 0.35;
 
 /**
@@ -234,7 +243,9 @@ export const STATUS_LAYOUT_STICKY_MARGIN = 0.04;
  * attested; busy backdrops mis-rank: sendou-triton match-start scores even
  * 0.278 / narrow-right 0.273 yet is narrow-right). Even wins only when
  * narrow-right reads under the floor (S2 POV fixture 0.198 vs true >=0.212) or
- * leads decisively (true narrow-right mis-leads even by at most 0.036).
+ * leads decisively (true narrow-right mis-leads even by at most 0.036). With even
+ * at the SWS26 pitch, the badge-less AREA CUP trough frame (0.192 vs even 0.224)
+ * lands on even too, where every slot still reads right.
  */
 export const STATUS_FRESH_NARROW_RIGHT_MIN_DECISIVENESS = 0.21;
 export const STATUS_FRESH_EVEN_MIN_LEAD = 0.05;
@@ -324,15 +335,19 @@ export const STRIP_WEAPON_SAMPLE_INTERVAL = 5;
 
 /**
  * Broadcast discriminator (`cast`): the spectator HUD draws white camera badges
- * under the right team's icons. All four probes must read white (bright AND
- * unsaturated — sky is saturated cyan). Badge frames read >=0.33 (AREA CUP faded
- * row), every badge-less frame <=0.004.
+ * under the right team's icons, one row per geometry (even's at the ~88px
+ * pitch, SWS26). All four probes must read white (bright AND unsaturated — sky
+ * is saturated cyan). Badge frames read >=0.33 (AREA CUP faded row), every
+ * badge-less frame <=0.004.
  */
 export const STATUS_DPAD_PROBES_NARROW_RIGHT: readonly Roi[] = [
 	1105, 1180, 1256, 1332,
 ].map((cx) => ({ x: cx - 8, y: 102, w: 16, h: 16 }));
 export const STATUS_DPAD_PROBES_NARROW_LEFT: readonly Roi[] = [
 	1110, 1207, 1303, 1401,
+].map((cx) => ({ x: cx - 8, y: 102, w: 16, h: 16 }));
+export const STATUS_DPAD_PROBES_EVEN: readonly Roi[] = [
+	1107, 1195, 1284, 1372,
 ].map((cx) => ({ x: cx - 8, y: 102, w: 16, h: 16 }));
 export const STATUS_WHITE_MIN_VALUE = 215;
 export const STATUS_WHITE_MAX_SPREAD = 40;

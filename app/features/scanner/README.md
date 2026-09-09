@@ -94,7 +94,9 @@ sequenceDiagram
   which side sits at the packed pitch — `even`, `narrow-right`,
   `narrow-left` — that are pure geometry, never footage type: S3 POV
   footage draws both narrow arrangements too, so only the D-pad camera
-  badges prove a broadcast, reported as the read's `cast: true | null`;
+  badges prove a broadcast, reported as the read's `cast: true | null` —
+  each geometry has its own badge row, the SWS26 broadcast draws `even`
+  badges included;
   broadcasts can hide the badges while keeping their geometry, so a
   badge-less frame scores the geometries on how decisively the bodies
   read and sticks with the established layout unless another wins

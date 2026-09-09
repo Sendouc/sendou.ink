@@ -29,6 +29,7 @@ import {
 	STATUS_DEAD_MAX_BODY_INK,
 	STATUS_DEAD_MAX_BODY_PALE,
 	STATUS_DEAD_MAX_SHOULDER_GLOW,
+	STATUS_DPAD_PROBES_EVEN,
 	STATUS_DPAD_PROBES_NARROW_LEFT,
 	STATUS_DPAD_PROBES_NARROW_RIGHT,
 	STATUS_FRESH_EVEN_MIN_LEAD,
@@ -76,9 +77,10 @@ export interface PlayerStatusData {
 	dead: [PlayerStatusFlags, PlayerStatusFlags];
 	/**
 	 * strip geometry, named by which side sits at the packed ~76px pitch ("even"
-	 * = both at ~99px). Pure geometry, never footage type: S3 POV draws both
+	 * = both at ~88px). Pure geometry, never footage type: S3 POV draws both
 	 * narrow arrangements (2026-08-11 Um'ami VoD = narrow-right, 2026-08-22
-	 * Sendou VoD = narrow-left), so only `cast` is broadcast evidence
+	 * Sendou VoD = narrow-left) and the SWS26 broadcast draws even, so only
+	 * `cast` is broadcast evidence
 	 */
 	layout: PlayerStatusLayout;
 	/** true when camera badges proved a cast; never false since badge absence proves nothing */
@@ -253,6 +255,8 @@ function pickLayout(
 		return { layout: "narrow-right", scores: null };
 	if (badgesVisible(frame, STATUS_DPAD_PROBES_NARROW_LEFT))
 		return { layout: "narrow-left", scores: null };
+	if (badgesVisible(frame, STATUS_DPAD_PROBES_EVEN))
+		return { layout: "even", scores: null };
 	const sideScores = Object.fromEntries(
 		ALL_LAYOUTS.map((layout) => [
 			layout,
