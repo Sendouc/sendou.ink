@@ -151,7 +151,9 @@ export function canAccessLohiEndpoint(request: Request) {
 }
 
 export function errorToastRedirect(message: string) {
-	return redirect(`${currentRequestPathname() ?? ""}?__error=${message}`);
+	return redirect(
+		urlWithToastParam(currentRequestPathname() ?? "", "__error", message),
+	);
 }
 
 /** Asserts condition is truthy. Throws a redirect triggering an error toast with given message otherwise.  */
@@ -179,7 +181,9 @@ export function errorToast(message: string) {
 }
 
 export function successToast(message: string) {
-	return redirect(`${currentRequestPathname() ?? ""}?__success=${message}`);
+	return redirect(
+		urlWithToastParam(currentRequestPathname() ?? "", "__success", message),
+	);
 }
 
 export function successToastWithRedirect({
@@ -189,7 +193,29 @@ export function successToastWithRedirect({
 	message: string;
 	url: string;
 }) {
-	return redirect(`${url}?__success=${message}`);
+	return redirect(urlWithToastParam(url, "__success", message));
+}
+
+function urlWithToastParam(
+	url: string,
+	param: "__error" | "__success",
+	message: string,
+) {
+	const [pathnameAndSearch, hash] = splitOnce(url, "#");
+	const [pathname, search] = splitOnce(pathnameAndSearch, "?");
+
+	const searchParams = new URLSearchParams(search);
+	searchParams.set(param, message);
+
+	return `${pathname}?${searchParams}${hash ? `#${hash}` : ""}`;
+}
+
+function splitOnce(value: string, separator: string) {
+	const index = value.indexOf(separator);
+
+	return index === -1
+		? ([value, undefined] as const)
+		: ([value.slice(0, index), value.slice(index + 1)] as const);
 }
 
 export type Breadcrumb =

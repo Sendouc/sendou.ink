@@ -27,6 +27,7 @@ import { Config } from "~/config";
 import type { CustomTheme } from "~/db/tables-json";
 import { resolveLayoutData } from "~/features/layout/core/layout.server";
 import { useDebounce } from "~/hooks/useDebounce";
+import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
 import lexendLatinUrl from "~/styles/fonts/lexend-latin.woff2?url";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import type { Route } from "./+types/root";
@@ -284,11 +285,13 @@ function useTriggerToasts() {
 	// biome-ignore lint/plugin: app-wide toast params written by server redirects, belonging to no one feature
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
+	const scrollBeforeToast = useScrollBeforeToast();
 
 	const error = searchParams.get("__error");
 	const success = searchParams.get("__success");
 
-	React.useEffect(() => {
+	// layout effect: the restore has to land after <ScrollRestoration /> (a child) reset the scroll, before paint
+	useIsomorphicLayoutEffect(() => {
 		if (!error && !success) return;
 
 		if (error) {
@@ -308,8 +311,36 @@ function useTriggerToasts() {
 			);
 		}
 
-		navigate({ search: "" }, { replace: true, defaultShouldRevalidate: false });
-	}, [error, success, navigate]);
+		if (scrollBeforeToast.current.pathname === window.location.pathname) {
+			window.scrollTo(0, scrollBeforeToast.current.y);
+		}
+
+		navigate(
+			{ search: "" },
+			{
+				replace: true,
+				preventScrollReset: true,
+				defaultShouldRevalidate: false,
+			},
+		);
+	}, [error, success, navigate, scrollBeforeToast]);
+}
+
+/** Latest scroll position and the page it was scrolled on, to undo the scroll reset of a toast's redirect. */
+function useScrollBeforeToast() {
+	const ref = React.useRef({ pathname: "", y: 0 });
+
+	React.useEffect(() => {
+		const onScroll = () => {
+			ref.current = { pathname: window.location.pathname, y: window.scrollY };
+		};
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+
+		return () => window.removeEventListener("scroll", onScroll);
+	}, []);
+
+	return ref;
 }
 
 function useLoadingIndicator() {

@@ -170,9 +170,14 @@ export function assertResponseErrored(response: Response, message?: string) {
 		throw new Error(`Expected a Response, got: ${response}`);
 	}
 
-	expect(response.headers.get("Location")).toContain("?__error=");
+	const location = response.headers.get("Location") ?? "";
+	const errorMessage = new URLSearchParams(location.split("?")[1]).get(
+		"__error",
+	);
+
+	expect(errorMessage).not.toBeNull();
 	if (message) {
-		expect(response.headers.get("Location")).toContain(message);
+		expect(errorMessage).toContain(message);
 	}
 }
 
