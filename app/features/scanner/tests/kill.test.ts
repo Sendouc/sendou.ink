@@ -20,12 +20,14 @@ import { createScoreboardBattleLogDetector } from "../core/detectors/scoreboard-
 import { createScoreboardBattleLogReplayDetector } from "../core/detectors/scoreboard-battle-log-replay/index";
 import { createScoreboardOwnDetector } from "../core/detectors/scoreboard-own/index";
 import type { Detector } from "../core/detectors/types";
+import { normalizeFrame, toMat } from "../core/image";
 import {
 	type Fixture,
 	isFieldSkipped,
 	loadFixtures,
 	runDetectorOnFixture,
 } from "../node/fixtures";
+import { readImage } from "../node/image-io";
 import { loadScoreboardResources } from "../node/resources";
 import { test } from "./node-test-compat";
 
@@ -182,6 +184,32 @@ for (const fixture of fixtures.filter((f) => f.expected.event === "Kill")) {
 		}
 	});
 }
+
+// A row read repeats across the frames it shows; the memo must hand the same
+// read back on a later frame and start blank when the clock stands still or
+// rewinds (a fresh scan, this harness parsing every fixture at t=0).
+test("row reads are memoized across advancing frames only", async () => {
+	const fixture = fixtures.find((f) => f.name === "double-24k-datkid")!;
+	const src = toMat(await readImage(fixture.framePath));
+	const frame = normalizeFrame(src);
+	src.delete();
+	try {
+		const memoizedRows = (event: { debug?: unknown }) =>
+			(event.debug as { rows: { memoized: boolean }[] }).rows.map(
+				(row) => row.memoized,
+			);
+		const first = detector.parse(frame, 10)[0]!;
+		const repeat = detector.parse(frame, 10.5)[0]!;
+		const rewound = detector.parse(frame, 10.5)[0]!;
+		assert.deepEqual(memoizedRows(first), [false, false]);
+		assert.deepEqual(memoizedRows(repeat), [true, true]);
+		assert.deepEqual(memoizedRows(rewound), [false, false]);
+		assert.deepEqual(repeat.data, first.data);
+		assert.equal(repeat.confidence, first.confidence);
+	} finally {
+		frame.delete();
+	}
+});
 
 function skip(fixture: Fixture, field: string): boolean | string {
 	return isFieldSkipped(fixture, field) ? "skipFields" : false;

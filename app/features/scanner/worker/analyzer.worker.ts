@@ -29,6 +29,7 @@ import {
 } from "../core/detectors/telemetry";
 import type { Detector } from "../core/detectors/types";
 import { normalizeFrame, toMat } from "../core/image";
+import { TimelineBuilder } from "../core/timeline/index";
 import type {
 	AnalyzeRequest,
 	InitRequest,
@@ -53,6 +54,14 @@ let collectTelemetry = false;
 let chunkAborted = false;
 /** last per-frame t, to reset telemetry when a new session rewinds the clock */
 let lastFrameT = Number.NEGATIVE_INFINITY;
+/**
+ * Mirror of the main thread's timeline (same defaults), fed every event first:
+ * a frame is PNG-encoded only when some event would be listed rather than
+ * merged into an earlier read — a fixed-cadence detector re-reads a standing
+ * screen twice a second, and encoding 1080p for each repeat cost more than
+ * the parse.
+ */
+let shadowTimeline = new TimelineBuilder();
 
 function post(message: WorkerResponse, transfer: Transferable[] = []): void {
 	self.postMessage(message, { transfer });
@@ -146,8 +155,13 @@ async function analyzeFrame(
 				}
 				scheduler!.recordParse(detector.id, t, events);
 			}
+			let listed = false;
+			for (const event of events) {
+				const { action } = shadowTimeline.push(event);
+				if (action === "added" || action === "replaced") listed = true;
+			}
 			const blob =
-				events.length > 0 && detector.attachFrame !== false
+				listed && detector.attachFrame !== false
 					? await frameBlob()
 					: undefined;
 			post({
@@ -165,7 +179,10 @@ async function analyzeFrame(
 }
 
 async function analyze({ bitmap, t }: AnalyzeRequest): Promise<void> {
-	if (t + 5 < lastFrameT) telemetry = freshTelemetry();
+	if (t + 5 < lastFrameT) {
+		telemetry = freshTelemetry();
+		shadowTimeline = new TimelineBuilder();
+	}
 	lastFrameT = t;
 	try {
 		await analyzeFrame(bitmap, t);
@@ -184,6 +201,7 @@ async function scanChunk({
 	chunkAborted = false;
 	scheduler!.reset(tStart);
 	telemetry = freshTelemetry();
+	shadowTimeline = new TimelineBuilder();
 	const wallStart = performance.now();
 	let lastProgressAt = 0;
 	let lastPreviewAt = 0;

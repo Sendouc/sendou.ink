@@ -12,7 +12,13 @@
  */
 import { getCV, type Mat } from "../../cv";
 import { type GlyphSet, scaleGlyphSet } from "../../glyphs";
-import { copyRoi, maxBrightness, meanBrightness, type Roi } from "../../image";
+import {
+	copyRoi,
+	maxBrightness,
+	meanBrightness,
+	type Roi,
+	roiSignature,
+} from "../../image";
 import {
 	readMatchTimer,
 	timerBoxChecks,
@@ -65,6 +71,23 @@ const MESSAGE_MIN_SCORE = 0.75;
  */
 const PLAIN_TIE_MARGIN = 0.05;
 
+/**
+ * A row's text band recurs pixel-near-identical across the frames it shows
+ * (and shifts up intact when a newer row enters) while reading it against the
+ * ~900-glyph atlas costs 80-160ms, so reads are memoized on a downscaled band
+ * signature. VoD-measured at 103x10 cells: repeat frames of one row differ by
+ * ≤4.2 mean and ≤21 in any cell (≤39 across a row's re-entry seconds later),
+ * different names by ≥28 mean, and a single swapped glyph moves some cell by
+ * ~200 while the mean barely reaches 4 — the per-cell cap is what tells
+ * near-twin names apart; the mean cap rejects whole-band changes (a 1px drift
+ * reads ≥7 mean / ≥60 cell, a fading row more).
+ */
+const ROW_MEMO_COLS = 103;
+const ROW_MEMO_ROWS = 10;
+const ROW_MEMO_MAX_MEAN_DIFF = 6;
+const ROW_MEMO_MAX_CELL_DIFF = 48;
+const ROW_MEMO_MAX_ENTRIES = 16;
+
 /** Timeline content guard: repeat frames of one stack merge, a row entering or leaving keeps its own event. */
 export function sameKillData(a: unknown, b: unknown): boolean {
 	const da = a as KillData;
@@ -86,6 +109,37 @@ export function createKillDetector(
 			)
 		: null;
 	const timerSets = timerGlyphSets(resources);
+
+	const rowMemo: { signature: number[]; read: ParsedName }[] = [];
+	let lastParseT = Number.NEGATIVE_INFINITY;
+
+	/** Memoized read of a band within the signature caps, freshened to the list's end. */
+	function rowMemoLookup(signature: number[]): ParsedName | null {
+		for (let i = 0; i < rowMemo.length; i++) {
+			const entry = rowMemo[i]!;
+			let sum = 0;
+			let cell = 0;
+			for (let k = 0; k < signature.length; k++) {
+				const diff = Math.abs(signature[k]! - entry.signature[k]!);
+				sum += diff;
+				if (diff > cell) cell = diff;
+			}
+			if (
+				cell <= ROW_MEMO_MAX_CELL_DIFF &&
+				sum / signature.length <= ROW_MEMO_MAX_MEAN_DIFF
+			) {
+				rowMemo.splice(i, 1);
+				rowMemo.push(entry);
+				return entry.read;
+			}
+		}
+		return null;
+	}
+
+	function rowMemoStore(signature: number[], read: ParsedName): void {
+		rowMemo.push({ signature, read });
+		if (rowMemo.length > ROW_MEMO_MAX_ENTRIES) rowMemo.shift();
+	}
 
 	function whiteFraction(gray: Mat, roi: Roi): number {
 		const crop = copyRoi(gray, roi);
@@ -125,19 +179,31 @@ export function createKillDetector(
 		return { pass: passed === checks.length, score: passed / checks.length };
 	}
 
-	function readRow(gray: Mat, row: number): ParsedName {
-		const band = copyRoi(gray, textRoi(row));
+	function readRow(
+		gray: Mat,
+		row: number,
+	): { parsed: ParsedName; memoized: boolean } {
+		const roi = textRoi(row);
+		const signature = roiSignature(gray, roi, ROW_MEMO_COLS, ROW_MEMO_ROWS);
+		const memoized = rowMemoLookup(signature);
+		if (memoized) return { parsed: memoized, memoized: true };
+		const band = copyRoi(gray, roi);
 		const parsed = parseName(band, glyphs!, {
 			binThreshold: KILL_TEXT_BIN_THRESHOLD,
 			spaceGap: Math.max(6, Math.round(glyphs!.medianWidth * 0.55)),
 			plainTieMargin: PLAIN_TIE_MARGIN,
 		});
 		band.delete();
-		return parsed;
+		rowMemoStore(signature, parsed);
+		return { parsed, memoized: false };
 	}
 
 	function parse(frame: Mat, t: number): DetectedEvent<KillData>[] {
 		if (!glyphs) return [];
+		// reads carry forward in time only: a clock that stands still or rewinds
+		// (a fresh scan, the fixture harness) starts from a blank memo
+		if (t <= lastParseT) rowMemo.length = 0;
+		lastParseT = t;
 		const gray = new cv.Mat();
 		cv.cvtColor(frame, gray, cv.COLOR_RGBA2GRAY);
 
@@ -146,7 +212,7 @@ export function createKillDetector(
 		const rows: Record<string, unknown>[] = [];
 		for (let row = 0; row < MAX_ROWS; row++) {
 			if (row > 0 && !rowChecks(gray, row).every(Boolean)) break;
-			const parsed = readRow(gray, row);
+			const { parsed, memoized } = readRow(gray, row);
 			const message = matchKillMessage(parsed.name);
 			rows.push({
 				raw: parsed.raw.text,
@@ -154,6 +220,7 @@ export function createKillDetector(
 				readScore: parsed.confidence,
 				messageLangs: message?.template.langs,
 				messageScore: message?.score,
+				memoized,
 			});
 			if (!message || message.score < MESSAGE_MIN_SCORE) break;
 			names.push(message.name);

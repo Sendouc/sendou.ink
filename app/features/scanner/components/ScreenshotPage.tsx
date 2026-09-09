@@ -877,7 +877,7 @@ export function ScreenshotPage() {
 				<div className={styles.detail}>
 					{(() => {
 						const data = event.data as unknown as KillData;
-						const rows = (event.debug?.rows ?? []) as { raw?: string }[];
+						const killRows = (event.debug?.rows ?? []) as { raw?: string }[];
 						return (
 							<>
 								<div className={styles.detailStats}>
@@ -885,7 +885,11 @@ export function ScreenshotPage() {
 										{formatTimer(data.time)}
 									</Stat>
 									{data.names.map((name, row) => (
-										<Stat key={row} label={`row ${row}`} raw={rows[row]?.raw}>
+										<Stat
+											key={row}
+											label={`row ${row}`}
+											raw={killRows[row]?.raw}
+										>
 											{name ?? "?"}
 										</Stat>
 									))}

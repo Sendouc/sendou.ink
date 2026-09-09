@@ -179,9 +179,13 @@ sequenceDiagram
   recognition code. Parse cost matters live (a stalled worker drops
   frames): a CJK splash-tag name once cost tens of seconds per death
   parse, which is why the death detector memoizes tag reads on a
-  downscaled tag signature (same killer recurs pixel-identical) and
-  `classifySegment` prescreens oversized eligibility lists at half scale
-  — both tuned so `scanner:report` stays bit-identical.
+  downscaled tag signature (same killer recurs pixel-identical), the kill
+  detector memoizes each feed row's read on its text-band signature (a row
+  is re-read twice a second for as long as it shows, and shifts up intact
+  when a newer one enters; the per-cell cap of the signature compare is
+  what keeps near-twin names apart) and `classifySegment` prescreens
+  oversized eligibility lists at half scale — all tuned so
+  `scanner:report` stays bit-identical.
 - Scheduling (`core/detectors/scheduler.ts`): the per-session
   DetectorScheduler decides which detectors see a frame. Failing gates are
   re-checked every `searchIntervalS` (0.25s — produced VoDs cut screens to
@@ -193,7 +197,11 @@ sequenceDiagram
   `rearmCooldownS`. Battle-log/replay gates return a content `signature` so
   browsing distinct entries re-parses once per battle instead of dropping
   the gate. `checkIntervalS` hard-caps both phases; `attachFrame: false`
-  keeps continuously-firing events from storing a frame PNG each. Frames no
+  keeps continuously-firing events from storing a frame PNG each, and the
+  worker only encodes a frame at all when a shadow `TimelineBuilder` (same
+  defaults as the page's) says an event would be listed rather than merged
+  into an earlier read — a 1080p PNG per repeat read cost more than the
+  parse once the kill feed re-read its stack twice a second. Frames no
   detector is due for skip canvas readback, and everything is counted in
   `core/detectors/telemetry.ts` — but only when the VoD tab is opened with
   `?telemetry=true` (nothing links there); otherwise the workers skip
