@@ -10,6 +10,10 @@ export class TopRightButtons {
 			supportLink: page
 				.getByRole("banner")
 				.getByRole("link", { name: "Support" }),
+			// logged out only: logged in the search opener is a link, not a button
+			searchButton: page
+				.getByRole("banner")
+				.getByRole("button", { name: "Search" }),
 		};
 	}
 }

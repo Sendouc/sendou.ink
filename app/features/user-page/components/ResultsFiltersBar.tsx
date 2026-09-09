@@ -80,6 +80,7 @@ export function ResultsFiltersBar() {
 		formattedValue: filters.highlightsOnly ? t("results.filter.only") : null,
 		onRemove: () => setFilters({ highlightsOnly: false }),
 		onAdd: () => setFilters({ highlightsOnly: true }),
+		usableLoggedOut: true,
 		testId: "highlights-filter",
 		popover: (
 			<SendouSwitch

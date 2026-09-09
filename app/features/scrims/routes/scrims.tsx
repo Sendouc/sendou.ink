@@ -95,14 +95,14 @@ export default function ScrimsPage() {
 
 	return (
 		<Main className="stack lg">
-			{user ? (
-				<div className="stack horizontal sm items-center flex-wrap">
+			<div className="stack horizontal sm items-center flex-wrap">
+				{user ? (
 					<LinkButton size="small" to={associationsPage()} variant="outlined">
 						{t("scrims:associations.title")}
 					</LinkButton>
-					<Filters />
-				</div>
-			) : null}
+				) : null}
+				<Filters />
+			</div>
 			<SendouTabs
 				key={pendingRequestPostId}
 				defaultSelectedKey={

@@ -6,6 +6,7 @@ import { useUser } from "~/features/auth/core/user";
 import { SendouButton } from "../elements/Button";
 import { SendouMenu, SendouMenuItem } from "../elements/Menu";
 import { SendouPopover } from "../elements/Popover";
+import { LogInPopover } from "../LogInPopover";
 import styles from "./FilterBar.module.css";
 
 export interface FilterBarPill {
@@ -20,6 +21,8 @@ export interface FilterBarPill {
 	onRemove?: () => void;
 	/** Writes a starting value when the pill is added from the menu. */
 	onAdd?: () => void;
+	/** Usable logged out, where every other pill prompts to log in instead. */
+	usableLoggedOut?: boolean;
 	icon?: React.ReactNode;
 	popoverClassName?: string;
 	testId?: string;
@@ -35,17 +38,24 @@ export function FilterBar({
 	onReset?: () => void;
 	actions?: React.ReactNode;
 }) {
-	const user = useUser();
+	const isLoggedIn = Boolean(useUser());
 	const { t } = useTranslation();
 	const [justAddedKeys, setJustAddedKeys] = React.useState<ReadonlySet<string>>(
 		new Set(),
 	);
 	const [openPillKey, setOpenPillKey] = React.useState<string | null>(null);
 
-	if (!user) return null;
+	/** A logged out visitor has no add filter menu to bring a pill back with. */
+	const isPinned = (pill: FilterBarPill) =>
+		!isLoggedIn && Boolean(pill.usableLoggedOut);
 
 	const isVisible = (pill: FilterBarPill) =>
-		pill.formattedValue !== null || justAddedKeys.has(pill.key);
+		pill.formattedValue !== null ||
+		justAddedKeys.has(pill.key) ||
+		isPinned(pill);
+
+	const isRemovable = (pill: FilterBarPill) =>
+		Boolean(pill.onRemove) && (pill.formattedValue !== null || !isPinned(pill));
 
 	const hiddenPills = pills.filter((pill) => !isVisible(pill));
 
@@ -79,13 +89,18 @@ export function FilterBar({
 				<FilterPill
 					key={pill.key}
 					pill={pill}
+					showLogInPrompt={!isLoggedIn && !pill.usableLoggedOut}
 					isOpen={openPillKey === pill.key}
 					onOpenChange={(isOpen) => setOpenPillKey(isOpen ? pill.key : null)}
-					onRemove={pill.onRemove ? () => removePill(pill) : undefined}
+					onRemove={isRemovable(pill) ? () => removePill(pill) : undefined}
 				/>
 			))}
 			{hiddenPills.length > 0 ? (
-				<AddFilterMenu pills={hiddenPills} onAdd={addPill} />
+				<AddFilterMenu
+					pills={hiddenPills}
+					isLoggedIn={isLoggedIn}
+					onAdd={addPill}
+				/>
 			) : null}
 			{onReset || actions ? (
 				<div className={styles.actions}>
@@ -103,41 +118,47 @@ export function FilterBar({
 
 function FilterPill({
 	pill,
+	showLogInPrompt,
 	isOpen,
 	onOpenChange,
 	onRemove,
 }: {
 	pill: FilterBarPill;
+	showLogInPrompt: boolean;
 	isOpen: boolean;
 	onOpenChange: (isOpen: boolean) => void;
 	onRemove?: () => void;
 }) {
+	const trigger = (
+		<button
+			type="button"
+			className={styles.trigger}
+			data-active={pill.formattedValue !== null}
+			data-testid={pill.testId}
+		>
+			{pill.icon ? <span className={styles.icon}>{pill.icon}</span> : null}
+			<span>{pill.name}</span>
+			{pill.formattedValue !== null ? (
+				<span className={styles.value}>{pill.formattedValue}</span>
+			) : null}
+			<ChevronDown className={styles.chevron} />
+		</button>
+	);
+
 	return (
 		<div className={styles.pill}>
-			<SendouPopover
-				isOpen={isOpen}
-				onOpenChange={onOpenChange}
-				popoverClassName={clsx(styles.popover, pill.popoverClassName)}
-				trigger={
-					<button
-						type="button"
-						className={styles.trigger}
-						data-active={pill.formattedValue !== null}
-						data-testid={pill.testId}
-					>
-						{pill.icon ? (
-							<span className={styles.icon}>{pill.icon}</span>
-						) : null}
-						<span>{pill.name}</span>
-						{pill.formattedValue !== null ? (
-							<span className={styles.value}>{pill.formattedValue}</span>
-						) : null}
-						<ChevronDown className={styles.chevron} />
-					</button>
-				}
-			>
-				{pill.popover}
-			</SendouPopover>
+			{showLogInPrompt ? (
+				<LogInPopover>{trigger}</LogInPopover>
+			) : (
+				<SendouPopover
+					isOpen={isOpen}
+					onOpenChange={onOpenChange}
+					popoverClassName={clsx(styles.popover, pill.popoverClassName)}
+					trigger={trigger}
+				>
+					{pill.popover}
+				</SendouPopover>
+			)}
 			{onRemove ? (
 				<button
 					type="button"
@@ -155,27 +176,37 @@ function FilterPill({
 
 function AddFilterMenu({
 	pills,
+	isLoggedIn,
 	onAdd,
 }: {
 	pills: FilterBarPill[];
+	isLoggedIn: boolean;
 	onAdd: (pill: FilterBarPill) => void;
 }) {
 	const { t } = useTranslation();
 
+	const trigger = (
+		<button
+			type="button"
+			className={styles.trigger}
+			data-testid="add-filter-button"
+		>
+			<Plus className={styles.plus} />
+			<span>{t("filterBar.addFilter")}</span>
+		</button>
+	);
+
+	if (!isLoggedIn) {
+		return (
+			<div className={styles.pill}>
+				<LogInPopover>{trigger}</LogInPopover>
+			</div>
+		);
+	}
+
 	return (
 		<div className={styles.pill}>
-			<SendouMenu
-				trigger={
-					<button
-						type="button"
-						className={styles.trigger}
-						data-testid="add-filter-button"
-					>
-						<Plus className={styles.plus} />
-						<span>{t("filterBar.addFilter")}</span>
-					</button>
-				}
-			>
+			<SendouMenu trigger={trigger}>
 				{pills.map((pill) => (
 					<SendouMenuItem
 						key={pill.key}

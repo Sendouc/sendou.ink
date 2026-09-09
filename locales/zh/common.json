@@ -36,6 +36,7 @@
 	"header.profile": "个人资料",
 	"header.logout": "退出登录",
 	"header.login.discord": "通过 Discord 登录",
+	"logInPrompt": "",
 	"header.language": "语言",
 	"header.loggedInAs": "已登录: {{userName}}",
 	"header.theme": "主题",

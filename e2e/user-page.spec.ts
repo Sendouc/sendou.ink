@@ -264,6 +264,16 @@ test.describe("User page", () => {
 
 		await expect(resultsPage.eventName("In The Zone 30")).toBeVisible();
 		await isNotVisible(resultsPage.eventName("Paddling Pool 253"));
+
+		await page.context().clearCookies();
+		await resultsPage.goto(ADMIN_DISCORD_ID);
+		await isNotVisible(resultsPage.eventName("Paddling Pool 253"));
+
+		await resultsPage.toggleHighlightsOnly();
+		await expect(resultsPage.eventName("Paddling Pool 253")).toBeVisible();
+
+		await resultsPage.toggleHighlightsOnly();
+		await isNotVisible(resultsPage.eventName("Paddling Pool 253"));
 	});
 
 	test("edits profile widgets, lists vods and shows season stats", async ({

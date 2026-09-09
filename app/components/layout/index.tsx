@@ -462,7 +462,6 @@ export function Layout({
 						showSupport={Boolean(
 							data && !data?.user?.roles.includes("MINOR_SUPPORT"),
 						)}
-						showSearch={Boolean(data?.user)}
 						isLoggedIn={Boolean(data?.user)}
 						onChatToggle={
 							data?.user && !chatSidebarOpen

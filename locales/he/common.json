@@ -36,6 +36,7 @@
 	"header.profile": "פרופיל",
 	"header.logout": "התנתקות",
 	"header.login.discord": "",
+	"logInPrompt": "",
 	"header.language": "שפה",
 	"header.loggedInAs": "הנך מחובר בתור {{userName}}",
 	"header.theme": "נושא",

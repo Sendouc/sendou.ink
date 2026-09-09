@@ -36,6 +36,7 @@
 	"header.profile": "Profil",
 	"header.logout": "Log ud",
 	"header.login.discord": "",
+	"logInPrompt": "",
 	"header.language": "Sprog",
 	"header.loggedInAs": "Du er logget ind som {{userName}}",
 	"header.theme": "Tema",

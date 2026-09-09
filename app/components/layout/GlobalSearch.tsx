@@ -10,6 +10,7 @@ import { SendouRadio, SendouRadioGroup } from "~/components/elements/Radio";
 import { Image } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { LocaleTime } from "~/components/LocaleTime";
+import { LogInPopover } from "~/components/LogInPopover";
 import type { SearchLoaderData } from "~/features/search/routes/search";
 import { searchSearchParams } from "~/features/search/search-search-params";
 import { tournamentOrganizationPage } from "~/features/tournament-organization/tournament-organization-urls";
@@ -141,6 +142,20 @@ export function GlobalSearch() {
 				</SendouModal>
 			) : null}
 		</>
+	);
+}
+
+/** Search is logged in only, so a logged out visitor gets a log in prompt instead. */
+export function LoggedOutGlobalSearch() {
+	const { t } = useTranslation(["common"]);
+
+	return (
+		<LogInPopover>
+			<button type="button" className={styles.searchButton}>
+				<Search className={styles.searchIcon} />
+				<span className={styles.searchPlaceholder}>{t("common:search")}</span>
+			</button>
+		</LogInPopover>
 	);
 }
 

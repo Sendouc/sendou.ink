@@ -16,7 +16,19 @@ export class UserResultsPage {
 			chooseHighlightsButton: page.getByRole("link", {
 				name: "Choose highlights",
 			}),
+			highlightsFilter: page.getByTestId("highlights-filter"),
+			highlightsOnlySwitch: page.getByRole("switch", {
+				name: "Only highlighted results",
+			}),
 		};
+	}
+
+	/** Flips the highlights only filter, which a logged out visitor may use too. */
+	async toggleHighlightsOnly() {
+		await this.locators.highlightsFilter.click();
+		// the switch indicator covers its input, like everywhere else this one is clicked
+		await this.locators.highlightsOnlySwitch.click({ force: true });
+		await this.page.keyboard.press("Escape");
 	}
 
 	async goto(discordId: string) {

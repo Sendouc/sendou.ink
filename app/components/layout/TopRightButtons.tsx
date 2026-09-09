@@ -3,20 +3,18 @@ import { useTranslation } from "react-i18next";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { LinkButton, SendouButton } from "../elements/Button";
 import { AnythingAdder } from "./AnythingAdder";
-import { GlobalSearch } from "./GlobalSearch";
+import { GlobalSearch, LoggedOutGlobalSearch } from "./GlobalSearch";
 import { LogInButtonContainer } from "./LogInButtonContainer";
 import styles from "./TopRightButtons.module.css";
 
 export function TopRightButtons({
 	showSupport,
-	showSearch,
 	isLoggedIn,
 	onChatToggle,
 	onChatModalToggle,
 	chatUnreadCount,
 }: {
 	showSupport: boolean;
-	showSearch: boolean;
 	isLoggedIn: boolean;
 	onChatToggle?: () => void;
 	onChatModalToggle?: () => void;
@@ -49,16 +47,14 @@ export function TopRightButtons({
 					</div>
 				</>
 			) : null}
+			<div className={styles.searchAndAddContainer}>
+				<div className={styles.searchWrapper}>
+					{isLoggedIn ? <GlobalSearch /> : <LoggedOutGlobalSearch />}
+				</div>
+				{isLoggedIn ? <AnythingAdder /> : null}
+			</div>
 			{isLoggedIn ? (
 				<>
-					<div className={styles.searchAndAddContainer}>
-						{showSearch ? (
-							<div className={styles.searchWrapper}>
-								<GlobalSearch />
-							</div>
-						) : null}
-						<AnythingAdder />
-					</div>
 					{onChatToggle ? (
 						<div className={styles.chatButtonWrapperPersistent}>
 							<ChatButton

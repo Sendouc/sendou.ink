@@ -36,6 +36,7 @@
 	"header.profile": "Profile",
 	"header.logout": "Log out",
 	"header.login.discord": "Log in via Discord",
+	"logInPrompt": "Log in to use this",
 	"header.language": "Language",
 	"header.loggedInAs": "Logged in as {{userName}}",
 	"header.theme": "Theme",

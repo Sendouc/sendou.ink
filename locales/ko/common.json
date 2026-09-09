@@ -36,6 +36,7 @@
 	"header.profile": "프로필",
 	"header.logout": "로그아웃",
 	"header.login.discord": "",
+	"logInPrompt": "",
 	"header.language": "언어",
 	"header.loggedInAs": "{{userName}}로 로그인됨",
 	"header.theme": "테마",

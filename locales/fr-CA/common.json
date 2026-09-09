@@ -36,6 +36,7 @@
 	"header.profile": "Profil",
 	"header.logout": "Déconnexion",
 	"header.login.discord": "",
+	"logInPrompt": "",
 	"header.language": "Langue",
 	"header.loggedInAs": "Connecté en tant que {{userName}}",
 	"header.theme": "Thème",

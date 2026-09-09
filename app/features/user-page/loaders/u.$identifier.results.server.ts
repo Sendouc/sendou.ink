@@ -35,16 +35,9 @@ export const loader = async ({ request, url }: LoaderFunctionArgs) => {
 	const isChoosingHighlights = url.pathname.includes("/results/highlights");
 	const canFilter = !isChoosingHighlights && Boolean(getUser());
 
-	/** Logged out visitors are locked to the highlights, if there are any. */
-	let showHighlightsOnly = hasHighlightedResults;
-
-	if (canFilter && !highlightsOnly) {
-		showHighlightsOnly = false;
-	}
-
-	if (isChoosingHighlights) {
-		showHighlightsOnly = false;
-	}
+	/** Turning the highlights off is the one filter a logged out visitor gets. */
+	const showHighlightsOnly =
+		hasHighlightedResults && highlightsOnly && !isChoosingHighlights;
 
 	const filters = canFilter
 		? {
