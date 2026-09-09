@@ -110,6 +110,46 @@ describe("useAnchorPositioning", () => {
 		expect(popoverRect.top).toBeGreaterThanOrEqual(0);
 	});
 
+	test("caps a long select to the space below its trigger", async () => {
+		const screen = await render(
+			<div style={{ padding: "100px" }}>
+				<SendouSelect
+					label="Season"
+					items={MANY_SEASONS}
+					placeholder="Pick a season"
+				>
+					{({ id, name }: (typeof MANY_SEASONS)[number]) => (
+						<SendouSelectItem key={id} id={id}>
+							{name}
+						</SendouSelectItem>
+					)}
+				</SendouSelect>
+			</div>,
+		);
+
+		const trigger = screen.getByRole("button", { name: /Pick a season/ });
+		await trigger.click();
+		await expect
+			.element(screen.getByRole("option", { name: "Season 1", exact: true }))
+			.toBeVisible();
+
+		const popover = document.querySelector("[popover]") as HTMLElement;
+		const listbox = screen.getByRole("listbox").element();
+		const spaceBelow =
+			window.innerHeight -
+			rectOf(trigger.element()).bottom -
+			Number.parseFloat(getComputedStyle(popover).marginTop) -
+			12;
+
+		// an explicit cap, as WebKit does not resolve the percentage one in the CSS
+		expect(Number.parseFloat(popover.style.maxHeight)).toBeCloseTo(
+			spaceBelow,
+			0,
+		);
+		expect(rectOf(popover).bottom).toBeLessThanOrEqual(window.innerHeight);
+		expect(listbox.scrollHeight).toBeGreaterThan(listbox.clientHeight);
+	});
+
 	test("keeps the select where it opened when searching shrinks the list", async () => {
 		const screen = await render(<SelectNearViewportBottom />);
 

@@ -41,8 +41,11 @@ const POSITION_AREAS: Record<
  * Opens a popover on the side of its anchor that fits its content, keeping it
  * there for as long as it stays open.
  *
- * Where CSS anchor positioning is supported it only pins the `position-area`,
- * the CSS handles the rest. `position-try-fallbacks` is deliberately not used:
+ * Where CSS anchor positioning is supported it only pins the `position-area`
+ * and, with `constrainHeight`, caps the height in pixels (WebKit resolves a
+ * percentage `max-height` of an anchor-positioned box against nothing, so a
+ * long list would run past the viewport with nothing to scroll). The CSS
+ * handles the rest. `position-try-fallbacks` is deliberately not used:
  * it flips only when a side overflows, so a popover capped to the space it has
  * never flips, and on iOS 26 a popover carrying it locks up the page for good
  * when it leaves the top layer during a navigation. Presumably an iOS 26 WebKit
@@ -97,6 +100,12 @@ export function useAnchorPositioning({
 					"position-area",
 					fitsPreferred ? area.preferred : area.flipped,
 				);
+				if (constrainHeight) {
+					popover.style.setProperty(
+						"max-height",
+						px(availableHeight(popover, anchor, placement, below)),
+					);
+				}
 				return;
 			}
 
@@ -162,6 +171,23 @@ function preferredSideFits(
 	const [preferred, other] =
 		placement === "top" ? [above, below] : [below, above];
 	return naturalHeight(popover) <= preferred || preferred >= other;
+}
+
+/** The height the popover may take on the side it opened to. */
+function availableHeight(
+	popover: HTMLElement,
+	anchor: Element,
+	placement: AnchorPlacement,
+	below: boolean,
+) {
+	if (placement === "right") {
+		return Math.max(0, window.innerHeight - 2 * VIEWPORT_PADDING);
+	}
+	const space = spaceAroundAnchor(
+		anchor.getBoundingClientRect(),
+		getComputedStyle(popover),
+	);
+	return Math.max(0, below ? space.below : space.above);
 }
 
 /**
@@ -264,19 +290,13 @@ function positionStyles(
 				? anchorRect.left
 				: anchorRect.right - width;
 
-	const side = below ? "below" : "above";
-
 	return {
 		...styles,
 		...(below
 			? { top: px(anchorRect.bottom), bottom: "auto" }
 			: { top: "auto", bottom: px(window.innerHeight - anchorRect.top) }),
 		...(constrainHeight
-			? {
-					"max-height": px(
-						Math.max(0, spaceAroundAnchor(anchorRect, computed)[side]),
-					),
-				}
+			? { "max-height": px(availableHeight(popover, anchor, placement, below)) }
 			: {}),
 		...horizontalPlacement(left, width, marginLeft),
 	};
