@@ -1,6 +1,6 @@
 import type { Namespace, TFunction } from "i18next";
 import type { Params, UIMatch } from "react-router";
-import { data, redirect } from "react-router";
+import { redirect } from "react-router";
 import * as v from "valibot";
 import type { navItems } from "~/components/layout/nav-items";
 import { ServerConfig } from "~/config.server";
@@ -248,10 +248,3 @@ export type SendouRouteHandle = {
 	 */
 	mainBreakout?: boolean;
 };
-
-/** Per-user loader response cached with `private` Cache-Control (no CDN), useful for link hover prefetch. */
-export function privatelyCachedJson<T>(dataValue: T) {
-	return data(dataValue, {
-		headers: { "Cache-Control": "private, max-age=5" },
-	});
-}

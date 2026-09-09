@@ -33,6 +33,7 @@ export function SubNavLink({
 	secondary = false,
 	controlled = false,
 	active = false,
+	prefetch = "intent",
 	...props
 }: LinkProps & {
 	end?: boolean;
@@ -50,6 +51,7 @@ export function SubNavLink({
 				})
 			}
 			end={end}
+			prefetch={prefetch}
 			{...props}
 		>
 			<div

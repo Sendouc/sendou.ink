@@ -166,6 +166,7 @@ export function ListLink({
 	return (
 		<Link
 			to={to}
+			prefetch="intent"
 			className={styles.listLink}
 			aria-current={isActive ? "page" : undefined}
 		>

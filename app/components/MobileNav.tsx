@@ -439,7 +439,11 @@ function MenuPanel({
 							)
 							.map((item) => (
 								<li key={item.name}>
-									<Link to={`/${item.url}`} className={styles.navItem}>
+									<Link
+										to={`/${item.url}`}
+										prefetch="intent"
+										className={styles.navItem}
+									>
 										<div className={styles.navItemImage}>
 											<Image
 												path={navIconUrl(item.name)}

@@ -110,7 +110,6 @@ export default function UserPageLayout() {
 			count: data.user.buildsCount,
 			isVisible: data.user.buildsCount > 0 || isOwnPage,
 			testId: "user-builds-tab",
-			prefetch: "intent",
 		},
 		{
 			to: userVodsPage(data.user),

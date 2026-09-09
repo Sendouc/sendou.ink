@@ -243,6 +243,7 @@ export function SendouTab({
 		return (
 			<Link
 				to={href}
+				prefetch="intent"
 				preventScrollReset={routerOptions?.preventScrollReset}
 				ref={register}
 				{...sharedProps}

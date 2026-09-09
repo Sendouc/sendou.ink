@@ -6,6 +6,7 @@ import { renderToPipeableStream } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
 import {
 	type EntryContext,
+	type HandleDataRequestFunction,
 	type HandleErrorFunction,
 	type RouterContextProvider,
 	ServerRouter,
@@ -24,6 +25,8 @@ import { IS_E2E_TEST_RUN } from "./utils/e2e";
 import { logger } from "./utils/logger";
 
 export const streamTimeout = 5000;
+
+const PREFETCH_CACHE_CONTROL = "private, max-age=10";
 
 const dateFnsLocalesLoaded = loadAllDateFnsLocales();
 
@@ -79,6 +82,25 @@ async function handleRequest(
 		setTimeout(abort, streamTimeout + 1000);
 	});
 }
+
+/** Lets the browser reuse a hover-prefetched loader response on the click that follows it. */
+export const handleDataRequest: HandleDataRequestFunction = (
+	response,
+	{ request },
+) => {
+	const isPrefetch = request.headers.get("Sec-Purpose") === "prefetch";
+	if (request.method !== "GET" || !response.ok || !isPrefetch) return response;
+
+	const headers = new Headers(response.headers);
+	headers.set("Cache-Control", PREFETCH_CACHE_CONTROL);
+	headers.set("Vary", "Cookie");
+
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers,
+	});
+};
 
 declare global {
 	var appStartSignal: undefined | true;

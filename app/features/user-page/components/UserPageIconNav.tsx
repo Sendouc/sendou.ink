@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { type LinkProps, NavLink } from "react-router";
+import { NavLink } from "react-router";
 import { Image } from "~/components/Image";
 import { navIconUrl } from "~/utils/urls";
 import styles from "./UserPageIconNav.module.css";
@@ -12,7 +12,6 @@ export interface UserPageNavItem {
 	isVisible: boolean;
 	testId?: string;
 	end?: boolean;
-	prefetch?: LinkProps["prefetch"];
 }
 
 export function UserPageIconNav({ items }: { items: UserPageNavItem[] }) {
@@ -25,7 +24,7 @@ export function UserPageIconNav({ items }: { items: UserPageNavItem[] }) {
 					key={item.to}
 					to={item.to}
 					end={item.end ?? true}
-					prefetch={item.prefetch}
+					prefetch="intent"
 					data-testid={item.testId}
 					className={(state) =>
 						clsx(styles.iconNavItem, {

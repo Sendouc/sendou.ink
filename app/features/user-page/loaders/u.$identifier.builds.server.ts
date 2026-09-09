@@ -4,7 +4,7 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { userPageUserId } from "~/features/user-page/user-page-context.server";
 import type { SerializeFrom } from "~/utils/remix";
-import { notFoundIfNullish, privatelyCachedJson } from "~/utils/remix.server";
+import { notFoundIfNullish } from "~/utils/remix.server";
 import { sortBuilds } from "../core/build-sorting.server";
 
 export type UserBuildsPageData = SerializeFrom<typeof loader>;
@@ -33,12 +33,12 @@ export const loader = async () => {
 		weaponPool: user.weapons,
 	});
 
-	return privatelyCachedJson({
+	return {
 		buildSorting: user.buildSorting,
 		builds: sortedBuilds,
 		weaponCounts: R.countBy(
 			builds.flatMap((build) => build.weapons),
 			(weapon) => weapon.weaponSplId,
 		),
-	});
+	};
 };

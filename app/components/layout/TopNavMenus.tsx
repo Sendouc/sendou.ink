@@ -235,6 +235,7 @@ function CategoryMenu({
 						<Link
 							key={item.url}
 							to={`/${item.url}`}
+							prefetch="intent"
 							className={styles.menuItem}
 							onClick={() => {
 								setIsOpen(false);
@@ -258,6 +259,7 @@ function CategoryMenu({
 						<Link
 							key={item.url}
 							to={`/${item.url}`}
+							prefetch="intent"
 							className={styles.previewIcon}
 							title={t(`common:pages.${item.name}`)}
 							aria-label={t(`common:pages.${item.name}`)}

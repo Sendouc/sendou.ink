@@ -79,7 +79,13 @@ export function TournamentNav({
 
 	return (
 		<nav className={styles.nav} aria-label={t("tournament:nav.label")}>
-			<NavLink to={homeHref} className={styles.identity} end preventScrollReset>
+			<NavLink
+				to={homeHref}
+				className={styles.identity}
+				end
+				prefetch="intent"
+				preventScrollReset
+			>
 				<Avatar url={tournament.ctx.logoUrl} size="sm" alt="" />
 				<div className={styles.identityText}>
 					<span className={styles.identityName}>{name}</span>
