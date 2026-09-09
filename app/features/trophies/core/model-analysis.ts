@@ -1,9 +1,4 @@
-import type {
-	Color3,
-	ExtrasOptions,
-	RenderStats,
-	ViewerSettings,
-} from "picocad2-web";
+import type { Color3, ExtrasOptions, RenderStats } from "picocad2-web";
 
 export interface TrophyModelAnalysis {
 	cameraTargetCentered: boolean;
@@ -27,6 +22,12 @@ interface RawGraphNode {
 	mesh?: { faces: Array<RawFace> };
 }
 
+interface RawVec3 {
+	x: number;
+	y: number;
+	z: number;
+}
+
 interface ModelState {
 	source: {
 		graph: RawGraphNode;
@@ -35,8 +36,10 @@ interface ModelState {
 			background_color: number;
 			transparent_color: number;
 		};
+		metadata: { camera: { target: RawVec3 } };
 	};
-	settings: ViewerSettings;
+	model?: { camera?: { target?: Array<number> } };
+	viewer?: { backgroundColor?: Color3 | null };
 	extras?: ExtrasOptions;
 }
 
@@ -52,6 +55,22 @@ export function analyzeTrophyModel(model: string): TrophyModelAnalysis | null {
 		};
 	} catch {
 		return null;
+	}
+}
+
+export function stripDisabledEffects(model: string): string {
+	try {
+		const state: ModelState = JSON.parse(model);
+		if (!isRecord(state)) return model;
+
+		const extras: Record<string, unknown> = {};
+		for (const [key, effect] of Object.entries(state.extras ?? {})) {
+			if (effect?.enabled === true) extras[key] = effect;
+		}
+
+		return JSON.stringify({ ...state, extras });
+	} catch {
+		return model;
 	}
 }
 
@@ -75,15 +94,18 @@ export function mergePeakRenderStats(
 }
 
 function isCameraTargetCentered(state: ModelState) {
-	const target = state.settings.camera.target;
-	return target[0] === 0 && target[2] === 0;
+	const override = state.model?.camera?.target;
+	if (override) return override[0] === 0 && override[2] === 0;
+
+	const fileTarget = state.source.metadata.camera.target;
+	return fileTarget.x === 0 && fileTarget.z === 0;
 }
 
 function isBackgroundAlpha(state: ModelState) {
 	const texture = state.source.texture;
 	const transparent = toColor3(texture.colors[texture.transparent_color]);
 	const background =
-		state.settings.backgroundColor ??
+		state.viewer?.backgroundColor ??
 		toColor3(texture.colors[texture.background_color]);
 
 	return (
@@ -131,4 +153,8 @@ function countEnabledEffects(state: ModelState) {
 	return Object.values(state.extras ?? {}).filter(
 		(effect) => effect?.enabled === true,
 	).length;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }

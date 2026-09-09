@@ -85,6 +85,7 @@ export function TrophyDisplay({
 									preview={!!openTrophy}
 									staticOnSoftwareRendering
 									disableCameraControls
+									fps={30}
 									pill={
 										trophy.count && trophy.count > 1
 											? `×${trophy.count}`

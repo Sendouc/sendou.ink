@@ -420,11 +420,13 @@ function ModelField({
 									className={styles.trophyPreview}
 									preview
 									tier={1}
+									colorScheme={theme}
 								/>
 								<Trophy
 									model={preview.compressedModel}
 									className={styles.trophyPreview}
 									onRenderStats={reportRenderStats}
+									colorScheme={theme}
 								/>
 							</div>
 						))}

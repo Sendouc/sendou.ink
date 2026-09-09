@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import { Ban } from "lucide-react";
 import {
+	type ColorScheme,
 	PicoCAD2Context,
 	PicoCAD2Viewer,
 	type RenderStats,
@@ -14,6 +15,7 @@ import {
 	useState,
 } from "react";
 import { TierPill } from "~/components/TierPill";
+import { useTheme } from "~/features/theme/core/provider";
 import { IS_E2E_TEST_RUN } from "~/utils/e2e";
 import { decompressTrophyModel } from "../trophies-utils";
 import style from "./Trophy.module.css";
@@ -77,6 +79,8 @@ export function Trophy({
 	staticOnSoftwareRendering,
 	pill,
 	onRenderStats,
+	colorScheme: forcedColorScheme,
+	fps = 60,
 }: {
 	model: string;
 	className?: string;
@@ -88,6 +92,8 @@ export function Trophy({
 	staticOnSoftwareRendering?: boolean;
 	pill?: React.ReactNode;
 	onRenderStats?: (stats: RenderStats) => void;
+	colorScheme?: ColorScheme;
+	fps?: number;
 }) {
 	const ctxValue = useContext(TrophyCtx);
 	const context = ctxValue?.context;
@@ -106,6 +112,8 @@ export function Trophy({
 	}
 
 	const modelState = decompressTrophyModel(model);
+	const siteColorScheme = useTrophyColorScheme();
+	const colorScheme = forcedColorScheme ?? siteColorScheme;
 
 	// stable ref callback identity, else React re-attaches and rebuilds the viewer every render
 	const canvasRef = useCallback(
@@ -122,6 +130,11 @@ export function Trophy({
 				canvas,
 				context,
 				resolution: { width: 128, height: 128, scale: 4 },
+				clampCameraDistance: {
+					enabled: true,
+					minimumDistance: 3,
+				},
+				colorScheme,
 			});
 			viewerRef.current = viewer;
 
@@ -132,6 +145,17 @@ export function Trophy({
 				return;
 			}
 
+			viewer.setResolution(128, 128, 4);
+			viewer.leftTag = null;
+			viewer.rightTag = null;
+			viewer.animation.loop = true;
+			viewer.animation.speed = 1;
+			viewer.clampCameraDistance = { enabled: true, minimumDistance: 3 };
+			viewer.maxFps = fps;
+			viewer.cameraMode = "spin";
+			viewer.cameraModeSpeed = 5;
+			viewer.animation.setTime(0);
+
 			// render loops starve the main thread on software WebGL, so e2e (always CPU) and surfaces
 			// showing many trophies without GPU acceleration draw a single static frame
 			if (
@@ -139,8 +163,12 @@ export function Trophy({
 				IS_E2E_TEST_RUN ||
 				(staticOnSoftwareRendering && isSoftwareRendering())
 			) {
-				viewer.draw();
-				viewer.dispose();
+				viewer.whenReady().then(() => {
+					if (viewerRef.current !== viewer) return;
+					viewer.draw();
+					viewer.dispose();
+					viewerRef.current = null;
+				});
 				return;
 			}
 
@@ -150,9 +178,6 @@ export function Trophy({
 				};
 			}
 
-			viewer.cameraMode = "spin";
-			viewer.cameraModeSpeed = 5;
-			viewer.animation.setTime(0);
 			viewer.startRenderLoop(false);
 
 			if (disableCameraControls) return;
@@ -175,6 +200,8 @@ export function Trophy({
 			preview,
 			staticOnSoftwareRendering,
 			disableCameraControls,
+			colorScheme,
+			fps,
 		],
 	);
 
@@ -237,6 +264,13 @@ export function Trophy({
 			{cornerPill}
 		</div>
 	);
+}
+
+function useTrophyColorScheme(): ColorScheme {
+	const { userTheme, htmlThemeClass } = useTheme();
+	if (userTheme === "auto") return "auto";
+
+	return htmlThemeClass || "auto";
 }
 
 let softwareRenderingDetected: boolean | undefined;
