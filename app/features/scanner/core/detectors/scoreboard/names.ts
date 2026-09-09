@@ -240,16 +240,58 @@ function resolveCaseByDescent(raw: RecognizedText): string {
 		.join("");
 }
 
+/**
+ * Near-tie homoglyphs re-decided toward the plain form before the context
+ * rules run (opt-in via `plainTieMargin`; the kill feed's ~24px rows need it):
+ * the dot of 'i' alone ranks 'í'/'ì' level with 'i', a blurred 'l' ranks 'í'
+ * over the bar glyphs, and a fullwidth bracket lands level with its ASCII
+ * twin — while a real accent or double stroke ranks the plain form well
+ * lower. A dotted vowel may also fall to a bar glyph, which the bar rule
+ * then reads in context.
+ */
+const PLAIN_TWINS: Record<string, string> = { "【": "[", "】": "]" };
+
+function preferPlainTies(raw: RecognizedText, margin: number): RecognizedText {
+	const chars = raw.chars.map((c) => {
+		const twin = PLAIN_TWINS[c.char];
+		const base = c.char.normalize("NFD").replace(/[̀-ͯ]/g, "");
+		const accented = twin === undefined && base.length === 1 && base !== c.char;
+		const plain = twin ?? (accented ? base : undefined);
+		if (plain === undefined || !c.candidates) return c;
+		const top = c.candidates[0]?.score ?? c.score;
+		const pick = c.candidates.find(
+			(k) =>
+				(k.char === plain || (accented && BAR_CHARS.has(k.char))) &&
+				top - k.score <= margin,
+		);
+		return pick ? { ...c, char: pick.char, score: pick.score } : c;
+	});
+	let ci = 0;
+	const text = [...raw.text]
+		.map((ch) => (ch === " " ? ch : chars[ci++]!.char))
+		.join("");
+	return { ...raw, text, chars };
+}
+
 export function parseName(
 	gray: Mat,
 	glyphs: GlyphSet,
-	options: { spaceGap?: number; binThreshold?: number } = {},
+	options: {
+		spaceGap?: number;
+		binThreshold?: number;
+		/** re-decide near-tie homoglyphs toward the plain form (preferPlainTies) */
+		plainTieMargin?: number;
+	} = {},
 ): ParsedName {
-	const raw = recognizeText(gray, glyphs, {
+	const recognized = recognizeText(gray, glyphs, {
 		spaceGap: options.spaceGap ?? 7,
 		binThreshold: options.binThreshold,
 		minCharScore: 0.35,
 	});
+	const raw =
+		options.plainTieMargin === undefined
+			? recognized
+			: preferPlainTies(recognized, options.plainTieMargin);
 	return {
 		name: normalizeLongBars(
 			normalizeOhs(

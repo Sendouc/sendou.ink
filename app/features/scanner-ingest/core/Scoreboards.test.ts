@@ -98,6 +98,7 @@ function testMatch({
 		cast: false,
 		objective,
 		playerStatus,
+		kills: null,
 		teams: [{ players: players.slice(0, 4) }, { players: players.slice(4) }],
 		winner: 0,
 		pov:

@@ -22,6 +22,8 @@ import {
 	LOCALIZED_WEAPON_NAMES,
 } from "../../app/features/scanner/core/detectors/death/localized-messages";
 import { ALL_WEAPON_ENTRIES } from "../../app/features/scanner/core/detectors/death/weapon-names";
+import { KILL_MESSAGE_TEMPLATES } from "../../app/features/scanner/core/detectors/kill/localized-messages";
+import { KILL_TEXT_HEIGHT } from "../../app/features/scanner/core/detectors/kill/rois";
 import type { AtlasMeta } from "../../app/features/scanner/core/glyphs";
 import {
 	ALL_LOBBY_ENTRIES,
@@ -455,4 +457,19 @@ await build("death-weapon-ja", 40, [
 await build("death-tag-name", 42, [
 	{ family: "BlitzBold", pxs: [53, 54], chars: nameCharset() },
 	{ family: "Rowdy", pxs: [52, 54], chars: nameCharset() },
+]);
+// kill feed: the "Splatted <name>!" rows bottom-center, BlitzMain with ~24px
+// caps (kill/rois.ts) — the scoreboard-names charset plus every language's row text
+const killFeedTexts = KILL_MESSAGE_TEMPLATES.flatMap((t) => [t.pre, t.post]);
+await build("kill-feed", KILL_TEXT_HEIGHT, [
+	{
+		family: "BlitzMain",
+		pxs: [28, 29],
+		chars: [
+			...nameCharset(),
+			...NAME_GREEK,
+			...nameSymbols("BlitzMain"),
+			...localizedChars(killFeedTexts, "BlitzMain"),
+		],
+	},
 ]);

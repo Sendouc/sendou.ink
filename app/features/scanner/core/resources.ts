@@ -61,6 +61,7 @@ const ATLASES = {
 	deathTagNameGlyphs: "death-tag-name",
 	mapStartModeGlyphs: "map-start-mode",
 	mapStartStageGlyphs: "map-start-stage",
+	killFeedGlyphs: "kill-feed",
 } as const;
 
 /** Memoize an expensive template/atlas build for the lazy resource getters. */
@@ -224,6 +225,9 @@ export async function assembleScoreboardResources(
 		},
 		get mapStartStageGlyphs() {
 			return atlas.mapStartStageGlyphs();
+		},
+		get killFeedGlyphs() {
+			return atlas.killFeedGlyphs();
 		},
 	};
 }

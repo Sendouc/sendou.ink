@@ -46,6 +46,14 @@ export function canonicalMatch(match: ScannerMatch): ScannerMatch {
 			match.playerStatus == null
 				? null
 				: canonicalPlayerStatus(match.playerStatus),
+		kills:
+			match.kills == null
+				? null
+				: match.kills.map((kill) => ({
+						t: kill.t,
+						time: kill.time,
+						name: kill.name,
+					})),
 		teams: [canonicalTeam(match.teams[0]), canonicalTeam(match.teams[1])],
 		winner: match.winner,
 		pov:
@@ -118,6 +126,7 @@ export function mergeMatches(
 		// series from different scans is not attempted
 		objective: existing.objective ?? oriented.objective,
 		playerStatus: existing.playerStatus ?? oriented.playerStatus,
+		kills: existing.kills ?? oriented.kills,
 		teams: [
 			mergeTeam(existing.teams[0], oriented.teams[0]),
 			mergeTeam(existing.teams[1], oriented.teams[1]),

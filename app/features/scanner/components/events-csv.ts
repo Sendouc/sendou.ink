@@ -9,6 +9,7 @@ import {
 	DEATH_EVENT_TYPE,
 	type DeathData,
 } from "../core/detectors/death/index";
+import { KILL_EVENT_TYPE, type KillData } from "../core/detectors/kill/index";
 import {
 	MAP_START_EVENT_TYPE,
 	type MapStartData,
@@ -206,6 +207,29 @@ function eventCells(event: CsvEvent): Cell[] {
 				mainWeaponLabel(d.weaponId),
 				"",
 				formatAbilities(d.abilities),
+				"",
+				"",
+				"",
+			];
+		}
+		case KILL_EVENT_TYPE: {
+			const d = event.data as KillData;
+			const clock = d.time === null ? "" : `${formatClock(d.time)} · `;
+			return [
+				...base,
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				// oldest first, the order the splats happened
+				`${clock}${d.names
+					.toReversed()
+					.map((name) => name ?? "?")
+					.join(" | ")}`,
+				"",
 				"",
 				"",
 				"",

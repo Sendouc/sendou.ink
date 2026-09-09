@@ -79,6 +79,16 @@ export interface ScannerMatchPlayerStatus {
 	samples: ScannerMatchPlayerStatusSample[];
 }
 
+/** One splat by the POV (or specced) player, off the kill feed. */
+export interface ScannerMatchKill {
+	/** whole seconds into the video/stream the feed row was first seen at */
+	t: number;
+	/** seconds shown on the match timer — the same key the objective samples carry */
+	time: number | null;
+	/** the splatted player's name as read; null when unreadable */
+	name: string | null;
+}
+
 export interface ScannerMatch {
 	/** whole seconds into the video/stream the match starts at */
 	startsAt: number | null;
@@ -108,6 +118,12 @@ export interface ScannerMatch {
 	 * objective samples; null when the icon strip was never read
 	 */
 	playerStatus: ScannerMatchPlayerStatus | null;
+	/**
+	 * the POV player's splats (a broadcast's: the specced player's, so they
+	 * follow camera swaps), chronological, derived from the kill feed's stack
+	 * reads; null when the feed was never read
+	 */
+	kills: ScannerMatchKill[] | null;
 	/** on-screen order: scoreboard rows 0-3 are teams[0] (the winners), minimap own side is teams[0] */
 	teams: [ScannerMatchTeam, ScannerMatchTeam];
 	/** scoreboard-sourced matches know it (0); minimap-only matches don't */

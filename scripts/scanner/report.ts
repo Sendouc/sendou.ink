@@ -10,6 +10,10 @@ import {
 	type DeathData,
 } from "../../app/features/scanner/core/detectors/death/index";
 import {
+	createKillDetector,
+	type KillData,
+} from "../../app/features/scanner/core/detectors/kill/index";
+import {
 	createMapStartDetector,
 	type MapStartData,
 } from "../../app/features/scanner/core/detectors/map-start/index";
@@ -514,6 +518,73 @@ for (const config of configs) {
 	console.info(`gate        ${pct(tally.gate)}`);
 	console.info(`weapon      ${pct(tally.weapon)}`);
 	console.info(`abilities   ${pct(tally.abilities)}`);
+	console.info(`names       ${pct(tally.names)}`);
+	console.info(
+		`name CER    ${charTotal ? ((100 * charEdits) / charTotal).toFixed(2) : "n/a"}% (${charEdits} edits / ${charTotal} chars)`,
+	);
+	if (misses.length > 0) {
+		console.info("misses:");
+		for (const m of misses) console.info(`  ${m}`);
+	}
+}
+
+// Kill fixtures: the feed's stacked rows (names, newest first) and the timer.
+{
+	const detector = createKillDetector(resources);
+	const fixtures = loadFixtures("kill");
+	const tally = {
+		gate: { ok: 0, total: 0 } as Tally,
+		time: { ok: 0, total: 0 } as Tally,
+		rows: { ok: 0, total: 0 } as Tally,
+		names: { ok: 0, total: 0 } as Tally,
+	};
+	let charEdits = 0;
+	let charTotal = 0;
+	const misses: string[] = [];
+
+	for (const fixture of fixtures) {
+		const { gate, events } = await runDetectorOnFixture<KillData>(
+			detector,
+			fixture,
+		);
+		const expectPositive = fixture.expected.event === "Kill";
+		tally.gate.total++;
+		if (gate.pass === expectPositive) tally.gate.ok++;
+		if (!expectPositive || !events[0]) continue;
+		const event = events[0];
+		const expected = fixture.expected.data ?? {};
+		if (expected.time !== undefined) {
+			tally.time.total++;
+			if (event.data.time === expected.time) tally.time.ok++;
+			else
+				misses.push(
+					`${fixture.name}: time ${event.data.time} != ${expected.time}`,
+				);
+		}
+		if (expected.names !== undefined) {
+			tally.rows.total++;
+			if (event.data.names.length === expected.names.length) tally.rows.ok++;
+			else
+				misses.push(
+					`${fixture.name}: ${event.data.names.length} rows != ${expected.names.length}`,
+				);
+			for (const [row, want] of expected.names.entries()) {
+				if (want === null) continue;
+				tally.names.total++;
+				const got = event.data.names[row] ?? "";
+				const dist = editDistance(got, want);
+				charEdits += dist;
+				charTotal += want.length;
+				if (dist === 0) tally.names.ok++;
+				else misses.push(`${fixture.name}: row ${row} "${got}" != "${want}"`);
+			}
+		}
+	}
+
+	console.info(`\n=== kill (${fixtures.length} fixtures) ===`);
+	console.info(`gate        ${pct(tally.gate)}`);
+	console.info(`time        ${pct(tally.time)}`);
+	console.info(`rows        ${pct(tally.rows)}`);
 	console.info(`names       ${pct(tally.names)}`);
 	console.info(
 		`name CER    ${charTotal ? ((100 * charEdits) / charTotal).toFixed(2) : "n/a"}% (${charEdits} edits / ${charTotal} chars)`,

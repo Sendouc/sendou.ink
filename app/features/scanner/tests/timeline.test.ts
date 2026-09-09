@@ -175,3 +175,14 @@ test("per-type merge window: repeat death frames merge, consecutive deaths do no
 	tl.push(event(200, 0.8, "Scoreboard"));
 	assert.equal(tl.push(event(212, 0.7, "Scoreboard")).action, "merged");
 });
+
+test("kill stacks merge while unchanged and split when a row enters", () => {
+	const tl = new TimelineBuilder();
+	const kill = (t: number, names: string[]) =>
+		tl.push({ type: "Kill", t, confidence: 0.8, data: { time: null, names } });
+	assert.equal(kill(100, ["24K"]).action, "added");
+	assert.equal(kill(100.5, ["24K"]).action, "merged");
+	assert.equal(kill(101, ["datkid", "24K"]).action, "added");
+	assert.equal(kill(104, ["datkid", "24K"]).action, "merged");
+	assert.equal(tl.events.length, 2);
+});

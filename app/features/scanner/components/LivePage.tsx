@@ -9,6 +9,7 @@ import {
 } from "../capture/sampler";
 import { connectAbilities } from "../core/ability-harvest";
 import { DEATH_EVENT_TYPE } from "../core/detectors/death/index";
+import { KILL_EVENT_TYPE } from "../core/detectors/kill/index";
 import {
 	MAP_START_EVENT_TYPE,
 	type MapStartData,
@@ -83,6 +84,7 @@ const SCANNER_TEAM_LABELS = ["Alpha", "Bravo"] as const;
 const INGESTABLE_TYPES = [
 	MAP_START_EVENT_TYPE,
 	DEATH_EVENT_TYPE,
+	KILL_EVENT_TYPE,
 	MINIMAP_EVENT_TYPE,
 	...SCOREBOARD_EVENT_TYPES,
 ];

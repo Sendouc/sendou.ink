@@ -133,6 +133,11 @@ export interface ScoreboardResources {
 	mapStartModeGlyphs?: GlyphSet | null;
 	mapStartStageGlyphs?: GlyphSet | null;
 	/**
+	 * Kill-feed row glyphs (BlitzMain at the row's ~24px caps, name charset plus
+	 * every language's row text); without them the kill detector emits nothing.
+	 */
+	killFeedGlyphs?: GlyphSet | null;
+	/**
 	 * Minimap extras: main-weapon icons on the card-pill background, a
 	 * light-background variant for special-ready camo, and ability icons at the
 	 * cards' badge size. Missing ones skip their fields; names reuse `nameGlyphs`.

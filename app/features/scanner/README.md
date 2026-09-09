@@ -80,14 +80,32 @@ sequenceDiagram
 - The route (`routes/scanner.tsx`) is SSR-guarded: the client tree loads via
   `React.lazy` after `useHydrated`; nothing from `core/worker/capture/store`
   may be imported at route-module top level.
-- Eight detectors: `scoreboard` (results screen),
+- Nine detectors: `scoreboard` (results screen),
   `scoreboard-battle-log-replay` (replay-browser detail),
   `scoreboard-battle-log` (Recent Battles detail — same data sans replay
   code, panels stacked), `scoreboard-own` (personal results), `death`
   (respawn overlay), `map-start` (match intro), `minimap` (in-match overlay
   + casted 8-player spectator variant), `objective` (ranked counter overlay:
   counts, penalties, holder, match timer — a mode-discriminated union with
-  only the SZ member so far). The objective parse also emits a second
+  only the SZ member so far), `kill` (the "Splatted <name>!" feed
+  bottom-center). The feed is the POV player's — on the SWS26 broadcast the
+  specced player's, so a cast's kills follow camera swaps. One `Kill` event
+  per frame carries the whole visible stack newest-first, up to four rows,
+  each read as one line against every language's row template
+  (`core/detectors/kill/localized-messages.ts`, generated) with the leftover
+  as the name, plus the match timer off the same frame (`objective/timer.ts`,
+  shared with the counter) so kills land on the game clock in every mode. The
+  builder reduces the stack reads to one kill per row entering the feed
+  (`deriveKills`: rows expire oldest-first and a blurred inner row can drop
+  out of a single read, so each read is matched newest-first as a
+  subsequence of the rows still remembered within
+  `KILL_ROW_LIFETIME_SECONDS`), on the same replay-wipe anchor as the
+  counter series; how long a row stays up is unattested, so a row outliving
+  that lifetime would count twice. Row text reads through the `kill-feed`
+  atlas, BlitzMain at the row's ~24px caps with the scoreboard-names
+  charset, under `parseName`'s opt-in plain-tie rule (at that size an i's
+  dot alone ranks the accented glyphs level with the plain one). The
+  objective parse also emits a second
   event type per read: `PlayerStatus`
   (`core/detectors/objective/player-status.ts`), per-player special/dead
   flags off the icon strip flanking the timer (three geometries named by
@@ -263,7 +281,11 @@ new tests there whenever they can be written without a frame.
 A test case is a directory `tests/fixtures/<detector>/<case-name>/` with
 `frame.png|jpg` (raw capture, never re-encoded) and `expected.json` (partial
 expectations, sendou ids; `stageLabel`/`weaponLabel` are informational for
-the human corrector — tests compare only ids). Negative cases
+the human corrector — tests compare only ids). A frame that already serves
+another detector's fixture (a kill feed caught in an objective frame) is
+symlinked (`ln -s ../../objective/<case>/frame.png frame.png`), not copied,
+and the kill suite's cross-negative sweep skips shared frames by real path.
+Negative cases
 (`{ "event": "none" }`) go in the shared `tests/fixtures/negative/`; every
 detector's suite sweeps them. Every live misread should become a fixture —
 the live app's "Save fixture" button exports the byte-exact analyzed frame

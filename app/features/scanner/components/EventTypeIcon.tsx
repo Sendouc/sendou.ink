@@ -5,6 +5,7 @@
 
 import {
 	CircleHelp,
+	Crosshair,
 	History,
 	type LucideIcon,
 	Map as MapIcon,
@@ -16,6 +17,7 @@ import {
 	User,
 } from "lucide-react";
 import { DEATH_EVENT_TYPE } from "../core/detectors/death/index";
+import { KILL_EVENT_TYPE } from "../core/detectors/kill/index";
 import { MAP_START_EVENT_TYPE } from "../core/detectors/map-start/index";
 import { MINIMAP_EVENT_TYPE } from "../core/detectors/minimap/index";
 import { OBJECTIVE_EVENT_TYPE } from "../core/detectors/objective/index";
@@ -27,6 +29,7 @@ import { SCOREBOARD_OWN_EVENT_TYPE } from "../core/detectors/scoreboard-own/inde
 const EVENT_TYPE_ICONS: Record<string, LucideIcon> = {
 	[MAP_START_EVENT_TYPE]: Play,
 	[DEATH_EVENT_TYPE]: Skull,
+	[KILL_EVENT_TYPE]: Crosshair,
 	[MINIMAP_EVENT_TYPE]: MapIcon,
 	[OBJECTIVE_EVENT_TYPE]: Target,
 	[SCOREBOARD_EVENT_TYPE]: Trophy,

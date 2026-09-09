@@ -12,6 +12,8 @@ import { mainWeaponImageUrl } from "~/utils/urls";
 import { CANONICAL_HEIGHT, CANONICAL_WIDTH, type Roi } from "../core/canonical";
 import type { DeathData } from "../core/detectors/death/index";
 import * as death from "../core/detectors/death/rois";
+import type { KillData } from "../core/detectors/kill/index";
+import * as kill from "../core/detectors/kill/rois";
 import type { MapStartData } from "../core/detectors/map-start/index";
 import * as mapStart from "../core/detectors/map-start/rois";
 import type { MinimapData } from "../core/detectors/minimap/index";
@@ -224,6 +226,10 @@ function gateSummary(result: Result): string | null {
 			const data = event.data as unknown as ObjectiveData;
 			return `${confidence} · ${formatTimer(data.time)} · score ${data.score[0] ?? "?"}–${data.score[1] ?? "?"}`;
 		}
+		case "kill": {
+			const data = event.data as unknown as KillData;
+			return `${confidence} · ${formatTimer(data.time)} · splatted ${data.names.map((name) => name ?? "?").join(", ")}`;
+		}
 		default: {
 			const data = event.data as CardData;
 			return `${confidence} · scores ${JSON.stringify(data.matchScores)} · ${[lobbyLabel(data.lobby), modeLabel(data.mode), stageLabel(data.stage)].map((v) => v ?? "?").join(" · ")}`;
@@ -290,6 +296,15 @@ function drawOverlay(ctx: CanvasRenderingContext2D, detector: string) {
 				rect({ x: cx + box.dx, y: box.y, w: box.w, h: box.h }, color);
 			}
 		}
+		return;
+	}
+	if (detector === "kill") {
+		for (let row = 0; row < kill.MAX_ROWS; row++) {
+			rect(kill.textRoi(row), "#34d399");
+			rect(kill.skullRoi(row), "#60a5fa");
+			for (const roi of kill.darkProbes(row)) rect(roi, "#facc15");
+		}
+		rect(objective.TIMER_DIGIT_ROI, "#f87171");
 		return;
 	}
 	if (detector === "map-start") {
@@ -501,6 +516,7 @@ export function ScreenshotPage() {
 	const isOwn = activeDetector === "scoreboard-own";
 	const isMinimap = activeDetector === "minimap";
 	const isObjective = activeDetector === "objective";
+	const isKill = activeDetector === "kill";
 	const winnerSide = String(event?.debug?.winnerSide ?? "left");
 	const rowRois = isReplay
 		? replayRows(winnerSide)
@@ -857,13 +873,52 @@ export function ScreenshotPage() {
 				</div>
 			) : null}
 
+			{frame && event && isKill ? (
+				<div className={styles.detail}>
+					{(() => {
+						const data = event.data as unknown as KillData;
+						const rows = (event.debug?.rows ?? []) as { raw?: string }[];
+						return (
+							<>
+								<div className={styles.detailStats}>
+									<Stat label="timer" raw={event.debug?.timerRaw}>
+										{formatTimer(data.time)}
+									</Stat>
+									{data.names.map((name, row) => (
+										<Stat key={row} label={`row ${row}`} raw={rows[row]?.raw}>
+											{name ?? "?"}
+										</Stat>
+									))}
+								</div>
+								<div className={styles.detailCrops}>
+									{data.names.map((_, row) => (
+										<LabeledCrop
+											key={row}
+											label={`row ${row}`}
+											frame={frame}
+											roi={kill.textRoi(row)}
+										/>
+									))}
+									<LabeledCrop
+										label="timer"
+										frame={frame}
+										roi={objective.TIMER_DIGIT_ROI}
+									/>
+								</div>
+							</>
+						);
+					})()}
+				</div>
+			) : null}
+
 			{frame &&
 			event &&
 			!isDeath &&
 			!isMapStart &&
 			!isOwn &&
 			!isMinimap &&
-			!isObjective ? (
+			!isObjective &&
+			!isKill ? (
 				<table className={styles.inspector}>
 					<thead>
 						<tr>

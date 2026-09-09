@@ -19,6 +19,7 @@ import {
 	harvestCardMains,
 } from "./ability-harvest";
 import { DEATH_EVENT_TYPE, type DeathData } from "./detectors/death/index";
+import { KILL_EVENT_TYPE, type KillData } from "./detectors/kill/index";
 import {
 	MAP_START_EVENT_TYPE,
 	type MapStartData,
@@ -55,6 +56,7 @@ import { hueDistance, hueOf, type InkRgb } from "./ink-color";
 import { parseReplayTimestamp } from "./replay-time";
 import type {
 	ScannerMatch,
+	ScannerMatchKill,
 	ScannerMatchObjective,
 	ScannerMatchObjectiveSample,
 	ScannerMatchPlayer,
@@ -69,6 +71,7 @@ import {
 	type SlotRowPermutation,
 	weaponSlotRowPermutation,
 } from "./slot-row-assignment";
+import { editDistance, matchKey } from "./text";
 
 /** The lobby header value private battles (tournament games) carry. */
 const TOURNAMENT_LOBBY = "PRIVATE";
@@ -121,6 +124,17 @@ const ALIVE_RUN_MIN_SECONDS = 2;
  */
 const SPECIAL_REGAIN_MIN_SECONDS = 10;
 
+/**
+ * Kill-feed stack reads further apart than this show independent rows even
+ * when the names repeat: a splatted player respawns in ~8.5s, so a repeated
+ * name inside it is the same row still up. How long a row stays up is
+ * unattested beyond single frames; a row outliving this would count twice.
+ */
+const KILL_ROW_LIFETIME_SECONDS = 8;
+
+/** Name similarity (1 - edits / length) at which two stack reads show the same row. */
+const KILL_SAME_ROW_MIN_SIMILARITY = 0.7;
+
 export interface BuiltMatch<E extends DetectedEvent> {
 	match: ScannerMatch;
 	/** input events the match was built from, chronological — the send-status unit for callers */
@@ -145,6 +159,7 @@ export function buildScannerMatches<E extends DetectedEvent>(
 	let orphanObjectives: E[] = [];
 	let orphanPlayerStatuses: E[] = [];
 	let orphanStripWeapons: E[] = [];
+	let orphanKills: E[] = [];
 	const finalize = (): void => {
 		if (!open) return;
 		if (open.scoreboard || open.minimaps.length > 0) {
@@ -164,6 +179,7 @@ export function buildScannerMatches<E extends DetectedEvent>(
 			orphanObjectives = [];
 			orphanPlayerStatuses = [];
 			orphanStripWeapons = [];
+			orphanKills = [];
 		} else if (SCOREBOARD_EVENT_TYPES.includes(event.type)) {
 			if (!open) {
 				open = startMatch();
@@ -179,6 +195,9 @@ export function buildScannerMatches<E extends DetectedEvent>(
 				open.stripWeapons = orphanStripWeapons.filter(
 					(read) => event.t - read.t <= FALLBACK_WINDOW_SECONDS,
 				);
+				open.kills = orphanKills.filter(
+					(read) => event.t - read.t <= FALLBACK_WINDOW_SECONDS,
+				);
 			}
 			open.scoreboard = event;
 			vote(open.stageVotes, (event.data as ScoreboardData).stage);
@@ -187,6 +206,7 @@ export function buildScannerMatches<E extends DetectedEvent>(
 			orphanObjectives = [];
 			orphanPlayerStatuses = [];
 			orphanStripWeapons = [];
+			orphanKills = [];
 		} else if (event.type === MINIMAP_EVENT_TYPE) {
 			const stage = (event.data as MinimapData).stage;
 			if (open) {
@@ -215,6 +235,8 @@ export function buildScannerMatches<E extends DetectedEvent>(
 			(open?.playerStatuses ?? orphanPlayerStatuses).push(event);
 		} else if (event.type === STRIP_WEAPONS_EVENT_TYPE) {
 			(open?.stripWeapons ?? orphanStripWeapons).push(event);
+		} else if (event.type === KILL_EVENT_TYPE) {
+			(open?.kills ?? orphanKills).push(event);
 		}
 	}
 	finalize();
@@ -339,6 +361,8 @@ interface OpenMatch<E extends DetectedEvent> {
 	playerStatuses: E[];
 	/** sampled per-slot weapon evidence for the slot→row assignment */
 	stripWeapons: E[];
+	/** kill-feed stack reads; become the match's `kills` */
+	kills: E[];
 	scoreboard: E | null;
 	/**
 	 * per-stage read counts (a MapStart's stage seeds it); the plurality winner
@@ -356,6 +380,7 @@ function startMatch<E extends DetectedEvent>(): OpenMatch<E> {
 		objectives: [],
 		playerStatuses: [],
 		stripWeapons: [],
+		kills: [],
 		scoreboard: null,
 		stageVotes: new Map(),
 		lastMinimapT: null,
@@ -407,6 +432,7 @@ function toBuiltMatch<E extends DetectedEvent>(
 		...open.objectives,
 		...open.playerStatuses,
 		...open.stripWeapons,
+		...open.kills,
 		...(open.scoreboard ? [open.scoreboard] : []),
 	].sort((a, b) => a.t - b.t);
 
@@ -437,18 +463,24 @@ function toBuiltMatch<E extends DetectedEvent>(
 		t: event.t,
 		data: event.data as MinimapData,
 	}));
+	const killReads = open.kills.map((event) => ({
+		t: event.t,
+		data: event.data as KillData,
+	}));
 	const minimaps = minimapReads.map((read) => read.data);
 
 	const mode = board?.mode ?? start?.mode ?? null;
 	// only the SZ counter is parsed: reads on a known other-mode match are
 	// lookalike-overlay misreads (statuses ride along with counter reads).
-	// Minimap card states are mode-agnostic and feed status samples regardless
+	// Minimap card states and the kill feed are mode-agnostic and feed their
+	// samples regardless
 	const counterModeValid = mode === null || mode === "SZ";
 	const progress = buildProgress(
 		counterModeValid ? objectives : [],
 		counterModeValid ? playerStatuses : [],
 		counterModeValid ? stripWeapons : [],
 		minimapReads,
+		killReads,
 		board,
 		minimapTeamColors(minimaps),
 	);
@@ -483,6 +515,7 @@ function toBuiltMatch<E extends DetectedEvent>(
 				playerStatuses.some((read) => read.data.cast)),
 		objective: progress.objective,
 		playerStatus: progress.playerStatus,
+		kills: progress.kills,
 		teams: board
 			? teamsFromScoreboard(board, deaths, minimaps, progress.minimapEnemySide)
 			: teamsFromMinimaps(minimaps, deaths),
@@ -529,22 +562,34 @@ function floorOrNull(t: number | undefined): number | null {
  * column, own column assumed symmetric). The POV diamond follows neither
  * order, so its flags map by card name and stay as drawn when too few names
  * resolve. A minimap-grouped match's samples stay as drawn by construction.
+ *
+ * Kill-feed stack reads share the replay-wipe anchor (they carry the same
+ * clock) and reduce to one kill per row entering a stack (deriveKills); the
+ * feed belongs to the POV (on a cast: specced) player, so they need no side
+ * orientation.
  */
 function buildProgress(
 	objectives: readonly { t: number; data: ObjectiveData }[],
 	playerStatuses: readonly { t: number; data: PlayerStatusData }[],
 	stripWeapons: readonly { t: number; data: StripWeaponsData }[],
 	minimapReads: readonly { t: number; data: MinimapData }[],
+	killReads: readonly { t: number; data: KillData }[],
 	board: ScoreboardData | undefined,
 	minimapColors: [InkRgb | null, InkRgb | null] | null,
 ): {
 	objective: ScannerMatchObjective | null;
 	playerStatus: ScannerMatchPlayerStatus | null;
+	kills: ScannerMatchKill[] | null;
 	/** the `teams` side the minimap's enemy column is; null with no scoreboard */
 	minimapEnemySide: 0 | 1 | null;
 } {
-	const dominant = dominantAnchorOf([...objectives, ...playerStatuses]);
+	const dominant = dominantAnchorOf([
+		...objectives,
+		...playerStatuses,
+		...killReads,
+	]);
 	const live = withoutReplayReads(objectives, dominant);
+	const liveKills = withoutReplayReads(killReads, dominant);
 	const statusReads = [
 		...playerStatuses.map(
 			(read): StatusRead => ({
@@ -631,8 +676,81 @@ function buildProgress(
 	return {
 		objective,
 		playerStatus,
+		kills: liveKills.length === 0 ? null : deriveKills(liveKills),
 		minimapEnemySide: board ? (minimapSwapped ? 0 : 1) : null,
 	};
+}
+
+/**
+ * One kill per feed row entering the feed. Rows expire oldest-first and a
+ * single read can miss an inner row (a blurred pill ends the bottom-up scan
+ * early), so each read is matched newest-first as a subsequence of the rows
+ * still remembered (first seen within KILL_ROW_LIFETIME_SECONDS): a row
+ * matching a remembered one is carried, anything else is a new kill.
+ * Remembered rows a read fails to show stay remembered until they age out,
+ * so the recovered read after a truncated one re-counts nothing.
+ */
+function deriveKills(
+	reads: readonly { t: number; data: KillData }[],
+): ScannerMatchKill[] {
+	const kills: ScannerMatchKill[] = [];
+	// rows believed on screen, oldest first, by the read that first saw them
+	let known: { name: string | null; t: number }[] = [];
+	for (const read of reads) {
+		known = known.filter((row) => read.t - row.t <= KILL_ROW_LIFETIME_SECONDS);
+		const names = read.data.names.toReversed();
+
+		// newest-first greedy subsequence match: a row matches the newest
+		// remembered row not yet claimed, skipping remembered rows this read
+		// failed to show
+		const matched = new Map<number, number>();
+		let j = known.length - 1;
+		for (let i = names.length - 1; i >= 0; i--) {
+			let k = j;
+			while (k >= 0 && !sameRowName(names[i]!, known[k]!.name)) k--;
+			if (k >= 0) {
+				matched.set(k, i);
+				j = k - 1;
+			}
+		}
+
+		// rebuild the remembered stack in order: unmatched remembered rows stay
+		// (hidden or expiring), unmatched read rows are new kills
+		const t = Math.max(0, Math.floor(read.t));
+		const next: typeof known = [];
+		let placed = 0;
+		const placeNewUpTo = (end: number): void => {
+			for (; placed < end; placed++) {
+				const name = names[placed]!;
+				kills.push({ t, time: read.data.time, name });
+				next.push({ name, t: read.t });
+			}
+		};
+		for (const [k, row] of known.entries()) {
+			const i = matched.get(k);
+			if (i === undefined) {
+				next.push(row);
+				continue;
+			}
+			placeNewUpTo(i);
+			next.push(row);
+			placed = i + 1;
+		}
+		placeNewUpTo(names.length);
+		known = next;
+	}
+	// earliest first: the stack walk already emits in feed order, the sort
+	// pins it as the contract
+	return kills.toSorted((a, b) => a.t - b.t);
+}
+
+function sameRowName(a: string | null, b: string | null): boolean {
+	if (a === null || b === null) return true;
+	const ka = matchKey(a);
+	const kb = matchKey(b);
+	const similarity =
+		1 - editDistance(ka, kb) / Math.max(ka.length, kb.length, 1);
+	return similarity >= KILL_SAME_ROW_MIN_SIMILARITY;
 }
 
 /** The slot→row permutations of a scoreboard-closed match, per source. */

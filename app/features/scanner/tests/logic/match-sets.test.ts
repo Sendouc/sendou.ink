@@ -31,6 +31,7 @@ function match(
 		cast: false,
 		objective: null,
 		playerStatus: null,
+		kills: null,
 		teams: [{ players: alpha.map(player) }, { players: bravo.map(player) }],
 		winner: null,
 		pov: null,

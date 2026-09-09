@@ -1,6 +1,7 @@
 /** Small text utilities: edit distance and closed-set snapping for OCR output. */
 
-function editDistance(a: string, b: string): number {
+/** Levenshtein distance between two strings. */
+export function editDistance(a: string, b: string): number {
 	const dp = Array.from({ length: a.length + 1 }, (_, i) => {
 		const row = new Array<number>(b.length + 1).fill(0);
 		row[0] = i;

@@ -5,6 +5,7 @@
 
 import * as R from "remeda";
 import { DEATH_EVENT_TYPE } from "../core/detectors/death/index";
+import { KILL_EVENT_TYPE } from "../core/detectors/kill/index";
 import { MAP_START_EVENT_TYPE } from "../core/detectors/map-start/index";
 import { MINIMAP_EVENT_TYPE } from "../core/detectors/minimap/index";
 import { OBJECTIVE_EVENT_TYPE } from "../core/detectors/objective/index";
@@ -18,6 +19,7 @@ import { EventTypeIcon } from "./EventTypeIcon";
 const EVENT_TYPE_LABELS: Record<string, string> = {
 	[MAP_START_EVENT_TYPE]: "map start",
 	[DEATH_EVENT_TYPE]: "death",
+	[KILL_EVENT_TYPE]: "kill",
 	[MINIMAP_EVENT_TYPE]: "minimap",
 	[OBJECTIVE_EVENT_TYPE]: "objective",
 	[SCOREBOARD_EVENT_TYPE]: "scoreboard",

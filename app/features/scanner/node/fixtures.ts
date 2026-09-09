@@ -72,6 +72,7 @@ interface ExpectedScoreboard {
 		| "Objective"
 		| "PlayerStatus"
 		| "StripWeapons"
+		| "Kill"
 		| "none";
 	data?: {
 		lobby?: ScannerLobby;
@@ -99,8 +100,10 @@ interface ExpectedScoreboard {
 		abilities?: AbilityWithUnknown[][];
 		/** Death only: killer's splash-tag name */
 		name?: string;
-		/** Objective only: match-timer seconds ("3:35" = 215); null = unreadable */
+		/** Objective + Kill: match-timer seconds ("3:35" = 215); null = unreadable */
 		time?: number | null;
+		/** Kill only: feed rows bottom (newest) first; null = row shown but name unreadable */
+		names?: (string | null)[];
 		/** Objective only: displayed counter per team, [alpha, bravo] */
 		score?: [number | null, number | null];
 		/** Objective only: penalty pill value per team; null = no pill */

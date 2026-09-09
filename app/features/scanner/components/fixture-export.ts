@@ -7,6 +7,7 @@ import {
 	DEATH_EVENT_TYPE,
 	type DeathData,
 } from "../core/detectors/death/index";
+import { KILL_EVENT_TYPE, type KillData } from "../core/detectors/kill/index";
 import {
 	MAP_START_EVENT_TYPE,
 	type MapStartData,
@@ -48,7 +49,8 @@ export type FixtureData =
 	| MinimapData
 	| ObjectiveData
 	| PlayerStatusData
-	| StripWeaponsData;
+	| StripWeaponsData
+	| KillData;
 
 function isDeath(_data: FixtureData, eventType: string): _data is DeathData {
 	return eventType === DEATH_EVENT_TYPE;
@@ -197,6 +199,14 @@ function buildExpectedJson(
 					),
 				},
 			},
+			null,
+			2,
+		)}\n`;
+	}
+	if (eventType === KILL_EVENT_TYPE) {
+		const kill = data as KillData;
+		return `${JSON.stringify(
+			{ event: eventType, data: { time: kill.time, names: kill.names } },
 			null,
 			2,
 		)}\n`;

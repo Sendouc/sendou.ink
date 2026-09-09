@@ -13,6 +13,7 @@ import type { Ability } from "~/modules/in-game-lists/types";
 import { mainWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 import type {
 	ScannerMatch,
+	ScannerMatchKill,
 	ScannerMatchObjective,
 	ScannerMatchPlayer,
 	ScannerMatchPlayerStatus,
@@ -96,6 +97,15 @@ const scannerMatchPlayerStatusSchema = v.object({
 	),
 });
 
+/** a splat every few seconds over a match runs to dozens, not hundreds */
+const MAX_KILLS = 200;
+
+const scannerMatchKillSchema = v.object({
+	t: v.pipe(v.number(), v.integer(), v.minValue(0)),
+	time: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
+	name: v.nullable(detectionText),
+});
+
 export const scannerMatchSchema = v.object({
 	startsAt: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
 	endsAt: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
@@ -111,6 +121,9 @@ export const scannerMatchSchema = v.object({
 	cast: v.boolean(),
 	objective: v.nullable(scannerMatchObjectiveSchema),
 	playerStatus: v.nullable(scannerMatchPlayerStatusSchema),
+	kills: v.nullable(
+		v.pipe(v.array(scannerMatchKillSchema), v.maxLength(MAX_KILLS)),
+	),
 	teams: v.tuple([scannerMatchTeamSchema, scannerMatchTeamSchema]),
 	winner: v.nullable(teamIndexSchema),
 	pov: v.nullable(
@@ -145,6 +158,10 @@ true satisfies MutuallyAssignable<
 true satisfies MutuallyAssignable<
 	v.InferOutput<typeof scannerMatchPlayerStatusSchema>,
 	ScannerMatchPlayerStatus
+>;
+true satisfies MutuallyAssignable<
+	v.InferOutput<typeof scannerMatchKillSchema>,
+	ScannerMatchKill
 >;
 true satisfies MutuallyAssignable<
 	v.InferOutput<typeof scannerMatchSchema>,

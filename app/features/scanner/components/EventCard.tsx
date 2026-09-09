@@ -13,6 +13,7 @@ import {
 	DEATH_EVENT_TYPE,
 	type DeathData,
 } from "../core/detectors/death/index";
+import { KILL_EVENT_TYPE, type KillData } from "../core/detectors/kill/index";
 import {
 	MAP_START_EVENT_TYPE,
 	type MapStartData,
@@ -45,6 +46,7 @@ import { DeathCard } from "./DeathCard";
 import styles from "./EventCard.module.css";
 import type { FixtureData } from "./fixture-export";
 import { useEventTimeFormatter } from "./format";
+import { KillCard } from "./KillCard";
 import { MapStartCard } from "./MapStartCard";
 import { MinimapCard } from "./MinimapCard";
 import { ObjectiveCard } from "./ObjectiveCard";
@@ -162,6 +164,8 @@ function renderCard(
 ) {
 	return type === DEATH_EVENT_TYPE ? (
 		<DeathCard {...shared} data={data as DeathData} />
+	) : type === KILL_EVENT_TYPE ? (
+		<KillCard {...shared} data={data as KillData} />
 	) : type === MAP_START_EVENT_TYPE ? (
 		<MapStartCard {...shared} data={data as MapStartData} />
 	) : type === SCOREBOARD_OWN_EVENT_TYPE ? (

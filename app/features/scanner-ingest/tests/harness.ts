@@ -317,6 +317,7 @@ export function scannedGame(
 		cast,
 		objective: null,
 		playerStatus: null,
+		kills: null,
 		teams: seenFrom === "loser" ? [losers, winners] : [winners, losers],
 		winner: seenFrom === "loser" ? 1 : 0,
 		pov: cast ? null : { team: 0, index: 0 },

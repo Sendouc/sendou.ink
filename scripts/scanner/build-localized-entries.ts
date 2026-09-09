@@ -13,11 +13,14 @@
  *   LayoutMsg/Mng_Result_00          replay-browser VICTORY / DEFEAT tags
  *   LayoutMsg/VS_Beaten_00 (999)     death-burst message; the weapon placeholder sits on
  *                                    line 1 or 2 by language, so it becomes a per-language template
+ *   LayoutMsg/VS_BeatMessage_00 (000) kill-feed row ("Splatted <name>!"); the name placeholder
+ *                                    splits it into a per-language pre/post text pair
  *   CommonMsg/Weapon/WeaponName_*    weapon names, mapped to canonical entries via USen
  *
  * Usage: pnpm scanner:build-localized-entries [path-to-splat3]
  * Writes app/features/scanner/core/localized-entries.ts
  *    and app/features/scanner/core/detectors/death/localized-messages.ts
+ *    and app/features/scanner/core/detectors/kill/localized-messages.ts
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -36,6 +39,10 @@ const OUT_ENTRIES = new URL(
 ).pathname;
 const OUT_MESSAGES = new URL(
 	"../../app/features/scanner/core/detectors/death/localized-messages.ts",
+	import.meta.url,
+).pathname;
+const OUT_KILL_MESSAGES = new URL(
+	"../../app/features/scanner/core/detectors/kill/localized-messages.ts",
 	import.meta.url,
 ).pathname;
 
@@ -270,6 +277,30 @@ for (const lang of languages) {
 		});
 }
 
+interface KillTemplate {
+	langs: string[];
+	pre: string;
+	post: string;
+}
+
+// the name placeholder is the first group; KRko carries a second (a particle
+// chosen by the name's final syllable) that clean() drops along with markup
+const killTemplates: KillTemplate[] = [];
+for (const lang of languages) {
+	const raw = dumps.get(lang)!["LayoutMsg/VS_BeatMessage_00"]!["000"]!;
+	const line = raw.replace(PLACEHOLDER, SENTINEL).replace(/\[[^\]]*\]/g, "");
+	if (!line.includes(SENTINEL) || line.includes("\n"))
+		throw new Error(
+			`${lang}: kill message is not one line with a name: ${raw}`,
+		);
+	const [pre, post] = line
+		.split(SENTINEL)
+		.map((s) => s.replace(/[ \t]+/g, " ")) as [string, string];
+	const existing = killTemplates.find((t) => t.pre === pre && t.post === post);
+	if (existing) existing.langs.push(lang);
+	else killTemplates.push({ langs: [lang], pre, post });
+}
+
 const WEAPON_MSGS = [
 	"CommonMsg/Weapon/WeaponName_Main",
 	"CommonMsg/Weapon/WeaponName_Sub",
@@ -410,11 +441,37 @@ export const LOCALIZED_WEAPON_NAMES: Readonly<
 `,
 );
 
+writeFileSync(
+	OUT_KILL_MESSAGES,
+	`${banner(
+		`Per-language kill-feed row templates: the "Splatted <name>!" row
+ * wraps the splatted player's name in language-specific text on either side
+ * (spaces kept as rendered; either side may be empty).`,
+	)}
+
+export interface KillMessageTemplate {
+  /** languages sharing this exact template */
+  langs: readonly string[];
+  /** constant text before the name (may end with a space, or be empty) */
+  pre: string;
+  /** constant text after the name (may start with a space, or be empty) */
+  post: string;
+}
+
+export const KILL_MESSAGE_TEMPLATES: readonly KillMessageTemplate[] = ${JSON.stringify(
+		killTemplates,
+		null,
+		2,
+	)};
+`,
+);
+
 console.info(
 	`localized-entries: ${languages.length} languages, ` +
 		`${languageEntries.reduce((n, l) => n + l.stages.length, 0)} stage strings`,
 );
 console.info(
 	`localized-messages: ${templates.length} death templates, ` +
-		`${Object.values(localizedWeaponNames).reduce((n, e) => n + e.length, 0)} localized weapon names`,
+		`${Object.values(localizedWeaponNames).reduce((n, e) => n + e.length, 0)} localized weapon names, ` +
+		`${killTemplates.length} kill templates`,
 );

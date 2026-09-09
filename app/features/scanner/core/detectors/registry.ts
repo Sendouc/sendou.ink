@@ -1,6 +1,7 @@
 /** Every detector that runs on a frame; new event types register here. */
 
 import { createDeathDetector } from "./death/index";
+import { createKillDetector } from "./kill/index";
 import { createMapStartDetector } from "./map-start/index";
 import { createMinimapDetector } from "./minimap/index";
 import { createObjectiveDetector } from "./objective/index";
@@ -39,5 +40,6 @@ export function createAllDetectors(
 		createMapStartDetector(resources) as Detector<unknown>,
 		createMinimapDetector(resources) as Detector<unknown>,
 		createObjectiveDetector(resources) as Detector<unknown>,
+		createKillDetector(resources) as Detector<unknown>,
 	];
 }

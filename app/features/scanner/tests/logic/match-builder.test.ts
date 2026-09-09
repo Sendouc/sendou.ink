@@ -6,6 +6,7 @@ import type {
 	StageId,
 } from "~/modules/in-game-lists/types";
 import type { DeathData } from "../../core/detectors/death/index";
+import type { KillData } from "../../core/detectors/kill/index";
 import type {
 	MinimapData,
 	MinimapEnemy,
@@ -1297,4 +1298,128 @@ test("pov diamond cards map to scoreboard rows by name", () => {
 		[false, true, false, false],
 		[false, false, false, false],
 	]);
+});
+
+function kill(
+	t: number,
+	names: (string | null)[],
+	{ time = (300 - Math.round(t)) as number | null } = {},
+): DetectedEvent {
+	const data: KillData = { time, names };
+	return { type: "Kill", t, confidence: 0.9, data };
+}
+
+test("kill reads become one kill per row entering the stack", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["24K"]),
+		kill(61, ["datkid", "24K"]),
+		kill(65, ["datkid"]),
+		scoreboard(300),
+	]);
+	assert.deepEqual(built[0]!.match.kills, [
+		{ t: 60, time: 240, name: "24K" },
+		{ t: 61, time: 239, name: "datkid" },
+	]);
+});
+
+test("a repeated name past the row lifetime is a fresh kill", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["24K"]),
+		kill(75, ["24K"]),
+		scoreboard(300),
+	]);
+	assert.deepEqual(
+		built[0]!.match.kills!.map((k) => k.t),
+		[60, 75],
+	);
+});
+
+test("a wobbling read of a persisting row is not a new kill", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["datkid"]),
+		kill(63, ["datkíd"]),
+		scoreboard(300),
+	]);
+	assert.equal(built[0]!.match.kills!.length, 1);
+});
+
+test("an unreadable row still counts as a kill", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, [null]),
+		scoreboard(300),
+	]);
+	assert.deepEqual(built[0]!.match.kills, [{ t: 60, time: 240, name: null }]);
+});
+
+test("kill reads off a replay wipe are dropped", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		objective(60),
+		objective(70),
+		objective(80),
+		kill(65, ["24K"]),
+		// a broadcast re-running the 3:30 moment at t=200
+		kill(200, ["datkid"], { time: 210 }),
+		scoreboard(300),
+	]);
+	assert.deepEqual(
+		built[0]!.match.kills!.map((k) => k.name),
+		["24K"],
+	);
+});
+
+test("kills survive on a known non-SZ match", () => {
+	const built = buildScannerMatches([
+		mapStart(0, { mode: "TC" }),
+		kill(60, ["24K"]),
+		scoreboard(300, { mode: "TC" }),
+	]);
+	assert.equal(built[0]!.match.kills!.length, 1);
+});
+
+test("a match with no kill reads has null kills", () => {
+	const built = buildScannerMatches([mapStart(0), scoreboard(300)]);
+	assert.equal(built[0]!.match.kills, null);
+});
+
+test("a read that misses an inner row does not recount the rows it drops", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(50, ["Z"]),
+		// Z's pill blurred: the bottom-up scan stops after the new row
+		kill(50.5, ["X"]),
+		kill(51, ["X", "Z"]),
+		scoreboard(300),
+	]);
+	assert.deepEqual(
+		built[0]!.match.kills!.map((k) => [k.t, k.name]),
+		[
+			[50, "Z"],
+			[50, "X"],
+		],
+	);
+});
+
+test("the same name twice in one stack is two kills", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["A", "A"]),
+		kill(61, ["A", "A"]),
+		scoreboard(300),
+	]);
+	assert.equal(built[0]!.match.kills!.length, 2);
+});
+
+test("a same-name stack seen again inside the row lifetime is the same row", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["A"]),
+		kill(64, ["A"]),
+		scoreboard(300),
+	]);
+	assert.equal(built[0]!.match.kills!.length, 1);
 });

@@ -3,6 +3,7 @@
  * (highest confidence kept); events below a confidence floor are dropped.
  */
 
+import { KILL_EVENT_TYPE, sameKillData } from "../detectors/kill/index";
 import {
 	MINIMAP_EVENT_TYPE,
 	sameMinimapStatusData,
@@ -48,13 +49,17 @@ const DEFAULT_TIMELINE_OPTIONS: TimelineOptions = {
 	// own event via the content guard). Objective: reads repeat every second; the
 	// content guard keeps every change while static stretches collapse.
 	// PlayerStatus: a state can recur no sooner than a respawn (~9s), so the
-	// window stays under that. StripWeapons: sampled every ~5s, each distinct evidence
+	// window stays under that. StripWeapons: sampled every ~5s, each distinct evidence.
+	// Kill: the same stack re-read while it shows merges; a splatted player
+	// can't re-enter the feed before respawning (~8.5s), so the window stays
+	// under that and the content guard splits a growing stack.
 	mergeWindowByType: {
 		Death: 8,
 		[MINIMAP_EVENT_TYPE]: 5,
 		[OBJECTIVE_EVENT_TYPE]: 10,
 		[PLAYER_STATUS_EVENT_TYPE]: 5,
 		[STRIP_WEAPONS_EVENT_TYPE]: 2,
+		[KILL_EVENT_TYPE]: 8,
 	},
 	sameEventDataByType: {
 		[SCOREBOARD_EVENT_TYPE]: sameScoreboardMatch,
@@ -63,6 +68,7 @@ const DEFAULT_TIMELINE_OPTIONS: TimelineOptions = {
 		[MINIMAP_EVENT_TYPE]: sameMinimapStatusData,
 		[OBJECTIVE_EVENT_TYPE]: sameObjectiveData,
 		[PLAYER_STATUS_EVENT_TYPE]: samePlayerStatusData,
+		[KILL_EVENT_TYPE]: sameKillData,
 	},
 	minConfidence: 0.6,
 	minConfidenceByType: {
