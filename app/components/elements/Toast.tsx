@@ -99,7 +99,7 @@ export function SendouToastRegion() {
 			{toasts.map((toast) => (
 				<div
 					key={toast.key}
-					role="alert"
+					role={toast.content.variant === "error" ? "alert" : "status"}
 					style={{ viewTransitionName: toast.key }}
 					className={clsx(styles.toast, {
 						[styles.errorToast]: toast.content.variant === "error",
