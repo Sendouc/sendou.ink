@@ -164,4 +164,4 @@ async function addBadge(badge: {
 	return BadgeRepository.insert({ ...badge, hue: null });
 }
 
-main();
+await main();

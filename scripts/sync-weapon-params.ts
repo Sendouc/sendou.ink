@@ -437,4 +437,4 @@ async function main() {
 	);
 }
 
-main().catch((err) => logger.error(err));
+await main();

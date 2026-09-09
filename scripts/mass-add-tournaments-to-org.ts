@@ -39,4 +39,4 @@ async function main() {
 	logger.info(`Added ${filtered.length} tournaments to organization ${orgId}`);
 }
 
-main();
+await main();
