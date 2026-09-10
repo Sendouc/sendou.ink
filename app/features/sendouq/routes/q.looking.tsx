@@ -81,6 +81,8 @@ export default function QLookingShell() {
 	return <QLookingPage />;
 }
 
+// xxx: show in global indicator if group expired
+
 function QLookingPage() {
 	const { t } = useTranslation(["q"]);
 	const user = useUser();
