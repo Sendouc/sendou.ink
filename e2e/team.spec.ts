@@ -1,7 +1,10 @@
 import { addWeeks } from "date-fns";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
 import { ADMIN_DISCORD_ID, ADMIN_ID } from "~/features/admin/admin-constants";
-import { addTeamEventSchema } from "~/features/availability/availability-schemas";
+import {
+	addTeamEventSchema,
+	editTeamEventSchema,
+} from "~/features/availability/availability-schemas";
 import * as Availability from "~/features/availability/core/Availability";
 import { weekDates, weekRange } from "./helpers/availability";
 import type { Factories } from "./helpers/factories";
@@ -130,7 +133,6 @@ test.describe("Team page", () => {
 		const team = new TeamPage(page);
 		await team.goto(customUrl);
 
-		// Owner is Sendou
 		await expect(team.ownerBadge(ADMIN_ID)).toBeVisible();
 
 		const roster = await team.openManageRoster();
@@ -188,7 +190,6 @@ test.describe("Team page", () => {
 		await expect(firstRow.locators.moveUpButton).toBeDisabled();
 		await expect(lastRow.locators.moveDownButton).toBeDisabled();
 
-		// move the first member down one slot
 		await firstRow.moveDown();
 
 		await expect(firstRow.locators.username).toHaveText(secondName);
@@ -199,7 +200,6 @@ test.describe("Team page", () => {
 		await team.goto(customUrl);
 		await team.openManageRoster();
 
-		// the new order is persisted
 		await expect(firstRow.locators.username).toHaveText(secondName);
 	});
 
@@ -349,8 +349,8 @@ test.describe("Team page", () => {
 		const user = new UserPage(page);
 		await user.goto(ADMIN_DISCORD_ID);
 
-		await expect(user.locators.secondaryTeamsTrigger).toBeVisible();
-		await expect(user.locators.mainTeamLink).not.toContainText(TEAM_NAME);
+		await expect(user.teamLinks()).toHaveCount(2);
+		await expect(user.teamLinks().first()).not.toContainText(TEAM_NAME);
 
 		const mainTeam = await user.openMainTeam();
 
@@ -360,8 +360,8 @@ test.describe("Team page", () => {
 
 		await user.goto(ADMIN_DISCORD_ID);
 
-		await isNotVisible(user.locators.secondaryTeamsTrigger);
-		await expect(user.locators.mainTeamLink).toContainText(TEAM_NAME);
+		await expect(user.teamLinks()).toHaveCount(1);
+		await expect(user.teamLinks().first()).toContainText(TEAM_NAME);
 	});
 
 	test("makes another user editor, who can edit the page & becomes owner after the original leaves", async ({
@@ -419,11 +419,13 @@ async function createFullTeam(factories: Factories) {
 }
 
 test.describe("Team schedule", () => {
-	test("member sees the grid states and playable windows", async ({
+	test("member sees the heatmap, the grid states and playable windows", async ({
 		page,
 		factories,
 	}) => {
-		const noScheduleMember = await factories.UserFactory.create();
+		const noScheduleMember = await factories.UserFactory.create({
+			discordName: "Schedules-Later",
+		});
 		const { id: teamId, customUrl } = await factories.TeamFactory.create({
 			name: TEAM_NAME,
 			memberUserIds: [ADMIN_ID, NZAP_TEST_ID, noScheduleMember.id],
@@ -465,6 +467,34 @@ test.describe("Team schedule", () => {
 		await team.goto(customUrl);
 
 		const schedule = await team.openSchedule();
+
+		// heatmap is the default view: two share Wed 19-22, one is also free Wed 18-19 and Thu 1-2
+		await expect(schedule.locators.heatmap).toBeVisible();
+		await expect(schedule.heatmapCells(2)).toHaveCount(3);
+		await expect(schedule.heatmapCells(1)).toHaveCount(2);
+		// the count shade must actually paint: an equal-specificity base background once blanked the whole grid
+		expect(await schedule.heatmapCellBackground(2)).not.toBe(
+			await schedule.heatmapCellBackground(0),
+		);
+		await expect(schedule.locators.heatmapUnreported).toContainText(
+			"Schedules-Later",
+		);
+		await expect(schedule.dayDot(WEDNESDAY)).toBeVisible();
+
+		// hovering a block names who is free then and who has no schedule
+		await schedule.heatmapCells(2).first().hover();
+		await expect(schedule.locators.heatmapTooltip).toContainText("2/3");
+		await expect(schedule.locators.heatmapTooltip).toContainText("N-ZAP");
+		await expect(schedule.locators.heatmapTooltip).toContainText(
+			"Schedules-Later",
+		);
+
+		// dropping the member without a schedule from the count clears the nudge about them
+		await schedule.memberChip(noScheduleMember.id).click();
+		await isNotVisible(schedule.locators.heatmapUnreported);
+		await schedule.memberChip(noScheduleMember.id).click();
+
+		await schedule.locators.gridViewTab.click();
 		await expect(schedule.locators.grid).toBeVisible();
 
 		await expect(schedule.cellRange(ADMIN_ID, WEDNESDAY)).toBeVisible();
@@ -513,7 +543,7 @@ test.describe("Team schedule", () => {
 		await isNotVisible(schedule.locators.grid);
 	});
 
-	test("owner adds and deletes a team event, a regular member only sees it", async ({
+	test("owner adds, edits and deletes a team event, a regular member only sees it", async ({
 		page,
 		factories,
 	}) => {
@@ -539,6 +569,18 @@ test.describe("Team schedule", () => {
 		await expect(schedule.locators.teamEvents).toContainText(
 			"VoD review vs. FTWin",
 		);
+
+		await page.getByTestId(/edit-team-event/).click();
+		const editForm = createFormHelpers(page, editTeamEventSchema);
+		await editForm.fill("name", "Strategy meeting");
+		await editForm.checkItems("participants", ["SELECTED"]);
+		await page.getByLabel("N-ZAP", { exact: true }).click();
+		await editForm.submit();
+
+		await expect(schedule.locators.teamEvents).toContainText(
+			"Strategy meeting",
+		);
+		await expect(schedule.locators.teamEvents).toContainText("N-ZAP");
 
 		await impersonate(page, NZAP_TEST_ID);
 		await schedule.goto(customUrl);

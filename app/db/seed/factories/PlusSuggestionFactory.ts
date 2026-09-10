@@ -3,14 +3,11 @@ import {
 	nextNonCompletedVoting,
 	rangeToMonthYear,
 } from "~/features/plus-voting/core";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { defineFactory } from "../core/defineFactory";
 import { faker } from "../core/faker";
 
-/**
- * Creates plus server suggestions, `authorId` suggesting `suggestedId` for `tier`.
- * Defaults to the upcoming voting's month, i.e. a suggestion that is currently open.
- */
+/** `authorId` suggests `suggestedId` for `tier`. Defaults to the upcoming voting's month, i.e. currently open. */
 export const { create } = defineFactory({
 	defaults: () => ({
 		...upcomingVotingMonthYear(),

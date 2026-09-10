@@ -2,6 +2,7 @@ import { createMemoryRouter, RouterProvider } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
+import TournamentAdminRegistrationPage from "./to.$id.admin.registration.$tid";
 
 const { mockTournament, mockLoaderData, submitMock, loadMock } = vi.hoisted(
 	() => ({
@@ -33,8 +34,7 @@ vi.mock("~/features/tournament/tournament-context", () => ({
 	useTournament: () => mockTournament,
 }));
 
-// Stub the server action re-exported by the route module so importing the route
-// in a browser test doesn't pull in the database-backed action code.
+// stubbed so importing the route in a browser test doesn't pull in the database-backed action
 vi.mock(
 	"~/features/tournament-admin/actions/to.$id.admin.registration.server",
 	() => ({ action: vi.fn() }),
@@ -44,8 +44,6 @@ vi.mock(
 	"~/features/tournament-admin/loaders/to.$id.admin.registration.$tid.server",
 	() => ({ loader: vi.fn() }),
 );
-
-import TournamentAdminRegistrationPage from "./to.$id.admin.registration.$tid";
 
 function renderPage() {
 	const router = createMemoryRouter(
@@ -65,7 +63,7 @@ describe("tournament admin registration - captain field", () => {
 	});
 
 	test("removing the captain's roster row does not leave a stale captain that fails validation", async () => {
-		// A linked/edited team whose captain (OWNER) is the first roster member.
+		// captain (OWNER) is the first roster member
 		mockLoaderData.team = {
 			id: 10,
 			name: "low ink buddies",
@@ -80,9 +78,8 @@ describe("tournament admin registration - captain field", () => {
 
 		const screen = await renderPage();
 
-		// Remove the captain's row (member #1). The Captain <select> is non-clearable
-		// so it now visually shows the remaining member ("Jolt") as selected, but the
-		// form's ownerId still points at the removed user (1) and nothing resyncs it.
+		// the non-clearable Captain <select> now shows the remaining member ("Jolt") as selected, but
+		// nothing resyncs the form's ownerId still pointing at the removed user (1)
 		const removeButtons = () =>
 			screen.container.querySelectorAll<HTMLButtonElement>(
 				'button[aria-label="Remove item"]',
@@ -92,9 +89,7 @@ describe("tournament admin registration - captain field", () => {
 
 		await screen.getByRole("button", { name: "Submit" }).click();
 
-		// The captain shown in the dropdown IS a current player, so submitting should
-		// not be blocked by "the captain must be one of the players": the form makes
-		// it to the server instead of stopping at client-side validation.
+		// the shown captain IS a current player, so "the captain must be one of the players" must not block the submit
 		await expect.poll(() => submitMock.mock.calls.length).toBe(1);
 		await expect
 			.element(screen.getByText(CAPTAIN_NOT_A_MEMBER_ERROR))

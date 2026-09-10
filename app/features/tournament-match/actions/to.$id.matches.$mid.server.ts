@@ -1,6 +1,7 @@
 import type { ActionFunction } from "react-router";
 import { db } from "~/db/sql";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
+import type { PersistedSystemMessageType } from "~/features/chat/chat-types";
 import * as ReportedWeaponRepository from "~/features/sendouq-match/ReportedWeaponRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
@@ -25,7 +26,7 @@ import {
 } from "~/features/tournament-bracket/tournament-bracket-utils";
 import * as TournamentMatchRepository from "~/features/tournament-match/TournamentMatchRepository.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import {
 	errorToastIfFalsy,
@@ -93,8 +94,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 	let emitMatchUpdate = false;
 	let emitTournamentUpdate = false;
-	// true when nothing outside match data (scores, pick/ban events) changed, letting
-	// broadcast receivers skip revalidating the tournament layout and root loaders
+	// lets broadcast receivers skip revalidating the tournament layout and root loaders
 	let onlyMatchResultsChanged = false;
 	let setIsOver = false;
 	let emitStatusUpdate = false;
@@ -121,8 +121,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 			emitMatchUpdate = true;
 			emitTournamentUpdate = true;
-			// a set ending (or dropped teams' matches ending) changes bracket state
-			// the layout ships (bracketsMeta), so only mid-set reports are scoped
+			// a set ending (or dropped teams' matches ending) changes the layout's bracketsMeta
 			onlyMatchResultsChanged = !setIsOver && endedDroppedMatchIds.length === 0;
 
 			break;
@@ -351,9 +350,10 @@ export const action: ActionFunction = async ({ params, request }) => {
 			errorToastIfFalsy(turnOfResult, "Not time to pick/ban");
 			const pickerTeamId = turnOfResult.teamId;
 			const actionType = turnOfResult.action;
+			const pickerTeam = pickerTeamId === teamOne.id ? teamOne : teamTwo;
 			errorToastIfFalsy(
 				tournament.isOrganizer(user) ||
-					tournament.ownedTeamByUser(user)?.id === pickerTeamId,
+					pickerTeam.memberUserIds.includes(user.id),
 				"Unauthorized",
 			);
 
@@ -413,8 +413,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 			const eventType = (() => {
 				if (match.roundMaps.pickBan === "CUSTOM") {
-					// a no-mode-repeat pick is stored as a regular map pick; the
-					// restriction only applies while choosing, not to the stored event
+					// the no-mode-repeat restriction only applies while choosing, not to the stored event
 					return actionType === "PICK_NO_MODE_REPEAT"
 						? ("PICK" as const)
 						: actionType;
@@ -433,15 +432,22 @@ export const action: ActionFunction = async ({ params, request }) => {
 					type: eventType,
 				});
 			} catch (error) {
-				// another request already recorded this pick/ban in the race window,
-				// let their page refresh to pick up the already-recorded event
+				// another request already recorded this pick/ban, let their page refresh to pick it up
 				if (errorIsSqliteUniqueConstraintFailure(error)) {
 					return null;
 				}
 				throw error;
 			}
 
-			// Chain roll after action for CUSTOM flow
+			const chatMessageType = pickBanChatMessageType(actionType);
+			if (match.chatRoomId && chatMessageType) {
+				void ChatSystemMessage.sendPersisted({
+					roomId: match.chatRoomId,
+					type: chatMessageType,
+					authorUserId: user.id,
+				});
+			}
+
 			if (match.roundMaps.pickBan === "CUSTOM" && match.roundMaps.customFlow) {
 				const updatedEvents =
 					await TournamentRepository.findPickBanEventsByMatchId(match.id);
@@ -482,7 +488,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 				operation: (bracketData) => Engine.reopenMatch(bracketData, match.id),
 				endDroppedTeams: false,
 				inTransaction: async (result, trx) => {
-					// edge case but for round robin we can just leave the match as is, lock it then unlock later to continue where they left off (should not really ever happen)
+					// round robin edge case: leave the match as is, lock it and unlock later to continue (should not really ever happen)
 					if (bracketFormat !== "round_robin") {
 						for (const followingMatch of followingMatches) {
 							await TournamentMatchRepository.deletePickBanEventsByMatchId(
@@ -492,9 +498,8 @@ export const action: ActionFunction = async ({ params, request }) => {
 						}
 					}
 
-					// when the set was force-ended early no extra result was inserted for
-					// the forced win, so the last result is a genuinely played game and must
-					// be kept to avoid desyncing the score from the results
+					// a force-ended set inserted no result for the forced win, so its last result is a
+					// played game that must stay or the score desyncs from the results
 					if (!result.endedEarly) {
 						invariant(lastResult, "Last result is missing");
 						await TournamentMatchRepository.deleteResultById(
@@ -509,8 +514,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 				`Reopening match: User ID: ${user.id}; Match ID: ${match.id}; Ended early: ${reopened.endedEarly}`,
 			);
 
-			// the teams advanced into following matches are being pulled back out,
-			// so those "waiting for teams" pages need to revalidate too
+			// teams pulled back out of following matches: their "waiting for teams" pages revalidate too
 			followingMatchIds = followingMatches.map(
 				(followingMatch) => followingMatch.id,
 			);
@@ -592,7 +596,6 @@ export const action: ActionFunction = async ({ params, request }) => {
 			);
 			errorToastIfFalsy(!match.winnerSide, "Match is already over");
 
-			// Determine winner (random if not specified)
 			const winnerTeamId = (() => {
 				if (data.winnerTeamId) {
 					errorToastIfFalsy(
@@ -603,7 +606,6 @@ export const action: ActionFunction = async ({ params, request }) => {
 					return data.winnerTeamId;
 				}
 
-				// Random winner: true 50/50 selection
 				return Math.random() < 0.5
 					? match.opponentOne.id
 					: match.opponentTwo.id;
@@ -625,8 +627,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 			});
 			endedDroppedMatchIds = endedMatchIds;
 
-			// the set ended early so no further games will be played; trim weapons
-			// reported in advance for map indexes beyond the games actually played
+			// no further games: trim weapons reported in advance for maps beyond the games played
 			const playedResults =
 				await TournamentMatchRepository.findResultsByMatchId(matchId);
 			await ReportedWeaponRepository.deleteExtraByTournamentMatchId({
@@ -683,15 +684,13 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 	clearTournamentDataCache(tournamentId);
 
-	// update RunningTournaments to make sure sidebar is not showing stale matches at the end
-	// of the tournament in case the TO is not finalizing the tournament right away
+	// refresh RunningTournaments so the sidebar doesn't show stale matches while the TO delays finalizing
 	if (setIsOver || emitStatusUpdate) {
 		const refreshedTournament = await tournamentFromDB(tournamentId);
 		const followingMatches = refreshedTournament.followingMatches(match.id);
 
 		if (setIsOver) {
-			// the teams that just advanced now populate following matches, so their
-			// "waiting for teams" pages need to revalidate too
+			// teams just advanced into following matches: their "waiting for teams" pages revalidate too
 			followingMatchIds = followingMatches.map(
 				(followingMatch) => followingMatch.id,
 			);
@@ -744,11 +743,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 	return null;
 };
 
-/**
- * Room of the brackets page views that render this match, i.e. the ones a change of its
- * results can be seen in. Falls back to the whole tournament's room if the match's bracket
- * can not be resolved.
- */
+/** Room of the brackets page views rendering this match; the whole tournament's room if its bracket can't be resolved. */
 function matchResultsRoom(
 	tournament: Tournament,
 	match: NonNullable<FindMatchById>,
@@ -767,6 +762,28 @@ function matchResultsRoom(
 		bracketIdx,
 		groupId: showsOneGroupAtATime(type) ? match.groupId : null,
 	});
+}
+
+/** What the match chat reports the pick/ban as, so both teams see who on the picking team acted. */
+function pickBanChatMessageType(
+	actionType: PickBan.TurnOfResult["action"],
+): PersistedSystemMessageType | null {
+	switch (actionType) {
+		case "PICK":
+		case "PICK_NO_MODE_REPEAT":
+			return "MAP_PICKED";
+		case "BAN":
+			return "MAP_BANNED";
+		case "MODE_PICK":
+			return "MODE_PICKED";
+		case "MODE_BAN":
+			return "MODE_BANNED";
+		// the server's own step, never a team's turn
+		case "ROLL":
+			return null;
+		default:
+			assertUnreachable(actionType);
+	}
 }
 
 function canReportTournamentScore({

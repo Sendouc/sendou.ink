@@ -1,13 +1,13 @@
 /**
- * "Save as fixture": download the raw captured frame as PNG plus an
- * expected.json prefilled from the detector's own output, so labeling a new
- * fixture is review-and-correct instead of data entry.
+ * "Save as fixture": downloads the raw captured frame as PNG plus an
+ * expected.json prefilled from the detector's output, so labeling is review-and-correct.
  */
 
 import {
 	DEATH_EVENT_TYPE,
 	type DeathData,
 } from "../core/detectors/death/index";
+import { KILL_EVENT_TYPE, type KillData } from "../core/detectors/kill/index";
 import {
 	MAP_START_EVENT_TYPE,
 	type MapStartData,
@@ -49,7 +49,8 @@ export type FixtureData =
 	| MinimapData
 	| ObjectiveData
 	| PlayerStatusData
-	| StripWeaponsData;
+	| StripWeaponsData
+	| KillData;
 
 function isDeath(_data: FixtureData, eventType: string): _data is DeathData {
 	return eventType === DEATH_EVENT_TYPE;
@@ -123,7 +124,7 @@ function buildExpectedJson(
 					}),
 					...(minimap.spectator && { spectator: true }),
 					teammates: minimap.teammates.map((p) => ({
-						slot: p.slot,
+						self: p.self,
 						name: p.name,
 						weaponLabel: mainWeaponLabel(p.weaponId),
 						weaponId: p.weaponId,
@@ -202,6 +203,14 @@ function buildExpectedJson(
 			2,
 		)}\n`;
 	}
+	if (eventType === KILL_EVENT_TYPE) {
+		const kill = data as KillData;
+		return `${JSON.stringify(
+			{ event: eventType, data: { time: kill.time, names: kill.names } },
+			null,
+			2,
+		)}\n`;
+	}
 	// NB: not a type-predicate helper — CardData is structurally assignable to
 	// MapStartData, so a predicate would narrow the fall-through case to never
 	if (eventType === MAP_START_EVENT_TYPE) {
@@ -250,10 +259,7 @@ function buildExpectedJson(
 	)}\n`;
 }
 
-/**
- * expected.json alone, for a frame the user already has on disk (Screenshot
- * page). Null data produces the negative-fixture form.
- */
+/** expected.json alone, for a frame already on disk (Screenshot page). Null data = negative-fixture form. */
 export function downloadExpectedJson(
 	data: FixtureData | null,
 	eventType?: string,
@@ -266,10 +272,7 @@ export function downloadExpectedJson(
 	);
 }
 
-/**
- * Fixture export for a live detection: the stored PNG is the byte-exact
- * frame the detector analyzed, paired with that event's own parse output.
- */
+/** Fixture export for a live detection: the stored PNG is the byte-exact analyzed frame plus its parse output. */
 export function saveFixtureFromEvent(
 	frame: Blob,
 	data: FixtureData,

@@ -33,6 +33,7 @@ export function SubNavLink({
 	secondary = false,
 	controlled = false,
 	active = false,
+	prefetch = "intent",
 	...props
 }: LinkProps & {
 	end?: boolean;
@@ -46,10 +47,10 @@ export function SubNavLink({
 			className={(state) =>
 				clsx(styles.linkContainer, {
 					[styles.active]: controlled ? active : state.isActive,
-					pending: state.isPending,
 				})
 			}
 			end={end}
+			prefetch={prefetch}
 			{...props}
 		>
 			<div

@@ -4,7 +4,7 @@
     "stage": 6,
     "teammates": [
       {
-        "slot": "up",
+        "self": false,
         "name": "STONKS",
         "abilities": [
           "IRU",
@@ -17,7 +17,7 @@
         "specialReady": false
       },
       {
-        "slot": "left",
+        "self": false,
         "name": "Player",
         "abilities": [
           "IRU",
@@ -30,7 +30,7 @@
         "specialReady": false
       },
       {
-        "slot": "right",
+        "self": false,
         "name": null,
         "abilities": [],
         "weaponLabel": null,
@@ -39,7 +39,7 @@
         "specialReady": false
       },
       {
-        "slot": "self",
+        "self": true,
         "name": "Edd",
         "abilities": [
           "IRU",

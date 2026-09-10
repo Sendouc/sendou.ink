@@ -1,6 +1,6 @@
 // https://web.archive.org/web/20200601102344/https://tl.net/forum/sc2-tournaments/202139-superior-double-elimination-losers-bracket-seeding
 
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { OrderingMap, Seeding, SeedOrdering } from "../types";
 
 export const ordering: OrderingMap = {
@@ -30,10 +30,10 @@ export const ordering: OrderingMap = {
 			pls = nextLayer(pls);
 		}
 		return seedsToOrderedArray(pls);
-		function nextLayer(pls: number[]) {
+		function nextLayer(layer: number[]) {
 			const out: number[] = [];
-			const length = pls.length * 2 + 1;
-			for (const d of pls) {
+			const length = layer.length * 2 + 1;
+			for (const d of layer) {
 				out.push(d);
 				out.push(length - d);
 			}
@@ -87,31 +87,15 @@ export const defaultMinorOrdering: { [key: number]: SeedOrdering[] } = {
 	],
 };
 
-/**
- * Pads the seeding with BYEs (`null`) until its length is a power of two.
- *
- * @param seeding The seeding of the stage.
- */
+/** Pads the seeding with BYEs (`null`) until its length is a power of two. */
 export function padSeedingToPowerOfTwo(seeding: Seeding): Seeding {
 	return setArraySize(seeding, getNearestPowerOfTwo(seeding.length), null);
 }
 
-/**
- * Sets the size of an array with a placeholder if the size is bigger.
- *
- * @param array The original array.
- * @param length The new length.
- * @param placeholder A placeholder to use to fill the empty space.
- */
 function setArraySize<T>(array: T[], length: number, placeholder: T): T[] {
 	return Array.from(Array(length), (_, i) => array[i] || placeholder);
 }
 
-/**
- * Returns the nearest power of two **greater than** or equal to the given number.
- *
- * @param input The input number.
- */
 function getNearestPowerOfTwo(input: number): number {
 	return 2 ** Math.ceil(Math.log2(input));
 }

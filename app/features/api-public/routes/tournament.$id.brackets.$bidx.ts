@@ -12,9 +12,12 @@ const paramsSchema = v.object({
 });
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-	const { id, bidx } = parseParams({ params, schema: paramsSchema });
+	const { id: tournamentId, bidx } = parseParams({
+		params,
+		schema: paramsSchema,
+	});
 
-	const tournament = await tournamentFromDB(id);
+	const tournament = await tournamentFromDB(tournamentId);
 
 	const bracket = notFoundIfNullish(tournament.bracketByIdx(bidx));
 

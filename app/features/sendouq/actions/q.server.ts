@@ -1,6 +1,7 @@
 import type { ActionFunction } from "react-router";
 import { redirect } from "react-router";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
+import { refreshApiTokensCache } from "~/features/api-public/api-public-utils.server";
 import { requireUser } from "~/features/auth/core/user.server";
 import { refreshBannedCache } from "~/features/ban/core/banned.server";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
@@ -66,8 +67,7 @@ export const action: ActionFunction = async ({ request, url }) => {
 
 				ChatSystemMessage.notifyStatusChanged([user.id]);
 
-				// Joining directly creates an ACTIVE group that enters the pool, so
-				// refresh every looking client. (A PREPARING group isn't in the pool.)
+				// joining directly creates an ACTIVE group that enters the pool (a PREPARING one isn't in it)
 				if (data.direct === "true") {
 					ChatSystemMessage.send({ channel: SENDOUQ_LOOKING_CHANNEL });
 				}
@@ -110,15 +110,12 @@ export const action: ActionFunction = async ({ request, url }) => {
 				);
 
 				if (groupInvitedTo.status === "PREPARING") {
-					// A preparing group isn't in the pool, so notify just its existing
-					// members (on the preparing page) via the group topic.
+					// a preparing group isn't in the pool, so only its members (on the preparing page)
 					ChatSystemMessage.send({
 						channel: sqGroupChannel(groupInvitedTo.id),
 					});
 				} else {
-					// Joining an active group changes its size/suitability for the whole
-					// pool, so refresh every looking client — which already includes the
-					// group's own existing members.
+					// the group's size/suitability changed for the whole pool, its own members included
 					ChatSystemMessage.send({ channel: SENDOUQ_LOOKING_CHANNEL });
 				}
 
@@ -156,6 +153,7 @@ export const action: ActionFunction = async ({ request, url }) => {
 					});
 
 					await refreshBannedCache();
+					await refreshApiTokensCache();
 
 					throw redirect(SUSPENDED_PAGE);
 				}
@@ -167,9 +165,8 @@ export const action: ActionFunction = async ({ request, url }) => {
 			}
 		}
 	} catch (error) {
-		// some errors are expected to happen, for example two requests racing to
-		// create/join a group. return null so loaders re-run and the user sees
-		// the fresh state instead of an error page
+		// expected errors (two requests racing to create/join a group): return null so
+		// loaders re-run and the user sees the fresh state instead of an error page
 		if (error instanceof SendouQError) {
 			return null;
 		}

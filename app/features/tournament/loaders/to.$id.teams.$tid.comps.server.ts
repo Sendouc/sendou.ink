@@ -23,7 +23,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 	const tournament = await tournamentDataCached(tournamentId);
 	const team = tournament?.ctx.teams.find(
-		(team) => team.id === tournamentTeamId,
+		(candidate) => candidate.id === tournamentTeamId,
 	);
 	if (!tournament || !team) {
 		throw new Response(null, { status: 404 });
@@ -36,9 +36,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const minMembersPerTeam = tournament.ctx.settings.minMembersPerTeam ?? 4;
 
 	const teamIdByUserId = new Map<number, number>();
-	for (const team of tournament.ctx.teams) {
-		for (const userId of team.memberUserIds) {
-			teamIdByUserId.set(userId, team.id);
+	for (const eachTeam of tournament.ctx.teams) {
+		for (const userId of eachTeam.memberUserIds) {
+			teamIdByUserId.set(userId, eachTeam.id);
 		}
 	}
 
@@ -128,9 +128,9 @@ async function previousSeriesWins({
 
 	const series = Series.findByEventName({
 		series:
-			await TournamentOrganizationRepository.findAllSeriesByOrganizationId(
+			await TournamentOrganizationRepository.findAllSeriesByOrganizationIds([
 				organizationId,
-			),
+			]),
 		eventName: tournamentName,
 	});
 	if (!series) return null;

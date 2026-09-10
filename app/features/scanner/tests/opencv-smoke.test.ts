@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { loadOpenCV, minMaxLoc } from "../core/cv";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 test("opencv.js loads in Node and matchTemplate works", async () => {
 	const cv = await loadOpenCV();

@@ -6,7 +6,7 @@ import * as Seasons from "~/features/mmr/core/Seasons";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 
 const tournamentIdArg = process.argv[2]?.trim();
@@ -22,8 +22,10 @@ invariant(
 async function loadTournament() {
 	try {
 		return await tournamentFromDB(tournamentId);
-	} catch {
-		throw new Error(`Tournament with id ${tournamentId} not found`);
+	} catch (error) {
+		throw new Error(`Tournament with id ${tournamentId} not found`, {
+			cause: error,
+		});
 	}
 }
 

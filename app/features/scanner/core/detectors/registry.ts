@@ -1,10 +1,7 @@
-/**
- * The full detector registry — the single source of truth for "every
- * detector that runs on a frame". New event types get added here and are
- * picked up by the analyzer worker.
- */
+/** Every detector that runs on a frame; new event types register here. */
 
 import { createDeathDetector } from "./death/index";
+import { createKillDetector } from "./kill/index";
 import { createMapStartDetector } from "./map-start/index";
 import { createMinimapDetector } from "./minimap/index";
 import { createObjectiveDetector } from "./objective/index";
@@ -24,11 +21,7 @@ import {
 import { createScoreboardOwnDetector } from "./scoreboard-own/index";
 import type { Detector } from "./types";
 
-/**
- * Event types whose data is the full 8-player scoreboard shape
- * (ScoreboardData): the results screen, the replay-browser detail, and the
- * scoreboard-battle-log detail.
- */
+/** Event types whose data is the full 8-player ScoreboardData shape. */
 export const SCOREBOARD_EVENT_TYPES: readonly string[] = [
 	SCOREBOARD_EVENT_TYPE,
 	SCOREBOARD_BATTLE_LOG_REPLAY_EVENT_TYPE,
@@ -47,5 +40,6 @@ export function createAllDetectors(
 		createMapStartDetector(resources) as Detector<unknown>,
 		createMinimapDetector(resources) as Detector<unknown>,
 		createObjectiveDetector(resources) as Detector<unknown>,
+		createKillDetector(resources) as Detector<unknown>,
 	];
 }

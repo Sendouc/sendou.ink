@@ -2,21 +2,15 @@ import clsx from "clsx";
 import type { TFunction } from "i18next";
 import { Search } from "lucide-react";
 import * as React from "react";
-import {
-	Button,
-	Dialog,
-	DialogTrigger,
-	Modal,
-	ModalOverlay,
-	Radio,
-	RadioGroup,
-} from "react-aria-components";
 import { useTranslation } from "react-i18next";
-import { useFetcher } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { Avatar } from "~/components/Avatar";
+import { SendouModal } from "~/components/elements/Dialog";
+import { SendouRadio, SendouRadioGroup } from "~/components/elements/Radio";
 import { Image } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { LocaleTime } from "~/components/LocaleTime";
+import { LogInPopover } from "~/components/LogInPopover";
 import type { SearchLoaderData } from "~/features/search/routes/search";
 import { searchSearchParams } from "~/features/search/search-search-params";
 import { tournamentOrganizationPage } from "~/features/tournament-organization/tournament-organization-urls";
@@ -122,26 +116,48 @@ export function GlobalSearch() {
 	};
 
 	return (
-		<DialogTrigger isOpen={isOpen} onOpenChange={handleOpenChange}>
-			<Button className={styles.searchButton}>
+		<>
+			<Link
+				to={globalSearchSearchParams.href("", { search: "open" })}
+				defaultShouldRevalidate={false}
+				preventScrollReset
+				className={styles.searchButton}
+			>
 				<Search className={styles.searchIcon} />
 				<span className={styles.searchLabel}>
 					<span className={styles.searchPlaceholder}>{t("common:search")}</span>
 					<kbd className={styles.searchKbd}>{isMac ? "Cmd+K" : "Ctrl+K"}</kbd>
 				</span>
-			</Button>
-			<ModalOverlay className={styles.overlay} isDismissable>
-				<Modal className={styles.modal}>
-					<Dialog className={styles.dialog} aria-label={t("common:search")}>
-						<GlobalSearchContent
-							onClose={() => setIsOpen(false)}
-							initialSearchType={params.type}
-							initialWeaponId={params.weapon}
-						/>
-					</Dialog>
-				</Modal>
-			</ModalOverlay>
-		</DialogTrigger>
+			</Link>
+			{isOpen ? (
+				<SendouModal
+					className={styles.modal}
+					aria-label={t("common:search")}
+					isDismissable
+					onClose={() => handleOpenChange(false)}
+				>
+					<GlobalSearchContent
+						onClose={() => setIsOpen(false)}
+						initialSearchType={params.type}
+						initialWeaponId={params.weapon}
+					/>
+				</SendouModal>
+			) : null}
+		</>
+	);
+}
+
+/** Search is logged in only, so a logged out visitor gets a log in prompt instead. */
+export function LoggedOutGlobalSearch() {
+	const { t } = useTranslation(["common"]);
+
+	return (
+		<LogInPopover>
+			<button type="button" className={styles.searchButton}>
+				<Search className={styles.searchIcon} />
+				<span className={styles.searchPlaceholder}>{t("common:search")}</span>
+			</button>
+		</LogInPopover>
 	);
 }
 
@@ -322,15 +338,14 @@ function GlobalSearchContent({
 				/>
 			</div>
 			<div className={styles.searchTypeContainer}>
-				<RadioGroup
+				<SendouRadioGroup
 					value={searchType}
 					onChange={handleSearchTypeChange}
-					orientation="horizontal"
 					aria-label="Search type"
 					className={styles.searchTypeRadioGroup}
 				>
 					{SEARCH_TYPES.map((type) => (
-						<Radio
+						<SendouRadio
 							key={type}
 							value={type}
 							className={styles.searchTypeRadioWrapper}
@@ -348,9 +363,9 @@ function GlobalSearchContent({
 									{t(`common:search.type.${type}`)}
 								</span>
 							)}
-						</Radio>
+						</SendouRadio>
 					))}
-				</RadioGroup>
+				</SendouRadioGroup>
 			</div>
 			{searchType === "weapons" ? (
 				<WeaponResultsList

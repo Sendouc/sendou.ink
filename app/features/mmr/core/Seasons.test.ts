@@ -1,6 +1,11 @@
-import { addHours } from "date-fns";
+import { addHours, subDays } from "date-fns";
 import { describe, expect, test } from "vitest";
-import { list, nthToDateRange, nthToReportingDateRange } from "./Seasons";
+import {
+	list,
+	nthToDateRange,
+	nthToGroupMembershipDateRange,
+	nthToReportingDateRange,
+} from "./Seasons";
 
 describe("nthToDateRange()", () => {
 	test("returns the date range for an existing season", () => {
@@ -31,5 +36,17 @@ describe("nthToReportingDateRange()", () => {
 
 	test("throws for a season number past the end of the list", () => {
 		expect(() => nthToReportingDateRange(list.length)).toThrow();
+	});
+});
+
+describe("nthToGroupMembershipDateRange()", () => {
+	test("starts a week before the season, covering groups formed before it", () => {
+		const { starts } = nthToGroupMembershipDateRange(0);
+		expect(starts).toEqual(subDays(list[0].starts, 7));
+	});
+
+	test("ends when reporting ends", () => {
+		const { ends } = nthToGroupMembershipDateRange(0);
+		expect(ends).toEqual(nthToReportingDateRange(0).ends);
 	});
 });

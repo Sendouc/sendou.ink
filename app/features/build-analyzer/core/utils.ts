@@ -5,7 +5,7 @@ import type {
 	SpecialWeaponId,
 } from "~/modules/in-game-lists/types";
 import { weaponIdToBaseWeaponId } from "~/modules/in-game-lists/weapon-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { Unpacked } from "~/utils/types";
 import type {
 	AbilityPoints,
@@ -171,12 +171,7 @@ const rawMultiShot: Partial<Record<MainWeaponId, number>> = {
 	3050: 2,
 };
 
-/**
- * Returns the multi-shot count for a given weapon ID. Multi-shot refers to the number of projectiles fired in a single shot,
- * e.g. H-3 Nozzlenose fires 3 projectiles per one trigger press.
- *
- * @returns The multi-shot count associated with the weapon, or `undefined` if not found.
- */
+/** Projectiles fired per trigger press (e.g. 3 for H-3 Nozzlenose), or `undefined` for single-shot weapons. */
 export const weaponIdToMultiShotCount = (weaponId: MainWeaponId) => {
 	return rawMultiShot[
 		weaponIdToBaseWeaponId(weaponId) as keyof typeof rawMultiShot

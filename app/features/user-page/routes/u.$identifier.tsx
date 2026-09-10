@@ -1,9 +1,11 @@
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
-import { Outlet, useLoaderData, useLocation, useMatches } from "react-router";
+import { Outlet, useLoaderData, useLocation } from "react-router";
 import { Main } from "~/components/Main";
-import { SubNav, SubNavLink } from "~/components/SubNav";
+import { userArtPage } from "~/features/art/art-urls";
 import { useUser } from "~/features/auth/core/user";
+import { userPageMiddleware } from "~/features/user-page/user-page-middleware.server";
+import { userSeasonsPage } from "~/features/user-page/user-page-urls";
 import { useHasRole } from "~/modules/permissions/hooks";
 import { metaTags } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
@@ -11,22 +13,20 @@ import {
 	discordAvatarUrl,
 	userAdminPage,
 	userBuildsPage,
-	userEditProfilePage,
 	userPage,
 	userResultsPage,
 	userVodsPage,
 } from "~/utils/urls";
 import type { UserPageNavItem } from "../components/UserPageIconNav";
-
 import {
 	loader,
 	type UserPageLoaderData,
 } from "../loaders/u.$identifier.server";
+import type { Route } from "./+types/u.$identifier";
 
 export { loader };
 
-import { userArtPage } from "~/features/art/art-urls";
-import { userSeasonsPage } from "~/features/user-page/user-page-urls";
+export const middleware: Route.MiddlewareFunction[] = [userPageMiddleware];
 
 export const meta: MetaFunction<typeof loader> = (args) => {
 	if (!args.loaderData) return [];
@@ -73,22 +73,19 @@ export const handle: SendouRouteHandle = {
 	},
 };
 
+const WIDE_LAYOUT_SUB_PAGES = ["results", "edit-widgets"];
+
 export default function UserPageLayout() {
 	const data = useLoaderData<typeof loader>();
 	const user = useUser();
 	const isStaff = useHasRole("STAFF");
 	const location = useLocation();
 	const { t } = useTranslation(["common", "user"]);
-	const matches = useMatches();
 
 	const isOwnPage = data.user.id === user?.id;
 
 	const allResultsCount =
 		data.user.calendarEventResultsCount + data.user.tournamentResultsCount;
-
-	const isNewUserPage = matches.some(
-		(m) => (m.loaderData as any)?.type === "new",
-	);
 
 	const navItems: UserPageNavItem[] = [
 		{
@@ -113,7 +110,6 @@ export default function UserPageLayout() {
 			count: data.user.buildsCount,
 			isVisible: data.user.buildsCount > 0 || isOwnPage,
 			testId: "user-builds-tab",
-			prefetch: "intent",
 		},
 		{
 			to: userVodsPage(data.user),
@@ -142,71 +138,11 @@ export default function UserPageLayout() {
 	];
 
 	return (
-		<Main bigger={location.pathname.includes("results")}>
-			{isNewUserPage ? null : (
-				<SubNav>
-					<SubNavLink to={userPage(data.user)} data-testid="user-profile-tab">
-						{t("common:header.profile")}
-					</SubNavLink>
-					<SubNavLink
-						to={userSeasonsPage({ user: data.user })}
-						data-testid="user-seasons-tab"
-					>
-						{t("user:seasons")}
-					</SubNavLink>
-					{isOwnPage ? (
-						<SubNavLink
-							to={userEditProfilePage(data.user)}
-							prefetch="intent"
-							data-testid="user-edit-tab"
-						>
-							{t("common:actions.edit")}
-						</SubNavLink>
-					) : null}
-					{allResultsCount > 0 ? (
-						<SubNavLink
-							to={userResultsPage(data.user)}
-							data-testid="user-results-tab"
-						>
-							{t("common:results")} ({allResultsCount})
-						</SubNavLink>
-					) : null}
-					{data.user.buildsCount > 0 || isOwnPage ? (
-						<SubNavLink
-							to={userBuildsPage(data.user)}
-							prefetch="intent"
-							data-testid="user-builds-tab"
-						>
-							{t("common:pages.builds")} ({data.user.buildsCount})
-						</SubNavLink>
-					) : null}
-					{data.user.vodsCount > 0 || isOwnPage ? (
-						<SubNavLink
-							to={userVodsPage(data.user)}
-							data-testid="user-vods-tab"
-						>
-							{t("common:pages.vods")} ({data.user.vodsCount})
-						</SubNavLink>
-					) : null}
-					{data.user.artCount > 0 || isOwnPage ? (
-						<SubNavLink
-							to={userArtPage(data.user)}
-							end={false}
-							data-testid="user-art-tab"
-						>
-							{t("common:pages.art")} ({data.user.artCount})
-						</SubNavLink>
-					) : null}
-					{isStaff ? (
-						<SubNavLink
-							to={userAdminPage(data.user)}
-							data-testid="user-admin-tab"
-						>
-							Admin
-						</SubNavLink>
-					) : null}
-				</SubNav>
+		<Main
+			bigger={WIDE_LAYOUT_SUB_PAGES.some((subPage) =>
+				location.pathname.includes(subPage),
 			)}
+		>
 			<Outlet context={{ navItems }} />
 		</Main>
 	);

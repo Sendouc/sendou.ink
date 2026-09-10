@@ -29,7 +29,7 @@ import { useUser } from "~/features/auth/core/user";
 import type { TeamLoaderData } from "~/features/team/loaders/t.$customUrl.server";
 import { useActionSubmit } from "~/hooks/useActionSubmit";
 import { useHasPermission } from "~/modules/permissions/hooks";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { editTeamPage, manageTeamRosterPage, userPage } from "~/utils/urls";
 import { action } from "../actions/t.$customUrl.index.server";
 import type * as TeamRepository from "../TeamRepository.server";
@@ -191,9 +191,9 @@ function TeamActionsMenu({ team }: { team: TeamLoaderData["team"] }) {
 	}
 
 	const submitAction = (
-		action: "LEAVE_TEAM" | "MAKE_MAIN_TEAM" | "DELETE_TEAM",
+		actionToSubmit: "LEAVE_TEAM" | "MAKE_MAIN_TEAM" | "DELETE_TEAM",
 	) => {
-		submit(action);
+		submit(actionToSubmit);
 		setConfirming(null);
 	};
 
@@ -300,7 +300,7 @@ function ConfirmActionContent({
 			<div className="stack horizontal md justify-center mt-2">
 				<SendouButton
 					variant="destructive"
-					onPress={onConfirm}
+					onClick={onConfirm}
 					data-testid="confirm-button"
 				>
 					{buttonText}

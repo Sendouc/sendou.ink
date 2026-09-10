@@ -1,11 +1,4 @@
 import { describe, expect, test, vi } from "vitest";
-
-vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
-	send: vi.fn(),
-	notifyStatusChanged: vi.fn(),
-	notifyNotificationsChanged: vi.fn(),
-}));
-
 import * as SQGroupFactory from "~/db/seed/factories/SQGroupFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
@@ -14,13 +7,19 @@ import * as Seasons from "~/features/mmr/core/Seasons";
 import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server";
 import { stageIds } from "~/modules/in-game-lists/stage-ids";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { wrappedAction } from "~/utils/Test";
 import * as ReadyCheck from "../core/ready-check.server";
 import { refreshSendouQInstance } from "../core/SendouQ.server";
 import type { lookingSchema } from "../q-action-schemas";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { action as rawLookingAction } from "./q.looking";
+
+vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
+	send: vi.fn(),
+	notifyStatusChanged: vi.fn(),
+	notifyNotificationsChanged: vi.fn(),
+}));
 
 const SZ_ONLY_PREFERENCE: UserMapModePreferences["modes"] = [
 	{ mode: "SZ", preference: "PREFER" },

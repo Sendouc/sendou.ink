@@ -1,8 +1,6 @@
 /**
  * Golden-file tests for the MinimapDetector over every fixture in minimap/,
- * plus cross-negative sweeps in both directions: the minimap gate must stay
- * quiet on every other detector's positives (and the shared negatives), and
- * every other gate must stay quiet on the minimap fixtures.
+ * plus cross-negative sweeps both ways against every other detector's positives.
  */
 
 import assert from "node:assert/strict";
@@ -25,7 +23,7 @@ import {
 	runDetectorOnFixture,
 } from "../node/fixtures";
 import { loadScoreboardResources } from "../node/resources";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 await loadOpenCV();
 const resources = await loadScoreboardResources();
@@ -96,7 +94,7 @@ for (const fixture of fixtures) {
 
 		for (const [i, want] of (expected.teammates ?? []).entries()) {
 			await t.test(
-				`teammate ${i} (${want.slot ?? "?"})`,
+				`teammate ${i}`,
 				{ skip: skip(fixture, `teammates.${i}`) },
 				() => {
 					const got = event.data.teammates[i];
@@ -107,7 +105,7 @@ for (const fixture of fixtures) {
 					const cardDebug = JSON.stringify(
 						(event.debug?.cards as unknown[])?.[i],
 					);
-					if (want.slot !== undefined) assert.equal(got.slot, want.slot);
+					if (want.self !== undefined) assert.equal(got.self, want.self);
 					if (
 						want.name !== undefined &&
 						!isFieldSkipped(fixture, `teammates.${i}.name`)
@@ -203,10 +201,9 @@ for (const fixture of fixtures) {
 	});
 }
 
-// The columns' sub-tile ink means anchor the objective counter's color
-// clusters to `teams` order (match-builder); the SWS26 spectator fixture
-// pairs with objective/splat-zones-cast-* from the same game, where the
-// plates read green ~78° and purple ~302°.
+// The columns' sub-tile ink means anchor the objective counter's color clusters
+// to `teams` order (match-builder); the SWS26 spectator fixture pairs with
+// objective/splat-zones-cast-* from the same game (green ~78°, purple ~302°).
 test("spectator sub tiles read the two team ink colors", async () => {
 	const fixture = fixtures.find((f) => f.name === "spectator-sws26-swiss");
 	assert.ok(fixture, "spectator-sws26-swiss fixture missing");

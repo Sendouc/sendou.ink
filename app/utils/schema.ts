@@ -36,10 +36,7 @@ export interface ValidationCtx {
 	addIssue: (issue: { message: string; path?: PropertyKey[] }) => void;
 }
 
-/**
- * Validation action running `fn` on the parsed value with an `addIssue`
- * taking plain key paths.
- */
+/** Validation action running `fn` on the parsed value with an `addIssue` taking plain key paths. */
 export function superRefine<TValue>(
 	fn: (value: TValue, ctx: ValidationCtx) => void,
 ) {
@@ -253,10 +250,13 @@ export const themeInputSchema = v.object({
 });
 
 const timeStringRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-export const timeString = v.pipe(v.string(), v.regex(timeStringRegex));
+export const timeString = v.pipe(
+	v.string(),
+	v.regex(timeStringRegex, "forms:errors.invalidTime"),
+);
 
 const abilityNameToType = (val: string) =>
-	abilities.find((ability) => ability.name === val)?.type;
+	abilities.find((candidate) => candidate.name === val)?.type;
 export const headMainSlotAbility = v.pipe(
 	v.string(),
 	v.check(
@@ -401,7 +401,7 @@ export const hasZalgo = (txt: string) => zalgoRe.test(encodeURIComponent(txt));
 /** Non-empty string that has the given length (max and optionally min). Prevents z͎͗ͣḁ̵̑l̉̃ͦg̐̓̒o͓̔ͥ text as well as filters out characters that have no width. */
 export const safeStringSchema = ({ min, max }: { min?: number; max: number }) =>
 	preprocess(
-		actuallyNonEmptyStringOrNull, // if this returns null, none of the checks below will run because it's not a string
+		actuallyNonEmptyStringOrNull, // null skips the string checks below
 		v.pipe(
 			v.string(),
 			v.minLength(min ?? 0),
@@ -430,9 +430,7 @@ export const safeNullableStringSchema = ({
 		),
 	);
 
-/**
- * Processes the input value and returns a non-empty string with invisible characters cleaned out or null.
- */
+/** Non-empty string with invisible characters cleaned out, or null. */
 export function actuallyNonEmptyStringOrNull(value: unknown) {
 	if (typeof value !== "string") return value;
 

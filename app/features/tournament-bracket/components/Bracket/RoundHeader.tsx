@@ -131,14 +131,16 @@ function RoundTimer({
 
 	const displayText = elapsedMinutes >= 60 ? "1h+" : `${elapsedMinutes}m`;
 
-	const statusColor =
-		worstStatus === "error"
-			? "var(--color-error)"
-			: worstStatus === "warning"
-				? "var(--color-warning)"
-				: "var(--color-text)";
-
-	return <div style={{ color: statusColor }}>{displayText}</div>;
+	return (
+		<div
+			className={clsx(styles.roundTimer, {
+				[styles.roundTimerWarning]: worstStatus === "warning",
+				[styles.roundTimerError]: worstStatus === "error",
+			})}
+		>
+			{displayText}
+		</div>
+	);
 }
 
 function useLeagueRoundStartDate(bracketIdx: number, roundId: number) {

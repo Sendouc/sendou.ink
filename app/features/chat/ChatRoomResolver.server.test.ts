@@ -12,7 +12,7 @@ import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server"
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { hasPermission } from "~/modules/permissions/utils";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import * as ChatRepository from "./ChatRepository.server";
 import * as ChatRoomResolver from "./ChatRoomResolver.server";
 import { setupSqMatch } from "./tests/fixtures";
@@ -112,7 +112,9 @@ describe("ChatRoomResolver.resolve", () => {
 		const room = await resolveOrThrow(await groupChatRoomId(group.id));
 
 		expect(room.type).toBe("SQ_GROUP");
-		expect(room.participantUserIds.sort()).toEqual(memberUserIds.sort());
+		expect(room.participantUserIds.sort(byId)).toEqual(
+			memberUserIds.sort(byId),
+		);
 		expect(room.url).toBe("/q/looking");
 		// a group chat resolves no observers of its own, site staff aside
 		expect(hasPermission(room, "OBSERVE", { id: outsiderId() })).toBe(false);
@@ -136,8 +138,8 @@ describe("ChatRoomResolver.resolve", () => {
 		const room = await resolveOrThrow(match.chatRoomId!);
 
 		expect(room.type).toBe("SQ_MATCH");
-		expect(room.participantUserIds.sort()).toEqual(
-			[...alphaUserIds, ...bravoUserIds].sort(),
+		expect(room.participantUserIds.sort(byId)).toEqual(
+			[...alphaUserIds, ...bravoUserIds].sort(byId),
 		);
 		expect(room.titleParams).toEqual({ matchId: String(match.id) });
 		expect(room.url).toContain(String(match.id));
@@ -155,8 +157,8 @@ describe("ChatRoomResolver.resolve", () => {
 		const room = await resolveOrThrow(chatRoomId);
 
 		expect(room.type).toBe("TOURNAMENT_MATCH");
-		expect(room.participantUserIds.sort()).toEqual(
-			[...teamAlphaUserIds, ...teamBravoUserIds].sort(),
+		expect(room.participantUserIds.sort(byId)).toEqual(
+			[...teamAlphaUserIds, ...teamBravoUserIds].sort(byId),
 		);
 		expect(room.titleParams.matchId).toBe(String(matchId));
 		expect(room.titleParams.tournamentName).toEqual(expect.any(String));
@@ -187,7 +189,9 @@ describe("ChatRoomResolver.resolve", () => {
 		const room = await resolveOrThrow(await teamChatRoomId(team.id));
 
 		expect(room.type).toBe("TOURNAMENT_TEAM");
-		expect(room.participantUserIds.sort()).toEqual(memberUserIds.sort());
+		expect(room.participantUserIds.sort(byId)).toEqual(
+			memberUserIds.sort(byId),
+		);
 		expect(room.titleParams.teamName).toEqual(expect.any(String));
 		expect(room.permissions.OBSERVE).toContain(authorId);
 	});
@@ -199,8 +203,8 @@ describe("ChatRoomResolver.resolve", () => {
 		const room = await resolveOrThrow(chatRoomId);
 
 		expect(room.type).toBe("SCRIM");
-		expect(room.participantUserIds.sort()).toEqual(
-			[...postUserIds, ...requestUserIds].sort(),
+		expect(room.participantUserIds.sort(byId)).toEqual(
+			[...postUserIds, ...requestUserIds].sort(byId),
 		);
 		expect(room.titleParams.startsAt).toBe(
 			String(dateToDatabaseTimestamp(startsAt)),
@@ -223,11 +227,18 @@ describe("ChatRoomResolver.findAllByUserId", () => {
 
 		const rooms = await ChatRoomResolver.findAllByUserId(alphaUserIds[0]);
 
-		expect(rooms.map((room) => [room.roomId, room.type]).sort()).toEqual(
+		expect(
+			rooms
+				.map((room) => ({ roomId: room.roomId, type: room.type }))
+				.sort(byRoomId),
+		).toEqual(
 			[
-				[match.chatRoomId!, "SQ_MATCH"],
-				[await groupChatRoomId(match.alphaGroup.id), "SQ_GROUP"],
-			].sort(),
+				{ roomId: match.chatRoomId!, type: "SQ_MATCH" },
+				{
+					roomId: await groupChatRoomId(match.alphaGroup.id),
+					type: "SQ_GROUP",
+				},
+			].sort(byRoomId),
 		);
 	});
 
@@ -501,3 +512,8 @@ const teamChatRoomId = async (teamId: number) => {
 
 	return team.chatRoomId!;
 };
+
+const byId = (a: number, b: number) => a - b;
+
+const byRoomId = (a: { roomId: number }, b: { roomId: number }) =>
+	a.roomId - b.roomId;

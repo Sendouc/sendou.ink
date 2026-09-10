@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import React, { type JSX } from "react";
-import { Button } from "react-aria-components";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction, ShouldRevalidateFunction } from "react-router";
 import { Ability } from "~/components/Ability";
@@ -181,10 +180,10 @@ function DamageTypesSelect({
 				handleChange({ newDamageType: e.target.value as DamageType })
 			}
 		>
-			{allDamageTypes.map((damageType) => {
+			{allDamageTypes.map((optionDamageType) => {
 				return (
-					<option key={damageType} value={damageType}>
-						{t(`analyzer:damage.${damageType}` as any)}
+					<option key={optionDamageType} value={optionDamageType}>
+						{t(`analyzer:damage.${optionDamageType}` as any)}
 					</option>
 				);
 			})}
@@ -322,7 +321,9 @@ function DamageReceiversGrid({
 						</div>
 						<div className="stack horizontal sm justify-center items-center">
 							{t(`analyzer:damage.${damage.type}` as any)}
-							{damage.objectShredder && <Ability ability="OS" size="TINY" />}
+							{damage.objectShredder ? (
+								<Ability ability="OS" size="TINY" />
+							) : null}
 						</div>
 					</div>
 				))}
@@ -333,13 +334,14 @@ function DamageReceiversGrid({
 								<div>
 									<Label htmlFor="ap">
 										<div className={styles.apLabel}>
-											{abilityPoints !== "0" &&
-												damageReceiverAp[damageToReceiver.receiver]}
+											{abilityPoints !== "0"
+												? damageReceiverAp[damageToReceiver.receiver]
+												: null}
 										</div>
 									</Label>
 									<SendouPopover
 										trigger={
-											<Button className={styles.receiverButton}>
+											<button type="button" className={styles.receiverButton}>
 												<Image
 													className={styles.receiverImage}
 													alt={translateReceiver(damageToReceiver.receiver)}
@@ -347,7 +349,7 @@ function DamageReceiversGrid({
 													width={40}
 													height={40}
 												/>
-											</Button>
+											</button>
 										}
 									>
 										{translateReceiver(damageToReceiver.receiver)}

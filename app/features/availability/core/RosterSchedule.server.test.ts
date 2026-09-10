@@ -10,6 +10,7 @@ import * as RosterSchedule from "./RosterSchedule.server";
 const users = UserFactory.pool();
 const memberId = () => users.id(1);
 const teammateId = () => users.id(2);
+const viewerId = () => users.id(3);
 
 const TIMEZONE = "Europe/Helsinki";
 const HOUR = 60 * 60;
@@ -18,14 +19,18 @@ const currentWeekStartsAt = () =>
 	Availability.weekStartsAt(new Date(), TIMEZONE);
 
 const dataOf = (userIds: Array<number>) =>
-	RosterSchedule.rosterScheduleData({ userIds, timezone: TIMEZONE });
+	RosterSchedule.rosterScheduleData({
+		userIds,
+		timezone: TIMEZONE,
+		viewerId: viewerId(),
+	});
 
 const memberOf = async (userId: number) =>
 	(await dataOf([userId])).members.find((member) => member.userId === userId);
 
 describe("RosterSchedule.rosterScheduleData", () => {
 	beforeEach(async () => {
-		await users.create(2);
+		await users.create(3);
 	});
 
 	test("lays out the current and the next week as seven days each", async () => {
@@ -40,6 +45,29 @@ describe("RosterSchedule.rosterScheduleData", () => {
 			expect(week.days[0].startsAt).toBe(week.startsAt);
 			expect(week.days[6].endsAt).toBe(week.endsAt);
 		}
+	});
+
+	test("keeps an entry for a member not sharing their schedule, with nothing in it", async () => {
+		await AvailabilityWeekFactory.create({
+			userId: memberId(),
+			weekStartsAt: currentWeekStartsAt(),
+			timezone: TIMEZONE,
+			slots: [
+				{
+					startsAt: currentWeekStartsAt() + 18 * HOUR,
+					endsAt: currentWeekStartsAt() + 22 * HOUR,
+				},
+			],
+		});
+		await UserFactory.grant(memberId(), {
+			preferences: { scheduleVisibility: { friends: false, teamIds: [] } },
+		});
+
+		expect(await memberOf(memberId())).toEqual({
+			userId: memberId(),
+			reportedWeekStarts: [],
+			ranges: [],
+		});
 	});
 
 	test("reports which of the weeks the member has filled in", async () => {
@@ -103,10 +131,11 @@ describe("RosterSchedule.windowSchedules", () => {
 	const schedulesOf = async (
 		windows: Array<ReturnType<typeof window>>,
 		userIds: Array<number> = [memberId()],
-	) => RosterSchedule.windowSchedules({ windows, userIds });
+	) =>
+		RosterSchedule.windowSchedules({ windows, userIds, viewerId: viewerId() });
 
 	beforeEach(async () => {
-		await users.create(2);
+		await users.create(3);
 	});
 
 	test("reports what the member has free inside the window", async () => {
@@ -136,6 +165,29 @@ describe("RosterSchedule.windowSchedules", () => {
 				],
 				busy: [],
 			},
+		]);
+	});
+
+	test("keeps an entry for a member not sharing their schedule, with nothing in it", async () => {
+		await AvailabilityWeekFactory.create({
+			userId: memberId(),
+			weekStartsAt: currentWeekStartsAt(),
+			timezone: TIMEZONE,
+			slots: [
+				{
+					startsAt: currentWeekStartsAt() + 18 * HOUR,
+					endsAt: currentWeekStartsAt() + 22 * HOUR,
+				},
+			],
+		});
+		await UserFactory.grant(memberId(), {
+			preferences: { scheduleVisibility: { friends: false, teamIds: [] } },
+		});
+
+		const [schedules] = await schedulesOf([window(1, 20, 23)]);
+
+		expect(schedules.members).toEqual([
+			{ userId: memberId(), reported: false, ranges: [], busy: [] },
 		]);
 	});
 

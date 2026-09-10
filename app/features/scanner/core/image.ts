@@ -1,10 +1,14 @@
 /**
- * Environment-agnostic frame representation and helpers.
- * A FrameData is RGBA, same layout as browser ImageData — Node code builds it
- * from @napi-rs/canvas, browser code from a canvas or VideoFrame.
+ * Environment-agnostic frame representation: a FrameData is RGBA with the
+ * same layout as browser ImageData (Node builds it from @napi-rs/canvas).
  */
 
-import { CANONICAL_HEIGHT, CANONICAL_WIDTH, type Roi } from "./canonical";
+import {
+	CANONICAL_HEIGHT,
+	CANONICAL_WIDTH,
+	detectContentBox,
+	type Roi,
+} from "./canonical";
 import { getCV, type Mat, meanOf, minMaxLoc } from "./cv";
 
 export type { Roi };
@@ -23,34 +27,38 @@ export function toMat(frame: FrameData): Mat {
 }
 
 /**
- * Normalize any input frame to the canonical 1920x1080 RGBA mat that all ROI
- * constants are defined against. Returns a new mat; caller owns both.
+ * Normalizes any frame to the canonical 1920x1080 RGBA mat all ROI constants
+ * assume: black bars around the picture are cropped away first
+ * (detectContentBox), then the picture is resized. New mat; caller owns both.
+ * `src` must be continuous (a fresh mat, not a ROI view).
  */
 export function normalizeFrame(src: Mat): Mat {
 	const cv = getCV();
 	const dst = new cv.Mat();
-	if (src.cols === CANONICAL_WIDTH && src.rows === CANONICAL_HEIGHT) {
-		src.copyTo(dst);
-		return dst;
+	const box = detectContentBox(src.cols, src.rows, src.data as Uint8Array);
+	const picture = box ? cropRoi(src, box) : src;
+	if (picture.cols === CANONICAL_WIDTH && picture.rows === CANONICAL_HEIGHT) {
+		picture.copyTo(dst);
+	} else {
+		const interpolation =
+			picture.cols > CANONICAL_WIDTH ? cv.INTER_AREA : cv.INTER_CUBIC;
+		cv.resize(
+			picture,
+			dst,
+			new cv.Size(CANONICAL_WIDTH, CANONICAL_HEIGHT),
+			0,
+			0,
+			interpolation,
+		);
 	}
-	const interpolation =
-		src.cols > CANONICAL_WIDTH ? cv.INTER_AREA : cv.INTER_CUBIC;
-	cv.resize(
-		src,
-		dst,
-		new cv.Size(CANONICAL_WIDTH, CANONICAL_HEIGHT),
-		0,
-		0,
-		interpolation,
-	);
+	if (box) picture.delete();
 	return dst;
 }
 
 /**
- * Crop a rect out of a mat. Returns a view: fine as *input* to OpenCV calls
- * (matchTemplate, mean, resize, ...) but NEVER read `.data` off it — in this
- * opencv.js build both `.data` and `.clone()` mishandle non-continuous views.
- * Use copyRoi when pixel access is needed.
+ * Crops a rect out of a mat as a view: fine as *input* to OpenCV calls but
+ * NEVER read `.data` off it — this opencv.js build mishandles `.data` and
+ * `.clone()` on non-continuous views. Use copyRoi for pixel access.
  */
 export function cropRoi(src: Mat, roi: Roi): Mat {
 	const cv = getCV();
@@ -67,9 +75,8 @@ export function copyRoi(src: Mat, roi: Roi): Mat {
 }
 
 /**
- * Mean brightness of a ROI: the average of the first three channels on a
- * color mat, the single channel's mean on a grayscale (or |Laplacian|) mat.
- * The shared probe primitive of every detector gate.
+ * Mean brightness of a ROI: average of the first three channels on a color
+ * mat, the single channel's mean on grayscale. The shared gate probe.
  */
 export function meanBrightness(mat: Mat, roi: Roi): number {
 	const view = cropRoi(mat, roi);
@@ -129,12 +136,11 @@ export function minChannel(mat: Mat, roi?: Roi): Mat {
 }
 
 /**
- * Coarse content fingerprint of a grayscale ROI: the mean brightness of each
- * cell in a cols x rows grid over the region. Cheap enough for gates.
- * Consecutive frames of one static screen move a cell by ≤~2 while different
- * text/content moves cells by tens (measured on battle log browsing footage)
- * — the scheduler compares fingerprints to re-arm suppression when a passing
- * gate's screen flips to a new real occurrence (GateResult.signature).
+ * Coarse content fingerprint of a grayscale ROI: mean brightness per cell of a
+ * cols x rows grid. Consecutive frames of one static screen move a cell by
+ * ≤~2 while different content moves cells by tens (measured on battle log
+ * browsing) — the scheduler compares fingerprints to re-arm suppression when
+ * a passing gate's screen flips to a new occurrence (GateResult.signature).
  */
 export function roiSignature(
 	gray: Mat,

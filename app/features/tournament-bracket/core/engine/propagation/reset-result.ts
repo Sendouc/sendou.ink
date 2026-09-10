@@ -8,11 +8,7 @@ import * as helpers from "./helpers";
 import { Store } from "./store";
 import { Propagator } from "./traversal";
 
-/**
- * Clears a match's results and rolls back everything that was propagated
- * from it. 1:1 with the old reset.ts, including the swiss/round_robin early
- * return.
- */
+/** Clears a match's results and rolls back everything propagated from it. */
 export function resetMatchResults(
 	data: BracketData,
 	matchId: number,
@@ -21,13 +17,13 @@ export function resetMatchResults(
 	const propagator = new Propagator(store);
 
 	const stored = store.matchById(matchId);
-	if (!stored) throw Error("Match not found.");
+	if (!stored) throw new Error("Match not found.");
 
 	const stage = store.stageById(stored.stageId);
-	if (!stage) throw Error("Stage not found.");
+	if (!stage) throw new Error("Stage not found.");
 
 	const group = store.groupById(stored.groupId);
-	if (!group) throw Error("Group not found.");
+	if (!group) throw new Error("Group not found.");
 
 	const { roundNumber, roundCount } = propagator.getRoundPositionalInfo(
 		stored.roundId,
@@ -52,7 +48,7 @@ export function resetMatchResults(
 				!isMatchByeCompleted(match),
 		)
 	)
-		throw Error("The match is locked.");
+		throw new Error("The match is locked.");
 
 	helpers.clearWinner(stored);
 	store.markMatchChanged(stored);

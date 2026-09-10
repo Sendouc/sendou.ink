@@ -12,7 +12,7 @@ const paramsSchema = v.object({
 });
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-	const { id } = parseParams({
+	const { id: tournamentId } = parseParams({
 		params,
 		schema: paramsSchema,
 	});
@@ -40,7 +40,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 							"LiveStream.twitch",
 							"LiveStream.viewerCount",
 						])
-						.where("TournamentTeam.tournamentId", "=", id)
+						.where("TournamentTeam.tournamentId", "=", tournamentId)
 						.groupBy("LiveStream.twitch"),
 				).as("playerStreams"),
 				jsonArrayFrom(
@@ -52,7 +52,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 						),
 				).as("castStreams"),
 			])
-			.where("Tournament.id", "=", id)
+			.where("Tournament.id", "=", tournamentId)
 			.executeTakeFirst(),
 	);
 

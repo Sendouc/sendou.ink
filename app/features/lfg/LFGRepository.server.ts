@@ -8,7 +8,7 @@ import {
 	concatUserSubmittedImagePrefix,
 	jsonArrayFrom,
 	jsonObjectFrom,
-	userProfileWeapons,
+	matchProfileWeapons,
 } from "~/utils/kysely.server";
 import { LFG } from "./lfg-constants";
 
@@ -39,7 +39,7 @@ export async function findAllPosts(user?: {
 						"User.languages",
 						"User.country",
 						"PlusTier.tier as plusTier",
-						userProfileWeapons(innerEb).as("weaponPool"),
+						matchProfileWeapons(innerEb).as("weaponPool"),
 					])
 					.whereRef("User.id", "=", "LFGPost.authorId"),
 			).as("author"),
@@ -67,7 +67,7 @@ export async function findAllPosts(user?: {
 									"User.languages",
 									"User.country",
 									"PlusTier.tier as plusTier",
-									userProfileWeapons(innestEb).as("weaponPool"),
+									matchProfileWeapons(innestEb).as("weaponPool"),
 								])
 								.whereRef("TeamMemberWithSecondary.teamId", "=", "Team.id"),
 						).as("members"),
@@ -92,13 +92,12 @@ export async function findAllPosts(user?: {
 		.execute();
 
 	return rows
-		.filter((row) => {
-			if (!row.plusTierVisibility) return true;
-			if (row.author.id === userId) return true;
-			if (!user?.plusTier) return false;
-
-			return row.plusTierVisibility >= user.plusTier;
-		})
+		.filter((row) =>
+			isVisibleToViewer(
+				{ plusTierVisibility: row.plusTierVisibility, authorId: row.author.id },
+				user,
+			),
+		)
 		.map((row) => ({
 			...row,
 			permissions: {
@@ -110,6 +109,17 @@ export async function findAllPosts(user?: {
 
 const postExpiryCutoff = () =>
 	sub(new Date(), { days: LFG.POST_FRESHNESS_DAYS });
+
+const isVisibleToViewer = (
+	post: { plusTierVisibility: number | null; authorId: number },
+	viewer?: { id: number; plusTier: number | null },
+) => {
+	if (!post.plusTierVisibility) return true;
+	if (post.authorId === viewer?.id) return true;
+	if (!viewer?.plusTier) return false;
+
+	return post.plusTierVisibility >= viewer.plusTier;
+};
 
 export function insertPost(
 	args: Omit<TablesInsertable["LFGPost"], "updatedAt">,
@@ -161,11 +171,25 @@ export function deletePostsByTeamId(teamId: number, trx?: Transaction<DB>) {
 		.execute();
 }
 
-export async function findByAuthorUserId(authorId: number) {
-	return db
+/** Posts of one author, as they are visible to `viewer` on the LFG page (expired ones only to their author). */
+export async function findByAuthorUserId(
+	authorId: number,
+	viewer?: { id: number; plusTier: number | null },
+) {
+	const rows = await db
 		.selectFrom("LFGPost")
-		.select(["id", "type"])
+		.select(["id", "type", "plusTierVisibility", "authorId"])
 		.where("authorId", "=", authorId)
+		.where((eb) =>
+			eb.or([
+				eb("updatedAt", ">", dateToDatabaseTimestamp(postExpiryCutoff())),
+				eb("authorId", "=", viewer?.id ?? -1),
+			]),
+		)
 		.orderBy("updatedAt", "desc")
 		.execute();
+
+	return rows
+		.filter((row) => isVisibleToViewer(row, viewer))
+		.map((row) => ({ id: row.id, type: row.type }));
 }

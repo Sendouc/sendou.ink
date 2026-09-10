@@ -10,6 +10,7 @@ import * as FriendSchedule from "./FriendSchedule.server";
 const users = UserFactory.pool();
 const friendId = () => users.id(1);
 const otherId = () => users.id(2);
+const viewerId = () => users.id(3);
 
 const TIMEZONE = "Europe/Helsinki";
 const HOUR = 60 * 60;
@@ -23,6 +24,7 @@ const weeksOf = async (userId: number) => {
 	const schedules = await FriendSchedule.findByUserIds({
 		userIds: [friendId(), otherId()],
 		timezone: TIMEZONE,
+		viewerId: viewerId(),
 	});
 
 	return schedules.get(userId);
@@ -30,7 +32,7 @@ const weeksOf = async (userId: number) => {
 
 describe("FriendSchedule.findByUserIds", () => {
 	beforeEach(async () => {
-		await users.create(2);
+		await users.create(3);
 	});
 
 	test("leaves out a user who reported neither week", async () => {
@@ -41,6 +43,19 @@ describe("FriendSchedule.findByUserIds", () => {
 		});
 
 		expect(await weeksOf(otherId())).toBeUndefined();
+	});
+
+	test("leaves out a user not sharing their schedule with the viewer", async () => {
+		await AvailabilityWeekFactory.create({
+			userId: friendId(),
+			weekStartsAt: currentWeekStartsAt(),
+			timezone: TIMEZONE,
+		});
+		await UserFactory.grant(friendId(), {
+			preferences: { scheduleVisibility: { friends: false, teamIds: [] } },
+		});
+
+		expect(await weeksOf(friendId())).toBeUndefined();
 	});
 
 	test("marks the week they filled in as reported and the other one not", async () => {

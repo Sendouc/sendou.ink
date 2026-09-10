@@ -10,13 +10,15 @@ const paramsSchema = v.object({
 });
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-	const { id } = parseParams({
+	const { id: tournamentId } = parseParams({
 		params,
 		schema: paramsSchema,
 	});
 
 	const participants: GetTournamentPlayersResponse =
-		await TournamentMatchRepository.findUserParticipationByTournamentId(id);
+		await TournamentMatchRepository.findUserParticipationByTournamentId(
+			tournamentId,
+		);
 
 	return Response.json(participants);
 };

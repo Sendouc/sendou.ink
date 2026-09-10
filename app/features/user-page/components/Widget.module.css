@@ -147,6 +147,12 @@
 	gap: var(--s-3);
 }
 
+.weapon {
+	padding: var(--s-2);
+	border-radius: 100%;
+	background-color: var(--color-bg-high);
+}
+
 .weaponGrid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
@@ -341,4 +347,83 @@
 	&:hover {
 		background-color: var(--color-bg-higher);
 	}
+}
+
+.mapModePreferences {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-4);
+}
+
+.mapModePreferenceStages {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: var(--s-1-5);
+}
+
+.liveStream {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+	color: var(--color-text);
+}
+
+.liveStreamThumbnail {
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+	border-radius: var(--radius-field);
+}
+
+.liveStreamInfo {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	font-size: var(--font-xs);
+	font-weight: var(--weight-semi);
+}
+
+/* same look as the sidebar's live badge */
+.liveBadge {
+	display: flex;
+	align-items: center;
+	height: var(--selector-size-xs);
+	padding: 0 var(--s-1);
+	border-radius: var(--radius-selector);
+	background-color: var(--color-text-second);
+	color: var(--color-text-inverse);
+	font-size: var(--font-2xs);
+	font-weight: var(--weight-semi);
+	text-transform: uppercase;
+}
+
+.liveStreamName {
+	margin-inline-start: auto;
+	color: var(--color-text-high);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.countdownTitle {
+	font-size: var(--font-sm);
+	font-weight: var(--weight-semi);
+	text-align: center;
+}
+
+.countdown {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: var(--s-2) var(--s-3);
+}
+
+.countdownPart {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--s-0-5);
+	min-width: 3ch;
+	font-variant-numeric: tabular-nums;
 }

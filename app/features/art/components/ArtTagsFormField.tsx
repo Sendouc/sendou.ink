@@ -11,12 +11,10 @@ import { TagSelect } from "./TagSelect";
 export type ArtTag = { name?: string; id?: number };
 
 type ArtTagsFormFieldProps = Omit<CustomFieldRenderProps<ArtTag[]>, "name"> & {
-	/** All tags that exist in the database, selectable without creating a new one. */
 	existingTags: Array<{ id: number; name: string }>;
 };
 
-// note: not handling edge case where a tag was added by another user while this
-// user was adding a new art with the same tag -> will crash
+// NOTE: a tag added by another user while this form is open will crash on submit
 export function ArtTagsFormField({
 	value,
 	onChange,
@@ -31,7 +29,6 @@ export function ArtTagsFormField({
 	const handleAddNewTag = () => {
 		const normalizedNewTagValue = newTagValue
 			.trim()
-			// replace many whitespaces with one
 			.replace(/\s\s+/g, " ")
 			.toLowerCase();
 
@@ -86,7 +83,7 @@ export function ArtTagsFormField({
 								size="small"
 								variant="outlined"
 								className={styles.addButton}
-								onPress={handleAddNewTag}
+								onClick={handleAddNewTag}
 							>
 								{t("common:actions.add")}
 							</SendouButton>
@@ -95,7 +92,7 @@ export function ArtTagsFormField({
 							<SendouButton
 								variant="minimal"
 								className={styles.switcherButton}
-								onPress={() => setCreationMode(false)}
+								onClick={() => setCreationMode(false)}
 							>
 								{t("art:forms.tags.selectFromExisting")}
 							</SendouButton>
@@ -109,7 +106,7 @@ export function ArtTagsFormField({
 							tags={existingTags}
 							disabledKeys={value
 								.map((tag) => tag.id)
-								.filter((id) => id !== undefined)}
+								.filter((tagId) => tagId !== undefined)}
 							onSelectionChange={(tagName) =>
 								onChange([
 									...value,
@@ -122,7 +119,7 @@ export function ArtTagsFormField({
 							<SendouButton
 								variant="minimal"
 								className={styles.switcherButton}
-								onPress={() => setCreationMode(true)}
+								onClick={() => setCreationMode(true)}
 							>
 								{t("art:forms.tags.addNew")}
 							</SendouButton>
@@ -138,7 +135,7 @@ export function ArtTagsFormField({
 									icon={<X />}
 									size="miniscule"
 									variant="minimal-destructive"
-									onPress={() =>
+									onClick={() =>
 										onChange(value.filter((it) => it.name !== tag.name))
 									}
 								/>

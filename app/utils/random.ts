@@ -3,9 +3,8 @@ function cyrb128(str: string) {
 	let h2 = 3144134277;
 	let h3 = 1013904242;
 	let h4 = 2773480762;
-	// biome-ignore lint/suspicious/noImplicitAnyLet: biome migration
-	for (let i = 0, k; i < str.length; i++) {
-		k = str.charCodeAt(i);
+	for (let i = 0; i < str.length; i++) {
+		const k = str.charCodeAt(i);
 		h1 = h2 ^ Math.imul(h1 ^ k, 597399067);
 		h2 = h3 ^ Math.imul(h2 ^ k, 2869860233);
 		h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
@@ -35,18 +34,8 @@ function mulberry32(a: number) {
 }
 
 /**
- * Creates a seeded pseudo-random number generator that produces consistent results for the same seed.
- * Uses mulberry32 algorithm with cyrb128 hash function for string-to-number conversion.
- *
- * @param seed - String seed value (e.g., "2025-1-8" for daily rotation)
- * @returns Object with random number generation methods:
- *   - `random(lo?, hi?)` - Returns random float between lo (inclusive) and hi (exclusive)
- *   - `randomInteger(lo, hi?)` - Returns random integer between lo (inclusive) and hi (exclusive)
- *   - `seededShuffle(array)` - Returns shuffled copy of array using seeded Fisher-Yates algorithm
- *
- * @example
- * const { seededShuffle } = seededRandom("2025-1-8");
- * const shuffled = seededShuffle([1, 2, 3, 4, 5]);
+ * Seeded PRNG (mulberry32 over a cyrb128 hash of `seed`, e.g. "2025-1-8" for daily rotation).
+ * `random` / `randomInteger` ranges are lo inclusive, hi exclusive.
  */
 export const seededRandom = (seed: string) => {
 	const rng = mulberry32(cyrb128(seed)[0]);

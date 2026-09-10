@@ -2,7 +2,7 @@ import { getUser } from "~/features/auth/core/user.server";
 import { lastCompletedVoting } from "~/features/plus-voting/core";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { isSupporter } from "~/modules/permissions/utils";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { UserWithPlusTier } from "~/utils/kysely.server";
 import { roundToNDecimalPlaces } from "~/utils/number";
 

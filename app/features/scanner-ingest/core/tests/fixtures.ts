@@ -43,6 +43,7 @@ export function scannerMatch(
 		cast: false,
 		objective: null,
 		playerStatus: null,
+		kills: null,
 		teams: [
 			{
 				players: NAMES.slice(0, 4).map((name, i) =>

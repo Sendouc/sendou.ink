@@ -45,7 +45,7 @@ export function FiltersBar() {
 	};
 
 	const modesFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.modes.length < modesShortWithSpecial.length) {
 			parts.push(filters.modes.join(", "));
 		}
@@ -57,7 +57,7 @@ export function FiltersBar() {
 	};
 
 	const eventTypeFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.games.length < gamesShort.length) {
 			parts.push(filters.games.join(", "));
 		}
@@ -89,7 +89,7 @@ export function FiltersBar() {
 	};
 
 	const tagsFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.tagsIncluded.length > 0) {
 			parts.push(`+${filters.tagsIncluded.length}`);
 		}
@@ -101,7 +101,7 @@ export function FiltersBar() {
 	};
 
 	const organizersFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.orgsIncluded.length > 0) {
 			parts.push(`+${filters.orgsIncluded.length}`);
 		}
@@ -115,7 +115,7 @@ export function FiltersBar() {
 	};
 
 	const timeAndSizeFormatted = () => {
-		const parts = [];
+		const parts: string[] = [];
 		if (filters.preferredStartTime !== "ANY") {
 			parts.push(
 				t(
@@ -394,7 +394,7 @@ export function FiltersBar() {
 					<SendouButton
 						icon={<Star />}
 						isDisabled={persistFetcher.state !== "idle"}
-						onPress={() =>
+						onClick={() =>
 							persistFetcher.submit(filters, {
 								method: "post",
 								encType: "application/json",
@@ -468,7 +468,7 @@ function OrgListEditor({
 						variant="minimal-destructive"
 						size="miniscule"
 						aria-label={`Remove ${org}`}
-						onPress={() => onChange(values.filter((value) => value !== org))}
+						onClick={() => onChange(values.filter((value) => value !== org))}
 					/>
 				</div>
 			))}
@@ -492,7 +492,7 @@ function OrgListEditor({
 						variant="minimal"
 						size="small"
 						isDisabled={disabled || draft.trim().length === 0}
-						onPress={addDraft}
+						onClick={addDraft}
 					>
 						{t("common:actions.add")}
 					</SendouButton>
@@ -522,7 +522,7 @@ function ExcludedAuthorsEditor({
 						variant="minimal-destructive"
 						size="miniscule"
 						aria-label="Remove excluded author"
-						onPress={() => onChange(values.filter((value) => value !== userId))}
+						onClick={() => onChange(values.filter((value) => value !== userId))}
 					/>
 				</div>
 			))}

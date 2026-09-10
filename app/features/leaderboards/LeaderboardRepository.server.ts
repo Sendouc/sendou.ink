@@ -11,6 +11,7 @@ import type {
 import {
 	commonUserSelect,
 	concatUserSubmittedImagePrefix,
+	groupMemberOfSeasonSql,
 	jsonArrayFrom,
 	latestSkillPerSeason,
 	skillCountsAsSeasonSet,
@@ -33,7 +34,7 @@ function addPowers<T extends { ordinal: number }>(entries: T[]) {
 	}));
 }
 
-/** Numbers the entries by placement. A skipped team keeps its spot in the order but takes no number, the one below it getting the number it would have had. */
+/** Numbers the entries by placement; a skipped team keeps its spot but no number, which passes to the one below. */
 function addPlacementRank<T extends { isSkipped: boolean }>(entries: T[]) {
 	let placementRank = 0;
 
@@ -74,7 +75,7 @@ const teamLeaderboardBySeasonQuery = (season: number) =>
 				eb
 					.selectFrom("SkillTeamUser")
 					.innerJoin("User", "SkillTeamUser.userId", "User.id")
-					.select((eb) => commonUserSelect(eb))
+					.select((memberEb) => commonUserSelect(memberEb))
 					.whereRef("SkillTeamUser.skillId", "=", "Entry.entryId"),
 			).as("members"),
 			jsonArrayFrom(
@@ -92,12 +93,12 @@ const teamLeaderboardBySeasonQuery = (season: number) =>
 						"UserSubmittedImage.id",
 						"Team.avatarImgId",
 					)
-					.select((eb) => [
+					.select((teamEb) => [
 						"Team.id",
 						"Team.name",
-						concatUserSubmittedImagePrefix(eb.ref("UserSubmittedImage.url")).as(
-							"avatarUrl",
-						),
+						concatUserSubmittedImagePrefix(
+							teamEb.ref("UserSubmittedImage.url"),
+						).as("avatarUrl"),
 						"Team.customUrl",
 						"TeamMemberWithSecondary.isMainTeam",
 						"TeamMemberWithSecondary.userId",
@@ -121,7 +122,7 @@ export async function findTeamLeaderboardBySeason({
 	season: number;
 	onlyOneEntryPerUser: boolean;
 }) {
-	// skipping is about the season finale qualification which the all rosters leaderboard is not concerned with
+	// skipping concerns season finale qualification, not the all rosters leaderboard
 	const entries = addSkipped({
 		entries: await teamLeaderboardBySeasonQuery(season).execute(),
 		skippedIdentifiers: onlyOneEntryPerUser
@@ -208,6 +209,7 @@ export async function hasEnoughSqMatchesByUserId(userId: number) {
 				.onRef("Skill.userId", "=", "GroupMember.userId"),
 		)
 		.where("GroupMember.userId", "=", userId)
+		.where(groupMemberOfSeasonSql(season.nth))
 		.where(
 			"GroupMatch.createdAt",
 			">",
@@ -341,12 +343,24 @@ function xpLeaderboardQuery(where?: {
 								.$if(typeof where?.weaponSplId === "number", (qb) =>
 									qb.where("Better.weaponSplId", "=", where!.weaponSplId!),
 								)
-								.where((eb) =>
-									eb.or([
-										eb("Better.power", ">", eb.ref("XRankPlacement.power")),
-										eb.and([
-											eb("Better.power", "=", eb.ref("XRankPlacement.power")),
-											eb("Better.id", "<", eb.ref("XRankPlacement.id")),
+								.where((betterEb) =>
+									betterEb.or([
+										betterEb(
+											"Better.power",
+											">",
+											betterEb.ref("XRankPlacement.power"),
+										),
+										betterEb.and([
+											betterEb(
+												"Better.power",
+												"=",
+												betterEb.ref("XRankPlacement.power"),
+											),
+											betterEb(
+												"Better.id",
+												"<",
+												betterEb.ref("XRankPlacement.id"),
+											),
 										]),
 									]),
 								),
@@ -477,8 +491,8 @@ export async function findSeasonPopularUsersWeapon(
 		.where("ReportedWeapon.createdAt", "<=", endsTs);
 
 	const rows = await db
-		.with("q1", (db) =>
-			db
+		.with("q1", (cte) =>
+			cte
 				.selectFrom(sendouqWeapons.unionAll(tournamentWeapons).as("merged"))
 				.select(({ fn, ref }) => [
 					sql<number>`${ref("merged.packedUserWeapon")} / ${sql.lit(

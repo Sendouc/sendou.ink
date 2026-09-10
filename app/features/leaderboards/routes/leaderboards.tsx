@@ -20,11 +20,21 @@ import {
 } from "~/components/elements/Tabs";
 import { Image, ModeImage, TierImage } from "~/components/Image";
 import { Main } from "~/components/Main";
+import {
+	RankTable,
+	RankTableDividerRow,
+	RankTableInnerRow,
+	RankTableRank,
+	RankTableRow,
+	RankTableWeaponImage,
+} from "~/components/RankTable";
 import { WeaponSelect } from "~/components/WeaponSelect";
 import { SeasonSelect } from "~/features/mmr/components/SeasonSelect";
 import * as Seasons from "~/features/mmr/core/Seasons";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
 import type { SkillTierInterval } from "~/features/mmr/tiered.server";
+import { topSearchPlayerPage } from "~/features/top-search/top-search-urls";
+import { userSeasonsPage } from "~/features/user-page/user-page-urls";
 import { useActionSubmit } from "~/hooks/useActionSubmit";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
@@ -52,20 +62,9 @@ import { leaderboardsActionSchema } from "../leaderboards-schemas";
 import { leaderboardsSearchParams } from "../leaderboards-search-params";
 import { seasonHasTopTen } from "../leaderboards-utils";
 import { loader } from "../loaders/leaderboards.server";
+import leaderboardsStyles from "./leaderboards.module.css";
 
 export { action, loader };
-
-import {
-	RankTable,
-	RankTableDividerRow,
-	RankTableInnerRow,
-	RankTableRank,
-	RankTableRow,
-	RankTableWeaponImage,
-} from "~/components/RankTable";
-import { topSearchPlayerPage } from "~/features/top-search/top-search-urls";
-import { userSeasonsPage } from "~/features/user-page/user-page-urls";
-import leaderboardsStyles from "./leaderboards.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["vods"],

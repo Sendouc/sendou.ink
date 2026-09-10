@@ -34,7 +34,7 @@
 - state management is done via plain `useState` and React Context API
 - avoid using `useEffect`
 - all texts should be provided translations via the i18next library's `useTranslations` hook's `t` function
-- instead of `&&` operator for conditional rendering, use the ternary operator
+- instead of `&&` operator for conditional rendering, use the ternary operator; enforced by the `no-and-conditional-rendering` Biome plugin
 - for localized user-readable time strings use `<LocaleTime />`, `<LocaleTimeRange>` or `useFormatDistanceToNow`. If needed use `useDateTimeFormat` directly. NEVER use e.g. `toLocaleString` directly as it does not include users' language selection.
 
 ## Forms
@@ -101,7 +101,7 @@
 
 - every user facing change needs a changelog entry, added in the same commit as the change itself. One file per change, a commit can add several. Purely internal work (refactors, dependency bumps, dev tooling, tests) gets none
 - entries live at `changelog/YYYY-MM-DD-<slug>.md` and are never deleted, they are the update history
-- frontmatter is `type` (`feature` or `bug`) and optionally `navItem`, which picks the icon(s) shown next to the entry: one of `OG_IMAGE_PAGES` (`app/utils/urls.ts`), or a list of them (`navItem: [calendar, scrims]`) when the change spans several pages. Omitted = the sendou.ink logo. A change to a page with no nav item of its own is filed under the closest existing one
+- frontmatter is `type` (`feature` or `bug`) and optionally `navItem`, which picks the icon(s) shown next to the entry: one of `NAV_ICONS` (`app/utils/urls.ts`), or a list of them (`navItem: [calendar, scrims]`) when the change spans several pages. Omitted = the sendou.ink logo. Pick the icon of the page or feature the change is about (`medal` for tournaments, `t` for teams, `u` for user pages). A change to a page with no icon of its own is filed under the closest existing one
 - the body is either short (a one line headline) or long (headline followed by a markdown bullet list, for a big feature release)
 - write them for users and not developers: what changed for them, not how it was implemented
 

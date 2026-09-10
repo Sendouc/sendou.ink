@@ -11,7 +11,7 @@ export function Section({
 }) {
 	return (
 		<section className={styles.section}>
-			{title && <h2>{title}</h2>}
+			{title ? <h2>{title}</h2> : null}
 			<div className={className}>{children}</div>
 		</section>
 	);

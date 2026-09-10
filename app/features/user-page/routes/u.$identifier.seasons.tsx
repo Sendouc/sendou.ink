@@ -10,7 +10,7 @@ import {
 	useLocation,
 	useMatches,
 } from "react-router";
-import Chart from "~/components/Chart";
+import { Chart } from "~/components/Chart";
 import { EmptyState } from "~/components/EmptyState";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
@@ -39,7 +39,7 @@ import {
 	userSeasonsStatsPage,
 } from "~/features/user-page/user-page-urls";
 import { useSearchParam } from "~/modules/search-params/hooks";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	resolveAvatarUrl,
@@ -162,11 +162,11 @@ function SeasonNav({
 				>
 					{t("user:seasons.tabs.sets")}
 				</SendouTab>
-				{STAT_TABS.map(({ info, labelKey }) => (
+				{STAT_TABS.map(({ info: tabInfo, labelKey }) => (
 					<SendouTab
-						key={info}
-						id={info}
-						href={userSeasonsStatsPage({ user, season, info })}
+						key={tabInfo}
+						id={tabInfo}
+						href={userSeasonsStatsPage({ user, season, info: tabInfo })}
 						routerOptions={routerOptions}
 					>
 						{t(`user:seasons.tabs.${labelKey}`)}
@@ -260,7 +260,7 @@ function SeasonSummaryExportDialog({
 					size="small"
 					variant="outlined"
 					icon={<HardDriveDownload />}
-					onPress={handleOpen}
+					onClick={handleOpen}
 				>
 					{t("user:seasons.summary.export")}
 				</SendouButton>

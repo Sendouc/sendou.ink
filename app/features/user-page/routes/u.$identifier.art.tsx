@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useLoaderData, useMatches } from "react-router";
 import { ArtGrid } from "~/features/art/components/ArtGrid";
 import { useSearchParam } from "~/modules/search-params/hooks";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { userPage } from "~/utils/urls";
 import { action } from "../actions/u.$identifier.art.server";

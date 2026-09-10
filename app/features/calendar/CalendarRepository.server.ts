@@ -13,14 +13,16 @@ import type { TournamentSettings } from "~/db/tables-json";
 import { EXCLUDED_TAGS } from "~/features/calendar/calendar-constants";
 import * as ChatRepository from "~/features/chat/ChatRepository.server";
 import * as Progression from "~/features/tournament-bracket/core/Progression";
+import * as Series from "~/features/tournament-organization/core/Series";
 import { getTentativeTier } from "~/features/tournament-organization/core/tentativeTiers.server";
+import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
 import {
 	databaseTimestampNow,
 	databaseTimestampToDate,
 	databaseTimestampToJavascriptTimestamp,
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	commonUserSelect,
 	concatUserSubmittedImagePrefix,
@@ -38,6 +40,8 @@ import {
 } from "../tournament/tournament-utils";
 import type { CalendarEvent } from "./calendar-types";
 import { calendarEventSorter } from "./calendar-utils";
+
+const RECENT_TOURNAMENTS_SHOWN = 10;
 
 function hasBadge(eb: ExpressionBuilder<DB, "CalendarEventDate">) {
 	return eb
@@ -164,7 +168,7 @@ function findAllBetweenTwoTimestampsQuery({
 			"CalendarEvent.name",
 			"CalendarEvent.tags",
 			"CalendarEventDate.startsAt",
-			// events get grouped to their closest :00 or :30 so for example users can't make their event start at :59 to make it show at the top
+			// grouped to the closest :00 or :30 so a :59 start can't game its way to the top
 			sql<number>`(("CalendarEventDate"."startsAt" + 900) / 1800) * 1800`.as(
 				"normalizedStartsAt",
 			),
@@ -355,8 +359,39 @@ export async function findById(
 	};
 }
 
-export async function findRecentTournamentsByAuthorId(authorId: number) {
-	return db
+/** Logo image ids of the given event and of the given tournament's event: what the new event form may keep when editing or copying. */
+export async function findAvatarImgIds({
+	eventId,
+	tournamentId,
+}: {
+	eventId?: number;
+	tournamentId?: number;
+}) {
+	if (!eventId && !tournamentId) return [];
+
+	const rows = await db
+		.selectFrom("CalendarEvent")
+		.select("CalendarEvent.avatarImgId")
+		.where((eb) =>
+			eb.or([
+				...(eventId ? [eb("CalendarEvent.id", "=", eventId)] : []),
+				...(tournamentId
+					? [eb("CalendarEvent.tournamentId", "=", tournamentId)]
+					: []),
+			]),
+		)
+		.where("CalendarEvent.avatarImgId", "is not", null)
+		.execute();
+
+	return rows.flatMap((row) => (row.avatarImgId ? [row.avatarImgId] : []));
+}
+
+/**
+ * Past year's tournaments the user organized (author, organization ADMIN/ORGANIZER or staff
+ * ORGANIZER), newest first. Latest event per series only, the next newest filling spare spots.
+ */
+export async function findRecentTournamentsByOrganizerUserId(userId: number) {
+	const tournaments = await db
 		.selectFrom("CalendarEvent")
 		.innerJoin("Tournament", "Tournament.id", "CalendarEvent.tournamentId")
 		.innerJoin(
@@ -364,15 +399,82 @@ export async function findRecentTournamentsByAuthorId(authorId: number) {
 			"CalendarEvent.id",
 			"CalendarEventDate.eventId",
 		)
-		.select([
+		.select(({ fn }) => [
 			"CalendarEvent.id",
 			"CalendarEvent.name",
-			"CalendarEventDate.startsAt",
+			"CalendarEvent.organizationId",
+			fn.min("CalendarEventDate.startsAt").as("startsAt"),
 		])
-		.where("CalendarEvent.authorId", "=", authorId)
-		.orderBy("CalendarEvent.id", "desc")
-		.limit(10)
+		.where((eb) =>
+			eb.or([
+				eb("CalendarEvent.authorId", "=", userId),
+				eb.exists(
+					eb
+						.selectFrom("TournamentOrganizationMember")
+						.select("TournamentOrganizationMember.userId")
+						.whereRef(
+							"TournamentOrganizationMember.organizationId",
+							"=",
+							"CalendarEvent.organizationId",
+						)
+						.where("TournamentOrganizationMember.userId", "=", userId)
+						.where("TournamentOrganizationMember.role", "in", [
+							"ADMIN",
+							"ORGANIZER",
+						]),
+				),
+				eb.exists(
+					eb
+						.selectFrom("TournamentStaff")
+						.select("TournamentStaff.userId")
+						.whereRef(
+							"TournamentStaff.tournamentId",
+							"=",
+							"CalendarEvent.tournamentId",
+						)
+						.where("TournamentStaff.userId", "=", userId)
+						.where("TournamentStaff.role", "=", "ORGANIZER"),
+				),
+			]),
+		)
+		.where(
+			"CalendarEventDate.startsAt",
+			">=",
+			dateToDatabaseTimestamp(sub(new Date(), { years: 1 })),
+		)
+		.groupBy("CalendarEvent.id")
+		.orderBy("startsAt", "desc")
 		.execute();
+
+	const series =
+		await TournamentOrganizationRepository.findAllSeriesByOrganizationIds(
+			R.unique(
+				tournaments
+					.map((tournament) => tournament.organizationId)
+					.filter((organizationId) => organizationId !== null),
+			),
+		);
+
+	const latestOfEachSeries = R.uniqueBy(tournaments, (tournament) => {
+		const tournamentSeries = Series.findByEventName({
+			series: series.filter(
+				(oneSeries) => oneSeries.organizationId === tournament.organizationId,
+			),
+			eventName: tournament.name,
+		});
+
+		return tournamentSeries
+			? `series-${tournamentSeries.id}`
+			: `event-${tournament.id}`;
+	});
+
+	return R.sortBy(
+		R.take(
+			R.unique([...latestOfEachSeries, ...tournaments]),
+			RECENT_TOURNAMENTS_SHOWN,
+		),
+		[(tournament) => tournament.startsAt, "desc"],
+	);
 }
 
 export async function findResultsByEventId(eventId: number) {
@@ -386,8 +488,8 @@ export async function findResultsByEventId(eventId: number) {
 				eb
 					.selectFrom("CalendarEventResultPlayer")
 					.leftJoin("User", "User.id", "CalendarEventResultPlayer.userId")
-					.select((eb) => [
-						...commonUserSelect(eb),
+					.select((playerEb) => [
+						...commonUserSelect(playerEb),
 						"CalendarEventResultPlayer.name",
 					])
 					.whereRef(
@@ -402,10 +504,7 @@ export async function findResultsByEventId(eventId: number) {
 		.execute();
 }
 
-/**
- * Players of the podium teams of the given events, one row per player. Players reported as plain
- * text rather than linked to an account have a `null` id.
- */
+/** Podium players of the events, one row each; players reported as plain text have a `null` id. */
 export async function findTopThreeResultsByEventIds(eventIds: number[]) {
 	if (eventIds.length === 0) return [];
 
@@ -709,24 +808,25 @@ async function updateTournamentTables(
 				: undefined,
 	};
 
+	const changedFormat = Progression.changedBracketProgressionFormat(
+		existingSettings.bracketProgression,
+		args.bracketProgression,
+	);
+
 	const { mapPickingStyle } = await trx
 		.updateTable("Tournament")
 		.set({
 			settings: JSON.stringify(settings),
 			rules: args.rules,
-			preparedMaps: Progression.changedBracketProgressionFormat(
-				existingSettings.bracketProgression,
-				args.bracketProgression,
-			)
-				? null
-				: undefined,
+			preparedMaps: changedFormat ? null : undefined,
 		})
 		.where("id", "=", tournamentId)
 		.returning("mapPickingStyle")
 		.executeTakeFirstOrThrow();
 
 	if (
-		Progression.changedBracketProgressionFormat(
+		changedFormat ||
+		Progression.changedStartingBrackets(
 			existingSettings.bracketProgression,
 			args.bracketProgression,
 		)

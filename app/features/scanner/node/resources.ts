@@ -1,10 +1,8 @@
 /**
- * Node IO for ScoreboardResources: reads the scanner asset sets from the local
- * sendou-ink/assets checkout (tests and atlas builders never touch the
- * CDN). Game icons come from the checkout's shared `img/**` tree, the
- * scanner-specific atlases from its `scanner/v1/**`. What the bundle contains — every
- * key, template option set, and atlas name — lives in core/resources.ts,
- * shared with the worker's HTTP loader.
+ * Node IO for ScoreboardResources: reads the asset sets from the local
+ * sendou-ink/assets checkout (tests and atlas builders never touch the CDN) —
+ * game icons from its `img/**` tree, atlases from `scanner/v1/**`. What the
+ * bundle contains lives in core/resources.ts.
  */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -27,7 +25,10 @@ async function loadAtlasLazy(name: string): Promise<() => GlyphSet | null> {
 	const meta = JSON.parse(readFileSync(json, "utf8")) as AtlasMeta;
 	const image = await readImage(png);
 	let set: GlyphSet | null = null;
-	return () => (set ??= loadGlyphSet(image, meta));
+	return () => {
+		set ??= loadGlyphSet(image, meta);
+		return set;
+	};
 }
 
 /** Planner stage signatures; the (CPU) tile slicing runs on first access. */
@@ -38,7 +39,10 @@ async function loadPlannerStagesLazy(): Promise<() => PlannerStage[] | null> {
 	const manifest = JSON.parse(readFileSync(json, "utf8")) as PlannerManifest;
 	const atlas = await readImage(png);
 	let stages: PlannerStage[] | null = null;
-	return () => (stages ??= loadPlannerStages(atlas, manifest));
+	return () => {
+		stages ??= loadPlannerStages(atlas, manifest);
+		return stages;
+	};
 }
 
 /** Requires loadOpenCV() to have resolved. */

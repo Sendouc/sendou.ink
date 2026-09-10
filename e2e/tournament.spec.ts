@@ -349,7 +349,9 @@ test.describe("Tournament", () => {
 		});
 
 		const captains = await factories.UserFactory.createMany(SEEDED_TEAM_COUNT);
-		const teams = [];
+		const teams: Awaited<
+			ReturnType<typeof factories.TournamentTeamFactory.create>
+		>[] = [];
 		for (const [i, captain] of captains.entries()) {
 			teams.push(
 				await factories.TournamentTeamFactory.create({

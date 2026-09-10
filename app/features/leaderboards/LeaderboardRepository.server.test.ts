@@ -1,12 +1,4 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-
-vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
-	send: vi.fn(),
-	notifyStatusChanged: vi.fn(),
-	notifyNotificationsChanged: vi.fn(),
-	notifyRoomsChangedByRoomIds: vi.fn(),
-}));
-
 import { actAs } from "~/db/seed/core/actAs";
 import * as SQMatchFactory from "~/db/seed/factories/SQMatchFactory";
 import * as SQReportedWeaponFactory from "~/db/seed/factories/SQReportedWeaponFactory";
@@ -20,6 +12,13 @@ import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import * as LeaderboardRepository from "./LeaderboardRepository.server";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "./leaderboards-constants";
+
+vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
+	send: vi.fn(),
+	notifyStatusChanged: vi.fn(),
+	notifyNotificationsChanged: vi.fn(),
+	notifyRoomsChangedByRoomIds: vi.fn(),
+}));
 
 const SEASON = Seasons.currentOrPrevious()!.nth;
 const SEASON_RANGE = Seasons.nthToDateRange(SEASON);

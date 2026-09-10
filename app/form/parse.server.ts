@@ -11,17 +11,10 @@ export type ParseResult<T> =
 	| { success: true; data: T }
 	| { success: false; fieldErrors: Record<string, string> };
 
-/**
- * Ceiling for a request body, in bytes. Sized to fit a form with a couple of `image()` fields (each
- * capped at ~3M base64 characters) plus its other fields. Forms that legitimately submit more (e.g.
- * art) pass their own `maxBodyBytes`.
- */
+/** Fits a couple of `image()` fields (~3M base64 chars each) plus the rest; forms needing more (e.g. art) pass `maxBodyBytes`. */
 const DEFAULT_MAX_BODY_BYTES = 8 * 1024 * 1024;
 
-/**
- * Maps validation issues to field-level errors keyed by form field name
- * (e.g. `members[0].userId`), keeping the first error per field.
- */
+/** Errors keyed by field name (e.g. `members[0].userId`), first error per field. */
 function fieldErrorsFromIssues(
 	issues: v.BaseIssue<unknown>[],
 ): Record<string, string> {
@@ -36,11 +29,7 @@ function fieldErrorsFromIssues(
 	return fieldErrors;
 }
 
-/**
- * Parses request body against a schema.
- * Handles both JSON (SendouForm) and form data (FormWithConfirm) based on Content-Type.
- * Returns parsed data on success, or field-level errors on validation failure.
- */
+/** Parses a JSON (SendouForm) or form data (FormWithConfirm) body by Content-Type into data or field errors. */
 export async function parseFormData<T extends AnySchema>({
 	request,
 	schema,
@@ -71,18 +60,25 @@ type ResolvedImages<T> = T extends unknown
 	: never;
 
 /**
- * Like {@link parseFormData}, but additionally resolves every `image()` field in the schema to the
- * image id to store on the consuming FK column (`number | null`) via {@link imageFieldValueToImgId}
- * — uploading newly picked images, keeping unchanged ones, and clearing removed ones. The schema
- * may be a single object or a union of objects (e.g. an `_action` discriminated form). The
- * consuming action receives a plain id per image field and only writes it to its own entity.
+ * {@link parseFormData} plus every `image()` field resolved to the image id for the FK column via
+ * {@link imageFieldValueToImgId} (uploading new, keeping unchanged, clearing removed). The schema may be an
+ * object or a union of objects (e.g. `_action` discriminated).
+ *
+ * A kept (`EXISTING`) image must be the user's own upload unless `isCurrentImgId` says the edited
+ * entity already holds it; forms that only ever keep the user's own images can leave it out.
  */
 export async function parseFormDataWithImages<T extends AnySchema>({
 	request,
 	schema,
+	isCurrentImgId,
 }: {
 	request: Request;
 	schema: T;
+	/** Whether the edited entity already holds this image (given the parsed form data to find the entity by). */
+	isCurrentImgId?: (
+		imgId: number,
+		data: v.InferOutput<T>,
+	) => boolean | Promise<boolean>;
 }): Promise<ParseResult<ResolvedImages<v.InferOutput<T>>>> {
 	const result = await parseFormData({ request, schema });
 	if (!result.success) return result;
@@ -96,6 +92,9 @@ export async function parseFormDataWithImages<T extends AnySchema>({
 				value: data[key] as ImageFieldValue,
 				user,
 				autoValidate,
+				isCurrentImgId: isCurrentImgId
+					? (imgId) => isCurrentImgId(imgId, result.data)
+					: undefined,
 			});
 		}
 	}
@@ -103,10 +102,7 @@ export async function parseFormDataWithImages<T extends AnySchema>({
 	return { success: true, data: data as ResolvedImages<v.InferOutput<T>> };
 }
 
-/**
- * Collects every `image()` field across a schema object or union/variant of objects, along with each
- * field's `autoValidate` flag (whether its uploads bypass the moderator queue).
- */
+/** Every `image()` field across an object or union/variant of objects, with its `autoValidate` flag. */
 function imageFields(
 	schema: AnySchema,
 ): Array<{ key: string; autoValidate: boolean }> {
@@ -132,11 +128,7 @@ function imageFields(
 	return [...fields].map(([key, autoValidate]) => ({ key, autoValidate }));
 }
 
-/**
- * Reads the request body into the plain object the schema parses, refusing anything over
- * `maxBytes`. `Content-Length` is checked up front so an oversized body is rejected before a byte
- * of it is read.
- */
+/** Body → plain object, refusing over `maxBytes`. `Content-Length` is checked up front to reject before reading. */
 async function requestBodyToObject(request: Request, maxBytes: number) {
 	if (Number(request.headers.get("Content-Length")) > maxBytes) {
 		throw payloadTooLarge();
@@ -149,11 +141,7 @@ async function requestBodyToObject(request: Request, maxBytes: number) {
 	return formDataToObject(await request.formData());
 }
 
-/**
- * Reads the body as text, aborting the stream as soon as `maxBytes` is exceeded. The running total
- * is enforced (rather than trusting `Content-Length`) so a chunked body that omits or understates
- * the header can't be buffered in full either.
- */
+/** Aborts the stream past `maxBytes`, enforcing the running total so a chunked body understating `Content-Length` can't be buffered. */
 async function readBodyText(request: Request, maxBytes: number) {
 	const reader = request.body?.getReader();
 	if (!reader) return "";

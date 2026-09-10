@@ -51,9 +51,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 	const cardUserIds = R.unique(
 		posts.flatMap((post) => [
-			...post.users.map((user) => user.id),
-			...post.requests.flatMap((request) =>
-				request.users.map((user) => user.id),
+			...post.users.map((postUser) => postUser.id),
+			...post.requests.flatMap((postRequest) =>
+				postRequest.users.map((requestUser) => requestUser.id),
 			),
 		]),
 	);
@@ -70,6 +70,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		availability: await rosterAvailability({
 			posts: dividedPosts.neutral,
 			teams,
+			viewerId: user?.id ?? null,
 		}),
 		filters,
 		canSaveAsDefault:
@@ -81,17 +82,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	};
 };
 
-/**
- * How the viewer's teams relate to the posts they could request: the material
- * the fit indicators on the post cards and in the request dialog are resolved
- * from, one entry per post.
- */
+/** How the viewer's teams relate to the requestable posts, one entry per post: what the fit indicators on cards and in the request dialog resolve from. */
 async function rosterAvailability({
 	posts,
 	teams,
+	viewerId,
 }: {
 	posts: Array<ScrimPost>;
 	teams: Awaited<ReturnType<typeof TeamRepository.findAllByMemberUserId>>;
+	viewerId: number | null;
 }) {
 	const userIds = R.unique(
 		teams.flatMap((team) =>
@@ -109,6 +108,7 @@ async function rosterAvailability({
 				...postSpan({ post, now }),
 			})),
 			userIds,
+			viewerId,
 		}),
 	};
 }

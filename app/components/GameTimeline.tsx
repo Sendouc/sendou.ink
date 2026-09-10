@@ -1,11 +1,7 @@
 /**
- * A game's two scanned-timeline charts stacked on one shared time axis and
- * plot width: per-player status bands above the objective-counter chart.
- * Hovering scrubs over both — a dotted cursor line spans the charts and a
- * readout next to the cursor shows the moment's elapsed time, match clock,
- * scores, penalties, who was in control, who was splatted and who had their
- * special ready. The chart's own tooltip is turned off in favor of the
- * readout.
+ * A game's two scanned-timeline charts (player status bands above the objective-counter chart)
+ * on one shared time axis. Hovering scrubs both: a cursor line spans the charts and a readout
+ * shows the moment's state, replacing the chart's own tooltip.
  */
 import clsx from "clsx";
 import { memo, useRef, useState } from "react";
@@ -112,6 +108,8 @@ export function GameTimeline({
 }
 
 /** Memoized so scrubbing re-renders only the overlay, not the chart canvas. */
+// biome-ignore lint/nursery/useReactFunctionComponentDefinition: memo() takes a function expression
+// biome-ignore lint/suspicious/noShadow: the function expression is named for devtools, it is the same component
 const TimelineCharts = memo(function TimelineCharts({
 	objectiveEvents,
 	playerStatusSamples,

@@ -15,10 +15,9 @@ import {
 	useMarkNotificationsAsSeen,
 	useStickyUnseenIds,
 } from "../notifications-hooks";
+import styles from "./notifications.module.css";
 
 export { loader };
-
-import styles from "./notifications.module.css";
 
 export const meta: MetaFunction = (args) => {
 	return metaTags({
@@ -30,7 +29,7 @@ export const meta: MetaFunction = (args) => {
 export default function NotificationsPage() {
 	const { t } = useTranslation(["common"]);
 	const data = useLoaderData<typeof loader>();
-	const unseenIds = useStickyUnseenIds(data.notifications);
+	const unseenIds = useStickyUnseenIds(data.notifications, true);
 
 	const unSeenIdsArr = React.useMemo(() => Array.from(unseenIds), [unseenIds]);
 
@@ -61,9 +60,9 @@ export default function NotificationsPage() {
 									seen: Number(!unseenIds.has(notification.id)),
 								}}
 							/>
-							{i !== data.notifications.length - 1 && (
+							{i !== data.notifications.length - 1 ? (
 								<NotificationItemDivider />
-							)}
+							) : null}
 						</React.Fragment>
 					))}
 				</NotificationsList>

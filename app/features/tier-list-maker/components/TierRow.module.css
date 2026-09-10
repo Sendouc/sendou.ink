@@ -26,15 +26,11 @@
 }
 
 .tierName {
-	color: var(--color-text-inverse);
+	color: var(--color-text-on-light);
 	line-height: 1.2;
 	max-width: 90px;
 	overflow-wrap: break-word;
 	word-wrap: break-word;
-}
-
-:global(html.light) .tierName {
-	color: var(--color-text);
 }
 
 .popupContent {

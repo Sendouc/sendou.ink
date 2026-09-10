@@ -6,15 +6,11 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { tournamentTeamPageParamsSchema } from "~/features/tournament-bracket/tournament-bracket-schemas";
 import * as TournamentMatchRepository from "~/features/tournament-match/TournamentMatchRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SerializeFrom } from "~/utils/remix";
 import { parseParams } from "~/utils/remix.server";
 import * as Standings from "../core/Standings";
-import {
-	type AllRoundsItem,
-	tournamentTeamSets,
-	winCounts,
-} from "../core/sets.server";
+import { type AllRoundsItem, tournamentTeamSets } from "../core/sets.server";
 
 export type TournamentTeamLoaderData = SerializeFrom<typeof loader>;
 
@@ -78,7 +74,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 				set.tournamentMatchId,
 			),
 		})),
-		winCounts: winCounts(sets),
+		record:
+			Standings.recordByTeamId(fullTournament).get(tournamentTeamId) ?? null,
 		participatedUsersCount: fullTournament.participatedUserIds?.length ?? 0,
 		division:
 			standingsResult.type === "multi"

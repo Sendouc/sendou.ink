@@ -3,7 +3,7 @@ import {
 	type BuildSort,
 	DEFAULT_BUILD_SORT,
 } from "~/features/user-page/user-page-constants";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { userBuildsPage } from "~/utils/urls";
 import {
 	modalClickConfirmButton,
@@ -20,7 +20,6 @@ export class UserBuildsPage {
 	constructor(page: Page) {
 		this.page = page;
 		this.locators = {
-			buildsTab: page.getByTestId("user-builds-tab"),
 			changeSortingButton: page.getByTestId("change-sorting-button"),
 			buildCards: page.getByTestId("build-card"),
 			editBuildLinks: page.getByTestId("edit-build"),
@@ -56,7 +55,7 @@ export class UserBuildsPage {
 		await this.locators.changeSortingButton.click();
 
 		const dialog = this.page.getByRole("dialog");
-		for (let i = 0; i < DEFAULT_BUILD_SORT.length; i++) {
+		for (const _ of DEFAULT_BUILD_SORT) {
 			await dialog.getByTestId("delete-sorting-button").click();
 		}
 		await dialog.getByRole("combobox").selectOption(sort);

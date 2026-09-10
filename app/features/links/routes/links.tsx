@@ -32,7 +32,7 @@ export default function LinksPage() {
 		<Main>
 			<div className="stack md">
 				{links
-					.sort((a, b) => a.title.localeCompare(b.title))
+					.toSorted((a, b) => a.title.localeCompare(b.title))
 					.map((link) => {
 						const isDiscord = link.url.includes("discord");
 						const isYoutube = link.url.includes("youtube");

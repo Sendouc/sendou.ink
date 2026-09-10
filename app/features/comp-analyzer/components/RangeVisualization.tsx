@@ -119,9 +119,7 @@ function TrajectoryChart({
 	const yScale = (y: number) =>
 		innerHeight - ((y - minY) / (maxY - minY)) * innerHeight;
 
-	// Returns the point where trajectory hits y=0 (ground level).
-	// This differs from lastPoint which may be below ground or mid-air.
-	// Used for blast radius positioning since explosions happen at ground impact.
+	// where the trajectory hits the ground (lastPoint may be below it or mid-air); blasts happen there
 	const getGroundIntersection = (
 		trajectory: TrajectoryPoint[],
 	): TrajectoryPoint | null => {
@@ -167,13 +165,13 @@ function TrajectoryChart({
 
 	const groundY = yScale(0);
 
-	const xTicks = [];
+	const xTicks: number[] = [];
 	const xStep = Math.ceil(maxRange / 5);
 	for (let x = 0; x <= maxRange; x += xStep) {
 		xTicks.push(x);
 	}
 
-	const yTicks = [];
+	const yTicks: number[] = [];
 	const yStep = Math.ceil((maxY - minY) / 4);
 	for (let y = Math.ceil(minY); y <= maxY; y += yStep) {
 		yTicks.push(y);

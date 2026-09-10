@@ -19,8 +19,7 @@ import type { CalendarEvent, ShowcaseCalendarEvent } from "../calendar-types";
 import { Tags } from "./Tags";
 import styles from "./TournamentCard.module.css";
 
-// lazy loaded so the WebGL renderer stays out of the eager bundle of every
-// page showing tournament cards, as the trophy only renders inside a popover
+// lazy so the WebGL renderer stays out of every tournament card page's eager bundle; it only renders inside a popover
 const Trophy = lazy(() =>
 	import("~/features/trophies/components/Trophy").then((module) => ({
 		default: module.Trophy,
@@ -186,10 +185,10 @@ function TournamentFirstPlacers({
 		return (
 			<div className={styles.firstPlacers}>
 				<div className="stack md items-start">
-					{firstPlacers.map((placer) => (
+					{firstPlacers.map((firstPlacer) => (
 						<TournamentFirstPlacerTeamNameOnly
-							key={placer.div ?? placer.teamName}
-							placer={placer}
+							key={firstPlacer.div ?? firstPlacer.teamName}
+							placer={firstPlacer}
 							censored={censored}
 						/>
 					))}
@@ -286,7 +285,7 @@ function SpoilerRevealPill({ onReveal }: { onReveal: () => void }) {
 		<SendouButton
 			variant="outlined"
 			size="miniscule"
-			onPress={onReveal}
+			onClick={onReveal}
 			icon={<ShieldMinus />}
 		>
 			{t("common:actions.reveal")}

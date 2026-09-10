@@ -1,12 +1,11 @@
 /**
- * Glanceable card for one ScannerMatch in the live feed: stage banner
- * background, mode + stage, score, team weapons, and the match's /ingest
- * status. Expanding the card reveals the source event cards below it,
- * so the raw per-event view stays one click away.
+ * Glanceable card for one ScannerMatch in the live feed: stage banner, mode +
+ * stage, score, team weapons and /ingest status. Expanding reveals the
+ * match's kills (from the feed) and the source event cards below it.
  */
 
 import clsx from "clsx";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Crosshair } from "lucide-react";
 import type * as React from "react";
 import { useState } from "react";
 import { Ability } from "~/components/Ability";
@@ -18,17 +17,29 @@ import type { IngestedMatchLink } from "~/features/scanner-ingest/scanner-ingest
 import type {
 	AbilityWithUnknown,
 	MainWeaponId,
+	ModeShort,
 } from "~/modules/in-game-lists/types";
 import { sendouQMatchPage, tournamentMatchPage } from "~/utils/urls";
 import type { IngestSkipReason } from "../core/match-builder";
-import type { ScannerMatch, ScannerMatchPlayer } from "../core/scanner-match";
+import type {
+	ScannerMatch,
+	ScannerMatchKill,
+	ScannerMatchPlayer,
+} from "../core/scanner-match";
 import type { SendStatus } from "../store/events";
-import { formatTime, useEventTimeFormatter } from "./format";
+import { formatClock, formatTime, useEventTimeFormatter } from "./format";
 import { lobbyLabel, modeLabel, stageLabel } from "./labels";
 import styles from "./MatchCard.module.css";
 
 /** the game score a knockout wins at */
 const KO_MATCH_SCORE = 100;
+
+/**
+ * Where the match clock starts, to turn a time-left read into time elapsed:
+ * Turf War runs 3:00, the ranked modes 5:00 (overtime reads clamp to the end).
+ */
+const MATCH_CLOCK_SECONDS: Partial<Record<ModeShort, number>> = { TW: 180 };
+const DEFAULT_MATCH_CLOCK_SECONDS = 300;
 
 /** one per gear slot: [head, clothes, shoes], the arc's left-to-right order */
 const UNKNOWN_MAIN_ABILITIES: AbilityWithUnknown[] = [
@@ -39,8 +50,8 @@ const UNKNOWN_MAIN_ABILITIES: AbilityWithUnknown[] = [
 
 /**
  * Where each main sits on the half-moon under the weapon. A positive CSS
- * rotation swings the arc's downward offset to the *left*, so the angles
- * descend to read head, clothes, shoes left to right.
+ * rotation swings the arc's offset to the *left*, so angles descend to read
+ * head, clothes, shoes left to right.
  */
 const ABILITY_ARC_ANGLES = ["44deg", "0deg", "-44deg"];
 
@@ -76,10 +87,7 @@ export function MatchCard({
 	onSend?: () => void;
 	/** still being played: no closing scoreboard yet and the scan is running */
 	live?: boolean;
-	/**
-	 * the newest match, still being formulated (no result yet) — shows an
-	 * "in progress" chip in the score slot; at most one card should get this
-	 */
+	/** the newest match, still being formulated — shows an "in progress" chip; at most one card */
 	inProgress?: boolean;
 	/** set = ingestSkipReasons held the match back from /ingest */
 	skipReason?: IngestSkipReason;
@@ -155,7 +163,7 @@ export function MatchCard({
 							className={clsx(styles.expand, { [styles.expanded]: expanded })}
 							aria-expanded={expanded}
 							aria-label={expanded ? "Hide events" : "Show events"}
-							onPress={() => setExpanded(!expanded)}
+							onClick={() => setExpanded(!expanded)}
 						/>
 					) : null}
 				</div>
@@ -190,7 +198,45 @@ export function MatchCard({
 	return (
 		<div className={styles.group}>
 			{card}
-			{expanded ? <div className={styles.events}>{children}</div> : null}
+			{expanded ? (
+				<div className={styles.events}>
+					{match.kills ? (
+						<MatchKills kills={match.kills} mode={match.mode} />
+					) : null}
+					{children}
+				</div>
+			) : null}
+		</div>
+	);
+}
+
+/** The POV player's splats off the kill feed, in the order they happened, stamped with match time elapsed. */
+function MatchKills({
+	kills,
+	mode,
+}: {
+	kills: readonly ScannerMatchKill[];
+	mode: ModeShort | null;
+}) {
+	const clockStart =
+		(mode !== null ? MATCH_CLOCK_SECONDS[mode] : undefined) ??
+		DEFAULT_MATCH_CLOCK_SECONDS;
+	return (
+		<div className={styles.kills}>
+			<span className={styles.killsLabel}>
+				<Crosshair size={12} aria-hidden />
+				kills · {kills.length}
+			</span>
+			{kills.map((kill, i) => (
+				<span key={i} className={styles.kill}>
+					<span className={styles.killClock}>
+						{kill.time !== null
+							? formatClock(Math.max(0, clockStart - kill.time))
+							: "?:??"}
+					</span>
+					{kill.name ?? "?"}
+				</span>
+			))}
 		</div>
 	);
 }
@@ -243,10 +289,9 @@ function Score({
 
 /**
  * `teams` order is winner-first on a scoreboard-closed match, so it flips
- * between the games of one feed. The card instead keeps the scan's own
- * side (alpha) left and the enemy (bravo) right for every match, so the
- * scores and weapons of consecutive games line up; footage with no POV
- * seat read (casts) keeps `teams` order.
+ * between games. The card keeps the scan's own side (alpha) left and the
+ * enemy right for every match so consecutive games line up; footage with no
+ * POV seat read (casts) keeps `teams` order.
  */
 function displayOrder(match: ScannerMatch): [0 | 1, 0 | 1] {
 	return match.pov?.team === 1 ? [1, 0] : [0, 1];
@@ -259,9 +304,8 @@ function winnerClass(match: ScannerMatch, team: 0 | 1): string | undefined {
 
 /**
  * A 100 only happens on a knockout, shown the way players say it. A knockout's
- * loser gets no score of its own, so the objective counter's last read stands
- * in — parenthesized, since the scan read it off the video and may have lost
- * sight of the counter before the game ended.
+ * loser gets no score, so the objective counter's last read stands in —
+ * parenthesized, since the scan may have lost sight of the counter early.
  */
 function scoreLabel(
 	score: number | null,
@@ -322,10 +366,7 @@ function TeamWeapons({ match }: { match: ScannerMatch }) {
 	);
 }
 
-/**
- * The three gear mains of a build, or null when the scan read none of them —
- * a partially read build keeps its unknown slots.
- */
+/** The three gear mains of a build, or null when none were read; partial builds keep unknown slots. */
 function mainAbilities(
 	player: ScannerMatchPlayer,
 ): AbilityWithUnknown[] | null {

@@ -57,6 +57,7 @@ export function ImageFormField({
 		const uploadedFile = event.target.files?.[0];
 		if (!uploadedFile) return;
 
+		// biome-ignore lint/correctness/noUnusedInstantiation: Compressor does its work through the success/error callbacks
 		new Compressor(uploadedFile, {
 			width: resolvedDimensions.width,
 			height: resolvedDimensions.height,
@@ -101,7 +102,7 @@ export function ImageFormField({
 					<SendouButton
 						variant="minimal-destructive"
 						size="small"
-						onPress={() => onChange(null)}
+						onClick={() => onChange(null)}
 						isDisabled={disabled}
 					>
 						{t("common:actions.remove")}

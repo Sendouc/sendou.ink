@@ -42,7 +42,7 @@ import {
 	WHO_SIDES,
 	type WhoSide,
 } from "~/features/tournament-bracket/tournament-bracket-constants";
-import { useLayoutSize } from "~/hooks/useMainContentWidth";
+import { useLayoutSize } from "~/hooks/useLayoutSize";
 import {
 	type CustomFlowValidationError,
 	validateCustomFlowSection,
@@ -454,7 +454,7 @@ function StepListSection({
 				size="small"
 				variant="outlined"
 				icon={<Plus />}
-				onPress={addStep}
+				onClick={addStep}
 			>
 				{t("tournament:customFlow.addStep")}
 			</SendouButton>

@@ -1,30 +1,37 @@
+import { addYears } from "date-fns";
 import * as v from "valibot";
 import { ART_SOURCES } from "~/features/art/art-types";
+import { BADGE } from "~/features/badges/badges-constants";
 import { TIMEZONES } from "~/features/lfg/lfg-constants";
 import {
 	array,
+	badges,
 	customField,
+	datetime,
 	numberField,
 	select,
 	selectDynamic,
 	stageSelect,
 	textArea,
+	textAreaOptional,
 	textField,
+	weaponPool,
 	weaponSelect,
 } from "~/form/fields";
 import type { FormObjectSchema, SelectOption } from "~/form/types";
 import { GAME_BADGE_IDS } from "~/modules/in-game-lists/game-badge-ids";
-import { USER } from "../../user-page-constants";
+import { superRefine } from "~/utils/schema";
+import { SENS_OPTIONS, USER } from "../../user-page-constants";
 
 export const bioSchema = v.object({
-	bio: textArea({
+	bio: textAreaOptional({
 		label: "labels.bio",
 		maxLength: USER.BIO_MAX_LENGTH,
 	}),
 });
 
 export const bioMdSchema = v.object({
-	bio: textArea({
+	bio: textAreaOptional({
 		label: "labels.bio",
 		bottomText: "bottomTexts.bioMarkdown",
 		maxLength: USER.BIO_MD_MAX_LENGTH,
@@ -42,11 +49,18 @@ export const xRankPeaksSchema = v.object({
 	}),
 });
 
-export const timezoneSchema = v.object({
-	timezone: selectDynamic({
-		label: "labels.timezone",
+export const timezoneSchema = v.pipe(
+	v.object({
+		timezone: selectDynamic({
+			label: "labels.timezone",
+		}),
 	}),
-});
+	superRefine((data, ctx) => {
+		if (TIMEZONES.includes(data.timezone)) return;
+
+		ctx.addIssue({ message: "Invalid timezone", path: ["timezone"] });
+	}),
+);
 
 export const TIMEZONE_OPTIONS: SelectOption[] = TIMEZONES.map((tz) => ({
 	value: tz,
@@ -62,8 +76,9 @@ export const favoriteStageSchema = v.object({
 export const peakXpUnverifiedSchema = v.object({
 	peakXp: numberField({
 		label: "labels.peakXp",
-		minLength: 4,
 		maxLength: 4,
+		min: USER.PEAK_XP_MIN,
+		max: USER.PEAK_XP_MAX,
 	}),
 	division: select({
 		label: "labels.division",
@@ -80,7 +95,24 @@ export const peakXpWeaponSchema = v.object({
 	}),
 });
 
-const CONTROLLERS = ["s1-pro-con", "s2-pro-con", "grip", "handheld"] as const;
+export const weaponPoolWidgetSchema = v.object({
+	weaponPool: weaponPool({
+		label: "labels.weaponPool",
+		bottomText: "bottomTexts.weaponPoolWidget",
+		maxCount: USER.WEAPON_POOL_WIDGET_MAX,
+	}),
+});
+
+const CONTROLLERS = [
+	"s1-pro-con",
+	"s2-pro-con",
+	"grip",
+	"s1-split-joycon",
+	"s2-split-joycon",
+	"handheld",
+] as const;
+
+const sensValueSchema = v.nullable(v.picklist(SENS_OPTIONS));
 
 export const sensSchema = v.object({
 	controller: select({
@@ -89,10 +121,9 @@ export const sensSchema = v.object({
 			value: controller,
 			label: `options.controller.${controller}` as const,
 		})),
-		initialValue: "s2-pro-con",
 	}),
-	motionSens: customField({ initialValue: null }, v.nullable(v.number())),
-	stickSens: customField({ initialValue: null }, v.nullable(v.number())),
+	motionSens: customField({ initialValue: null }, sensValueSchema),
+	stickSens: customField({ initialValue: null }, sensValueSchema),
 });
 
 export const artSchema = v.object({
@@ -126,6 +157,13 @@ export const tierListSchema = v.object({
 	}),
 });
 
+export const badgesOwnedSchema = v.object({
+	favoriteBadgeIds: badges({
+		label: "labels.profileFavoriteBadges",
+		maxCount: BADGE.SMALL_BADGES_PER_DISPLAY_PAGE + 1,
+	}),
+});
+
 const gameBadgeId = v.pipe(
 	v.string(),
 	v.check((val) => (GAME_BADGE_IDS as readonly string[]).includes(val)),
@@ -145,6 +183,27 @@ export const gameBadgesSmallSchema = v.object({
 	),
 });
 
+const COUNTDOWN_MAX_YEARS_AHEAD = 10;
+
+export const countdownSchema = v.object({
+	title: textField({
+		label: "labels.title",
+		maxLength: USER.COUNTDOWN_TITLE_MAX_LENGTH,
+	}),
+	date: datetime({
+		label: "labels.date",
+		max: () => addYears(new Date(), COUNTDOWN_MAX_YEARS_AHEAD),
+	}),
+});
+
+export const markdownSchema = v.object({
+	content: textArea({
+		label: "labels.text",
+		bottomText: "bottomTexts.bioMarkdown",
+		maxLength: USER.MARKDOWN_WIDGET_MAX_LENGTH,
+	}),
+});
+
 const WIDGET_FORM_SCHEMAS: Record<string, FormObjectSchema> = {
 	bio: bioSchema,
 	"bio-md": bioMdSchema,
@@ -153,12 +212,16 @@ const WIDGET_FORM_SCHEMAS: Record<string, FormObjectSchema> = {
 	"favorite-stage": favoriteStageSchema,
 	"peak-xp-unverified": peakXpUnverifiedSchema,
 	"peak-xp-weapon": peakXpWeaponSchema,
+	"weapon-pool": weaponPoolWidgetSchema,
 	sens: sensSchema,
 	art: artSchema,
 	links: linksSchema,
 	"tier-list": tierListSchema,
+	"badges-owned": badgesOwnedSchema,
 	"game-badges": gameBadgesSchema,
 	"game-badges-small": gameBadgesSmallSchema,
+	countdown: countdownSchema,
+	markdown: markdownSchema,
 };
 
 export function getWidgetFormSchema(widgetId: string) {
@@ -170,7 +233,7 @@ function pastedTierListUrlToSearchParams(value: string) {
 	if (!value.includes("/tier-list-maker")) return value;
 
 	try {
-		return new URL(value, "https://sendou.ink").search.substring(1);
+		return new URL(value, "https://sendou.ink").search.slice(1);
 	} catch {
 		return value;
 	}

@@ -14,7 +14,7 @@
 	gap: var(--s-1-5);
 }
 
-/* the author credit belongs visually to the title above it, counteract the container gap */
+/* the author credit belongs to the title above it */
 .title + .author {
 	margin-top: calc(-1 * var(--s-3));
 }
@@ -37,15 +37,21 @@
 }
 
 .tiers {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: max-content 1fr;
 	gap: var(--s-2);
 }
 
+.tiersWithoutLabels {
+	grid-template-columns: 1fr;
+}
+
+/* subgrid so every label shares the widest label's width */
 .tierRow {
-	display: flex;
+	display: grid;
+	grid-template-columns: subgrid;
+	grid-column: 1 / -1;
 	align-items: stretch;
-	gap: var(--s-2);
 	min-height: 64px;
 	padding: var(--s-1-5);
 	background-color: var(--graphic-row-bg);
@@ -55,7 +61,6 @@
 
 .tierLabel {
 	display: flex;
-	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
 	min-width: 68px;

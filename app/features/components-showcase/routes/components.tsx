@@ -1,4 +1,3 @@
-import { parseDate } from "@internationalized/date";
 import clsx from "clsx";
 import { Check, Plus, RotateCcw, Search, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
@@ -100,7 +99,7 @@ import { EXAMPLE_TROPHY_MODEL } from "../example-trophy-model";
 import { formFieldsShowcaseSchema } from "../form-examples-schema";
 
 export const handle: SendouRouteHandle = {
-	i18n: ["user", "q", "calendar", "tournament", "schedule"],
+	i18n: ["user", "q", "calendar", "tournament", "schedule", "builds"],
 };
 
 export const SECTIONS = [
@@ -553,7 +552,6 @@ function SelectSection({ id }: { id: string }) {
 					<SendouSelect
 						items={SELECT_ITEMS}
 						label="Select with description"
-						description="This is a helpful description"
 						placeholder="Select..."
 					>
 						{(item) => (
@@ -618,6 +616,12 @@ function SwitchSection({ id }: { id: string }) {
 			<div className="stack md">
 				<ComponentRow label="Medium (default)">
 					<SendouSwitch isSelected={isOn} onChange={setIsOn}>
+						Toggle me
+					</SendouSwitch>
+				</ComponentRow>
+
+				<ComponentRow label="Small">
+					<SendouSwitch size="small" isSelected={isOn} onChange={setIsOn}>
 						Toggle me
 					</SendouSwitch>
 				</ComponentRow>
@@ -1250,7 +1254,7 @@ function DialogSection({ id }: { id: string }) {
 
 				<ComponentRow label="Controlled">
 					<div className="stack horizontal sm">
-						<SendouButton onPress={() => setIsOpen(true)}>
+						<SendouButton onClick={() => setIsOpen(true)}>
 							Open Controlled Dialog
 						</SendouButton>
 						<SendouDialog
@@ -1260,7 +1264,7 @@ function DialogSection({ id }: { id: string }) {
 							showCloseButton
 						>
 							<p>This dialog is controlled via state.</p>
-							<SendouButton onPress={() => setIsOpen(false)}>
+							<SendouButton onClick={() => setIsOpen(false)}>
 								Close
 							</SendouButton>
 						</SendouDialog>
@@ -1420,7 +1424,7 @@ function FilterBarSection({ id }: { id: string }) {
 					mode !== null || stage !== null ? (
 						<SendouButton
 							icon={<RotateCcw />}
-							onPress={() => {
+							onClick={() => {
 								setMode(null);
 								setStage(null);
 							}}
@@ -1443,7 +1447,7 @@ function ToastSection({ id }: { id: string }) {
 				<ComponentRow label="Success Toast">
 					<SendouButton
 						variant="success"
-						onPress={() =>
+						onClick={() =>
 							toastQueue.add({
 								message: "Operation completed successfully!",
 								variant: "success",
@@ -1457,7 +1461,7 @@ function ToastSection({ id }: { id: string }) {
 				<ComponentRow label="Error Toast">
 					<SendouButton
 						variant="destructive"
-						onPress={() =>
+						onClick={() =>
 							toastQueue.add({
 								message: "Something went wrong. Please try again.",
 								variant: "error",
@@ -1470,7 +1474,7 @@ function ToastSection({ id }: { id: string }) {
 
 				<ComponentRow label="Info Toast">
 					<SendouButton
-						onPress={() =>
+						onClick={() =>
 							toastQueue.add({
 								message: "Here is some information for you.",
 								variant: "info",
@@ -2376,9 +2380,9 @@ function SubNavSection({ id }: { id: string }) {
 }
 
 function DatePickerSection({ id }: { id: string }) {
-	const [calendarValue, setCalendarValue] = useState(parseDate("2024-12-27"));
-	const [datePickerValue, setDatePickerValue] = useState(
-		parseDate("2024-12-27"),
+	const [calendarValue, setCalendarValue] = useState(new Date(2024, 11, 27));
+	const [datePickerValue, setDatePickerValue] = useState<Date | null>(
+		new Date(2024, 11, 27),
 	);
 
 	const handleCalendarChange = (value: typeof calendarValue | null) => {
@@ -2403,6 +2407,7 @@ function DatePickerSection({ id }: { id: string }) {
 
 				<ComponentRow label="DatePicker">
 					<SendouDatePicker
+						granularity="day"
 						label="Select Date"
 						value={datePickerValue}
 						onChange={handleDatePickerChange}
@@ -2411,6 +2416,7 @@ function DatePickerSection({ id }: { id: string }) {
 
 				<ComponentRow label="DatePicker with Bottom Text">
 					<SendouDatePicker
+						granularity="day"
 						label="Event Date"
 						value={datePickerValue}
 						onChange={handleDatePickerChange}
@@ -2420,6 +2426,7 @@ function DatePickerSection({ id }: { id: string }) {
 
 				<ComponentRow label="DatePicker Required">
 					<SendouDatePicker
+						granularity="day"
 						label="Required Date"
 						value={datePickerValue}
 						onChange={handleDatePickerChange}
@@ -3080,13 +3087,13 @@ function ScheduleSection({ id }: { id: string }) {
 						<SendouButton
 							variant="outlined"
 							size="small"
-							onPress={() => setWeek(SCHEDULE_EXAMPLE_WEEK)}
+							onClick={() => setWeek(SCHEDULE_EXAMPLE_WEEK)}
 						>
 							Reset
 						</SendouButton>
 						<SendouButton
 							size="small"
-							onPress={() =>
+							onClick={() =>
 								toastQueue.add({
 									message: `Saved week with ${rangeCount} time ranges`,
 									variant: "success",

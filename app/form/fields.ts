@@ -42,10 +42,7 @@ import type {
 
 export const formRegistry = new WeakMap<object, FormField>();
 
-/**
- * Attaches form field metadata to a schema. Clones the schema first so shared
- * schema instances (e.g. `id`, `stageId`) each get their own registry entry.
- */
+/** Clones the schema first so shared instances (e.g. `id`, `stageId`) each get their own registry entry. */
 function register<T extends AnySyncSchema>(schema: T, metadata: FormField): T {
 	const clone = { ...schema };
 	formRegistry.set(clone, metadata);
@@ -63,8 +60,7 @@ export type RequiresDefault<T extends AnySyncSchema> = T & {
 	_requiresDefault: true;
 };
 
-// A builder declares on its signature what `defaultValues` must supply for the
-// field and returns `as never`; parsing itself always starts from `unknown`.
+// a builder's signature declares what `defaultValues` must supply and returns `as never`; parsing starts from `unknown`
 
 type WithTypedTranslationKeys<T> = Omit<
 	T,
@@ -157,17 +153,6 @@ type TextFieldArgs = WithTypedTranslationKeys<
 export function textFieldOptional(
 	args: TextFieldArgs,
 ): v.GenericSchema<string | null, string | null> {
-	// a url field is validated as a plain string, so unlike the other optional
-	// text fields it has no null to fall back to and its key stays required
-	if (args.validate === "url") {
-		return registerTextField(
-			v.pipe(v.string(), v.url()),
-			args,
-			false,
-			false,
-		) as never;
-	}
-
 	return registerTextField(
 		safeNullableStringSchema({ min: args.minLength, max: args.maxLength }),
 		args,
@@ -177,12 +162,12 @@ export function textFieldOptional(
 }
 
 export function textField(args: TextFieldArgs): v.GenericSchema<string> {
-	const schema =
-		args.validate === "url"
-			? v.pipe(v.string(), v.url())
-			: safeStringSchema({ min: args.minLength, max: args.maxLength });
-
-	return registerTextField(schema, args, true, false) as never;
+	return registerTextField(
+		safeStringSchema({ min: args.minLength, max: args.maxLength }),
+		args,
+		true,
+		false,
+	) as never;
 }
 
 function registerTextField<T extends v.GenericSchema<any, string | null>>(
@@ -211,6 +196,16 @@ function textFieldRefined<T extends v.GenericSchema<any, string | null>>(
 	>,
 ): v.GenericSchema<any, string | null> {
 	let result: v.GenericSchema<any, string | null> = schema;
+
+	if (args.validate === "url") {
+		result = v.pipe(
+			result,
+			v.check(
+				(val) => val === null || isHttpUrl(val),
+				"forms:errors.invalidUrl",
+			),
+		);
+	}
 
 	if (args.regExp) {
 		result = v.pipe(
@@ -242,6 +237,15 @@ function textFieldRefined<T extends v.GenericSchema<any, string | null>>(
 	}
 
 	return result;
+}
+
+/** Only http(s) is allowed so that e.g. a `javascript:` URL can never end up in a rendered link. */
+function isHttpUrl(value: string) {
+	try {
+		return ["http:", "https:"].includes(new URL(value).protocol);
+	} catch {
+		return false;
+	}
 }
 
 export function inGameName(
@@ -292,8 +296,7 @@ export function numberField(
 ): v.GenericSchema<number> {
 	let schema: v.GenericSchema<number> = numberSchema();
 
-	// an empty field coerces to 0, so `min` is also what makes a required number
-	// field reject being left blank
+	// an empty field coerces to 0, so `min` is also what rejects a blank required field
 	if (typeof args.min === "number") {
 		schema = v.pipe(
 			schema,
@@ -395,10 +398,8 @@ export function toggle(
 }
 
 /**
- * Makes a nullable field tolerate a missing key: `v.object` requires every key
- * whose entry schema is not itself optional, and a `preprocess` pipe hides the
- * nullable wrapper behind its own type. The `null` default is fed through the
- * schema, so an absent field parses exactly like an explicitly `null` one.
+ * `v.object` requires every key whose schema isn't optional, and a `preprocess` pipe hides the nullable
+ * wrapper; the `null` default goes through the schema so an absent field parses like an explicit `null`.
  */
 function optionalKey<TSchema extends v.GenericSchema<any, any>>(
 	schema: TSchema,
@@ -406,12 +407,7 @@ function optionalKey<TSchema extends v.GenericSchema<any, any>>(
 	return v.optional(schema, null);
 }
 
-/**
- * Item value type of a field builder, shielded from inference. Without it,
- * calling a builder inline inside `v.object({...})` lets valibot's entry
- * constraint drive `V` from the return position and widen the item literals to
- * `string`.
- */
+/** Without `NoInfer`, a builder inline in `v.object({...})` has `V` driven from the return position, widening literals to `string`. */
 type ItemValue<V extends string> = NoInfer<V>;
 
 function itemsSchema<V extends string>(items: FormFieldItems<V>) {
@@ -526,8 +522,7 @@ export function dualSelectOptional<V extends string>(
 		>
 	>,
 ): v.OptionalSchema<DualSelectSchema<ItemValue<V>>, undefined> {
-	// the `optional` wrapper stays outermost so `v.object` still reads the key as
-	// optional (a pipe reports its first item's type, hiding the wrapper)
+	// `optional` stays outermost so `v.object` reads the key as optional (a pipe would hide the wrapper)
 	const tuple = v.tuple([
 		clearableItemsSchema(args.fields[0].items),
 		clearableItemsSchema(args.fields[1].items),
@@ -665,8 +660,7 @@ export function datetime(args: DateTimeArgs): v.GenericSchema<Date> {
 export function datetimeOptional(
 	args: DateTimeArgs,
 ): v.NullishSchema<v.GenericSchema<Date>, undefined> {
-	// the `nullish` wrapper stays outermost so `v.object` still reads the key as
-	// optional (a pipe reports its first item's type, hiding the wrapper)
+	// `nullish` stays outermost so `v.object` reads the key as optional (a pipe would hide the wrapper)
 	return register(
 		v.nullish(preprocess(date, boundedDate(args, v.date()))),
 		datetimeMetadata(args, { type: "datetime", required: false }),
@@ -768,11 +762,8 @@ export function weaponPool(
 }
 
 /**
- * Field that renders no control at all. Use it for values the form needs to
- * submit but the user never edits, e.g. a discriminator seeded from the loader.
- *
- * Pass `initialValue` to hardcode the starting value. Omitting it makes the
- * field require a matching entry in the form's `defaultValues`.
+ * Renders no control, for values the user never edits (e.g. a discriminator from the loader). Without
+ * `initialValue` the field requires an entry in the form's `defaultValues`.
  */
 export function hidden<T extends AnySyncSchema>(
 	schema: T,
@@ -838,12 +829,18 @@ type TimeRangeArgs = WithTypedTranslationKeys<
 	endLabel?: FormsTranslationKey;
 };
 
+const timeRangeEndpoint = v.pipe(
+	v.string(),
+	v.nonEmpty("forms:errors.timeRangeIncomplete"),
+	v.check((value) => v.is(timeString, value), "forms:errors.invalidTime"),
+);
+
 export function timeRangeOptional(args: TimeRangeArgs) {
 	return register(
 		v.nullable(
 			v.object({
-				start: timeString,
-				end: timeString,
+				start: timeRangeEndpoint,
+				end: timeRangeEndpoint,
 			}),
 		),
 		{

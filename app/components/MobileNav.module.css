@@ -1,9 +1,21 @@
 .mobileNav {
+	display: block;
 	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
+	inset: auto 0 0 0;
+	width: auto;
+	height: auto;
+	margin: 0;
+	padding: 0;
+	border: none;
+	overflow: visible;
+	background: none;
+	color: inherit;
 	z-index: 19;
+
+	--mobile-nav-height: calc(
+		var(--layout-nav-height) +
+		env(safe-area-inset-bottom)
+	);
 }
 
 @media screen and (min-width: 600px) {
@@ -16,7 +28,7 @@
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-	height: calc(var(--layout-nav-height) + env(safe-area-inset-bottom));
+	height: var(--mobile-nav-height);
 	background-color: var(--color-bg-nav);
 	border-top: 1.5px solid var(--color-border);
 	padding: 0 var(--s-4);
@@ -70,19 +82,6 @@
 	font-size: var(--font-xs);
 }
 
-.panelOverlay {
-	position: fixed;
-	inset: 0;
-	bottom: var(--layout-nav-height);
-	z-index: 18;
-	background-color: rgba(0, 0, 0, 0.25);
-	backdrop-filter: blur(10px);
-
-	&[data-entering] {
-		animation: fade-in 200ms ease-out;
-	}
-}
-
 @keyframes fade-in {
 	from {
 		opacity: 0;
@@ -92,21 +91,47 @@
 	}
 }
 
-.panel {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 85%;
-	background-color: var(--color-bg);
-	border-radius: var(--radius-box) var(--radius-box) 0 0;
-	overflow: hidden;
+.panelDialog {
+	outline: none;
 	display: flex;
 	flex-direction: column;
-	padding-block-end: env(safe-area-inset-bottom);
+	height: 100%;
+}
 
-	&[data-entering] {
+.panel {
+	position: fixed;
+	inset: auto 0 var(--mobile-nav-height) 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+	width: 100%;
+	max-width: none;
+	max-height: none;
+	height: calc((100% - var(--mobile-nav-height)) * 0.85);
+	background: none;
+	color: var(--color-text);
+	overflow: hidden;
+	flex-direction: column;
+	outline: none;
+
+	/* a display on the class itself would show the closed panels too */
+	&:popover-open {
+		display: flex;
+	}
+
+	/* the box sits above the tab bar and clips, so the sliding content comes up from behind the bar */
+	& > .panelDialog {
+		background-color: var(--color-bg);
+		border-radius: var(--radius-box) var(--radius-box) 0 0;
 		animation: slide-up 200ms ease-out;
+	}
+
+	&::backdrop {
+		inset: 0;
+		bottom: var(--mobile-nav-height);
+		background-color: rgba(0, 0, 0, 0.25);
+		backdrop-filter: blur(10px);
+		animation: fade-in 200ms ease-out;
 	}
 }
 
@@ -147,24 +172,29 @@
 	flex-direction: column;
 }
 
-.panelDialog {
-	outline: none;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-}
-
 .menuOverlay {
 	position: fixed;
-	inset: 0;
-	z-index: 20;
+	inset: 0 0 var(--mobile-nav-height) 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+	width: 100%;
+	max-width: none;
+	height: calc(100% - var(--mobile-nav-height));
+	max-height: none;
 	background-color: var(--color-bg);
+	color: var(--color-text);
 	overflow-y: auto;
-	display: flex;
 	flex-direction: column;
+	outline: none;
+	animation: fade-in 200ms ease-out;
 
-	&[data-entering] {
-		animation: fade-in 200ms ease-out;
+	&:popover-open {
+		display: flex;
+	}
+
+	&::backdrop {
+		background: none;
 	}
 }
 
@@ -219,7 +249,6 @@
 	list-style: none;
 	margin: 0;
 	padding: var(--s-4);
-	padding-block-end: calc(env(safe-area-inset-bottom) + var(--s-4));
 
 	& a:not(:first-child) {
 		padding-block: var(--s-2);
@@ -265,14 +294,15 @@
 }
 
 .youPanelUserRow {
-	display: grid;
-	grid-template-columns: 1fr auto;
+	display: flex;
 	align-items: center;
 	padding: var(--s-1) var(--s-2);
 }
 
 .youPanelUser {
 	display: flex;
+	flex: 1;
+	min-width: 0;
 	align-items: center;
 	gap: var(--s-3);
 	padding: var(--s-2);
@@ -309,6 +339,11 @@
 		width: 18px;
 		height: 18px;
 	}
+}
+
+.youPanelTeamAvatar {
+	border-radius: 50%;
+	object-fit: cover;
 }
 
 .panelSectionLink {
@@ -361,30 +396,10 @@
 }
 
 .noAnimation {
-	&[data-entering] {
+	animation: none;
+
+	& > .panelDialog,
+	&::backdrop {
 		animation: none;
 	}
-}
-
-.ghostTabBar {
-	position: fixed;
-	bottom: calc(0px - var(--layout-nav-height));
-	left: 0;
-	right: 0;
-	height: calc(var(--layout-nav-height) + env(safe-area-inset-bottom));
-	padding-bottom: env(safe-area-inset-bottom);
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
-	z-index: 100;
-}
-
-.ghostTab {
-	height: 100%;
-	flex: 1;
-	background: none;
-	border: none;
-	cursor: pointer;
-	opacity: 0;
-	padding: 0;
 }

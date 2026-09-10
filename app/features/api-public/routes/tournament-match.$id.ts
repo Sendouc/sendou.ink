@@ -19,7 +19,7 @@ const paramsSchema = v.object({
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const t = await getFixedTForLanguage("en", ["game-misc"]);
-	const { id } = parseParams({
+	const { id: matchId } = parseParams({
 		params,
 		schema: paramsSchema,
 	});
@@ -66,11 +66,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 									),
 							).as("participants"),
 						])
-						.where("TournamentMatchGameResult.matchId", "=", id)
+						.where("TournamentMatchGameResult.matchId", "=", matchId)
 						.orderBy("TournamentMatchGameResult.number", "asc"),
 				).as("playedMapList"),
 			])
-			.where("TournamentMatch.id", "=", id)
+			.where("TournamentMatch.id", "=", matchId)
 			.executeTakeFirst(),
 	);
 
@@ -109,7 +109,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 		return resolveMapList({
 			tournamentId: match.tournamentId,
-			matchId: id,
+			matchId,
 			teams: [opponentOne.id, opponentTwo.id],
 			mapPoolByTeamId: (teamId) => mapPools.get(teamId) ?? [],
 			mapPickingStyle: match.mapPickingStyle,
@@ -120,7 +120,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 				match.mapPickingStyle !== "TO"
 					? await TournamentTeamRepository.findRecentlyPlayedMapsByIds({
 							teamIds: [opponentOne.id, opponentTwo.id],
-							excludeMatchId: id,
+							excludeMatchId: matchId,
 						}).catch((error) => {
 							logger.error("Failed to fetch recently played maps", error);
 							return [];
@@ -144,7 +144,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	};
 
 	const { bracketName, roundNameWithoutMatchIdentifier } =
-		tournament.matchContextNamesById(id);
+		tournament.matchContextNamesById(matchId);
 
 	const result: GetTournamentMatchResponse = {
 		teamOne: match.opponentOne?.id
@@ -159,7 +159,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 					score: match.opponentTwo.score ?? 0,
 				}
 			: null,
-		url: `https://sendou.ink/to/${match.tournamentId}/matches/${id}`,
+		url: `https://sendou.ink/to/${match.tournamentId}/matches/${matchId}`,
 		mapList: await mapList(),
 		bracketName: bracketName ?? null,
 		roundName: roundNameWithoutMatchIdentifier ?? null,

@@ -1,12 +1,16 @@
 import { useTranslation } from "react-i18next";
+import { useLoaderData } from "react-router";
 import type { Tables } from "~/db/tables";
+import { BADGE } from "~/features/badges/badges-constants";
 import { type CustomFieldRenderProps, FormField } from "~/form/FormField";
 import { SendouForm, useFormFieldContext } from "~/form/SendouForm";
+import { useHasRole } from "~/modules/permissions/hooks";
 import {
 	getWidgetFormSchema,
 	TIMEZONE_OPTIONS,
 } from "../core/widgets/widget-form-schemas";
-import { USER } from "../user-page-constants";
+import type { loader } from "../loaders/u.$identifier.edit-widgets.server";
+import { SENS_OPTIONS, USER } from "../user-page-constants";
 import { GameBadgeSelectField } from "./GameBadgeSelectField";
 
 export function WidgetSettingsForm({
@@ -81,6 +85,8 @@ function WidgetFormFields({ widgetId }: { widgetId: string }) {
 			);
 		case "peak-xp-weapon":
 			return <FormField name="weaponSplId" />;
+		case "weapon-pool":
+			return <FormField name="weaponPool" />;
 		case "sens":
 			return <SensFields />;
 		case "art":
@@ -89,6 +95,17 @@ function WidgetFormFields({ widgetId }: { widgetId: string }) {
 			return <FormField name="links" />;
 		case "tier-list":
 			return <FormField name="searchParams" />;
+		case "countdown":
+			return (
+				<div className="stack md">
+					<FormField name="title" />
+					<FormField name="date" />
+				</div>
+			);
+		case "markdown":
+			return <FormField name="content" />;
+		case "badges-owned":
+			return <FavoriteBadgesField />;
 		case "game-badges":
 			return (
 				<FormField name="badgeIds">
@@ -116,10 +133,18 @@ function WidgetFormFields({ widgetId }: { widgetId: string }) {
 	}
 }
 
-const SENS_OPTIONS = [
-	-50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
-	40, 45, 50,
-];
+function FavoriteBadgesField() {
+	const data = useLoaderData<typeof loader>();
+	const isSupporter = useHasRole("SUPPORTER");
+
+	return (
+		<FormField
+			name="favoriteBadgeIds"
+			options={data.ownedBadges}
+			maxCount={isSupporter ? BADGE.SMALL_BADGES_PER_DISPLAY_PAGE + 1 : 1}
+		/>
+	);
+}
 
 function SensFields() {
 	const { t } = useTranslation(["user"]);

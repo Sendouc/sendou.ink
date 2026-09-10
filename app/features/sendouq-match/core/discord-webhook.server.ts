@@ -5,7 +5,7 @@ import {
 	userPageLink,
 	type WebhookUser,
 } from "~/modules/discord-webhook.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { SENDOU_INK_BASE_URL, sendouQMatchPage } from "~/utils/urls";
 
 type MatchMember = WebhookUser & { id: number };
@@ -16,10 +16,7 @@ interface CancelReport {
 	nominatedPlayers: Array<{ userId: number }>;
 }
 
-/**
- * Posts a rich embed about a finalized SendouQ match cancellation to the SendouQ
- * cancels channel Discord webhook. Fire-and-forget (see `sendSQCancelDiscordWebhook`).
- */
+/** Posts a rich embed about a finalized SendouQ cancellation to the cancels channel webhook. Fire-and-forget (see `sendSQCancelDiscordWebhook`). */
 export function sendMatchCanceledWebhook(args: {
 	matchId: number;
 	members: MatchMember[];

@@ -67,11 +67,7 @@ export function WeaponPatchHistory({ patches }: { patches: WeaponPatch[] }) {
 	);
 }
 
-/**
- * Patch history of a main weapon shown one kit at a time: the selected kit's main weapon, sub
- * weapon and special weapon changes are grouped under dividers within the same patch column. Sub
- * and special weapon changes can be toggled off.
- */
+/** Patch history one kit at a time, main/sub/special changes under dividers in the same column. */
 export function WeaponPatchHistoryByKit({
 	kits,
 	defaultWeaponId,
@@ -81,7 +77,7 @@ export function WeaponPatchHistoryByKit({
 }) {
 	const { t } = useTranslation(["params"]);
 
-	const kitIds = kits.map((kit) => kit.weaponId);
+	const kitIds = kits.map((weaponKit) => weaponKit.weaponId);
 
 	const [kit, setKit] = useSearchParam(weaponParamsSearchParams, "kit");
 	const selectedWeaponId =
@@ -96,7 +92,8 @@ export function WeaponPatchHistoryByKit({
 	);
 
 	const selectedKit =
-		kits.find((kit) => kit.weaponId === selectedWeaponId) ?? kits[0];
+		kits.find((candidate) => candidate.weaponId === selectedWeaponId) ??
+		kits[0];
 
 	const patches = selectedKit.patches
 		.map((patch) => ({
@@ -279,7 +276,7 @@ function ChangeBadge({ change }: { change: PatchChange }) {
 
 	const isSpecialPoints = change.category === SPECIAL_POINTS_PARAM_KEY;
 	const isDamageMultiplier = change.category === DAMAGE_MULTIPLIER_PARAM_KEY;
-	// Damage falloff curves serialize to long "damage @ distance" lists that need their own line.
+	// falloff curves serialize to long "damage @ distance" lists
 	const isWideValue =
 		typeof change.from === "string" && change.from.includes("@");
 
@@ -322,11 +319,7 @@ function ChangeBadge({ change }: { change: PatchChange }) {
 	);
 }
 
-/**
- * An incoming damage multiplier change: a set of attacking weapons whose shared damage rate against
- * the page's sub or special weapon changed. Shows the attacking weapons' icons (with a suffix for
- * multi-part objects, e.g. a Big Bubbler's shield vs. weak point) and the from→to rate.
- */
+/** Attacking weapons' icons (suffixed for multi-part objects, e.g. Big Bubbler shield vs. weak point) and the from→to rate. */
 function IncomingChangeBadge({
 	change,
 	attackers,

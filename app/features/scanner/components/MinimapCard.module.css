@@ -81,16 +81,4 @@
 		width: 13px;
 		height: 13px;
 	}
-
-	&.right svg {
-		transform: rotate(90deg);
-	}
-
-	&.down svg {
-		transform: rotate(180deg);
-	}
-
-	&.left svg {
-		transform: rotate(-90deg);
-	}
 }

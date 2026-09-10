@@ -1,20 +1,16 @@
 /** biome-ignore-all lint/suspicious/noConsole: CLI script output */
 /**
- * Audit death/special detection against scoreboard truth, from an events CSV
- * downloaded from the scanner UI (Live/VoD tab → Download CSV). The CSV rows
- * are parsed back into DetectedEvents, run through the real match builder,
- * and rendered into the same status spans the timeline would draw — then
- * each player's span counts are diffed against the scoreboard's D/S numbers,
- * which are near-always correct. A special span ending in a death (or held
- * at the final whistle) is a legit non-use and does not count toward S.
+ * Audits death/special detection against scoreboard truth, from an events CSV
+ * downloaded from the scanner UI. Rows are parsed back into DetectedEvents,
+ * run through the real match builder and rendered into the timeline's status
+ * spans; each player's span counts are diffed against the scoreboard's D/S
+ * numbers. A special span ending in a death (or held at the final whistle) is
+ * a legit non-use and does not count toward S.
  *
  * The CSV is lossy (no ink colors, only top-1 strip-weapon candidates), so
- * cast-footage side orientation and slot→row assignment can degrade to
- * their fallbacks; the output flags when a mismatch looks like a
- * slot-mapping artifact rather than a detection error.
- *
- * Output is structured for triage: every discrepancy lists the exact
- * read timestamps most likely to yield a new failing fixture.
+ * cast-footage side orientation and slot→row assignment can degrade to their
+ * fallbacks; the output flags mismatches that look like slot-mapping artifacts.
+ * Every discrepancy lists the read timestamps most likely to yield a fixture.
  *
  * Usage: pnpm scanner:status-audit <events.csv> [--all]
  */
@@ -45,7 +41,6 @@ import {
 	type MinimapEnemy,
 	type MinimapTeammate,
 } from "../../app/features/scanner/core/detectors/minimap/index";
-import type { CardSlot } from "../../app/features/scanner/core/detectors/minimap/rois";
 import {
 	OBJECTIVE_EVENT_TYPE,
 	type ObjectiveData,
@@ -98,8 +93,6 @@ const SCOREBOARD_TYPES = new Set([
 	SCOREBOARD_BATTLE_LOG_EVENT_TYPE,
 	SCOREBOARD_BATTLE_LOG_REPLAY_EVENT_TYPE,
 ]);
-
-const CARD_SLOTS = new Set<CardSlot>(["up", "left", "right", "self", "down"]);
 
 const MODE_BY_LABEL = new Map<string, ModeShort>(
 	modesShort.map((mode) => [modeLabel(mode) ?? mode, mode]),
@@ -181,9 +174,6 @@ for (const [index, builtMatch] of built.entries()) {
 }
 printCandidates();
 printGuidance();
-
-// ---------------------------------------------------------------------------
-// CSV → DetectedEvent reconstruction
 
 function parseCsv(text: string): string[][] {
 	const result: string[][] = [];
@@ -365,8 +355,8 @@ function parseMinimapCell(cell: string, stageCell: string): MinimapData {
 		const rawName = spaceAt === -1 ? "" : head.slice(spaceAt + 1);
 		const name = rawName === "?" || rawName === "" ? null : rawName;
 		const player = { name, weaponId, abilities, dead, specialReady };
-		if (CARD_SLOTS.has(label as CardSlot)) {
-			teammates.push({ slot: label as CardSlot, ...player });
+		if (label === "self" || /^ally[1-4]$/.test(label)) {
+			teammates.push({ self: label === "self", ...player });
 		} else if (/^enemy[1-4]$/.test(label)) {
 			enemies.push(player);
 		} else {
@@ -451,9 +441,6 @@ function parseScoreboardRow(row: string[]): ScoreboardData & {
 	};
 }
 
-// ---------------------------------------------------------------------------
-// Analysis
-
 interface FixtureCandidate {
 	score: number;
 	t: number;
@@ -471,10 +458,9 @@ interface StatusSpan extends TimeWindow {
 	/** sample timestamps that read the flag true inside the span */
 	confirmingReads: number[];
 	/**
-	 * widest the true state could really have held: from the last false read
-	 * before the span to the false read that closed it (the builder's
-	 * flank-to-flank measure); the rendered span bounds where a flank is
-	 * unobserved (series edge or gap-split)
+	 * widest the true state could have held: from the last false read before the
+	 * span to the false read that closed it (the builder's flank-to-flank measure);
+	 * the rendered span bounds where a flank is unobserved
 	 */
 	maxPossibleSeconds: number;
 }
@@ -586,9 +572,6 @@ function readsInWindow(
 		)
 		.map((event) => Math.round(event.t * 100) / 100);
 }
-
-// ---------------------------------------------------------------------------
-// Output
 
 function ts(t: number): string {
 	return `t=${Math.round(t * 10) / 10} (${formatTime(t)})`;

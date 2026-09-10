@@ -1,5 +1,9 @@
 import { describe, expect, test } from "vitest";
-import { paginate } from "./remix.server";
+import {
+	paginate,
+	safeReturnTo,
+	successToastWithRedirect,
+} from "./remix.server";
 
 const buildUrl = (url: string) => new URL(url);
 
@@ -110,5 +114,71 @@ describe("paginate()", () => {
 		);
 
 		expect(response?.headers.get("Location")).toBe("/vods?page=1");
+	});
+});
+
+describe("safeReturnTo()", () => {
+	test.each([
+		["/u/sendou", "a same-site path"],
+		["/calendar?page=2", "a path with search params"],
+		["/", "the root path"],
+	])("returns %s (%s)", (value) => {
+		expect(safeReturnTo(value)).toBe(value);
+	});
+
+	test.each([
+		["//evil.com", "protocol-relative URL"],
+		["/\\evil.com", "backslash the browser normalises to a slash"],
+		["/\\\\evil.com", "double backslash"],
+		["https://evil.com", "absolute URL"],
+		["evil.com", "no leading slash"],
+		["\\/evil.com", "leading backslash"],
+	])("returns null for %s (%s)", (value) => {
+		expect(safeReturnTo(value)).toBeNull();
+	});
+
+	test("returns null for a non-string value", () => {
+		expect(safeReturnTo(null)).toBeNull();
+	});
+});
+
+describe("successToastWithRedirect()", () => {
+	test.each([
+		["Bo3 & Bo5 updated", "an ampersand"],
+		["Set #3 reported", "a hash"],
+		["100% complete", "a percent sign"],
+		["Team + org linked", "a plus sign"],
+	])("round trips a message containing %s (%s)", (message) => {
+		const response = successToastWithRedirect({ message, url: "/to/1" });
+		const location = response.headers.get("Location")!;
+
+		expect(new URLSearchParams(location.split("?")[1]).get("__success")).toBe(
+			message,
+		);
+	});
+
+	test("keeps the search params already on the url", () => {
+		const response = successToastWithRedirect({
+			message: "Tournament finalized",
+			url: "/to/1/brackets?bracket=1",
+		});
+
+		const searchParams = new URLSearchParams(
+			response.headers.get("Location")!.split("?")[1],
+		);
+
+		expect(searchParams.get("bracket")).toBe("1");
+		expect(searchParams.get("__success")).toBe("Tournament finalized");
+	});
+
+	test("keeps the hash at the end of the url", () => {
+		const response = successToastWithRedirect({
+			message: "Saved",
+			url: "/u/sendou#results",
+		});
+
+		expect(response.headers.get("Location")).toBe(
+			"/u/sendou?__success=Saved#results",
+		);
 	});
 });

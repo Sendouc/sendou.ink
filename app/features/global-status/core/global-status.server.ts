@@ -94,7 +94,7 @@ function resolveTournamentStatus(
 	activity: UserActivity.UserActivity,
 ): GlobalStatus | null {
 	const relevant = activity.tournaments.filter(
-		({ status }) => UserActivity.TOURNAMENT_STATUS_IS_IN_PROGRESS[status.type],
+		(entry) => UserActivity.TOURNAMENT_STATUS_IS_IN_PROGRESS[entry.status.type],
 	);
 
 	const mostUrgent = relevant.sort(

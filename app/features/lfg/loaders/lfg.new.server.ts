@@ -9,9 +9,7 @@ import { lfgNewSearchParams } from "../lfg-search-params";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const user = requireUser();
 
-	const userProfileData = await UserRepository.findProfileByIdentifier(
-		String(user.id),
-	);
+	const userProfileData = await UserRepository.findProfileByUserId(user.id);
 	const userMatchProfile = await MatchProfileRepository.findSettingsByUserId(
 		user.id,
 	);
@@ -20,7 +18,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 	return {
 		team: userProfileData?.team,
-		weaponPool: userProfileData?.weapons,
+		weaponPool: userMatchProfile.weaponPool,
 		languages: postToEdit?.languages ?? userMatchProfile.languages,
 		postToEdit,
 		userPostTypes: userPostTypes(allPosts, user.id),

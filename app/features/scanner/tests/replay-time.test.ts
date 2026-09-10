@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { parseReplayTimestamp } from "../core/replay-time";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 /** Expected epoch for a local wall time — timezone-independent comparison. */
 function local(

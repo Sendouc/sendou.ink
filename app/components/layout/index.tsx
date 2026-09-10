@@ -10,12 +10,6 @@ import {
 	Users,
 } from "lucide-react";
 import * as React from "react";
-import {
-	Dialog,
-	DialogTrigger,
-	Modal,
-	ModalOverlay,
-} from "react-aria-components";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { useTranslation } from "react-i18next";
 import { Link, useFetcher, useLocation, useMatches } from "react-router";
@@ -27,23 +21,30 @@ import { FriendMenu } from "~/features/friends/components/FriendMenu";
 import { useGlobalStatus } from "~/features/global-status/GlobalStatusProvider";
 import { useLayoutData } from "~/features/layout/LayoutDataProvider";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
+import { useClosePopoversOnNavigation } from "~/hooks/useClosePopoversOnNavigation";
 import { useHydrated } from "~/hooks/useHydrated";
-import { useLayoutSize } from "~/hooks/useMainContentWidth";
+import { MOBILE_LAYOUT_QUERY, useLayoutSize } from "~/hooks/useLayoutSize";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
 import { usePrefersReducedMotion } from "~/hooks/usePrefersReducedMotion";
 import { useUnseenFriendRequests } from "~/hooks/useUnseenFriendRequests";
 import { useVisualViewportHeight } from "~/hooks/useVisualViewportHeight";
 import { useSearchParam } from "~/modules/search-params/hooks";
 import type { RootLoaderData } from "~/root";
+import { generateIdenticon } from "~/utils/identicon";
 import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix.server";
 import {
 	EVENTS_PAGE,
 	FRIENDS_PAGE,
+	navIconUrl,
 	PLANNER_URL,
 	SETTINGS_PAGE,
+	teamPage,
 	userPage,
 } from "~/utils/urls";
-import { Avatar, generateIdenticon } from "../Avatar";
-import { SendouButton } from "../elements/Button";
+import { Avatar } from "../Avatar";
+import { SendouButton, type SendouButtonProps } from "../elements/Button";
+import { SendouModal } from "../elements/Dialog";
+import { isOwnToggle } from "../elements/Popover";
 import { FuseZone } from "../fuse/Fuse";
 import { Image } from "../Image";
 import { MobileNav } from "../MobileNav";
@@ -60,20 +61,16 @@ import { TopNavMenus } from "./TopNavMenus";
 import { TopRightButtons } from "./TopRightButtons";
 
 const MAX_DESKTOP_FRIENDS = 4;
+const SIDENAV_ACTION = "/sidenav";
 
-// lazy loaded so the rarely needed auth error dialog stays out of the eager
-// bundle loaded on every page
+// lazy loaded to stay out of the eager bundle
 const AuthErrorDialog = React.lazy(() =>
 	import("./AuthErrorDialog").then((module) => ({
 		default: module.AuthErrorDialog,
 	})),
 );
 
-/** Id of the loading-bar track rendered inside the header. NProgress mounts its
- * bar into it; the track sits just below the header border, spans only the area
- * between the sidebars, and clips the bar so it never extends over a sidebar.
- * Living inside the header makes it follow the header on scroll and in
- * standalone (PWA) mode where the header grows by the safe-area inset. */
+/** Loading-bar track inside the header that NProgress mounts into; styled in common.css. */
 export const NPROGRESS_ANCHOR_ID = "nprogress-anchor";
 
 function useRelativeDayFormat() {
@@ -141,17 +138,14 @@ function useSideNavCollapsed(initialCollapsed: boolean) {
 		setCollapsed(value);
 		fetcher.submit(
 			{ collapsed: String(value) },
-			{ method: "POST", action: "/sidenav" },
+			{ method: "POST", action: SIDENAV_ACTION },
 		);
 	};
 
 	return [collapsed, setCollapsedAndPersist] as const;
 }
 
-/**
- * Open state of a modal that only the tablet layout has, remembering the pathname it was
- * opened on so that leaving that layout or navigating elsewhere closes it on its own.
- */
+/** Open state of a tablet-layout-only modal; leaving that layout or navigating closes it. */
 function useTabletModal(isTabletLayout: boolean) {
 	const location = useLocation();
 	const [openedOnPathname, setOpenedOnPathname] = React.useState<string | null>(
@@ -165,11 +159,12 @@ function useTabletModal(isTabletLayout: boolean) {
 	return [isOpen, setIsOpen] as const;
 }
 
+/** Hides the mobile header while scrolling down and brings it back on scrolling up; always `0` outside the mobile layout. */
 function useNavOffset(headerRef: React.RefObject<HTMLElement | null>) {
 	const [navOffset, setNavOffset] = React.useState(0);
 	const lastScrollY = React.useRef(0);
+	const isMobileLayout = useMediaQuery(MOBILE_LAYOUT_QUERY);
 
-	const MOBILE_BREAKPOINT = 600;
 	const NAV_HEIGHT_FALLBACK = 55;
 	const SCROLL_THRESHOLD_PX = 200;
 
@@ -183,14 +178,12 @@ function useNavOffset(headerRef: React.RefObject<HTMLElement | null>) {
 	}, []);
 
 	React.useEffect(() => {
-		const handleScroll = () => {
-			if (window.innerWidth >= MOBILE_BREAKPOINT) {
-				setNavOffset(0);
-				lastScrollY.current = window.scrollY;
-				scrollAccumulator.current = 0;
-				return;
-			}
+		if (!isMobileLayout) return;
 
+		lastScrollY.current = window.scrollY;
+		scrollAccumulator.current = 0;
+
+		const handleScroll = () => {
 			const navHeight = headerRef.current?.offsetHeight ?? NAV_HEIGHT_FALLBACK;
 			const currentScrollY = window.scrollY;
 			const scrollDelta = currentScrollY - lastScrollY.current;
@@ -225,20 +218,13 @@ function useNavOffset(headerRef: React.RefObject<HTMLElement | null>) {
 			lastScrollY.current = currentScrollY;
 		};
 
-		const handleResize = () => {
-			if (window.innerWidth >= MOBILE_BREAKPOINT) {
-				setNavOffset(0);
-			}
-		};
-
 		window.addEventListener("scroll", handleScroll, { passive: true });
-		window.addEventListener("resize", handleResize);
 
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
-			window.removeEventListener("resize", handleResize);
+			setNavOffset(0);
 		};
-	}, [headerRef]);
+	}, [headerRef, isMobileLayout]);
 
 	return { navOffset, revealNav };
 }
@@ -273,8 +259,10 @@ export function Layout({
 	);
 	const layoutSize = useLayoutSize();
 	const isTabletLayout = layoutSize === "tablet";
-	const [sideNavModalOpen, setSideNavModalOpen] =
-		useTabletModal(isTabletLayout);
+	const sideNavId = React.useId();
+	const sideNavRef = React.useRef<HTMLElement>(null);
+	const [sideNavDrawerOpen, setSideNavDrawerOpen] = React.useState(false);
+	useClosePopoversOnNavigation(sideNavRef);
 	const [chatSidebarModalOpen, setChatSidebarModalOpen] =
 		useTabletModal(isTabletLayout);
 	useVisualViewportHeight();
@@ -418,7 +406,20 @@ export function Layout({
 	return (
 		<>
 			<SideNav
-				className={showLeaderboard ? styles.sidebarFuseSpace : undefined}
+				ref={sideNavRef}
+				id={sideNavId}
+				popover="auto"
+				tabIndex={-1}
+				onToggle={(event) => {
+					if (!isOwnToggle(event)) return;
+					const open = event.newState === "open";
+					setSideNavDrawerOpen(open);
+					if (open) event.currentTarget.focus();
+				}}
+				className={clsx(
+					styles.sideNavDrawer,
+					showLeaderboard && styles.sidebarFuseSpace,
+				)}
 				collapsed={sideNavCollapsed}
 				footer={sideNavFooterContent}
 				top={<SiteTitle />}
@@ -438,59 +439,55 @@ export function Layout({
 					<Link to="/" className={clsx(styles.siteLogo, styles.mobileLogo)}>
 						<SiteLogoContent />
 					</Link>
-					<DialogTrigger
-						isOpen={sideNavModalOpen}
-						onOpenChange={setSideNavModalOpen}
-					>
-						<SideNavCollapseButton
-							className={styles.sideNavModalTrigger}
-							showNotificationDot={!sideNavModalOpen && showUnseenDot}
-							badgeCount={!sideNavModalOpen ? unseenFriendRequests : 0}
-							testId="sidenav-modal-trigger"
-						/>
-						<ModalOverlay className={styles.sideNavModalOverlay} isDismissable>
-							<Modal className={styles.sideNavModal}>
-								<Dialog className={styles.sideNavModalDialog}>
-									<SideNav
-										className={styles.sideNavInModal}
-										footer={sideNavFooterContent}
-										top={<SiteTitle />}
-										topCentered={isFrontPage}
-									>
-										{sideNavChildren}
-									</SideNav>
-								</Dialog>
-							</Modal>
-						</ModalOverlay>
-					</DialogTrigger>
-					<ModalOverlay
-						className={styles.chatSidebarModalOverlay}
-						isDismissable
-						isOpen={chatSidebarModalOpen}
-						onOpenChange={setChatSidebarModalOpenAndSync}
-					>
-						<Modal className={styles.chatSidebarModal}>
-							<Dialog
-								className={styles.chatSidebarModalDialog}
-								aria-label={t("common:chat.sidebar.title")}
-							>
-								<LazyChatSidebar />
-							</Dialog>
-						</Modal>
-					</ModalOverlay>
 					<SideNavCollapseButton
-						onToggle={() => setSideNavCollapsed(!sideNavCollapsed)}
-						className={styles.sideNavCollapseButton}
-						showNotificationDot={sideNavCollapsed && showUnseenDot}
-						badgeCount={sideNavCollapsed ? unseenFriendRequests : 0}
-						testId="sidenav-collapse-button"
+						popoverTarget={sideNavId}
+						className={styles.sideNavModalTrigger}
+						showNotificationDot={!sideNavDrawerOpen && showUnseenDot}
+						badgeCount={!sideNavDrawerOpen ? unseenFriendRequests : 0}
+						testId="sidenav-modal-trigger"
 					/>
+					{chatSidebarModalOpen ? (
+						<SendouModal
+							className={styles.chatSidebarModal}
+							isDismissable
+							aria-label={t("common:chat.sidebar.title")}
+							onClose={() => setChatSidebarModalOpenAndSync(false)}
+						>
+							<LazyChatSidebar />
+						</SendouModal>
+					) : null}
+					<form
+						method="post"
+						action={SIDENAV_ACTION}
+						className={styles.sideNavCollapseForm}
+						onSubmit={(event) => {
+							event.preventDefault();
+							setSideNavCollapsed(!sideNavCollapsed);
+						}}
+					>
+						<input
+							type="hidden"
+							name="collapsed"
+							value={String(!sideNavCollapsed)}
+						/>
+						<input
+							type="hidden"
+							name="returnTo"
+							value={`${location.pathname}${location.search}`}
+						/>
+						<SideNavCollapseButton
+							type="submit"
+							className={styles.sideNavCollapseButton}
+							showNotificationDot={sideNavCollapsed && showUnseenDot}
+							badgeCount={sideNavCollapsed ? unseenFriendRequests : 0}
+							testId="sidenav-collapse-button"
+						/>
+					</form>
 					<TopNavMenus />
 					<TopRightButtons
 						showSupport={Boolean(
 							data && !data?.user?.roles.includes("MINOR_SUPPORT"),
 						)}
-						showSearch={Boolean(data?.user)}
 						isLoggedIn={Boolean(data?.user)}
 						onChatToggle={
 							data?.user && !chatSidebarOpen
@@ -602,18 +599,17 @@ function SiteLogoContent() {
 }
 
 function SideNavCollapseButton({
-	onToggle,
 	className,
 	showNotificationDot,
 	badgeCount,
 	testId,
+	...buttonProps
 }: {
-	onToggle?: () => void;
 	className?: string;
 	showNotificationDot?: boolean;
 	badgeCount?: number;
 	testId?: string;
-}) {
+} & Pick<SendouButtonProps, "type" | "popoverTarget">) {
 	const { t } = useTranslation(["friends"]);
 
 	return (
@@ -624,7 +620,7 @@ function SideNavCollapseButton({
 				size="small"
 				shape="square"
 				icon={<PanelLeft />}
-				onPress={onToggle}
+				{...buttonProps}
 			/>
 			{showNotificationDot ? <NotificationDot /> : null}
 			{badgeCount ? (
@@ -644,7 +640,6 @@ function SideNavCollapseButton({
 
 function PageIcon({ crumb }: { crumb: Breadcrumb }) {
 	const [isErrored, setIsErrored] = React.useState(false);
-	const isClient = useHydrated();
 
 	if (crumb.type !== "IMAGE") {
 		return null;
@@ -661,8 +656,8 @@ function PageIcon({ crumb }: { crumb: Breadcrumb }) {
 	};
 
 	const identiconSrc =
-		isErrored && isClient && crumb.identiconInput
-			? generateIdenticon(crumb.identiconInput, 28, 7)
+		isErrored && crumb.identiconInput
+			? generateIdenticon(crumb.identiconInput)
 			: null;
 
 	return (
@@ -704,6 +699,26 @@ function SideNavUserPanel() {
 					<span className={styles.sideNavFooterUsername}>{user.username}</span>
 				</Link>
 				<div className={styles.sideNavFooterActions}>
+					{user.team ? (
+						<Link
+							to={teamPage(user.team.customUrl)}
+							className={styles.sideNavFooterButton}
+							aria-label={t("header.myTeam")}
+							title={t("header.myTeam")}
+						>
+							{user.team.avatarUrl ? (
+								<img
+									src={user.team.avatarUrl}
+									alt=""
+									className={styles.sideNavFooterTeamAvatar}
+									width={22}
+									height={22}
+								/>
+							) : (
+								<Image path={navIconUrl("t")} alt="" width={22} height={22} />
+							)}
+						</Link>
+					) : null}
 					{notifications ? (
 						<div
 							className={styles.sideNavFooterNotification}

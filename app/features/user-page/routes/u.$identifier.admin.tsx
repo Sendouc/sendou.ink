@@ -11,7 +11,7 @@ import { ReportsBarChart } from "~/features/user-report/components/ReportsBarCha
 import { USER_REPORT_CATEGORY_LABELS } from "~/features/user-report/user-report-constants";
 import { SendouForm } from "~/form";
 import { useFormatDistanceToNow } from "~/hooks/intl/useFormatDistanceToNow";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { sendouQMatchPage, userPage } from "~/utils/urls";
 import { action } from "../actions/u.$identifier.admin.server";
 import { SubPageHeader } from "../components/SubPageHeader";

@@ -7,15 +7,11 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as XRankPlacementRepository from "~/features/top-search/XRankPlacementRepository.server";
 import * as TrophyRepository from "~/features/trophies/TrophyRepository.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 
 /**
- * Migrates user-related data. Takes data from the "old user" and remaps it to the Discord ID of the "new user". Used when user switches their Discord accounts.
- *
- * @param args - An object containing:
- *   - `newUserId`: The ID of the user whose data will be migrated and then deleted.
- *   - `oldUserId`: The ID of the user who will receive the migrated data.
- * @returns A promise that resolves to `null` if the migration succeeds, or an error message if validation fails.
+ * For a user switching Discord accounts: moves the new account's data onto the old user and deletes
+ * the new one. Resolves to `null` on success, or an error message if validation fails.
  */
 export function migrate(args: { newUserId: number; oldUserId: number }) {
 	return db.transaction().execute(async (trx) => {
@@ -24,15 +20,8 @@ export function migrate(args: { newUserId: number; oldUserId: number }) {
 			return error;
 		}
 
-		// delete some limited data from the target user
-		// idea is to make the migration a bit more smooth
-		// since it won't fail if some small thing has been added
-		// but for bigger things (e.g. has played tournaments)
-		// it will still fail
-		await trx
-			.deleteFrom("UserWeapon")
-			.where("userId", "=", args.newUserId)
-			.execute();
+		// small data on the new account is dropped so it doesn't block the migration;
+		// bigger things (e.g. played tournaments) still fail validation
 		await trx
 			.deleteFrom("Build")
 			.where("ownerId", "=", args.newUserId)
@@ -126,8 +115,7 @@ export function migrate(args: { newUserId: number; oldUserId: number }) {
 			.set({ userId: args.oldUserId })
 			.execute();
 
-		// If both accounts own the same trophy, drop the
-		// migrated account's duplicate rows
+		// if both accounts own the same trophy, drop the migrated account's duplicate rows
 		await trx
 			.deleteFrom("TrophyOwner")
 			.where("userId", "=", args.newUserId)
@@ -228,10 +216,7 @@ export function migrate(args: { newUserId: number; oldUserId: number }) {
 	});
 }
 
-/**
- * Merging accounts can collide on the one-report-per-pair unique index; the newer
- * report (by `createdAt`, id as tie-breaker) wins and the other row is dropped.
- */
+/** Merging can collide on the one-report-per-pair unique index; the newer report (createdAt, then id) wins. */
 function deleteOlderCollidingUserReports(
 	trx: Transaction<DB>,
 	args: { newUserId: number; oldUserId: number },
@@ -414,6 +399,7 @@ export async function findAllBannedUsers() {
 	return result;
 }
 
+/** Bans the user, logging it unless it's an automatic ban. Revokes their API tokens. */
 export function banUser({
 	userId,
 	banned,
@@ -423,7 +409,7 @@ export function banUser({
 	userId: number;
 	banned: 1 | Date;
 	bannedReason: string | null;
-	/** Which user banned the user? If null then it means it was an automatic ban. */
+	/** null means an automatic ban. */
 	bannedByUserId: number | null;
 }) {
 	return db.transaction().execute(async (trx) => {
@@ -448,6 +434,8 @@ export function banUser({
 				})
 				.execute();
 		}
+
+		await trx.deleteFrom("ApiToken").where("userId", "=", userId).execute();
 	});
 }
 

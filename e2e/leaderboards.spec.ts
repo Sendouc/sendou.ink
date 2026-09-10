@@ -102,7 +102,8 @@ async function seedLeaderboards(factories: Factories) {
 	const alphaUserIds = [ADMIN_ID, ...mates.map((mate) => mate.id)];
 	const bravoUserIds = enemies.map((enemy) => enemy.id);
 
-	const matches = [];
+	const matches: Awaited<ReturnType<typeof factories.SQMatchFactory.create>>[] =
+		[];
 	for (let i = 0; i < MATCHES_COUNT_NEEDED_FOR_LEADERBOARD; i++) {
 		matches.push(
 			await factories.SQMatchFactory.create(

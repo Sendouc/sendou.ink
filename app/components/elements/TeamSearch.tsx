@@ -1,8 +1,9 @@
 import type * as React from "react";
-import type { SelectProps } from "react-aria-components";
 import type { SearchLoaderData } from "~/features/search/routes/search";
+import { searchSearchParams } from "~/features/search/search-search-params";
 import {
 	SearchSelect,
+	type SearchSelectFieldProps,
 	SearchSelectItem,
 	SearchSelectItemLogo,
 } from "./SearchSelect";
@@ -14,30 +15,26 @@ export type TeamSearchResult = Extract<
 	{ type: "team" }
 >;
 
-interface TeamSearchProps<T extends object>
-	extends Omit<SelectProps<T>, "children" | "onChange"> {
-	name?: string;
-	label?: string;
-	bottomText?: string;
-	errorText?: string;
-	/** Team to preselect and display on mount (e.g. when editing a linked team). */
+interface TeamSearchProps extends SearchSelectFieldProps {
+	/** preselected on mount (e.g. when editing a linked team) */
 	initialTeam?: { id: number; name: string; avatarUrl?: string | null };
 	onChange?: (team: TeamSearchResult | null) => void;
 	ref?: React.Ref<HTMLButtonElement>;
 }
 
-export function TeamSearch<T extends object>({
-	name,
-	label,
-	bottomText,
-	errorText,
+export function TeamSearch({
 	initialTeam,
 	onChange,
 	ref,
 	...rest
-}: TeamSearchProps<T>) {
+}: TeamSearchProps) {
 	const search = useEntitySearch<TeamSearchResult>({
-		buildUrl: (query) => `/search?q=${query}&type=teams&limit=6`,
+		buildUrl: (query) =>
+			searchSearchParams.href("/search", {
+				q: query,
+				type: "teams",
+				limit: 6,
+			}),
 		parseResults: parseTeamResults,
 		initialItem: initialTeam as TeamSearchResult | undefined,
 		initialSelectedId: initialTeam?.id,
@@ -47,10 +44,6 @@ export function TeamSearch<T extends object>({
 	return (
 		<SearchSelect
 			{...rest}
-			name={name}
-			label={label}
-			bottomText={bottomText}
-			errorText={errorText}
 			ariaLabel="Team search"
 			inputTestId="team-search-input"
 			i18nKey="teamSearch"

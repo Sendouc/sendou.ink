@@ -6,12 +6,12 @@ import type {
 	StageId,
 } from "~/modules/in-game-lists/types";
 import type { DeathData } from "../../core/detectors/death/index";
+import type { KillData } from "../../core/detectors/kill/index";
 import type {
 	MinimapData,
 	MinimapEnemy,
 	MinimapTeammate,
 } from "../../core/detectors/minimap/index";
-import { SPECTATOR_SLOTS } from "../../core/detectors/minimap/rois";
 import type { ObjectiveData } from "../../core/detectors/objective/index";
 import type { PlayerStatusData } from "../../core/detectors/objective/player-status";
 import type { StripWeaponsData } from "../../core/detectors/objective/strip-weapons";
@@ -25,7 +25,7 @@ import {
 	invalidObjectiveEvents,
 } from "../../core/match-builder";
 import type { ScannerLobby } from "../../scanner-types";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 const NAMES = ["w1", "w2", "w3", "w4", "l1", "l2", "l3", "l4"];
 const ALPHA: MainWeaponId[] = [40, 1001, 2010, 3030];
@@ -82,7 +82,7 @@ function scoreboard(
 		lobby = "PRIVATE" as ScannerLobby | null,
 		mode = "SZ" as ModeShort | null,
 		stage = 0 as StageId | null,
-		weapons = ALL as (MainWeaponId | null)[],
+		weapons: weaponIds = ALL as (MainWeaponId | null)[],
 		povIndex = 0 as number | null,
 		matchScores = [100, 47] as [number | null, number | null],
 	} = {},
@@ -92,7 +92,7 @@ function scoreboard(
 		mode,
 		stage,
 		matchScores,
-		players: weapons.map((weaponId, i) => ({
+		players: weaponIds.map((weaponId, i) => ({
 			name: NAMES[i] ?? `p${i}`,
 			weaponId,
 			paint: 1000,
@@ -135,9 +135,9 @@ function battleLogScoreboard(
 	return { type: "ScoreboardBattleLog", t, confidence: 0.9, data };
 }
 
-function teammate(weaponId: MainWeaponId | null, i: number): MinimapTeammate {
+function teammate(weaponId: MainWeaponId | null): MinimapTeammate {
 	return {
-		slot: SPECTATOR_SLOTS[i]!,
+		self: false,
 		name: null,
 		weaponId,
 		abilities: [],
@@ -172,7 +172,7 @@ function minimap(
 		stage,
 		spectator,
 		teammates: alpha.map((id, i) => ({
-			...teammate(id, i),
+			...teammate(id),
 			dead: dead[0].includes(i),
 			specialReady: specialReady[0].includes(i),
 		})),
@@ -784,11 +784,9 @@ test("a confirmed stage change splits even when the misread-looking frame is mid
 	);
 });
 
-// KNOWN LIMITATION (documented, not desired): two consecutive games on the
-// SAME stage with a between-games break shorter than MATCH_GAP_SECONDS merge
-// into one match — no native UI delimits them on casted footage and the
-// simplified minimap carries no signal to split on. Real mode/game detection
-// should replace this.
+// KNOWN LIMITATION: two consecutive games on the SAME stage with a break
+// shorter than MATCH_GAP_SECONDS merge into one match — casted footage has no
+// native delimiter and the minimap carries no signal to split on.
 test("same-stage rematch within the gap window merges into one match (known limitation)", () => {
 	const game1 = [minimap(70), minimap(150)];
 	const game2 = [minimap(380), minimap(460)];
@@ -868,8 +866,6 @@ test("a scoreboard is the preferred weapon/mode source and closes a match", () =
 test("no minimaps and no scoreboard means no match", () => {
 	assert.deepEqual(buildScannerMatches([mapStart(30), mapStart(400)]), []);
 });
-
-// ---- player-status samples ----
 
 const ALL_FALSE = [
 	[false, false, false, false],
@@ -1208,8 +1204,6 @@ test("a losing-side pov swaps minimap-sourced samples into teams order", () => {
 	]);
 });
 
-// ---- strip-slot → scoreboard-row assignment ----
-
 test("strip weapon evidence reorders status slots into scoreboard rows", () => {
 	// strip seating [2010, 40, 3030, 1001] vs scoreboard rows ALPHA
 	// [40, 1001, 2010, 3030]: slot0 belongs to row2
@@ -1282,10 +1276,10 @@ test("minimap enemy-card weapons vote the strip assignment too", () => {
 
 test("pov diamond cards map to scoreboard rows by name", () => {
 	const cards = [
-		{ ...teammate(ALPHA[1]!, 0), name: "w2", dead: true },
-		{ ...teammate(ALPHA[0]!, 1), name: "w1" },
-		{ ...teammate(ALPHA[3]!, 2), name: "w4" },
-		{ ...teammate(ALPHA[2]!, 3), name: "w3" },
+		{ ...teammate(ALPHA[1]!), name: "w2", dead: true },
+		{ ...teammate(ALPHA[0]!), name: "w1" },
+		{ ...teammate(ALPHA[3]!), name: "w4" },
+		{ ...teammate(ALPHA[2]!), name: "w3" },
 	];
 	const data: MinimapData = {
 		stage: 0 as StageId,
@@ -1304,4 +1298,128 @@ test("pov diamond cards map to scoreboard rows by name", () => {
 		[false, true, false, false],
 		[false, false, false, false],
 	]);
+});
+
+function kill(
+	t: number,
+	names: (string | null)[],
+	{ time = (300 - Math.round(t)) as number | null } = {},
+): DetectedEvent {
+	const data: KillData = { time, names };
+	return { type: "Kill", t, confidence: 0.9, data };
+}
+
+test("kill reads become one kill per row entering the stack", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["24K"]),
+		kill(61, ["datkid", "24K"]),
+		kill(65, ["datkid"]),
+		scoreboard(300),
+	]);
+	assert.deepEqual(built[0]!.match.kills, [
+		{ t: 60, time: 240, name: "24K" },
+		{ t: 61, time: 239, name: "datkid" },
+	]);
+});
+
+test("a repeated name past the row lifetime is a fresh kill", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["24K"]),
+		kill(75, ["24K"]),
+		scoreboard(300),
+	]);
+	assert.deepEqual(
+		built[0]!.match.kills!.map((k) => k.t),
+		[60, 75],
+	);
+});
+
+test("a wobbling read of a persisting row is not a new kill", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["datkid"]),
+		kill(63, ["datkíd"]),
+		scoreboard(300),
+	]);
+	assert.equal(built[0]!.match.kills!.length, 1);
+});
+
+test("an unreadable row still counts as a kill", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, [null]),
+		scoreboard(300),
+	]);
+	assert.deepEqual(built[0]!.match.kills, [{ t: 60, time: 240, name: null }]);
+});
+
+test("kill reads off a replay wipe are dropped", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		objective(60),
+		objective(70),
+		objective(80),
+		kill(65, ["24K"]),
+		// a broadcast re-running the 3:30 moment at t=200
+		kill(200, ["datkid"], { time: 210 }),
+		scoreboard(300),
+	]);
+	assert.deepEqual(
+		built[0]!.match.kills!.map((k) => k.name),
+		["24K"],
+	);
+});
+
+test("kills survive on a known non-SZ match", () => {
+	const built = buildScannerMatches([
+		mapStart(0, { mode: "TC" }),
+		kill(60, ["24K"]),
+		scoreboard(300, { mode: "TC" }),
+	]);
+	assert.equal(built[0]!.match.kills!.length, 1);
+});
+
+test("a match with no kill reads has null kills", () => {
+	const built = buildScannerMatches([mapStart(0), scoreboard(300)]);
+	assert.equal(built[0]!.match.kills, null);
+});
+
+test("a read that misses an inner row does not recount the rows it drops", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(50, ["Z"]),
+		// Z's pill blurred: the bottom-up scan stops after the new row
+		kill(50.5, ["X"]),
+		kill(51, ["X", "Z"]),
+		scoreboard(300),
+	]);
+	assert.deepEqual(
+		built[0]!.match.kills!.map((k) => [k.t, k.name]),
+		[
+			[50, "Z"],
+			[50, "X"],
+		],
+	);
+});
+
+test("the same name twice in one stack is two kills", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["A", "A"]),
+		kill(61, ["A", "A"]),
+		scoreboard(300),
+	]);
+	assert.equal(built[0]!.match.kills!.length, 2);
+});
+
+test("a same-name stack seen again inside the row lifetime is the same row", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		kill(60, ["A"]),
+		kill(64, ["A"]),
+		scoreboard(300),
+	]);
+	assert.equal(built[0]!.match.kills!.length, 1);
 });

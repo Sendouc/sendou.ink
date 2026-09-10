@@ -1,5 +1,5 @@
 import { db } from "~/db/sql";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 
 const discordId = process.argv[2]?.trim();
 const discordId2 = process.argv[3]?.trim();
@@ -10,7 +10,6 @@ invariant(discordId !== discordId2, "discord ids must be different");
 
 const tempDiscordId = "temp-discord-id";
 
-// swap user discordIds
 await db.transaction().execute(async (trx) => {
 	const swap = (from: string, to: string) =>
 		trx

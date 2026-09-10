@@ -98,7 +98,7 @@ export interface Team {
 	name: string;
 	bsky: string | null;
 	mapModePreferences: JSONColumnTypeNullable<UserMapModePreferences>;
-	/** Team's tag, typically used in-game in front of users' names to indicate they are a member of the team. */
+	/** Shown in-game in front of members' names */
 	tag: string | null;
 }
 
@@ -679,18 +679,10 @@ export interface TournamentBadgeOwner {
 	count: Generated<number>;
 }
 
-/** A group is a logical structure used to group multiple rounds together.
-
-- In round-robin stages, a group is a pool.
-- In swiss, a group is also a pool (can have one or multiple groups)
-- In elimination stages, a group is a bracket.
-    - A single elimination stage can have one or two groups:
-      - The unique bracket.
-      - If enabled, the Consolation Final.
-    - A double elimination stage can have two or three groups:
-      - Upper and lower brackets.
-      - If enabled, the Grand Final.
-*/
+/**
+ * Groups rounds together. In round-robin and swiss a group is a pool; in elimination it is a bracket
+ * (single: the bracket + optional consolation final, double: upper, lower + optional grand final).
+ */
 export interface TournamentGroup {
 	id: GeneratedAlways<number>;
 	number: number;
@@ -749,23 +741,14 @@ export interface TournamentResult {
 	placement: number;
 	tournamentId: number;
 	tournamentTeamId: number;
-	/**
-	 * The result of sets in the tournament.
-	 * E.g. ["W", "L", null] would mean the user won the first set, lost the second and did not play the third.
-	 * */
+	/** E.g. ["W", "L", null] = won the first set, lost the second, did not play the third. */
 	setResults: JSONColumnType<WinLossParticipationArray>;
 	userId: number;
 	/** Division label for tournaments with multiple starting brackets (e.g., "D1", "D2") */
 	div: string | null;
 }
 
-/**
- * A round is a logical structure used to group multiple matches together.
-
-  - In round-robin stages, a round can be viewed as a list of matches that can be played at the same time.
-  - In swiss, a round is a list of matches that are played at the same time.
-  - In elimination stages, a round is a round of a bracket, e.g. 8th finals, semi-finals, etc.
- */
+/** Groups matches played at the same time (round-robin, swiss) or one round of a bracket (elimination). */
 export interface TournamentRound {
 	groupId: number;
 	id: GeneratedAlways<number>;
@@ -861,7 +844,6 @@ export interface TournamentAuditLog {
 	id: GeneratedAlways<number>;
 	tournamentId: number;
 	type: TournamentAuditLogType;
-	/** The user who performed the action. */
 	actorUserId: number;
 	/** The affected member, for member-level events. `null` for team-level events. */
 	subjectUserId: number | null;
@@ -965,8 +947,6 @@ export interface User {
 	/** 1 = permabanned, timestamp = ban active till then */
 	banned: Generated<number | null>;
 	bannedReason: string | null;
-	/** Shown on old user profile and Plus Voting */
-	bio: string | null;
 	/** Shown on user card */
 	shortBio: string | null;
 	commissionsOpen: Generated<DBBoolean>;
@@ -985,8 +965,6 @@ export interface User {
 	/** Name the user is shown under in tournaments, set by organizers of established organizations. `null` = their `username` is used. */
 	tournamentName: string | null;
 	discordUniqueName: string | null;
-	/** User's favorite badges they want to show on the front page of the badge display. Index = 0 big badge. */
-	favoriteBadgeIds: JSONColumnTypeNullable<number[]>;
 	favoriteTrophyIds: JSONColumnTypeNullable<number[]>;
 	hiddenTrophyIds: JSONColumnTypeNullable<number[]>;
 	id: GeneratedAlways<number>;
@@ -996,16 +974,12 @@ export interface User {
 	isTournamentOrganizer: Generated<DBBoolean>;
 	isApiAccesser: Generated<DBBoolean>;
 	languages: JSONColumnTypeNullable<UnifiedLanguageCode[]>;
-	motionSens: number | null;
 	pronouns: JSONColumnTypeNullable<Pronouns>;
 	patronStartedAt: number | null;
 	patronTier: number | null;
 	patronExpiresAt: number | null;
-	showDiscordUniqueName: Generated<DBBoolean>;
-	stickSens: number | null;
 	twitch: string | null;
 	bsky: string | null;
-	battlefy: string | null;
 	vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
 	youtubeId: string | null;
 	mapModePreferences: JSONColumnTypeNullable<UserMapModePreferences>;
@@ -1014,10 +988,10 @@ export interface User {
 	noScreen: Generated<DBBoolean>;
 	buildSorting: JSONColumnTypeNullable<BuildSort[]>;
 	preferences: JSONColumnTypeNullable<UserPreferences>;
-	/** User creation date. Can be null because we did not always save this. */
+	/** Can be null because we did not always save this. */
 	createdAt: number | null;
 	joinOrder: number | null;
-	/** User card banner default selection, stored as raw text (not JSON): either a hex code (e.g. "#8b0000") or a stage id in string form (e.g. "16"). Note: supporters can also upload banner (stored in UserSubmittedImage, referenced by `bannerImgId` which takes precedence) */
+	/** User card banner preset, raw text (not JSON): a hex code ("#8b0000") or a stage id ("16"). `bannerImgId` takes precedence. */
 	bannerPresetImg: string | null;
 	/** Supporter-uploaded user card banner (UserSubmittedImage id). Takes precedence over `bannerPresetImg`. */
 	bannerImgId: number | null;
@@ -1025,6 +999,8 @@ export interface User {
 	hiddenCardStats: JSONColumnTypeNullable<Array<HideableUserCardStat>>;
 	/** Div in the latest finished LUTI (e.g. "2" or "X"). Must have been in a team that did not drop and the user played at least one match (got result as well) */
 	div: string | null;
+	/** LUTI season `div` was earned in. */
+	divSeason: number | null;
 	/** Peak XP as indicated by the user. Should have either `takoroka` or `tentatek` key defined but not both. */
 	unverifiedPeakXP: JSONColumnTypeNullable<PeakXP>;
 	/** Division the user card's XP is taken from. `null` when the user has not picked one, showing their highest XP across both. */
@@ -1054,14 +1030,6 @@ export interface UserSearch {
 	inGameName: GeneratedAlways<string | null>;
 	discordUniqueName: GeneratedAlways<string | null>;
 	customUrl: GeneratedAlways<string | null>;
-}
-
-export interface UserWeapon {
-	createdAt: Generated<number>;
-	isFavorite: Generated<DBBoolean>;
-	order: number;
-	userId: number;
-	weaponSplId: MainWeaponId;
 }
 
 export interface UserWeaponPool {
@@ -1208,7 +1176,6 @@ export interface XRankPlacement {
 
 export interface ScrimPost {
 	id: GeneratedAlways<number>;
-	/** When is the scrim scheduled to happen */
 	startsAt: number;
 	/** Optional end of time range indicating team accepts scrims starting between startsAt and rangeEndsAt */
 	rangeEndsAt: number | null;
@@ -1216,20 +1183,14 @@ export interface ScrimPost {
 	maxDiv: number | null;
 	/** Lowest LUTI div accepted */
 	minDiv: number | null;
-	/** Who sees the post */
 	visibility: JSONColumnTypeNullable<AssociationVisibility>;
-	/** Any additional info */
 	text: string | null;
 	chatRoomId: number | null;
 	/** Refers to the team looking for the team (can also be a pick-up) */
 	teamId: number | null;
-	/** Indicates if anyone in the post can manage it */
 	managedByAnyone: DBBoolean;
-	/** When the scrim was canceled */
 	canceledAt: number | null;
-	/** User id who canceled the scrim */
 	canceledByUserId: number | null;
-	/** Reason for canceling the scrim */
 	cancelReason: string | null;
 	/** When the post was made was it scheduled for a future time slot (as opposed to looking now) */
 	isScheduledForFuture: Generated<DBBoolean>;
@@ -1265,13 +1226,11 @@ export interface ScrimMap {
 export interface ScrimPostUser {
 	scrimPostId: number;
 	userId: number;
-	/** User is the author of the post */
 	isOwner: DBBoolean;
 }
 
 export interface ScrimPickupRoster {
 	id: GeneratedAlways<number>;
-	/** User who used the pick-up roster */
 	userId: number;
 	/** When the roster was last used to make a scrim post */
 	usedAt: Generated<number>;
@@ -1296,7 +1255,6 @@ export interface ScrimPostRequest {
 
 export interface ScrimPostRequestUser {
 	scrimPostRequestId: number;
-	/** User that made the request */
 	userId: number;
 	isOwner: DBBoolean;
 }
@@ -1384,20 +1342,19 @@ export interface TeamEvent {
 	createdAt: Generated<number>;
 }
 
+/** Participant of a team event limited to selected members. No rows for an event = the whole team takes part. */
+export interface TeamEventMember {
+	teamEventId: number;
+	userId: number;
+}
+
 export type Tables = { [P in keyof DB]: Selectable<DB[P]> };
 export type TablesInsertable = { [P in keyof DB]: Insertable<DB[P]> };
 
 /**
- * Every table and view available to query.
- *
- * Some entries are SQL **views**, not tables. They are marked below and can not
- * be inserted into or updated. Two naming conventions exist for the
- * table/view pairing, both meaning "base table vs. filtered view":
- * - `All` prefix on the table: `AllTeam` (table) / `Team` (view)
- * - `Unvalidated` prefix on the table: `UnvalidatedVideo` (table) / `Video` (view)
- *
- * In both cases write to the prefixed table and read from the unprefixed view
- * unless you specifically want the filtered-out rows.
+ * Every table and view. Views (marked below) are read-only. Base table / filtered view pairs use an
+ * `All` or `Unvalidated` prefix on the table (`AllTeam`/`Team`, `UnvalidatedVideo`/`Video`): write to
+ * the prefixed table, read from the view unless you want the filtered-out rows.
  */
 export interface DB {
 	/** Table backing the `Team` view. Includes soft-deleted teams. */
@@ -1508,7 +1465,6 @@ export interface DB {
 	UserResultHighlight: UserResultHighlight;
 	/** VIEW over `UnvalidatedUserSubmittedImage`, excludes images awaiting validation. Insert/update via `UnvalidatedUserSubmittedImage`. */
 	UserSubmittedImage: UserSubmittedImage;
-	UserWeapon: UserWeapon;
 	UserWeaponPool: UserWeaponPool;
 	TenStarWeapon: TenStarWeapon;
 	UserFriendCode: UserFriendCode;
@@ -1538,4 +1494,5 @@ export interface DB {
 	AvailabilitySlot: AvailabilitySlot;
 	AvailabilityDayNote: AvailabilityDayNote;
 	TeamEvent: TeamEvent;
+	TeamEventMember: TeamEventMember;
 }

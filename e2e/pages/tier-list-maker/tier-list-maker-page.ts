@@ -1,7 +1,12 @@
 import type { Page } from "@playwright/test";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { TIER_LIST_MAKER_URL } from "~/utils/urls";
-import { expect, expectIsHydrated, navigate } from "../../helpers/playwright";
+import {
+	expect,
+	expectIsHydrated,
+	navigate,
+	waitForDropToSettle,
+} from "../../helpers/playwright";
 
 type ItemType =
 	| "main-weapon"
@@ -64,7 +69,9 @@ export class TierListMakerPage {
 	}
 
 	async openTab(type: ItemType) {
-		await this.page.getByRole("tab", { name: TAB_NAMES[type] }).click();
+		const tab = this.page.getByRole("tab", { name: TAB_NAMES[type] });
+		await tab.click();
+		await expect(tab).toHaveAttribute("aria-selected", "true");
 	}
 
 	async setPlacementMode(mode: "drag" | "click") {
@@ -94,6 +101,7 @@ export class TierListMakerPage {
 		await this.page.mouse.up();
 
 		await expect(emptyTiers).toHaveCount(emptyCountBefore - 1);
+		await waitForDropToSettle(this.page);
 	}
 
 	async clickFirstItem(type: ItemType) {

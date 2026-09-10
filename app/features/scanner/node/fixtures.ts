@@ -1,9 +1,7 @@
 /**
- * Fixture discovery and detector execution for tests and tools.
- *
- * A fixture is a directory under app/features/scanner/tests/fixtures/<detector>/<case-name>/ containing
- * frame.png or frame.jpg (raw capture, any resolution — normalization happens
- * inside the pipeline under test) and expected.json.
+ * Fixture discovery and detector execution for tests and tools. A fixture is a
+ * directory under tests/fixtures/<detector>/<case-name>/ holding frame.png or
+ * frame.jpg (raw capture, any resolution) and expected.json.
  */
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -36,7 +34,8 @@ interface ExpectedPlayer {
 }
 
 interface ExpectedMinimapTeammate {
-	slot?: "up" | "left" | "right" | "self" | "down";
+	/** the POV player's own card */
+	self?: boolean;
 	name?: string | null;
 	/** informational for the human corrector; tests compare weaponId */
 	weaponLabel?: string | null;
@@ -73,6 +72,7 @@ interface ExpectedScoreboard {
 		| "Objective"
 		| "PlayerStatus"
 		| "StripWeapons"
+		| "Kill"
 		| "none";
 	data?: {
 		lobby?: ScannerLobby;
@@ -90,9 +90,8 @@ interface ExpectedScoreboard {
 		/** index of the yellow POV-arrow row in `players`; null = no arrow */
 		povIndex?: number | null;
 		/**
-		 * Death: killer's weapon id and kind (ids are unique per kind).
-		 * ScoreboardOwn: the player's own main weapon (weaponType unused).
-		 * weaponLabel is informational for the human corrector.
+		 * Death: killer's weapon id and kind (ids are unique per kind). ScoreboardOwn:
+		 * the player's own main (weaponType unused). weaponLabel is informational.
 		 */
 		weaponLabel?: string;
 		weaponId?: number | null;
@@ -101,8 +100,10 @@ interface ExpectedScoreboard {
 		abilities?: AbilityWithUnknown[][];
 		/** Death only: killer's splash-tag name */
 		name?: string;
-		/** Objective only: match-timer seconds ("3:35" = 215); null = unreadable */
+		/** Objective + Kill: match-timer seconds ("3:35" = 215); null = unreadable */
 		time?: number | null;
+		/** Kill only: feed rows bottom (newest) first; null = row shown but name unreadable */
+		names?: (string | null)[];
 		/** Objective only: displayed counter per team, [alpha, bravo] */
 		score?: [number | null, number | null];
 		/** Objective only: penalty pill value per team; null = no pill */
@@ -117,16 +118,12 @@ interface ExpectedScoreboard {
 		layout?: "even" | "narrow-right" | "narrow-left";
 		/** PlayerStatus only: white camera badges proved a casted spectator HUD */
 		cast?: true | null;
-		/**
-		 * StripWeapons only: the true weapon per slot, [left team, right
-		 * team], null = slot skipped (splatted icon). weaponLabels is
-		 * informational for the human corrector.
-		 */
+		/** StripWeapons only: true weapon per slot, [left team, right team], null = splatted slot skipped */
 		weapons?: [(MainWeaponId | null)[], (MainWeaponId | null)[]];
 		weaponLabels?: [(string | null)[], (string | null)[]];
 		/** Minimap only: casted 8-player spectator map screen (not parsed yet) */
 		spectator?: boolean;
-		/** Minimap only: own-team callout cards in slot order */
+		/** Minimap only: own-team callout cards in drawn order */
 		teammates?: ExpectedMinimapTeammate[];
 		/** Minimap only: enemy panel rows, top to bottom */
 		enemies?: ExpectedMinimapEnemy[];

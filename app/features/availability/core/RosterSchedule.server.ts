@@ -5,12 +5,11 @@ import {
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
 import type { SerializeFrom } from "~/utils/remix";
-import * as AvailabilityRepository from "../AvailabilityRepository.server";
 import { AVAILABILITY } from "../availability-constants";
 import type { TimeRange, WindowSchedule } from "../availability-types";
 import * as Availability from "./Availability";
-import * as Commitments from "./Commitments.server";
 import * as ScheduleWeek from "./ScheduleWeek";
+import * as VisibleSchedules from "./VisibleSchedules.server";
 
 const DAY_SECONDS = 24 * 60 * 60;
 
@@ -19,20 +18,19 @@ export type RosterScheduleData = SerializeFrom<
 >;
 
 /**
- * Effective availability of the given users over the reportable horizon, laid
- * out as the viewer-local weeks and days the schedule surfaces render on.
- *
- * Which of these users make up a roster is only known in the browser (the
- * scrim post form's team select, its pick-up member search), so the roster's
- * shared free time is not resolved here — the members come out one by one and
- * {@link Availability.playableWindows} merges the picked ones client side.
+ * Effective availability of the users over the reportable horizon as viewer-local weeks and
+ * days. Which users form a roster is only known in the browser (scrim post form's team select,
+ * pick-up search), so members come out one by one and {@link Availability.playableWindows}
+ * merges the picked ones client side.
  */
 export async function rosterScheduleData({
 	userIds,
 	timezone,
+	viewerId,
 }: {
 	userIds: Array<number>;
 	timezone: string;
+	viewerId: number;
 }) {
 	const now = new Date();
 	const horizon = {
@@ -43,10 +41,11 @@ export async function rosterScheduleData({
 		).endsAt,
 	};
 
-	const [reportedWeeks, busyByUserId] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({ userIds, ...horizon }),
-		Commitments.busyBlocksByUserIds({ userIds, ...horizon }),
-	]);
+	const { reportedWeeks, busyByUserId } = await VisibleSchedules.findByUserIds({
+		userIds,
+		viewerId,
+		...horizon,
+	});
 
 	const weeks = R.range(0, AVAILABILITY.WEEK_HORIZON).map((weekOffset) =>
 		weekView({
@@ -114,23 +113,21 @@ function weekView({ range, timezone }: { range: TimeRange; timezone: string }) {
 }
 
 /**
- * What the given users' schedules say about each of the given windows: what
- * they reported inside it, the commitments overriding that and whether they
- * filled in the week it falls in at all.
- *
- * The windows are resolved in one go so that a page showing many of them (the
- * scrim browsing page's fit indicators) reads the schedules once. Windows past
- * the reportable horizon are left out — nothing could be known about them.
+ * What the users' schedules say about each window: reported ranges inside it, overriding
+ * commitments and whether the week was filled in at all. Resolved in one go so a page with many
+ * windows (scrim fit indicators) reads the schedules once. Windows past the horizon are left out.
  */
 export async function windowSchedules({
 	windows,
 	userIds,
+	viewerId,
 }: {
 	windows: Array<TimeRange & { id: number }>;
 	userIds: Array<number>;
+	/** Null when logged out, which the scrims page is viewable as. */
+	viewerId: number | null;
 }) {
-	// the horizon's last week starts at the current week's start at the latest,
-	// so nothing inside it reaches this far
+	// the horizon's last week starts at the current week's start at the latest, so nothing inside it reaches this far
 	const horizonEndsAt = dateToDatabaseTimestamp(
 		addWeeks(new Date(), AVAILABILITY.WEEK_HORIZON),
 	);
@@ -138,17 +135,20 @@ export async function windowSchedules({
 		(window) => window.startsAt < horizonEndsAt,
 	);
 
-	if (withinHorizon.length === 0 || userIds.length === 0) return [];
+	if (withinHorizon.length === 0 || userIds.length === 0 || viewerId === null) {
+		return [];
+	}
 
 	const range = {
 		startsAt: Math.min(...withinHorizon.map((window) => window.startsAt)),
 		endsAt: Math.max(...withinHorizon.map((window) => window.endsAt)),
 	};
 
-	const [reportedWeeks, busyByUserId] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({ userIds, ...range }),
-		Commitments.busyBlocksByUserIds({ userIds, ...range }),
-	]);
+	const { reportedWeeks, busyByUserId } = await VisibleSchedules.findByUserIds({
+		userIds,
+		viewerId,
+		...range,
+	});
 
 	return withinHorizon.map((window) => ({
 		id: window.id,
@@ -162,8 +162,7 @@ export async function windowSchedules({
 
 			return {
 				userId,
-				// which week a window falls in is a question about the member's own
-				// clock, the same one they filled the week in on
+				// which week a window falls in goes by the member's own clock, the one they filled the week in on
 				reported: memberWeeks.some(
 					(week) =>
 						Availability.weekStartsAt(

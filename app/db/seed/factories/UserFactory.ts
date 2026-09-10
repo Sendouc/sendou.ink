@@ -7,8 +7,7 @@ import { ADMIN_ID } from "~/features/admin/admin-constants";
 import * as MatchProfileRepository from "~/features/match-profile/MatchProfileRepository.server";
 import * as UserCardRepository from "~/features/user-card/UserCardRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import invariant from "~/utils/invariant";
-import { toDBBoolean } from "~/utils/sql";
+import { invariant } from "~/utils/invariant";
 import {
 	ORG_ADMIN_TEST_ID,
 	REGULAR_USER_TEST_ID,
@@ -46,12 +45,11 @@ type Options = {
 	ban?: Omit<Parameters<typeof AdminRepository.banUser>[0], "userId">;
 	/** Division the user played their last season in. */
 	div?: NonNullable<Tables["User"]["div"]>;
-	/** Weapon pool, submitted as the user themselves. */
-	weapons?: Parameters<typeof UserRepository.updateOwnProfile>[0]["weapons"];
+	/** LUTI season `div` is from, only applied together with it. */
+	divSeason?: number;
 	/** User card fields, submitted as the user themselves. */
 	card?: Partial<CardArgs>;
-	/** Profile page widgets, replacing whatever the user had. Only shown to a user
-	 * who is a supporter and has `newProfileEnabled` in their `preferences`. */
+	/** Replaces the user's widgets, i.e. their profile layout, in place of the default one. */
 	widgets?: Parameters<typeof UserRepository.upsertWidgets>[1];
 	/** Preferences, merged into the ones the user has, as the settings pages save them. */
 	preferences?: UserPreferences;
@@ -87,8 +85,7 @@ const GRANT_ROLE: Record<Role, (userId: number) => Promise<unknown>> = {
 	API_ACCESSER: AdminRepository.makeApiAccesserByUserId,
 };
 
-/** Creates users. Columns outside `UserRepository.upsert` (patron status, plus tier,
- * match profile) are set by the repository function that owns them. */
+/** Columns outside `UserRepository.upsert` (patron status, plus tier, match profile) are set by their owning repository function. */
 export const { create, createMany } = defineFactory({
 	defaults: ({ seq }) => ({
 		discordId: fakeDiscordId(seq),
@@ -125,9 +122,7 @@ function fakeFriendCode() {
 	return `${faker.string.numeric(4)}-${faker.string.numeric(4)}-${faker.string.numeric(4)}`;
 }
 
-/** A real-looking Discord snowflake: 42 bits of timestamp, `seq` in the low 22.
- * Must stay 10+ characters — `userByIdentifierQuery` resolves shorter numeric
- * identifiers as row ids, which would break `/u/<discordId>` links. */
+/** Snowflake-like: 42 bits of timestamp, `seq` in the low 22. Must stay 10+ chars or `userByIdentifierQuery` reads it as a row id. */
 function fakeDiscordId(seq: number) {
 	const DISCORD_EPOCH_MS = 1420070400000n;
 	const FAKE_CREATED_AT_MS = 1685577600000n; // 2023-06-01
@@ -135,9 +130,7 @@ function fakeDiscordId(seq: number) {
 	return String(((FAKE_CREATED_AT_MS - DISCORD_EPOCH_MS) << 22n) + BigInt(seq));
 }
 
-/** Saves profile fields as the user, for a user that already exists. The profile page
- * submits every field at once, prefilled with what the user has, so the fields the
- * caller leaves out keep their current value instead of being cleared. */
+/** Saves profile fields as the user; like the profile page, fields left out keep their current value. */
 export async function updateProfile(
 	userId: number,
 	profile: Partial<ProfileArgs>,
@@ -154,18 +147,12 @@ async function currentProfile(userId: number): Promise<ProfileArgs> {
 		.selectFrom("User")
 		.select([
 			"country",
-			"bio",
 			"customUrl",
 			"customName",
-			"motionSens",
-			"stickSens",
 			"pronouns",
 			"inGameName",
-			"battlefy",
-			"showDiscordUniqueName",
 			"commissionText",
 			"commissionsOpen",
-			"favoriteBadgeIds",
 			"favoriteTrophyIds",
 			"hiddenTrophyIds",
 			"customAvatarImgId",
@@ -173,22 +160,13 @@ async function currentProfile(userId: number): Promise<ProfileArgs> {
 		.where("id", "=", userId)
 		.executeTakeFirstOrThrow();
 
-	const weapons = await db
-		.selectFrom("UserWeapon")
-		.select(["weaponSplId", "isFavorite"])
-		.where("userId", "=", userId)
-		.orderBy("order", "asc")
-		.execute();
-
 	return {
 		...user,
 		pronouns: user.pronouns ? JSON.stringify(user.pronouns) : null,
-		weapons,
 	};
 }
 
-/** Links the Twitch account to the user, the way logging in with the account
- * connected on Discord does. */
+/** Links the Twitch account the way logging in with it connected on Discord does. */
 export async function linkTwitch(userId: number, twitch: string | null) {
 	const user = await db
 		.selectFrom("User")
@@ -206,8 +184,7 @@ export async function linkTwitch(userId: number, twitch: string | null) {
 	await UserRepository.upsert({ ...user, twitch });
 }
 
-/** Pronouns as the profile page saves them: the subject and object forms as one
- * JSON object, not the `he/him` string they are displayed as. */
+/** Subject and object forms as one JSON object, as the profile page saves them. */
 export function fakePronouns() {
 	return JSON.stringify(
 		faker.helpers.arrayElement([
@@ -218,8 +195,7 @@ export function fakePronouns() {
 	);
 }
 
-/** Country biased the way the player base is: US and the big European scenes
- * first, anything possible. */
+/** Biased like the player base: US and big European scenes first, anything possible. */
 export function fakeCountry() {
 	return faker.helpers.weightedArrayElement([
 		{ value: "US", weight: 30 },
@@ -240,45 +216,20 @@ function fakeProfile(): Partial<ProfileArgs> | null {
 
 	return {
 		country: fakeCountry(),
-		bio: chance(0.4)
-			? faker.lorem.paragraphs(faker.helpers.arrayElement([1, 1, 2, 3]), "\n\n")
-			: undefined,
 		inGameName: chance(0.5) ? SplatoonFaker.inGameName() : undefined,
-		motionSens: chance(0.3)
-			? faker.helpers.arrayElement([-50, -30, -10, 0, 10, 30, 50])
-			: undefined,
-		stickSens: chance(0.3)
-			? faker.helpers.arrayElement([-50, -20, 0, 20, 50])
-			: undefined,
 		pronouns: chance(0.2) ? fakePronouns() : undefined,
-		weapons: chance(0.6)
-			? SplatoonFaker.mainWeapons(
-					faker.helpers.arrayElement([1, 2, 3, 4, 5]),
-				).map((weaponSplId) => ({
-					weaponSplId,
-					isFavorite: toDBBoolean(faker.number.float(1) < 0.2),
-				}))
-			: [],
 	};
 }
 
-/**
- * Creates the admin user, on the id the app's permission logic treats as an admin.
- * Also who `wrappedAction({ user: "admin" })` submits as.
- *
- * Has to be created before any other user, see {@link pinUserId}.
- */
+/** The admin id user, who `wrappedAction({ user: "admin" })` submits as. Create before any other user, see {@link pinUserId}. */
 export const createAdmin = (
 	overrides?: Partial<UpsertArgs> | null,
 	options?: Options,
 ) => createPinned(ADMIN_ID, overrides, options);
 
 /**
- * Creates the user that `wrappedAction({ user: "regular" })` submits as. Has no
- * permissions of any kind unless `options` gives it some; use for the "somebody
- * else" side of a permission test.
- *
- * Has to be created before any user without a pinned id, see {@link pinUserId}.
+ * Who `wrappedAction({ user: "regular" })` submits as; no permissions unless `options` gives some.
+ * Create before any user without a pinned id, see {@link pinUserId}.
  */
 export const createRegular = (
 	overrides?: Partial<UpsertArgs> | null,
@@ -291,8 +242,7 @@ export const createOrgAdmin = (
 	options?: Options,
 ) => createPinned(ORG_ADMIN_TEST_ID, overrides, options);
 
-/** Creates the user on the id the app's permission logic treats as staff. Create
- * after every unpinned user, so the ids in between stay free. */
+/** The staff id user. Create after every unpinned user so the ids in between stay free. */
 export const createStaff = (
 	overrides?: Partial<UpsertArgs> | null,
 	options?: Options,
@@ -332,18 +282,8 @@ async function createPinned(
 }
 
 /**
- * A set of interchangeable users referred to by the order they were created in.
- * For tests needing more users than it makes sense to give names to; prefer
- * destructuring `createMany` into named users when there are only a few.
- *
- * @example
- * const users = UserFactory.pool();
- *
- * beforeEach(async () => {
- *   await users.create(20);
- * });
- *
- * test("notifies both", () => notify({ userIds: [users.id(1), users.id(2)] }));
+ * Interchangeable users referred to by creation order, for tests needing more users than it makes
+ * sense to name. Declare at module scope, fill in `beforeEach` with `users.create(20)`, read with `users.id(1)`.
  */
 export function pool() {
 	let created: Array<{ id: number }> = [];
@@ -372,11 +312,7 @@ export function pool() {
 	};
 }
 
-/**
- * What `create`'s second argument does, applied to a user that already exists — for
- * the tests whose users come from shared setup, or that want two of them given
- * different things.
- */
+/** `create`'s second argument applied to an existing user. */
 export async function grant(
 	userId: number,
 	{
@@ -386,7 +322,7 @@ export async function grant(
 		matchProfile,
 		ban,
 		div,
-		weapons,
+		divSeason,
 		card,
 		widgets,
 		preferences,
@@ -430,13 +366,9 @@ export async function grant(
 	}
 
 	if (div) {
-		await UserRepository.updateManyDivs([{ userId, div }]);
-	}
-
-	if (weapons) {
-		// the profile page saves every field at once; everything besides the weapons
-		// is still empty on a user the repository has only just upserted
-		await actAs(userId, () => UserRepository.updateOwnProfile({ weapons }));
+		await UserRepository.updateManyDivs([
+			{ userId, div, divSeason: divSeason ?? null },
+		]);
 	}
 
 	if (widgets) {
@@ -453,8 +385,7 @@ export async function grant(
 }
 
 async function setPlusTier(userId: number, plusTier: number) {
-	// `replacePlusTiers` replaces every row, being the monthly recount of who is in
-	// what tier, so the tiers granted before this one are read back and sent along
+	// `replacePlusTiers` replaces every row (monthly recount), so earlier grants are read back and sent along
 	const others = await db
 		.selectFrom("PlusTier")
 		.select(["userId", "tier"])

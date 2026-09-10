@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import * as v from "valibot";
-import { OG_IMAGE_PAGES } from "~/utils/urls";
+import { NAV_ICONS } from "~/utils/urls";
 import { CHANGELOG_FOLDER_PATH } from "../changelog-constants";
 import type { ChangelogGraphicEntry } from "../components/ChangelogGraphic";
 
@@ -11,18 +11,14 @@ const RESOLVED_CHANGELOG_DIR = path.resolve(CHANGELOG_FOLDER_PATH);
 
 const BULLET_LINE_PATTERN = /^[-*]\s+/;
 
-const navItemSchema = v.picklist(OG_IMAGE_PAGES);
+const navItemSchema = v.picklist(NAV_ICONS);
 
 const frontmatterSchema = v.object({
 	navItem: v.optional(v.union([navItemSchema, v.array(navItemSchema)])),
 	type: v.picklist(["feature", "bug"] as const),
 });
 
-/**
- * Every changelog entry added between the given commit and HEAD, oldest first.
- *
- * @param since Sha of the commit the previous update was shipped from.
- */
+/** Entries added between `since` (sha the previous update shipped from) and HEAD, oldest first. */
 export function entriesSince(since: string): ChangelogGraphicEntry[] {
 	const output = execFileSync(
 		"git",
@@ -55,6 +51,13 @@ export function allEntries(): ChangelogGraphicEntry[] {
 		.map(parseEntryFile);
 }
 
+/** Sha the entries are read from, so a caller can check the server runs the same checkout. */
+export function headSha(): string {
+	return execFileSync("git", ["rev-parse", "HEAD"], {
+		encoding: "utf8",
+	}).trim();
+}
+
 function parseEntryFile(fileName: string): ChangelogGraphicEntry {
 	const rawMarkdown = fs.readFileSync(
 		path.join(RESOLVED_CHANGELOG_DIR, fileName),
@@ -70,6 +73,7 @@ function parseEntryFile(fileName: string): ChangelogGraphicEntry {
 			`Invalid frontmatter in changelog entry "${fileName}": ${
 				error instanceof v.ValiError ? error.message : String(error)
 			}`,
+			{ cause: error },
 		);
 	}
 

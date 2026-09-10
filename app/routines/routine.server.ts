@@ -2,7 +2,7 @@ import { logger } from "../utils/logger";
 
 export class Routine {
 	readonly name;
-	private func;
+	private readonly func;
 
 	constructor({
 		name,

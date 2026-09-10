@@ -4,16 +4,9 @@ import type { SidebarEvent } from "~/features/sidebar/core/sidebar.server";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { useHydrated } from "~/hooks/useHydrated";
 import styles from "./EventsList.module.css";
-import { Placeholder } from "./Placeholder";
 import { ListLink } from "./SideNav";
 
-export function EventsList({
-	events,
-	onClick,
-}: {
-	events: SidebarEvent[];
-	onClick?: () => void;
-}) {
+export function EventsList({ events }: { events: SidebarEvent[] }) {
 	const { t, i18n } = useTranslation(["front"]);
 	const { formatter: dateFormatter } = useDateTimeFormat({
 		weekday: "long",
@@ -28,14 +21,32 @@ export function EventsList({
 
 	if (events.length === 0) {
 		return (
-			<div className="text-lighter text-sm p-2">
-				{t("front:sideNav.noEvents")}
-			</div>
+			<div className={styles.emptyState}>{t("front:sideNav.noEvents")}</div>
 		);
 	}
 
+	const eventLink = (event: SidebarEvent) => (
+		<ListLink
+			key={`${event.type}-${event.id}`}
+			to={event.url}
+			imageUrl={event.logoUrl ?? undefined}
+			user={event.user ?? undefined}
+			subtitle={timeFormatter.format(event.startsAt)}
+		>
+			{event.scrimStatus === "booked"
+				? t("front:sideNav.scrimVs", { opponent: event.name })
+				: event.scrimStatus === "looking"
+					? t("front:sideNav.lookingForScrim")
+					: event.scrimStatus === "requestPending"
+						? t("front:sideNav.scrimRequestPending")
+						: event.name}
+		</ListLink>
+	);
+
+	// which day an event falls on depends on the viewer's timezone, so until
+	// hydration the list is flat rather than absent
 	if (!isHydrated) {
-		return <Placeholder />;
+		return events.map(eventLink);
 	}
 
 	const getDayKey = (timestamp: number) => {
@@ -84,24 +95,7 @@ export function EventsList({
 				return (
 					<div key={dayKey}>
 						<div className={styles.dayHeader}>{formatDayHeader(firstDate)}</div>
-						{dayEvents.map((event) => (
-							<ListLink
-								key={`${event.type}-${event.id}`}
-								to={event.url}
-								imageUrl={event.logoUrl ?? undefined}
-								user={event.user ?? undefined}
-								subtitle={timeFormatter.format(event.startsAt)}
-								onClick={onClick}
-							>
-								{event.scrimStatus === "booked"
-									? t("front:sideNav.scrimVs", { opponent: event.name })
-									: event.scrimStatus === "looking"
-										? t("front:sideNav.lookingForScrim")
-										: event.scrimStatus === "requestPending"
-											? t("front:sideNav.scrimRequestPending")
-											: event.name}
-							</ListLink>
-						))}
+						{dayEvents.map(eventLink)}
 					</div>
 				);
 			})}

@@ -148,13 +148,29 @@ test.describe("Admin panel", () => {
 
 		const userPage = new UserPage(page);
 		await userPage.goto(NZAP_TEST_DISCORD_ID);
-		await expect(userPage.locators.placementsBox).toBeVisible();
+		await expect(userPage.widget("x-rank-peaks")).toBeVisible();
 		const playerPage = await userPage.openPlacements();
 		await expect(playerPage.locators.heading).toBeVisible();
 
 		// the old user kept their account, now reached via the new user's Discord id
 		await userPage.goto(LEAVER.discordId);
 		await expect(userPage.usernameHeading(KEEPER.discordName)).toBeVisible();
+	});
+
+	test("keeps the scroll position when an action shows a toast", async ({
+		page,
+		factories,
+	}) => {
+		await factories.UserFactory.create({ ...ROLE_TARGET, friendCode: null });
+
+		await impersonate(page, ADMIN_ID);
+		const adminActions = new AdminActionsPage(page);
+		await adminActions.goto();
+
+		// the form is far down the page, so filling it scrolls there
+		await adminActions.updateFriendCode(ROLE_TARGET.discordName, FRIEND_CODE);
+
+		expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
 	});
 
 	test("adds and deletes an external stream", async ({ page }) => {

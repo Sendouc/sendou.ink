@@ -13,12 +13,10 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { FAQ_PAGE, sendouQMatchPage, twitchUrl } from "~/utils/urls";
-
 import { loader } from "../loaders/q.streams.server";
+import styles from "./q.streams.module.css";
 
 export { loader };
-
-import styles from "./q.streams.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["q"],

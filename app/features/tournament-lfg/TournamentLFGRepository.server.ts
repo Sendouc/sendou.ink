@@ -5,7 +5,7 @@ import { actorId } from "~/features/auth/core/user.server";
 import * as ChatRepository from "~/features/chat/ChatRepository.server";
 import { databaseTimestampNow } from "~/utils/dates";
 import { shortNanoid } from "~/utils/id";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	commonUserMembersAgg,
 	concatUserSubmittedImagePrefix,
@@ -186,8 +186,7 @@ export function mergeTeams({
 
 		await ensurePickupChatRoom(survivingTeamId, chatRoomExpiresAt, trx);
 
-		// the merged-in members either lost their old room or gained the
-		// surviving team's, and the surviving members may have just gained theirs
+		// merged-in members lost their old room or gained the surviving team's, which may itself be new
 		return memberUserIds;
 	});
 }

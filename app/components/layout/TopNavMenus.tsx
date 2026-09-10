@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { Button } from "react-aria-components";
 import { useTranslation } from "react-i18next";
 import { Form, Link, useLocation } from "react-router";
 import { Config } from "~/config";
@@ -96,18 +95,20 @@ function DevMenu() {
 		<div className={styles.menuWrapper}>
 			<SendouPopover
 				trigger={
-					<Button
+					<button
+						type="button"
 						className={styles.menuButton}
-						onHoverStart={() => setIsPreviewSuppressed(false)}
+						onPointerEnter={() => setIsPreviewSuppressed(false)}
 					>
 						Dev
 						<ChevronDown className={styles.menuButtonChevron} />
-					</Button>
+					</button>
 				}
 				popoverClassName={styles.menuPopover}
 				placement="bottom start"
 				isOpen={isOpen}
 				onOpenChange={setIsOpen}
+				eager
 			>
 				<div className={styles.menuContent}>
 					{DEV_IMPERSONATE_ITEMS.map((item) => (
@@ -217,24 +218,27 @@ function CategoryMenu({
 		<div className={styles.menuWrapper}>
 			<SendouPopover
 				trigger={
-					<Button
+					<button
+						type="button"
 						className={styles.menuButton}
-						onHoverStart={() => setIsPreviewSuppressed(false)}
+						onPointerEnter={() => setIsPreviewSuppressed(false)}
 					>
 						{t(`front:nav.${category.name}`)}
 						<ChevronDown className={styles.menuButtonChevron} />
-					</Button>
+					</button>
 				}
 				popoverClassName={styles.menuPopover}
 				placement="bottom start"
 				isOpen={isOpen}
 				onOpenChange={setIsOpen}
+				eager
 			>
 				<div className={styles.menuContent}>
 					{visibleItems.map((item) => (
 						<Link
 							key={item.url}
 							to={`/${item.url}`}
+							prefetch="intent"
 							className={styles.menuItem}
 							onClick={() => {
 								setIsOpen(false);
@@ -258,6 +262,7 @@ function CategoryMenu({
 						<Link
 							key={item.url}
 							to={`/${item.url}`}
+							prefetch="intent"
 							className={styles.previewIcon}
 							title={t(`common:pages.${item.name}`)}
 							aria-label={t(`common:pages.${item.name}`)}

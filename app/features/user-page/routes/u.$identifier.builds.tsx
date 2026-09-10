@@ -31,10 +31,9 @@ import {
 import type { UserPageLoaderData } from "../loaders/u.$identifier.server";
 import { DEFAULT_BUILD_SORT } from "../user-page-constants";
 import { userBuildsSearchParams } from "../user-page-search-params";
+import styles from "./u.$identifier.builds.module.css";
 
 export { action, loader };
-
-import styles from "./u.$identifier.builds.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["weapons", "builds", "gear", "analyzer"],
@@ -58,8 +57,7 @@ export default function UserBuildsPage() {
 		"sorting",
 	);
 	const changingSorting = sorting && isOwnPage;
-	// lives here so closing the dialog mid-submit doesn't unmount the fetcher,
-	// which would discard the action's redirect and skip revalidation
+	// here so closing the dialog mid-submit doesn't unmount the fetcher and drop the redirect
 	const sortingFetcher = useFetcher();
 
 	const closeSortingDialog = () => setChangingSorting(false);
@@ -88,7 +86,7 @@ export default function UserBuildsPage() {
 			<SubPageHeader user={layoutData.user} backTo={userPage(layoutData.user)}>
 				{isOwnPage ? (
 					<SendouButton
-						onPress={() => setChangingSorting(true)}
+						onClick={() => setChangingSorting(true)}
 						size="small"
 						variant="outlined"
 						icon={<ArrowDownNarrowWide />}
@@ -146,7 +144,7 @@ function BuildsFilters({
 	return (
 		<div className="stack horizontal sm flex-wrap">
 			<SendouButton
-				onPress={() => setWeaponFilter("ALL")}
+				onClick={() => setWeaponFilter("ALL")}
 				variant={weaponFilter === "ALL" ? undefined : "outlined"}
 				size="small"
 				className={styles.buildFilterButton}
@@ -156,7 +154,7 @@ function BuildsFilters({
 			{showPublicPrivateFilters ? (
 				<>
 					<SendouButton
-						onPress={() => setWeaponFilter("PUBLIC")}
+						onClick={() => setWeaponFilter("PUBLIC")}
 						variant={weaponFilter === "PUBLIC" ? undefined : "outlined"}
 						size="small"
 						className={styles.buildFilterButton}
@@ -165,7 +163,7 @@ function BuildsFilters({
 						{t("builds:stats.public")} ({publicBuildsCount})
 					</SendouButton>
 					<SendouButton
-						onPress={() => setWeaponFilter("PRIVATE")}
+						onClick={() => setWeaponFilter("PRIVATE")}
 						variant={weaponFilter === "PRIVATE" ? undefined : "outlined"}
 						size="small"
 						className={styles.buildFilterButton}
@@ -241,7 +239,7 @@ function ChangeSortingDialog({
 							className="ml-auto"
 							variant="minimal"
 							size="small"
-							onPress={() => setBuildSorting([...DEFAULT_BUILD_SORT, null])}
+							onClick={() => setBuildSorting([...DEFAULT_BUILD_SORT, null])}
 						>
 							{t("user:builds.sorting.backToDefaults")}
 						</SendouButton>
@@ -277,7 +275,7 @@ function ChangeSortingDialog({
 											size="small"
 											icon={<Trash />}
 											variant="minimal-destructive"
-											onPress={deleteLastSorting}
+											onClick={deleteLastSorting}
 											data-testid="delete-sorting-button"
 										/>
 									) : null}
@@ -330,7 +328,7 @@ function ChangeSortingDialogSelect({
 }
 
 function WeaponFilterMenu({
-	mainWeaponIds,
+	mainWeaponIds: weaponIds,
 	counts,
 	weaponFilter,
 	setWeaponFilter,
@@ -361,7 +359,7 @@ function WeaponFilterMenu({
 				</SendouButton>
 			}
 		>
-			{mainWeaponIds.map((weaponId) => {
+			{weaponIds.map((weaponId) => {
 				const count = counts[weaponId];
 
 				if (!count) return null;

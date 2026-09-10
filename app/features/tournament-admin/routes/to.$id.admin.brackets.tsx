@@ -12,7 +12,7 @@ import { useTournament } from "~/features/tournament/tournament-context";
 import * as Progression from "~/features/tournament-bracket/core/Progression";
 import { SendouForm } from "~/form/SendouForm";
 import { useActionSubmit } from "~/hooks/useActionSubmit";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { tournamentAdminPage } from "~/utils/urls";
 import {
 	bracketProgressionFormSchema,
@@ -151,9 +151,8 @@ function BracketProgressionEdit() {
 					values.progression,
 				);
 
-				// started brackets can't be edited in the form, so pass their stored
-				// version through untouched — re-deriving their settings from form
-				// values could register them as changed and fail the server's guard
+				// started brackets pass through untouched: re-deriving their settings from form values
+				// could register them as changed and fail the server's guard
 				const originalInputBrackets =
 					Progression.validatedBracketsToInputFormat(
 						tournament.ctx.settings.bracketProgression,

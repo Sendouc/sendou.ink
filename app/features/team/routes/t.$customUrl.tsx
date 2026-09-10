@@ -9,10 +9,9 @@ import { metaTags, type SerializeFrom } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { bskyUrl, navIconUrl, TEAM_SEARCH_PAGE, teamPage } from "~/utils/urls";
 import { loader } from "../loaders/t.$customUrl.server";
+import styles from "./t.$customUrl.module.css";
 
 export { loader };
-
-import styles from "./t.$customUrl.module.css";
 
 export const meta: MetaFunction<typeof loader> = (args) => {
 	if (!args.loaderData) return [];
@@ -56,8 +55,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export default function TeamPage() {
-	// breakout container so the schedule tab's table can size against the full
-	// content area; the wrapper keeps every page at the normal width
+	// breakout container so the schedule tab's table can use the full content area
 	return (
 		<Main breakoutContainer>
 			<div className={clsx(containerClassName("normal"), "stack sm")}>

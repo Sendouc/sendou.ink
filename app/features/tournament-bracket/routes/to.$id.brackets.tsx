@@ -37,6 +37,7 @@ import {
 	TournamentProvider,
 	useTournament,
 } from "~/features/tournament/tournament-context";
+import { tournamentJoinPage } from "~/features/tournament/tournament-urls";
 import { useHydrated } from "~/hooks/useHydrated";
 import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
 import { useSearchParam } from "~/modules/search-params/hooks";
@@ -65,15 +66,13 @@ import {
 	tournamentBracketChannel,
 	tournamentChannel,
 } from "../tournament-bracket-utils";
+import styles from "./to.$id.brackets.module.css";
 
 export { action, loader };
 
 export const handle: SendouRouteHandle = {
 	mainBreakout: true,
 };
-
-import { tournamentJoinPage } from "~/features/tournament/tournament-urls";
-import styles from "./to.$id.brackets.module.css";
 
 export default function TournamentBracketsPage() {
 	const data = useLoaderData<TournamentBracketsLoaderData>();
@@ -113,8 +112,7 @@ function TournamentBracketsView() {
 		tournamentChannel(tournament.ctx.id),
 		!tournament.ctx.isFinalized,
 	);
-	// results of the loaded bracket (and group) broadcast to their own room, so that
-	// another bracket's or group's live scores do not make this view refetch
+	// own room per bracket (and group) so another's live scores do not make this view refetch
 	useTopicRevalidation(
 		tournamentBracketChannel({
 			tournamentId: tournament.ctx.id,
@@ -144,9 +142,12 @@ function TournamentBracketsView() {
 	const showSecondaryActionsRow =
 		tournament.canFinalize(user) || censored || canToggle;
 
-	const waitingForTeamsText = (bracket: BracketType, bracketIdx: number) => {
+	const waitingForTeamsText = (
+		bracketToDescribe: BracketType,
+		bracketIdx: number,
+	) => {
 		if (bracketIdx > 0) {
-			return bracket.requiresCheckIn
+			return bracketToDescribe.requiresCheckIn
 				? t("tournament:bracket.waiting.checkin", {
 						count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
 					})
@@ -166,9 +167,9 @@ function TournamentBracketsView() {
 		});
 	};
 
-	const teamsSourceText = (bracket: BracketType) => {
+	const teamsSourceText = (bracketToDescribe: BracketType) => {
 		const progression = tournament.ctx.settings.bracketProgression;
-		const sources = progression[bracket.idx].sources;
+		const sources = progression[bracketToDescribe.idx].sources;
 		if (!sources || sources.length === 0) return null;
 
 		const sourceDescriptions = Progression.sortedSourcesForSeeding(
@@ -241,11 +242,11 @@ function TournamentBracketsView() {
 						</LinkButton>
 					) : null}
 					{censored ? (
-						<SendouButton onPress={revealSpoiler} icon={<ShieldMinus />}>
+						<SendouButton onClick={revealSpoiler} icon={<ShieldMinus />}>
 							{t("common:spoilerFree.showResults")}
 						</SendouButton>
 					) : canToggle ? (
-						<SendouButton onPress={hideSpoiler} icon={<ShieldPlus />}>
+						<SendouButton onClick={hideSpoiler} icon={<ShieldPlus />}>
 							{t("common:spoilerFree.hideResults")}
 						</SendouButton>
 					) : null}
@@ -275,11 +276,7 @@ export interface BracketsPageState {
 	scrollToMatchId?: number;
 }
 
-/**
- * Scrolls the match referenced by the navigation `state` into view on load, so
- * returning from a match page lands the user at that match's spot in the bracket
- * instead of the top.
- */
+/** Returning from a match page lands at that match's spot in the bracket instead of the top. */
 function useScrollToMatchOnLoad() {
 	const location = useLocation();
 	const scrollToMatchId = (location.state as BracketsPageState | null)
@@ -350,7 +347,7 @@ function BracketStarter({
 				variant="outlined"
 				size="small"
 				data-testid="finalize-bracket-button"
-				onPress={() => setDialogOpen(true)}
+				onClick={() => setDialogOpen(true)}
 				isDisabled={isDisabled}
 			>
 				Start the bracket
@@ -425,7 +422,7 @@ function MapPreparer({
 					size="small"
 					variant="outlined"
 					icon={<MapIcon />}
-					onPress={() => setDialogOpen(true)}
+					onClick={() => setDialogOpen(true)}
 					data-testid="prepare-maps-button"
 				>
 					Prepare maps
@@ -494,10 +491,8 @@ function SubsPopover({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Bracket switcher. Only the bracket the loader shipped the match data of is rendered;
- * switching navigates so that the newly selected bracket's data gets loaded, the
- * previously loaded bracket staying up until it arrives. Of a league only the brackets
- * of the division the loader resolved can be switched between.
+ * Only the bracket the loader shipped is rendered; switching navigates to load the new one, the previous
+ * staying up until it arrives. A league switches only within the loader's division.
  */
 function BracketTabs({
 	loadedBracketIdx,
@@ -732,7 +727,7 @@ function CompactifyButton() {
 
 	return (
 		<SendouButton
-			onPress={() => {
+			onClick={() => {
 				setBracketExpanded(!bracketExpanded);
 			}}
 			className={styles.compactifyButton}

@@ -21,7 +21,7 @@ import {
 	tournamentLogoWithDefault,
 } from "~/utils/kysely.server";
 import { db } from "../../db/sql";
-import invariant from "../../utils/invariant";
+import { invariant } from "../../utils/invariant";
 import type { Unwrapped } from "../../utils/types";
 import type { AssociationVisibility } from "../associations/associations-types";
 import * as Scrim from "./core/Scrim";
@@ -90,12 +90,7 @@ type InsertRequestArgs = Pick<
 	>;
 };
 
-/**
- * Inserts a new request to a scrim post.
- *
- * @returns id of the new request
- * @throws {DuplicateEntryError} If the team already has a request for the post
- */
+/** Inserts a request to a scrim post, returning its id. @throws {DuplicateEntryError} if the team already has one for the post. */
 export function insertRequest(args: InsertRequestArgs) {
 	invariant(args.users.length > 0, "At least one user must be provided");
 
@@ -195,8 +190,8 @@ const baseFindQuery = db
 			eb
 				.selectFrom("ScrimPostUser")
 				.innerJoin("User", "ScrimPostUser.userId", "User.id")
-				.select((eb) => [
-					...commonUserSelect(eb),
+				.select((userEb) => [
+					...commonUserSelect(userEb),
 					"User.inGameName",
 					"ScrimPostUser.isOwner",
 				])
@@ -228,8 +223,8 @@ const baseFindQuery = db
 						innerEb
 							.selectFrom("ScrimPostRequestUser")
 							.innerJoin("User", "ScrimPostRequestUser.userId", "User.id")
-							.select((eb) => [
-								...commonUserSelect(eb),
+							.select((requestUserEb) => [
+								...commonUserSelect(requestUserEb),
 								"User.inGameName",
 								"ScrimPostRequestUser.isOwner",
 							])
@@ -243,6 +238,9 @@ const baseFindQuery = db
 				.whereRef("ScrimPostRequest.scrimPostId", "=", "ScrimPost.id"),
 		).as("requests"),
 	]);
+
+/** The booked start of a scrim: the accepted request's chosen time for a range post, the post's own otherwise. */
+const bookedStartsAt = sql<number>`coalesce((select "ScrimPostRequest"."startsAt" from "ScrimPostRequest" where "ScrimPostRequest"."scrimPostId" = "ScrimPost"."id" and "ScrimPostRequest"."isAccepted" = 1), "ScrimPost"."startsAt")`;
 
 function findMany() {
 	const min = sub(new Date(), { hours: 3 });
@@ -535,17 +533,10 @@ export function cancelScrim(id: number, reason: string) {
 	});
 }
 
-/**
- * Finds all accepted scrims scheduled within a specific time range.
- *
- * @returns Array of accepted (matched) scrim posts within the time range
- */
+/** Accepted scrims starting within [startTime, endTime), excluding ones created after `excludeRecentlyCreated`. */
 export async function findAcceptedScrimsBetweenTwoTimestamps({
-	/** The earliest scrim start time to include (inclusive) */
 	startTime,
-	/** The latest scrim start time to include (exclusive) */
 	endTime,
-	/** Exclude scrims created after this timestamp */
 	excludeRecentlyCreated,
 }: {
 	startTime: Date;
@@ -553,8 +544,8 @@ export async function findAcceptedScrimsBetweenTwoTimestamps({
 	excludeRecentlyCreated: Date;
 }) {
 	const rows = await baseFindQuery
-		.where("ScrimPost.startsAt", ">=", dateToDatabaseTimestamp(startTime))
-		.where("ScrimPost.startsAt", "<", dateToDatabaseTimestamp(endTime))
+		.where(bookedStartsAt, ">=", dateToDatabaseTimestamp(startTime))
+		.where(bookedStartsAt, "<", dateToDatabaseTimestamp(endTime))
 		.where("ScrimPost.canceledAt", "is", null)
 		.where(
 			"ScrimPost.createdAt",
@@ -566,14 +557,7 @@ export async function findAcceptedScrimsBetweenTwoTimestamps({
 	return rows.map(mapDBRowToScrimPost).filter((post) => Scrim.isAccepted(post));
 }
 
-/**
- * Finds the accepted (booked), uncanceled scrims of the given users whose
- * resolved start time — the accepted request's chosen time for a range post,
- * the post's own otherwise — falls within the given window. Used to resolve
- * availability commitments.
- *
- * @returns one row per participating user per scrim
- */
+/** Accepted, uncanceled scrims of the users whose resolved start (accepted request's time for a range post, else the post's) falls in the window; one row per participating user per scrim. */
 export async function findAllAcceptedByUserIds({
 	userIds,
 	startsAt,
@@ -619,12 +603,9 @@ export async function findAllAcceptedByUserIds({
 }
 
 /**
- * Finds pending (unaccepted, uncanceled, future) scrim posts and requests
- * involving any of the given users whose time overlaps [startTime, endTime].
- * Used to auto-clean conflicting availability when a scrim is scheduled.
- *
- * @returns posts (with their member ids, for notifying) and request ids
- * (deleted silently) that should be removed
+ * Pending (unaccepted, uncanceled, future) posts and requests involving the users that overlap
+ * [startTime, endTime], for auto-cleaning when a scrim is scheduled: posts come with member ids
+ * for notifying, requests are deleted silently.
  */
 export async function findPendingOverlapsForUsers({
 	userIds,
@@ -684,7 +665,7 @@ export async function findPendingOverlapsForUsers({
 
 	for (const post of rows
 		.map(mapDBRowToScrimPost)
-		.filter((post) => !Scrim.isAccepted(post))) {
+		.filter((candidate) => !Scrim.isAccepted(candidate))) {
 		if (post.id === excludePostId) continue;
 
 		const postInvolvesUser = post.users.some((u) => userIdSet.has(u.id));
@@ -733,17 +714,13 @@ export async function findUserScrims(userId: number): Promise<SidebarScrim[]> {
 
 	const rows = await baseFindQuery
 		.where("ScrimPost.canceledAt", "is", null)
-		.where("ScrimPost.startsAt", ">=", now)
-		.where((eb) =>
-			eb.or([
-				eb.exists(
-					eb
-						.selectFrom("ScrimPostUser")
-						.select("ScrimPostUser.scrimPostId")
-						.whereRef("ScrimPostUser.scrimPostId", "=", "ScrimPost.id")
-						.where("ScrimPostUser.userId", "=", userId),
-				),
-				eb.exists(
+		.where(bookedStartsAt, ">=", now)
+		.where("ScrimPost.id", "in", (eb) =>
+			eb
+				.selectFrom("ScrimPostUser")
+				.select("ScrimPostUser.scrimPostId")
+				.where("ScrimPostUser.userId", "=", userId)
+				.union(
 					eb
 						.selectFrom("ScrimPostRequest")
 						.innerJoin(
@@ -752,12 +729,10 @@ export async function findUserScrims(userId: number): Promise<SidebarScrim[]> {
 							"ScrimPostRequest.id",
 						)
 						.select("ScrimPostRequest.scrimPostId")
-						.whereRef("ScrimPostRequest.scrimPostId", "=", "ScrimPost.id")
 						.where("ScrimPostRequestUser.userId", "=", userId),
 				),
-			]),
 		)
-		.orderBy("ScrimPost.startsAt", "asc")
+		.orderBy(bookedStartsAt, "asc")
 		.execute();
 
 	return rows

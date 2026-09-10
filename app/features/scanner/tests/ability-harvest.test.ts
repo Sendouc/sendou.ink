@@ -1,9 +1,7 @@
 /**
- * Unit tests for connectAbilities: deaths are attributed to the next
- * scoreboard event and matched to a player row by name/weapon, with
- * ambiguous matches (two players on the same weapon, misread name)
- * left unattributed. harvestCardMains puts minimap cards through the same
- * matching, merging their gear mains across the match's frames.
+ * connectAbilities: deaths are attributed to the next scoreboard event and
+ * matched to a row by name/weapon, ambiguous matches left unattributed.
+ * harvestCardMains puts minimap cards through the same matching.
  */
 
 import assert from "node:assert/strict";
@@ -22,7 +20,7 @@ import {
 } from "../core/detectors/death/index";
 import { SCOREBOARD_EVENT_TYPE } from "../core/detectors/scoreboard/index";
 import type { DetectedEvent } from "../core/detectors/types";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 const GRID_A: AbilityWithUnknown[][] = [
 	["ISM", "ISM", "ISM", "ISM"],

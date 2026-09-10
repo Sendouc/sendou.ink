@@ -1,14 +1,11 @@
 /**
  * AnalyzerWorker: owns OpenCV.js (WASM), the detector registry and a
- * DetectorScheduler. Two entry points: "frame" — the main thread posts one
- * ImageBitmap/VideoFrame at a time (live capture, screenshot harness, VoD
- * seek fallback); results come back per detector, then a "done" carrying the
- * scheduler's calm signal and telemetry. "scanChunk" — a VoD time slice is
- * demuxed/decoded entirely in the worker with mediabunny: the worker owns a
- * contiguous slice so scheduling is exact, undue frames skip canvas
- * readback, and calm stretches skim by keyframe hops instead of decoding
- * every frame — the big VoD speedup, since sequential decode bounds scan
- * wall-clock time.
+ * DetectorScheduler. "frame": the main thread posts one ImageBitmap/VideoFrame
+ * at a time; results come back per detector, then a "done" with the calm
+ * signal and telemetry. "scanChunk": a VoD slice is demuxed/decoded in the
+ * worker with mediabunny — the worker owns a contiguous slice so scheduling is
+ * exact, undue frames skip canvas readback, and calm stretches skim by
+ * keyframe hops — the big VoD speedup, since sequential decode bounds scan time.
  */
 import {
 	ALL_FORMATS,
@@ -32,6 +29,7 @@ import {
 } from "../core/detectors/telemetry";
 import type { Detector } from "../core/detectors/types";
 import { normalizeFrame, toMat } from "../core/image";
+import { TimelineBuilder } from "../core/timeline/index";
 import type {
 	AnalyzeRequest,
 	InitRequest,
@@ -41,11 +39,7 @@ import type {
 } from "./protocol";
 import { fetchScoreboardResources } from "./resources";
 
-/**
- * Widest skim hop: calm footage is sampled at the keyframe cadence, capped
- * here so long-GOP recordings still cannot slip a results screen (~10s) or
- * a match intro (~7s) between two samples.
- */
+/** Widest skim hop, so long-GOP recordings can't slip a results screen (~10s) or intro (~7s) between samples. */
 const MAX_SKIM_STRIDE_S = 2.5;
 const PROGRESS_POST_INTERVAL_MS = 400;
 const PREVIEW_POST_INTERVAL_MS = 600;
@@ -60,6 +54,14 @@ let collectTelemetry = false;
 let chunkAborted = false;
 /** last per-frame t, to reset telemetry when a new session rewinds the clock */
 let lastFrameT = Number.NEGATIVE_INFINITY;
+/**
+ * Mirror of the main thread's timeline (same defaults), fed every event first:
+ * a frame is PNG-encoded only when some event would be listed rather than
+ * merged into an earlier read — a fixed-cadence detector re-reads a standing
+ * screen twice a second, and encoding 1080p for each repeat cost more than
+ * the parse.
+ */
+let shadowTimeline = new TimelineBuilder();
 
 function post(message: WorkerResponse, transfer: Transferable[] = []): void {
 	self.postMessage(message, { transfer });
@@ -87,10 +89,7 @@ async function init({
 	}
 }
 
-/**
- * Run the due detectors over one frame; closes `bitmap`. When the scheduler
- * has no detector due, the canvas readback and normalize are skipped too.
- */
+/** Runs the due detectors over one frame; closes `bitmap`. Readback and normalize are skipped when nothing is due. */
 async function analyzeFrame(
 	bitmap: ImageBitmap | VideoFrame,
 	t: number,
@@ -122,12 +121,13 @@ async function analyzeFrame(
 	}
 	if (telemetry) telemetry.analyzedFrames++;
 
-	// On detection, ship back the exact analyzed pixels (lossless, at capture
-	// resolution) so the UI never has to re-grab a later frame — encoded at
-	// most once per frame, however many detectors fire on it.
+	// ship back the exact analyzed pixels (lossless, capture resolution) so the
+	// UI never re-grabs a later frame — encoded at most once per frame
 	let encoded: Promise<Blob> | null = null;
-	const frameBlob = () =>
-		(encoded ??= canvas.convertToBlob({ type: "image/png" }));
+	const frameBlob = () => {
+		encoded ??= canvas.convertToBlob({ type: "image/png" });
+		return encoded;
+	};
 
 	try {
 		for (const detector of detectors) {
@@ -155,8 +155,13 @@ async function analyzeFrame(
 				}
 				scheduler!.recordParse(detector.id, t, events);
 			}
+			let listed = false;
+			for (const event of events) {
+				const { action } = shadowTimeline.push(event);
+				if (action === "added" || action === "replaced") listed = true;
+			}
 			const blob =
-				events.length > 0 && detector.attachFrame !== false
+				listed && detector.attachFrame !== false
 					? await frameBlob()
 					: undefined;
 			post({
@@ -174,7 +179,10 @@ async function analyzeFrame(
 }
 
 async function analyze({ bitmap, t }: AnalyzeRequest): Promise<void> {
-	if (t + 5 < lastFrameT) telemetry = freshTelemetry();
+	if (t + 5 < lastFrameT) {
+		telemetry = freshTelemetry();
+		shadowTimeline = new TimelineBuilder();
+	}
 	lastFrameT = t;
 	try {
 		await analyzeFrame(bitmap, t);
@@ -193,6 +201,7 @@ async function scanChunk({
 	chunkAborted = false;
 	scheduler!.reset(tStart);
 	telemetry = freshTelemetry();
+	shadowTimeline = new TimelineBuilder();
 	const wallStart = performance.now();
 	let lastProgressAt = 0;
 	let lastPreviewAt = 0;

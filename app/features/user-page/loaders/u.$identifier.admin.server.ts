@@ -1,7 +1,7 @@
 import { isSameMonth, startOfMonth, subMonths } from "date-fns";
-import type { LoaderFunctionArgs } from "react-router";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { userPageUserId } from "~/features/user-page/user-page-context.server";
 import * as UserReportRepository from "~/features/user-report/UserReportRepository.server";
 import { requireRole } from "~/modules/permissions/guards.server";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -11,13 +11,13 @@ import { convertSnowflakeToDate } from "~/utils/users";
 
 const REPORT_GRAPH_MONTHS = 12;
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async () => {
 	const loggedInUser = requireUser();
 
 	requireRole("STAFF");
 
 	const user = notFoundIfNullish(
-		await UserRepository.findLayoutDataByIdentifier(params.identifier!),
+		await UserRepository.findLayoutDataById(userPageUserId()),
 	);
 
 	logger.info(

@@ -6,7 +6,7 @@ import { userIsBanned } from "~/features/ban/core/banned.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { parseFormData } from "~/form/parse.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { errorToast, errorToastIfFalsy } from "~/utils/remix.server";
 import { toDBBoolean } from "~/utils/sql";
 import { scrimsPage } from "~/utils/urls";
@@ -115,7 +115,7 @@ export const usersListForPost = async ({
 
 	const teamId = from.teamId;
 	const team = (await TeamRepository.findAllByMemberUserId(authorId)).find(
-		(team) => team.id === teamId,
+		(candidate) => candidate.id === teamId,
 	);
 	errorToastIfFalsy(team, "User is not a member of this team");
 
@@ -123,7 +123,7 @@ export const usersListForPost = async ({
 		(member) => getMemberRoleType(member) !== "OTHER",
 	);
 
-	// handle case when all users are from excluded roles
+	// falls back to everyone when too few members have a playing role
 	const result = (
 		filteredMembers.length >= SCRIM.MIN_MEMBERS_PER_TEAM
 			? filteredMembers
@@ -134,7 +134,7 @@ export const usersListForPost = async ({
 		errorToast("Your team does not have enough members (4) to scrim");
 	}
 
-	// ensure author is included in the list even if they match the ignore condition
+	// the author is included even with an excluded role
 	return result.includes(authorId) ? result : [authorId, ...result];
 };
 

@@ -1,32 +1,26 @@
 import { addWeeks, subWeeks } from "date-fns";
 import type { Tables } from "~/db/tables";
 import { databaseTimestampToDate } from "~/utils/dates";
-import * as AvailabilityRepository from "../AvailabilityRepository.server";
 import { AVAILABILITY } from "../availability-constants";
 import type { TimeRange } from "../availability-types";
 import * as Availability from "./Availability";
-import * as Commitments from "./Commitments.server";
 import { estimatedEndsAt } from "./TournamentDuration.server";
+import * as VisibleSchedules from "./VisibleSchedules.server";
 
 export type RegistrationAvailability = Awaited<
 	ReturnType<typeof registrationAvailability>
 >;
 
 /**
- * Availability of the given users for a tournament's estimated window
- * (start to {@link estimatedEndsAt}), for the registration
- * page's availability panel. The tournament's own registrations do not count
- * as being busy — the panel asks whether people can play this very event.
- *
- * When the event starts past the reportable horizon there is nothing to
- * compute: every schedule would be unknown, so the result is only when
- * schedules for the event's week open up (the Monday its week becomes the
- * "next week").
+ * Availability of the users for the tournament's estimated window (start to
+ * {@link estimatedEndsAt}); its own registrations don't count as busy. Past the reportable
+ * horizon every schedule would be unknown, so the result is only when the event's week opens up.
  */
 export async function registrationAvailability({
 	tournament,
 	userIds,
 	timezone,
+	viewerId,
 }: {
 	tournament: {
 		id: number;
@@ -39,6 +33,7 @@ export async function registrationAvailability({
 	};
 	userIds: Array<number>;
 	timezone: string;
+	viewerId: number;
 }) {
 	const startDate = databaseTimestampToDate(tournament.startsAt);
 
@@ -61,14 +56,13 @@ export async function registrationAvailability({
 		endsAt: await estimatedEndsAt(tournament),
 	};
 
-	const [weeks, busyByUserId] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({ userIds, ...window }),
-		Commitments.busyBlocksByUserIds({
+	const { reportedWeeks: weeks, busyByUserId } =
+		await VisibleSchedules.findByUserIds({
 			userIds,
+			viewerId,
 			...window,
 			excludeTournamentId: tournament.id,
-		}),
-	]);
+		});
 
 	const windowDates = [
 		Availability.dateInTimezone(window.startsAt, timezone),

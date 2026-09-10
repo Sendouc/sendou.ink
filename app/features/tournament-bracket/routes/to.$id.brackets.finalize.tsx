@@ -21,7 +21,7 @@ import {
 } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { Trophy } from "~/features/trophies/components/Trophy";
 import { ParticipationPill } from "~/features/user-page/components/ParticipationPill";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { action } from "../actions/to.$id.brackets.finalize.server";
 import {
 	type FinalizeTournamentLoaderData,
@@ -207,7 +207,7 @@ function NewBadgeReceiversSelector({
 					tournament.minMembersPerTeam === newOwnerStanding.members.length;
 
 				newReceivers.push({
-					badgeId: badgeId,
+					badgeId,
 					tournamentTeamId: newOwnerTournamentTeamId,
 					userIds: defaultSelected
 						? newOwnerStanding.members.map((m) => m.userId)
@@ -226,7 +226,9 @@ function NewBadgeReceiversSelector({
 
 				const newUserIds = isSelected
 					? [...receiver.userIds, userId]
-					: receiver.userIds.filter((id) => id !== userId);
+					: receiver.userIds.filter(
+							(receiverUserId) => receiverUserId !== userId,
+						);
 
 				return {
 					...receiver,
@@ -293,9 +295,9 @@ function NewBadgeReceiversSelector({
 									<div className="stack horizontal sm items-end">
 										<ParticipationPill setResults={member.setResults} />
 									</div>
-									{i !== standingToReceive?.members.length - 1 && (
+									{i !== standingToReceive?.members.length - 1 ? (
 										<Divider className="mt-3" />
-									)}
+									) : null}
 								</div>
 							);
 						})}

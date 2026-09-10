@@ -11,11 +11,7 @@ export function replaceAll(streams: Omit<Tables["LiveStream"], "id">[]) {
 	});
 }
 
-/**
- * Adds the given accounts as streamers of their tournament. Returns the ids of the
- * rows actually inserted, in insertion order — an account already streaming that
- * tournament is skipped and so has no id among them.
- */
+/** Adds the accounts as streamers of their tournament, returning the inserted ids in order; an account already streaming it is skipped. */
 export function insertTournamentStreamers(
 	rows: Omit<Tables["TournamentStreamer"], "id">[],
 ) {
@@ -27,6 +23,21 @@ export function insertTournamentStreamers(
 		)
 		.returning("id")
 		.execute();
+}
+
+/** The user's ongoing Splatoon 3 Twitch stream, `undefined` when they are not live. */
+export function findByUserId(userId: number) {
+	return db
+		.selectFrom("LiveStream")
+		.select([
+			"LiveStream.twitch",
+			"LiveStream.viewerCount",
+			"LiveStream.thumbnailUrl",
+		])
+		.where("LiveStream.userId", "=", userId)
+		.where("LiveStream.twitch", "is not", null)
+		.$narrowType<{ twitch: string }>()
+		.executeTakeFirst();
 }
 
 export function findXRankStreams() {

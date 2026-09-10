@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import {
 	abilities,
 	mainOnlyAbilitiesShort,
@@ -7,13 +8,10 @@ import type {
 	BuildAbilitiesTuple,
 } from "~/modules/in-game-lists/types";
 
-const abilityToIndex = abilities.reduce(
-	(acc, ability, index) => {
-		acc[ability.name] = index;
-		return acc;
-	},
-	{} as Record<Ability, number>,
-);
+const abilityToIndex = R.mapToObj(abilities, (ability, index) => [
+	ability.name,
+	index,
+]);
 
 const mainOnlyAbilitiesSet = new Set(mainOnlyAbilitiesShort);
 
@@ -21,12 +19,16 @@ const abilitySorter = (a: Ability, b: Ability) =>
 	abilityToIndex[a] - abilityToIndex[b];
 
 export function sortAbilities(
-	abilities: BuildAbilitiesTuple,
+	buildAbilities: BuildAbilitiesTuple,
 ): BuildAbilitiesTuple {
-	const m1 = abilities[0][0];
-	const m2 = abilities[1][0];
-	const m3 = abilities[2][0];
-	const oldMainAbilities = [abilities[0][0], abilities[1][0], abilities[2][0]];
+	const m1 = buildAbilities[0][0];
+	const m2 = buildAbilities[1][0];
+	const m3 = buildAbilities[2][0];
+	const oldMainAbilities = [
+		buildAbilities[0][0],
+		buildAbilities[1][0],
+		buildAbilities[2][0],
+	];
 
 	const sortedMainAbilities = [m1, m2, m3]
 		.filter((ability) => !mainOnlyAbilitiesSet.has(ability as any))
@@ -37,7 +39,7 @@ export function sortAbilities(
 			: sortedMainAbilities.pop(),
 	);
 
-	const subAbilities = subAbilitiesSorted(abilities);
+	const subAbilities = subAbilitiesSorted(buildAbilities);
 
 	return switchSubRowsIfBetter([
 		[newMainAbilities[0], ...subAbilities.slice(0, 3)],
@@ -53,8 +55,8 @@ const sortAbilityCount = (a: [Ability, number], b: [Ability, number]) => {
 
 	return b[1] - a[1];
 };
-function subAbilitiesSorted(abilities: BuildAbilitiesTuple): Ability[] {
-	const subAbilitiesUnsorted = abilities.flatMap((row) => row.slice(1));
+function subAbilitiesSorted(buildAbilities: BuildAbilitiesTuple): Ability[] {
+	const subAbilitiesUnsorted = buildAbilities.flatMap((row) => row.slice(1));
 
 	const countsMap = new Map<Ability, number>();
 	for (const ability of subAbilitiesUnsorted) {
@@ -116,12 +118,12 @@ function subAbilitiesSorted(abilities: BuildAbilitiesTuple): Ability[] {
 }
 
 function switchSubRowsIfBetter(
-	abilities: BuildAbilitiesTuple,
+	buildAbilities: BuildAbilitiesTuple,
 ): BuildAbilitiesTuple {
 	const desiredMoves: [source: number, target: number][] = [];
 	const rowsInvolvedInMove = new Set<number>();
 
-	for (const [i, row] of abilities.entries()) {
+	for (const [i, row] of buildAbilities.entries()) {
 		if (rowsInvolvedInMove.has(i)) continue;
 
 		const [m, s1] = row;
@@ -129,7 +131,7 @@ function switchSubRowsIfBetter(
 		// already in a good place
 		if (m === s1) continue;
 
-		for (const [j, row2] of abilities.entries()) {
+		for (const [j, row2] of buildAbilities.entries()) {
 			if (i === j || rowsInvolvedInMove.has(j)) continue;
 
 			const [m2, s21] = row2;
@@ -149,10 +151,10 @@ function switchSubRowsIfBetter(
 	}
 
 	for (const [source, target] of desiredMoves) {
-		const temp = abilities[source].slice(1);
-		abilities[source].splice(1, 3, ...abilities[target].slice(1));
-		abilities[target].splice(1, 3, ...temp);
+		const temp = buildAbilities[source].slice(1);
+		buildAbilities[source].splice(1, 3, ...buildAbilities[target].slice(1));
+		buildAbilities[target].splice(1, 3, ...temp);
 	}
 
-	return abilities;
+	return buildAbilities;
 }

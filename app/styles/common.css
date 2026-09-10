@@ -23,7 +23,7 @@
 
 		-moz-osx-font-smoothing: antialiased;
 		-webkit-font-smoothing: antialiased;
-		-webkit-tab-highlight-color: transparent;
+		-webkit-tap-highlight-color: transparent;
 		-webkit-text-size-adjust: 100%;
 	}
 
@@ -416,6 +416,27 @@
 		opacity: 0;
 	}
 
+	/* Safari has no picker indicator reserving room for the icon above,
+	so reserve it with padding instead (-webkit-hyphens = Safari only) */
+	@supports (-webkit-hyphens: none) {
+		input[type="date"],
+		input[type="datetime-local"],
+		input[type="month"],
+		input[type="time"],
+		input[type="week"] {
+			padding-right: calc(
+				var(--field-size-icon) +
+				var(--field-padding) +
+				var(--s-2)
+			);
+		}
+	}
+
+	/* iOS centers the value inside date/time inputs */
+	input::-webkit-date-and-time-value {
+		text-align: left;
+	}
+
 	@-moz-document url-prefix() {
 		[type="date"],
 		[type="datetime-local"],
@@ -619,13 +640,10 @@
 	}
 }
 
-/* Track that NProgress renders its bar into (see NPROGRESS_ANCHOR_ID). It is a
- * child of the header positioned just below the header's 1.5px bottom border, so
- * it follows the header on scroll and in standalone (PWA) mode. It spans only the
- * header width (the area between the sidebars), and its overflow: hidden clips the
- * bar — which NProgress slides in from the left — so the bar can never extend over
- * a sidebar. Unlayered + id selector so it beats NProgress's own unlayered
- * .nprogress-custom-parent rules (and the @layer-wrapped CSS modules). */
+/* NProgress track (see NPROGRESS_ANCHOR_ID): a header child just below its 1.5px bottom border so
+ * it follows the header on scroll and in PWA mode, spanning only the area between the sidebars
+ * with overflow: hidden so the bar never slides over a sidebar. Unlayered id selector so it beats
+ * NProgress's own unlayered .nprogress-custom-parent rules. */
 #nprogress-anchor {
 	position: absolute;
 	top: calc(100% + 1.5px);

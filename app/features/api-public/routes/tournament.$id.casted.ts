@@ -10,7 +10,7 @@ const paramsSchema = v.object({
 });
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-	const { id } = parseParams({
+	const { id: tournamentId } = parseParams({
 		params,
 		schema: paramsSchema,
 	});
@@ -19,7 +19,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		await db
 			.selectFrom("Tournament")
 			.select(["Tournament.castedMatchesInfo"])
-			.where("Tournament.id", "=", id)
+			.where("Tournament.id", "=", tournamentId)
 			.executeTakeFirst(),
 	);
 

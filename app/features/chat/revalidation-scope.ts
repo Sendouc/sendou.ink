@@ -11,16 +11,49 @@ let pendingRevalidations = 0;
 let oldestPendingStartedAt: number | null = null;
 let revalidationGeneration = 0;
 let scheduledBroadcast: { scope: RevalidateScope | null } | null = null;
+let heldSubmissions = 0;
+let deferredRevalidation: {
+	revalidate: () => Promise<void>;
+	scope: RevalidateScope | null;
+} | null = null;
 
 /**
- * Runs a broadcast triggered revalidation, remembering the broadcast's scope
- * while it is in flight so `shouldRevalidate` implementations can skip loaders whose
- * data the broadcast can not have changed.
+ * Runs a fetcher submission, holding broadcast revalidations back until it has settled (its
+ * redirect followed). React Router drops a fetcher's redirect when a navigation started after
+ * the submission, and a revalidation is one: a broadcast landing mid-flight would leave the
+ * user on the page with nothing happening. The held revalidation runs once, afterwards.
  */
+export async function holdRevalidationsDuring(submission: () => Promise<void>) {
+	heldSubmissions++;
+	try {
+		await submission();
+	} finally {
+		heldSubmissions--;
+		if (heldSubmissions === 0 && deferredRevalidation) {
+			const { revalidate, scope } = deferredRevalidation;
+			deferredRevalidation = null;
+			revalidateWithScope(revalidate, scope ?? undefined);
+		}
+	}
+}
+
+/** Runs a broadcast triggered revalidation, remembering its scope while in flight so `shouldRevalidate` can skip loaders the broadcast cannot have changed. */
 export function revalidateWithScope(
 	revalidate: () => Promise<void>,
 	scope: RevalidateScope | undefined,
 ) {
+	if (heldSubmissions > 0) {
+		// like an absorbed broadcast, a deferred revalidation of a different scope widens to unscoped
+		const widens =
+			deferredRevalidation !== null &&
+			deferredRevalidation.scope !== (scope ?? null);
+		deferredRevalidation = {
+			revalidate,
+			scope: widens ? null : (scope ?? null),
+		};
+		return;
+	}
+
 	forgetStalePendingRevalidations();
 
 	if (!scope) {
@@ -47,12 +80,9 @@ export function revalidateWithScope(
 }
 
 /**
- * Runs a broadcast triggered revalidation after a random delay so the clients
- * subscribed to a topic do not all refetch in the same instant the broadcast fans out
- * (thundering herd — a broadcast to e.g. the SendouQ looking channel or a live tournament's
- * channel reaches every client on that page at once). A broadcast arriving while one is
- * already scheduled is absorbed into it, widening its scope as needed: the eventual
- * single fetch returns data fresh enough to cover both.
+ * Runs a broadcast triggered revalidation after a random delay so a topic's clients do not all
+ * refetch in the same instant (thundering herd on e.g. the SendouQ looking channel). A broadcast
+ * arriving while one is scheduled is absorbed into it, widening its scope as needed.
  */
 export function scheduleBroadcastRevalidation(
 	revalidate: () => Promise<void>,
@@ -74,10 +104,9 @@ export function scheduleBroadcastRevalidation(
 }
 
 /**
- * Whether the pending revalidation is a broadcast scoped to match results,
- * meaning only match data (reported scores, pick/ban events) changed. Loaders whose data
- * does not derive from match data can return `false` from `shouldRevalidate` for these —
- * during a live tournament this is the most frequent broadcast: one per reported game.
+ * Whether the pending revalidation is scoped to match results (reported scores, pick/ban events).
+ * Loaders not derived from match data can return `false` from `shouldRevalidate` for these — the
+ * most frequent broadcast during a live tournament, one per reported game.
  */
 export function isMatchResultsScopedRevalidation(
 	args: ShouldRevalidateFunctionArgs,
@@ -86,11 +115,9 @@ export function isMatchResultsScopedRevalidation(
 }
 
 /**
- * Drops the bookkeeping of revalidations counted as in flight for longer than one can
- * plausibly take. A `revalidate()` interrupted by a navigation never settles, which would
- * otherwise leave `activeScope` stuck for the life of the tab and make every later
- * broadcast skip the loaders it narrows away. Only the stuck case is forgotten, so a
- * revalidation genuinely in flight keeps its scope from being narrowed under it.
+ * Forgets revalidations counted as in flight for implausibly long: a `revalidate()` interrupted
+ * by a navigation never settles and would leave `activeScope` stuck for the life of the tab.
+ * Only the stuck case is forgotten, so a genuine in-flight one keeps its scope.
  */
 function forgetStalePendingRevalidations() {
 	const isStale =

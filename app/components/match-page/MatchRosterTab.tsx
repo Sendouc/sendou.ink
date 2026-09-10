@@ -14,7 +14,7 @@ import {
 	useUserCardData,
 } from "~/features/user-card/components/UserCard";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { CommonUser } from "~/utils/kysely.server";
 import { tierImageUrl } from "~/utils/urls";
 import { SendouTabPanel } from "../elements/Tabs";
@@ -37,10 +37,10 @@ interface RosterTabTeam {
 	};
 	defaultName?: string;
 	members: Array<RosterTabMember>;
-	/** Sub user ids i.e. those who are not the current active roster */
+	/** users not in the current active roster */
 	subbedOut?: Array<number>;
 	tier?: { name: TierName; isPlus: boolean };
-	/** Tournament seed of the team (tournament only). */
+	/** tournament only */
 	seed?: number | null;
 }
 
@@ -180,7 +180,7 @@ function TeamRoster({
 							isDisabled={
 								isSubmitting || selectedMemberIds.length !== minMembersPerTeam
 							}
-							onPress={handleSubmit}
+							onClick={handleSubmit}
 							testId={`save-active-roster-button-${side}`}
 						>
 							{t("common:actions.submit")}
@@ -189,7 +189,7 @@ function TeamRoster({
 							<SendouButton
 								variant="outlined"
 								size="small"
-								onPress={handleCancel}
+								onClick={handleCancel}
 							>
 								{t("common:actions.cancel")}
 							</SendouButton>
@@ -202,7 +202,7 @@ function TeamRoster({
 					icon={<Edit />}
 					className="mt-4 mx-auto"
 					size="small"
-					onPress={() => {
+					onClick={() => {
 						setSelectedMemberIds(activeMembers.map((m) => m.id));
 						setIsEditing(true);
 					}}

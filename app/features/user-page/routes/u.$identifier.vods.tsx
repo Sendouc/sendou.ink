@@ -6,7 +6,7 @@ import {
 } from "~/features/vods/components/VodListing";
 import { userVodsSearchParams } from "~/features/vods/vods-search-params";
 import { useSearchParamPagination } from "~/hooks/useSearchParamPagination";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { userPage } from "~/utils/urls";
 import { SubPageHeader } from "../components/SubPageHeader";

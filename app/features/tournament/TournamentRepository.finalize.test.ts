@@ -8,12 +8,10 @@ import type { TournamentSummary } from "../tournament-bracket/core/summarizer.se
 import * as TournamentRepository from "./TournamentRepository.server";
 import * as TournamentTeamRepository from "./TournamentTeamRepository.server";
 
-/** SQLite binds at most 32,766 parameters per statement and `PlayerResult` has
- * eight columns, so one multi-row insert fits this many rows at most. */
+/** SQLite binds at most 32,766 parameters per statement and `PlayerResult` has eight columns. */
 const PLAYER_RESULT_ROWS_PER_STATEMENT = Math.floor(32766 / 8);
 
-/** Enough users that every ordered pair of them, for both types, is over
- * {@link PLAYER_RESULT_ROWS_PER_STATEMENT}. */
+/** Enough that every ordered pair, for both types, is over {@link PLAYER_RESULT_ROWS_PER_STATEMENT}. */
 const USER_COUNT = 46;
 
 const users = UserFactory.pool();
@@ -245,6 +243,40 @@ describe("TournamentRepository.finalize", () => {
 			.executeTakeFirstOrThrow();
 
 		expect(second.matchesCount).toBe(8);
+	});
+
+	test("a second finalize of the same tournament is a no-op", async () => {
+		const { id: tournamentId } = await createTournament();
+		const summary = emptySummary([
+			{
+				userId: users.id(1),
+				identifier: null,
+				mu: 25,
+				sigma: 8.333,
+				matchesCount: 5,
+			},
+		]);
+
+		const first = await TournamentRepository.finalize({
+			tournamentId,
+			season: 1,
+			summary,
+		});
+		const second = await TournamentRepository.finalize({
+			tournamentId,
+			season: 1,
+			summary,
+		});
+
+		const skills = await db
+			.selectFrom("Skill")
+			.select("matchesCount")
+			.where("tournamentId", "=", tournamentId)
+			.execute();
+
+		expect(first).toBe(true);
+		expect(second).toBe(false);
+		expect(skills).toEqual([{ matchesCount: 5 }]);
 	});
 
 	test("finalizes a tournament with more player result deltas than fit in one insert statement", async () => {

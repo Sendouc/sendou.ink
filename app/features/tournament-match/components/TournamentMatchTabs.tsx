@@ -40,7 +40,7 @@ export function TournamentMatchTabs({
 		isPickBanStep,
 	} = useMatch();
 
-	// When waiting on team(s) only a subset of tabs can be rendered
+	// waiting on team(s): only a subset of tabs can be rendered
 	if (!teamOne || !teamTwo) {
 		return tabs.length > 0 ? (
 			<MatchTabs tabs={tabs}>
@@ -402,7 +402,9 @@ function TournamentMatchRosterTab({
 	}
 
 	function handleSubbedOutChange(teamId: number, subbedOut: number[]) {
-		const team = [teamOne, teamTwo].find((t) => t?.id === teamId);
+		const team = [teamOne, teamTwo].find(
+			(candidate) => candidate?.id === teamId,
+		);
 		if (!team) return;
 
 		const activeRoster = team.memberUserIds.filter(

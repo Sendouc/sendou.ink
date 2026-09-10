@@ -10,19 +10,12 @@ import { dismissScheduleNudgeSchema } from "../availability-schemas";
 import { scheduleWeekSearchParams } from "../availability-search-params";
 import styles from "./ScheduleNudge.module.css";
 
-/**
- * Prompt to report next week's availability, shown on the last day of the week
- * while next week is still empty. Sits as a band right under the events header.
- * Dismissing it is remembered for the week, so it can be waved away without
- * filling anything in.
- */
+/** Band under the events header on the last day of the week while next week is empty; dismissal is remembered for the week. */
 export function ScheduleNudge({
 	panel,
-	onNavigate,
 }: {
 	/** Bleeds past the mobile events panel's padding rather than the sidebar's. */
 	panel?: boolean;
-	onNavigate?: () => void;
 }) {
 	const { t } = useTranslation(["front"]);
 	const [dismissed, setDismissed] = React.useState(false);
@@ -45,7 +38,6 @@ export function ScheduleNudge({
 			<Link
 				to={scheduleWeekSearchParams.href(EVENTS_PAGE, { week: "next" })}
 				className={styles.link}
-				onClick={onNavigate}
 			>
 				<CalendarPlus size={14} />
 				{t("front:sideNav.scheduleNudge")}
@@ -56,7 +48,7 @@ export function ScheduleNudge({
 				size="miniscule"
 				className={styles.dismissButton}
 				aria-label={t("front:sideNav.scheduleNudge.dismiss")}
-				onPress={dismiss}
+				onClick={dismiss}
 			/>
 		</div>
 	);

@@ -24,13 +24,13 @@ describe("UserRepository", () => {
 	});
 
 	test("updates user name when upserting", async () => {
-		await UserRepository.upsert({
+		const { id } = await UserRepository.upsert({
 			discordId: "1",
 			discordName: "TestUser",
 			discordAvatar: null,
 		});
 
-		const user = await UserRepository.findLayoutDataByIdentifier("1");
+		const user = await UserRepository.findLayoutDataById(id);
 
 		expect(user?.username).toBe("TestUser");
 
@@ -40,7 +40,7 @@ describe("UserRepository", () => {
 			discordAvatar: null,
 		});
 
-		const updatedUser = await UserRepository.findLayoutDataByIdentifier("1");
+		const updatedUser = await UserRepository.findLayoutDataById(id);
 		expect(updatedUser?.username).toBe("UpdatedUser");
 	});
 
@@ -323,7 +323,9 @@ describe("UserRepository", () => {
 					{},
 				);
 
-				const teams = [];
+				const teams: Awaited<
+					ReturnType<typeof TournamentTeamFactory.create>
+				>[] = [];
 				for (const user of [topUser, topMate, lowUser, lowMate]) {
 					teams.push(
 						await TournamentTeamFactory.create(
@@ -514,6 +516,43 @@ describe("UserRepository", () => {
 		});
 	});
 
+	describe("UserRepository.findStoredWidgetsByUserId", () => {
+		const sixMainWidgets: Parameters<typeof UserFactory.create>[1] = {
+			widgets: [
+				{ id: "weapon-pool", settings: { weaponPool: [] } },
+				{ id: "trophies-owned" },
+				{ id: "badges-owned", settings: { favoriteBadgeIds: [] } },
+				{ id: "badges-authored" },
+				{ id: "badges-managed" },
+				{ id: "builds" },
+			],
+		};
+
+		test("returns all the widgets of a supporter", async () => {
+			const { id } = await UserFactory.create(null, {
+				...sixMainWidgets,
+				patronTier: 2,
+			});
+
+			const widgets = await UserRepository.findStoredWidgetsByUserId(id);
+
+			expect(widgets).toHaveLength(6);
+		});
+
+		test("truncates the widgets over the limit of a non supporter", async () => {
+			const { id } = await UserFactory.create(null, sixMainWidgets);
+
+			const widgets = await UserRepository.findStoredWidgetsByUserId(id);
+
+			expect(widgets.map((widget) => widget.id)).toEqual([
+				"weapon-pool",
+				"trophies-owned",
+				"badges-owned",
+				"badges-authored",
+			]);
+		});
+	});
+
 	describe("UserRepository.findAllPatronsForFooter", () => {
 		const patrons = UserFactory.pool();
 
@@ -549,7 +588,9 @@ describe("UserRepository", () => {
 			const tomorrow = await UserRepository.findAllPatronsForFooter();
 
 			expect(ids(today)).not.toEqual(ids(tomorrow));
-			expect(ids(today).sort()).toEqual(ids(tomorrow).sort());
+			expect(ids(today).sort((a, b) => a - b)).toEqual(
+				ids(tomorrow).sort((a, b) => a - b),
+			);
 		});
 	});
 });

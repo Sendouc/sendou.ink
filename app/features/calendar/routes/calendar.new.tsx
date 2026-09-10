@@ -198,10 +198,9 @@ function useDefaultValues() {
 				? databaseTimestampToDate(data.eventToEdit.startTimes[0])
 				: getDateAtNextFullHour(new Date())
 			: null,
-		// tournaments hide this field, so seed a valid URL to satisfy the url-format
-		// validation (the action coalesces to the same default)
+		// tournaments hide this field, the action coalesces the empty value to the default
 		bracketUrl: data.isAddingTournament
-			? "https://sendou.ink"
+			? ""
 			: (data.eventToEdit?.bracketUrl ?? ""),
 		discordInviteCode: baseEvent?.discordInviteCode ?? "",
 		tags: baseEvent?.tags ?? [],
@@ -422,7 +421,7 @@ function TrophyField() {
 									<span>{selectedTrophy.name}</span>
 									<SendouButton
 										className="ml-auto"
-										onPress={() => handleChange(null)}
+										onClick={() => handleChange(null)}
 										icon={<Trash />}
 										variant="minimal-destructive"
 										aria-label="Remove trophy"
@@ -520,7 +519,7 @@ function CalendarMapPoolField() {
 								size="small"
 								variant="outlined"
 								id={id}
-								onPress={() => setInclude(true)}
+								onClick={() => setInclude(true)}
 							>
 								{t("common:actions.add")}
 							</SendouButton>

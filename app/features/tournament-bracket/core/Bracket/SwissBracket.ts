@@ -3,7 +3,7 @@ import type { Tables } from "~/db/tables";
 import * as Standings from "~/features/tournament/core/Standings";
 import * as Engine from "~/features/tournament-bracket/core/engine";
 import type { BracketData } from "~/features/tournament-bracket/core/engine/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { cutToNDecimalPlaces } from "../../../../utils/number";
 import { calculateTeamStatus } from "../engine/swiss/team-status";
@@ -34,8 +34,7 @@ export class SwissBracket extends Bracket {
 
 		const relevantMatchesFinished = this.standingsAreFinal;
 
-		// explicit placements override the threshold, e.g. a consolation
-		// bracket for the teams that did not advance
+		// explicit placements override the threshold, e.g. a consolation bracket for the teams that did not advance
 		if (advanceThreshold && placements.length === 0) {
 			return {
 				relevantMatchesFinished,
@@ -54,7 +53,6 @@ export class SwissBracket extends Bracket {
 			};
 		}
 
-		// Standard Swiss logic without early advance/elimination
 		const uniquePlacements = R.unique(standings.map((s) => s.placement));
 
 		// 1,3,5 -> 1,2,3 e.g.
@@ -75,9 +73,8 @@ export class SwissBracket extends Bracket {
 	}
 
 	/**
-	 * Swiss rounds are paired one at a time, so a round that has no matches yet can still change the standings.
-	 * Exception being rounds that can never be paired because every team of the group has already
-	 * advanced or been eliminated (early advance variation).
+	 * Rounds are paired one at a time, so a round without matches yet can still change the standings,
+	 * unless it can never be paired because every team already advanced or got eliminated.
 	 */
 	get everyMatchOver() {
 		if (!super.everyMatchOver) return false;
@@ -164,7 +161,7 @@ export class SwissBracket extends Bracket {
 				opponentSets?: TeamTrackRecord;
 				opponentMaps?: TeamTrackRecord;
 			}) => {
-				const team = teams.find((team) => team.id === teamId);
+				const team = teams.find((candidate) => candidate.id === teamId);
 				if (team) {
 					team.setWins += setWins;
 					team.setLosses += setLosses;
@@ -262,7 +259,7 @@ export class SwissBracket extends Bracket {
 				}
 
 				const round = this.data.round.find(
-					(round) => round.id === match.roundId,
+					(candidate) => candidate.id === match.roundId,
 				);
 				const mapWins =
 					round?.maps?.type === "PLAY_ALL"
@@ -277,7 +274,7 @@ export class SwissBracket extends Bracket {
 					teamId: winner.id,
 					setWins: 1,
 					setLosses: 0,
-					mapWins: mapWins,
+					mapWins,
 					mapLosses: 0,
 				});
 			}
@@ -385,16 +382,13 @@ export class SwissBracket extends Bracket {
 						if (a.setLosses < b.setLosses) return -1;
 						if (a.setLosses > b.setLosses) return 1;
 
-						// TIEBREAKER 2) losses against tied - a team that lost to fewer of the
-						// teams it is tied with is placed higher. Unlike round robin (which uses
-						// wins against tied), Swiss counts losses because not every tied team has
-						// played each other: rewarding wins would unfairly favor teams who simply
-						// faced more of their tied peers, whereas penalizing head-to-head losses is
-						// schedule-independent. (winsAgainstTied is still tracked for display only.)
+						// TIEBREAKER 2) losses against tied. Unlike round robin (wins against tied), Swiss counts
+						// losses because not every tied team has played each other: wins would favor teams who
+						// faced more tied peers, losses are schedule-independent. winsAgainstTied is display only.
 						if (a.lossesAgainstTied > b.lossesAgainstTied) return 1;
 						if (a.lossesAgainstTied < b.lossesAgainstTied) return -1;
 
-						// TIEBREAKER 3) opponent set win % - how good the opponents they played against were?
+						// TIEBREAKER 3) opponent set win %
 						const aOpponentSetWinPercentage = this.trackRecordToWinPercentage(
 							a.opponentSets,
 						);
@@ -415,7 +409,7 @@ export class SwissBracket extends Bracket {
 						if (a.mapLosses < b.mapLosses) return -1;
 						if (a.mapLosses > b.mapLosses) return 1;
 
-						// TIEBREAKER 5) map wins against tied OW% (M) - note that this needs to be lower than map wins tiebreaker to make sure that throwing maps is not optimal
+						// TIEBREAKER 5) map wins against tied OW% (M), must rank below map wins so throwing maps is not optimal
 						const aOpponentMapWinPercentage = this.trackRecordToWinPercentage(
 							a.opponentMaps,
 						);

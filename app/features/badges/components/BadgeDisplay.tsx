@@ -36,7 +36,7 @@ export function BadgeDisplay({
 		badgeIdsKey(_badges),
 	);
 
-	// the badges given as props can change without a remount e.g. when navigating from one organization's page to another
+	// props can change without a remount e.g. navigating between organization pages
 	if (shownBadgeIds !== badgeIdsKey(_badges)) {
 		setShownBadgeIds(badgeIdsKey(_badges));
 		setBadges(_badges);
@@ -112,7 +112,7 @@ export function BadgeDisplay({
 						<SendouButton
 							icon={<Trash />}
 							variant="minimal-destructive"
-							onPress={() =>
+							onClick={() =>
 								onChange(
 									badges.filter((b) => b.id !== bigBadge.id).map((b) => b.id),
 								)

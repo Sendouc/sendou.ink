@@ -16,11 +16,9 @@ export default defineConfig((config) => {
 		},
 		plugins: [
 			{
-				// Vite dev serves everything with no-cache, so the browser revalidates
-				// the woff2 on every font re-resolution — any <head> mutation (e.g. an
-				// intent-prefetch link mounting) then flashes fallback fonts across the
-				// whole page while the 304 round-trips. Fonts effectively never change,
-				// so dev caches them hard, matching how the production build serves them.
+				// Vite dev serves everything with no-cache, so any <head> mutation (e.g. a prefetch
+				// link mounting) revalidates the woff2 and flashes fallback fonts while the 304
+				// round-trips. Fonts never change, so dev caches them hard like the production build.
 				name: "cache-fonts-in-dev",
 				apply: "serve",
 				configureServer(server) {
@@ -36,14 +34,10 @@ export default defineConfig((config) => {
 				},
 			},
 			{
-				// Wraps CSS modules in a @layer so utility classes always win and, more
-				// generally, so that the more specific of two modules styling the same
-				// element wins no matter what order Vite happens to emit the chunks in:
-				// `elements` (headless library wrappers) < `components` (shared
-				// components) < `features` (feature code and composed component groups).
-				// The layer order declaration is prepended to each module because in Vite
-				// dev mode, module <style> tags are injected before global stylesheets —
-				// without it the implicit first layer would get lowest priority.
+				// Wraps CSS modules in a @layer so utilities always win and the higher of two modules
+				// styling the same element wins regardless of chunk order: `elements` < `components`
+				// < `features`. The layer order is prepended to each module because in Vite dev module
+				// <style> tags are injected before global stylesheets.
 				name: "css-modules-layer",
 				enforce: "pre",
 				transform(code, id) {
@@ -62,8 +56,7 @@ export default defineConfig((config) => {
 				},
 			},
 			reactRouter(),
-			// React Compiler is skipped in dev where its per-module transform cost
-			// outweighs its value.
+			// React Compiler is skipped in dev, its transform cost outweighs its value there
 			...(isBuild
 				? [
 						babel({
@@ -99,10 +92,10 @@ export default defineConfig((config) => {
 			tsconfigPaths: true,
 		},
 		optimizeDeps: {
-			// Dependencies which are only imported by specific route modules.
-			// Pre-bundling them at startup avoids mid-session re-optimization
-			// and full page reloads on first navigations.
+			// route-specific deps pre-bundled at startup to avoid mid-session re-optimization and full page reloads
 			include: [
+				"@aws-sdk/client-s3",
+				"@aws-sdk/lib-storage",
 				"@date-fns/tz",
 				"@techstark/opencv-js",
 				"@dnd-kit/core",
@@ -110,7 +103,7 @@ export default defineConfig((config) => {
 				"@dnd-kit/sortable",
 				"@dnd-kit/utilities",
 				"@epic-web/cachified",
-				"@internationalized/date",
+				"@react-router/node",
 				"@tldraw/tldraw",
 				"@zumer/snapdom",
 				"chart.js",
@@ -132,6 +125,7 @@ export default defineConfig((config) => {
 				"date-fns/locale/zh-CN",
 				"edmonds-blossom-fixed",
 				"fflate",
+				"gray-matter",
 				"i18next-browser-languagedetector",
 				"i18next-http-backend",
 				"kysely",
@@ -139,11 +133,11 @@ export default defineConfig((config) => {
 				"mediabunny",
 				"nanoid",
 				"openskill",
+				"p-limit",
 				"picocad2-web",
 				"qrcode.react",
 				"react-chartjs-2",
 				"react-flip-toolkit",
-				"react-use-draggable-scroll",
 				"remeda",
 				"remix-auth",
 				"remix-auth-oauth2",
@@ -152,6 +146,7 @@ export default defineConfig((config) => {
 				"swr/immutable",
 				"valibot",
 				"web-haptics/react",
+				"web-push",
 			],
 		},
 	};

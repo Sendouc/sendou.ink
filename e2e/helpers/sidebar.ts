@@ -2,7 +2,7 @@ import type { Locator } from "@playwright/test";
 import { addDays, addHours } from "date-fns";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { Factories } from "./factories";
 import { expect } from "./playwright";
 

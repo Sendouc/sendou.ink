@@ -9,15 +9,86 @@ import {
 } from "~/utils/kysely.server";
 import { AVAILABILITY } from "./availability-constants";
 import type { TimeRange } from "./availability-types";
+import { sharesScheduleWith } from "./availability-utils";
 
-/** Longest a week can be, a DST week included. Weeks are indexed by their start, so finding the ones overlapping a window means looking this far back. */
+/** Longest week (DST included). Weeks are indexed by start, so overlapping a window means looking this far back. */
 const WEEK_MAX_SECONDS = 169 * 60 * 60;
 
 /**
- * Reported availability of the given users for every week overlapping the given
- * window, with the week's slots and day notes. A week without slots was
- * submitted as "unavailable all week"; a user with no week at all for the
- * window simply has not reported anything.
+ * Of `userIds`, those whose schedule the viewer may see, in the order given. Without the
+ * `scheduleVisibility` preference a schedule is visible to everyone; once set it is an allow-list
+ * of friends and teams (secondary memberships count), and the viewer has to be an allowed friend
+ * or share one of the allowed teams. The viewer always sees their own.
+ */
+export async function findScheduleVisibleUserIds({
+	userIds,
+	viewerId,
+}: {
+	userIds: Array<number>;
+	viewerId: number;
+}): Promise<Array<number>> {
+	if (userIds.length === 0) return [];
+
+	const rows = await db
+		.selectFrom("User")
+		.select((eb) => [
+			"User.id",
+			"User.preferences",
+			eb
+				.exists(
+					eb
+						.selectFrom("Friendship")
+						.select("Friendship.id")
+						.where((innerEb) =>
+							innerEb.or([
+								innerEb.and([
+									innerEb("Friendship.userOneId", "=", viewerId),
+									innerEb("Friendship.userTwoId", "=", innerEb.ref("User.id")),
+								]),
+								innerEb.and([
+									innerEb("Friendship.userTwoId", "=", viewerId),
+									innerEb("Friendship.userOneId", "=", innerEb.ref("User.id")),
+								]),
+							]),
+						),
+				)
+				.as("isFriend"),
+			jsonArrayFrom(
+				eb
+					.selectFrom("TeamMemberWithSecondary as theirs")
+					.innerJoin("TeamMemberWithSecondary as viewers", (join) =>
+						join
+							.onRef("viewers.teamId", "=", "theirs.teamId")
+							.on("viewers.userId", "=", viewerId),
+					)
+					.select("theirs.teamId")
+					.whereRef("theirs.userId", "=", "User.id"),
+			).as("sharedTeams"),
+		])
+		.where("User.id", "in", userIds)
+		.execute();
+
+	const visible = new Set(
+		rows
+			.filter(
+				(row) =>
+					row.id === viewerId ||
+					sharesScheduleWith({
+						visibility: row.preferences?.scheduleVisibility,
+						isFriend: Boolean(row.isFriend),
+						sharedTeamIds: row.sharedTeams.map((team) => team.teamId),
+					}),
+			)
+			.map((row) => row.id),
+	);
+
+	return userIds.filter((userId) => visible.has(userId));
+}
+
+/**
+ * Reported weeks of the given users overlapping the window, with slots and day notes. A week
+ * without slots means "unavailable all week"; no week at all means nothing was reported. Callers
+ * pass only ids {@link findScheduleVisibleUserIds} handed back.
  */
 export function findAllWeeksByUserIds({
 	userIds,
@@ -68,9 +139,8 @@ export function findAllWeeksByUserIds({
 }
 
 /**
- * Whether the user has reported the week starting at `weekStartsAt`. The week
- * is theirs to place, so a start within {@link AVAILABILITY.WEEK_MATCH_MAX_DISTANCE_SECONDS}
- * of the asked one is the same week seen from another timezone.
+ * Whether the user reported the week starting at `weekStartsAt`. A start within
+ * {@link AVAILABILITY.WEEK_MATCH_MAX_DISTANCE_SECONDS} is the same week seen from another timezone.
  */
 export async function hasReportedWeek({
 	userId,
@@ -99,20 +169,12 @@ export async function hasReportedWeek({
 }
 
 /**
- * Ids of the users who have not reported the week starting at `weekStartsAt`
- * while at least one of their teammates has — the reminder is only worth
- * sending when somebody else on the team already moved. Cheerleaders are left
- * out, the schedule surfaces do not show them.
+ * Users who have not reported the week starting at `weekStartsAt` while a teammate has (a reminder
+ * is only worth sending then).
  */
 export async function findWeekReminderUserIds(weekStartsAt: number) {
 	const memberships = await db
 		.selectFrom("TeamMemberWithSecondary")
-		.where((eb) =>
-			eb.or([
-				eb("TeamMemberWithSecondary.role", "is", null),
-				eb("TeamMemberWithSecondary.role", "!=", "CHEERLEADER"),
-			]),
-		)
 		.leftJoin("AvailabilityWeek", (join) =>
 			join
 				.onRef("AvailabilityWeek.userId", "=", "TeamMemberWithSecondary.userId")
@@ -149,8 +211,8 @@ export async function findWeekReminderUserIds(weekStartsAt: number) {
 }
 
 /**
- * Team events of every team the given users are members of (secondary teams
- * included) that overlap the given window, one row per member.
+ * Team events overlapping the window of every team (secondary included) the users are members of,
+ * one row per member. Events limited to selected participants only produce rows for those.
  */
 export function findAllTeamEventsByUserIds({
 	userIds,
@@ -179,10 +241,27 @@ export function findAllTeamEventsByUserIds({
 		.where("TeamMemberWithSecondary.userId", "in", userIds)
 		.where("TeamEvent.startsAt", "<", endsAt)
 		.where("TeamEvent.endsAt", ">", startsAt)
+		.where((eb) => {
+			const participants = eb
+				.selectFrom("TeamEventMember")
+				.select("TeamEventMember.userId")
+				.whereRef("TeamEventMember.teamEventId", "=", "TeamEvent.id");
+
+			return eb.or([
+				eb.not(eb.exists(participants)),
+				eb.exists(
+					participants.whereRef(
+						"TeamEventMember.userId",
+						"=",
+						"TeamMemberWithSecondary.userId",
+					),
+				),
+			]);
+		})
 		.execute();
 }
 
-/** Team events of one team overlapping the given window. */
+/** One team's events overlapping the window, with the participant user ids (empty = the whole team). */
 export function findTeamEventsByTeamId({
 	teamId,
 	startsAt,
@@ -194,11 +273,18 @@ export function findTeamEventsByTeamId({
 }) {
 	return db
 		.selectFrom("TeamEvent")
-		.select([
+		.select((eb) => [
 			"TeamEvent.id",
 			"TeamEvent.name",
 			"TeamEvent.startsAt",
 			"TeamEvent.endsAt",
+			jsonArrayFrom(
+				eb
+					.selectFrom("TeamEventMember")
+					.select("TeamEventMember.userId")
+					.whereRef("TeamEventMember.teamEventId", "=", "TeamEvent.id")
+					.orderBy("TeamEventMember.userId", "asc"),
+			).as("participants"),
 		])
 		.where("TeamEvent.teamId", "=", teamId)
 		.where("TeamEvent.startsAt", "<", endsAt)
@@ -208,9 +294,9 @@ export function findTeamEventsByTeamId({
 }
 
 /**
- * Ongoing and upcoming team events of every team the given user is a member of
- * (secondary teams included), starting within the given window, with the
- * owning team attached. For the user's personal calendar surfaces.
+ * Ongoing and upcoming events starting within the window of every team (secondary included) the
+ * user is a member of, with the owning team. Events limited to selected participants show up only
+ * for those. For the user's personal calendar views.
  */
 export function findAllUpcomingTeamEventsByUserId({
 	userId,
@@ -244,6 +330,17 @@ export function findAllUpcomingTeamEventsByUserId({
 		.where("TeamMemberWithSecondary.userId", "=", userId)
 		.where("TeamEvent.endsAt", ">", startsAt)
 		.where("TeamEvent.startsAt", "<", endsAt)
+		.where((eb) => {
+			const participants = eb
+				.selectFrom("TeamEventMember")
+				.select("TeamEventMember.userId")
+				.whereRef("TeamEventMember.teamEventId", "=", "TeamEvent.id");
+
+			return eb.or([
+				eb.not(eb.exists(participants)),
+				eb.exists(participants.where("TeamEventMember.userId", "=", userId)),
+			]);
+		})
 		.orderBy("TeamEvent.startsAt", "asc")
 		.execute();
 }
@@ -266,13 +363,9 @@ interface UpsertOwnWeekArgs {
 }
 
 /**
- * Saves the acting user's availability for one week, replacing whatever they
- * had reported for it. The week is saved as a whole, so slots and day notes
- * left out are removed. A week reported earlier from another timezone (its
- * start hours apart, never days) is the same week and gets replaced, not
- * duplicated.
- *
- * @returns id of the week
+ * Replaces the acting user's week as a whole (slots and day notes left out are removed). A week
+ * reported earlier from another timezone (start hours apart, never days) is replaced, not duplicated.
+ * Returns the week id.
  */
 export function upsertOwnWeek(args: UpsertOwnWeekArgs) {
 	const userId = actorId();
@@ -354,10 +447,7 @@ export function upsertOwnWeek(args: UpsertOwnWeekArgs) {
 	});
 }
 
-/**
- * Deletes availability weeks that started before the given timestamp. Their
- * slots and day notes go with them via cascade delete.
- */
+/** Deletes weeks started before the timestamp; slots and day notes cascade. */
 export function deleteWeeksStartedBefore(weekStartsAt: number) {
 	return db
 		.deleteFrom("AvailabilityWeek")
@@ -373,21 +463,71 @@ export function deleteTeamEventsEndedBefore(endsAt: number) {
 		.executeTakeFirstOrThrow();
 }
 
-/**
- * Adds an event the whole team takes part in. Author is the acting user.
- *
- * @returns id of the new event
- */
-export async function insertTeamEvent(
-	args: Omit<TablesInsertable["TeamEvent"], "authorId">,
-) {
-	const event = await db
-		.insertInto("TeamEvent")
-		.values({ ...args, authorId: actorId() })
-		.returning("id")
-		.executeTakeFirstOrThrow();
+/** Adds a team event authored by the acting user; without `participantUserIds` the whole team takes part. Returns its id. */
+export function insertTeamEvent({
+	participantUserIds,
+	...args
+}: Omit<TablesInsertable["TeamEvent"], "authorId"> & {
+	participantUserIds?: Array<number>;
+}) {
+	const authorId = actorId();
 
-	return event.id;
+	return db.transaction().execute(async (trx) => {
+		const event = await trx
+			.insertInto("TeamEvent")
+			.values({ ...args, authorId })
+			.returning("id")
+			.executeTakeFirstOrThrow();
+
+		if (participantUserIds && participantUserIds.length > 0) {
+			await trx
+				.insertInto("TeamEventMember")
+				.values(
+					participantUserIds.map((userId) => ({
+						teamEventId: event.id,
+						userId,
+					})),
+				)
+				.execute();
+		}
+
+		return event.id;
+	});
+}
+
+/** Updates a team event, replacing its participant limitation (none = the whole team takes part). */
+export function updateTeamEvent({
+	id,
+	participantUserIds,
+	...args
+}: {
+	id: number;
+	name: string;
+	startsAt: number;
+	endsAt: number;
+	participantUserIds?: Array<number>;
+}) {
+	return db.transaction().execute(async (trx) => {
+		await trx
+			.updateTable("TeamEvent")
+			.set(args)
+			.where("TeamEvent.id", "=", id)
+			.execute();
+
+		await trx
+			.deleteFrom("TeamEventMember")
+			.where("TeamEventMember.teamEventId", "=", id)
+			.execute();
+
+		if (participantUserIds && participantUserIds.length > 0) {
+			await trx
+				.insertInto("TeamEventMember")
+				.values(
+					participantUserIds.map((userId) => ({ teamEventId: id, userId })),
+				)
+				.execute();
+		}
+	});
 }
 
 export function deleteTeamEvent(id: number) {

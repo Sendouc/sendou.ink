@@ -4,7 +4,7 @@ import * as ChatRoomFactory from "~/db/seed/factories/ChatRoomFactory";
 import * as SQGroupFactory from "~/db/seed/factories/SQGroupFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { CloseExpiredChatRoomsRoutine } from "./closeExpiredChatRooms";
 
 const users = UserFactory.pool();

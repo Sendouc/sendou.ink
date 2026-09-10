@@ -1,18 +1,15 @@
 /** biome-ignore-all lint/suspicious/noConsole: CLI script output */
 /**
- * CLI equivalent of the VoD tab: scan a video file with the full detector
- * registry and write the same events CSV the tab's Export menu downloads.
- * ffmpeg decodes the video to raw RGBA frames piped through the
- * DetectorScheduler + detectors, and every parse event goes through a
- * TimelineBuilder with the tab's default merge/confidence options — so the
- * CSV matches a browser scan of the same footage (minus the calm-stretch
- * keyframe skimming, which only affects speed, not results).
+ * CLI equivalent of the VoD tab: scans a video with the full detector registry
+ * and writes the same events CSV the tab's Export menu downloads. ffmpeg
+ * decodes to raw RGBA frames piped through the DetectorScheduler + detectors
+ * and a TimelineBuilder with the tab's default options, so the CSV matches a
+ * browser scan (minus keyframe skimming, which only affects speed).
  *
  * Requires ffmpeg (and ffprobe for the progress percentage) on PATH.
  *
  * Usage: pnpm scanner:scan-vod <video> [--fps 8] [--start T] [--duration S] [--out file.csv] [--telemetry]
- * --telemetry prints the VoD tab's ?telemetry=true scan counters after the
- * run (per-detector gate/parse time, scheduling savings).
+ * --telemetry prints the VoD tab's ?telemetry=true scan counters after the run.
  */
 import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
@@ -131,39 +128,42 @@ function parseArgs(argv: string[]): {
 	outPath: string;
 	collectTelemetry: boolean;
 } | null {
-	let videoPath: string | undefined;
-	let fps = DEFAULT_FPS;
-	let start = 0;
-	let duration: number | undefined;
-	let outPath: string | undefined;
-	let collectTelemetry = false;
+	let parsedVideoPath: string | undefined;
+	let parsedFps = DEFAULT_FPS;
+	let parsedStart = 0;
+	let parsedDuration: number | undefined;
+	let parsedOutPath: string | undefined;
+	let parsedCollectTelemetry = false;
+	// biome-ignore lint/style/useForOf: the index advances inside the loop to consume flag values
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i]!;
-		if (arg === "--fps") fps = Number(argv[++i]);
-		else if (arg === "--start") start = Number(argv[++i]);
-		else if (arg === "--duration") duration = Number(argv[++i]);
-		else if (arg === "--out") outPath = argv[++i];
-		else if (arg === "--telemetry") collectTelemetry = true;
-		else if (!arg.startsWith("--") && videoPath === undefined) videoPath = arg;
+		if (arg === "--fps") parsedFps = Number(argv[++i]);
+		else if (arg === "--start") parsedStart = Number(argv[++i]);
+		else if (arg === "--duration") parsedDuration = Number(argv[++i]);
+		else if (arg === "--out") parsedOutPath = argv[++i];
+		else if (arg === "--telemetry") parsedCollectTelemetry = true;
+		else if (!arg.startsWith("--") && parsedVideoPath === undefined)
+			parsedVideoPath = arg;
 		else return null;
 	}
 	if (
-		videoPath === undefined ||
-		Number.isNaN(fps) ||
-		fps <= 0 ||
-		Number.isNaN(start) ||
-		(duration !== undefined && Number.isNaN(duration))
+		parsedVideoPath === undefined ||
+		Number.isNaN(parsedFps) ||
+		parsedFps <= 0 ||
+		Number.isNaN(parsedStart) ||
+		(parsedDuration !== undefined && Number.isNaN(parsedDuration))
 	) {
 		return null;
 	}
 	return {
-		videoPath,
-		fps,
-		start,
-		duration,
+		videoPath: parsedVideoPath,
+		fps: parsedFps,
+		start: parsedStart,
+		duration: parsedDuration,
 		outPath:
-			outPath ?? `${basename(videoPath).replace(/\.[^.]+$/, "")}-events.csv`,
-		collectTelemetry,
+			parsedOutPath ??
+			`${basename(parsedVideoPath).replace(/\.[^.]+$/, "")}-events.csv`,
+		collectTelemetry: parsedCollectTelemetry,
 	};
 }
 

@@ -7,11 +7,9 @@ import {
 	useOutletContext,
 } from "react-router";
 import { containerClassName, Main } from "~/components/Main";
-import { Placeholder } from "~/components/Placeholder";
 import { isMatchResultsScopedRevalidation } from "~/features/chat/revalidation-scope";
 import { TournamentProvider } from "~/features/tournament/tournament-context";
 import { Tournament } from "~/features/tournament-bracket/core/Tournament";
-import { useHydrated } from "~/hooks/useHydrated";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { tournamentPage } from "~/utils/urls";
 import { isRevalidation, metaTags } from "../../../utils/remix";
@@ -71,23 +69,7 @@ export const handle: SendouRouteHandle = {
 	},
 };
 
-export default function TournamentLayoutShell() {
-	const isHydrated = useHydrated();
-
-	// tournaments are something that people like to refresh a lot
-	// which can cause spikes that are hard for the server to handle
-	// this is just making sure the SSR for this page is as fast as possible in prod
-	if (!isHydrated)
-		return (
-			<Main bigger>
-				<Placeholder />
-			</Main>
-		);
-
-	return <TournamentLayout />;
-}
-
-export function TournamentLayout() {
+export default function TournamentLayout() {
 	const rawData = useLoaderData<typeof loader>();
 	const data = React.useMemo(
 		() => parseTournamentLoaderData(rawData),
@@ -99,7 +81,7 @@ export function TournamentLayout() {
 	);
 	const [bracketExpanded, setBracketExpanded] = React.useState(true);
 
-	// this is nice to debug with tournament in browser console
+	// for debugging in the browser console
 	if (process.env.NODE_ENV === "development") {
 		React.useEffect(() => {
 			// @ts-expect-error for dev purposes
@@ -126,8 +108,7 @@ export function TournamentLayout() {
 		</>
 	);
 
-	// Always render within the breakout container so the nav (and content) keep a
-	// consistent width across routes, avoiding a layout shift when switching tabs.
+	// always in the breakout container so the nav keeps its width across routes, avoiding a layout shift
 	return (
 		<Main breakoutContainer>
 			<div className={containerClassName("wide")}>{content}</div>

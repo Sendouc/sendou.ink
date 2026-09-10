@@ -91,7 +91,7 @@ const TLDRAW_OPTIONS: Partial<TldrawOptions> = {
 const MAIN_WEAPON_URL_PATTERN = /main-weapons-outlined\/(\d+)/;
 const SPECIAL_WEAPON_URL_PATTERN = /special-weapons\/(\d+)/;
 
-export default function Planner() {
+export function Planner() {
 	const { t, i18n } = useTranslation(["common"]);
 	const { htmlThemeClass } = useTheme();
 
@@ -258,8 +258,7 @@ export default function Planner() {
 		}) => {
 			if (!editor) return;
 
-			// tldraw image shapes reference an asset by id, so many copies of the
-			// same image on the canvas only take up memory once
+			// image shapes reference an asset by id, so copies of the same image only take up memory once
 			const assetId: TLAssetId = AssetRecordType.createId();
 
 			const srcWithOutline = imgOutlined ? `${src}?outline=red` : src;
@@ -288,11 +287,11 @@ export default function Planner() {
 				type: "image",
 				x: point[0],
 				y: point[1],
-				isLocked: isLocked,
+				isLocked,
 				id: shapeId,
 				meta: meta ?? {},
 				props: {
-					assetId: assetId,
+					assetId,
 					w: size[0],
 					h: size[1],
 				},
@@ -372,7 +371,7 @@ export default function Planner() {
 			setRangesVisible(false);
 
 			const shapes = editor.getCurrentPageShapes();
-			// i dont think locked shapes can be deleted
+			// locked shapes can't be deleted
 			for (const value of shapes) {
 				editor.updateShape({ id: value.id, type: value.type, isLocked: false });
 			}
@@ -498,7 +497,7 @@ export default function Planner() {
 	);
 }
 
-// Wraps the style panel so it can be styled to sit below the header bar, which otherwise blocks clicks on it
+// styled to sit below the header bar, which otherwise blocks clicks on it
 function CustomStylePanel(props: TLUiStylePanelProps) {
 	return (
 		<div className={props.isMobile ? undefined : styles.stylePanel}>
@@ -523,7 +522,7 @@ function OutlineToggle({
 	return (
 		<SendouButton
 			variant="minimal"
-			onPress={handleClick}
+			onClick={handleClick}
 			icon={<Square />}
 			className={clsx(
 				styles.outlineToggleButton,
@@ -547,7 +546,7 @@ function RangeToggle({
 	return (
 		<SendouButton
 			variant="minimal"
-			onPress={onToggle}
+			onClick={onToggle}
 			icon={<Radius />}
 			className={clsx(
 				styles.outlineToggleButton,
@@ -739,10 +738,10 @@ function StageBackgroundSelector({
 		setParams,
 	] = useSearchParamsTyped(plansSearchParams);
 
-	const handleStageIdChange = (stageId: StageId) => {
+	const handleStageIdChange = (newStageId: StageId) => {
 		setParams({
-			stage: stageId,
-			water: stageId === stagesObj.MAHI_MAHI_RESORT ? waterLevel : "up",
+			stage: newStageId,
+			water: newStageId === stagesObj.MAHI_MAHI_RESORT ? waterLevel : "up",
 		});
 	};
 
@@ -756,10 +755,10 @@ function StageBackgroundSelector({
 			>
 				{stageIds
 					.filter((id) => id <= LAST_STAGE_ID_WITH_IMAGES)
-					.map((stageId) => {
+					.map((optionStageId) => {
 						return (
-							<option value={stageId} key={stageId}>
-								{t(`game-misc:STAGE_${stageId}`)}
+							<option value={optionStageId} key={optionStageId}>
+								{t(`game-misc:STAGE_${optionStageId}`)}
 							</option>
 						);
 					})}
@@ -769,10 +768,10 @@ function StageBackgroundSelector({
 				value={mode}
 				onChange={(e) => setParams({ mode: e.target.value as ModeShort })}
 			>
-				{modesShort.map((mode) => {
+				{modesShort.map((optionMode) => {
 					return (
-						<option key={mode} value={mode}>
-							{t(`game-misc:MODE_LONG_${mode}`)}
+						<option key={optionMode} value={optionMode}>
+							{t(`game-misc:MODE_LONG_${optionMode}`)}
 						</option>
 					);
 				})}
@@ -810,7 +809,7 @@ function StageBackgroundSelector({
 				</select>
 			) : null}
 			<SendouButton
-				onPress={() =>
+				onClick={() =>
 					onAddBackground({ style: backgroundStyle, stageId, mode, waterLevel })
 				}
 				className="w-max"
@@ -822,8 +821,7 @@ function StageBackgroundSelector({
 	);
 }
 
-// when adding new language check from Tldraw codebase what is the matching
-// language in TRANSLATIONS constant, or default to english if none found
+// for a new language check tldraw's TRANSLATIONS constant for the matching one, default to english
 const ourLanguageToTldrawLanguageMap: Record<LanguageCode, string> = {
 	"es-US": "es",
 	"es-ES": "es",

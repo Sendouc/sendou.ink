@@ -4,7 +4,7 @@ import type {
 	ScannerMatch,
 	ScannerMatchPlayer,
 } from "../../core/scanner-match";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 const TEAM_A = ["Sendou", "Kiver", "Brian", "Zed"];
 const TEAM_B = ["Gos", "Noah", "Alice", "Bob"];
@@ -31,6 +31,7 @@ function match(
 		cast: false,
 		objective: null,
 		playerStatus: null,
+		kills: null,
 		teams: [{ players: alpha.map(player) }, { players: bravo.map(player) }],
 		winner: null,
 		pov: null,

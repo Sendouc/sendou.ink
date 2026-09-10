@@ -1,6 +1,6 @@
 import type { Namespace, TFunction } from "i18next";
 import type { Params, UIMatch } from "react-router";
-import { data, redirect } from "react-router";
+import { redirect } from "react-router";
 import * as v from "valibot";
 import type { navItems } from "~/components/layout/nav-items";
 import { ServerConfig } from "~/config.server";
@@ -37,12 +37,8 @@ export function badRequestIfFalsy<T>(value: T | null | undefined): T {
 }
 
 /**
- * Resolves the pagination state of a loader whose current page comes from the
- * `page` search param. `pagesCount` is at minimum 1 so empty result sets stay
- * on page 1.
- *
- * If the requested `page` exceeds `pagesCount`, throws a redirect to the last
- * available page (preserving other search params).
+ * Pagination state for a loader driven by the `page` search param. `pagesCount` is at least 1;
+ * a `page` past it throws a redirect to the last page (other search params preserved).
  */
 export function paginate({
 	url,
@@ -66,11 +62,7 @@ export function paginate({
 	return { currentPage: page, pagesCount };
 }
 
-/**
- * Parse formData of a request with the given schema. Throws HTTP 400 response if fails.
- *
- * When using SendouForm, use parseFormData from /app/form/parse.server.ts instead.
- * */
+/** Parses request payload with the schema, error toast redirect on failure. With SendouForm use `parseFormData` from `~/form/parse.server` instead. */
 export async function parseRequestPayload<T extends AnySchema>({
 	request,
 	schema,
@@ -145,12 +137,23 @@ export function formDataToObject(formData: FormData) {
 const LOHI_TOKEN_HEADER_NAME = "Lohi-Token";
 
 /** Some endpoints can only be accessed with an auth token. Used by Lohi bot and cron jobs. */
+/** A `returnTo` form value narrowed to a same-site path, so that redirecting to it can not leave the site. */
+export function safeReturnTo(value: FormDataEntryValue | null) {
+	if (typeof value !== "string") return null;
+	// a second slash or backslash makes it a protocol-relative URL to another host
+	if (!/^\/(?![\\/])/.test(value)) return null;
+
+	return value;
+}
+
 export function canAccessLohiEndpoint(request: Request) {
 	return request.headers.get(LOHI_TOKEN_HEADER_NAME) === ServerConfig.lohiToken;
 }
 
 export function errorToastRedirect(message: string) {
-	return redirect(`${currentRequestPathname() ?? ""}?__error=${message}`);
+	return redirect(
+		urlWithToastParam(currentRequestPathname() ?? "", "__error", message),
+	);
 }
 
 /** Asserts condition is truthy. Throws a redirect triggering an error toast with given message otherwise.  */
@@ -163,11 +166,7 @@ export function errorToastIfFalsy(
 	throw errorToastRedirect(message);
 }
 
-/**
- * To be used in loader or action function. Asserts that the provided `Result` value is an `Ok` variant.
- *
- * If the value is an `Err`, shows an error toast to the user with the error message. The function will stop execution by throwing a redirect meaning it is safe to operate on the value after this function call.
- */
+/** Asserts `Result` is `Ok`; on `Err` throws a redirect showing the error as a toast. */
 export function errorToastIfErr<T, E extends string>(
 	value: Result<T, E>,
 ): asserts value is Ok<T> {
@@ -182,7 +181,9 @@ export function errorToast(message: string) {
 }
 
 export function successToast(message: string) {
-	return redirect(`${currentRequestPathname() ?? ""}?__success=${message}`);
+	return redirect(
+		urlWithToastParam(currentRequestPathname() ?? "", "__success", message),
+	);
 }
 
 export function successToastWithRedirect({
@@ -192,7 +193,29 @@ export function successToastWithRedirect({
 	message: string;
 	url: string;
 }) {
-	return redirect(`${url}?__success=${message}`);
+	return redirect(urlWithToastParam(url, "__success", message));
+}
+
+function urlWithToastParam(
+	url: string,
+	param: "__error" | "__success",
+	message: string,
+) {
+	const [pathnameAndSearch, hash] = splitOnce(url, "#");
+	const [pathname, search] = splitOnce(pathnameAndSearch, "?");
+
+	const searchParams = new URLSearchParams(search);
+	searchParams.set(param, message);
+
+	return `${pathname}?${searchParams}${hash ? `#${hash}` : ""}`;
+}
+
+function splitOnce(value: string, separator: string) {
+	const index = value.indexOf(separator);
+
+	return index === -1
+		? ([value, undefined] as const)
+		: ([value.slice(0, index), value.slice(index + 1)] as const);
 }
 
 export type Breadcrumb =
@@ -206,45 +229,22 @@ export type Breadcrumb =
 	  }
 	| { text: string; type: "TEXT"; href: string };
 
-/**
- * Our custom type for route handles - the keys are defined by us or
- * libraries that parse them.
- *
- * Can be set per route using `export const handle: SendouRouteHandle = { };`
- * Can be accessed for all currently active routes via the `useMatches()` hook.
- */
+/** Route `handle` shape; read for all active routes via `useMatches()`. */
 export type SendouRouteHandle = {
-	/** The i18n translation files used for this route, via remix-i18next */
+	/** i18n namespaces loaded for this route */
 	i18n?: Namespace;
 
-	/**
-	 * A function that returns the breadcrumb text that should be displayed in
-	 * the <Breadcrumb> component
-	 */
 	breadcrumb?: (args: {
 		match: UIMatch;
 		t: TFunction<"common", undefined>;
 	}) => Breadcrumb | Array<Breadcrumb> | undefined;
 
-	/** The name of a navItem that is active on this route. See nav-items.ts */
+	/** navItem active on this route, see nav-items.ts */
 	navItemName?: (typeof navItems)[number]["name"];
 
 	/**
-	 * When `true`, the shared `<Main>` rendered by a parent layout (e.g. the
-	 * tournament layout) fills the whole content area instead of the page
-	 * max-width, while the page content stays centered at the normal width.
-	 * Lets a descendant (e.g. the bracket) break out and grow wider than the
-	 * page when it needs to.
+	 * Parent layout's `<Main>` fills the whole content area (content stays centered at normal
+	 * width) so a descendant like the bracket can grow wider than the page.
 	 */
 	mainBreakout?: boolean;
 };
-
-/** Caches the loader response with "private" Cache-Control meaning that CDN won't cache the response.
- * To be used when the response is different for each user. This is especially useful when the response
- * is prefetched on link hover.
- */
-export function privatelyCachedJson<T>(dataValue: T) {
-	return data(dataValue, {
-		headers: { "Cache-Control": "private, max-age=5" },
-	});
-}

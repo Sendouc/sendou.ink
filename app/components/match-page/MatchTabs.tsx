@@ -2,7 +2,7 @@ import { BarChart3, Key, ScrollText, Tally5, Users } from "lucide-react";
 import type * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParam } from "~/modules/search-params/hooks";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { SendouTab, SendouTabList, SendouTabs } from "../elements/Tabs";
 import styles from "./MatchTabs.module.css";
 import { matchPageSearchParams } from "./match-page-search-params";
@@ -11,7 +11,7 @@ type MatchTabsKey = (typeof TAB_KEYS)[keyof typeof TAB_KEYS];
 interface MatchTabsProps {
 	children: React.ReactNode;
 	tabs: Array<MatchTabsKey>;
-	/** Tabs that should show a warning-colored alert icon to draw attention. */
+	/** tabs showing a warning-colored alert icon */
 	alertTabs?: Array<MatchTabsKey>;
 }
 

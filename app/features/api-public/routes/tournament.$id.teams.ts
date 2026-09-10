@@ -2,8 +2,23 @@ import { sql } from "kysely";
 import type { LoaderFunctionArgs } from "react-router";
 import * as v from "valibot";
 import { db } from "~/db/sql";
+import type { TournamentSettings } from "~/db/tables-json";
+import { getUser } from "~/features/auth/core/user.server";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
+import * as Standings from "~/features/tournament/core/Standings";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import {
+	seedsByStartingBracket,
+	sortTeamsBySeeding,
+} from "~/features/tournament/tournament-utils";
+import * as Progression from "~/features/tournament-bracket/core/Progression";
+import {
+	canSeeTournamentFriendCodes,
+	isTournamentTeamInfoRevealed,
+	requireTournamentVisible,
+	tournamentDataCached,
+	tournamentFromDB,
+} from "~/features/tournament-bracket/core/Tournament.server";
 import { getFixedTForLanguage } from "~/modules/i18n/i18next.server";
 import { nullifyingAvg } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -21,12 +36,25 @@ const paramsSchema = v.object({
 	id,
 });
 
+const ZERO_STATS: Standings.TeamRecord = {
+	setWins: 0,
+	setLosses: 0,
+	mapWins: 0,
+	mapLosses: 0,
+};
+
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 	const t = await getFixedTForLanguage("en", ["game-misc"]);
-	const { id } = parseParams({
+	const user = getUser();
+	const { id: tournamentId } = parseParams({
 		params,
 		schema: paramsSchema,
 	});
+
+	const tournament = await tournamentDataCached(tournamentId);
+	requireTournamentVisible({ ctx: tournament.ctx, user });
+	const hasStarted = tournament.data.stage.length > 0;
+	const revealInfo = isTournamentTeamInfoRevealed({ tournament, user });
 
 	const teams = await db
 		.selectFrom("TournamentTeam")
@@ -44,6 +72,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			"TournamentTeam.id",
 			"TournamentTeam.name",
 			"TournamentTeam.seed",
+			"TournamentTeam.startingBracketIdx",
 			"TournamentTeam.createdAt",
 			"TournamentTeamCheckIn.checkedInAt",
 			concatUserSubmittedImagePrefix(eb.ref("UserSubmittedImage.url")).as(
@@ -85,7 +114,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 						tournamentUsername().as("username"),
 						"User.discordId",
 						"User.discordAvatar",
-						"User.battlefy",
 						"User.country",
 						"User.pronouns",
 						"TournamentTeamMember.inGameName",
@@ -109,24 +137,52 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 					.whereRef("MapPoolMap.tournamentTeamId", "=", "TournamentTeam.id"),
 			).as("mapPool"),
 		])
-		.where("TournamentTeam.tournamentId", "=", id)
+		.where("TournamentTeam.tournamentId", "=", tournamentId)
 		.where("TournamentTeam.isPlaceholder", "=", 0)
 		.orderBy("TournamentTeam.createdAt", "asc")
 		.execute();
 
-	const friendCodes =
-		await TournamentRepository.findFriendCodesByTournamentId(id);
+	const friendCodes = canSeeTournamentFriendCodes({
+		ctx: tournament.ctx,
+		user,
+	})
+		? await TournamentRepository.findFriendCodesByTournamentId(tournamentId)
+		: null;
+
+	const seedByTeamId = hasStarted
+		? seedsOfStartedTournament({ teams, settings: tournament.ctx.settings })
+		: null;
+
+	const fullTournament = hasStarted
+		? await tournamentFromDB(tournamentId)
+		: null;
+	const placementByTeamId = fullTournament
+		? new Map(
+				Standings.flattenStandings(
+					Standings.tournamentStandings(fullTournament),
+				).map((standing) => [standing.team.id, standing.placement]),
+			)
+		: null;
+	const statsByTeamId = fullTournament
+		? Standings.recordByTeamId(fullTournament)
+		: null;
 
 	const result: GetTournamentTeamsResponse = teams.map((team) => {
+		const isOwnTeam = team.members.some((member) => member.userId === user?.id);
+		const showTeamInfo = revealInfo || isOwnTeam;
+		const pickupAvatarUrl = showTeamInfo ? team.avatarUrl : null;
+
 		return {
 			id: team.id,
 			name: team.name,
-			url: `https://sendou.ink/to/${id}/teams/${team.id}`,
+			url: `https://sendou.ink/to/${tournamentId}/teams/${team.id}`,
 			teamPageUrl:
 				team.team?.customUrl && !team.team.deletedAt
 					? `https://sendou.ink/t/${team.team.customUrl}`
 					: null,
-			seed: team.seed,
+			seed: seedByTeamId ? (seedByTeamId.get(team.id) ?? null) : team.seed,
+			placement: placementByTeamId?.get(team.id) ?? null,
+			stats: statsByTeamId ? (statsByTeamId.get(team.id) ?? ZERO_STATS) : null,
 			registeredAt: databaseTimestampToDate(team.createdAt).toISOString(),
 			checkedIn: Boolean(team.checkedInAt),
 			seedingPower: {
@@ -141,7 +197,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 				return {
 					userId: member.userId,
 					name: member.username,
-					battlefy: member.battlefy,
 					discordId: member.discordId,
 					avatarUrl: member.discordAvatar
 						? `https://cdn.discordapp.com/avatars/${member.discordId}/${member.discordAvatar}.png`
@@ -150,13 +205,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 					captain: member.role === "OWNER",
 					inGameName: member.inGameName,
 					pronouns: member.pronouns,
-					friendCode: friendCodes[member.userId],
+					friendCode: friendCodes?.[member.userId] ?? null,
 					joinedAt: databaseTimestampToDate(member.createdAt).toISOString(),
 				};
 			}),
-			logoUrl: team.team?.logoUrl ?? team.avatarUrl,
+			logoUrl: team.team?.logoUrl ?? pickupAvatarUrl,
 			mapPool:
-				team.mapPool.length > 0
+				showTeamInfo && team.mapPool.length > 0
 					? team.mapPool.map((map) => {
 							return {
 								mode: map.mode,
@@ -172,6 +227,58 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 	return Response.json(result);
 };
+
+/**
+ * Seeds as the site shows them once the tournament has started: all teams are put in seed order, then
+ * those who did not check in are left out and the rest numbered per starting bracket, the same
+ * derivation the tournament pages do.
+ */
+function seedsOfStartedTournament({
+	teams,
+	settings,
+}: {
+	teams: Array<{
+		id: number;
+		seed: number | null;
+		createdAt: number;
+		startingBracketIdx: number | null;
+		checkedInAt: number | null;
+		members: Array<{
+			userId: number;
+			rankedOrdinal: number | null;
+			unrankedOrdinal: number | null;
+		}>;
+	}>;
+	settings: TournamentSettings;
+}) {
+	const isMultiStartingBracket =
+		Progression.startingBrackets(settings.bracketProgression).length > 1;
+
+	const teamsInSeedOrder = sortTeamsBySeeding(
+		teams.map((team) => ({
+			id: team.id,
+			seed: team.seed,
+			createdAt: team.createdAt,
+			checkedInAt: team.checkedInAt,
+			startingBracketIdx: isMultiStartingBracket
+				? team.startingBracketIdx
+				: null,
+			memberUserIds: team.members.map((member) => member.userId),
+			avgSeedingSkillOrdinal: nullifyingAvg(
+				team.members
+					.map((member) =>
+						settings.isRanked ? member.rankedOrdinal : member.unrankedOrdinal,
+					)
+					.filter((ordinal) => typeof ordinal === "number"),
+			),
+		})),
+		settings.minMembersPerTeam ?? 4,
+	);
+
+	return seedsByStartingBracket(
+		teamsInSeedOrder.filter((team) => team.checkedInAt),
+	);
+}
 
 function toSeedingPowerSP(ordinals: (number | null)[]) {
 	const avg = nullifyingAvg(

@@ -44,9 +44,9 @@ export const loader = async ({ request, url }: LoaderFunctionArgs) => {
 	);
 
 	const cardUserIds = R.unique(
-		posts.flatMap((post) => [
-			post.author.id,
-			...(post.team?.members ?? []).map((member) => member.id),
+		posts.flatMap((eachPost) => [
+			eachPost.author.id,
+			...(eachPost.team?.members ?? []).map((member) => member.id),
 		]),
 	);
 

@@ -26,6 +26,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const result = await parseFormDataWithImages({
 		request,
 		schema: editTeamActionSchema,
+		isCurrentImgId: (imgId) =>
+			imgId === team.avatarImgId || imgId === team.bannerImgId,
 	});
 
 	if (!result.success) {
@@ -66,12 +68,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 		}
 		case "EDIT": {
 			const newCustomUrl = mySlugify(data.name);
-			const teams = await TeamRepository.findAllUndisbanded();
-			const duplicateTeam = teams.find(
-				(t) => t.customUrl === newCustomUrl && t.customUrl !== team.customUrl,
-			);
+			const duplicateTeam = await TeamRepository.findByCustomUrl(newCustomUrl);
 
-			if (duplicateTeam) {
+			if (duplicateTeam && duplicateTeam.id !== team.id) {
 				return { fieldErrors: { name: "forms:errors.duplicateName" } };
 			}
 

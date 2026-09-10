@@ -13,10 +13,6 @@
 	width: 100%;
 	max-width: var(--columns-width);
 	margin-inline: auto;
-
-	&:empty {
-		display: none;
-	}
 }
 
 .buttonsContainer {
@@ -107,6 +103,7 @@
 	justify-content: safe center;
 	overflow-x: auto;
 	scroll-snap-type: x mandatory;
+	user-select: none;
 
 	& > * {
 		scroll-snap-align: start;

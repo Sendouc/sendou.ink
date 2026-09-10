@@ -4,7 +4,7 @@ import { ADMIN_ID } from "~/features/admin/admin-constants";
 import type { TournamentTierNumber } from "~/features/tournament/core/tiering";
 import type { ModeShort, StageId } from "~/modules/in-game-lists/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { Factories } from "./factories";
 
 export const ROSTER_SIZE = 4;
@@ -172,7 +172,9 @@ export async function createTeams(
 	tournamentId: number,
 	seeds: TeamSeed[],
 ) {
-	const teams = [];
+	const teams: Awaited<
+		ReturnType<typeof factories.TournamentTeamFactory.create>
+	>[] = [];
 	for (const [i, seed] of seeds.entries()) {
 		const presetMembers = seed.members ?? [];
 		const rosterSize = seed.rosterSize ?? ROSTER_SIZE;
@@ -206,10 +208,8 @@ export function startedTournamentTimes() {
 }
 
 /**
- * A tournament running an unfinished match: two checked-in teams and the bracket
- * started, which is all it takes for both teams to be "in a match". The friend and
- * their teammate play the opponent, and every user given is on the roster it is
- * named for.
+ * A tournament running an unfinished match: two checked-in teams and a started bracket, which is
+ * all it takes for both to be "in a match". The friend and their teammate play the opponent.
  */
 export async function createInProgressMatch(
 	factories: Factories,
@@ -266,11 +266,7 @@ export async function createSubSeekingTournament(
 	return { tournament };
 }
 
-/**
- * A tournament where the given user is waiting for their next match: three teams
- * in a single elimination bracket leave the top seed with a bye into the final,
- * whose other side is still being played for.
- */
+/** The user waits for their next match: three teams in single elimination give the top seed a bye into the final. */
 export async function createTournamentWithByeTeam(
 	factories: Factories,
 	{ name, waitingUserId }: { name: string; waitingUserId: number },

@@ -5,8 +5,10 @@
  */
 import { loadOpenCV, type Mat } from "../../app/features/scanner/core/cv";
 import * as death from "../../app/features/scanner/core/detectors/death/rois";
+import * as kill from "../../app/features/scanner/core/detectors/kill/rois";
 import * as mapStart from "../../app/features/scanner/core/detectors/map-start/rois";
 import * as minimap from "../../app/features/scanner/core/detectors/minimap/rois";
+import { TIMER_DIGIT_ROI } from "../../app/features/scanner/core/detectors/objective/rois";
 import * as sb from "../../app/features/scanner/core/detectors/scoreboard/rois";
 import * as bl from "../../app/features/scanner/core/detectors/scoreboard-battle-log/rois";
 import * as replay from "../../app/features/scanner/core/detectors/scoreboard-battle-log-replay/rois";
@@ -22,7 +24,7 @@ const [imagePath, outPath = "roi-overlay.png", detector = "scoreboard"] =
 	process.argv.slice(2);
 if (!imagePath) {
 	console.error(
-		"usage: vite-node -c scripts/scanner/vite-node.config.ts scripts/scanner/overlay-rois.ts <image> [out.png] [scoreboard|scoreboard-battle-log-replay|scoreboard-battle-log|death|map-start|minimap]",
+		"usage: vite-node -c scripts/scanner/vite-node.config.ts scripts/scanner/overlay-rois.ts <image> [out.png] [scoreboard|scoreboard-battle-log-replay|scoreboard-battle-log|death|kill|map-start|minimap]",
 	);
 	process.exit(1);
 }
@@ -105,6 +107,13 @@ if (detector === "scoreboard") {
 	for (const roi of [...death.GATE_BURST_PROBES, ...death.GATE_PANEL_PROBES]) {
 		rect(frame, roi, [255, 255, 0]);
 	}
+} else if (detector === "kill") {
+	for (let row = 0; row < kill.MAX_ROWS; row++) {
+		rect(frame, kill.textRoi(row), [0, 255, 0]);
+		rect(frame, kill.skullRoi(row), [0, 128, 255]);
+		for (const roi of kill.darkProbes(row)) rect(frame, roi, [255, 255, 0]);
+	}
+	rect(frame, TIMER_DIGIT_ROI, [255, 0, 0]);
 } else if (detector === "map-start") {
 	rect(frame, mapStart.MODE_LABEL_ROI, [0, 255, 0]);
 	rect(frame, mapStart.MODE_BLOCK_ROI, [255, 0, 0]);

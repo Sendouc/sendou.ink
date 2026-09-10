@@ -6,20 +6,18 @@ import { useGlobalStatus } from "~/features/global-status/GlobalStatusProvider";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { LinkButton, SendouButton } from "../elements/Button";
 import { AnythingAdder } from "./AnythingAdder";
-import { GlobalSearch } from "./GlobalSearch";
+import { GlobalSearch, LoggedOutGlobalSearch } from "./GlobalSearch";
 import { LogInButtonContainer } from "./LogInButtonContainer";
 import styles from "./TopRightButtons.module.css";
 
 export function TopRightButtons({
 	showSupport,
-	showSearch,
 	isLoggedIn,
 	onChatToggle,
 	onChatModalToggle,
 	chatUnreadCount,
 }: {
 	showSupport: boolean;
-	showSearch: boolean;
 	isLoggedIn: boolean;
 	onChatToggle?: () => void;
 	onChatModalToggle?: () => void;
@@ -59,30 +57,23 @@ export function TopRightButtons({
 					</div>
 				</>
 			) : null}
+			<div className={styles.searchAndAddContainer}>
+				<GlobalStatusIndicator />
+				<div
+					className={styles.searchWrapper}
+					data-with-status={hasGlobalStatus ? "" : undefined}
+				>
+					{isLoggedIn ? <GlobalSearch /> : <LoggedOutGlobalSearch />}
+				</div>
+				{isLoggedIn ? <AnythingAdder /> : null}
+			</div>
 			{isLoggedIn ? (
 				<>
-					<div className={styles.searchAndAddContainer}>
-						<GlobalStatusIndicator />
-						{showSearch ? (
-							<div
-								className={styles.searchWrapper}
-								data-with-status={hasGlobalStatus ? "" : undefined}
-							>
-								<GlobalSearch />
-							</div>
-						) : null}
-						<div className={styles.addNewWrapper}>
-							<AnythingAdder />
-						</div>
-						<div className={styles.addNewWrapperCompact}>
-							<AnythingAdder compact />
-						</div>
-					</div>
 					{onChatToggle ? (
 						<div className={styles.chatButtonWrapperPersistent}>
 							<ChatButton
 								variant="outlined"
-								onPress={onChatToggle}
+								onClick={onChatToggle}
 								unreadCount={chatUnreadCount}
 							/>
 						</div>
@@ -91,7 +82,7 @@ export function TopRightButtons({
 						<div className={styles.chatButtonWrapperModal}>
 							<ChatButton
 								variant="outlined"
-								onPress={onChatModalToggle}
+								onClick={onChatModalToggle}
 								unreadCount={chatUnreadCount}
 							/>
 						</div>
@@ -110,11 +101,11 @@ export function TopRightButtons({
 
 function ChatButton({
 	variant,
-	onPress,
+	onClick,
 	unreadCount,
 }: {
 	variant: "outlined" | "primary";
-	onPress: () => void;
+	onClick: () => void;
 	unreadCount?: number;
 }) {
 	return (
@@ -124,11 +115,17 @@ function ChatButton({
 				size="small"
 				icon={<MessageSquare />}
 				variant={variant}
-				onPress={onPress}
+				onClick={onClick}
 				testId="chat-toggle-button"
 			/>
 			{unreadCount ? (
-				<span className={styles.chatUnreadBadge}>{unreadCount}</span>
+				<span
+					className={styles.chatUnreadBadge}
+					role="status"
+					aria-label={`${unreadCount} unread chat ${unreadCount === 1 ? "message" : "messages"}`}
+				>
+					{unreadCount}
+				</span>
 			) : null}
 		</>
 	);

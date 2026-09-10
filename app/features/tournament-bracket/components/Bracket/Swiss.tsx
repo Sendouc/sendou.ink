@@ -37,8 +37,7 @@ export function SwissBracket({
 		tournamentBracketsSearchParams,
 		"group",
 	);
-	// the group of the shipped matches rather than that of the search param, so that
-	// the group being switched to only shows up once its matches have loaded
+	// group of the shipped matches rather than the search param's, so a switch shows once its matches loaded
 	const selectedGroupId = groupId ?? groups[0].groupId;
 
 	const selectedGroup = groups.find((g) => g.groupId === selectedGroupId)!;
@@ -67,8 +66,7 @@ export function SwissBracket({
 		return true;
 	};
 
-	// with the early advance variation the group can run out of teams before every
-	// round has been played, those rounds can never be started
+	// early advance: the group can run out of teams before every round is played
 	const groupHasActiveTeams = Engine.groupHasActiveTeams(bracket.data, {
 		groupId: selectedGroupId,
 		standings: bracket.liveStandings,
@@ -100,12 +98,12 @@ export function SwissBracket({
 	return (
 		<div className="stack xl">
 			<div className="stack lg">
-				{groups.length > 1 && (
+				{groups.length > 1 ? (
 					<div className="stack horizontal">
 						{groups.map((g) => (
 							<SendouButton
 								key={g.groupId}
-								onPress={() => setSelectedGroupId(g.groupId)}
+								onClick={() => setSelectedGroupId(g.groupId)}
 								className={clsx(
 									styles.bracketNavLink,
 									styles.bracketNavLinkBig,
@@ -120,7 +118,7 @@ export function SwissBracket({
 							</SendouButton>
 						))}
 					</div>
-				)}
+				) : null}
 				<div className="stack lg">
 					{rounds.map((round, roundI) => {
 						const matches = bracket.data.match.filter(

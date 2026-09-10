@@ -2,6 +2,7 @@ import type { Page } from "@playwright/test";
 import { tournamentBracketsPage } from "~/features/tournament-bracket/tournament-bracket-urls";
 import {
 	expect,
+	expectIsHydrated,
 	modalClickConfirmButton,
 	navigate,
 	submit,
@@ -49,6 +50,11 @@ export class TournamentBracketsPage {
 		});
 	}
 
+	async reload() {
+		await this.page.reload();
+		await expectIsHydrated(this.page);
+	}
+
 	teamName(name: string) {
 		return this.page.getByText(name);
 	}
@@ -81,11 +87,9 @@ export class TournamentBracketsPage {
 		return this.match(matchId).locator("..").getByTestId("bracket-match-timer");
 	}
 
-	/** Team names of the bracket's first round in bracket order, top to bottom; two
-	 * slots per match, both slots of a BYE match reading as an empty string.
-	 * `teamCount` is how many teams the first round holds, byes excluded. Note that a
-	 * first round of mostly byes is compacted away by the UI, in which case what is
-	 * returned is the compacted column rather than the true first round. */
+	/** Team names of the first round in bracket order, two slots per match, both slots of a BYE
+	 * reading as "". `teamCount` excludes byes. A first round of mostly byes is compacted away by
+	 * the UI, in which case the compacted column is returned instead. */
 	async firstRoundTeamNames(teamCount: number): Promise<string[]> {
 		const firstRound = this.locators.bracketsViewer
 			.locator("[data-round-id]")
@@ -154,6 +158,8 @@ export class TournamentBracketsPage {
 				this.page.getByTestId("back-to-bracket-button"),
 			).toBeVisible();
 		}).toPass();
+		// a click that beat hydration loads the match page as a new document
+		await expectIsHydrated(this.page);
 		return new TournamentMatchPage(this.page);
 	}
 
@@ -234,9 +240,8 @@ class BracketMapListDialog {
 		return submit(this.page, "confirm-finalize-bracket-button");
 	}
 
-	/** Starts the bracket with a CUSTOM pick/ban flow. The flow builder UI has no
-	 * e2e-friendly handles, so the flow is written straight into the form's maps
-	 * input before submitting it. */
+	/** Starts the bracket with a CUSTOM pick/ban flow, written straight into the form's maps
+	 * input as the flow builder UI has no e2e-friendly handles. */
 	confirmWithCustomFlow(customFlow: unknown) {
 		return waitForPOSTResponse(this.page, async () => {
 			await this.page.evaluate((cfStr) => {

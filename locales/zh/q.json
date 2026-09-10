@@ -162,7 +162,7 @@
 	"match.action.pickerThem": "敌方",
 	"match.action.pickerBoth": "双方",
 	"match.action.pickBanPrompt": "请在上方进行选择",
-	"match.action.pickBanWaiting": "正在等待 {{teamName}} 的队长进行选择",
+	"match.action.pickBanWaiting": "",
 	"match.action.picking": "正在选择",
 	"match.action.banning": "正在禁用",
 	"match.cancelRequested.subtitle": "{{teamName}} 已申请取消本组比赛",

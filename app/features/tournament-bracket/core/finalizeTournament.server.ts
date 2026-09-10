@@ -8,7 +8,7 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import * as TournamentMatchRepository from "~/features/tournament-match/TournamentMatchRepository.server";
 import { refreshTentativeTiersCache } from "~/features/tournament-organization/core/tentativeTiers.server";
 import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import type {
 	TournamentBadgeReceivers,
@@ -18,8 +18,11 @@ import { summaryRatingTargets, tournamentSummary } from "./summarizer.server";
 import type { Tournament } from "./Tournament";
 import { clearTournamentDataCache } from "./Tournament.server";
 
-/** Finalizes a fully played tournament with a real summary: results, skills, badges,
- * trophies and leaderboard entries. */
+/**
+ * Results, skills, badges, trophies and leaderboard entries of a fully played tournament.
+ *
+ * @returns false if an overlapping request finalized the tournament first, meaning nothing was written
+ */
 export async function finalizeTournament({
 	tournament,
 	badgeReceivers,
@@ -69,9 +72,10 @@ export async function finalizeTournament({
 	});
 
 	const tournamentSummaryString = `Tournament id: ${tournamentId}, mapResultDeltas.lenght: ${summary.mapResultDeltas.length}, playerResultDeltas.length ${summary.playerResultDeltas.length}, tournamentResults.length ${summary.tournamentResults.length}, skills.length ${summary.skills.length}, seedingSkills.length ${summary.seedingSkills.length}`;
+	let finalized: boolean;
 	if (!tournament.isTest) {
 		logger.info(`Inserting tournament summary. ${tournamentSummaryString}`);
-		await TournamentRepository.finalize({
+		finalized = await TournamentRepository.finalize({
 			tournamentId,
 			summary,
 			season,
@@ -82,7 +86,14 @@ export async function finalizeTournament({
 		logger.info(
 			`Did not insert tournament summary. ${tournamentSummaryString}`,
 		);
-		await TournamentRepository.finalizeWithoutSummary(tournamentId);
+		finalized = await TournamentRepository.finalizeWithoutSummary(tournamentId);
+	}
+
+	// an overlapping request already finalized this tournament, its side effects are its own
+	if (!finalized) {
+		logger.info(`Tournament ${tournamentId} was already finalized`);
+		clearTournamentDataCache(tournamentId);
+		return false;
 	}
 
 	await SavedCalendarEventRepository.deleteByTournamentId(tournamentId);
@@ -100,6 +111,8 @@ export async function finalizeTournament({
 	}
 
 	clearTournamentDataCache(tournamentId);
+
+	return true;
 }
 
 async function updateSeriesTierHistory(tournament: Tournament) {
@@ -132,8 +145,7 @@ function resolveFinalizationSeason(tournament: Tournament) {
 	const season = Seasons.current(attributionDate);
 	if (!season) return undefined;
 
-	// don't allow changing seasons that have already been closed for a long while
-	// even if you were sluggish with finalizing the tournament
+	// seasons closed for a long while can't be changed even by a sluggishly finalized tournament
 	if (differenceInHours(new Date(), season.ends) >= 24) return undefined;
 
 	return season.nth;

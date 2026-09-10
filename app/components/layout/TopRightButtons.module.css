@@ -15,10 +15,6 @@
 	display: none;
 }
 
-.addNewWrapperCompact {
-	display: none;
-}
-
 @media screen and (min-width: 600px) {
 	@container (max-width: 700px) {
 		.supportWrapper {
@@ -39,17 +35,6 @@
 			display: block;
 		}
 	}
-
-	@container (max-width: 640px) {
-		.addNewWrapper {
-			display: none;
-		}
-
-		.addNewWrapperCompact {
-			display: block;
-			flex: 1 1 0;
-		}
-	}
 }
 
 .searchAndAddContainer {
@@ -59,31 +44,20 @@
 }
 
 .searchWrapper {
-	flex: 2 1 0;
+	flex: 1 1 0;
+	min-width: 0;
 }
 
-.addNewWrapper {
-	flex: none;
-}
-
+/* the status indicator takes the room the search button gives up */
 .withStatus {
 	@container (max-width: 920px) {
 		& .searchWrapper {
 			flex: none;
 		}
-
-		& .addNewWrapper {
-			display: none;
-		}
-
-		& .addNewWrapperCompact {
-			display: block;
-		}
 	}
 }
 
-.searchWrapper > button,
-.addNewWrapper > button {
+.searchWrapper > button {
 	width: 100%;
 }
 
@@ -128,14 +102,4 @@
 	display: grid;
 	place-items: center;
 	pointer-events: none;
-}
-
-@media screen and (max-width: 1000px) {
-	.searchWrapper {
-		flex-grow: 1;
-	}
-
-	.addNewWrapper {
-		flex: 1 1 0;
-	}
 }

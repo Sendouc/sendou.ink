@@ -66,8 +66,6 @@ export function WeaponParamImage({
 	);
 }
 
-// The display name and (English) url slug of a weapon, resolved from the right `weapons`
-// translation key for the table's kind.
 function useWeaponParamNaming(kind: WeaponParamKind) {
 	const { t } = useTranslation(["weapons"]);
 
@@ -147,8 +145,7 @@ export function WeaponParamsTable({
 		});
 	};
 
-	// Bars are only drawn for plain numbers, so string-valued (or array/object) params and hidden
-	// weapons are skipped here. The compare button shows up only when at least two weapons remain.
+	// bars only for plain numbers; compare button needs at least two weapons left
 	const comparisonEntries = (
 		getValue: (weaponId: number) => number | string | undefined,
 	) =>
@@ -201,7 +198,7 @@ export function WeaponParamsTable({
 												shape="square"
 												icon={<X />}
 												className={styles.hideButton}
-												onPress={() => hideWeapon(weaponId)}
+												onClick={() => hideWeapon(weaponId)}
 												aria-label={t("common:actions.hide")}
 												testId={`hide-weapon-${weaponId}`}
 											/>
@@ -357,7 +354,7 @@ function ComparisonButton({
 				size="miniscule"
 				shape="square"
 				icon={<ChartColumnBig />}
-				onPress={() => onCompare(label, entries)}
+				onClick={() => onCompare(label, entries)}
 				aria-label={t("params:compare.action")}
 				testId="compare-param"
 			/>
@@ -411,7 +408,7 @@ function DamageRateInfoSection({
 		damageMultipliers[String(weaponId)]?.find((m) => m.target === target);
 
 	return (
-		<Fragment>
+		<>
 			<tr>
 				<td
 					colSpan={visibleWeaponIds.length + 1}
@@ -470,7 +467,7 @@ function DamageRateInfoSection({
 					</tr>
 				);
 			})}
-		</Fragment>
+		</>
 	);
 }
 
@@ -501,7 +498,7 @@ function HiddenWeaponsBar({
 					variant="minimal"
 					size="miniscule"
 					className={styles.hiddenBadge}
-					onPress={() => onRestore(weaponId)}
+					onClick={() => onRestore(weaponId)}
 					testId={`restore-weapon-${weaponId}`}
 				>
 					<WeaponParamImage kind={kind} id={weaponId} size={20} />
@@ -514,7 +511,7 @@ function HiddenWeaponsBar({
 			<SendouButton
 				variant="minimal"
 				size="miniscule"
-				onPress={onShowAll}
+				onClick={onShowAll}
 				testId="show-all-weapons"
 			>
 				{t("common:actions.showAll")}

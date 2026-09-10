@@ -5,7 +5,7 @@ import { sendouUpload } from "../components/sendou-upload";
 import type { MinimapData } from "../core/detectors/minimap/index";
 import type { ScoreboardData } from "../core/detectors/scoreboard/index";
 import type { DetectedEvent } from "../core/detectors/types";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 const ALPHA: MainWeaponId[] = [40, 1001, 2010, 3030];
 const BRAVO: MainWeaponId[] = [50, 210, 4010, 8000];
@@ -55,10 +55,10 @@ test("weapons are padded to 4 slots per team so uneven rosters keep the team spl
 	const data: MinimapData = {
 		stage: 0,
 		spectator: true,
-		teammates: (["up", "left", "right"] as const).map((slot, i) => ({
-			slot,
+		teammates: ALPHA.slice(0, 3).map((weaponId) => ({
+			self: false,
 			name: null,
-			weaponId: ALPHA[i]!,
+			weaponId,
 			abilities: [],
 			dead: false,
 			specialReady: false,

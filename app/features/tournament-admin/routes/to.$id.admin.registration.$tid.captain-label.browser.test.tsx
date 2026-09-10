@@ -3,6 +3,7 @@ import { createMemoryRouter, RouterProvider } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
+import TournamentAdminRegistrationPage from "./to.$id.admin.registration.$tid";
 
 const { mockTournament } = vi.hoisted(() => ({
 	mockTournament: {
@@ -33,8 +34,6 @@ vi.mock(
 	"~/features/tournament-admin/loaders/to.$id.admin.registration.$tid.server",
 	() => ({ loader: vi.fn() }),
 );
-
-import TournamentAdminRegistrationPage from "./to.$id.admin.registration.$tid";
 
 const GREY = {
 	type: "user" as const,
@@ -79,16 +78,15 @@ describe("tournament admin registration - captain label", () => {
 	test("captain dropdown shows the searched player's name, not a generic placeholder", async () => {
 		const screen = await renderPage();
 
-		// Pick a player in member #1 via the user search.
 		await userEvent.click(screen.getByRole("button", { name: "Player" }));
 		await userEvent.type(
 			screen.getByTestId("user-search-input").element(),
 			GREY.name,
 		);
-		// Auto-retries until the debounced search resolves and the result appears.
+		// auto-retries until the debounced search resolves
 		await screen.getByTestId("user-search-item").click();
 
-		// The Captain <select> should label that player by name, not "Player 1".
+		// labelled by name, not "Player 1"
 		await expect
 			.poll(
 				() =>

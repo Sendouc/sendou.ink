@@ -1,8 +1,11 @@
 import * as React from "react";
-import type { Key } from "react-aria-components";
 import { useTranslation } from "react-i18next";
 import { useLoaderData } from "react-router";
-import { SendouSelect, SendouSelectItem } from "~/components/elements/Select";
+import {
+	type SelectKey,
+	SendouSelect,
+	SendouSelectItem,
+} from "~/components/elements/Select";
 import { SendouSwitch } from "~/components/elements/Switch";
 import { UserSearch } from "~/components/elements/UserSearch";
 import type { FilterBarPill } from "~/components/filter-bar/FilterBar";
@@ -77,6 +80,7 @@ export function ResultsFiltersBar() {
 		formattedValue: filters.highlightsOnly ? t("results.filter.only") : null,
 		onRemove: () => setFilters({ highlightsOnly: false }),
 		onAdd: () => setFilters({ highlightsOnly: true }),
+		usableLoggedOut: true,
 		testId: "highlights-filter",
 		popover: (
 			<SendouSwitch
@@ -380,7 +384,7 @@ function YearSelect({
 const selectableYears = () => {
 	const currentYear = new Date().getFullYear();
 
-	const result = [];
+	const result: number[] = [];
 	for (let year = currentYear; year >= RESULTS_FIRST_YEAR; year--) {
 		result.push(year);
 	}
@@ -388,7 +392,8 @@ const selectableYears = () => {
 	return result;
 };
 
-const toTierNumber = (key: Key | null) => Number(key) as TournamentTierNumber;
+const toTierNumber = (key: SelectKey | null) =>
+	Number(key) as TournamentTierNumber;
 
 const isDefaultFilters = (
 	filters: Record<keyof typeof DEFAULT_FILTERS, unknown>,

@@ -3,11 +3,14 @@ import { describe, expect, test } from "vitest";
 import { backdate } from "~/db/seed/core/backdate";
 import * as GroupMatchContinueVoteFactory from "~/db/seed/factories/GroupMatchContinueVoteFactory";
 import * as SQGroupFactory from "~/db/seed/factories/SQGroupFactory";
+import * as SQGroupLikeFactory from "~/db/seed/factories/SQGroupLikeFactory";
+import * as SQGroupSuggestionFactory from "~/db/seed/factories/SQGroupSuggestionFactory";
 import * as SQMatchFactory from "~/db/seed/factories/SQMatchFactory";
 import * as TeamFactory from "~/db/seed/factories/TeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import * as GroupMatchContinueVoteRepository from "~/features/sendouq-match/GroupMatchContinueVoteRepository.server";
+import { invariant } from "~/utils/invariant";
 import { FULL_GROUP_SIZE } from "./q-constants";
 import * as SQGroupRepository from "./SQGroupRepository.server";
 
@@ -392,4 +395,102 @@ describe("leaveGroup", () => {
 		expect(groupRow).toBeUndefined();
 		expect(await allChatRooms()).toHaveLength(0);
 	});
+
+	test("clears the challenges the group received", async () => {
+		const { ownGroup, challengerGroup } = await setupGroupWithChallenges();
+
+		await SQGroupRepository.leaveGroup(ownGroup.leaverId);
+
+		const likes = await SQGroupRepository.findAllLikesByGroupId(ownGroup.id);
+		expect(likes.received).toHaveLength(0);
+		expect(
+			await SQGroupRepository.findAllLikesByGroupId(challengerGroup.id),
+		).toMatchObject({ given: [] });
+	});
+
+	test("clears the challenges the leaver sent but not those of the members who stay", async () => {
+		const { ownGroup, leaverTargetGroup, stayerTargetGroup } =
+			await setupGroupWithChallenges();
+
+		await SQGroupRepository.leaveGroup(ownGroup.leaverId);
+
+		const likes = await SQGroupRepository.findAllLikesByGroupId(ownGroup.id);
+		expect(likes.given.map((like) => like.groupId)).toEqual([
+			stayerTargetGroup.id,
+		]);
+		expect(
+			await SQGroupRepository.findAllLikesByGroupId(leaverTargetGroup.id),
+		).toMatchObject({ received: [] });
+	});
+
+	test("clears the suggestions the leaver made but not those of the members who stay", async () => {
+		const { ownGroup, stayerTargetGroup } = await setupGroupWithChallenges();
+
+		await SQGroupRepository.leaveGroup(ownGroup.leaverId);
+
+		const suggestions = await SQGroupRepository.findAllSuggestionsByGroupId(
+			ownGroup.id,
+		);
+		expect(suggestions.map((suggestion) => suggestion.groupId)).toEqual([
+			stayerTargetGroup.id,
+		]);
+	});
 });
+
+/**
+ * A group of two whose first member is about to leave, with a challenge received, one sent by
+ * each of its members and a suggestion made by each of them.
+ */
+const setupGroupWithChallenges = async () => {
+	const [leaver, stayer] = await UserFactory.createMany(2);
+	invariant(leaver && stayer, "Expected two users");
+
+	const ownGroup = await SQGroupFactory.create({
+		memberUserIds: [leaver.id, stayer.id],
+	});
+
+	const [challengerGroup, leaverTargetGroup, stayerTargetGroup] =
+		await createSoloGroups(3);
+
+	await SQGroupLikeFactory.create({
+		likerGroupId: challengerGroup.id,
+		targetGroupId: ownGroup.id,
+		createdByUserId: challengerGroup.memberUserIds[0]!,
+	});
+	await SQGroupLikeFactory.create({
+		likerGroupId: ownGroup.id,
+		targetGroupId: leaverTargetGroup.id,
+		createdByUserId: leaver.id,
+	});
+	await SQGroupLikeFactory.create({
+		likerGroupId: ownGroup.id,
+		targetGroupId: stayerTargetGroup.id,
+		createdByUserId: stayer.id,
+	});
+
+	await SQGroupSuggestionFactory.create({
+		suggesterGroupId: ownGroup.id,
+		targetGroupId: challengerGroup.id,
+		createdByUserId: leaver.id,
+	});
+	await SQGroupSuggestionFactory.create({
+		suggesterGroupId: ownGroup.id,
+		targetGroupId: stayerTargetGroup.id,
+		createdByUserId: stayer.id,
+	});
+
+	return {
+		ownGroup: { ...ownGroup, leaverId: leaver.id },
+		challengerGroup,
+		leaverTargetGroup,
+		stayerTargetGroup,
+	};
+};
+
+const createSoloGroups = async (count: number) => {
+	const users = await UserFactory.createMany(count);
+
+	return Promise.all(
+		users.map((user) => SQGroupFactory.create({ memberUserIds: [user.id] })),
+	);
+};

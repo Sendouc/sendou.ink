@@ -11,6 +11,8 @@ import { FaqPage } from "./pages/info/faq-page";
 import { LinksPage } from "./pages/info/links-page";
 import { SupportPage } from "./pages/info/support-page";
 import { ErrorPage } from "./pages/layout/error-page";
+import { LogInPopover } from "./pages/layout/log-in-popover";
+import { TopRightButtons } from "./pages/layout/top-right-buttons";
 import { ScannerPage } from "./pages/scanner/scanner-page";
 import { TournamentPage } from "./pages/tournament/tournament-page";
 import { UserPage } from "./pages/user/user-page";
@@ -20,6 +22,7 @@ const PUBLIC_USER = {
 	discordName: "Chirpy",
 };
 const BUILD_WEAPON_ID = 40;
+const BUILD_WEAPON_SLUG = "splattershot";
 const EVENT_NAME = "Ink Clash Open";
 const TOURNAMENT_NAME = "Public Pages Cup";
 const ICS_EVENT_NAME = "ICS Feed Cup";
@@ -112,6 +115,23 @@ test.describe("Public pages", () => {
 		await scanner.goto();
 		await expectNoErrorPage(page);
 		await expect(page).toHaveURL("/");
+	});
+
+	test("prompts a logged out visitor to log in when using search or a filter", async ({
+		page,
+	}) => {
+		const weaponBuilds = new WeaponBuildsPage(page);
+		await weaponBuilds.goto(BUILD_WEAPON_SLUG);
+
+		const logInPopover = new LogInPopover(page);
+
+		await weaponBuilds.locators.addFilterButton.click();
+		await expect(logInPopover.locators.logInButton).toBeVisible();
+
+		await page.keyboard.press("Escape");
+
+		await new TopRightButtons(page).locators.searchButton.click();
+		await expect(logInPopover.locators.logInButton).toBeVisible();
 	});
 
 	test("lists articles and renders one by slug", async ({ page }) => {

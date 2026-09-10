@@ -5,6 +5,10 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as FriendRepository from "~/features/friends/FriendRepository.server";
 import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
 import * as LFGRepository from "~/features/lfg/LFGRepository.server";
+import * as LiveStreamRepository from "~/features/live-streams/LiveStreamRepository.server";
+import { BANNED_MAPS } from "~/features/match-profile/banned-maps";
+import * as MatchProfileRepository from "~/features/match-profile/MatchProfileRepository.server";
+import type { TierName } from "~/features/mmr/mmr-constants";
 import { ordinalToSp } from "~/features/mmr/mmr-utils";
 import { userSkills as _userSkills } from "~/features/mmr/tiered.server";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
@@ -14,6 +18,7 @@ import * as TrophyRepository from "~/features/trophies/TrophyRepository.server";
 import { canAccessTrophies } from "~/features/trophies/trophies-utils";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as VodRepository from "~/features/vods/VodRepository.server";
+import { modesShort } from "~/modules/in-game-lists/modes";
 import { weaponCategories } from "~/modules/in-game-lists/weapon-ids";
 import type { ExtractWidgetSettings } from "./types";
 import { cachedUserSQLeaderboardTopData } from "./utils.server";
@@ -24,8 +29,11 @@ export const WIDGET_LOADERS = {
 
 		return TrophyRepository.findByOwnerUserId(userId);
 	},
-	"badges-owned": async (userId: number) => {
-		return BadgeRepository.findByOwnerUserId(userId);
+	"badges-owned": async (
+		userId: number,
+		settings: ExtractWidgetSettings<"badges-owned">,
+	) => {
+		return BadgeRepository.findByOwnerUserId(userId, settings.favoriteBadgeIds);
 	},
 	"badges-authored": async (userId: number) => {
 		return BadgeRepository.findByAuthorUserId(userId);
@@ -47,7 +55,12 @@ export const WIDGET_LOADERS = {
 			return null;
 		}
 
-		let peakData = null;
+		let peakData: {
+			peakSp: number;
+			tierName: TierName;
+			isPlus: boolean;
+			season: number;
+		} | null = null;
 		let maxOrdinal = Number.NEGATIVE_INFINITY;
 
 		for (const season of seasonsParticipatedIn) {
@@ -206,7 +219,7 @@ export const WIDGET_LOADERS = {
 		return VodRepository.findByUserId(userId, 3);
 	},
 	"lfg-posts": async (userId: number) => {
-		return LFGRepository.findByAuthorUserId(userId);
+		return LFGRepository.findByAuthorUserId(userId, getUser());
 	},
 	"top-500-weapons": async (userId: number) => {
 		const placements =
@@ -286,8 +299,22 @@ export const WIDGET_LOADERS = {
 	commissions: async (userId: number) => {
 		return UserRepository.findCommissionsByUserId(userId);
 	},
-	"weapon-pool": async (userId: number) => {
-		return UserRepository.findWeaponPoolByUserId(userId);
+	"weapon-pool": async (
+		userId: number,
+		settings: ExtractWidgetSettings<"weapon-pool">,
+	) => {
+		if (settings.weaponPool.length === 0) {
+			return MatchProfileRepository.findWeaponPoolByUserId(userId);
+		}
+
+		const tenStarWeaponSplIds =
+			await XRankPlacementRepository.findTenStarWeaponSplIdsByUserId(userId);
+
+		return settings.weaponPool.map((weapon) => ({
+			weaponSplId: weapon.id,
+			isFavorite: weapon.isFavorite ? 1 : 0,
+			isTenStar: tenStarWeaponSplIds.includes(weapon.id) ? 1 : 0,
+		}));
 	},
 	"social-links": async (userId: number) => {
 		return UserRepository.findSocialLinksByUserId(userId);
@@ -309,6 +336,31 @@ export const WIDGET_LOADERS = {
 	},
 	friends: async (userId: number) => {
 		return FriendRepository.findFriendsByUserId(userId);
+	},
+	"luti-div": async (userId: number) => {
+		return UserRepository.findDivByUserId(userId);
+	},
+	"map-mode-preferences": async (userId: number) => {
+		const preferences =
+			await MatchProfileRepository.findMapModePreferencesByUserId(userId);
+		if (!preferences) return [];
+
+		return modesShort.flatMap((mode) => {
+			const preference = preferences.modes.find(
+				(m) => m.mode === mode,
+			)?.preference;
+			if (preference === "AVOID") return [];
+
+			const stages = (
+				preferences.pool.find((p) => p.mode === mode)?.stages ?? []
+			).filter((stageId) => !BANNED_MAPS[mode].includes(stageId));
+			if (stages.length === 0) return [];
+
+			return { mode, stages };
+		});
+	},
+	"live-stream": async (userId: number) => {
+		return LiveStreamRepository.findByUserId(userId);
 	},
 };
 

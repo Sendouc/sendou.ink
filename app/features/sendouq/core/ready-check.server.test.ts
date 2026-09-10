@@ -1,19 +1,12 @@
 import { subMinutes } from "date-fns";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-
-vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
-	send: vi.fn(),
-	notifyStatusChanged: vi.fn(),
-	notifyNotificationsChanged: vi.fn(),
-}));
-
 import { backdate } from "~/db/seed/core/backdate";
 import * as SQGroupFactory from "~/db/seed/factories/SQGroupFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
 import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	FULL_GROUP_SIZE,
 	SENDOUQ,
@@ -23,6 +16,12 @@ import {
 import { pinClockInsideSeason } from "../tests/season-clock";
 import * as ReadyCheck from "./ready-check.server";
 import { refreshSendouQInstance, SendouQ } from "./SendouQ.server";
+
+vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
+	send: vi.fn(),
+	notifyStatusChanged: vi.fn(),
+	notifyNotificationsChanged: vi.fn(),
+}));
 
 const setupMatchedUpGroups = async () => {
 	const ownMembers = await UserFactory.createMany(FULL_GROUP_SIZE);

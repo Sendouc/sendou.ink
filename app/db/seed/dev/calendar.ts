@@ -1,5 +1,5 @@
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { faker } from "../core/faker";
 import * as showcaseNames from "../core/showcaseNames";
 import * as CalendarEventFactory from "../factories/CalendarEventFactory";
@@ -61,8 +61,8 @@ function nzapTeamId(
 	teams: Awaited<ReturnType<typeof CalendarEventResultFactory.create>>["teams"],
 	nzapId: number,
 ) {
-	const team = teams.find((team) =>
-		team.players.some((player) => player.id === nzapId),
+	const team = teams.find((candidate) =>
+		candidate.players.some((player) => player.id === nzapId),
 	);
 	invariant(team, "N-ZAP was not placed in the results");
 

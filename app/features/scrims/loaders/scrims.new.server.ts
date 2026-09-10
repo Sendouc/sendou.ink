@@ -34,6 +34,7 @@ export const loader = async () => {
 		schedule: await RosterSchedule.rosterScheduleData({
 			userIds: scheduleUserIds,
 			timezone: getViewerTimezone() ?? "UTC",
+			viewerId: user.id,
 		}),
 		scheduleUsers: R.uniqueBy(
 			friendsAndTeammates.friends.map((friend) => ({

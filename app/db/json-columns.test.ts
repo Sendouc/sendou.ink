@@ -4,7 +4,9 @@ import { JSON_COLUMNS } from "./json-columns";
 
 describe("JSON_COLUMNS", () => {
 	test("matches the JSONColumnType declarations in tables.ts", () => {
-		expect([...JSON_COLUMNS].sort()).toEqual(jsonColumnsFromTablesSource());
+		expect([...JSON_COLUMNS].sort(alphabetically)).toEqual(
+			jsonColumnsFromTablesSource(),
+		);
 	});
 });
 
@@ -17,7 +19,7 @@ function jsonColumnsFromTablesSource() {
 		const [, interfaceName, body] = match;
 		if (interfaceName === "DB") continue;
 
-		const columns = [];
+		const columns: string[] = [];
 		for (const line of body.split("\n")) {
 			const columnMatch = line.match(
 				/^\s*(\w+)\??:\s*.*JSONColumnType(?:Nullable)?</,
@@ -30,7 +32,7 @@ function jsonColumnsFromTablesSource() {
 	}
 
 	const dbInterfaceBody = source.slice(source.indexOf("export interface DB {"));
-	const entries = [];
+	const entries: string[] = [];
 	for (const match of dbInterfaceBody.matchAll(/^\t(\w+): (\w+);/gm)) {
 		const [, tableName, interfaceName] = match;
 		for (const column of jsonColumnsByInterface.get(interfaceName) ?? []) {
@@ -38,5 +40,7 @@ function jsonColumnsFromTablesSource() {
 		}
 	}
 
-	return entries.sort();
+	return entries.sort(alphabetically);
 }
+
+const alphabetically = (a: string, b: string) => a.localeCompare(b);

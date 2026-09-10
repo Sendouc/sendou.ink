@@ -1,6 +1,7 @@
 import type { ShouldRevalidateFunctionArgs } from "react-router";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
+	holdRevalidationsDuring,
 	isMatchResultsScopedRevalidation,
 	revalidateWithScope,
 	scheduleBroadcastRevalidation,
@@ -173,5 +174,86 @@ describe("scheduleBroadcastRevalidation", () => {
 		scoped.resolve();
 		await vi.runAllTimersAsync();
 		expect(isMatchResultsScopedRevalidation(revalidationArgs())).toBe(false);
+	});
+});
+
+describe("holdRevalidationsDuring", () => {
+	test("a revalidation requested during a submission runs once it has settled", async () => {
+		const submission = deferred();
+		const revalidate = vi.fn(() => Promise.resolve());
+
+		const held = holdRevalidationsDuring(() => submission.promise);
+		revalidateWithScope(revalidate, undefined);
+		expect(revalidate).not.toHaveBeenCalled();
+
+		submission.resolve();
+		await held;
+		expect(revalidate).toHaveBeenCalledTimes(1);
+	});
+
+	test("revalidations requested during a submission collapse into one", async () => {
+		const submission = deferred();
+		const revalidate = vi.fn(() => Promise.resolve());
+
+		const held = holdRevalidationsDuring(() => submission.promise);
+		revalidateWithScope(revalidate, "MATCH_RESULTS");
+		revalidateWithScope(revalidate, "MATCH_RESULTS");
+
+		submission.resolve();
+		await held;
+		expect(revalidate).toHaveBeenCalledTimes(1);
+	});
+
+	test("a deferred revalidation of another scope widens to unscoped", async () => {
+		const submission = deferred();
+		const revalidation = deferred();
+
+		const held = holdRevalidationsDuring(() => submission.promise);
+		revalidateWithScope(() => revalidation.promise, "MATCH_RESULTS");
+		revalidateWithScope(() => revalidation.promise, undefined);
+
+		submission.resolve();
+		await held;
+		expect(isMatchResultsScopedRevalidation(revalidationArgs())).toBe(false);
+
+		revalidation.resolve();
+		await flushMicrotasks();
+	});
+
+	test("the hold lasts until every overlapping submission has settled", async () => {
+		const first = deferred();
+		const second = deferred();
+		const revalidate = vi.fn(() => Promise.resolve());
+
+		const firstHeld = holdRevalidationsDuring(() => first.promise);
+		const secondHeld = holdRevalidationsDuring(() => second.promise);
+		revalidateWithScope(revalidate, undefined);
+
+		first.resolve();
+		await firstHeld;
+		expect(revalidate).not.toHaveBeenCalled();
+
+		second.resolve();
+		await secondHeld;
+		expect(revalidate).toHaveBeenCalledTimes(1);
+	});
+
+	test("a failing submission releases the hold", async () => {
+		const revalidate = vi.fn(() => Promise.resolve());
+
+		const held = holdRevalidationsDuring(() =>
+			Promise.reject(new Error("network")),
+		);
+		revalidateWithScope(revalidate, undefined);
+
+		await expect(held).rejects.toThrow("network");
+		expect(revalidate).toHaveBeenCalledTimes(1);
+	});
+
+	test("nothing is held outside a submission", () => {
+		const revalidate = vi.fn(() => Promise.resolve());
+
+		revalidateWithScope(revalidate, undefined);
+		expect(revalidate).toHaveBeenCalledTimes(1);
 	});
 });

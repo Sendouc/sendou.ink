@@ -23,6 +23,25 @@ export function findSettingsByUserId(userId: number) {
 		.executeTakeFirstOrThrow();
 }
 
+export function findMapModePreferencesByUserId(userId: number) {
+	return db
+		.selectFrom("User")
+		.select("User.mapModePreferences")
+		.where("User.id", "=", userId)
+		.executeTakeFirstOrThrow()
+		.then((row) => row.mapModePreferences);
+}
+
+/** Match profile weapon pool of one user, with ten-star status. */
+export function findWeaponPoolByUserId(userId: number) {
+	return db
+		.selectFrom("User")
+		.select(({ eb }) => matchProfileWeapons(eb).as("weaponPool"))
+		.where("User.id", "=", userId)
+		.executeTakeFirstOrThrow()
+		.then((row) => row.weaponPool);
+}
+
 export async function updateOwnMatchProfile({
 	mapModePreferences,
 	vc,
@@ -92,10 +111,7 @@ export async function updateOwnMatchProfile({
 	return { mapModePreferencesChanged, noScreenChanged };
 }
 
-/**
- * Preserves existing preferences for modes not included in the new submission.
- * So if they later want to play this mode again, the system remembers their maps.
- */
+/** Keeps preferences of modes left out of the submission, so their maps are remembered when the mode is played again. */
 export function mergeExcludedModePreferences(
 	newPool: UserMapModePreferences["pool"],
 	currentPool: UserMapModePreferences["pool"] | undefined,

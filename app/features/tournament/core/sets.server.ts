@@ -16,11 +16,7 @@ export interface AllRoundsItem {
 export interface PlayedSet {
 	tournamentMatchId: number;
 	score: [teamBeingViewed: number, opponent: number];
-	/**
-	 * Who won the set according to the bracket. Can disagree with the maps and
-	 * the score e.g. when an organizer overrode the winner after games were
-	 * already reported.
-	 */
+	/** Per the bracket; can disagree with the maps and score, e.g. an organizer overrode the winner after reports. */
 	result: "win" | "loss";
 	round: {
 		type: "winners" | "losers" | "single_elim" | "round_robin" | "swiss";
@@ -36,7 +32,6 @@ export interface PlayedSet {
 	opponent: {
 		id: number;
 		name: string;
-		/** Team's roster that played in this set */
 		roster: Array<
 			Pick<
 				Tables["User"],
@@ -51,46 +46,6 @@ export interface PlayedSet {
 	};
 }
 
-export function winCounts(sets: PlayedSet[]) {
-	let setsWon = 0;
-	let totalSets = 0;
-	let mapsWon = 0;
-	let totalMaps = 0;
-
-	for (const set of sets) {
-		let mapsWonThisSet = 0;
-		let totalMapsThisSet = 0;
-
-		for (const map of set.maps) {
-			if (map.result === "win") {
-				mapsWonThisSet++;
-			}
-			totalMapsThisSet++;
-		}
-
-		totalSets++;
-		if (set.result === "win") {
-			setsWon++;
-		}
-
-		mapsWon += mapsWonThisSet;
-		totalMaps += totalMapsThisSet;
-	}
-
-	return {
-		sets: {
-			won: setsWon,
-			total: totalSets,
-			percentage: totalSets === 0 ? 0 : Math.round((setsWon / totalSets) * 100),
-		},
-		maps: {
-			won: mapsWon,
-			total: totalMaps,
-			percentage: totalMaps === 0 ? 0 : Math.round((mapsWon / totalMaps) * 100),
-		},
-	};
-}
-
 export function tournamentTeamSets({
 	sets,
 	allRounds,
@@ -100,7 +55,8 @@ export function tournamentTeamSets({
 }): PlayedSet[] {
 	return sets.map((set) => {
 		const round =
-			allRounds.find((round) => round.stageId === set.stageId) ?? allRounds[0];
+			allRounds.find((candidate) => candidate.stageId === set.stageId) ??
+			allRounds[0];
 
 		const resolveRound = () => {
 			if (round.stageType === "round_robin" || round.stageType === "swiss") {
@@ -116,11 +72,11 @@ export function tournamentTeamSets({
 			const maxRoundNumberOfGroup = Math.max(
 				...allRounds
 					.filter(
-						(round) =>
-							round.groupNumber === set.groupNumber &&
-							round.stageId === set.stageId,
+						(candidate) =>
+							candidate.groupNumber === set.groupNumber &&
+							candidate.stageId === set.stageId,
 					)
-					.map((round) => round.roundNumber),
+					.map((candidate) => candidate.roundNumber),
 			);
 
 			if (set.roundNumber === maxRoundNumberOfGroup) {

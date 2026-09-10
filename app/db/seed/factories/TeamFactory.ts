@@ -1,7 +1,7 @@
 import type { UserMapModePreferences } from "~/db/tables-json";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { type MemberRole, TEAM } from "~/features/team/team-constants";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { actAs } from "../core/actAs";
 import { defineFactory } from "../core/defineFactory";
 import * as ImageFactory from "./ImageFactory";
@@ -23,14 +23,11 @@ type Options = {
 	mapModePreferences?: UserMapModePreferences;
 	/** Roles of the members, keyed by user id, saved as the roster page saves them. Members left out keep none. */
 	roles?: Record<number, MemberRole>;
+	/** Members who may edit the team like the owner does, saved as the roster page saves them. */
+	managerUserIds?: number[];
 };
 
-/**
- * Creates teams. The first of `memberUserIds` is the owner, whose membership the
- * repository creates with the team; the rest join it the way they do in production,
- * within the team count a non-patron is allowed. Custom url and invite code are the
- * repository's own, the custom url following from the name.
- */
+/** First of `memberUserIds` is the owner, the rest join like in production (within the non-patron team limit). */
 export const { create } = defineFactory({
 	defaults: ({ seq }) => ({
 		name: `Team ${seq}`,
@@ -55,17 +52,23 @@ export const { create } = defineFactory({
 	},
 	applyOptions: async (
 		team,
-		{ hasAvatar, avatarUrl, mapModePreferences, roles }: Options,
+		{
+			hasAvatar,
+			avatarUrl,
+			mapModePreferences,
+			roles,
+			managerUserIds,
+		}: Options,
 	) => {
-		if (roles) {
+		if (roles || managerUserIds) {
 			await TeamRepository.updateRoster({
 				teamId: team.id,
 				members: team.memberUserIds.map((userId, index) => ({
 					userId,
-					role: roles[userId] ?? null,
+					role: roles?.[userId] ?? null,
 					customRole: null,
 					roleType: null,
-					isManager: false,
+					isManager: managerUserIds?.includes(userId) ?? false,
 					order: index,
 				})),
 				kickedUserIds: [],
@@ -88,8 +91,7 @@ export const { create } = defineFactory({
 			{ isValidated: true },
 		);
 
-		// the team edit page saves the whole profile at once; everything besides the
-		// name is still empty on a team the repository has only just inserted
+		// the team edit page saves the whole profile at once; the rest is still empty on a fresh insert
 		await TeamRepository.update({
 			id: team.id,
 			name: team.name,

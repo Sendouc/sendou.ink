@@ -1,13 +1,9 @@
 /**
- * Valibot schemas for the scanner domain — the single source of truth shared by
- * the producer (the scanner match builder/UI in this feature) and the
- * validator (features/scanner-ingest). Every domain field is a sendou.ink id
- * type; the compile-time asserts at the bottom pin each schema to the
- * corresponding core interface so producer and validator cannot drift.
- *
- * The core/worker modules consume only the *types* (type-only imports point
- * the other way), so valibot never enters the worker bundle; runtime validation
- * happens at the boundaries (ingest action, prefill loader).
+ * Valibot schemas for the scanner domain, shared by the producer (match
+ * builder/UI) and the validator (features/scanner-ingest). Every field is a
+ * sendou.ink id type; the compile-time asserts at the bottom pin each schema
+ * to its core interface. core/worker consume only the *types*, so valibot
+ * never enters the worker bundle; validation happens at the boundaries.
  */
 import * as v from "valibot";
 import { abilities } from "~/modules/in-game-lists/abilities";
@@ -17,6 +13,7 @@ import type { Ability } from "~/modules/in-game-lists/types";
 import { mainWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 import type {
 	ScannerMatch,
+	ScannerMatchKill,
 	ScannerMatchObjective,
 	ScannerMatchPlayer,
 	ScannerMatchPlayerStatus,
@@ -100,6 +97,15 @@ const scannerMatchPlayerStatusSchema = v.object({
 	),
 });
 
+/** a splat every few seconds over a match runs to dozens, not hundreds */
+const MAX_KILLS = 200;
+
+const scannerMatchKillSchema = v.object({
+	t: v.pipe(v.number(), v.integer(), v.minValue(0)),
+	time: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
+	name: v.nullable(detectionText),
+});
+
 export const scannerMatchSchema = v.object({
 	startsAt: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
 	endsAt: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(0))),
@@ -115,6 +121,9 @@ export const scannerMatchSchema = v.object({
 	cast: v.boolean(),
 	objective: v.nullable(scannerMatchObjectiveSchema),
 	playerStatus: v.nullable(scannerMatchPlayerStatusSchema),
+	kills: v.nullable(
+		v.pipe(v.array(scannerMatchKillSchema), v.maxLength(MAX_KILLS)),
+	),
 	teams: v.tuple([scannerMatchTeamSchema, scannerMatchTeamSchema]),
 	winner: v.nullable(teamIndexSchema),
 	pov: v.nullable(
@@ -125,8 +134,6 @@ export const scannerMatchSchema = v.object({
 	),
 });
 
-// ---- compile-time drift protection: schema output <-> core interface ----
-
 type MutuallyAssignable<A, B> = [A] extends [B]
 	? [B] extends [A]
 		? true
@@ -135,6 +142,7 @@ type MutuallyAssignable<A, B> = [A] extends [B]
 
 // `true satisfies …` fails to compile the moment a schema and its core
 // interface disagree in either direction.
+// biome-ignore-start lint/suspicious/noUnusedExpressions: type-level assertions, no runtime effect
 true satisfies MutuallyAssignable<
 	v.InferOutput<typeof scannerMatchPlayerSchema>,
 	ScannerMatchPlayer
@@ -152,6 +160,11 @@ true satisfies MutuallyAssignable<
 	ScannerMatchPlayerStatus
 >;
 true satisfies MutuallyAssignable<
+	v.InferOutput<typeof scannerMatchKillSchema>,
+	ScannerMatchKill
+>;
+true satisfies MutuallyAssignable<
 	v.InferOutput<typeof scannerMatchSchema>,
 	ScannerMatch
 >;
+// biome-ignore-end lint/suspicious/noUnusedExpressions: type-level assertions, no runtime effect

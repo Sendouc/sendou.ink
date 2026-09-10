@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import { EVENTS_PAGE } from "~/utils/urls";
-import { navigate } from "../../helpers/playwright";
+import { navigate, submit } from "../../helpers/playwright";
 
 const VIEW_LABELS = {
 	registered: "Registered",
@@ -29,6 +29,13 @@ export class EventsPage {
 			saveWeekButton: page.getByTestId("save-week-button"),
 			copyLastWeekButton: page.getByTestId("copy-last-week-button"),
 			dayEditorPopover: page.getByRole("dialog"),
+			teamScheduleLink: page.getByTestId("team-schedule-link"),
+			visibilityButton: page.getByTestId("schedule-visibility-button"),
+			notSharedWith: page.getByTestId("schedule-not-shared-with"),
+			// the chip radio input is visually hidden, so the label is what clicks
+			nextWeekToggle: page.locator(
+				'label[for="chip-radio-my-schedule-week-next"]',
+			),
 		};
 	}
 
@@ -42,11 +49,7 @@ export class EventsPage {
 		return this.page.getByTestId(`availability-day-edit-${dayIndex}`);
 	}
 
-	/**
-	 * Paints a range on a day track by dragging across it, `from` and `to` being
-	 * fractions of the track's width. Past 1 the drag runs beyond the hours the
-	 * track shows.
-	 */
+	/** Drags across a day track, `from` and `to` being fractions of its width (past 1 runs beyond the shown hours). */
 	async paintAvailability(dayIndex: number, from: number, to: number) {
 		const track = this.page.getByTestId(`availability-track-${dayIndex}`);
 		const box = await track.boundingBox();
@@ -78,6 +81,30 @@ export class EventsPage {
 
 	async goto() {
 		await navigate({ page: this.page, url: EVENTS_PAGE });
+	}
+
+	/**
+	 * Opens the schedule visibility dialog, toggles the named audiences and saves. The options are
+	 * team names and "All friends", data rather than locale keys, so they are matched by their name.
+	 */
+	async setScheduleVisibility({
+		check = [],
+		uncheck = [],
+	}: {
+		check?: Array<string>;
+		uncheck?: Array<string>;
+	}) {
+		await this.locators.visibilityButton.click();
+		const dialog = this.page.getByRole("dialog");
+
+		for (const name of uncheck) {
+			await dialog.getByRole("checkbox", { name, exact: true }).uncheck();
+		}
+		for (const name of check) {
+			await dialog.getByRole("checkbox", { name, exact: true }).check();
+		}
+
+		await submit(this.page);
 	}
 
 	/** The tabs carry the category's event count, so they are matched by their start. */

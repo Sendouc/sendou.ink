@@ -80,26 +80,48 @@ sequenceDiagram
 - The route (`routes/scanner.tsx`) is SSR-guarded: the client tree loads via
   `React.lazy` after `useHydrated`; nothing from `core/worker/capture/store`
   may be imported at route-module top level.
-- Eight detectors: `scoreboard` (results screen),
+- Nine detectors: `scoreboard` (results screen),
   `scoreboard-battle-log-replay` (replay-browser detail),
   `scoreboard-battle-log` (Recent Battles detail — same data sans replay
   code, panels stacked), `scoreboard-own` (personal results), `death`
   (respawn overlay), `map-start` (match intro), `minimap` (in-match overlay
   + casted 8-player spectator variant), `objective` (ranked counter overlay:
   counts, penalties, holder, match timer — a mode-discriminated union with
-  only the SZ member so far). The objective parse also emits a second
+  only the SZ member so far), `kill` (the "Splatted <name>!" feed
+  bottom-center). The feed is the POV player's — on the SWS26 broadcast the
+  specced player's, so a cast's kills follow camera swaps. One `Kill` event
+  per frame carries the whole visible stack newest-first, up to four rows,
+  each read as one line against every language's row template
+  (`core/detectors/kill/localized-messages.ts`, generated) with the leftover
+  as the name, plus the match timer off the same frame (`objective/timer.ts`,
+  shared with the counter) so kills land on the game clock in every mode. The
+  builder reduces the stack reads to one kill per row entering the feed
+  (`deriveKills`: rows expire oldest-first and a blurred inner row can drop
+  out of a single read, so each read is matched newest-first as a
+  subsequence of the rows still remembered within
+  `KILL_ROW_LIFETIME_SECONDS`), on the same replay-wipe anchor as the
+  counter series; how long a row stays up is unattested, so a row outliving
+  that lifetime would count twice. Row text reads through the `kill-feed`
+  atlas, BlitzMain at the row's ~24px caps with the scoreboard-names
+  charset, under `parseName`'s opt-in plain-tie rule (at that size an i's
+  dot alone ranks the accented glyphs level with the plain one). The
+  objective parse also emits a second
   event type per read: `PlayerStatus`
   (`core/detectors/objective/player-status.ts`), per-player special/dead
   flags off the icon strip flanking the timer (three geometries named by
   which side sits at the packed pitch — `even`, `narrow-right`,
   `narrow-left` — that are pure geometry, never footage type: S3 POV
   footage draws both narrow arrangements too, so only the D-pad camera
-  badges prove a broadcast, reported as the read's `cast: true | null`;
+  badges prove a broadcast, reported as the read's `cast: true | null` —
+  each geometry has its own badge row, the SWS26 broadcast draws `even`
+  badges included;
   broadcasts can hide the badges while keeping their geometry, so a
   badge-less frame scores the geometries on how decisively the bodies
   read and sticks with the established layout unless another wins
   clearly — the special-ready wash also pulses, so its dim trough is told
-  apart from a splat by its pale body, and a narrow-layout ready read
+  apart from a splat by its team tint: a splat is a neutral grey plate under
+  a grey X, which a blown-out backdrop turns near-white while a wash stays
+  tinted at every pulse phase, and a narrow-layout ready read
   must also see a washed (ink-poor) body: pale backdrop or the lead
   banner leaking past an icon edge fakes the shoulder glow on the
   overhead map view's badge-less strip), with
@@ -157,9 +179,13 @@ sequenceDiagram
   recognition code. Parse cost matters live (a stalled worker drops
   frames): a CJK splash-tag name once cost tens of seconds per death
   parse, which is why the death detector memoizes tag reads on a
-  downscaled tag signature (same killer recurs pixel-identical) and
-  `classifySegment` prescreens oversized eligibility lists at half scale
-  — both tuned so `scanner:report` stays bit-identical.
+  downscaled tag signature (same killer recurs pixel-identical), the kill
+  detector memoizes each feed row's read on its text-band signature (a row
+  is re-read twice a second for as long as it shows, and shifts up intact
+  when a newer one enters; the per-cell cap of the signature compare is
+  what keeps near-twin names apart) and `classifySegment` prescreens
+  oversized eligibility lists at half scale — all tuned so
+  `scanner:report` stays bit-identical.
 - Scheduling (`core/detectors/scheduler.ts`): the per-session
   DetectorScheduler decides which detectors see a frame. Failing gates are
   re-checked every `searchIntervalS` (0.25s — produced VoDs cut screens to
@@ -171,7 +197,11 @@ sequenceDiagram
   `rearmCooldownS`. Battle-log/replay gates return a content `signature` so
   browsing distinct entries re-parses once per battle instead of dropping
   the gate. `checkIntervalS` hard-caps both phases; `attachFrame: false`
-  keeps continuously-firing events from storing a frame PNG each. Frames no
+  keeps continuously-firing events from storing a frame PNG each, and the
+  worker only encodes a frame at all when a shadow `TimelineBuilder` (same
+  defaults as the page's) says an event would be listed rather than merged
+  into an earlier read — a 1080p PNG per repeat read cost more than the
+  parse once the kill feed re-read its stack twice a second. Frames no
   detector is due for skip canvas readback, and everything is counted in
   `core/detectors/telemetry.ts` — but only when the VoD tab is opened with
   `?telemetry=true` (nothing links there); otherwise the workers skip
@@ -194,7 +224,11 @@ sequenceDiagram
   language at once (`core/localized-entries.ts`, generated) and events carry
   sendou ids. English display names come from `components/labels.ts`.
 - ROI coordinates live in each detector's `rois.ts`, in canonical 1920×1080
-  space; every frame is normalized to that size first.
+  space; every frame is normalized to that size first — black bars around the
+  picture (letterbox/pillarbox, or a scene drawing the game smaller than its
+  canvas) are cropped away before the resize (`detectContentBox` in
+  `core/canonical.ts`; a bar must be level and ≥1% deep, since the Recent
+  Battles screen's own scanline-textured edge is dark but neither).
 - New event types implement `Detector` (`core/detectors/types.ts`): a cheap
   `gate(mat)` at sample rate plus `parse(mat, t)` when the gate fires.
   Register in `core/detectors/registry.ts`.
@@ -255,7 +289,11 @@ new tests there whenever they can be written without a frame.
 A test case is a directory `tests/fixtures/<detector>/<case-name>/` with
 `frame.png|jpg` (raw capture, never re-encoded) and `expected.json` (partial
 expectations, sendou ids; `stageLabel`/`weaponLabel` are informational for
-the human corrector — tests compare only ids). Negative cases
+the human corrector — tests compare only ids). A frame that already serves
+another detector's fixture (a kill feed caught in an objective frame) is
+symlinked (`ln -s ../../objective/<case>/frame.png frame.png`), not copied,
+and the kill suite's cross-negative sweep skips shared frames by real path.
+Negative cases
 (`{ "event": "none" }`) go in the shared `tests/fixtures/negative/`; every
 detector's suite sweeps them. Every live misread should become a fixture —
 the live app's "Save fixture" button exports the byte-exact analyzed frame

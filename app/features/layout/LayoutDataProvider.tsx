@@ -7,6 +7,7 @@ import { LAYOUT_DATA_ROUTE } from "~/utils/urls";
 import type { loader } from "./routes/api.layout";
 
 const TEN_MINUTES = 10 * 60 * 1000;
+const ONE_MINUTE = 60 * 1000;
 
 interface LayoutData {
 	/** `null` when the server has no session, `undefined` when it has not said. */
@@ -19,19 +20,15 @@ interface LayoutData {
 interface LayoutDataContextValue extends LayoutData {
 	/** Refetches the app shell data, without touching the page's own loaders. */
 	refresh: () => void;
-	isRefreshing: boolean;
 }
 
 const LayoutDataContext = React.createContext<LayoutDataContextValue>({
 	refresh: () => {},
-	isRefreshing: false,
 });
 
 /**
- * Serves the parts of the app shell that go stale while a page sits open, from
- * the root loader first and from a polled resource route after. Polling instead
- * of revalidating means a page whose own loader is expensive (plus suggestions,
- * a tournament's brackets) is not refetched just to refresh the sidebar.
+ * App shell data that goes stale while a page sits open: from the root loader first, then a polled
+ * resource route, so pages with expensive loaders are not refetched just to refresh the sidebar.
  */
 export function LayoutDataProvider({
 	data,
@@ -46,16 +43,16 @@ export function LayoutDataProvider({
 		refresh,
 	} = useBackgroundResource<SerializeFrom<typeof loader>>(LAYOUT_DATA_ROUTE);
 
-	// read through a ref so a poll elsewhere in the app does not re-run the effect
-	// and restart the interval before it ever fires
-	const isLoadingRef = React.useRef(isLoading);
-	isLoadingRef.current = isLoading;
+	const lastRefreshedAtRef = React.useRef(0);
 
 	React.useEffect(() => {
 		const loadIfIdle = () => {
-			if (!isLoadingRef.current) {
-				void refresh();
-			}
+			if (isLoading()) return;
+			// alt-tabbing back is not worth a full app shell rebuild if one just happened
+			if (Date.now() - lastRefreshedAtRef.current < ONE_MINUTE) return;
+
+			lastRefreshedAtRef.current = Date.now();
+			void refresh();
 		};
 
 		const handleVisibilityChange = () => {
@@ -71,7 +68,7 @@ export function LayoutDataProvider({
 			document.removeEventListener("visibilitychange", handleVisibilityChange);
 			clearInterval(interval);
 		};
-	}, [refresh]);
+	}, [refresh, isLoading]);
 
 	const newest = useNewestOf(data, polledData);
 
@@ -84,7 +81,6 @@ export function LayoutDataProvider({
 	const value: LayoutDataContextValue = {
 		...newest,
 		refresh,
-		isRefreshing: isLoading,
 	};
 
 	return (
@@ -94,10 +90,7 @@ export function LayoutDataProvider({
 	);
 }
 
-/**
- * App shell data (sidebar, build commit), fresher than the root loader
- * whenever a poll has landed since the last root revalidation.
- */
+/** App shell data, fresher than the root loader whenever a poll has landed since. */
 export function useLayoutData() {
 	return React.useContext(LayoutDataContext);
 }
@@ -118,11 +111,7 @@ function useReloadOnStaleAuth({
 	}, [clientUserId, serverUserId]);
 }
 
-/**
- * Whichever of the two arrived last. The root loader reruns on every navigation
- * and the poll fires on its own schedule, so neither source is reliably the
- * newer one and both have to be watched for a change.
- */
+/** Whichever arrived last; neither the root loader nor the poll is reliably the newer one. */
 function useNewestOf(
 	rootData: RootLoaderData | undefined,
 	polledData: LayoutData | undefined,

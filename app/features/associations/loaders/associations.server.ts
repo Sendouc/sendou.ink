@@ -38,20 +38,17 @@ async function associationToJoin(
 
 	if (!inviteCode) return null;
 
-	const associationToJoin = await AssociationRepository.findByInviteCode(
-		inviteCode,
-		{
-			withMembers: true,
-		},
-	);
-	if (!associationToJoin) return null;
+	const association = await AssociationRepository.findByInviteCode(inviteCode, {
+		withMembers: true,
+	});
+	if (!association) return null;
 
-	if (associationToJoin.members!.some((member) => member.id === userId)) {
+	if (association.members!.some((member) => member.id === userId)) {
 		return null;
 	}
 
 	return {
-		association: associationToJoin,
+		association,
 		inviteCode,
 	};
 }

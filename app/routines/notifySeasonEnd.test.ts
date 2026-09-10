@@ -56,7 +56,9 @@ describe("NotifySeasonEndRoutine", () => {
 				},
 			}),
 		);
-		expect(notifiedUserIds().sort()).toEqual([users.id(1), users.id(2)].sort());
+		expect(notifiedUserIds().sort((a, b) => a - b)).toEqual(
+			[users.id(1), users.id(2)].sort((a, b) => a - b),
+		);
 	});
 
 	test("does NOT notify a participant whose skill is approximate", async () => {

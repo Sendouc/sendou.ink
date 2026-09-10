@@ -87,6 +87,29 @@ function TestFilterBar(props: {
 	);
 }
 
+function TestHighlightsFilterBar() {
+	const [highlights, setHighlights] = useState(true);
+
+	return (
+		<FilterBar
+			pills={[
+				{
+					key: "highlights",
+					name: "Highlights",
+					formattedValue: highlights ? "Only" : null,
+					usableLoggedOut: true,
+					onRemove: () => setHighlights(false),
+					popover: (
+						<button type="button" onClick={() => setHighlights(!highlights)}>
+							Toggle highlights
+						</button>
+					),
+				},
+			]}
+		/>
+	);
+}
+
 describe("FilterBar", () => {
 	test("renders a set pill with its name and formatted value", async () => {
 		const screen = await render(<TestFilterBar initialMode="SZ" />);
@@ -189,16 +212,50 @@ describe("FilterBar", () => {
 			.not.toBeInTheDocument();
 	});
 
-	test("renders nothing for a logged out user", async () => {
+	test("prompts a logged out user to log in instead of opening a pill", async () => {
 		useUser.mockReturnValue(null);
 
 		const screen = await render(<TestFilterBar initialMode="SZ" />);
 
+		await screen.getByRole("button", { name: "Mode SZ" }).click();
+
 		await expect
-			.element(screen.getByRole("button", { name: /Mode/ }))
+			.element(screen.getByText("Log in to use this"))
+			.toBeInTheDocument();
+		await expect
+			.element(screen.getByRole("button", { name: "Set SZ" }))
 			.not.toBeInTheDocument();
+	});
+
+	test("prompts a logged out user to log in instead of opening the add filter menu", async () => {
+		useUser.mockReturnValue(null);
+
+		const screen = await render(<TestFilterBar />);
+
+		await screen.getByRole("button", { name: "Filter" }).click();
+
 		await expect
-			.element(screen.getByRole("button", { name: "Filter" }))
+			.element(screen.getByText("Log in to use this"))
+			.toBeInTheDocument();
+		await expect
+			.element(screen.getByRole("menuitem", { name: "Mode" }))
+			.not.toBeInTheDocument();
+	});
+
+	test("keeps a pill marked usable logged out on the bar and out of the log in prompt", async () => {
+		useUser.mockReturnValue(null);
+
+		const screen = await render(<TestHighlightsFilterBar />);
+
+		await screen.getByRole("button", { name: "Highlights Only" }).click();
+		await screen.getByRole("button", { name: "Toggle highlights" }).click();
+
+		// still there to be turned back on, without a remove button now that it is off
+		await expect
+			.element(screen.getByRole("button", { name: "Highlights", exact: true }))
+			.toBeInTheDocument();
+		await expect
+			.element(screen.getByRole("button", { name: "Remove Highlights filter" }))
 			.not.toBeInTheDocument();
 	});
 

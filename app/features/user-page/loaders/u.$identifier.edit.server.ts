@@ -1,28 +1,19 @@
-import { type LoaderFunctionArgs, redirect } from "react-router";
-import * as v from "valibot";
+import { redirect } from "react-router";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as TrophyRepository from "~/features/trophies/TrophyRepository.server";
 import { canAccessTrophies } from "~/features/trophies/trophies-utils";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { notFoundIfNullish } from "~/utils/remix.server";
+import { userPageUser } from "~/features/user-page/user-page-context.server";
 import { userPage } from "~/utils/urls";
-import { userParamsSchema } from "../user-page-schemas";
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async () => {
 	const user = requireUser();
-	const { identifier } = v.parse(userParamsSchema, params);
-	const userToBeEdited = notFoundIfNullish(
-		await UserRepository.findLayoutDataByIdentifier(identifier),
-	);
+	const userToBeEdited = userPageUser();
 	if (user.id !== userToBeEdited.id) {
 		throw redirect(userPage(userToBeEdited));
 	}
 
-	const userProfile = (await UserRepository.findProfileByIdentifier(
-		identifier,
-		true,
-	))!;
-	const preferences = await UserRepository.findPreferencesByUserId(user.id);
+	const userProfile = (await UserRepository.findProfileByUserId(user.id))!;
 	const friendCodeResult = await UserRepository.findCurrentFriendCodeByUserId(
 		user.id,
 	);
@@ -32,12 +23,9 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 	return {
 		user: userProfile,
-		favoriteBadgeIds: userProfile.favoriteBadgeIds,
 		favoriteTrophyIds: userProfile.favoriteTrophyIds,
 		hiddenTrophyIds: userProfile.hiddenTrophyIds,
 		ownedTrophies,
-		discordUniqueName: userProfile.discordUniqueName,
-		newProfileEnabled: preferences?.newProfileEnabled ?? false,
 		friendCode: friendCodeResult?.friendCode ?? null,
 	};
 };

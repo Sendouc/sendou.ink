@@ -11,6 +11,7 @@ import { SendouDialog } from "~/components/elements/Dialog";
 import { SendouSwitch } from "~/components/elements/Switch";
 import { useTheme } from "~/features/theme/core/provider";
 import { useCopyPngToClipboard } from "~/hooks/useCopyToClipboard";
+import { useMediaQuery } from "~/hooks/useMediaQuery";
 import { SENDOU_INK_BASE_URL } from "~/utils/urls";
 import { GraphicQrCodeContext } from "./Graphic";
 import styles from "./ImageExportDialog.module.css";
@@ -45,23 +46,20 @@ const THEME_SELECTIONS = [
 ] as const;
 
 interface ImageExportDialogProps {
-	/** Button that opens the dialog, e.g. a `SendouButton` (its own `onPress` also runs, useful for lazy loading the graphic's data) */
-	trigger: React.ReactNode;
+	/** Button that opens the dialog, e.g. a `SendouButton` (its own `onClick` also runs, useful for lazy loading the graphic's data) */
+	trigger: React.ReactElement<{ onClick?: () => void }>;
 	heading: string;
 	/** Name of the downloaded file without the extension */
 	filename: string;
 	/** Path the QR code links to, defaults to the current page */
 	qrCodePath?: string;
-	/** Extra settings controls specific to the use case */
 	settings?: React.ReactNode;
-	/** The graphic to preview and export */
 	children: React.ReactNode;
 }
 
 /**
- * Dialog for exporting a graphic component as a .png image. Renders the given graphic
- * as a preview with generic settings (color scheme, custom theme, QR code) and downloads
- * a screenshot of it via snapdom. Graphics render their QR code via {@link GraphicQrCodeContext}.
+ * Previews a graphic with generic settings (color scheme, custom theme, QR code) and downloads a
+ * snapdom screenshot of it as .png. Graphics render their QR code via {@link GraphicQrCodeContext}.
  */
 export function ImageExportDialog({
 	trigger,
@@ -74,6 +72,7 @@ export function ImageExportDialog({
 			heading={heading}
 			showCloseButton
 			className={styles.dialog}
+			lazy
 		>
 			<ImageExportDialogContent {...contentProps} />
 		</SendouDialog>
@@ -110,21 +109,21 @@ function ImageExportDialogContent({
 
 	const qrCodeUrl = `${SENDOU_INK_BASE_URL}${qrCodePath ?? `${location.pathname}${location.search}`}`;
 
-	// snapdom re-downloads every image at export time rather than reusing what the preview
-	// already painted, and silently drops any that fails. Warming them while the preview sits
-	// idle keeps those fetches from racing the capture's own work for the main thread.
-	// Runs after every render because settings can mount images that were not there before
-	// (e.g. the build export's ability chunks); re-running once everything is cached is ~7ms.
+	// snapdom re-downloads every image at export and silently drops failures, so they are warmed
+	// while the preview idles. Runs after every render since settings can mount new images
+	// (e.g. ability chunks); re-running once cached is ~7ms.
 	React.useEffect(() => {
 		if (exportAction) return;
 
 		let cancelled = false;
 
-		import("@zumer/snapdom").then(({ preCache }) => {
-			if (cancelled || !frameRef.current) return;
+		import("@zumer/snapdom")
+			.then(({ preCache }) => {
+				if (cancelled || !frameRef.current) return;
 
-			preCache(frameRef.current).catch(() => {});
-		});
+				return preCache(frameRef.current);
+			})
+			.catch(() => {});
 
 		return () => {
 			cancelled = true;
@@ -181,7 +180,7 @@ function ImageExportDialogContent({
 			<div className={styles.actions}>
 				<SendouButton
 					icon={isMobile ? <Share2 /> : <HardDriveDownload />}
-					onPress={handleDownload}
+					onClick={handleDownload}
 					isDisabled={exportAction !== null}
 				>
 					{exportAction === "download"
@@ -194,7 +193,7 @@ function ImageExportDialogContent({
 					<SendouButton
 						variant={copySuccess ? "outlined-success" : "outlined"}
 						icon={copySuccess ? <Check /> : <Copy />}
-						onPress={handleCopy}
+						onClick={handleCopy}
 						isDisabled={exportAction !== null}
 					>
 						{t("common:actions.copyToClipboard")}
@@ -246,10 +245,7 @@ function canCopyPngToClipboard() {
 	return typeof ClipboardItem !== "undefined";
 }
 
-/**
- * Opens the share sheet when sharing is allowed (mobile) and the platform supports it,
- * otherwise downloads the image
- */
+/** Share sheet when allowed (mobile) and supported, otherwise a download. */
 async function saveImage(
 	blob: Blob,
 	filename: string,
@@ -277,18 +273,8 @@ async function saveImage(
 	URL.revokeObjectURL(url);
 }
 
-function subscribeToPointerQuery(callback: () => void) {
-	const mediaQueryList = window.matchMedia(COARSE_POINTER_QUERY);
-	mediaQueryList.addEventListener("change", callback);
-	return () => mediaQueryList.removeEventListener("change", callback);
-}
-
 function useIsMobile() {
-	return React.useSyncExternalStore(
-		subscribeToPointerQuery,
-		() => window.matchMedia(COARSE_POINTER_QUERY).matches,
-		() => false,
-	);
+	return useMediaQuery(COARSE_POINTER_QUERY);
 }
 
 function usePageHasCustomTheme() {

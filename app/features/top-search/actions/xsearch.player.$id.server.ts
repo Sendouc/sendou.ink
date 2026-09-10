@@ -30,7 +30,7 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 	);
 
 	logger.info("Unlinking player", {
-		id: id,
+		id,
 		userId: user.id,
 	});
 

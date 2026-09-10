@@ -13,7 +13,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	});
 
 	const posts = await LFGRepository.findAllPosts(user);
-	const post = posts.find((post) => post.id === data.id);
+	const post = posts.find((candidate) => candidate.id === data.id);
 	errorToastIfFalsy(post, "Post not found");
 
 	switch (data._action) {

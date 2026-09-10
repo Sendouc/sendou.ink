@@ -327,9 +327,9 @@ export const scrimsNewFormSchema = v.pipe(
 			v.object({
 				at: v.pipe(
 					v.nullish(preprocess(date, v.date())),
-					v.check((date) => {
-						if (!date) return true;
-						if (date < sub(new Date(), { days: 1 })) return false;
+					v.check((at) => {
+						if (!at) return true;
+						if (at < sub(new Date(), { days: 1 })) return false;
 						return true;
 					}, "errors.dateInPast"),
 				),

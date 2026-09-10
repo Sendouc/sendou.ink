@@ -9,43 +9,16 @@ import { NON_PLAYER_TEAM_ROLES } from "~/features/team/team-constants";
 import { subsOfResult } from "~/features/team/team-utils";
 import { databaseTimestampNow } from "~/utils/dates";
 import { shortNanoid } from "~/utils/id";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import {
 	commonUserSelect,
 	concatUserSubmittedImagePrefix,
 	jsonArrayFrom,
+	matchProfileWeapons,
 	tournamentLogoOrNull,
-	userProfileWeapons,
 } from "~/utils/kysely.server";
 import { toDBBoolean } from "~/utils/sql";
 import { mySlugify } from "~/utils/urls";
-
-export function findAllUndisbanded() {
-	return db
-		.selectFrom("Team")
-		.leftJoin("UserSubmittedImage", "UserSubmittedImage.id", "Team.avatarImgId")
-		.select(({ eb }) => [
-			"Team.customUrl",
-			"Team.name",
-			"Team.tag",
-			concatUserSubmittedImagePrefix(eb.ref("UserSubmittedImage.url")).as(
-				"avatarUrl",
-			),
-			jsonArrayFrom(
-				eb
-					// AllTeamMember directly instead of the TeamMemberWithSecondary view:
-					// the view's team-existence check is redundant when joining to Team
-					.selectFrom("AllTeamMember")
-					.innerJoin("User", "User.id", "AllTeamMember.userId")
-					.leftJoin("PlusTier", "PlusTier.userId", "User.id")
-					.select(["User.id", "User.username", "PlusTier.tier as plusTier"])
-					.whereRef("AllTeamMember.teamId", "=", "Team.id")
-					.where("AllTeamMember.leftAt", "is", null)
-					.orderBy("AllTeamMember.order", "asc"),
-			).as("members"),
-		])
-		.execute();
-}
 
 export function searchByName({
 	query,
@@ -139,9 +112,8 @@ export async function findByCustomUrl(
 		includeMapModePreferences = false,
 	} = {},
 ) {
-	// join the unvalidated table (instead of the validated-only `UserSubmittedImage` view) so the
-	// edit page can preview images still pending moderation; for everyone else the url is gated on
-	// `validatedAt` so pending images stay hidden
+	// joins the unvalidated table so the edit page can preview images pending moderation;
+	// for everyone else the url is gated on `validatedAt`
 	const row = await db
 		.selectFrom("Team")
 		.leftJoin(
@@ -196,7 +168,7 @@ export async function findByCustomUrl(
 						"TeamMemberWithSecondary.isMainTeam",
 						"User.country",
 						"User.patronTier",
-						userProfileWeapons(innerEb).as("weapons"),
+						matchProfileWeapons(innerEb).as("weapons"),
 					])
 					.whereRef("TeamMemberWithSecondary.teamId", "=", "Team.id")
 					.orderBy("TeamMemberWithSecondary.order", "asc"),
@@ -245,13 +217,11 @@ export function findResultPlacementsById(teamId: number) {
 		.execute();
 }
 
-/**
- * Retrieves tournament results for a given team by its ID.
- */
+/** Tournament results of the team. */
 export async function findResultsById(teamId: number) {
 	const rows = await db
-		.with("results", (db) =>
-			db
+		.with("results", (cte) =>
+			cte
 				.selectFrom("TournamentTeam")
 				.innerJoin(
 					"TournamentResult",
@@ -323,7 +293,7 @@ export async function findResultsById(teamId: number) {
 					)
 					.innerJoin("User", "User.id", "TournamentResult.userId")
 					.whereRef("results2.tournamentId", "=", "results.tournamentId")
-					.select((eb) => commonUserSelect(eb)),
+					.select((participantEb) => commonUserSelect(participantEb)),
 			).as("participants"),
 		])
 		.orderBy("CalendarEventDate.startsAt", "desc")
@@ -341,9 +311,7 @@ export async function findResultsById(teamId: number) {
 	});
 }
 
-// reads AllTeamMember instead of the TeamMemberWithSecondary view because the
-// view filters out members who have left, and past members are exactly what
-// subsOfResult needs to tell substitutes apart from since-departed roster members
+// AllTeamMember rather than the TeamMemberWithSecondary view: subsOfResult needs past members too
 function allMembersById(teamId: number) {
 	return db
 		.selectFrom("AllTeamMember")
@@ -372,7 +340,11 @@ export async function findAllByMemberUserId(
 				eb
 					.selectFrom("TeamMemberWithSecondary as m2")
 					.innerJoin("User", "User.id", "m2.userId")
-					.select((eb) => [...commonUserSelect(eb), "m2.role", "m2.roleType"])
+					.select((memberEb) => [
+						...commonUserSelect(memberEb),
+						"m2.role",
+						"m2.roleType",
+					])
 					.whereRef("TeamMemberWithSecondary.teamId", "=", "m2.teamId")
 					.orderBy("m2.order", "asc"),
 			).as("members"),
@@ -436,8 +408,7 @@ export async function update({
 			.where("id", "=", id)
 			.executeTakeFirst();
 
-		// images that got removed or replaced are no longer referenced by anything,
-		// so their submitted image rows are cleaned up
+		// removed or replaced images' submitted image rows are cleaned up
 		const orphanedImageIds: number[] = [];
 		if (current?.avatarImgId && current.avatarImgId !== avatarImgId) {
 			orphanedImageIds.push(current.avatarImgId);
@@ -486,7 +457,7 @@ export async function updateCustomTheme({
 		.execute();
 }
 
-/** Updates the team's SendouQ map/mode preferences, or clears them when passed `null`. Keeps existing map pools of modes missing from the new value. */
+/** Sets (or clears with `null`) SendouQ map/mode preferences; map pools of modes missing from the new value are kept. */
 export async function updateMapModePreferences({
 	id,
 	mapModePreferences,
@@ -559,7 +530,7 @@ export function deleteById(teamId: number) {
 			.where("teamId", "=", teamId)
 			.execute();
 
-		// switch main team to another if they at least one secondary team
+		// switch main team to a secondary team if they have one
 		for (const member of members) {
 			const currentTeams = await findAllByMemberUserId(member.userId, trx);
 
@@ -662,10 +633,7 @@ export function handleMemberLeaving({
 		.execute((trx) => memberLeave(trx, { userId, teamId, newOwnerUserId }));
 }
 
-/**
- * Applies a roster edit in a single transaction: updates each kept member's role
- * & editor status and removes (kicks) the members in `kickedUserIds`.
- */
+/** In one transaction: updates kept members' role & editor status and kicks `kickedUserIds`. */
 export function updateRoster({
 	teamId,
 	members,

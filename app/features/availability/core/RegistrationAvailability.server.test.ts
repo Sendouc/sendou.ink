@@ -9,6 +9,7 @@ import * as RegistrationAvailability from "./RegistrationAvailability.server";
 
 const users = UserFactory.pool();
 const playerId = () => users.id(1);
+const viewerId = () => users.id(2);
 
 const TIMEZONE = "UTC";
 const HOUR = 60 * 60;
@@ -32,11 +33,12 @@ const availabilityFor = (startsAt: number) =>
 		tournament: tournamentStartingAt(startsAt),
 		userIds: [playerId()],
 		timezone: TIMEZONE,
+		viewerId: viewerId(),
 	});
 
 describe("RegistrationAvailability.registrationAvailability", () => {
 	beforeEach(async () => {
-		await users.create(1);
+		await users.create(2);
 	});
 
 	test("computes nothing for a tournament past the reportable horizon", async () => {
@@ -62,6 +64,31 @@ describe("RegistrationAvailability.registrationAvailability", () => {
 		expect(result.beyondHorizon).toBeNull();
 		expect(result.window?.startsAt).toBe(startsAt);
 		expect(result.entries).toHaveLength(1);
+	});
+
+	test("reads as unknown for a player not sharing their schedule", async () => {
+		const weekStartsAt = weekStartsAtIn(1);
+		const startsAt = weekStartsAt + 2 * DAY + 18 * HOUR;
+		await AvailabilityWeekFactory.create({
+			userId: playerId(),
+			weekStartsAt,
+			timezone: TIMEZONE,
+			slots: [{ startsAt, endsAt: startsAt + 6 * HOUR }],
+			dayNotes: [
+				{
+					date: Availability.dateInTimezone(startsAt, TIMEZONE),
+					text: "Have to leave by 21",
+				},
+			],
+		});
+		await UserFactory.grant(playerId(), {
+			preferences: { scheduleVisibility: { friends: false, teamIds: [] } },
+		});
+
+		const result = await availabilityFor(startsAt);
+
+		expect(result.entries?.[0].availability.status).toBe("unknown");
+		expect(result.entries?.[0].notes).toEqual([]);
 	});
 
 	test("returns only the day notes falling inside the tournament's window", async () => {

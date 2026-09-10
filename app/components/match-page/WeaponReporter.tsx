@@ -24,8 +24,7 @@ export interface WeaponReporterMap {
 }
 
 export interface WeaponReporterProps {
-	/** Only the maps the viewer took part in, so someone who was subbed out is
-	 * never asked for a weapon of a map they did not play. */
+	/** Only the maps the viewer took part in, so a subbed out player is never asked for one they did not play. */
 	maps: WeaponReporterMap[];
 	pastReported: MainWeaponId[];
 	nextMapIndex: number;
@@ -97,7 +96,7 @@ export function WeaponReporter({
 						<SendouButton
 							variant="primary"
 							isDisabled={selectedWeapon === null || isSubmitting}
-							onPress={() => {
+							onClick={() => {
 								if (selectedWeapon === null) return;
 								onSubmit(selectedWeapon);
 								setSelectedWeapon(null);
@@ -122,7 +121,7 @@ export function WeaponReporter({
 						variant="minimal"
 						size="small"
 						isDisabled={isSubmitting}
-						onPress={onUndo}
+						onClick={onUndo}
 					>
 						{t("q:match.weapon.undoWeapon")}
 					</SendouButton>

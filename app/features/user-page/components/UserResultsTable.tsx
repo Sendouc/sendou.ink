@@ -37,7 +37,7 @@ export function UserResultsTable({
 		<Table>
 			<thead>
 				<tr>
-					{hasHighlightCheckboxes && <th />}
+					{hasHighlightCheckboxes ? <th /> : null}
 					<th id={placementHeaderId}>{t("results.placing")}</th>
 					<th>{t("results.tournament")}</th>
 					<th>{t("results.date")}</th>
@@ -52,17 +52,14 @@ export function UserResultsTable({
 						? `tournament-${result.teamId}`
 						: `event-${result.teamId}`;
 
-					// We are trying to construct a reasonable label for the checkbox
-					// which shouldn't contain the whole information of the table row as
-					// that can be also accessed when needed.
-					// e.g. "20xx Placing 2nd", "Big House 10 Placing 20th"
+					// short checkbox label e.g. "Big House 10 Placing 20th" rather than the whole row
 					const placementCellId = `${id}-${rowId}-placement`;
 					const nameCellId = `${id}-${rowId}-name`;
 					const checkboxLabelIds = `${nameCellId} ${placementHeaderId} ${placementCellId}`;
 
 					return (
 						<tr key={rowId}>
-							{hasHighlightCheckboxes && (
+							{hasHighlightCheckboxes ? (
 								<td>
 									<input
 										value={result.teamId}
@@ -76,7 +73,7 @@ export function UserResultsTable({
 										defaultChecked={Boolean(result.isHighlight)}
 									/>
 								</td>
-							)}
+							) : null}
 							<td className="pl-4 whitespace-nowrap" id={placementCellId}>
 								<div className="stack horizontal xs items-end">
 									<Placement placement={result.placement} />{" "}

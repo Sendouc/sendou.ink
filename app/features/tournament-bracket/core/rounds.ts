@@ -25,12 +25,13 @@ export function getRounds(args: {
 
 			return round;
 		})
-		.filter((round, i, rounds) => {
-			const isBracketReset = args.type === "winners" && i === rounds.length - 1;
+		.filter((round, i, allRounds) => {
+			const isBracketReset =
+				args.type === "winners" && i === allRounds.length - 1;
 			const grandFinalsMatch =
 				args.type === "winners"
 					? args.bracketData.match.find(
-							(match) => match.roundId === rounds[rounds.length - 2]?.id,
+							(match) => match.roundId === allRounds[allRounds.length - 2]?.id,
 						)
 					: undefined;
 

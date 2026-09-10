@@ -1,10 +1,8 @@
 /**
  * node:test-shaped `test` on top of Vitest, so the golden-file suites keep
- * their original shape (dynamic per-fixture tests with nested `t.test`
- * subtests and `{ skip }` options — a pattern Vitest has no native
- * equivalent for). Subtests run inline; every failure is collected and the
- * parent test reports them all at once, preserving node:test's
- * "one field mismatch doesn't hide the next" behavior.
+ * their dynamic per-fixture tests with nested `t.test` subtests and `{ skip }`
+ * options (no native Vitest equivalent). Subtests run inline; every failure is
+ * collected and reported at once, so one field mismatch doesn't hide the next.
  */
 import { test as vitestTest } from "vitest";
 
@@ -19,7 +17,7 @@ export interface CompatTestContext {
 	): Promise<void>;
 }
 
-export default function test(
+export function test(
 	name: string,
 	fn: (t: CompatTestContext) => void | Promise<void>,
 ): void {

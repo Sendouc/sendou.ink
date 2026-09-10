@@ -16,12 +16,7 @@ export function nullFilledArray(size: number): null[] {
 	return new Array(size).fill(null);
 }
 
-/**
- * Calculates the average of an array of numbers. If the array is empty, returns null.
- *
- * @param values - An array of numbers to calculate the average of.
- * @returns The average of the numbers in the array, or null if the array is empty.
- */
+/** Average of the numbers, null for an empty array. */
 export function nullifyingAvg(values: number[]) {
 	if (values.length === 0) return null;
 	return values.reduce((acc, cur) => acc + cur, 0) / values.length;
@@ -43,16 +38,16 @@ export function diff<T extends string | number>(arr1: T[], arr2: T[]): T[] {
 	const arr1Counts = countElements(arr1);
 	const arr2Counts = countElements(arr2);
 
-	const diff = new Map<T, number>();
+	const counts = new Map<T, number>();
 
 	for (const [element, count] of arr2Counts) {
 		const diffCount = Math.max(count - (arr1Counts.get(element) ?? 0), 0);
-		diff.set(element, diffCount);
+		counts.set(element, diffCount);
 	}
 
 	const result: T[] = [];
 
-	for (const [element, count] of diff) {
+	for (const [element, count] of counts) {
 		for (let i = 0; i < count; i++) {
 			result.push(element);
 		}
@@ -78,20 +73,7 @@ export function mostPopularArrayElement<T>(arr: T[]): T | null {
 	return mostPopularElement;
 }
 
-/**
- * Safely zips two arrays together by alternating elements. If arrays have different lengths,
- * zips as much as possible, then appends remaining elements from the longer array.
- *
- * @param arr1 - The first array
- * @param arr2 - The second array
- * @returns Alternating elements from both arrays: [arr1[0], arr2[0], arr1[1], arr2[1], ...]
- *          followed by any remaining elements from the longer array
- *
- * @example
- * zipSafe([1, 2], ['a', 'b']) // [1, 'a', 2, 'b']
- * zipSafe([1, 2], ['a', 'b', 'c']) // [1, 'a', 2, 'b', 'c']
- * zipSafe([1, 2, 3], ['a', 'b']) // [1, 'a', 2, 'b', 3]
- */
+/** Alternates elements of both arrays, then appends the longer array's rest: `flatZip([1, 2, 3], ['a']) → [1, 'a', 2, 3]`. */
 export function flatZip<T, U>(arr1: T[], arr2: U[]): Array<T | U> {
 	const result: Array<T | U> = [];
 	const minLength = Math.min(arr1.length, arr2.length);

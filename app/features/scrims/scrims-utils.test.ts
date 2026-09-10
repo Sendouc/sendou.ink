@@ -5,6 +5,7 @@ import {
 	formatFlexTimeDisplay,
 	generateTimeOptions,
 	parseLutiDivFromName,
+	parseLutiSeasonFromName,
 	parseMapPoolInput,
 	postSpan,
 	requestStarts,
@@ -20,6 +21,18 @@ describe("parseLutiDivFromName", () => {
 		["LUTI Division 12", null],
 	])("parses %s as %s", (name, expected) => {
 		expect(parseLutiDivFromName(name)).toBe(expected);
+	});
+});
+
+describe("parseLutiSeasonFromName", () => {
+	test.each([
+		["LUTI: Season 15 - Division 2", 15],
+		["LUTI Season 17", 17],
+		["LUTI season 9 Div X", 9],
+		["LUTI Division 2", null],
+		["Seasonal Cup 3", null],
+	])("parses %s as %s", (name, expected) => {
+		expect(parseLutiSeasonFromName(name)).toBe(expected);
 	});
 });
 

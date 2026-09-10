@@ -1,29 +1,23 @@
 import type { LoaderFunctionArgs } from "react-router";
-import * as v from "valibot";
 import { requireUser } from "~/features/auth/core/user.server";
 import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
 import * as PlayerStatRepository from "~/features/sendouq-match/PlayerStatRepository.server";
 import * as ReportedWeaponRepository from "~/features/sendouq-match/ReportedWeaponRepository.server";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { userPageUserId } from "~/features/user-page/user-page-context.server";
 import type { SerializeFrom } from "~/utils/remix";
-import { notFoundIfNullish } from "~/utils/remix.server";
-import { userParamsSchema } from "../user-page-schemas";
 import { userSeasonsSearchParams } from "../user-page-search-params";
 
 export type UserSeasonsStatsLoaderData = NonNullable<
 	SerializeFrom<typeof loader>
 >;
 
-export const loader = async ({ params, url }: LoaderFunctionArgs) => {
+export const loader = async ({ url }: LoaderFunctionArgs) => {
 	requireUser();
-	const { identifier } = v.parse(userParamsSchema, params);
 	const { info, season: seasonParam } = userSeasonsSearchParams.parse(url);
 
-	const user = notFoundIfNullish(
-		await UserRepository.findIdByIdentifier(identifier),
-	);
+	const userId = userPageUserId();
 	const seasonsParticipatedIn =
-		await LeaderboardRepository.findSeasonsParticipatedInByUserId(user.id);
+		await LeaderboardRepository.findSeasonsParticipatedInByUserId(userId);
 
 	if (seasonsParticipatedIn.length === 0) {
 		return null;
@@ -37,21 +31,21 @@ export const loader = async ({ params, url }: LoaderFunctionArgs) => {
 			info === "stages"
 				? await PlayerStatRepository.findSeasonStagesByUserId({
 						season,
-						userId: user.id,
+						userId,
 					})
 				: null,
 		weapons:
 			info === "weapons"
 				? await ReportedWeaponRepository.findSeasonReportedWeaponsByUserId({
 						season,
-						userId: user.id,
+						userId,
 					})
 				: null,
 		players:
 			info === "enemies" || info === "mates"
 				? await PlayerStatRepository.findSeasonMatesEnemiesByUserId({
 						season,
-						userId: user.id,
+						userId,
 						type: info === "enemies" ? "ENEMY" : "MATE",
 					})
 				: null,

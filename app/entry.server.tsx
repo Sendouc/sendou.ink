@@ -6,6 +6,7 @@ import { renderToPipeableStream } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
 import {
 	type EntryContext,
+	type HandleDataRequestFunction,
 	type HandleErrorFunction,
 	type RouterContextProvider,
 	ServerRouter,
@@ -23,8 +24,9 @@ import { loadAllDateFnsLocales } from "./utils/dates";
 import { IS_E2E_TEST_RUN } from "./utils/e2e";
 import { logger } from "./utils/logger";
 
-// Reject/cancel all pending promises after 5 seconds
 export const streamTimeout = 5000;
+
+const PREFETCH_CACHE_CONTROL = "private, max-age=10";
 
 const dateFnsLocalesLoaded = loadAllDateFnsLocales();
 
@@ -76,13 +78,30 @@ async function handleRequest(
 			},
 		);
 
-		// Automatically timeout the React renderer after 6 seconds, which ensures
-		// React has enough time to flush down the rejected boundary contents
+		// +1s gives React time to flush the rejected boundary contents
 		setTimeout(abort, streamTimeout + 1000);
 	});
 }
 
-// example from https://github.com/BenMcH/remix-rss/blob/main/app/entry.server.tsx
+/** Lets the browser reuse a hover-prefetched loader response on the click that follows it. */
+export const handleDataRequest: HandleDataRequestFunction = (
+	response,
+	{ request },
+) => {
+	const isPrefetch = request.headers.get("Sec-Purpose") === "prefetch";
+	if (request.method !== "GET" || !response.ok || !isPrefetch) return response;
+
+	const headers = new Headers(response.headers);
+	headers.set("Cache-Control", PREFETCH_CACHE_CONTROL);
+	headers.set("Vary", "Cookie");
+
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers,
+	});
+};
+
 declare global {
 	var appStartSignal: undefined | true;
 }
@@ -109,8 +128,7 @@ if (!global.appStartSignal && ServerConfig.isProduction && !IS_E2E_TEST_RUN) {
 		}
 	});
 
-	// 9:00 AM Finnish time on Wednesdays, a quiet hour picked because vacuuming blocks
-	// writes for longer than the 5s busy_timeout
+	// 9:00 AM Finnish time on Wednesdays, a quiet hour since vacuuming blocks writes longer than the 5s busy_timeout
 	cron.schedule(
 		"0 9 * * 3",
 		async () => {
@@ -132,7 +150,7 @@ process.on("unhandledRejection", (reason: string, p: Promise<any>) => {
 	logger.error("Unhandled Rejection at:", p, "reason:", reason);
 });
 
-// wrapper so we get request id shown in the server logs
+// routes through logger so the request id shows in server logs
 export const handleError: HandleErrorFunction = (error) => {
 	logger.error(error);
 };

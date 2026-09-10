@@ -32,6 +32,9 @@
 	&:only-child {
 		border-radius: var(--radius-box);
 	}
+
+	content-visibility: auto;
+	contain-intrinsic-size: auto 32px;
 }
 
 .dividerRow {

@@ -22,7 +22,7 @@ import {
 	TORPEDO_ID,
 	ZIPCASTER_ID,
 } from "~/modules/in-game-lists/weapon-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { cutToNDecimalPlaces, roundToNDecimalPlaces } from "~/utils/number";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -201,7 +201,7 @@ function specialPoint({
 
 	const { effect } = abilityPointsToEffects({
 		abilityPoints: apFromMap({
-			abilityPoints: abilityPoints,
+			abilityPoints,
 			ability: SPECIAL_POINT_ABILITY,
 		}),
 		key: "IncreaseRt_Special",
@@ -221,8 +221,7 @@ function tenacitySecondsToSpecial({
 }: StatFunctionInput): AnalyzedBuild["stats"]["tenacitySecondsToSpecial"] {
 	if (!mainOnlyAbilities.includes("T")) return;
 
-	// Special Charge Up does not affect the rate Tenacity fills the gauge at
-	// so the unmodified amount of points needed is used here
+	// Special Charge Up does not affect Tenacity's fill rate, so the unmodified points are used
 	const secondsToSpecial = (playerDeficit: TenacityPlayerDeficit) =>
 		roundToNDecimalPlaces(
 			mainWeaponParams.SpecialPoint /
@@ -248,12 +247,12 @@ function specialLost(
 		? OWN_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST
 		: 0;
 
-	const specialSavedAfterDeathForDisplay = (effect: number) =>
-		Number(((1.0 - effect) * 100).toFixed(2));
+	const specialSavedAfterDeathForDisplay = (ratio: number) =>
+		Number(((1.0 - ratio) * 100).toFixed(2));
 
 	const { baseEffect, effect } = abilityPointsToEffects({
 		abilityPoints: apFromMap({
-			abilityPoints: abilityPoints,
+			abilityPoints,
 			ability: SPECIAL_SAVED_AFTER_DEATH_ABILITY,
 		}),
 		key: "SpecialGaugeRt_Restart",
@@ -282,9 +281,7 @@ function subWeaponInkConsumptionPercentage(args: StatFunctionInput) {
 			(args.subWeaponParams.InkConsume * 100) / inkTankSize(args.weaponSplId),
 		),
 		value: roundToNDecimalPlaces(
-			// + 0.004 is a hack to avoid situation where the value is e.g. 50.0005
-			// -> rounds to 50% so it appears you can throw two subs
-			// which is not correct so we force the round upwards
+			// + 0.0045 forces e.g. 50.0005 to round up, else it shows 50% as if two subs fit
 			(subWeaponConsume(args).inkConsume * 100 + 0.0045) /
 				inkTankSize(args.weaponSplId),
 		),
@@ -407,8 +404,7 @@ function mainWeaponInkConsumeByType({
 		weapon: mainWeaponParams,
 	});
 
-	// these keys are always mutually exclusive i.e. even if inkConsumeTypeToParamsKeys() returns many keys
-	// then weapon params of this weapon should only have one defined
+	// the keys are mutually exclusive, a weapon's params only ever define one of them
 	for (const key of inkConsumeTypeToParamsKeys(type)) {
 		const value = mainWeaponParams[key];
 
@@ -417,8 +413,7 @@ function mainWeaponInkConsumeByType({
 		}
 	}
 
-	// not all weapons have all ink consume types
-	// i.e. blaster does not (hopefully) perform dualie dodge rolls
+	// not all weapons have all ink consume types (a blaster has no dodge roll)
 	return;
 }
 
@@ -703,12 +698,12 @@ function subWeaponDefenseDamages(
 								distance: [
 									Math.min(
 										...secondHalfValues.map(
-											(value) => value.distance as number,
+											(halfValue) => halfValue.distance as number,
 										),
 									),
 									Math.max(
 										...secondHalfValues.map(
-											(value) => value.distance as number,
+											(halfValue) => halfValue.distance as number,
 										),
 									),
 								],
@@ -721,10 +716,14 @@ function subWeaponDefenseDamages(
 								subWeaponId: id,
 								distance: [
 									Math.min(
-										...firstHalfValues.map((value) => value.distance as number),
+										...firstHalfValues.map(
+											(halfValue) => halfValue.distance as number,
+										),
 									),
 									Math.max(
-										...firstHalfValues.map((value) => value.distance as number),
+										...firstHalfValues.map(
+											(halfValue) => halfValue.distance as number,
+										),
 									),
 								],
 								baseValue: firstHalfValues[0].baseValue,
@@ -1299,16 +1298,16 @@ export function subStats(
 			weapon: args.subWeaponParams,
 		});
 
-		const toValue = (effect: number) => {
+		const toValue = (rawEffect: number) => {
 			switch (type) {
 				case "NO_CHANGE":
-					return roundToNDecimalPlaces(effect);
+					return roundToNDecimalPlaces(rawEffect);
 				case "SUB_VELOCITY":
-					return roundToNDecimalPlaces(effect, 3);
+					return roundToNDecimalPlaces(rawEffect, 3);
 				case "HP":
-					return roundToNDecimalPlaces(hpDivided(effect), 1);
+					return roundToNDecimalPlaces(hpDivided(rawEffect), 1);
 				case "TIME":
-					return framesToSeconds(effect);
+					return framesToSeconds(rawEffect);
 				default:
 					assertUnreachable(type);
 			}
@@ -1442,7 +1441,7 @@ function subQsjBoost(
 
 	const SUB_QSJ_BOOST_KEY = "BRU";
 
-	// Lean: This is the base that is used with their weird formula (I didn't even bother renaming the vars and just used what my disassembler gave me)
+	// Lean: base of their weird formula, var names as given by the disassembler
 	const calculate = (ap: number) => {
 		const multiplier = abilityValues({
 			key: "SubSpecUpParam",

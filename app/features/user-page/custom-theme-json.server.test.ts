@@ -25,12 +25,9 @@ describe("supporter custom theme on the profile layout", () => {
 			customTheme: CUSTOM_THEME,
 		});
 
-		const layoutData = await UserRepository.findLayoutDataByIdentifier(
-			String(user.id),
-		);
+		const layoutData = await UserRepository.findLayoutDataById(user.id);
 
-		// `root.tsx` spreads `Object.entries(customTheme)` into the page's CSS
-		// variables, so a raw string here renders as garbage instead of the theme
+		// `root.tsx` spreads the object into CSS variables, so a raw string renders as garbage
 		expect(layoutData?.customTheme?.["--_acc-h"]).toBe(
 			CUSTOM_THEME["--_acc-h"],
 		);
@@ -41,9 +38,7 @@ describe("supporter custom theme on the profile layout", () => {
 			customTheme: CUSTOM_THEME,
 		});
 
-		const layoutData = await UserRepository.findLayoutDataByIdentifier(
-			String(user.id),
-		);
+		const layoutData = await UserRepository.findLayoutDataById(user.id);
 
 		expect(layoutData?.customTheme).toBeNull();
 	});

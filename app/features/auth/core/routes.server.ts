@@ -10,6 +10,7 @@ import { logger } from "~/utils/logger";
 import {
 	canAccessLohiEndpoint,
 	errorToastRedirect,
+	safeReturnTo,
 } from "~/utils/remix.server";
 import type { AnySyncSchema } from "~/utils/schema";
 import { ADMIN_PAGE, authErrorUrl } from "~/utils/urls";
@@ -26,7 +27,6 @@ import { getUser } from "./user.server";
 export const callbackLoader: LoaderFunction = async ({ request, url }) => {
 	// biome-ignore lint/plugin: OAuth callback param, its name and values defined by the provider
 	if (url.searchParams.get("error") === "access_denied") {
-		// The user denied the authentication request
 		// https://www.oauth.com/oauth2-servers/server-side-apps/possible-errors/
 
 		throw redirect(authErrorUrl("aborted"));
@@ -88,7 +88,7 @@ export const impersonateAction: ActionFunction = async ({ request, url }) => {
 		}
 	}
 
-	const returnTo = await safeReturnTo(request);
+	const returnTo = await formReturnTo(request);
 
 	const session = await authSessionStorage.getSession(
 		request.headers.get("Cookie"),
@@ -115,7 +115,7 @@ export const impersonateAction: ActionFunction = async ({ request, url }) => {
 };
 
 export const stopImpersonatingAction: ActionFunction = async ({ request }) => {
-	const returnTo = await safeReturnTo(request);
+	const returnTo = await formReturnTo(request);
 
 	const session = await authSessionStorage.getSession(
 		request.headers.get("Cookie"),
@@ -135,23 +135,15 @@ export const stopImpersonatingAction: ActionFunction = async ({ request }) => {
 	});
 };
 
-async function safeReturnTo(request: Request): Promise<string | null> {
+async function formReturnTo(request: Request): Promise<string | null> {
 	if (!request.headers.get("Content-Type")?.includes("form")) return null;
 
-	const value = (await request.formData()).get("returnTo");
-	if (typeof value !== "string") return null;
-	if (!value.startsWith("/") || value.startsWith("//")) return null;
-
-	return value;
+	return safeReturnTo((await request.formData()).get("returnTo"));
 }
 
-// below is alternative log-in flow that is operated via the Lohi Discord bot
-// this is intended primarily as a workaround when website is having problems communicating
-// with the Discord due to rate limits or other reasons
-
-// only light validation here as we generally trust Lohi
-// auth flow params are infrastructure conventions and intentionally do not go
-// through app/modules/search-params/
+// alternative log-in flow via the Lohi Discord bot, a workaround for when the site can't reach
+// Discord (rate limits etc.). Only light validation as we trust Lohi; these params are
+// infrastructure conventions and intentionally bypass app/modules/search-params/
 function parseSearchParams<T extends AnySyncSchema>({
 	request,
 	schema,

@@ -3,10 +3,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import * as v from "valibot";
 import type { CustomTheme } from "~/db/tables-json";
-import {
-	CUSTOM_THEME_VARS,
-	type CustomThemeVar,
-} from "~/features/theme/theme-constants";
+import { CUSTOM_THEME_VARS } from "~/features/theme/theme-constants";
 import { useCopyToClipboard } from "~/hooks/useCopyToClipboard";
 import {
 	ACCENT_CHROMA_MULTIPLIERS,
@@ -308,9 +305,9 @@ export function CustomThemeSelector({
 
 	const handleReset = () => {
 		setThemeInput(DEFAULT_THEME_INPUT);
-		CUSTOM_THEME_VARS.forEach((varDef: CustomThemeVar) => {
+		for (const varDef of CUSTOM_THEME_VARS) {
 			document.documentElement.style.removeProperty(varDef);
-		});
+		}
 		onReset();
 	};
 
@@ -445,7 +442,7 @@ export function CustomThemeSelector({
 					isDisabled={
 						!isSupporter || (fetcherState != null && fetcherState !== "idle")
 					}
-					onPress={handleSave}
+					onClick={handleSave}
 				>
 					{t("common:actions.save")}
 				</SendouButton>
@@ -454,7 +451,7 @@ export function CustomThemeSelector({
 						!isSupporter || (fetcherState != null && fetcherState !== "idle")
 					}
 					variant="destructive"
-					onPress={handleReset}
+					onClick={handleReset}
 				>
 					{t("common:actions.reset")}
 				</SendouButton>
@@ -492,14 +489,14 @@ function ThemeShareInput({
 					shape="square"
 					variant="outlined"
 					icon={copySuccess ? <Check /> : <Clipboard />}
-					onPress={() => copyToClipboard(themeString)}
+					onClick={() => copyToClipboard(themeString)}
 					aria-label={t("common:settings.customTheme.copy")}
 				/>
 				<SendouButton
 					shape="square"
 					variant="outlined"
 					icon={<PencilLine />}
-					onPress={handlePaste}
+					onClick={handlePaste}
 					aria-label={t("common:settings.customTheme.paste")}
 				/>
 			</div>

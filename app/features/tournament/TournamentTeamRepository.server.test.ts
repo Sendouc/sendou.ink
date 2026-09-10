@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, test } from "vitest";
+import * as ImageFactory from "~/db/seed/factories/ImageFactory";
 import * as TournamentFactory from "~/db/seed/factories/TournamentFactory";
 import * as TournamentTeamFactory from "~/db/seed/factories/TournamentTeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import type { TournamentSettings } from "~/db/tables-json";
+import { invariant } from "~/utils/invariant";
 import { withUserId } from "~/utils/Test";
 import * as TournamentTeamRepository from "./TournamentTeamRepository.server";
 
@@ -336,8 +338,8 @@ describe("TournamentTeamRepository", () => {
 				TournamentTeamRepository.deleteById(team.id),
 			);
 
-			expect(roomsChangedUserIds.sort()).toEqual(
-				[ownerId(), memberId()].sort(),
+			expect(roomsChangedUserIds.sort(byId)).toEqual(
+				[ownerId(), memberId()].sort(byId),
 			);
 		});
 
@@ -359,11 +361,75 @@ describe("TournamentTeamRepository", () => {
 		});
 	});
 
+	describe("findAllRegistrationsByUserIds", () => {
+		const WINDOW_STARTS_AT = 1_700_000_000;
+		const DAY_IN_SECONDS = 60 * 60 * 24;
+		const WINDOW_ENDS_AT = WINDOW_STARTS_AT + 7 * DAY_IN_SECONDS;
+
+		const registerAt = async (startTime: number) => {
+			const tournament = await TournamentFactory.create({
+				authorId: organizerId(),
+				startTimes: [startTime],
+			});
+			await TournamentTeamFactory.create({
+				tournamentId: tournament.id,
+				memberUserIds: [ownerId(), memberId()],
+			});
+
+			return tournament.id;
+		};
+
+		const registrationsInWindow = (excludeTournamentId?: number) =>
+			TournamentTeamRepository.findAllRegistrationsByUserIds({
+				userIds: [memberId()],
+				startsAt: WINDOW_STARTS_AT,
+				endsAt: WINDOW_ENDS_AT,
+				excludeTournamentId,
+			});
+
+		test("leaves out the registrations starting outside the window", async () => {
+			await registerAt(WINDOW_STARTS_AT + DAY_IN_SECONDS);
+			await registerAt(WINDOW_STARTS_AT - DAY_IN_SECONDS);
+			await registerAt(WINDOW_ENDS_AT + DAY_IN_SECONDS);
+
+			const registrations = await registrationsInWindow();
+
+			expect(registrations).toHaveLength(1);
+			expect(registrations[0].userId).toBe(memberId());
+			expect(registrations[0].startsAt).toBe(WINDOW_STARTS_AT + DAY_IN_SECONDS);
+		});
+
+		test("leaves out the excluded tournament", async () => {
+			const excludedTournamentId = await registerAt(
+				WINDOW_STARTS_AT + DAY_IN_SECONDS,
+			);
+			await registerAt(WINDOW_STARTS_AT + 2 * DAY_IN_SECONDS);
+
+			const registrations = await registrationsInWindow(excludedTournamentId);
+
+			expect(registrations).toHaveLength(1);
+			expect(registrations[0].startsAt).toBe(
+				WINDOW_STARTS_AT + 2 * DAY_IN_SECONDS,
+			);
+		});
+
+		test("returns nothing when no user ids are given", async () => {
+			await registerAt(WINDOW_STARTS_AT + DAY_IN_SECONDS);
+
+			expect(
+				await TournamentTeamRepository.findAllRegistrationsByUserIds({
+					userIds: [],
+					startsAt: WINDOW_STARTS_AT,
+					endsAt: WINDOW_ENDS_AT,
+				}),
+			).toEqual([]);
+		});
+	});
+
 	describe("findRecentlyPlayedMapsByIds", () => {
 		test("leaves out the games of the match the maps are resolved for", async () => {
-			// the map list of an in-progress set is regenerated whenever its cache entry
-			// is lost, so counting the set's own games as recently played would change
-			// the maps the teams have left to play under them
+			// an in-progress set's map list is regenerated when its cache entry is lost, so counting its
+			// own games as recently played would change the maps left to play under the teams
 			const players = await UserFactory.createMany(TEAM_COUNT);
 			const tournament = await TournamentFactory.createPlayed(
 				{
@@ -393,4 +459,37 @@ describe("TournamentTeamRepository", () => {
 			]);
 		});
 	});
+
+	describe("isPickupAvatarImgId", () => {
+		test("tells a team's pickup logo apart from an image no team uses", async () => {
+			const tournament = await TournamentFactory.create({
+				authorId: organizerId(),
+			});
+			await TournamentTeamFactory.create({
+				tournamentId: tournament.id,
+				memberUserIds: [ownerId()],
+				hasAvatar: true,
+			});
+			const unusedImage = await ImageFactory.create({
+				submitterUserId: ownerId(),
+			});
+			const pickupAvatarImgId = (
+				await db
+					.selectFrom("TournamentTeam")
+					.select("TournamentTeam.avatarImgId")
+					.where("TournamentTeam.tournamentId", "=", tournament.id)
+					.executeTakeFirstOrThrow()
+			).avatarImgId;
+			invariant(pickupAvatarImgId, "Expected the team to have a logo");
+
+			expect(
+				await TournamentTeamRepository.isPickupAvatarImgId(pickupAvatarImgId),
+			).toBe(true);
+			expect(
+				await TournamentTeamRepository.isPickupAvatarImgId(unusedImage.id),
+			).toBe(false);
+		});
+	});
 });
+
+const byId = (a: number, b: number) => a - b;

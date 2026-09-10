@@ -1,14 +1,14 @@
 import type { ActionFunctionArgs } from "react-router";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
 import { requireUser } from "~/features/auth/core/user.server";
-import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { userPageUserId } from "~/features/user-page/user-page-context.server";
 import { adminTabActionSchema } from "~/features/user-page/user-page-schemas";
 import { parseFormData } from "~/form/parse.server";
 import { requireRole } from "~/modules/permissions/guards.server";
-import { badRequestIfFalsy, notFoundIfNullish } from "~/utils/remix.server";
+import { badRequestIfFalsy } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 
-export const action = async ({ request, params }: ActionFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
 	const loggedInUser = requireUser();
 
 	requireRole("STAFF");
@@ -24,14 +24,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 	const data = result.data;
 
-	const user = notFoundIfNullish(
-		await UserRepository.findLayoutDataByIdentifier(params.identifier!),
-	);
-
 	switch (data._action) {
 		case "ADD_MOD_NOTE": {
 			await AdminRepository.addModNote({
-				userId: user.id,
+				userId: userPageUserId(),
 				text: data.value,
 			});
 			break;

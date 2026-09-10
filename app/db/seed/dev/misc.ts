@@ -29,7 +29,7 @@ const ADMIN_FRIEND_COUNT = 3;
 const STREAM_COUNT = 20;
 
 export type SeededMisc = {
-	/** The admin's friends, who are none of them their teammate. */
+	/** None of them a teammate. */
 	adminFriendIds: number[];
 };
 
@@ -48,9 +48,10 @@ export async function seedMisc({
 	await seedNotifications(users, tournaments);
 	await seedUserReports(users, sendouq);
 
-	await LiveStreamFactory.replaceAll(
-		users.showcaseIds.slice(0, STREAM_COUNT).map((userId) => ({ userId })),
-	);
+	await LiveStreamFactory.replaceAll([
+		{ userId: users.nzapId, twitch: "nzap_stream" },
+		...users.showcaseIds.slice(0, STREAM_COUNT).map((userId) => ({ userId })),
+	]);
 	await SplatoonRotationFactory.replaceAll();
 
 	return { adminFriendIds: adminFriendIds(users) };

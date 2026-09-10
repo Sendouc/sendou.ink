@@ -140,9 +140,8 @@ function CastChannelChipRadio({
 	const { submit, fetcher } = useActionSubmit(matchSchema);
 	const previousStateRef = React.useRef(fetcher.state);
 
-	// the action can still reject (e.g. "Not an organizer or streamer"), so the
-	// success toast waits for the round trip; on failure the action's data stays
-	// unset and only the error toast shows
+	// the action can still reject (e.g. "Not an organizer or streamer"), so the success toast waits
+	// for the round trip; on failure its data stays unset and only the error toast shows
 	React.useEffect(() => {
 		if (
 			previousStateRef.current !== "idle" &&
@@ -373,9 +372,8 @@ function EditReportedScoreRow({
 	const fetcher = useFetcher();
 	const [editing, setEditing] = React.useState(false);
 
-	// close the form once our own submit round trip succeeds (action returns
-	// null); on failure the action redirects with an error toast and data stays
-	// unset, keeping the form open
+	// close once our own submit succeeds (action returns null); on failure the action redirects
+	// with an error toast and data stays unset, keeping the form open
 	const [previousFetcherState, setPreviousFetcherState] = React.useState(
 		fetcher.state,
 	);
@@ -405,7 +403,7 @@ function EditReportedScoreRow({
 					icon={<SquarePen />}
 					variant="outlined"
 					size="small"
-					onPress={() => setEditing(true)}
+					onClick={() => setEditing(true)}
 					data-testid={`edit-result-${index}-button`}
 				>
 					{t("common:actions.edit")}
@@ -537,7 +535,7 @@ function EditReportedScoreForm({
 				>
 					{t("common:actions.save")}
 				</SubmitButton>
-				<SendouButton variant="destructive" size="small" onPress={onCancel}>
+				<SendouButton variant="destructive" size="small" onClick={onCancel}>
 					{t("common:actions.cancel")}
 				</SendouButton>
 			</div>

@@ -9,7 +9,7 @@ import {
 } from "~/features/plus-voting/core";
 import { parseFormData } from "~/form/parse.server";
 import { requirePermission } from "~/modules/permissions/guards.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { badRequestIfFalsy } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
 import { suggestionActionSchema } from "../plus-suggestions-schemas";
@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request }) => {
 				await PlusSuggestionRepository.findAllByMonth(votingMonthYear);
 
 			const suggestion = suggestions.find((s) =>
-				s.entries.some((entry) => entry.id === data.suggestionId),
+				s.entries.some((candidate) => candidate.id === data.suggestionId),
 			);
 			invariant(suggestion);
 			const entry = suggestion.entries.find((e) => e.id === data.suggestionId);

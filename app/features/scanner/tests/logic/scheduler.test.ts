@@ -1,8 +1,6 @@
 /**
- * Unit tests for DetectorScheduler: search/refine check cadence,
- * steady-frame suppression (stagnation and sufficient-confidence early
- * stop), the rearm cooldown, checkIntervalS compatibility, and the calm
- * signal that drives VoD skim mode.
+ * DetectorScheduler tests: search/refine cadence, steady-frame suppression,
+ * the rearm cooldown, checkIntervalS compatibility, and the calm signal.
  */
 
 import assert from "node:assert/strict";
@@ -10,7 +8,7 @@ import {
 	DetectorScheduler,
 	type SchedulingInfo,
 } from "../../core/detectors/scheduler";
-import test from "../node-test-compat";
+import { test } from "../node-test-compat";
 
 const OPTS = {
 	refineIntervalS: 0.1,

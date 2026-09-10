@@ -1,9 +1,7 @@
 /**
- * Flatten detected events into a single CSV for download. One row per event;
- * the event types share columns where they overlap (lobby/mode/stage,
- * weapon/name/abilities) and a scoreboard's eight player rows — or the
- * minimap's teammates+enemies, or the objective HUD's icon strip — are packed
- * into one cell, matching the compact per-event view of the live feed.
+ * Flattens detected events into one CSV. One row per event; types share
+ * columns where they overlap, and a scoreboard's eight player rows (or the
+ * minimap's cards, or the objective HUD's icon strip) pack into one cell.
  */
 
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
@@ -11,6 +9,7 @@ import {
 	DEATH_EVENT_TYPE,
 	type DeathData,
 } from "../core/detectors/death/index";
+import { KILL_EVENT_TYPE, type KillData } from "../core/detectors/kill/index";
 import {
 	MAP_START_EVENT_TYPE,
 	type MapStartData,
@@ -115,7 +114,7 @@ function formatMinimapPlayers(data: MinimapData): string {
 		`${label} ${p.name ?? "?"} · ${mainWeaponLabel(p.weaponId as MainWeaponId | null) ?? "?"} · ${formatMinimapAbilities(p.abilities)}` +
 		`${p.dead ? " · splatted" : ""}${p.specialReady ? " · special" : ""}`;
 	return [
-		...data.teammates.map((p) => fmt(p.slot, p)),
+		...data.teammates.map((p, i) => fmt(p.self ? "self" : `ally${i + 1}`, p)),
 		...data.enemies.map((p, i) => fmt(`enemy${i + 1}`, p)),
 	].join("; ");
 }
@@ -213,6 +212,29 @@ function eventCells(event: CsvEvent): Cell[] {
 				"",
 			];
 		}
+		case KILL_EVENT_TYPE: {
+			const d = event.data as KillData;
+			const clock = d.time === null ? "" : `${formatClock(d.time)} · `;
+			return [
+				...base,
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				// oldest first, the order the splats happened
+				`${clock}${d.names
+					.toReversed()
+					.map((name) => name ?? "?")
+					.join(" | ")}`,
+				"",
+				"",
+				"",
+				"",
+			];
+		}
 		case OBJECTIVE_EVENT_TYPE: {
 			const d = event.data as ObjectiveData;
 			const sideText = (side: 0 | 1) =>
@@ -236,7 +258,7 @@ function eventCells(event: CsvEvent): Cell[] {
 		}
 		case MINIMAP_EVENT_TYPE: {
 			const d = event.data as MinimapData;
-			const self = d.teammates.find((p) => p.slot === "self");
+			const self = d.teammates.find((p) => p.self);
 			return [
 				...base,
 				"", // lobby

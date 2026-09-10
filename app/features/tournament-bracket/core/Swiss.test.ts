@@ -7,7 +7,7 @@ import {
 	RUSH_WEEKEND_3,
 } from "~/features/tournament-bracket/core/tests/mocks-swiss";
 import { ZONES_WEEKLY_38 } from "~/features/tournament-bracket/core/tests/mocks-zones-weekly";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { unwrap } from "~/utils/result";
 import * as Engine from "./engine";
 import { pairUp } from "./engine/swiss/pairing";

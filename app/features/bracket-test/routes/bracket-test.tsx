@@ -111,7 +111,7 @@ export default function BracketTestLayout() {
 								key={opt.value}
 								variant={format === opt.value ? undefined : "outlined"}
 								size="small"
-								onPress={() => setFormat(opt.value)}
+								onClick={() => setFormat(opt.value)}
 							>
 								{opt.label}
 							</SendouButton>
@@ -269,7 +269,7 @@ function markMatchesCompleted(
 ) {
 	for (const match of data.match) {
 		if (!completedRoundIds.has(match.roundId)) continue;
-		// skip BYE matches (opponent slot is null entirely)
+		// BYE matches
 		if (match.opponent1 === null || match.opponent2 === null) continue;
 
 		match.opponent1 = { ...match.opponent1, score: 2 };

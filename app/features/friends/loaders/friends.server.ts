@@ -25,11 +25,10 @@ export const loader = async () => {
 			FriendRepository.findPendingSentRequests(user.id),
 			FriendRepository.findPendingReceivedRequests(user.id),
 			resolveSendouQMatchStreams(),
-			// everyone listed is a friend or a teammate, which is what makes their
-			// schedule theirs to see
 			FriendSchedule.findByUserIds({
 				userIds: unique.map((f) => f.id),
 				timezone: getViewerTimezone() ?? "UTC",
+				viewerId: user.id,
 			}),
 		]);
 

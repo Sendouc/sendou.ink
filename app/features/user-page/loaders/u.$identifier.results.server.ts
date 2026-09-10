@@ -1,8 +1,9 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { getUser } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { userPageUserId } from "~/features/user-page/user-page-context.server";
 import type { SerializeFrom } from "~/utils/remix";
-import { notFoundIfNullish, paginate } from "~/utils/remix.server";
+import { paginate } from "~/utils/remix.server";
 import {
 	HIGHLIGHTS_RESULTS_MAX,
 	RESULTS_PER_PAGE,
@@ -11,7 +12,7 @@ import { userResultsSearchParams } from "../user-page-search-params";
 
 export type UserResultsLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ params, request, url }: LoaderFunctionArgs) => {
+export const loader = async ({ request, url }: LoaderFunctionArgs) => {
 	const {
 		highlightsOnly,
 		page,
@@ -27,25 +28,16 @@ export const loader = async ({ params, request, url }: LoaderFunctionArgs) => {
 		minParticipantCount,
 	} = userResultsSearchParams.parse(request);
 
-	const userId = notFoundIfNullish(
-		await UserRepository.findIdByIdentifier(params.identifier!),
-	).id;
+	const userId = userPageUserId();
 	const hasHighlightedResults =
 		await UserRepository.hasHighlightedResultsByUserId(userId);
 
 	const isChoosingHighlights = url.pathname.includes("/results/highlights");
 	const canFilter = !isChoosingHighlights && Boolean(getUser());
 
-	/** Logged out visitors are locked to the highlights, if there are any. */
-	let showHighlightsOnly = hasHighlightedResults;
-
-	if (canFilter && !highlightsOnly) {
-		showHighlightsOnly = false;
-	}
-
-	if (isChoosingHighlights) {
-		showHighlightsOnly = false;
-	}
+	/** Turning the highlights off is the one filter a logged out visitor gets. */
+	const showHighlightsOnly =
+		hasHighlightedResults && highlightsOnly && !isChoosingHighlights;
 
 	const filters = canFilter
 		? {

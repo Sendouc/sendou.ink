@@ -1,4 +1,5 @@
 import { type FetcherWithComponents, useFetcher } from "react-router";
+import { holdRevalidationsDuring } from "~/features/chat/revalidation-scope";
 import {
 	type ActionsOf,
 	type FieldsOf,
@@ -16,12 +17,8 @@ interface UseActionSubmitOptions {
 }
 
 /**
- * Programmatic counterpart of `<ActionButton>`: submits an `_action` mutation
- * from an event handler, type checked against the route's action schema.
- *
- * @example
- * const { submit } = useActionSubmit(deleteFriendSchema);
- * submit("DELETE_FRIEND", { friendshipId });
+ * Programmatic `<ActionButton>`: submits an `_action` mutation type checked against the route's schema,
+ * e.g. `submit("DELETE_FRIEND", { friendshipId })`.
  */
 export function useActionSubmit<TSchema extends AnySchema>(
 	_schema: TSchema,
@@ -40,9 +37,13 @@ export function useActionSubmit<TSchema extends AnySchema>(
 		const fields = (rest[0] ?? {}) as Record<string, unknown>;
 
 		if (opts?.encType === "application/json") {
-			fetcher.submit(
-				{ _action: action, ...fields } as Parameters<typeof fetcher.submit>[0],
-				{ method: "post", action: opts?.action, encType: "application/json" },
+			void holdRevalidationsDuring(() =>
+				fetcher.submit(
+					{ _action: action, ...fields } as Parameters<
+						typeof fetcher.submit
+					>[0],
+					{ method: "post", action: opts?.action, encType: "application/json" },
+				),
 			);
 			return;
 		}
@@ -52,7 +53,9 @@ export function useActionSubmit<TSchema extends AnySchema>(
 			if (value === undefined || value === null) continue;
 			payload[name] = serializeFieldValue(value);
 		}
-		fetcher.submit(payload, { method: "post", action: opts?.action });
+		void holdRevalidationsDuring(() =>
+			fetcher.submit(payload, { method: "post", action: opts?.action }),
+		);
 	};
 
 	return { submit, fetcher, state: fetcher.state };

@@ -1,18 +1,11 @@
 import { subMinutes } from "date-fns";
 import { afterEach, describe, expect, test, vi } from "vitest";
-
-vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
-	send: vi.fn(),
-	notifyStatusChanged: vi.fn(),
-	notifyNotificationsChanged: vi.fn(),
-}));
-
 import { backdate } from "~/db/seed/core/backdate";
 import * as SQGroupFactory from "~/db/seed/factories/SQGroupFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import * as Seasons from "~/features/mmr/core/Seasons";
 import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { wrappedAction, wrappedLoader } from "~/utils/Test";
 import { SENDOUQ_LOOKING_PAGE } from "~/utils/urls";
 import * as ReadyCheck from "../core/ready-check.server";
@@ -21,6 +14,12 @@ import type { readySchema } from "../q-action-schemas";
 import { FULL_GROUP_SIZE, SENDOUQ } from "../q-constants";
 import { pinClockInsideSeason } from "../tests/season-clock";
 import { action as rawReadyAction, loader as rawReadyLoader } from "./q.ready";
+
+vi.mock("~/features/chat/ChatSystemMessage.server", () => ({
+	send: vi.fn(),
+	notifyStatusChanged: vi.fn(),
+	notifyNotificationsChanged: vi.fn(),
+}));
 
 const readyLoader = wrappedLoader<Awaited<ReturnType<typeof rawReadyLoader>>>({
 	loader: rawReadyLoader,

@@ -3,7 +3,7 @@ import { useLoaderData, useMatches } from "react-router";
 import { Alert } from "~/components/Alert";
 import { Main } from "~/components/Main";
 import { BUILD } from "~/features/builds/builds-constants";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { action } from "../actions/u.$identifier.builds.new.server";
 import { NewBuildForm } from "../components/NewBuildForm";

@@ -12,7 +12,7 @@ const paramsSchema = v.object({
 });
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-	const { id } = parseParams({ params, schema: paramsSchema });
+	const { id: tournamentId } = parseParams({ params, schema: paramsSchema });
 
 	const tournament = notFoundIfNullish(
 		await db
@@ -30,7 +30,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 				"Tournament.settings",
 				exists(
 					selectFrom("TournamentResult")
-						.where("TournamentResult.tournamentId", "=", id)
+						.where("TournamentResult.tournamentId", "=", tournamentId)
 						.select("TournamentResult.tournamentId"),
 				).as("isFinalized"),
 				eb
@@ -51,18 +51,18 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 								.on("TournamentTeamCheckIn.bracketIdx", "is", null),
 						)
 						.select(["TournamentTeamCheckIn.checkedInAt"])
-						.where("TournamentTeam.tournamentId", "=", id)
+						.where("TournamentTeam.tournamentId", "=", tournamentId)
 						.where("TournamentTeam.isPlaceholder", "=", 0),
 				).as("teams"),
 			])
-			.where("Tournament.id", "=", id)
+			.where("Tournament.id", "=", tournamentId)
 			.executeTakeFirst(),
 	);
 
 	const result: GetTournamentResponse = {
 		name: tournament.name,
 		startTime: databaseTimestampToDate(tournament.startsAt).toISOString(),
-		url: `https://sendou.ink/to/${id}/brackets`,
+		url: `https://sendou.ink/to/${tournamentId}/brackets`,
 		logoUrl: tournament.logoUrl,
 		teams: {
 			checkedInCount: tournament.teams.filter((team) => team.checkedInAt)

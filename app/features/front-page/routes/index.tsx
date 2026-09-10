@@ -357,6 +357,7 @@ function DiscoverFeatures() {
 								type: "weapons",
 								weapon: weapon.weaponSplId,
 							})}
+							defaultShouldRevalidate={false}
 							className={styles.weaponPill}
 						>
 							<WeaponImage
@@ -373,6 +374,7 @@ function DiscoverFeatures() {
 					<Link
 						key={item.name}
 						to={`/${item.url}`}
+						prefetch="intent"
 						className={styles.discoverGridItem}
 					>
 						<div className={styles.discoverGridItemImage}>

@@ -138,8 +138,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 			notify({
 				userIds: post.users
-					.filter((user) => user.isOwner)
-					.map((user) => user.id),
+					.filter((postUser) => postUser.isOwner)
+					.map((postUser) => postUser.id),
 				notification: {
 					type: "SCRIM_NEW_REQUEST",
 					meta: {
@@ -153,12 +153,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			break;
 		}
 		case "ACCEPT_REQUEST": {
-			const { post, request } = await findRequest({
+			const { post, request: scrimRequest } = await findRequest({
 				requestId: data.scrimPostRequestId,
 			});
 			requirePermission(post, "MANAGE_REQUESTS");
 
-			errorToastIfFalsy(!request.isAccepted, "Request is already accepted");
+			errorToastIfFalsy(
+				!scrimRequest.isAccepted,
+				"Request is already accepted",
+			);
 
 			try {
 				await ScrimPostRepository.acceptRequest(data.scrimPostRequestId);
@@ -181,7 +184,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			const fullPost = await ScrimPostRepository.findById(post.id);
 
 			const postTeamName = Scrim.sideDisplayName(post);
-			const requestTeamName = Scrim.sideDisplayName(request);
+			const requestTeamName = Scrim.sideDisplayName(scrimRequest);
 
 			notify({
 				userIds: post.users.map((m) => m.id),
@@ -193,7 +196,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			});
 
 			notify({
-				userIds: request.users.map((m) => m.id),
+				userIds: scrimRequest.users.map((m) => m.id),
 				defaultSeenUserIds: [user.id],
 				notification: {
 					type: "SCRIM_SCHEDULED",
@@ -254,19 +257,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			break;
 		}
 		case "CANCEL_REQUEST": {
-			const { post, request } = await findRequest({
+			const { post, request: scrimRequest } = await findRequest({
 				requestId: data.scrimPostRequestId,
 			});
-			requirePermission(request, "CANCEL");
+			requirePermission(scrimRequest, "CANCEL");
 
 			errorToastIfFalsy(
-				!request.isAccepted,
+				!scrimRequest.isAccepted,
 				"Can't cancel an accepted request",
 			);
 
 			await ScrimPostRepository.deleteRequest(data.scrimPostRequestId);
 
-			const requestOwner = request.users.find((u) => u.isOwner);
+			const requestOwner = scrimRequest.users.find((u) => u.isOwner);
 			if (requestOwner) {
 				await resolveNotifications({
 					userIds: post.users.filter((u) => u.isOwner).map((u) => u.id),
@@ -297,7 +300,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 async function findPost({ postId }: { postId: number }) {
 	const posts = await ScrimPostRepository.findAllRelevant();
-	const post = posts.find((post) => post.id === postId);
+	const post = posts.find((candidate) => candidate.id === postId);
 
 	errorToastIfFalsy(post, "Post not found");
 
@@ -306,10 +309,12 @@ async function findPost({ postId }: { postId: number }) {
 
 async function findRequest({ requestId }: { requestId: number }) {
 	const posts = await ScrimPostRepository.findAllRelevant();
-	const post = posts.find((post) =>
-		post.requests.some((request) => request.id === requestId),
+	const post = posts.find((candidate) =>
+		candidate.requests.some((postRequest) => postRequest.id === requestId),
 	);
-	const request = post?.requests.find((request) => request.id === requestId);
+	const request = post?.requests.find(
+		(candidate) => candidate.id === requestId,
+	);
 
 	errorToastIfFalsy(post && request, "Request not found");
 

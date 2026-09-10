@@ -1,8 +1,7 @@
 /**
- * Analyzed-frame preview in an event card's meta row. Clicking it opens the
- * frame big in a dialog — the exact lossless frame once its lazy loader
- * resolves, the thumbnail as a stand-in until then. The frame actions
- * (Inspect, Save fixture) live under the dialog image.
+ * Analyzed-frame preview in an event card's meta row; clicking opens the
+ * frame big in a dialog (the exact lossless frame once its lazy loader
+ * resolves, the thumbnail until then) with the Inspect / Save fixture actions.
  */
 
 import { ExternalLink, FlaskConical } from "lucide-react";
@@ -85,7 +84,7 @@ export function FrameThumb({
 								<SendouButton
 									size="small"
 									icon={<ExternalLink />}
-									onPress={onInspect}
+									onClick={onInspect}
 								>
 									Inspect
 								</SendouButton>
@@ -95,7 +94,7 @@ export function FrameThumb({
 									size="small"
 									variant="outlined"
 									icon={<FlaskConical />}
-									onPress={onSaveFixture}
+									onClick={onSaveFixture}
 								>
 									Save fixture
 								</SendouButton>

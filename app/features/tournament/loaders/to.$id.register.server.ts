@@ -93,6 +93,7 @@ function rosterAvailability({
 		},
 		userIds: R.unique([userId, ...friendIds]),
 		timezone: getViewerTimezone() ?? "UTC",
+		viewerId: userId,
 	});
 }
 

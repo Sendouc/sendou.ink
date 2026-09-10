@@ -1,10 +1,11 @@
 import * as React from "react";
-import type { SelectProps } from "react-aria-components";
 import { useFetcher } from "react-router";
 import type { SearchLoaderData } from "~/features/search/routes/search";
+import { searchSearchParams } from "~/features/search/search-search-params";
 import { Avatar } from "../Avatar";
 import {
 	SearchSelect,
+	type SearchSelectFieldProps,
 	SearchSelectItem,
 	SearchSelectItemAdditionalText,
 } from "./SearchSelect";
@@ -15,31 +16,27 @@ export type UserSearchResult = Extract<
 	{ type: "user" }
 >;
 
-interface UserSearchProps<T extends object>
-	extends Omit<SelectProps<T>, "children" | "onChange"> {
-	name?: string;
-	label?: string;
-	bottomText?: string;
-	errorText?: string;
+interface UserSearchProps extends SearchSelectFieldProps {
 	initialUserId?: number;
 	onChange?: (user: UserSearchResult | null) => void;
 	ref?: React.Ref<HTMLButtonElement>;
 }
 
-export function UserSearch<T extends object>({
-	name,
-	label,
-	bottomText,
-	errorText,
+export function UserSearch({
 	initialUserId,
 	onChange,
 	ref,
 	...rest
-}: UserSearchProps<T>) {
+}: UserSearchProps) {
 	const initialUser = useInitialUser(initialUserId);
 
 	const search = useEntitySearch<UserSearchResult>({
-		buildUrl: (query) => `/search?q=${query}&type=users&limit=6`,
+		buildUrl: (query) =>
+			searchSearchParams.href("/search", {
+				q: query,
+				type: "users",
+				limit: 6,
+			}),
 		parseResults: (data, query) => parseUserResults(data, query, initialUser),
 		initialItem: initialUser,
 		initialSelectedId: initialUserId,
@@ -49,10 +46,6 @@ export function UserSearch<T extends object>({
 	return (
 		<SearchSelect
 			{...rest}
-			name={name}
-			label={label}
-			bottomText={bottomText}
-			errorText={errorText}
 			ariaLabel="User search"
 			inputTestId="user-search-input"
 			inputClassName="in-container"
@@ -76,11 +69,7 @@ function parseUserResults(
 		.filter((user) => user.id !== initialUser?.id);
 }
 
-/**
- * Resolves the full user object for a preselected id so it can be displayed.
- * Loads at most once per field: later id changes come from the user picking a
- * result, which already carries the full user object.
- */
+/** Loads the preselected id's user once; later changes come from picked results which carry the full user. */
 function useInitialUser(initialUserId?: number) {
 	const fetcher = useFetcher<SearchLoaderData>();
 	const { load } = fetcher;

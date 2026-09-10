@@ -47,17 +47,14 @@ export function weekNumber(range: TimeRange, timezone: string) {
 }
 
 /**
- * One member's week bucketed into the viewer's days: what they are effectively
- * free for, the commitments taking time back and the notes they left.
- *
- * Slots are placed on the viewer-local day they start on, wherever their
- * author's week put them — the adjacent weeks' spillover included. What a
- * commitment takes back is cut out first: the days show when the member is
- * actually free.
+ * One member's week bucketed into the viewer's days: effective free time (commitments cut out
+ * first), the commitments and their notes. Slots land on the viewer-local day track they start
+ * on, wherever the author's week put them, adjacent weeks' spillover included, and what runs past
+ * the end of that track continues on the next day.
  */
 export function memberRow({
 	userId,
-	days,
+	days: weekDays,
 	timezone,
 	reportedWeeks,
 	range,
@@ -85,7 +82,7 @@ export function memberRow({
 		return {
 			userId,
 			reported: false,
-			days: days.map((day) => ({
+			days: weekDays.map((day) => ({
 				ranges: [] as Array<TimeRange>,
 				busy: busyOfDay(day),
 			})),
@@ -93,15 +90,18 @@ export function memberRow({
 		};
 	}
 
-	const slots = Availability.subtract(
-		memberWeeks.flatMap((week) => week.slots),
-		busy,
+	const slots = Availability.splitByDayTracks(
+		Availability.subtract(
+			memberWeeks.flatMap((week) => week.slots),
+			busy,
+		),
+		timezone,
 	);
 
 	return {
 		userId,
 		reported: true,
-		days: days.map((day) => ({
+		days: weekDays.map((day) => ({
 			ranges: slots.filter(
 				(slot) =>
 					Availability.dateInTimezone(slot.startsAt, timezone) === day.date,
@@ -115,7 +115,7 @@ export function memberRow({
 					from: week.timezone,
 					to: timezone,
 				});
-				const dayIndex = days.findIndex((day) => day.date === noteDate);
+				const dayIndex = weekDays.findIndex((day) => day.date === noteDate);
 
 				return dayIndex === -1 ? [] : [{ dayIndex, text: note.text }];
 			}),

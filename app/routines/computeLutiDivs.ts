@@ -1,4 +1,7 @@
-import { parseLutiDivFromName } from "../features/scrims/scrims-utils";
+import {
+	parseLutiDivFromName,
+	parseLutiSeasonFromName,
+} from "../features/scrims/scrims-utils";
 import * as TournamentRepository from "../features/tournament/TournamentRepository.server";
 import { LUTI_ORGANIZATION_ID } from "../features/tournament-organization/tournament-organization-constants";
 import * as UserRepository from "../features/user-page/UserRepository.server";
@@ -9,10 +12,8 @@ import { Routine } from "./routine.server";
 export const LUTI_NAME_PREFIX = "LUTI";
 
 /**
- * Recomputes `User.div` (the user's division in the latest finished LUTI). Looks at the most recent
- * finalized LUTI season and sets the division for every eligible participant (on a team that did
- * not drop out and played at least one match). Users not in that season keep their previous
- * division. Idempotent.
+ * Recomputes `User.div` from the latest finalized LUTI season for every eligible participant (team
+ * did not drop out, played at least one match). Others keep their previous division. Idempotent.
  */
 export const ComputeLutiDivsRoutine = new Routine({
 	name: "ComputeLutiDivs",
@@ -23,6 +24,14 @@ export const ComputeLutiDivsRoutine = new Routine({
 				namePrefix: LUTI_NAME_PREFIX,
 			});
 		if (!league) return;
+
+		const divSeason = parseLutiSeasonFromName(league.name);
+		if (!divSeason) {
+			logger.warn(
+				`ComputeLutiDivs: could not parse season from league name "${league.name}", skipping the run`,
+			);
+			return;
+		}
 
 		const divByBracketIdx = new Map<number, string | null>();
 		const divOfBracket = (bracketIdx: number) => {
@@ -40,12 +49,12 @@ export const ComputeLutiDivsRoutine = new Routine({
 			return divByBracketIdx.get(bracketIdx)!;
 		};
 
-		const updates: Array<{ userId: number; div: string }> = [];
+		const updates: Parameters<typeof UserRepository.updateManyDivs>[0] = [];
 		for (const participant of league.participants) {
 			const div = divOfBracket(participant.startingBracketIdx ?? 0);
 			if (!div) continue;
 
-			updates.push({ userId: participant.userId, div });
+			updates.push({ userId: participant.userId, div, divSeason });
 		}
 
 		await UserRepository.updateManyDivs(updates);

@@ -47,10 +47,9 @@ import {
 	sqGroupChannel,
 } from "../q-constants";
 import { qLookingSearchParams } from "../q-search-params";
+import styles from "./q.looking.module.css";
 
 export { action, loader };
-
-import styles from "./q.looking.module.css";
 
 export const handle: SendouRouteHandle = {
 	i18n: ["user", "q"],
@@ -90,11 +89,9 @@ function QLookingPage() {
 
 	useMarkSqLikesSeen(data.ownGroup?.id, data.likes.received.length);
 
-	// Pool-shape changes (a group joining/leaving, a morph, a match starting) are
-	// broadcast to this shared room so every looking client revalidates.
+	// pool-shape changes (a group joining/leaving, a morph, a match starting)
 	useTopicRevalidation(SENDOUQ_LOOKING_CHANNEL);
-	// Group-specific updates (e.g. a received like) are pushed to the group's own
-	// dedicated topic.
+	// group-specific updates (e.g. a received like)
 	useTopicRevalidation(
 		data.ownGroup ? sqGroupChannel(data.ownGroup.id) : "",
 		Boolean(data.ownGroup),
@@ -361,7 +358,7 @@ function Groups() {
 							<SendouTab id="groups" number={neutralGroups.length}>
 								{t("q:looking.columns.groups")}
 							</SendouTab>
-							{isMobile && (
+							{isMobile ? (
 								<SendouTab
 									id="received"
 									number={groupsReceivedLikesFrom.length}
@@ -372,12 +369,12 @@ function Groups() {
 											: "q:looking.columns.invitations",
 									)}
 								</SendouTab>
-							)}
-							{isMobile && data.ownGroup && (
+							) : null}
+							{isMobile && data.ownGroup ? (
 								<SendouTab id="own" number={data.ownGroup.members.length}>
 									{t("q:looking.columns.myGroup")}
 								</SendouTab>
-							)}
+							) : null}
 						</SendouTabList>
 						<SendouTabPanel id="groups">
 							<div className="stack sm">
@@ -422,7 +419,7 @@ function Groups() {
 										(l) => l.groupId === group.id,
 									)!;
 
-									const action = () => {
+									const likeAction = () => {
 										if (!isFullGroup) return "GROUP_UP";
 
 										if (like.isRechallenge) return "MATCH_UP_RECHALLENGE";
@@ -433,7 +430,7 @@ function Groups() {
 										<GroupCard
 											key={group.id}
 											group={group}
-											action={action()}
+											action={likeAction()}
 											suggestable={isSuggestable(group.id)}
 											trail={trailOf(group.id)}
 											isSuggested={suggestedGroupIds.has(group.id)}
@@ -462,7 +459,7 @@ function Groups() {
 								(l) => l.groupId === group.id,
 							)!;
 
-							const action = () => {
+							const likeAction = () => {
 								if (!isFullGroup) return "GROUP_UP";
 
 								if (like.isRechallenge) return "MATCH_UP_RECHALLENGE";
@@ -473,7 +470,7 @@ function Groups() {
 								<GroupCard
 									key={group.id}
 									group={group}
-									action={action()}
+									action={likeAction()}
 									suggestable={isSuggestable(group.id)}
 									trail={trailOf(group.id)}
 									isSuggested={suggestedGroupIds.has(group.id)}
@@ -490,11 +487,9 @@ function Groups() {
 }
 
 /**
- * Floats groups a teammate suggested to the very top, then groups the viewer has
- * a positive private note on up and groups with a negative note down, while
- * preserving the server's tier/activity ordering within each bucket and keeping
- * full (censored) groups last. The note sentiment is read from the already-loaded
- * `userCards` data so the server does not need to attach notes to group members.
+ * Floats teammate-suggested groups to the top, then positive private note groups up and negative
+ * ones down, keeping the server's order within each bucket and full (censored) groups last. Note
+ * sentiment comes from the already-loaded `userCards`.
  */
 function sortGroups<T extends { id: number; members?: { id: number }[] }>(
 	groups: T[],

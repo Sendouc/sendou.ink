@@ -31,7 +31,7 @@ export async function updatePatreonData(): Promise<void> {
 		noDiscordConnected.push(...parsed.noDiscordConnection);
 		noDataIds.push(...parsed.noDataIds);
 
-		// TS freaks out if we don't keep nextUrlToFetchWith string so that's why this weird thing here
+		// kept a string for TS's sake
 		nextUrlToFetchWith = patronData.links?.next ?? "";
 	}
 
@@ -126,7 +126,7 @@ function parsePatronData({
 
 		const tier = [TIER_4_ID, TIER_3_ID, TIER_2_ID, TIER_1_ID].find((id) =>
 			patron.relationships.currently_entitled_tiers.data.some(
-				(tier) => tier.id === id,
+				(entitled) => entitled.id === id,
 			),
 		);
 

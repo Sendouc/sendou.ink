@@ -82,7 +82,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
 								icon={<Trash />}
 								variant="minimal-destructive"
 								aria-label="Delete badge manager"
-								onPress={() =>
+								onClick={() =>
 									setManagers(managers.filter((m) => m.id !== manager.id))
 								}
 							/>
@@ -103,11 +103,11 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
 		</div>
 	);
 
-	function submitButtonText(amountOfChanges: number) {
-		if (amountOfChanges === 0) return "Submit";
-		if (amountOfChanges === 1) return `Submit ${amountOfChanges} change`;
+	function submitButtonText(count: number) {
+		if (count === 0) return "Submit";
+		if (count === 1) return `Submit ${count} change`;
 
-		return `Submit ${amountOfChanges} changes`;
+		return `Submit ${count} changes`;
 	}
 }
 

@@ -7,6 +7,7 @@ import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
+import * as MatchProfileRepository from "~/features/match-profile/MatchProfileRepository.server";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { assertResponseErrored, wrappedAction } from "~/utils/Test";
@@ -20,8 +21,7 @@ const adminAction = wrappedAction<typeof adminActionSchema>({
 
 const users = UserFactory.pool();
 
-// account migration is asserted through Discord ids, so the tests give the users
-// one they can name
+// account migration is asserted through Discord ids
 const createUsers = (count = 2) =>
 	users.create(count, (index) => ({ discordId: String(index) }));
 
@@ -275,15 +275,15 @@ describe("Account migration", () => {
 	});
 
 	test("migrates a blank account", async () => {
-		expect(await UserRepository.findProfileByIdentifier("0")).toBeDefined();
-		expect(await UserRepository.findProfileByIdentifier("1")).toBeDefined();
+		expect(await UserRepository.findIdByIdentifier("0")).toBeDefined();
+		expect(await UserRepository.findIdByIdentifier("1")).toBeDefined();
 
 		await migrateUserAction();
 
-		const oldUser = await UserRepository.findProfileByIdentifier("0"); // these are discord ids
-		const newUser = await UserRepository.findProfileByIdentifier("1");
+		const oldUser = await UserRepository.findIdByIdentifier("0"); // these are discord ids
+		const newUser = await UserRepository.findIdByIdentifier("1");
 
-		expect(oldUser).toBeNull();
+		expect(oldUser).toBeUndefined();
 		expect(newUser?.id).toBe(users.id(1)); // took the old user's id
 	});
 
@@ -340,19 +340,22 @@ describe("Account migration", () => {
 		expect(membershipNewUser).toBeUndefined();
 	});
 
-	test("deletes weapon pool from the new user when migrating (takes weapon pool from the old user)", async () => {
+	test("keeps the match profile weapon pool of the old user when migrating", async () => {
 		await UserFactory.grant(users.id(1), {
-			weapons: [{ weaponSplId: 1, isFavorite: 1 }],
+			matchProfile: { weaponPool: [{ id: 1, isFavorite: true }] },
 		});
-		await UserFactory.grant(users.id(2), { weapons: [{ weaponSplId: 10 }] });
+		await UserFactory.grant(users.id(2), {
+			matchProfile: { weaponPool: [{ id: 10, isFavorite: false }] },
+		});
 
 		await migrateUserAction();
 
-		const oldUser = await UserRepository.findProfileByIdentifier("0");
-		const newUser = await UserRepository.findProfileByIdentifier("1");
+		const migratedUser = await MatchProfileRepository.findSettingsByUserId(
+			users.id(1),
+		);
 
-		expect(oldUser).toBeNull();
-		expect(newUser?.weapons).toEqual([
+		expect(await UserRepository.findIdByIdentifier("0")).toBeUndefined();
+		expect(migratedUser.weaponPool).toEqual([
 			{ weaponSplId: 1, isFavorite: 1, isTenStar: 0 },
 		]);
 	});
@@ -366,8 +369,8 @@ describe("Account migration", () => {
 
 		await migrateUserAction();
 
-		const oldUser = await UserRepository.findProfileByIdentifier("0");
-		expect(oldUser).toBeNull();
+		const oldUser = await UserRepository.findIdByIdentifier("0");
+		expect(oldUser).toBeUndefined();
 
 		for (const id of [users.id(1), users.id(2)]) {
 			const buildsAfter = await BuildRepository.findAllByUserId(id);

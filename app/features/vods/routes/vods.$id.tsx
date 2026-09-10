@@ -199,12 +199,12 @@ function Match({
 			{weapons ? (
 				<div className="stack horizontal md">
 					<div className={styles.matchWeapons}>
-						{weapons.slice(0, teamSize).map((weapon, i) => {
+						{weapons.slice(0, teamSize).map((weaponSplId, i) => {
 							return (
 								<WeaponImage
 									key={i}
-									testId={`weapon-img-${weapon}-${i}`}
-									weaponSplId={weapon}
+									testId={`weapon-img-${weaponSplId}-${i}`}
+									weaponSplId={weaponSplId}
 									variant="badge"
 									width={30}
 								/>
@@ -212,13 +212,13 @@ function Match({
 						})}
 					</div>
 					<div className={styles.matchWeapons}>
-						{weapons.slice(teamSize).map((weapon, i) => {
+						{weapons.slice(teamSize).map((weaponSplId, i) => {
 							const adjustedI = i + teamSize;
 							return (
 								<WeaponImage
 									key={i}
-									testId={`weapon-img-${weapon}-${adjustedI}`}
-									weaponSplId={weapon}
+									testId={`weapon-img-${weaponSplId}-${adjustedI}`}
+									weaponSplId={weaponSplId}
 									variant="badge"
 									width={30}
 								/>
@@ -229,7 +229,7 @@ function Match({
 			) : null}
 			<SendouButton
 				size="small"
-				onPress={() => setStart(match.startsAt)}
+				onClick={() => setStart(match.startsAt)}
 				variant="outlined"
 			>
 				{secondsToHoursMinutesSecondString(match.startsAt)}
@@ -273,7 +273,7 @@ function CopyTimestampsButton({
 				size="small"
 				variant="outlined"
 				icon={<ClipboardCopy />}
-				onPress={() => {
+				onClick={() => {
 					setDialogOpen(true);
 					reset();
 				}}
@@ -331,7 +331,7 @@ function CopyTimestampsButton({
 						{t("vods:copyTimestamps.help")}
 					</p>
 					<SendouButton
-						onPress={handleCopy}
+						onClick={handleCopy}
 						icon={copySuccess ? <Check /> : <Copy />}
 					>
 						{copySuccess

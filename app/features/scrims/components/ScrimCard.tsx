@@ -22,7 +22,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { ModeImage } from "~/components/Image";
 import { LocaleTime } from "~/components/LocaleTime";
 import { NoteAvatar } from "~/components/NoteAvatar";
-import TimePopover from "~/components/TimePopover";
+import { TimePopover } from "~/components/TimePopover";
 import { useUser } from "~/features/auth/core/user";
 import {
 	UserCard,
@@ -445,7 +445,7 @@ function ScrimActionButtons({
 			<>
 				<SendouButton
 					size="small"
-					onPress={() => setIsRequestModalOpen(true)}
+					onClick={() => setIsRequestModalOpen(true)}
 					icon={<Upload />}
 					data-testid="request-scrim-button"
 				>
@@ -470,7 +470,7 @@ function ScrimActionButtons({
 			<>
 				<SendouButton
 					size="small"
-					onPress={() => setIsViewRequestModalOpen(true)}
+					onClick={() => setIsViewRequestModalOpen(true)}
 					variant="outlined"
 					icon={<Download />}
 					data-testid="view-request-button"

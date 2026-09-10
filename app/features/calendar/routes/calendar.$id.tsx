@@ -191,7 +191,7 @@ function Results() {
 
 	return (
 		<Section title={t("calendar:results")} className={styles.resultsSection}>
-			{data.event.participantCount && (
+			{data.event.participantCount ? (
 				<div className={styles.resultsParticipantCount}>
 					{isTeamResults
 						? t("calendar:participatedCount", {
@@ -201,7 +201,7 @@ function Results() {
 								count: data.event.participantCount,
 							})}
 				</div>
-			)}
+			) : null}
 			<Table>
 				<thead>
 					<tr>
@@ -276,9 +276,9 @@ function Description() {
 					<Avatar user={data.event} size="xs" />
 					{data.event.username}
 				</div>
-				{data.event.description && (
+				{data.event.description ? (
 					<div className="whitespace-pre-wrap">{data.event.description}</div>
-				)}
+				) : null}
 			</div>
 		</Section>
 	);

@@ -10,7 +10,7 @@ import {
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import * as Progression from "~/features/tournament-bracket/core/Progression";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import {
 	errorToastIfErr,
@@ -81,9 +81,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 					? abDivisionsForSeeding(seeding, tournament, groupCount)
 					: undefined;
 
-			// in rr/swiss every group shares one map list per round number, and
-			// groups can have different round counts when teams divide unevenly,
-			// so compare against the number of distinct round numbers
+			// rr/swiss groups share one map list per round number and can have different round counts
 			const distinctRoundNumberCount = new Set(
 				bracket.data.round.map((round) => round.number),
 			).size;
@@ -111,7 +109,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 				isLeague: tournament.isLeague,
 			});
 
-			// persist maps as prepared even if they weren't initially so sibling brackets can reuse them
+			// persisted as prepared so sibling brackets can reuse them
 			const existingPreparedMaps =
 				await TournamentRepository.findPreparedMapsById(tournamentId);
 			if (!existingPreparedMaps?.[data.bracketIdx]) {
@@ -272,9 +270,17 @@ export const action: ActionFunction = async ({ params, request }) => {
 				bracket.type === "swiss",
 				"Can't unadvance non-swiss bracket",
 			);
-			errorToastIfFalsyNoFollowUpBrackets(tournament);
+			errorToastIfFalsyNoFollowUpBrackets(tournament, data.bracketIdx);
+			errorToastIfFalsy(
+				bracket.data.round.some(
+					(round) =>
+						round.id === data.roundId && round.groupId === data.groupId,
+				),
+				"Round not found in bracket",
+			);
 
 			await BracketRepository.deleteRoundMatches({
+				stageId: bracket.id,
 				groupId: data.groupId,
 				roundId: data.roundId,
 			});
@@ -361,9 +367,12 @@ export const action: ActionFunction = async ({ params, request }) => {
 	return null;
 };
 
-function errorToastIfFalsyNoFollowUpBrackets(tournament: Tournament) {
+function errorToastIfFalsyNoFollowUpBrackets(
+	tournament: Tournament,
+	bracketIdx: number,
+) {
 	const followUpBrackets = tournament.brackets.filter((b) =>
-		b.sources?.some((source) => source.bracketIdx === 0),
+		b.sources?.some((source) => source.bracketIdx === bracketIdx),
 	);
 
 	errorToastIfFalsy(

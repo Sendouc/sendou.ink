@@ -73,6 +73,16 @@ const SEASONS: Season[] = [
 	},
 ];
 
+type MigratedDivision = Season["divisions"][number] & {
+	tier: number | null;
+	castTwitchAccounts: string[] | null;
+	castedMatchesInfo: CastedMatchesInfo | null;
+	groupStageIdx: number;
+	playoffsIdx: number;
+	groupStageBracket: any;
+	playoffsBracket: any;
+};
+
 async function migrateSeason(trx: Transaction<any>, season: Season) {
 	const signup = await trx
 		.selectFrom("Tournament")
@@ -83,7 +93,7 @@ async function migrateSeason(trx: Transaction<any>, season: Season) {
 	// databases without the production league data (dev, tests)
 	if (!signup) return;
 
-	const divisions = [];
+	const divisions: MigratedDivision[] = [];
 	for (const [idx, division] of season.divisions.entries()) {
 		const row = await trx
 			.selectFrom("Tournament")

@@ -37,15 +37,14 @@ import * as AbDivisions from "~/features/tournament-bracket/core/AbDivisions";
 import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import type { TournamentTeamFull } from "~/features/tournament-bracket/core/Tournament.server";
 import { UserCard } from "~/features/user-card/components/UserCard";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { ordinalToRoundedSp } from "../../mmr/mmr-utils";
+import { loader } from "../loaders/to.$id.admin.seeds.server";
 import { adminSeedsActionSchema } from "../tournament-admin-schemas";
 import styles from "./to.$id.admin.seeds.module.css";
 
 export { action } from "../actions/to.$id.admin.seeds.server";
-
-import { loader } from "../loaders/to.$id.admin.seeds.server";
 
 export { loader };
 
@@ -157,7 +156,7 @@ export default function TournamentAdminSeedsPage() {
 						variant="minimal"
 						size="small"
 						type="button"
-						onPress={sortAllBySp}
+						onClick={sortAllBySp}
 					>
 						Sort all by SP
 					</SendouButton>
@@ -349,7 +348,7 @@ function StartingBracketDialog() {
 		<div>
 			<SendouButton
 				size="small"
-				onPress={() => setIsOpen(true)}
+				onClick={() => setIsOpen(true)}
 				data-testid="set-starting-brackets"
 			>
 				Set starting brackets
@@ -400,8 +399,8 @@ function StartingBracketDialog() {
 												value={startingBracketIdx}
 												onChange={(e) => {
 													const newBracketIdx = Number(e.target.value);
-													setTeamStartingBrackets((teamStartingBrackets) =>
-														teamStartingBrackets.map((t) =>
+													setTeamStartingBrackets((current) =>
+														current.map((t) =>
 															t.tournamentTeamId === team.id
 																? { ...t, startingBracketIdx: newBracketIdx }
 																: t,
@@ -522,7 +521,7 @@ function AbDivisionsDialog() {
 		<div>
 			<SendouButton
 				size="small"
-				onPress={() => setIsOpen(true)}
+				onClick={() => setIsOpen(true)}
 				data-testid="set-ab-divisions"
 			>
 				Set A/B divisions
@@ -573,8 +572,8 @@ function AbDivisionsDialog() {
 																rawValue === "unassigned"
 																	? null
 																	: (Number(rawValue) as 0 | 1);
-															setTeamAbDivisions((teamAbDivisions) =>
-																teamAbDivisions.map((t) =>
+															setTeamAbDivisions((current) =>
+																current.map((t) =>
 																	t.tournamentTeamId === team.id
 																		? { ...t, abDivision: newDivision }
 																		: t,

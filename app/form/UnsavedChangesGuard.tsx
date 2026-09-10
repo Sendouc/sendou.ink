@@ -4,12 +4,7 @@ import { type Location, useBlocker } from "react-router";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
 
-/**
- * Reports whether the registering component has unsaved changes. For an in-app
- * navigation the blocked locations are passed, so a checker whose state
- * survives same-route navigations can ignore those; a full page unload passes
- * nothing and every dirty checker should warn.
- */
+/** In-app navigations pass the locations so same-route ones can be ignored; a page unload passes nothing. */
 type UnsavedChangesChecker = (navigation?: {
 	currentLocation: Location;
 	nextLocation: Location;
@@ -17,12 +12,7 @@ type UnsavedChangesChecker = (navigation?: {
 
 const dirtyCheckers = new Set<UnsavedChangesChecker>();
 
-/**
- * Confirms navigating away when any mounted form has unsaved changes.
- * Rendered once in the root layout because react-router supports only a
- * single active blocker at a time — individual forms register a checker via
- * `useUnsavedChangesChecker` instead of calling `useBlocker` themselves.
- */
+/** Rendered once in root since react-router allows one active blocker; forms register via `useUnsavedChangesChecker`. */
 export function UnsavedChangesGuard() {
 	const { t } = useTranslation(["common", "forms"]);
 
@@ -54,12 +44,12 @@ export function UnsavedChangesGuard() {
 			<div className="stack md stack md text-sm text-lighter">
 				{t("forms:unsavedChanges.body")}
 				<div className="stack horizontal md justify-center">
-					<SendouButton variant="outlined" onPress={() => blocker.reset()}>
+					<SendouButton variant="outlined" onClick={() => blocker.reset()}>
 						{t("common:actions.cancel")}
 					</SendouButton>
 					<SendouButton
 						variant="destructive"
-						onPress={() => blocker.proceed()}
+						onClick={() => blocker.proceed()}
 						data-testid="discard-changes-button"
 					>
 						{t("forms:unsavedChanges.discard")}
@@ -70,11 +60,7 @@ export function UnsavedChangesGuard() {
 	);
 }
 
-/**
- * Registers a callback reporting whether the calling form currently has
- * unsaved changes. The ref indirection lets the callback read the latest
- * form state without re-registering on every render.
- */
+/** Registers a dirty checker; the ref lets it read the latest state without re-registering every render. */
 export function useUnsavedChangesChecker(
 	checkerRef: React.RefObject<UnsavedChangesChecker>,
 ) {

@@ -9,7 +9,6 @@ import {
 	Link as LinkIcon,
 } from "lucide-react";
 import type * as React from "react";
-import type { DateValue } from "react-aria-components";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
 import { Link, useLoaderData, useNavigate } from "react-router";
@@ -26,8 +25,9 @@ import { Main } from "~/components/Main";
 import { DAYS_SHOWN_AT_A_TIME } from "~/features/calendar/calendar-constants";
 import { useCollapsableEvents } from "~/features/calendar/calendar-hooks";
 import { calendarSearchParams } from "~/features/calendar/calendar-search-params";
+import { calendarIcalFeed } from "~/features/calendar/calendar-urls";
+import { dragToScroll } from "~/hooks/useDragToScroll";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
-import { dayMonthYearToDateValue } from "~/utils/dates";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import type { DayMonthYear } from "~/utils/schema";
@@ -37,11 +37,9 @@ import { daysForCalendar } from "../calendar-utils";
 import { FiltersBar } from "../components/FiltersBar";
 import { TournamentCard } from "../components/TournamentCard";
 import { type CalendarLoaderData, loader } from "../loaders/calendar.server";
+import styles from "./calendar.module.css";
 
 export { action, loader };
-
-import { calendarIcalFeed } from "~/features/calendar/calendar-urls";
-import styles from "./calendar.module.css";
 
 export const meta: MetaFunction = (args) => {
 	return metaTags({
@@ -106,7 +104,7 @@ export default function CalendarPage() {
 			</div>
 			<div
 				key={`${shown[0].year}-${shown[0].month}-${shown[0].day}`}
-				ref={scrollTodayToCenter}
+				ref={setUpColumnsContainer}
 				className={clsx(styles.columnsContainer, "scrollbar")}
 			>
 				{shown.map((date) => (
@@ -171,12 +169,12 @@ function CalendarDatePicker({ dayMonthYear }: { dayMonthYear: DayMonthYear }) {
 	const navigate = useNavigate();
 	const dayHref = useCalendarDayHref();
 
-	const onChange = (date: DateValue) => {
+	const onChange = (date: Date) => {
 		navigate(
 			dayHref({
-				day: date.day,
-				month: date.month - 1,
-				year: date.year,
+				day: date.getDate(),
+				month: date.getMonth(),
+				year: date.getFullYear(),
 			}),
 		);
 	};
@@ -189,7 +187,9 @@ function CalendarDatePicker({ dayMonthYear }: { dayMonthYear: DayMonthYear }) {
 		>
 			<SendouCalendar
 				className={styles.calendar}
-				value={dayMonthYearToDateValue(dayMonthYear)}
+				value={
+					new Date(dayMonthYear.year, dayMonthYear.month, dayMonthYear.day)
+				}
 				onChange={onChange}
 				firstDayOfWeek="mon"
 				weekSelection
@@ -204,6 +204,13 @@ function useCalendarDayHref() {
 
 	return (dayMonthYear: DayMonthYear) =>
 		calendarSearchParams.href(CALENDAR_PAGE, { ...params, ...dayMonthYear });
+}
+
+function setUpColumnsContainer(container: HTMLDivElement | null) {
+	scrollTodayToCenter(container);
+	if (!container) return;
+
+	return dragToScroll(container);
 }
 
 /** Centers today's column, leaving weeks that don't contain today scrolled to their first day. */
@@ -228,7 +235,7 @@ function DayEventsColumn({
 	date,
 	month,
 	year,
-	isToday,
+	isToday: isCurrentDay,
 	eventTimes,
 }: {
 	date: number;
@@ -240,8 +247,8 @@ function DayEventsColumn({
 	const eventTimesCollapsed = useCollapsableEvents(eventTimes);
 
 	return (
-		<div data-today-column={isToday || undefined}>
-			<DayHeader date={date} month={month} year={year} isToday={isToday} />
+		<div data-today-column={isCurrentDay || undefined}>
+			<DayHeader date={date} month={month} year={year} isToday={isCurrentDay} />
 			<div className={styles.dayEvents}>
 				{eventTimesCollapsed.map((eventTime, i) => {
 					return (
@@ -346,7 +353,7 @@ function ClockHeader({
 				{hiddenEventsCount > 0 ? (
 					<SendouButton
 						icon={hiddenShown ? <Eye /> : <EyeOff />}
-						onPress={onToggleHidden}
+						onClick={onToggleHidden}
 						variant="minimal"
 						className={styles.hiddenEventsButton}
 						data-testid="hidden-events-button"

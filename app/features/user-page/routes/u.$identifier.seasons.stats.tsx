@@ -17,7 +17,7 @@ import { useWeaponUsage } from "~/hooks/swr";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import { stageIds } from "~/modules/in-game-lists/stage-ids";
 import type { ModeShort, StageId } from "~/modules/in-game-lists/types";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { cutToNDecimalPlaces, winPercentage } from "~/utils/number";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
@@ -125,14 +125,14 @@ function Stages({
 						<StageImage stageId={id} height={48} className="rounded" />
 						{modesShort.map((mode) => {
 							const stats = stages[id]?.[mode];
-							const winPercentage = stats
+							const winRate = stats
 								? cutToNDecimalPlaces(
 										(stats.wins / (stats.wins + stats.losses)) * 100,
 									)
 								: "";
 							const infoText = `${t(`game-misc:MODE_SHORT_${mode}`)} ${t(
 								`game-misc:STAGE_${id}`,
-							)} ${winPercentage}${winPercentage ? "%" : ""}`;
+							)} ${winRate}${winRate ? "%" : ""}`;
 
 							return (
 								<SendouPopover
@@ -277,8 +277,7 @@ function Players({
 	return (
 		<div className="stack md horizontal justify-center flex-wrap">
 			{players.map((player) => {
-				// a player only met on maps of a set someone else's team was fielded
-				// for has no set record to show a win rate of
+				// a player only met on maps of another team's set has no set record
 				const setWinRate = winPercentage(player.setWins, player.setLosses);
 				const mapWinRate = winPercentage(player.mapWins, player.mapLosses);
 				return (

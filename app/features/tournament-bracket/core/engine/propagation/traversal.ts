@@ -17,11 +17,7 @@ interface RoundPositionalInfo {
 	roundCount: number;
 }
 
-/**
- * Resolves the matches following another match and applies result propagation
- * to them. Port of the old brackets-manager getter + updater, mutating the rows
- * of a Store instead of writing to storage.
- */
+/** Resolves the matches following another match and propagates results to them, mutating Store rows. */
 export class Propagator {
 	readonly store: Store;
 
@@ -29,48 +25,33 @@ export class Propagator {
 		this.store = store;
 	}
 
-	/* ------------------------------------------------------------------ */
-	/* Updater                                                            */
-	/* ------------------------------------------------------------------ */
-
-	/**
-	 * Propagates the results of a match to the matches following it.
-	 *
-	 * @param match A match.
-	 */
 	updateRelatedMatches(match: MatchData): void {
 		const { roundNumber, roundCount } = this.getRoundPositionalInfo(
 			match.roundId,
 		);
 
 		const stage = this.store.stageById(match.stageId);
-		if (!stage) throw Error("Stage not found.");
+		if (!stage) throw new Error("Stage not found.");
 
 		const group = this.store.groupById(match.groupId);
-		if (!group) throw Error("Group not found.");
+		if (!group) throw new Error("Group not found.");
 
 		const matchLocation = helpers.getMatchLocation(stage.type, group.number);
 
 		this.updateNext(match, matchLocation, stage, roundNumber, roundCount);
 	}
 
-	/**
-	 * Updates a match based on a reported result.
-	 *
-	 * @param stored The match row of the store that is mutated.
-	 * @param input Input of the update.
-	 * @param force Whether to force update matches that can't be played yet.
-	 */
+	/** @param force Also update matches that can't be played yet. */
 	updateMatch(
 		stored: MatchData,
 		input: MatchResultsInput,
 		force?: boolean,
 	): void {
 		if (!force && matchStatus(this.store.data, stored.id) === "PENDING")
-			throw Error("The match is locked.");
+			throw new Error("The match is locked.");
 
 		const stage = this.store.stageById(stored.stageId);
-		if (!stage) throw Error("Stage not found.");
+		if (!stage) throw new Error("Stage not found.");
 
 		const resultChanged = helpers.setMatchResults(
 			stored,
@@ -90,11 +71,7 @@ export class Propagator {
 		}
 	}
 
-	/**
-	 * The winner the scores decide once the input has been applied. `undefined`
-	 * when the set is not over or the round has no map count to decide it by
-	 * (a bracket created without map lists).
-	 */
+	/** `undefined` when the set is not over or the round has no map count (bracket created without map lists). */
 	private winnerSideAfter(
 		stored: MatchData,
 		scores: MatchResultsInput["scores"],
@@ -109,15 +86,6 @@ export class Propagator {
 		});
 	}
 
-	/**
-	 * Updates the match(es) following the current match based on this match results.
-	 *
-	 * @param match Input of the update.
-	 * @param matchLocation Location of the current match.
-	 * @param stage The parent stage.
-	 * @param roundNumber Number of the round.
-	 * @param roundCount Count of rounds.
-	 */
 	private updateNext(
 		match: MatchData,
 		matchLocation: GroupType,
@@ -159,17 +127,6 @@ export class Propagator {
 			);
 	}
 
-	/**
-	 * Applies a SetNextOpponent function to matches following the current match.
-	 *
-	 * @param setNextOpponent The SetNextOpponent function.
-	 * @param match The current match.
-	 * @param matchLocation Location of the current match.
-	 * @param roundNumber Number of the current round.
-	 * @param roundCount Count of rounds.
-	 * @param nextMatches The matches following the current match.
-	 * @param winnerSide Side of the winner in the current match.
-	 */
 	private applyToNextMatches(
 		setNextOpponent: SetNextOpponent,
 		match: MatchData,
@@ -180,7 +137,7 @@ export class Propagator {
 		winnerSide?: Side,
 	): void {
 		if (matchLocation === "final_group") {
-			if (!nextMatches[0]) throw Error("First next match is null.");
+			if (!nextMatches[0]) throw new Error("First next match is null.");
 			setNextOpponent(nextMatches[0], "opponent1", match, "opponent1");
 			setNextOpponent(nextMatches[0], "opponent2", match, "opponent2");
 			this.store.markMatchChanged(nextMatches[0]);
@@ -200,10 +157,9 @@ export class Propagator {
 		}
 
 		if (nextMatches.length !== 2) return;
-		if (!nextMatches[1]) throw Error("Second next match is null.");
+		if (!nextMatches[1]) throw new Error("Second next match is null.");
 
-		// The second match is either the consolation final (single elimination) or a loser bracket match (double elimination).
-
+		// Second match is the consolation final (SE) or a loser bracket match (DE).
 		if (matchLocation === "single_bracket") {
 			setNextOpponent(
 				nextMatches[1],
@@ -228,30 +184,16 @@ export class Propagator {
 		}
 	}
 
-	/**
-	 * Propagates winner against BYEs in related matches.
-	 *
-	 * @param match The current match.
-	 */
 	propagateByeWinners(match: MatchData): void {
-		helpers.resolveByeWinner(match); // BYE propagation is only in non round-robin stages.
+		helpers.resolveByeWinner(match);
 		this.store.markMatchChanged(match);
 
 		if (helpers.hasBye(match)) this.updateRelatedMatches(match);
 	}
 
-	/* ------------------------------------------------------------------ */
-	/* Getter                                                             */
-	/* ------------------------------------------------------------------ */
-
-	/**
-	 * Gets the positional information (number in group and total number of rounds in group) of a round based on its id.
-	 *
-	 * @param roundId ID of the round.
-	 */
 	getRoundPositionalInfo(roundId: number): RoundPositionalInfo {
 		const round = this.store.roundById(roundId);
-		if (!round) throw Error("Round not found.");
+		if (!round) throw new Error("Round not found.");
 
 		return {
 			roundNumber: round.number,
@@ -259,15 +201,6 @@ export class Propagator {
 		};
 	}
 
-	/**
-	 * Gets the match(es) where the opponents of the current match will go just after.
-	 *
-	 * @param match The current match.
-	 * @param matchLocation Location of the current match.
-	 * @param stage The parent stage.
-	 * @param roundNumber The number of the current round.
-	 * @param roundCount Count of rounds.
-	 */
 	getNextMatches(
 		match: MatchData,
 		matchLocation: GroupType,
@@ -295,18 +228,10 @@ export class Propagator {
 			case "final_group":
 				return this.getNextMatchesFinal(match, roundNumber, roundCount);
 			default:
-				throw Error("Unknown bracket kind.");
+				throw new Error("Unknown bracket kind.");
 		}
 	}
 
-	/**
-	 * Gets the match(es) where the opponents of the current match of winner bracket will go just after.
-	 *
-	 * @param match The current match.
-	 * @param stage The parent stage.
-	 * @param roundNumber The number of the current round.
-	 * @param roundCount Count of rounds.
-	 */
 	private getNextMatchesWB(
 		match: MatchData,
 		stage: StageData,
@@ -340,14 +265,6 @@ export class Propagator {
 		];
 	}
 
-	/**
-	 * Gets the match(es) where the opponents of the current match of an upper bracket will go just after.
-	 *
-	 * @param match The current match.
-	 * @param stageType Type of the stage.
-	 * @param roundNumber The number of the current round.
-	 * @param roundCount Count of rounds.
-	 */
 	private getNextMatchesUpperBracket(
 		match: MatchData,
 		stageType: StageType,
@@ -368,14 +285,6 @@ export class Propagator {
 		return [this.getDiagonalMatch(match.groupId, roundNumber, match.number)];
 	}
 
-	/**
-	 * Gets the match(es) where the opponents of the current match of the unique bracket of a single elimination will go just after.
-	 *
-	 * @param match The current match.
-	 * @param stageType Type of the stage.
-	 * @param roundNumber The number of the current round.
-	 * @param roundCount Count of rounds.
-	 */
 	private getNextMatchesUpperBracketSingleElimination(
 		match: MatchData,
 		stageType: StageType,
@@ -395,14 +304,6 @@ export class Propagator {
 		return [this.getDiagonalMatch(match.groupId, roundNumber, match.number)];
 	}
 
-	/**
-	 * Gets the match(es) where the opponents of the current match of loser bracket will go just after.
-	 *
-	 * @param match The current match.
-	 * @param stageType Type of the stage.
-	 * @param roundNumber The number of the current round.
-	 * @param roundCount Count of rounds.
-	 */
 	private getNextMatchesLB(
 		match: MatchData,
 		stageType: StageType,
@@ -420,12 +321,7 @@ export class Propagator {
 		return this.getMatchAfterMinorRoundLB(match, roundNumber);
 	}
 
-	/**
-	 * Gets the first match of the final group (consolation final or grand final).
-	 *
-	 * @param match The current match.
-	 * @param stageType Type of the stage.
-	 */
+	/** First match of the final group (consolation final or grand final). */
 	private getFirstMatchFinal(
 		match: MatchData,
 		stageType: StageType,
@@ -436,13 +332,6 @@ export class Propagator {
 		return this.findMatch(finalGroupId, 1, 1);
 	}
 
-	/**
-	 * Gets the matches following the current match, which is in the final group (consolation final or grand final).
-	 *
-	 * @param match The current match.
-	 * @param roundNumber The number of the current round.
-	 * @param roundCount The count of rounds.
-	 */
 	private getNextMatchesFinal(
 		match: MatchData,
 		roundNumber: number,
@@ -459,12 +348,6 @@ export class Propagator {
 		return [this.findMatch(match.groupId, roundNumber + 1, 1)];
 	}
 
-	/**
-	 * Gets the match(es) where the opponents of the current match of a winner bracket's major round will go just after.
-	 *
-	 * @param match The current match.
-	 * @param roundNumber The number of the current round.
-	 */
 	private getMatchAfterMajorRoundLB(
 		match: MatchData,
 		roundNumber: number,
@@ -472,12 +355,6 @@ export class Propagator {
 		return [this.getParallelMatch(match.groupId, roundNumber, match.number)];
 	}
 
-	/**
-	 * Gets the match(es) where the opponents of the current match of a winner bracket's minor round will go just after.
-	 *
-	 * @param match The current match.
-	 * @param roundNumber The number of the current round.
-	 */
 	private getMatchAfterMinorRoundLB(
 		match: MatchData,
 		roundNumber: number,
@@ -485,12 +362,6 @@ export class Propagator {
 		return [this.getDiagonalMatch(match.groupId, roundNumber, match.number)];
 	}
 
-	/**
-	 * Returns the id of the final group (consolation final or grand final).
-	 *
-	 * @param stageId ID of the stage.
-	 * @param stageType Type of the stage.
-	 */
 	private getFinalGroupId(
 		stageId: number,
 		stageType: StageType,
@@ -504,49 +375,27 @@ export class Propagator {
 		return finalGroup.id;
 	}
 
-	/**
-	 * Gets the upper bracket (the only bracket if single elimination or the winner bracket in double elimination).
-	 *
-	 * @param stageId ID of the stage.
-	 */
+	/** The only bracket in single elimination, the winner bracket in double elimination. */
 	private getUpperBracket(stageId: number): GroupData {
 		const winnerBracket = this.store.groupByNumber(stageId, 1);
-		if (!winnerBracket) throw Error("Winner bracket not found.");
+		if (!winnerBracket) throw new Error("Winner bracket not found.");
 		return winnerBracket;
 	}
 
-	/**
-	 * Gets the participant count of an elimination stage, derived from its upper
-	 * bracket's first round (two participants per match, BYEs included).
-	 *
-	 * @param stageId ID of the stage.
-	 */
+	/** Derived from the upper bracket's first round (two participants per match, BYEs included). */
 	private participantCount(stageId: number): number {
 		const upperBracket = this.getUpperBracket(stageId);
 		const firstRound = this.store.roundByNumber(upperBracket.id, 1);
-		if (!firstRound) throw Error("First round not found.");
+		if (!firstRound) throw new Error("First round not found.");
 
 		return this.store.matchCountInRound(firstRound.id) * 2;
 	}
 
-	/**
-	 * Gets the loser bracket.
-	 *
-	 * @param stageId ID of the stage.
-	 */
 	private getLoserBracket(stageId: number): GroupData | null {
 		return this.store.groupByNumber(stageId, 2);
 	}
 
-	/**
-	 * Gets the corresponding match in the next round ("diagonal match") the usual way.
-	 *
-	 * Just like from Round 1 to Round 2 in a single elimination stage.
-	 *
-	 * @param groupId ID of the group.
-	 * @param roundNumber Number of the round in its parent group.
-	 * @param matchNumber Number of the match in its parent round.
-	 */
+	/** Corresponding match in the next round, like Round 1 to Round 2 in single elimination. */
 	private getDiagonalMatch(
 		groupId: number,
 		roundNumber: number,
@@ -559,15 +408,7 @@ export class Propagator {
 		);
 	}
 
-	/**
-	 * Gets the corresponding match in the next round ("parallel match") the "major round to minor round" way.
-	 *
-	 * Just like from Round 1 to Round 2 in the loser bracket of a double elimination stage.
-	 *
-	 * @param groupId ID of the group.
-	 * @param roundNumber Number of the round in its parent group.
-	 * @param matchNumber Number of the match in its parent round.
-	 */
+	/** Same match number in the next round, like major round to minor round in the loser bracket. */
 	private getParallelMatch(
 		groupId: number,
 		roundNumber: number,
@@ -576,13 +417,6 @@ export class Propagator {
 		return this.findMatch(groupId, roundNumber + 1, matchNumber);
 	}
 
-	/**
-	 * Finds a match in a given group. The match must have the given number in a round of which the number in group is given.
-	 *
-	 * @param groupId ID of the group.
-	 * @param roundNumber Number of the round in its parent group.
-	 * @param matchNumber Number of the match in its parent round.
-	 */
 	findMatch(
 		groupId: number,
 		roundNumber: number,
@@ -590,11 +424,11 @@ export class Propagator {
 	): MatchData {
 		const round = this.store.roundByNumber(groupId, roundNumber);
 
-		if (!round) throw Error("Round not found.");
+		if (!round) throw new Error("Round not found.");
 
 		const match = this.store.matchByNumber(round.id, matchNumber);
 
-		if (!match) throw Error("Match not found.");
+		if (!match) throw new Error("Match not found.");
 
 		return match;
 	}

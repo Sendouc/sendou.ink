@@ -18,8 +18,8 @@ import type {
 	TimeRange,
 } from "../availability-types";
 import * as Availability from "../core/Availability";
-import * as Commitments from "../core/Commitments.server";
 import * as ScheduleWeek from "../core/ScheduleWeek";
+import * as VisibleSchedules from "../core/VisibleSchedules.server";
 
 export type TeamScheduleLoaderData = SerializeFrom<typeof loader>;
 
@@ -41,9 +41,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		meta: { teamCustomUrl: team.customUrl },
 	});
 
-	const members = team.members.filter(
-		(member) => member.role !== "CHEERLEADER",
-	);
+	const members = team.members;
 	const timezone = getViewerTimezone() ?? "UTC";
 	const now = new Date();
 
@@ -54,15 +52,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			timezone,
 		).endsAt,
 	};
-	const [reportedWeeks, busyByUserId, teamEvents] = await Promise.all([
-		AvailabilityRepository.findAllWeeksByUserIds({
+	const [{ reportedWeeks, busyByUserId }, teamEvents] = await Promise.all([
+		VisibleSchedules.findByUserIds({
 			userIds: members.map((member) => member.id),
+			viewerId: user.id,
 			...horizon,
 		}),
-		Commitments.busyBlocksByUserIds({
-			userIds: members.map((member) => member.id),
-			...horizon,
-		}),
+		// team events are the team's own data, visible to every member no matter what they share
 		AvailabilityRepository.findTeamEventsByTeamId({
 			teamId: team.id,
 			...horizon,
@@ -132,6 +128,12 @@ function weekView({
 
 	const days = ScheduleWeek.days(range, timezone).map((day) => ({
 		...day,
+		/** Local midnight starting the day, the zero the heatmap reads track minutes from. */
+		startsAt: Availability.localToTimestamp({
+			date: day.date,
+			time: "00:00",
+			timezone,
+		}),
 		windowTier: bestWindowTierOfDay({ date: day.date, windows, timezone }),
 	}));
 
@@ -160,10 +162,7 @@ function weekView({
 	};
 }
 
-/**
- * Tier of the best playable window starting on the given viewer-local day, the
- * same day a window renders its grid ranges on.
- */
+/** Tier of the best playable window starting on the viewer-local day (the day it renders its grid ranges on). */
 function bestWindowTierOfDay({
 	date,
 	windows,

@@ -254,7 +254,7 @@ describe("trophy list tiers", () => {
 	});
 
 	function createTrophyTournament({
-		trophyId,
+		trophyId: forTrophyId,
 		tier,
 		startInDays,
 	}: {
@@ -266,7 +266,7 @@ describe("trophy list tiers", () => {
 			{
 				authorId,
 				startTimes: [dateToDatabaseTimestamp(daysFromNow(startInDays))],
-				trophyId,
+				trophyId: forTrophyId,
 			},
 			tier ? { tier } : undefined,
 		);
@@ -343,7 +343,8 @@ describe("existsByName", () => {
 describe("user deletion", () => {
 	test("keeps their trophies and drops their approvals", async () => {
 		const submitter = await UserFactory.create();
-		const deleted = await UserFactory.create();
+		// bare: a random profile's weapon pool would block the delete on its own
+		const deleted = await UserFactory.create({ profile: null });
 
 		const trophy = await TrophyFactory.create({
 			name: "Orphaned Trophy",

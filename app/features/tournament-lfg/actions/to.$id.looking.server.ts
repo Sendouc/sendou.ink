@@ -247,9 +247,15 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 				value: data.note ?? null,
 			});
 
+			break;
+		}
+		case "SET_STAY_AS_SUB": {
+			const ownGroup = await findOwnGroup();
+			if (!ownGroup) return null;
+
 			await TournamentLFGRepository.updateOwnStayAsSub({
 				teamId: ownGroup.id,
-				value: data.stayAsSub ?? false,
+				value: data.stayAsSub,
 			});
 
 			break;

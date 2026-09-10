@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, test } from "vitest";
 import { actAs } from "~/db/seed/core/actAs";
 import * as AvailabilityWeekFactory from "~/db/seed/factories/AvailabilityWeekFactory";
+import * as FriendshipFactory from "~/db/seed/factories/FriendshipFactory";
 import * as TeamEventFactory from "~/db/seed/factories/TeamEventFactory";
 import * as TeamFactory from "~/db/seed/factories/TeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
+import type { UserPreferences } from "~/db/tables-json";
 import * as AvailabilityRepository from "./AvailabilityRepository.server";
 import * as Availability from "./core/Availability";
 
@@ -335,7 +337,7 @@ describe("AvailabilityRepository.findWeekReminderUserIds", () => {
 		expect(await reminderUserIds()).toEqual([]);
 	});
 
-	test("leaves cheerleaders out, the schedule surfaces do not show them", async () => {
+	test("reminds cheerleaders like any other member", async () => {
 		await TeamFactory.create(
 			{ memberUserIds: [users.id(1), users.id(2), users.id(3)] },
 			{ roles: { [users.id(3)]: "CHEERLEADER" } },
@@ -345,7 +347,7 @@ describe("AvailabilityRepository.findWeekReminderUserIds", () => {
 			weekStartsAt: WEEK_STARTS_AT,
 		});
 
-		expect(await reminderUserIds()).toEqual([users.id(2)]);
+		expect(await reminderUserIds()).toEqual([users.id(2), users.id(3)]);
 	});
 });
 
@@ -393,6 +395,82 @@ describe("AvailabilityRepository.findTeamEventsByTeamId", () => {
 
 		expect(events).toHaveLength(1);
 		expect(events[0].name).toBe("VoD review");
+	});
+
+	test("returns the participants of an event limited to selected members, empty for a whole-team event", async () => {
+		const team = await TeamFactory.create({
+			name: "Alpha",
+			memberUserIds: [users.id(1), users.id(2)],
+		});
+
+		await TeamEventFactory.create({
+			teamId: team.id,
+			authorId: users.id(1),
+			name: "Whole team",
+			startsAt: at("2026-08-25", "20:00"),
+			endsAt: at("2026-08-25", "21:00"),
+		});
+		await TeamEventFactory.create({
+			teamId: team.id,
+			authorId: users.id(1),
+			name: "Selected only",
+			startsAt: at("2026-08-26", "20:00"),
+			endsAt: at("2026-08-26", "21:00"),
+			participantUserIds: [users.id(2)],
+		});
+
+		const events = await AvailabilityRepository.findTeamEventsByTeamId({
+			teamId: team.id,
+			...WINDOW,
+		});
+
+		expect(events).toHaveLength(2);
+		expect(events[0].participants).toEqual([]);
+		expect(events[1].participants).toEqual([{ userId: users.id(2) }]);
+	});
+});
+
+describe("AvailabilityRepository.findAllTeamEventsByUserIds", () => {
+	beforeEach(async () => {
+		await users.create(2);
+	});
+
+	test("an event limited to selected members produces rows only for them", async () => {
+		const team = await TeamFactory.create({
+			name: "Alpha",
+			memberUserIds: [users.id(1), users.id(2)],
+		});
+
+		await TeamEventFactory.create({
+			teamId: team.id,
+			authorId: users.id(1),
+			name: "Whole team",
+			startsAt: at("2026-08-25", "20:00"),
+			endsAt: at("2026-08-25", "21:00"),
+		});
+		await TeamEventFactory.create({
+			teamId: team.id,
+			authorId: users.id(1),
+			name: "Selected only",
+			startsAt: at("2026-08-26", "20:00"),
+			endsAt: at("2026-08-26", "21:00"),
+			participantUserIds: [users.id(2)],
+		});
+
+		const events = await AvailabilityRepository.findAllTeamEventsByUserIds({
+			userIds: [users.id(1), users.id(2)],
+			...WINDOW,
+		});
+
+		expect(
+			events.filter((event) => event.userId === users.id(1)).map((e) => e.name),
+		).toEqual(["Whole team"]);
+		expect(
+			events
+				.filter((event) => event.userId === users.id(2))
+				.map((e) => e.name)
+				.sort(),
+		).toEqual(["Selected only", "Whole team"]);
 	});
 });
 
@@ -461,6 +539,104 @@ describe("AvailabilityRepository.findAllUpcomingTeamEventsByUserId", () => {
 			}),
 		).toEqual([]);
 	});
+
+	test("leaves out an event limited to selected members the user is not one of", async () => {
+		const team = await TeamFactory.create({
+			name: "Alpha",
+			memberUserIds: [users.id(1), users.id(2)],
+		});
+
+		await TeamEventFactory.create({
+			teamId: team.id,
+			authorId: users.id(1),
+			name: "Selected only",
+			startsAt: at("2026-08-25", "20:00"),
+			endsAt: at("2026-08-25", "21:00"),
+			participantUserIds: [users.id(2)],
+		});
+
+		expect(
+			await AvailabilityRepository.findAllUpcomingTeamEventsByUserId({
+				userId: users.id(1),
+				...WINDOW,
+			}),
+		).toEqual([]);
+		expect(
+			await AvailabilityRepository.findAllUpcomingTeamEventsByUserId({
+				userId: users.id(2),
+				...WINDOW,
+			}),
+		).toHaveLength(1);
+	});
+});
+
+describe("AvailabilityRepository.updateTeamEvent", () => {
+	beforeEach(async () => {
+		await users.create(2);
+	});
+
+	test("updates the event and replaces its participant limitation", async () => {
+		const team = await TeamFactory.create({
+			name: "Alpha",
+			memberUserIds: [users.id(1), users.id(2)],
+		});
+		const event = await TeamEventFactory.create({
+			teamId: team.id,
+			authorId: users.id(1),
+			name: "VoD review",
+			startsAt: at("2026-08-25", "20:00"),
+			endsAt: at("2026-08-25", "21:00"),
+		});
+
+		await AvailabilityRepository.updateTeamEvent({
+			id: event.id,
+			name: "Scrim review",
+			startsAt: at("2026-08-26", "19:00"),
+			endsAt: at("2026-08-26", "20:30"),
+			participantUserIds: [users.id(2)],
+		});
+
+		const [updated] = await AvailabilityRepository.findTeamEventsByTeamId({
+			teamId: team.id,
+			...WINDOW,
+		});
+
+		expect(updated).toMatchObject({
+			name: "Scrim review",
+			startsAt: at("2026-08-26", "19:00"),
+			endsAt: at("2026-08-26", "20:30"),
+			participants: [{ userId: users.id(2) }],
+		});
+	});
+
+	test("clears the participant limitation when updated back to the whole team", async () => {
+		const team = await TeamFactory.create({
+			name: "Alpha",
+			memberUserIds: [users.id(1), users.id(2)],
+		});
+		const event = await TeamEventFactory.create({
+			teamId: team.id,
+			authorId: users.id(1),
+			name: "VoD review",
+			startsAt: at("2026-08-25", "20:00"),
+			endsAt: at("2026-08-25", "21:00"),
+			participantUserIds: [users.id(2)],
+		});
+
+		await AvailabilityRepository.updateTeamEvent({
+			id: event.id,
+			name: "VoD review",
+			startsAt: at("2026-08-25", "20:00"),
+			endsAt: at("2026-08-25", "21:00"),
+		});
+
+		const [updated] = await AvailabilityRepository.findTeamEventsByTeamId({
+			teamId: team.id,
+			...WINDOW,
+		});
+
+		expect(updated.participants).toEqual([]);
+	});
 });
 
 describe("AvailabilityRepository.deleteTeamEvent", () => {
@@ -487,6 +663,105 @@ describe("AvailabilityRepository.deleteTeamEvent", () => {
 			await AvailabilityRepository.findTeamEventsByTeamId({
 				teamId: team.id,
 				...WINDOW,
+			}),
+		).toEqual([]);
+	});
+});
+
+describe("AvailabilityRepository.findScheduleVisibleUserIds", () => {
+	const targetId = () => users.id(1);
+	const viewerId = () => users.id(2);
+
+	const restrict = (
+		scheduleVisibility: NonNullable<UserPreferences["scheduleVisibility"]> = {
+			friends: false,
+			teamIds: [],
+		},
+	) => UserFactory.grant(targetId(), { preferences: { scheduleVisibility } });
+
+	const visibleToViewer = async () =>
+		AvailabilityRepository.findScheduleVisibleUserIds({
+			userIds: [targetId()],
+			viewerId: viewerId(),
+		});
+
+	beforeEach(async () => {
+		await users.create(2);
+	});
+
+	test("shows the schedule of a user who never restricted it", async () => {
+		expect(await visibleToViewer()).toEqual([targetId()]);
+	});
+
+	test("hides the schedule of a user sharing with nobody", async () => {
+		await restrict();
+
+		expect(await visibleToViewer()).toEqual([]);
+	});
+
+	test("shows the viewer their own schedule however they restricted it", async () => {
+		await restrict();
+
+		expect(
+			await AvailabilityRepository.findScheduleVisibleUserIds({
+				userIds: [targetId()],
+				viewerId: targetId(),
+			}),
+		).toEqual([targetId()]);
+	});
+
+	test("shows a friend the schedule when sharing with friends", async () => {
+		await FriendshipFactory.create({
+			userOneId: targetId(),
+			userTwoId: viewerId(),
+		});
+		await restrict({ friends: true, teamIds: [] });
+
+		expect(await visibleToViewer()).toEqual([targetId()]);
+	});
+
+	test("hides the schedule from a friend when not sharing with friends", async () => {
+		await FriendshipFactory.create({
+			userOneId: targetId(),
+			userTwoId: viewerId(),
+		});
+		await restrict({ friends: false, teamIds: [] });
+
+		expect(await visibleToViewer()).toEqual([]);
+	});
+
+	test("shows a teammate the schedule when their team is shared with", async () => {
+		const team = await TeamFactory.create({
+			memberUserIds: [targetId(), viewerId()],
+		});
+		await restrict({ friends: false, teamIds: [team.id] });
+
+		expect(await visibleToViewer()).toEqual([targetId()]);
+	});
+
+	test("hides the schedule from a teammate whose team is not shared with", async () => {
+		await TeamFactory.create({ memberUserIds: [targetId(), viewerId()] });
+		await restrict({ friends: false, teamIds: [] });
+
+		expect(await visibleToViewer()).toEqual([]);
+	});
+
+	test("counts a secondary team as a shared team", async () => {
+		await TeamFactory.create({ memberUserIds: [targetId()] });
+		const secondary = await TeamFactory.create({
+			memberUserIds: [viewerId(), targetId()],
+			isMainTeam: false,
+		});
+		await restrict({ friends: false, teamIds: [secondary.id] });
+
+		expect(await visibleToViewer()).toEqual([targetId()]);
+	});
+
+	test("returns nothing when asked about nobody", async () => {
+		expect(
+			await AvailabilityRepository.findScheduleVisibleUserIds({
+				userIds: [],
+				viewerId: viewerId(),
 			}),
 		).toEqual([]);
 	});

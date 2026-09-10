@@ -8,7 +8,7 @@ import {
 	nextNonCompletedVoting,
 	rangeToMonthYear,
 } from "~/features/plus-voting/core";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { commonUserSelect } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 import * as PlusVoting from "./core/PlusVoting";
@@ -32,8 +32,7 @@ type ResultsByMonthYearQueryReturnType = InferResult<
 >;
 
 export async function findAllPlusTiersFromLatestVoting() {
-	// resolving month & year separately first allows SQLite to push the
-	// filtering down into the PlusVotingResult view's aggregation
+	// resolving month & year first lets SQLite push the filter into the PlusVotingResult view
 	const latestVoting = await db
 		.selectFrom("PlusVote")
 		.select(["PlusVote.year", "PlusVote.month"])
@@ -125,11 +124,13 @@ function groupPlusVotingResults(rows: EnrichedRow[]) {
 		.sort((a, b) => a.tier - b.tier);
 }
 
+type Bio = { text: string; markdown: boolean };
+
 export type UsersForVoting = {
 	user: Pick<
 		Tables["User"],
-		"id" | "discordId" | "username" | "discordAvatar" | "bio"
-	> & { customAvatarUrl: string | null };
+		"id" | "discordId" | "username" | "discordAvatar"
+	> & { customAvatarUrl: string | null; bio: Bio | null };
 	suggestion?: PlusSuggestionRepository.FindAllByMonthItem;
 }[];
 
@@ -140,7 +141,7 @@ export async function findAllUsersForVoting(loggedInUser: {
 	const members = await db
 		.selectFrom("User")
 		.innerJoin("PlusTier", "PlusTier.userId", "User.id")
-		.select((eb) => [...commonUserSelect(eb), "User.bio"])
+		.select((eb) => commonUserSelect(eb))
 		.where("PlusTier.tier", "=", loggedInUser.plusTier)
 		.execute();
 
@@ -152,11 +153,11 @@ export async function findAllUsersForVoting(loggedInUser: {
 		tier: loggedInUser.plusTier,
 	});
 
-	// the suggestions page does not render bios, so they are not part of a
-	// suggestion and are looked up for the voting page separately
-	const suggestedUserBios = await findBiosByUserIds(
-		suggestedUsers.map((suggestion) => suggestion.suggested.id),
-	);
+	// bios are not part of a suggestion (the suggestions page does not render them)
+	const bios = await findBiosByUserIds([
+		...members.map((member) => member.id),
+		...suggestedUsers.map((suggestion) => suggestion.suggested.id),
+	]);
 
 	const result: UsersForVoting = [];
 
@@ -168,7 +169,7 @@ export async function findAllUsersForVoting(loggedInUser: {
 				username: member.username,
 				discordAvatar: member.discordAvatar,
 				customAvatarUrl: member.customAvatarUrl,
-				bio: member.bio,
+				bio: bios.get(member.id) ?? null,
 			},
 		});
 	}
@@ -181,7 +182,7 @@ export async function findAllUsersForVoting(loggedInUser: {
 				username: suggestion.suggested.username,
 				discordAvatar: suggestion.suggested.discordAvatar,
 				customAvatarUrl: suggestion.suggested.customAvatarUrl,
-				bio: suggestedUserBios.get(suggestion.suggested.id) ?? null,
+				bio: bios.get(suggestion.suggested.id) ?? null,
 			},
 			suggestion,
 		});
@@ -231,14 +232,42 @@ export function upsertMany(votes: UpsertManyPlusVotesArgs) {
 	});
 }
 
+/** Bios as the profile page's bio widget stores them, keyed by user id. */
 async function findBiosByUserIds(userIds: number[]) {
-	if (userIds.length === 0) return new Map<number, string | null>();
+	const bios = new Map<number, Bio>();
+
+	if (userIds.length === 0) return bios;
 
 	const rows = await db
-		.selectFrom("User")
-		.select(["User.id", "User.bio"])
-		.where("User.id", "in", userIds)
+		.selectFrom("UserWidget")
+		.select([
+			"UserWidget.userId",
+			// cast keeps a bio that happens to look like JSON a string, the dialect
+			// parses raw selections starting with `json` as documents
+			sql<
+				string | null
+			>`cast(json_extract("UserWidget"."widget", '$.settings.bio') as text)`.as(
+				"bio",
+			),
+			sql<string>`json_extract("UserWidget"."widget", '$.id')`.as("widgetId"),
+		])
+		.where("UserWidget.userId", "in", userIds)
+		.where(sql`json_extract("UserWidget"."widget", '$.id')`, "in", [
+			"bio",
+			"bio-md",
+		])
+		.orderBy("UserWidget.index", "asc")
 		.execute();
 
-	return new Map(rows.map((row) => [row.id, row.bio]));
+	for (const row of rows) {
+		// a user can have both bio widgets, the one higher up their profile wins
+		if (row.bio && !bios.has(row.userId)) {
+			bios.set(row.userId, {
+				text: row.bio,
+				markdown: row.widgetId === "bio-md",
+			});
+		}
+	}
+
+	return bios;
 }

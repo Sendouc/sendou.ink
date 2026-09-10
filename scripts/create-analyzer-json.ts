@@ -21,7 +21,7 @@ import {
 	subWeaponIds,
 	weaponIdToBaseWeaponId,
 } from "~/modules/in-game-lists/weapon-ids";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import {
 	LANG_JSONS_TO_CREATE,
@@ -205,7 +205,7 @@ function splitIntoBaseStatsAndKits(
 		for (const prop of nonKitProps) {
 			const firstVal = JSON.stringify(firstVariant[prop]);
 			const allSame = variants.every(
-				(v) => JSON.stringify(v.params[prop]) === firstVal,
+				(variant) => JSON.stringify(variant.params[prop]) === firstVal,
 			);
 			if (allSame && firstVariant[prop] !== undefined) {
 				(sharedProps as any)[prop] = firstVariant[prop];
@@ -695,20 +695,16 @@ function parametersToSubWeaponResult(
 	};
 }
 
-// Thrown targeting specials (Booyah Bomb, Super Chump, Triple Inkstrike, Ultra Stamp) are
-// player-aimed and have no throw-distance param in the game data, so their throw (fly) range is
-// approximated with a constant. Kept as named per-special constants so each can be tuned later;
-// for now they all reuse Booyah Bomb's value.
+// Thrown targeting specials (Booyah Bomb, Super Chump, Triple Inkstrike, Ultra Stamp) are player-aimed
+// with no throw-distance param, so their fly range is a per-special constant, all Booyah Bomb's value for now.
 const BOOYAH_BOMB_FLY_DISTANCE = 27;
 const SUPER_CHUMP_FLY_DISTANCE = 30;
 const TRIPLE_INKSTRIKE_FLY_DISTANCE = 28;
 const ULTRA_STAMP_FLY_DISTANCE = 24;
 
-// Range circle data for the map planner. Projectile / thrown specials store the distance the shot
-// travels plus its blast; a few store a single effect radius. Specials whose reach is global
-// (Tenta Missiles, Killer Wail), placed or utility (Big Bubbler, Tacticooler, Ink Storm, Ink Vac),
-// or otherwise has no meaningful circle (Kraken Royale, Splattercolor Screen) are left out.
-// See app/features/comp-analyzer/core/special-weapon-range.ts.
+// Range circles for the map planner (see app/features/comp-analyzer/core/special-weapon-range.ts):
+// travel distance plus blast, or a single effect radius. Global (Tenta Missiles, Killer Wail), placed/utility
+// (Big Bubbler, Tacticooler, Ink Storm, Ink Vac) and circle-less (Kraken Royale, Splattercolor Screen) specials are left out.
 function specialWeaponRangeParams(
 	specialWeapon: SpecialWeapon,
 	rawParams: any,
@@ -785,8 +781,7 @@ function specialWeaponRangeParams(
 	}
 }
 
-// some specials lack damage values in the params
-// so they are instead hardcoded here as a workaround
+// some specials lack damage values in the params, so they are hardcoded here
 function parametersToSpecialWeaponResult(params: any) {
 	const result: any = {};
 
@@ -993,15 +988,16 @@ function unwrapSubSpecialSpecUpList(result: any) {
 		Object.entries(result).flatMap((entries) => {
 			const [key, value]: any = entries;
 			if (Array.isArray(value)) {
-				return value.map((v: any) => {
+				return value.map((entry: any) => {
 					if (
-						!v.SpecUpType ||
-						(v.Value.Low === v.Value.Mid && v.Value.Mid === v.Value.High)
+						!entry.SpecUpType ||
+						(entry.Value.Low === entry.Value.Mid &&
+							entry.Value.Mid === entry.Value.High)
 					) {
 						return [];
 					}
 
-					return [v.SpecUpType, v.Value];
+					return [entry.SpecUpType, entry.Value];
 				});
 			}
 
@@ -1259,8 +1255,8 @@ function writeTranslationsJsons(arr: TranslationArray) {
 	}
 }
 
-function logWeaponIds(weapons: Record<number, WeaponKit>) {
-	logger.info(JSON.stringify(Object.keys(weapons).map(Number)));
+function logWeaponIds(weaponKits: Record<number, WeaponKit>) {
+	logger.info(JSON.stringify(Object.keys(weaponKits).map(Number)));
 }
 
 void main();

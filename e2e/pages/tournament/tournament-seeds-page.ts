@@ -1,6 +1,10 @@
 import type { Page } from "@playwright/test";
 import { tournamentAdminPage } from "~/utils/urls";
-import { navigate, submit } from "../../helpers/playwright";
+import {
+	navigate,
+	submit,
+	waitForDropToSettle,
+} from "../../helpers/playwright";
 
 const DRAG_TARGET_Y = 500;
 
@@ -31,10 +35,10 @@ export class TournamentSeedsPage {
 	async dragTeamDown(tournamentTeamId: number) {
 		await this.teamHandle(tournamentTeamId).hover();
 		await this.page.mouse.down();
-		// i think the drag & drop library might actually be a bit buggy
-		// so we have to do it in steps like this to allow for testing
+		// the drag & drop library only registers the drop when moved in steps
 		await this.page.mouse.move(0, DRAG_TARGET_Y, { steps: 10 });
 		await this.page.mouse.up();
+		await waitForDropToSettle(this.page);
 	}
 
 	save() {

@@ -15,7 +15,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { tournamentChannel } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { tournamentMatchChannel } from "~/features/tournament-match/tournament-match-utils";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { errorToastIfFalsy, parseRequestPayload } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
@@ -147,10 +147,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 /**
- * Drops a single team out: assigns a random active roster for teams with subs,
- * ends their in-progress matches and marks the team dropped out. Returns the ids
- * of matches that were ended so the caller can broadcast a single batch of chat
- * messages.
+ * Drops a team out: random active roster for teams with subs, ends their in-progress matches,
+ * marks them dropped. Returns the ended match ids for one batch of chat messages.
  */
 async function dropTeamOut({
 	tournament,
@@ -162,8 +160,7 @@ async function dropTeamOut({
 	const droppingTeam = tournament.teamById(teamId);
 	invariant(droppingTeam, "Invalid team id");
 
-	// Set active roster only for teams with subs (can't infer which players played)
-	// Teams without subs have their roster trivially inferred in summarizer
+	// only teams with subs need an active roster set, the summarizer infers the rest trivially
 	const hasSubs =
 		droppingTeam.memberUserIds.length > tournament.minMembersPerTeam;
 	if (hasSubs && !droppingTeam.activeRosterUserIds) {
@@ -189,7 +186,7 @@ async function dropTeamOut({
 				data: bracketData,
 				droppedTeamId: teamId,
 			});
-			const changedChatRoomIds = await BracketRepository.applyMatchChanges(
+			const chatRoomIds = await BracketRepository.applyMatchChanges(
 				{
 					previousData: bracketData,
 					result: droppedResult,
@@ -198,7 +195,10 @@ async function dropTeamOut({
 				trx,
 			);
 
-			return { endedMatchIds: droppedResult.endedMatchIds, changedChatRoomIds };
+			return {
+				endedMatchIds: droppedResult.endedMatchIds,
+				changedChatRoomIds: chatRoomIds,
+			};
 		});
 
 	// after the commit so the refetch it prompts can not read the pre-commit state

@@ -12,7 +12,7 @@ import { useCopyToClipboard } from "~/hooks/useCopyToClipboard";
 import { stageIds } from "~/modules/in-game-lists/stage-ids";
 import type { ModeWithStage } from "~/modules/in-game-lists/types";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { ipLabsMaps, MAPS_URL, navIconUrl } from "~/utils/urls";
@@ -125,10 +125,10 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
 				<Label>{t("common:maps.halfSz")}</Label>
 				<SendouSwitch isSelected={szEveryOther} onChange={setSzEveryOther} />
 			</div>
-			<SendouButton onPress={handleCreateMaplist} isDisabled={disabled}>
+			<SendouButton onClick={handleCreateMaplist} isDisabled={disabled}>
 				{t("common:maps.createMapList")}
 			</SendouButton>
-			{mapList && (
+			{mapList ? (
 				<>
 					<ol className={styles.mapList}>
 						{mapList.map(({ mode, stageId }, i) => (
@@ -147,7 +147,7 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
 						size="small"
 						variant="outlined"
 						icon={copySuccess ? <Check /> : <Clipboard />}
-						onPress={() =>
+						onClick={() =>
 							copyToClipboard(
 								mapList
 									.map(
@@ -163,7 +163,7 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
 						{t("common:actions.copyToClipboard")}
 					</SendouButton>
 				</>
-			)}
+			) : null}
 		</div>
 	);
 }

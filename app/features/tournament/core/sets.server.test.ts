@@ -1,81 +1,6 @@
 import { describe, expect, test } from "vitest";
 import type { FindByTournamentTeamIdItem } from "~/features/tournament-match/TournamentMatchRepository.server";
-import {
-	type AllRoundsItem,
-	tournamentTeamSets,
-	winCounts,
-} from "./sets.server";
-
-describe("winCounts", () => {
-	test("returns 0% (not NaN) when there are no played sets", () => {
-		const result = winCounts([]);
-
-		expect(result.sets.percentage).toBe(0);
-		expect(result.maps.percentage).toBe(0);
-	});
-
-	test("counts a set the team won on the bracket but lost on maps as a win", () => {
-		// e.g. a set the opponent forfeited after winning games, awarded 2-1 by the
-		// organizer — the bracket, and so the set score, says the team won it
-		const result = winCounts([
-			{
-				tournamentMatchId: 1,
-				score: [2, 1],
-				result: "win",
-				round: { type: "winners", round: 1 },
-				stageName: "Main bracket",
-				maps: [
-					{ stageId: 1, modeShort: "SZ", result: "loss", source: "BOTH" },
-					{ stageId: 2, modeShort: "TC", result: "loss", source: "BOTH" },
-					{ stageId: 3, modeShort: "RM", result: "win", source: "BOTH" },
-				],
-				opponent: { id: 2, name: "Opponent", roster: [] },
-			},
-		]);
-
-		expect(result.sets.won).toBe(1);
-	});
-
-	test("counts a set that ended early with the maps split as a win", () => {
-		const result = winCounts([
-			{
-				tournamentMatchId: 1,
-				score: [1, 1],
-				result: "win",
-				round: { type: "winners", round: 1 },
-				stageName: "Main bracket",
-				maps: [
-					{ stageId: 1, modeShort: "SZ", result: "win", source: "BOTH" },
-					{ stageId: 2, modeShort: "TC", result: "loss", source: "BOTH" },
-				],
-				opponent: { id: 2, name: "Opponent", roster: [] },
-			},
-		]);
-
-		expect(result.sets.won).toBe(1);
-	});
-
-	test("counts a set the team lost on the bracket but won on maps as a loss", () => {
-		const result = winCounts([
-			{
-				tournamentMatchId: 1,
-				score: [2, 1],
-				result: "loss",
-				round: { type: "winners", round: 1 },
-				stageName: "Main bracket",
-				maps: [
-					{ stageId: 1, modeShort: "SZ", result: "win", source: "BOTH" },
-					{ stageId: 2, modeShort: "TC", result: "loss", source: "BOTH" },
-					{ stageId: 3, modeShort: "RM", result: "win", source: "BOTH" },
-				],
-				opponent: { id: 2, name: "Opponent", roster: [] },
-			},
-		]);
-
-		expect(result.sets.won).toBe(0);
-		expect(result.maps.won).toBe(2);
-	});
-});
+import { type AllRoundsItem, tournamentTeamSets } from "./sets.server";
 
 const ALL_ROUNDS: AllRoundsItem[] = [
 	{
@@ -123,8 +48,7 @@ describe("tournamentTeamSets", () => {
 	});
 
 	test("takes the set result from the bracket winner even when the maps disagree", () => {
-		// organizer overrode the winner after the games were reported, so the team
-		// won the set on the bracket while losing 1-2 on the maps
+		// organizer overrode the winner after reports: won on the bracket, lost 1-2 on the maps
 		const [set] = tournamentTeamSets({
 			sets: [playedSetRow({ teamSide: "opponent1", winnerSide: "opponent1" })],
 			allRounds: ALL_ROUNDS,

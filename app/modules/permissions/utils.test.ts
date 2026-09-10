@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { ADMIN_ID } from "~/features/admin/admin-constants";
+import { hasPermission } from "./utils";
 
 const e2e = vi.hoisted(() => ({ isTestRun: false }));
 
@@ -8,8 +9,6 @@ vi.mock("~/utils/e2e", () => ({
 		return e2e.isTestRun;
 	},
 }));
-
-import { hasPermission } from "./utils";
 
 const REGULAR_USER_ID = ADMIN_ID + 1;
 const OTHER_USER_ID = ADMIN_ID + 2;

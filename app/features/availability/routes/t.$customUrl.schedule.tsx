@@ -1,42 +1,64 @@
 import clsx from "clsx";
 import { isSameDay } from "date-fns";
-import { Flag, Plus, Trash } from "lucide-react";
+import {
+	CalendarClock,
+	Flag,
+	Flame,
+	Pencil,
+	Plus,
+	Table,
+	Trash,
+} from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useLoaderData, useMatches } from "react-router";
 import * as R from "remeda";
+import type * as v from "valibot";
 import { ActionButton } from "~/components/ActionButton";
 import { Alert } from "~/components/Alert";
-import { SendouButton } from "~/components/elements/Button";
+import { LinkButton, SendouButton } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
+import {
+	SendouTab,
+	SendouTabList,
+	SendouTabPanel,
+	SendouTabs,
+} from "~/components/elements/Tabs";
 import { FormMessage } from "~/components/FormMessage";
 import { UserLink } from "~/components/UserLink";
 import { TeamGoBackButton } from "~/features/team/components/TeamGoBackButton";
 import type { TeamLoaderData } from "~/features/team/loaders/t.$customUrl.server";
 import { getMemberRoleType } from "~/features/team/team-utils";
 import { timezoneMiddleware } from "~/features/timezone/timezone-middleware.server";
-import { SendouForm } from "~/form/SendouForm";
+import { FormField } from "~/form/FormField";
+import { SendouForm, useFormFieldContext } from "~/form/SendouForm";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { useHasPermission } from "~/modules/permissions/hooks";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import { databaseTimestampToDate } from "~/utils/dates";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import type { SendouRouteHandle } from "~/utils/remix.server";
+import { EVENTS_PAGE } from "~/utils/urls";
 import { action } from "../actions/t.$customUrl.schedule.server";
 import {
 	addTeamEventSchema,
+	editTeamEventSchema,
 	teamScheduleActionSchema,
 } from "../availability-schemas";
 import { scheduleWeekSearchParams } from "../availability-search-params";
+import {
+	PlayableWindowsSummary,
+	TierDot,
+} from "../components/PlayableWindowsSummary";
 import { ScheduleDayCell } from "../components/ScheduleDayCell";
+import { ScheduleHeatmap } from "../components/ScheduleHeatmap";
 import { WeekToggle } from "../components/WeekToggle";
 import type { TeamScheduleLoaderData } from "../loaders/t.$customUrl.schedule.server";
 import { loader } from "../loaders/t.$customUrl.schedule.server";
-
-export { action, loader };
-
 import type { Route } from "./+types/t.$customUrl.schedule";
 import styles from "./t.$customUrl.schedule.module.css";
+
+export { action, loader };
 
 export const middleware: Route.MiddlewareFunction[] = [timezoneMiddleware];
 
@@ -45,6 +67,8 @@ export const handle: SendouRouteHandle = {
 };
 
 type WeekData = NonNullable<TeamScheduleLoaderData["weeks"]>[number];
+type TeamEventData = WeekData["teamEvents"][number];
+type TeamEventDuration = v.InferOutput<typeof editTeamEventSchema>["duration"];
 type MemberWeekRow = WeekData["members"][number];
 type TeamMember = TeamLoaderData["team"]["members"][number];
 
@@ -68,7 +92,10 @@ export default function TeamSchedulePage() {
 
 function ScheduleWeeks({ weeks }: { weeks: Array<WeekData> }) {
 	const { t } = useTranslation(["schedule"]);
-	const [{ week }, setParams] = useSearchParamsTyped(scheduleWeekSearchParams);
+	const members = useTeamMembers();
+	const [{ week, view }, setParams] = useSearchParamsTyped(
+		scheduleWeekSearchParams,
+	);
 	const { formatter: headingFormatter } = useDateTimeFormat({
 		month: "short",
 		day: "numeric",
@@ -86,15 +113,51 @@ function ScheduleWeeks({ weeks }: { weeks: Array<WeekData> }) {
 						shownWeek.days[6].noonAt,
 					)}
 				</h2>
-				<WeekToggle
-					name="schedule-week"
-					value={week}
-					onChange={(value) => setParams({ week: value })}
-				/>
+				<div className={styles.headerActions}>
+					<LinkButton
+						to={scheduleWeekSearchParams.href(EVENTS_PAGE, { week })}
+						variant="minimal"
+						size="miniscule"
+						icon={<CalendarClock />}
+						testId="edit-availability-link"
+					>
+						{t("schedule:team.editAvailability")}
+					</LinkButton>
+					<WeekToggle
+						name="schedule-week"
+						value={week}
+						onChange={(value) => setParams({ week: value })}
+					/>
+				</div>
 			</div>
 			<TeamEvents week={shownWeek} />
-			<ScheduleGrid week={shownWeek} />
-			<PlayableWindowsSummary week={shownWeek} />
+			<SendouTabs
+				selectedKey={view}
+				onSelectionChange={(key) =>
+					setParams({ view: key === "grid" ? "grid" : "heatmap" })
+				}
+			>
+				<SendouTabList>
+					<SendouTab id="heatmap" icon={<Flame />}>
+						{t("schedule:team.viewHeatmap")}
+					</SendouTab>
+					<SendouTab id="grid" icon={<Table />}>
+						{t("schedule:team.viewGrid")}
+					</SendouTab>
+				</SendouTabList>
+				<SendouTabPanel id="heatmap">
+					<ScheduleHeatmap week={shownWeek} members={members} />
+				</SendouTabPanel>
+				<SendouTabPanel id="grid">
+					<div className="stack md">
+						<ScheduleGrid week={shownWeek} />
+						<PlayableWindowsSummary
+							windows={shownWeek.windows}
+							minPlayers={shownWeek.minPlayers}
+						/>
+					</div>
+				</SendouTabPanel>
+			</SendouTabs>
 			<WeekNotes week={shownWeek} />
 		</div>
 	);
@@ -109,7 +172,7 @@ function ScheduleGrid({ week }: { week: WeekData }) {
 	});
 
 	const rows = week.members.flatMap((row) => {
-		const member = members.find((member) => member.id === row.userId);
+		const member = members.find((candidate) => candidate.id === row.userId);
 
 		return member ? [{ ...row, member }] : [];
 	});
@@ -145,11 +208,10 @@ function ScheduleGrid({ week }: { week: WeekData }) {
 						{week.days.map((day, dayIndex) => (
 							<th key={day.date} scope="col" className={styles.dayHeader}>
 								{day.windowTier ? (
-									<span
-										className={clsx(styles.tierDot, styles.dayDot, {
-											[styles.tierDotFull]: day.windowTier === "FULL",
-										})}
-										data-testid={`schedule-day-dot-${dayIndex}`}
+									<TierDot
+										full={day.windowTier === "FULL"}
+										className={styles.dayDot}
+										testId={`schedule-day-dot-${dayIndex}`}
 									/>
 								) : null}
 								{dayFormatter.format(day.noonAt)}
@@ -182,7 +244,7 @@ function ScheduleCell({
 	day: MemberWeekRow["days"][number];
 	dayIndex: number;
 }) {
-	const note = row.notes.find((note) => note.dayIndex === dayIndex);
+	const note = row.notes.find((candidate) => candidate.dayIndex === dayIndex);
 
 	return (
 		<td data-testid={`schedule-cell-${row.userId}-${dayIndex}`}>
@@ -193,63 +255,6 @@ function ScheduleCell({
 				note={note?.text}
 			/>
 		</td>
-	);
-}
-
-function PlayableWindowsSummary({ week }: { week: WeekData }) {
-	const { t } = useTranslation(["schedule"]);
-
-	const fullWindows = week.windows.filter((window) => window.tier === "FULL");
-	const oneShortWindows = week.windows.filter(
-		(window) => window.tier === "ONE_SHORT",
-	);
-
-	return (
-		<div className={styles.summary} data-testid="schedule-summary">
-			<div className={styles.summaryRow}>
-				<span className={clsx(styles.tierDot, styles.tierDotFull)} />
-				<span className={styles.summaryLabel}>
-					{t("schedule:team.canPlay", { players: week.minPlayers })}
-				</span>
-				<WindowList windows={fullWindows} />
-			</div>
-			{week.minPlayers > 1 && oneShortWindows.length > 0 ? (
-				<div className={styles.summaryRow}>
-					<span className={styles.tierDot} />
-					<span className={styles.summaryLabel}>
-						{t("schedule:team.withSub", { players: week.minPlayers - 1 })}
-					</span>
-					<WindowList windows={oneShortWindows} />
-				</div>
-			) : null}
-		</div>
-	);
-}
-
-function WindowList({ windows }: { windows: WeekData["windows"] }) {
-	const { t } = useTranslation(["schedule"]);
-	const { formatter: windowFormatter } = useDateTimeFormat({
-		weekday: "short",
-		hour: "numeric",
-		minute: "2-digit",
-	});
-
-	if (windows.length === 0) {
-		return <span className="text-lighter">{t("schedule:team.noWindows")}</span>;
-	}
-
-	return (
-		<span className={styles.windowList}>
-			{windows.map((window) => (
-				<span
-					key={window.startsAt}
-					className={styles.window}
-					data-testid="schedule-window"
-				>
-					{windowFormatter.formatRange(window.startsAt, window.endsAt)}
-				</span>
-			))}
-		</span>
 	);
 }
 
@@ -291,8 +296,12 @@ function WeekNotes({ week }: { week: WeekData }) {
 function TeamEvents({ week }: { week: WeekData }) {
 	const { t } = useTranslation(["schedule"]);
 	const team = useTeam();
+	const members = useTeamMembers();
 	const canEdit = useHasPermission(team, "EDIT");
 	const [addDialogOpen, setAddDialogOpen] = React.useState(false);
+	const [editedEvent, setEditedEvent] = React.useState<TeamEventData | null>(
+		null,
+	);
 	const { formatter: dayFormatter } = useDateTimeFormat({
 		weekday: "short",
 		day: "numeric",
@@ -301,6 +310,19 @@ function TeamEvents({ week }: { week: WeekData }) {
 		hour: "numeric",
 		minute: "2-digit",
 	});
+
+	const participantNames = (event: TeamEventData) =>
+		event.participants
+			.map(
+				(participant) =>
+					members.find((member) => member.id === participant.userId)?.username,
+			)
+			.filter(R.isDefined)
+			.join(", ");
+
+	// an event that already started can no longer pass the form's start time validation
+	const canEditEvent = (event: TeamEventData) =>
+		canEdit && databaseTimestampToDate(event.startsAt) > new Date();
 
 	if (week.teamEvents.length === 0 && !canEdit) return null;
 
@@ -313,7 +335,7 @@ function TeamEvents({ week }: { week: WeekData }) {
 						size="small"
 						variant="outlined"
 						icon={<Plus />}
-						onPress={() => setAddDialogOpen(true)}
+						onClick={() => setAddDialogOpen(true)}
 						data-testid="add-team-event-button"
 					>
 						{t("schedule:events.add")}
@@ -345,6 +367,26 @@ function TeamEvents({ week }: { week: WeekData }) {
 									: `${timeFormatter.format(databaseTimestampToDate(event.startsAt))} – ${timeFormatter.format(databaseTimestampToDate(event.endsAt))}`}
 							</span>
 							<span className={styles.eventName}>{event.name}</span>
+							{event.participants.length > 0 ? (
+								<span
+									className={clsx(
+										styles.eventParticipants,
+										"text-lighter text-xs",
+									)}
+								>
+									{participantNames(event)}
+								</span>
+							) : null}
+							{canEditEvent(event) ? (
+								<SendouButton
+									variant="minimal"
+									size="miniscule"
+									icon={<Pencil />}
+									onClick={() => setEditedEvent(event)}
+									aria-label={t("schedule:events.edit")}
+									data-testid={`edit-team-event-${event.id}`}
+								/>
+							) : null}
 							{canEdit ? (
 								<ActionButton
 									schema={teamScheduleActionSchema}
@@ -369,6 +411,12 @@ function TeamEvents({ week }: { week: WeekData }) {
 			{addDialogOpen ? (
 				<AddTeamEventDialog close={() => setAddDialogOpen(false)} />
 			) : null}
+			{editedEvent ? (
+				<EditTeamEventDialog
+					event={editedEvent}
+					close={() => setEditedEvent(null)}
+				/>
+			) : null}
 		</div>
 	);
 }
@@ -379,18 +427,79 @@ function AddTeamEventDialog({ close }: { close: () => void }) {
 	return (
 		<SendouDialog heading={t("schedule:events.addDialogTitle")} onClose={close}>
 			<SendouForm schema={addTeamEventSchema} onSuccess={close}>
-				{({ FormField }) => (
-					<>
-						<FormField name="name" />
-						<FormField name="startsAt" />
-						<FormField name="duration" />
-						<FormMessage type="info">
-							{t("schedule:events.membersWillSee")}
-						</FormMessage>
-					</>
-				)}
+				<TeamEventFormFields />
 			</SendouForm>
 		</SendouDialog>
+	);
+}
+
+function EditTeamEventDialog({
+	event,
+	close,
+}: {
+	event: TeamEventData;
+	close: () => void;
+}) {
+	const { t } = useTranslation(["schedule"]);
+
+	return (
+		<SendouDialog
+			heading={t("schedule:events.editDialogTitle")}
+			onClose={close}
+		>
+			<SendouForm
+				schema={editTeamEventSchema}
+				onSuccess={close}
+				defaultValues={{
+					eventId: event.id,
+					name: event.name,
+					startsAt: databaseTimestampToDate(event.startsAt),
+					duration: String(
+						(event.endsAt - event.startsAt) / 60,
+					) as TeamEventDuration,
+					participants: event.participants.length > 0 ? "SELECTED" : "ALL",
+					participantUserIds: event.participants.map((participant) =>
+						String(participant.userId),
+					),
+				}}
+			>
+				<TeamEventFormFields />
+			</SendouForm>
+		</SendouDialog>
+	);
+}
+
+function TeamEventFormFields() {
+	const { t } = useTranslation(["schedule"]);
+
+	return (
+		<>
+			<FormField name="name" />
+			<FormField name="startsAt" />
+			<FormField name="duration" />
+			<FormField name="participants" />
+			<ParticipantUserIdsFormField />
+			<FormMessage type="info">
+				{t("schedule:events.membersWillSee")}
+			</FormMessage>
+		</>
+	);
+}
+
+function ParticipantUserIdsFormField() {
+	const { values } = useFormFieldContext();
+	const members = useTeamMembers();
+
+	if (values.participants !== "SELECTED") return null;
+
+	return (
+		<FormField
+			name="participantUserIds"
+			options={members.map((member) => ({
+				value: String(member.id),
+				label: () => member.username,
+			}))}
+		/>
 	);
 }
 

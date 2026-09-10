@@ -19,16 +19,12 @@ import type {
 } from "./core/engine/types";
 
 const CHAT_ROOM_LIFESPAN_DAYS = 7;
-// a league round can be scheduled weeks out, and its rooms are all created when
-// the bracket is inserted (see insertBracket)
+// league rounds can be scheduled weeks out and all rooms are created on insertBracket
 const LEAGUE_CHAT_ROOM_LIFESPAN_DAYS = 30;
 
 /**
- * Loads the full BracketData for a tournament (all stages). Includes the
- * score/totalKos aggregation over TournamentMatchGameResult. Direct replacement
- * for the old manager.get.tournamentData(); also called from write actions
- * inside their transaction (propagation must be computed from fresh rows, not
- * the cached Tournament instance).
+ * Full BracketData of all stages, with score/totalKos aggregated over TournamentMatchGameResult.
+ * Also called inside write transactions: propagation needs fresh rows, not the cached Tournament.
  */
 export async function findByTournamentId(
 	tournamentId: number,
@@ -97,11 +93,6 @@ export async function findByTournamentId(
 						"TournamentStage.id",
 						"TournamentMatch.stageId",
 					)
-					.leftJoin(
-						"TournamentMatchGameResult",
-						"TournamentMatch.id",
-						"TournamentMatchGameResult.matchId",
-					)
 					.select([
 						"TournamentMatch.id",
 						"TournamentMatch.stageId",
@@ -115,7 +106,6 @@ export async function findByTournamentId(
 						serializedOpponentWithKos("opponentTwo").as("opponent2"),
 					])
 					.where("TournamentStage.tournamentId", "=", tournamentId)
-					.groupBy("TournamentMatch.id")
 					.orderBy("TournamentMatch.stageId", "asc")
 					.orderBy("TournamentMatch.id", "asc"),
 			).as("match"),
@@ -125,33 +115,28 @@ export async function findByTournamentId(
 	return { stage, group, round, match };
 }
 
-/**
- * Builds the opponent JSON with the freshly aggregated KO count: sets
- * `totalKos` to the SQL sum over the match's game results. Resolves to `null`
- * for BYEs (the column is `null`).
- */
+/** Opponent JSON with `totalKos` counted over the match's game results, `null` for BYEs. */
 function serializedOpponentWithKos(
 	column: "opponentOne" | "opponentTwo",
 ): RawBuilder<ParticipantResult | null> {
+	const opponent = kyselySql.ref(`TournamentMatch.${column}`);
+
+	// a correlated count is answered by the (matchId, winnerTeamId, ko) index alone; the
+	// left join + group by it replaces read every game result row of the tournament
 	return kyselySql<ParticipantResult | null>`json_set(
-		${kyselySql.ref(`TournamentMatch.${column}`)},
+		${opponent},
 		'$.totalKos',
-		sum(
-			case
-				when "TournamentMatchGameResult"."ko" = 1
-					and "TournamentMatchGameResult"."winnerTeamId" = ${kyselySql.ref(`TournamentMatch.${column}`)} ->> '$.id'
-				then 1
-				else 0
-			end
+		(
+			select count(*)
+			from "TournamentMatchGameResult"
+			where "TournamentMatchGameResult"."matchId" = "TournamentMatch"."id"
+				and "TournamentMatchGameResult"."winnerTeamId" = ${opponent} ->> '$.id'
+				and "TournamentMatchGameResult"."ko" = 1
 		)
 	)`;
 }
 
-/**
- * Persists Engine.create output in one transaction. Inserts stage → groups →
- * rounds → matches, translating the engine's local ids to real row ids. The
- * stage number is assigned from the existing stages of the tournament.
- */
+/** Persists Engine.create output, translating local ids to row ids. Stage number follows the existing stages. */
 export function insertBracket(args: {
 	tournamentId: number;
 	name: string;
@@ -174,6 +159,13 @@ export function insertBracket(args: {
 			})
 			.returning(["id"])
 			.executeTakeFirstOrThrow();
+
+		// no team can join once a bracket has started, so none is looking for members anymore
+		await trx
+			.updateTable("TournamentTeam")
+			.set({ isLooking: 0 })
+			.where("tournamentId", "=", args.tournamentId)
+			.execute();
 
 		if (
 			args.bracket.group.length === 0 ||
@@ -217,9 +209,8 @@ export function insertBracket(args: {
 
 		const statuses = matchStatuses(args.bracket);
 
-		// only matches that can already be played get a chat room; the rest get
-		// theirs as they start (see syncStartedAt). A league's rounds are
-		// independent, so every one of its matches is playable right away
+		// only playable matches get a chat room now, the rest as they start (see syncStartedAt).
+		// A league's rounds are independent so every match is playable right away
 		const startedMatches = args.bracket.match.filter(
 			(match) => statuses.get(match.id) === "STARTED",
 		);
@@ -256,12 +247,10 @@ export function insertBracket(args: {
 }
 
 /**
- * UPDATEs the opponents of the changed matches and keeps startedAt in sync with
- * the statuses that the new state implies. Called inside the caller's
- * transaction with the bracket data the operation was computed from.
+ * UPDATEs the changed matches' opponents and syncs startedAt with the implied statuses. Called inside
+ * the caller's transaction with the bracket data the operation was computed from.
  *
- * @returns ids of the chat rooms whose inactive flag was rewritten, for the
- * caller to notify their participants of once the transaction has committed
+ * @returns ids of the chat rooms whose inactive flag changed, to notify participants of after commit
  */
 export async function applyMatchChanges(
 	args: {
@@ -297,10 +286,8 @@ export async function applyMatchChanges(
 }
 
 /**
- * A match starts when it stops being pending, which can also happen as a side
- * effect of another match's result (the teams of a round robin round becoming
- * free, an opponent advancing). Matches that were already started keep the
- * timestamp they got, and one that goes back to pending loses it.
+ * A match starts when it stops being pending, possibly as a side effect of another match's result.
+ * Already started matches keep their timestamp, one going back to pending loses it.
  */
 async function syncStartedAt(
 	args: { previousData: BracketData; data: BracketData; isLeague: boolean },
@@ -365,8 +352,7 @@ async function syncStartedAt(
 }
 
 /**
- * A match completing marks its chat room inactive; a completed match losing its
- * winner again (reopen, undone final game) marks the room back active.
+ * Completing marks the chat room inactive, losing the winner again (reopen, undone final game) reactivates it.
  *
  * @returns ids of the rewritten chat rooms
  */
@@ -467,6 +453,7 @@ export async function insertRoundMatches(
 
 /** DELETEs a round's matches (swiss unadvance). */
 export async function deleteRoundMatches(args: {
+	stageId: number;
 	groupId: number;
 	roundId: number;
 }): Promise<void> {
@@ -474,6 +461,7 @@ export async function deleteRoundMatches(args: {
 		const matches = await trx
 			.selectFrom("TournamentMatch")
 			.select(["TournamentMatch.chatRoomId"])
+			.where("stageId", "=", args.stageId)
 			.where("groupId", "=", args.groupId)
 			.where("roundId", "=", args.roundId)
 			.execute();
@@ -484,6 +472,7 @@ export async function deleteRoundMatches(args: {
 
 		await trx
 			.deleteFrom("TournamentMatch")
+			.where("stageId", "=", args.stageId)
 			.where("groupId", "=", args.groupId)
 			.where("roundId", "=", args.roundId)
 			.execute();
@@ -556,10 +545,7 @@ function hasBothOpponents(match: GeneratedRound["matches"][number]) {
 	return Boolean(match.opponent1?.id && match.opponent2?.id);
 }
 
-/**
- * Lines the ids of a multi-row insert back up with the rows they were inserted for. SQLite assigns
- * ids in insertion order, but RETURNING makes no ordering promise, so the ids are sorted first.
- */
+/** SQLite assigns ids in insertion order but RETURNING makes no ordering promise, so the ids are sorted first. */
 function zipInsertedIds(
 	sources: Array<{ id: number }>,
 	inserted: Array<{ id: number }>,

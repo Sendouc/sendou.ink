@@ -1,8 +1,6 @@
 /**
  * Golden-file tests for the ScoreboardOwnDetector over every fixture in
- * scoreboard-own/, plus cross-negative sweeps in both directions: the own
- * gate must stay quiet on every other detector's positives (and the shared
- * negatives), and every other gate must stay quiet on the own fixtures.
+ * scoreboard-own/, plus cross-negative sweeps both ways.
  */
 
 import assert from "node:assert/strict";
@@ -23,7 +21,7 @@ import {
 	runDetectorOnFixture,
 } from "../node/fixtures";
 import { loadScoreboardResources } from "../node/resources";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 await loadOpenCV();
 const resources = await loadScoreboardResources();

@@ -16,10 +16,9 @@ describe("Analyze build", () => {
 				hasTacticooler: false,
 			});
 
-			const hasDamage =
-				analyzed.stats.damages.filter(
-					(dmg) => damageTypeToWeaponType[dmg.type] === "MAIN",
-				).length > 0;
+			const hasDamage = analyzed.stats.damages.some(
+				(dmg) => damageTypeToWeaponType[dmg.type] === "MAIN",
+			);
 
 			if (!hasDamage) {
 				weaponsWithoutDamage.push(weaponSplId);

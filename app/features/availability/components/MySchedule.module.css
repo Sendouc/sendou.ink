@@ -6,6 +6,18 @@
 	flex-wrap: wrap;
 }
 
+.title {
+	display: flex;
+	align-items: center;
+	gap: var(--s-1);
+	flex-wrap: wrap;
+
+	/* the two links read as one blur of blue at the gap the heading needs */
+	& > a + button {
+		margin-inline-start: var(--s-1);
+	}
+}
+
 .weekHeading {
 	font-size: var(--font-xs);
 	font-weight: var(--weight-semi);

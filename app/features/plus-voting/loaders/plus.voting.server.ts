@@ -88,8 +88,8 @@ export const loader: LoaderFunction = async () => {
 	}
 
 	const cardUserIds = R.unique(
-		usersForVoting.flatMap(({ user, suggestion }) => [
-			user.id,
+		usersForVoting.flatMap(({ user: votedUser, suggestion }) => [
+			votedUser.id,
 			...(suggestion?.entries ?? []).map((entry) => entry.author.id),
 		]),
 	);

@@ -125,6 +125,7 @@ export function YouTubeEmbed({
 					autoplay ? "1" : "0"
 				}&controls=1&rel=0&modestbranding=1&start=${start ?? 0}`}
 				frameBorder="0"
+				sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 				allowFullScreen
 				title="Embedded youtube"

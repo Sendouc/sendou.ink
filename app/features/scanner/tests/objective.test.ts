@@ -1,9 +1,7 @@
 /**
- * Golden-file tests for the ObjectiveDetector over every fixture in
- * objective/, mirroring map-start.test.ts, plus cross-negative sweeps in
- * both directions: the objective gate must stay quiet on every other
- * detector's positives (and the shared negatives), and their gates must
- * stay quiet on the objective fixtures.
+ * Golden-file tests for the ObjectiveDetector over every fixture in objective/,
+ * plus cross-negative sweeps both ways: the objective gate must stay quiet on
+ * every other detector's positives (and the shared negatives), and vice versa.
  */
 
 import assert from "node:assert/strict";
@@ -19,7 +17,7 @@ import { createScoreboardDetector } from "../core/detectors/scoreboard/index";
 import { createScoreboardBattleLogReplayDetector } from "../core/detectors/scoreboard-battle-log-replay/index";
 import { createScoreboardOwnDetector } from "../core/detectors/scoreboard-own/index";
 import type { DetectedEvent, Detector } from "../core/detectors/types";
-import { hueDistance, hueOf } from "../core/ink-color";
+import { hueDistance, hueOf, type InkRgb } from "../core/ink-color";
 import {
 	type Fixture,
 	isFieldSkipped,
@@ -27,7 +25,7 @@ import {
 	runDetectorOnFixture,
 } from "../node/fixtures";
 import { loadScoreboardResources } from "../node/resources";
-import test from "./node-test-compat";
+import { test } from "./node-test-compat";
 
 await loadOpenCV();
 const resources = await loadScoreboardResources();
@@ -45,7 +43,7 @@ for (const fixture of fixtures) {
 			fixture,
 		);
 		const events = allEvents.filter(
-			(event) => event.type === "Objective",
+			(candidate) => candidate.type === "Objective",
 		) as DetectedEvent<ObjectiveData>[];
 		const expectPositive = fixture.expected.event === "Objective";
 
@@ -134,12 +132,10 @@ for (const fixture of fixtures) {
 	});
 }
 
-// The cast fixture pair captures the same game under both camera
-// arrangements (the specced team's plate sits left, so purple is left in
-// one frame and right in the other): each frame's two ink hues must
-// separate cleanly, and cross-frame the same team's hue must land on the
-// same cluster with the sides swapped — the invariant cast score tracking
-// (match-builder's color orientation) rests on.
+// The cast fixture pair captures the same game under both camera arrangements
+// (the specced team's plate sits left): each frame's two ink hues must separate
+// cleanly, and cross-frame the same team's hue must land on the same cluster
+// with sides swapped — the invariant match-builder's color orientation rests on.
 test("cast fixture pair: team ink hues identify sides across camera swaps", async () => {
 	const pair = [
 		"splat-zones-cast-specced-purple-left",
@@ -147,7 +143,7 @@ test("cast fixture pair: team ink hues identify sides across camera swaps", asyn
 	].map((name) => fixtures.find((fixture) => fixture.name === name));
 	assert.ok(pair[0] && pair[1], "cast fixture pair missing");
 
-	const colors = [];
+	const colors: Array<readonly [InkRgb, InkRgb]> = [];
 	for (const fixture of pair) {
 		const { events } = await runDetectorOnFixture(detector, fixture!);
 		const teamColor = (
@@ -194,10 +190,9 @@ for (const [dir, eventType] of otherPositiveSets) {
 	}
 }
 
-// No sweep over death positives: the death overlay rides live gameplay
-// whose counter HUD stays visible (several death fixtures show full,
-// correctly-readable plates), so neither gate- nor parse-level quiet can be
-// promised there. Death frames with counters make fine objective fixtures.
+// No sweep over death positives: the death overlay rides live gameplay whose
+// counter HUD stays visible (several death fixtures show readable plates), so
+// no quiet can be promised there. Death frames with counters make fine fixtures.
 
 // Shared negatives (tests/fixtures/negative/): frames no detector may fire on.
 for (const fixture of loadFixtures("negative")) {

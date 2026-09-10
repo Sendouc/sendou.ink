@@ -155,6 +155,8 @@ test.describe("Tournament bracket multi stage", () => {
 		await userPage.openSeasons();
 		await expect(userPage.locators.seasonsTournamentResult).toBeVisible();
 
+		await userPage.backToProfile();
+
 		const userResults = await userPage.openResults();
 		await expect(
 			userResults.locators.tournamentNameCells.first(),
@@ -417,12 +419,11 @@ test.describe("Tournament bracket multi stage", () => {
 
 		await isNotVisible(brackets.locators.preparedMapsCheckIcon);
 
-		// should reuse prepared maps from Great White
+		// reuses the maps prepared for Great White
 		await brackets.bracketTab("Hammerhead").click();
 
 		await expect(brackets.locators.preparedMapsCheckIcon).toBeVisible();
 
-		// finally, test third place match linking
 		await brackets.bracketTab("Great White").click();
 
 		const unlinkDialog = await brackets.openPrepareMapsDialog();
@@ -435,7 +436,7 @@ test.describe("Tournament bracket multi stage", () => {
 
 		const relinkDialog = await brackets.openPrepareMapsDialog();
 
-		// link button should be visible because we unlinked and made finals and third place match maps different earlier
+		// linking is offered again since the finals and third place match maps now differ
 		await expect(relinkDialog.locators.linkFinalsButton).toBeVisible();
 	});
 });

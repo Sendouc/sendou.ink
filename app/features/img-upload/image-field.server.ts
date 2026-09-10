@@ -4,7 +4,7 @@ import type { AuthenticatedUser } from "~/features/auth/core/user.server";
 import type { ImageFieldValue } from "~/form/image-field";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { shortNanoid } from "~/utils/id";
-import invariant from "~/utils/invariant";
+import { invariant } from "~/utils/invariant";
 import { errorToastIfFalsy } from "~/utils/remix.server";
 import * as ImageRepository from "./ImageRepository.server";
 import { dataUrlToImageBuffer } from "./image-bytes.server";
@@ -12,28 +12,40 @@ import { uploadStreamToS3 } from "./s3.server";
 import { MAX_UNVALIDATED_IMG_COUNT } from "./upload-constants";
 
 /**
- * Resolves a SendouForm `image` field value to the image id to store on the consuming FK column.
+ * Resolves a SendouForm `image` field value to the image id the caller stores on its FK column:
+ * `null` → `null`, `EXISTING` → the unchanged `imgId`, `NEW` → uploads to S3 and inserts an
+ * unvalidated image row (auto-validated for supporters or when `autoValidate` is set).
  *
- * - `null` → `null` (image removed / none)
- * - `EXISTING` → the unchanged `imgId` (no bytes are re-uploaded)
- * - `NEW` → decodes the base64 image, uploads it to S3 and inserts an unvalidated image row,
- *   auto-validating it for supporters (or always when `autoValidate` is set), then returns the
- *   new id.
- *
- * The consuming action is responsible for writing the returned value to its own FK column.
+ * An `EXISTING` id is client-supplied, so it is only accepted when the user uploaded that image
+ * themselves or `isCurrentImgId` vouches for it; otherwise anyone could attach (and, via the
+ * entity's image cleanup, delete) another user's image.
  */
 export async function imageFieldValueToImgId({
 	value,
 	user,
 	autoValidate = false,
+	isCurrentImgId,
 }: {
 	value: ImageFieldValue;
 	user: AuthenticatedUser;
-	/** Validate the image immediately, bypassing the moderator queue (e.g. trusted org logos). */
+	/** Bypass the moderator queue (e.g. trusted org logos). */
 	autoValidate?: boolean;
+	/** Whether the entity being edited already holds this image, letting co-editors keep one someone else uploaded. */
+	isCurrentImgId?: (imgId: number) => boolean | Promise<boolean>;
 }): Promise<number | null> {
 	if (!value) return null;
-	if (value.type === "EXISTING") return value.imgId;
+	if (value.type === "EXISTING") {
+		errorToastIfFalsy(
+			await canKeepExistingImage({
+				imgId: value.imgId,
+				userId: user.id,
+				isCurrentImgId,
+			}),
+			"Image does not belong to you",
+		);
+
+		return value.imgId;
+	}
 
 	const shouldAutoValidate = autoValidate || user.roles.includes("SUPPORTER");
 
@@ -67,4 +79,20 @@ export async function imageFieldValueToImgId({
 	});
 
 	return img.id;
+}
+
+async function canKeepExistingImage({
+	imgId,
+	userId,
+	isCurrentImgId,
+}: {
+	imgId: number;
+	userId: number;
+	isCurrentImgId?: (imgId: number) => boolean | Promise<boolean>;
+}) {
+	if (await isCurrentImgId?.(imgId)) return true;
+
+	const image = await ImageRepository.findById(imgId);
+
+	return image?.submitterUserId === userId;
 }

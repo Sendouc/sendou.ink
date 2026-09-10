@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { Check, Download, Funnel, Megaphone, Star } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
@@ -39,12 +40,9 @@ import { LUTI_DIVS } from "../scrims-constants";
 import { type newRequestSchema, scrimsActionSchema } from "../scrims-schemas";
 import { scrimsSearchParams } from "../scrims-search-params";
 import type { LutiDiv, ScrimFilters, ScrimPost } from "../scrims-types";
+import styles from "./scrims.module.css";
 
 export { action, loader };
-
-import { Check, Download, Funnel, Megaphone, Star } from "lucide-react";
-
-import styles from "./scrims.module.css";
 
 export type NewRequestFormFields = v.InferOutput<typeof newRequestSchema>;
 
@@ -97,14 +95,14 @@ export default function ScrimsPage() {
 
 	return (
 		<Main className="stack lg">
-			{user ? (
-				<div className="stack horizontal sm items-center flex-wrap">
+			<div className="stack horizontal sm items-center flex-wrap">
+				{user ? (
 					<LinkButton size="small" to={associationsPage()} variant="outlined">
 						{t("scrims:associations.title")}
 					</LinkButton>
-					<Filters />
-				</div>
-			) : null}
+				) : null}
+				<Filters />
+			</div>
 			<SendouTabs
 				key={pendingRequestPostId}
 				defaultSelectedKey={
@@ -269,7 +267,7 @@ function Filters() {
 					<SendouButton
 						icon={<Star />}
 						isDisabled={persistFilters.state !== "idle"}
-						onPress={() =>
+						onClick={() =>
 							persistFilters.submit("PERSIST_SCRIM_FILTERS", { filters })
 						}
 						data-testid="save-filters-as-default-button"
@@ -506,7 +504,7 @@ function AvailableScrimsFilterButtons({
 				<SendouButton
 					variant="minimal"
 					size="miniscule"
-					onPress={() => setShowFiltered(!showFiltered)}
+					onClick={() => setShowFiltered(!showFiltered)}
 					icon={<Funnel />}
 					className={showFiltered ? styles.active : undefined}
 				>
@@ -519,7 +517,7 @@ function AvailableScrimsFilterButtons({
 				<SendouButton
 					variant="minimal"
 					size="miniscule"
-					onPress={() => setShowRequestPending(!showRequestPending)}
+					onClick={() => setShowRequestPending(!showRequestPending)}
 					icon={<Download />}
 					className={showRequestPending ? styles.active : undefined}
 					data-testid="toggle-pending-requests-button"
@@ -549,12 +547,12 @@ function ScrimsDaySeparatedOwnedCards({ posts }: { posts: ScrimPost[] }) {
 		<div className="stack lg">
 			{Object.entries(postsByDay)
 				.sort(([a], [b]) => a.localeCompare(b))
-				.map(([day, posts]) => {
+				.map(([day, dayPosts]) => {
 					return (
 						<div key={day} className="stack md">
 							<h2 className="text-sm">
 								<LocaleTime
-									date={posts![0].startsAt}
+									date={dayPosts![0].startsAt}
 									options={{
 										day: "numeric",
 										month: "numeric",
@@ -563,7 +561,7 @@ function ScrimsDaySeparatedOwnedCards({ posts }: { posts: ScrimPost[] }) {
 								/>
 							</h2>
 							<div className="stack lg">
-								{posts!.map((post) => {
+								{dayPosts!.map((post) => {
 									const isAccepted = post.requests.some(
 										(request) => request.isAccepted,
 									);
@@ -619,12 +617,12 @@ function ScrimsDaySeparatedBookedCards({ posts }: { posts: ScrimPost[] }) {
 		<div className="stack lg">
 			{Object.entries(postsByDay)
 				.sort(([a], [b]) => a.localeCompare(b))
-				.map(([day, posts]) => {
+				.map(([day, dayPosts]) => {
 					return (
 						<div key={day} className="stack md">
 							<h2 className="text-sm">
 								<LocaleTime
-									date={posts![0].startsAt}
+									date={dayPosts![0].startsAt}
 									options={{
 										day: "numeric",
 										month: "numeric",
@@ -633,7 +631,7 @@ function ScrimsDaySeparatedBookedCards({ posts }: { posts: ScrimPost[] }) {
 								/>
 							</h2>
 							<div className="stack lg">
-								{posts!.map((post) => {
+								{dayPosts!.map((post) => {
 									const acceptedRequest = post.requests.find(
 										(request) => request.isAccepted,
 									);

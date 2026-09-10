@@ -21,7 +21,10 @@ export type SystemMessageType =
 	| "CANCEL_CONFIRMED"
 	| "CANCEL_REFUSED"
 	| "MAP_REPLAYED"
-	| "MAP_PICKED";
+	| "MAP_PICKED"
+	| "MAP_BANNED"
+	| "MODE_PICKED"
+	| "MODE_BANNED";
 
 export type PersistedSystemMessageType = Extract<
 	SystemMessageType,
@@ -33,6 +36,9 @@ export type PersistedSystemMessageType = Extract<
 	| "USER_LEFT"
 	| "MAP_REPLAYED"
 	| "MAP_PICKED"
+	| "MAP_BANNED"
+	| "MODE_PICKED"
+	| "MODE_BANNED"
 >;
 
 export type SoundOnlySystemMessageType = Extract<

@@ -8,7 +8,7 @@ import { SendouAnchoredPopover } from "./elements/Popover";
 import { LocaleTime } from "./LocaleTime";
 import styles from "./TimePopover.module.css";
 
-export default function TimePopover({
+export function TimePopover({
 	date,
 	options = {
 		minute: "numeric",
@@ -70,7 +70,7 @@ export default function TimePopover({
 					<SendouButton
 						size="miniscule"
 						variant="minimal"
-						onPress={() => copyToClipboard(`<t:${date.valueOf() / 1000}:F>`)}
+						onClick={() => copyToClipboard(`<t:${date.valueOf() / 1000}:F>`)}
 						icon={copySuccess ? <Check /> : <Clipboard />}
 					>
 						{t("common:actions.copyTimestampForDiscord")}
