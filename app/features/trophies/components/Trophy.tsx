@@ -27,11 +27,11 @@ type TrophyCtxValue =
 const TrophyCtx = createContext<TrophyCtxValue | undefined>(undefined);
 
 /**
- * Shares one PicoCAD2 WebGL context across every `Trophy` inside. Without a provider each `Trophy`
- * creates its own, but browsers cap active WebGL contexts at 16, so big grids or rapid remounts
- * break rendering. One page-wide singleton is held for the page lifetime (per-mount contexts stack
- * faster than the browser frees them), and while it is loading descendants render a spacer instead
- * of a canvas that would create their own context.
+ * Shares one PicoCAD2 WebGL context across every `Trophy`. Browsers cap active WebGL contexts at 16,
+ * so big grids or rapid remounts with a context per trophy break rendering, and a context created
+ * per mount loses its compiled shaders with every navigation. One page-wide singleton is held for
+ * the page lifetime. A Trophy outside a provider uses it directly, and inside one descendants
+ * render a spacer while it is loading instead of a canvas.
  */
 
 let sharedContext: PicoCAD2Context | undefined;
@@ -128,7 +128,7 @@ export function Trophy({
 
 			const viewer = new PicoCAD2Viewer({
 				canvas,
-				context,
+				context: context ?? getSharedTrophyContext(),
 				resolution: { width: 128, height: 128, scale: 4 },
 				clampCameraDistance: {
 					enabled: true,
