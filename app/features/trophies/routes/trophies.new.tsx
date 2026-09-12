@@ -417,14 +417,12 @@ function ModelField({
 								</span>
 								<Trophy
 									model={preview.compressedModel}
-									className={styles.trophyPreview}
 									preview
 									tier={1}
 									colorScheme={theme}
 								/>
 								<Trophy
 									model={preview.compressedModel}
-									className={styles.trophyPreview}
 									onRenderStats={reportRenderStats}
 									colorScheme={theme}
 								/>
@@ -691,11 +689,7 @@ function TrophyListRow({
 				onClose={() => setPreviewOpen(false)}
 				showCloseButton
 			>
-				<Trophy
-					model={pending.model}
-					className={styles.trophyPreview}
-					onRenderStats={reportRenderStats}
-				/>
+				<Trophy model={pending.model} onRenderStats={reportRenderStats} />
 			</SendouDialog>
 			<div className={styles.pendingMain}>
 				<div className={styles.pendingHeader}>

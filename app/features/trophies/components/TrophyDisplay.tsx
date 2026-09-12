@@ -17,7 +17,7 @@ import {
 	useProgressiveRender,
 } from "../trophies-utils";
 import { TournamentSummaryRow } from "./TournamentSummaryRow";
-import { Trophy, TrophyContextProvider } from "./Trophy";
+import { Trophy, TrophyContextProvider, TrophyGrid } from "./Trophy";
 import styles from "./TrophyDisplay.module.css";
 import { TrophyShowcaseModal } from "./TrophyShowcase";
 
@@ -68,17 +68,15 @@ export function TrophyDisplay({
 				data-testid="trophy-display"
 				className={clsx(className, styles.root)}
 			>
-				<div className={styles.grid}>
+				<TrophyGrid columns={3}>
 					{itemsToDisplay.map((trophy, i) => (
 						<button
 							key={trophy.id}
 							type="button"
-							className={styles.trophyButton}
 							onClick={() => setOpenTrophy(trophy)}
 							aria-label={trophy.name}
 						>
 							<Trophy
-								tile
 								model={trophy.model}
 								tier={trophy.tier ?? null}
 								preview={!!openTrophy}
@@ -94,7 +92,7 @@ export function TrophyDisplay({
 							/>
 						</button>
 					))}
-				</div>
+				</TrophyGrid>
 				{!everythingVisible ? (
 					<DotPagination
 						pagesCount={pagesCount}

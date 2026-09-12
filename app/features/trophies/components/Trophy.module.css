@@ -1,9 +1,6 @@
 .container {
 	position: relative;
 	overflow: hidden;
-}
-
-.tile {
 	border: var(--border-width) solid var(--tier-bg);
 	border-radius: var(--radius-field);
 	background-color: var(--color-bg-high);
@@ -11,9 +8,17 @@
 
 .grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, 100px);
+	grid-template-columns: repeat(var(--trophy-grid-columns, auto-fit), 100px);
 	justify-content: center;
 	gap: var(--s-2);
+
+	/* every tile sits in a link or a button that must fill its cell so the container has a size before the canvas exists */
+	> :is(a, button) {
+		all: unset;
+		display: block;
+		position: relative;
+		cursor: pointer;
+	}
 }
 
 .tierPill {

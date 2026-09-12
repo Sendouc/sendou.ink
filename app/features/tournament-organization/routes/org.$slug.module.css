@@ -62,12 +62,6 @@
 	padding-inline-start: var(--s-3);
 }
 
-.trophyGridButton {
-	all: unset;
-	cursor: pointer;
-	display: block;
-}
-
 .trophyModalTournaments {
 	display: flex;
 	flex-direction: column;

@@ -237,7 +237,7 @@ function InfoTabs() {
 
 	return (
 		<div>
-			<SendouTabs defaultSelectedKey="rewards">
+			<SendouTabs>
 				<SendouTabList>
 					<SendouTab id="socials" isDisabled={!hasSocials} icon={<LinkIcon />}>
 						{t("org:edit.form.socialLinks.title")}
@@ -737,12 +737,10 @@ function RewardsTrophyGrid({
 					<button
 						key={trophy.id}
 						type="button"
-						className={styles.trophyGridButton}
 						onClick={() => setOpenTrophy(trophy)}
 						aria-label={trophy.name}
 					>
 						<Trophy
-							tile
 							model={trophy.model}
 							tier={trophy.tier}
 							tentativeTier={trophy.tentativeTier}

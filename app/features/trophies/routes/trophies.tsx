@@ -76,7 +76,6 @@ export default function TrophiesPage() {
 							{filteredTrophies.map((trophy, i) => (
 								<NavLink to={String(trophy.id)} key={trophy.id}>
 									<Trophy
-										tile
 										model={trophy.model}
 										tier={trophy.tier}
 										tentativeTier={trophy.tentativeTier}

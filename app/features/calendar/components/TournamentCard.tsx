@@ -352,9 +352,7 @@ function PrizesPill({
 			}
 		>
 			{trophy ? (
-				<Suspense fallback={<div className={styles.trophyPreviewFallback} />}>
-					<Trophy model={trophy} className={styles.trophyPreview} />
-				</Suspense>
+				<Trophy model={trophy} />
 			) : badges ? (
 				<BadgeDisplay badges={badges} showText={false} compact />
 			) : null}

@@ -60,15 +60,30 @@ export function TrophyContextProvider({
 	return <TrophyCtx.Provider value={value}>{children}</TrophyCtx.Provider>;
 }
 
-export function TrophyGrid({ children }: { children: React.ReactNode }) {
-	return <div className={style.grid}>{children}</div>;
+export function TrophyGrid({
+	children,
+	columns,
+}: {
+	children: React.ReactNode;
+	columns?: number;
+}) {
+	return (
+		<div
+			className={style.grid}
+			style={
+				columns
+					? ({ "--trophy-grid-columns": columns } as React.CSSProperties)
+					: undefined
+			}
+		>
+			{children}
+		</div>
+	);
 }
 
 export function Trophy({
 	model,
-	className,
 	preview,
-	tile,
 	tier,
 	tentativeTier,
 	disableCameraControls,
@@ -80,9 +95,7 @@ export function Trophy({
 	deferred,
 }: {
 	model: string;
-	className?: string;
 	preview?: boolean;
-	tile?: boolean;
 	tier?: number | null;
 	tentativeTier?: number | null;
 	disableCameraControls?: boolean;
@@ -216,9 +229,6 @@ export function Trophy({
 	);
 
 	const effectiveTier = tier ?? tentativeTier ?? null;
-	const containerClassName = clsx(style.container, className, {
-		[style.tile]: tile,
-	});
 	const containerStyle = effectiveTier
 		? ({
 				"--tier-bg": `var(--tier-bg-${effectiveTier})`,
@@ -244,7 +254,7 @@ export function Trophy({
 
 	if (error || modelState === null) {
 		return (
-			<div className={containerClassName} style={containerStyle}>
+			<div className={style.container} style={containerStyle}>
 				<div className={clsx(style.trophy, style.error)}>
 					<Ban size={48} />
 				</div>
@@ -255,11 +265,7 @@ export function Trophy({
 	}
 
 	return (
-		<div
-			className={containerClassName}
-			style={containerStyle}
-			aria-busy={!drawn}
-		>
+		<div className={style.container} style={containerStyle} aria-busy={!drawn}>
 			{deferred || isLoadingSharedContext ? (
 				<div className={style.trophy} />
 			) : (
