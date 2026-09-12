@@ -16,6 +16,7 @@ import {
 } from "react";
 import { TierPill } from "~/components/TierPill";
 import { useTheme } from "~/features/theme/core/provider";
+import { usePrefersReducedMotion } from "~/hooks/usePrefersReducedMotion";
 import { IS_E2E_TEST_RUN } from "~/utils/e2e";
 import { decompressTrophyModel } from "../trophies-utils";
 import style from "./Trophy.module.css";
@@ -113,6 +114,9 @@ export function Trophy({
 	const viewerRef = useRef<PicoCAD2Viewer | null>(null);
 	const [error, setError] = useState<boolean>(false);
 	const [drawn, setDrawn] = useState(false);
+	const [everDrawn, setEverDrawn] = useState(false);
+	const [activeModel, setActiveModel] = useState(model);
+	const reducedMotion = usePrefersReducedMotion();
 
 	const onRenderStatsRef = useRef(onRenderStats);
 	onRenderStatsRef.current = onRenderStats;
@@ -121,10 +125,12 @@ export function Trophy({
 	if (prevModelRef.current !== model) {
 		prevModelRef.current = model;
 		setError(false);
+		if (!drawn || reducedMotion) setActiveModel(model);
 		setDrawn(false);
 	}
 
-	const modelState = decompressTrophyModel(model);
+	const swapping = activeModel !== model;
+	const modelState = decompressTrophyModel(activeModel);
 	const siteColorScheme = useTrophyColorScheme();
 	const colorScheme = forcedColorScheme ?? siteColorScheme;
 
@@ -186,6 +192,7 @@ export function Trophy({
 						viewer.dispose();
 						viewerRef.current = null;
 						setDrawn(true);
+						setEverDrawn(true);
 					};
 					drawOnce();
 				});
@@ -200,7 +207,9 @@ export function Trophy({
 
 			viewer.startRenderLoop(false);
 			viewer.whenReady().then(() => {
-				if (viewerRef.current === viewer) setDrawn(true);
+				if (viewerRef.current !== viewer) return;
+				setDrawn(true);
+				setEverDrawn(true);
 			});
 
 			if (disableCameraControls) return;
@@ -275,9 +284,12 @@ export function Trophy({
 						[style.visible]: drawn,
 						[style.interactive]: !preview && !disableCameraControls,
 					})}
+					onTransitionEnd={() => {
+						if (swapping) setActiveModel(model);
+					}}
 				/>
 			)}
-			{drawn ? null : (
+			{everDrawn || swapping ? null : (
 				<div className={style.loading}>
 					<div className={style.spinner} />
 				</div>
