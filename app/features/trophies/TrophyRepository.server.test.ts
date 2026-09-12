@@ -64,7 +64,9 @@ describe("trophy approvals", () => {
 			creatorId: artist.id,
 		});
 
-		let accepted = null;
+		let accepted: null | {
+			id: number;
+		} = null;
 		for (const userId of reviewerIds.slice(0, TROPHY_APPROVALS_REQUIRED)) {
 			accepted = await TrophyRepository.addApproval({
 				pendingTrophyId: pending.id,
