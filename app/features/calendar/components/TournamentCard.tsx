@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ShieldMinus, Users } from "lucide-react";
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { SendouButton } from "~/components/elements/Button";

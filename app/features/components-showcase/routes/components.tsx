@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { Check, Plus, RotateCcw, Search, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 import { Ability } from "~/components/Ability";
