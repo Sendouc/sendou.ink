@@ -64,10 +64,6 @@ export function TrophyGrid({ children }: { children: React.ReactNode }) {
 	return <div className={style.grid}>{children}</div>;
 }
 
-export function TrophyPlaceholder() {
-	return <div className={style.placeholder} />;
-}
-
 export function Trophy({
 	model,
 	className,
@@ -81,6 +77,7 @@ export function Trophy({
 	onRenderStats,
 	colorScheme: forcedColorScheme,
 	fps = 60,
+	deferred,
 }: {
 	model: string;
 	className?: string;
@@ -94,6 +91,7 @@ export function Trophy({
 	onRenderStats?: (stats: RenderStats) => void;
 	colorScheme?: ColorScheme;
 	fps?: number;
+	deferred?: boolean;
 }) {
 	const ctxValue = useContext(TrophyCtx);
 	const context = ctxValue?.context;
@@ -101,6 +99,7 @@ export function Trophy({
 		ctxValue !== undefined && ctxValue.context === undefined;
 	const viewerRef = useRef<PicoCAD2Viewer | null>(null);
 	const [error, setError] = useState<boolean>(false);
+	const [drawn, setDrawn] = useState(false);
 
 	const onRenderStatsRef = useRef(onRenderStats);
 	onRenderStatsRef.current = onRenderStats;
@@ -109,6 +108,7 @@ export function Trophy({
 	if (prevModelRef.current !== model) {
 		prevModelRef.current = model;
 		setError(false);
+		setDrawn(false);
 	}
 
 	const modelState = decompressTrophyModel(model);
@@ -164,10 +164,17 @@ export function Trophy({
 				(staticOnSoftwareRendering && isSoftwareRendering())
 			) {
 				viewer.whenReady().then(() => {
-					if (viewerRef.current !== viewer) return;
-					viewer.draw();
-					viewer.dispose();
-					viewerRef.current = null;
+					const drawOnce = () => {
+						if (viewerRef.current !== viewer) return;
+						if (!viewer.draw()) {
+							requestAnimationFrame(drawOnce);
+							return;
+						}
+						viewer.dispose();
+						viewerRef.current = null;
+						setDrawn(true);
+					};
+					drawOnce();
 				});
 				return;
 			}
@@ -179,6 +186,9 @@ export function Trophy({
 			}
 
 			viewer.startRenderLoop(false);
+			viewer.whenReady().then(() => {
+				if (viewerRef.current === viewer) setDrawn(true);
+			});
 
 			if (disableCameraControls) return;
 
@@ -244,22 +254,28 @@ export function Trophy({
 		);
 	}
 
-	if (isLoadingSharedContext) {
-		return (
-			<div className={containerClassName} style={containerStyle}>
-				<div className={style.trophy} />
-			</div>
-		);
-	}
-
 	return (
-		<div className={containerClassName} style={containerStyle}>
-			<canvas
-				ref={canvasRef}
-				className={clsx(style.trophy, {
-					[style.interactive]: !preview && !disableCameraControls,
-				})}
-			/>
+		<div
+			className={containerClassName}
+			style={containerStyle}
+			aria-busy={!drawn}
+		>
+			{deferred || isLoadingSharedContext ? (
+				<div className={style.trophy} />
+			) : (
+				<canvas
+					ref={canvasRef}
+					className={clsx(style.trophy, {
+						[style.visible]: drawn,
+						[style.interactive]: !preview && !disableCameraControls,
+					})}
+				/>
+			)}
+			{drawn ? null : (
+				<div className={style.loading}>
+					<div className={style.spinner} />
+				</div>
+			)}
 			{tierPill}
 			{cornerPill}
 		</div>

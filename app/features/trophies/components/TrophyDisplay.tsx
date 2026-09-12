@@ -17,7 +17,7 @@ import {
 	useProgressiveRender,
 } from "../trophies-utils";
 import { TournamentSummaryRow } from "./TournamentSummaryRow";
-import { Trophy, TrophyContextProvider, TrophyPlaceholder } from "./Trophy";
+import { Trophy, TrophyContextProvider } from "./Trophy";
 import styles from "./TrophyDisplay.module.css";
 import { TrophyShowcaseModal } from "./TrophyShowcase";
 
@@ -69,34 +69,31 @@ export function TrophyDisplay({
 				className={clsx(className, styles.root)}
 			>
 				<div className={styles.grid}>
-					{itemsToDisplay.map((trophy, i) =>
-						i < visibleCount ? (
-							<button
-								key={trophy.id}
-								type="button"
-								className={styles.trophyButton}
-								onClick={() => setOpenTrophy(trophy)}
-								aria-label={trophy.name}
-							>
-								<Trophy
-									tile
-									model={trophy.model}
-									tier={trophy.tier ?? null}
-									preview={!!openTrophy}
-									staticOnSoftwareRendering
-									disableCameraControls
-									fps={30}
-									pill={
-										trophy.count && trophy.count > 1
-											? `×${trophy.count}`
-											: undefined
-									}
-								/>
-							</button>
-						) : (
-							<TrophyPlaceholder key={trophy.id} />
-						),
-					)}
+					{itemsToDisplay.map((trophy, i) => (
+						<button
+							key={trophy.id}
+							type="button"
+							className={styles.trophyButton}
+							onClick={() => setOpenTrophy(trophy)}
+							aria-label={trophy.name}
+						>
+							<Trophy
+								tile
+								model={trophy.model}
+								tier={trophy.tier ?? null}
+								preview={!!openTrophy}
+								staticOnSoftwareRendering
+								disableCameraControls
+								fps={30}
+								deferred={i >= visibleCount}
+								pill={
+									trophy.count && trophy.count > 1
+										? `×${trophy.count}`
+										: undefined
+								}
+							/>
+						</button>
+					))}
 				</div>
 				{!everythingVisible ? (
 					<DotPagination

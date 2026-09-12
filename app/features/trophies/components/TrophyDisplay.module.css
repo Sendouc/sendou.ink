@@ -19,9 +19,7 @@
 	all: unset;
 	cursor: pointer;
 	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	display: block;
 }
 
 .win {

@@ -619,12 +619,13 @@ function TrophyList({
 	return (
 		<TrophyContextProvider>
 			<div className={styles.pendingList}>
-				{items.slice(0, visibleCount).map((item) => (
+				{items.map((item, i) => (
 					<TrophyListRow
 						key={item.id}
 						pending={item}
 						currentUserId={data.currentUserId}
 						canReview={data.canReview}
+						deferred={i >= visibleCount}
 					/>
 				))}
 			</div>
@@ -636,10 +637,12 @@ function TrophyListRow({
 	pending,
 	currentUserId,
 	canReview,
+	deferred,
 }: {
 	pending: NewTrophyLoaderData["pendingTrophies"][number];
 	currentUserId: number;
 	canReview: boolean;
+	deferred: boolean;
 }) {
 	const { t } = useTranslation(["trophies", "common"]);
 	const { submit, state } = useActionSubmit(pendingTrophyActionSchema);
@@ -680,7 +683,7 @@ function TrophyListRow({
 				className={styles.trophyPreviewButton}
 				onClick={() => setPreviewOpen(true)}
 			>
-				<Trophy model={pending.model} preview />
+				<Trophy model={pending.model} preview deferred={deferred} />
 			</button>
 			<SendouDialog
 				heading={pending.name}
