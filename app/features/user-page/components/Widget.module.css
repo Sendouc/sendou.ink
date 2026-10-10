@@ -464,7 +464,12 @@
 	color: var(--color-text);
 }
 
+.liveStreamThumbnailLink {
+	display: block;
+}
+
 .liveStreamThumbnail {
+	display: block;
 	width: 100%;
 	aspect-ratio: 16 / 9;
 	object-fit: cover;
@@ -496,6 +501,10 @@
 .liveStreamName {
 	margin-inline-start: auto;
 	color: var(--color-text-high);
+}
+
+.liveStreamLinks {
+	margin-inline-start: auto;
 }
 
 .liveStreamPlatformIcon {

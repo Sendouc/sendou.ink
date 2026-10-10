@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import { youtubeUrl } from "~/utils/urls";
 import type { StreamAccount } from "../live-streams-constants";
 
@@ -39,4 +40,34 @@ export function key({ platform, account }: StreamAccount) {
 /** Whether both point to the same account on the same platform. */
 export function isSameAccount(a: StreamAccount, b: StreamAccount) {
 	return key(a) === key(b);
+}
+
+/** Live streams of one streamer, most viewed first. */
+export interface StreamerStreams<T> {
+	streams: [T, ...T[]];
+	viewerCount: number;
+}
+
+/** Groups the streams of a user live on several platforms together, streams of no user (casts) by their account. Most viewed streamer first. */
+export function groupByStreamer<
+	T extends StreamAccount & { userId: number | null; viewerCount: number },
+>(streams: T[]): StreamerStreams<T>[] {
+	const groups = new Map<string, StreamerStreams<T>>();
+	for (const stream of R.sortBy(streams, [(s) => s.viewerCount, "desc"])) {
+		const streamerKey =
+			stream.userId === null ? key(stream) : `user:${stream.userId}`;
+
+		const existing = groups.get(streamerKey);
+		if (existing) {
+			existing.streams.push(stream);
+			existing.viewerCount += stream.viewerCount;
+		} else {
+			groups.set(streamerKey, {
+				streams: [stream],
+				viewerCount: stream.viewerCount,
+			});
+		}
+	}
+
+	return R.sortBy([...groups.values()], [(g) => g.viewerCount, "desc"]);
 }

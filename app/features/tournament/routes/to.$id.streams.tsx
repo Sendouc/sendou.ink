@@ -14,6 +14,7 @@ export default function TournamentStreamsPage() {
 	const { t } = useTranslation(["tournament"]);
 	const tournament = useTournament();
 	const { streams } = useLoaderData<TournamentStreamsLoaderData>();
+	const streamers = LiveStream.groupByStreamer(streams);
 
 	if (!tournament.hasStarted || tournament.everyBracketOver) {
 		return <Redirect to={tournamentRegisterPage(tournament.ctx.id)} />;
@@ -30,8 +31,11 @@ export default function TournamentStreamsPage() {
 	// TODO: link to user page, later tournament team page?
 	return (
 		<div className={styles.streamsGrid}>
-			{streams.map((stream) => (
-				<TournamentStream key={LiveStream.key(stream)} stream={stream} />
+			{streamers.map((streamer) => (
+				<TournamentStream
+					key={LiveStream.key(streamer.streams[0])}
+					streamer={streamer}
+				/>
 			))}
 		</div>
 	);

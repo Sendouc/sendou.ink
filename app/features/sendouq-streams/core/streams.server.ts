@@ -8,6 +8,7 @@ import {
 	cachedFullUserLeaderboard,
 	type UserLeaderboardWithAdditionsItem,
 } from "~/features/leaderboards/core/leaderboards.server";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import * as Seasons from "~/features/mmr/core/Seasons";
 import { TIERS, type TierName } from "~/features/mmr/mmr-constants";
@@ -53,7 +54,7 @@ export function cachedStreams() {
 					return a.tier?.isPlus ? -1 : 1;
 				}
 
-				return b.stream.viewerCount - a.stream.viewerCount;
+				return b.viewerCount - a.viewerCount;
 			});
 		},
 	});
@@ -74,19 +75,29 @@ function streamedMatches({
 	matchPlayers: QStreamsRepository.ActiveMatchPlayersItem[];
 	leaderboard: UserLeaderboardWithAdditionsItem[];
 }) {
-	return matchPlayers.map((player) => {
+	const playerByUserId = new Map(
+		matchPlayers.map((player) => [player.user.id, player]),
+	);
+	const streamers = LiveStream.groupByStreamer(
+		matchPlayers.map((player) => ({
+			platform: player.streamPlatform,
+			account: player.streamAccount,
+			videoId: player.streamVideoId,
+			thumbnailUrl: player.streamThumbnailUrl,
+			viewerCount: player.streamViewerCount,
+			userId: player.user.id,
+		})),
+	);
+
+	return streamers.map(({ streams, viewerCount }) => {
+		const player = playerByUserId.get(streams[0].userId)!;
 		const leaderboardEntry = leaderboard.find(
 			(entry) => entry.id === player.user.id,
 		);
 
 		return {
-			stream: {
-				platform: player.streamPlatform,
-				account: player.streamAccount,
-				videoId: player.streamVideoId,
-				thumbnailUrl: player.streamThumbnailUrl,
-				viewerCount: player.streamViewerCount,
-			},
+			streams,
+			viewerCount,
 			match: {
 				id: player.groupMatchId,
 				createdAt: player.groupMatchCreatedAt,
@@ -138,7 +149,7 @@ export async function getSendouQSidebarStreams(): Promise<
 				tier: null,
 			},
 			tier: averageTier,
-			streamAccounts: matchStreams.map((s) => s.stream),
+			streamAccounts: matchStreams.flatMap((s) => s.streams),
 		});
 	}
 

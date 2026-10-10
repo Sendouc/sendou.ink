@@ -32,10 +32,10 @@ export async function resolveSendouQMatchStreams() {
 	const streams = await cachedStreams();
 
 	const result = new Map<number, FriendActivityStream>();
-	for (const { match, stream } of streams) {
+	for (const { match, streams: playerStreams } of streams) {
 		if (result.has(match.id)) continue;
 
-		result.set(match.id, toActivityStream(stream));
+		result.set(match.id, toActivityStream(playerStreams[0]));
 	}
 
 	return result;

@@ -6,6 +6,7 @@ import { EmptyState } from "~/components/EmptyState";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { UserLink } from "~/components/UserLink";
+import { StreamWatchLinks } from "~/features/live-streams/components/StreamWatchLinks";
 import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useHydrated } from "~/hooks/useHydrated";
@@ -59,7 +60,7 @@ export default function SendouQStreamsPage() {
 				{data.streams.map((streamedMatch) => {
 					return (
 						<div
-							key={LiveStream.key(streamedMatch.stream)}
+							key={LiveStream.key(streamedMatch.streams[0])}
 							className="stack sm"
 						>
 							<div className="stack horizontal justify-between items-end">
@@ -85,13 +86,13 @@ export default function SendouQStreamsPage() {
 								</div>
 							</div>
 							<a
-								href={LiveStream.url(streamedMatch.stream)}
+								href={LiveStream.url(streamedMatch.streams[0])}
 								target="_blank"
 								rel="noreferrer"
 							>
 								<img
 									alt=""
-									src={LiveStream.thumbnailSrc(streamedMatch.stream)}
+									src={LiveStream.thumbnailSrc(streamedMatch.streams[0])}
 									width={320}
 									height={180}
 								/>
@@ -111,9 +112,12 @@ export default function SendouQStreamsPage() {
 								</div>
 								<div className={styles.viewerCount}>
 									<User />
-									{streamedMatch.stream.viewerCount}
+									{streamedMatch.viewerCount}
 								</div>
 							</div>
+							{streamedMatch.streams.length > 1 ? (
+								<StreamWatchLinks streams={streamedMatch.streams} />
+							) : null}
 						</div>
 					);
 				})}

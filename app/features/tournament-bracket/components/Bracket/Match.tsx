@@ -438,10 +438,10 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 			className={clsx("stack md justify-center", styles.streamPopover)}
 			data-testid="stream-popover"
 		>
-			{streamsOfThisMatch.map((stream) => (
+			{LiveStream.groupByStreamer(streamsOfThisMatch).map((streamer) => (
 				<TournamentStream
-					key={LiveStream.key(stream)}
-					stream={stream}
+					key={LiveStream.key(streamer.streams[0])}
+					streamer={streamer}
 					withThumbnail={false}
 				/>
 			))}

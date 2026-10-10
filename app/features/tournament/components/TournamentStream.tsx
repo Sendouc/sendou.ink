@@ -2,54 +2,53 @@ import clsx from "clsx";
 import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
+import { StreamWatchLinks } from "~/features/live-streams/components/StreamWatchLinks";
 import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useTournament } from "~/features/tournament/tournament-context";
-import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
+import type { TournamentStream as TournamentStreamType } from "~/features/tournament-bracket/core/Tournament";
 import styles from "./TournamentStream.module.css";
 
 export function TournamentStream({
-	stream,
+	streamer,
 	withThumbnail = true,
 }: {
-	stream: Tournament["streams"][number];
+	streamer: LiveStream.StreamerStreams<TournamentStreamType>;
 	withThumbnail?: boolean;
 }) {
 	const { t } = useTranslation(["tournament"]);
 	const tournament = useTournament();
+	const mostViewed = streamer.streams[0];
 
 	const castName =
 		tournament.ctx.castAccounts?.find((castAccount) =>
-			LiveStream.isSameAccount(castAccount, stream),
-		)?.name ?? stream.account;
+			LiveStream.isSameAccount(castAccount, mostViewed),
+		)?.name ?? mostViewed.account;
 
 	return (
-		<div
-			key={stream.userId}
-			className="stack sm"
-			data-testid="tournament-stream"
-		>
+		<div className="stack sm" data-testid="tournament-stream">
 			{withThumbnail ? (
-				<a href={LiveStream.url(stream)} target="_blank" rel="noreferrer">
+				<a href={LiveStream.url(mostViewed)} target="_blank" rel="noreferrer">
 					<img
 						alt=""
-						src={LiveStream.thumbnailSrc(stream)}
+						src={LiveStream.thumbnailSrc(mostViewed)}
 						width={320}
 						height={180}
 					/>
 				</a>
 			) : null}
 			<div className="stack md horizontal justify-between">
-				{stream.user ? (
+				{mostViewed.user ? (
 					<div className={clsx(styles.streamUserContainer, "truncate")}>
-						<Avatar size="xxs" user={stream.user} /> {stream.user.username}
+						<Avatar size="xxs" user={mostViewed.user} />{" "}
+						{mostViewed.user.username}
 						<span
 							className={clsx(
 								"text-theme-secondary truncate",
 								styles.streamTeamName,
 							)}
-							title={stream.teamName ?? undefined}
+							title={mostViewed.teamName ?? undefined}
 						>
-							{stream.teamName}
+							{mostViewed.teamName}
 						</span>
 					</div>
 				) : (
@@ -61,18 +60,11 @@ export function TournamentStream({
 				)}
 				<div className={styles.streamViewerCount}>
 					<User />
-					{stream.viewerCount}
+					{streamer.viewerCount}
 				</div>
 			</div>
-			{!withThumbnail ? (
-				<a
-					href={LiveStream.url(stream)}
-					target="_blank"
-					rel="noreferrer"
-					className="text-xxs text-semi-bold text-center"
-				>
-					{t("tournament:streams.watchNow")}
-				</a>
+			{!withThumbnail || streamer.streams.length > 1 ? (
+				<StreamWatchLinks streams={streamer.streams} />
 			) : null}
 		</div>
 	);

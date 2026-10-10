@@ -160,7 +160,6 @@
 	"finalize.receivingTeam.placeholder": "Seleccionar equipo...",
 	"streams.none": "No hay streams en vivo de este torneo en este momento",
 	"streams.cast": "Cast",
-	"streams.watchNow": "Ver ahora",
 	"run.sets": "Sets",
 	"run.maps": "Mapas",
 	"run.qualifiedFor": "Avanzó a {{bracket}}",

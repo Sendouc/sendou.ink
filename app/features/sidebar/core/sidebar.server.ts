@@ -275,7 +275,11 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 	}
 
 	const xRankUserIds = new Set<number>();
-	for (const row of xRankByStream.values()) {
+	const xRankRowsMostViewedFirst = R.sortBy(
+		[...xRankByStream.values()],
+		[(row) => row.viewerCount, "desc"],
+	);
+	for (const row of xRankRowsMostViewedFirst) {
 		if (userIsBanned(row.id)) continue;
 		if (seenStreamKeys.has(LiveStream.key(row))) continue;
 		if (xRankUserIds.has(row.id)) continue;

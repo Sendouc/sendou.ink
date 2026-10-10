@@ -72,3 +72,40 @@ describe("LiveStream.isSameAccount", () => {
 		expect(LiveStream.isSameAccount(a, b)).toBe(expected);
 	});
 });
+
+describe("LiveStream.groupByStreamer", () => {
+	const stream = (
+		platform: "TWITCH" | "YOUTUBE",
+		account: string,
+		userId: number | null,
+		viewerCount: number,
+	) => ({ platform, account, userId, viewerCount });
+
+	test("groups a user's streams on both platforms, most viewed first", () => {
+		const twitch = stream("TWITCH", "sendou", 1, 10);
+		const youtube = stream("YOUTUBE", "UCabc", 1, 30);
+
+		expect(LiveStream.groupByStreamer([twitch, youtube])).toEqual([
+			{ streams: [youtube, twitch], viewerCount: 40 },
+		]);
+	});
+
+	test("keeps casts of different accounts apart", () => {
+		const castOne = stream("TWITCH", "cast_one", null, 5);
+		const castTwo = stream("YOUTUBE", "UCcast", null, 5);
+
+		expect(LiveStream.groupByStreamer([castOne, castTwo])).toHaveLength(2);
+	});
+
+	test("orders streamers by summed viewers", () => {
+		const single = stream("TWITCH", "single", 2, 35);
+		const bothTwitch = stream("TWITCH", "both", 1, 20);
+		const bothYoutube = stream("YOUTUBE", "UCboth", 1, 20);
+
+		expect(
+			LiveStream.groupByStreamer([single, bothTwitch, bothYoutube]).map(
+				(group) => group.streams[0].account,
+			),
+		).toEqual(["both", "single"]);
+	});
+});
