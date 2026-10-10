@@ -64,7 +64,7 @@ export const loader = async () => {
 					activityType: activity.type,
 					matchId: activity.matchId,
 					tournamentId: activity.tournamentId ?? friend.tournamentId,
-					streamUrl: activity.streamUrl,
+					stream: activity.stream,
 					friendshipCreatedAt: friend.friendshipCreatedAt,
 					isPinned: Boolean(friend.isPinned),
 					schedule: schedules.get(friend.id) ?? null,
@@ -104,7 +104,7 @@ export const loader = async () => {
 					activityType: activity.type,
 					matchId: activity.matchId,
 					tournamentId: activity.tournamentId ?? tm.tournamentId,
-					streamUrl: activity.streamUrl,
+					stream: activity.stream,
 					isPinned: false,
 					schedule: schedules.get(tm.id) ?? null,
 				};

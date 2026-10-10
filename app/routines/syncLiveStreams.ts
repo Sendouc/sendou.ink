@@ -1,5 +1,7 @@
 import { differenceInMinutes } from "date-fns";
+import type { Tables } from "~/db/tables";
 import { clearCombinedStreamsCache } from "~/features/core/streams/streams.server";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import * as LiveStreamRepository from "~/features/live-streams/LiveStreamRepository.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { RunningTournaments } from "~/features/tournament-bracket/core/RunningTournaments.server";
@@ -38,22 +40,26 @@ async function syncLiveStreams() {
 		}
 	}
 
-	const liveStreams = streams.map((stream) => ({
-		userId: twitchToUserId.get(stream.twitchUserName) ?? null,
-		viewerCount: stream.viewerCount,
-		thumbnailUrl: stream.thumbnailUrl,
-		twitch: stream.twitchUserName,
-	}));
+	const liveStreams = streams.map(
+		(stream): LiveStreamRow => ({
+			platform: "TWITCH",
+			account: stream.twitchUserName,
+			videoId: null,
+			userId: twitchToUserId.get(stream.twitchUserName) ?? null,
+			viewerCount: stream.viewerCount,
+			thumbnailUrl: stream.thumbnailUrl,
+		}),
+	);
 
 	await LiveStreamRepository.replaceAll(liveStreams);
 	clearCombinedStreamsCache();
 
-	await syncTournamentStreamers(streams);
+	await syncTournamentStreamers(liveStreams);
 }
 
-async function syncTournamentStreamers(
-	streams: Awaited<ReturnType<typeof getStreams>>,
-) {
+type LiveStreamRow = Omit<Tables["LiveStream"], "id">;
+
+async function syncTournamentStreamers(liveStreams: LiveStreamRow[]) {
 	const now = new Date();
 	if (
 		lastTournamentStreamSync &&
@@ -69,36 +75,38 @@ async function syncTournamentStreamers(
 		return;
 	}
 
-	const streamsByTwitchName = new Map(
-		streams.map((s) => [s.twitchUserName.toLowerCase(), s]),
-	);
+	const liveKeys = new Set(liveStreams.map(LiveStream.key));
 
 	const rows: Parameters<
 		typeof LiveStreamRepository.insertTournamentStreamers
 	>[0] = [];
 
-	const participants = await TournamentRepository.findParticipantTwitchAccounts(
+	const participants = await TournamentRepository.findParticipantStreamAccounts(
 		tournaments.map((tournament) => tournament.ctx.id),
 	);
 
 	for (const participant of participants) {
-		if (!streamsByTwitchName.has(participant.twitch.toLowerCase())) continue;
+		for (const streamAccount of participant.streamAccounts) {
+			if (!liveKeys.has(LiveStream.key(streamAccount))) continue;
 
-		rows.push({
-			userId: participant.userId,
-			tournamentId: participant.tournamentId,
-			twitchAccount: participant.twitch,
-		});
+			rows.push({
+				userId: participant.userId,
+				tournamentId: participant.tournamentId,
+				platform: streamAccount.platform,
+				account: streamAccount.account,
+			});
+		}
 	}
 
 	for (const tournament of tournaments) {
-		for (const twitchAccount of tournament.ctx.castTwitchAccounts ?? []) {
-			if (!streamsByTwitchName.has(twitchAccount.toLowerCase())) continue;
+		for (const castAccount of tournament.ctx.castAccounts ?? []) {
+			if (!liveKeys.has(LiveStream.key(castAccount))) continue;
 
 			rows.push({
 				userId: null,
 				tournamentId: tournament.ctx.id,
-				twitchAccount,
+				platform: castAccount.platform,
+				account: castAccount.account,
 			});
 		}
 	}

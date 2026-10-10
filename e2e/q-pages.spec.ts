@@ -29,7 +29,7 @@ test.describe("SendouQ pages", () => {
 		await factories.LiveStreamFactory.replaceAll([
 			{
 				userId: streamer.id,
-				twitch: STREAMER_TWITCH,
+				account: STREAMER_TWITCH,
 				viewerCount: STREAM_VIEWER_COUNT,
 			},
 		]);

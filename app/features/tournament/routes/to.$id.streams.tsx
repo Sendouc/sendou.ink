@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useLoaderData } from "react-router";
 import { Redirect } from "~/components/Redirect";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useTournament } from "~/features/tournament/tournament-context";
 import { tournamentRegisterPage } from "~/utils/urls";
 import { TournamentStream } from "../components/TournamentStream";
@@ -30,7 +31,7 @@ export default function TournamentStreamsPage() {
 	return (
 		<div className={styles.streamsGrid}>
 			{streams.map((stream) => (
-				<TournamentStream key={stream.twitchUserName} stream={stream} />
+				<TournamentStream key={LiveStream.key(stream)} stream={stream} />
 			))}
 		</div>
 	);

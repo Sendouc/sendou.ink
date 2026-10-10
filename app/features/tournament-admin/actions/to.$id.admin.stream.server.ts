@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import {
 	clearTournamentDataCache,
@@ -13,9 +14,19 @@ export const action = defineAction(
 			for: "organizer",
 		});
 
-		await TournamentRepository.updateCastTwitchAccounts({
+		const twitchAccounts = R.unique(
+			body.castTwitchAccounts
+				.map((account) => account.trim().toLowerCase())
+				.filter(Boolean),
+		);
+
+		await TournamentRepository.updateCastAccounts({
 			tournamentId: tournament.ctx.id,
-			castTwitchAccounts: body.castTwitchAccounts,
+			castAccounts: twitchAccounts.map((account) => ({
+				platform: "TWITCH",
+				account,
+				name: account,
+			})),
 		});
 
 		clearTournamentDataCache(tournamentId);

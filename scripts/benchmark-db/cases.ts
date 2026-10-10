@@ -1301,10 +1301,10 @@ export function buildCases(fx: Fixtures): {
 			TournamentRepository.findRelatedUsersByTournamentIds(tournamentIds),
 	);
 	add(
-		"TournamentRepository.findParticipantTwitchAccounts",
+		"TournamentRepository.findParticipantStreamAccounts",
 		fx.recentTournamentIds,
 		(tournamentIds) =>
-			TournamentRepository.findParticipantTwitchAccounts(tournamentIds),
+			TournamentRepository.findParticipantStreamAccounts(tournamentIds),
 	);
 	addStatic("TournamentRepository.findAllForShowcase", () =>
 		TournamentRepository.findAllForShowcase(),

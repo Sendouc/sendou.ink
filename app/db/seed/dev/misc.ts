@@ -64,7 +64,7 @@ export async function seedMisc({
 
 	const showcaseStreamerIds = users.showcaseIds.slice(0, STREAM_COUNT);
 	await LiveStreamFactory.replaceAll([
-		{ userId: users.nzapId, twitch: "nzap_stream" },
+		{ userId: users.nzapId, account: "nzap_stream" },
 		...showcaseStreamerIds.map((userId) => ({ userId })),
 		// the league sets live right now have a member of theirs on, unless they already are
 		...tournaments.luti.streamerUserIds

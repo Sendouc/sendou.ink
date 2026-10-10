@@ -1,4 +1,6 @@
 import { addDays } from "date-fns";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
+import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import type { TournamentTierNumber } from "~/features/tournament/core/tiering";
 import { RunningTournaments } from "~/features/tournament-bracket/core/RunningTournaments.server";
 import type {
@@ -32,7 +34,6 @@ export type SidebarStream = {
 	membersPerTeam?: number;
 	tentativeTier?: number;
 	peakXp?: number;
-	twitchUsername?: string;
 };
 
 type RunningTournamentStreams = Array<{
@@ -111,23 +112,15 @@ export function getUpcomingLeagueCastStreams(
 	});
 }
 
-/** Lowercased Twitch usernames of all members and casters streaming a currently live tournament or league set. */
-export function getLiveTournamentStreamerTwitchNames(
+/** Stream accounts of all members and casters streaming a currently live tournament or league set. */
+export function getLiveTournamentStreamAccounts(
 	runningTournaments: RunningTournamentStreams,
-): string[] {
-	const names: string[] = [];
-
-	for (const { tournament, streams } of runningTournaments) {
-		const liveStreams = tournament.isLeague
+): StreamAccount[] {
+	return runningTournaments.flatMap(({ tournament, streams }) =>
+		tournament.isLeague
 			? liveLeagueSets(tournament, streams).flatMap((set) => set.streams)
-			: streams;
-
-		for (const stream of liveStreams) {
-			names.push(stream.twitchUserName.toLowerCase());
-		}
-	}
-
-	return names;
+			: streams,
+	);
 }
 
 interface LeagueSet {
@@ -137,8 +130,8 @@ interface LeagueSet {
 	hasWinner: boolean;
 	teamNames: [string, string];
 	memberUserIds: number[];
-	/** The Twitch account the organizer marked the set to be casted on, if any. */
-	castAccount: string | null;
+	/** The account the organizer marked the set to be casted on, if any. */
+	castAccount: StreamAccount | null;
 }
 
 /** Every set of the league with an agreed time and both teams. */
@@ -147,7 +140,7 @@ function leagueSets(tournament: Tournament): LeagueSet[] {
 		[
 			...(tournament.ctx.castedMatchesInfo?.lockedMatches ?? []),
 			...(tournament.ctx.castedMatchesInfo?.castedMatches ?? []),
-		].map((cast) => [cast.matchId, cast.twitchAccount]),
+		].map((cast) => [cast.matchId, cast]),
 	);
 
 	return tournament.brackets.flatMap((bracket, bracketIdx) => {
@@ -201,8 +194,7 @@ function liveLeagueSets(
 			(stream) =>
 				(stream.userId !== null && set.memberUserIds.includes(stream.userId)) ||
 				(set.castAccount !== null &&
-					stream.twitchUserName.toLowerCase() ===
-						set.castAccount.toLowerCase()),
+					LiveStream.isSameAccount(stream, set.castAccount)),
 		);
 		if (streams.length === 0) return [];
 

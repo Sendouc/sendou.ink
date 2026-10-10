@@ -2,10 +2,9 @@ import clsx from "clsx";
 import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useTournament } from "~/features/tournament/tournament-context";
 import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
-import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
-import { twitchUrl } from "~/utils/urls";
 import styles from "./TournamentStream.module.css";
 
 export function TournamentStream({
@@ -18,6 +17,11 @@ export function TournamentStream({
 	const { t } = useTranslation(["tournament"]);
 	const tournament = useTournament();
 
+	const castName =
+		tournament.ctx.castAccounts?.find((castAccount) =>
+			LiveStream.isSameAccount(castAccount, stream),
+		)?.name ?? stream.account;
+
 	return (
 		<div
 			key={stream.userId}
@@ -25,14 +29,10 @@ export function TournamentStream({
 			data-testid="tournament-stream"
 		>
 			{withThumbnail ? (
-				<a
-					href={twitchUrl(stream.twitchUserName)}
-					target="_blank"
-					rel="noreferrer"
-				>
+				<a href={LiveStream.url(stream)} target="_blank" rel="noreferrer">
 					<img
 						alt=""
-						src={twitchThumbnailUrlToSrc(stream.thumbnailUrl)}
+						src={LiveStream.thumbnailSrc(stream)}
 						width={320}
 						height={180}
 					/>
@@ -56,7 +56,7 @@ export function TournamentStream({
 					<div className={clsx(styles.streamUserContainer, "truncate")}>
 						<Avatar size="xxs" url={tournament.ctx.logoUrl} />
 						{t("tournament:streams.cast")}{" "}
-						<span className="text-lighter">{stream.twitchUserName}</span>
+						<span className="text-lighter">{castName}</span>
 					</div>
 				)}
 				<div className={styles.streamViewerCount}>
@@ -66,7 +66,7 @@ export function TournamentStream({
 			</div>
 			{!withThumbnail ? (
 				<a
-					href={twitchUrl(stream.twitchUserName)}
+					href={LiveStream.url(stream)}
 					target="_blank"
 					rel="noreferrer"
 					className="text-xxs text-semi-bold text-center"

@@ -34,6 +34,8 @@ import { userArtPage } from "~/features/art/art-urls";
 import { previewUrl } from "~/features/art/art-utils";
 import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { lfgSearchParams } from "~/features/lfg/lfg-search-params";
+import { StreamPlatformIcon } from "~/features/live-streams/components/StreamPlatformIcon";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { tierListMakerSearchParams } from "~/features/tier-list-maker/tier-list-maker-search-params";
 import { DivisionImage } from "~/features/top-search/components/DivisionImage";
 import { topSearchPlayerPage } from "~/features/top-search/top-search-urls";
@@ -52,7 +54,6 @@ import type {
 	ModeShort,
 	StageId,
 } from "~/modules/in-game-lists/types";
-import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
 import { logger } from "~/utils/logger";
 import type { SerializeFrom } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
@@ -66,7 +67,6 @@ import {
 	modeImageUrl,
 	navIconUrl,
 	teamPage,
-	twitchUrl,
 	userBuildsPage,
 	userResultsPage,
 	userVodsPage,
@@ -1151,13 +1151,13 @@ function LiveStreamWidget({
 
 	return (
 		<a
-			href={twitchUrl(stream.twitch)}
+			href={LiveStream.url(stream)}
 			target="_blank"
 			rel="noreferrer"
 			className={styles.liveStream}
 		>
 			<img
-				src={twitchThumbnailUrlToSrc(stream.thumbnailUrl)}
+				src={LiveStream.thumbnailSrc(stream)}
 				alt=""
 				className={styles.liveStreamThumbnail}
 				loading="lazy"
@@ -1172,7 +1172,11 @@ function LiveStreamWidget({
 					})}
 				</span>
 				<span className={clsx(styles.liveStreamName, "truncate")}>
-					{stream.twitch}
+					<StreamPlatformIcon
+						platform={stream.platform}
+						className={styles.liveStreamPlatformIcon}
+					/>
+					{stream.account}
 				</span>
 			</div>
 		</a>

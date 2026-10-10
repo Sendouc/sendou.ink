@@ -364,7 +364,9 @@ export const WIDGET_LOADERS = {
 		});
 	},
 	"live-stream": async (userId: number) => {
-		return LiveStreamRepository.findByUserId(userId);
+		const streams = await LiveStreamRepository.findByUserId(userId);
+
+		return streams.at(0) ?? null;
 	},
 };
 

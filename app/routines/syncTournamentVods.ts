@@ -54,15 +54,12 @@ export async function processOneTournament(tournamentId: number) {
 	const vods: Omit<Tables["TournamentMatchVod"], "id">[] = [];
 
 	// Player stream VODs
-	const streamers =
-		await TournamentMatchVodRepository.findStreamersByTournamentId(
-			tournamentId,
-		);
+	const streamers = (
+		await TournamentMatchVodRepository.findStreamersByTournamentId(tournamentId)
+	).filter((streamer) => streamer.platform === "TWITCH");
 
 	if (streamers.length > 0) {
-		const twitchUsers = await getUsersByLogin(
-			streamers.map((s) => s.twitchAccount),
-		);
+		const twitchUsers = await getUsersByLogin(streamers.map((s) => s.account));
 		for (const u of twitchUsers) {
 			loginToTwitchId.set(u.login.toLowerCase(), u.id);
 		}
@@ -74,26 +71,24 @@ export async function processOneTournament(tournamentId: number) {
 		const streamerDbUserIds = new Map(
 			streamers
 				.filter((s) => s.userId !== null)
-				.map((s) => [s.twitchAccount.toLowerCase(), s.userId!]),
+				.map((s) => [s.account.toLowerCase(), s.userId!]),
 		);
 
 		for (const streamer of streamers) {
 			const dbUserId =
-				streamerDbUserIds.get(streamer.twitchAccount.toLowerCase()) ?? null;
+				streamerDbUserIds.get(streamer.account.toLowerCase()) ?? null;
 
 			// cast accounts (null userId) are handled via castedMatchHistory below
 			if (dbUserId === null) continue;
 
-			const twitchUserId = loginToTwitchId.get(
-				streamer.twitchAccount.toLowerCase(),
-			);
+			const twitchUserId = loginToTwitchId.get(streamer.account.toLowerCase());
 			if (!twitchUserId) continue;
 
 			let videos: Awaited<ReturnType<typeof fetchArchiveVideos>>;
 			try {
 				videos = await fetchArchiveVideos(twitchUserId);
 			} catch (e) {
-				logger.warn(`Failed to fetch VODs for ${streamer.twitchAccount}: ${e}`);
+				logger.warn(`Failed to fetch VODs for ${streamer.account}: ${e}`);
 				hadApiError = true;
 				continue;
 			}
@@ -112,7 +107,7 @@ export async function processOneTournament(tournamentId: number) {
 					matchId: match.id,
 					userId: dbUserId,
 					platform: "TWITCH",
-					account: streamer.twitchAccount,
+					account: streamer.account,
 					...vodMatch,
 				});
 			}
@@ -128,10 +123,12 @@ export async function processOneTournament(tournamentId: number) {
 	if (castedMatchHistory.length > 0) {
 		const castMatchesByAccount = new Map<string, Set<number>>();
 		for (const entry of castedMatchHistory) {
-			if (!castMatchesByAccount.has(entry.twitchAccount)) {
-				castMatchesByAccount.set(entry.twitchAccount, new Set());
+			if (entry.platform !== "TWITCH") continue;
+
+			if (!castMatchesByAccount.has(entry.account)) {
+				castMatchesByAccount.set(entry.account, new Set());
 			}
-			castMatchesByAccount.get(entry.twitchAccount)!.add(entry.matchId);
+			castMatchesByAccount.get(entry.account)!.add(entry.matchId);
 		}
 
 		const newCastLogins = [...castMatchesByAccount.keys()].filter(

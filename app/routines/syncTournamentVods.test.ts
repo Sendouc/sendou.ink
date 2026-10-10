@@ -276,7 +276,7 @@ async function seedTournamentWithMatches({
 		await TournamentRepository.setMatchAsCasted({
 			tournamentId,
 			matchId: castedOn.match === "first" ? firstMatch.id : secondMatch.id,
-			twitchAccount: castedOn.twitchAccount,
+			castAccount: { platform: "TWITCH", account: castedOn.twitchAccount },
 		});
 	}
 }
@@ -288,7 +288,7 @@ function playerOf(tournamentTeamId: number) {
 function seedStreamer(twitchAccount: string, userId: number | null = null) {
 	return TournamentStreamerFactory.create({
 		tournamentId,
-		twitchAccount,
+		account: twitchAccount,
 		userId,
 	});
 }

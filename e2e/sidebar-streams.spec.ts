@@ -209,6 +209,6 @@ async function createLiveXRankStreamer(factories: Factories) {
 		{ matchesCount: MATCHES_COUNT_NEEDED_FOR_LEADERBOARD },
 	);
 	await factories.LiveStreamFactory.replaceAll([
-		{ userId: topPlayer.id, twitch: XRANK_TWITCH },
+		{ userId: topPlayer.id, account: XRANK_TWITCH },
 	]);
 }

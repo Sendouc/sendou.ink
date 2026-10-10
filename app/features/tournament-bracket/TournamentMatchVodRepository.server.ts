@@ -258,7 +258,11 @@ export function deleteObsolete() {
 export function findStreamersByTournamentId(tournamentId: number) {
 	return db
 		.selectFrom("TournamentStreamer")
-		.select(["TournamentStreamer.twitchAccount", "TournamentStreamer.userId"])
+		.select([
+			"TournamentStreamer.platform",
+			"TournamentStreamer.account",
+			"TournamentStreamer.userId",
+		])
 		.where("TournamentStreamer.tournamentId", "=", tournamentId)
 		.execute();
 }

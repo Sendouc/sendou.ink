@@ -263,17 +263,19 @@ export async function castMatch({
 	const tournament = await TournamentRepository.findById(tournamentId);
 	invariant(tournament, `Tournament ${tournamentId} not found`);
 
-	await TournamentRepository.updateCastTwitchAccounts({
+	const castAccount = { platform: "TWITCH" as const, account: twitchAccount };
+
+	await TournamentRepository.updateCastAccounts({
 		tournamentId,
-		castTwitchAccounts: [
-			...(tournament.castTwitchAccounts ?? []),
-			twitchAccount,
+		castAccounts: [
+			...(tournament.castAccounts ?? []),
+			{ ...castAccount, name: twitchAccount },
 		],
 	});
 	await TournamentRepository.setMatchAsCasted({
 		tournamentId,
 		matchId,
-		twitchAccount,
+		castAccount,
 	});
 
 	clearTournamentDataCache(tournamentId);

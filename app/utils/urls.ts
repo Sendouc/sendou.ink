@@ -513,8 +513,14 @@ export const isCustomUrl = (value: string) => {
 };
 
 export function vodUrl(vod: {
+	platform: Tables["TournamentMatchVod"]["platform"];
 	platformVideoId: string;
 	timestampSeconds: number;
 }) {
-	return `https://www.twitch.tv/videos/${vod.platformVideoId}?t=${vod.timestampSeconds}s`;
+	switch (vod.platform) {
+		case "TWITCH":
+			return `https://www.twitch.tv/videos/${vod.platformVideoId}?t=${vod.timestampSeconds}s`;
+		case "YOUTUBE":
+			return `https://www.youtube.com/watch?v=${vod.platformVideoId}&t=${vod.timestampSeconds}s`;
+	}
 }

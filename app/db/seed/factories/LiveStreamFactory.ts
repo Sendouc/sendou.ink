@@ -8,16 +8,17 @@ type Stream = Omit<Tables["LiveStream"], "id">;
 type StreamOverrides = Partial<Stream> & Pick<Stream, "userId">;
 
 /**
- * Same write as the twitch poller, so seed all streams at once. A stream credited to a user also links the
- * Twitch account to them, as the poller only credits users with the account on their profile.
+ * Same write as the stream poller, so seed all streams at once. A Twitch stream credited to a user also links the
+ * account to them, as the poller only credits users with the account on their profile.
  */
 export async function replaceAll(streams: StreamOverrides[]) {
 	const filledStreams = streams.map(fillStream);
 
 	for (const stream of filledStreams) {
 		if (typeof stream.userId !== "number") continue;
+		if (stream.platform !== "TWITCH") continue;
 
-		await linkTwitch(stream.userId, stream.twitch);
+		await linkTwitch(stream.userId, stream.account);
 	}
 
 	await LiveStreamRepository.replaceAll(filledStreams);
@@ -25,6 +26,9 @@ export async function replaceAll(streams: StreamOverrides[]) {
 
 function fillStream(overrides: StreamOverrides): Stream {
 	return {
+		platform: "TWITCH",
+		account: `stream_${overrides.userId}`,
+		videoId: null,
 		viewerCount: faker.helpers.weightedArrayElement([
 			{ value: faker.number.int({ min: 5, max: 30 }), weight: 5 },
 			{ value: faker.number.int({ min: 31, max: 100 }), weight: 3 },
@@ -32,7 +36,6 @@ function fillStream(overrides: StreamOverrides): Stream {
 			{ value: faker.number.int({ min: 501, max: 2000 }), weight: 1 },
 		]),
 		thumbnailUrl: faker.image.urlPicsumPhotos({ width: 320, height: 180 }),
-		twitch: `stream_${overrides.userId}`,
 		...overrides,
 	};
 }

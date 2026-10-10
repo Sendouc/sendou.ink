@@ -44,7 +44,7 @@ function findAllLiveStreams() {
 	return db.selectFrom("LiveStream").selectAll().execute();
 }
 
-/** A tournament the routine considers live: teams in the database (for members' Twitch accounts) and in the running tournaments registry. */
+/** A tournament the routine considers live: teams in the database (for members' stream accounts) and in the running tournaments registry. */
 async function addRunningTournament({
 	memberUserIds = [],
 	castTwitchAccounts = [],
@@ -74,7 +74,16 @@ async function addRunningTournament({
 
 	RunningTournaments.clear();
 	RunningTournaments.add(
-		testTournament({ ctx: { id: tournament.id, castTwitchAccounts } }),
+		testTournament({
+			ctx: {
+				id: tournament.id,
+				castAccounts: castTwitchAccounts.map((account) => ({
+					platform: "TWITCH",
+					account,
+					name: account,
+				})),
+			},
+		}),
 	);
 
 	return tournament;
@@ -117,10 +126,9 @@ describe("syncLiveStreams tournament streamers", () => {
 		const rows = await findAllLiveStreams();
 		expect(rows).toHaveLength(2);
 		expect(
-			rows
-				.map((r) => r.twitch)
-				.sort((a, b) => (a ?? "").localeCompare(b ?? "")),
+			rows.map((r) => r.account).sort((a, b) => a.localeCompare(b)),
 		).toEqual(["streamer_one", "streamer_two"]);
+		expect(rows.every((r) => r.platform === "TWITCH")).toBe(true);
 		expect(rows[0].viewerCount).toBe(100);
 	});
 
@@ -139,7 +147,10 @@ describe("syncLiveStreams tournament streamers", () => {
 		const rows = await findAllTournamentStreamers();
 		expect(rows).toHaveLength(1);
 		expect(rows[0].userId).toBe(player.id);
-		expect(rows[0].twitchAccount).toBe("player_one");
+		expect(rows[0]).toMatchObject({
+			platform: "TWITCH",
+			account: "player_one",
+		});
 		expect(rows[0].tournamentId).toBe(tournament.id);
 	});
 
@@ -172,7 +183,10 @@ describe("syncLiveStreams tournament streamers", () => {
 		const rows = await findAllTournamentStreamers();
 		expect(rows).toHaveLength(1);
 		expect(rows[0].userId).toBeNull();
-		expect(rows[0].twitchAccount).toBe("caster_account");
+		expect(rows[0]).toMatchObject({
+			platform: "TWITCH",
+			account: "caster_account",
+		});
 	});
 
 	test("no inserts when no streams match", async () => {
@@ -215,7 +229,7 @@ describe("syncLiveStreams tournament streamers", () => {
 
 		const rowsAfterSecond = await findAllTournamentStreamers();
 		expect(rowsAfterSecond).toHaveLength(1);
-		expect(rowsAfterSecond[0].twitchAccount).toBe("streamer_a");
+		expect(rowsAfterSecond[0].account).toBe("streamer_a");
 	});
 });
 

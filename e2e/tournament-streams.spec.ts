@@ -92,7 +92,7 @@ test.describe("Tournament streams", () => {
 	}) => {
 		const { tournament } = await createStartableTournament(factories);
 		await factories.LiveStreamFactory.replaceAll([
-			{ userId: null, twitch: CAST_ACCOUNT },
+			{ userId: null, account: CAST_ACCOUNT },
 		]);
 
 		await impersonate(page, NZAP_TEST_ID);

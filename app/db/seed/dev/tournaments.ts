@@ -545,7 +545,7 @@ async function seedLuti({
 	});
 	await TournamentStreamerFactory.create({
 		tournamentId: tournament.id,
-		twitchAccount: "luti_cast",
+		account: "luti_cast",
 	});
 
 	for (const [index] of LUTI_DIVISIONS.entries()) {
@@ -946,8 +946,8 @@ async function seedSubs(tournamentId: number, users: SeededUsers) {
 }
 
 async function seedTournamentExtras(tournamentId: number, users: SeededUsers) {
-	for (const twitchAccount of ["sendou", "nzap_stream"]) {
-		await TournamentStreamerFactory.create({ tournamentId, twitchAccount });
+	for (const account of ["sendou", "nzap_stream"]) {
+		await TournamentStreamerFactory.create({ tournamentId, account });
 	}
 
 	// not N-ZAP: he registers with Alliance Rogue and a player can't both be on a team and look for one

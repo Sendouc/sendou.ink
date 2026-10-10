@@ -19,7 +19,9 @@ export default function TournamentAdminStreamPage() {
 			fullWidth
 			submitButtonTestId="save-cast-twitch-accounts-button"
 			defaultValues={{
-				castTwitchAccounts: tournament.ctx.castTwitchAccounts ?? [],
+				castTwitchAccounts: (tournament.ctx.castAccounts ?? []).map(
+					(castAccount) => castAccount.account,
+				),
 			}}
 		>
 			{({ FormField }) => <FormField name="castTwitchAccounts" />}

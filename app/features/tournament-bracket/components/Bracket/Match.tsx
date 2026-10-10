@@ -7,6 +7,7 @@ import { Avatar } from "~/components/Avatar";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouPopover } from "~/components/elements/Popover";
 import { useUser } from "~/features/auth/core/user";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { TournamentStream } from "~/features/tournament/components/TournamentStream";
 import { useTournamentVods } from "~/features/tournament/routes/to.$id";
 import { useTournament } from "~/features/tournament/tournament-context";
@@ -410,7 +411,7 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 
 	const castingAccount = tournament.ctx.castedMatchesInfo?.castedMatches.find(
 		(cm) => cm.matchId === match.id,
-	)?.twitchAccount;
+	);
 
 	const matchParticipants = [match.opponent1.id, match.opponent2.id].flatMap(
 		(teamId) => tournament.teamById(teamId)?.memberUserIds ?? [],
@@ -419,7 +420,7 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 	const streamsOfThisMatch = tournament.streams.filter(
 		(stream) =>
 			(stream.userId && matchParticipants.includes(stream.userId)) ||
-			stream.twitchUserName === castingAccount,
+			(castingAccount && LiveStream.isSameAccount(stream, castingAccount)),
 	);
 
 	if (streamsOfThisMatch.length === 0) {
@@ -439,7 +440,7 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 		>
 			{streamsOfThisMatch.map((stream) => (
 				<TournamentStream
-					key={stream.twitchUserName}
+					key={LiveStream.key(stream)}
 					stream={stream}
 					withThumbnail={false}
 				/>

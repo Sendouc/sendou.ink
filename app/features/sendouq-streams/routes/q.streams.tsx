@@ -6,13 +6,13 @@ import { EmptyState } from "~/components/EmptyState";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { UserLink } from "~/components/UserLink";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useHydrated } from "~/hooks/useHydrated";
-import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
-import { FAQ_PAGE, sendouQMatchPage, twitchUrl } from "~/utils/urls";
+import { FAQ_PAGE, sendouQMatchPage } from "~/utils/urls";
 import { loader } from "../loaders/q.streams.server";
 import styles from "./q.streams.module.css";
 
@@ -58,7 +58,10 @@ export default function SendouQStreamsPage() {
 			<div className="stack horizontal lg flex-wrap justify-center">
 				{data.streams.map((streamedMatch) => {
 					return (
-						<div key={streamedMatch.user.id} className="stack sm">
+						<div
+							key={LiveStream.key(streamedMatch.stream)}
+							className="stack sm"
+						>
 							<div className="stack horizontal justify-between items-end">
 								<UserLink
 									user={streamedMatch.user}
@@ -82,15 +85,13 @@ export default function SendouQStreamsPage() {
 								</div>
 							</div>
 							<a
-								href={twitchUrl(streamedMatch.user.twitch)}
+								href={LiveStream.url(streamedMatch.stream)}
 								target="_blank"
 								rel="noreferrer"
 							>
 								<img
 									alt=""
-									src={twitchThumbnailUrlToSrc(
-										streamedMatch.stream.thumbnailUrl,
-									)}
+									src={LiveStream.thumbnailSrc(streamedMatch.stream)}
 									width={320}
 									height={180}
 								/>

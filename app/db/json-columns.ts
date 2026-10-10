@@ -16,7 +16,7 @@ export const JSON_COLUMNS: ReadonlySet<string> = new Set([
 	"SplatoonPlayer.peakXp",
 	"Team.customTheme",
 	"Team.mapModePreferences",
-	"Tournament.castTwitchAccounts",
+	"Tournament.castAccounts",
 	"Tournament.castedMatchesInfo",
 	"Tournament.preparedMaps",
 	"Tournament.seedingSnapshot",

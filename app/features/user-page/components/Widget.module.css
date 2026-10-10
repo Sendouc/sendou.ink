@@ -498,6 +498,13 @@
 	color: var(--color-text-high);
 }
 
+.liveStreamPlatformIcon {
+	width: 1em;
+	height: 1em;
+	margin-inline-end: var(--s-1);
+	vertical-align: middle;
+}
+
 .countdownTitle {
 	font-size: var(--font-sm);
 	font-weight: var(--weight-semi);

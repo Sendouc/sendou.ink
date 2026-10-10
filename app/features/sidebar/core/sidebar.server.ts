@@ -11,7 +11,7 @@ import type { ShowcaseCalendarEvent } from "~/features/calendar/calendar-types";
 import {
 	COMBINED_STREAMS_KEY,
 	fetchRunningTournamentStreams,
-	getLiveTournamentStreamerTwitchNames,
+	getLiveTournamentStreamAccounts,
 	getLiveTournamentStreams,
 	getUpcomingLeagueCastStreams,
 	type SidebarStream,
@@ -28,6 +28,7 @@ import {
 	resolveSendouQMatchStreams,
 } from "~/features/friends/friends-utils.server";
 import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import * as LiveStreamRepository from "~/features/live-streams/LiveStreamRepository.server";
 import * as Seasons from "~/features/mmr/core/Seasons";
 import type { SidebarScrim } from "~/features/scrims/ScrimPostRepository.server";
@@ -50,7 +51,6 @@ import {
 	navIconUrl,
 	teamSchedulePage,
 	tournamentMatchPage,
-	twitchUrl,
 	userPage,
 } from "~/utils/urls";
 import * as StreamRanking from "./StreamRanking";
@@ -79,7 +79,7 @@ export type SidebarFriend = {
 	activityType: FriendActivityType | null;
 	matchId: number | null;
 	tournamentId: number | null;
-	streamUrl: string | null;
+	stream: FriendActivity["stream"];
 };
 
 const MAX_EVENTS_VISIBLE = 5;
@@ -216,12 +216,12 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 	const upcomingTournaments = await ShowcaseTournaments.upcomingTournaments();
 	const externalStreams = await ExternalStreamRepository.findAllForSidebar();
 
-	const seenUsernames = new Set([
-		...getLiveTournamentStreamerTwitchNames(runningTournaments),
-		...sendouQEntries.flatMap((e) =>
-			e.twitchUsernames.map((t) => t.toLowerCase()),
-		),
-	]);
+	const seenStreamKeys = new Set(
+		[
+			...getLiveTournamentStreamAccounts(runningTournaments),
+			...sendouQEntries.flatMap((e) => e.streamAccounts),
+		].map(LiveStream.key),
+	);
 
 	const ranked: { stream: SidebarStream; score: number }[] = [];
 
@@ -267,22 +267,19 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 
 	const xRankByStream = new Map<string, (typeof xRankRows)[number]>();
 	for (const row of xRankRows) {
-		const key = row.twitchUsername?.toLowerCase() ?? `user-${row.id}`;
+		const key = LiveStream.key(row);
 		const existing = xRankByStream.get(key);
 		if (!existing || (row.peakXp ?? 0) > (existing.peakXp ?? 0)) {
 			xRankByStream.set(key, row);
 		}
 	}
 
+	const xRankUserIds = new Set<number>();
 	for (const row of xRankByStream.values()) {
 		if (userIsBanned(row.id)) continue;
-
-		if (
-			row.twitchUsername &&
-			seenUsernames.has(row.twitchUsername.toLowerCase())
-		) {
-			continue;
-		}
+		if (seenStreamKeys.has(LiveStream.key(row))) continue;
+		if (xRankUserIds.has(row.id)) continue;
+		xRankUserIds.add(row.id);
 
 		const score = StreamRanking.xpToScore(row.peakXp ?? 0);
 		if (score === null) continue;
@@ -300,9 +297,7 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 								size: "sm",
 							})
 						: BLANK_IMAGE_URL,
-				url: row.twitchUsername
-					? twitchUrl(row.twitchUsername)
-					: userPage({ discordId: row.discordId, customUrl: row.customUrl }),
+				url: LiveStream.url(row),
 				subtitle: "",
 				startsAt: databaseTimestampNow(),
 				tier: null,
@@ -353,7 +348,9 @@ type FriendWithActivity = Awaited<
 
 function resolveFriends(
 	friendsWithActivity: FriendWithActivity[],
-	streamedSendouQMatches: ReadonlyMap<number, string>,
+	streamedSendouQMatches: Awaited<
+		ReturnType<typeof resolveSendouQMatchStreams>
+	>,
 ) {
 	const entries = R.uniqueBy(friendsWithActivity, (f) => f.id).map((row) => {
 		const activity = resolveFriendActivity({
@@ -441,7 +438,7 @@ function rowToSidebarFriend(
 		activityType: activity.type,
 		matchId: activity.matchId,
 		tournamentId: activity.tournamentId ?? row.tournamentId,
-		streamUrl: activity.streamUrl,
+		stream: activity.stream,
 	};
 }
 
