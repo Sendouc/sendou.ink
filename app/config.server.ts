@@ -87,7 +87,7 @@ export const ServerConfig = {
 		clientSecret: values.TWITCH_CLIENT_SECRET,
 	},
 
-	/** Optional, YouTube channels can't be resolved when unset. */
+	/** Optional, YouTube streams are hidden and YouTube channels can't be resolved when unset. */
 	youtube: {
 		apiKey: values.YOUTUBE_API_KEY,
 	},

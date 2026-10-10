@@ -3,14 +3,19 @@ import type { Tables } from "~/db/tables";
 import { clearCombinedStreamsCache } from "~/features/core/streams/streams.server";
 import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import * as LiveStreamRepository from "~/features/live-streams/LiveStreamRepository.server";
+import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { RunningTournaments } from "~/features/tournament-bracket/core/RunningTournaments.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { getStreams } from "~/modules/twitch/streams";
 import { hasTwitchEnvVars } from "~/modules/twitch/utils.server";
+import { getLiveStreams as getYoutubeLiveStreams } from "~/modules/youtube/streams";
+import { hasYoutubeEnvVars } from "~/modules/youtube/utils.server";
 import { Routine } from "./routine.server";
 
 const TOURNAMENT_STREAM_SYNC_INTERVAL_MINS = 30;
+const YOUTUBE_SEARCH_INTERVAL_MINS = 20;
+const YOUTUBE_SEARCH_INTERVAL_DURING_TOURNAMENTS_MINS = 10;
 let lastTournamentStreamSync: Date | null = null;
 
 export const SyncLiveStreamsRoutine = new Routine({
@@ -19,9 +24,40 @@ export const SyncLiveStreamsRoutine = new Routine({
 });
 
 async function syncLiveStreams() {
-	if (!hasTwitchEnvVars()) return;
+	if (!hasTwitchEnvVars() && !hasYoutubeEnvVars()) return;
 
-	const streams = await getStreams();
+	const [twitchStreams, youtubeStreams] = await Promise.all([
+		hasTwitchEnvVars() ? getStreams() : [],
+		hasYoutubeEnvVars()
+			? getYoutubeLiveStreams({
+					searchIntervalMinutes:
+						RunningTournaments.all.length > 0
+							? YOUTUBE_SEARCH_INTERVAL_DURING_TOURNAMENTS_MINS
+							: YOUTUBE_SEARCH_INTERVAL_MINS,
+				})
+			: [],
+	]);
+
+	const streams = [
+		...twitchStreams.map(
+			(stream): Omit<LiveStreamRow, "userId"> => ({
+				platform: "TWITCH",
+				account: stream.twitchUserName,
+				videoId: null,
+				viewerCount: stream.viewerCount,
+				thumbnailUrl: stream.thumbnailUrl,
+			}),
+		),
+		...youtubeStreams.map(
+			(stream): Omit<LiveStreamRow, "userId"> => ({
+				platform: "YOUTUBE",
+				account: stream.channelId,
+				videoId: stream.videoId,
+				viewerCount: stream.viewerCount,
+				thumbnailUrl: stream.thumbnailUrl,
+			}),
+		),
+	];
 
 	if (streams.length === 0) {
 		await LiveStreamRepository.replaceAll([]);
@@ -29,25 +65,11 @@ async function syncLiveStreams() {
 		return;
 	}
 
-	const streamTwitchNames = streams.map((s) => s.twitchUserName);
-	const matchingUsers =
-		await UserRepository.findIdsByTwitchUsernames(streamTwitchNames);
-
-	const twitchToUserId = new Map<string, number>();
-	for (const user of matchingUsers) {
-		if (user.twitch) {
-			twitchToUserId.set(user.twitch, user.id);
-		}
-	}
-
+	const accountToUserId = await streamAccountToUserId(streams);
 	const liveStreams = streams.map(
 		(stream): LiveStreamRow => ({
-			platform: "TWITCH",
-			account: stream.twitchUserName,
-			videoId: null,
-			userId: twitchToUserId.get(stream.twitchUserName) ?? null,
-			viewerCount: stream.viewerCount,
-			thumbnailUrl: stream.thumbnailUrl,
+			...stream,
+			userId: accountToUserId.get(LiveStream.key(stream)) ?? null,
 		}),
 	);
 
@@ -58,6 +80,35 @@ async function syncLiveStreams() {
 }
 
 type LiveStreamRow = Omit<Tables["LiveStream"], "id">;
+
+async function streamAccountToUserId(streams: StreamAccount[]) {
+	const users = await UserRepository.findIdsByStreamAccounts({
+		twitchNames: streams
+			.filter((stream) => stream.platform === "TWITCH")
+			.map((stream) => stream.account),
+		youtubeIds: streams
+			.filter((stream) => stream.platform === "YOUTUBE")
+			.map((stream) => stream.account),
+	});
+
+	const result = new Map<string, number>();
+	for (const user of users) {
+		if (user.twitch) {
+			result.set(
+				LiveStream.key({ platform: "TWITCH", account: user.twitch }),
+				user.id,
+			);
+		}
+		if (user.youtubeId) {
+			result.set(
+				LiveStream.key({ platform: "YOUTUBE", account: user.youtubeId }),
+				user.id,
+			);
+		}
+	}
+
+	return result;
+}
 
 async function syncTournamentStreamers(liveStreams: LiveStreamRow[]) {
 	const now = new Date();

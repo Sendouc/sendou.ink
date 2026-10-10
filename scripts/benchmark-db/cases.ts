@@ -1551,10 +1551,9 @@ export function buildCases(fx: Fixtures): {
 		UserRepository.findSocialLinksByUserId(user.id),
 	);
 	add(
-		"UserRepository.findIdsByTwitchUsernames",
-		fx.twitchUsernames,
-		(twitchUsernames) =>
-			UserRepository.findIdsByTwitchUsernames(twitchUsernames),
+		"UserRepository.findIdsByStreamAccounts",
+		fx.streamAccounts,
+		(streamAccounts) => UserRepository.findIdsByStreamAccounts(streamAccounts),
 	);
 
 	add("VodRepository.findByUserId", fx.vod, (vod) =>
