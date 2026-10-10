@@ -7,6 +7,8 @@ export const VOICE_ROOM_TYPES = [
 ] as const satisfies ChatRoomType[];
 
 export const VOICE_TOKEN_LIFETIME_MINUTES = 120;
+export const VOICE_JOIN_SOUND = "voice_join";
+export const VOICE_LEAVE_SOUND = "voice_leave";
 export const VOICE_MONTHLY_BUDGET_USD = 500;
 export const VOICE_FREE_MINUTES_PER_MONTH = 10_000;
 export const VOICE_PRICE_PER_MINUTE_USD = 0.00099;

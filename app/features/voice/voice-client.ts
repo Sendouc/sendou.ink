@@ -1,12 +1,15 @@
 import type { ServerEvent } from "~/features/events/events-types";
 import { logger } from "~/utils/logger";
 import { VOICE_TELEMETRY_ROUTE, voiceRoomDataRoute } from "~/utils/urls";
+import * as Sounds from "../chat/core/Sounds";
 import { eventsClient } from "../events/events-client";
-import type {
-	VoiceClientErrorKind,
-	VoiceInputMode,
-	VoiceLeaveReason,
-	VoicePlatform,
+import {
+	VOICE_JOIN_SOUND,
+	VOICE_LEAVE_SOUND,
+	type VoiceClientErrorKind,
+	type VoiceInputMode,
+	type VoiceLeaveReason,
+	type VoicePlatform,
 } from "./voice-constants";
 
 export interface VoiceRoomState {
@@ -68,6 +71,7 @@ interface VoiceClientDeps {
 		listener: (event: ServerEvent) => void,
 	) => () => void;
 	platform: () => VoicePlatform;
+	playSound: (soundCode: string) => void;
 }
 
 export interface VoiceClient {
@@ -161,6 +165,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 		if (!call) return;
 
 		sendSummary(false);
+		if (call.status === "CONNECTED") deps.playSound(VOICE_LEAVE_SOUND);
 		// not awaited: clearing the call unmounts its call object, whose leave then never settles
 		void callHandle?.leave().catch((error) => {
 			logger.error("Leaving the voice call failed", error);
@@ -311,6 +316,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			if (!call?.voiceSessionId) return;
 
 			updateCall({ status: "CONNECTED" });
+			deps.playSound(VOICE_JOIN_SOUND);
 			void deps.postRoomAction(call.roomId, {
 				_action: "CONNECTED",
 				voiceSessionId: call.voiceSessionId,
@@ -329,6 +335,25 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			const mutedSessionIds = participants
 				.filter((participant) => !participant.audioEnabled)
 				.map((participant) => participant.sessionId);
+
+			const hasBaseline = call.participants.some(
+				(participant) => participant.isLocal,
+			);
+			if (call.status === "CONNECTED" && hasBaseline) {
+				const remoteSessionIdsOf = (list: VoiceCallParticipant[]) =>
+					list
+						.filter((participant) => !participant.isLocal)
+						.map((participant) => participant.sessionId);
+				const before = remoteSessionIdsOf(call.participants);
+				const after = remoteSessionIdsOf(participants);
+
+				if (after.some((id) => !before.includes(id))) {
+					deps.playSound(VOICE_JOIN_SOUND);
+				}
+				if (before.some((id) => !after.includes(id))) {
+					deps.playSound(VOICE_LEAVE_SOUND);
+				}
+			}
 			updateCall({
 				participants,
 				speakingSessionIds: call.speakingSessionIds.filter(
@@ -477,4 +502,5 @@ export const voiceClient = createVoiceClient({
 	beaconTelemetry: (body) => beacon(VOICE_TELEMETRY_ROUTE, body),
 	addServerEventListener: (listener) => eventsClient.addEventListener(listener),
 	platform: detectPlatform,
+	playSound: Sounds.play,
 });

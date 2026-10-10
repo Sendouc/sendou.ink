@@ -55,6 +55,7 @@ function setup({
 			return () => serverListeners.delete(listener);
 		},
 		platform: () => "DESKTOP" as const,
+		playSound: vi.fn(),
 	};
 	const client = createVoiceClient(deps);
 	client.start();
@@ -271,5 +272,53 @@ describe("createVoiceClient", () => {
 			deafened: false,
 			micEnabled: true,
 		});
+	});
+
+	test("connecting plays the join sound once, not for everyone already in the call", async () => {
+		const { client, deps } = setup();
+		await client.join(ROOM_ID);
+		client.updateParticipants([
+			participant("local", { isLocal: true }),
+			participant("remote-1"),
+			participant("remote-2"),
+		]);
+
+		client.markConnected("local");
+
+		expect(deps.playSound).toHaveBeenCalledTimes(1);
+		expect(deps.playSound).toHaveBeenCalledWith("voice_join");
+	});
+
+	test("others joining and leaving the call play their sounds", async () => {
+		const { client, deps } = setup();
+		await client.join(ROOM_ID);
+		client.updateParticipants([participant("local", { isLocal: true })]);
+		client.markConnected("local");
+		deps.playSound.mockClear();
+
+		client.updateParticipants([
+			participant("local", { isLocal: true }),
+			participant("remote"),
+		]);
+		client.updateParticipants([participant("local", { isLocal: true })]);
+
+		expect(deps.playSound.mock.calls).toEqual([
+			["voice_join"],
+			["voice_leave"],
+		]);
+	});
+
+	test("leaving a connected call plays the leave sound, a call that never connected doesn't", async () => {
+		const { client, deps } = setup();
+		await client.join(ROOM_ID);
+		await client.leave();
+		expect(deps.playSound).not.toHaveBeenCalled();
+
+		await client.join(ROOM_ID);
+		client.markConnected("local");
+		deps.playSound.mockClear();
+		await client.leave();
+
+		expect(deps.playSound).toHaveBeenCalledWith("voice_leave");
 	});
 });

@@ -37,7 +37,7 @@ export const action = defineAction(async ({ request }) => {
 	const rawBody = await request.text();
 	const secret = ServerConfig.daily.webhookSecret;
 
-	// Daily checks a new webhook endpoint with an unsigned `{"test":"test"}`
+	// Daily checks a new webhook endpoint with `{"test":"test"}` and needs a 200
 	const parsed = v.safeParse(eventSchema, safeJsonParse(rawBody));
 	if (!parsed.success || !secret) return null;
 
