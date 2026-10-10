@@ -16,7 +16,7 @@ const { mockGetStreams } = vi.hoisted(() => ({
 	mockGetStreams: vi.fn(),
 }));
 
-vi.mock("~/modules/twitch", () => ({
+vi.mock("~/modules/twitch/streams", () => ({
 	getStreams: mockGetStreams,
 }));
 

@@ -6,7 +6,7 @@ import * as LiveStreamRepository from "~/features/live-streams/LiveStreamReposit
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { RunningTournaments } from "~/features/tournament-bracket/core/RunningTournaments.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-import { getStreams } from "~/modules/twitch";
+import { getStreams } from "~/modules/twitch/streams";
 import { hasTwitchEnvVars } from "~/modules/twitch/utils.server";
 import { Routine } from "./routine.server";
 

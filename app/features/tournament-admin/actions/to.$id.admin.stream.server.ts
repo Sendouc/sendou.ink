@@ -1,32 +1,22 @@
-import * as R from "remeda";
+import type { Params } from "react-router";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import {
 	clearTournamentDataCache,
 	tournamentFromParams,
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { defineAction } from "~/form/define-action.server";
-import { adminStreamFormSchema } from "../tournament-admin-staff-schemas";
+import { adminStreamFormSchemaServer } from "../tournament-admin-staff-schemas.server";
 
 export const action = defineAction(
-	{ body: adminStreamFormSchema },
+	{ body: streamBodySchema },
 	async ({ params, body }) => {
 		const { tournament, tournamentId } = await tournamentFromParams(params, {
 			for: "organizer",
 		});
 
-		const twitchAccounts = R.unique(
-			body.castTwitchAccounts
-				.map((account) => account.trim().toLowerCase())
-				.filter(Boolean),
-		);
-
 		await TournamentRepository.updateCastAccounts({
 			tournamentId: tournament.ctx.id,
-			castAccounts: twitchAccounts.map((account) => ({
-				platform: "TWITCH",
-				account,
-				name: account,
-			})),
+			castAccounts: body.castAccounts,
 		});
 
 		clearTournamentDataCache(tournamentId);
@@ -34,3 +24,13 @@ export const action = defineAction(
 		return null;
 	},
 );
+
+async function streamBodySchema({ params }: { params: Params<string> }) {
+	const { tournament } = await tournamentFromParams(params, {
+		for: "organizer",
+	});
+
+	return adminStreamFormSchemaServer({
+		currentCastAccounts: tournament.ctx.castAccounts ?? [],
+	});
+}

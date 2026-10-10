@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 import { tournamentAdminPage } from "~/utils/urls";
 import { navigate, submit } from "../../helpers/playwright";
 
-/** `/to/:id/admin/stream` — the cast Twitch accounts form. */
+/** `/to/:id/admin/stream` — the cast accounts form. */
 export class TournamentAdminStreamPage {
 	private readonly page: Page;
 	readonly locators;
@@ -27,8 +27,8 @@ export class TournamentAdminStreamPage {
 	}
 
 	/** An empty array field already renders one placeholder input to fill. */
-	async fillAccount(nth: number, twitchAccount: string) {
-		await this.accountInput(nth).fill(twitchAccount);
+	async fillAccount(nth: number, account: string) {
+		await this.accountInput(nth).fill(account);
 	}
 
 	async addAccountField() {
@@ -36,6 +36,6 @@ export class TournamentAdminStreamPage {
 	}
 
 	save() {
-		return submit(this.page, "save-cast-twitch-accounts-button");
+		return submit(this.page, "save-cast-accounts-button");
 	}
 }
