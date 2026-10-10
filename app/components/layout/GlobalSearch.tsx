@@ -12,6 +12,7 @@ import { Input } from "~/components/Input";
 import { LocaleTime } from "~/components/LocaleTime";
 import { LogInPopover } from "~/components/LogInPopover";
 import type { SearchLoaderData } from "~/features/search/routes/search";
+import { SEARCH_DEBOUNCE_MS } from "~/features/search/search-constants";
 import { searchSearchParams } from "~/features/search/search-search-params";
 import { tournamentOrganizationPage } from "~/features/tournament-organization/tournament-organization-urls";
 import { useDebounce } from "~/hooks/useDebounce";
@@ -223,7 +224,7 @@ function GlobalSearchContent({
 				}),
 			);
 		},
-		300,
+		SEARCH_DEBOUNCE_MS,
 		[query, searchType],
 	);
 
