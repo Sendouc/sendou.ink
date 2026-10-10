@@ -65,6 +65,10 @@
 	margin-inline-start: auto;
 }
 
+.mirroredIcon {
+	transform: scaleX(-1);
+}
+
 .pushToTalk {
 	user-select: none;
 	touch-action: none;
@@ -75,7 +79,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	margin: 0;
-	padding: 0 0 0 var(--s-0-5);
+	padding: 0 0 var(--s-1) var(--s-0-5);
 	list-style: none;
 }
 

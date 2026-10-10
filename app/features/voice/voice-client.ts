@@ -32,6 +32,7 @@ export interface VoiceCall {
 	credentials: { roomUrl: string; token: string } | null;
 	status: VoiceCallStatus;
 	micEnabled: boolean;
+	deafened: boolean;
 	inputMode: VoiceInputMode;
 	participants: VoiceCallParticipant[];
 	speakingSessionIds: string[];
@@ -79,6 +80,7 @@ export interface VoiceClient {
 	leaveOnPageClose: () => void;
 	kick: (roomId: number, userId: number) => Promise<void>;
 	setMicEnabled: (enabled: boolean) => void;
+	setDeafened: (deafened: boolean) => void;
 	setInputMode: (mode: VoiceInputMode) => void;
 	setVolume: (userId: number, volume: number) => void;
 	registerCallHandle: (handle: VoiceCallHandle | null) => void;
@@ -108,6 +110,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 	let callHandle: VoiceCallHandle | null = null;
 	let latestSummary: VoiceTelemetrySummary | null = null;
 	let preferredInputMode: VoiceInputMode = "OPEN_MIC";
+	let micEnabledBeforeDeafen = false;
 	const listeners = new Set<() => void>();
 
 	const update = (patch: Partial<VoiceSnapshot>) => {
@@ -215,6 +218,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 					credentials: null,
 					status: "JOINING",
 					micEnabled: false,
+					deafened: false,
 					inputMode: preferredInputMode,
 					participants: [],
 					speakingSessionIds: [],
@@ -258,7 +262,25 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 		setMicEnabled: (enabled) => {
 			if (!snapshot.call) return;
 			callHandle?.setLocalAudio(enabled);
-			updateCall({ micEnabled: enabled });
+			updateCall(
+				enabled ? { micEnabled: true, deafened: false } : { micEnabled: false },
+			);
+		},
+		setDeafened: (deafened) => {
+			const call = snapshot.call;
+			if (!call || call.deafened === deafened) return;
+
+			if (deafened) {
+				micEnabledBeforeDeafen = call.micEnabled;
+				if (call.micEnabled) callHandle?.setLocalAudio(false);
+				updateCall({ deafened: true, micEnabled: false });
+				return;
+			}
+
+			const restoreMic =
+				call.inputMode === "OPEN_MIC" && micEnabledBeforeDeafen;
+			if (restoreMic) callHandle?.setLocalAudio(true);
+			updateCall({ deafened: false, micEnabled: restoreMic });
 		},
 		setInputMode: (mode) => {
 			preferredInputMode = mode;

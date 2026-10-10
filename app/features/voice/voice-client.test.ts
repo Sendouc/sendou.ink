@@ -192,4 +192,43 @@ describe("createVoiceClient", () => {
 		expect(setLocalAudio).toHaveBeenCalledWith(true);
 		expect(client.getSnapshot().call?.micEnabled).toBe(true);
 	});
+
+	test("deafening mutes the microphone and undeafening restores it", async () => {
+		const { client } = setup();
+		const setLocalAudio = vi.fn();
+		await client.join(ROOM_ID);
+		client.registerCallHandle({
+			setLocalAudio,
+			leave: async () => {},
+			resumeAudio: () => {},
+		});
+		client.setMicEnabled(true);
+
+		client.setDeafened(true);
+		expect(setLocalAudio).toHaveBeenLastCalledWith(false);
+		expect(client.getSnapshot().call).toMatchObject({
+			deafened: true,
+			micEnabled: false,
+		});
+
+		client.setDeafened(false);
+		expect(setLocalAudio).toHaveBeenLastCalledWith(true);
+		expect(client.getSnapshot().call).toMatchObject({
+			deafened: false,
+			micEnabled: true,
+		});
+	});
+
+	test("unmuting the microphone undeafens", async () => {
+		const { client } = setup();
+		await client.join(ROOM_ID);
+		client.setDeafened(true);
+
+		client.setMicEnabled(true);
+
+		expect(client.getSnapshot().call).toMatchObject({
+			deafened: false,
+			micEnabled: true,
+		});
+	});
 });

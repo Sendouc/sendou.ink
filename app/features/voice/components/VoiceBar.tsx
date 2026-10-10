@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import {
+	HeadphoneOff,
 	Headphones,
 	Mic,
 	MicOff,
@@ -136,7 +137,10 @@ function CallButtons({ call }: { call: VoiceCall }) {
 			{call.status === "FAILED" ? (
 				<RetryButton roomId={call.roomId} />
 			) : (
-				<MicButton call={call} />
+				<>
+					<MicButton call={call} />
+					<DeafenButton call={call} />
+				</>
 			)}
 			<LeaveButton />
 		</>
@@ -232,7 +236,9 @@ function MicButton({ call }: { call: VoiceCall }) {
 			size="small"
 			shape="square"
 			variant={call.micEnabled ? "minimal-success" : "minimal-destructive"}
-			icon={call.micEnabled ? <Mic /> : <MicOff />}
+			icon={
+				call.micEnabled ? <Mic /> : <MicOff className={styles.mirroredIcon} />
+			}
 			isDisabled={call.status !== "CONNECTED"}
 			aria-label={label}
 			aria-pressed={call.micEnabled}
@@ -241,6 +247,33 @@ function MicButton({ call }: { call: VoiceCall }) {
 			{...(isPushToTalk
 				? pushToTalkHandlers
 				: { onClick: () => voiceClient.setMicEnabled(!call.micEnabled) })}
+		/>
+	);
+}
+
+function DeafenButton({ call }: { call: VoiceCall }) {
+	const { t } = useTranslation(["common"]);
+	const label = call.deafened
+		? t("common:chat.voice.undeafen")
+		: t("common:chat.voice.deafen");
+
+	return (
+		<SendouButton
+			size="small"
+			shape="square"
+			variant={call.deafened ? "minimal-destructive" : "minimal-success"}
+			icon={
+				call.deafened ? (
+					<HeadphoneOff className={styles.mirroredIcon} />
+				) : (
+					<Headphones />
+				)
+			}
+			isDisabled={call.status !== "CONNECTED"}
+			aria-label={label}
+			aria-pressed={call.deafened}
+			title={label}
+			onClick={() => voiceClient.setDeafened(!call.deafened)}
 		/>
 	);
 }
@@ -361,6 +394,10 @@ function RemoteUserControls({
 	const { t } = useTranslation(["common"]);
 	const { volumeByUserId } = useVoiceSnapshot();
 	const volume = volumeByUserId.get(userId) ?? 1;
+	const muteLabel =
+		volume === 0
+			? t("common:chat.voice.unmuteUser")
+			: t("common:chat.voice.muteUser");
 
 	return (
 		<SendouPopover
@@ -379,28 +416,27 @@ function RemoteUserControls({
 		>
 			<div className="stack sm">
 				<span className="font-semi-bold">{user?.username ?? "?"}</span>
-				<label className="stack xxs text-sm">
-					{t("common:chat.voice.volume")}
+				<div className="stack horizontal xs items-center">
+					<SendouButton
+						size="small"
+						shape="square"
+						variant="minimal"
+						icon={volume === 0 ? <VolumeX /> : <Volume2 />}
+						aria-label={muteLabel}
+						title={muteLabel}
+						onClick={() => voiceClient.setVolume(userId, volume === 0 ? 1 : 0)}
+					/>
 					<input
 						type="range"
 						min={0}
 						max={100}
 						value={Math.round(volume * 100)}
+						aria-label={t("common:chat.voice.volume")}
 						onChange={(event) =>
 							voiceClient.setVolume(userId, Number(event.target.value) / 100)
 						}
 					/>
-				</label>
-				<SendouButton
-					size="small"
-					variant="outlined"
-					icon={volume === 0 ? <Volume2 /> : <VolumeX />}
-					onClick={() => voiceClient.setVolume(userId, volume === 0 ? 1 : 0)}
-				>
-					{volume === 0
-						? t("common:chat.voice.unmuteUser")
-						: t("common:chat.voice.muteUser")}
-				</SendouButton>
+				</div>
 				{canKick ? (
 					<SendouButton
 						size="small"

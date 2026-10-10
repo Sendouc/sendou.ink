@@ -219,9 +219,10 @@ function ParticipantAudio({
 	sessionId: string;
 	userId: number;
 }) {
-	const { volumeByUserId } = useVoiceSnapshot();
+	const { volumeByUserId, call } = useVoiceSnapshot();
 	const audioRef = React.useRef<HTMLAudioElement>(null);
 	const volume = volumeByUserId.get(userId) ?? 1;
+	const deafened = call?.deafened ?? false;
 
 	React.useEffect(() => {
 		const audio = audioRef.current;
@@ -229,8 +230,8 @@ function ParticipantAudio({
 
 		// iOS ignores `volume` (lol), muting at least works everywhere
 		audio.volume = volume;
-		audio.muted = volume === 0;
-	}, [volume]);
+		audio.muted = volume === 0 || deafened;
+	}, [volume, deafened]);
 
 	React.useEffect(() => {
 		const audio = audioRef.current;
