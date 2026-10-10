@@ -5,7 +5,7 @@ export const channelsSchema = v.object({
 		v.array(
 			v.object({
 				id: v.string(),
-				snippet: v.object({ title: v.string() }),
+				snippet: v.object({ title: v.pipe(v.string(), v.trim()) }),
 			}),
 		),
 		[],
