@@ -137,10 +137,10 @@ function CallButtons({ call }: { call: VoiceCall }) {
 			{call.status === "FAILED" ? (
 				<RetryButton roomId={call.roomId} />
 			) : (
-				<>
+				<div className={styles.buttonGroup}>
 					<MicButton call={call} />
 					<DeafenButton call={call} />
-				</>
+				</div>
 			)}
 			<LeaveButton />
 		</>

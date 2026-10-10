@@ -61,8 +61,13 @@
 .actions {
 	display: flex;
 	flex-shrink: 0;
-	gap: var(--s-1);
+	gap: var(--s-3);
 	margin-inline-start: auto;
+}
+
+.buttonGroup {
+	display: flex;
+	gap: var(--s-1);
 }
 
 .mirroredIcon {
