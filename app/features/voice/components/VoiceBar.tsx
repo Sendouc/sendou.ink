@@ -370,7 +370,7 @@ function UserAvatar({
 		<Avatar
 			size="xxs"
 			user={user}
-			identiconInput={String(userId)}
+			identiconInput={user ? undefined : String(userId)}
 			alt={user?.username ?? ""}
 			title={user?.username}
 			className={clsx(styles.avatar, speaking && styles.speaking)}
