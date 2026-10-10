@@ -537,30 +537,30 @@ export class Tournament {
 
 	private resolveTeamsFromSignups(bracketIdx: number) {
 		const teams = this.isMultiStartingBracket
-			? this.ctx.teams.filter((team) => {
-					// 0 is the default
-					if (typeof team.startingBracketIdx !== "number") {
-						return bracketIdx === 0;
-					}
-
-					const startingBracket = this.ctx.settings.bracketProgression.at(
-						team.startingBracketIdx,
-					);
-					if (!startingBracket || startingBracket.sources) {
-						logger.warn(
-							"resolveTeamsFromSignups: Starting bracket index invalid",
-						);
-						return bracketIdx === 0;
-					}
-
-					return team.startingBracketIdx === bracketIdx;
-				})
+			? this.ctx.teams.filter(
+					(team) => this.startingBracketIdxOfTeam(team) === bracketIdx,
+				)
 			: this.ctx.teams;
 
 		return {
 			teams: teams.map((team) => team.id),
 			relevantMatchesFinished: true,
 		};
+	}
+
+	/** Index of the bracket the team plays first, a missing or invalid index falls back to the first bracket. */
+	startingBracketIdxOfTeam(team: { startingBracketIdx: number | null }) {
+		if (typeof team.startingBracketIdx !== "number") return 0;
+
+		const startingBracket = this.ctx.settings.bracketProgression.at(
+			team.startingBracketIdx,
+		);
+		if (!startingBracket || startingBracket.sources) {
+			logger.warn("startingBracketIdxOfTeam: Starting bracket index invalid");
+			return 0;
+		}
+
+		return team.startingBracketIdx;
 	}
 
 	private followUpBracketSeeding(

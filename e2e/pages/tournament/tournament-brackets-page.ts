@@ -215,6 +215,7 @@ class BracketMapListDialog {
 			),
 			linkFinalsButton: page.getByTestId("link-finals-3rd-place-match-button"),
 			beforeSetText: page.getByText("Before set"),
+			preparedByText: page.getByText(/^Prepared by/),
 			pickBanToggles: page.getByTitle("Toggle counterpick/ban"),
 		};
 	}
