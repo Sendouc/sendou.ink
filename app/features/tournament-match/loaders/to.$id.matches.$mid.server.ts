@@ -19,6 +19,7 @@ import {
 	tournamentTeamsFullCached,
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { matchPageParamsSchema } from "~/features/tournament-bracket/tournament-bracket-schemas";
+import { showsOneGroupAtATime } from "~/features/tournament-bracket/tournament-bracket-utils";
 import * as UserCardRepository from "~/features/user-card/UserCardRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { cache, IN_MILLISECONDS, ttl } from "~/utils/cache.server";
@@ -238,6 +239,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			groupNumber:
 				bracket?.data.group.find((group) => group.id === match.groupId)
 					?.number ?? null,
+			bracketsPageGroupId:
+				bracket && showsOneGroupAtATime(bracket) ? match.groupId : null,
 			hasRoundRobin: tournament.bracketsMeta.some(
 				(meta) => meta.type === "round_robin",
 			),
