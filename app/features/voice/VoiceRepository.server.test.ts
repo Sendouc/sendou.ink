@@ -1,6 +1,7 @@
 import { subDays, subMinutes } from "date-fns";
 import { beforeEach, describe, expect, test } from "vitest";
 import * as ChatRoomFactory from "~/db/seed/factories/ChatRoomFactory";
+import * as SQMatchFactory from "~/db/seed/factories/SQMatchFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import * as VoiceSessionFactory from "~/db/seed/factories/VoiceSessionFactory";
 import { db } from "~/db/sql";
@@ -13,7 +14,7 @@ const playerId = () => users.id(1);
 const otherPlayerId = () => users.id(2);
 
 beforeEach(async () => {
-	await users.create(2);
+	await users.create(8);
 });
 
 const sessionRow = (id: number) =>
@@ -155,3 +156,89 @@ describe("VoiceRepository.markOwnSessionLeft", () => {
 		expect((await sessionRow(session.id)).leftAt).toBeNull();
 	});
 });
+
+describe("VoiceRepository.findPlayerAdoptionSince", () => {
+	test("splits the players of new matches by voice chat setting and counts who connected", async () => {
+		const match = await createMatchWithVoiceChatSettings();
+		await connect(match.chatRoomId, users.id(1));
+		await connect(match.chatRoomId, users.id(2));
+		await VoiceSessionFactory.create({
+			userId: users.id(5),
+			roomId: match.chatRoomId,
+		});
+
+		const rows = await VoiceRepository.findPlayerAdoptionSince(weekAgo());
+
+		expect(
+			rows
+				.filter((row) => row.roomType === "SQ_MATCH")
+				.map(({ vc, playerCount, connectedCount }) => ({
+					vc,
+					playerCount,
+					connectedCount,
+				})),
+		).toEqual(
+			expect.arrayContaining([
+				{ vc: "YES", playerCount: 6, connectedCount: 1 },
+				{ vc: "LISTEN_ONLY", playerCount: 1, connectedCount: 1 },
+				{ vc: "NO", playerCount: 1, connectedCount: 0 },
+			]),
+		);
+	});
+});
+
+describe("VoiceRepository.findDailyAdoptionSince", () => {
+	test("counts rooms where two or more people connected apart from rooms with voice", async () => {
+		const conversation = await createMatchWithVoiceChatSettings({
+			isConcluded: true,
+		});
+		await connect(conversation.chatRoomId, users.id(1));
+		await connect(conversation.chatRoomId, users.id(2));
+		const alone = await createMatchWithVoiceChatSettings();
+		await connect(alone.chatRoomId, users.id(1));
+
+		const rows = await VoiceRepository.findDailyAdoptionSince(weekAgo());
+		const matchRow = rows.find((row) => row.type === "SQ_MATCH");
+
+		expect(matchRow).toMatchObject({
+			roomCount: 2,
+			voiceRoomCount: 2,
+			conversationRoomCount: 1,
+		});
+	});
+});
+
+const weekAgo = () => dateToDatabaseTimestamp(subDays(new Date(), 7));
+
+async function createMatchWithVoiceChatSettings(
+	options: { isConcluded?: boolean } = {},
+) {
+	for (const userId of users.ids()) {
+		await UserFactory.grant(userId, {
+			matchProfile: {
+				vc:
+					userId === users.id(2)
+						? "LISTEN_ONLY"
+						: userId === users.id(3)
+							? "NO"
+							: "YES",
+			},
+		});
+	}
+	const match = await SQMatchFactory.create(
+		{
+			alphaUserIds: users.ids(4),
+			bravoUserIds: users.ids().slice(4),
+		},
+		options,
+	);
+
+	return { chatRoomId: match.chatRoomId };
+}
+
+function connect(roomId: number | null, userId: number) {
+	return VoiceSessionFactory.create(
+		{ userId, roomId },
+		{ dailySessionId: crypto.randomUUID() },
+	);
+}

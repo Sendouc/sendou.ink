@@ -36,7 +36,9 @@ export default function AdminVoicePage() {
 			<p className="text-lighter text-sm">
 				The panels below cover the last {data.statsDays} days.
 			</p>
+			<PlayerAdoption playerAdoption={data.playerAdoption} />
 			<Adoption adoption={data.adoption} />
+			<VoiceChatPreferences voiceChatPreferences={data.voiceChatPreferences} />
 			<Platforms platforms={data.platforms} />
 			<LeaveReasons leaveReasons={data.leaveReasons} />
 			<Errors errorCounts={data.errorCounts} latestErrors={data.latestErrors} />
@@ -162,7 +164,7 @@ function Adoption({ adoption }: { adoption: LoaderData["adoption"] }) {
 
 	return (
 		<section className="stack sm">
-			<h2>Adoption</h2>
+			<h2>Room adoption</h2>
 			<p className="text-lighter text-sm">
 				Share of new rooms where at least one person connected to voice.
 			</p>
@@ -182,6 +184,7 @@ function Adoption({ adoption }: { adoption: LoaderData["adoption"] }) {
 						<th>Type</th>
 						<th>Rooms</th>
 						<th>With voice</th>
+						<th>2+ connected</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -194,6 +197,128 @@ function Adoption({ adoption }: { adoption: LoaderData["adoption"] }) {
 								{row.voiceRoomCount} (
 								{percent(row.voiceRoomCount, row.roomCount)})
 							</td>
+							<td>
+								{row.conversationRoomCount} (
+								{percent(row.conversationRoomCount, row.roomCount)})
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</section>
+	);
+}
+
+function PlayerAdoption({
+	playerAdoption,
+}: {
+	playerAdoption: LoaderData["playerAdoption"];
+}) {
+	const willing = playerAdoption.filter((row) => row.vc !== "NO");
+	const series = Object.entries(R.groupBy(willing, (row) => row.roomType)).map(
+		([type, rows]) => ({
+			label: type,
+			points: Object.entries(R.groupBy(rows, (row) => row.day)).map(
+				([day, dayRows]) => ({
+					x: new Date(`${day}T00:00:00Z`).getTime(),
+					y: Math.round(
+						(R.sumBy(dayRows, (row) => row.connectedCount) /
+							R.sumBy(dayRows, (row) => row.playerCount)) *
+							100,
+					),
+				}),
+			),
+		}),
+	);
+	const canChart = series.some((entry) => entry.points.length >= 2);
+	const totals = Object.values(
+		R.groupBy(playerAdoption, (row) => `${row.roomType}-${row.vc}`),
+	).map((rows) => ({
+		roomType: rows[0].roomType,
+		vc: rows[0].vc,
+		playerCount: R.sumBy(rows, (row) => row.playerCount),
+		connectedCount: R.sumBy(rows, (row) => row.connectedCount),
+	}));
+
+	return (
+		<section className="stack sm">
+			<h2>Player adoption</h2>
+			<p className="text-lighter text-sm">
+				Share of players in new rooms who connected to voice, counting only
+				those whose voice chat setting is "yes" or "listen only". Uses the
+				players' current setting, which may have changed since the match.
+			</p>
+			{canChart ? (
+				<LineChart
+					series={series}
+					xAxis={{ type: "date" }}
+					formatValue={(value) => `${value}%`}
+					interactive
+					ariaLabel="Share of willing players who connected to voice per day"
+				/>
+			) : null}
+			<table className={styles.table}>
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Voice chat setting</th>
+						<th>Players</th>
+						<th>Connected</th>
+					</tr>
+				</thead>
+				<tbody>
+					{R.sortBy(
+						totals,
+						(row) => row.roomType,
+						(row) => row.vc,
+					).map((row) => (
+						<tr key={`${row.roomType}-${row.vc}`}>
+							<td>{row.roomType}</td>
+							<td>{row.vc}</td>
+							<td>{row.playerCount}</td>
+							<td>
+								{row.connectedCount} (
+								{percent(row.connectedCount, row.playerCount)})
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</section>
+	);
+}
+
+function VoiceChatPreferences({
+	voiceChatPreferences,
+}: {
+	voiceChatPreferences: LoaderData["voiceChatPreferences"];
+}) {
+	return (
+		<section className="stack sm">
+			<h2>Joins by voice chat setting</h2>
+			<p className="text-lighter text-sm">
+				The joiner's own setting at the time they joined.
+			</p>
+			<table className={styles.table}>
+				<thead>
+					<tr>
+						<th>Setting</th>
+						<th>Joins</th>
+						<th>Connected</th>
+						<th>Users</th>
+						<th>Turned mic on</th>
+						<th>Mic-on time</th>
+					</tr>
+				</thead>
+				<tbody>
+					{voiceChatPreferences.map((row) => (
+						<tr key={row.vcPreference}>
+							<td>{row.vcPreference}</td>
+							<td>{row.joinCount}</td>
+							<td>{percent(row.connectedCount, row.joinCount)}</td>
+							<td>{row.uniqueUserCount}</td>
+							<td>{percent(row.talkedCount, row.connectedCount)}</td>
+							<td>{formatMinutes(row.talkSeconds)}</td>
 						</tr>
 					))}
 				</tbody>

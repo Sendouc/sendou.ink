@@ -1,5 +1,6 @@
 import { addMinutes, subHours } from "date-fns";
 import type { LoaderFunctionArgs } from "react-router";
+import * as R from "remeda";
 import { requireUser } from "~/features/auth/core/user.server";
 import { userIsBanned } from "~/features/ban/core/banned.server";
 import * as ChatRoomResolver from "~/features/chat/ChatRoomResolver.server";
@@ -77,11 +78,22 @@ export const action = defineAction(
 					userName: user.username,
 					expiresAt: tokenExpiresAt,
 				});
+				const voiceChatPreferences =
+					await VoiceRepository.findVoiceChatPreferences(
+						R.unique([...room.participantUserIds, user.id]),
+					);
 				const voiceSessionId = await VoiceRepository.insertOwnSession({
 					roomId,
 					roomType: room.type,
 					platform: data.platform,
-					eligibleMemberCount: room.participantUserIds.length,
+					eligibleMemberCount: voiceChatPreferences.filter(
+						(preference) =>
+							preference.vc !== "NO" &&
+							room.participantUserIds.includes(preference.id),
+					).length,
+					vcPreference:
+						voiceChatPreferences.find((preference) => preference.id === user.id)
+							?.vc ?? "YES",
 				});
 
 				return {

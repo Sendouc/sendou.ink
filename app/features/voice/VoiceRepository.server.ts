@@ -97,11 +97,124 @@ export function findDailyAdoptionSince(since: number) {
 					),
 				)
 				.as("voiceRoomCount"),
+			eb.fn
+				.count<number>("ChatRoom.id")
+				.filterWhere(
+					eb
+						.selectFrom("VoiceSession")
+						.select((sub) =>
+							sub.fn
+								.count<number>("VoiceSession.userId")
+								.distinct()
+								.as("connectedUserCount"),
+						)
+						.whereRef("VoiceSession.roomId", "=", "ChatRoom.id")
+						.where("VoiceSession.connectedAt", "is not", null),
+					">=",
+					2,
+				)
+				.as("conversationRoomCount"),
 		])
 		.where("ChatRoom.type", "in", [...VOICE_ROOM_TYPES])
 		.where("ChatRoom.createdAt", ">=", since)
 		.groupBy([day, "ChatRoom.type"])
 		.orderBy("day", "asc")
+		.execute();
+}
+
+export function findPlayerAdoptionSince(since: number) {
+	const matchMembers = db
+		.selectFrom("ChatRoom")
+		.innerJoin("GroupMatch", "GroupMatch.chatRoomId", "ChatRoom.id")
+		.innerJoin("GroupMember", (join) =>
+			join.on((eb) =>
+				eb.or([
+					eb("GroupMember.groupId", "=", eb.ref("GroupMatch.alphaGroupId")),
+					eb("GroupMember.groupId", "=", eb.ref("GroupMatch.bravoGroupId")),
+				]),
+			),
+		)
+		.select([
+			"ChatRoom.id as roomId",
+			"ChatRoom.type as roomType",
+			"ChatRoom.createdAt as roomCreatedAt",
+			"GroupMember.userId",
+		])
+		.where("ChatRoom.type", "=", "SQ_MATCH")
+		.where("ChatRoom.createdAt", ">=", since);
+	const groupMembers = db
+		.selectFrom("ChatRoom")
+		.innerJoin("Group", "Group.chatRoomId", "ChatRoom.id")
+		.innerJoin("GroupMember", "GroupMember.groupId", "Group.id")
+		.select([
+			"ChatRoom.id as roomId",
+			"ChatRoom.type as roomType",
+			"ChatRoom.createdAt as roomCreatedAt",
+			"GroupMember.userId",
+		])
+		.where("ChatRoom.type", "=", "SQ_GROUP")
+		.where("ChatRoom.createdAt", ">=", since);
+	const day = sql<string>`date("RoomMember"."roomCreatedAt", 'unixepoch')`;
+
+	return db
+		.selectFrom(matchMembers.unionAll(groupMembers).as("RoomMember"))
+		.innerJoin("User", "User.id", "RoomMember.userId")
+		.select((eb) => [
+			day.as("day"),
+			"RoomMember.roomType",
+			"User.vc",
+			eb.fn.countAll<number>().as("playerCount"),
+			eb.fn
+				.countAll<number>()
+				.filterWhere(
+					eb.exists(
+						eb
+							.selectFrom("VoiceSession")
+							.select("VoiceSession.id")
+							.whereRef("VoiceSession.roomId", "=", "RoomMember.roomId")
+							.whereRef("VoiceSession.userId", "=", "RoomMember.userId")
+							.where("VoiceSession.connectedAt", "is not", null),
+					),
+				)
+				.as("connectedCount"),
+		])
+		.groupBy([day, "RoomMember.roomType", "User.vc"])
+		.orderBy("day", "asc")
+		.execute();
+}
+
+export function findVoiceChatPreferenceStatsSince(since: number) {
+	return db
+		.selectFrom("VoiceSession")
+		.select((eb) => [
+			"VoiceSession.vcPreference",
+			eb.fn.countAll<number>().as("joinCount"),
+			eb.fn
+				.count<number>("VoiceSession.id")
+				.filterWhere("VoiceSession.connectedAt", "is not", null)
+				.as("connectedCount"),
+			eb.fn
+				.count<number>("VoiceSession.userId")
+				.distinct()
+				.as("uniqueUserCount"),
+			eb.fn
+				.count<number>("VoiceSession.id")
+				.filterWhere("VoiceSession.talkSeconds", ">", 0)
+				.as("talkedCount"),
+			eb.fn.sum<number | null>("VoiceSession.talkSeconds").as("talkSeconds"),
+		])
+		.where("VoiceSession.createdAt", ">=", since)
+		.groupBy("VoiceSession.vcPreference")
+		.execute();
+}
+
+export function findVoiceChatPreferences(userIds: number[]) {
+	if (userIds.length === 0) return Promise.resolve([]);
+
+	return db
+		.selectFrom("User")
+		.select(["User.id", "User.vc"])
+		.where("User.id", "in", userIds)
 		.execute();
 }
 
@@ -233,7 +346,7 @@ export function findLatestFeedbackComments() {
 export async function insertOwnSession(
 	args: Pick<
 		TablesInsertable["VoiceSession"],
-		"roomId" | "roomType" | "platform" | "eligibleMemberCount"
+		"roomId" | "roomType" | "platform" | "eligibleMemberCount" | "vcPreference"
 	>,
 ) {
 	const { id } = await db

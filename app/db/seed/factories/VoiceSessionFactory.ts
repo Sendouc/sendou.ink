@@ -20,6 +20,7 @@ export const { create } = defineFactory({
 		roomType: "SQ_MATCH" as const,
 		platform: "DESKTOP" as const,
 		eligibleMemberCount: 8,
+		vcPreference: "YES" as const,
 	}),
 	insert: async ({ userId, ...args }: InsertArgs) => {
 		const id = await actAs(userId, () =>

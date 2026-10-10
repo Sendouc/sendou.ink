@@ -14,6 +14,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			)
 			.addColumn("platform", "text", (col) => col.notNull())
 			.addColumn("eligibleMemberCount", "integer", (col) => col.notNull())
+			.addColumn("vcPreference", "text", (col) => col.notNull())
 			.addColumn("dailySessionId", "text")
 			.addColumn("createdAt", "integer", (col) =>
 				col.notNull().defaultTo(sql`(strftime('%s', 'now'))`),

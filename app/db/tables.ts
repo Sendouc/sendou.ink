@@ -1025,7 +1025,7 @@ export interface User {
 	patronExpiresAt: number | null;
 	twitch: string | null;
 	bsky: string | null;
-	vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
+	vc: Generated<UserVoiceChat>;
 	youtubeId: string | null;
 	youtubeName: string | null;
 	mapModePreferences: JSONColumnTypeNullable<UserMapModePreferences>;
@@ -1203,6 +1203,8 @@ export interface VideoMatchPlayer {
 	weaponSplId: number;
 }
 
+export type UserVoiceChat = "YES" | "NO" | "LISTEN_ONLY";
+
 export interface VoiceSession {
 	id: GeneratedAlways<number>;
 	/** `null` once the chat room has been deleted. The session stays for the statistics. */
@@ -1212,6 +1214,8 @@ export interface VoiceSession {
 	platform: VoicePlatform;
 	/** Members of the room who could have joined voice when this session started based on voice chat settings. We need these to check for adoption. */
 	eligibleMemberCount: number;
+	/** The joiner's own voice chat setting ({@link User.vc}) when they joined. */
+	vcPreference: UserVoiceChat;
 	dailySessionId: string | null;
 	createdAt: Generated<number>;
 	connectedAt: number | null;
