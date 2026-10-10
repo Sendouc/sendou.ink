@@ -1,6 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
 import type { ServerEvent } from "~/features/events/events-types";
-import { createVoiceClient, type VoiceRoomState } from "./voice-client";
+import {
+	createVoiceClient,
+	type VoiceCallParticipant,
+	type VoiceRoomState,
+} from "./voice-client";
 
 const ROOM_ID = 1;
 const OTHER_ROOM_ID = 2;
@@ -19,6 +23,17 @@ const joinResult = (voiceSessionId: number) => ({
 	roomUrl: "https://sendou.daily.co/chat-1",
 	token: `token-${voiceSessionId}`,
 	voiceSessionId,
+});
+
+const participant = (
+	sessionId: string,
+	overrides: Partial<VoiceCallParticipant> = {},
+): VoiceCallParticipant => ({
+	userId: 5,
+	sessionId,
+	isLocal: false,
+	audioEnabled: true,
+	...overrides,
 });
 
 function setup({
@@ -217,6 +232,32 @@ describe("createVoiceClient", () => {
 			deafened: false,
 			micEnabled: true,
 		});
+	});
+
+	test("a participant who mutes mid-sentence stops speaking", async () => {
+		const { client } = setup();
+		await client.join(ROOM_ID);
+		client.updateParticipants([participant("remote", { audioEnabled: true })]);
+		client.setSpeaking("remote", true);
+
+		client.updateParticipants([participant("remote", { audioEnabled: false })]);
+		client.setSpeaking("remote", true);
+
+		expect(client.getSnapshot().call?.speakingSessionIds).toEqual([]);
+	});
+
+	test("muting the own microphone clears the own speaking indicator right away", async () => {
+		const { client } = setup();
+		await client.join(ROOM_ID);
+		client.updateParticipants([
+			participant("local", { audioEnabled: true, isLocal: true }),
+		]);
+		client.setMicEnabled(true);
+		client.setSpeaking("local", true);
+
+		client.setMicEnabled(false);
+
+		expect(client.getSnapshot().call?.speakingSessionIds).toEqual([]);
 	});
 
 	test("unmuting the microphone undeafens", async () => {

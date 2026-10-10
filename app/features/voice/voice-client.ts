@@ -263,7 +263,9 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			if (!snapshot.call) return;
 			callHandle?.setLocalAudio(enabled);
 			updateCall(
-				enabled ? { micEnabled: true, deafened: false } : { micEnabled: false },
+				enabled
+					? { micEnabled: true, deafened: false }
+					: { micEnabled: false, ...silencedLocally(snapshot.call) },
 			);
 		},
 		setDeafened: (deafened) => {
@@ -273,7 +275,11 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			if (deafened) {
 				micEnabledBeforeDeafen = call.micEnabled;
 				if (call.micEnabled) callHandle?.setLocalAudio(false);
-				updateCall({ deafened: true, micEnabled: false });
+				updateCall({
+					deafened: true,
+					micEnabled: false,
+					...silencedLocally(call),
+				});
 				return;
 			}
 
@@ -286,7 +292,11 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			preferredInputMode = mode;
 			if (!snapshot.call || snapshot.call.inputMode === mode) return;
 			callHandle?.setLocalAudio(false);
-			updateCall({ inputMode: mode, micEnabled: false });
+			updateCall({
+				inputMode: mode,
+				micEnabled: false,
+				...silencedLocally(snapshot.call),
+			});
 		},
 		setVolume: (userId, volume) => {
 			const volumeByUserId = new Map(snapshot.volumeByUserId);
@@ -312,10 +322,29 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			updateCall({ status: "FAILED", errorKind: kind });
 			if (kind) reportError(kind, detail);
 		},
-		updateParticipants: (participants) => updateCall({ participants }),
+		updateParticipants: (participants) => {
+			const call = snapshot.call;
+			if (!call) return;
+
+			const mutedSessionIds = participants
+				.filter((participant) => !participant.audioEnabled)
+				.map((participant) => participant.sessionId);
+			updateCall({
+				participants,
+				speakingSessionIds: call.speakingSessionIds.filter(
+					(id) => !mutedSessionIds.includes(id),
+				),
+			});
+		},
 		setSpeaking: (sessionId, speaking) => {
 			const call = snapshot.call;
 			if (!call) return;
+
+			const participant = call.participants.find(
+				(candidate) => candidate.sessionId === sessionId,
+			);
+			// audio levels stop arriving once a track is muted
+			if (speaking && participant && !participant.audioEnabled) return;
 
 			const isSpeaking = call.speakingSessionIds.includes(sessionId);
 			if (isSpeaking === speaking) return;
@@ -354,6 +383,25 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			});
 		},
 		dismissFeedback: () => update({ pendingFeedback: null }),
+	};
+}
+
+function silencedLocally(
+	call: VoiceCall,
+): Pick<VoiceCall, "participants" | "speakingSessionIds"> {
+	const localSessionId = call.participants.find(
+		(participant) => participant.isLocal,
+	)?.sessionId;
+
+	return {
+		participants: call.participants.map((participant) =>
+			participant.isLocal
+				? { ...participant, audioEnabled: false }
+				: participant,
+		),
+		speakingSessionIds: call.speakingSessionIds.filter(
+			(id) => id !== localSessionId,
+		),
 	};
 }
 
