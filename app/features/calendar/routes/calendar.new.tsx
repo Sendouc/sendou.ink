@@ -358,11 +358,31 @@ function CalendarEventFields() {
 function TournamentSteps() {
 	const { t } = useTranslation(["calendar", "forms"]);
 	const data = useLoaderData<typeof loader>();
-	const { values } = useFormFieldContext();
+	const { values, setValueFromPrev } = useFormFieldContext();
 	const organizationOptions = useOrganizationOptions();
 
 	const isEditing = Boolean(data.eventToEdit);
 	const isInvitational = Boolean(values.isInvitational);
+
+	// registration keeps closing the same time before the start, e.g. when a copy is moved to its new date
+	const keepRegClosesAtDistanceToStart = (newStartTime: unknown) => {
+		const previousStartTime = values.startTime;
+		if (
+			!(previousStartTime instanceof Date) ||
+			!(newStartTime instanceof Date)
+		) {
+			return;
+		}
+
+		setValueFromPrev("regClosesAt", (regClosesAt) =>
+			regClosesAt instanceof Date
+				? addMilliseconds(
+						regClosesAt,
+						newStartTime.getTime() - previousStartTime.getTime(),
+					)
+				: regClosesAt,
+		);
+	};
 
 	return (
 		<>
@@ -370,7 +390,11 @@ function TournamentSteps() {
 				<div className={styles.stepColumn}>
 					{isEditing ? null : <CopyTournamentPicker />}
 					<FormField name="name" />
-					<FormField name="startTime" required />
+					<FormField
+						name="startTime"
+						required
+						onValueChange={keepRegClosesAtDistanceToStart}
+					/>
 					{isInvitational ? null : <FormField name="regClosesAt" />}
 					{data.organizations.length > 0 ? (
 						<FormField name="organizationId" options={organizationOptions} />
@@ -790,7 +814,10 @@ function TournamentMapsFields() {
 			{mapPickingStyle === "AUTO" ? (
 				<TeamPickFields />
 			) : (
-				<FormField name="pool" options={{ quickFill: mapPoolQuickFill }} />
+				<FormField
+					name="pool"
+					options={{ quickFill: mapPoolQuickFill, sendouQFilter: true }}
+				/>
 			)}
 			{data.eventToEdit?.teamsHavePickedMaps ? (
 				<div className="text-warning text-sm">
@@ -975,7 +1002,10 @@ function CustomTeamPickPoolField({
 
 	return (
 		<div className="stack lg">
-			<FormField name="pool" options={{ modes: pickedModes, quickFill }} />
+			<FormField
+				name="pool"
+				options={{ modes: pickedModes, quickFill, sendouQFilter: true }}
+			/>
 			<Alert variation={shortfalls.length === 0 ? "SUCCESS" : "WARNING"} tiny>
 				{shortfalls.length === 0
 					? t("calendar:forms.teamPick.poolOk")
