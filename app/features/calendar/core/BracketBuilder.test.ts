@@ -173,14 +173,17 @@ describe("BracketBuilder.defaultBracketName", () => {
 	});
 });
 
-describe("BracketBuilder.moveToColumn", () => {
+describe("BracketBuilder.moveBracket", () => {
 	test("moving to the first column makes it a starting bracket without lines", () => {
 		const values = progressionOf([
 			{ name: "Main" },
 			{ name: "Underground", sources: [[0, "-1"]] },
 		]);
 
-		const result = BracketBuilder.moveToColumn(values, 1, 0);
+		const result = BracketBuilder.moveBracket(values, 1, {
+			column: 0,
+			beforeIdx: null,
+		});
 
 		expect(result.removedConnectionCount).toBe(1);
 		expect(BracketBuilder.isStartingBracket(result.values, 1)).toBe(true);
@@ -199,7 +202,10 @@ describe("BracketBuilder.moveToColumn", () => {
 			},
 		]);
 
-		const result = BracketBuilder.moveToColumn(values, 2, 1);
+		const result = BracketBuilder.moveBracket(values, 2, {
+			column: 1,
+			beforeIdx: null,
+		});
 
 		expect(result.removedConnectionCount).toBe(1);
 		expect(result.values.progression[2].sources).toEqual([
@@ -210,7 +216,96 @@ describe("BracketBuilder.moveToColumn", () => {
 	test("never moves the first bracket", () => {
 		const values = progressionOf([{ name: "Main" }]);
 
-		expect(BracketBuilder.moveToColumn(values, 0, 2).values).toBe(values);
+		expect(
+			BracketBuilder.moveBracket(values, 0, { column: 2, beforeIdx: null })
+				.values,
+		).toBe(values);
+	});
+
+	test("moving up in a column moves the bracket before the one it was dropped above", () => {
+		const values = progressionOf([
+			{ name: "Groups" },
+			{ name: "Top cut", sources: [[0, "1-2"]] },
+			{ name: "Middle cut", sources: [[0, "3-4"]] },
+			{ name: "Finals", sources: [[2, "1"]] },
+			{ name: "Bottom cut", sources: [[0, "5-6"]] },
+		]);
+
+		const result = BracketBuilder.moveBracket(values, 4, {
+			column: 1,
+			beforeIdx: 1,
+		});
+
+		expect(result.values.brackets.map((bracket) => bracket.name)).toEqual([
+			"Groups",
+			"Bottom cut",
+			"Top cut",
+			"Middle cut",
+			"Finals",
+		]);
+		expect(result.values.progression[4].sources).toEqual([
+			{ bracketIdx: "3", placements: "1" },
+		]);
+		expect([0, 1, 2, 3, 4].map(result.newIdxOf)).toEqual([0, 2, 3, 4, 1]);
+	});
+
+	test("moving down in a column moves the bracket after the one above where it was dropped", () => {
+		const values = progressionOf([
+			{ name: "Groups" },
+			{ name: "Top cut", sources: [[0, "1-2"]] },
+			{ name: "Finals", sources: [[1, "1"]] },
+			{ name: "Bottom cut", sources: [[0, "3-4"]] },
+		]);
+
+		const result = BracketBuilder.moveBracket(values, 1, {
+			column: 1,
+			beforeIdx: null,
+		});
+
+		expect(result.values.brackets.map((bracket) => bracket.name)).toEqual([
+			"Groups",
+			"Finals",
+			"Bottom cut",
+			"Top cut",
+		]);
+		expect(result.values.progression[1].sources).toEqual([
+			{ bracketIdx: "3", placements: "1" },
+		]);
+	});
+
+	test("keeps the index of a bracket already in its place", () => {
+		const values = progressionOf([
+			{ name: "Groups" },
+			{ name: "Top cut", sources: [[0, "1-2"]] },
+			{ name: "Underground" },
+		]);
+
+		const result = BracketBuilder.moveBracket(values, 2, {
+			column: 0,
+			beforeIdx: null,
+		});
+
+		expect(result.values.brackets).toBe(values.brackets);
+		expect(result.newIdxOf(2)).toBe(2);
+	});
+
+	test("never moves a bracket above the first bracket", () => {
+		const values = progressionOf([
+			{ name: "Main" },
+			{ name: "Top cut", sources: [[0, "1-2"]] },
+			{ name: "Second division" },
+		]);
+
+		const result = BracketBuilder.moveBracket(values, 2, {
+			column: 0,
+			beforeIdx: 0,
+		});
+
+		expect(result.values.brackets.map((bracket) => bracket.name)).toEqual([
+			"Main",
+			"Second division",
+			"Top cut",
+		]);
 	});
 });
 

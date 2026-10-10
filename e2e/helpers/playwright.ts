@@ -509,10 +509,21 @@ export async function waitForDropToSettle(page: Page) {
 	await page.waitForTimeout(2 * DND_KIT_CLICK_SUPPRESSION_MS);
 }
 
-/** Drags `from` onto the center of `to` with a dnd-kit compatible stepped pointer move, then waits for the drop to settle. */
+/**
+ * Drags `from` onto `to` with a dnd-kit compatible stepped pointer move, then waits for the drop to settle.
+ * Dropped at the center of `to` unless `at` gives the spot, relative to its top left corner.
+ */
 export async function dragAndDrop(
 	page: Page,
-	{ from, to }: { from: Locator; to: Locator },
+	{
+		from,
+		to,
+		at,
+	}: {
+		from: Locator;
+		to: Locator;
+		at?: (box: { width: number; height: number }) => { x: number; y: number };
+	},
 ) {
 	await from.hover();
 	await page.mouse.down();
@@ -521,12 +532,13 @@ export async function dragAndDrop(
 	if (!targetBox) {
 		throw new Error("The drop target has no bounding box");
 	}
+	const dropAt = at
+		? at(targetBox)
+		: { x: targetBox.width / 2, y: targetBox.height / 2 };
 	// the drag & drop library only registers the drop when moved in steps
-	await page.mouse.move(
-		targetBox.x + targetBox.width / 2,
-		targetBox.y + targetBox.height / 2,
-		{ steps: 10 },
-	);
+	await page.mouse.move(targetBox.x + dropAt.x, targetBox.y + dropAt.y, {
+		steps: 10,
+	});
 	await page.mouse.up();
 
 	await waitForDropToSettle(page);

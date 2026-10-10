@@ -50,9 +50,7 @@ export class CalendarNewEventPage {
 			bestFinishersModeChip: page.getByText("Best finishers", { exact: true }),
 			knockedOutModeChip: page.getByText("Knocked out early", { exact: true }),
 			deleteBracketButton: page.getByTestId("builder-delete-bracket-button"),
-			startingBracketsColumn: page.getByText("Starting brackets", {
-				exact: true,
-			}),
+			startingBracketsColumn: page.getByTestId("builder-column-0"),
 			lastStepButton: page.getByTestId("form-step-button-prizes"),
 			discardChangesButton: page.getByTestId("discard-changes-button"),
 			groupCountSelect: page.getByLabel(/^Group count/),
@@ -242,6 +240,8 @@ export class CalendarNewEventPage {
 			await dragAndDrop(this.page, {
 				from: this.locators.bracketCards.nth(nth),
 				to: this.locators.startingBracketsColumn,
+				// below the column's cards, keeping the brackets in their order
+				at: ({ width, height }) => ({ x: width / 2, y: height - 8 }),
 			});
 		}
 	}
