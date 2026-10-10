@@ -107,6 +107,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 	};
 	let callHandle: VoiceCallHandle | null = null;
 	let latestSummary: VoiceTelemetrySummary | null = null;
+	let preferredInputMode: VoiceInputMode = "OPEN_MIC";
 	const listeners = new Set<() => void>();
 
 	const update = (patch: Partial<VoiceSnapshot>) => {
@@ -214,7 +215,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 					credentials: null,
 					status: "JOINING",
 					micEnabled: false,
-					inputMode: snapshot.call?.inputMode ?? "OPEN_MIC",
+					inputMode: preferredInputMode,
 					participants: [],
 					speakingSessionIds: [],
 					audioBlocked: false,
@@ -260,7 +261,8 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			updateCall({ micEnabled: enabled });
 		},
 		setInputMode: (mode) => {
-			if (!snapshot.call) return;
+			preferredInputMode = mode;
+			if (!snapshot.call || snapshot.call.inputMode === mode) return;
 			callHandle?.setLocalAudio(false);
 			updateCall({ inputMode: mode, micEnabled: false });
 		},

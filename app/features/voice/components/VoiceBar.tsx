@@ -3,7 +3,9 @@ import {
 	Headphones,
 	Mic,
 	MicOff,
+	Phone,
 	PhoneOff,
+	RotateCcw,
 	Star,
 	Volume2,
 	VolumeX,
@@ -13,7 +15,6 @@ import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouPopover } from "~/components/elements/Popover";
-import { InfoPopover } from "~/components/InfoPopover";
 import { useUser } from "~/features/auth/core/user";
 import type { ChatRoomListItem } from "~/features/chat/chat-types";
 import type { CommonUser } from "~/utils/kysely.server";
@@ -26,25 +27,45 @@ import { VOICE_FEEDBACK_COMMENT_MAX_LENGTH } from "../voice-constants";
 import { useVoiceRoom, useVoiceSnapshot } from "../voice-hooks";
 import styles from "./VoiceBar.module.css";
 
-const DAILY_PRIVACY_POLICY_URL = "https://www.daily.co/legal/privacy/";
 const RATINGS = [1, 2, 3, 4, 5];
 
 export function VoiceBar({ room }: { room: ChatRoomListItem }) {
 	const voiceRoom = useVoiceRoom(room);
 	const { call, pendingFeedback } = useVoiceSnapshot();
 
-	const inThisCall = call?.roomId === room.id;
+	const roomCall = call?.roomId === room.id ? call : null;
 	const feedback = pendingFeedback?.roomId === room.id ? pendingFeedback : null;
 
-	if (!voiceRoom?.available && !inThisCall && !feedback) return null;
+	if (!voiceRoom?.available && !roomCall && !feedback) return null;
 
 	return (
 		<div className={styles.voiceBar}>
-			{inThisCall ? (
-				<InCallControls call={call} room={room} voiceRoom={voiceRoom} />
-			) : voiceRoom ? (
-				<IdleBar room={room} voiceRoom={voiceRoom} />
+			{roomCall || voiceRoom ? (
+				<div className={styles.row}>
+					{roomCall ? (
+						<CallStatus call={roomCall} />
+					) : (
+						<>
+							<Headphones size={16} className={styles.voiceIcon} />
+							<VoiceLabel />
+						</>
+					)}
+					<div className={styles.actions}>
+						{roomCall ? (
+							<CallButtons call={roomCall} />
+						) : voiceRoom?.canJoin ? (
+							<JoinButton roomId={room.id} />
+						) : null}
+					</div>
+				</div>
 			) : null}
+			{roomCall ? <CallNotices call={roomCall} /> : null}
+			<VoiceUsers
+				call={roomCall}
+				voiceRoom={voiceRoom}
+				participants={room.participants}
+				roomId={room.id}
+			/>
 			{feedback ? <FeedbackPrompt /> : null}
 		</div>
 	);
@@ -66,112 +87,67 @@ export function VoiceCallStrip({
 		<div className={clsx(styles.voiceBar, styles.strip)}>
 			<button type="button" className={styles.stripTitle} onClick={onOpen}>
 				<StatusDot status={call.status} />
-				{t("common:chat.voice.inCall", { room: title })}
+				<span className="truncate">
+					{t("common:chat.voice.inCall", { room: title })}
+				</span>
 			</button>
-			<MicButton call={call} compact />
-			<LeaveButton />
+			<div className={styles.actions}>
+				<CallButtons call={call} />
+			</div>
 		</div>
 	);
 }
 
-function IdleBar({
-	room,
-	voiceRoom,
-}: {
-	room: ChatRoomListItem;
-	voiceRoom: VoiceRoomState;
-}) {
+function VoiceLabel() {
 	const { t } = useTranslation(["common"]);
 
 	return (
-		<div className={styles.row}>
-			<Headphones size={16} className={styles.voiceIcon} />
+		<>
 			<span className={styles.label}>{t("common:chat.voice.title")}</span>
 			<span className={styles.betaBadge}>{t("common:chat.voice.beta")}</span>
-			<InfoPopover tiny>
-				<div className="stack xs text-sm">
-					<span>{t("common:chat.voice.provider")}</span>
-					<a href={DAILY_PRIVACY_POLICY_URL} target="_blank" rel="noreferrer">
-						{t("common:chat.voice.privacyPolicy")}
-					</a>
-				</div>
-			</InfoPopover>
-			<UserAvatars
-				userIds={voiceRoom.userIds}
-				participants={room.participants}
-			/>
-			{voiceRoom.canJoin ? (
-				<SendouButton
-					size="small"
-					variant="outlined"
-					className="ml-auto"
-					icon={<Headphones />}
-					onClick={() => void voiceClient.join(room.id)}
-				>
-					{t("common:chat.voice.join")}
-				</SendouButton>
-			) : null}
-		</div>
+		</>
 	);
 }
 
-function InCallControls({
-	call,
-	room,
-	voiceRoom,
-}: {
-	call: VoiceCall;
-	room: ChatRoomListItem;
-	voiceRoom: VoiceRoomState | null;
-}) {
+function CallStatus({ call }: { call: VoiceCall }) {
 	const { t } = useTranslation(["common"]);
 
-	if (call.status === "FAILED") {
-		return (
-			<div className={styles.row}>
-				<span className="text-error text-sm">
+	return (
+		<>
+			<StatusDot status={call.status} />
+			{call.status === "FAILED" ? (
+				<span className={clsx(styles.label, "text-error")}>
 					{t("common:chat.voice.failed")}
 				</span>
-				<SendouButton
-					size="small"
-					variant="outlined"
-					className="ml-auto"
-					onClick={() => void voiceClient.join(room.id)}
-				>
-					{t("common:chat.voice.retry")}
-				</SendouButton>
-				<SendouButton
-					size="small"
-					variant="minimal-destructive"
-					onClick={() => void voiceClient.leave()}
-				>
-					{t("common:actions.close")}
-				</SendouButton>
-			</div>
-		);
-	}
+			) : call.status === "CONNECTED" ? (
+				<VoiceLabel />
+			) : (
+				<span className={styles.label}>
+					{t("common:chat.voice.connecting")}
+				</span>
+			)}
+		</>
+	);
+}
+
+function CallButtons({ call }: { call: VoiceCall }) {
+	return (
+		<>
+			{call.status === "FAILED" ? (
+				<RetryButton roomId={call.roomId} />
+			) : (
+				<MicButton call={call} />
+			)}
+			<LeaveButton />
+		</>
+	);
+}
+
+function CallNotices({ call }: { call: VoiceCall }) {
+	const { t } = useTranslation(["common"]);
 
 	return (
-		<div className="stack xs">
-			<div className={styles.row}>
-				<StatusDot status={call.status} />
-				<span className={styles.label}>
-					{call.status === "CONNECTED"
-						? t("common:chat.voice.connected")
-						: t("common:chat.voice.connecting")}
-				</span>
-				<InputModeToggle call={call} />
-				<div className={styles.actions}>
-					<MicButton call={call} />
-					<LeaveButton />
-				</div>
-			</div>
-			<CallParticipants
-				call={call}
-				participants={room.participants}
-				canKick={voiceRoom?.canKick ?? false}
-				roomId={room.id}
-			/>
+		<>
 			{call.audioBlocked ? (
 				<SendouButton
 					size="small"
@@ -191,64 +167,80 @@ function InCallControls({
 					{t("common:chat.voice.micNotFound")}
 				</span>
 			) : null}
-		</div>
+		</>
 	);
 }
 
-function MicButton({
-	call,
-	compact = false,
-}: {
-	call: VoiceCall;
-	/** Push-to-talk as an icon only, where the bar has no room for its label. */
-	compact?: boolean;
-}) {
+function JoinButton({ roomId }: { roomId: number }) {
 	const { t } = useTranslation(["common"]);
-	const disabled = call.status !== "CONNECTED";
-
-	if (call.inputMode === "PUSH_TO_TALK") {
-		const setTalking = (talking: boolean) => {
-			if (call.micEnabled !== talking) voiceClient.setMicEnabled(talking);
-		};
-
-		return (
-			<SendouButton
-				size="small"
-				variant={call.micEnabled ? "success" : "outlined"}
-				icon={<Mic />}
-				shape={compact ? "square" : undefined}
-				aria-label={compact ? t("common:chat.voice.holdToTalk") : undefined}
-				isDisabled={disabled}
-				className={styles.pushToTalk}
-				onPointerDown={() => setTalking(true)}
-				onPointerUp={() => setTalking(false)}
-				onPointerCancel={() => setTalking(false)}
-				onPointerLeave={() => setTalking(false)}
-				onKeyDown={(event) => {
-					if (event.key === " " || event.key === "Enter") setTalking(true);
-				}}
-				onKeyUp={() => setTalking(false)}
-				onContextMenu={(event) => event.preventDefault()}
-			>
-				{compact ? null : t("common:chat.voice.holdToTalk")}
-			</SendouButton>
-		);
-	}
 
 	return (
 		<SendouButton
 			size="small"
 			shape="square"
-			variant={call.micEnabled ? "success" : "minimal"}
+			variant="outlined-success"
+			icon={<Phone />}
+			aria-label={t("common:chat.voice.join")}
+			title={t("common:chat.voice.join")}
+			onClick={() => void voiceClient.join(roomId)}
+		/>
+	);
+}
+
+function RetryButton({ roomId }: { roomId: number }) {
+	const { t } = useTranslation(["common"]);
+
+	return (
+		<SendouButton
+			size="small"
+			shape="square"
+			variant="minimal"
+			icon={<RotateCcw />}
+			aria-label={t("common:chat.voice.retry")}
+			title={t("common:chat.voice.retry")}
+			onClick={() => void voiceClient.join(roomId)}
+		/>
+	);
+}
+
+function MicButton({ call }: { call: VoiceCall }) {
+	const { t } = useTranslation(["common"]);
+	const isPushToTalk = call.inputMode === "PUSH_TO_TALK";
+	const label = isPushToTalk
+		? t("common:chat.voice.holdToTalk")
+		: call.micEnabled
+			? t("common:chat.voice.mute")
+			: t("common:chat.voice.unmute");
+
+	const setTalking = (talking: boolean) => {
+		if (call.micEnabled !== talking) voiceClient.setMicEnabled(talking);
+	};
+	const pushToTalkHandlers: React.ComponentProps<typeof SendouButton> = {
+		onPointerDown: () => setTalking(true),
+		onPointerUp: () => setTalking(false),
+		onPointerCancel: () => setTalking(false),
+		onPointerLeave: () => setTalking(false),
+		onKeyDown: (event) => {
+			if (event.key === " " || event.key === "Enter") setTalking(true);
+		},
+		onKeyUp: () => setTalking(false),
+		onContextMenu: (event) => event.preventDefault(),
+	};
+
+	return (
+		<SendouButton
+			size="small"
+			shape="square"
+			variant={call.micEnabled ? "minimal-success" : "minimal-destructive"}
 			icon={call.micEnabled ? <Mic /> : <MicOff />}
-			isDisabled={disabled}
-			aria-label={
-				call.micEnabled
-					? t("common:chat.voice.mute")
-					: t("common:chat.voice.unmute")
-			}
+			isDisabled={call.status !== "CONNECTED"}
+			aria-label={label}
 			aria-pressed={call.micEnabled}
-			onClick={() => voiceClient.setMicEnabled(!call.micEnabled)}
+			title={label}
+			className={isPushToTalk ? styles.pushToTalk : undefined}
+			{...(isPushToTalk
+				? pushToTalkHandlers
+				: { onClick: () => voiceClient.setMicEnabled(!call.micEnabled) })}
 		/>
 	);
 }
@@ -260,176 +252,166 @@ function LeaveButton() {
 		<SendouButton
 			size="small"
 			shape="square"
-			variant="destructive"
+			variant="outlined-destructive"
 			icon={<PhoneOff />}
 			aria-label={t("common:chat.voice.leave")}
+			title={t("common:chat.voice.leave")}
 			onClick={() => void voiceClient.leave()}
 		/>
 	);
 }
 
-function InputModeToggle({ call }: { call: VoiceCall }) {
+function VoiceUsers({
+	call,
+	voiceRoom,
+	participants,
+	roomId,
+}: {
+	call: VoiceCall | null;
+	voiceRoom: VoiceRoomState | null;
+	participants: CommonUser[];
+	roomId: number;
+}) {
 	const { t } = useTranslation(["common"]);
-	const isPushToTalk = call.inputMode === "PUSH_TO_TALK";
+
+	const entries = call
+		? call.participants.map((participant) => ({
+				key: participant.sessionId,
+				userId: participant.userId,
+				isLocal: participant.isLocal,
+				speaking: call.speakingSessionIds.includes(participant.sessionId),
+			}))
+		: (voiceRoom?.userIds ?? []).map((userId) => ({
+				key: String(userId),
+				userId,
+				isLocal: false,
+				speaking: false,
+			}));
+
+	if (entries.length === 0) return null;
 
 	return (
-		<button
-			type="button"
-			className={styles.modeToggle}
-			onClick={() =>
-				voiceClient.setInputMode(isPushToTalk ? "OPEN_MIC" : "PUSH_TO_TALK")
-			}
+		<ul
+			className={styles.avatarStack}
+			aria-label={t("common:chat.voice.inVoice", { count: entries.length })}
 		>
-			{isPushToTalk
-				? t("common:chat.voice.mode.pushToTalk")
-				: t("common:chat.voice.mode.openMic")}
-		</button>
+			{entries.map((entry) => {
+				const user = participants.find(
+					(candidate) => candidate.id === entry.userId,
+				);
+
+				return (
+					<li key={entry.key} className={styles.stackedUser}>
+						{call && !entry.isLocal ? (
+							<RemoteUserControls
+								userId={entry.userId}
+								user={user}
+								speaking={entry.speaking}
+								canKick={voiceRoom?.canKick ?? false}
+								roomId={roomId}
+							/>
+						) : (
+							<UserAvatar
+								userId={entry.userId}
+								user={user}
+								speaking={entry.speaking}
+							/>
+						)}
+					</li>
+				);
+			})}
+		</ul>
 	);
 }
 
-function CallParticipants({
-	call,
-	participants,
+function UserAvatar({
+	userId,
+	user,
+	speaking,
+}: {
+	userId: number;
+	user: CommonUser | undefined;
+	speaking: boolean;
+}) {
+	return (
+		<Avatar
+			size="xxs"
+			user={user}
+			identiconInput={String(userId)}
+			alt={user?.username ?? ""}
+			title={user?.username}
+			className={clsx(styles.avatar, speaking && styles.speaking)}
+		/>
+	);
+}
+
+function RemoteUserControls({
+	userId,
+	user,
+	speaking,
 	canKick,
 	roomId,
 }: {
-	call: VoiceCall;
-	participants: CommonUser[];
+	userId: number;
+	user: CommonUser | undefined;
+	speaking: boolean;
 	canKick: boolean;
 	roomId: number;
 }) {
 	const { t } = useTranslation(["common"]);
 	const { volumeByUserId } = useVoiceSnapshot();
+	const volume = volumeByUserId.get(userId) ?? 1;
 
 	return (
-		<ul className={styles.participants}>
-			{call.participants.map((participant) => {
-				const user = participants.find(
-					(candidate) => candidate.id === participant.userId,
-				);
-				const speaking = call.speakingSessionIds.includes(
-					participant.sessionId,
-				);
-				const avatar = (
-					<Avatar
-						size="xxs"
-						user={user}
-						identiconInput={String(participant.userId)}
-						alt={user?.username ?? ""}
-						className={clsx(styles.avatar, speaking && styles.speaking)}
-					/>
-				);
-
-				if (participant.isLocal) {
-					return (
-						<li key={participant.sessionId} className={styles.participant}>
-							{avatar}
-						</li>
-					);
-				}
-
-				const volume = volumeByUserId.get(participant.userId) ?? 1;
-
-				return (
-					<li key={participant.sessionId} className={styles.participant}>
-						<SendouPopover
-							trigger={
-								<button
-									type="button"
-									className={styles.participantButton}
-									aria-label={user?.username ?? t("common:chat.voice.title")}
-								>
-									{avatar}
-									{volume === 0 ? (
-										<VolumeX size={12} className={styles.mutedIcon} />
-									) : null}
-								</button>
-							}
-						>
-							<div className="stack sm">
-								<span className="font-semi-bold">{user?.username ?? "?"}</span>
-								<label className="stack xxs text-sm">
-									{t("common:chat.voice.volume")}
-									<input
-										type="range"
-										min={0}
-										max={100}
-										value={Math.round(volume * 100)}
-										onChange={(event) =>
-											voiceClient.setVolume(
-												participant.userId,
-												Number(event.target.value) / 100,
-											)
-										}
-									/>
-								</label>
-								<SendouButton
-									size="small"
-									variant="outlined"
-									icon={volume === 0 ? <Volume2 /> : <VolumeX />}
-									onClick={() =>
-										voiceClient.setVolume(
-											participant.userId,
-											volume === 0 ? 1 : 0,
-										)
-									}
-								>
-									{volume === 0
-										? t("common:chat.voice.unmuteUser")
-										: t("common:chat.voice.muteUser")}
-								</SendouButton>
-								{canKick ? (
-									<SendouButton
-										size="small"
-										variant="minimal-destructive"
-										onClick={() =>
-											void voiceClient.kick(roomId, participant.userId)
-										}
-									>
-										{t("common:chat.voice.kick")}
-									</SendouButton>
-								) : null}
-							</div>
-						</SendouPopover>
-					</li>
-				);
-			})}
-		</ul>
-	);
-}
-
-function UserAvatars({
-	userIds,
-	participants,
-}: {
-	userIds: number[];
-	participants: CommonUser[];
-}) {
-	const { t } = useTranslation(["common"]);
-
-	if (userIds.length === 0) return null;
-
-	return (
-		<ul
-			className={styles.participants}
-			aria-label={t("common:chat.voice.inVoice", { count: userIds.length })}
+		<SendouPopover
+			trigger={
+				<button
+					type="button"
+					className={styles.userButton}
+					aria-label={user?.username ?? t("common:chat.voice.title")}
+				>
+					<UserAvatar userId={userId} user={user} speaking={speaking} />
+					{volume === 0 ? (
+						<VolumeX size={12} className={styles.mutedIcon} />
+					) : null}
+				</button>
+			}
 		>
-			{userIds.map((userId) => {
-				const user = participants.find((candidate) => candidate.id === userId);
-
-				return (
-					<li key={userId} className={styles.participant}>
-						<Avatar
-							size="xxxsm"
-							user={user}
-							identiconInput={String(userId)}
-							alt={user?.username ?? ""}
-							className={styles.avatar}
-						/>
-					</li>
-				);
-			})}
-		</ul>
+			<div className="stack sm">
+				<span className="font-semi-bold">{user?.username ?? "?"}</span>
+				<label className="stack xxs text-sm">
+					{t("common:chat.voice.volume")}
+					<input
+						type="range"
+						min={0}
+						max={100}
+						value={Math.round(volume * 100)}
+						onChange={(event) =>
+							voiceClient.setVolume(userId, Number(event.target.value) / 100)
+						}
+					/>
+				</label>
+				<SendouButton
+					size="small"
+					variant="outlined"
+					icon={volume === 0 ? <Volume2 /> : <VolumeX />}
+					onClick={() => voiceClient.setVolume(userId, volume === 0 ? 1 : 0)}
+				>
+					{volume === 0
+						? t("common:chat.voice.unmuteUser")
+						: t("common:chat.voice.muteUser")}
+				</SendouButton>
+				{canKick ? (
+					<SendouButton
+						size="small"
+						variant="minimal-destructive"
+						onClick={() => void voiceClient.kick(roomId, userId)}
+					>
+						{t("common:chat.voice.kick")}
+					</SendouButton>
+				) : null}
+			</div>
+		</SendouPopover>
 	);
 }
 

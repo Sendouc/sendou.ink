@@ -1,13 +1,12 @@
-import type {
-	DailyCall,
-	DailyEventObjectCameraError,
-	DailyEventObjectFatalError,
+import Daily, {
+	type DailyCall,
+	type DailyEventObjectCameraError,
+	type DailyEventObjectFatalError,
 } from "@daily-co/daily-js";
 import {
 	DailyAudioTrack,
 	DailyProvider,
 	useAudioLevelObserver,
-	useCallObject,
 	useDaily,
 	useDailyEvent,
 	useNetwork,
@@ -23,6 +22,7 @@ const SPEAKING_LEVEL = 0.04;
 const TELEMETRY_TICK_MS = 1_000;
 
 const audioElements = new Set<HTMLAudioElement>();
+let previousTeardown: Promise<void> = Promise.resolve();
 
 export function VoiceCall({
 	roomId,
@@ -33,18 +33,38 @@ export function VoiceCall({
 	roomUrl: string;
 	token: string;
 }) {
-	const callObject = useCallObject({
-		options: {
-			audioSource: true,
-			videoSource: false,
-			startVideoOff: true,
-			startAudioOff: true,
-			subscribeToTracksAutomatically: true,
-		},
-	});
+	const [callObject, setCallObject] = React.useState<DailyCall | null>(null);
+
+	React.useEffect(() => {
+		let unmounted = false;
+		let created: DailyCall | null = null;
+
+		void previousTeardown.then(() => {
+			if (unmounted) return;
+			created = Daily.createCallObject({
+				audioSource: true,
+				videoSource: false,
+				startVideoOff: true,
+				startAudioOff: true,
+				subscribeToTracksAutomatically: true,
+			});
+			setCallObject(created);
+		});
+
+		return () => {
+			unmounted = true;
+			previousTeardown = previousTeardown
+				.then(() => (created ? teardownCallObject(created) : undefined))
+				.catch((error: unknown) => {
+					logger.error("Tearing down the voice call failed", error);
+				});
+		};
+	}, []);
 
 	React.useEffect(() => {
 		if (!callObject) return;
+
+		let superseded = false;
 
 		callObject.setLocalVideo(false);
 		voiceClient.registerCallHandle({
@@ -60,16 +80,18 @@ export function VoiceCall({
 		callObject
 			.join({ url: roomUrl, token, startVideoOff: true, startAudioOff: true })
 			.then(() => {
+				if (superseded) return;
 				voiceClient.markConnected(callObject.participants().local.session_id);
 			})
 			.catch((error: unknown) => {
+				if (superseded) return;
 				logger.error("Joining the voice call failed", error);
 				voiceClient.markFailed("JOIN_FAILED", String(error));
 			});
 
 		return () => {
+			superseded = true;
 			voiceClient.registerCallHandle(null);
-			void callObject.leave().catch(() => {});
 		};
 	}, [callObject, roomUrl, token]);
 
@@ -312,4 +334,12 @@ function participantsOf(daily: DailyCall): VoiceCallParticipant[] {
 				participant.tracks.audio.state === "sendable",
 		};
 	});
+}
+
+async function teardownCallObject(callObject: DailyCall) {
+	try {
+		await callObject.leave();
+	} finally {
+		await callObject.destroy();
+	}
 }

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useUser } from "~/features/auth/core/user";
 import { voiceClient } from "../voice-client";
 import { useVoiceSnapshot } from "../voice-hooks";
 
@@ -8,8 +9,14 @@ const VoiceCall = React.lazy(() =>
 
 export function VoiceCallHost() {
 	const { call } = useVoiceSnapshot();
+	const user = useUser();
+	const inputMode = user?.preferences.voicePushToTalk
+		? "PUSH_TO_TALK"
+		: "OPEN_MIC";
 
 	React.useEffect(() => voiceClient.start(), []);
+
+	React.useEffect(() => voiceClient.setInputMode(inputMode), [inputMode]);
 
 	React.useEffect(() => {
 		const handlePageHide = () => voiceClient.leaveOnPageClose();

@@ -1,17 +1,25 @@
 .voiceBar {
 	display: flex;
 	flex-direction: column;
-	gap: var(--s-1-5);
-	padding: var(--s-1-5) var(--s-2);
+	gap: var(--s-1);
+	padding: var(--s-1) var(--s-2);
 	border-bottom: 1.5px solid var(--color-border);
 	background-color: var(--color-bg-high);
 	flex-shrink: 0;
 	font-size: var(--font-xs);
 }
 
+.row {
+	display: flex;
+	align-items: center;
+	gap: var(--s-1-5);
+	min-width: 0;
+}
+
 .strip {
 	flex-direction: row;
 	align-items: center;
+	gap: var(--s-1-5);
 }
 
 .stripTitle {
@@ -28,19 +36,10 @@
 	font-weight: var(--weight-semi);
 	text-align: start;
 	cursor: pointer;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.row {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: var(--s-1-5);
 }
 
 .voiceIcon {
+	flex-shrink: 0;
 	color: var(--color-text-high);
 }
 
@@ -61,22 +60,9 @@
 
 .actions {
 	display: flex;
+	flex-shrink: 0;
 	gap: var(--s-1);
 	margin-inline-start: auto;
-}
-
-.modeToggle {
-	padding: 0 var(--s-1-5);
-	border: var(--border-style);
-	border-radius: var(--radius-full);
-	background: none;
-	color: var(--color-text-high);
-	font-size: var(--font-2xs);
-	cursor: pointer;
-
-	&:hover {
-		background-color: var(--color-bg-higher);
-	}
 }
 
 .pushToTalk {
@@ -85,21 +71,29 @@
 	-webkit-touch-callout: none;
 }
 
-.participants {
+.avatarStack {
 	display: flex;
 	flex-wrap: wrap;
-	gap: var(--s-1);
 	margin: 0;
-	padding: 0;
+	padding: 0 0 0 var(--s-0-5);
 	list-style: none;
 }
 
-.participant {
+.stackedUser {
 	position: relative;
 	display: flex;
+
+	& + & {
+		margin-inline-start: calc(var(--s-1-5) * -1);
+	}
+
+	&:hover,
+	&:focus-within {
+		z-index: 1;
+	}
 }
 
-.participantButton {
+.userButton {
 	position: relative;
 	display: flex;
 	padding: 0;
@@ -111,13 +105,14 @@
 
 .avatar {
 	border-radius: var(--radius-full);
-	outline: 2px solid transparent;
-	outline-offset: 1px;
-	transition: outline-color 0.1s;
+	box-shadow: 0 0 0 2px var(--color-bg-high);
+	transition: box-shadow 0.1s;
 }
 
 .speaking {
-	outline-color: var(--color-success);
+	box-shadow:
+		0 0 0 2px var(--color-bg-high),
+		0 0 0 4px var(--color-success);
 }
 
 .mutedIcon {

@@ -429,8 +429,6 @@
 	"chat.voice.mute": "",
 	"chat.voice.unmute": "",
 	"chat.voice.holdToTalk": "",
-	"chat.voice.mode.pushToTalk": "",
-	"chat.voice.mode.openMic": "",
 	"chat.voice.enableSound": "",
 	"chat.voice.micDenied": "",
 	"chat.voice.micNotFound": "",

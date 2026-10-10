@@ -44,6 +44,14 @@ export const spoilerFreeModeSchema = v.object({
 	}),
 });
 
+export const voicePushToTalkSchema = v.object({
+	_action: stringConstant("UPDATE_VOICE_PUSH_TO_TALK"),
+	newValue: toggle({
+		label: "labels.voicePushToTalk",
+		bottomText: "bottomTexts.voicePushToTalk",
+	}),
+});
+
 export const weaponReportDefaultOpenSchema = v.object({
 	_action: stringConstant("UPDATE_WEAPON_REPORT_DEFAULT_OPEN"),
 	newValue: v.boolean(),
@@ -54,6 +62,7 @@ export const settingsEditSchema = v.union([
 	disableBuildAbilitySortingSchema,
 	disallowScrimPickupsFromUntrustedSchema,
 	spoilerFreeModeSchema,
+	voicePushToTalkSchema,
 	clockFormatSchema,
 	weaponReportDefaultOpenSchema,
 ]);
