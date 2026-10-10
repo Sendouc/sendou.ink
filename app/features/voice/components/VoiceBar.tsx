@@ -16,8 +16,12 @@ import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouPopover } from "~/components/elements/Popover";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { useUser } from "~/features/auth/core/user";
-import type { ChatRoomListItem } from "~/features/chat/chat-types";
+import type {
+	ChatRoomListItem,
+	ChatRoomType,
+} from "~/features/chat/chat-types";
 import type { CommonUser } from "~/utils/kysely.server";
 import {
 	type VoiceCall,
@@ -66,6 +70,7 @@ export function VoiceBar({ room }: { room: ChatRoomListItem }) {
 				voiceRoom={voiceRoom}
 				participants={room.participants}
 				roomId={room.id}
+				roomType={room.type}
 			/>
 			{feedback ? <FeedbackPrompt /> : null}
 		</div>
@@ -299,11 +304,13 @@ function VoiceUsers({
 	voiceRoom,
 	participants,
 	roomId,
+	roomType,
 }: {
 	call: VoiceCall | null;
 	voiceRoom: VoiceRoomState | null;
 	participants: CommonUser[];
 	roomId: number;
+	roomType: ChatRoomType;
 }) {
 	const { t } = useTranslation(["common"]);
 
@@ -342,6 +349,7 @@ function VoiceUsers({
 								speaking={entry.speaking}
 								canKick={voiceRoom?.canKick ?? false}
 								roomId={roomId}
+								roomType={roomType}
 							/>
 						) : (
 							<UserAvatar
@@ -384,14 +392,17 @@ function RemoteUserControls({
 	speaking,
 	canKick,
 	roomId,
+	roomType,
 }: {
 	userId: number;
 	user: CommonUser | undefined;
 	speaking: boolean;
 	canKick: boolean;
 	roomId: number;
+	roomType: ChatRoomType;
 }) {
 	const { t } = useTranslation(["common"]);
+	const [isKickConfirmOpen, setIsKickConfirmOpen] = React.useState(false);
 	const { volumeByUserId } = useVoiceSnapshot();
 	const volume = volumeByUserId.get(userId) ?? 1;
 	const muteLabel =
@@ -400,54 +411,74 @@ function RemoteUserControls({
 			: t("common:chat.voice.muteUser");
 
 	return (
-		<SendouPopover
-			trigger={
-				<button
-					type="button"
-					className={styles.userButton}
-					aria-label={user?.username ?? t("common:chat.voice.title")}
-				>
-					<UserAvatar userId={userId} user={user} speaking={speaking} />
-					{volume === 0 ? (
-						<VolumeX size={12} className={styles.mutedIcon} />
-					) : null}
-				</button>
-			}
-		>
-			<div className="stack sm">
-				<span className="font-semi-bold">{user?.username ?? "?"}</span>
-				<div className="stack horizontal xs items-center">
-					<SendouButton
-						size="small"
-						shape="square"
-						variant="minimal"
-						icon={volume === 0 ? <VolumeX /> : <Volume2 />}
-						aria-label={muteLabel}
-						title={muteLabel}
-						onClick={() => voiceClient.setVolume(userId, volume === 0 ? 1 : 0)}
-					/>
-					<input
-						type="range"
-						min={0}
-						max={100}
-						value={Math.round(volume * 100)}
-						aria-label={t("common:chat.voice.volume")}
-						onChange={(event) =>
-							voiceClient.setVolume(userId, Number(event.target.value) / 100)
-						}
-					/>
-				</div>
-				{canKick ? (
-					<SendouButton
-						size="small"
-						variant="minimal-destructive"
-						onClick={() => void voiceClient.kick(roomId, userId)}
+		<>
+			<SendouPopover
+				trigger={
+					<button
+						type="button"
+						className={styles.userButton}
+						aria-label={user?.username ?? t("common:chat.voice.title")}
 					>
-						{t("common:chat.voice.kick")}
-					</SendouButton>
-				) : null}
-			</div>
-		</SendouPopover>
+						<UserAvatar userId={userId} user={user} speaking={speaking} />
+						{volume === 0 ? (
+							<VolumeX size={12} className={styles.mutedIcon} />
+						) : null}
+					</button>
+				}
+			>
+				<div className="stack sm">
+					<span className="font-semi-bold">{user?.username ?? "?"}</span>
+					<div className="stack horizontal xs items-center">
+						<SendouButton
+							size="small"
+							shape="square"
+							variant="minimal"
+							icon={volume === 0 ? <VolumeX /> : <Volume2 />}
+							aria-label={muteLabel}
+							title={muteLabel}
+							onClick={() =>
+								voiceClient.setVolume(userId, volume === 0 ? 1 : 0)
+							}
+						/>
+						<input
+							type="range"
+							min={0}
+							max={100}
+							value={Math.round(volume * 100)}
+							aria-label={t("common:chat.voice.volume")}
+							onChange={(event) =>
+								voiceClient.setVolume(userId, Number(event.target.value) / 100)
+							}
+						/>
+					</div>
+					{canKick ? (
+						<SendouButton
+							size="small"
+							variant="minimal-destructive"
+							onClick={() => setIsKickConfirmOpen(true)}
+						>
+							{t("common:chat.voice.kick")}
+						</SendouButton>
+					) : null}
+				</div>
+			</SendouPopover>
+			{canKick ? (
+				<FormWithConfirm
+					isOpen={isKickConfirmOpen}
+					onOpenChange={setIsKickConfirmOpen}
+					dialogHeading={t("common:chat.voice.kickConfirm.heading", {
+						user: user?.username ?? "?",
+					})}
+					description={
+						roomType === "SQ_MATCH"
+							? t("common:chat.voice.kickConfirm.set")
+							: t("common:chat.voice.kickConfirm.group")
+					}
+					submitButtonText={t("common:chat.voice.kick")}
+					onConfirm={() => void voiceClient.kick(roomId, userId)}
+				/>
+			) : null}
+		</>
 	);
 }
 

@@ -37,7 +37,10 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 	return {
 		available,
-		canJoin: available && VoiceAccess.canJoin(room, user.id),
+		canJoin:
+			available &&
+			VoiceAccess.canJoin(room, user.id) &&
+			!(await VoiceRepository.hasBeenKicked({ roomId, userId: user.id })),
 		canKick: available && VoiceAccess.canKick(room, user.id),
 		userIds: available ? await VoicePresence.reconciledUserIdsOf(room) : [],
 	};
@@ -56,7 +59,11 @@ export const action = defineAction(
 
 		switch (data._action) {
 			case "JOIN": {
-				if (!VoiceAccess.canJoin(room, user.id) || userIsBanned(user.id)) {
+				if (
+					!VoiceAccess.canJoin(room, user.id) ||
+					userIsBanned(user.id) ||
+					(await VoiceRepository.hasBeenKicked({ roomId, userId: user.id }))
+				) {
 					forbidden();
 				}
 				badRequestIfFalsy(await VoiceAvailability.isAvailable());
@@ -132,14 +139,15 @@ export const action = defineAction(
 				if (!VoiceAccess.canKick(room, user.id)) forbidden();
 				badRequestIfFalsy(data.userId !== user.id);
 
+				// before ejecting, or the ejected client's own leave report wins the race
+				await VoiceRepository.markSessionsKicked({
+					roomId,
+					userId: data.userId,
+				});
 				await Daily.ejectUsers({
 					chatRoomId: roomId,
 					userIds: [data.userId],
 					ban: true,
-				});
-				await VoiceRepository.markSessionsKicked({
-					roomId,
-					userId: data.userId,
 				});
 				VoicePresence.remove(room, [data.userId]);
 

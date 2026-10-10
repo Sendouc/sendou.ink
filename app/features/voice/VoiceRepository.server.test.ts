@@ -157,6 +157,44 @@ describe("VoiceRepository.markOwnSessionLeft", () => {
 	});
 });
 
+describe("VoiceRepository.hasBeenKicked", () => {
+	test("holds only for the kicked user in the room they were kicked from", async () => {
+		const room = await ChatRoomFactory.create();
+		const otherRoom = await ChatRoomFactory.create();
+		await VoiceSessionFactory.create(
+			{ userId: playerId(), roomId: room.id },
+			{ dailySessionId: "daily-1" },
+		);
+		await VoiceSessionFactory.create(
+			{ userId: otherPlayerId(), roomId: room.id },
+			{ dailySessionId: "daily-2" },
+		);
+		await VoiceRepository.markSessionsKicked({
+			roomId: room.id,
+			userId: playerId(),
+		});
+
+		expect(
+			await VoiceRepository.hasBeenKicked({
+				roomId: room.id,
+				userId: playerId(),
+			}),
+		).toBe(true);
+		expect(
+			await VoiceRepository.hasBeenKicked({
+				roomId: room.id,
+				userId: otherPlayerId(),
+			}),
+		).toBe(false);
+		expect(
+			await VoiceRepository.hasBeenKicked({
+				roomId: otherRoom.id,
+				userId: playerId(),
+			}),
+		).toBe(false);
+	});
+});
+
 describe("VoiceRepository.findPlayerAdoptionSince", () => {
 	test("splits the players of new matches by voice chat setting and counts who connected", async () => {
 		const match = await createMatchWithVoiceChatSettings();

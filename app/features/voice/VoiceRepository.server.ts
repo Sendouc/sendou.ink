@@ -62,6 +62,24 @@ export async function hasFeedbackSince({
 	return Boolean(row);
 }
 
+export async function hasBeenKicked({
+	roomId,
+	userId,
+}: {
+	roomId: number;
+	userId: number;
+}) {
+	const row = await db
+		.selectFrom("VoiceSession")
+		.select("VoiceSession.id")
+		.where("VoiceSession.roomId", "=", roomId)
+		.where("VoiceSession.userId", "=", userId)
+		.where("VoiceSession.leaveReason", "=", "KICKED")
+		.executeTakeFirst();
+
+	return Boolean(row);
+}
+
 export function findOwnSessionById(id: number) {
 	return db
 		.selectFrom("VoiceSession")
