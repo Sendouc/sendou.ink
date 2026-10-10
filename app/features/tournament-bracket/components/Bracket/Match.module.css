@@ -252,4 +252,9 @@ a.match:hover {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+
+	&:is(a):hover {
+		border-color: var(--color-border-high);
+		background-color: var(--color-bg-high);
+	}
 }

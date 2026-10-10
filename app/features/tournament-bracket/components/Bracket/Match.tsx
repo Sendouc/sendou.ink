@@ -24,6 +24,7 @@ import type { MatchExitDestinations } from "../../core/Bracket/Bracket";
 import * as Deadline from "../../core/Deadline";
 import type { TournamentData } from "../../core/Tournament.server";
 import type { VodsByTournamentId } from "../../TournamentMatchVodRepository.server";
+import { tournamentBracketsPage } from "../../tournament-bracket-urls";
 import styles from "./Match.module.css";
 
 type LineType = "none" | "straight" | "curve-up" | "curve-down";
@@ -102,11 +103,18 @@ function MatchExitLabels({
 	const { t } = useTranslation(["tournament"]);
 	const tournament = useTournament();
 
-	const bracketName = (bracketIdx: number | null) =>
-		bracketIdx === null ? null : tournament.bracketsMeta[bracketIdx]?.name;
+	const exitRow = (type: "winner" | "loser", bracketIdx: number | null) => ({
+		type,
+		bracketIdx,
+		bracket:
+			bracketIdx === null ? null : tournament.bracketsMeta[bracketIdx]?.name,
+		isLinkable: tournament.visibleBracketsMeta.some(
+			(bracket) => bracket.idx === bracketIdx,
+		),
+	});
 
-	const winner = { type: "winner", bracket: bracketName(destinations.winner) };
-	const loser = { type: "loser", bracket: bracketName(destinations.loser) };
+	const winner = exitRow("winner", destinations.winner);
+	const loser = exitRow("loser", destinations.loser);
 	const rows = (
 		match.winnerSide === "opponent2" ? [loser, winner] : [winner, loser]
 	).filter((row) => hasLine || row.bracket);
@@ -118,26 +126,41 @@ function MatchExitLabels({
 			})}
 			data-testid="match-exits"
 		>
-			{rows.map(({ type, bracket }) => (
-				<div key={type} className={styles.matchExitRow}>
-					{bracket ? (
-						<>
-							<span className={styles.matchExitDots} aria-hidden="true" />
-							<span
+			{rows.map(({ type, bracket, bracketIdx, isLinkable }) => {
+				if (!bracket) {
+					return <div key={type} className={styles.matchExitRow} />;
+				}
+
+				const title = t(
+					type === "winner"
+						? "tournament:bracket.exit.winner"
+						: "tournament:bracket.exit.loser",
+					{ bracket },
+				);
+				const label = `${bracket} ${type === "winner" ? "[W]" : "[L]"}`;
+
+				return (
+					<div key={type} className={styles.matchExitRow}>
+						<span className={styles.matchExitDots} aria-hidden="true" />
+						{isLinkable && bracketIdx !== null ? (
+							<Link
+								to={tournamentBracketsPage({
+									tournamentId: tournament.ctx.id,
+									bracketIdx,
+								})}
 								className={styles.matchExit}
-								title={t(
-									type === "winner"
-										? "tournament:bracket.exit.winner"
-										: "tournament:bracket.exit.loser",
-									{ bracket },
-								)}
+								title={title}
 							>
-								{bracket} {type === "winner" ? "[W]" : "[L]"}
+								{label}
+							</Link>
+						) : (
+							<span className={styles.matchExit} title={title}>
+								{label}
 							</span>
-						</>
-					) : null}
-				</div>
-			))}
+						)}
+					</div>
+				);
+			})}
 		</div>
 	);
 }
