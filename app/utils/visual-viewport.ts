@@ -44,5 +44,7 @@ export function keyboardIsOpen() {
 	const viewport = window.visualViewport;
 	if (!viewport) return false;
 
-	return window.innerHeight - viewport.height > KEYBOARD_MIN_HEIGHT;
+	return (
+		window.innerHeight - viewport.height * viewport.scale > KEYBOARD_MIN_HEIGHT
+	);
 }

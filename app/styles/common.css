@@ -670,27 +670,10 @@
 	place-items: center;
 }
 
-/* iOS can't pin the tab bar on top of the virtual keyboard, so it gets out of the way while typing */
-@media (pointer: coarse) {
-	body:has(
-		:is(
-				input:is(
-					:not([type]),
-					[type="text"],
-					[type="search"],
-					[type="email"],
-					[type="url"],
-					[type="tel"],
-					[type="password"],
-					[type="number"]
-				),
-				textarea,
-				[contenteditable]:not([contenteditable="false"])
-			):not([readonly], [inputmode="none"]):focus
-	) {
-		--mobile-nav-height: 0px;
-		--mobile-tab-bar-display: none;
-	}
+/* iOS can't pin the tab bar on top of the virtual keyboard, so it gets out of the way while the keyboard is open */
+html[data-keyboard-open] body {
+	--mobile-nav-height: 0px;
+	--mobile-tab-bar-display: none;
 }
 
 @media screen and (max-width: 599px) {
