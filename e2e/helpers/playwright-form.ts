@@ -216,8 +216,9 @@ export function createFormHelpers<T extends v.ObjectEntries>(
 			await expect(comboboxButton).not.toBeDisabled();
 			await comboboxButton.click();
 			await searchInput.fill(userName);
-			await expect(option).toBeVisible();
-			await page.keyboard.press("Enter");
+			// clicking rather than pressing Enter: a result is in the DOM one commit
+			// before the effect that registers it and focuses it for Enter has run
+			await option.click();
 		},
 
 		async selectWeapons(_name, weaponNames) {

@@ -6,7 +6,7 @@ import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/elements/Button";
 import { useHasPermission, useHasRole } from "~/modules/permissions/hooks";
 import { metaTags, type SerializeFrom } from "~/utils/remix";
-import { badgeUrl, userPage } from "~/utils/urls";
+import { badgeEditPage, badgeUrl, userPage } from "~/utils/urls";
 import { badgeExplanationText } from "../badges-utils";
 import { loader } from "../loaders/badges.$id.server";
 import styles from "./badges.$id.module.css";
@@ -85,7 +85,11 @@ export default function BadgeDetailsPage() {
 				</div>
 			</div>
 			{isStaff || canManageBadge ? (
-				<LinkButton to="edit" variant="outlined" size="small">
+				<LinkButton
+					to={badgeEditPage(data.badge.id)}
+					variant="outlined"
+					size="small"
+				>
 					Edit
 				</LinkButton>
 			) : null}

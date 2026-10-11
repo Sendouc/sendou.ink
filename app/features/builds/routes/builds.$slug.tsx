@@ -112,7 +112,7 @@ export default function WeaponsBuildsPage() {
 		useSearchParamsTyped(buildsSearchParams);
 
 	const loadMoreLink = () =>
-		buildsSearchParams.href("", {
+		buildsSearchParams.href(weaponBuildPage(data.slug), {
 			limit: data.limit + BUILDS_PAGE_BATCH_SIZE,
 			abilities: abilityConditions,
 			mode,

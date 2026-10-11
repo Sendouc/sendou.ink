@@ -29,8 +29,12 @@ export class TournamentSubsPage {
 	}
 
 	subPostText(text: string) {
-		// the poster's name is also in the closed mobile "You" panel
-		return this.page.getByText(text).filter({ visible: true });
+		// the poster's name is also in the side nav (as the logged in user) and
+		// in the closed mobile "You" panel
+		return this.page
+			.getByRole("main")
+			.getByText(text)
+			.filter({ visible: true });
 	}
 
 	openAddPostDialog() {

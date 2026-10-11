@@ -380,6 +380,7 @@ function AllTournamentsView() {
 	return (
 		<div className={styles.eventsContainer}>
 			<EventCalendar
+				organizationSlug={data.organization.slug}
 				month={data.month}
 				year={data.year}
 				events={data.events}
@@ -505,11 +506,16 @@ function SeriesButton({
 	children: React.ReactNode;
 	seriesId?: number;
 }) {
+	const data = useLoaderData<typeof loader>();
+
 	return (
 		<LinkButton
 			variant="minimal"
 			size="small"
-			to={`?series=${seriesId ?? "all"}`}
+			to={tournamentOrganizationPage({
+				organizationSlug: data.organization.slug,
+				seriesId,
+			})}
 		>
 			{children}
 		</LinkButton>

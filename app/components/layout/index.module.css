@@ -131,15 +131,6 @@
 		padding-bottom: var(--s-2);
 		height: calc(var(--layout-nav-height) + env(safe-area-inset-top));
 	}
-
-	.chatSidebarModal {
-		top: calc(var(--layout-nav-height) + env(safe-area-inset-top));
-		height: calc(100% - var(--layout-nav-height) - env(safe-area-inset-top));
-
-		&::backdrop {
-			top: calc(var(--layout-nav-height) + env(safe-area-inset-top));
-		}
-	}
 }
 
 .sideNavEmpty {
@@ -320,30 +311,6 @@ shown, so the popover's user agent styles are reset here.
 @media screen and (max-width: 1474px) {
 	.sidebarFuseSpace {
 		padding-bottom: var(--layout-fuse-bottom-height);
-	}
-}
-
-.chatSidebarModal {
-	position: fixed;
-	inset: 0;
-	top: var(--layout-nav-height);
-	margin: 0;
-	margin-left: auto;
-	padding: 0;
-	max-width: none;
-	max-height: none;
-	height: calc(100% - var(--layout-nav-height));
-	width: var(--layout-sidenav-width);
-	border: none;
-	border-left: 1.5px solid var(--color-border);
-	background-color: var(--color-bg-nav);
-	color: var(--color-text);
-	outline: none;
-
-	&::backdrop {
-		background-color: rgba(0, 0, 0, 0.4);
-		backdrop-filter: blur(4px);
-		top: var(--layout-nav-height);
 	}
 }
 

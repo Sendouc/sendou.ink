@@ -10,7 +10,6 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import type { Tables } from "~/db/tables";
-import { useUser } from "~/features/auth/core/user";
 import { analyzerPage } from "~/features/build-analyzer/analyzer-urls";
 import type { BuildWeaponWithTop500Info } from "~/features/builds/builds-types";
 import {
@@ -18,6 +17,7 @@ import {
 	type BuildGraphicOwner,
 } from "~/features/img-export/components/BuildGraphic";
 import { ImageExportDialog } from "~/features/img-export/components/ImageExportDialog";
+import { userEditBuildPage } from "~/features/user-page/user-page-urls";
 import type {
 	Ability as AbilityType,
 	BuildAbilitiesTuple,
@@ -76,7 +76,6 @@ export function BuildCard({
 	showOwner = true,
 	canEdit = false,
 }: BuildProps) {
-	const user = useUser();
 	const { t } = useTranslation(["weapons", "builds", "common", "game-misc"]);
 
 	const {
@@ -219,14 +218,14 @@ export function BuildCard({
 						{description}
 					</SendouPopover>
 				) : null}
-				{canEdit ? (
+				{canEdit && owner ? (
 					<>
 						<LinkButton
 							shape="circle"
 							className={styles.smallText}
 							variant="minimal"
 							size="small"
-							to={`new?buildId=${id}&userId=${user!.id}`}
+							to={userEditBuildPage(owner, id)}
 							testId="edit-build"
 							icon={<SquarePen />}
 						/>

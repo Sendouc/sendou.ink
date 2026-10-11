@@ -4,7 +4,12 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { plusSuggestionPage } from "~/features/plus-suggestions/plus-suggestions-urls";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
-import { navIconUrl } from "~/utils/urls";
+import {
+	navIconUrl,
+	PLUS_SUGGESTIONS_PAGE,
+	PLUS_VOTING_PAGE,
+	PLUS_VOTING_RESULTS_PAGE,
+} from "~/utils/urls";
 
 export const meta: MetaFunction = (args) => {
 	return metaTags({
@@ -27,9 +32,9 @@ export default function PlusPageLayout() {
 	return (
 		<Main className="stack md">
 			<SubNav>
-				<SubNavLink to="suggestions">Suggestions</SubNavLink>
-				<SubNavLink to="voting/results">Results</SubNavLink>
-				<SubNavLink to="voting">Voting</SubNavLink>
+				<SubNavLink to={PLUS_SUGGESTIONS_PAGE}>Suggestions</SubNavLink>
+				<SubNavLink to={PLUS_VOTING_RESULTS_PAGE}>Results</SubNavLink>
+				<SubNavLink to={PLUS_VOTING_PAGE}>Voting</SubNavLink>
 			</SubNav>
 			<Outlet />
 		</Main>

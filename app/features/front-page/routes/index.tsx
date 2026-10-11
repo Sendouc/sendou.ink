@@ -350,7 +350,7 @@ function DiscoverFeatures() {
 				<WeaponPoolBanner
 					weaponIds={data.weaponPool.map((weapon) => weapon.weaponSplId)}
 					weaponHref={(weaponId) =>
-						globalSearchSearchParams.href("", {
+						globalSearchSearchParams.href("/", {
 							search: "open",
 							type: "weapons",
 							weapon: weaponId,

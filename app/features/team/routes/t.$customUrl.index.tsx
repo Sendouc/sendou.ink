@@ -30,7 +30,13 @@ import type { TeamLoaderData } from "~/features/team/loaders/t.$customUrl.server
 import { useActionSubmit } from "~/hooks/useActionSubmit";
 import { useHasPermission } from "~/modules/permissions/hooks";
 import { invariant } from "~/utils/invariant";
-import { editTeamPage, manageTeamRosterPage, userPage } from "~/utils/urls";
+import {
+	editTeamPage,
+	manageTeamRosterPage,
+	teamResultsPage,
+	teamSchedulePage,
+	userPage,
+} from "~/utils/urls";
 import { action } from "../actions/t.$customUrl.index.server";
 import type * as TeamRepository from "../TeamRepository.server";
 import { teamProfilePageActionSchema } from "../team-schemas";
@@ -70,7 +76,10 @@ export default function TeamIndexPage() {
 		<div className="stack lg">
 			<ActionButtons />
 			{layoutData.results ? (
-				<ResultsBanner results={layoutData.results} />
+				<ResultsBanner
+					customUrl={layoutData.team.customUrl}
+					results={layoutData.results}
+				/>
 			) : null}
 			{layoutData.team.bio ? (
 				<article data-testid="team-bio">{layoutData.team.bio}</article>
@@ -127,7 +136,7 @@ function ActionButtons() {
 			{isMember ? (
 				<LinkButton
 					size="small"
-					to="schedule"
+					to={teamSchedulePage(team.customUrl)}
 					variant="outlined"
 					prefetch="intent"
 					icon={<CalendarDays />}
@@ -311,12 +320,14 @@ function ConfirmActionContent({
 }
 
 function ResultsBanner({
+	customUrl,
 	results,
 }: {
+	customUrl: string;
 	results: NonNullable<TeamLoaderData["results"]>;
 }) {
 	return (
-		<Link className={styles.results} to="results">
+		<Link className={styles.results} to={teamResultsPage(customUrl)}>
 			<div>View {results.count} results</div>
 			<ul className={styles.resultsPlacements}>
 				{results.placements.map(({ placement, count }) => {

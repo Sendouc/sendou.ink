@@ -6,10 +6,11 @@ import { useHydrated } from "~/hooks/useHydrated";
 import { databaseTimestampToDate, nullPaddedDatesOfMonth } from "~/utils/dates";
 import type { SerializeFrom } from "~/utils/remix";
 import type { loader } from "../loaders/org.$slug.server";
-import { tournamentOrganizationSearchParams } from "../tournament-organization-search-params";
+import { tournamentOrganizationPage } from "../tournament-organization-urls";
 import styles from "./EventCalendar.module.css";
 
 interface EventCalendarProps {
+	organizationSlug: string;
 	month: number;
 	year: number;
 	events: SerializeFrom<typeof loader>["events"];
@@ -17,6 +18,7 @@ interface EventCalendarProps {
 }
 
 export function EventCalendar({
+	organizationSlug,
 	month,
 	year,
 	events,
@@ -35,7 +37,11 @@ export function EventCalendar({
 
 	return (
 		<div className={styles.calendarContainer}>
-			<MonthSelector month={month} year={year} />
+			<MonthSelector
+				organizationSlug={organizationSlug}
+				month={month}
+				year={year}
+			/>
 			<div className={styles.calendar}>
 				{dayHeaders.map((day) => (
 					<div key={day} className={styles.calendarDayHeader}>
@@ -104,7 +110,15 @@ function EventCalendarCell({
 	);
 }
 
-function MonthSelector({ month, year }: { month: number; year: number }) {
+function MonthSelector({
+	organizationSlug,
+	month,
+	year,
+}: {
+	organizationSlug: string;
+	month: number;
+	year: number;
+}) {
 	const date = new Date(Date.UTC(year, month, 15));
 
 	return (
@@ -113,15 +127,12 @@ function MonthSelector({ month, year }: { month: number; year: number }) {
 				variant="minimal"
 				aria-label="Previous month"
 				prefetch="intent"
-				to={tournamentOrganizationSearchParams.href(
-					"",
-					month === 0
+				to={tournamentOrganizationPage({
+					organizationSlug,
+					...(month === 0
 						? { month: 11, year: year - 1 }
-						: {
-								month: date.getMonth() - 1,
-								year: date.getFullYear(),
-							},
-				)}
+						: { month: date.getMonth() - 1, year: date.getFullYear() }),
+				})}
 			>
 				{"<"}
 			</LinkButton>
@@ -138,15 +149,12 @@ function MonthSelector({ month, year }: { month: number; year: number }) {
 				variant="minimal"
 				aria-label="Following month"
 				prefetch="intent"
-				to={tournamentOrganizationSearchParams.href(
-					"",
-					month === 11
+				to={tournamentOrganizationPage({
+					organizationSlug,
+					...(month === 11
 						? { month: 0, year: year + 1 }
-						: {
-								month: date.getMonth() + 1,
-								year: date.getFullYear(),
-							},
-				)}
+						: { month: date.getMonth() + 1, year: date.getFullYear() }),
+				})}
 			>
 				{">"}
 			</LinkButton>

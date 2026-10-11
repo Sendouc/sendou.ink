@@ -570,6 +570,7 @@ function hasImminentBracket(tournament: Tournament) {
 }
 
 function isTournamentLive(tournament: Tournament) {
+	if (tournament.isTest) return false;
 	if (!tournament.hasStarted || tournament.everyBracketOver) return false;
 	if (hasImminentBracket(tournament)) return true;
 

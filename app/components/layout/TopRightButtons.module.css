@@ -139,3 +139,38 @@
 	place-items: center;
 	pointer-events: none;
 }
+
+@media screen and (display-mode: standalone) {
+	.chatSidebarModal {
+		top: calc(var(--layout-nav-height) + env(safe-area-inset-top));
+		height: calc(100% - var(--layout-nav-height) - env(safe-area-inset-top));
+
+		&::backdrop {
+			top: calc(var(--layout-nav-height) + env(safe-area-inset-top));
+		}
+	}
+}
+
+.chatSidebarModal {
+	position: fixed;
+	inset: 0;
+	top: var(--layout-nav-height);
+	margin: 0;
+	margin-left: auto;
+	padding: 0;
+	max-width: none;
+	max-height: none;
+	height: calc(100% - var(--layout-nav-height));
+	width: var(--layout-sidenav-width);
+	border: none;
+	border-left: 1.5px solid var(--color-border);
+	background-color: var(--color-bg-nav);
+	color: var(--color-text);
+	outline: none;
+
+	&::backdrop {
+		background-color: rgba(0, 0, 0, 0.4);
+		backdrop-filter: blur(4px);
+		top: var(--layout-nav-height);
+	}
+}

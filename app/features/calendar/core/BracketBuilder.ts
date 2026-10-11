@@ -66,6 +66,7 @@ export interface PlacementTier {
 		| "GROUP_PLACEMENT"
 		| "STILL_IN"
 		| "UNBEATEN"
+		| "LOST_WINNERS_FINAL"
 		| "ALIVE_WITH_ONE_LOSS";
 	/** Most teams sharing the placement, in round robin per group. */
 	maxTeams: number;
@@ -828,11 +829,17 @@ function doubleEliminationTiers(bracket: BracketFormValue): PlacementTier[] {
 	);
 
 	const unbeatenCount = skipped.includes("WB_FINALS") ? 2 : 1;
+	const winnersFinalLoserStaysAlive =
+		!skipped.includes("WB_FINALS") && skipped.includes("LB_FINALS");
+	const winnersFinalLoserCount = winnersFinalLoserStaysAlive ? 1 : 0;
 	const stillIn: Array<Omit<PlacementTier, "placement">> = skipped.includes(
 		"GRAND_FINALS",
 	)
 		? [
 				{ kind: "UNBEATEN", maxTeams: unbeatenCount },
+				...(winnersFinalLoserStaysAlive
+					? [{ kind: "LOST_WINNERS_FINAL" as const, maxTeams: 1 }]
+					: []),
 				{
 					kind: "ALIVE_WITH_ONE_LOSS",
 					// grand finalists + the teams of the skipped losers rounds
@@ -842,7 +849,8 @@ function doubleEliminationTiers(bracket: BracketFormValue): PlacementTier[] {
 							losersRounds.slice(0, skippedLosersRoundCount),
 							(round) => round.maxTeams,
 						) -
-						unbeatenCount,
+						unbeatenCount -
+						winnersFinalLoserCount,
 				},
 			]
 		: [

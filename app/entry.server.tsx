@@ -83,7 +83,7 @@ async function handleRequest(
 	});
 }
 
-/** Lets the browser reuse a hover-prefetched loader response on the click that follows it. */
+/** Lets the browser reuse a hover-prefetched loader response on the click that follows it. Varies by cookie so that a mutation (see `invalidatePrefetchedLoaderData` in entry.client.tsx) or a log in invalidates it. */
 export const handleDataRequest: HandleDataRequestFunction = (
 	response,
 	{ request },

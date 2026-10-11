@@ -83,10 +83,11 @@ pnpm exec playwright show-trace test-results/<test-folder>/trace.zip
 When a failure needs full DOM snapshots to understand, re-run just that test with `--trace retain-on-failure` (the CLI flag records complete traces).
 
 ### Re-render races
-Live events run on an in-process event bus per worker server (SSE, see `app/features/events`), so cross-worker crosstalk cannot cause flakes. Google Fonts are also blocked at the context level so font swaps never reflow the page mid-test. Re-renders from the test's own action revalidations can still swallow a React Aria press (press start registers, press end never fires — no POST); `waitForPOSTResponse` retries for this, so route flows through it rather than adding sleeps.
+Live events run on an in-process event bus per worker server (SSE, see `app/features/events`), so cross-worker crosstalk cannot cause flakes. Google Fonts are also blocked (DNS level, `--host-resolver-rules` in `playwright.config.ts`) so font swaps never reflow the page mid-test. Re-renders from the test's own action revalidations can still swallow a React Aria press (press start registers, press end never fires — no POST); `waitForPOSTResponse` retries for this, so route flows through it rather than adding sleeps.
 
 Other known sources, each handled once in the helpers or page objects:
-- YouTube is stubbed at the context level (a fake `iframe_api`, everything else aborted): the real player loads from the internet at its own pace and, arriving mid-test, closed an open select on the VoD form
+- YouTube is stubbed (a fake `window.YT` init script, its hosts cut off at DNS): the real player loads from the internet at its own pace and, arriving mid-test, closed an open select on the VoD form
+- Never block or stub with a context-wide `context.route`: any route turns off the browser's HTTP cache, so every navigation refetches all ~200 script chunks and hydration crawls under load. Keep routes to the page and test that needs them
 - dnd-kit stops every click in the document for 50ms after a drop; drag helpers end with `waitForDropToSettle` so the next click lands
 - A tab or link clicked before hydration (after a raw `page.reload()`, say) loads the target as a new document and the click after it is lost; reload through the page object's `reload()` which waits for hydration
 - Popovers close on navigation in a passive effect, so for a frame the old panel and the new page both show the same names; scope locators to `main` where a name can appear in both

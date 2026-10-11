@@ -1,8 +1,6 @@
-import path from "node:path";
+import fs from "node:fs/promises";
 import type { Page } from "@playwright/test";
 import { type FixtureFrame, fixtureFramePath } from "./fixture-game";
-
-const FRAME_ROUTE_PREFIX = "/__e2e-capture/";
 
 /** Labels the scanner picks on its own (a capture card) or ignores unless picked by hand (a webcam). */
 const DEVICE_LABELS = {
@@ -34,22 +32,18 @@ export class FakeCaptureCard {
 	}: {
 		kind?: keyof typeof DEVICE_LABELS;
 	} = {}) {
-		await this.page.route(`**${FRAME_ROUTE_PREFIX}*.png`, (route) => {
-			const name = path.basename(
-				new URL(route.request().url()).pathname,
-				".png",
-			) as FixtureFrame;
-			return route.fulfill({ path: fixtureFramePath(name) });
-		});
 		await this.page.addInitScript(installFakeDevice, DEVICE_LABELS[kind]);
 	}
 
 	/** Puts a frame on the capture card's screen; null goes black. */
 	async show(frame: FixtureFrame | null) {
-		await this.page.evaluate(
-			(url) => window.__e2eCapture!.show(url),
-			frame === null ? null : `${FRAME_ROUTE_PREFIX}${frame}.png`,
-		);
+		// a data URL and not a route serving the file: any route turns off the
+		// page's HTTP cache, and every load then refetches all the script chunks
+		const frameUrl =
+			frame === null
+				? null
+				: `data:image/png;base64,${(await fs.readFile(fixtureFramePath(frame))).toString("base64")}`;
+		await this.page.evaluate((url) => window.__e2eCapture!.show(url), frameUrl);
 	}
 }
 

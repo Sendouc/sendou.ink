@@ -21,8 +21,20 @@ import { SendouPopover } from "~/components/elements/Popover";
 import { DANGEROUS_CAN_ACCESS_DEV_CONTROLS } from "~/features/admin/core/dev-controls";
 import { useUser } from "~/features/auth/core/user";
 import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
+import { tournamentBracketsPage } from "~/features/tournament-bracket/tournament-bracket-urls";
 import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
-import { tournamentInfoPage, tournamentRulesPage } from "~/utils/urls";
+import {
+	tournamentAdminPage,
+	tournamentDivisionsPage,
+	tournamentInfoPage,
+	tournamentMatchesPage,
+	tournamentRegisterPage,
+	tournamentResultsPage,
+	tournamentRulesPage,
+	tournamentStreamsPage,
+	tournamentSubsPage,
+	tournamentTeamsPage,
+} from "~/utils/urls";
 import { tournamentNameParts } from "../tournament-utils";
 import styles from "./TournamentNav.module.css";
 
@@ -168,7 +180,7 @@ function useNavItems({
 		items.register = {
 			key: "register",
 			label: t("tournament:nav.register"),
-			to: "register",
+			to: tournamentRegisterPage(tournament.ctx.id),
 			icon: <ClipboardCheck />,
 			testId: "register-tab",
 		};
@@ -179,7 +191,7 @@ function useNavItems({
 		items.divisions = {
 			key: "divisions",
 			label: t("tournament:nav.divisions"),
-			to: "divisions",
+			to: tournamentDivisionsPage(tournament.ctx.id),
 			icon: <LayoutGrid />,
 			testId: "divisions-tab",
 		};
@@ -187,7 +199,7 @@ function useNavItems({
 		items.brackets = {
 			key: "brackets",
 			label: t("tournament:nav.brackets"),
-			to: "brackets",
+			to: tournamentBracketsPage({ tournamentId: tournament.ctx.id }),
 			icon: <Trophy />,
 			testId: "brackets-tab",
 		};
@@ -197,7 +209,7 @@ function useNavItems({
 		items.matches = {
 			key: "matches",
 			label: t("tournament:nav.matches"),
-			to: "matches",
+			to: tournamentMatchesPage(tournament.ctx.id),
 			icon: <CalendarClock />,
 			testId: "matches-tab",
 		};
@@ -208,7 +220,7 @@ function useNavItems({
 		label: t("tournament:nav.teams", {
 			count: tournament.ctx.teams.length,
 		}),
-		to: "teams",
+		to: tournamentTeamsPage(tournament.ctx.id),
 		icon: <Users />,
 		end: false,
 		testId: "teams-tab",
@@ -220,7 +232,7 @@ function useNavItems({
 			label: t("tournament:nav.streams", {
 				count: streamsCount,
 			}),
-			to: "streams",
+			to: tournamentStreamsPage(tournament.ctx.id),
 			icon: <Tv />,
 		};
 	}
@@ -229,7 +241,7 @@ function useNavItems({
 		items.results = {
 			key: "results",
 			label: t("tournament:nav.results"),
-			to: "results",
+			to: tournamentResultsPage(tournament.ctx.id),
 			icon: <Medal />,
 			testId: "results-tab",
 		};
@@ -254,7 +266,7 @@ function useNavItems({
 			label: tournament.registrationOpen
 				? t("tournament:nav.looking")
 				: t("tournament:nav.subs"),
-			to: "looking",
+			to: tournamentSubsPage(tournament.ctx.id),
 			icon: <UserPlus />,
 		};
 	}
@@ -266,7 +278,7 @@ function useNavItems({
 		items.admin = {
 			key: "admin",
 			label: t("tournament:nav.admin"),
-			to: "admin",
+			to: tournamentAdminPage(tournament.ctx.id),
 			icon: <Settings />,
 			end: false,
 			testId: "admin-tab",

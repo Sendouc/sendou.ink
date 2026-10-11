@@ -304,6 +304,10 @@
 			"plugins": ["./biome-plugins/no-kysely-sqlite-helpers.grit"]
 		},
 		{
+			"includes": ["app/**", "!app/features/components-showcase/**"],
+			"plugins": ["./biome-plugins/no-relative-links.grit"]
+		},
+		{
 			"includes": ["app/**"],
 			"plugins": ["./biome-plugins/no-and-conditional-rendering.grit"]
 		},

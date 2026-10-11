@@ -1570,8 +1570,16 @@ describe("PreparedMaps.eliminationTeamCountPrefill (grouped source bracket)", ()
 			teamCount: 16,
 			skippedRounds: ["LB_FINALS"],
 			placements: [1, 2],
+			expected: 4,
+			why: "DE groups of 8 without losers bracket finals, winners and winners final losers",
+		},
+		{
+			type: "double_elimination",
+			teamCount: 16,
+			skippedRounds: ["LB_FINALS"],
+			placements: [1, 2, 3],
 			expected: 6,
-			why: "DE groups of 8 without losers bracket finals, losers bracket semifinal winners share 2nd",
+			why: "DE groups of 8 without losers bracket finals, losers bracket semifinal winners 3rd",
 		},
 	] as const)(
 		"prefills with the teams advancing from the groups ($why)",

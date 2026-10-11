@@ -286,12 +286,15 @@ export const manageTeamRosterPage = (customUrl: string) =>
 	`${teamPage(customUrl)}/roster`;
 export const teamSchedulePage = (customUrl: string) =>
 	`${teamPage(customUrl)}/schedule`;
+export const teamResultsPage = (customUrl: string) =>
+	`${teamPage(customUrl)}/results`;
 
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
 	`/?authError=${errorCode}`;
 export const impersonateUrl = (idToLogInAs: number) =>
 	`/auth/impersonate?id=${idToLogInAs}`;
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
+export const badgeEditPage = (badgeId: number) => `${badgePage(badgeId)}/edit`;
 
 export const weaponBuildPage = (weaponSlug: string) =>
 	`${BUILDS_PAGE}/${weaponSlug}`;
