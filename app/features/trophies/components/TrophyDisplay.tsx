@@ -85,7 +85,7 @@ export function TrophyDisplay({
 								model={trophy.model}
 								code={trophy.code}
 								tier={trophy.tier ?? null}
-								preview={!!openTrophy}
+								paused={!!openTrophy}
 								staticOnSoftwareRendering
 								disableCameraControls
 								fps={30}

@@ -91,6 +91,7 @@ export function Trophy({
 	model,
 	code,
 	preview,
+	paused,
 	tier,
 	tentativeTier,
 	disableCameraControls,
@@ -105,6 +106,8 @@ export function Trophy({
 	model: string;
 	code?: string | null;
 	preview?: boolean;
+	/** Freezes on the current frame. Unlike toggling `preview`, keeps the viewer so the canvas never blanks. */
+	paused?: boolean;
 	tier?: number | null;
 	tentativeTier?: number | null;
 	disableCameraControls?: boolean;
@@ -131,6 +134,16 @@ export function Trophy({
 
 	const onRenderStatsRef = useRef(onRenderStats);
 	onRenderStatsRef.current = onRenderStats;
+	const pausedRef = useRef(paused);
+	pausedRef.current = paused;
+
+	useEffect(() => {
+		const viewer = viewerRef.current;
+		if (!viewer || !drawn) return;
+
+		if (paused) viewer.stopRenderLoop();
+		else viewer.startRenderLoop(false);
+	}, [paused, drawn]);
 
 	const prevSourceRef = useRef({ model, code });
 	if (
@@ -192,23 +205,26 @@ export function Trophy({
 			viewer.cameraModeSpeed = 5;
 			viewer.animation.setTime(0);
 
+			const presentFrame = (onPresented: () => void) => {
+				if (viewerRef.current !== viewer) return;
+				if (!viewer.draw()) {
+					requestAnimationFrame(() => presentFrame(onPresented));
+					return;
+				}
+				onPresented();
+			};
+
 			// render loops starve the main thread on software WebGL, so surfaces
 			// showing many trophies without GPU acceleration draw a single static frame
 			if (preview || (staticOnSoftwareRendering && isSoftwareRendering())) {
-				viewer.whenReady().then(() => {
-					const drawOnce = () => {
-						if (viewerRef.current !== viewer) return;
-						if (!viewer.draw()) {
-							requestAnimationFrame(drawOnce);
-							return;
-						}
+				viewer.whenReady().then(() =>
+					presentFrame(() => {
 						viewer.dispose();
 						viewerRef.current = null;
 						setDrawn(true);
 						setEverDrawn(true);
-					};
-					drawOnce();
-				});
+					}),
+				);
 				return;
 			}
 
@@ -228,11 +244,18 @@ export function Trophy({
 				};
 			}
 
-			viewer.whenReady().then(() => {
-				if (viewerRef.current !== viewer) return;
-				viewer.startRenderLoop(false);
+			const markDrawn = () => {
 				setDrawn(true);
 				setEverDrawn(true);
+			};
+			viewer.whenReady().then(() => {
+				if (viewerRef.current !== viewer) return;
+				if (pausedRef.current) {
+					presentFrame(markDrawn);
+					return;
+				}
+				viewer.startRenderLoop(false);
+				markDrawn();
 			});
 
 			if (disableCameraControls) return;
