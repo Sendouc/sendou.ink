@@ -151,6 +151,7 @@
 	"builder.tier.GROUP_PLACEMENT": "",
 	"builder.tier.STILL_IN": "",
 	"builder.tier.UNBEATEN": "",
+	"builder.tier.LOST_WINNERS_FINAL": "",
 	"builder.tier.ALIVE_WITH_ONE_LOSS": "",
 	"builder.label.top": "",
 	"builder.label.groupTop": "",

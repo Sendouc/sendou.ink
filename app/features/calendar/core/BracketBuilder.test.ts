@@ -533,11 +533,12 @@ describe("BracketBuilder.placementTiers", () => {
 
 		expect(
 			tiers
-				.slice(0, 2)
+				.slice(0, 3)
 				.map((tier) => [tier.kind, tier.maxTeams, tier.maxTeamsPerGroup]),
 		).toEqual([
 			["UNBEATEN", 8, 1],
-			["ALIVE_WITH_ONE_LOSS", 24, 3],
+			["LOST_WINNERS_FINAL", 8, 1],
+			["ALIVE_WITH_ONE_LOSS", 16, 2],
 		]);
 	});
 

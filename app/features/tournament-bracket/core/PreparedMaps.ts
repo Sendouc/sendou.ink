@@ -582,6 +582,18 @@ function groupEliminationPlacementSizes({
 					(round) => nonByeMatchCount({ data, roundId: round.id }),
 				);
 
+		const losersFinalNumber = (upperBracketRoundCount - 1) * 2;
+		const winnersFinalLoserStaysAlive =
+			!hasGrandFinals &&
+			unbeatenCount === 1 &&
+			!groupRounds.some(
+				(round) =>
+					round.section === "losers" && round.number === losersFinalNumber,
+			);
+		if (winnersFinalLoserStaysAlive) {
+			return [unbeatenCount, 1, stillInCount - unbeatenCount - 1];
+		}
+
 		return [unbeatenCount, stillInCount - unbeatenCount];
 	})();
 

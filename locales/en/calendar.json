@@ -151,6 +151,7 @@
 	"builder.tier.GROUP_PLACEMENT": "In every group",
 	"builder.tier.STILL_IN": "Still in when the bracket ends",
 	"builder.tier.UNBEATEN": "Unbeaten when the bracket ends",
+	"builder.tier.LOST_WINNERS_FINAL": "Lost the winners final",
 	"builder.tier.ALIVE_WITH_ONE_LOSS": "Alive with 1 loss when the bracket ends",
 	"builder.label.top": "Top {{count}}",
 	"builder.label.groupTop": "Top {{count}} / group",

@@ -97,7 +97,7 @@ export const DE_GROUPS_TO_REDEMPTION_AND_TOP_CUT: BracketProgression = [
 			groupCount: 2,
 			skippedRounds: ["GRAND_FINALS", "BRACKET_RESET"],
 		},
-		sources: [{ bracketIdx: 0, placements: [2] }],
+		sources: [{ bracketIdx: 0, placements: [2, 3] }],
 	},
 	{
 		type: "double_elimination",

@@ -79,7 +79,8 @@ export class DoubleEliminationBracket extends Bracket {
 
 	/**
 	 * Teams knocked out by the losers bracket round they lost in, the grand finals deciding 1st and 2nd.
-	 * Without grand finals the teams still in once every match is over are ranked by losses: unbeaten teams share the top, one loss teams come next.
+	 * Without grand finals the teams still in once every match is over are ranked by losses: unbeaten teams share the top,
+	 * then the winners final loser (when it was played and its loser still is in), then the rest of the one loss teams.
 	 */
 	private groupStandings(groupId: number): Standing[] {
 		const groupRounds = this.data.round.filter(
@@ -172,20 +173,35 @@ export class DoubleEliminationBracket extends Bracket {
 				.filter((teamId) => !eliminatedIds.has(teamId))
 				.map((teamId) => ({ teamId, losses: lossCount(teamId) }));
 			const unbeatenCount = stillIn.filter((team) => team.losses === 0).length;
+			const winnersFinal = this.winnersFinalMatch(groupId);
+			const winnersFinalLoserId = winnersFinal?.winnerSide
+				? winnersFinal[
+						winnersFinal.winnerSide === "opponent1" ? "opponent2" : "opponent1"
+					]?.id
+				: undefined;
+			const winnersFinalLoserStillIn = stillIn.some(
+				(team) => team.teamId === winnersFinalLoserId,
+			);
+			const placementOf = ({ teamId, losses }: (typeof stillIn)[number]) => {
+				if (losses === 0) return 1;
+				if (teamId === winnersFinalLoserId) return unbeatenCount + 1;
+
+				return unbeatenCount + 1 + (winnersFinalLoserStillIn ? 1 : 0);
+			};
 			const effectiveSeed = this.effectiveSeedResolver();
 
-			// reversed below: fewest losses, then best seed first
-			for (const { teamId, losses } of stillIn.toSorted(
+			// reversed below: best placement, then best seed first
+			for (const stillInTeam of stillIn.toSorted(
 				(a, b) =>
-					b.losses - a.losses ||
+					placementOf(b) - placementOf(a) ||
 					effectiveSeed(b.teamId) - effectiveSeed(a.teamId),
 			)) {
-				const team = this.tournament.teamById(teamId);
-				invariant(team, `Team not found for id: ${teamId}`);
+				const team = this.tournament.teamById(stillInTeam.teamId);
+				invariant(team, `Team not found for id: ${stillInTeam.teamId}`);
 
 				result.push({
 					team,
-					placement: losses === 0 ? 1 : unbeatenCount + 1,
+					placement: placementOf(stillInTeam),
 				});
 			}
 
@@ -249,10 +265,22 @@ export class DoubleEliminationBracket extends Bracket {
 			const losersRoundNumbers = new Set(
 				losersRounds.map((round) => round.number),
 			);
+			const loserStaysAlive = (winnersRound: RoundData) =>
+				losersRoundCount === 0 ||
+				!losersRoundNumbers.has(
+					winnersRound.number > 1 ? (winnersRound.number - 1) * 2 : 1,
+				);
+			const winnersFinal = this.winnersFinalMatch(group.id);
+			const winnersFinalRound = winnersRounds.find(
+				(round) => round.id === winnersFinal?.roundId,
+			);
+			const winnersFinalLoserStaysAlive =
+				!grandFinal && winnersFinalRound && loserStaysAlive(winnersFinalRound);
 
-			// tiers from the top: grand finals winner & loser (or unbeaten & alive with one loss), then the losers of each losers round, latest first
-			const ONE_LOSS_TIER = 2;
-			let tier = 2;
+			// tiers from the top: grand finals winner & loser (or unbeaten, winners final loser & alive with one loss), then the losers of each losers round, latest first
+			const WINNERS_FINAL_LOSER_TIER = 2;
+			const ALIVE_WITH_ONE_LOSS_TIER = winnersFinalLoserStaysAlive ? 3 : 2;
+			let tier = ALIVE_WITH_ONE_LOSS_TIER;
 			const loserTierByRoundId = new Map<number, number>();
 			for (const round of losersRounds.toReversed()) {
 				if (!this.hasNonByeMatch(round.id)) continue;
@@ -262,14 +290,16 @@ export class DoubleEliminationBracket extends Bracket {
 
 			for (const round of winnersRounds) {
 				const isLastPlayed = round === winnersRounds.at(-1);
-				const losersRoundNumber = round.number > 1 ? (round.number - 1) * 2 : 1;
-				const loserStaysAlive =
-					losersRoundCount === 0 || !losersRoundNumbers.has(losersRoundNumber);
+				const loserTier = !loserStaysAlive(round)
+					? undefined
+					: round === winnersFinalRound
+						? WINNERS_FINAL_LOSER_TIER
+						: ALIVE_WITH_ONE_LOSS_TIER;
 
 				for (const match of this.matchesOfRound(round.id)) {
 					result.set(match.id, {
 						winnerTier: isLastPlayed && !grandFinal ? 1 : undefined,
-						loserTier: loserStaysAlive ? ONE_LOSS_TIER : undefined,
+						loserTier,
 					});
 				}
 			}
@@ -284,7 +314,9 @@ export class DoubleEliminationBracket extends Bracket {
 
 				for (const match of this.matchesOfRound(round.id)) {
 					result.set(match.id, {
-						winnerTier: continuesInBracket ? undefined : ONE_LOSS_TIER,
+						winnerTier: continuesInBracket
+							? undefined
+							: ALIVE_WITH_ONE_LOSS_TIER,
 						loserTier: loserTierByRoundId.get(round.id),
 						loserRound: firstRoundIsOnlyByes ? roundIdx : roundIdx + 1,
 					});
@@ -309,6 +341,19 @@ export class DoubleEliminationBracket extends Bracket {
 		}
 
 		return result;
+	}
+
+	/** The match of the group's last winners round when it is a single match, i.e. the winners final is played. */
+	private winnersFinalMatch(groupId: number) {
+		const lastWinnersRound = this.data.round
+			.filter(
+				(round) => round.groupId === groupId && round.section === "winners",
+			)
+			.sort((a, b) => b.number - a.number)[0];
+		if (!lastWinnersRound) return;
+
+		const matches = this.matchesOfRound(lastWinnersRound.id);
+		return matches.length === 1 ? matches[0] : undefined;
 	}
 
 	get everyMatchOver() {

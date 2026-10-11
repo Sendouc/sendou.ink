@@ -200,7 +200,7 @@ const DOUBLE_ELIMINATION_GROUPS_WITH_REDEMPTION_AND_TOP_CUT: Progression = [
 			groupCount: 8,
 			skippedRounds: ["GRAND_FINALS", "BRACKET_RESET"],
 		},
-		sources: [{ bracketIdx: 0, placements: [2] }],
+		sources: [{ bracketIdx: 0, placements: [2, 3] }],
 	},
 	{
 		type: "double_elimination",
