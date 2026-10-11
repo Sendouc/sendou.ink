@@ -10,6 +10,13 @@ const WORKER_COUNT =
 	Number(process.env.E2E_WORKERS) ||
 	Math.min(8, Math.max(4, os.cpus().length - 2));
 
+const BLOCKED_HOSTS = [
+	"fonts.googleapis.com",
+	"fonts.gstatic.com",
+	"youtube.com",
+	"*.youtube.com",
+];
+
 const config: PlaywrightTestConfig = {
 	testDir: "./e2e",
 	timeout: 30 * 1000,
@@ -37,6 +44,17 @@ const config: PlaywrightTestConfig = {
 		serviceWorkers: "block",
 
 		permissions: ["clipboard-read", "clipboard-write"],
+
+		launchOptions: {
+			args: [
+				// Google Fonts load with display=swap, so a font arriving mid-test
+				// reflowed the page (e.g. re-collapsing the tournament nav between a
+				// visibility check and a click), and a YouTube embed arriving closed
+				// the select being filled in. Cut off at DNS rather than with routes,
+				// which would turn off the browser's HTTP cache.
+				`--host-resolver-rules=${BLOCKED_HOSTS.map((host) => `MAP ${host} ~NOTFOUND`).join(", ")}`,
+			],
+		},
 	},
 
 	projects: [

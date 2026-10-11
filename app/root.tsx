@@ -501,6 +501,7 @@ function HydrationTestIndicator() {
 			// the rendered search trails the browser's by a commit: once the toast params are
 			// gone from here the forms keyed on the location (see SendouForm) have remounted
 			data-location-search={location.search}
+			data-location-pathname={location.pathname}
 		/>
 	);
 }

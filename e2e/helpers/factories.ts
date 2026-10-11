@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import { NZAP_TEST_DISCORD_ID } from "~/db/seed/constants";
 import { ADMIN_DISCORD_ID } from "~/features/admin/admin-constants";
+import { postRetryingTransientFailures } from "./request";
 
 export type Factories = Awaited<ReturnType<typeof loadFactories>>;
 
@@ -141,11 +142,13 @@ export async function flushIfDirty(
 	);
 	if (!isDatabaseDirty() && !resetDevOverrides) return;
 
-	// deliberately not retryPost: that helper calls this one, and would recurse
-	const response = await page.request.post("/refresh-caches", {
-		timeout: 7_500,
-		form: { resetDevOverrides: String(resetDevOverrides) },
-	});
+	const response = await postRetryingTransientFailures(
+		page,
+		"/refresh-caches",
+		{
+			form: { resetDevOverrides: String(resetDevOverrides) },
+		},
+	);
 	if (!response.ok()) {
 		throw new Error(`Cache refresh failed with status ${response.status()}`);
 	}

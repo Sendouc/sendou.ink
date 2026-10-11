@@ -1,4 +1,5 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
+import { waitForNavigationRendered } from "../../helpers/playwright";
 import { NotificationsPage } from "../notifications/notifications-page";
 
 /** The notification bell of the layout, and the popover it opens. */
@@ -10,6 +11,12 @@ export class NotificationPopover {
 		this.page = page;
 		this.locators = {
 			openButton: this.page.getByTestId("notifications-button"),
+			shownPopover: this.page
+				.getByRole("dialog")
+				.filter({
+					has: this.page.getByRole("heading", { name: "Notifications" }),
+				})
+				.filter({ visible: true }),
 			// the list is rendered while closed too (and once more in the closed
 			// mobile "You" panel), so only what shows counts
 			items: this.page
@@ -28,7 +35,12 @@ export class NotificationPopover {
 	}
 
 	async open() {
+		// the popover is closed on navigation, which would also close one opened
+		// after a click on a notification navigated but before the page rendered
+		await waitForNavigationRendered(this.page);
+		await expect(this.locators.shownPopover).toHaveCount(0);
 		await this.locators.openButton.click();
+		await expect(this.locators.shownPopover).toHaveCount(1);
 	}
 
 	async close() {

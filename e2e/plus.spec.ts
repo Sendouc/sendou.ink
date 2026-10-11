@@ -35,6 +35,8 @@ test.describe("Plus Server", () => {
 		page,
 		factories,
 	}) => {
+		// a long flow: runs past two thirds of the default timeout under load
+		test.slow();
 		await factories.UserFactory.grant(ADMIN_ID, { plusTier: 1 });
 		await factories.UserFactory.grant(NZAP_TEST_ID, { plusTier: 1 });
 		const suggested = await factories.UserFactory.create({

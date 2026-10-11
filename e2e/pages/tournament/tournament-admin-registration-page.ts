@@ -61,10 +61,13 @@ export class TournamentAdminRegistrationPage {
 		await this.page.getByRole("button", { name: "Add", exact: true }).click();
 		await this.page.getByLabel("Player").last().click();
 		await this.page.getByTestId("user-search-input").fill(userName);
-		await expect(
-			this.page.getByRole("listbox").getByTestId("user-search-item").first(),
-		).toBeVisible();
-		await this.page.keyboard.press("Enter");
+		// clicking rather than pressing Enter: a result is in the DOM one commit
+		// before the effect that registers it and focuses it for Enter has run
+		await this.page
+			.getByRole("listbox")
+			.getByTestId("user-search-item")
+			.first()
+			.click();
 	}
 
 	/** Names the roster member at `index` for tournaments. Only shown to organizers who may set it. */

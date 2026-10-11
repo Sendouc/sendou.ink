@@ -207,8 +207,11 @@ test.describe("Tournament bracket", () => {
 
 		// the event stream a suspended app comes back to: still connected as far as
 		// the page knows, but no longer subscribed to anything, so the broadcast of
-		// the result below never reaches it
-		await page.route(/\/sse\/[^/]+\/topics$/, (route) => route.abort());
+		// the result below never reaches it. Answered rather than aborted: a failed
+		// subscription reopens the stream, and that reconnect alone catches the page up
+		await page.route(/\/sse\/[^/]+\/topics$/, (route) =>
+			route.fulfill({ status: 200 }),
+		);
 
 		await impersonate(page, NZAP_TEST_ID);
 		const brackets = new TournamentBracketsPage(page);

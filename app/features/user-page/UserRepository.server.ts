@@ -1133,6 +1133,11 @@ export async function findFriendCodesByUserId(userId: number) {
 
 let cachedFriendCodes: Set<string> | null = null;
 
+/** Drops the cached friend codes, for when the table was written to behind this module's back. */
+export function clearFriendCodesCache() {
+	cachedFriendCodes = null;
+}
+
 export async function findAllCurrentFriendCodes() {
 	if (cachedFriendCodes) {
 		return cachedFriendCodes;

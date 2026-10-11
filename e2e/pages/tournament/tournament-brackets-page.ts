@@ -68,6 +68,13 @@ export class TournamentBracketsPage {
 		return this.page.getByRole("tab", { name });
 	}
 
+	/** Switching loads the bracket, the previous one staying up (and its buttons pressable) until it has. */
+	async selectBracket(name: string) {
+		const tab = this.bracketTab(name);
+		await tab.click();
+		await expect(tab).toHaveAttribute("aria-selected", "true");
+	}
+
 	roundLabel(roundNumber: number) {
 		return this.page.getByText(`Round ${roundNumber}`, { exact: true });
 	}

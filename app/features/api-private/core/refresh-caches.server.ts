@@ -9,6 +9,7 @@ import {
 } from "~/features/tournament-bracket/core/Tournament.server";
 import { refreshTentativeTiersCache } from "~/features/tournament-organization/core/tentativeTiers.server";
 import { clearUserCardCache } from "~/features/user-card/UserCardRepository.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { cache } from "~/utils/cache.server";
 
 /** Clears and refreshes every in-process cache; E2E workers call this (via the route) after writing test data straight into the database file. */
@@ -17,6 +18,7 @@ export async function refreshCaches() {
 	clearParticipationInfoMap();
 	clearSeasonSkillsCache();
 	clearUserCardCache();
+	UserRepository.clearFriendCodesCache();
 	cache.clear();
 	await refreshBannedCache();
 	await refreshSendouQInstance();

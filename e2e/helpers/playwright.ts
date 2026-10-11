@@ -13,6 +13,7 @@ import {
 	loadFactories,
 	resetForTest,
 } from "./factories";
+import { postRetryingTransientFailures } from "./request";
 
 try {
 	process.loadEnvFile();
@@ -33,7 +34,7 @@ declare global {
 	}
 }
 
-/** `YT.Player` that never readies, so a VoD form behaves as it does before the real one loads. */
+/** `YT.Player` that never readies, so a VoD form behaves as it does before the real one loads. Present from the start, the real API is never fetched. */
 const YOUTUBE_IFRAME_API_STUB = `
 window.YT = {
 	Player: class {
@@ -41,7 +42,6 @@ window.YT = {
 		destroy() {}
 	},
 };
-window.onYouTubeIframeAPIReady?.();
 `;
 
 export const MOBILE_VIEWPORT = { width: 375, height: 667 };
@@ -83,26 +83,14 @@ type TestFixtures = {
 
 export const test = base.extend<TestFixtures, WorkerFixtures>({
 	context: async ({ context }, use) => {
-		// Google Fonts load with display=swap and every test context re-fetches
-		// them, so the swap reflows the page mid-test (e.g. re-collapsing the
-		// tournament nav between a visibility check and a click). Block them so
-		// layout settles at first paint and stays put.
-		await context.route(
-			/^https:\/\/fonts\.(googleapis|gstatic)\.com\//,
-			(route) => route.abort(),
-		);
 		// The VoD pages embed a YouTube player, which loads from the internet
 		// (player, ads, telemetry) at a pace of its own. Under load it landed
 		// mid-test, and the frame arriving closed the select being filled in.
-		// A stub player API keeps the pages off the network.
-		await context.route(/^https:\/\/www\.youtube\.com\//, (route) =>
-			new URL(route.request().url()).pathname === "/iframe_api"
-				? route.fulfill({
-						contentType: "text/javascript",
-						body: YOUTUBE_IFRAME_API_STUB,
-					})
-				: route.abort(),
-		);
+		// A stub player API keeps the pages off the network. An init script and
+		// not a route: any route turns off the browser's HTTP cache for the whole
+		// context, and every navigation then refetches all ~200 script chunks.
+		// The hosts themselves are cut off in playwright.config.ts.
+		await context.addInitScript(YOUTUBE_IFRAME_API_STUB);
 		await use(context);
 	},
 	workerPort: [
@@ -301,19 +289,66 @@ export async function holdScripts(page: Page) {
 /** Waits and expects the page to be hydrated (click handlers etc. ready for testing) */
 export async function expectIsHydrated(page: Page) {
 	// waitFor reacts within a frame of the marker appearing, where the expect
-	// poll would wait out its current back-off interval first
-	await page
-		.getByTestId("hydrated")
-		.waitFor({ state: "attached", timeout: 5_000 });
+	// poll would wait out its current back-off interval first. A context's first
+	// load fetches ~200 script chunks, which took 7s with the suite loading
+	// every core (the scanner's video pipeline especially)
+	try {
+		await page
+			.getByTestId("hydrated")
+			.waitFor({ state: "attached", timeout: 15_000 });
+	} catch (error) {
+		const loadReport = await hydrationLoadReport(page).catch(() => null);
+		throw new Error(
+			`Page never hydrated at ${page.url()}\n${loadReport ?? "(no load report)"}`,
+			{ cause: error },
+		);
+	}
+}
+
+/** What the page loaded and how long it took, for telling a slow request from a slow main thread. */
+function hydrationLoadReport(page: Page) {
+	return page.evaluate(async () => {
+		const longTasks = await new Promise<PerformanceEntryList>((resolve) => {
+			new PerformanceObserver((list, observer) => {
+				observer.disconnect();
+				resolve(list.getEntries());
+			}).observe({ type: "longtask", buffered: true });
+			setTimeout(() => resolve([]), 100);
+		});
+		const resources = performance.getEntriesByType(
+			"resource",
+		) as PerformanceResourceTiming[];
+		const loadedUrls = new Set(resources.map((resource) => resource.name));
+		const scriptUrls = [
+			...document.querySelectorAll<HTMLLinkElement>("link[rel=modulepreload]"),
+		].map((link) => link.href);
+		const pendingScripts = scriptUrls.filter((url) => !loadedUrls.has(url));
+		const slowest = resources
+			.toSorted((a, b) => b.duration - a.duration)
+			.slice(0, 5)
+			.map(
+				(resource) =>
+					`  ${new URL(resource.name).pathname} started ${Math.round(resource.startTime)}ms, took ${Math.round(resource.duration)}ms`,
+			);
+
+		return [
+			`document ${document.readyState} ${Math.round(performance.now())}ms after navigation start, ${resources.length} resources loaded`,
+			`long tasks: ${longTasks.length}, ${Math.round(longTasks.reduce((sum, task) => sum + task.duration, 0))}ms in total, longest ${Math.round(Math.max(0, ...longTasks.map((task) => task.duration)))}ms`,
+			`modulepreloads not loaded: ${pendingScripts.length}/${scriptUrls.length}`,
+			...pendingScripts.slice(0, 5).map((url) => `  ${new URL(url).pathname}`),
+			"slowest resources:",
+			...slowest,
+		].join("\n");
+	});
 }
 
 export function impersonate(page: Page, userId = ADMIN_ID) {
-	return retryPost(page, "impersonate", `/auth/impersonate?id=${userId}`);
+	return retryPost(page, `/auth/impersonate?id=${userId}`);
 }
 
 /** Makes the worker's server resolve every season as over. Undone before the next test starts. */
 export async function endSeason(page: Page) {
-	const response = await retryPost(page, "endSeason", "/end-season");
+	const response = await retryPost(page, "/end-season");
 	if (!response?.ok()) {
 		throw new Error(
 			`Ending the season failed with status ${response?.status()}`,
@@ -323,12 +358,9 @@ export async function endSeason(page: Page) {
 
 /** Makes the worker's server resolve Plus Server voting as active. Undone before the next test starts. */
 export async function setPlusVotingActive(page: Page, active: boolean) {
-	const response = await retryPost(
-		page,
-		"setPlusVotingActive",
-		"/set-plus-voting-active",
-		{ form: { active: String(active) } },
-	);
+	const response = await retryPost(page, "/set-plus-voting-active", {
+		form: { active: String(active) },
+	});
 	if (!response?.ok()) {
 		throw new Error(
 			`Setting plus voting active failed with status ${response?.status()}`,
@@ -338,7 +370,7 @@ export async function setPlusVotingActive(page: Page, active: boolean) {
 
 /** Runs the named server Routine (normally cron-driven) in the worker's server process. */
 export async function runRoutine(page: Page, name: string) {
-	const response = await retryPost(page, "runRoutine", "/run-routine", {
+	const response = await retryPost(page, "/run-routine", {
 		form: { name },
 	});
 	if (!response?.ok()) {
@@ -348,32 +380,20 @@ export async function runRoutine(page: Page, name: string) {
 	}
 }
 
-/** Direct POST retrying transient failures ("socket hang up" under load). Only for idempotent endpoints. */
+/** {@link postRetryingTransientFailures} after telling the server about the test's factory writes. */
 async function retryPost(
 	page: Page,
-	name: string,
 	url: string,
 	options?: Parameters<Page["request"]["post"]>[1],
 ) {
 	await flushIfDirty(page);
 
-	const MAX_ATTEMPTS = 3;
-
-	for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-		try {
-			// maxRedirects 0: following impersonate's redirect would render a page nobody reads;
-			// the Set-Cookie lands in the context jar either way
-			return await page.request.post(url, {
-				timeout: 7_500,
-				maxRedirects: 0,
-				...options,
-			});
-		} catch (error) {
-			if (attempt === MAX_ATTEMPTS) throw error;
-		}
-	}
-
-	throw new Error(`${name}: unreachable`);
+	// maxRedirects 0: following impersonate's redirect would render a page nobody reads;
+	// the Set-Cookie lands in the context jar either way
+	return postRetryingTransientFailures(page, url, {
+		maxRedirects: 0,
+		...options,
+	});
 }
 
 /** Clicks a submit button and waits for the POST it fires. Takes a locator when
@@ -475,6 +495,26 @@ async function armRouterProbe(page: Page) {
 /** A missing probe means a document navigation wiped it, which only a busy router does. */
 function routerWentBusy(page: Page) {
 	return page.evaluate(() => window.__routerProbe?.wentBusy !== false);
+}
+
+/**
+ * Waits for the app to have rendered the page the browser is on. The browser's URL changes a
+ * commit before the app's, and what the layout does on navigation (e.g. closing its popovers)
+ * runs only after that, so it would undo e.g. a popover opened in between.
+ */
+export async function waitForNavigationRendered(page: Page) {
+	await page.waitForFunction(
+		() => {
+			const marker = document.querySelector('[data-testid="hydrated"]');
+			return (
+				marker?.getAttribute("data-router-idle") === "true" &&
+				marker.getAttribute("data-location-pathname") ===
+					window.location.pathname
+			);
+		},
+		undefined,
+		{ polling: 50, timeout: 15_000 },
+	);
 }
 
 /** Waits until no navigation, revalidation or fetcher is in flight. */

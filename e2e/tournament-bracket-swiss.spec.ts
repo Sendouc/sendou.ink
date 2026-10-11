@@ -121,7 +121,7 @@ test.describe("Tournament bracket swiss", () => {
 		await isNotVisible(brackets.roundLabel(5));
 		await isNotVisible(brackets.locators.startRoundButton);
 
-		await brackets.bracketTab("Top Cut").click();
+		await brackets.selectBracket("Top Cut");
 		await brackets.finalize();
 		await expect(brackets.match(8)).toBeVisible();
 	});

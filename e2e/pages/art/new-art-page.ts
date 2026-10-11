@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 import type { Tables } from "~/db/tables";
 import { artFormSchema } from "~/features/art/art-schemas";
 import { newArtPage } from "~/features/art/art-urls";
-import { navigate } from "../../helpers/playwright";
+import { navigate, waitForPOSTResponse } from "../../helpers/playwright";
 import { createFormHelpers } from "../../helpers/playwright-form";
 import { UserArtPage } from "./user-art-page";
 
@@ -34,7 +34,8 @@ export class NewArtPage {
 
 	/** Lands on the uploader's own art page. */
 	async save() {
-		await this.form.submit();
+		// the upload alone can outlast an assertion's timeout under load
+		await waitForPOSTResponse(this.page, () => this.form.submit());
 		return new UserArtPage(this.page);
 	}
 }
