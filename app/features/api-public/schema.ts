@@ -241,6 +241,7 @@ export interface GetTournamentMatchResponse {
 	bracketName: string | null;
 	/** Name of the round this match belongs to. @example "Grand Finals" */
 	roundName: string | null;
+	/** Maps already played (with their results) followed by the upcoming ones. Once the set is over, only the played maps. `null` until both teams are known. */
 	mapList: Array<MapListMap> | null;
 	/** @example "https://sendou.ink/to/9/matches/695" */
 	url: string;
@@ -408,6 +409,7 @@ export type MapListMap = {
 		| "TO"
 		| "COUNTERPICK"
 		| "ROLL";
+	/** `null` if the map has not been played yet. */
 	winnerTeamId: number | null;
 	participatedUserIds: Array<number> | null;
 	/** (round robin only) whether the map ended in a knockout. `null` if not tracked. */

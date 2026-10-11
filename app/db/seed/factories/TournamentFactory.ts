@@ -82,6 +82,8 @@ type StartBracketArgs = {
 type PlayMatchesFilter = {
 	roundNumbers?: number[];
 	matchIds?: number[];
+	/** Stop after this many maps, leaving unfinished sets in progress. */
+	mapCount?: number;
 };
 
 /** Bracket idx(s) in the progression, or `"all"` = every bracket then finalize. */
@@ -317,7 +319,7 @@ export async function playMatches(
 	const played = playableMatches(tournament, filter);
 	for (const match of played) {
 		await setActiveRosters(tournamentId, match);
-		await playOutMatch(tournamentId, match);
+		await playOutMatch(tournamentId, match, filter.mapCount);
 	}
 
 	clearTournamentDataCache(tournamentId);
@@ -516,11 +518,15 @@ async function setActiveRosters(tournamentId: number, match: PlayedMatch) {
 	}
 }
 
-async function playOutMatch(tournamentId: number, match: PlayedMatch) {
+async function playOutMatch(
+	tournamentId: number,
+	match: PlayedMatch,
+	mapCount = Number.POSITIVE_INFINITY,
+) {
 	let position = 0;
 	let setOver = false;
 
-	while (!setOver) {
+	while (!setOver && position < mapCount) {
 		// rehydrated per map, the previous report having moved the score on
 		const tournament = await tournamentFromDB(tournamentId);
 		const matchRow = await findMatch(match.id);
