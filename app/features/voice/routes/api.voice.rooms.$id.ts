@@ -6,6 +6,7 @@ import { userIsBanned } from "~/features/ban/core/banned.server";
 import * as ChatRoomResolver from "~/features/chat/ChatRoomResolver.server";
 import { defineAction } from "~/form/define-action.server";
 import { databaseTimestampNow, dateToDatabaseTimestamp } from "~/utils/dates";
+import { logger } from "~/utils/logger";
 import {
 	badRequestIfFalsy,
 	forbidden,
@@ -79,6 +80,14 @@ export const action = defineAction(
 					chatRoomId: roomId,
 					expiresAt: room.expiresAt,
 				});
+				// a refreshed pages old connection lingers on Dailys side and would show up as a second you
+				await Daily.ejectUsers({
+					chatRoomId: roomId,
+					userIds: [user.id],
+					ban: false,
+				}).catch((error: unknown) => {
+					logger.error("Ejecting the previous voice connection failed", error);
+				});
 				const token = await Daily.createMeetingToken({
 					chatRoomId: roomId,
 					userId: user.id,
@@ -148,9 +157,10 @@ export const action = defineAction(
 				badRequestIfFalsy(data.userId !== user.id);
 
 				// before ejecting, or the ejected client's own leave report wins the race
-				await VoiceRepository.markSessionsKicked({
+				await VoiceRepository.markSessionsLeft({
 					roomId,
-					userId: data.userId,
+					userIds: [data.userId],
+					leaveReason: "KICKED",
 				});
 				await Daily.ejectUsers({
 					chatRoomId: roomId,

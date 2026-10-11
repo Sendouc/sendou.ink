@@ -315,22 +315,6 @@ export async function updateRoomsInactive(
 		.execute();
 }
 
-/** Deletes rooms and their messages. Only for a room its owner replaces: deleting the owner row deletes its room by trigger. */
-export async function deleteRoomsByIds(
-	roomIds: Array<number | null>,
-	trx?: Transaction<DB>,
-) {
-	const idsToDelete = roomIds.filter((id) => id !== null);
-	if (idsToDelete.length === 0) return;
-
-	const executor = trx ?? db;
-
-	await executor
-		.deleteFrom("ChatRoom")
-		.where("ChatRoom.id", "in", idsToDelete)
-		.execute();
-}
-
 type InsertMessageArgs = Pick<
 	TablesInsertable["ChatMessage"],
 	"roomId" | "publicId"

@@ -13,9 +13,14 @@ const reloadedForCommitPersisted = PersistedState.define({
 /**
  * Reloads when the server reports a different build than this client's JS, since long-open revalidating
  * pages (SendouQ looking above all) would otherwise run old code against new loader data.
+ * Waits while `canReload` is false, like during a voice call a reload would drop.
  */
-export function useReloadOnNewDeploy(serverCommit: string) {
+export function useReloadOnNewDeploy(
+	serverCommit: string,
+	{ canReload }: { canReload: boolean },
+) {
 	React.useEffect(() => {
+		if (!canReload) return;
 		if (!GIT_COMMIT || !serverCommit || serverCommit === GIT_COMMIT) return;
 
 		// the same build is never retried, so a reload not serving the new bundle can't loop
@@ -25,5 +30,5 @@ export function useReloadOnNewDeploy(serverCommit: string) {
 
 		PersistedState.write(reloadedForCommitPersisted, serverCommit);
 		window.location.reload();
-	}, [serverCommit]);
+	}, [serverCommit, canReload]);
 }
