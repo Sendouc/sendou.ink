@@ -8,7 +8,6 @@ import {
 	StreamCardUser,
 } from "~/features/live-streams/components/StreamCard";
 import { StreamsPage } from "~/features/live-streams/components/StreamsPage";
-import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useHydrated } from "~/hooks/useHydrated";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -42,7 +41,7 @@ export default function SendouQStreamsPage() {
 			<StreamsPage navItem="sendouq" emptyText={t("q:streams.noStreams")}>
 				{data.streams.map((streamedMatch) => (
 					<StreamCard
-						key={LiveStream.key(streamedMatch.streams[0])}
+						key={streamedMatch.user.id}
 						streamer={streamedMatch}
 						title={<StreamCardUser user={streamedMatch.user} />}
 						aside={

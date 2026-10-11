@@ -1,11 +1,10 @@
 import clsx from "clsx";
 import { CircleHelp } from "lucide-react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import * as StreamRanking from "~/features/sidebar/core/StreamRanking";
-import { SENDOU_INK_DISCORD_URL } from "~/utils/urls";
 import styles from "./StreamHelpDialog.module.css";
 import { StreamPlatformIcon } from "./StreamPlatformIcon";
 
@@ -35,16 +34,7 @@ export function StreamHelpDialog({ className }: { className?: string }) {
 						{t("common:streams.help.connect.title")}
 					</h3>
 					<p>{t("common:streams.help.connect")}</p>
-					<p>
-						<Trans t={t} i18nKey="common:streams.help.refresh">
-							Then log out and back in on sendou.ink, or use the /update-profile
-							command of the Lohi bot on{" "}
-							<a href={SENDOU_INK_DISCORD_URL} target="_blank" rel="noreferrer">
-								our Discord server
-							</a>
-							.
-						</Trans>
-					</p>
+					<p>{t("common:streams.help.refresh")}</p>
 				</section>
 				<section className={styles.section}>
 					<h3 className={styles.title}>

@@ -109,7 +109,7 @@
 	"bottomTexts.scrimManagedByAnyone": "If enabled, all users in this post can accept requests and delete the post, not just the owner.",
 	"labels.castAccounts": "Cast accounts",
 	"placeholders.castAccounts": "dappleproductions",
-	"bottomTexts.castAccounts": "Twitch account name, or YouTube channel link or @handle, where the tournament is casted. YouTube streams need #sendouink in the title or description to be found. Player streams are added automatically based on their profile data.",
+	"bottomTexts.castAccounts": "Twitch account name, or YouTube channel link or @handle, where the tournament is cast. YouTube streams need #sendouink in the title or description to be found. Player streams are added automatically based on their profile data.",
 	"labels.scrimMaps": "Maps",
 	"labels.scrimMaxDiv": "Max div",
 	"labels.scrimMinDiv": "Min div",

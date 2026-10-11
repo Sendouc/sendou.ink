@@ -13,7 +13,6 @@ export async function findVideosLiveDetails(
 		const data = await youtubeFetch("videos", {
 			part: "snippet,liveStreamingDetails",
 			id: batch.join(","),
-			maxResults: "50",
 		});
 
 		result.push(...v.parse(videosSchema, data).items);

@@ -1,12 +1,12 @@
 import * as R from "remeda";
-import { youtubeUrl } from "~/utils/urls";
+import { twitchUrl, youtubeUrl } from "~/utils/urls";
 import type { StreamAccount } from "../live-streams-constants";
 
 /** Where the stream can be watched: the live video when its id is known, otherwise the channel. */
 export function url(stream: StreamAccount & { videoId?: string | null }) {
 	switch (stream.platform) {
 		case "TWITCH":
-			return `https://twitch.tv/${stream.account}`;
+			return twitchUrl(stream.account);
 		case "YOUTUBE":
 			return stream.videoId
 				? `https://www.youtube.com/watch?v=${stream.videoId}`

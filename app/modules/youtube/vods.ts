@@ -20,7 +20,6 @@ export async function findRecentLiveStreams(
 	const data = await youtubeFetch("videos", {
 		part: "liveStreamingDetails,statistics",
 		id: videoIds.join(","),
-		maxResults: "50",
 	});
 
 	return v.parse(videosStreamTimesSchema, data).items.flatMap((video) => {
