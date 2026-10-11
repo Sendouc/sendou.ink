@@ -498,6 +498,12 @@ function CombinedChatView({
 		};
 	}, [backgroundRoomIdsKey, setHiddenRoomIds]);
 
+	const { call } = useVoiceSnapshot();
+	const backgroundCallRoom =
+		call && call.roomId !== selectedRoomId
+			? rooms.find((room) => room.id === call.roomId)
+			: undefined;
+
 	const primary = rooms[0];
 	const display = roomDisplay(primary);
 	const headerContent = (
@@ -572,6 +578,9 @@ function CombinedChatView({
 								</SendouTab>
 							))}
 						</SendouTabList>
+						{backgroundCallRoom ? (
+							<VoiceBar key={backgroundCallRoom.id} room={backgroundCallRoom} />
+						) : null}
 					</div>
 					{rooms.map((room) => (
 						<SplitPanel
