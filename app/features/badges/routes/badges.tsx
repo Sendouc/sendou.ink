@@ -64,6 +64,7 @@ export default function BadgesPageLayout() {
 			<div className={styles.container}>
 				<Outlet />
 				<Input
+					type="search"
 					className={styles.searchInput}
 					icon={<Search />}
 					value={inputValue}

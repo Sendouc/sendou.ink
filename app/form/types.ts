@@ -34,6 +34,8 @@ interface FormFieldText<T extends string> extends FormFieldBase<T> {
 	placeholder?: string;
 	required: boolean;
 	inputType?: "text" | "number";
+	/** Picks the mobile keyboard. Number fields default to `numeric` and `validate: "url"` fields to `url`. */
+	inputMode?: "numeric" | "url";
 	regExp?: {
 		pattern: RegExp;
 		message: string;

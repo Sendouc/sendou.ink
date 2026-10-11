@@ -194,6 +194,7 @@ function registerTextField<T extends v.GenericSchema<any, string | null>>(
 		label: prefixKey(args.label),
 		bottomText: prefixKey(args.bottomText),
 		placeholder: prefixKey(args.placeholder),
+		inputMode: args.inputMode ?? (args.validate === "url" ? "url" : undefined),
 		required,
 		type: "text-field",
 		initialValue: "",
@@ -299,6 +300,7 @@ type NumberFieldArgs = WithTypedTranslationKeys<
 		| "required"
 		| "validate"
 		| "inputType"
+		| "inputMode"
 		| "maxLength"
 	>
 > & { maxLength?: number };
@@ -347,6 +349,7 @@ function numberFieldMetadata(args: NumberFieldArgs, required: boolean) {
 		required,
 		type: "text-field" as const,
 		inputType: "number" as const,
+		inputMode: "numeric" as const,
 		initialValue: "",
 		maxLength: args.maxLength ?? 10,
 	};

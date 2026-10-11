@@ -37,6 +37,10 @@
 		&::placeholder {
 			color: var(--color-text-high);
 		}
+
+		&::-webkit-search-cancel-button {
+			display: none;
+		}
 	}
 }
 

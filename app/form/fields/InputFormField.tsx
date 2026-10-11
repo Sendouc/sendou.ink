@@ -25,6 +25,7 @@ export function InputFormField({
 	onBlur,
 	required,
 	inputType = "text",
+	inputMode,
 	disabled,
 	autoFocus,
 	value,
@@ -53,6 +54,9 @@ export function InputFormField({
 					id={id}
 					className={leftAddon ? "in-container" : undefined}
 					type={inputType}
+					inputMode={inputMode}
+					autoCapitalize={inputMode ? "off" : undefined}
+					spellCheck={inputMode ? false : undefined}
 					value={value}
 					onChange={(e) =>
 						onChange(

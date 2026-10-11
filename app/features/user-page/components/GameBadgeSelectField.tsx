@@ -108,7 +108,8 @@ export function GameBadgeSelectField({
 			</div>
 
 			<input
-				type="text"
+				type="search"
+				enterKeyHint="search"
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 				placeholder={t("user:widgets.forms.gameBadgesSearch")}

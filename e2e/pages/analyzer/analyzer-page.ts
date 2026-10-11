@@ -43,7 +43,7 @@ export class AnalyzerPage {
 	/** Picks a weapon from the landing shown when no weapon is selected yet */
 	async pickWeapon(name: string) {
 		const { weaponLanding } = this.locators;
-		await weaponLanding.getByRole("textbox").fill(name);
+		await weaponLanding.getByRole("searchbox").fill(name);
 		await weaponLanding.getByText(name, { exact: true }).click();
 	}
 

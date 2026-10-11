@@ -493,6 +493,7 @@ function InputsSection({ id }: { id: string }) {
 
 				<ComponentRow label="With Icon">
 					<Input
+						type="search"
 						icon={<Search />}
 						placeholder="Search..."
 						aria-label="Search"

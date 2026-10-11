@@ -14,6 +14,8 @@ export const SENDOUQ = {
 const FRIEND_CODE_REGEXP_PATTERN = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
 export const FRIEND_CODE_REGEXP = new RegExp(FRIEND_CODE_REGEXP_PATTERN);
 
+export const FRIEND_CODE_DIGIT_COUNT = 12;
+
 /** Length of a friend code with the optional "SW-" prefix included */
 export const FRIEND_CODE_MAX_LENGTH = 17;
 

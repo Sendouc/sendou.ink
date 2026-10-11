@@ -148,6 +148,7 @@ export const vodFormBaseSchema = v.object({
 	youtubeUrl: textField({
 		label: "labels.vodYoutubeUrl",
 		maxLength: 200,
+		inputMode: "url",
 		validate: {
 			func: (val) => extractYoutubeIdFromVideoUrl(val) !== null,
 			message: "Invalid YouTube URL",

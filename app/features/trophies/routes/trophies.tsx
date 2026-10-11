@@ -70,6 +70,7 @@ export default function TrophiesPage() {
 				<Outlet />
 				<div className={styles.trophiesListContainer}>
 					<Input
+						type="search"
 						icon={<Search />}
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}

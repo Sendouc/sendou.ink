@@ -207,6 +207,7 @@ export function WeaponLanding<W extends WeaponLandingWeapon>({
 				})}
 			>
 				<Input
+					type="search"
 					ref={searchInputRef}
 					className={styles.search}
 					icon={<SearchIcon />}

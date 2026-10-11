@@ -333,6 +333,7 @@ function GlobalSearchContent({
 					{`${SEARCH_TYPE_TO_PREFIX[searchType]}.`}
 				</p>
 				<Input
+					type="search"
 					ref={inputRef}
 					className={styles.input}
 					placeholder={t("common:search.placeholder")}

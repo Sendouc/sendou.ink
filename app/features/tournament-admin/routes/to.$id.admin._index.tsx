@@ -101,6 +101,7 @@ export default function TournamentAdminTeamsPage() {
 					onChange={(e) => setSearch(e.target.value)}
 					aria-label="Search teams"
 					placeholder="Search teams"
+					type="search"
 					icon={<Search aria-hidden />}
 				/>
 			</div>

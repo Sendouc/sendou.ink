@@ -90,3 +90,7 @@
 .heading {
 	font-size: var(--font-lg);
 }
+
+.initialFocusSink {
+	position: absolute;
+}

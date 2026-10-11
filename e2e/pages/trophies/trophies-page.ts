@@ -10,7 +10,7 @@ export class TrophiesPage {
 	constructor(page: Page) {
 		this.page = page;
 		this.locators = {
-			searchInput: page.getByRole("textbox"),
+			searchInput: page.getByRole("searchbox"),
 			// the "Add new" menu links to /trophies/new from every page
 			trophyLinks: page.locator("main").locator("a[href^='/trophies/']"),
 			xpSection: page.getByTestId("xp-trophies"),
