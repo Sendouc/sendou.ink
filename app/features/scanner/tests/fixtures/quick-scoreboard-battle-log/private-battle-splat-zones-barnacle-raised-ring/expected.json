@@ -1,0 +1,84 @@
+{
+  "event": "QuickScoreboardBattleLog",
+  "data": {
+    "lobby": "PRIVATE",
+    "mode": "SZ",
+    "stage": 17,
+    "stageLabel": "Barnacle & Dime",
+    "timestamp": "7/10/2026 0:50",
+    "matchScores": [
+      100,
+      0
+    ],
+    "players": [
+      {
+        "name": "carota",
+        "weaponId": 3011,
+        "paint": 951,
+        "ka": 11,
+        "d": 3,
+        "s": 3
+      },
+      {
+        "name": "NERF AOE:(",
+        "weaponId": 8000,
+        "paint": 881,
+        "ka": 8,
+        "d": 3,
+        "s": 2
+      },
+      {
+        "name": "crystl!!<3",
+        "weaponId": 3041,
+        "paint": 1075,
+        "ka": 4,
+        "d": 4,
+        "s": 2
+      },
+      {
+        "name": "°◎ sneakye",
+        "weaponId": 50,
+        "paint": 710,
+        "ka": 5,
+        "d": 4,
+        "s": 2
+      },
+      {
+        "name": "MegGriffin",
+        "weaponId": 2060,
+        "paint": 1247,
+        "ka": 7,
+        "d": 4,
+        "s": 5
+      },
+      {
+        "name": "julufm",
+        "weaponId": 4002,
+        "paint": 1389,
+        "ka": 3,
+        "d": 3,
+        "s": 6
+      },
+      {
+        "name": "EGØ Bachi",
+        "weaponId": 8010,
+        "paint": 666,
+        "ka": 3,
+        "d": 5,
+        "s": 4
+      },
+      {
+        "name": "-Artemis->",
+        "weaponId": 1002,
+        "paint": 552,
+        "ka": 4,
+        "d": 6,
+        "s": 2
+      }
+    ],
+    "povIndex": 2
+  },
+  "options": {
+    "notes": "Same session as the hagglefish-fused-timestamp case. players.3.name's leading small raised ring read as 。 (a full stop sits on the baseline, the degree sign at the cap line); labeled as the picker's degree sign. players.1.name read NERF nOE:(. players.5.name's weapon (Mini Splatling RTL-R) taken from the prefilled read."
+  }
+}

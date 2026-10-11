@@ -1,0 +1,84 @@
+{
+  "event": "QuickScoreboardBattleLog",
+  "data": {
+    "lobby": "PRIVATE",
+    "mode": "SZ",
+    "stage": 2,
+    "stageLabel": "Hagglefish Market",
+    "timestamp": "7/10/2026 0:33",
+    "matchScores": [
+      99,
+      98
+    ],
+    "players": [
+      {
+        "name": "°◎ sneakye",
+        "weaponId": 50,
+        "paint": 1027,
+        "ka": 11,
+        "d": 10,
+        "s": 3
+      },
+      {
+        "name": "crystl!!<3",
+        "weaponId": 3041,
+        "paint": 2258,
+        "ka": 8,
+        "d": 3,
+        "s": 9
+      },
+      {
+        "name": "carota",
+        "weaponId": 3011,
+        "paint": 981,
+        "ka": 9,
+        "d": 12,
+        "s": 4
+      },
+      {
+        "name": "NERF AOE:(",
+        "weaponId": 8000,
+        "paint": 1222,
+        "ka": 7,
+        "d": 3,
+        "s": 5
+      },
+      {
+        "name": "EGØ Bachi",
+        "weaponId": 8010,
+        "paint": 1353,
+        "ka": 13,
+        "d": 4,
+        "s": 6
+      },
+      {
+        "name": "-Artemis->",
+        "weaponId": 1001,
+        "paint": 730,
+        "ka": 11,
+        "d": 11,
+        "s": 2
+      },
+      {
+        "name": "MegGriffin",
+        "weaponId": 2061,
+        "paint": 1598,
+        "ka": 9,
+        "d": 3,
+        "s": 9
+      },
+      {
+        "name": "julufm",
+        "weaponId": 2071,
+        "paint": 1532,
+        "ka": 3,
+        "d": 7,
+        "s": 6
+      }
+    ],
+    "povIndex": 1
+  },
+  "options": {
+    "notes": "1080p capture of the lobby's quick battle log while matchmaking, the card translucent over the player's character. timestamp once read 7/10/202 60:33: the space between year and time closed up and the fused-form regex let a year digit pass as an hour. players.3.name read NERF oOE:( (BlitzMain's A arches like a tall o/n), players.4.name EGØ Sachi (a fixture S edged out the font B), players.5.name _ortemis-> (the floating dash read as an underscore) and players.7.name iulufm (the descent was the only j evidence). players.1.name's < may be fullwidth on screen; the read is ASCII. players.0.name's first glyph is a small raised ring, labeled as the picker's degree sign. Weapons from the prefilled read, matching the icons."
+  }
+}

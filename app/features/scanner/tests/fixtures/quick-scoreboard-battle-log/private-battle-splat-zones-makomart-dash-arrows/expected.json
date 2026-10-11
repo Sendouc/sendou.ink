@@ -1,0 +1,84 @@
+{
+  "event": "QuickScoreboardBattleLog",
+  "data": {
+    "lobby": "PRIVATE",
+    "mode": "SZ",
+    "stage": 10,
+    "stageLabel": "MakoMart",
+    "timestamp": "7/10/2026 0:40",
+    "matchScores": [
+      100,
+      0
+    ],
+    "players": [
+      {
+        "name": "EGØ Bachi",
+        "weaponId": 8010,
+        "paint": 1028,
+        "ka": 12,
+        "d": 6,
+        "s": 5
+      },
+      {
+        "name": "-Artemis->",
+        "weaponId": 1001,
+        "paint": 616,
+        "ka": 12,
+        "d": 6,
+        "s": 2
+      },
+      {
+        "name": "MegGriffin",
+        "weaponId": 2060,
+        "paint": 1418,
+        "ka": 8,
+        "d": 3,
+        "s": 6
+      },
+      {
+        "name": "julufm",
+        "weaponId": 92,
+        "paint": 1313,
+        "ka": 7,
+        "d": 5,
+        "s": 4
+      },
+      {
+        "name": "carota",
+        "weaponId": 3011,
+        "paint": 1023,
+        "ka": 8,
+        "d": 9,
+        "s": 4
+      },
+      {
+        "name": "crystl!!<3",
+        "weaponId": 3041,
+        "paint": 1584,
+        "ka": 4,
+        "d": 5,
+        "s": 4
+      },
+      {
+        "name": "NERF AOE:(",
+        "weaponId": 8000,
+        "paint": 842,
+        "ka": 5,
+        "d": 7,
+        "s": 3
+      },
+      {
+        "name": "°◎ sneakye",
+        "weaponId": 50,
+        "paint": 642,
+        "ka": 4,
+        "d": 7,
+        "s": 1
+      }
+    ],
+    "povIndex": 5
+  },
+  "options": {
+    "notes": "Same session as the hagglefish-fused-timestamp case. players.1.name once read _Artemis_> (both dashes sit at mid height but matched the underscore template) and players.5.name crystl!!＜3 (the fullwidth template fits the on-screen ASCII < better than the font's own <; the read is ASCII). players.3.name (julufm) is on a Jet Squelcher COB-R-like camo icon, taken from the prefilled read."
+  }
+}
