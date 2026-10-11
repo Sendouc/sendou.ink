@@ -76,12 +76,13 @@ export const action = defineAction(
 				requireTournamentOrganizer(tournament, user);
 				const team = tournament.teamById(body.teamId);
 				errorToastIfFalsy(team, "Invalid team id");
-				errorToastIfFalsy(
-					body.bracketIdx !== 0 || !tournament.hasStarted,
-					"Tournament has started",
-				);
 
-				const bracket = tournament.bracketByIdx(body.bracketIdx);
+				const bracket = tournament.bracketByIdx(
+					// 0 = event check-out, blocked only once the team's own bracket starts
+					body.bracketIdx === 0
+						? tournament.startingBracketIdxOfTeam(team)
+						: body.bracketIdx,
+				);
 				invariant(bracket, "Invalid bracket idx");
 				errorToastIfFalsy(bracket.preview, "Bracket has been started");
 
@@ -127,7 +128,13 @@ export const action = defineAction(
 			}
 			case "DROP_TEAM_OUT": {
 				requireTournamentOrganizer(tournament, user);
-				errorToastIfFalsy(tournament.teamById(body.teamId), "Invalid team id");
+				const team = tournament.teamById(body.teamId);
+				errorToastIfFalsy(team, "Invalid team id");
+				errorToastIfFalsy(
+					!tournament.bracketByIdx(tournament.startingBracketIdxOfTeam(team))
+						?.preview,
+					"Team's bracket has not started, check them out instead",
+				);
 
 				const { endedMatchIds, statusChangedTeamIds } = await dropTeamOut({
 					tournament,

@@ -74,6 +74,30 @@ export function superRefineAsync<TValue>(
 	});
 }
 
+/** Async transformation of the parsed value whose `fn` reports issues like {@link superRefine}, any issue failing the parse. */
+export function superTransformAsync<TInput, TOutput>(
+	fn: (value: TInput, ctx: ValidationCtx) => Promise<TOutput>,
+) {
+	return v.rawTransformAsync<TInput, TOutput>(
+		async ({ dataset, addIssue, NEVER }) => {
+			let hasIssues = false;
+			const output = await fn(dataset.value, {
+				addIssue: (issue) => {
+					hasIssues = true;
+					addIssue({
+						message: issue.message,
+						path: issue.path?.length
+							? toIssuePath(dataset.value, issue.path)
+							: undefined,
+					});
+				},
+			});
+
+			return hasIssues ? NEVER : output;
+		},
+	);
+}
+
 function toIssuePath(
 	root: unknown,
 	keys: PropertyKey[],

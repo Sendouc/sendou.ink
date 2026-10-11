@@ -12,6 +12,7 @@ import type {
 	Selectable,
 } from "kysely";
 import type {
+	CastAccount,
 	CastedMatchesInfo,
 	CustomTheme,
 	NotificationSubscription,
@@ -35,6 +36,7 @@ import type {
 	PersistedSystemMessageType,
 } from "~/features/chat/chat-types";
 import type { LFGType } from "~/features/lfg/lfg-constants";
+import type { StreamPlatform } from "~/features/live-streams/live-streams-constants";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import type { SkillTeamIdentifier } from "~/features/mmr/mmr-utils";
 import type { Notification as NotificationValue } from "~/features/notifications/notifications-types";
@@ -658,7 +660,7 @@ export interface Tournament {
 	mapPickingStyle: TournamentMapPickingStyle;
 	/** Maps prepared ahead of time for rounds. Follows settings.bracketProgression order. Null in the spot if not defined yet for that bracket. */
 	preparedMaps: JSONColumnTypeNullable<(PreparedMaps | null)[]>;
-	castTwitchAccounts: JSONColumnTypeNullable<string[]>;
+	castAccounts: JSONColumnTypeNullable<CastAccount[]>;
 	castedMatchesInfo: JSONColumnTypeNullable<CastedMatchesInfo>;
 	rules: string | null;
 	/** Is the tournament finalized meaning all the matches are played and TO has locked it making it read-only */
@@ -1110,19 +1112,27 @@ export interface ApiToken {
 	createdAt: Generated<number>;
 }
 
+/** Splatoon 3 stream live right now, replaced wholesale on every sync. */
 export interface LiveStream {
 	id: GeneratedAlways<number>;
+	platform: StreamPlatform;
+	/** Twitch login or YouTube channel id */
+	account: string;
+	/** Id of the live video, `null` on Twitch where the channel is the stream. */
+	videoId: string | null;
+	/** User whose Twitch/YouTube connection the account is. */
 	userId: number | null;
 	viewerCount: number;
 	thumbnailUrl: string;
-	twitch: string | null;
 }
 
+/** Account seen streaming the tournament while it was running, used to find match VoDs afterwards. */
 export interface TournamentStreamer {
 	id: GeneratedAlways<number>;
 	userId: number | null;
 	tournamentId: number;
-	twitchAccount: string;
+	platform: StreamPlatform;
+	account: string;
 }
 
 export interface ExternalStream {
@@ -1138,7 +1148,7 @@ export interface TournamentMatchVod {
 	id: GeneratedAlways<number>;
 	matchId: number;
 	userId: number | null;
-	platform: "TWITCH";
+	platform: StreamPlatform;
 	account: string;
 	platformVideoId: string;
 	timestampSeconds: number;

@@ -26,7 +26,9 @@ export function SubmitButton<TSchema extends AnySchema>({
 }: SubmitButtonProps<TSchema>) {
 	const navigation = useNavigation();
 
-	const isSubmitting = state ? state !== "idle" : navigation.state !== "idle";
+	const isSubmitting = state
+		? state !== "idle"
+		: navigation.state !== "idle" && navigation.formMethod !== undefined;
 
 	const name = () => {
 		if (rest.name) return rest.name;
@@ -45,7 +47,7 @@ export function SubmitButton<TSchema extends AnySchema>({
 	return (
 		<SendouButton
 			{...rest}
-			isDisabled={rest.isDisabled || isSubmitting}
+			isPending={rest.isPending || isSubmitting}
 			type="submit"
 			name={name()}
 			value={value()}

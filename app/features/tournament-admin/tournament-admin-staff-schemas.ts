@@ -1,16 +1,21 @@
 import * as v from "valibot";
+import * as StreamAccountInput from "~/features/live-streams/core/StreamAccountInput";
 import { TOURNAMENT_STAFF_ROLES } from "~/features/tournament/tournament-constants";
 import { array, fieldset, select, textField, userSearch } from "~/form/fields";
 import { superRefine } from "~/utils/schema";
 
 export const adminStreamFormSchema = v.object({
-	castTwitchAccounts: array({
-		label: "labels.castTwitchAccounts",
-		bottomText: "bottomTexts.castTwitchAccounts",
+	castAccounts: array({
+		label: "labels.castAccounts",
+		bottomText: "bottomTexts.castAccounts",
 		max: 5,
 		field: textField({
-			maxLength: 100,
-			placeholder: "placeholders.castTwitchAccounts",
+			maxLength: 200,
+			placeholder: "placeholders.castAccounts",
+			validate: {
+				func: (value) => StreamAccountInput.parse(value) !== null,
+				message: "forms:errors.invalidStreamAccount",
+			},
 		}),
 	}),
 });

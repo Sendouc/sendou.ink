@@ -15,7 +15,10 @@ import { InfoPopover } from "~/components/InfoPopover";
 import { Label } from "~/components/Label";
 import { TAB_KEYS } from "~/components/match-page/MatchTabs";
 import { SubmitButton } from "~/components/SubmitButton";
+import type { CastAccount } from "~/db/tables-json";
 import { useUser } from "~/features/auth/core/user";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
+import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import { useTournament } from "~/features/tournament/tournament-context";
 import type { MatchStatus } from "~/features/tournament-bracket/core/engine";
 import { matchSchema } from "~/features/tournament-bracket/tournament-bracket-schemas";
@@ -130,11 +133,11 @@ function AdminCastSection({
 
 	const isMatchStarted = scoreSum > 0;
 
-	const castTwitchAccounts = tournament.ctx.castTwitchAccounts ?? [];
+	const castAccounts = tournament.ctx.castAccounts ?? [];
 	const castedMatchesInfo = tournament.ctx.castedMatchesInfo;
 	const currentlyCastedOn =
-		castedMatchesInfo?.castedMatches.find((cm) => cm.matchId === matchId)
-			?.twitchAccount ?? null;
+		castedMatchesInfo?.castedMatches.find((cm) => cm.matchId === matchId) ??
+		null;
 	const isLocked =
 		castedMatchesInfo?.lockedMatches?.some((lm) => lm.matchId === matchId) ??
 		false;
@@ -148,7 +151,7 @@ function AdminCastSection({
 				<Label spaced={false}>{t("tournament:match.admin.cast")}</Label>
 				<InfoPopover tiny>{t("tournament:match.admin.castInfo")}</InfoPopover>
 			</div>
-			{castTwitchAccounts.length === 0 ? (
+			{castAccounts.length === 0 ? (
 				<p className={styles.castEmptyHint}>
 					{t("tournament:match.admin.castConfigureHint")}
 				</p>
@@ -156,13 +159,13 @@ function AdminCastSection({
 				<>
 					<CastChannelChipRadio
 						matchId={matchId}
-						accounts={castTwitchAccounts}
+						accounts={castAccounts}
 						currentlyCastedOn={currentlyCastedOn}
 					/>
 					{canLock || canUnlock ? (
 						<LockToggleButton
 							isLocked={isLocked}
-							twitchAccount={currentlyCastedOn}
+							castAccount={currentlyCastedOn}
 						/>
 					) : null}
 				</>
@@ -177,8 +180,8 @@ function CastChannelChipRadio({
 	currentlyCastedOn,
 }: {
 	matchId: number;
-	accounts: string[];
-	currentlyCastedOn: string | null;
+	accounts: CastAccount[];
+	currentlyCastedOn: StreamAccount | null;
 }) {
 	const { t } = useTranslation(["tournament"]);
 	const { submit, fetcher } = useActionSubmit(matchSchema);
@@ -203,11 +206,21 @@ function CastChannelChipRadio({
 		previousStateRef.current = fetcher.state;
 	}, [fetcher.state, fetcher.data, t]);
 
-	const selectedValue = currentlyCastedOn ?? NOT_CASTED_VALUE;
+	const selectedValue = currentlyCastedOn
+		? LiveStream.key(currentlyCastedOn)
+		: NOT_CASTED_VALUE;
 
 	const handleChange = (value: string) => {
 		if (value === selectedValue) return;
-		submit("SET_AS_CASTED", { twitchAccount: value });
+
+		const castAccount = accounts.find(
+			(account) => LiveStream.key(account) === value,
+		);
+		submit("SET_AS_CASTED", {
+			castAccount: castAccount
+				? { platform: castAccount.platform, account: castAccount.account }
+				: null,
+		});
 	};
 
 	return (
@@ -220,27 +233,31 @@ function CastChannelChipRadio({
 			>
 				{t("tournament:match.admin.notCasted")}
 			</SendouChipRadio>
-			{accounts.map((account) => (
-				<SendouChipRadio
-					key={account}
-					name={`cast-channel-${matchId}`}
-					value={account}
-					checked={selectedValue === account}
-					onChange={handleChange}
-				>
-					{account}
-				</SendouChipRadio>
-			))}
+			{accounts.map((account) => {
+				const value = LiveStream.key(account);
+
+				return (
+					<SendouChipRadio
+						key={value}
+						name={`cast-channel-${matchId}`}
+						value={value}
+						checked={selectedValue === value}
+						onChange={handleChange}
+					>
+						{account.name}
+					</SendouChipRadio>
+				);
+			})}
 		</SendouChipRadioGroup>
 	);
 }
 
 function LockToggleButton({
 	isLocked,
-	twitchAccount,
+	castAccount,
 }: {
 	isLocked: boolean;
-	twitchAccount: string | null;
+	castAccount: StreamAccount | null;
 }) {
 	const { t } = useTranslation(["tournament"]);
 
@@ -260,10 +277,14 @@ function LockToggleButton({
 				<ActionButton
 					schema={matchSchema}
 					action="LOCK"
-					fields={{ twitchAccount: twitchAccount ?? "" }}
+					fields={{
+						castAccount: castAccount
+							? { platform: castAccount.platform, account: castAccount.account }
+							: { platform: "TWITCH", account: "" },
+					}}
 					size="small"
 					icon={<Lock size={16} />}
-					isDisabled={!twitchAccount}
+					isDisabled={!castAccount}
 					testId="cast-info-submit-button"
 				>
 					{t("tournament:match.admin.lockToBeCasted")}

@@ -8,7 +8,6 @@ import {
 	SendouMenuItem,
 	SendouMenuSection,
 } from "~/components/elements/Menu";
-import { TwitchIcon } from "~/components/icons/Twitch";
 import { ListButton } from "~/components/SideNav";
 import {
 	type FriendActivityBadge,
@@ -16,6 +15,8 @@ import {
 	friendActivityBadge,
 } from "~/features/friends/friends-constants";
 import { deleteFriendSchema } from "~/features/friends/friends-schemas";
+import type { FriendActivity } from "~/features/friends/friends-utils.server";
+import { StreamPlatformIcon } from "~/features/live-streams/components/StreamPlatformIcon";
 import { frontPageSchema } from "~/features/sendouq/q-action-schemas";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { useActionSubmit } from "~/hooks/useActionSubmit";
@@ -43,7 +44,7 @@ export function FriendMenu({
 	activityType,
 	matchId,
 	tournamentId,
-	streamUrl,
+	stream,
 	friendshipId,
 	friendshipCreatedAt,
 }: {
@@ -57,7 +58,7 @@ export function FriendMenu({
 	activityType: FriendActivityType | null;
 	matchId: number | null;
 	tournamentId: number | null;
-	streamUrl: string | null;
+	stream: FriendActivity["stream"];
 	friendshipId?: number;
 	friendshipCreatedAt?: number | null;
 }) {
@@ -89,13 +90,13 @@ export function FriendMenu({
 						user={{ discordId, discordAvatar, customAvatarUrl }}
 						subtitle={subtitle}
 						badge={
-							streamUrl
+							stream
 								? t("friends:friendsList.live")
 								: activityBadge
 									? t(ACTIVITY_BADGE_TRANSLATION_KEY[activityBadge])
 									: badge
 						}
-						badgeVariant={streamUrl ? "warning" : "default"}
+						badgeVariant={stream ? "warning" : "default"}
 					>
 						{name}
 					</ListButton>
@@ -105,12 +106,12 @@ export function FriendMenu({
 					<SendouMenuItem href={url} icon={<User />}>
 						{t("friends:friendsList.viewUserPage")}
 					</SendouMenuItem>
-					{streamUrl ? (
+					{stream ? (
 						<SendouMenuItem
-							href={streamUrl}
+							href={stream.url}
 							target="_blank"
 							rel="noreferrer"
-							icon={<TwitchIcon />}
+							icon={<StreamPlatformIcon platform={stream.platform} />}
 						>
 							{t("friends:friendsList.watchStream")}
 						</SendouMenuItem>

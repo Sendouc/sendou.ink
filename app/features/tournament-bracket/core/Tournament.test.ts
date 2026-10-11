@@ -448,6 +448,22 @@ describe("Adjusting team starting bracket", () => {
 
 		expect(tournament.brackets[0].participantTournamentTeamIds).toHaveLength(4);
 	});
+
+	test.each([
+		{ why: "valid starting bracket", startingBracketIdx: 1, expected: 1 },
+		{ why: "missing", startingBracketIdx: null, expected: 0 },
+		{ why: "too high", startingBracketIdx: 10, expected: 0 },
+		{ why: "follow-up bracket", startingBracketIdx: 2, expected: 0 },
+	])(
+		"startingBracketIdxOfTeam resolves $why index to $expected",
+		({ startingBracketIdx, expected }) => {
+			const tournament = createTournament([startingBracketIdx]);
+
+			expect(tournament.startingBracketIdxOfTeam(tournament.ctx.teams[0])).toBe(
+				expected,
+			);
+		},
+	);
 });
 
 describe("eligibleTeamIdsOfBracket", () => {

@@ -7,6 +7,7 @@ import * as TournamentRepository from "./TournamentRepository.server";
 
 const TWITCH_ACCOUNT = "streamer";
 const OTHER_TWITCH_ACCOUNT = "someone_else";
+const YOUTUBE_CHANNEL = "UCyoutubechannel";
 
 const users = UserFactory.pool();
 
@@ -58,21 +59,52 @@ describe("TournamentRepository.findStreamsByTournamentId", () => {
 		const { id: tournamentId } = await createTournament();
 		await createTeam(tournamentId, [streamerId(), teammateId()]);
 		await LiveStreamFactory.replaceAll([
-			{ userId: streamerId(), twitch: TWITCH_ACCOUNT },
+			{ userId: streamerId(), account: TWITCH_ACCOUNT },
 		]);
 
 		const streams = await participantStreamsOf(tournamentId);
 
 		expect(streams).toHaveLength(1);
 		expect(streams[0].userId).toBe(streamerId());
-		expect(streams[0].twitch).toBe(TWITCH_ACCOUNT);
+		expect(streams[0].platform).toBe("TWITCH");
+		expect(streams[0].account).toBe(TWITCH_ACCOUNT);
+	});
+
+	test("returns the YouTube stream of a participant with a connected channel", async () => {
+		const { id: tournamentId } = await createTournament();
+		const youtuber = await UserFactory.create({ youtubeId: YOUTUBE_CHANNEL });
+		await createTeam(tournamentId, [youtuber.id, teammateId()]);
+		await LiveStreamFactory.replaceAll([
+			{
+				userId: youtuber.id,
+				platform: "YOUTUBE",
+				account: YOUTUBE_CHANNEL,
+				videoId: "video",
+			},
+		]);
+
+		const streams = await participantStreamsOf(tournamentId);
+
+		expect(streams).toHaveLength(1);
+		expect(streams[0].userId).toBe(youtuber.id);
+		expect(streams[0].platform).toBe("YOUTUBE");
+	});
+
+	test("returns no stream of a participant whose account matches on another platform", async () => {
+		const { id: tournamentId } = await createTournament();
+		await createTeam(tournamentId, [streamerId(), teammateId()]);
+		await LiveStreamFactory.replaceAll([
+			{ userId: null, platform: "YOUTUBE", account: TWITCH_ACCOUNT },
+		]);
+
+		expect(await participantStreamsOf(tournamentId)).toHaveLength(0);
 	});
 
 	test("returns the stream credited to another user sharing the twitch account", async () => {
 		const { id: tournamentId } = await createTournament();
 		await createTeam(tournamentId, [streamerId(), teammateId()]);
 		await LiveStreamFactory.replaceAll([
-			{ userId: duplicateStreamerId(), twitch: TWITCH_ACCOUNT },
+			{ userId: duplicateStreamerId(), account: TWITCH_ACCOUNT },
 		]);
 
 		const streams = await participantStreamsOf(tournamentId);
@@ -86,7 +118,7 @@ describe("TournamentRepository.findStreamsByTournamentId", () => {
 		await createTeam(tournamentId, [streamerId(), teammateId()]);
 		await createTeam(tournamentId, [duplicateStreamerId(), otherTeammateId()]);
 		await LiveStreamFactory.replaceAll([
-			{ userId: duplicateStreamerId(), twitch: TWITCH_ACCOUNT },
+			{ userId: duplicateStreamerId(), account: TWITCH_ACCOUNT },
 		]);
 
 		const streams = await participantStreamsOf(tournamentId);
@@ -100,7 +132,7 @@ describe("TournamentRepository.findStreamsByTournamentId", () => {
 			isCheckedIn: false,
 		});
 		await LiveStreamFactory.replaceAll([
-			{ userId: streamerId(), twitch: TWITCH_ACCOUNT },
+			{ userId: streamerId(), account: TWITCH_ACCOUNT },
 		]);
 
 		expect(await participantStreamsOf(tournamentId)).toHaveLength(0);
@@ -110,7 +142,7 @@ describe("TournamentRepository.findStreamsByTournamentId", () => {
 		const { id: tournamentId } = await createTournament();
 		await createTeam(tournamentId, [streamerId(), teammateId()]);
 		await LiveStreamFactory.replaceAll([
-			{ userId: outsiderId(), twitch: OTHER_TWITCH_ACCOUNT },
+			{ userId: outsiderId(), account: OTHER_TWITCH_ACCOUNT },
 		]);
 
 		expect(await participantStreamsOf(tournamentId)).toHaveLength(0);

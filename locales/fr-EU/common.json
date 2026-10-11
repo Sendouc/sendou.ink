@@ -522,5 +522,14 @@
 	"tier.confirmed": "",
 	"spoilerFree.showResults": "",
 	"spoilerFree.hideResults": "",
-	"yourWeapons": ""
+	"yourWeapons": "",
+	"streams.help.trigger": "",
+	"streams.help.heading": "",
+	"streams.help.connect.title": "",
+	"streams.help.connect": "",
+	"streams.help.refresh": "",
+	"streams.help.twitch": "",
+	"streams.help.youtube": "",
+	"streams.help.sidebar.title": "",
+	"streams.help.sidebar": ""
 }

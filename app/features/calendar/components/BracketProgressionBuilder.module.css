@@ -555,3 +555,14 @@
 	padding-inline-start: var(--s-4);
 	font-size: var(--font-sm);
 }
+
+.dropIndicator {
+	position: absolute;
+	z-index: 1;
+	width: 224px;
+	height: 4px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-fg-accent);
+	transform: translateY(-50%);
+	pointer-events: none;
+}

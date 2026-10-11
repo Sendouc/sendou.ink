@@ -26,7 +26,7 @@ import { useHydrated } from "~/hooks/useHydrated";
 import type { UnifiedLanguageCode } from "~/modules/i18n/config";
 import { useHasPermission } from "~/modules/permissions/hooks";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { hourDifferenceBetweenTimezones } from "../core/timezone";
+import { createTimezoneHourDifference } from "../core/timezone";
 import type { LFGLoaderData } from "../routes/lfg";
 
 import styles from "./LFGPost.module.css";
@@ -37,6 +37,9 @@ type Post = LFGLoaderData["posts"][number];
 const COLLAPSED_TEXT_HEIGHT = 150;
 /** Server-side guess of whether the text gets clipped, corrected by measuring once mounted */
 const CLIPPED_TEXT_GUESS = { length: 300, lines: 6 };
+
+const hourDifference = createTimezoneHourDifference();
+let cachedViewerTimezone: string | null = null;
 
 export function LFGPost({ post }: { post: Post }) {
 	if (post.team) {
@@ -309,8 +312,7 @@ function PostTimezonePillPlaceholder() {
 }
 
 function PostTimezonePill({ timezone }: { timezone: string }) {
-	const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	const diff = hourDifferenceBetweenTimezones(userTimezone, timezone);
+	const diff = hourDifference(viewerTimezone(), timezone);
 
 	const textColorClass = () => {
 		const absDiff = Math.abs(diff);
@@ -466,4 +468,9 @@ function PostExpandableText({
 			{isTextCollapsed ? <div className={styles.textCut} /> : null}
 		</div>
 	);
+}
+
+function viewerTimezone() {
+	cachedViewerTimezone ??= Intl.DateTimeFormat().resolvedOptions().timeZone;
+	return cachedViewerTimezone;
 }

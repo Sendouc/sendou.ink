@@ -300,6 +300,7 @@ function AvailableWidgetsList({
 	return (
 		<div>
 			<Input
+				type="search"
 				className={styles.searchInput}
 				icon={<SearchIcon className={styles.searchIcon} />}
 				value={searchValue}

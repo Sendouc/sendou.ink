@@ -173,6 +173,7 @@ export const tierListSchema = v.object({
 	searchParams: textField({
 		label: "labels.tierListUrl",
 		leftAddon: "/tier-list-maker?",
+		inputMode: "url",
 		maxLength: USER.TIER_LIST_WIDGET_MAX_LENGTH,
 		transformValue: pastedTierListUrlToSearchParams,
 		validate: {

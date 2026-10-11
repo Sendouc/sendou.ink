@@ -76,6 +76,7 @@ export const editTeamFormSchema = v.object({
 	bsky: textFieldOptional({
 		label: "labels.teamBsky",
 		leftAddon: "https://bsky.app/profile/",
+		inputMode: "url",
 		maxLength: TEAM.BSKY_MAX_LENGTH,
 	}),
 	bio: textAreaOptional({

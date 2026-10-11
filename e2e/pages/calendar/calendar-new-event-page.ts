@@ -50,9 +50,6 @@ export class CalendarNewEventPage {
 			bestFinishersModeChip: page.getByText("Best finishers", { exact: true }),
 			knockedOutModeChip: page.getByText("Knocked out early", { exact: true }),
 			deleteBracketButton: page.getByTestId("builder-delete-bracket-button"),
-			startingBracketsColumn: page.getByText("Starting brackets", {
-				exact: true,
-			}),
 			lastStepButton: page.getByTestId("form-step-button-prizes"),
 			discardChangesButton: page.getByTestId("discard-changes-button"),
 			groupCountSelect: page.getByLabel(/^Group count/),
@@ -238,10 +235,13 @@ export class CalendarNewEventPage {
 	async makeAllBracketsStartingBrackets() {
 		await this.goToStep("format");
 		const count = await this.locators.bracketCards.count();
-		for (let nth = 1; nth < count; nth++) {
+		// last one first, each dropped right below the first card so the order is kept
+		// and the pointer stays clear of the viewport bottom where dnd-kit auto scrolls
+		for (let nth = count - 1; nth >= 1; nth--) {
 			await dragAndDrop(this.page, {
 				from: this.locators.bracketCards.nth(nth),
-				to: this.locators.startingBracketsColumn,
+				to: this.locators.bracketCards.first(),
+				at: ({ width, height }) => ({ x: width / 2, y: height + 8 }),
 			});
 		}
 	}

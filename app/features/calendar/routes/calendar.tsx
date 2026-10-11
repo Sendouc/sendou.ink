@@ -148,6 +148,7 @@ function NavigateButton({
 	return (
 		<Link
 			to={dayHref(lowestDate)}
+			prefetch="intent"
 			className={clsx(styles.navigateButton, styles.navigateArrowButton)}
 			data-testid="calendar-navigate-button"
 		>

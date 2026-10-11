@@ -260,6 +260,9 @@ html,
 		var(--color-bg-high) 25%
 	);
 	--color-bg-ability: oklch(11.736% 0.00867 215.976);
+	/* behind content laid over a video or thumbnail, dark in every theme (text: --color-text-on-dark) */
+	--color-bg-overlay: rgb(0 0 0 / 0.65);
+	--color-bg-overlay-high: rgb(0 0 0 / 0.85);
 	--color-bg-badge: oklch(0% 0 0);
 	--color-bg-accent: var(--color-accent-low);
 	--color-bg-second: var(--color-second-low);

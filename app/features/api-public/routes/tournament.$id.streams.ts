@@ -1,7 +1,12 @@
 import { sql } from "kysely";
 import type { LoaderFunctionArgs } from "react-router";
 import { db } from "~/db/sql";
-import { jsonArrayFrom } from "~/utils/kysely.server";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
+import {
+	isCastLiveStreamOf,
+	isLiveStreamOf,
+	jsonArrayFrom,
+} from "~/utils/kysely.server";
 import { notFoundIfNullish, parseParams } from "~/utils/remix.server";
 import { idObject } from "~/utils/schema";
 import type { GetTournamentStreamsResponse } from "../schema";
@@ -18,33 +23,34 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			.select([
 				jsonArrayFrom(
 					db
-						.selectFrom("LiveStream")
-						.innerJoin("User", "User.twitch", "LiveStream.twitch")
+						.selectFrom("TournamentTeam")
 						.innerJoin(
 							"TournamentTeamMember",
-							"TournamentTeamMember.userId",
-							"User.id",
-						)
-						.innerJoin(
-							"TournamentTeam",
-							"TournamentTeam.id",
 							"TournamentTeamMember.tournamentTeamId",
+							"TournamentTeam.id",
 						)
+						.innerJoin("User", "User.id", "TournamentTeamMember.userId")
+						.innerJoin("LiveStream", (join) => join.on(isLiveStreamOf()))
 						.select([
 							"User.id as userId",
-							"LiveStream.twitch",
+							"LiveStream.platform",
+							"LiveStream.account",
+							"LiveStream.videoId",
 							"LiveStream.viewerCount",
 						])
 						.where("TournamentTeam.tournamentId", "=", tournamentId)
-						.groupBy("LiveStream.twitch"),
+						.groupBy("LiveStream.id"),
 				).as("playerStreams"),
 				jsonArrayFrom(
 					db
 						.selectFrom("LiveStream")
-						.select(["LiveStream.twitch", "LiveStream.viewerCount"])
-						.where(
-							sql<boolean>`"LiveStream"."twitch" IN (SELECT value FROM json_each("Tournament"."castTwitchAccounts"))`,
-						),
+						.select([
+							"LiveStream.platform",
+							"LiveStream.account",
+							"LiveStream.videoId",
+							"LiveStream.viewerCount",
+						])
+						.where(isCastLiveStreamOf(sql.ref("Tournament.castAccounts"))),
 				).as("castStreams"),
 			])
 			.where("Tournament.id", "=", tournamentId)
@@ -52,21 +58,24 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 	);
 
 	const playerStreams: GetTournamentStreamsResponse =
-		tournament?.playerStreams.map((stream) => ({
+		tournament.playerStreams.map((stream) => ({
 			type: "PLAYER",
-			userId: stream.userId!,
-			platform: "TWITCH",
-			channelId: stream.twitch!,
-			viewerCount: stream.viewerCount!,
-		})) ?? [];
+			userId: stream.userId,
+			platform: stream.platform,
+			channelId: stream.account,
+			url: LiveStream.url(stream),
+			viewerCount: stream.viewerCount,
+		}));
 
-	const castStreams: GetTournamentStreamsResponse =
-		tournament?.castStreams.map((stream) => ({
+	const castStreams: GetTournamentStreamsResponse = tournament.castStreams.map(
+		(stream) => ({
 			type: "CAST",
-			platform: "TWITCH",
-			channelId: stream.twitch!,
-			viewerCount: stream.viewerCount!,
-		})) ?? [];
+			platform: stream.platform,
+			channelId: stream.account,
+			url: LiveStream.url(stream),
+			viewerCount: stream.viewerCount,
+		}),
+	);
 
 	const result: GetTournamentStreamsResponse = [
 		...playerStreams,

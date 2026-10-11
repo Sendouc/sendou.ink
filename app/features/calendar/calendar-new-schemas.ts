@@ -122,6 +122,7 @@ export const calendarNewBaseSchema = v.object({
 		label: "labels.discordInvite",
 		maxLength: CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH,
 		leftAddon: "https://discord.gg/",
+		inputMode: "url",
 	}),
 	tags: checkboxGroup({
 		label: "labels.tags",

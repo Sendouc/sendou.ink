@@ -159,7 +159,6 @@
 	"finalize.receivingTeam.placeholder": "Select team…",
 	"streams.none": "No live streams of this tournament available currently",
 	"streams.cast": "Cast",
-	"streams.watchNow": "Watch now",
 	"run.sets": "Sets",
 	"run.maps": "Maps",
 	"run.qualifiedFor": "Advanced to {{bracket}}",

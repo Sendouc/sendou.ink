@@ -10,11 +10,7 @@ import {
 } from "~/components/Image";
 import { MAX_AP } from "~/features/build-analyzer/analyzer-constants";
 import { mainWeaponParams } from "~/features/build-analyzer/core/utils";
-import type {
-	MainWeaponId,
-	SpecialWeaponId,
-	SubWeaponId,
-} from "~/modules/in-game-lists/types";
+import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { abilityImageUrl } from "~/utils/urls";
 import { LETHAL_DAMAGE } from "../comp-analyzer-constants";
 import {
@@ -118,7 +114,6 @@ function SegmentBar({
 	const segmentDamage = segment.damageValue * segment.count;
 	const widthPercent = (segmentDamage / totalDamage) * 100;
 	const slotColor = SLOT_COLORS[segment.weaponSlot] ?? "yellow";
-	const params = mainWeaponParams(segment.weaponId);
 
 	const handleFilterClick = () => {
 		onToggleFilter({
@@ -138,8 +133,6 @@ function SegmentBar({
 					weaponId={segment.weaponId}
 					isSubWeapon={segment.isSubWeapon}
 					isSpecialWeapon={segment.isSpecialWeapon}
-					subWeaponId={params.subWeaponId}
-					specialWeaponId={params.specialWeaponId}
 				/>
 				<span className={styles.damageValue}>
 					{segment.damageValue}
@@ -190,21 +183,17 @@ interface WeaponIconProps {
 	weaponId: MainWeaponId;
 	isSubWeapon: boolean;
 	isSpecialWeapon: boolean;
-	subWeaponId: SubWeaponId;
-	specialWeaponId: SpecialWeaponId;
 }
 
 function WeaponIcon({
 	weaponId,
 	isSubWeapon,
 	isSpecialWeapon,
-	subWeaponId,
-	specialWeaponId,
 }: WeaponIconProps) {
 	if (isSubWeapon) {
 		return (
 			<SubWeaponImage
-				subWeaponId={subWeaponId}
+				subWeaponId={mainWeaponParams(weaponId).subWeaponId}
 				size={18}
 				className={styles.subSpecialWeaponIcon}
 			/>
@@ -214,7 +203,7 @@ function WeaponIcon({
 	if (isSpecialWeapon) {
 		return (
 			<SpecialWeaponImage
-				specialWeaponId={specialWeaponId}
+				specialWeaponId={mainWeaponParams(weaponId).specialWeaponId}
 				size={18}
 				className={styles.subSpecialWeaponIcon}
 			/>
@@ -238,7 +227,6 @@ interface FilteredItemProps {
 
 function FilteredItem({ filterKey, onRestore }: FilteredItemProps) {
 	const { t } = useTranslation(["analyzer", "weapons"]);
-	const params = mainWeaponParams(filterKey.weaponId);
 
 	return (
 		<button
@@ -250,8 +238,6 @@ function FilteredItem({ filterKey, onRestore }: FilteredItemProps) {
 				weaponId={filterKey.weaponId}
 				isSubWeapon={filterKey.weaponType === "sub"}
 				isSpecialWeapon={filterKey.weaponType === "special"}
-				subWeaponId={params.subWeaponId}
-				specialWeaponId={params.specialWeaponId}
 			/>
 			<span>{t(`analyzer:damage.${filterKey.damageType}` as any)}</span>
 		</button>

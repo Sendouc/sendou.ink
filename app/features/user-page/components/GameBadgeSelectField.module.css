@@ -64,6 +64,10 @@
 
 .searchInput {
 	width: 100%;
+
+	&::-webkit-search-cancel-button {
+		display: none;
+	}
 }
 
 .resultsGrid {

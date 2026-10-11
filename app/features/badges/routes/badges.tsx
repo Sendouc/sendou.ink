@@ -64,6 +64,7 @@ export default function BadgesPageLayout() {
 			<div className={styles.container}>
 				<Outlet />
 				<Input
+					type="search"
 					className={styles.searchInput}
 					icon={<Search />}
 					value={inputValue}
@@ -74,7 +75,7 @@ export default function BadgesPageLayout() {
 						<Divider smallText>{t("badges:own.divider")}</Divider>
 						<div className={styles.smallBadges}>
 							{ownBadges.map((badge) => (
-								<NavLink key={badge.id} to={String(badge.id)}>
+								<NavLink key={badge.id} to={String(badge.id)} prefetch="intent">
 									<Badge badge={badge} size={64} isAnimated={false} />
 								</NavLink>
 							))}
@@ -88,7 +89,7 @@ export default function BadgesPageLayout() {
 								<Divider smallText>{t("badges:other.divider")}</Divider>
 							) : null}
 							{otherBadges.map((badge) => (
-								<NavLink key={badge.id} to={String(badge.id)}>
+								<NavLink key={badge.id} to={String(badge.id)} prefetch="intent">
 									<Badge badge={badge} size={64} isAnimated={false} />
 								</NavLink>
 							))}

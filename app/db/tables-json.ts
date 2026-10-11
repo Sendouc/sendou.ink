@@ -2,6 +2,7 @@
 
 import type { DBBoolean } from "~/db/tables";
 import type { CalendarFilters } from "~/features/calendar/calendar-types";
+import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import type { ScrimFilters } from "~/features/scrims/scrims-types";
 import type { CustomThemeVar } from "~/features/theme/theme-constants";
 import type {
@@ -114,15 +115,19 @@ export interface TeamPickSettings {
 	pool: TeamPickPool;
 }
 
+/** Official cast channel of a tournament. */
+export interface CastAccount extends StreamAccount {
+	/** Shown in place of `account`, which for YouTube is a channel id. */
+	name: string;
+}
+
+type CastedMatch = StreamAccount & { matchId: number };
+
 export interface CastedMatchesInfo {
 	/** Matches locked because they are pending to be casted */
-	lockedMatches: Array<{ twitchAccount: string; matchId: number }>;
-	castedMatches: { twitchAccount: string; matchId: number }[];
-	castedMatchHistory?: Array<{
-		twitchAccount: string;
-		matchId: number;
-		timestamp: number;
-	}>;
+	lockedMatches: CastedMatch[];
+	castedMatches: CastedMatch[];
+	castedMatchHistory?: Array<CastedMatch & { timestamp: number }>;
 }
 
 export interface SeedingSnapshot {

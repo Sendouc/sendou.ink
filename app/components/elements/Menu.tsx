@@ -246,7 +246,7 @@ export function SendouMenuItem(props: SendouMenuItemProps) {
 		};
 
 		return props.href.startsWith("/") ? (
-			<Link to={props.href} {...linkProps}>
+			<Link to={props.href} prefetch="intent" {...linkProps}>
 				{content}
 			</Link>
 		) : (

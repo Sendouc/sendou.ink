@@ -35,7 +35,7 @@ export function Input({
 	defaultValue?: string;
 	leftAddon?: string;
 	icon?: React.ReactNode;
-	type?: "number" | "date";
+	type?: "number" | "date" | "search";
 	min?: number;
 	max?: number | string;
 	pattern?: string;
@@ -77,6 +77,7 @@ export function Input({
 				required={required}
 				placeholder={placeholder}
 				type={type}
+				enterKeyHint={type === "search" ? "search" : undefined}
 				autoComplete={disableAutoComplete ? "one-time-code" : undefined}
 				readOnly={readOnly}
 			/>

@@ -1,0 +1,131 @@
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+	min-width: 0;
+}
+
+.thumbnailContainer {
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--radius-box);
+	aspect-ratio: 16 / 9;
+}
+
+.thumbnail {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.overlay {
+	position: absolute;
+	bottom: var(--s-2);
+	display: flex;
+	align-items: center;
+	height: 1.5rem;
+	padding-inline: var(--s-2);
+	border-radius: var(--radius-full);
+	background: var(--color-bg-overlay);
+	backdrop-filter: blur(8px);
+	color: var(--color-text-on-dark);
+}
+
+.platforms {
+	left: var(--s-2);
+	gap: var(--s-2);
+}
+
+.platformLink {
+	display: flex;
+
+	&:hover {
+		opacity: 0.8;
+	}
+}
+
+.twitch {
+	color: #9146ff;
+}
+
+.youtube {
+	color: #f00;
+}
+
+.platformIcon {
+	width: 1rem;
+	height: 1rem;
+}
+
+.viewerCount {
+	display: flex;
+	gap: var(--s-1);
+	align-items: center;
+	font-size: var(--font-xs);
+	font-weight: var(--weight-semi);
+	color: var(--color-text-high);
+
+	& > svg {
+		width: 0.75rem;
+		min-width: 0.75rem;
+	}
+}
+
+.overlayViewerCount {
+	right: var(--s-2);
+	color: var(--color-text-on-dark);
+	padding-inline: var(--s-1-5);
+	pointer-events: none;
+
+	& > svg {
+		width: 1rem;
+		height: 1rem;
+		min-width: 1rem;
+	}
+}
+
+/* both columns get their full width when they fit, otherwise the longer one is truncated first */
+.info {
+	display: grid;
+	grid-template-columns: minmax(0, max-content) minmax(0, max-content);
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--s-2);
+	min-width: 0;
+	font-size: var(--font-xs);
+	font-weight: var(--weight-semi);
+}
+
+.title,
+.aside {
+	display: flex;
+	min-width: 0;
+
+	/* the user card trigger sits inside a display: contents wrapper */
+	& > *,
+	& button,
+	& a,
+	& span {
+		min-width: 0;
+		max-width: 100%;
+	}
+
+	& img {
+		flex-shrink: 0;
+	}
+}
+
+.user {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	min-width: 0;
+}
+
+.compactLinks {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--s-2);
+}

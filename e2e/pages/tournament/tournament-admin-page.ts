@@ -95,17 +95,18 @@ export class TournamentAdminPage {
 		await modalClickConfirmButton(this.page);
 	}
 
-	/** Checks a team in to a bracket that requires its own check-in, matched by its
-	 * stable team id rather than the row index which shifts after the start. */
+	/** A team's row by its stable team id rather than the row index which shifts after the start. */
+	teamRow(tournamentTeamId: number) {
+		return this.page.locator(
+			`[data-testid="team-row"][data-team-id="${tournamentTeamId}"]`,
+		);
+	}
+
+	/** Checks a team in to a bracket that requires its own check-in. */
 	async checkTeamInToBracket(tournamentTeamId: number, bracketName: string) {
-		await this.page
-			.locator(`[data-testid="team-row"][data-team-id="${tournamentTeamId}"]`)
-			.getByLabel("Actions")
-			.click();
+		await this.openTeamActions(tournamentTeamId);
 		await waitForPOSTResponse(this.page, async () => {
-			await this.page
-				.getByRole("menuitem", { name: `Check in (${bracketName})` })
-				.click();
+			await this.teamActionsMenuItem(`Check in (${bracketName})`).click();
 		});
 	}
 
@@ -136,6 +137,21 @@ export class TournamentAdminPage {
 		await waitForPOSTResponse(this.page, async () => {
 			await this.page.getByRole("menuitem", { name: /^Check out/ }).click();
 		});
+	}
+
+	async openTeamActions(tournamentTeamId: number) {
+		await this.teamRow(tournamentTeamId).getByLabel("Actions").click();
+	}
+
+	teamActionsMenuItem(name: string | RegExp) {
+		return this.page.getByRole("menuitem", { name });
+	}
+
+	/** Checks a team out once the tournament has started, which can't be undone so asks for confirmation. */
+	async checkStartedTeamOut(tournamentTeamId: number) {
+		await this.openTeamActions(tournamentTeamId);
+		await this.teamActionsMenuItem(/^Check out/).click();
+		await modalClickConfirmButton(this.page);
 	}
 
 	async unregisterTeam(nth: number) {

@@ -461,6 +461,24 @@ export function tournamentUsername(alias = "User") {
 	)})`;
 }
 
+/** Whether the `LiveStream` row is on one of the user's connected Twitch/YouTube accounts. */
+export function isLiveStreamOf(alias = "User") {
+	return sql<boolean>`(("LiveStream"."platform" = 'TWITCH' and "LiveStream"."account" = ${sql.ref(
+		`${alias}.twitch`,
+	)}) or ("LiveStream"."platform" = 'YOUTUBE' and "LiveStream"."account" = ${sql.ref(
+		`${alias}.youtubeId`,
+	)}))`;
+}
+
+/** Whether the `LiveStream` row is on one of the accounts of a `Tournament.castAccounts` value. */
+export function isCastLiveStreamOf(castAccounts: Expression<unknown>) {
+	return sql<boolean>`exists (
+		select 1 from json_each(${castAccounts}) as "castAccount"
+		where json_extract("castAccount"."value", '$.platform') = "LiveStream"."platform"
+			and json_extract("castAccount"."value", '$.account') = "LiveStream"."account"
+	)`;
+}
+
 type SelectQueryBuilderExpression<O> = Parameters<
 	typeof sqliteJsonArrayFrom<O>
 >[0];

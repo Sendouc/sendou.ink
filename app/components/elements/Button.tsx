@@ -4,6 +4,7 @@ import * as React from "react";
 import { Link, type LinkProps } from "react-router";
 import { assertUnreachable } from "~/utils/types";
 import styles from "./Button.module.css";
+import { Spinner } from "./Spinner";
 
 type ButtonVariant =
 	| "primary"
@@ -50,6 +51,7 @@ export function SendouButton({
 			{...rest}
 			disabled={isDisabled}
 			aria-disabled={isPending || undefined}
+			aria-busy={isPending || undefined}
 			data-pending={isPending || undefined}
 			onClick={(event) => {
 				if (isPending) {
@@ -65,7 +67,12 @@ export function SendouButton({
 						className: iconClassName(icon.props.className, children, size),
 					})
 				: null}
-			{children}
+			{isPending ? (
+				<span className={styles.pendingContent}>{children}</span>
+			) : (
+				children
+			)}
+			{isPending ? <Spinner className={styles.spinner} /> : null}
 		</button>
 	);
 }

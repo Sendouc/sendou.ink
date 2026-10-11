@@ -8,7 +8,8 @@ type InsertArgs = Parameters<
 
 export const { create } = defineFactory({
 	defaults: ({ seq }) => ({
-		twitchAccount: `streamer_${seq}`,
+		platform: "TWITCH" as const,
+		account: `streamer_${seq}`,
 		userId: null,
 	}),
 	insert: async (args: InsertArgs) => {
@@ -16,7 +17,7 @@ export const { create } = defineFactory({
 
 		invariant(
 			row,
-			`${args.twitchAccount} is already a streamer of tournament ${args.tournamentId}`,
+			`${args.platform} ${args.account} is already a streamer of tournament ${args.tournamentId}`,
 		);
 
 		return row;

@@ -5,12 +5,15 @@ import * as TournamentStreamerFactory from "~/db/seed/factories/TournamentStream
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { db } from "~/db/sql";
 import type { TournamentSettings } from "~/db/tables-json";
+import type { StreamPlatform } from "~/features/live-streams/live-streams-constants";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 
-const { mockGetUsersByLogin, mockGetArchiveVideos } = vi.hoisted(() => ({
-	mockGetUsersByLogin: vi.fn(),
-	mockGetArchiveVideos: vi.fn(),
-}));
+const { mockGetUsersByLogin, mockGetArchiveVideos, mockFindRecentLiveStreams } =
+	vi.hoisted(() => ({
+		mockGetUsersByLogin: vi.fn(),
+		mockGetArchiveVideos: vi.fn(),
+		mockFindRecentLiveStreams: vi.fn(),
+	}));
 
 vi.mock("~/modules/twitch/vods", async (importOriginal) => {
 	const actual = await importOriginal<typeof import("~/modules/twitch/vods")>();
@@ -23,6 +26,14 @@ vi.mock("~/modules/twitch/vods", async (importOriginal) => {
 
 vi.mock("~/modules/twitch/utils.server", () => ({
 	hasTwitchEnvVars: () => true,
+}));
+
+vi.mock("~/modules/youtube/vods", () => ({
+	findRecentLiveStreams: mockFindRecentLiveStreams,
+}));
+
+vi.mock("~/modules/youtube/utils.server", () => ({
+	hasYoutubeEnvVars: () => true,
 }));
 
 const DOUBLE_ELIMINATION: TournamentSettings["bracketProgression"] = [
@@ -50,6 +61,7 @@ describe("syncTournamentVods", () => {
 	beforeEach(async () => {
 		mockGetUsersByLogin.mockReset();
 		mockGetArchiveVideos.mockReset();
+		mockFindRecentLiveStreams.mockReset();
 		await users.create(TEAM_COUNT);
 	});
 
@@ -89,7 +101,7 @@ describe("syncTournamentVods", () => {
 
 	test("cast account with castedMatchHistory produces VODs for casted matches only", async () => {
 		await seedTournamentWithMatches({
-			castedOn: { match: "second", twitchAccount: "caster_stream" },
+			castedOn: { match: "second", account: "caster_stream" },
 		});
 
 		mockGetUsersByLogin.mockResolvedValue([
@@ -108,7 +120,7 @@ describe("syncTournamentVods", () => {
 
 	test("player VOD is preferred over cast VOD for same match and account", async () => {
 		await seedTournamentWithMatches({
-			castedOn: { match: "first", twitchAccount: "dual_stream" },
+			castedOn: { match: "first", account: "dual_stream" },
 		});
 		const player = playerOf(firstMatch.winnerTeamId);
 		await seedStreamer("dual_stream", player);
@@ -127,7 +139,7 @@ describe("syncTournamentVods", () => {
 
 	test("no VODs inserted when no Twitch videos match", async () => {
 		await seedTournamentWithMatches({
-			castedOn: { match: "first", twitchAccount: "caster_stream" },
+			castedOn: { match: "first", account: "caster_stream" },
 		});
 
 		mockGetUsersByLogin.mockResolvedValue([
@@ -179,7 +191,7 @@ describe("syncTournamentVods", () => {
 
 	test("returns hadApiError=true when cast account API call fails", async () => {
 		await seedTournamentWithMatches({
-			castedOn: { match: "first", twitchAccount: "caster_stream" },
+			castedOn: { match: "first", account: "caster_stream" },
 		});
 
 		mockGetUsersByLogin.mockResolvedValue([
@@ -213,6 +225,108 @@ describe("syncTournamentVods", () => {
 		expect(vods[0].account).toBe("good_stream");
 	});
 
+	test("YouTube player streamer gets a VOD timestamped from the stream's start", async () => {
+		await seedTournamentWithMatches();
+		const player = playerOf(firstMatch.winnerTeamId);
+		await seedStreamer("UCplayer", player, "YOUTUBE");
+
+		mockFindRecentLiveStreams.mockResolvedValue([youtubeStream()]);
+
+		await runProcessOneTournament();
+
+		expect(mockFindRecentLiveStreams).toHaveBeenCalledWith("UCplayer");
+		expect(await findAllVods()).toMatchObject([
+			{
+				matchId: firstMatch.id,
+				userId: player,
+				platform: "YOUTUBE",
+				account: "UCplayer",
+				platformVideoId: "yt-video1",
+				timestampSeconds: 600 + 180,
+				viewCount: 50,
+			},
+		]);
+	});
+
+	test("YouTube stream still live during sync is matched up to now", async () => {
+		await seedTournamentWithMatches();
+		await seedStreamer(
+			"UCplayer",
+			playerOf(firstMatch.winnerTeamId),
+			"YOUTUBE",
+		);
+
+		mockFindRecentLiveStreams.mockResolvedValue([
+			youtubeStream({ endedAt: null }),
+		]);
+
+		await runProcessOneTournament();
+
+		expect(await findAllVods()).toContainEqual(
+			expect.objectContaining({
+				matchId: firstMatch.id,
+				timestampSeconds: 600 + 180,
+			}),
+		);
+	});
+
+	test("YouTube cast account with castedMatchHistory produces VODs for casted matches only", async () => {
+		await seedTournamentWithMatches({
+			castedOn: { match: "second", account: "UCcaster", platform: "YOUTUBE" },
+		});
+
+		mockFindRecentLiveStreams.mockResolvedValue([youtubeStream()]);
+
+		await runProcessOneTournament();
+
+		expect(await findAllVods()).toMatchObject([
+			{
+				matchId: secondMatch.id,
+				userId: null,
+				platform: "YOUTUBE",
+				account: "UCcaster",
+			},
+		]);
+		expect(mockGetUsersByLogin).not.toHaveBeenCalled();
+	});
+
+	test("player streaming on both platforms gets a VOD from each", async () => {
+		await seedTournamentWithMatches();
+		const player = playerOf(firstMatch.winnerTeamId);
+		await seedStreamer("player_stream", player);
+		await seedStreamer("UCplayer", player, "YOUTUBE");
+
+		mockGetUsersByLogin.mockResolvedValue([
+			{ id: "twitch-1", login: "player_stream" },
+		]);
+		mockGetArchiveVideos.mockResolvedValue([twitchVideo()]);
+		mockFindRecentLiveStreams.mockResolvedValue([youtubeStream()]);
+
+		await runProcessOneTournament();
+
+		const vods = await findAllVods();
+		expect(vods).toHaveLength(2);
+		expect(vods).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ platform: "TWITCH", userId: player }),
+				expect.objectContaining({ platform: "YOUTUBE", userId: player }),
+			]),
+		);
+	});
+
+	test("returns hadApiError=true when fetching a YouTube channel's streams fails", async () => {
+		await seedTournamentWithMatches();
+		await seedStreamer(
+			"UCplayer",
+			playerOf(firstMatch.winnerTeamId),
+			"YOUTUBE",
+		);
+
+		mockFindRecentLiveStreams.mockRejectedValue(new Error("quota exhausted"));
+
+		expect(await runProcessOneTournament()).toBe(true);
+	});
+
 	test("no matches with startedAt results in no processing", async () => {
 		await seedTournamentWithMatches();
 		await seedStreamer("player_stream", playerOf(firstMatch.winnerTeamId));
@@ -244,6 +358,15 @@ function twitchVideo({
 	};
 }
 
+function youtubeStream({
+	videoId = "yt-video1",
+	startedAt = new Date((MATCH_START_SECONDS - 600) * 1000),
+	endedAt = new Date((MATCH_START_SECONDS + 2 * 60 * 60) * 1000) as Date | null,
+	viewCount = 50,
+} = {}) {
+	return { videoId, startedAt, endedAt, viewCount };
+}
+
 /**
  * Played out double elimination bracket of four one-player teams, first round backdated to the
  * VOD times and optionally cast. Later matches start now, far from any mocked VOD.
@@ -251,7 +374,11 @@ function twitchVideo({
 async function seedTournamentWithMatches({
 	castedOn,
 }: {
-	castedOn?: { match: "first" | "second"; twitchAccount: string };
+	castedOn?: {
+		match: "first" | "second";
+		account: string;
+		platform?: StreamPlatform;
+	};
 } = {}) {
 	const tournament = await TournamentFactory.createPlayed(
 		{
@@ -276,7 +403,10 @@ async function seedTournamentWithMatches({
 		await TournamentRepository.setMatchAsCasted({
 			tournamentId,
 			matchId: castedOn.match === "first" ? firstMatch.id : secondMatch.id,
-			twitchAccount: castedOn.twitchAccount,
+			castAccount: {
+				platform: castedOn.platform ?? "TWITCH",
+				account: castedOn.account,
+			},
 		});
 	}
 }
@@ -285,10 +415,15 @@ function playerOf(tournamentTeamId: number) {
 	return teams.find((team) => team.id === tournamentTeamId)!.ownerUserId;
 }
 
-function seedStreamer(twitchAccount: string, userId: number | null = null) {
+function seedStreamer(
+	account: string,
+	userId: number | null = null,
+	platform: StreamPlatform = "TWITCH",
+) {
 	return TournamentStreamerFactory.create({
 		tournamentId,
-		twitchAccount,
+		platform,
+		account,
 		userId,
 	});
 }

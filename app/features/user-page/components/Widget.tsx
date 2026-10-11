@@ -34,6 +34,9 @@ import { userArtPage } from "~/features/art/art-urls";
 import { previewUrl } from "~/features/art/art-utils";
 import { BadgeDisplay } from "~/features/badges/components/BadgeDisplay";
 import { lfgSearchParams } from "~/features/lfg/lfg-search-params";
+import { StreamPlatformIcon } from "~/features/live-streams/components/StreamPlatformIcon";
+import { StreamWatchLinks } from "~/features/live-streams/components/StreamWatchLinks";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { tierListMakerSearchParams } from "~/features/tier-list-maker/tier-list-maker-search-params";
 import { DivisionImage } from "~/features/top-search/components/DivisionImage";
 import { topSearchPlayerPage } from "~/features/top-search/top-search-urls";
@@ -52,7 +55,6 @@ import type {
 	ModeShort,
 	StageId,
 } from "~/modules/in-game-lists/types";
-import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
 import { logger } from "~/utils/logger";
 import type { SerializeFrom } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
@@ -66,7 +68,6 @@ import {
 	modeImageUrl,
 	navIconUrl,
 	teamPage,
-	twitchUrl,
 	userBuildsPage,
 	userResultsPage,
 	userVodsPage,
@@ -321,7 +322,7 @@ export function Widget({
 				);
 			case "live-stream":
 				if (!widget.data) return null;
-				return <LiveStreamWidget stream={widget.data} />;
+				return <LiveStreamWidget streamer={widget.data} />;
 			case "countdown":
 				return (
 					<CountdownWidget title={widget.data.title} date={widget.data.date} />
@@ -1143,39 +1144,58 @@ function MapModePreferencesWidget({
 }
 
 function LiveStreamWidget({
-	stream,
+	streamer,
 }: {
-	stream: NonNullable<Extract<LoadedWidget, { id: "live-stream" }>["data"]>;
+	streamer: NonNullable<Extract<LoadedWidget, { id: "live-stream" }>["data"]>;
 }) {
 	const { t } = useTranslation(["user"]);
+	const mostViewed = streamer.streams[0];
 
 	return (
-		<a
-			href={twitchUrl(stream.twitch)}
-			target="_blank"
-			rel="noreferrer"
-			className={styles.liveStream}
-		>
-			<img
-				src={twitchThumbnailUrlToSrc(stream.thumbnailUrl)}
-				alt=""
-				className={styles.liveStreamThumbnail}
-				loading="lazy"
-			/>
+		<div className={styles.liveStream}>
+			<a
+				href={LiveStream.url(mostViewed)}
+				target="_blank"
+				rel="noreferrer"
+				className={styles.liveStreamThumbnailLink}
+			>
+				<img
+					src={LiveStream.thumbnailSrc(mostViewed)}
+					alt=""
+					className={styles.liveStreamThumbnail}
+					loading="lazy"
+				/>
+			</a>
 			<div className={styles.liveStreamInfo}>
 				<span className={styles.liveBadge}>
 					{t("user:widget.live-stream.live")}
 				</span>
 				<span>
 					{t("user:widget.live-stream.viewers", {
-						count: stream.viewerCount,
+						count: streamer.viewerCount,
 					})}
 				</span>
-				<span className={clsx(styles.liveStreamName, "truncate")}>
-					{stream.twitch}
-				</span>
+				{streamer.streams.length > 1 ? (
+					<StreamWatchLinks
+						streams={streamer.streams}
+						className={styles.liveStreamLinks}
+					/>
+				) : (
+					<a
+						href={LiveStream.url(mostViewed)}
+						target="_blank"
+						rel="noreferrer"
+						className={clsx(styles.liveStreamName, "truncate")}
+					>
+						<StreamPlatformIcon
+							platform={mostViewed.platform}
+							className={styles.liveStreamPlatformIcon}
+						/>
+						{mostViewed.account}
+					</a>
+				)}
 			</div>
-		</a>
+		</div>
 	);
 }
 

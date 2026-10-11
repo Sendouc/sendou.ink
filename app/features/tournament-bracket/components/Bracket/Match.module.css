@@ -24,6 +24,11 @@
 	gap: var(--s-2);
 }
 
+.vodPlatformIcon {
+	width: 12px;
+	height: 12px;
+}
+
 .vodTeamName {
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -252,4 +257,9 @@ a.match:hover {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+
+	&:is(a):hover {
+		border-color: var(--color-border-high);
+		background-color: var(--color-bg-high);
+	}
 }

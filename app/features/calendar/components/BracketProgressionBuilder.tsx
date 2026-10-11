@@ -88,8 +88,20 @@ type DropData =
 	| { kind: "column"; column: number }
 	| { kind: "card"; bracketIdx: number };
 
+interface MoveTarget {
+	column: number;
+	/** Bracket of the column the moved one goes above, null = to the bottom */
+	beforeIdx: number | null;
+}
+
 type ActiveDrag =
-	| { kind: "move"; bracketIdx: number; hoveredColumn: number | null }
+	| {
+			kind: "move";
+			bracketIdx: number;
+			/** Where in the card the pointer grabbed it, from its top */
+			grabOffsetY: number;
+			target: MoveTarget | null;
+	  }
 	| {
 			kind: "connect";
 			fromIdx: number;
@@ -322,20 +334,24 @@ export function BracketProgressionBuilder({
 		scrollColumnIntoBoardView(result.column);
 	};
 
-	const moveToColumn = (bracketIdx: number, column: number) => {
-		const result = BracketBuilder.moveToColumn(
+	const moveBracket = (bracketIdx: number, target: MoveTarget) => {
+		const result = BracketBuilder.moveBracket(
 			values,
 			bracketIdx,
-			column,
+			target,
 			minColumns,
 		);
+		const bracketCount = values.brackets.length;
 		commit(result.values);
 		setMinColumns((prev) => {
 			const next = [...prev];
-			next[bracketIdx] = column > 0 ? column : undefined;
-			return next;
+			next[bracketIdx] = target.column > 0 ? target.column : undefined;
+			return reindexed(next, bracketCount, result.newIdxOf);
 		});
-		setSelection({ kind: "bracket", bracketIdx });
+		setCardHeights((prev) => reindexed(prev, bracketCount, result.newIdxOf));
+		setHoveredLineKey(null);
+		setLinkFromIdx((prev) => (prev === null ? null : result.newIdxOf(prev)));
+		setSelection({ kind: "bracket", bracketIdx: result.newIdxOf(bracketIdx) });
 		setNotice(
 			bracketIdx === 0
 				? t("calendar:builder.notice.FIRST_BRACKET")
@@ -382,10 +398,14 @@ export function BracketProgressionBuilder({
 		setNotice(null);
 
 		if (data.kind === "move") {
+			const cardTop = event.active.rect.current.initial?.top;
+			const grabbedAt = getEventCoordinates(event.activatorEvent);
 			setActiveDrag({
 				kind: "move",
 				bracketIdx: data.bracketIdx,
-				hoveredColumn: null,
+				grabOffsetY:
+					cardTop !== undefined && grabbedAt ? grabbedAt.y - cardTop : 0,
+				target: null,
 			});
 			return;
 		}
@@ -415,15 +435,11 @@ export function BracketProgressionBuilder({
 		// functional updates, dnd-kit can report a move after the drag already ended
 		setActiveDrag((current) => {
 			if (current?.kind === "move") {
-				const hoveredColumn = !over
-					? null
-					: over.kind === "column"
-						? over.column
-						: bracketColumns[over.bracketIdx];
+				const target = moveTargetOf(current, over, event.delta.y);
 
-				return hoveredColumn === current.hoveredColumn
+				return R.isDeepEqual(target, current.target)
 					? current
-					: { ...current, hoveredColumn };
+					: { ...current, target };
 			}
 
 			if (current?.kind === "connect") {
@@ -445,6 +461,7 @@ export function BracketProgressionBuilder({
 	const handleDragEnd = (event: DragEndEvent) => {
 		const data = event.active.data.current as DragData;
 		const over = event.over?.data.current as DropData | undefined;
+		const drag = activeDrag;
 		setActiveDrag(null);
 		if (!over) return;
 
@@ -455,15 +472,77 @@ export function BracketProgressionBuilder({
 			return;
 		}
 
-		if (over.kind === "column") {
-			moveToColumn(data.bracketIdx, over.column);
-		} else if (over.bracketIdx !== data.bracketIdx) {
-			moveToColumn(data.bracketIdx, bracketColumns[over.bracketIdx]);
+		if (drag?.kind !== "move") return;
+
+		const target = moveTargetOf(drag, over, event.delta.y);
+		if (target && !isCurrentPlace(drag.bracketIdx, target)) {
+			moveBracket(drag.bracketIdx, target);
 		}
+	};
+
+	// cards of a column are in index order, so the target is above the first card whose middle is below the pointer
+	const moveTargetOf = (
+		drag: Extract<ActiveDrag, { kind: "move" }>,
+		over: DropData | undefined,
+		deltaY: number,
+	): MoveTarget | null => {
+		if (!over) return null;
+
+		const column =
+			over.kind === "column" ? over.column : bracketColumns[over.bracketIdx];
+		const pointerY = positions[drag.bracketIdx].y + drag.grabOffsetY + deltaY;
+		const beforeIdx = bracketColumns.findIndex(
+			(bracketColumn, idx) =>
+				bracketColumn === column &&
+				idx !== drag.bracketIdx &&
+				// the first bracket stays at the top
+				idx !== 0 &&
+				positions[idx].y + positions[idx].height / 2 > pointerY,
+		);
+
+		return { column, beforeIdx: beforeIdx === -1 ? null : beforeIdx };
+	};
+
+	const aboveIdxOf = (bracketIdx: number, target: MoveTarget) =>
+		bracketColumns.findLastIndex(
+			(column, idx) =>
+				column === target.column &&
+				idx !== bracketIdx &&
+				(target.beforeIdx === null || idx < target.beforeIdx),
+		);
+
+	const isCurrentPlace = (bracketIdx: number, target: MoveTarget) =>
+		bracketColumns[bracketIdx] === target.column &&
+		aboveIdxOf(bracketIdx, target) < bracketIdx &&
+		(target.beforeIdx === null || bracketIdx < target.beforeIdx);
+
+	const dropIndicatorYOf = (bracketIdx: number, target: MoveTarget) => {
+		const aboveIdx = aboveIdxOf(bracketIdx, target);
+		const aboveBottom =
+			aboveIdx === -1
+				? null
+				: positions[aboveIdx].y + positions[aboveIdx].height;
+		const belowTop =
+			target.beforeIdx === null ? null : positions[target.beforeIdx].y;
+
+		if (aboveBottom !== null && belowTop !== null) {
+			return (aboveBottom + belowTop) / 2;
+		}
+		if (belowTop !== null) return belowTop - ROW_GAP / 2;
+		if (aboveBottom !== null) return aboveBottom + ROW_GAP / 2;
+
+		return COLUMN_HEADER_HEIGHT - ROW_GAP / 2;
 	};
 
 	const connectDrag = activeDrag?.kind === "connect" ? activeDrag : null;
 	const moveDrag = activeDrag?.kind === "move" ? activeDrag : null;
+	const dropIndicator =
+		moveDrag?.target && !isCurrentPlace(moveDrag.bracketIdx, moveDrag.target)
+			? {
+					x: BOARD_PADDING + moveDrag.target.column * (CARD_WIDTH + COLUMN_GAP),
+					y: dropIndicatorYOf(moveDrag.bracketIdx, moveDrag.target),
+				}
+			: null;
 	const linkingFromIdx = connectDrag?.fromIdx ?? linkFromIdx;
 	const draftLine = connectDrag ? draftLineOf(connectDrag, positions) : null;
 
@@ -582,7 +661,7 @@ export function BracketProgressionBuilder({
 									key={column}
 									column={column}
 									isNewColumn={column === usedColumnCount}
-									isHovered={moveDrag?.hoveredColumn === column}
+									isHovered={moveDrag?.target?.column === column}
 									height={boardHeight - BOARD_PADDING}
 								/>
 							))}
@@ -764,6 +843,14 @@ export function BracketProgressionBuilder({
 									</BracketCard>
 								);
 							})}
+
+							{dropIndicator ? (
+								<div
+									className={styles.dropIndicator}
+									style={{ left: dropIndicator.x, top: dropIndicator.y }}
+									aria-hidden="true"
+								/>
+							) : null}
 
 							{lines.map((line, lineIdx) => {
 								const key = lineKey(line);
@@ -1478,6 +1565,7 @@ function BuilderColumn({
 					BOARD_PADDING / 2,
 				height,
 			}}
+			data-testid={`builder-column-${column}`}
 		>
 			<div className={styles.columnHeader}>
 				<span className={styles.columnTitle}>
@@ -1499,7 +1587,7 @@ function BuilderColumn({
 	);
 }
 
-/** A bracket of the board: dragged to move it between columns, its port dragged onto another card to connect them. */
+/** A bracket of the board: dragged to move it to another column or place, its port dragged onto another card to connect them. */
 function BracketCard({
 	bracketIdx,
 	position,
@@ -1634,6 +1722,20 @@ function draftLineOf(
 		endX: startX + drag.grabOffset.x + drag.delta.x,
 		endY: startY + drag.grabOffset.y + drag.delta.y,
 	};
+}
+
+/** Items indexed by bracket, moved to the brackets' new indexes */
+function reindexed<T>(
+	items: Array<T | undefined>,
+	bracketCount: number,
+	newIdxOf: (idx: number) => number,
+) {
+	const result: Array<T | undefined> = Array.from({ length: bracketCount });
+	for (let idx = 0; idx < bracketCount; idx++) {
+		result[newIdxOf(idx)] = items[idx];
+	}
+
+	return result;
 }
 
 interface TakenPlacements {

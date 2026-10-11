@@ -69,7 +69,7 @@ export const testTournament = ({
 		startsAt: 1705858842,
 		isFinalized: 0,
 		name: "test",
-		castTwitchAccounts: [],
+		castAccounts: [],
 		bracketProgressionOverrides: [],
 		staff: [],
 		toSetMapPool: [],
@@ -154,7 +154,11 @@ export const runningTournamentWithMatch = ({
 			castedMatchesInfo: lockFirstMatchForCast
 				? {
 						lockedMatches: [
-							{ matchId: data.match[0].id, twitchAccount: "test" },
+							{
+								matchId: data.match[0].id,
+								platform: "TWITCH",
+								account: "test",
+							},
 						],
 						castedMatches: [],
 					}

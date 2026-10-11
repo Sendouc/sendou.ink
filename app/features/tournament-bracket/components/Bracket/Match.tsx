@@ -7,6 +7,8 @@ import { Avatar } from "~/components/Avatar";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouPopover } from "~/components/elements/Popover";
 import { useUser } from "~/features/auth/core/user";
+import { StreamPlatformIcon } from "~/features/live-streams/components/StreamPlatformIcon";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { TournamentStream } from "~/features/tournament/components/TournamentStream";
 import { useTournamentVods } from "~/features/tournament/routes/to.$id";
 import { useTournament } from "~/features/tournament/tournament-context";
@@ -24,6 +26,7 @@ import type { MatchExitDestinations } from "../../core/Bracket/Bracket";
 import * as Deadline from "../../core/Deadline";
 import type { TournamentData } from "../../core/Tournament.server";
 import type { VodsByTournamentId } from "../../TournamentMatchVodRepository.server";
+import { tournamentBracketsPage } from "../../tournament-bracket-urls";
 import styles from "./Match.module.css";
 
 type LineType = "none" | "straight" | "curve-up" | "curve-down";
@@ -102,11 +105,18 @@ function MatchExitLabels({
 	const { t } = useTranslation(["tournament"]);
 	const tournament = useTournament();
 
-	const bracketName = (bracketIdx: number | null) =>
-		bracketIdx === null ? null : tournament.bracketsMeta[bracketIdx]?.name;
+	const exitRow = (type: "winner" | "loser", bracketIdx: number | null) => ({
+		type,
+		bracketIdx,
+		bracket:
+			bracketIdx === null ? null : tournament.bracketsMeta[bracketIdx]?.name,
+		isLinkable: tournament.visibleBracketsMeta.some(
+			(bracket) => bracket.idx === bracketIdx,
+		),
+	});
 
-	const winner = { type: "winner", bracket: bracketName(destinations.winner) };
-	const loser = { type: "loser", bracket: bracketName(destinations.loser) };
+	const winner = exitRow("winner", destinations.winner);
+	const loser = exitRow("loser", destinations.loser);
 	const rows = (
 		match.winnerSide === "opponent2" ? [loser, winner] : [winner, loser]
 	).filter((row) => hasLine || row.bracket);
@@ -118,26 +128,41 @@ function MatchExitLabels({
 			})}
 			data-testid="match-exits"
 		>
-			{rows.map(({ type, bracket }) => (
-				<div key={type} className={styles.matchExitRow}>
-					{bracket ? (
-						<>
-							<span className={styles.matchExitDots} aria-hidden="true" />
-							<span
+			{rows.map(({ type, bracket, bracketIdx, isLinkable }) => {
+				if (!bracket) {
+					return <div key={type} className={styles.matchExitRow} />;
+				}
+
+				const title = t(
+					type === "winner"
+						? "tournament:bracket.exit.winner"
+						: "tournament:bracket.exit.loser",
+					{ bracket },
+				);
+				const label = `${bracket} ${type === "winner" ? "[W]" : "[L]"}`;
+
+				return (
+					<div key={type} className={styles.matchExitRow}>
+						<span className={styles.matchExitDots} aria-hidden="true" />
+						{isLinkable && bracketIdx !== null ? (
+							<Link
+								to={tournamentBracketsPage({
+									tournamentId: tournament.ctx.id,
+									bracketIdx,
+								})}
 								className={styles.matchExit}
-								title={t(
-									type === "winner"
-										? "tournament:bracket.exit.winner"
-										: "tournament:bracket.exit.loser",
-									{ bracket },
-								)}
+								title={title}
 							>
-								{bracket} {type === "winner" ? "[W]" : "[L]"}
+								{label}
+							</Link>
+						) : (
+							<span className={styles.matchExit} title={title}>
+								{label}
 							</span>
-						</>
-					) : null}
-				</div>
-			))}
+						)}
+					</div>
+				);
+			})}
 		</div>
 	);
 }
@@ -387,7 +412,7 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 
 	const castingAccount = tournament.ctx.castedMatchesInfo?.castedMatches.find(
 		(cm) => cm.matchId === match.id,
-	)?.twitchAccount;
+	);
 
 	const matchParticipants = [match.opponent1.id, match.opponent2.id].flatMap(
 		(teamId) => tournament.teamById(teamId)?.memberUserIds ?? [],
@@ -396,7 +421,7 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 	const streamsOfThisMatch = tournament.streams.filter(
 		(stream) =>
 			(stream.userId && matchParticipants.includes(stream.userId)) ||
-			stream.twitchUserName === castingAccount,
+			(castingAccount && LiveStream.isSameAccount(stream, castingAccount)),
 	);
 
 	if (streamsOfThisMatch.length === 0) {
@@ -414,10 +439,10 @@ function MatchStreams({ match }: Pick<MatchProps, "match">) {
 			className={clsx("stack md justify-center", styles.streamPopover)}
 			data-testid="stream-popover"
 		>
-			{streamsOfThisMatch.map((stream) => (
+			{LiveStream.groupByStreamer(streamsOfThisMatch).map((streamer) => (
 				<TournamentStream
-					key={stream.twitchUserName}
-					stream={stream}
+					key={LiveStream.key(streamer.streams[0])}
+					streamer={streamer}
 					withThumbnail={false}
 				/>
 			))}
@@ -456,6 +481,10 @@ function MatchVods({ vods }: MatchVodsProps) {
 							{user ? vod.teamName : null}
 						</span>
 						<span className="text-lighter stack horizontal xs items-center">
+							<StreamPlatformIcon
+								platform={vod.platform}
+								className={styles.vodPlatformIcon}
+							/>
 							<Eye size={12} />
 							{vod.viewCount.toLocaleString()}
 						</span>

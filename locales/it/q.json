@@ -191,7 +191,5 @@
 	"tiers.info.p1": "Per esempio Leviathan è la top 5% dei giocatori. Diamante è l' 85esimo percentile etc.",
 	"tiers.info.p2": "Nota bene: Nessuno ha rango Leviathan prima che ci siano {{usersMin}} giocatori sulla classifica (o {{teamsMin}} per i team)",
 	"tiers.info.p3": "Ogni rango ha anche un tier + (see BRONZE+ as an example below). Ciò significa che sei nella top 50% di quel rango.",
-	"streams.noStreams": "Nessun match streammato al momento",
-	"streams.ownStreamInfo": "La tua stream è mancante? Assicurati che il tuo account Twitch sia collegato e il gioco settato sia Splatoon 3.",
-	"streams.ownStreamInfo.linkText": "Consulta il FAQ per ulteriori informazioni su come collegare il tuo account Twitch."
+	"streams.noStreams": "Nessun match streammato al momento"
 }

@@ -31,5 +31,6 @@ export const reportUserSchema = v.object({
 		label: "labels.reportMatchId",
 		bottomText: "bottomTexts.reportMatchId",
 		maxLength: USER_REPORT.MATCH_ID_MAX_LENGTH,
+		inputMode: "numeric",
 	}),
 });

@@ -1,0 +1,19 @@
+.links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--s-3);
+	justify-content: center;
+}
+
+.link {
+	display: flex;
+	align-items: center;
+	gap: var(--s-1);
+	font-size: var(--font-xs);
+	font-weight: var(--weight-semi);
+}
+
+.icon {
+	width: 1em;
+	height: 1em;
+}

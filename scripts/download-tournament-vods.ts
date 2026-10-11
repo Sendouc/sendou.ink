@@ -5,7 +5,7 @@
  * Usage: pnpm vods:download <tournament id or url> [--include-winless] [--dry-run]
  *
  * VoDs of teams that won no sets (e.g. went 0-2) are skipped unless --include-winless is passed.
- * Files go to scripts/output/vods/<tournament id>/<match id>-<twitch account>.mp4 and existing ones are not redownloaded.
+ * Files go to scripts/output/vods/<tournament id>/<match id>-<stream account>.mp4 and existing ones are not redownloaded.
  * Next to them go tournament.json and the logos it names, for the scanner's tournament montage (`/scanner?view=montage`, dev only).
  */
 import { spawnSync } from "node:child_process";
@@ -13,6 +13,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as R from "remeda";
+import type { StreamPlatform } from "~/features/live-streams/live-streams-constants";
 import {
 	MONTAGE_MANIFEST_FILE,
 	type MontageManifest,
@@ -53,6 +54,7 @@ if (!dryRun) await writeMontageManifest();
 
 const sectionsToDownload: Array<{
 	name: string;
+	platform: StreamPlatform;
 	platformVideoId: string;
 	start: number;
 	end: number;
@@ -79,6 +81,7 @@ for (const vod of vods) {
 
 	sectionsToDownload.push({
 		name,
+		platform: vod.platform,
 		platformVideoId: vod.platformVideoId,
 		...section,
 	});
@@ -90,7 +93,7 @@ let downloadedCount = 0;
 for (const [platformVideoId, sections] of Object.entries(
 	R.groupBy(sectionsToDownload, (section) => section.platformVideoId),
 )) {
-	const url = `https://www.twitch.tv/videos/${platformVideoId}`;
+	const url = videoUrl(sections[0]);
 	for (const section of sections) {
 		logger.info(
 			`${dryRun ? "Would download" : "Downloading"} ${section.name} (${url} ${section.start}s-${section.end}s)`,
@@ -130,6 +133,21 @@ logger.info(`Downloaded ${downloadedCount} VoDs to ${outputDir}`);
 if (failed.length > 0) {
 	logger.error(`Failed to download: ${failed.join(", ")}`);
 	process.exitCode = 1;
+}
+
+function videoUrl({
+	platform,
+	platformVideoId,
+}: {
+	platform: StreamPlatform;
+	platformVideoId: string;
+}) {
+	switch (platform) {
+		case "TWITCH":
+			return `https://www.twitch.tv/videos/${platformVideoId}`;
+		case "YOUTUBE":
+			return `https://www.youtube.com/watch?v=${platformVideoId}`;
+	}
 }
 
 async function writeMontageManifest() {

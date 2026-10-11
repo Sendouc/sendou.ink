@@ -1,4 +1,10 @@
+import * as R from "remeda";
 import type { Tables } from "~/db/tables";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
+import type {
+	StreamAccount,
+	StreamPlatform,
+} from "~/features/live-streams/live-streams-constants";
 import * as TournamentMatchVodRepository from "~/features/tournament-bracket/TournamentMatchVodRepository.server";
 import { hasTwitchEnvVars } from "~/modules/twitch/utils.server";
 import {
@@ -6,12 +12,21 @@ import {
 	getUsersByLogin,
 	parseTwitchDuration,
 } from "~/modules/twitch/vods";
-import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { hasYoutubeEnvVars } from "~/modules/youtube/utils.server";
+import { findRecentLiveStreams } from "~/modules/youtube/vods";
+import { databaseTimestampNow, dateToDatabaseTimestamp } from "~/utils/dates";
 import { logger } from "~/utils/logger";
 import { Routine } from "./routine.server";
 
 const VOD_TIMESTAMP_OFFSET_SECONDS = 180;
 const BRACKET_RESET_OFFSET_SECONDS = 0;
+
+interface ArchivedStream {
+	videoId: string;
+	startSeconds: number;
+	endSeconds: number;
+	viewCount: number;
+}
 
 interface VodMatchRound {
 	stageType: string;
@@ -25,7 +40,7 @@ export const SyncTournamentVodsRoutine = new Routine({
 });
 
 async function syncTournamentVods() {
-	if (!hasTwitchEnvVars()) return;
+	if (!hasTwitchEnvVars() && !hasYoutubeEnvVars()) return;
 
 	const tournaments =
 		await TournamentMatchVodRepository.findTournamentsNeedingVodSync();
@@ -47,139 +62,71 @@ export async function processOneTournament(tournamentId: number) {
 		await TournamentMatchVodRepository.findMatchesWithStartedAt(tournamentId);
 	if (matches.length === 0) return false;
 
-	let hadApiError = false;
-
-	const matchesById = new Map(matches.map((m) => [m.id, m]));
-	const loginToTwitchId = new Map<string, string>();
-	const vods: Omit<Tables["TournamentMatchVod"], "id">[] = [];
-
-	// Player stream VODs
-	const streamers =
-		await TournamentMatchVodRepository.findStreamersByTournamentId(
+	// cast accounts (null userId) are handled via castedMatchHistory below
+	const playerStreamers = (
+		await TournamentMatchVodRepository.findStreamersByTournamentId(tournamentId)
+	).filter(
+		(streamer): streamer is typeof streamer & { userId: number } =>
+			streamer.userId !== null && isPlatformSynced(streamer.platform),
+	);
+	const castedMatchHistory = (
+		await TournamentMatchVodRepository.findCastedMatchHistoryByTournamentId(
 			tournamentId,
+		)
+	).filter((entry) => isPlatformSynced(entry.platform));
+
+	const { archivedStreamsByKey, hadApiError } = await fetchArchivedStreams(
+		R.uniqueBy([...playerStreamers, ...castedMatchHistory], LiveStream.key),
+	);
+
+	const vods: Omit<Tables["TournamentMatchVod"], "id">[] = [];
+	const addedVodKeys = new Set<string>();
+	const addVod = ({
+		match,
+		streamAccount,
+		userId,
+	}: {
+		match: (typeof matches)[number];
+		streamAccount: StreamAccount;
+		userId: number | null;
+	}) => {
+		const vodKey = `${match.id}-${streamAccount.account}`;
+		if (!match.startedAt || addedVodKeys.has(vodKey)) return;
+
+		const archivedStreams = archivedStreamsByKey.get(
+			LiveStream.key(streamAccount),
 		);
+		if (!archivedStreams) return;
 
-	if (streamers.length > 0) {
-		const twitchUsers = await getUsersByLogin(
-			streamers.map((s) => s.twitchAccount),
-		);
-		for (const u of twitchUsers) {
-			loginToTwitchId.set(u.login.toLowerCase(), u.id);
-		}
+		const vodMatch = findMatchingVod(match.startedAt, match, archivedStreams);
+		if (!vodMatch) return;
 
-		const participantsByMatch = new Map(
-			matches.map((m) => [m.id, new Set(m.participants.map((p) => p.userId))]),
-		);
+		vods.push({
+			matchId: match.id,
+			userId,
+			platform: streamAccount.platform,
+			account: streamAccount.account,
+			...vodMatch,
+		});
+		addedVodKeys.add(vodKey);
+	};
 
-		const streamerDbUserIds = new Map(
-			streamers
-				.filter((s) => s.userId !== null)
-				.map((s) => [s.twitchAccount.toLowerCase(), s.userId!]),
-		);
-
-		for (const streamer of streamers) {
-			const dbUserId =
-				streamerDbUserIds.get(streamer.twitchAccount.toLowerCase()) ?? null;
-
-			// cast accounts (null userId) are handled via castedMatchHistory below
-			if (dbUserId === null) continue;
-
-			const twitchUserId = loginToTwitchId.get(
-				streamer.twitchAccount.toLowerCase(),
-			);
-			if (!twitchUserId) continue;
-
-			let videos: Awaited<ReturnType<typeof fetchArchiveVideos>>;
-			try {
-				videos = await fetchArchiveVideos(twitchUserId);
-			} catch (e) {
-				logger.warn(`Failed to fetch VODs for ${streamer.twitchAccount}: ${e}`);
-				hadApiError = true;
+	for (const streamer of playerStreamers) {
+		for (const match of matches) {
+			if (!match.participants.some((p) => p.userId === streamer.userId)) {
 				continue;
 			}
-			if (!videos) continue;
 
-			for (const match of matches) {
-				if (!match.startedAt) continue;
-
-				const matchParticipants = participantsByMatch.get(match.id);
-				if (!matchParticipants?.has(dbUserId)) continue;
-
-				const vodMatch = findMatchingVod(match.startedAt, match, videos);
-				if (!vodMatch) continue;
-
-				vods.push({
-					matchId: match.id,
-					userId: dbUserId,
-					platform: "TWITCH",
-					account: streamer.twitchAccount,
-					...vodMatch,
-				});
-			}
+			addVod({ match, streamAccount: streamer, userId: streamer.userId });
 		}
 	}
 
-	// Cast stream VODs
-	const castedMatchHistory =
-		await TournamentMatchVodRepository.findCastedMatchHistoryByTournamentId(
-			tournamentId,
-		);
+	const matchesById = new Map(matches.map((m) => [m.id, m]));
+	for (const entry of castedMatchHistory) {
+		const match = matchesById.get(entry.matchId);
+		if (!match) continue;
 
-	if (castedMatchHistory.length > 0) {
-		const castMatchesByAccount = new Map<string, Set<number>>();
-		for (const entry of castedMatchHistory) {
-			if (!castMatchesByAccount.has(entry.twitchAccount)) {
-				castMatchesByAccount.set(entry.twitchAccount, new Set());
-			}
-			castMatchesByAccount.get(entry.twitchAccount)!.add(entry.matchId);
-		}
-
-		const newCastLogins = [...castMatchesByAccount.keys()].filter(
-			(account) => !loginToTwitchId.has(account.toLowerCase()),
-		);
-		if (newCastLogins.length > 0) {
-			const newUsers = await getUsersByLogin(newCastLogins);
-			for (const u of newUsers) {
-				loginToTwitchId.set(u.login.toLowerCase(), u.id);
-			}
-		}
-
-		const addedVodKeys = new Set(vods.map((v) => `${v.matchId}-${v.account}`));
-
-		for (const [account, matchIds] of castMatchesByAccount) {
-			const twitchUserId = loginToTwitchId.get(account.toLowerCase());
-			if (!twitchUserId) continue;
-
-			let videos: Awaited<ReturnType<typeof fetchArchiveVideos>>;
-			try {
-				videos = await fetchArchiveVideos(twitchUserId);
-			} catch (e) {
-				logger.warn(`Failed to fetch VODs for ${account}: ${e}`);
-				hadApiError = true;
-				continue;
-			}
-			if (!videos) continue;
-
-			for (const matchId of matchIds) {
-				const match = matchesById.get(matchId);
-				if (!match?.startedAt) continue;
-
-				const vodKey = `${matchId}-${account}`;
-				if (addedVodKeys.has(vodKey)) continue;
-
-				const vodMatch = findMatchingVod(match.startedAt, match, videos);
-				if (!vodMatch) continue;
-
-				vods.push({
-					matchId,
-					userId: null,
-					platform: "TWITCH",
-					account,
-					...vodMatch,
-				});
-				addedVodKeys.add(vodKey);
-			}
-		}
+		addVod({ match, streamAccount: entry, userId: null });
 	}
 
 	if (vods.length > 0) {
@@ -190,9 +137,82 @@ export async function processOneTournament(tournamentId: number) {
 	return hadApiError;
 }
 
-async function fetchArchiveVideos(twitchUserId: string) {
-	const videos = await getArchiveVideos(twitchUserId);
-	return videos.length > 0 ? videos : null;
+function isPlatformSynced(platform: StreamPlatform) {
+	switch (platform) {
+		case "TWITCH":
+			return hasTwitchEnvVars();
+		case "YOUTUBE":
+			return hasYoutubeEnvVars();
+	}
+}
+
+/** Archived streams of each account (by `LiveStream.key`), left out for accounts whose fetch failed. */
+async function fetchArchivedStreams(streamAccounts: StreamAccount[]) {
+	const archivedStreamsByKey = new Map<string, ArchivedStream[]>();
+	let hadApiError = false;
+
+	const twitchLogins = streamAccounts
+		.filter((streamAccount) => streamAccount.platform === "TWITCH")
+		.map((streamAccount) => streamAccount.account);
+	const twitchUserIdByLogin = new Map(
+		twitchLogins.length > 0
+			? (await getUsersByLogin(twitchLogins)).map((user) => [
+					user.login.toLowerCase(),
+					user.id,
+				])
+			: [],
+	);
+
+	for (const streamAccount of streamAccounts) {
+		try {
+			archivedStreamsByKey.set(
+				LiveStream.key(streamAccount),
+				await fetchAccountArchivedStreams(streamAccount, twitchUserIdByLogin),
+			);
+		} catch (e) {
+			logger.warn(`Failed to fetch VODs for ${streamAccount.account}: ${e}`);
+			hadApiError = true;
+		}
+	}
+
+	return { archivedStreamsByKey, hadApiError };
+}
+
+async function fetchAccountArchivedStreams(
+	{ platform, account }: StreamAccount,
+	twitchUserIdByLogin: Map<string, string>,
+): Promise<ArchivedStream[]> {
+	switch (platform) {
+		case "TWITCH": {
+			const twitchUserId = twitchUserIdByLogin.get(account.toLowerCase());
+			if (!twitchUserId) return [];
+
+			return (await getArchiveVideos(twitchUserId)).map((video) => {
+				const startSeconds = dateToDatabaseTimestamp(
+					new Date(video.created_at),
+				);
+
+				return {
+					videoId: video.id,
+					startSeconds,
+					endSeconds: startSeconds + parseTwitchDuration(video.duration),
+					viewCount: video.view_count,
+				};
+			});
+		}
+		case "YOUTUBE": {
+			const nowSeconds = databaseTimestampNow();
+
+			return (await findRecentLiveStreams(account)).map((stream) => ({
+				videoId: stream.videoId,
+				startSeconds: dateToDatabaseTimestamp(stream.startedAt),
+				endSeconds: stream.endedAt
+					? dateToDatabaseTimestamp(stream.endedAt)
+					: nowSeconds,
+				viewCount: stream.viewCount,
+			}));
+		}
+	}
 }
 
 /** How many seconds past the match start the VoD timestamp of the match points to. */
@@ -210,27 +230,21 @@ export function vodTimestampOffsetSeconds(match: VodMatchRound) {
 function findMatchingVod(
 	matchStartSeconds: number,
 	match: VodMatchRound,
-	videos: NonNullable<Awaited<ReturnType<typeof fetchArchiveVideos>>>,
+	archivedStreams: ArchivedStream[],
 ) {
-	for (const video of videos) {
-		const vodStartSeconds = dateToDatabaseTimestamp(new Date(video.created_at));
-		const vodDurationSeconds = parseTwitchDuration(video.duration);
-		const vodEndSeconds = vodStartSeconds + vodDurationSeconds;
+	const archivedStream = archivedStreams.find(
+		(stream) =>
+			matchStartSeconds >= stream.startSeconds &&
+			matchStartSeconds <= stream.endSeconds,
+	);
+	if (!archivedStream) return null;
 
-		if (
-			matchStartSeconds >= vodStartSeconds &&
-			matchStartSeconds <= vodEndSeconds
-		) {
-			const timestampSeconds =
-				matchStartSeconds - vodStartSeconds + vodTimestampOffsetSeconds(match);
-
-			return {
-				platformVideoId: video.id,
-				timestampSeconds,
-				viewCount: video.view_count,
-			};
-		}
-	}
-
-	return null;
+	return {
+		platformVideoId: archivedStream.videoId,
+		timestampSeconds:
+			matchStartSeconds -
+			archivedStream.startSeconds +
+			vodTimestampOffsetSeconds(match),
+		viewCount: archivedStream.viewCount,
+	};
 }

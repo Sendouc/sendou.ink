@@ -1,6 +1,7 @@
 import { isAfter, subDays } from "date-fns";
 import type { LoaderFunctionArgs } from "react-router";
 import { getUser } from "~/features/auth/core/user.server";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import {
@@ -59,7 +60,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			ctx: tournament.ctx,
 			bracketsMeta: await bracketsMetaCached(tournamentId),
 		},
-		streamsCount: tournament.streams.length,
+		streamsCount: LiveStream.groupByStreamer(tournament.streams).length,
 		friendCodes: showFriendCodes
 			? await TournamentRepository.findFriendCodesByTournamentId(tournamentId)
 			: undefined,

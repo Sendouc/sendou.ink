@@ -18,6 +18,8 @@ export interface GetUserResponse {
 	country: string | null;
 	socials: {
 		twitch: string | null;
+		/** YouTube channel ID @example "UCLN8s9Ogn71QcCYIPtb9mtw" */
+		youtube: string | null;
 		/** @deprecated */
 		twitter: null;
 		bsky: string | null;
@@ -210,17 +212,22 @@ export interface GetCastedTournamentMatchesResponse {
 }
 
 type TournamentCastChannel = {
-	type: "TWITCH";
-	/** @example "iplsplatoon" */
+	type: "TWITCH" | "YOUTUBE";
+	/** Twitch login or YouTube channel ID. @example "iplsplatoon" */
 	channelId: string;
+	/** @example "https://twitch.tv/iplsplatoon" */
+	url: string;
 };
 
 /** GET /api/tournament/{tournamentId}/streams */
 
 export type GetTournamentStreamsResponse = Array<
 	{
-		platform: "TWITCH";
+		platform: "TWITCH" | "YOUTUBE";
+		/** Twitch login or YouTube channel ID. */
 		channelId: string;
+		/** Where the stream can be watched. @example "https://twitch.tv/iplsplatoon" */
+		url: string;
 		viewerCount: number;
 	} & ({ type: "PLAYER"; userId: number } | { type: "CAST" })
 >;

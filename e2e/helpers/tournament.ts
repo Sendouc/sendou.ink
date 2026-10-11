@@ -158,6 +158,22 @@ export const SOS_BRACKETS: BracketProgression = [
 	},
 ];
 
+/** Two independent single elimination brackets, teams split between them on the seeds page. */
+export const TWO_STARTING_BRACKETS: BracketProgression = [
+	{
+		type: "single_elimination",
+		name: "Division 1",
+		requiresCheckIn: false,
+		settings: {},
+	},
+	{
+		type: "single_elimination",
+		name: "Division 2",
+		requiresCheckIn: false,
+		settings: {},
+	},
+];
+
 export const SWISS_TO_TOP_CUT: BracketProgression = [
 	{
 		type: "swiss",
@@ -204,6 +220,7 @@ export type TeamSeed = {
 	members?: number[];
 	rosterSize?: number;
 	isCheckedIn?: boolean;
+	startingBracketIdx?: number;
 };
 
 /** `count` checked in teams with full rosters of fresh users. */
@@ -240,7 +257,10 @@ export async function createTeams(
 						...fillerUsers.map((user) => user.id),
 					],
 				},
-				{ isCheckedIn: seed.isCheckedIn ?? true },
+				{
+					isCheckedIn: seed.isCheckedIn ?? true,
+					startingBracketIdx: seed.startingBracketIdx,
+				},
 			),
 		);
 	}

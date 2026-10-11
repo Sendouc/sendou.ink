@@ -1,6 +1,7 @@
-import { subMinutes } from "date-fns";
+import { addHours, subMinutes } from "date-fns";
 import { ADMIN_ID } from "~/features/admin/admin-constants";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { expect, impersonate, isNotVisible, test } from "./helpers/playwright";
 import {
 	createTeams,
@@ -11,6 +12,7 @@ import {
 	SOS_BRACKETS,
 	startedTournamentTimes,
 	TO_MAP_POOL,
+	TWO_STARTING_BRACKETS,
 	teamSeeds,
 } from "./helpers/tournament";
 import { CalendarNewEventPage } from "./pages/calendar/calendar-new-event-page";
@@ -306,6 +308,100 @@ test.describe("Tournament bracket multi stage", () => {
 		}
 
 		await expect(brackets.match(11)).toBeVisible();
+	});
+
+	test("offers check out until the team's starting bracket starts and drop out after", async ({
+		page,
+		factories,
+	}) => {
+		const tournament = await factories.TournamentFactory.create({
+			authorId: ADMIN_ID,
+			startTimes: startedTournamentTimes(),
+			bracketProgression: TWO_STARTING_BRACKETS,
+			mapPoolMaps: TO_MAP_POOL,
+		});
+		const teams = await createTeams(
+			factories,
+			tournament.id,
+			[0, 0, 0, 0, 1, 1, 1, 1].map((startingBracketIdx) => ({
+				startingBracketIdx,
+			})),
+		);
+		await factories.TournamentFactory.startBracket(tournament.id, {
+			bracketIdx: 0,
+		});
+
+		await impersonate(page);
+
+		const brackets = new TournamentBracketsPage(page);
+		await brackets.goto(tournament.id, 1);
+		await expect(brackets.bracketTeamName("Team 5")).toBeVisible();
+
+		const admin = new TournamentAdminPage(page);
+		await admin.goto(tournament.id);
+		await admin.openTeamActions(teams[0].id);
+		await expect(admin.teamActionsMenuItem("Drop out")).toBeVisible();
+		await expect(admin.teamActionsMenuItem(/^Check out/)).toHaveCount(0);
+
+		await admin.goto(tournament.id);
+		await admin.openTeamActions(teams[4].id);
+		await expect(admin.teamActionsMenuItem(/^Check out/)).toBeVisible();
+		await expect(admin.teamActionsMenuItem("Drop out")).toHaveCount(0);
+
+		await admin.goto(tournament.id);
+		await admin.checkStartedTeamOut(teams[4].id);
+
+		await expect(admin.teamRow(teams[4].id)).toHaveCount(0);
+
+		await brackets.goto(tournament.id, 1);
+		await expect(brackets.bracketTeamName("Team 6")).toBeVisible();
+		await expect(brackets.bracketTeamName("Team 5")).toHaveCount(0);
+	});
+
+	test("starts a starting bracket with the maps prepared for another starting bracket", async ({
+		page,
+		factories,
+	}) => {
+		const [division1, division2] = TWO_STARTING_BRACKETS;
+		const tournament = await factories.TournamentFactory.create({
+			authorId: ADMIN_ID,
+			startTimes: startedTournamentTimes(),
+			// maps can only be prepared for a bracket that can't be started yet
+			bracketProgression: [
+				division1,
+				{
+					...division2,
+					startTime: dateToDatabaseTimestamp(addHours(new Date(), 1)),
+				},
+			],
+			mapPoolMaps: TO_MAP_POOL,
+		});
+		await createTeams(
+			factories,
+			tournament.id,
+			[0, 0, 0, 0, 1, 1, 1, 1].map((startingBracketIdx) => ({
+				startingBracketIdx,
+			})),
+		);
+
+		await impersonate(page);
+
+		const brackets = new TournamentBracketsPage(page);
+		await brackets.goto(tournament.id, 1);
+
+		const prepareDialog = await brackets.openPrepareMapsDialog();
+		await prepareDialog.confirm();
+
+		await brackets.goto(tournament.id, 1);
+		await expect(brackets.locators.preparedMapsCheckIcon).toBeVisible();
+
+		await brackets.goto(tournament.id, 0);
+
+		const startDialog = await brackets.openFinalizeDialog();
+		await expect(startDialog.locators.preparedByText).toBeVisible();
+		await startDialog.confirm();
+
+		await expect(brackets.locators.matches.first()).toBeVisible();
 	});
 
 	test("plays out a redemption bracket set up in the tournament creation form", async ({

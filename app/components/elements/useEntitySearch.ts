@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useFetcher } from "react-router";
+import { SEARCH_DEBOUNCE_MS } from "~/features/search/search-constants";
 import { useDebounce } from "~/hooks/useDebounce";
 
 /** Sentinel items rendered in place of real results while loading or when empty. */
@@ -52,7 +53,7 @@ export function useEntitySearch<TItem extends { id: number }>({
 			queryFetcher.load(buildUrl(query));
 			setSelectedKey(null);
 		},
-		500,
+		SEARCH_DEBOUNCE_MS,
 		[query],
 	);
 

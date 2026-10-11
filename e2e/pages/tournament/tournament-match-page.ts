@@ -298,7 +298,7 @@ export class TournamentMatchPage {
 	 * which auto-submits the cast channel on pick. */
 	setCastedBy(twitchAccount: string) {
 		return waitForPOSTResponse(this.page, async () => {
-			await this.page.locator(`label[for$="-${twitchAccount}"]`).click();
+			await this.page.locator(`label[for$="-TWITCH:${twitchAccount}"]`).click();
 		});
 	}
 

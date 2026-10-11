@@ -3,6 +3,8 @@ import { db } from "~/db/sql";
 import * as ChatRepository from "~/features/chat/ChatRepository.server";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
 import type { PersistedSystemMessageType } from "~/features/chat/chat-types";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
+import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import { notify } from "~/features/notifications/core/notify.server";
 import { resolveNotifications } from "~/features/notifications/core/resolve.server";
 import { linkStoredMatches } from "~/features/scanner-ingest/core/relink.server";
@@ -548,15 +550,15 @@ export const action = defineAction(
 					"Not an organizer or streamer",
 				);
 				errorToastIfFalsy(
-					body.twitchAccount === null ||
-						tournament.ctx.castTwitchAccounts?.includes(body.twitchAccount),
-					"Invalid Twitch account",
+					body.castAccount === null ||
+						isCastAccountOf(tournament, body.castAccount),
+					"Invalid cast account",
 				);
 
 				await TournamentRepository.setMatchAsCasted({
 					matchId: match.id,
 					tournamentId: tournament.ctx.id,
-					twitchAccount: body.twitchAccount,
+					castAccount: body.castAccount,
 				});
 
 				emitTournamentUpdate = true;
@@ -569,8 +571,8 @@ export const action = defineAction(
 					"Not an organizer or streamer",
 				);
 				errorToastIfFalsy(
-					tournament.ctx.castTwitchAccounts?.includes(body.twitchAccount),
-					"Invalid Twitch account",
+					isCastAccountOf(tournament, body.castAccount),
+					"Invalid cast account",
 				);
 
 				// can't lock if the match can already be played, let's update their view to reflect that
@@ -581,7 +583,7 @@ export const action = defineAction(
 				await TournamentRepository.lockMatch({
 					matchId: match.id,
 					tournamentId: tournament.ctx.id,
-					twitchAccount: body.twitchAccount,
+					castAccount: body.castAccount,
 				});
 
 				emitMatchUpdate = true;
@@ -1098,4 +1100,10 @@ function canReportTournamentScore({
 	isOrganizer: boolean;
 }) {
 	return !match.winnerSide && (isMemberOfATeamInTheMatch || isOrganizer);
+}
+
+function isCastAccountOf(tournament: Tournament, account: StreamAccount) {
+	return (tournament.ctx.castAccounts ?? []).some((castAccount) =>
+		LiveStream.isSameAccount(castAccount, account),
+	);
 }

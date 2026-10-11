@@ -1,5 +1,6 @@
 import { addHours, subMinutes } from "date-fns";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { Factories } from "./helpers/factories";
 import { expect, impersonate, test } from "./helpers/playwright";
@@ -86,13 +87,54 @@ test.describe("Tournament streams", () => {
 		).toBeVisible();
 	});
 
+	test("streamer live on both platforms shows as one card with a link per platform", async ({
+		page,
+		factories,
+	}) => {
+		const { tournament, players } = await createStartableTournament(factories);
+		await factories.LiveStreamFactory.replaceAll([
+			{
+				userId: players[0].id,
+				account: "both_platforms",
+				viewerCount: 100,
+			},
+			{
+				userId: players[0].id,
+				platform: "YOUTUBE",
+				account: "UCbothPlatforms000000000",
+				viewerCount: 50,
+			},
+		]);
+		await factories.TournamentFactory.startBracket(tournament.id);
+
+		const streams = new TournamentStreamsPage(page);
+		await streams.goto(tournament.id);
+
+		await expect(streams.locators.streams).toHaveCount(1);
+		await expect(streams.platformLink("Twitch")).toHaveAttribute(
+			"href",
+			LiveStream.url({ platform: "TWITCH", account: "both_platforms" }),
+		);
+		await expect(streams.platformLink("YouTube")).toHaveAttribute(
+			"href",
+			LiveStream.url({
+				platform: "YOUTUBE",
+				account: "UCbothPlatforms000000000",
+			}),
+		);
+		await expect(streams.viewerCount(150)).toBeVisible();
+
+		await streams.locators.helpButton.click();
+		await expect(streams.locators.helpDialog).toBeVisible();
+	});
+
 	test("cast stream shows on bracket when match is set as casted", async ({
 		page,
 		factories,
 	}) => {
 		const { tournament } = await createStartableTournament(factories);
 		await factories.LiveStreamFactory.replaceAll([
-			{ userId: null, twitch: CAST_ACCOUNT },
+			{ userId: null, account: CAST_ACCOUNT },
 		]);
 
 		await impersonate(page, NZAP_TEST_ID);

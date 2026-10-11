@@ -182,39 +182,37 @@ export function defaultBracketName(
 }
 
 /**
- * Moves a bracket to a column, the first one making it a starting bracket. Lines from brackets that would no
- * longer be on its left are removed, the count of them is returned. The first bracket always stays a starting bracket.
+ * Moves a bracket to a column, the first one making it a starting bracket, and in it above the bracket `beforeIdx`
+ * (null = to the bottom). Brackets of a column are in index order, so the bracket gets a new index if needed for
+ * its place, `newIdxOf` mapping each old index to its new one. Lines from brackets that would no longer be on its
+ * left are removed, the count of them is returned. The first bracket always stays the first starting bracket.
  */
-export function moveToColumn(
+export function moveBracket(
 	values: BuilderValues,
 	bracketIdx: number,
-	column: number,
+	target: { column: number; beforeIdx: number | null },
 	minColumns: ReadonlyArray<number | undefined> = [],
-): { values: BuilderValues; removedConnectionCount: number } {
-	if (bracketIdx === 0) return { values, removedConnectionCount: 0 };
-
-	const incoming = connections(values).filter(
-		(line) => line.toIdx === bracketIdx,
-	);
-
-	if (column === 0) {
-		return {
-			values: withProgressionEntry(values, bracketIdx, signUpEntry()),
-			removedConnectionCount: incoming.length,
-		};
+): {
+	values: BuilderValues;
+	removedConnectionCount: number;
+	newIdxOf: (idx: number) => number;
+} {
+	if (bracketIdx === 0) {
+		return { values, removedConnectionCount: 0, newIdxOf: (idx) => idx };
 	}
 
 	const currentColumns = columns(values, minColumns);
-	const keptSources = incoming
-		.filter((line) => currentColumns[line.fromIdx] < column)
-		.map((line) => values.progression[bracketIdx].sources[line.sourceIdx]);
+	const moved = withColumn(values, bracketIdx, target.column, currentColumns);
+	const toIdx = idxForPlaceInColumn(bracketIdx, target, currentColumns);
+	const newIdxOf = (idx: number) => movedIdx(idx, bracketIdx, toIdx);
 
 	return {
-		values: withProgressionEntry(values, bracketIdx, {
-			source: "BRACKET",
-			sources: keptSources,
-		}),
-		removedConnectionCount: incoming.length - keptSources.length,
+		values:
+			toIdx === bracketIdx
+				? moved.values
+				: reindexed(moved.values, bracketIdx, toIdx),
+		removedConnectionCount: moved.removedConnectionCount,
+		newIdxOf,
 	};
 }
 
@@ -903,6 +901,106 @@ function withProgressionEntry(
 		progression: values.progression.map((existing, idx) =>
 			idx === bracketIdx ? entry : existing,
 		),
+	};
+}
+
+function withColumn(
+	values: BuilderValues,
+	bracketIdx: number,
+	column: number,
+	currentColumns: number[],
+) {
+	const incoming = connections(values).filter(
+		(line) => line.toIdx === bracketIdx,
+	);
+
+	if (column === 0) {
+		return {
+			values: withProgressionEntry(values, bracketIdx, signUpEntry()),
+			removedConnectionCount: incoming.length,
+		};
+	}
+
+	const keptSources = incoming
+		.filter((line) => currentColumns[line.fromIdx] < column)
+		.map((line) => values.progression[bracketIdx].sources[line.sourceIdx]);
+
+	return {
+		values: withProgressionEntry(values, bracketIdx, {
+			source: "BRACKET",
+			sources: keptSources,
+		}),
+		removedConnectionCount: incoming.length - keptSources.length,
+	};
+}
+
+/** Index putting the bracket to its place among the column's other brackets, changing it only if it's not there already. */
+function idxForPlaceInColumn(
+	bracketIdx: number,
+	target: { column: number; beforeIdx: number | null },
+	currentColumns: number[],
+) {
+	const { beforeIdx } = target;
+	const aboveIdx = currentColumns.findLastIndex(
+		(column, idx) =>
+			column === target.column &&
+			idx !== bracketIdx &&
+			(beforeIdx === null || idx < beforeIdx),
+	);
+
+	// the first bracket stays above every other
+	if (beforeIdx !== null && bracketIdx > beforeIdx) {
+		return Math.max(1, beforeIdx);
+	}
+	if (aboveIdx !== -1 && bracketIdx < aboveIdx) return aboveIdx;
+
+	return bracketIdx;
+}
+
+function movedIdx(idx: number, fromIdx: number, toIdx: number) {
+	if (idx === fromIdx) return toIdx;
+	if (fromIdx < idx && idx <= toIdx) return idx - 1;
+	if (toIdx <= idx && idx < fromIdx) return idx + 1;
+
+	return idx;
+}
+
+function reindexed(
+	values: BuilderValues,
+	fromIdx: number,
+	toIdx: number,
+): BuilderValues {
+	const moveItem = <T>(items: T[]) => {
+		const result = [...items];
+		const [item] = result.splice(fromIdx, 1);
+		result.splice(toIdx, 0, item);
+		return result;
+	};
+
+	return {
+		brackets: moveItem(values.brackets),
+		progression: moveItem(values.progression).map((entry) => {
+			if (entry.source !== "BRACKET") return entry;
+
+			return {
+				...entry,
+				sources: entry.sources.map((source) => {
+					const sourceIdx = Number(source.bracketIdx);
+					if (
+						String(sourceIdx) !== source.bracketIdx ||
+						sourceIdx < 0 ||
+						sourceIdx >= values.brackets.length
+					) {
+						return source;
+					}
+
+					return {
+						...source,
+						bracketIdx: String(movedIdx(sourceIdx, fromIdx, toIdx)),
+					};
+				}),
+			};
+		}),
 	};
 }
 

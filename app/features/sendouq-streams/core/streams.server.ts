@@ -8,6 +8,8 @@ import {
 	cachedFullUserLeaderboard,
 	type UserLeaderboardWithAdditionsItem,
 } from "~/features/leaderboards/core/leaderboards.server";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
+import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import * as Seasons from "~/features/mmr/core/Seasons";
 import { TIERS, type TierName } from "~/features/mmr/mmr-constants";
 import { SendouQ } from "~/features/sendouq/core/SendouQ.server";
@@ -52,7 +54,7 @@ export function cachedStreams() {
 					return a.tier?.isPlus ? -1 : 1;
 				}
 
-				return b.stream.viewerCount - a.stream.viewerCount;
+				return b.viewerCount - a.viewerCount;
 			});
 		},
 	});
@@ -73,29 +75,34 @@ function streamedMatches({
 	matchPlayers: QStreamsRepository.ActiveMatchPlayersItem[];
 	leaderboard: UserLeaderboardWithAdditionsItem[];
 }) {
-	return matchPlayers.flatMap((player) => {
-		if (!player.streamTwitch) {
-			return [];
-		}
+	const playerByUserId = new Map(
+		matchPlayers.map((player) => [player.user.id, player]),
+	);
+	const streamers = LiveStream.groupByStreamer(
+		matchPlayers.map((player) => ({
+			platform: player.streamPlatform,
+			account: player.streamAccount,
+			videoId: player.streamVideoId,
+			thumbnailUrl: player.streamThumbnailUrl,
+			viewerCount: player.streamViewerCount,
+			userId: player.user.id,
+		})),
+	);
 
+	return streamers.map(({ streams, viewerCount }) => {
+		const player = playerByUserId.get(streams[0].userId)!;
 		const leaderboardEntry = leaderboard.find(
 			(entry) => entry.id === player.user.id,
 		);
 
 		return {
-			stream: {
-				thumbnailUrl: player.streamThumbnailUrl,
-				twitchUserName: player.streamTwitch,
-				viewerCount: player.streamViewerCount,
-			},
+			streams,
+			viewerCount,
 			match: {
 				id: player.groupMatchId,
 				createdAt: player.groupMatchCreatedAt,
 			},
-			user: {
-				...player.user,
-				twitch: player.user.twitch!,
-			},
+			user: player.user,
 			weaponSplId: leaderboardEntry?.weaponSplId,
 			tier: leaderboardEntry?.tier,
 		};
@@ -105,7 +112,7 @@ function streamedMatches({
 export type SendouQSidebarEntry = {
 	sidebarStream: SidebarStream;
 	tier: { name: TierName; isPlus: boolean } | null;
-	twitchUsernames: string[];
+	streamAccounts: StreamAccount[];
 };
 
 export async function getSendouQSidebarStreams(): Promise<
@@ -123,10 +130,6 @@ export async function getSendouQSidebarStreams(): Promise<
 
 		const matchGroups = SendouQ.groups.filter((g) => g.matchId === matchId);
 		const averageTier = calculateAverageTierForMatch(matchGroups);
-
-		const twitchUsernames = matchStreams
-			.map((s) => s.stream.twitchUserName)
-			.filter((t): t is string => t !== null);
 
 		entries.push({
 			sidebarStream: {
@@ -146,7 +149,7 @@ export async function getSendouQSidebarStreams(): Promise<
 				tier: null,
 			},
 			tier: averageTier,
-			twitchUsernames,
+			streamAccounts: matchStreams.flatMap((s) => s.streams),
 		});
 	}
 

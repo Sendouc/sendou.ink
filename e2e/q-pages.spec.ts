@@ -1,3 +1,4 @@
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { sendouQMatchPage } from "~/utils/urls";
 import { expect, expectNoErrorPage, test } from "./helpers/playwright";
 import { createNamedUsers, createUserIds } from "./helpers/sidebar";
@@ -29,19 +30,22 @@ test.describe("SendouQ pages", () => {
 		await factories.LiveStreamFactory.replaceAll([
 			{
 				userId: streamer.id,
-				twitch: STREAMER_TWITCH,
+				account: STREAMER_TWITCH,
 				viewerCount: STREAM_VIEWER_COUNT,
 			},
 		]);
 
 		await streamsPage.goto();
 
-		await expect(streamsPage.streamerLink("QStreamer")).toBeVisible();
+		await expect(streamsPage.streamer("QStreamer")).toBeVisible();
 		await expect(streamsPage.matchLink(match.id)).toHaveAttribute(
 			"href",
 			sendouQMatchPage(match.id),
 		);
-		await expect(streamsPage.twitchLink(STREAMER_TWITCH)).toBeVisible();
+		await expect(streamsPage.platformLink("Twitch")).toHaveAttribute(
+			"href",
+			LiveStream.url({ platform: "TWITCH", account: STREAMER_TWITCH }),
+		);
 		await expect(streamsPage.viewerCount(STREAM_VIEWER_COUNT)).toBeVisible();
 	});
 

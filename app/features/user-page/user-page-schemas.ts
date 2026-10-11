@@ -69,6 +69,7 @@ export const userEditProfileBaseSchema = v.object({
 		label: "labels.profileCustomUrl",
 		bottomText: "bottomTexts.profileCustomUrl",
 		leftAddon: "https://sendou.ink/u/",
+		inputMode: "url",
 		maxLength: USER.CUSTOM_URL_MAX_LENGTH,
 		toLowerCase: true,
 		regExp: {

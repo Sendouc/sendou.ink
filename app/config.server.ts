@@ -34,6 +34,8 @@ const schema = v.pipe(
 		TWITCH_CLIENT_ID: v.optional(v.string()),
 		TWITCH_CLIENT_SECRET: v.optional(v.string()),
 
+		YOUTUBE_API_KEY: v.optional(v.string()),
+
 		PATREON_ACCESS_TOKEN: v.optional(v.string()),
 
 		// the client-readable public key (VITE_VAPID_PUBLIC_KEY) lives in `~/config`;
@@ -88,6 +90,11 @@ export const ServerConfig = {
 	twitch: {
 		clientId: values.TWITCH_CLIENT_ID,
 		clientSecret: values.TWITCH_CLIENT_SECRET,
+	},
+
+	/** Optional, YouTube streams are hidden and YouTube channels can't be resolved when unset. */
+	youtube: {
+		apiKey: values.YOUTUBE_API_KEY,
 	},
 
 	patreon: {
