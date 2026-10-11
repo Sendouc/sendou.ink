@@ -268,19 +268,20 @@ export interface BracketsPageState {
 	scrollToMatchId?: number;
 }
 
-/** Returning from a match page lands at that match's spot in the bracket instead of the top. */
+/** Returning from a match page (or following the header status indicator) lands at that match's spot in the bracket instead of the top. */
 function useScrollToMatchOnLoad() {
 	const location = useLocation();
 	const scrollToMatchId = (location.state as BracketsPageState | null)
 		?.scrollToMatchId;
 
+	// location.key: following the same link again while on the page scrolls again
 	useIsomorphicLayoutEffect(() => {
 		if (typeof scrollToMatchId !== "number") return;
 
 		document
 			.querySelector(`[data-match-id="${scrollToMatchId}"]`)
 			?.scrollIntoView({ block: "center", inline: "center" });
-	}, [scrollToMatchId]);
+	}, [scrollToMatchId, location.key]);
 }
 
 /** The layout does not revalidate on navigations within the tournament, so it can lack teams registered since it loaded. */

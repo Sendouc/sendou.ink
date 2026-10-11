@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Image } from "~/components/Image";
+import type { BracketsPageState } from "~/features/tournament-bracket/routes/to.$id.brackets";
 import { navIconUrl } from "~/utils/urls";
 import { useGlobalStatus } from "../GlobalStatusProvider";
 import type { GlobalStatusState } from "../global-status-types";
@@ -36,6 +37,13 @@ export function GlobalStatusIndicator() {
 	return (
 		<Link
 			to={status.url}
+			state={
+				status.scrollToMatchId
+					? ({
+							scrollToMatchId: status.scrollToMatchId,
+						} satisfies BracketsPageState)
+					: undefined
+			}
 			prefetch="intent"
 			className={styles.status}
 			aria-label={text}

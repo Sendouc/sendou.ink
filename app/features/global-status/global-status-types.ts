@@ -13,6 +13,8 @@ export interface GlobalStatus {
 	state: GlobalStatusState;
 	/** Page the indicator links to e.g. the SendouQ match page. */
 	url: string;
+	/** Bracket match the brackets page `url` scrolls to, e.g. the one the team is waiting on. */
+	scrollToMatchId?: number;
 	/** Logo shown instead of the default state icon, e.g. the tournament's logo. */
 	logoUrl?: string;
 	/** Current SendouQ group fill shown after the state text, e.g. 2/4 members. */

@@ -3,8 +3,12 @@ import { groupExpiresAt } from "~/features/sendouq/core/groups";
 import { FULL_GROUP_SIZE } from "~/features/sendouq/q-constants";
 import * as SQMatchRepository from "~/features/sendouq-match/SQMatchRepository.server";
 import * as PendingCheckIns from "~/features/tournament/core/PendingCheckIns.server";
-import type { TournamentTeamMemberProgressStatus } from "~/features/tournament-bracket/core/Tournament";
+import type {
+	Tournament,
+	TournamentTeamMemberProgressStatus,
+} from "~/features/tournament-bracket/core/Tournament";
 import { tournamentBracketsPage } from "~/features/tournament-bracket/tournament-bracket-urls";
+import { showsOneGroupAtATime } from "~/features/tournament-bracket/tournament-bracket-utils";
 import * as UserActivity from "~/features/user-activity/core/UserActivity.server";
 import {
 	SENDOUQ_LOOKING_PAGE,
@@ -144,7 +148,13 @@ function resolveTournamentStatus(
 		case "WAITING_FOR_CAST":
 			return {
 				state: "TO_WAITING_FOR_CAST",
-				url: tournamentBracketsPage({ tournamentId }),
+				...waitedMatchLink(tournament, status),
+				logoUrl,
+			};
+		case "WAITING_FOR_MATCH":
+			return {
+				state: "TO_WAITING_FOR_MATCH",
+				...waitedMatchLink(tournament, status),
 				logoUrl,
 			};
 		default:
@@ -154,4 +164,21 @@ function resolveTournamentStatus(
 				logoUrl,
 			};
 	}
+}
+
+function waitedMatchLink(
+	tournament: Tournament,
+	match: { matchId: number; bracketIdx: number; groupId: number },
+): Pick<GlobalStatus, "url" | "scrollToMatchId"> {
+	const bracket = tournament.bracketMetaByIdx(match.bracketIdx);
+
+	return {
+		url: tournamentBracketsPage({
+			tournamentId: tournament.ctx.id,
+			bracketIdx: match.bracketIdx,
+			groupId:
+				bracket && showsOneGroupAtATime(bracket) ? match.groupId : undefined,
+		}),
+		scrollToMatchId: match.matchId,
+	};
 }
