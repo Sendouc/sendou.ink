@@ -33,6 +33,30 @@
 		opacity: 0.5;
 		transform: initial;
 	}
+
+	&[data-pending] {
+		position: relative;
+		cursor: progress;
+		opacity: 0.7;
+
+		& > .buttonIcon {
+			opacity: 0;
+		}
+	}
+}
+
+/* text stays in the accessibility tree (unlike visibility: hidden) and keeps the button's width */
+.pendingContent {
+	display: contents;
+	color: transparent;
+}
+
+.spinner {
+	position: absolute;
+	inset: 0;
+	width: 1.4em;
+	height: 1.4em;
+	margin: auto;
 }
 
 .outlined {

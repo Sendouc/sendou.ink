@@ -380,6 +380,29 @@ function ButtonsSection({ id }: { id: string }) {
 					<SendouButton isDisabled>Disabled Button</SendouButton>
 				</ComponentRow>
 
+				<ComponentRow label="Pending">
+					<div className="stack horizontal sm items-center flex-wrap">
+						<SendouButton isPending>Primary</SendouButton>
+						<SendouButton isPending variant="outlined">
+							Outlined
+						</SendouButton>
+						<SendouButton isPending variant="destructive" icon={<Trash />}>
+							Delete
+						</SendouButton>
+						<SendouButton isPending variant="minimal">
+							Minimal
+						</SendouButton>
+						<SendouButton isPending size="small">
+							Small
+						</SendouButton>
+						<SendouButton isPending shape="circle" icon={<SquarePen />} />
+					</div>
+				</ComponentRow>
+
+				<ComponentRow label="Pending (click)">
+					<PendingButtonDemo />
+				</ComponentRow>
+
 				<Divider smallText>Link Buttons</Divider>
 
 				<ComponentRow label="Internal Link">
@@ -399,6 +422,22 @@ function ButtonsSection({ id }: { id: string }) {
 				</ComponentRow>
 			</div>
 		</Section>
+	);
+}
+
+function PendingButtonDemo() {
+	const [isPending, setIsPending] = useState(false);
+
+	return (
+		<SendouButton
+			isPending={isPending}
+			onClick={() => {
+				setIsPending(true);
+				setTimeout(() => setIsPending(false), 2000);
+			}}
+		>
+			Save changes
+		</SendouButton>
 	);
 }
 
