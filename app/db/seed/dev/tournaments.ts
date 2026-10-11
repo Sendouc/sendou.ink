@@ -40,7 +40,6 @@ const SZ_ONLY_TEAM_PICK: TeamPickSettings = {
 	pool: "SENDOUQ",
 };
 const RANKED_MODES_TEAM_PICK = TeamPick.defaultSettings([...rankedModesShort]);
-/** Uneven counts from a custom pool: every SZ stage, half of the legal TC stages. */
 /** Live on both platforms, see the streams seeded in misc.ts. */
 const PADDLING_POOL_CAST_ACCOUNTS: CastAccount[] = [
 	{ platform: "TWITCH", account: "paddling_cast", name: "paddling_cast" },
@@ -50,7 +49,7 @@ const PADDLING_POOL_CAST_ACCOUNTS: CastAccount[] = [
 		name: "Paddling Pool Casts",
 	},
 ];
-
+/** Uneven counts from a custom pool: every SZ stage, half of the legal TC stages. */
 const PADDLING_POOL_TEAM_PICK: TeamPickSettings = {
 	modes: [
 		{ mode: "SZ", count: 6 },

@@ -497,7 +497,7 @@
 	"streams.help.heading": "Getting your stream shown",
 	"streams.help.connect.title": "Connect your account",
 	"streams.help.connect": "Connect your Twitch or YouTube account on Discord (User Settings → Connected Apps → Connections) and keep \"Display on profile\" turned on.",
-	"streams.help.refresh": "Then log out and back in on sendou.ink if you want the change you made to show right away, or alternatively wait for the backgrond refresh to run.",
+	"streams.help.refresh": "Then log out and back in on sendou.ink if you want the change you made to show right away, or alternatively wait for the background refresh to run.",
 	"streams.help.twitch": "Stream in the Splatoon 3 category.",
 	"streams.help.youtube": "Add #sendouink to your stream's title or description. It can take up to 20 minutes for your stream to appear.",
 	"streams.help.sidebar.title": "Sidebar",

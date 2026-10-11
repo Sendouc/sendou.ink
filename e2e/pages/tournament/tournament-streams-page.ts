@@ -11,6 +11,10 @@ export class TournamentStreamsPage {
 		this.page = page;
 		this.locators = {
 			streams: page.getByTestId("tournament-stream"),
+			helpButton: page.getByRole("button", { name: "Stream not showing up?" }),
+			helpDialog: page.getByRole("dialog", {
+				name: "Getting your stream shown",
+			}),
 		};
 	}
 
@@ -21,7 +25,11 @@ export class TournamentStreamsPage {
 		});
 	}
 
+	platformLink(platformName: "Twitch" | "YouTube") {
+		return this.page.getByRole("link", { name: platformName, exact: true });
+	}
+
 	viewerCount(count: number) {
-		return this.page.getByText(String(count));
+		return this.page.getByText(String(count), { exact: true });
 	}
 }
