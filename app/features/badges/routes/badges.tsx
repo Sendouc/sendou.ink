@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
-import { NavLink, Outlet, useLoaderData } from "react-router";
+import { Link, Outlet, useLoaderData } from "react-router";
 import { Badge } from "~/components/Badge";
 import { Divider } from "~/components/Divider";
 import { EmptyState } from "~/components/EmptyState";
@@ -80,13 +80,9 @@ export default function BadgesPageLayout() {
 						<Divider smallText>{t("badges:own.divider")}</Divider>
 						<div className={styles.smallBadges}>
 							{ownBadges.map((badge) => (
-								<NavLink
-									key={badge.id}
-									to={badgePage(badge.id)}
-									prefetch="intent"
-								>
+								<Link key={badge.id} to={badgePage(badge.id)} prefetch="intent">
 									<Badge badge={badge} size={64} isAnimated={false} />
-								</NavLink>
+								</Link>
 							))}
 						</div>
 					</div>
@@ -98,13 +94,9 @@ export default function BadgesPageLayout() {
 								<Divider smallText>{t("badges:other.divider")}</Divider>
 							) : null}
 							{otherBadges.map((badge) => (
-								<NavLink
-									key={badge.id}
-									to={badgePage(badge.id)}
-									prefetch="intent"
-								>
+								<Link key={badge.id} to={badgePage(badge.id)} prefetch="intent">
 									<Badge badge={badge} size={64} isAnimated={false} />
-								</NavLink>
+								</Link>
 							))}
 						</div>
 					</div>

@@ -1,13 +1,7 @@
 import { CalendarClock, Search } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	Link,
-	type MetaFunction,
-	NavLink,
-	Outlet,
-	useLoaderData,
-} from "react-router";
+import { Link, type MetaFunction, Outlet, useLoaderData } from "react-router";
 import * as R from "remeda";
 import { Divider } from "~/components/Divider";
 import { Input } from "~/components/Input";
@@ -83,7 +77,7 @@ export default function TrophiesPage() {
 					<TrophyGrid>
 						<TrophyContextProvider>
 							{filteredTrophies.map((trophy, i) => (
-								<NavLink
+								<Link
 									to={trophyPage(trophy.id)}
 									key={trophy.id}
 									prefetch="intent"
@@ -104,7 +98,7 @@ export default function TrophiesPage() {
 											) : undefined
 										}
 									/>
-								</NavLink>
+								</Link>
 							))}
 						</TrophyContextProvider>
 					</TrophyGrid>
@@ -152,7 +146,7 @@ function XpTrophiesSection({ searchValue }: { searchValue: string }) {
 						return (
 							<div key={category} className={styles.xpRow}>
 								{row.map(({ trophy, i }) => (
-									<NavLink
+									<Link
 										to={trophyPage(trophy.id)}
 										key={trophy.id}
 										prefetch="intent"
@@ -164,7 +158,7 @@ function XpTrophiesSection({ searchValue }: { searchValue: string }) {
 											preview
 											deferred={i >= visibleCount}
 										/>
-									</NavLink>
+									</Link>
 								))}
 							</div>
 						);
