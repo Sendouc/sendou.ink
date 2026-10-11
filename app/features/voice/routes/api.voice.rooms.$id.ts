@@ -110,9 +110,16 @@ export const action = defineAction(
 				};
 			}
 			case "CONNECTED": {
-				notFoundIfNullish(
+				const session = notFoundIfNullish(
 					await VoiceRepository.findOwnSessionById(data.voiceSessionId),
 				);
+				if (
+					session.roomId !== roomId ||
+					session.leftAt !== null ||
+					!VoiceAccess.canJoin(room, user.id)
+				) {
+					forbidden();
+				}
 
 				await VoiceRepository.markOwnSessionConnected({
 					id: data.voiceSessionId,
@@ -126,6 +133,7 @@ export const action = defineAction(
 				const session = notFoundIfNullish(
 					await VoiceRepository.findOwnSessionById(data.voiceSessionId),
 				);
+				if (session.roomId !== roomId) forbidden();
 
 				await VoiceRepository.markOwnSessionLeft({
 					id: session.id,
