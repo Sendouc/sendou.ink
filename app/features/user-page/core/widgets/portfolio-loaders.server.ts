@@ -5,6 +5,7 @@ import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as FriendRepository from "~/features/friends/FriendRepository.server";
 import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
 import * as LFGRepository from "~/features/lfg/LFGRepository.server";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import * as LiveStreamRepository from "~/features/live-streams/LiveStreamRepository.server";
 import { BANNED_MAPS } from "~/features/match-profile/banned-maps";
 import * as MatchProfileRepository from "~/features/match-profile/MatchProfileRepository.server";
@@ -364,7 +365,13 @@ export const WIDGET_LOADERS = {
 		});
 	},
 	"live-stream": async (userId: number) => {
-		return LiveStreamRepository.findByUserId(userId);
+		const streams = await LiveStreamRepository.findByUserId(userId);
+
+		return (
+			LiveStream.groupByStreamer(
+				streams.map((stream) => ({ ...stream, userId })),
+			).at(0) ?? null
+		);
 	},
 };
 

@@ -44,20 +44,20 @@ describe("QStreamsRepository.findAllActiveMatchPlayers", () => {
 	test("returns the stream of a player of an active match", async () => {
 		await createMatch();
 		await LiveStreamFactory.replaceAll([
-			{ userId: streamerId(), twitch: TWITCH_ACCOUNT },
+			{ userId: streamerId(), account: TWITCH_ACCOUNT },
 		]);
 
 		const players = await QStreamsRepository.findAllActiveMatchPlayers();
 
 		expect(players).toHaveLength(1);
 		expect(players[0].user.id).toBe(streamerId());
-		expect(players[0].streamTwitch).toBe(TWITCH_ACCOUNT);
+		expect(players[0].streamAccount).toBe(TWITCH_ACCOUNT);
 	});
 
 	test("returns the stream credited to another user sharing the twitch account", async () => {
 		await createMatch();
 		await LiveStreamFactory.replaceAll([
-			{ userId: duplicateStreamerId(), twitch: TWITCH_ACCOUNT },
+			{ userId: duplicateStreamerId(), account: TWITCH_ACCOUNT },
 		]);
 
 		const players = await QStreamsRepository.findAllActiveMatchPlayers();
@@ -69,7 +69,7 @@ describe("QStreamsRepository.findAllActiveMatchPlayers", () => {
 	test("returns no stream of a user playing no match", async () => {
 		await createMatch();
 		await LiveStreamFactory.replaceAll([
-			{ userId: outsiderId(), twitch: OTHER_TWITCH_ACCOUNT },
+			{ userId: outsiderId(), account: OTHER_TWITCH_ACCOUNT },
 		]);
 
 		expect(await QStreamsRepository.findAllActiveMatchPlayers()).toHaveLength(
@@ -80,7 +80,7 @@ describe("QStreamsRepository.findAllActiveMatchPlayers", () => {
 	test("returns no stream of a match older than an hour", async () => {
 		await createMatch({ createdAt: sub(new Date(), { hours: 2 }) });
 		await LiveStreamFactory.replaceAll([
-			{ userId: streamerId(), twitch: TWITCH_ACCOUNT },
+			{ userId: streamerId(), account: TWITCH_ACCOUNT },
 		]);
 
 		expect(await QStreamsRepository.findAllActiveMatchPlayers()).toHaveLength(

@@ -1,5 +1,7 @@
 import * as R from "remeda";
 import type { CastedMatchesInfo, TeamPickSettings } from "~/db/tables-json";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
+import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists/types";
 import { SHORT_NANOID_LENGTH } from "~/utils/id";
@@ -456,11 +458,15 @@ function labeledBracketIdxs(progression: ParsedBracket[]) {
  */
 export function updatedCastedMatchesInfo(
 	current: CastedMatchesInfo,
-	args: { matchId: number; twitchAccount: string | null; timestamp: number },
+	args: {
+		matchId: number;
+		castAccount: StreamAccount | null;
+		timestamp: number;
+	},
 ): CastedMatchesInfo {
-	const { matchId, twitchAccount, timestamp } = args;
+	const { matchId, castAccount, timestamp } = args;
 
-	if (twitchAccount === null) {
+	if (castAccount === null) {
 		return {
 			...current,
 			castedMatches: current.castedMatches.filter(
@@ -473,6 +479,7 @@ export function updatedCastedMatchesInfo(
 	}
 
 	const existingHistory = current.castedMatchHistory ?? [];
+	const { platform, account } = castAccount;
 
 	return {
 		...current,
@@ -480,12 +487,12 @@ export function updatedCastedMatchesInfo(
 			.filter(
 				(cm) =>
 					// for now one account per match and one match per account at a time
-					cm.matchId !== matchId && cm.twitchAccount !== twitchAccount,
+					cm.matchId !== matchId && !LiveStream.isSameAccount(cm, castAccount),
 			)
-			.concat([{ twitchAccount, matchId }]),
+			.concat([{ platform, account, matchId }]),
 		lockedMatches: current.lockedMatches.filter((lm) => lm.matchId !== matchId),
 		castedMatchHistory: existingHistory
 			.filter((entry) => entry.matchId !== matchId)
-			.concat([{ twitchAccount, matchId, timestamp }]),
+			.concat([{ platform, account, matchId, timestamp }]),
 	};
 }

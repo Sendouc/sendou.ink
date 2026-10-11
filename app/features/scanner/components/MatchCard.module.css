@@ -163,18 +163,19 @@
 	line-height: 1;
 	padding: 5px var(--s-3);
 	border-radius: var(--radius-full);
-	background: color-mix(in oklab, var(--color-bg) 72%, transparent);
+	background: var(--color-bg-overlay);
 	backdrop-filter: blur(8px);
+	color: var(--color-text-on-dark);
 }
 
 .win {
-	color: var(--color-success-high);
+	color: var(--color-success);
 	font-size: var(--font-2xs);
 	letter-spacing: 0.08em;
 }
 
 .loss {
-	color: var(--color-error-high);
+	color: var(--color-error);
 	font-size: var(--font-2xs);
 	letter-spacing: 0.08em;
 }
@@ -185,7 +186,7 @@
 }
 
 .scoreDash {
-	color: var(--color-text-high);
+	opacity: 0.7;
 }
 
 .kds {
@@ -194,8 +195,9 @@
 	font-size: var(--font-xs);
 	padding: var(--s-0-5) var(--s-2);
 	border-radius: var(--radius-full);
-	background: color-mix(in oklab, var(--color-bg) 72%, transparent);
+	background: var(--color-bg-overlay);
 	backdrop-filter: blur(8px);
+	color: var(--color-text-on-dark);
 }
 
 .teamWeapons {
@@ -253,11 +255,11 @@
 	align-items: center;
 	gap: var(--s-1);
 	padding: var(--s-0-5) var(--s-2);
-	border: var(--border-style);
+	border: none;
 	border-radius: var(--radius-full);
-	background: color-mix(in oklab, var(--color-bg) 72%, transparent);
+	background: var(--color-bg-overlay);
 	backdrop-filter: blur(8px);
-	color: var(--color-text);
+	color: var(--color-text-on-dark);
 	font: inherit;
 	font-size: var(--font-2xs);
 	font-weight: var(--weight-bold);
@@ -265,7 +267,7 @@
 	cursor: pointer;
 
 	&:hover {
-		color: var(--color-fg-accent);
+		background: var(--color-bg-overlay-high);
 	}
 
 	&:focus-visible {
@@ -281,10 +283,9 @@
 	padding: 0;
 	border: none;
 	border-radius: var(--radius-full);
-	background: color-mix(in oklab, var(--color-bg) 85%, transparent);
+	background: var(--color-bg-overlay);
 	backdrop-filter: blur(8px);
-	color: var(--color-text);
-	box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-text) 20%, transparent);
+	color: var(--color-text-on-dark);
 
 	& svg {
 		width: var(--field-size-icon);
@@ -292,8 +293,8 @@
 	}
 
 	&:hover {
-		color: var(--color-fg-accent);
-		background: var(--color-bg);
+		color: var(--color-text-on-dark);
+		background: var(--color-bg-overlay-high);
 	}
 }
 

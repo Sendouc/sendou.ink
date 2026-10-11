@@ -14,7 +14,7 @@ import {
 import { databaseTimestampNow } from "~/utils/dates";
 import {
 	fetchRunningTournamentStreams,
-	getLiveTournamentStreamerTwitchNames,
+	getLiveTournamentStreamAccounts,
 	getLiveTournamentStreams,
 	getUpcomingLeagueCastStreams,
 } from "./streams.server";
@@ -74,11 +74,13 @@ async function runningLeagueSet({
 		});
 	}
 	await LiveStreamFactory.replaceAll([
-		{ userId: streamerId(), twitch: "streamer_channel" },
+		{ userId: streamerId(), account: "streamer_channel" },
 	]);
-	await TournamentRepository.updateCastTwitchAccounts({
+	await TournamentRepository.updateCastAccounts({
 		tournamentId: league.id,
-		castTwitchAccounts: castAccount ? [castAccount] : [],
+		castAccounts: castAccount
+			? [{ platform: "TWITCH", account: castAccount, name: castAccount }]
+			: [],
 	});
 	if (isPlayed) {
 		await TournamentFactory.endSets(league.id);
@@ -118,10 +120,8 @@ describe("getLiveTournamentStreams", () => {
 		});
 		expect(streams[0].subtitle).toContain("Division 1");
 		expect(
-			getLiveTournamentStreamerTwitchNames(
-				await fetchRunningTournamentStreams(),
-			),
-		).toEqual(["streamer_channel"]);
+			getLiveTournamentStreamAccounts(await fetchRunningTournamentStreams()),
+		).toMatchObject([{ platform: "TWITCH", account: "streamer_channel" }]);
 	});
 
 	test("a tournament whose streamers stopped streaming after the registry filled is not live", async () => {
@@ -139,7 +139,7 @@ describe("getLiveTournamentStreams", () => {
 		}
 		await TournamentFactory.startBracket(tournament.id);
 		await LiveStreamFactory.replaceAll([
-			{ userId: streamerId(), twitch: "streamer_channel" },
+			{ userId: streamerId(), account: "streamer_channel" },
 		]);
 		clearAllTournamentDataCache();
 		RunningTournaments.add(await tournamentFromDB(tournament.id));
@@ -162,9 +162,7 @@ describe("getLiveTournamentStreams", () => {
 			getLiveTournamentStreams(await fetchRunningTournamentStreams()),
 		).toHaveLength(0);
 		expect(
-			getLiveTournamentStreamerTwitchNames(
-				await fetchRunningTournamentStreams(),
-			),
+			getLiveTournamentStreamAccounts(await fetchRunningTournamentStreams()),
 		).toHaveLength(0);
 	});
 });

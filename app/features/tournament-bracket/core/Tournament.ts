@@ -4,6 +4,7 @@ import type {
 	TeamPickSettings,
 	TournamentStageSettings,
 } from "~/db/tables-json";
+import type { StreamAccount } from "~/features/live-streams/live-streams-constants";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import * as TeamPick from "~/features/tournament/core/TeamPick";
 import type { TournamentTierNumber } from "~/features/tournament/core/tiering";
@@ -83,12 +84,12 @@ export type SerializedBracket = {
 };
 
 /** One live stream of the tournament: a participant's stream or an official cast stream. */
-export type TournamentStream = {
+export type TournamentStream = StreamAccount & {
+	videoId: string | null;
 	thumbnailUrl: string;
-	twitchUserName: string;
 	viewerCount: number;
 	userId: number | null;
-	teamName: string | null;
+	teamId: number | null;
 	user: {
 		id: number;
 		username: string;
@@ -1544,17 +1545,21 @@ export class Tournament {
 		return this.args.streams ?? [];
 	}
 
-	/** Twitch account of every participant streaming the tournament right now, keyed by their user id. */
-	get streamingParticipants(): Map<number, string> {
+	/** Most viewed stream of every participant streaming the tournament right now, keyed by their user id. */
+	get streamingParticipants(): Map<number, TournamentStream> {
 		if (!this.hasStarted || this.everyBracketOver) return new Map();
 
-		return new Map(
-			this.streams.flatMap((stream) =>
-				stream.userId !== null
-					? [[stream.userId, stream.twitchUserName] as const]
-					: [],
-			),
-		);
+		const result = new Map<number, TournamentStream>();
+		for (const stream of this.streams) {
+			if (stream.userId === null) continue;
+
+			const existing = result.get(stream.userId);
+			if (!existing || stream.viewerCount > existing.viewerCount) {
+				result.set(stream.userId, stream);
+			}
+		}
+
+		return result;
 	}
 
 	get streamingParticipantIds(): number[] {

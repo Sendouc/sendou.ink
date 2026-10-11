@@ -3,6 +3,7 @@ import {
 	reportWeaponSchema,
 	undoWeaponReportSchema,
 } from "~/components/match-page/match-page-schemas";
+import { streamAccountSchema } from "~/features/live-streams/live-streams-schemas";
 import {
 	ACTION_TYPES,
 	WHO_SIDES,
@@ -79,14 +80,14 @@ export const matchSchema = v.union([
 	}),
 	v.object({
 		_action: _action("SET_AS_CASTED"),
-		twitchAccount: preprocess(
-			nullLiteraltoNull,
-			v.nullable(v.pipe(v.string(), v.minLength(1), v.maxLength(100))),
+		castAccount: preprocess(
+			safeJSONParse,
+			v.optional(v.nullable(streamAccountSchema), null),
 		),
 	}),
 	v.object({
 		_action: _action("LOCK"),
-		twitchAccount: v.pipe(v.string(), v.minLength(1), v.maxLength(100)),
+		castAccount: preprocess(safeJSONParse, streamAccountSchema),
 	}),
 	v.object({
 		_action: _action("UNLOCK"),

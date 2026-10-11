@@ -6288,11 +6288,14 @@ export const LOW_INK_DECEMBER_2024 = (): TournamentData => ({
 				roundCount: 6,
 			},
 		},
-		castTwitchAccounts: ["iplsplatoon"],
+		castAccounts: [
+			{ platform: "TWITCH", account: "iplsplatoon", name: "iplsplatoon" },
+		],
 		castedMatchesInfo: {
 			castedMatches: [
 				{
-					twitchAccount: "iplsplatoon",
+					platform: "TWITCH",
+					account: "iplsplatoon",
 					matchId: 37936,
 				},
 			],

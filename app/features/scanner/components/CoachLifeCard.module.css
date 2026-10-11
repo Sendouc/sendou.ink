@@ -9,9 +9,9 @@
 	max-width: calc(100% - var(--s-6));
 	padding: var(--s-2) var(--s-3);
 	border-radius: var(--radius-box);
-	background: rgb(0 0 0 / 0.65);
+	background: var(--color-bg-overlay);
 	backdrop-filter: blur(6px);
-	color: #fff;
+	color: var(--color-text-on-dark);
 	font-size: var(--font-xs);
 	pointer-events: none;
 	transition: opacity 0.5s;
@@ -27,7 +27,8 @@
 	justify-content: space-between;
 	gap: var(--s-4);
 	padding-block-end: var(--s-1);
-	border-block-end: 1px solid rgb(255 255 255 / 0.2);
+	border-block-end: 1px solid
+		color-mix(in oklab, var(--color-text-on-dark) 20%, transparent);
 }
 
 .life {

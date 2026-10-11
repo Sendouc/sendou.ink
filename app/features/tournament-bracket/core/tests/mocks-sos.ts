@@ -1791,11 +1791,14 @@ export const SWIM_OR_SINK_167 = (
 			requireInGameNames: false,
 			minMembersPerTeam: 4,
 		},
-		castTwitchAccounts: ["iplsplatoon"],
+		castAccounts: [
+			{ platform: "TWITCH", account: "iplsplatoon", name: "iplsplatoon" },
+		],
 		castedMatchesInfo: {
 			castedMatches: [
 				{
-					twitchAccount: "iplsplatoon",
+					platform: "TWITCH",
+					account: "iplsplatoon",
 					matchId: 31480,
 				},
 			],

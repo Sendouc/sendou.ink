@@ -1573,12 +1573,28 @@ export async function findSocialLinksByUserId(userId: number) {
 	return links;
 }
 
-export function findIdsByTwitchUsernames(twitchUsernames: string[]) {
-	if (twitchUsernames.length === 0) return [];
+/** Users whose connected Twitch login or YouTube channel id is among the given ones. */
+export function findIdsByStreamAccounts({
+	twitchNames,
+	youtubeIds,
+}: {
+	twitchNames: string[];
+	youtubeIds: string[];
+}) {
+	if (twitchNames.length === 0 && youtubeIds.length === 0) return [];
 
 	return db
 		.selectFrom("User")
-		.select(["User.id", "User.twitch"])
-		.where("User.twitch", "in", twitchUsernames)
+		.select(["User.id", "User.twitch", "User.youtubeId"])
+		.where((eb) =>
+			eb.or([
+				...(twitchNames.length > 0
+					? [eb("User.twitch", "in", twitchNames)]
+					: []),
+				...(youtubeIds.length > 0
+					? [eb("User.youtubeId", "in", youtubeIds)]
+					: []),
+			]),
+		)
 		.execute();
 }

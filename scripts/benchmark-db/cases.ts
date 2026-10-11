@@ -1301,10 +1301,10 @@ export function buildCases(fx: Fixtures): {
 			TournamentRepository.findRelatedUsersByTournamentIds(tournamentIds),
 	);
 	add(
-		"TournamentRepository.findParticipantTwitchAccounts",
+		"TournamentRepository.findParticipantStreamAccounts",
 		fx.recentTournamentIds,
 		(tournamentIds) =>
-			TournamentRepository.findParticipantTwitchAccounts(tournamentIds),
+			TournamentRepository.findParticipantStreamAccounts(tournamentIds),
 	);
 	addStatic("TournamentRepository.findAllForShowcase", () =>
 		TournamentRepository.findAllForShowcase(),
@@ -1551,10 +1551,9 @@ export function buildCases(fx: Fixtures): {
 		UserRepository.findSocialLinksByUserId(user.id),
 	);
 	add(
-		"UserRepository.findIdsByTwitchUsernames",
-		fx.twitchUsernames,
-		(twitchUsernames) =>
-			UserRepository.findIdsByTwitchUsernames(twitchUsernames),
+		"UserRepository.findIdsByStreamAccounts",
+		fx.streamAccounts,
+		(streamAccounts) => UserRepository.findIdsByStreamAccounts(streamAccounts),
 	);
 
 	add("VodRepository.findByUserId", fx.vod, (vod) =>

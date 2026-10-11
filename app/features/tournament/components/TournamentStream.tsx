@@ -1,79 +1,65 @@
-import clsx from "clsx";
-import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { Avatar } from "~/components/Avatar";
+import {
+	StreamCard,
+	StreamCardUser,
+} from "~/features/live-streams/components/StreamCard";
+import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useTournament } from "~/features/tournament/tournament-context";
-import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
-import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
-import { twitchUrl } from "~/utils/urls";
-import styles from "./TournamentStream.module.css";
+import type { TournamentStream as TournamentStreamType } from "~/features/tournament-bracket/core/Tournament";
+import { tournamentTeamPage } from "~/utils/urls";
 
 export function TournamentStream({
-	stream,
+	streamer,
 	withThumbnail = true,
 }: {
-	stream: Tournament["streams"][number];
+	streamer: LiveStream.StreamerStreams<TournamentStreamType>;
 	withThumbnail?: boolean;
 }) {
 	const { t } = useTranslation(["tournament"]);
 	const tournament = useTournament();
+	const mostViewed = streamer.streams[0];
+
+	const team =
+		mostViewed.teamId !== null ? tournament.teamById(mostViewed.teamId) : null;
+
+	const castName =
+		tournament.ctx.castAccounts?.find((castAccount) =>
+			LiveStream.isSameAccount(castAccount, mostViewed),
+		)?.name ?? mostViewed.account;
 
 	return (
-		<div
-			key={stream.userId}
-			className="stack sm"
-			data-testid="tournament-stream"
-		>
-			{withThumbnail ? (
-				<a
-					href={twitchUrl(stream.twitchUserName)}
-					target="_blank"
-					rel="noreferrer"
-				>
-					<img
-						alt=""
-						src={twitchThumbnailUrlToSrc(stream.thumbnailUrl)}
-						width={320}
-						height={180}
-					/>
-				</a>
-			) : null}
-			<div className="stack md horizontal justify-between">
-				{stream.user ? (
-					<div className={clsx(styles.streamUserContainer, "truncate")}>
-						<Avatar size="xxs" user={stream.user} /> {stream.user.username}
-						<span
-							className={clsx(
-								"text-theme-secondary truncate",
-								styles.streamTeamName,
-							)}
-							title={stream.teamName ?? undefined}
-						>
-							{stream.teamName}
-						</span>
-					</div>
+		<StreamCard
+			streamer={streamer}
+			withThumbnail={withThumbnail}
+			testId="tournament-stream"
+			title={
+				mostViewed.user ? (
+					<StreamCardUser user={mostViewed.user} />
 				) : (
-					<div className={clsx(styles.streamUserContainer, "truncate")}>
+					<span className="stack horizontal sm items-center">
 						<Avatar size="xxs" url={tournament.ctx.logoUrl} />
-						{t("tournament:streams.cast")}{" "}
-						<span className="text-lighter">{stream.twitchUserName}</span>
-					</div>
-				)}
-				<div className={styles.streamViewerCount}>
-					<User />
-					{stream.viewerCount}
-				</div>
-			</div>
-			{!withThumbnail ? (
-				<a
-					href={twitchUrl(stream.twitchUserName)}
-					target="_blank"
-					rel="noreferrer"
-					className="text-xxs text-semi-bold text-center"
-				>
-					{t("tournament:streams.watchNow")}
-				</a>
-			) : null}
-		</div>
+						{t("tournament:streams.cast")}
+						<span className="text-lighter truncate">{castName}</span>
+					</span>
+				)
+			}
+			aside={
+				team ? (
+					<Link
+						to={tournamentTeamPage({
+							tournamentId: tournament.ctx.id,
+							tournamentTeamId: team.id,
+						})}
+						className="stack horizontal xs items-center text-theme-secondary"
+						title={team.name}
+					>
+						<Avatar size="xxs" url={team.logoUrl} identiconInput={team.name} />
+						<span className="truncate">{team.name}</span>
+					</Link>
+				) : null
+			}
+		/>
 	);
 }

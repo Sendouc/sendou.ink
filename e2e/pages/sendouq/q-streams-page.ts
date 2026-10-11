@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { SENDOUQ_STREAMS_PAGE, twitchUrl } from "~/utils/urls";
+import { SENDOUQ_STREAMS_PAGE } from "~/utils/urls";
 import { navigate } from "../../helpers/playwright";
 
 export class QStreamsPage {
@@ -17,16 +17,16 @@ export class QStreamsPage {
 		await navigate({ page: this.page, url: SENDOUQ_STREAMS_PAGE });
 	}
 
-	streamerLink(username: string) {
-		return this.page.getByRole("link", { name: username });
+	streamer(username: string) {
+		return this.page.getByRole("button", { name: username });
 	}
 
 	matchLink(matchId: number) {
 		return this.page.getByRole("link", { name: `#${matchId}`, exact: true });
 	}
 
-	twitchLink(accountName: string) {
-		return this.page.locator(`a[href="${twitchUrl(accountName)}"]`);
+	platformLink(platformName: "Twitch" | "YouTube") {
+		return this.page.getByRole("link", { name: platformName, exact: true });
 	}
 
 	viewerCount(count: number) {

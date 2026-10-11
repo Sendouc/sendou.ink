@@ -1276,11 +1276,18 @@ export const PADDLING_POOL_257 = () =>
 				isRanked: true,
 			},
 			discordUrl: null,
-			castTwitchAccounts: ["dappleproductions"],
+			castAccounts: [
+				{
+					platform: "TWITCH",
+					account: "dappleproductions",
+					name: "dappleproductions",
+				},
+			],
 			castedMatchesInfo: {
 				castedMatches: [
 					{
-						twitchAccount: "dappleproductions",
+						platform: "TWITCH",
+						account: "dappleproductions",
 						matchId: 1802,
 					},
 				],
@@ -3900,11 +3907,18 @@ export const PADDLING_POOL_255 = () =>
 				teamsPerGroup: 4,
 			},
 			discordUrl: null,
-			castTwitchAccounts: ["dappleproductions"],
+			castAccounts: [
+				{
+					platform: "TWITCH",
+					account: "dappleproductions",
+					name: "dappleproductions",
+				},
+			],
 			castedMatchesInfo: {
 				castedMatches: [
 					{
-						twitchAccount: "dappleproductions",
+						platform: "TWITCH",
+						account: "dappleproductions",
 						matchId: 1510,
 					},
 				],
@@ -6384,7 +6398,14 @@ export const IN_THE_ZONE_32 = ({
 				],
 			},
 			discordUrl: null,
-			castTwitchAccounts: ["dappleproductions", "kyochandxd"],
+			castAccounts: [
+				{
+					platform: "TWITCH",
+					account: "dappleproductions",
+					name: "dappleproductions",
+				},
+				{ platform: "TWITCH", account: "kyochandxd", name: "kyochandxd" },
+			],
 			castedMatchesInfo: null,
 			mapPickingStyle: "AUTO",
 			name: "In The Zone 32",

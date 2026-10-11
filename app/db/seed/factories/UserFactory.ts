@@ -169,22 +169,13 @@ async function currentProfile(userId: number): Promise<ProfileArgs> {
 }
 
 /** Links the Twitch account the way logging in with it connected on Discord does. */
-export async function linkTwitch(userId: number, twitch: string | null) {
-	const user = await db
-		.selectFrom("User")
-		.select([
-			"discordId",
-			"discordName",
-			"discordAvatar",
-			"discordUniqueName",
-			"youtubeId",
-			"youtubeName",
-			"bsky",
-		])
-		.where("id", "=", userId)
-		.executeTakeFirstOrThrow();
+export function linkTwitch(userId: number, twitch: string | null) {
+	return linkConnections(userId, { twitch });
+}
 
-	await UserRepository.upsert({ ...user, twitch });
+/** Links the YouTube channel the way logging in with it connected on Discord does. */
+export function linkYoutube(userId: number, youtubeId: string | null) {
+	return linkConnections(userId, { youtubeId });
 }
 
 /** Subject and object forms as one JSON object, as the profile page saves them. */
@@ -405,4 +396,26 @@ async function setPlusTier(userId: number, plusTier: number) {
 		...others.map((other) => ({ userId: other.userId, plusTier: other.tier })),
 		{ userId, plusTier },
 	]);
+}
+
+async function linkConnections(
+	userId: number,
+	connections: { twitch: string | null } | { youtubeId: string | null },
+) {
+	const user = await db
+		.selectFrom("User")
+		.select([
+			"discordId",
+			"discordName",
+			"discordAvatar",
+			"discordUniqueName",
+			"twitch",
+			"youtubeId",
+			"youtubeName",
+			"bsky",
+		])
+		.where("id", "=", userId)
+		.executeTakeFirstOrThrow();
+
+	await UserRepository.upsert({ ...user, ...connections });
 }

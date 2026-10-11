@@ -318,7 +318,7 @@ test.describe("Sidebar friend streams", () => {
 		await expectWatchStream(streamAccountOf(teammate.id));
 
 		await factories.LiveStreamFactory.replaceAll([
-			{ userId: null, twitch: CAST_ACCOUNT },
+			{ userId: null, account: CAST_ACCOUNT },
 		]);
 		await expectWatchStream(CAST_ACCOUNT);
 
@@ -329,7 +329,7 @@ test.describe("Sidebar friend streams", () => {
 			{ userId: friend.id },
 			{ userId: teammate.id },
 			{ userId: opponent.id },
-			{ userId: null, twitch: CAST_ACCOUNT },
+			{ userId: null, account: CAST_ACCOUNT },
 		]);
 		await expectWatchStream(streamAccountOf(friend.id));
 	});

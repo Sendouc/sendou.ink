@@ -85,11 +85,13 @@ export async function fetchTournamentStreams(
 		await TournamentRepository.findStreamsByTournamentId(tournamentId);
 
 	const memberStreams = participantStreams.map((stream) => ({
+		platform: stream.platform,
+		account: stream.account,
+		videoId: stream.videoId,
 		thumbnailUrl: stream.thumbnailUrl,
-		twitchUserName: stream.twitch,
 		viewerCount: stream.viewerCount,
 		userId: stream.userId as number | null,
-		teamName: stream.teamName as string | null,
+		teamId: stream.teamId as number | null,
 		user: {
 			id: stream.id,
 			username: stream.username,
@@ -101,11 +103,13 @@ export async function fetchTournamentStreams(
 	}));
 
 	const casts = castStreams.map((stream) => ({
+		platform: stream.platform,
+		account: stream.account,
+		videoId: stream.videoId,
 		thumbnailUrl: stream.thumbnailUrl,
-		twitchUserName: stream.twitch!,
 		viewerCount: stream.viewerCount,
 		userId: null,
-		teamName: null,
+		teamId: null,
 		user: null,
 	}));
 

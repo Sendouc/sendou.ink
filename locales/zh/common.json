@@ -492,5 +492,14 @@
 	"tier.confirmed": "{{tierName}} 级别赛事",
 	"spoilerFree.showResults": "显示结果",
 	"spoilerFree.hideResults": "隐藏结果",
-	"yourWeapons": ""
+	"yourWeapons": "",
+	"streams.help.trigger": "",
+	"streams.help.heading": "",
+	"streams.help.connect.title": "",
+	"streams.help.connect": "",
+	"streams.help.refresh": "",
+	"streams.help.twitch": "",
+	"streams.help.youtube": "",
+	"streams.help.sidebar.title": "",
+	"streams.help.sidebar": ""
 }

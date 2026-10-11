@@ -60,8 +60,8 @@
 	top: var(--s-1-5);
 	padding: var(--s-0-5) var(--s-2);
 	border-radius: var(--radius-full);
-	background: rgb(0 0 0 / 0.6);
-	color: #fff;
+	background: var(--color-bg-overlay);
+	color: var(--color-text-on-dark);
 	font-size: var(--font-2xs);
 	font-weight: var(--weight-bold);
 }
@@ -105,11 +105,11 @@
 	flex-direction: column;
 	gap: var(--s-1);
 	padding: var(--s-4) var(--s-2) var(--s-1-5);
-	background: linear-gradient(transparent, rgb(0 0 0 / 0.75));
+	background: linear-gradient(transparent, var(--color-bg-overlay-high));
 }
 
 .laneClock {
-	color: #fff;
+	color: var(--color-text-on-dark);
 	font-size: var(--font-md);
 	font-weight: var(--weight-bold);
 	font-variant-numeric: tabular-nums;
