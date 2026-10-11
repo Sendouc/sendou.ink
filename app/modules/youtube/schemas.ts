@@ -53,4 +53,29 @@ export const videosSchema = v.object({
 	),
 });
 
+export const playlistItemsSchema = v.object({
+	items: v.optional(
+		v.array(v.object({ contentDetails: v.object({ videoId: v.string() }) })),
+		[],
+	),
+});
+
+export const videosStreamTimesSchema = v.object({
+	items: v.optional(
+		v.array(
+			v.object({
+				id: v.string(),
+				liveStreamingDetails: v.optional(
+					v.object({
+						actualStartTime: v.optional(v.string()),
+						actualEndTime: v.optional(v.string()),
+					}),
+				),
+				statistics: v.optional(v.object({ viewCount: v.optional(v.string()) })),
+			}),
+		),
+		[],
+	),
+});
+
 export type RawVideo = Unpacked<v.InferOutput<typeof videosSchema>["items"]>;

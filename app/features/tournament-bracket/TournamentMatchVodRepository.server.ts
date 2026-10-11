@@ -94,6 +94,7 @@ export async function findAllForDownloadByTournamentId(tournamentId: number) {
 			)
 			.select((eb) => [
 				"TournamentMatchVod.matchId",
+				"TournamentMatchVod.platform",
 				"TournamentMatchVod.account",
 				"TournamentMatchVod.userId",
 				"TournamentMatchVod.platformVideoId",

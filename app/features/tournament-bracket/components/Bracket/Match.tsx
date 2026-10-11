@@ -7,6 +7,7 @@ import { Avatar } from "~/components/Avatar";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouPopover } from "~/components/elements/Popover";
 import { useUser } from "~/features/auth/core/user";
+import { StreamPlatformIcon } from "~/features/live-streams/components/StreamPlatformIcon";
 import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { TournamentStream } from "~/features/tournament/components/TournamentStream";
 import { useTournamentVods } from "~/features/tournament/routes/to.$id";
@@ -480,6 +481,10 @@ function MatchVods({ vods }: MatchVodsProps) {
 							{user ? vod.teamName : null}
 						</span>
 						<span className="text-lighter stack horizontal xs items-center">
+							<StreamPlatformIcon
+								platform={vod.platform}
+								className={styles.vodPlatformIcon}
+							/>
 							<Eye size={12} />
 							{vod.viewCount.toLocaleString()}
 						</span>

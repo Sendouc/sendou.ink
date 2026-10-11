@@ -3,6 +3,15 @@ import { getYoutubeApiKey } from "./utils.server";
 
 const YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3";
 
+export class YoutubeApiError extends Error {
+	readonly status: number;
+
+	constructor(status: number) {
+		super(`YouTube API request failed with status: ${status}`);
+		this.status = status;
+	}
+}
+
 export async function youtubeFetch(
 	endpoint: Quota.YoutubeEndpoint,
 	searchParams: Record<string, string>,
@@ -17,7 +26,7 @@ export async function youtubeFetch(
 
 	const res = await fetch(url);
 	if (!res.ok) {
-		throw new Error(`YouTube API request failed with status: ${res.status}`);
+		throw new YoutubeApiError(res.status);
 	}
 
 	return res.json();

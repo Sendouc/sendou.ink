@@ -4,6 +4,7 @@ export const QUOTA_COST = {
 	search: 100,
 	videos: 1,
 	channels: 1,
+	playlistItems: 1,
 } as const;
 
 export type YoutubeEndpoint = keyof typeof QUOTA_COST;
