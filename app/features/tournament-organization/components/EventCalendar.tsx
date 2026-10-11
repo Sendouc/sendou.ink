@@ -112,6 +112,7 @@ function MonthSelector({ month, year }: { month: number; year: number }) {
 			<LinkButton
 				variant="minimal"
 				aria-label="Previous month"
+				prefetch="intent"
 				to={tournamentOrganizationSearchParams.href(
 					"",
 					month === 0
@@ -136,6 +137,7 @@ function MonthSelector({ month, year }: { month: number; year: number }) {
 			<LinkButton
 				variant="minimal"
 				aria-label="Following month"
+				prefetch="intent"
 				to={tournamentOrganizationSearchParams.href(
 					"",
 					month === 11

@@ -322,7 +322,11 @@ export function Layout({
 				icon={<Calendar />}
 				action={
 					user ? (
-						<Link to={EVENTS_PAGE} className={styles.viewAllLink}>
+						<Link
+							to={EVENTS_PAGE}
+							prefetch="intent"
+							className={styles.viewAllLink}
+						>
 							{t("common:actions.viewAll")}
 							<ChevronRight size={14} />
 						</Link>
@@ -376,7 +380,11 @@ export function Layout({
 									{unseenFriendRequests}
 								</span>
 							) : null}
-							<Link to={FRIENDS_PAGE} className={styles.viewAllLink}>
+							<Link
+								to={FRIENDS_PAGE}
+								prefetch="intent"
+								className={styles.viewAllLink}
+							>
 								{t("common:actions.viewAll")}
 								<ChevronRight size={14} />
 							</Link>
@@ -445,7 +453,11 @@ export function Layout({
 						transform: `translateY(${navOffset}px)`,
 					}}
 				>
-					<Link to="/" className={clsx(styles.siteLogo, styles.mobileLogo)}>
+					<Link
+						to="/"
+						prefetch="intent"
+						className={clsx(styles.siteLogo, styles.mobileLogo)}
+					>
 						<SiteLogoContent />
 					</Link>
 					<SideNavCollapseButton
@@ -550,7 +562,12 @@ function SiteTitle() {
 
 	return (
 		<Flipper flipKey={isFrontPage} className={styles.siteTitle}>
-			<Link to="/" className={styles.siteLogo} data-flip-id="site-logo">
+			<Link
+				to="/"
+				prefetch="intent"
+				className={styles.siteLogo}
+				data-flip-id="site-logo"
+			>
 				<SiteLogoContent />
 			</Link>
 
@@ -565,7 +582,11 @@ function SiteTitle() {
 								{isCurrentPage ? (
 									<PageIcon crumb={crumb} />
 								) : (
-									<Link to={crumb.href} className={styles.breadcrumbLink}>
+									<Link
+										to={crumb.href}
+										prefetch="intent"
+										className={styles.breadcrumbLink}
+									>
 										<PageIcon crumb={crumb} />
 									</Link>
 								)}
@@ -689,7 +710,11 @@ function SideNavUserPanel() {
 	if (user) {
 		return (
 			<>
-				<Link to={userPage(user)} className={styles.sideNavFooterUser}>
+				<Link
+					to={userPage(user)}
+					prefetch="intent"
+					className={styles.sideNavFooterUser}
+				>
 					<Avatar user={user} size="xs" />
 					<span className="truncate">{user.username}</span>
 				</Link>
@@ -697,6 +722,7 @@ function SideNavUserPanel() {
 					{user.team ? (
 						<Link
 							to={teamPage(user.team.customUrl)}
+							prefetch="intent"
 							className={styles.sideNavFooterButton}
 							aria-label={t("header.myTeam")}
 							title={t("header.myTeam")}
@@ -730,7 +756,11 @@ function SideNavUserPanel() {
 							triggerClassName={styles.sideNavFooterButton}
 						/>
 					</div>
-					<Link to={SETTINGS_PAGE} className={styles.sideNavFooterButton}>
+					<Link
+						to={SETTINGS_PAGE}
+						prefetch="intent"
+						className={styles.sideNavFooterButton}
+					>
 						<Settings />
 					</Link>
 				</div>
@@ -746,7 +776,11 @@ function SideNavUserPanel() {
 				</SendouButton>
 			</LogInButtonContainer>
 			<div className={styles.sideNavFooterActions}>
-				<Link to={SETTINGS_PAGE} className={styles.sideNavFooterButton}>
+				<Link
+					to={SETTINGS_PAGE}
+					prefetch="intent"
+					className={styles.sideNavFooterButton}
+				>
 					<Settings />
 				</Link>
 			</div>

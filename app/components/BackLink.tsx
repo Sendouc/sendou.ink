@@ -13,7 +13,11 @@ export function BackLink({
 	const { t } = useTranslation(["common"]);
 
 	return (
-		<Link {...rest} className={clsx(styles.backLink, className)}>
+		<Link
+			prefetch="intent"
+			{...rest}
+			className={clsx(styles.backLink, className)}
+		>
 			<ArrowLeft className={styles.icon} />
 			{children ?? t("common:actions.back")}
 		</Link>

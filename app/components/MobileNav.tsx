@@ -525,7 +525,11 @@ function FriendsPanel({
 					{t("front:sideNav.friends.noFriends")}
 				</div>
 			)}
-			<Link to={FRIENDS_PAGE} className={styles.panelSectionLink}>
+			<Link
+				to={FRIENDS_PAGE}
+				prefetch="intent"
+				className={styles.panelSectionLink}
+			>
 				{t("common:actions.viewAll")}
 				<ChevronRight size={14} />
 			</Link>
@@ -558,7 +562,11 @@ function TourneysPanel({
 		>
 			{showScheduleNudge ? <ScheduleNudge panel /> : null}
 			<EventsList events={events} />
-			<Link to={EVENTS_PAGE} className={styles.panelSectionLink}>
+			<Link
+				to={EVENTS_PAGE}
+				prefetch="intent"
+				className={styles.panelSectionLink}
+			>
 				{t("common:actions.viewAll")}
 				<ChevronRight size={14} />
 			</Link>
@@ -594,13 +602,18 @@ function YouPanel({
 			onToggle={onToggle}
 		>
 			<div className={styles.youPanelUserRow}>
-				<Link to={userPage(user)} className={styles.youPanelUser}>
+				<Link
+					to={userPage(user)}
+					prefetch="intent"
+					className={styles.youPanelUser}
+				>
 					<Avatar user={user} size="sm" />
 					<span className={styles.youPanelUsername}>{user.username}</span>
 				</Link>
 				{user.team ? (
 					<Link
 						to={teamPage(user.team.customUrl)}
+						prefetch="intent"
 						className={styles.youPanelSettingsButton}
 						aria-label={t("common:header.myTeam")}
 					>
@@ -619,6 +632,7 @@ function YouPanel({
 				) : null}
 				<Link
 					to={SETTINGS_PAGE}
+					prefetch="intent"
 					className={styles.youPanelSettingsButton}
 					aria-label={t("common:pages.settings")}
 				>

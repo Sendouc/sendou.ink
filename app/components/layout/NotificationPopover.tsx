@@ -145,6 +145,7 @@ function NotificationsFooter() {
 			<hr className={styles.divider} />
 			<Link
 				to={NOTIFICATIONS_URL}
+				prefetch="intent"
 				className={styles.viewAllLink}
 				data-testid="notifications-see-all-button"
 			>

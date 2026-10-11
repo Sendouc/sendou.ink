@@ -34,7 +34,12 @@ export function GlobalStatusIndicator() {
 	}`;
 
 	return (
-		<Link to={status.url} className={styles.status} aria-label={text}>
+		<Link
+			to={status.url}
+			prefetch="intent"
+			className={styles.status}
+			aria-label={text}
+		>
 			{status.logoUrl ? (
 				<img src={status.logoUrl} alt="" className={styles.logo} />
 			) : (
