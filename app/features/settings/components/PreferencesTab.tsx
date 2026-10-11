@@ -18,6 +18,7 @@ import {
 	disableBuildAbilitySortingSchema,
 	disallowScrimPickupsFromUntrustedSchema,
 	spoilerFreeModeSchema,
+	voicePushToTalkSchema,
 } from "../settings-schemas";
 
 export function PreferencesTab() {
@@ -56,6 +57,17 @@ export function PreferencesTab() {
 					schema={spoilerFreeModeSchema}
 					defaultValues={{
 						newValue: user.preferences.spoilerFreeMode ?? false,
+					}}
+					mode="autoSubmit"
+					revalidateRoot
+					fullWidth
+				>
+					{({ FormField }) => <FormField name="newValue" />}
+				</SendouForm>
+				<SendouForm
+					schema={voicePushToTalkSchema}
+					defaultValues={{
+						newValue: user.preferences.voicePushToTalk ?? false,
 					}}
 					mode="autoSubmit"
 					revalidateRoot

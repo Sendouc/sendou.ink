@@ -11,5 +11,7 @@
 	"sounds.likeReceived": "Vous avez reçu une invitation de groupe",
 	"sounds.readyCheckStarted": "",
 	"sounds.matchStarted": "",
-	"sounds.tournamentMatchStarted": ""
+	"sounds.tournamentMatchStarted": "",
+	"sounds.voiceJoin": "",
+	"sounds.voiceLeave": ""
 }

@@ -55,6 +55,12 @@ export const action = defineAction(
 				});
 				break;
 			}
+			case "UPDATE_VOICE_PUSH_TO_TALK": {
+				await UserRepository.updateOwnPreferences({
+					voicePushToTalk: body.newValue,
+				});
+				break;
+			}
 			case "UPDATE_CLOCK_FORMAT": {
 				await UserRepository.updateOwnPreferences({
 					clockFormat: body.newValue,

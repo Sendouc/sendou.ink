@@ -66,6 +66,13 @@ import type { StoredWidget } from "~/features/user-page/core/widgets/types";
 import type { BuildSort } from "~/features/user-page/user-page-constants";
 import type { UserReportCategory } from "~/features/user-report/user-report-constants";
 import type { videoMatchTypes } from "~/features/vods/vods-constants";
+import type {
+	VoiceClientErrorKind,
+	VoiceInputMode,
+	VoiceLeaveReason,
+	VoiceNetworkQualityState,
+	VoicePlatform,
+} from "~/features/voice/voice-constants";
 import type { UnifiedLanguageCode } from "~/modules/i18n/config";
 import type {
 	Ability,
@@ -1020,7 +1027,7 @@ export interface User {
 	patronExpiresAt: number | null;
 	twitch: string | null;
 	bsky: string | null;
-	vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
+	vc: Generated<UserVoiceChat>;
 	youtubeId: string | null;
 	youtubeName: string | null;
 	mapModePreferences: JSONColumnTypeNullable<UserMapModePreferences>;
@@ -1204,6 +1211,60 @@ export interface VideoMatchPlayer {
 	playerUserId: number | null;
 	videoMatchId: number;
 	weaponSplId: number;
+}
+
+export type UserVoiceChat = "YES" | "NO" | "LISTEN_ONLY";
+
+export interface VoiceSession {
+	id: GeneratedAlways<number>;
+	/** `null` once the chat room has been deleted. The session stays for the statistics. */
+	roomId: number | null;
+	roomType: ChatRoomType;
+	userId: number;
+	platform: VoicePlatform;
+	/** Members of the room who could have joined voice when this session started based on voice chat settings. We need these to check for adoption. */
+	eligibleMemberCount: number;
+	/** The joiner's own voice chat setting ({@link User.vc}) when they joined. */
+	vcPreference: UserVoiceChat;
+	dailySessionId: string | null;
+	createdAt: Generated<number>;
+	connectedAt: number | null;
+	leftAt: number | null;
+	/** Billed seconds in the call as reported by Daily, `null` until its webhook connects. */
+	durationSeconds: number | null;
+	leaveReason: VoiceLeaveReason | null;
+	networkQualityState: VoiceNetworkQualityState | null;
+	lowQualitySeconds: Generated<number>;
+	talkSeconds: Generated<number>;
+	inputMode: VoiceInputMode | null;
+}
+
+export interface VoiceClientError {
+	id: GeneratedAlways<number>;
+	voiceSessionId: number | null;
+	userId: number;
+	kind: VoiceClientErrorKind;
+	detail: string | null;
+	platform: VoicePlatform;
+	createdAt: Generated<number>;
+}
+
+export interface VoiceFeedback {
+	id: GeneratedAlways<number>;
+	voiceSessionId: number;
+	userId: number;
+	/** 1-5 */
+	rating: number;
+	comment: string | null;
+	createdAt: Generated<number>;
+}
+
+export interface VoiceSettings {
+	id: GeneratedAlways<number>;
+	/** Manual kill switch. */
+	isDisabled: Generated<DBBoolean>;
+	updatedAt: number | null;
+	updatedByUserId: number | null;
 }
 
 export interface XRankPlacement {
@@ -1526,6 +1587,10 @@ export interface DB {
 	Video: Video;
 	VideoMatch: VideoMatch;
 	VideoMatchPlayer: VideoMatchPlayer;
+	VoiceClientError: VoiceClientError;
+	VoiceFeedback: VoiceFeedback;
+	VoiceSession: VoiceSession;
+	VoiceSettings: VoiceSettings;
 	XRankPlacement: XRankPlacement;
 	ScrimPost: ScrimPost;
 	ScrimPostUser: ScrimPostUser;
