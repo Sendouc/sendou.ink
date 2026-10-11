@@ -81,11 +81,13 @@ describe("evictStaleRunningTournaments", () => {
 		startsAt,
 		bracketStartedAt,
 		nextBracketStartsAt,
+		isTest,
 	}: {
 		startsAt: Date;
 		bracketStartedAt: Date;
 		/** Schedules a follow-up bracket, as a tournament running over several days has. */
 		nextBracketStartsAt?: Date;
+		isTest?: boolean;
 	}) => {
 		const data = Engine.create({
 			type: "swiss",
@@ -104,6 +106,7 @@ describe("evictStaleRunningTournaments", () => {
 			ctx: {
 				startsAt: dateToDatabaseTimestamp(startsAt),
 				settings: {
+					isTest,
 					bracketProgression: nextBracketStartsAt
 						? [
 								...progressions.swissOneGroup,
@@ -129,6 +132,20 @@ describe("evictStaleRunningTournaments", () => {
 		evictStaleRunningTournaments();
 
 		expect(RunningTournaments.has(1)).toBe(true);
+	});
+
+	test("evicts a test tournament even when its bracket was started recently", () => {
+		RunningTournaments.add(
+			tournamentStarted({
+				startsAt: subMinutes(new Date(), 30),
+				bracketStartedAt: subMinutes(new Date(), 5),
+				isTest: true,
+			}),
+		);
+
+		evictStaleRunningTournaments();
+
+		expect(RunningTournaments.has(1)).toBe(false);
 	});
 
 	test("evicts a tournament whose every start is older than the liveness window", () => {
