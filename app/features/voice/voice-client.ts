@@ -115,6 +115,8 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 	let latestSummary: VoiceTelemetrySummary | null = null;
 	let preferredInputMode: VoiceInputMode = "OPEN_MIC";
 	let micEnabledBeforeDeafen = false;
+	let joinAttempt = 0;
+	let latestJoinRequest: Promise<unknown> = Promise.resolve();
 	const listeners = new Set<() => void>();
 
 	const update = (patch: Partial<VoiceSnapshot>) => {
@@ -215,6 +217,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			}
 			if (snapshot.call) await leave();
 
+			const attempt = ++joinAttempt;
 			update({
 				pendingFeedback: null,
 				call: {
@@ -233,11 +236,26 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			});
 			latestSummary = null;
 
-			const result = await deps.postRoomAction(roomId, {
+			await latestJoinRequest;
+			const isSuperseded = () => attempt !== joinAttempt || !snapshot.call;
+			if (isSuperseded()) return;
+
+			const request = deps.postRoomAction(roomId, {
 				_action: "JOIN",
 				platform: deps.platform(),
 			});
-			if (snapshot.call?.roomId !== roomId) return;
+			latestJoinRequest = request;
+			const result = await request;
+			if (isSuperseded()) {
+				if (isJoinResult(result)) {
+					void deps.postRoomAction(roomId, {
+						_action: "LEAVE",
+						voiceSessionId: result.voiceSessionId,
+						leaveReason: "LEFT",
+					});
+				}
+				return;
+			}
 
 			if (!isJoinResult(result)) {
 				updateCall({ status: "FAILED", errorKind: "JOIN_FAILED" });

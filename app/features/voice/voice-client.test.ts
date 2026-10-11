@@ -36,6 +36,27 @@ const participant = (
 	...overrides,
 });
 
+function pendingJoins() {
+	const resolvers: Array<(result: unknown) => void> = [];
+	let sentCount = 0;
+
+	return {
+		postRoomAction: (_roomId: number, body: object) => {
+			if (!("_action" in body) || body._action !== "JOIN") {
+				return Promise.resolve(null);
+			}
+			sentCount++;
+			return new Promise<unknown>((resolve) => resolvers.push(resolve));
+		},
+		sentCount: () => sentCount,
+		sent: (count: number) => vi.waitFor(() => expect(sentCount).toBe(count)),
+		resolveNext: async (result: unknown) => {
+			resolvers.shift()!(result);
+			await new Promise((resolve) => setTimeout(resolve));
+		},
+	};
+}
+
 function setup({
 	postRoomAction = vi.fn(async (_roomId: number, body: object) =>
 		"_action" in body && body._action === "JOIN" ? joinResult(10) : null,
@@ -152,6 +173,50 @@ describe("createVoiceClient", () => {
 			comment: null,
 		});
 		expect(client.getSnapshot().pendingFeedback).toBeNull();
+	});
+
+	test("leaving while the join is in flight ends the session the server started", async () => {
+		const joins = pendingJoins();
+		const { client, deps } = setup({ postRoomAction: joins.postRoomAction });
+
+		void client.join(ROOM_ID);
+		await joins.sent(1);
+		await client.leave();
+		await joins.resolveNext(joinResult(10));
+
+		expect(deps.postRoomAction).toHaveBeenCalledWith(ROOM_ID, {
+			_action: "LEAVE",
+			voiceSessionId: 10,
+			leaveReason: "LEFT",
+		});
+		expect(client.getSnapshot().call).toBeNull();
+	});
+
+	test("rejoining while the earlier join is in flight waits for it and keeps only its own session", async () => {
+		const joins = pendingJoins();
+		const { client, deps } = setup({ postRoomAction: joins.postRoomAction });
+
+		void client.join(ROOM_ID);
+		await joins.sent(1);
+		await client.leave();
+		const rejoin = client.join(ROOM_ID);
+		await new Promise((resolve) => setTimeout(resolve));
+		expect(joins.sentCount()).toBe(1);
+
+		await joins.resolveNext(joinResult(10));
+		await joins.sent(2);
+		await joins.resolveNext(joinResult(11));
+		await rejoin;
+
+		expect(deps.postRoomAction).toHaveBeenCalledWith(ROOM_ID, {
+			_action: "LEAVE",
+			voiceSessionId: 10,
+			leaveReason: "LEFT",
+		});
+		expect(client.getSnapshot().call).toMatchObject({
+			voiceSessionId: 11,
+			credentials: { token: "token-11" },
+		});
 	});
 
 	test("closing the page reports the leave and the latest totals by beacon", async () => {
