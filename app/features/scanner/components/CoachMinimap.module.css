@@ -46,14 +46,14 @@
 	padding: var(--s-1) var(--s-2);
 	border: none;
 	border-radius: var(--radius-field);
-	background: rgb(0 0 0 / 0.7);
-	color: #fff;
+	background: var(--color-bg-overlay);
+	color: var(--color-text-on-dark);
 	font-size: var(--font-xs);
 	font-weight: var(--weight-semi);
 	cursor: pointer;
 
 	&:hover {
-		background: rgb(0 0 0 / 0.85);
+		background: var(--color-bg-overlay-high);
 	}
 }
 
@@ -70,8 +70,8 @@
 	inset-inline-start: var(--s-1-5);
 	padding: var(--s-0-5) var(--s-1-5);
 	border-radius: var(--radius-field);
-	background: rgb(0 0 0 / 0.7);
-	color: #fff;
+	background: var(--color-bg-overlay);
+	color: var(--color-text-on-dark);
 	font-size: var(--font-xs);
 	font-weight: var(--weight-semi);
 	font-variant-numeric: tabular-nums;

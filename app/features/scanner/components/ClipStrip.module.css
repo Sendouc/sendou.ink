@@ -84,8 +84,8 @@
 	gap: var(--s-1);
 	padding: var(--s-0-5) var(--s-2);
 	border-radius: var(--radius-full);
-	background: rgb(0 0 0 / 0.65);
-	color: #fff;
+	background: var(--color-bg-overlay);
+	color: var(--color-text-on-dark);
 	font-size: var(--font-2xs);
 	font-weight: var(--weight-bold);
 }
@@ -96,8 +96,8 @@
 	inset-inline-end: var(--s-1-5);
 	padding: 0 var(--s-1-5);
 	border-radius: var(--radius-selector);
-	background: rgb(0 0 0 / 0.65);
-	color: #fff;
+	background: var(--color-bg-overlay);
+	color: var(--color-text-on-dark);
 	font-size: var(--font-3xs);
 	font-variant-numeric: tabular-nums;
 }

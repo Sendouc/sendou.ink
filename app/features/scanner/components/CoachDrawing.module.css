@@ -32,7 +32,7 @@
 	gap: var(--s-1);
 	padding: var(--s-1) var(--s-1-5);
 	border-radius: var(--radius-field);
-	background: rgb(0 0 0 / 0.7);
+	background: var(--color-bg-overlay);
 	pointer-events: auto;
 }
 
@@ -45,7 +45,7 @@
 	cursor: pointer;
 
 	&[aria-pressed="true"] {
-		box-shadow: 0 0 0 2px #fff;
+		box-shadow: 0 0 0 2px var(--color-text-on-dark);
 	}
 
 	&:focus-visible {
@@ -59,7 +59,7 @@
 	padding: 0;
 	border: none;
 	background: none;
-	color: #fff;
+	color: var(--color-text-on-dark);
 	cursor: pointer;
 
 	&:focus-visible {
