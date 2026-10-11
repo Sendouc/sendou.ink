@@ -6,6 +6,7 @@ import { EmptyState } from "~/components/EmptyState";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { UserLink } from "~/components/UserLink";
+import { StreamHelpDialog } from "~/features/live-streams/components/StreamHelpDialog";
 import { StreamWatchLinks } from "~/features/live-streams/components/StreamWatchLinks";
 import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
@@ -13,7 +14,7 @@ import { useHydrated } from "~/hooks/useHydrated";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
-import { FAQ_PAGE, sendouQMatchPage } from "~/utils/urls";
+import { sendouQMatchPage } from "~/utils/urls";
 import { loader } from "../loaders/q.streams.server";
 import styles from "./q.streams.module.css";
 
@@ -36,19 +37,12 @@ export default function SendouQStreamsPage() {
 	const { t } = useTranslation(["q"]);
 	const data = useLoaderData<typeof loader>();
 
-	const ownStreamNote = (
-		<div className="text-xs mt-4 font-body">
-			{t("q:streams.ownStreamInfo")}{" "}
-			<Link to={FAQ_PAGE}>{t("q:streams.ownStreamInfo.linkText")}</Link>
-		</div>
-	);
-
 	if (data.streams.length === 0) {
 		return (
 			<Main>
 				<EmptyState navItem="sendouq">
 					{t("q:streams.noStreams")}
-					{ownStreamNote}
+					<StreamHelpDialog className="mt-4" />
 				</EmptyState>
 			</Main>
 		);
@@ -122,7 +116,7 @@ export default function SendouQStreamsPage() {
 					);
 				})}
 			</div>
-			{ownStreamNote}
+			<StreamHelpDialog className="mt-6" />
 		</Main>
 	);
 }

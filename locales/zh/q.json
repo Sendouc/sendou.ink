@@ -191,7 +191,5 @@
 	"tiers.info.p1": "例如：Leviathan 代表前 5% 的玩家，Diamond 代表前 15% 的玩家等等。",
 	"tiers.info.p2": "请注意：在玩家排行榜的人数达到至少 {{usersMin}} 人，或是队伍排行榜的队伍数达到 {{teamsMin}} 支之前，任何人均无法达到 Leviathan 段位。",
 	"tiers.info.p3": "每个段位都包含一个 + 等级，例如下面的 BRONZE+。这意味着您处于该段位前 50% 的水平。",
-	"streams.noStreams": "当前暂无直播中的对局",
-	"streams.ownStreamInfo": "找不到您的直播间？请确保您已经关联了您的 Twitch 账号，且当前直播的游戏已设置为《斯普拉遁 3》。",
-	"streams.ownStreamInfo.linkText": "查看常见问题与解答页面以了解有关如何关联 Twitch 账号的更多信息。"
+	"streams.noStreams": "当前暂无直播中的对局"
 }
