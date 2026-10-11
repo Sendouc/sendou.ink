@@ -562,8 +562,13 @@ sequenceDiagram
   space; every frame is normalized to that size first — black bars around the
   picture (letterbox/pillarbox, or a scene drawing the game smaller than its
   canvas) are cropped away before the resize (`detectContentBox` in
-  `core/canonical.ts`; a bar must be level and ≥1% deep, since the Recent
-  Battles screen's own scanline-textured edge is dark but neither). A
+  `core/canonical.ts`). Each edge is split into 16 segments that each walk
+  inward while level with the edge (plus a soft inner edge when lit picture
+  follows within 1%); segments agreeing on a depth vote for it, so a webcam
+  or alert box drawn over part of a bar only costs the segments it covers,
+  and the per-edge depths combine into the best-voted 16:9 box (within 0.5%).
+  A bar must be level and ≥1% deep, since the Recent Battles screen's own
+  scanline-textured edge is dark but neither. A
   layout drawn in perspective (the quick battle log card) additionally
   names a `RECTIFY` quad: its ROIs are in the frame warped by that
   homography, which the debug overlays map back onto the raw frame.

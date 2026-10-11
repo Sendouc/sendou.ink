@@ -46,6 +46,24 @@ function frame(
 	return data;
 }
 
+/** Paints `rect` of an RGBA `width`-wide frame grey `level`, in place. */
+function paint(
+	data: Uint8ClampedArray,
+	width: number,
+	rect: Roi,
+	level: number,
+): Uint8ClampedArray {
+	for (let y = rect.y; y < rect.y + rect.h; y++) {
+		for (let x = rect.x; x < rect.x + rect.w; x++) {
+			const i = (y * width + x) * 4;
+			data[i] = level;
+			data[i + 1] = level;
+			data[i + 2] = level;
+		}
+	}
+	return data;
+}
+
 test("a bar-less frame is left alone", () => {
 	assert.equal(
 		detectContentBox(
@@ -101,4 +119,28 @@ test("a scanline-textured dark edge is not level enough to be a bar", () => {
 		band: { rows: (y) => (y % 2 === 0 ? 1 : 12) },
 	});
 	assert.equal(detectContentBox(1920, 1080, scanlines), null);
+});
+
+test("bars partly hidden by a webcam and an alert box still yield the picture", () => {
+	const picture = { x: 38, y: 21, w: 1859, h: 1046 };
+	const data = frame(1920, 1080, picture);
+	paint(data, 1920, { x: 27, y: 865, w: 386, h: 215 }, 150);
+	paint(data, 1920, { x: 1428, y: 975, w: 472, h: 95 }, 40);
+	assert.deepEqual(detectContentBox(1920, 1080, data), picture);
+});
+
+test("a bar's soft inner edge is cropped with it", () => {
+	const picture = { x: 0, y: 135, w: 1440, h: 810 };
+	const ramp = (depth: number) => (depth < 6 ? 12 - depth * 2 : 0);
+	const softEdged = frame(1440, 1080, picture, {
+		band: { rows: (y) => (y < 135 ? ramp(134 - y) : ramp(y - 945)) },
+	});
+	assert.deepEqual(detectContentBox(1440, 1080, softEdged), picture);
+});
+
+test("dim picture next to a bar stays in the picture", () => {
+	const picture = { x: 28, y: 16, w: 1864, h: 1048 };
+	const data = frame(1920, 1080, picture);
+	paint(data, 1920, { x: 28, y: 16, w: 1864, h: 40 }, 8);
+	assert.deepEqual(detectContentBox(1920, 1080, data), picture);
 });
