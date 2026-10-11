@@ -1,13 +1,11 @@
 import clsx from "clsx";
 import * as LiveStream from "../core/LiveStream";
-import type { StreamAccount, StreamPlatform } from "../live-streams-constants";
+import {
+	STREAM_PLATFORM_NAMES,
+	type StreamAccount,
+} from "../live-streams-constants";
 import { StreamPlatformIcon } from "./StreamPlatformIcon";
 import styles from "./StreamWatchLinks.module.css";
-
-const PLATFORM_NAMES: Record<StreamPlatform, string> = {
-	TWITCH: "Twitch",
-	YOUTUBE: "YouTube",
-};
 
 /** One link per platform the streamer is live on. */
 export function StreamWatchLinks({
@@ -31,7 +29,7 @@ export function StreamWatchLinks({
 						platform={stream.platform}
 						className={styles.icon}
 					/>
-					{PLATFORM_NAMES[stream.platform]}
+					{STREAM_PLATFORM_NAMES[stream.platform]}
 				</a>
 			))}
 		</div>

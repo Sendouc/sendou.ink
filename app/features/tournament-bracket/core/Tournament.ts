@@ -89,7 +89,7 @@ export type TournamentStream = StreamAccount & {
 	thumbnailUrl: string;
 	viewerCount: number;
 	userId: number | null;
-	teamName: string | null;
+	teamId: number | null;
 	user: {
 		id: number;
 		username: string;

@@ -416,7 +416,7 @@ export async function findStreamsByTournamentId(tournamentId: number) {
 				"LiveStream.videoId",
 				"LiveStream.viewerCount",
 				"LiveStream.thumbnailUrl",
-				"TournamentTeam.name as teamName",
+				"TournamentTeam.id as teamId",
 				...commonUserSelect(eb, { inTournament: true }),
 			])
 			.where("TournamentTeam.tournamentId", "=", tournamentId)

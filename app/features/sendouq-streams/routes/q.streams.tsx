@@ -1,13 +1,13 @@
-import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
 import { Link, useLoaderData } from "react-router";
-import { EmptyState } from "~/components/EmptyState";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { UserLink } from "~/components/UserLink";
-import { StreamHelpDialog } from "~/features/live-streams/components/StreamHelpDialog";
-import { StreamWatchLinks } from "~/features/live-streams/components/StreamWatchLinks";
+import {
+	StreamCard,
+	StreamCardUser,
+} from "~/features/live-streams/components/StreamCard";
+import { StreamsPage } from "~/features/live-streams/components/StreamsPage";
 import * as LiveStream from "~/features/live-streams/core/LiveStream";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useHydrated } from "~/hooks/useHydrated";
@@ -37,86 +37,47 @@ export default function SendouQStreamsPage() {
 	const { t } = useTranslation(["q"]);
 	const data = useLoaderData<typeof loader>();
 
-	if (data.streams.length === 0) {
-		return (
-			<Main>
-				<EmptyState navItem="sendouq">
-					{t("q:streams.noStreams")}
-					<StreamHelpDialog className="mt-4" />
-				</EmptyState>
-			</Main>
-		);
-	}
-
 	return (
 		<Main>
-			<div className="stack horizontal lg flex-wrap justify-center">
-				{data.streams.map((streamedMatch) => {
-					return (
-						<div
-							key={LiveStream.key(streamedMatch.streams[0])}
-							className="stack sm"
-						>
-							<div className="stack horizontal justify-between items-end">
-								<UserLink
-									user={streamedMatch.user}
-									className={styles.userContainer}
-								/>
-								<div className="stack horizontal sm">
-									{streamedMatch.weaponSplId ? (
-										<div className={styles.infoCircle}>
-											<WeaponImage
-												weaponSplId={streamedMatch.weaponSplId}
-												size={24}
-												variant="build"
-											/>
-										</div>
-									) : null}
-									{streamedMatch.tier ? (
-										<div className={styles.infoCircle}>
-											<TierImage tier={streamedMatch.tier} width={24} />
-										</div>
-									) : null}
-								</div>
-							</div>
-							<a
-								href={LiveStream.url(streamedMatch.streams[0])}
-								target="_blank"
-								rel="noreferrer"
-							>
-								<img
-									alt=""
-									src={LiveStream.thumbnailSrc(streamedMatch.streams[0])}
-									width={320}
-									height={180}
-								/>
-							</a>
-							<div className="stack horizontal justify-between">
-								<div className="text-sm stack horizontal sm">
-									<div>
-										<Link to={sendouQMatchPage(streamedMatch.match.id)}>
-											#{streamedMatch.match.id}
-										</Link>
+			<StreamsPage navItem="sendouq" emptyText={t("q:streams.noStreams")}>
+				{data.streams.map((streamedMatch) => (
+					<StreamCard
+						key={LiveStream.key(streamedMatch.streams[0])}
+						streamer={streamedMatch}
+						title={<StreamCardUser user={streamedMatch.user} />}
+						aside={
+							<div className="stack horizontal sm">
+								{streamedMatch.weaponSplId ? (
+									<div className={styles.infoCircle}>
+										<WeaponImage
+											weaponSplId={streamedMatch.weaponSplId}
+											size={24}
+											variant="build"
+										/>
 									</div>
-									<RelativeStartTime
-										startedAt={databaseTimestampToDate(
-											streamedMatch.match.createdAt,
-										)}
-									/>
-								</div>
-								<div className={styles.viewerCount}>
-									<User />
-									{streamedMatch.viewerCount}
-								</div>
+								) : null}
+								{streamedMatch.tier ? (
+									<div className={styles.infoCircle}>
+										<TierImage tier={streamedMatch.tier} width={24} />
+									</div>
+								) : null}
 							</div>
-							{streamedMatch.streams.length > 1 ? (
-								<StreamWatchLinks streams={streamedMatch.streams} />
-							) : null}
-						</div>
-					);
-				})}
-			</div>
-			<StreamHelpDialog className="mt-6" />
+						}
+						footer={
+							<div className="text-sm stack horizontal sm">
+								<Link to={sendouQMatchPage(streamedMatch.match.id)}>
+									#{streamedMatch.match.id}
+								</Link>
+								<RelativeStartTime
+									startedAt={databaseTimestampToDate(
+										streamedMatch.match.createdAt,
+									)}
+								/>
+							</div>
+						}
+					/>
+				))}
+			</StreamsPage>
 		</Main>
 	);
 }
