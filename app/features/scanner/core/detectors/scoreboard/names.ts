@@ -275,14 +275,16 @@ function resolveBhByBowlFloor(
  * ink penalty decides (the quick battle log's "DUDE" read "OUDE"). The edge
  * profile keeps them: an O's top and bottom solid rows sit inset from its
  * mid-height edge on both sides alike, a D's only on the right. Measured
- * across fixtures at 15-29px, a D's right inset exceeds its left by 0.15+ of
- * the glyph height, an O's by under 0.08. A D read over a near-tied O only
- * turns O when its corners are near level: a ~15px D can sit at 0.05 ("sDpp"),
- * the 48px splash tag O of "OguriCap" read D at 0.00.
+ * across fixtures at 15-29px, per end an O's right inset exceeds its left by
+ * at most 0.055 of the glyph height, while a D's clearer end shows 0.11+. One
+ * clear end decides an O read toward D, since a streak or ink over the other
+ * end fills its corners in ("Dev" read "Oev"). A D read over a near-tied O
+ * only turns O when both ends together sit near level: a ~15px D can sum to
+ * 0.05 ("sDpp"), the 48px splash tag O of "OguriCap" read D at 0.00.
  */
 const ROUND_CHARS = new Set(["O", "0"]);
 const DO_SCORE_MARGIN = 0.05;
-const D_MIN_CORNER_ASYMMETRY = 0.15;
+const D_MIN_END_ASYMMETRY = 0.08;
 const O_MAX_CORNER_ASYMMETRY = 0.025;
 /** solid rows reach this share of the glyph's brightest pixel */
 const SOLID_ROW_FRACTION = 0.8;
@@ -307,11 +309,12 @@ function resolveDoByCorners(
 	const { cols, data } = gray;
 	const chars = raw.chars.map((c) => {
 		if (!contested(c)) return c;
-		const asymmetry = cornerAsymmetry(data, cols, c) / (c.y1 - c.y0);
+		const h = c.y1 - c.y0;
+		const ends = cornerAsymmetry(data, cols, c);
 		const isD =
 			c.char === "D"
-				? !(asymmetry < O_MAX_CORNER_ASYMMETRY)
-				: asymmetry >= D_MIN_CORNER_ASYMMETRY;
+				? !((ends.top + ends.bottom) / h < O_MAX_CORNER_ASYMMETRY)
+				: Math.max(ends.top, ends.bottom) / h >= D_MIN_END_ASYMMETRY;
 		if (isD === (c.char === "D")) return c;
 		const twin = twinOf(c)!;
 		return { ...c, char: twin.char, score: twin.score };
@@ -321,14 +324,15 @@ function resolveDoByCorners(
 }
 
 /**
- * How much further the segment's top and bottom solid rows are inset from the
- * mid-height edge on the right than on the left, in px (NaN when unmeasurable).
+ * How much further the segment's top and bottom solid rows are each inset from
+ * the mid-height edge on the right than on the left, in px (NaN when
+ * unmeasurable).
  */
 function cornerAsymmetry(
 	data: Uint8Array,
 	cols: number,
 	c: RecognizedChar,
-): number {
+): { top: number; bottom: number } {
 	const at = (x: number, y: number) =>
 		x >= c.x0 && x < c.x1 ? data[y * cols + x]! : 0;
 	const crossing = (x: number, y: number, step: -1 | 1) => {
@@ -370,14 +374,14 @@ function cornerAsymmetry(
 	) {
 		midRows.push(y);
 	}
-	if (midRows.length === 0) return Number.NaN;
+	if (midRows.length === 0) return { top: Number.NaN, bottom: Number.NaN };
 	const median = (values: number[]) =>
 		values.sort((a, b) => a - b)[Math.floor(values.length / 2)]!;
 	const leftMid = median(midRows.map(leftEdge));
 	const rightMid = median(midRows.map(rightEdge));
-	const leftInset = leftEdge(top) + leftEdge(bottom) - 2 * leftMid;
-	const rightInset = 2 * rightMid - rightEdge(top) - rightEdge(bottom);
-	return rightInset - leftInset;
+	const endAsymmetry = (y: number) =>
+		rightMid - rightEdge(y) - (leftEdge(y) - leftMid);
+	return { top: endAsymmetry(top), bottom: endAsymmetry(bottom) };
 }
 
 /**
