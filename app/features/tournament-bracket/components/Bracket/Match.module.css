@@ -244,22 +244,16 @@ a.match:hover {
 }
 
 .matchExit {
-	flex: 1;
 	min-width: 0;
-	padding-inline: var(--s-2);
-	border: 1.5px solid var(--color-border);
-	border-radius: var(--radius-full);
-	background-color: var(--color-bg);
 	font-size: var(--font-2xs);
-	line-height: 1.6;
+	font-weight: var(--weight-semi);
 	color: var(--color-text-high);
-	text-align: center;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 
 	&:is(a):hover {
-		border-color: var(--color-border-high);
-		background-color: var(--color-bg-high);
+		color: var(--color-text);
+		text-decoration: underline;
 	}
 }
