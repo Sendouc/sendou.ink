@@ -266,7 +266,7 @@ function FindingAGroup() {
 	return (
 		<section>
 			<h2 id="finding-a-group">Finding a group</h2>
-			<p>
+			<div>
 				<p>
 					If you didn&apos;t join with a full group of 4 next you will join a
 					screen where the aim is to get a full group. You do this by getting
@@ -284,15 +284,15 @@ function FindingAGroup() {
 					don&apos;t click the “Group up” button.
 				</p>
 				<p>Repeat this grouping up process till you have a full group of 4.</p>
-			</p>
+			</div>
 			<h3>Plus Server icons</h3>
-			<p>
+			<div>
 				<Image alt="" path={navIconUrl("plus")} size={24} />
 				<p>
 					Icon above means that the player is a member of the Plus Server. See{" "}
 					<Link to={FAQ_PAGE}>FAQ</Link> for more info.
 				</p>
-			</p>
+			</div>
 			<h3>Adding a note</h3>
 			<p>
 				You can add a public note if you want to communicate something to other

@@ -110,6 +110,8 @@ function Countdown({ expiresAt }: { expiresAt: number }) {
 				[styles.countdownUrgent]: secondsLeft <= 60,
 			})}
 			data-testid="ready-check-countdown"
+			// the clock has moved on since the server rendered
+			suppressHydrationWarning
 		>
 			{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, "0")}
 		</div>

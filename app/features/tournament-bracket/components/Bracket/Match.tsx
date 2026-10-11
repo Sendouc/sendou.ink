@@ -556,6 +556,8 @@ function MatchTimerInner({
 					[styles.matchTimerWarning]: status === "warning",
 					[styles.matchTimerError]: status === "error",
 				})}
+				// the clock has moved on since the server rendered
+				suppressHydrationWarning
 			>
 				{displayText}
 			</div>

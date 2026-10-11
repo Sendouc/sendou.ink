@@ -44,6 +44,9 @@ window.YT = {
 };
 `;
 
+/** Minified React errors for a hydration mismatch (418, 425) or a boundary hydration gave up on (421, 422, 423). */
+const HYDRATION_ERROR_REGEX = /Minified React error #(418|421|422|423|425)\b/;
+
 export const MOBILE_VIEWPORT = { width: 375, height: 667 };
 export const TABLET_VIEWPORT = { width: 768, height: 1024 };
 
@@ -91,7 +94,17 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
 		// context, and every navigation then refetches all ~200 script chunks.
 		// The hosts themselves are cut off in playwright.config.ts.
 		await context.addInitScript(YOUTUBE_IFRAME_API_STUB);
+
+		const hydrationErrors: string[] = [];
+		context.on("weberror", (webError) => {
+			const message = webError.error().message;
+			if (HYDRATION_ERROR_REGEX.test(message)) hydrationErrors.push(message);
+		});
+
 		await use(context);
+
+		// React recovers from these silently by rendering the boundary again on the client
+		expect(hydrationErrors, "React hydration errors").toEqual([]);
 	},
 	workerPort: [
 		// biome-ignore lint/correctness/noEmptyPattern: Playwright requires object destructuring

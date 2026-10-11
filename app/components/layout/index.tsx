@@ -41,7 +41,6 @@ import {
 } from "~/utils/urls";
 import { Avatar } from "../Avatar";
 import { SendouButton, type SendouButtonProps } from "../elements/Button";
-import { SendouModal } from "../elements/Dialog";
 import { isOwnToggle } from "../elements/Popover";
 import { Flipper } from "../Flipper";
 import { FuseZone } from "../fuse/Fuse";
@@ -144,27 +143,6 @@ function useSideNavCollapsed(initialCollapsed: boolean) {
 	return [collapsed, setCollapsedAndPersist] as const;
 }
 
-/** Open state of a tablet-layout-only modal; leaving that layout or navigating closes it. */
-function useTabletModal(isTabletLayout: boolean, openRequest: number) {
-	const location = useLocation();
-	const [openedOnPathname, setOpenedOnPathname] = React.useState<string | null>(
-		null,
-	);
-
-	const [handledOpenRequest, setHandledOpenRequest] =
-		React.useState(openRequest);
-	if (openRequest !== handledOpenRequest) {
-		setHandledOpenRequest(openRequest);
-		if (isTabletLayout) setOpenedOnPathname(location.pathname);
-	}
-
-	const isOpen = isTabletLayout && openedOnPathname === location.pathname;
-	const setIsOpen = (open: boolean) =>
-		setOpenedOnPathname(open ? location.pathname : null);
-
-	return [isOpen, setIsOpen] as const;
-}
-
 /** Hides the mobile header while scrolling down and brings it back on scrolling up; always `0` outside the mobile layout. */
 function useNavOffset(headerRef: React.RefObject<HTMLElement | null>) {
 	const [navOffset, setNavOffset] = React.useState(0);
@@ -259,29 +237,15 @@ export function Layout({
 	children: React.ReactNode;
 	data?: RootLoaderData;
 }) {
-	const chatContext = useChatContext();
 	const [sideNavCollapsed, setSideNavCollapsed] = useSideNavCollapsed(
 		data?.sidenavCollapsed ?? false,
 	);
-	const layoutSize = useLayoutSize();
-	const isTabletLayout = layoutSize === "tablet";
 	const sideNavId = React.useId();
 	const sideNavRef = React.useRef<HTMLElement>(null);
 	const [sideNavDrawerOpen, setSideNavDrawerOpen] = React.useState(false);
 	useClosePopoversOnNavigation(sideNavRef);
 	useScrollLock(sideNavDrawerOpen);
 	useVisualViewport();
-	const [chatSidebarModalOpen, setChatSidebarModalOpen] = useTabletModal(
-		isTabletLayout,
-		chatContext?.chatOpenRequest ?? 0,
-	);
-	const chatSidebarOpen = chatContext?.chatOpen ?? false;
-	const setChatSidebarOpen = chatContext?.setChatOpen ?? (() => {});
-
-	const setChatSidebarModalOpenAndSync = (open: boolean) => {
-		setChatSidebarModalOpen(open);
-		setChatSidebarOpen(open);
-	};
 
 	const { t } = useTranslation(["front", "common", "friends"]);
 	const { formatRelativeDate } = useRelativeDayFormat();
@@ -293,7 +257,6 @@ export function Layout({
 	useRevealNavOnStatusChange(revealNav);
 
 	const user = useUser();
-	const { showUnseenDot } = useNotifications();
 	const { sidebar: sidebarData } = useLayoutData();
 	const events = sidebarData?.events ?? [];
 	const friends = sidebarData?.friends ?? [];
@@ -463,20 +426,10 @@ export function Layout({
 					<SideNavCollapseButton
 						popoverTarget={sideNavId}
 						className={styles.sideNavModalTrigger}
-						showNotificationDot={!sideNavDrawerOpen && showUnseenDot}
+						showNotificationDotIfUnseen={!sideNavDrawerOpen}
 						badgeCount={!sideNavDrawerOpen ? unseenFriendRequests : 0}
 						testId="sidenav-modal-trigger"
 					/>
-					{chatSidebarModalOpen ? (
-						<SendouModal
-							className={styles.chatSidebarModal}
-							isDismissable
-							aria-label={t("common:chat.sidebar.title")}
-							onClose={() => setChatSidebarModalOpenAndSync(false)}
-						>
-							<ChatSidebar />
-						</SendouModal>
-					) : null}
 					<form
 						method="post"
 						action={SIDENAV_ACTION}
@@ -499,7 +452,7 @@ export function Layout({
 						<SideNavCollapseButton
 							type="submit"
 							className={styles.sideNavCollapseButton}
-							showNotificationDot={sideNavCollapsed && showUnseenDot}
+							showNotificationDotIfUnseen={sideNavCollapsed}
 							badgeCount={sideNavCollapsed ? unseenFriendRequests : 0}
 							testId="sidenav-collapse-button"
 						/>
@@ -510,17 +463,6 @@ export function Layout({
 							data && !data?.user?.roles.includes("MINOR_SUPPORT"),
 						)}
 						isLoggedIn={Boolean(data?.user)}
-						onChatToggle={
-							data?.user && !chatSidebarOpen
-								? () => setChatSidebarOpen(true)
-								: undefined
-						}
-						onChatModalToggle={
-							data?.user
-								? () => setChatSidebarModalOpenAndSync(!chatSidebarModalOpen)
-								: undefined
-						}
-						chatUnreadCount={chatContext?.totalUnreadCount}
 					/>
 					<div id={NPROGRESS_ANCHOR_ID} aria-hidden />
 				</header>
@@ -534,16 +476,7 @@ export function Layout({
 				{children}
 				<Footer />
 			</div>
-			{chatSidebarOpen && layoutSize === "desktop" ? (
-				<div
-					className={clsx(
-						styles.chatSidebar,
-						showLeaderboard && styles.sidebarFuseSpace,
-					)}
-				>
-					<ChatSidebar onClose={() => setChatSidebarOpen(false)} />
-				</div>
-			) : null}
+			<DesktopChatSidebar showLeaderboard={showLeaderboard} />
 			{typeof authError === "string" ? (
 				<React.Suspense>
 					<AuthErrorDialog />
@@ -614,19 +547,39 @@ function SiteLogoContent() {
 	);
 }
 
+function DesktopChatSidebar({ showLeaderboard }: { showLeaderboard: boolean }) {
+	const chatContext = useChatContext();
+	const layoutSize = useLayoutSize();
+
+	if (!chatContext?.chatOpen || layoutSize !== "desktop") return null;
+
+	return (
+		<div
+			className={clsx(
+				styles.chatSidebar,
+				showLeaderboard && styles.sidebarFuseSpace,
+			)}
+		>
+			<ChatSidebar onClose={() => chatContext.setChatOpen(false)} />
+		</div>
+	);
+}
+
 function SideNavCollapseButton({
 	className,
-	showNotificationDot,
+	showNotificationDotIfUnseen,
 	badgeCount,
 	testId,
 	...buttonProps
 }: {
 	className?: string;
-	showNotificationDot?: boolean;
+	showNotificationDotIfUnseen: boolean;
 	badgeCount?: number;
 	testId?: string;
 } & Pick<SendouButtonProps, "type" | "popoverTarget">) {
 	const { t } = useTranslation(["friends"]);
+	const { showUnseenDot } = useNotifications();
+	const showNotificationDot = showNotificationDotIfUnseen && showUnseenDot;
 
 	return (
 		<div className={styles.sideNavCollapseButtonContainer} data-testid={testId}>
