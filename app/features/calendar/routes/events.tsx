@@ -11,7 +11,7 @@ import { timezoneMiddleware } from "~/features/timezone/timezone-middleware.serv
 import { useSearchParam } from "~/modules/search-params/hooks";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
-import { CALENDAR_PAGE } from "~/utils/urls";
+import { CALENDAR_PAGE, EVENTS_PAGE } from "~/utils/urls";
 import {
 	calendarEventsSearchParams,
 	VIEW_FILTERS,
@@ -79,7 +79,9 @@ export default function EventsPage() {
 								<SubNavLink
 									key={value}
 									to={scheduleWeekSearchParams.href(
-										calendarEventsSearchParams.href("", { view: value }),
+										calendarEventsSearchParams.href(EVENTS_PAGE, {
+											view: value,
+										}),
 										{ week },
 									)}
 									secondary

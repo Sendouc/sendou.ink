@@ -1,3 +1,91 @@
+diff --git a/dist/development/lib/dom/lib.js b/dist/development/lib/dom/lib.js
+index 91f53f64ac6d7f49aa6cca772fe436845f147b87..6eedb577ec84396d4b5565b4b8fb9187f3a5fc5a 100644
+--- a/dist/development/lib/dom/lib.js
++++ b/dist/development/lib/dom/lib.js
+@@ -12,7 +12,7 @@ import { ABSOLUTE_URL_REGEX } from "../router/url.js";
+ import { createBrowserHistory, createHashHistory, createPath, invariant, warning } from "../router/history.js";
+ import { ErrorResponseImpl, SUPPORTED_ERROR_TYPES, defaultMapRouteProperties, joinPaths, matchPath, parseToInfo, resolveTo, stripBasename } from "../router/utils.js";
+ import { IDLE_FETCHER, createRouter } from "../router/router.js";
+-import { DataRouterNavigationContext, NavigationContext, RouteContext, ViewTransitionContext } from "../context.js";
++import { DataRouterContext, DataRouterNavigationContext, NavigationContext, RouteContext, ViewTransitionContext } from "../context.js";
+ import { useBlocker, useCurrentRouteId, useDataRouterContext, useDataRouterFetchers, useDataRouterState, useHref, useLocation, useMatches, useNavigate, useNavigation, useResolvedPath } from "../hooks.js";
+ import { Router, hydrationRouteProperties } from "../components.js";
+ import { createSearchParams, getFormSubmissionInfo, getSearchParamsForLocation, shouldProcessLinkClick } from "./dom.js";
+@@ -284,7 +284,7 @@ HistoryRouter.displayName = "unstable_HistoryRouter";
+ * @param {LinkProps.defaultShouldRevalidate} props.defaultShouldRevalidate n/a
+ * @param {LinkProps.mask} props.mask [modes: framework, data] n/a
+ */
+-const Link = React$1.forwardRef(function LinkWithRef({ onClick, discover = "render", prefetch = "none", relative, reloadDocument, replace, mask, state, target, to, preventScrollReset, viewTransition, defaultShouldRevalidate, ...rest }, forwardedRef) {
++function ResolvedLink({ ref: forwardedRef, onClick, discover = "render", prefetch = "none", relative, reloadDocument, replace, mask, state, target, to, preventScrollReset, viewTransition, defaultShouldRevalidate, ...rest }) {
+ 	let { basename, navigator, useTransitions } = React$1.useContext(NavigationContext);
+ 	let isAbsolute = typeof to === "string" && ABSOLUTE_URL_REGEX.test(to);
+ 	let parsed = parseToInfo(to, basename);
+@@ -324,8 +324,54 @@ const Link = React$1.forwardRef(function LinkWithRef({ onClick, discover = "rend
+ 		"data-discover": !isAbsolute && discover === "render" ? "true" : void 0
+ 	});
+ 	return shouldPrefetch && !isAbsolute ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, link, /* @__PURE__ */ React$1.createElement(PrefetchPageLinks, { page: href })) : link;
+-});
++}
++// patched: a link to an absolute path ("/foo") doesn't depend on the current location, so it reads it
++// only when clicked instead of subscribing to it and re-rendering whenever the location changes
++function Link(props) {
++	let isDataRouter = React$1.useContext(DataRouterContext) != null;
++	return React$1.createElement(linkComponent(props, isDataRouter), props);
++}
+ Link.displayName = "Link";
++function linkComponent({ to, relative, mask }, isDataRouter) {
++	let isAbsolutePath = typeof to === "string" && to.startsWith("/") && !to.startsWith("//");
++	return isDataRouter && isAbsolutePath && !relative && !mask ? StaticLink : ResolvedLink;
++}
++function StaticLink({ ref: forwardedRef, onClick, discover = "render", prefetch = "none", reloadDocument, replace: replaceProp, state, target, to, preventScrollReset, viewTransition, defaultShouldRevalidate, ...rest }) {
++	let { basename, navigator, useTransitions } = React$1.useContext(NavigationContext);
++	let { router } = React$1.useContext(DataRouterContext);
++	let navigate = useNavigate();
++	let path = React$1.useMemo(() => resolveTo(to, [], "/", false), [to]);
++	let href = navigator.createHref({
++		...path,
++		pathname: basename !== "/" ? path.pathname === "/" ? basename : joinPaths([basename, path.pathname]) : path.pathname
++	});
++	let [shouldPrefetch, prefetchRef, prefetchHandlers] = usePrefetchBehavior(prefetch, rest);
++	function handleClick(event) {
++		if (onClick) onClick(event);
++		if (event.defaultPrevented || !shouldProcessLinkClick(event, target)) return;
++		event.preventDefault();
++		let replace = replaceProp !== void 0 ? replaceProp : createPath(router.state.location) === createPath(path);
++		let doNavigate = () => navigate(to, {
++			replace,
++			state,
++			preventScrollReset,
++			viewTransition,
++			defaultShouldRevalidate
++		});
++		if (useTransitions) React$1.startTransition(() => doNavigate());
++		else doNavigate();
++	}
++	let link = /* @__PURE__ */ React$1.createElement("a", {
++		...rest,
++		...prefetchHandlers,
++		href,
++		onClick: reloadDocument ? onClick : handleClick,
++		ref: mergeRefs(forwardedRef, prefetchRef),
++		target,
++		"data-discover": discover === "render" ? "true" : void 0
++	});
++	return shouldPrefetch ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, link, /* @__PURE__ */ React$1.createElement(PrefetchPageLinks, { page: href })) : link;
++}
+ /**
+ * Wraps {@link Link | `<Link>`} with additional props for styling active and
+ * pending states.
+@@ -402,7 +448,8 @@ const NavLink = React$1.forwardRef(function NavLinkWithRef({ "aria-current": ari
+ 		isTransitioning ? "transitioning" : null
+ 	].filter(Boolean).join(" ");
+ 	let style = typeof styleProp === "function" ? styleProp(renderProps) : styleProp;
+-	return /* @__PURE__ */ React$1.createElement(Link, {
++	// patched: renders the link directly, skipping <Link>'s extra component layer on these frequent re-renders
++	return /* @__PURE__ */ React$1.createElement(linkComponent({ to, ...rest }, routerNavigation != null), {
+ 		...rest,
+ 		"aria-current": ariaCurrent,
+ 		className,
 diff --git a/dist/development/lib/dom/ssr/server.js b/dist/development/lib/dom/ssr/server.js
 index a2b1aca6bfc6cb9a663596780167b58102beb361..2b29018c3bd23ba9bbb307debcf5b456324bf160 100644
 --- a/dist/development/lib/dom/ssr/server.js
@@ -264,6 +352,94 @@ index 61b8dbf73570da26728aada21ecdd5f3ed4a75cd..f27872d6b326e691eb00f9a5ecd3eb9b
  		let error = null;
  		switch (typeof input) {
  			case "boolean":
+diff --git a/dist/production/lib/dom/lib.js b/dist/production/lib/dom/lib.js
+index 91f53f64ac6d7f49aa6cca772fe436845f147b87..6eedb577ec84396d4b5565b4b8fb9187f3a5fc5a 100644
+--- a/dist/production/lib/dom/lib.js
++++ b/dist/production/lib/dom/lib.js
+@@ -12,7 +12,7 @@ import { ABSOLUTE_URL_REGEX } from "../router/url.js";
+ import { createBrowserHistory, createHashHistory, createPath, invariant, warning } from "../router/history.js";
+ import { ErrorResponseImpl, SUPPORTED_ERROR_TYPES, defaultMapRouteProperties, joinPaths, matchPath, parseToInfo, resolveTo, stripBasename } from "../router/utils.js";
+ import { IDLE_FETCHER, createRouter } from "../router/router.js";
+-import { DataRouterNavigationContext, NavigationContext, RouteContext, ViewTransitionContext } from "../context.js";
++import { DataRouterContext, DataRouterNavigationContext, NavigationContext, RouteContext, ViewTransitionContext } from "../context.js";
+ import { useBlocker, useCurrentRouteId, useDataRouterContext, useDataRouterFetchers, useDataRouterState, useHref, useLocation, useMatches, useNavigate, useNavigation, useResolvedPath } from "../hooks.js";
+ import { Router, hydrationRouteProperties } from "../components.js";
+ import { createSearchParams, getFormSubmissionInfo, getSearchParamsForLocation, shouldProcessLinkClick } from "./dom.js";
+@@ -284,7 +284,7 @@ HistoryRouter.displayName = "unstable_HistoryRouter";
+ * @param {LinkProps.defaultShouldRevalidate} props.defaultShouldRevalidate n/a
+ * @param {LinkProps.mask} props.mask [modes: framework, data] n/a
+ */
+-const Link = React$1.forwardRef(function LinkWithRef({ onClick, discover = "render", prefetch = "none", relative, reloadDocument, replace, mask, state, target, to, preventScrollReset, viewTransition, defaultShouldRevalidate, ...rest }, forwardedRef) {
++function ResolvedLink({ ref: forwardedRef, onClick, discover = "render", prefetch = "none", relative, reloadDocument, replace, mask, state, target, to, preventScrollReset, viewTransition, defaultShouldRevalidate, ...rest }) {
+ 	let { basename, navigator, useTransitions } = React$1.useContext(NavigationContext);
+ 	let isAbsolute = typeof to === "string" && ABSOLUTE_URL_REGEX.test(to);
+ 	let parsed = parseToInfo(to, basename);
+@@ -324,8 +324,54 @@ const Link = React$1.forwardRef(function LinkWithRef({ onClick, discover = "rend
+ 		"data-discover": !isAbsolute && discover === "render" ? "true" : void 0
+ 	});
+ 	return shouldPrefetch && !isAbsolute ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, link, /* @__PURE__ */ React$1.createElement(PrefetchPageLinks, { page: href })) : link;
+-});
++}
++// patched: a link to an absolute path ("/foo") doesn't depend on the current location, so it reads it
++// only when clicked instead of subscribing to it and re-rendering whenever the location changes
++function Link(props) {
++	let isDataRouter = React$1.useContext(DataRouterContext) != null;
++	return React$1.createElement(linkComponent(props, isDataRouter), props);
++}
+ Link.displayName = "Link";
++function linkComponent({ to, relative, mask }, isDataRouter) {
++	let isAbsolutePath = typeof to === "string" && to.startsWith("/") && !to.startsWith("//");
++	return isDataRouter && isAbsolutePath && !relative && !mask ? StaticLink : ResolvedLink;
++}
++function StaticLink({ ref: forwardedRef, onClick, discover = "render", prefetch = "none", reloadDocument, replace: replaceProp, state, target, to, preventScrollReset, viewTransition, defaultShouldRevalidate, ...rest }) {
++	let { basename, navigator, useTransitions } = React$1.useContext(NavigationContext);
++	let { router } = React$1.useContext(DataRouterContext);
++	let navigate = useNavigate();
++	let path = React$1.useMemo(() => resolveTo(to, [], "/", false), [to]);
++	let href = navigator.createHref({
++		...path,
++		pathname: basename !== "/" ? path.pathname === "/" ? basename : joinPaths([basename, path.pathname]) : path.pathname
++	});
++	let [shouldPrefetch, prefetchRef, prefetchHandlers] = usePrefetchBehavior(prefetch, rest);
++	function handleClick(event) {
++		if (onClick) onClick(event);
++		if (event.defaultPrevented || !shouldProcessLinkClick(event, target)) return;
++		event.preventDefault();
++		let replace = replaceProp !== void 0 ? replaceProp : createPath(router.state.location) === createPath(path);
++		let doNavigate = () => navigate(to, {
++			replace,
++			state,
++			preventScrollReset,
++			viewTransition,
++			defaultShouldRevalidate
++		});
++		if (useTransitions) React$1.startTransition(() => doNavigate());
++		else doNavigate();
++	}
++	let link = /* @__PURE__ */ React$1.createElement("a", {
++		...rest,
++		...prefetchHandlers,
++		href,
++		onClick: reloadDocument ? onClick : handleClick,
++		ref: mergeRefs(forwardedRef, prefetchRef),
++		target,
++		"data-discover": discover === "render" ? "true" : void 0
++	});
++	return shouldPrefetch ? /* @__PURE__ */ React$1.createElement(React$1.Fragment, null, link, /* @__PURE__ */ React$1.createElement(PrefetchPageLinks, { page: href })) : link;
++}
+ /**
+ * Wraps {@link Link | `<Link>`} with additional props for styling active and
+ * pending states.
+@@ -402,7 +448,8 @@ const NavLink = React$1.forwardRef(function NavLinkWithRef({ "aria-current": ari
+ 		isTransitioning ? "transitioning" : null
+ 	].filter(Boolean).join(" ");
+ 	let style = typeof styleProp === "function" ? styleProp(renderProps) : styleProp;
+-	return /* @__PURE__ */ React$1.createElement(Link, {
++	// patched: renders the link directly, skipping <Link>'s extra component layer on these frequent re-renders
++	return /* @__PURE__ */ React$1.createElement(linkComponent({ to, ...rest }, routerNavigation != null), {
+ 		...rest,
+ 		"aria-current": ariaCurrent,
+ 		className,
 diff --git a/dist/production/lib/dom/ssr/server.js b/dist/production/lib/dom/ssr/server.js
 index a2b1aca6bfc6cb9a663596780167b58102beb361..2b29018c3bd23ba9bbb307debcf5b456324bf160 100644
 --- a/dist/production/lib/dom/ssr/server.js

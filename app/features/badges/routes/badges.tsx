@@ -10,7 +10,12 @@ import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
 import { useUser } from "~/features/auth/core/user";
 import type { SendouRouteHandle } from "~/utils/remix.server";
-import { BADGES_DOC_LINK, BADGES_PAGE, navIconUrl } from "~/utils/urls";
+import {
+	BADGES_DOC_LINK,
+	BADGES_PAGE,
+	badgePage,
+	navIconUrl,
+} from "~/utils/urls";
 import { metaTags } from "../../../utils/remix";
 import { type BadgesLoaderData, loader } from "../loaders/badges.server";
 import styles from "./badges.module.css";
@@ -75,7 +80,11 @@ export default function BadgesPageLayout() {
 						<Divider smallText>{t("badges:own.divider")}</Divider>
 						<div className={styles.smallBadges}>
 							{ownBadges.map((badge) => (
-								<NavLink key={badge.id} to={String(badge.id)} prefetch="intent">
+								<NavLink
+									key={badge.id}
+									to={badgePage(badge.id)}
+									prefetch="intent"
+								>
 									<Badge badge={badge} size={64} isAnimated={false} />
 								</NavLink>
 							))}
@@ -89,7 +98,11 @@ export default function BadgesPageLayout() {
 								<Divider smallText>{t("badges:other.divider")}</Divider>
 							) : null}
 							{otherBadges.map((badge) => (
-								<NavLink key={badge.id} to={String(badge.id)} prefetch="intent">
+								<NavLink
+									key={badge.id}
+									to={badgePage(badge.id)}
+									prefetch="intent"
+								>
 									<Badge badge={badge} size={64} isAnimated={false} />
 								</NavLink>
 							))}

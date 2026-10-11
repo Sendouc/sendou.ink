@@ -13,7 +13,12 @@ import { Divider } from "~/components/Divider";
 import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
 import type { SendouRouteHandle } from "~/utils/remix.server";
-import { BADGES_PAGE, navIconUrl, TROPHIES_PAGE } from "~/utils/urls";
+import {
+	BADGES_PAGE,
+	navIconUrl,
+	TROPHIES_PAGE,
+	trophyPage,
+} from "~/utils/urls";
 import { metaTags, ogPageImage } from "../../../utils/remix";
 import {
 	Trophy,
@@ -79,7 +84,7 @@ export default function TrophiesPage() {
 						<TrophyContextProvider>
 							{filteredTrophies.map((trophy, i) => (
 								<NavLink
-									to={String(trophy.id)}
+									to={trophyPage(trophy.id)}
 									key={trophy.id}
 									prefetch="intent"
 								>
@@ -148,7 +153,7 @@ function XpTrophiesSection({ searchValue }: { searchValue: string }) {
 							<div key={category} className={styles.xpRow}>
 								{row.map(({ trophy, i }) => (
 									<NavLink
-										to={String(trophy.id)}
+										to={trophyPage(trophy.id)}
 										key={trophy.id}
 										prefetch="intent"
 										aria-label={trophy.name}

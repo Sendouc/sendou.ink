@@ -119,6 +119,7 @@ export function GlobalSearch() {
 	return (
 		<>
 			<Link
+				// biome-ignore lint/plugin: opens the search on whichever page is open
 				to={globalSearchSearchParams.href("", { search: "open" })}
 				defaultShouldRevalidate={false}
 				preventScrollReset

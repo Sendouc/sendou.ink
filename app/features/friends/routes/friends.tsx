@@ -16,6 +16,7 @@ import { markFriendRequestsSeen } from "~/hooks/useUnseenFriendRequests";
 import { useSearchParam } from "~/modules/search-params/hooks";
 import { metaTags } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
+import { FRIENDS_PAGE } from "~/utils/urls";
 import { FriendMenu } from "../components/FriendMenu";
 import { friendSectionSortValue } from "../friends-constants";
 import {
@@ -215,7 +216,7 @@ function FriendsListSection() {
 					{VIEW_FILTERS.map((value) => (
 						<SubNavLink
 							key={value}
-							to={friendsSearchParams.href("", { view: value })}
+							to={friendsSearchParams.href(FRIENDS_PAGE, { view: value })}
 							secondary
 							controlled
 							active={filter === value}
