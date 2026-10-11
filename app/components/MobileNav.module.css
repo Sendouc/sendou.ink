@@ -11,11 +11,6 @@
 	background: none;
 	color: inherit;
 	z-index: 19;
-
-	--mobile-nav-height: calc(
-		var(--layout-nav-height) +
-		env(safe-area-inset-bottom)
-	);
 }
 
 @media screen and (min-width: 600px) {
@@ -25,7 +20,7 @@
 }
 
 .tabBar {
-	display: flex;
+	display: var(--mobile-tab-bar-display);
 	justify-content: space-around;
 	align-items: center;
 	height: var(--mobile-nav-height);

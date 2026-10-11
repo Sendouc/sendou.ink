@@ -30,11 +30,15 @@ const CUT_SLACK = 2;
  */
 const WORD_SPLIT_PENALTY = 0.2;
 
-/** At feed size the row's "!" reads as any of these; the tail comparison treats them as one. */
+/**
+ * At feed size the row's "!" reads as any of these; the tail comparison treats
+ * them as one. Ink or a splash touching the bar adds the stroke of 'ł'.
+ */
 const EXCLAMATION_LOOKALIKES = new Set([
 	"!",
 	"|",
 	"l",
+	"ł",
 	"i",
 	"1",
 	"「",

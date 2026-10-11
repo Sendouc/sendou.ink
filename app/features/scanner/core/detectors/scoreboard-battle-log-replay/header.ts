@@ -57,10 +57,12 @@ const TIMESTAMP_GAPPED_DATE_RE =
 /**
  * Fused date-time ("22/8/202620:37"), tried after the spaced form. The date's
  * last component is lazy so the time decides the split ("2026/3/720:28" = 7 +
- * 20:28); no spurious-gap tolerance or a lazy match could steal a year digit.
+ * 20:28), the hour capped at 23 so a year digit cannot pass as one
+ * ("7/10/20260:33" ≠ 202 + 60:33); no spurious-gap tolerance or a lazy match
+ * could steal a year digit.
  */
 const TIMESTAMP_FUSED_RE =
-	/(\d{1,4}[./-]\d{1,2}[./-]\d{1,4}?)(\d{1,2}:\d\d)(?:\s*([AP0]M))?\s*(.*)$/;
+	/(\d{1,4}[./-]\d{1,2}[./-]\d{1,4}?)((?:[01]?\d|2[0-3]):\d\d)(?:\s*([AP0]M))?\s*(.*)$/;
 
 interface TopBandParse {
 	reading: string;

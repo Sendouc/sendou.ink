@@ -318,6 +318,11 @@ html,
 	to the document scroll, for a smooth transition between sticking and un-sticking
 	*/
 	--layout-nav-height: 55px;
+	--mobile-nav-height: calc(
+		var(--layout-nav-height) +
+		env(safe-area-inset-bottom)
+	);
+	--mobile-tab-bar-display: flex;
 	--layout-sidenav-width: 250px;
 	--layout-fuse-bottom-height: 90px;
 	--layout-main-padding: var(--s-3);

@@ -35,6 +35,13 @@ export const MATCH_SCORE_MIN_CONF = 0.6;
  */
 const DIGIT_MIN_CONF = 0.75;
 
+/**
+ * Floor for a digit joining a run anchored by a DIGIT_MIN_CONF digit: a lime banner's wave crest
+ * grays like the digit fill, so every threshold either glues it on or speckles the digit ("88" at
+ * 0.71 + 0.77). Burst letters (0.62) never sit next to an anchor.
+ */
+const DIGIT_EXTEND_MIN_CONF = 0.65;
+
 /** White banner digits on saturated team color (yellow ink grays at ~170). */
 const BANNER_SCORE_BIN_THRESHOLD = 205;
 
@@ -117,7 +124,9 @@ export function* parseBannerScoreSteps(
 	);
 	let best = EMPTY_READ;
 	for (const [i, { set }] of reads.entries()) {
-		const read = trailingDigitRun(raws[i]!, set);
+		const read = trailingDigitRun(raws[i]!, set, {
+			extendMinScore: DIGIT_EXTEND_MIN_CONF,
+		});
 		if (isBetterRead(read, best)) best = read;
 	}
 	crop.delete();

@@ -1265,6 +1265,11 @@ export class Tournament {
 
 		for (const bracket of startedBrackets) {
 			for (const match of bracket.data.match) {
+				const matchLocation = {
+					matchId: match.id,
+					bracketIdx: bracket.idx,
+					groupId: match.groupId,
+				};
 				const isParticipant =
 					match.opponent1?.id === team.id || match.opponent2?.id === team.id;
 				const isNotFinished =
@@ -1290,7 +1295,7 @@ export class Tournament {
 						)?.id !== match.id;
 
 					if (otherTeamBusyWithPreviousMatch) {
-						return { type: "WAITING_FOR_MATCH" } as const;
+						return { type: "WAITING_FOR_MATCH", ...matchLocation } as const;
 					}
 
 					if (
@@ -1298,7 +1303,7 @@ export class Tournament {
 							(lm) => lm.matchId === match.id,
 						)
 					) {
-						return { type: "WAITING_FOR_CAST" } as const;
+						return { type: "WAITING_FOR_CAST", ...matchLocation } as const;
 					}
 
 					return {
@@ -1310,7 +1315,7 @@ export class Tournament {
 				}
 
 				if (isParticipant && isWaitingForTeam) {
-					return { type: "WAITING_FOR_MATCH" } as const;
+					return { type: "WAITING_FOR_MATCH", ...matchLocation } as const;
 				}
 			}
 		}

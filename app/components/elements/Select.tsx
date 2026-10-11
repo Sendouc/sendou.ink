@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { ChevronsUpDown, Search, X } from "lucide-react";
 import * as React from "react";
+import { flushSync } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { SendouBottomTexts } from "~/components/elements/BottomTexts";
 import { SendouButton } from "~/components/elements/Button";
@@ -299,6 +300,14 @@ export function SendouSelect<T extends object>({
 		scrollIntoView(targetKey);
 	};
 
+	// iOS only brings up the keyboard for a focus inside the tap itself, but the native
+	// open is redone a frame later (useShowPopoverOnOpen), so a searchable select opens here
+	const onTriggerClick = (event: React.MouseEvent) => {
+		if (!search || open) return;
+		event.preventDefault();
+		flushSync(() => setOpen(true));
+	};
+
 	const onTriggerKeyDown = (event: React.KeyboardEvent) => {
 		if (event.key === "ArrowDown" || event.key === "ArrowUp") {
 			event.preventDefault();
@@ -535,6 +544,7 @@ export function SendouSelect<T extends object>({
 				}
 				data-required={isRequired || undefined}
 				{...popoverTriggerProps}
+				onClick={onTriggerClick}
 				onKeyDown={onTriggerKeyDown}
 			>
 				<span

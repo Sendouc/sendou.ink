@@ -31,6 +31,13 @@ const cases: {
 		minScore: 1,
 	},
 	{
+		why: "an exclamation mark smeared into a stroked l counts as one",
+		read: "Splatted Devł",
+		lang: "USen",
+		name: "Dev",
+		minScore: 1,
+	},
+	{
 		why: "a name with spaces survives",
 		read: "Splatted Now or Never!",
 		lang: "USen",

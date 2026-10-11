@@ -135,26 +135,31 @@ function normalizeOhs(name: string): string {
 
 /**
  * A long bar is '_' or a dash by height alone, which the templates weigh
- * lightly: ">_<" read ">ー<", "Jrod_14" read "Jrod¯14". A bar whose bottom
- * reaches the line's baseline (median ink bottom of the other glyphs) is an
- * underscore; dashes float at mid height, a macron at the cap line.
+ * lightly: ">_<" read ">ー<", "Jrod_14" read "Jrod¯14", and the quick log's
+ * soft "-Artemis->" read "_Artemis_>". A bar whose bottom reaches the line's
+ * baseline (median ink bottom of the other non-descender glyphs: "Rιppιng_H"
+ * hangs three of eight below it) is an underscore; one
+ * floating above it is a dash (normalizeLongBars picks '-' or 'ー'), a
+ * macron at the cap line keeps its read.
  */
 const BASELINE_BAR_CHARS = new Set(["-", "ー", "¯", "_"]);
-const UNDERSCORE_LOOKALIKES = new Set(["-", "ー", "¯"]);
 const UNDERSCORE_BASELINE_SLACK_PX = 2;
 
 function resolveUnderscoreByBaseline(raw: RecognizedText): RecognizedText {
-	if (!raw.chars.some((c) => UNDERSCORE_LOOKALIKES.has(c.char))) return raw;
+	if (!raw.chars.some((c) => BASELINE_BAR_CHARS.has(c.char))) return raw;
 	const anchors = raw.chars
-		.filter((c) => !BASELINE_BAR_CHARS.has(c.char))
+		.filter(
+			(c) => !BASELINE_BAR_CHARS.has(c.char) && !DESCENDER_LETTERS.has(c.char),
+		)
 		.map((c) => c.y1)
 		.sort((a, b) => a - b);
 	if (anchors.length === 0) return raw;
 	const baseline = anchors[Math.floor(anchors.length / 2)]!;
 	const chars = raw.chars.map((c) => {
-		if (!UNDERSCORE_LOOKALIKES.has(c.char)) return c;
-		if (baseline - c.y1 > UNDERSCORE_BASELINE_SLACK_PX) return c;
-		return { ...c, char: "_" };
+		if (!BASELINE_BAR_CHARS.has(c.char)) return c;
+		const onBaseline = baseline - c.y1 <= UNDERSCORE_BASELINE_SLACK_PX;
+		if (onBaseline) return c.char === "_" ? c : { ...c, char: "_" };
+		return c.char === "_" ? { ...c, char: "-" } : c;
 	});
 	return { ...raw, text: retext(raw.text, chars), chars };
 }
@@ -199,6 +204,28 @@ function fixDotsByPosition(raw: RecognizedText): RecognizedText {
 		if (raised || c.char === "." || !betweenLatin) return c;
 		const period = c.candidates?.find((k) => k.char === ".");
 		return period ? { ...c, char: ".", score: period.score } : c;
+	});
+	return { ...raw, text: retext(raw.text, chars), chars };
+}
+
+/**
+ * '°' and '。' tight-crop to the same small ring ("°◎ sneakye" read "。◎"):
+ * the degree sign hangs at the cap line, the full stop sits on the baseline.
+ */
+const RING_CHARS = new Set(["°", "。"]);
+
+function resolveRingByPosition(raw: RecognizedText): RecognizedText {
+	if (!raw.chars.some((c) => RING_CHARS.has(c.char))) return raw;
+	const anchors = raw.chars
+		.filter((c) => !RING_CHARS.has(c.char))
+		.map((c) => c.y1)
+		.sort((a, b) => a - b);
+	if (anchors.length === 0) return raw;
+	const baseline = anchors[Math.floor(anchors.length / 2)]!;
+	const chars = raw.chars.map((c) => {
+		if (!RING_CHARS.has(c.char)) return c;
+		const raised = baseline - c.y1 > DOT_BASELINE_SLACK_PX;
+		return { ...c, char: raised ? "°" : "。" };
 	});
 	return { ...raw, text: retext(raw.text, chars), chars };
 }
@@ -275,14 +302,16 @@ function resolveBhByBowlFloor(
  * ink penalty decides (the quick battle log's "DUDE" read "OUDE"). The edge
  * profile keeps them: an O's top and bottom solid rows sit inset from its
  * mid-height edge on both sides alike, a D's only on the right. Measured
- * across fixtures at 15-29px, a D's right inset exceeds its left by 0.15+ of
- * the glyph height, an O's by under 0.08. A D read over a near-tied O only
- * turns O when its corners are near level: a ~15px D can sit at 0.05 ("sDpp"),
- * the 48px splash tag O of "OguriCap" read D at 0.00.
+ * across fixtures at 15-29px, per end an O's right inset exceeds its left by
+ * at most 0.055 of the glyph height, while a D's clearer end shows 0.11+. One
+ * clear end decides an O read toward D, since a streak or ink over the other
+ * end fills its corners in ("Dev" read "Oev"). A D read over a near-tied O
+ * only turns O when both ends together sit near level: a ~15px D can sum to
+ * 0.05 ("sDpp"), the 48px splash tag O of "OguriCap" read D at 0.00.
  */
 const ROUND_CHARS = new Set(["O", "0"]);
 const DO_SCORE_MARGIN = 0.05;
-const D_MIN_CORNER_ASYMMETRY = 0.15;
+const D_MIN_END_ASYMMETRY = 0.08;
 const O_MAX_CORNER_ASYMMETRY = 0.025;
 /** solid rows reach this share of the glyph's brightest pixel */
 const SOLID_ROW_FRACTION = 0.8;
@@ -307,11 +336,12 @@ function resolveDoByCorners(
 	const { cols, data } = gray;
 	const chars = raw.chars.map((c) => {
 		if (!contested(c)) return c;
-		const asymmetry = cornerAsymmetry(data, cols, c) / (c.y1 - c.y0);
+		const h = c.y1 - c.y0;
+		const ends = cornerAsymmetry(data, cols, c);
 		const isD =
 			c.char === "D"
-				? !(asymmetry < O_MAX_CORNER_ASYMMETRY)
-				: asymmetry >= D_MIN_CORNER_ASYMMETRY;
+				? !((ends.top + ends.bottom) / h < O_MAX_CORNER_ASYMMETRY)
+				: Math.max(ends.top, ends.bottom) / h >= D_MIN_END_ASYMMETRY;
 		if (isD === (c.char === "D")) return c;
 		const twin = twinOf(c)!;
 		return { ...c, char: twin.char, score: twin.score };
@@ -321,14 +351,15 @@ function resolveDoByCorners(
 }
 
 /**
- * How much further the segment's top and bottom solid rows are inset from the
- * mid-height edge on the right than on the left, in px (NaN when unmeasurable).
+ * How much further the segment's top and bottom solid rows are each inset from
+ * the mid-height edge on the right than on the left, in px (NaN when
+ * unmeasurable).
  */
 function cornerAsymmetry(
 	data: Uint8Array,
 	cols: number,
 	c: RecognizedChar,
-): number {
+): { top: number; bottom: number } {
 	const at = (x: number, y: number) =>
 		x >= c.x0 && x < c.x1 ? data[y * cols + x]! : 0;
 	const crossing = (x: number, y: number, step: -1 | 1) => {
@@ -370,14 +401,14 @@ function cornerAsymmetry(
 	) {
 		midRows.push(y);
 	}
-	if (midRows.length === 0) return Number.NaN;
+	if (midRows.length === 0) return { top: Number.NaN, bottom: Number.NaN };
 	const median = (values: number[]) =>
 		values.sort((a, b) => a - b)[Math.floor(values.length / 2)]!;
 	const leftMid = median(midRows.map(leftEdge));
 	const rightMid = median(midRows.map(rightEdge));
-	const leftInset = leftEdge(top) + leftEdge(bottom) - 2 * leftMid;
-	const rightInset = 2 * rightMid - rightEdge(top) - rightEdge(bottom);
-	return rightInset - leftInset;
+	const endAsymmetry = (y: number) =>
+		rightMid - rightEdge(y) - (leftEdge(y) - leftMid);
+	return { top: endAsymmetry(top), bottom: endAsymmetry(bottom) };
 }
 
 /**
@@ -471,6 +502,69 @@ function bottomInk(
 }
 
 /**
+ * 'S' and 'B' share their outline right of the stem, and a soft capture lets
+ * a fixture 'S' edge out the font 'B' (quick log "EGØ Bachi" read "EGØ
+ * Sachi"). The left edge tells them apart: below its top and above its
+ * bottom curve a 'B' keeps every row's leftmost ink at the stem, while an
+ * 'S' curls in past half its width under the waist (0.6 on the quick-log
+ * fixtures, stemmed capitals 0.12 and under). Only near-ties are re-decided.
+ */
+const LEFT_STEM_TWINS: Record<string, string> = { S: "B" };
+const LEFT_STEM_SCORE_MARGIN = 0.05;
+const LEFT_STEM_MAX_INDENT = 0.3;
+const LEFT_STEM_TRIM_FRACTION = 0.15;
+
+function resolveSbByLeftStem(
+	raw: RecognizedText,
+	grayView: Mat,
+	binThreshold: number,
+): RecognizedText {
+	const contested = (c: RecognizedChar) =>
+		c.candidates?.find(
+			(k) =>
+				k.char === LEFT_STEM_TWINS[c.char] &&
+				c.score - k.score <= LEFT_STEM_SCORE_MARGIN,
+		);
+	if (!raw.chars.some(contested)) return raw;
+
+	const gray = new (getCV().Mat)();
+	grayView.copyTo(gray);
+	const { cols, data } = gray;
+	const chars = raw.chars.map((c) => {
+		const twin = contested(c);
+		if (!twin) return c;
+		const indent = maxLeftIndent(data, cols, c, binThreshold);
+		if (indent === null || indent > LEFT_STEM_MAX_INDENT) return c;
+		return { ...c, char: twin.char, score: twin.score };
+	});
+	gray.delete();
+	return { ...raw, text: retext(raw.text, chars), chars };
+}
+
+/** Deepest leftmost-ink offset over the segment's middle rows, as a fraction of its width. */
+function maxLeftIndent(
+	data: Uint8Array,
+	cols: number,
+	c: RecognizedChar,
+	binThreshold: number,
+): number | null {
+	const w = c.x1 - c.x0;
+	const trim = Math.round((c.y1 - c.y0) * LEFT_STEM_TRIM_FRACTION);
+	let deepest: number | null = null;
+	for (let y = c.y0 + trim; y < c.y1 - trim; y++) {
+		let indent = w;
+		for (let x = c.x0; x < c.x1; x++) {
+			if (data[y * cols + x]! > binThreshold) {
+				indent = x - c.x0;
+				break;
+			}
+		}
+		deepest = Math.max(deepest ?? 0, indent);
+	}
+	return deepest === null ? null : deepest / w;
+}
+
+/**
  * A '!' is a cap-height stem with a dot on the baseline, but capture blur fills
  * the gap between them (720p "BLUEYMOM!!" read "BLUEvMOMIl"), and a fading
  * kill-feed row dims the dot under the binarization threshold so the segment
@@ -560,7 +654,8 @@ function resolveExclamationByNotch(
  */
 const CAP_TWINS: Record<string, string> = {
 	c: "C",
-	o: "O0",
+	n: "A",
+	o: "O0A",
 	s: "S",
 	u: "UY",
 	v: "VY",
@@ -568,7 +663,7 @@ const CAP_TWINS: Record<string, string> = {
 	x: "X",
 	z: "Z",
 };
-const CAP_LINE_ANCHOR = /^[\p{Lu}\dbdfhkl]$/u;
+const CAP_LINE_ANCHOR = /^[\p{Lu}\dbdfhikl]$/u;
 const CAP_LINE_MAX_OFFSET = 0.12;
 const CAP_LINE_SCORE_MARGIN = 0.06;
 
@@ -807,6 +902,46 @@ function stripMarks(s: string): string {
 }
 
 /**
+ * A descender's bowl tight-crops like the round letter it sits on ('g' over
+ * 'o': "Bagel!" read "Baoel!"), but the segment still hangs below the
+ * baseline. A Latin letter reaching DESCENT_MIN_PX under it takes the
+ * descender when that is a near-tie candidate. A dotted stem is 'i' or 'j'
+ * above the baseline, so there the descent alone decides ("julufm" read
+ * "iulufm" with the 'j' 0.08 behind).
+ */
+const DESCENDER_LETTERS = new Set([..."gjpqy"]);
+const DOTTED_STEMS = new Set([..."iìíîï"]);
+const DESCENDER_SCORE_MARGIN = 0.06;
+const LATIN_LETTER = /^\p{Script=Latin}$/u;
+
+function resolveDescenderByBaseline(raw: RecognizedText): RecognizedText {
+	const anchors = raw.chars
+		.filter((c) => !DESCENDER_LETTERS.has(c.char))
+		.map((c) => c.y1)
+		.sort((a, b) => a - b);
+	if (anchors.length === 0) return raw;
+	const baseline = anchors[Math.floor(anchors.length / 2)]!;
+	const chars = raw.chars.map((c) => {
+		if (DESCENDER_LETTERS.has(c.char) || !LATIN_LETTER.test(c.char)) return c;
+		if (c.y1 - baseline < DESCENT_MIN_PX) return c;
+		const descender = DOTTED_STEMS.has(c.char)
+			? (c.candidates?.find((k) => k.char === "j") ?? {
+					char: "j",
+					score: c.score,
+				})
+			: c.candidates?.find(
+					(k) =>
+						DESCENDER_LETTERS.has(k.char) &&
+						c.score - k.score <= DESCENDER_SCORE_MARGIN,
+				);
+		return descender
+			? { ...c, char: descender.char, score: descender.score }
+			: c;
+	});
+	return { ...raw, text: retext(raw.text, chars), chars };
+}
+
+/**
  * 'P' and 'p' tight-crop to the same shape, but the segment keeps the position
  * the templates lose: 'p' hangs below the baseline (median ink bottom of the
  * non-twin glyphs, which shrugs off real descenders). Skipped with no anchor glyph.
@@ -866,6 +1001,15 @@ function preferPlainTies(raw: RecognizedText, margin: number): RecognizedText {
 	return { ...raw, text: retext(raw.text, chars), chars };
 }
 
+/**
+ * The game draws ASCII '<' '>' like the fullwidth forms (the font's own
+ * ASCII renders are a size larger), so those templates win on a real '<'
+ * ("crystl!!<3" read "crystl!!＜3"). The pixels cannot tell the two apart and
+ * ASCII is the common pick, so the read is ASCII.
+ */
+const FULLWIDTH_LOOKALIKES: Record<string, string> = { "＜": "<", "＞": ">" };
+const FULLWIDTH_LOOKALIKE_RE = /[＜＞]/g;
+
 export function* parseNameSteps(
 	gray: Mat,
 	glyphs: GlyphSet,
@@ -902,14 +1046,22 @@ export function* parseNameSteps(
 							resolveVoicedByMark(
 								resolveBhByBowlFloor(
 									resolveStemTwins(
-										resolveDoByCorners(
-											fixDotsByPosition(
-												resolveExclamationByNotch(
-													resolveUnderscoreByBaseline(raw),
-													gray,
+										resolveSbByLeftStem(
+											resolveDoByCorners(
+												resolveRingByPosition(
+													fixDotsByPosition(
+														resolveExclamationByNotch(
+															resolveDescenderByBaseline(
+																resolveUnderscoreByBaseline(raw),
+															),
+															gray,
+														),
+													),
 												),
+												gray,
 											),
 											gray,
+											binThreshold,
 										),
 										gray,
 										binThreshold,
@@ -926,7 +1078,7 @@ export function* parseNameSteps(
 				).trim(),
 			),
 		),
-	);
+	).replace(FULLWIDTH_LOOKALIKE_RE, (c) => FULLWIDTH_LOOKALIKES[c]!);
 	return {
 		name,
 		confidence: raw.confidence,

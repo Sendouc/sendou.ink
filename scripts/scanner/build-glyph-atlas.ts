@@ -101,7 +101,7 @@ function nameCharset(): string[] {
  * few narrow glyphs shift an atlas's median width enough to change
  * wide-segment splitting, so it stays out of the death-tag charset until attested.
  */
-const NAME_GREEK = "ιαβψ"; // ι: "Rιppιng_H", α: "◇Dαrz™" (special-symbols fixture), β: "エキヒヒリヨβノ、" (quick log manta-maria)
+const NAME_GREEK = "ιαβψΞ"; // ι: "Rιppιng_H", α: "◇Dαrz™" (special-symbols fixture), β: "エキヒヒリヨβノ、" (quick log manta-maria), Ξ: "BΞ Bagel!" (anarchy-series-tower-control-double-eight)
 
 /**
  * The rest of the in-game name editor's symbol pickers (sendou.ink's

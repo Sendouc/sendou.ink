@@ -1,8 +1,10 @@
 /**
- * Per-row and per-column R+G+B sums of an RGBA picture on the GPU: all
- * detectContentBox reads, so the readback can look for bars without mapping
- * the full-size picture.
+ * Per-segment R+G+B sums of every row and column of an RGBA picture on the
+ * GPU: all detectContentBox reads, so the readback can look for bars without
+ * mapping the full-size picture.
  */
+import { BORDER_SEGMENTS, type SegmentSums } from "../core/canonical";
+
 const WORKGROUP_SIZE = 64;
 const BUFFER_MAP_READ = 0x0001;
 const BUFFER_COPY_SRC = 0x0004;
@@ -22,27 +24,29 @@ fn rgb(p: u32) -> u32 {
   return (p & 0xffu) + ((p >> 8u) & 0xffu) + ((p >> 16u) & 0xffu);
 }
 
+const SEGMENTS = ${BORDER_SEGMENTS}u;
+
 @compute @workgroup_size(${WORKGROUP_SIZE})
 fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
   let i = gid.x;
+  let line = i / SEGMENTS;
+  let segment = i % SEGMENTS;
   var sum = 0u;
-  if (i < params.h) {
-    for (var x = 0u; x < params.w; x++) { sum += rgb(src[i * params.stride + x]); }
-  } else if (i < params.h + params.w) {
-    let x = i - params.h;
-    for (var y = 0u; y < params.h; y++) { sum += rgb(src[y * params.stride + x]); }
+  if (line < params.h) {
+    let start = segment * params.w / SEGMENTS;
+    let end = (segment + 1u) * params.w / SEGMENTS;
+    for (var x = start; x < end; x++) { sum += rgb(src[line * params.stride + x]); }
+  } else if (line < params.h + params.w) {
+    let x = line - params.h;
+    let start = segment * params.h / SEGMENTS;
+    let end = (segment + 1u) * params.h / SEGMENTS;
+    for (var y = start; y < end; y++) { sum += rgb(src[y * params.stride + x]); }
   } else {
     return;
   }
   dst[i] = sum;
 }
 `;
-
-/** Read-back line sums: `rows[y]` and `cols[x]` are R+G+B over that line. */
-export interface LineSums {
-	rows: Uint32Array;
-	cols: Uint32Array;
-}
 
 export interface LineSumsKernel {
 	/**
@@ -53,7 +57,7 @@ export interface LineSumsKernel {
 		encoder: GPUCommandEncoder,
 		src: GPUBuffer,
 		{ stride, w, h }: { stride: number; w: number; h: number },
-	): { read: () => Promise<LineSums> };
+	): { read: () => Promise<SegmentSums> };
 }
 
 export async function createLineSumsKernel(
@@ -81,7 +85,7 @@ export async function createLineSumsKernel(
 	return {
 		encode(encoder, src, { stride, w, h }) {
 			const key = `${w}x${h}`;
-			const bytes = (w + h) * 4;
+			const bytes = (w + h) * BORDER_SEGMENTS * 4;
 			const slots = free.get(key) ?? [];
 			free.set(key, slots);
 			const slot = slots.pop() ?? {
@@ -115,7 +119,9 @@ export async function createLineSumsKernel(
 					})),
 				}),
 			);
-			pass.dispatchWorkgroups(Math.ceil((w + h) / WORKGROUP_SIZE));
+			pass.dispatchWorkgroups(
+				Math.ceil(((w + h) * BORDER_SEGMENTS) / WORKGROUP_SIZE),
+			);
 			pass.end();
 			encoder.copyBufferToBuffer(slot.dst, 0, slot.read, 0, bytes);
 			return {
@@ -124,7 +130,10 @@ export async function createLineSumsKernel(
 						await slot.read.mapAsync(MAP_MODE_READ);
 						const sums = new Uint32Array(slot.read.getMappedRange().slice(0));
 						slot.read.unmap();
-						return { rows: sums.subarray(0, h), cols: sums.subarray(h) };
+						return {
+							rows: sums.subarray(0, h * BORDER_SEGMENTS),
+							cols: sums.subarray(h * BORDER_SEGMENTS),
+						};
 					} finally {
 						slots.push(slot);
 					}

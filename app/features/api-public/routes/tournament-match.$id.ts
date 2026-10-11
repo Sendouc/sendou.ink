@@ -77,21 +77,21 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			return null;
 		}
 
-		if (match.winnerSide) {
-			return match.playedMapList.map((playedMap) => ({
-				map: {
-					mode: playedMap.mode,
-					stage: {
-						id: playedMap.stageId,
-						name: t(`game-misc:STAGE_${playedMap.stageId}`),
-					},
+		const playedMaps = match.playedMapList.map((playedMap) => ({
+			map: {
+				mode: playedMap.mode,
+				stage: {
+					id: playedMap.stageId,
+					name: t(`game-misc:STAGE_${playedMap.stageId}`),
 				},
-				participatedUserIds: playedMap.participants.map((p) => p.userId),
-				winnerTeamId: playedMap.winnerTeamId,
-				source: parseMaplistSource(playedMap.source),
-				ko: playedMap.ko !== null ? Boolean(playedMap.ko) : null,
-			}));
-		}
+			},
+			participatedUserIds: playedMap.participants.map((p) => p.userId),
+			winnerTeamId: playedMap.winnerTeamId,
+			source: parseMaplistSource(playedMap.source),
+			ko: playedMap.ko !== null ? Boolean(playedMap.ko) : null,
+		}));
+
+		if (match.winnerSide) return playedMaps;
 
 		const pickBanEvents = match.maps?.pickBan
 			? await TournamentRepository.findPickBanEventsByMatchId(match.id)
@@ -102,7 +102,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 			opponentTwo.id,
 		]);
 
-		return resolveMapList({
+		const upcomingMaps = resolveMapList({
 			tournamentId: match.tournamentId,
 			matchId,
 			teams: [opponentOne.id, opponentTwo.id],
@@ -122,21 +122,26 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 							return [];
 						})
 					: undefined,
-		}).map((mapListMap) => {
-			return {
-				map: {
-					mode: mapListMap.mode,
-					stage: {
-						id: mapListMap.stageId,
-						name: t(`game-misc:STAGE_${mapListMap.stageId}`),
+		})
+			.filter((mapListMap) => !mapListMap.bannedByTournamentTeamId)
+			.slice(playedMaps.length)
+			.map((mapListMap) => {
+				return {
+					map: {
+						mode: mapListMap.mode,
+						stage: {
+							id: mapListMap.stageId,
+							name: t(`game-misc:STAGE_${mapListMap.stageId}`),
+						},
 					},
-				},
-				participatedUserIds: null,
-				winnerTeamId: null,
-				source: mapListMap.source,
-				ko: null,
-			};
-		});
+					participatedUserIds: null,
+					winnerTeamId: null,
+					source: mapListMap.source,
+					ko: null,
+				};
+			});
+
+		return [...playedMaps, ...upcomingMaps];
 	};
 
 	const { bracketName, roundNameWithoutMatchIdentifier } =

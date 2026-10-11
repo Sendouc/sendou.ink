@@ -63,7 +63,10 @@
 	background: transparent;
 	color: var(--color-text);
 	text-align: start;
-	text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+	/* halo in the fade color so it lifts the label off the banner in either theme */
+	text-shadow:
+		0 0 2px var(--stage-banner-fade),
+		0 0 6px var(--stage-banner-fade);
 	cursor: pointer;
 
 	&:disabled {

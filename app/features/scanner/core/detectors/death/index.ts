@@ -501,7 +501,7 @@ export function createDeathDetector(
 			labels,
 			stats,
 			centroids,
-			8,
+			4,
 		);
 		bin.delete();
 		centroids.delete();

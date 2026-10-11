@@ -16,6 +16,7 @@ import {
 	testTournament,
 	tournamentCtxTeam,
 } from "~/features/tournament-bracket/core/tests/test-utils";
+import { tournamentBracketsPage } from "~/features/tournament-bracket/tournament-bracket-urls";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import {
 	SENDOUQ_LOOKING_PAGE,
@@ -309,19 +310,27 @@ describe("resolveGlobalStatus", () => {
 		expect(status?.logoUrl).toBe("/test.avif");
 	});
 
-	test("resolves a match locked for cast as waiting for it", async () => {
-		RunningTournaments.add(
-			runningTournamentWithMatch({
+	test("resolves a match locked for cast as waiting for it, linking to the match in the bracket", async () => {
+		const tournament = runningTournamentWithMatch({
+			tournamentId: 1,
+			teamOneUserIds: userIds([1]),
+			teamTwoUserIds: userIds([2]),
+			lockFirstMatchForCast: true,
+		});
+		RunningTournaments.add(tournament);
+		const lockedMatch = tournament.bracketByIdx(0)!.data.match[0];
+
+		const status = await resolveGlobalStatus(users.id(1));
+
+		expect(status?.state).toBe("TO_WAITING_FOR_CAST");
+		expect(status?.url).toBe(
+			tournamentBracketsPage({
 				tournamentId: 1,
-				teamOneUserIds: userIds([1]),
-				teamTwoUserIds: userIds([2]),
-				lockFirstMatchForCast: true,
+				bracketIdx: 0,
+				groupId: lockedMatch.groupId,
 			}),
 		);
-
-		expect((await resolveGlobalStatus(users.id(1)))?.state).toBe(
-			"TO_WAITING_FOR_CAST",
-		);
+		expect(status?.scrollToMatchId).toBe(lockedMatch.id);
 	});
 
 	test("resolves an open regular check-in", async () => {

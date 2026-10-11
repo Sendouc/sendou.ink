@@ -69,6 +69,15 @@ describe("SendouSelect", () => {
 			.not.toBeInTheDocument();
 	});
 
+	test("focuses the search input within the opening click", async () => {
+		const screen = await render(<GroupedSelect search={{}} />);
+		const trigger = screen.getByRole("button").element() as HTMLButtonElement;
+
+		trigger.click();
+
+		expect(document.activeElement).toBe(screen.getByRole("combobox").element());
+	});
+
 	test("shows the empty state when nothing matches the search", async () => {
 		const screen = await render(<GroupedSelect search={{}} />);
 
