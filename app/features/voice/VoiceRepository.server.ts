@@ -432,20 +432,48 @@ export async function markOwnSessionLeft({
 		.execute();
 }
 
-export async function markSessionsKicked({
+/** Ends the users open sessions of the room, for when they are taken out of the call rather than leaving it. */
+export async function markSessionsLeft({
+	roomId,
+	userIds,
+	leaveReason,
+}: {
+	roomId: number;
+	userIds: number[];
+	leaveReason: Extract<VoiceLeaveReason, "KICKED" | "EJECTED">;
+}) {
+	if (userIds.length === 0) return;
+
+	await db
+		.updateTable("VoiceSession")
+		.set({ leftAt: databaseTimestampNow(), leaveReason })
+		.where("VoiceSession.roomId", "=", roomId)
+		.where("VoiceSession.userId", "in", userIds)
+		.where("VoiceSession.leftAt", "is", null)
+		.execute();
+}
+
+/** Whether the user is in the rooms call through a Daily session other than the given one, like after rejoining. */
+export async function hasOtherConnectedSession({
 	roomId,
 	userId,
+	dailySessionId,
 }: {
 	roomId: number;
 	userId: number;
+	dailySessionId: string;
 }) {
-	await db
-		.updateTable("VoiceSession")
-		.set({ leftAt: databaseTimestampNow(), leaveReason: "KICKED" })
+	const row = await db
+		.selectFrom("VoiceSession")
+		.select("VoiceSession.id")
 		.where("VoiceSession.roomId", "=", roomId)
 		.where("VoiceSession.userId", "=", userId)
 		.where("VoiceSession.leftAt", "is", null)
-		.execute();
+		.where("VoiceSession.connectedAt", "is not", null)
+		.where("VoiceSession.dailySessionId", "!=", dailySessionId)
+		.executeTakeFirst();
+
+	return Boolean(row);
 }
 
 export async function updateFromLeftWebhook({

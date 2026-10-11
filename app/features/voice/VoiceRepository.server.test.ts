@@ -155,9 +155,10 @@ describe("VoiceRepository.markOwnSessionLeft", () => {
 			{ userId: playerId(), roomId: room.id },
 			{ dailySessionId: "daily-1" },
 		);
-		await VoiceRepository.markSessionsKicked({
+		await VoiceRepository.markSessionsLeft({
 			roomId: room.id,
-			userId: playerId(),
+			userIds: [playerId()],
+			leaveReason: "KICKED",
 		});
 
 		await withUserId(playerId(), () =>
@@ -196,9 +197,10 @@ describe("VoiceRepository.hasBeenKicked", () => {
 			{ userId: otherPlayerId(), roomId: room.id },
 			{ dailySessionId: "daily-2" },
 		);
-		await VoiceRepository.markSessionsKicked({
+		await VoiceRepository.markSessionsLeft({
 			roomId: room.id,
-			userId: playerId(),
+			userIds: [playerId()],
+			leaveReason: "KICKED",
 		});
 
 		expect(
@@ -219,6 +221,30 @@ describe("VoiceRepository.hasBeenKicked", () => {
 				userId: playerId(),
 			}),
 		).toBe(false);
+	});
+});
+
+describe("VoiceRepository.hasOtherConnectedSession", () => {
+	test("holds for the old connection of a user who rejoined, not for the new one", async () => {
+		const room = await ChatRoomFactory.create();
+		await VoiceSessionFactory.create(
+			{ userId: playerId(), roomId: room.id },
+			{ dailySessionId: "daily-old" },
+		);
+		await VoiceSessionFactory.create(
+			{ userId: playerId(), roomId: room.id },
+			{ dailySessionId: "daily-new" },
+		);
+
+		const hasOtherThan = (dailySessionId: string) =>
+			VoiceRepository.hasOtherConnectedSession({
+				roomId: room.id,
+				userId: playerId(),
+				dailySessionId,
+			});
+
+		expect(await hasOtherThan("daily-old")).toBe(true);
+		expect(await hasOtherThan("daily-new")).toBe(false);
 	});
 });
 

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useVoiceSnapshot } from "~/features/voice/voice-hooks";
 import { useBackgroundResource } from "~/hooks/useBackgroundResource";
 import { useReloadOnNewDeploy } from "~/hooks/useReloadOnNewDeploy";
 import type { RootLoaderData } from "~/root";
@@ -71,8 +72,9 @@ export function LayoutDataProvider({
 	}, [refresh, isLoading]);
 
 	const newest = useNewestOf(data, polledData);
+	const { call } = useVoiceSnapshot();
 
-	useReloadOnNewDeploy(newest.buildCommit ?? "");
+	useReloadOnNewDeploy(newest.buildCommit ?? "", { canReload: !call });
 	useReloadOnStaleAuth({
 		clientUserId: data?.user?.id,
 		serverUserId: newest.loggedInUserId,

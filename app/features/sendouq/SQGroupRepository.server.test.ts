@@ -399,7 +399,7 @@ describe("insertFromPrevious", () => {
 });
 
 describe("morphGroups", () => {
-	test("gives the survivor a fresh chat room and deletes both old rooms", async () => {
+	test("the survivor keeps its chat room and the other group's room is deleted", async () => {
 		const [userOne, userTwo] = await UserFactory.createMany(2);
 		const survivingGroup = await SQGroupFactory.create({
 			memberUserIds: [userOne.id],
@@ -414,11 +414,10 @@ describe("morphGroups", () => {
 			otherGroupId: otherGroup.id,
 		});
 
-		const survivorChatRoomId = await groupChatRoomId(survivingGroup.id);
-		expect(survivorChatRoomId).not.toBe(oldChatRoomId);
+		expect(await groupChatRoomId(survivingGroup.id)).toBe(oldChatRoomId);
 
 		const rooms = await allChatRooms();
-		expect(rooms.map((room) => room.id)).toEqual([survivorChatRoomId]);
+		expect(rooms.map((room) => room.id)).toEqual([oldChatRoomId]);
 	});
 });
 

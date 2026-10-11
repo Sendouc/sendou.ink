@@ -114,10 +114,15 @@ export async function ejectUsers({
 }) {
 	if (userIds.length === 0) return;
 
-	await request(`/rooms/${roomName(chatRoomId)}/eject`, {
+	const response = await request(`/rooms/${roomName(chatRoomId)}/eject`, {
 		method: "POST",
 		body: { user_ids: userIds.map(String), ban },
+		allowFailure: true,
 	});
+	// no room on Daily's side means nobody to eject
+	if (response.ok || response.status === 404) return;
+
+	throw new Error(`Daily eject failed (${response.status})`);
 }
 
 export async function findPresentUserIds(chatRoomId: number) {

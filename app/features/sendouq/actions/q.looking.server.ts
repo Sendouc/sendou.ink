@@ -3,6 +3,7 @@ import { requireUser } from "~/features/auth/core/user.server";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
 import * as Seasons from "~/features/mmr/core/Seasons";
 import * as SQGroupRepository from "~/features/sendouq/SQGroupRepository.server";
+import * as VoiceEject from "~/features/voice/core/VoiceEject.server";
 import { defineAction } from "~/form/define-action.server";
 import { errorToastIfFalsy } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
@@ -43,6 +44,21 @@ export const action = defineAction(
 				channel: sqGroupChannel(groupId),
 				type: "LIKE_RECEIVED",
 			});
+
+		const ejectFromGroupVoice = (
+			group: { chatRoomId: number | null; members: Array<{ id: number }> },
+			userIds: number[],
+		) => {
+			if (group.chatRoomId === null) return;
+
+			void VoiceEject.ejectUsers({
+				room: {
+					roomId: group.chatRoomId,
+					participantUserIds: group.members.map((member) => member.id),
+				},
+				userIds,
+			});
+		};
 
 		const notifyGroupStatusChanged = (groupId: number) =>
 			ChatSystemMessage.notifyStatusChanged(
@@ -150,10 +166,14 @@ export const action = defineAction(
 						survivingGroupId,
 						otherGroupId: otherGroup.id,
 					});
+					ejectFromGroupVoice(
+						otherGroup,
+						otherGroup.members.map((member) => member.id),
+					);
 
 					await refreshSendouQInstance();
 
-					// both old rooms died and a fresh merged room was created
+					// the other group's room died, the merged group lives on in the surviving one
 					ChatSystemMessage.notifyRoomsChanged(
 						[...ourGroup.members, ...theirGroup.members].map(
 							(member) => member.id,
@@ -202,6 +222,7 @@ export const action = defineAction(
 				case "LEAVE_GROUP": {
 					const { abortedReadyCheckGroupIds, leftUserIds } =
 						await SQGroupRepository.leaveGroup(user.id);
+					ejectFromGroupVoice(currentGroup, leftUserIds);
 
 					await refreshSendouQInstance();
 
@@ -252,6 +273,7 @@ export const action = defineAction(
 					await SQGroupRepository.leaveGroup(body.userId, {
 						keepQuickAddedMembers: true,
 					});
+					ejectFromGroupVoice(currentGroup, [body.userId]);
 
 					await refreshSendouQInstance();
 

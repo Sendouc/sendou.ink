@@ -73,9 +73,16 @@ export const action = defineAction(async ({ request }) => {
 
 	if (event.type === "participant.joined") {
 		VoicePresence.add(room, userId);
-	} else {
-		VoicePresence.remove(room, [userId]);
+		return null;
 	}
+
+	// the leftover connection of a page that was refreshed leaves after the user is already back
+	const hasRejoined = await VoiceRepository.hasOtherConnectedSession({
+		roomId: chatRoomId,
+		userId,
+		dailySessionId: event.payload.session_id,
+	});
+	if (!hasRejoined) VoicePresence.remove(room, [userId]);
 
 	return null;
 });

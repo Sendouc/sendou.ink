@@ -1,4 +1,6 @@
+import * as v from "valibot";
 import type { ServerEvent } from "~/features/events/events-types";
+import * as PersistedState from "~/modules/persisted-state/persisted-state";
 import { logger } from "~/utils/logger";
 import { VOICE_TELEMETRY_ROUTE, voiceRoomDataRoute } from "~/utils/urls";
 import * as Sounds from "../chat/core/Sounds";
@@ -11,6 +13,22 @@ import {
 	type VoiceLeaveReason,
 	type VoicePlatform,
 } from "./voice-constants";
+
+const REJOIN_AFTER_RELOAD_WINDOW_MS = 30_000;
+
+const callToRejoinPersisted = PersistedState.define({
+	key: "voiceCallToRejoin",
+	storage: "session",
+	schema: v.nullable(v.object({ roomId: v.number(), leftAt: v.number() })),
+	default: null,
+});
+
+const micEnabledPersisted = PersistedState.define({
+	key: "voiceMicEnabled",
+	storage: "local",
+	schema: v.boolean(),
+	default: false,
+});
 
 export interface VoiceRoomState {
 	available: boolean;
@@ -72,6 +90,10 @@ interface VoiceClientDeps {
 	) => () => void;
 	platform: () => VoicePlatform;
 	playSound: (soundCode: string) => void;
+	loadMicEnabled: () => boolean;
+	saveMicEnabled: (enabled: boolean) => void;
+	rememberCallForReload: (roomId: number) => void;
+	takeCallToRejoin: () => number | null;
 }
 
 export interface VoiceClient {
@@ -80,6 +102,7 @@ export interface VoiceClient {
 	start: () => () => void;
 	loadRoom: (roomId: number) => Promise<void>;
 	join: (roomId: number) => Promise<void>;
+	rejoinAfterReload: () => Promise<void>;
 	leave: (reason?: VoiceLeaveReason) => Promise<void>;
 	leaveOnPageClose: () => void;
 	kick: (roomId: number, userId: number) => Promise<void>;
@@ -190,6 +213,70 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 		}
 	};
 
+	const join = async (
+		roomId: number,
+		{ isAutomatic = false }: { isAutomatic?: boolean } = {},
+	) => {
+		if (snapshot.call?.roomId === roomId && snapshot.call.status !== "FAILED") {
+			return;
+		}
+		if (snapshot.call) await leave();
+
+		const attempt = ++joinAttempt;
+		update({
+			pendingFeedback: null,
+			call: {
+				roomId,
+				voiceSessionId: null,
+				credentials: null,
+				status: "JOINING",
+				micEnabled: false,
+				deafened: false,
+				inputMode: preferredInputMode,
+				participants: [],
+				speakingSessionIds: [],
+				audioBlocked: false,
+				errorKind: null,
+			},
+		});
+		latestSummary = null;
+
+		await latestJoinRequest;
+		const isSuperseded = () => attempt !== joinAttempt || !snapshot.call;
+		if (isSuperseded()) return;
+
+		const request = deps.postRoomAction(roomId, {
+			_action: "JOIN",
+			platform: deps.platform(),
+		});
+		latestJoinRequest = request;
+		const result = await request;
+		if (isSuperseded()) {
+			if (isJoinResult(result)) {
+				void deps.postRoomAction(roomId, {
+					_action: "LEAVE",
+					voiceSessionId: result.voiceSessionId,
+					leaveReason: "LEFT",
+				});
+			}
+			return;
+		}
+
+		if (!isJoinResult(result)) {
+			if (isAutomatic) {
+				update({ call: null });
+				return;
+			}
+			updateCall({ status: "FAILED", errorKind: "JOIN_FAILED" });
+			reportError("JOIN_FAILED", "join request was refused");
+			return;
+		}
+		updateCall({
+			voiceSessionId: result.voiceSessionId,
+			credentials: { roomUrl: result.roomUrl, token: result.token },
+		});
+	};
+
 	return {
 		getSnapshot: () => snapshot,
 		subscribe: (listener) => {
@@ -208,64 +295,10 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			const room = await deps.fetchRoom(roomId);
 			if (room) setRoom(roomId, room);
 		},
-		join: async (roomId) => {
-			if (
-				snapshot.call?.roomId === roomId &&
-				snapshot.call.status !== "FAILED"
-			) {
-				return;
-			}
-			if (snapshot.call) await leave();
-
-			const attempt = ++joinAttempt;
-			update({
-				pendingFeedback: null,
-				call: {
-					roomId,
-					voiceSessionId: null,
-					credentials: null,
-					status: "JOINING",
-					micEnabled: false,
-					deafened: false,
-					inputMode: preferredInputMode,
-					participants: [],
-					speakingSessionIds: [],
-					audioBlocked: false,
-					errorKind: null,
-				},
-			});
-			latestSummary = null;
-
-			await latestJoinRequest;
-			const isSuperseded = () => attempt !== joinAttempt || !snapshot.call;
-			if (isSuperseded()) return;
-
-			const request = deps.postRoomAction(roomId, {
-				_action: "JOIN",
-				platform: deps.platform(),
-			});
-			latestJoinRequest = request;
-			const result = await request;
-			if (isSuperseded()) {
-				if (isJoinResult(result)) {
-					void deps.postRoomAction(roomId, {
-						_action: "LEAVE",
-						voiceSessionId: result.voiceSessionId,
-						leaveReason: "LEFT",
-					});
-				}
-				return;
-			}
-
-			if (!isJoinResult(result)) {
-				updateCall({ status: "FAILED", errorKind: "JOIN_FAILED" });
-				reportError("JOIN_FAILED", "join request was refused");
-				return;
-			}
-			updateCall({
-				voiceSessionId: result.voiceSessionId,
-				credentials: { roomUrl: result.roomUrl, token: result.token },
-			});
+		join: (roomId) => join(roomId),
+		rejoinAfterReload: async () => {
+			const roomId = deps.takeCallToRejoin();
+			if (roomId !== null) await join(roomId, { isAutomatic: true });
 		},
 		leave,
 		leaveOnPageClose: () => {
@@ -273,6 +306,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			if (!call?.voiceSessionId) return;
 
 			sendSummary(true);
+			deps.rememberCallForReload(call.roomId);
 			deps.beaconRoomAction(call.roomId, {
 				_action: "LEAVE",
 				voiceSessionId: call.voiceSessionId,
@@ -284,6 +318,7 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 		},
 		setMicEnabled: (enabled) => {
 			if (!snapshot.call) return;
+			if (snapshot.call.inputMode === "OPEN_MIC") deps.saveMicEnabled(enabled);
 			callHandle?.setLocalAudio(enabled);
 			updateCall(
 				enabled
@@ -333,7 +368,9 @@ export function createVoiceClient(deps: VoiceClientDeps): VoiceClient {
 			const call = snapshot.call;
 			if (!call?.voiceSessionId) return;
 
-			updateCall({ status: "CONNECTED" });
+			const restoreMic = call.inputMode === "OPEN_MIC" && deps.loadMicEnabled();
+			if (restoreMic) callHandle?.setLocalAudio(true);
+			updateCall({ status: "CONNECTED", micEnabled: restoreMic });
 			deps.playSound(VOICE_JOIN_SOUND);
 			void deps.postRoomAction(call.roomId, {
 				_action: "CONNECTED",
@@ -521,4 +558,28 @@ export const voiceClient = createVoiceClient({
 	addServerEventListener: (listener) => eventsClient.addEventListener(listener),
 	platform: detectPlatform,
 	playSound: Sounds.play,
+	loadMicEnabled: () => PersistedState.read(micEnabledPersisted),
+	saveMicEnabled: (enabled) =>
+		PersistedState.write(micEnabledPersisted, enabled),
+	rememberCallForReload: (roomId) =>
+		PersistedState.write(callToRejoinPersisted, { roomId, leftAt: Date.now() }),
+	takeCallToRejoin: () => {
+		const remembered = PersistedState.read(callToRejoinPersisted);
+		if (!remembered) return null;
+		PersistedState.write(callToRejoinPersisted, null);
+
+		return isPageReload() &&
+			Date.now() - remembered.leftAt < REJOIN_AFTER_RELOAD_WINDOW_MS
+			? remembered.roomId
+			: null;
+	},
 });
+
+function isPageReload() {
+	const [navigation] = performance.getEntriesByType("navigation");
+
+	return (
+		navigation instanceof PerformanceNavigationTiming &&
+		navigation.type === "reload"
+	);
+}

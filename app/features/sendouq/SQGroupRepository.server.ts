@@ -383,18 +383,30 @@ export function morphGroups({
 			.where("Group.id", "=", survivingGroupId)
 			.executeTakeFirst();
 
-		// fresh chat room so neither group's previous messages are visible, and
-		// mark as matchmade
-		const chatRoom = await ChatRepository.insertRoom(
-			{
-				type: "SQ_GROUP",
-				expiresAt: addHours(new Date(), CHAT_ROOM_LIFESPAN_HOURS),
-			},
-			trx,
-		);
+		// the surviving group keeps its room so a voice call in it carries on
+		let chatRoomId = survivingGroup?.chatRoomId ?? null;
+		if (chatRoomId !== null) {
+			await ChatRepository.updateRoomExpiresAt(
+				{
+					roomId: chatRoomId,
+					expiresAt: addHours(new Date(), CHAT_ROOM_LIFESPAN_HOURS),
+				},
+				trx,
+			);
+		} else {
+			chatRoomId = (
+				await ChatRepository.insertRoom(
+					{
+						type: "SQ_GROUP",
+						expiresAt: addHours(new Date(), CHAT_ROOM_LIFESPAN_HOURS),
+					},
+					trx,
+				)
+			).id;
+		}
 		await trx
 			.updateTable("Group")
-			.set({ chatRoomId: chatRoom.id, matchmade: 1 })
+			.set({ chatRoomId, matchmade: 1 })
 			.where("Group.id", "=", survivingGroupId)
 			.execute();
 
@@ -407,12 +419,6 @@ export function morphGroups({
 		await syncTeamId(survivingGroupId, trx);
 		await deleteLikesAndSuggestionsByGroupId(survivingGroupId, trx);
 		await refreshGroup(survivingGroupId, trx);
-
-		// replaced rather than deleted with its group, so the trigger doesn't remove it
-		await ChatRepository.deleteRoomsByIds(
-			[survivingGroup?.chatRoomId ?? null],
-			trx,
-		);
 
 		await trx
 			.deleteFrom("Group")

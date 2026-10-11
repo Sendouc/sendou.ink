@@ -25,6 +25,8 @@ export function VoiceCallHost() {
 		return () => window.removeEventListener("pagehide", handlePageHide);
 	}, []);
 
+	React.useEffect(() => void voiceClient.rejoinAfterReload(), []);
+
 	if (!call?.credentials || !call.voiceSessionId) return null;
 
 	return (

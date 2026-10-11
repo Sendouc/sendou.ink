@@ -77,6 +77,10 @@ function setup({
 		},
 		platform: () => "DESKTOP" as const,
 		playSound: vi.fn(),
+		loadMicEnabled: vi.fn(() => false),
+		saveMicEnabled: vi.fn(),
+		rememberCallForReload: vi.fn(),
+		takeCallToRejoin: vi.fn((): number | null => null),
 	};
 	const client = createVoiceClient(deps);
 	client.start();
@@ -240,6 +244,37 @@ describe("createVoiceClient", () => {
 		});
 	});
 
+	test("closing the page remembers the call for a reload to rejoin", async () => {
+		const { client, deps } = setup();
+		await client.join(ROOM_ID);
+
+		client.leaveOnPageClose();
+
+		expect(deps.rememberCallForReload).toHaveBeenCalledWith(ROOM_ID);
+	});
+
+	test("a reload rejoins the remembered call", async () => {
+		const { client, deps } = setup();
+		deps.takeCallToRejoin.mockReturnValue(ROOM_ID);
+
+		await client.rejoinAfterReload();
+
+		expect(client.getSnapshot().call).toMatchObject({
+			roomId: ROOM_ID,
+			voiceSessionId: 10,
+		});
+	});
+
+	test("a refused rejoin after a reload ends quietly", async () => {
+		const { client, deps } = setup({ postRoomAction: async () => null });
+		deps.takeCallToRejoin.mockReturnValue(ROOM_ID);
+
+		await client.rejoinAfterReload();
+
+		expect(client.getSnapshot().call).toBeNull();
+		expect(deps.postTelemetry).not.toHaveBeenCalled();
+	});
+
 	test("leaving reports the leave even when the call object never finishes leaving", async () => {
 		const { client, deps } = setup();
 		await client.join(ROOM_ID);
@@ -324,6 +359,34 @@ describe("createVoiceClient", () => {
 		client.setMicEnabled(false);
 
 		expect(client.getSnapshot().call?.speakingSessionIds).toEqual([]);
+	});
+
+	test("a new call restores the open mic choice of the previous one", async () => {
+		const { client, deps } = setup();
+		const setLocalAudio = vi.fn();
+		deps.loadMicEnabled.mockReturnValue(true);
+		await client.join(ROOM_ID);
+		client.registerCallHandle({
+			setLocalAudio,
+			leave: async () => {},
+			resumeAudio: () => {},
+		});
+
+		client.markConnected("local");
+
+		expect(setLocalAudio).toHaveBeenCalledWith(true);
+		expect(client.getSnapshot().call?.micEnabled).toBe(true);
+	});
+
+	test("toggling the open mic is remembered, push to talk isn't", async () => {
+		const { client, deps } = setup();
+		await client.join(ROOM_ID);
+
+		client.setMicEnabled(true);
+		client.setInputMode("PUSH_TO_TALK");
+		client.setMicEnabled(false);
+
+		expect(deps.saveMicEnabled.mock.calls).toEqual([[true]]);
 	});
 
 	test("unmuting the microphone undeafens", async () => {
