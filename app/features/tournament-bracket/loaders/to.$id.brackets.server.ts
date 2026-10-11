@@ -59,6 +59,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 					groupId: bracket.preview ? null : groupId,
 				})
 			: null,
+		// destination brackets' match data is not shipped, so their groups are resolved here
+		exitGroups: Object.fromEntries(bracket?.matchExitGroups() ?? []),
 		// the layout does not ship these, standings derived in the view need them
 		participatedUserIds: tournament.participatedUserIds,
 		// only its bracket check-in is acted on here, the header status indicator covers the rest

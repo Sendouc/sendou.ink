@@ -1,6 +1,7 @@
 import * as R from "remeda";
 import { TOURNAMENT } from "../../../tournament/tournament-constants";
 import type { Bracket as BracketType } from "../../core/Bracket";
+import type { MatchExitGroupsById } from "../../core/Bracket/Bracket";
 import { getRounds } from "../../core/rounds";
 import {
 	BracketColumn,
@@ -17,6 +18,7 @@ interface EliminationBracketSideProps {
 	/** Group shown of a bracket split into groups, defaults to the first. */
 	groupId?: number;
 	isExpanded?: boolean;
+	exitGroups?: MatchExitGroupsById;
 }
 
 // must match --match-height in index.module.css and the match gap in BracketColumns.module.css
@@ -195,6 +197,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
 										lineType={lineType}
 										lineVerticalExtend={verticalExtend}
 										exitDestinations={exitDestinations.get(match.id)}
+										exitGroups={props.exitGroups?.[match.id]}
 									/>
 								);
 							})}

@@ -22,7 +22,10 @@ import {
 	vodUrl,
 } from "~/utils/urls";
 import type { Bracket } from "../../core/Bracket";
-import type { MatchExitDestinations } from "../../core/Bracket/Bracket";
+import type {
+	MatchExitDestinations,
+	MatchExitGroups,
+} from "../../core/Bracket/Bracket";
 import * as Deadline from "../../core/Deadline";
 import type { TournamentData } from "../../core/Tournament.server";
 import type { VodsByTournamentId } from "../../TournamentMatchVodRepository.server";
@@ -45,6 +48,8 @@ interface MatchProps {
 	spoilerCensor?: "full" | "score-only";
 	/** Brackets the teams leaving the bracket from this match continue to. */
 	exitDestinations?: MatchExitDestinations;
+	/** Groups of the destination brackets the teams leaving from this match landed in. */
+	exitGroups?: MatchExitGroups;
 }
 
 export function Match(props: MatchProps) {
@@ -79,6 +84,7 @@ export function Match(props: MatchProps) {
 				<MatchExitLabels
 					match={props.match}
 					destinations={props.exitDestinations}
+					groups={props.exitGroups}
 					hasLine={Boolean(props.lineType) && props.lineType !== "none"}
 				/>
 			) : null}
@@ -96,10 +102,12 @@ export function Match(props: MatchProps) {
 function MatchExitLabels({
 	match,
 	destinations,
+	groups,
 	hasLine,
 }: {
 	match: MatchProps["match"];
 	destinations: MatchExitDestinations;
+	groups?: MatchExitGroups;
 	hasLine: boolean;
 }) {
 	const { t } = useTranslation(["tournament"]);
@@ -108,6 +116,7 @@ function MatchExitLabels({
 	const exitRow = (type: "winner" | "loser", bracketIdx: number | null) => ({
 		type,
 		bracketIdx,
+		groupId: groups?.[type] ?? undefined,
 		bracket:
 			bracketIdx === null ? null : tournament.bracketsMeta[bracketIdx]?.name,
 		isLinkable: tournament.visibleBracketsMeta.some(
@@ -128,7 +137,7 @@ function MatchExitLabels({
 			})}
 			data-testid="match-exits"
 		>
-			{rows.map(({ type, bracket, bracketIdx, isLinkable }) => {
+			{rows.map(({ type, bracket, bracketIdx, groupId, isLinkable }) => {
 				if (!bracket) {
 					return <div key={type} className={styles.matchExitRow} />;
 				}
@@ -149,6 +158,7 @@ function MatchExitLabels({
 								to={tournamentBracketsPage({
 									tournamentId: tournament.ctx.id,
 									bracketIdx,
+									groupId,
 								})}
 								className={styles.matchExit}
 								title={title}

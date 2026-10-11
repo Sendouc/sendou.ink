@@ -40,8 +40,26 @@ test.describe("Tournament bracket grouped elimination", () => {
 		await expect(brackets.bracketTeamName("Team 2").first()).toBeVisible();
 		await isNotVisible(brackets.bracketTeamName("Team 1"));
 
+		// a pool's winners final loser is linked to the redemption group it lands in, before and after it starts
+		const expectExitLinksToRedemptionGroups = async () => {
+			for (const [pool, team, otherGroupTeam] of [
+				["A", "Team 4", "Team 3"],
+				["B", "Team 3", "Team 4"],
+			]) {
+				await brackets.goto(tournament.id, 0);
+				await brackets.openGroup(pool);
+				await brackets.exitLabel("Redemption [L]").click();
+				await expect(page).toHaveURL(/idx=1.*group=\d+/);
+				await expect(brackets.bracketTeamName(team).first()).toBeVisible();
+				await isNotVisible(brackets.bracketTeamName(otherGroupTeam));
+			}
+		};
+		await expectExitLinksToRedemptionGroups();
+
 		// Team 3 (pool B) and Team 4 (pool A) win their redemption groups, having lost their pool's winners final
 		await factories.TournamentFactory.playOut(tournament.id, 1);
+
+		await expectExitLinksToRedemptionGroups();
 
 		await brackets.goto(tournament.id, 2);
 		// pool winners take the top seeds and play a redemption winner from the other pool, not a rematch

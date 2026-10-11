@@ -2212,6 +2212,106 @@ describe("follow-up seeding through a redemption bracket", () => {
 	});
 });
 
+describe("matchExitGroups", () => {
+	const TEAM_IDS = Array.from({ length: 16 }, (_, index) => index + 1);
+	const PROGRESSION: TournamentSettings["bracketProgression"] = [
+		{
+			type: "double_elimination",
+			name: "Main",
+			requiresCheckIn: false,
+			settings: {
+				groupCount: 2,
+				skippedRounds: [
+					"LB_SEMIS",
+					"LB_FINALS",
+					"GRAND_FINALS",
+					"BRACKET_RESET",
+				],
+			},
+		},
+		{
+			type: "double_elimination",
+			name: "Redemption",
+			requiresCheckIn: false,
+			settings: {
+				groupCount: 2,
+				skippedRounds: ["GRAND_FINALS", "BRACKET_RESET"],
+			},
+			sources: [{ bracketIdx: 0, placements: [2, 3] }],
+		},
+		{
+			type: "single_elimination",
+			name: "Top Cut",
+			requiresCheckIn: false,
+			settings: {},
+			sources: [{ bracketIdx: 0, placements: [1] }],
+		},
+	];
+
+	const tournamentWith = (data: BracketData) =>
+		testTournament({
+			ctx: {
+				settings: { bracketProgression: PROGRESSION },
+				teams: TEAM_IDS.map((id) => tournamentCtxTeam(id, { seed: id })),
+			},
+			data,
+		});
+
+	const main = playedOut(
+		createResolved({
+			type: "double_elimination",
+			seeding: TEAM_IDS,
+			settings: PROGRESSION[0].settings,
+		}),
+	);
+
+	test("gives the group of the not yet started grouped destination each leaving team is projected in", () => {
+		expectExitGroupsToMatchDestination(tournamentWith(main));
+	});
+
+	test("gives the group of the started grouped destination each leaving team landed in", () => {
+		const redemption = createResolved({
+			type: "double_elimination",
+			seeding: tournamentWith(main).bracketByIdx(1)!.seeding!,
+			settings: PROGRESSION[1].settings,
+		});
+
+		expectExitGroupsToMatchDestination(
+			tournamentWith(mergeStages(main, redemption)),
+		);
+	});
+
+	function expectExitGroupsToMatchDestination(tournament: Tournament) {
+		const redemptionData = tournament.bracketByIdx(1)!.data;
+		const redemptionGroupOf = (teamId: number | null | undefined) =>
+			redemptionData.match.find(
+				(match) =>
+					match.opponent1?.id === teamId || match.opponent2?.id === teamId,
+			)?.groupId ?? null;
+
+		const exitGroups = [...tournament.bracketByIdx(0)!.matchExitGroups()];
+
+		for (const [matchId, groups] of exitGroups) {
+			const match = matchById(main, matchId);
+			const winner =
+				match.winnerSide === "opponent1" ? "opponent1" : "opponent2";
+			const loser = winner === "opponent1" ? "opponent2" : "opponent1";
+
+			expect(groups).toEqual({
+				winner: redemptionGroupOf(match[winner]?.id),
+				loser: redemptionGroupOf(match[loser]?.id),
+			});
+		}
+		expect(
+			new Set(
+				exitGroups.flatMap(([, groups]) => [groups.winner, groups.loser]),
+			),
+		).toEqual(
+			new Set([null, ...redemptionData.group.map((group) => group.id)]),
+		);
+	}
+});
+
 /** Plays every match of the bracket, the lower team id winning unless the other team is favored. */
 function playedOut(data: BracketData, favoredIds: number[] = []): BracketData {
 	let result = data;

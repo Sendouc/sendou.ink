@@ -9,6 +9,7 @@ import type {
 } from "~/features/tournament-bracket/core/engine/types";
 import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
+import { showsOneGroupAtATime } from "../../tournament-bracket-utils";
 import * as AbDivisions from "../AbDivisions";
 import * as Engine from "../engine";
 import * as Progression from "../Progression";
@@ -67,6 +68,15 @@ export interface MatchExitDestinations {
 	winner: number | null;
 	loser: number | null;
 }
+
+/** Groups of the destination brackets the winner and loser of a match landed in. See {@link Bracket.matchExitGroups}. */
+export interface MatchExitGroups {
+	winner: number | null;
+	loser: number | null;
+}
+
+/** {@link MatchExitGroups} keyed by match id, as shipped to the client. */
+export type MatchExitGroupsById = Partial<Record<number, MatchExitGroups>>;
 
 export interface TeamTrackRecord {
 	wins: number;
@@ -361,6 +371,52 @@ export abstract class Bracket {
 					typeof exit.loserRound === "number" ? -exit.loserRound : undefined,
 				) ?? destination(exit.loserTier);
 
+			if (winner === null && loser === null) continue;
+
+			result.set(matchId, { winner, loser });
+		}
+
+		return result;
+	}
+
+	/**
+	 * Groups the winner and loser of each decided match landed in (or are projected in, if not started), keyed by match id.
+	 * Only destinations shown one group at a time count. Needs their match data, so not available in views that only got `bracketsMeta`.
+	 */
+	matchExitGroups(): Map<number, MatchExitGroups> {
+		const groupIdOfTeam = (
+			bracketIdx: number | null,
+			tournamentTeamId: number | null | undefined,
+		) => {
+			if (bracketIdx === null || typeof tournamentTeamId !== "number") {
+				return null;
+			}
+
+			const destination = this.tournament.bracketByIdx(bracketIdx);
+			if (!destination || !showsOneGroupAtATime(destination)) return null;
+
+			const teamMatch = destination.data.match.find(
+				(match) =>
+					match.opponent1?.id === tournamentTeamId ||
+					match.opponent2?.id === tournamentTeamId,
+			);
+
+			return teamMatch?.groupId ?? null;
+		};
+
+		const result = new Map<number, MatchExitGroups>();
+		for (const [matchId, destinations] of this.matchExitDestinations()) {
+			const match = this.data.match.find(
+				(candidate) => candidate.id === matchId,
+			);
+			if (!match?.winnerSide) continue;
+
+			const winnerId = match[match.winnerSide]?.id;
+			const loserId =
+				match[match.winnerSide === "opponent1" ? "opponent2" : "opponent1"]?.id;
+
+			const winner = groupIdOfTeam(destinations.winner, winnerId);
+			const loser = groupIdOfTeam(destinations.loser, loserId);
 			if (winner === null && loser === null) continue;
 
 			result.set(matchId, { winner, loser });

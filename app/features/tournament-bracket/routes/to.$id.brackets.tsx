@@ -50,6 +50,7 @@ import { BracketCheckIn } from "../components/BracketCheckIn";
 import { BracketMapListDialog } from "../components/BracketMapListDialog";
 import * as AbDivisions from "../core/AbDivisions";
 import type { Bracket as BracketType } from "../core/Bracket";
+import type { MatchExitGroupsById } from "../core/Bracket/Bracket";
 import * as PreparedMaps from "../core/PreparedMaps";
 import * as Progression from "../core/Progression";
 import type { Tournament } from "../core/Tournament";
@@ -253,6 +254,7 @@ function TournamentBracketsView() {
 						bracket={bracket}
 						bracketIdx={data.bracketIdx}
 						groupId={data.groupId}
+						exitGroups={data.exitGroups}
 						waitingForTeamsText={waitingForTeamsText}
 						teamsSourceText={teamsSourceText}
 					/>
@@ -495,12 +497,14 @@ function BracketTabContent({
 	bracket,
 	bracketIdx,
 	groupId,
+	exitGroups,
 	waitingForTeamsText,
 	teamsSourceText,
 }: {
 	bracket: BracketType;
 	bracketIdx: number;
 	groupId: number | null;
+	exitGroups: MatchExitGroupsById;
 	waitingForTeamsText: (bracket: BracketType, bracketIdx: number) => string;
 	teamsSourceText: (bracket: BracketType) => string | null;
 }) {
@@ -517,6 +521,7 @@ function BracketTabContent({
 						bracket={bracket}
 						bracketIdx={bracketIdx}
 						groupId={groupId}
+						exitGroups={exitGroups}
 					/>
 				</>
 			) : (

@@ -4,6 +4,7 @@ import { useBracketExpanded } from "~/features/tournament/routes/to.$id";
 import { useDragToScroll } from "~/hooks/useDragToScroll";
 import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
 import type { Bracket as BracketType } from "../../core/Bracket";
+import type { MatchExitGroupsById } from "../../core/Bracket/Bracket";
 import { EliminationBracketSide } from "./Elimination";
 import { GroupTabs } from "./GroupTabs";
 import styles from "./index.module.css";
@@ -14,11 +15,13 @@ export function Bracket({
 	bracket,
 	bracketIdx,
 	groupId,
+	exitGroups,
 }: {
 	bracket: BracketType;
 	bracketIdx: number;
 	/** Group whose matches were loaded, for the bracket types shown one group at a time. */
 	groupId?: number | null;
+	exitGroups?: MatchExitGroupsById;
 }) {
 	const { bracketExpanded } = useBracketExpanded();
 
@@ -57,6 +60,7 @@ export function Bracket({
 						bracket={bracket}
 						groupId={selectedGroupId}
 						isExpanded={bracketExpanded}
+						exitGroups={exitGroups}
 					/>
 				) : (
 					<>
@@ -65,12 +69,14 @@ export function Bracket({
 							bracket={bracket}
 							groupId={selectedGroupId}
 							isExpanded={bracketExpanded}
+							exitGroups={exitGroups}
 						/>
 						<EliminationBracketSide
 							type="losers"
 							bracket={bracket}
 							groupId={selectedGroupId}
 							isExpanded={bracketExpanded}
+							exitGroups={exitGroups}
 						/>
 					</>
 				)}
