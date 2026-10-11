@@ -121,6 +121,33 @@ describe("VoiceRepository.updateFromLeftWebhook", () => {
 	});
 });
 
+describe("VoiceRepository.insertOwnSession", () => {
+	test("ends the user's other open sessions so they stop counting toward the budget", async () => {
+		const previous = await VoiceSessionFactory.create(
+			{ userId: playerId() },
+			{ dailySessionId: "daily-1", connectedAt: subMinutes(new Date(), 30) },
+		);
+		const othersSession = await VoiceSessionFactory.create(
+			{ userId: otherPlayerId() },
+			{ dailySessionId: "daily-2" },
+		);
+
+		const id = await withUserId(playerId(), () =>
+			VoiceRepository.insertOwnSession({
+				roomId: null,
+				roomType: "SQ_MATCH",
+				platform: "DESKTOP",
+				eligibleMemberCount: 8,
+				vcPreference: "YES",
+			}),
+		);
+
+		expect((await sessionRow(previous.id)).leaveReason).toBe("REPLACED");
+		expect((await sessionRow(othersSession.id)).leftAt).toBeNull();
+		expect((await sessionRow(id)).leftAt).toBeNull();
+	});
+});
+
 describe("VoiceRepository.markOwnSessionLeft", () => {
 	test("does not overwrite a kick", async () => {
 		const room = await ChatRoomFactory.create();

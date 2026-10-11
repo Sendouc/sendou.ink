@@ -31,6 +31,7 @@ export const VOICE_LEAVE_REASONS = [
 	"EJECTED",
 	"TOKEN_EXPIRED",
 	"CONNECTION_LOST",
+	"REPLACED",
 ] as const;
 export type VoiceLeaveReason = (typeof VOICE_LEAVE_REASONS)[number];
 

@@ -19,7 +19,7 @@ const seconds = v.pipe(
 );
 
 const clientLeaveReasons = VOICE_LEAVE_REASONS.filter(
-	(reason) => reason !== "KICKED",
+	(reason) => reason !== "KICKED" && reason !== "REPLACED",
 );
 
 export const voiceRoomActionSchema = v.variant("_action", [

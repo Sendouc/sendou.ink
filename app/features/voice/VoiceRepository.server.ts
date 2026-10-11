@@ -373,6 +373,15 @@ export async function insertOwnSession(
 		.returning("id")
 		.executeTakeFirstOrThrow();
 
+	// so concurrent joins can't both stay open and trip the kill switch in the process
+	await db
+		.updateTable("VoiceSession")
+		.set({ leftAt: databaseTimestampNow(), leaveReason: "REPLACED" })
+		.where("VoiceSession.userId", "=", actorId())
+		.where("VoiceSession.id", "!=", id)
+		.where("VoiceSession.leftAt", "is", null)
+		.execute();
+
 	return id;
 }
 
