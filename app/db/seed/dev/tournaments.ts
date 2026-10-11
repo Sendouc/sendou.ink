@@ -1,5 +1,9 @@
 import { addDays, addHours, addWeeks, sub, subWeeks } from "date-fns";
-import type { TeamPickSettings, TournamentSettings } from "~/db/tables-json";
+import type {
+	CastAccount,
+	TeamPickSettings,
+	TournamentSettings,
+} from "~/db/tables-json";
 import * as Availability from "~/features/availability/core/Availability";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/match-profile/banned-maps";
@@ -14,6 +18,7 @@ import {
 	databaseTimestampToDate,
 	dateToDatabaseTimestamp,
 } from "~/utils/dates";
+import { NZAP_YOUTUBE_ID } from "../constants";
 import { faker, unique } from "../core/faker";
 import * as showcaseNames from "../core/showcaseNames";
 import * as ImageFactory from "../factories/ImageFactory";
@@ -36,6 +41,16 @@ const SZ_ONLY_TEAM_PICK: TeamPickSettings = {
 };
 const RANKED_MODES_TEAM_PICK = TeamPick.defaultSettings([...rankedModesShort]);
 /** Uneven counts from a custom pool: every SZ stage, half of the legal TC stages. */
+/** Live on both platforms, see the streams seeded in misc.ts. */
+const PADDLING_POOL_CAST_ACCOUNTS: CastAccount[] = [
+	{ platform: "TWITCH", account: "paddling_cast", name: "paddling_cast" },
+	{
+		platform: "YOUTUBE",
+		account: "UCpaddlingPoolCasts00000",
+		name: "Paddling Pool Casts",
+	},
+];
+
 const PADDLING_POOL_TEAM_PICK: TeamPickSettings = {
 	modes: [
 		{ mode: "SZ", count: 6 },
@@ -211,6 +226,8 @@ export type SeededTournaments = {
 	};
 	/** Teams N-ZAP played on in the tournaments that were played to the end. */
 	nzapTeamIds: number[];
+	/** Cast accounts of a tournament in progress, each to be seeded live. */
+	castAccounts: CastAccount[];
 	/** The league in progress, with the pieces other seeds hang their data on. */
 	luti: {
 		id: number;
@@ -277,7 +294,12 @@ export async function seedTournaments({
 		seriesLogoImgIds,
 	});
 
-	return { regOpen: inTheZone, nzapTeamIds, luti };
+	return {
+		regOpen: inTheZone,
+		nzapTeamIds,
+		castAccounts: PADDLING_POOL_CAST_ACCOUNTS,
+		luti,
+	};
 }
 
 type Ctx = {
@@ -359,17 +381,20 @@ async function seedInTheZone({
 
 /** #2 double elim + underground, team picked SZ ×6 + TC ×3 from a custom pool, ranked — started, nothing reported. N-ZAP is seeded past the byes so he has a match going. */
 async function seedPaddlingPool({ users, rosters }: Ctx) {
-	const tournament = await TournamentFactory.create({
-		name: nameFor("Paddling Pool"),
-		authorId: users.adminId,
-		avatarFileName: "paddling-pool.png",
-		startTimes: [dateToDatabaseTimestamp(hoursAgo(1))],
-		mapPickingStyle: "AUTO",
-		teamPick: PADDLING_POOL_TEAM_PICK,
-		mapPoolMaps: PADDLING_POOL_MAP_POOL,
-		bracketProgression: DOUBLE_ELIMINATION_WITH_UNDERGROUND,
-		isRanked: true,
-	});
+	const tournament = await TournamentFactory.create(
+		{
+			name: nameFor("Paddling Pool"),
+			authorId: users.adminId,
+			avatarFileName: "paddling-pool.png",
+			startTimes: [dateToDatabaseTimestamp(hoursAgo(1))],
+			mapPickingStyle: "AUTO",
+			teamPick: PADDLING_POOL_TEAM_PICK,
+			mapPoolMaps: PADDLING_POOL_MAP_POOL,
+			bracketProgression: DOUBLE_ELIMINATION_WITH_UNDERGROUND,
+			isRanked: true,
+		},
+		{ castAccounts: PADDLING_POOL_CAST_ACCOUNTS },
+	);
 
 	const teamRosters = rosters.take({
 		teamCount: 12,
@@ -949,6 +974,12 @@ async function seedTournamentExtras(tournamentId: number, users: SeededUsers) {
 	for (const account of ["sendou", "nzap_stream"]) {
 		await TournamentStreamerFactory.create({ tournamentId, account });
 	}
+	await TournamentStreamerFactory.create({
+		tournamentId,
+		platform: "YOUTUBE",
+		account: NZAP_YOUTUBE_ID,
+		userId: users.nzapId,
+	});
 
 	// not N-ZAP: he registers with Alliance Rogue and a player can't both be on a team and look for one
 	const lfgUserIds = users.showcaseIds.slice(90, 96);

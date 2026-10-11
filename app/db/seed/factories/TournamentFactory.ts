@@ -2,7 +2,7 @@ import { addMinutes } from "date-fns";
 import { sql } from "kysely";
 import * as R from "remeda";
 import { db } from "~/db/sql";
-import type { TournamentSettings } from "~/db/tables-json";
+import type { CastAccount, TournamentSettings } from "~/db/tables-json";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import * as Standings from "~/features/tournament/core/Standings";
 import type { TournamentTierNumber } from "~/features/tournament/core/tiering";
@@ -65,6 +65,8 @@ type Options = {
 	tiers?: Record<number, TournamentTierNumber>;
 	/** Marks the tournament a league. Leagues have no creation UI, the flag is set straight in the db. */
 	isLeague?: boolean;
+	/** Set like the admin stream page does. */
+	castAccounts?: CastAccount[];
 };
 
 /** The maps of each round the factory starts, or one list every round shares; `isPlayableAt` is when a league round opens. */
@@ -102,7 +104,10 @@ export const { create } = defineFactory({
 
 		return { id: tournamentId, eventId };
 	},
-	applyOptions: async (tournament, { tier, tiers, isLeague }: Options) => {
+	applyOptions: async (
+		tournament,
+		{ tier, tiers, isLeague, castAccounts }: Options,
+	) => {
 		if (isLeague) {
 			await db
 				.updateTable("Tournament")
@@ -111,6 +116,13 @@ export const { create } = defineFactory({
 				})
 				.where("id", "=", tournament.id)
 				.execute();
+		}
+
+		if (castAccounts) {
+			await TournamentRepository.updateCastAccounts({
+				tournamentId: tournament.id,
+				castAccounts,
+			});
 		}
 
 		const tierByBracketIdx = { ...(tier ? { 0: tier } : {}), ...tiers };

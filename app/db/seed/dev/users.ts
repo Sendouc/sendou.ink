@@ -14,6 +14,7 @@ import {
 	ADMIN_TEST_AVATAR,
 	NZAP_TEST_AVATAR,
 	NZAP_TEST_DISCORD_ID,
+	NZAP_YOUTUBE_ID,
 	STAFF_TEST_DISCORD_ID,
 } from "../constants";
 import { faker } from "../core/faker";
@@ -73,7 +74,7 @@ export async function seedUsers(): Promise<SeededUsers> {
 			discordUniqueName: "nzap",
 			discordAvatar: NZAP_TEST_AVATAR,
 			twitch: "nzap_stream",
-			youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
+			youtubeId: NZAP_YOUTUBE_ID,
 			youtubeName: "N-ZAP Plays",
 			bsky: "nzap.bsky.social",
 			profile: {
