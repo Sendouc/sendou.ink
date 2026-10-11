@@ -1,0 +1,80 @@
+{
+  "event": "Scoreboard",
+  "data": {
+    "lobby": "SERIES",
+    "mode": "TC",
+    "stage": 4,
+    "stageLabel": "Mincemeat Metalworks",
+    "matchScores": [88, 79],
+    "povIndex": 4,
+    "players": [
+      {
+        "name": "ミッキーブンブン",
+        "weaponId": 51,
+        "paint": 1830,
+        "ka": 17,
+        "d": 9,
+        "s": 6
+      },
+      {
+        "name": "Noah★♪",
+        "weaponId": 3021,
+        "paint": 1074,
+        "ka": 23,
+        "d": 7,
+        "s": 4
+      },
+      {
+        "name": "こたろう",
+        "weaponId": 1015,
+        "paint": 999,
+        "ka": 7,
+        "d": 9,
+        "s": 4
+      },
+      {
+        "name": "otama/O!**",
+        "weaponId": 50,
+        "paint": 1045,
+        "ka": 9,
+        "d": 7,
+        "s": 4
+      },
+      {
+        "name": "BΞ Bagel!",
+        "weaponId": 3011,
+        "paint": 1200,
+        "ka": 15,
+        "d": 10,
+        "s": 4
+      },
+      {
+        "name": "Javi",
+        "weaponId": 30,
+        "paint": 2012,
+        "ka": 11,
+        "d": 7,
+        "s": 7
+      },
+      {
+        "name": "B",
+        "weaponId": 3000,
+        "paint": 684,
+        "ka": 11,
+        "d": 12,
+        "s": 1
+      },
+      {
+        "name": "maru",
+        "weaponId": 1010,
+        "paint": 1124,
+        "ka": 6,
+        "d": 10,
+        "s": 3
+      }
+    ]
+  },
+  "options": {
+    "notes": "user-submitted game zip 2026-10-10: winner banner \"Score: 88\" on lime green read as 8 (sent the game as 79-8). Row 4's Ξ is the Greek picker's capital xi (matches BlitzMain's Ξ; ≡ is not in the name editor)"
+  }
+}

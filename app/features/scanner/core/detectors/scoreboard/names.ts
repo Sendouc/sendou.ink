@@ -807,6 +807,38 @@ function stripMarks(s: string): string {
 }
 
 /**
+ * A descender's bowl tight-crops like the round letter it sits on ('g' over
+ * 'o': "Bagel!" read "Baoel!"), but the segment still hangs below the
+ * baseline. A Latin letter reaching DESCENT_MIN_PX under it takes the
+ * descender when that is a near-tie candidate.
+ */
+const DESCENDER_LETTERS = new Set([..."gjpqy"]);
+const DESCENDER_SCORE_MARGIN = 0.06;
+const LATIN_LETTER = /^\p{Script=Latin}$/u;
+
+function resolveDescenderByBaseline(raw: RecognizedText): RecognizedText {
+	const anchors = raw.chars
+		.filter((c) => !DESCENDER_LETTERS.has(c.char))
+		.map((c) => c.y1)
+		.sort((a, b) => a - b);
+	if (anchors.length === 0) return raw;
+	const baseline = anchors[Math.floor(anchors.length / 2)]!;
+	const chars = raw.chars.map((c) => {
+		if (DESCENDER_LETTERS.has(c.char) || !LATIN_LETTER.test(c.char)) return c;
+		if (c.y1 - baseline < DESCENT_MIN_PX) return c;
+		const descender = c.candidates?.find(
+			(k) =>
+				DESCENDER_LETTERS.has(k.char) &&
+				c.score - k.score <= DESCENDER_SCORE_MARGIN,
+		);
+		return descender
+			? { ...c, char: descender.char, score: descender.score }
+			: c;
+	});
+	return { ...raw, text: retext(raw.text, chars), chars };
+}
+
+/**
  * 'P' and 'p' tight-crop to the same shape, but the segment keeps the position
  * the templates lose: 'p' hangs below the baseline (median ink bottom of the
  * non-twin glyphs, which shrugs off real descenders). Skipped with no anchor glyph.
@@ -905,7 +937,9 @@ export function* parseNameSteps(
 										resolveDoByCorners(
 											fixDotsByPosition(
 												resolveExclamationByNotch(
-													resolveUnderscoreByBaseline(raw),
+													resolveDescenderByBaseline(
+														resolveUnderscoreByBaseline(raw),
+													),
 													gray,
 												),
 											),
