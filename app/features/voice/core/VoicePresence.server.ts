@@ -6,8 +6,8 @@ import { logger } from "~/utils/logger";
 import { VOICE_PRESENCE_RECONCILE_INTERVAL_MS } from "../voice-constants";
 import * as Daily from "./Daily.server";
 
-// Daily keeps listing a participant for a moment after they left
-const LEAVE_GRACE_MS = 15_000;
+// Daily's presence lags a moment behind joins and leaves
+const PRESENCE_GRACE_MS = 15_000;
 
 type PresenceRoom = Pick<ResolvedRoom, "roomId" | "participantUserIds">;
 
@@ -17,6 +17,7 @@ interface RoomPresence {
 }
 
 const presenceByRoomId = new Map<number, RoomPresence>();
+const joinedAtByRoomUser = new Map<string, number>();
 const leftAtByRoomUser = new Map<string, number>();
 
 export function allOccupiedRooms() {
@@ -26,7 +27,9 @@ export function allOccupiedRooms() {
 }
 
 export function add(room: PresenceRoom, userId: number) {
+	pruneGraceEntries();
 	leftAtByRoomUser.delete(roomUserKey(room.roomId, userId));
+	joinedAtByRoomUser.set(roomUserKey(room.roomId, userId), Date.now());
 	const presence = presenceOf(room.roomId);
 	if (presence.userIds.has(userId)) return;
 
@@ -38,8 +41,9 @@ export function remove(room: PresenceRoom, userIds: number[]) {
 	const presence = presenceByRoomId.get(room.roomId);
 	if (!presence) return;
 
-	pruneLeaves();
+	pruneGraceEntries();
 	for (const userId of userIds) {
+		joinedAtByRoomUser.delete(roomUserKey(room.roomId, userId));
 		leftAtByRoomUser.set(roomUserKey(room.roomId, userId), Date.now());
 	}
 
@@ -61,31 +65,51 @@ export async function reconciledUserIdsOf(room: PresenceRoom) {
 	presence.reconciledAt = Date.now();
 
 	try {
-		const dailyUserIds = (await Daily.findPresentUserIds(room.roomId)).filter(
-			(userId) => !hasJustLeft(room.roomId, userId),
-		);
+		const dailyUserIds = await Daily.findPresentUserIds(room.roomId);
+
+		// joins and leaves may have landed during the fetch, possibly replacing the entry
+		const current = presenceOf(room.roomId);
+		current.reconciledAt = presence.reconciledAt;
+		const userIds = R.unique([
+			...dailyUserIds.filter(
+				(userId) => !isWithinGrace(leftAtByRoomUser, room.roomId, userId),
+			),
+			...[...current.userIds].filter((userId) =>
+				isWithinGrace(joinedAtByRoomUser, room.roomId, userId),
+			),
+		]);
+
 		const changed = !R.isDeepEqual(
-			[...presence.userIds].sort(),
-			[...dailyUserIds].sort(),
+			[...current.userIds].sort(),
+			[...userIds].sort(),
 		);
-		presence.userIds = new Set(dailyUserIds);
-		if (changed) publish(room, presence);
+
+		current.userIds = new Set(userIds);
+		if (changed) publish(room, current);
 	} catch (error) {
 		logger.error("Reconciling voice presence failed", error);
 	}
 
-	return [...presence.userIds];
+	return [...presenceOf(room.roomId).userIds];
 }
 
-function hasJustLeft(roomId: number, userId: number) {
-	const leftAt = leftAtByRoomUser.get(roomUserKey(roomId, userId));
+function isWithinGrace(
+	timestampByRoomUser: Map<string, number>,
+	roomId: number,
+	userId: number,
+) {
+	const timestamp = timestampByRoomUser.get(roomUserKey(roomId, userId));
 
-	return leftAt !== undefined && Date.now() - leftAt < LEAVE_GRACE_MS;
+	return timestamp !== undefined && Date.now() - timestamp < PRESENCE_GRACE_MS;
 }
 
-function pruneLeaves() {
-	for (const [key, leftAt] of leftAtByRoomUser) {
-		if (Date.now() - leftAt >= LEAVE_GRACE_MS) leftAtByRoomUser.delete(key);
+function pruneGraceEntries() {
+	for (const timestampByRoomUser of [joinedAtByRoomUser, leftAtByRoomUser]) {
+		for (const [key, timestamp] of timestampByRoomUser) {
+			if (Date.now() - timestamp >= PRESENCE_GRACE_MS) {
+				timestampByRoomUser.delete(key);
+			}
+		}
 	}
 }
 
