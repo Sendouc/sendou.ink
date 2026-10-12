@@ -90,9 +90,6 @@ export function focusLeftTo(
  * native popover API, placed next to the trigger by `useFloatingLayer`.
  *
  * Opening focuses the popover, or the element inside it marked with `data-autofocus`.
- *
- * With `eager` the content is rendered while closed too, so it is in the server markup and there
- * is nothing left to mount when the popover opens.
  */
 export function SendouPopover({
 	children,
@@ -101,7 +98,6 @@ export function SendouPopover({
 	placement,
 	onOpenChange,
 	isOpen,
-	eager,
 }: {
 	children: React.ReactNode;
 	trigger: React.ReactElement<Record<string, unknown>>;
@@ -109,7 +105,6 @@ export function SendouPopover({
 	placement?: PopoverPlacement;
 	onOpenChange?: (isOpen: boolean) => void;
 	isOpen?: boolean;
-	eager?: boolean;
 }) {
 	const popoverId = `${React.useId()}-popover`;
 	const popoverTriggerProps = usePopoverTriggerPropsOnceHydrated(popoverId);
@@ -127,24 +122,10 @@ export function SendouPopover({
 		}
 		onOpenChange?.(next);
 	};
-	const setOpenRef = React.useRef(setOpen);
-	setOpenRef.current = setOpen;
 
-	const hasSyncedRef = React.useRef(false);
 	React.useEffect(() => {
 		const popover = popoverRef.current;
-		if (!popover) return;
-		const domOpen = popover.matches(":popover-open");
-		const isFirstSync = !hasSyncedRef.current;
-		hasSyncedRef.current = true;
-
-		if (domOpen === open) return;
-		// opened before hydration: adopt it rather than closing it under the user
-		if (isFirstSync && domOpen) {
-			setOpenRef.current(true);
-			return;
-		}
-		if (!open) {
+		if (!open && popover?.matches(":popover-open")) {
 			popover.hidePopover();
 		}
 	}, [open]);
@@ -212,7 +193,7 @@ export function SendouPopover({
 				onToggle={onToggle}
 				onBlur={onBlur}
 			>
-				{open || eager ? children : null}
+				{open ? children : null}
 			</div>
 		</>
 	);

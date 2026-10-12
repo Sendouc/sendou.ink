@@ -21,6 +21,7 @@ import { useChatContext } from "~/features/chat/ChatProvider";
 import { FriendMenu } from "~/features/friends/components/FriendMenu";
 import { SENDOUQ_ACTIVITY_LABEL } from "~/features/friends/friends-constants";
 import { useClosePopoversOnNavigation } from "~/hooks/useClosePopoversOnNavigation";
+import { useHydrated } from "~/hooks/useHydrated";
 import { useLayoutSize } from "~/hooks/useLayoutSize";
 import { useScrollLock } from "~/hooks/useScrollLock";
 import { useUnseenFriendRequests } from "~/hooks/useUnseenFriendRequests";
@@ -44,6 +45,7 @@ import { ChatSidebar } from "./layout/ChatSidebar";
 import { LogInButtonContainer } from "./layout/LogInButtonContainer";
 import {
 	NotificationContent,
+	useMarkNotificationsSeenWhileOpen,
 	useNotifications,
 } from "./layout/NotificationPopover";
 import { navItems } from "./layout/nav-items";
@@ -62,8 +64,10 @@ const PANEL_TYPES = ["menu", "friends", "tourneys", "chat", "you"] as const;
 
 /**
  * The bottom tab bar and its panels. The panels are native popovers opened by
- * the tabs, so they work before hydration; opening one closes the other and the
- * tab bar stays usable underneath. The state here only mirrors them.
+ * the tabs; opening one closes the other and the tab bar stays usable
+ * underneath. The state here only mirrors them. The menu and the chat open
+ * before hydration too; the other panels mount their contents on first open,
+ * so their tabs work only once hydrated.
  *
  * The bar itself is a manual popover shown on hydration so it lives in the top
  * layer; before that it is a plain fixed bar.
@@ -220,6 +224,9 @@ function MobileTabBar({
 }) {
 	const { t } = useTranslation(["front", "common"]);
 	const chatContext = useChatContext();
+	const isHydrated = useHydrated();
+	const panelIdOnceHydrated = (panel: PanelType) =>
+		isHydrated ? panelIds[panel] : undefined;
 
 	return (
 		<nav className={styles.tabBar}>
@@ -236,7 +243,7 @@ function MobileTabBar({
 					<MobileTab
 						icon={<Users />}
 						label={t("front:mobileNav.friends")}
-						panelId={panelIds.friends}
+						panelId={panelIdOnceHydrated("friends")}
 						isActive={activePanel === "friends"}
 						onBeforeToggle={onBeforeToggle}
 						showNotificationDot={hasFriendInSendouQ}
@@ -246,7 +253,7 @@ function MobileTabBar({
 					<MobileTab
 						icon={<Calendar />}
 						label={t("front:sideNav.myCalendar")}
-						panelId={panelIds.tourneys}
+						panelId={panelIdOnceHydrated("tourneys")}
 						isActive={activePanel === "tourneys"}
 						onBeforeToggle={onBeforeToggle}
 					/>
@@ -261,7 +268,7 @@ function MobileTabBar({
 					<MobileTab
 						icon={<User />}
 						label={t("front:mobileNav.you")}
-						panelId={panelIds.you}
+						panelId={panelIdOnceHydrated("you")}
 						isActive={activePanel === "you"}
 						onBeforeToggle={onBeforeToggle}
 						showNotificationDot={hasUnseenNotifications}
@@ -294,7 +301,7 @@ function MobileTab({
 }: {
 	icon: React.ReactNode;
 	label: string;
-	panelId: string;
+	panelId?: string;
 	isActive: boolean;
 	onBeforeToggle: () => void;
 	showNotificationDot?: boolean;
@@ -365,6 +372,7 @@ function MobilePanel({
 	onToggle: PanelToggleHandler;
 }) {
 	const titleId = `${id}-title`;
+	const [hasOpened, setHasOpened] = React.useState(false);
 
 	return (
 		<div
@@ -373,6 +381,11 @@ function MobilePanel({
 			role="dialog"
 			aria-labelledby={titleId}
 			className={clsx(styles.panel, skipAnimation && styles.noAnimation)}
+			onBeforeToggle={(event) => {
+				if (isOwnToggle(event) && event.newState === "open") {
+					setHasOpened(true);
+				}
+			}}
 			onToggle={onToggle}
 		>
 			<div className={styles.panelDialog}>
@@ -383,7 +396,9 @@ function MobilePanel({
 					</h2>
 					<PanelCloseButton panelId={id} />
 				</header>
-				<div className={clsx(styles.panelContent, "scrollbar")}>{children}</div>
+				<div className={clsx(styles.panelContent, "scrollbar")}>
+					{hasOpened ? children : null}
+				</div>
 			</div>
 		</div>
 	);
@@ -588,6 +603,7 @@ function YouPanel({
 	const { t } = useTranslation(["front", "common"]);
 	const user = useUser();
 	const { notifications, unseenIds } = useNotifications();
+	useMarkNotificationsSeenWhileOpen(unseenIds, isOpen);
 
 	if (!user) {
 		return null;
@@ -640,11 +656,7 @@ function YouPanel({
 				</Link>
 			</div>
 
-			<NotificationContent
-				notifications={notifications}
-				unseenIds={unseenIds}
-				isOpen={isOpen}
-			/>
+			<NotificationContent notifications={notifications} isOpen={isOpen} />
 		</MobilePanel>
 	);
 }

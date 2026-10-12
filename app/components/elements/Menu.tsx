@@ -25,8 +25,6 @@ interface SendouMenuProps {
 	children: React.ReactNode;
 	popoverClassName?: string;
 	placement?: MenuPlacement;
-	/** Render the items while closed too, so they are in the server markup and ready the moment the menu opens. */
-	eager?: boolean;
 }
 
 const MenuContext = React.createContext<{ close: () => void }>({
@@ -40,7 +38,6 @@ export function SendouMenu({
 	scrolling,
 	placement,
 	popoverClassName,
-	eager,
 }: SendouMenuProps) {
 	const popoverId = `${React.useId()}-menu`;
 	const popoverTriggerProps = usePopoverTriggerPropsOnceHydrated(popoverId);
@@ -48,11 +45,6 @@ export function SendouMenu({
 	const [open, setOpen] = React.useState(false);
 	const popoverRef = React.useRef<HTMLDivElement>(null);
 	const triggerContainerRef = React.useRef<HTMLSpanElement>(null);
-
-	// an eager menu can be open before hydration, its toggle event long gone
-	React.useEffect(() => {
-		if (popoverRef.current?.matches(":popover-open")) setOpen(true);
-	}, []);
 
 	const onBeforeToggle = useShowPopoverOnOpen({
 		popoverRef,
@@ -132,7 +124,7 @@ export function SendouMenu({
 				onBlur={onBlur}
 			>
 				<div className={styles.itemsContainer} role="menu">
-					{open || eager ? (
+					{open ? (
 						<MenuContext
 							value={{ close: () => popoverRef.current?.hidePopover() }}
 						>

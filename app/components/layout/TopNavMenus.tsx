@@ -141,7 +141,6 @@ function DevMenu({ openState }: { openState: MenuOpenState }) {
 				placement="bottom start"
 				isOpen={openState.isOpen}
 				onOpenChange={openState.onOpenChange}
-				eager
 			>
 				<div className={styles.menuContent}>
 					{DEV_IMPERSONATE_ITEMS.map((item) => (
@@ -267,7 +266,6 @@ function CategoryMenu({
 				placement="bottom start"
 				isOpen={openState.isOpen}
 				onOpenChange={openState.onOpenChange}
-				eager
 			>
 				<div className={styles.menuContent}>
 					{visibleItems.map((item) => (

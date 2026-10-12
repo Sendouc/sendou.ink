@@ -93,8 +93,8 @@ export function useShowUnseenDot(
  * Ids of the notifications to show an unseen dot for, keeping the dot for as
  * long as the list stays open. Opening the list marks its notifications as
  * seen right away so the bell stops claiming there is something new, and this
- * keeps the reader from losing track of which ones those were. The list stays
- * mounted while closed, so each opening starts over from what is unseen then.
+ * keeps the reader from losing track of which ones those were. Each opening starts
+ * over from what is unseen then.
  */
 export function useStickyUnseenIds(
 	notifications: Array<{ id: number; seen: number }>,
