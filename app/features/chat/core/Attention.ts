@@ -14,7 +14,7 @@ const ACTIVITY_EVENTS = [
 interface AttentionEnvironment {
 	document: Pick<Document, "visibilityState" | "hasFocus"> & EventTarget;
 	window: EventTarget;
-	storage: Pick<Storage, "getItem" | "setItem"> | null;
+	storage: Pick<Storage, "getItem" | "setItem" | "removeItem"> | null;
 	now: () => number;
 }
 
@@ -46,6 +46,7 @@ export function createTracker(
 		environment.window.addEventListener("focus", update);
 		environment.window.addEventListener("blur", update);
 		environment.document.addEventListener("visibilitychange", update);
+		environment.window.addEventListener("pagehide", releaseLastActiveTab);
 		update();
 
 		return environment;
@@ -91,6 +92,18 @@ export function createTracker(
 		lastActiveTabWrittenAt = env.now();
 		try {
 			env.storage?.setItem(LAST_ACTIVE_TAB_KEY, tabId);
+		} catch {
+			// storage blocked
+		}
+	}
+
+	// a closed tab can't play anything, so every other tab goes back to counting as the last active one
+	function releaseLastActiveTab() {
+		const env = environment!;
+		try {
+			if (env.storage?.getItem(LAST_ACTIVE_TAB_KEY) === tabId) {
+				env.storage.removeItem(LAST_ACTIVE_TAB_KEY);
+			}
 		} catch {
 			// storage blocked
 		}

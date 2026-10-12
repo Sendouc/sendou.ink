@@ -23,6 +23,9 @@ function fakeEnvironment(storage = new Map<string, string>()) {
 				setItem: (key: string, value: string) => {
 					storage.set(key, value);
 				},
+				removeItem: (key: string) => {
+					storage.delete(key);
+				},
 			},
 			now: () => Date.now(),
 		},
@@ -39,6 +42,7 @@ function fakeEnvironment(storage = new Map<string, string>()) {
 			window.dispatchEvent(new Event("focus"));
 		},
 		useKeyboard: () => window.dispatchEvent(new Event("keydown")),
+		close: () => window.dispatchEvent(new Event("pagehide")),
 	};
 }
 
@@ -122,6 +126,42 @@ describe("Attention.createTracker", () => {
 		firstEnv.focus();
 
 		expect(first.isLastActiveTab()).toBe(true);
+	});
+
+	test("every tab counts as the last active one again once it is closed", () => {
+		const storage = new Map<string, string>();
+		const firstEnv = fakeEnvironment(storage);
+		const secondEnv = fakeEnvironment(storage);
+		const first = trackerFor(firstEnv);
+		const second = trackerFor(secondEnv);
+		secondEnv.blur();
+		second.isAttending();
+		first.isAttending();
+		expect(second.isLastActiveTab()).toBe(false);
+
+		firstEnv.close();
+
+		expect(second.isLastActiveTab()).toBe(true);
+	});
+
+	test("closing a background tab keeps the last active one", () => {
+		const storage = new Map<string, string>();
+		const firstEnv = fakeEnvironment(storage);
+		const secondEnv = fakeEnvironment(storage);
+		const thirdEnv = fakeEnvironment(storage);
+		const first = trackerFor(firstEnv);
+		const second = trackerFor(secondEnv);
+		const third = trackerFor(thirdEnv);
+		secondEnv.blur();
+		thirdEnv.blur();
+		second.isAttending();
+		third.isAttending();
+		first.isAttending();
+
+		secondEnv.close();
+
+		expect(first.isLastActiveTab()).toBe(true);
+		expect(third.isLastActiveTab()).toBe(false);
 	});
 
 	test("every tab counts as the last active one without storage", () => {

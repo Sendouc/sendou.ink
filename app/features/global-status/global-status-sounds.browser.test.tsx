@@ -11,10 +11,15 @@ import type { GlobalStatus } from "./global-status-types";
 
 const mocks = vi.hoisted(() => ({
 	playSound: vi.fn(),
+	isLastActiveTab: vi.fn(() => true),
 }));
 
 vi.mock("~/features/chat/core/Sounds", () => ({
 	play: mocks.playSound,
+}));
+
+vi.mock("~/features/chat/core/Attention", () => ({
+	tracker: { isLastActiveTab: mocks.isLastActiveTab },
 }));
 
 function Sounds({ status }: { status: GlobalStatus | null }) {
@@ -43,6 +48,7 @@ const queued = (overrides: Partial<GlobalStatus> = {}): GlobalStatus => ({
 describe("useGlobalStatusSounds", () => {
 	beforeEach(() => {
 		mocks.playSound.mockClear();
+		mocks.isLastActiveTab.mockReturnValue(true);
 		localStorage.clear();
 	});
 
@@ -135,5 +141,28 @@ describe("useGlobalStatusSounds", () => {
 		await screen.rerender(<Sounds status={{ ...readyCheck }} />);
 
 		expect(mocks.playSound).toHaveBeenCalledWith("sq_ready-check");
+	});
+
+	test("stays silent in a tab the user wasn't last active in", async () => {
+		mocks.isLastActiveTab.mockReturnValue(false);
+
+		await transitionTo(queued(), {
+			state: "SQ_MATCH",
+			url: sendouQMatchPage(1),
+		});
+
+		expect(mocks.playSound).not.toHaveBeenCalled();
+	});
+
+	test("plays in the last active tab even when another tab got the status first", async () => {
+		const match: GlobalStatus = { state: "SQ_MATCH", url: sendouQMatchPage(1) };
+		const activeTab = await render(<Sounds status={queued()} />);
+		mocks.isLastActiveTab.mockReturnValue(false);
+		await transitionTo(queued(), match);
+		mocks.isLastActiveTab.mockReturnValue(true);
+
+		await activeTab.rerender(<Sounds status={match} />);
+
+		expect(mocks.playSound).toHaveBeenCalledWith("sq_match");
 	});
 });
