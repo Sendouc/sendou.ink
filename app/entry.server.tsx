@@ -8,6 +8,7 @@ import {
 	type EntryContext,
 	type HandleDataRequestFunction,
 	type HandleErrorFunction,
+	isRouteErrorResponse,
 	type RouterContextProvider,
 	ServerRouter,
 } from "react-router";
@@ -151,7 +152,10 @@ process.on("unhandledRejection", (reason: string, p: Promise<any>) => {
 });
 
 // routes through logger so the request id shows in server logs
-export const handleError: HandleErrorFunction = (error) => {
+export const handleError: HandleErrorFunction = (error, { request }) => {
+	if (request.signal.aborted) return;
+	if (isRouteErrorResponse(error) && error.status < 500) return;
+
 	logger.error(error);
 };
 export default handleRequest;
