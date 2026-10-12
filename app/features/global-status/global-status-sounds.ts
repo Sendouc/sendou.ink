@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as v from "valibot";
+import * as Attention from "~/features/chat/core/Attention";
 import * as Sounds from "~/features/chat/core/Sounds";
 import * as PersistedState from "~/modules/persisted-state/persisted-state";
 import type { GlobalStatus, GlobalStatusState } from "./global-status-types";
@@ -24,8 +25,10 @@ const lastSeenStatusPersisted = PersistedState.define({
  * anywhere on the site rather than only on the page the moment belongs to.
  *
  * The first status seen never plays: a sound announces a moment arriving, not
- * one already underway when the page was opened. Neither does a status another
- * tab has already seen, so a backgrounded tab catching up stays silent.
+ * one already underway when the page was opened. Only the tab the user was last
+ * active in plays (and marks a status seen): a tab never brought to the front
+ * would hold its sound back until it is. A status already seen doesn't play
+ * either, so a backgrounded tab catching up once switched to stays silent.
  */
 export function useGlobalStatusSounds(status: GlobalStatus | null) {
 	const previousRef = React.useRef<GlobalStatus | null | undefined>(undefined);
@@ -33,6 +36,8 @@ export function useGlobalStatusSounds(status: GlobalStatus | null) {
 	React.useEffect(() => {
 		const previous = previousRef.current;
 		previousRef.current = status;
+
+		if (!Attention.tracker.isLastActiveTab()) return;
 
 		const seenByAnotherTab = markSeenAcrossTabs(status);
 
