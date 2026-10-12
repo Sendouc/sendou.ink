@@ -179,7 +179,8 @@ type SlotState = "alive" | "ready" | "dead" | "vacant";
 
 /**
  * Parse the icon strip of a frame the objective gate anchored; emitted only
- * alongside a successful Objective read (its lookalike rejection covers both).
+ * alongside a successful Objective read or, with no counter (Turf War), a
+ * readable timer (their lookalike rejection covers the strip).
  * `prevFit` (the previous read's, when recent) holds unless clearly beaten.
  */
 export function parsePlayerStatus(

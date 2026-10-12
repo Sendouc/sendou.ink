@@ -1,8 +1,9 @@
 /**
  * Golden-file tests for the PlayerStatus event over every fixture in
  * player-status/. The event is emitted by the ObjectiveDetector alongside each
- * counter read — a positive fixture must produce both off one parse, with the
- * statuses and shared timer matching the labels. Other detectors' gates must
+ * counter read (on Turf War, each timer read) — a positive fixture must
+ * produce it off one parse, with the statuses and shared timer matching the
+ * labels. Other detectors' gates must
  * stay quiet on these frames (death excepted, see objective.test.ts).
  */
 

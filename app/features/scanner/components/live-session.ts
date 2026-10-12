@@ -32,7 +32,6 @@ import {
 	type MapStartData,
 } from "../core/detectors/map-start/index";
 import { OBJECTIVE_EVENT_TYPE } from "../core/detectors/objective/index";
-import { PLAYER_STATUS_EVENT_TYPE } from "../core/detectors/objective/player-status";
 import { SCOREBOARD_EVENT_TYPES } from "../core/detectors/registry";
 import type { DetectedEvent } from "../core/detectors/types";
 import type { ScannerMatch } from "../core/scanner-match";
@@ -157,7 +156,8 @@ const storedIds = new WeakMap<DetectedEvent, number>();
 /** event saves in flight, so Stop's last clip pass sees the final kills */
 const persisting = new Set<Promise<void>>();
 // the open match is known to be a mode with no counter overlay (Turf War), so
-// counter reads are lookalike misreads and are not collected at all
+// counter reads are lookalike misreads and are not collected at all (the icon
+// strip's reads are real in every mode)
 let objectiveBlocked = false;
 /** windows already cut, `${match first source id}:${window t}` */
 /**
@@ -510,13 +510,7 @@ function onResult(
 ): void {
 	if (!result.gate.pass) return;
 	for (const event of result.events as DetectedEvent<FixtureData>[]) {
-		if (
-			(event.type === OBJECTIVE_EVENT_TYPE ||
-				event.type === PLAYER_STATUS_EVENT_TYPE) &&
-			objectiveBlocked
-		) {
-			continue;
-		}
+		if (event.type === OBJECTIVE_EVENT_TYPE && objectiveBlocked) continue;
 		const action = timeline.push(event);
 		if (action.action === "merged" || action.action === "dropped") continue;
 		if (event.type === MAP_START_EVENT_TYPE) {

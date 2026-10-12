@@ -16,9 +16,13 @@ import { copyRoi, maxBrightness, meanBrightness } from "../../image";
 import { all, type MatchSteps } from "../../match-steps";
 import type { ScoreboardResources } from "../scoreboard/index";
 import {
+	GATE_TIMER_COLON_MAX_GAP_MEAN,
+	GATE_TIMER_COLON_MIN_DOT_MEAN,
 	GATE_TIMER_MAX_MEAN,
 	GATE_TIMER_MIN_MAX_BRIGHTNESS,
 	TIMER_BIN_THRESHOLD,
+	TIMER_COLON_DOT_ROIS,
+	TIMER_COLON_GAP_ROI,
 	TIMER_DARK_PROBES,
 	TIMER_DIGIT_MIN_CONF,
 	TIMER_DIGIT_MIN_HEIGHT_RATIO,
@@ -50,6 +54,16 @@ export function timerBoxChecks(gray: Mat): boolean[] {
 		),
 		maxBrightness(gray, TIMER_DIGIT_ROI) >= GATE_TIMER_MIN_MAX_BRIGHTNESS,
 	];
+}
+
+/** The M:SS colon's two dots, dark between them. */
+export function timerColonVisible(gray: Mat): boolean {
+	return (
+		TIMER_COLON_DOT_ROIS.every(
+			(roi) => meanBrightness(gray, roi) >= GATE_TIMER_COLON_MIN_DOT_MEAN,
+		) &&
+		meanBrightness(gray, TIMER_COLON_GAP_ROI) <= GATE_TIMER_COLON_MAX_GAP_MEAN
+	);
 }
 
 /** The match timer at every glyph size (read in one lockstep), best read kept. */

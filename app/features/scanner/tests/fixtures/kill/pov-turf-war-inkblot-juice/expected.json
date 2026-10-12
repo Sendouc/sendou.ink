@@ -1,0 +1,12 @@
+{
+	"event": "Kill",
+	"data": {
+		"time": 78,
+		"names": [
+			"Juice"
+		]
+	},
+	"options": {
+		"notes": "Frame shared with player-status/turf-war-inkblot-five-dead. Turf War: the timer is read with no counter under it. From tw.mkv (720p POV, Inkblot Art Academy)."
+	}
+}

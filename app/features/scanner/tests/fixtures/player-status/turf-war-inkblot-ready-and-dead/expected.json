@@ -1,0 +1,37 @@
+{
+	"event": "PlayerStatus",
+	"data": {
+		"time": 154,
+		"special": [
+			[
+				false,
+				false,
+				false,
+				false
+			],
+			[
+				true,
+				false,
+				false,
+				false
+			]
+		],
+		"dead": [
+			[
+				false,
+				false,
+				false,
+				true
+			],
+			[
+				false,
+				false,
+				false,
+				false
+			]
+		]
+	},
+	"options": {
+		"notes": "Turf War. Right slot 0 ready (pale wash), left slot 3 splatted. From tw.mkv (720p POV, Inkblot Art Academy)."
+	}
+}

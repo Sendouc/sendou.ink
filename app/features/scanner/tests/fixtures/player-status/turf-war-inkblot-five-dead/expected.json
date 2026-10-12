@@ -1,0 +1,37 @@
+{
+	"event": "PlayerStatus",
+	"data": {
+		"time": 78,
+		"special": [
+			[
+				false,
+				false,
+				false,
+				false
+			],
+			[
+				false,
+				false,
+				false,
+				false
+			]
+		],
+		"dead": [
+			[
+				true,
+				true,
+				true,
+				false
+			],
+			[
+				true,
+				false,
+				true,
+				false
+			]
+		]
+	},
+	"options": {
+		"notes": "Turf War. Three splatted on the left, two on the right. From tw.mkv (720p POV, Inkblot Art Academy)."
+	}
+}

@@ -211,6 +211,26 @@ for (const [dir, eventType] of otherPositiveSets) {
 	}
 }
 
+// Turf War draws the timer and icon strip with no counter: the strip reads
+// (player-status/turf-war-*) come with no Objective event.
+for (const fixture of loadFixtures("player-status").filter((f) =>
+	f.name.startsWith("turf-war-"),
+)) {
+	test(`no Objective event on player-status/${fixture.name}`, async () => {
+		const { gate, events } = await runDetectorOnFixture(
+			createObjectiveDetector(resources),
+			fixture,
+		);
+		assert.ok(gate.pass, "gate did not fire");
+		assert.deepEqual(
+			events
+				.map((event) => event.type)
+				.filter((type) => type !== "StripWeapons"),
+			["PlayerStatus"],
+		);
+	});
+}
+
 // No sweep over death positives: the death overlay rides live gameplay whose
 // counter HUD stays visible (several death fixtures show readable plates), so
 // no quiet can be promised there. Death frames with counters make fine fixtures.

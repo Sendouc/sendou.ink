@@ -51,8 +51,8 @@ export const GATE_SCORE_MIN_MAX_BRIGHTNESS = 200;
 /**
  * Gate anchor: the timer's white M:SS in a near-black box. In-match HUD reads
  * <=32 on each dark probe; closest lookalike is the replay-browser header's
- * stage tag ("Banlieue Balibot" ~48). Turf War and the death cam also show a
- * timer; the plate probes and no-readable-count rejection handle those. The
+ * stage tag ("Banlieue Balibot" ~48). Turf War shows the timer with no
+ * counter: the gate's timer variant, which reads the strip alone. The
  * last minute's digits are yellow, which peaks at 220-249 in gray against
  * white's 255.
  */
@@ -64,6 +64,20 @@ export const TIMER_DARK_PROBES: readonly Roi[] = [
 ];
 export const GATE_TIMER_MAX_MEAN = 40;
 export const GATE_TIMER_MIN_MAX_BRIGHTNESS = 200;
+
+/**
+ * The timer's colon sits at one x whatever the digits: two bright dots with
+ * dark between. With no counter under the timer (Turf War) it is what tells
+ * the box from a dark lookalike pill (a minimap player card). Attested dots
+ * >=218 (yellow last-minute digits included), gap <=49; card text ~15.
+ */
+export const TIMER_COLON_DOT_ROIS: readonly Roi[] = [
+	{ x: 945, y: 67, w: 5, h: 5 },
+	{ x: 945, y: 84, w: 5, h: 5 },
+];
+export const TIMER_COLON_GAP_ROI: Roi = { x: 945, y: 77, w: 5, h: 2 };
+export const GATE_TIMER_COLON_MIN_DOT_MEAN = 150;
+export const GATE_TIMER_COLON_MAX_GAP_MEAN = 120;
 
 /**
  * Timer digits are 34px on native 1080p, ~40px on upscaled 720p; both tried,
