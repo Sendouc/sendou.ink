@@ -2028,16 +2028,39 @@ test("a not-ready gap wide enough to regain a special is kept", () => {
 	assert.deepEqual(slot0Specials, [true, false, false, true]);
 });
 
-test("a Turf War match drops its player-status reads too", () => {
+test("a Turf War match keeps its player-status reads", () => {
 	const events = [
 		mapStart(0, { mode: "TW" }),
 		objective(60),
-		playerStatus(61),
+		playerStatus(61, { time: 119 }),
 		scoreboard(300, { mode: "TW" }),
 	];
 	const built = buildScannerMatches(events);
-	assert.equal(built[0]!.match.playerStatus, null);
-	assert.deepEqual(invalidObjectiveEvents(built), [events[1], events[2]]);
+	assert.equal(built[0]!.match.objective, null);
+	assert.deepEqual(
+		built[0]!.match.playerStatus!.samples.map((sample) => sample.time),
+		[119],
+	);
+	assert.deepEqual(invalidObjectiveEvents(built), [events[1]]);
+});
+
+test("a Turf War match drops ready reads before a special could charge on its 3:00 clock", () => {
+	const specialAt = (on: boolean) =>
+		[
+			[on, false, false, false],
+			[false, false, false, false],
+		] as PlayerStatusData["special"];
+	const built = buildScannerMatches([
+		mapStart(0, { mode: "TW" }),
+		playerStatus(15, { time: 176, special: specialAt(true) }),
+		playerStatus(16, { time: 175, special: specialAt(false) }),
+		playerStatus(40, { time: 150, special: specialAt(true) }),
+		scoreboard(200, { mode: "TW" }),
+	]);
+	const slot0Specials = built[0]!.match.playerStatus!.samples.map(
+		(sample) => sample.special[0][0],
+	);
+	assert.deepEqual(slot0Specials, [false, false, true]);
 });
 
 test("replay wipes drop status reads by the shared clock projection", () => {
@@ -2086,26 +2109,23 @@ test("minimap card states become timerless player-status samples", () => {
 	});
 });
 
-test("a Turf War match still gets its minimap-sourced status samples", () => {
+test("a Turf War match interleaves minimap-sourced status samples", () => {
 	const events = [
 		mapStart(0, { mode: "TW" }),
-		objective(60),
-		playerStatus(61),
+		playerStatus(61, { time: 119 }),
 		minimap(90, { spectator: false, dead: [[0], []] }),
 		scoreboard(300, { mode: "TW" }),
 	];
 	const built = buildScannerMatches(events);
-	assert.equal(built[0]!.match.objective, null);
 	const samples = built[0]!.match.playerStatus!.samples;
 	assert.deepEqual(
 		samples.map((sample) => sample.t),
-		[90],
+		[61, 90],
 	);
-	assert.deepEqual(samples[0]!.dead, [
+	assert.deepEqual(samples[1]!.dead, [
 		[true, false, false, false],
 		[false, false, false, false],
 	]);
-	assert.deepEqual(invalidObjectiveEvents(built), [events[1], events[2]]);
 });
 
 test("a losing-side pov swaps minimap-sourced samples into teams order", () => {

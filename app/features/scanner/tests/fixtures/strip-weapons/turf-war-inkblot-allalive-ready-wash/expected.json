@@ -1,0 +1,16 @@
+{
+	"event": "StripWeapons",
+	"data": {
+		"weapons": [
+			[3005, 60, 1021, 211],
+			[5001, 1020, 41, 20]
+		],
+		"weaponLabels": [
+			["Order Slosher Replica", "N-ZAP '85", "Gold Dynamo Roller", "Custom Blaster"],
+			["Dapple Dualies Nouveau", "Dynamo Roller", "Tentatek Splattershot", "Splash-o-matic"]
+		]
+	},
+	"options": {
+		"notes": "Frame shared with player-status/turf-war-inkblot-ready-wash-left. Turf War strip (no counter under the timer), left slot 1 under a ready wash. From tw.mkv (720p POV, Inkblot Art Academy)."
+	}
+}

@@ -1,0 +1,37 @@
+{
+	"event": "PlayerStatus",
+	"data": {
+		"time": 7,
+		"special": [
+			[
+				false,
+				false,
+				false,
+				false
+			],
+			[
+				false,
+				false,
+				false,
+				false
+			]
+		],
+		"dead": [
+			[
+				true,
+				false,
+				false,
+				true
+			],
+			[
+				true,
+				true,
+				true,
+				true
+			]
+		]
+	},
+	"options": {
+		"notes": "Turf War last minute: yellow timer digits. Right team wiped, left slots 0 and 3 splatted. From tw.mkv (720p POV, Inkblot Art Academy)."
+	}
+}

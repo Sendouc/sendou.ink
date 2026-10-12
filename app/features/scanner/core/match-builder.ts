@@ -558,11 +558,10 @@ export function isHistoryOnly<E extends DetectedEvent>(
 
 /**
  * Objective-counter reads on a match whose detected mode rules their overlay
- * out — lookalike misreads the builder already left out of the match's
- * `objective` — plus, on a mode with no counter overlay (Turf War), the
- * player-status and strip-weapon reads riding along with them.
- * Callers should delete these from their stores. A match with no mode read
- * yet loses nothing: its minority overlay is only left out of the build.
+ * out (every read on Turf War) — lookalike misreads the builder already left
+ * out of the match's `objective`. Callers should delete these from their
+ * stores. A match with no mode read yet loses nothing: its minority overlay is
+ * only left out of the build.
  */
 export function invalidObjectiveEvents<E extends DetectedEvent>(
 	built: readonly BuiltMatch<E>[],
@@ -570,16 +569,11 @@ export function invalidObjectiveEvents<E extends DetectedEvent>(
 	return built.flatMap(({ match, sources }) => {
 		if (match.mode === null) return [];
 		const kind = matchCounterKind(match.mode, []);
-		return sources.filter((event) => {
-			if (event.type === OBJECTIVE_EVENT_TYPE) {
-				return counterKindOfRead(event.data as ObjectiveData) !== kind;
-			}
-			return (
-				kind === null &&
-				(event.type === PLAYER_STATUS_EVENT_TYPE ||
-					event.type === STRIP_WEAPONS_EVENT_TYPE)
-			);
-		});
+		return sources.filter(
+			(event) =>
+				event.type === OBJECTIVE_EVENT_TYPE &&
+				counterKindOfRead(event.data as ObjectiveData) !== kind,
+		);
 	});
 }
 
@@ -715,9 +709,7 @@ function endedBeforeClock(
 ): boolean {
 	const intro = sources.find((event) => event.type === MAP_START_EVENT_TYPE);
 	if (!intro || match.endsAt === null) return false;
-	const clockSeconds =
-		match.mode === "TW" ? TURF_WAR_CLOCK_SECONDS : RANKED_CLOCK_SECONDS;
-	return match.endsAt - intro.t < clockSeconds;
+	return match.endsAt - intro.t < clockSecondsOf(match.mode);
 }
 
 function isPlayedGame(sources: readonly DetectedEvent[]): boolean {
@@ -921,10 +913,8 @@ function toBuiltMatch<E extends DetectedEvent>(
 	const minimaps = minimapReads.map((read) => read.data);
 
 	const mode = matchMode(board?.mode ?? null, start?.mode ?? null);
-	// reads of the overlay the mode doesn't draw are lookalike misreads, and on
-	// a mode with no parsed overlay the statuses riding along with them go too.
-	// Minimap card states and the kill feed are mode-agnostic and feed their
-	// samples regardless
+	// reads of the overlay the mode doesn't draw are lookalike misreads; the
+	// icon strip, minimap card states and the kill feed are drawn in every mode
 	const counterKind = matchCounterKind(
 		mode,
 		objectives.map((read) => read.data),
@@ -932,7 +922,6 @@ function toBuiltMatch<E extends DetectedEvent>(
 	const counterReads = objectives.filter(
 		(read) => counterKindOfRead(read.data) === counterKind,
 	);
-	const statusesValid = counterKind !== null || mode === null;
 	const progress = buildProgress(
 		counterReads,
 		counterKind === null
@@ -942,13 +931,14 @@ function toBuiltMatch<E extends DetectedEvent>(
 					mode,
 					counterReads.map((read) => read.data),
 				),
-		statusesValid ? playerStatuses : [],
-		statusesValid ? stripWeapons : [],
+		playerStatuses,
+		stripWeapons,
 		minimapReads,
 		killReads,
 		board,
 		minimapTeamColors(minimaps),
 		open.deaths.map((event) => event.t),
+		clockSecondsOf(mode),
 	);
 
 	const pov: ScannerMatch["pov"] =
@@ -1065,6 +1055,7 @@ function buildProgress(
 	board: ScoreboardData | undefined,
 	minimapColors: [InkRgb | null, InkRgb | null] | null,
 	deathTimes: readonly number[],
+	clockSeconds: number,
 ): {
 	objective: ScannerMatchObjective | null;
 	playerStatus: ScannerMatchPlayerStatus | null;
@@ -1168,6 +1159,7 @@ function buildProgress(
 									special: specialChargeable(
 										read.data.time ??
 											(dominant === null ? null : dominant - read.t),
+										clockSeconds,
 									)
 										? arrange(read.data.special)
 										: noSpecialsReady(),
@@ -1565,12 +1557,15 @@ function withImpossibleDeadRunsFlipped(
  * (or before it), so a ready read there is a misread (a pale backdrop behind
  * the icon, the spectator map's opening wipe) that would otherwise bridge into
  * the first real ready wash. Timerless reads take the clock the match's
- * dominant anchor projects; Turf War's shorter clock never reaches this window.
+ * dominant anchor projects.
  */
-function specialChargeable(time: number | null): boolean {
-	return (
-		time === null || time <= RANKED_CLOCK_SECONDS - SPECIAL_REGAIN_MIN_SECONDS
-	);
+function specialChargeable(time: number | null, clockSeconds: number): boolean {
+	return time === null || time <= clockSeconds - SPECIAL_REGAIN_MIN_SECONDS;
+}
+
+/** An unknown mode gets the ranked clock: Turf War's start window lies within its chargeable time. */
+function clockSecondsOf(mode: ModeShort | null): number {
+	return mode === "TW" ? TURF_WAR_CLOCK_SECONDS : RANKED_CLOCK_SECONDS;
 }
 
 function noSpecialsReady(): [PlayerStatusFlags, PlayerStatusFlags] {

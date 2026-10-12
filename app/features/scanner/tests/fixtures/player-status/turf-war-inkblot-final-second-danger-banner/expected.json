@@ -1,0 +1,37 @@
+{
+	"event": "PlayerStatus",
+	"data": {
+		"time": 1,
+		"special": [
+			[
+				false,
+				false,
+				false,
+				false
+			],
+			[
+				false,
+				false,
+				false,
+				false
+			]
+		],
+		"dead": [
+			[
+				false,
+				true,
+				false,
+				false
+			],
+			[
+				false,
+				true,
+				true,
+				false
+			]
+		]
+	},
+	"options": {
+		"notes": "Turf War final second, yellow timer and the 'Danger' banner beside the right strip. Left slot 1, right slots 1 and 2 splatted. From tw.mkv (720p POV, Inkblot Art Academy)."
+	}
+}

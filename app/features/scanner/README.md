@@ -419,8 +419,8 @@ sequenceDiagram
   bleeding through a crossed-out icon) — and bridges sub-10s not-ready
   gaps between ready reads when no death inside the gap explains them (no
   special regains that fast, so the gap is the wash's dim pulse trough);
-  for the same reason ready reads in the clock's first 10s (5:00-4:51) or
-  before it starts are dropped before bridging, timerless minimap reads
+  for the same reason ready reads in the clock's first 10s (5:00-4:51,
+  TW 3:00-2:51) or before it starts are dropped before bridging, timerless minimap reads
   timed by the match's dominant clock anchor. Objective reads land on `ScannerMatch` as
   progress samples anchored to the game clock; broadcast replay wipes re-run
   an earlier moment with the counter intact, so the builder keeps only the
@@ -437,19 +437,22 @@ sequenceDiagram
   mode doesn't draw (plates on TC/RM, a track on SZ/CB) are lookalike
   misreads the builder leaves out, and on Turf War every read is: the
   builder nulls that match's `objective` and callers discard the events
-  (`invalidObjectiveEvents`; Live also stops collecting once a MapStart
+  (`invalidObjectiveEvents`; Live also stops collecting them once a MapStart
   reveals Turf War). A match with no mode read, or whose intro and results
   screen disagree on it, builds from its majority overlay (a plates
-  objective's `mode` then stays null: SZ or CB) and discards nothing. PlayerStatus reads follow the
-  objective pipeline wholesale: same replay-wipe anchor, cast orientation
-  inherited from the nearest counter read, nulled together on TW matches, and rendered as
+  objective's `mode` then stays null: SZ or CB) and discards nothing. Turf
+  War draws the timer and icon strip with no counter under them: the gate's
+  `timer` variant (timer box plus its colon's two dots, which a dark minimap
+  card pill lacks) emits the strip reads alone, timed by the timer read
+  (no readable timer, nothing emitted) — as it does on a ranked frame whose
+  counter fails to read. PlayerStatus reads follow the
+  objective pipeline: same replay-wipe anchor, cast orientation
+  inherited from the nearest counter read (none on TW: as drawn), and rendered as
   per-player splat/special bands (`~/components/PlayerStatusTimeline.tsx`,
   shared with the match page) above the objective chart. Minimap reads
   feed the same samples: every card/row carries `dead` (respawn
   cross-out) and `specialReady` (special camo) flags, merged in timerless
-  on the shared replay anchor — and mode-agnostic, so a Turf War
-  match keeps its minimap-sourced samples while its counter/status
-  misreads are voided. Parsing details
+  on the shared replay anchor. Parsing details
   are in each detector's module
   header; accuracy-critical matching internals in `core/glyphs.ts` and
   `core/detectors/scoreboard/weapons.ts` — read those before touching
@@ -779,7 +782,8 @@ the game start charts both counts full from the clock's start until each
 side's first read (`withFullCountsAtGameStart`); later unread counts stay
 gaps, since a count never rises. Fixtures: `objective/tower-*`,
 `objective/rainmaker-*` (tower_control / rainmaker VoDs plus TC/RM death
-frames symlinked).
+frames symlinked). Turf War strip reads: `player-status/turf-war-*` (tw VoD,
+kill and strip-weapon fixtures symlinked to them).
 
 ## X Battle cards
 
