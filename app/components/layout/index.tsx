@@ -248,8 +248,6 @@ export function Layout({
 	useVisualViewport();
 
 	const { t } = useTranslation(["front", "common", "friends"]);
-	const { formatRelativeDate } = useRelativeDayFormat();
-	const isHydrated = useHydrated();
 	const location = useLocation();
 	const [authError] = useSearchParam(authErrorSearchParams, "authError");
 	const headerRef = React.useRef<HTMLElement>(null);
@@ -306,13 +304,7 @@ export function Layout({
 						to={event.url}
 						imageUrl={event.logoUrl ?? undefined}
 						user={event.user ?? undefined}
-						subtitle={
-							isHydrated ? (
-								formatRelativeDate(event.startsAt)
-							) : (
-								<span className="invisible">Placeholder</span>
-							)
-						}
+						subtitle={<EventStartTime startsAt={event.startsAt} />}
 					>
 						{event.scrimStatus === "booked"
 							? t("front:sideNav.scrimVs", { opponent: event.name })
@@ -545,6 +537,18 @@ function SiteLogoContent() {
 			<span className={styles.siteLogoInk}>ink</span>
 		</>
 	);
+}
+
+// own component so that hydration re-renders just the time instead of the whole layout
+function EventStartTime({ startsAt }: { startsAt: number }) {
+	const isHydrated = useHydrated();
+	const { formatRelativeDate } = useRelativeDayFormat();
+
+	if (!isHydrated) {
+		return <span className="invisible">Placeholder</span>;
+	}
+
+	return formatRelativeDate(startsAt);
 }
 
 function DesktopChatSidebar({ showLeaderboard }: { showLeaderboard: boolean }) {
