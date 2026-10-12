@@ -459,7 +459,8 @@ sequenceDiagram
   recognition code. Parse cost matters live (a stalled worker drops
   frames): a CJK splash-tag name once cost tens of seconds per death
   parse, which is why the death detector memoizes tag reads on a
-  downscaled tag signature (same killer recurs pixel-identical), the kill
+  downscaled tag signature (same killer recurs pixel-identical; a per-cell
+cap keeps two names on one plain banner apart, their means barely differ), the kill
   detector memoizes each feed row's read on its text-band signature (a row
   is re-read twice a second for as long as it shows, and shifts up intact
   when a newer one enters; the per-cell cap of the signature compare is
