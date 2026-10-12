@@ -1,5 +1,4 @@
 import * as ArtRepository from "~/features/art/ArtRepository.server";
-import { getUser } from "~/features/auth/core/user.server";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as FriendRepository from "~/features/friends/FriendRepository.server";
@@ -218,7 +217,7 @@ export const WIDGET_LOADERS = {
 		return VodRepository.findByUserId(userId, 3);
 	},
 	"lfg-posts": async (userId: number) => {
-		return LFGRepository.findByAuthorUserId(userId, getUser());
+		return LFGRepository.findByAuthorUserId(userId);
 	},
 	"top-500-weapons": async (userId: number) => {
 		const placements =

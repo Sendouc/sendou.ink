@@ -56,6 +56,14 @@ import { dateToDatabaseTimestamp, dateToYYYYMMDD } from "~/utils/dates";
 import type { Fixtures } from "./fixtures";
 
 const SEARCH_QUERY = { query: "s", limit: 25 };
+const LFG_NO_FILTERS = {
+	type: null,
+	weapons: [],
+	plusTier: null,
+	language: null,
+	timezones: null,
+	postIds: null,
+};
 
 export interface BenchmarkCase {
 	name: string;
@@ -444,11 +452,41 @@ export function buildCases(fx: Fixtures): {
 		LeaderboardRepository.findSeasonPopularUsersWeapon(sq.season),
 	);
 
-	addStatic("LFGRepository.findAllPosts.anon", () =>
-		LFGRepository.findAllPosts(),
+	addStatic("LFGRepository.findBoardPage", () =>
+		LFGRepository.findBoardPage({
+			filters: LFG_NO_FILTERS,
+			page: 1,
+			pageSize: 24,
+			containingPostId: null,
+		}),
 	);
-	add("LFGRepository.findAllPosts.loggedIn", fx.heavyUser, (user) =>
-		LFGRepository.findAllPosts({ id: user.id, plusTier: 1 }),
+	add("LFGRepository.findBoardPage.containing", fx.lfgPostId, (postId) =>
+		LFGRepository.findBoardPage({
+			filters: LFG_NO_FILTERS,
+			page: 1,
+			pageSize: 24,
+			containingPostId: postId,
+		}),
+	);
+	addStatic("LFGRepository.findBoardPage.filtered", () =>
+		LFGRepository.findBoardPage({
+			filters: {
+				...LFG_NO_FILTERS,
+				weapons: [40, 1010],
+				plusTier: 3,
+				language: "en",
+			},
+			page: 1,
+			pageSize: 24,
+			containingPostId: null,
+		}),
+	);
+	add("LFGRepository.findVisibleById", fx.lfgPostId, (postId) =>
+		LFGRepository.findVisibleById(postId),
+	);
+	addStatic("LFGRepository.findAllOwn", () => LFGRepository.findAllOwn());
+	addStatic("LFGRepository.findAllVisibleParticipantIds", () =>
+		LFGRepository.findAllVisibleParticipantIds(),
 	);
 	add("LFGRepository.findByAuthorUserId", fx.lfgAuthorId, (authorId) =>
 		LFGRepository.findByAuthorUserId(authorId),

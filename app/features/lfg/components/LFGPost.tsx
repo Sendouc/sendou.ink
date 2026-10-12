@@ -26,7 +26,7 @@ import { useHydrated } from "~/hooks/useHydrated";
 import type { UnifiedLanguageCode } from "~/modules/i18n/config";
 import { useHasPermission } from "~/modules/permissions/hooks";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { createTimezoneHourDifference } from "../core/timezone";
+import { hourDifferenceBetweenTimezones } from "../core/timezone";
 import type { LFGLoaderData } from "../routes/lfg";
 
 import styles from "./LFGPost.module.css";
@@ -38,7 +38,6 @@ const COLLAPSED_TEXT_HEIGHT = 150;
 /** Server-side guess of whether the text gets clipped, corrected by measuring once mounted */
 const CLIPPED_TEXT_GUESS = { length: 300, lines: 6 };
 
-const hourDifference = createTimezoneHourDifference();
 let cachedViewerTimezone: string | null = null;
 
 export function LFGPost({ post }: { post: Post }) {
@@ -312,7 +311,7 @@ function PostTimezonePillPlaceholder() {
 }
 
 function PostTimezonePill({ timezone }: { timezone: string }) {
-	const diff = hourDifference(viewerTimezone(), timezone);
+	const diff = hourDifferenceBetweenTimezones(viewerTimezone(), timezone);
 
 	const textColorClass = () => {
 		const absDiff = Math.abs(diff);

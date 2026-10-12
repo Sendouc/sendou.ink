@@ -5,13 +5,18 @@ import type { Tables } from "~/db/tables";
 import * as Availability from "~/features/availability/core/Availability";
 import * as ChatRepository from "~/features/chat/ChatRepository.server";
 import type { ChatRoomType } from "~/features/chat/chat-types";
+import { LFG } from "~/features/lfg/lfg-constants";
 import type { SkillTeamIdentifier } from "~/features/mmr/mmr-utils";
 import type {
 	MainWeaponId,
 	ModeShort,
 	StageId,
 } from "~/modules/in-game-lists/types";
-import { databaseTimestampNow, databaseTimestampToDate } from "~/utils/dates";
+import {
+	databaseTimestampNow,
+	databaseTimestampToDate,
+	dateToDatabaseTimestamp,
+} from "~/utils/dates";
 import { logger } from "~/utils/logger";
 
 export interface Fixtures {
@@ -105,6 +110,7 @@ export interface Fixtures {
 		inviteCode: string;
 	} | null;
 	lfgAuthorId: number | null;
+	lfgPostId: number | null;
 	lfgTournament: { tournamentId: number; teamId: number } | null;
 	auditTournamentId: number | null;
 	xrank: {
@@ -204,6 +210,7 @@ export async function resolveFixtures(): Promise<Fixtures> {
 		notification: await resolveNotification(),
 		heavyAssociation: await resolveHeavyAssociation(),
 		lfgAuthorId: await resolveLfgAuthorId(),
+		lfgPostId: await resolveLfgPostId(),
 		lfgTournament: await resolveLfgTournament(),
 		auditTournamentId: (await resolveAuditTournamentId()) ?? heavyTournamentId,
 		xrank: await resolveXRank(),
@@ -1173,6 +1180,26 @@ async function resolveLfgAuthorId() {
 		.executeTakeFirst();
 
 	return row?.authorId ?? null;
+}
+
+/** The least recently bumped post still on the board, the furthest page from its start. */
+async function resolveLfgPostId() {
+	const row = await db
+		.selectFrom("LFGPost")
+		.select("id")
+		.where(
+			"updatedAt",
+			">",
+			dateToDatabaseTimestamp(
+				sub(new Date(), { days: LFG.POST_FRESHNESS_DAYS }),
+			),
+		)
+		.where("plusTierVisibility", "is", null)
+		.orderBy("updatedAt", "asc")
+		.limit(1)
+		.executeTakeFirst();
+
+	return row?.id ?? null;
 }
 
 async function resolveLfgTournament() {

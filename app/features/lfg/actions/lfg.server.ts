@@ -8,10 +8,9 @@ import { lfgActionSchema } from "../lfg-schemas";
 export const action = defineAction(
 	{ body: lfgActionSchema },
 	async ({ body }) => {
-		const user = requireUser();
+		requireUser();
 
-		const posts = await LFGRepository.findAllPosts(user);
-		const post = posts.find((candidate) => candidate.id === body.id);
+		const post = await LFGRepository.findVisibleById(body.id);
 		errorToastIfFalsy(post, "Post not found");
 
 		switch (body._action) {
