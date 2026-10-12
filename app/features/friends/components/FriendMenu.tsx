@@ -84,7 +84,6 @@ export function FriendMenu({
 	return (
 		<>
 			<SendouMenu
-				eager
 				trigger={
 					<ListButton
 						user={{ discordId, discordAvatar, customAvatarUrl }}

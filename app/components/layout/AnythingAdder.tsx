@@ -113,7 +113,6 @@ export function AnythingAdder() {
 	return (
 		<SendouMenu
 			placement="bottom right"
-			eager
 			trigger={
 				<SendouButton
 					size="small"

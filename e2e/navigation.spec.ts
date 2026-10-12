@@ -15,11 +15,12 @@ import { TopNavMenus } from "./pages/layout/top-nav-menus";
 test.describe("Navigation", () => {
 	topNavMenuTests();
 	mobileNavigationTests();
+	youPanelTests();
 });
 
-// the mobile nav is native popovers and links, so it works before hydration
-// too, or with scripts turned off altogether; the top nav menus open only once
-// hydrated (see docs/dev/overlays.md)
+// the mobile nav menu is a native popover of links, so it works before
+// hydration too, or with scripts turned off altogether; the other mobile panels
+// and the top nav menus open only once hydrated (see docs/dev/overlays.md)
 test.describe("Navigation without JavaScript", () => {
 	test.use({ javaScriptEnabled: false });
 
@@ -79,20 +80,12 @@ function mobileNavigationTests() {
 		await mobileNav.openPanel("menu");
 		await expect(mobileNav.menuLink("Analyzer")).toBeVisible();
 		await expect(mobileNav.menuLink("Builds")).toBeVisible();
-
-		await mobileNav.switchPanel("you");
-		await expect(mobileNav.locators.youPanelUsername).toBeVisible();
-
-		await mobileNav.closePanel();
-		await expect(mobileNav.locators.youPanelUsername).not.toBeVisible();
-
-		await mobileNav.openPanel("menu");
 		await mobileNav.menuLink("SendouQ").click();
 		await expect(page).toHaveURL(SENDOUQ_PAGE);
 		await expect(mobileNav.menuLink("SendouQ")).not.toBeVisible();
 	});
 
-	test("my team shortcut navigates to the team page on desktop and mobile", async ({
+	test("my team shortcut navigates to the team page on desktop", async ({
 		page,
 		factories,
 	}) => {
@@ -105,10 +98,30 @@ function mobileNavigationTests() {
 
 		await new SideNav(page).locators.footerTeamLink.click();
 		await expect(page).toHaveURL(teamPage(team.customUrl));
+	});
+}
 
-		await navigate({ page, url: "/" });
+function youPanelTests() {
+	test("mobile you panel shows the user and their team shortcut", async ({
+		page,
+		factories,
+	}) => {
+		const team = await factories.TeamFactory.create({
+			memberUserIds: [NZAP_TEST_ID],
+		});
+
 		await page.setViewportSize(MOBILE_VIEWPORT);
+		await impersonate(page, NZAP_TEST_ID);
+		await navigate({ page, url: "/" });
+
 		const mobileNav = new MobileNav(page);
+		await mobileNav.openPanel("menu");
+		await mobileNav.switchPanel("you");
+		await expect(mobileNav.locators.youPanelUsername).toBeVisible();
+
+		await mobileNav.closePanel();
+		await expect(mobileNav.locators.youPanelUsername).not.toBeVisible();
+
 		await mobileNav.openPanel("you");
 		await mobileNav.locators.youPanelTeamLink.click();
 		await expect(page).toHaveURL(teamPage(team.customUrl));

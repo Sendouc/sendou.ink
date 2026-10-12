@@ -71,29 +71,6 @@ describe("SendouPopover", () => {
 		await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
 	});
 
-	test("adopts a popover opened before hydration instead of closing it", async () => {
-		const app = (
-			<SendouPopover trigger={<button type="button">Open</button>}>
-				Popover content
-			</SendouPopover>
-		);
-
-		const container = document.createElement("div");
-		container.innerHTML = renderToString(app);
-		document.body.appendChild(container);
-		cleanupFns.push(() => container.remove());
-
-		const popover = container.querySelector<HTMLElement>("[popover]");
-		if (!popover) throw new Error("no popover rendered");
-		popover.showPopover();
-
-		const root = hydrateRoot(container, app);
-		cleanupFns.push(() => root.unmount());
-
-		await expect.element(page.getByText("Popover content")).toBeVisible();
-		expect(popover.matches(":popover-open")).toBe(true);
-	});
-
 	test("does not open before hydration, when nothing could place it", async () => {
 		const app = (
 			<SendouPopover trigger={<button type="button">Open</button>}>

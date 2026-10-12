@@ -51,10 +51,10 @@ export function NotificationPopover({
 	triggerClassName?: string;
 }) {
 	const [isOpen, setIsOpen] = React.useState(false);
+	useMarkNotificationsSeenWhileOpen(unseenIds, isOpen);
 
 	return (
 		<SendouPopover
-			eager
 			onOpenChange={setIsOpen}
 			trigger={
 				<button
@@ -69,11 +69,7 @@ export function NotificationPopover({
 				[styles.noNotificationsContainer]: !notifications?.length,
 			})}
 		>
-			<NotificationContent
-				notifications={notifications}
-				unseenIds={unseenIds}
-				isOpen={isOpen}
-			/>
+			<NotificationContent notifications={notifications} isOpen={isOpen} />
 		</SendouPopover>
 	);
 }
@@ -81,15 +77,21 @@ export function NotificationPopover({
 const NO_IDS: number[] = [];
 const NO_NOTIFICATIONS: LoaderNotification[] = [];
 
-/** The list of the bell popover and the mobile "You" panel, rendered while closed too so that both work before hydration. */
+/** Lives outside `NotificationContent` so that the marking outlives the list unmounting on close. */
+export function useMarkNotificationsSeenWhileOpen(
+	unseenIds: number[],
+	isOpen: boolean,
+) {
+	useMarkNotificationsAsSeen(isOpen ? unseenIds : NO_IDS);
+}
+
+/** The list of the bell popover and the mobile "You" panel, mounted only once opened. */
 export function NotificationContent({
 	notifications,
-	unseenIds,
 	isOpen,
 }: {
 	/** `undefined` until the peek fetch lands; the header & its space are held meanwhile. */
 	notifications: LoaderNotification[] | undefined;
-	unseenIds: number[];
 	isOpen: boolean;
 }) {
 	const { t } = useTranslation(["common"]);
@@ -97,8 +99,6 @@ export function NotificationContent({
 		notifications ?? NO_NOTIFICATIONS,
 		isOpen,
 	);
-
-	useMarkNotificationsAsSeen(isOpen ? unseenIds : NO_IDS);
 
 	return (
 		<>

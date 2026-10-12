@@ -16,7 +16,7 @@ const TAB_NAMES: Record<Panel, string> = {
  *
  * The panels show the same rows as the side nav does, and its accessors find them
  * the same way — scoped to the panel that is open. Every panel is in the DOM,
- * closed, so a closed one is hidden rather than gone.
+ * closed, but only the menu's contents are there before it is first opened.
  */
 export class MobileNav {
 	private readonly page: Page;
