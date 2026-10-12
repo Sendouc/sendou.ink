@@ -70,6 +70,8 @@ const DEFEAT_INK = 2;
 const UNDECIDED_CONFIDENCE = 0.3;
 /** X Power has one decimal; float noise in differences stays under this. */
 const POWER_EPSILON = 0.05;
+/** Lower power reads are misreads (e.g. a dropped leading digit). */
+const MIN_POWER = 1500;
 
 /**
  * Timeline animation order of two reads of one card: positive when `b` is
@@ -197,7 +199,7 @@ export function createXSetResultDetector(
 					mode: icon.mode,
 					results,
 					powerChange: parsedNumber(change, /^[+-]\d{1,3}\.\d$/),
-					power: parsedNumber(power, /^\d{1,4}\.\d$/),
+					power: plausiblePower(parsedNumber(power, /^\d{1,4}\.\d$/)),
 				},
 				debug: {
 					headerReading: header.text,
@@ -286,6 +288,10 @@ function isVictoryYellow(r: number, g: number, b: number): boolean {
 
 function isDefeatPurple(r: number, g: number, b: number): boolean {
 	return b >= 170 && b - g >= 60 && r < 170;
+}
+
+function plausiblePower(power: number | null): number | null {
+	return power !== null && power >= MIN_POWER ? power : null;
 }
 
 function parsedNumber(read: NumberRead, pattern: RegExp): number | null {
