@@ -125,7 +125,7 @@ export type TournamentTeamMemberProgressStatus = NonNullable<
 export class Tournament {
 	ctx;
 	/** See {@link TournamentArgs.participatedUsers}, null when this view did not get them. */
-	readonly participatedUserIds: number[] | null;
+	readonly participatedUserIds: ReadonlySet<number> | null;
 	private readonly args;
 	private readonly data;
 	private readonly _brackets: Array<Bracket | undefined> = [];
@@ -155,7 +155,9 @@ export class Tournament {
 
 		this.args = args;
 		this.data = data;
-		this.participatedUserIds = args.participatedUsers ?? null;
+		this.participatedUserIds = args.participatedUsers
+			? new Set(args.participatedUsers)
+			: null;
 		this._derivedMeta = bracketsMeta;
 		this.ctx = {
 			...ctx,
@@ -882,7 +884,7 @@ export class Tournament {
 		invariant(participatedUserIds, "Participated user ids not loaded");
 
 		return team.memberUserIds.filter((userId) =>
-			participatedUserIds.includes(userId),
+			participatedUserIds.has(userId),
 		);
 	}
 

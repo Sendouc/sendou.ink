@@ -81,7 +81,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		})),
 		record:
 			Standings.recordByTeamId(fullTournament).get(tournamentTeamId) ?? null,
-		participatedUsersCount: fullTournament.participatedUserIds?.length ?? 0,
+		participatedUsersCount: fullTournament.participatedUserIds?.size ?? 0,
 		division:
 			standingsResult.type === "multi"
 				? (standingsResult.standings.find((div) =>

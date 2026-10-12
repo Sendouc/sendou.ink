@@ -577,7 +577,7 @@ export abstract class Bracket {
 				team: {
 					...standing.team,
 					memberUserIds: standing.team.memberUserIds.filter((userId) =>
-						participatedUserIds.includes(userId),
+						participatedUserIds.has(userId),
 					),
 				},
 			};

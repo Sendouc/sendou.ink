@@ -67,7 +67,7 @@ export default function BracketTestLayout() {
 			},
 			bracketProgressionOverrides: [],
 		},
-		participatedUserIds: teamIds,
+		participatedUserIds: new Set(teamIds),
 		brackets: [] as unknown[],
 		bracketsMeta: [] as unknown[],
 		bracketMetaByIdx: () => null,
