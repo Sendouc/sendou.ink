@@ -1,0 +1,17 @@
+{
+	"event": "Death",
+	"data": {
+		"weaponLabel": "Snipewriter 5H",
+		"weaponId": 2070,
+		"weaponType": "MAIN",
+		"abilities": [
+			["LDE", "SCU", "QSJ", "RES"],
+			["IRU", "SCU", "SPU", "SPU"],
+			["ISM", "SRU", "ISM", "QSJ"]
+		],
+		"name": "Mesh Cap"
+	},
+	"options": {
+		"notes": "Names hidden in-game (gear-name stand-ins) on a plain navy banner: tags differ only by their name text. Live it came out as an earlier killer's \"Bandana\" off the tag memo; the death suite's near-twin memo test erases \"Cap\" from this frame."
+	}
+}

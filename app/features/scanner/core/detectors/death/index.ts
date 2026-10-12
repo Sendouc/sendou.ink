@@ -115,10 +115,13 @@ const BURST_ICON_CORROBORATE_MIN_SCORE = 0.3;
 const CORROBORATE_EPS = 0.02;
 const TAG_NAME_BIN_THRESHOLD = 160;
 /**
- * Refinement band is closeness (255 - distance) to the text color: 215 keeps
- * pixels within 40 (glyph cores) and drops art highlights that leak past the banner band.
+ * Refinement band is closeness to the text color, stretched so the banner sits
+ * at 0: pixels within 40 (glyph cores; half the contrast on a pale banner) are
+ * ink, art highlights that leak past the banner band are not. Unstretched, a
+ * white name on a pale banner left its counters near-white inside the
+ * recognizer's mask and read bolder ("e" as "c", "o" as "•").
  */
-const TAG_NAME_REFINE_BIN_THRESHOLD = 215;
+const TAG_NAME_REFINE_MAX_DISTANCE = 40;
 /** Don't trust a text-color estimate taken from fewer ink pixels. */
 const TAG_NAME_REFINE_MIN_INK = 200;
 /**
@@ -134,12 +137,16 @@ const TAG_SPLIT_MIN_CHANNEL_DISTANCE = 40;
 /**
  * The tag read dominates parse cost (a CJK name OCRs for tens of seconds) and a
  * killer's tag recurs pixel-identical across frames and later kills, so reads
- * are memoized on a downscaled signature of the leveled band. VoD-measured mean
- * abs diff: ≤1 for the same killer, ≥95 between killers.
+ * are memoized on a downscaled signature of the leveled band. VoD-measured: the
+ * same killer differs by ≤7 mean and ≤45 in any cell (the tag landing a pixel
+ * off), killers on different banners by ≥30 mean. Two names on one plain
+ * banner differ only where their text does, ~8 mean but ~180 in a cell, so the
+ * per-cell cap is what tells them apart.
  */
 const TAG_MEMO_WIDTH = 48;
 const TAG_MEMO_HEIGHT = 12;
 const TAG_MEMO_MAX_MEAN_DIFF = 12;
+const TAG_MEMO_MAX_CELL_DIFF = 64;
 const TAG_MEMO_MAX_ENTRIES = 16;
 /** A failed read is not worth pinning onto every later frame of its tag. */
 const TAG_MEMO_MIN_CONFIDENCE = 0.5;
@@ -347,10 +354,16 @@ export function createDeathDetector(
 		for (let i = 0; i < tagMemo.length; i++) {
 			const entry = tagMemo[i]!;
 			let sum = 0;
+			let cell = 0;
 			for (let k = 0; k < signature.length; k++) {
-				sum += Math.abs(signature[k]! - entry.signature[k]!);
+				const diff = Math.abs(signature[k]! - entry.signature[k]!);
+				sum += diff;
+				if (diff > cell) cell = diff;
 			}
-			if (sum / signature.length <= TAG_MEMO_MAX_MEAN_DIFF) {
+			if (
+				cell <= TAG_MEMO_MAX_CELL_DIFF &&
+				sum / signature.length <= TAG_MEMO_MAX_MEAN_DIFF
+			) {
 				tagMemo.splice(i, 1);
 				tagMemo.push(entry);
 				return entry.read;
@@ -460,11 +473,13 @@ export function createDeathDetector(
 	 * Per-pixel max-channel distance from the nearest of `colors` (two for a split
 	 * banner). Distance rather than brightness since text/banner colors vary per
 	 * player (pink on light blue has ~zero luminance contrast). `invert` = closeness.
+	 * Distances are multiplied by `scale`, saturating at 255.
 	 */
 	function distanceBand(
 		inner: Mat,
 		colors: readonly [number, number, number][],
 		invert: boolean,
+		scale = 1,
 	): Mat {
 		const n = inner.rows * inner.cols;
 		const px = inner.data;
@@ -480,7 +495,8 @@ export function createDeathDetector(
 				);
 				if (dc < d) d = dc;
 			}
-			out[i] = invert ? 255 - d : d;
+			const v = Math.min(255, Math.round(d * scale));
+			out[i] = invert ? 255 - v : v;
 		}
 		return band;
 	}
@@ -545,15 +561,23 @@ export function createDeathDetector(
 
 		let textColor: [number, number, number] | null = null;
 		let refined: Mat | null = null;
+		let refineThreshold = 0;
 		const ink = band.data;
 		let inkCount = 0;
 		for (let i = 0; i < ink.length; i++)
 			if (ink[i]! > TAG_NAME_BIN_THRESHOLD) inkCount++;
 		if (inkCount >= TAG_NAME_REFINE_MIN_INK) {
 			textColor = medianColor(inner, (i) => ink[i]! > TAG_NAME_BIN_THRESHOLD);
-			refined = distanceBand(inner, [textColor], true);
+			const contrast = colorContrast(textColor, backgrounds);
+			refined = distanceBand(inner, [textColor], true, 255 / contrast);
+			refineThreshold =
+				255 -
+				Math.round(
+					(Math.min(TAG_NAME_REFINE_MAX_DISTANCE, contrast / 2) * 255) /
+						contrast,
+				);
 			if (chipMask) refined.setTo(new cv.Scalar(0), chipMask);
-			clearBorderBlobs(refined, TAG_NAME_REFINE_BIN_THRESHOLD);
+			clearBorderBlobs(refined, refineThreshold);
 		}
 		const [bandParse, refinedParse] = yield* all([
 			parseNameSteps(
@@ -566,7 +590,7 @@ export function createDeathDetector(
 				? parseNameSteps(
 						refined,
 						tagNameGlyphs!,
-						{ spaceGap, binThreshold: TAG_NAME_REFINE_BIN_THRESHOLD },
+						{ spaceGap, binThreshold: refineThreshold },
 						speculative,
 					)
 				: done(null),
@@ -972,4 +996,23 @@ export function createDeathDetector(
 			runSync(parseSteps(frame, t, gateResult, false)),
 		parseSteps,
 	};
+}
+
+/** Max-channel distance from `color` to the nearest of `others`, at least 1. */
+function colorContrast(
+	color: readonly [number, number, number],
+	others: readonly (readonly [number, number, number])[],
+): number {
+	let nearest = 255;
+	for (const other of others) {
+		nearest = Math.min(
+			nearest,
+			Math.max(
+				Math.abs(color[0] - other[0]),
+				Math.abs(color[1] - other[1]),
+				Math.abs(color[2] - other[2]),
+			),
+		);
+	}
+	return Math.max(1, nearest);
 }

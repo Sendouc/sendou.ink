@@ -14,11 +14,14 @@ import {
 } from "../../core/detectors/death/index";
 import { createScoreboardDetector } from "../../core/detectors/scoreboard/index";
 import { createScoreboardBattleLogReplayDetector } from "../../core/detectors/scoreboard-battle-log-replay/index";
+import type { Detector } from "../../core/detectors/types";
+import { type FrameData, normalizeFrame, toMat } from "../../core/image";
 import {
 	fieldTestOptions,
 	loadFixtures,
 	runDetectorOnFixture,
 } from "../../node/fixtures";
+import { readImage } from "../../node/image-io";
 import { loadScoreboardResources } from "../../node/resources";
 import { test } from "../node-test-compat";
 
@@ -103,6 +106,21 @@ export async function runDeathSuite(
 		});
 	}
 
+	// The tag memo outlives games: a later killer whose name differs by a word
+	// on the same plain banner must be read, not handed the earlier name.
+	if (shard === 0) {
+		test("death tag memo re-reads a near-twin name on the same plain banner", async () => {
+			const fixture = fixtures.find((f) => f.name === "plain-banner-mesh-cap");
+			assert.ok(fixture, "fixture death/plain-banner-mesh-cap missing");
+			const freshDetector = createDeathDetector(resources);
+			const original = await readImage(fixture.framePath);
+			const twin = withCapWordErased(await readImage(fixture.framePath));
+
+			assert.equal(parseKillerName(freshDetector, original), "Mesh Cap");
+			assert.equal(parseKillerName(freshDetector, twin), "Mesh");
+		});
+	}
+
 	// The death overlay sits on live gameplay while the scoreboards replace it;
 	// none of the three gates may fire on another detector's positives.
 	const scoreboardPositives = loadFixtures("scoreboard").filter(
@@ -157,4 +175,31 @@ export async function runDeathSuite(
 			});
 		}
 	}
+}
+
+function parseKillerName(
+	detector: Detector<DeathData>,
+	image: FrameData,
+): string | null | undefined {
+	const src = toMat(image);
+	const frame = normalizeFrame(src);
+	src.delete();
+	const gate = detector.gate(frame);
+	const events = gate.pass ? detector.parse(frame, 0, gate) : [];
+	frame.delete();
+	return events[0]?.data.name;
+}
+
+/** plain-banner-mesh-cap's tag reading "Mesh": "Cap" painted over with the banner column beside it. */
+function withCapWordErased(image: FrameData): FrameData {
+	const BACKGROUND_X = 1480;
+	for (let y = 805; y < 880; y++) {
+		for (let x = 1485; x < 1630; x++) {
+			for (let c = 0; c < 4; c++) {
+				image.data[(y * image.width + x) * 4 + c] =
+					image.data[(y * image.width + BACKGROUND_X) * 4 + c]!;
+			}
+		}
+	}
+	return image;
 }

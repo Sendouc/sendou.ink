@@ -1,0 +1,14 @@
+{
+	"event": "Death",
+	"data": {
+		"weaponLabel": "Custom Explosher",
+		"weaponId": 3041,
+		"weaponType": "MAIN",
+		"abilities": [
+			["ISM", "ISM", "ISM", "QSJ"],
+			["SSU", "IRU", "ISM", "ISM"],
+			["ISM", "RES", "IRU", "RES"]
+		],
+		"name": "Headphones"
+	}
+}
