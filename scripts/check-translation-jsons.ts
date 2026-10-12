@@ -3,6 +3,7 @@ import fs from "node:fs";
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import * as TranslationSyntax from "../app/features/translate/core/TranslationSyntax.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -77,7 +78,7 @@ for (const file of fileNames) {
 				file,
 			);
 
-			validateVariables({
+			validateSyntax({
 				english: englishContent,
 				other: otherLanguageContent,
 				lang,
@@ -126,7 +127,7 @@ const translationProgressPath = path.join(
 
 fs.writeFileSync(translationProgressPath, markdown);
 
-function validateVariables({
+function validateSyntax({
 	english,
 	other,
 	lang,
@@ -137,23 +138,40 @@ function validateVariables({
 	lang: string;
 	file: string;
 }) {
-	for (const [key, value] of Object.entries(english)) {
-		const otherValue = other[key];
-		if (!otherValue) continue;
+	for (const [key, value] of Object.entries(other)) {
+		if (!value.trim()) continue;
 
-		const englishMatches = value.match(/{{(.*?)}}/g);
-		const otherMatches = otherValue.match(/{{(.*?)}}/g);
+		const { source, isPlural } = englishSourceOf(english, key);
+		if (source === undefined) continue;
 
-		if (!englishMatches && !otherMatches) continue;
-
-		for (const englishVar of englishMatches ?? []) {
-			if (!otherMatches?.includes(englishVar)) {
-				throw new Error(
-					`variable mismatch in ${lang}/${file}: ${englishVar} is missing in ${otherValue}`,
-				);
-			}
+		const issues = TranslationSyntax.validate({
+			source,
+			translation: value,
+			isPlural,
+		});
+		if (issues.length > 0) {
+			throw new Error(
+				`invalid translation in ${lang}/${file} for "${key}": ${JSON.stringify(issues)} in ${value}`,
+			);
 		}
 	}
+}
+
+// plural forms a language has but English doesn't (e.g. `_few`) are translated from the `_other` form
+function englishSourceOf(english: Record<string, string>, key: string) {
+	const suffix = PLURAL_SUFFIXES.find((sfx) => key.endsWith(sfx));
+	const baseKey = suffix ? key.slice(0, -suffix.length) : key;
+
+	const singular = english[`${baseKey}_one`];
+	const plural = english[`${baseKey}_other`];
+	if (singular === undefined && plural === undefined) {
+		return { source: english[key], isPlural: false };
+	}
+
+	return {
+		source: suffix === "_one" ? (singular ?? plural) : (plural ?? singular),
+		isPlural: true,
+	};
 }
 
 function validateNoDuplicateKeys({

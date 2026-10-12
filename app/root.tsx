@@ -55,6 +55,7 @@ import {
 } from "./features/theme/core/provider";
 import { getThemeSession } from "./features/theme/core/theme-session.server";
 import { timezoneMiddleware } from "./features/timezone/timezone-middleware.server";
+import { TranslationPreview } from "./features/translate/components/TranslationPreview";
 import { VoiceCallHost } from "./features/voice/components/VoiceCallHost";
 import { UnsavedChangesGuard } from "./form/UnsavedChangesGuard";
 import { useHydrated } from "./hooks/useHydrated";
@@ -270,6 +271,7 @@ function Document({
 						<SearchParamsProvider>
 							<SendouToastRegion />
 							<UnsavedChangesGuard />
+							<TranslationPreview />
 							<MyFuse data={rootData} />
 							<ChatProvider
 								user={rootData?.user}

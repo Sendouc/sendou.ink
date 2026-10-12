@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
-import type { MetaFunction } from "react-router";
+import { Link, type MetaFunction } from "react-router";
 import { Main } from "~/components/Main";
 import { languages } from "~/modules/i18n/config";
 import { metaTags } from "~/utils/remix";
@@ -9,7 +9,10 @@ import {
 	GITHUB_CONTRIBUTORS_URL,
 	RHODESMAS_FREESOUND_PROFILE_URL,
 	SPLATOON_3_INK,
+	TRANSLATE_PAGE,
 } from "~/utils/urls";
+
+// xxx: docs about translation progress incl. how 100% is not rly done
 
 export const meta: MetaFunction = (args) => {
 	return metaTags({
@@ -160,6 +163,11 @@ export default function ContributionsPage() {
 					- {t("contributions:sounds")}
 				</li>
 			</ul>
+			<p className="mt-4">
+				<Link to={TRANSLATE_PAGE}>
+					Want to see sendou.ink in your language? Help translate it!
+				</Link>
+			</p>
 		</Main>
 	);
 }

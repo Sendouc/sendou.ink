@@ -1,12 +1,15 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { useUser } from "~/features/auth/core/user";
 import { SelectFormField } from "~/form/fields/SelectFormField";
 import { SendouForm } from "~/form/SendouForm";
 import { languages } from "~/modules/i18n/config";
 import { useSearchParam } from "~/modules/search-params/hooks";
+import { TRANSLATE_PAGE } from "~/utils/urls";
 import { clockFormatSchema } from "../settings-schemas";
 import { settingsSearchParams } from "../settings-search-params";
 
+// xxx: better prompt here (why not progress bar?)
 export function LocaleTab() {
 	const user = useUser();
 
@@ -45,11 +48,16 @@ function LanguageSelector() {
 	};
 
 	return (
-		<SelectFormField
-			label={t("common:header.language")}
-			items={languageItems}
-			value={i18n.language}
-			onChange={handleLanguageChange}
-		/>
+		<div className="stack xs">
+			<SelectFormField
+				label={t("common:header.language")}
+				items={languageItems}
+				value={i18n.language}
+				onChange={handleLanguageChange}
+			/>
+			<Link to={TRANSLATE_PAGE} className="text-xs">
+				Help translate sendou.ink
+			</Link>
+		</div>
 	);
 }

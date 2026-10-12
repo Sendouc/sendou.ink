@@ -18,6 +18,7 @@
  */
 import { useSyncExternalStore } from "react";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
+import * as PersistedState from "~/modules/persisted-state/persisted-state";
 import { downloadBlob } from "~/utils/download";
 import {
 	type MontageClipSource,
@@ -40,6 +41,7 @@ import {
 	playbackSegments,
 } from "../core/montage";
 import type { ScannerMatch } from "../core/scanner-match";
+import { montageCriteriaPersisted } from "../scanner-persisted";
 import {
 	latestMontage,
 	loadMontage,
@@ -50,8 +52,6 @@ import { listVods, loadVod, loadVodEvents } from "../store/vods";
 import { describeError } from "./errors";
 import { scannedTeamComps } from "./montage-comps";
 import { cancelVodScan, startVodScan } from "./vod-scan";
-
-const CRITERIA_STORAGE_KEY = "scanner:montage-criteria";
 
 export interface MontageFolder {
 	manifest: MontageManifest;
@@ -229,11 +229,7 @@ export function cancelMontageScan(): void {
 export function updateMontageCriteria(patch: Partial<MontageCriteria>): void {
 	const criteria = { ...snapshot.criteria, ...patch };
 	set({ criteria });
-	try {
-		localStorage.setItem(CRITERIA_STORAGE_KEY, JSON.stringify(criteria));
-	} catch {
-		// private mode or a full quota: the criteria still hold for this visit
-	}
+	PersistedState.write(montageCriteriaPersisted, criteria);
 }
 
 /** Sets or clears the music that replaces the game sound. */
@@ -643,20 +639,15 @@ function persist(): void {
 }
 
 function loadCriteria(): MontageCriteria {
-	try {
-		const stored: Partial<MontageCriteria> = JSON.parse(
-			localStorage.getItem(CRITERIA_STORAGE_KEY) ?? "{}",
-		);
-		return {
-			minKills: stored.minKills ?? DEFAULT_MONTAGE_CRITERIA.minKills,
-			maxSecondsByKills: {
-				...DEFAULT_MONTAGE_CRITERIA.maxSecondsByKills,
-				...stored.maxSecondsByKills,
-			},
-		};
-	} catch {
-		return DEFAULT_MONTAGE_CRITERIA;
-	}
+	const stored = PersistedState.read(montageCriteriaPersisted);
+
+	return {
+		minKills: stored.minKills,
+		maxSecondsByKills: {
+			...DEFAULT_MONTAGE_CRITERIA.maxSecondsByKills,
+			...stored.maxSecondsByKills,
+		},
+	};
 }
 
 /** A writable for a file the user picks; null when the browser has no save dialog (the render then downloads). */
