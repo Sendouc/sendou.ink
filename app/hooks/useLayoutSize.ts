@@ -4,7 +4,7 @@ import { useMediaQuery } from "./useMediaQuery";
 export const MOBILE_LAYOUT_QUERY = "(width < 600px)";
 export const DESKTOP_LAYOUT_QUERY = "(width >= 1000px)";
 
-type LayoutSize = "mobile" | "tablet" | "desktop";
+export type LayoutSize = "mobile" | "tablet" | "desktop";
 
 /** Which of the three site layouts the viewport is in. `"desktop"` on the server and the hydration render. */
 export function useLayoutSize(): LayoutSize {

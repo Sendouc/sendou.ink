@@ -39,8 +39,14 @@ function useSystemTheme() {
 	return useSyncExternalStore(
 		subscribeToSystemTheme,
 		getSystemTheme,
-		() => null,
+		getHydrationSystemTheme,
 	);
+}
+
+// the client hydrates with the real theme already: `CLIENT_THEME_SCRIPT` put it on <html>
+// before hydration, so it matches the DOM and the whole tree is not re-rendered right after
+function getHydrationSystemTheme() {
+	return typeof window === "undefined" ? null : getSystemTheme();
 }
 
 type ThemeProviderProps = {
@@ -117,7 +123,11 @@ function ThemeHead() {
 
 	return (
 		<>
-			<meta name="color-scheme" content={metaColorScheme} />
+			<meta
+				name="color-scheme"
+				content={metaColorScheme}
+				suppressHydrationWarning
+			/>
 			{initialUserTheme === "auto" ? (
 				<script dangerouslySetInnerHTML={{ __html: CLIENT_THEME_SCRIPT }} />
 			) : null}
