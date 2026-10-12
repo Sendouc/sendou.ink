@@ -454,28 +454,37 @@ export async function findStreamsByTournamentId(tournamentId: number) {
 	return { participantStreams, castStreams };
 }
 
-/** User ids of everyone who played at least one map of the tournament. */
+/**
+ * User ids of everyone who played at least one map of the tournament. Probes each roster member
+ * instead of reading every participant row (members who played can't be removed from the roster).
+ */
 export async function findParticipatedUserIdsById(tournamentId: number) {
 	const rows = await db
-		.selectFrom("TournamentStage")
+		.selectFrom("TournamentTeam")
 		.innerJoin(
-			"TournamentMatch",
-			"TournamentMatch.stageId",
-			"TournamentStage.id",
+			"TournamentTeamMember",
+			"TournamentTeamMember.tournamentTeamId",
+			"TournamentTeam.id",
 		)
-		.innerJoin(
-			"TournamentMatchGameResult",
-			"TournamentMatch.id",
-			"TournamentMatchGameResult.matchId",
+		.select("TournamentTeamMember.userId")
+		.distinct()
+		.where("TournamentTeam.tournamentId", "=", tournamentId)
+		.where(({ exists, selectFrom }) =>
+			exists(
+				selectFrom("TournamentMatchGameResultParticipant")
+					.select("TournamentMatchGameResultParticipant.userId")
+					.whereRef(
+						"TournamentMatchGameResultParticipant.tournamentTeamId",
+						"=",
+						"TournamentTeam.id",
+					)
+					.whereRef(
+						"TournamentMatchGameResultParticipant.userId",
+						"=",
+						"TournamentTeamMember.userId",
+					),
+			),
 		)
-		.innerJoin(
-			"TournamentMatchGameResultParticipant",
-			"TournamentMatchGameResult.id",
-			"TournamentMatchGameResultParticipant.matchGameResultId",
-		)
-		.select("TournamentMatchGameResultParticipant.userId")
-		.groupBy("TournamentMatchGameResultParticipant.userId")
-		.where("TournamentStage.tournamentId", "=", tournamentId)
 		.execute();
 
 	return rows.map((row) => row.userId);

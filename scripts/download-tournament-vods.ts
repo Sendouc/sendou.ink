@@ -190,7 +190,7 @@ async function writeMontageManifest() {
 				}
 			: null,
 		teamsCount: tournament.ctx.teams.length,
-		playersCount: tournament.participatedUserIds?.length ?? 0,
+		playersCount: tournament.participatedUserIds?.size ?? 0,
 		topTeams: await Promise.all(
 			topStandings.map(async (standing) => {
 				const playedUserIds = new Set(
