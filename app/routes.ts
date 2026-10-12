@@ -39,6 +39,7 @@ const devOnlyRoutes =
 					"/match-page-test",
 					"features/match-page-test/routes/match-page-test.tsx",
 				),
+				route("/header-test", "features/header-test/routes/header-test.tsx"),
 				route(
 					"/scanner/fixtures/:detector?/:caseName?",
 					"features/scanner/routes/scanner.fixtures.ts",

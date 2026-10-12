@@ -1,0 +1,76 @@
+.main {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-8);
+}
+
+.controls {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-3);
+	padding: var(--s-4);
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius-box);
+	background-color: var(--color-bg-high);
+}
+
+.controlRow {
+	display: grid;
+	grid-template-columns: 10rem 1fr;
+	align-items: center;
+	gap: var(--s-2);
+
+	@container (width < 600px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.controlLabel {
+	font-size: var(--font-xs);
+	font-weight: var(--weight-bold);
+	color: var(--color-text-high);
+}
+
+.switches {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--s-4);
+}
+
+.variant {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-4);
+}
+
+.variantName {
+	margin: 0;
+	font-size: var(--font-lg);
+}
+
+.variantDescription {
+	margin: 0;
+	font-size: var(--font-sm);
+	color: var(--color-text-high);
+}
+
+.frameContainer {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-1);
+}
+
+.frameLabel {
+	font-size: var(--font-2xs);
+	font-weight: var(--weight-semi);
+	color: var(--color-text-high);
+}
+
+.frame {
+	max-width: 100%;
+	min-width: 280px;
+	overflow: hidden;
+	resize: horizontal;
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius-box);
+}
