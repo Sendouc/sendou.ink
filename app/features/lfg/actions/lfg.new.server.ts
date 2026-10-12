@@ -28,10 +28,7 @@ export const action = defineAction({ body: lfgNewSchema }, async ({ body }) => {
 		: null;
 
 	if (body.postId) {
-		await validateCanUpdatePost({
-			postId: body.postId,
-			user,
-		});
+		await validateCanUpdatePost(body.postId);
 
 		await LFGRepository.updatePost(body.postId, {
 			text: body.postText,
@@ -58,15 +55,8 @@ export const action = defineAction({ body: lfgNewSchema }, async ({ body }) => {
 	return redirect(LFG_PAGE);
 });
 
-const validateCanUpdatePost = async ({
-	postId,
-	user,
-}: {
-	postId: number;
-	user: { id: number; plusTier: number | null };
-}) => {
-	const posts = await LFGRepository.findAllPosts(user);
-	const post = posts.find((candidate) => candidate.id === postId);
+const validateCanUpdatePost = async (postId: number) => {
+	const post = await LFGRepository.findVisibleById(postId);
 	errorToastIfFalsy(post, "Post to update not found");
 	requirePermission(post, "EDIT");
 };
