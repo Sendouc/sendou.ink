@@ -16,6 +16,7 @@ import {
 } from "react";
 import { TierPill } from "~/components/TierPill";
 import { useTheme } from "~/features/theme/core/provider";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import { usePrefersReducedMotion } from "~/hooks/usePrefersReducedMotion";
 import { IS_E2E_TEST_RUN } from "~/utils/e2e";
 import * as XpTrophy from "../core/XpTrophy";
@@ -132,10 +133,9 @@ export function Trophy({
 	const animationProgressRef = useRef<HTMLDivElement>(null);
 	const reducedMotion = usePrefersReducedMotion();
 
-	const onRenderStatsRef = useRef(onRenderStats);
-	onRenderStatsRef.current = onRenderStats;
-	const pausedRef = useRef(paused);
-	pausedRef.current = paused;
+	const onRenderStatsRef = useLatestRef(onRenderStats);
+	const reportsRenderStats = Boolean(onRenderStats);
+	const pausedRef = useLatestRef(paused);
 
 	useEffect(() => {
 		const viewer = viewerRef.current;
@@ -145,12 +145,9 @@ export function Trophy({
 		else viewer.startRenderLoop(false);
 	}, [paused, drawn]);
 
-	const prevSourceRef = useRef({ model, code });
-	if (
-		prevSourceRef.current.model !== model ||
-		prevSourceRef.current.code !== code
-	) {
-		prevSourceRef.current = { model, code };
+	const [prevSource, setPrevSource] = useState({ model, code });
+	if (prevSource.model !== model || prevSource.code !== code) {
+		setPrevSource({ model, code });
 		setError(false);
 		if (!drawn || reducedMotion) setActive({ model, code });
 		setDrawn(false);
@@ -194,16 +191,7 @@ export function Trophy({
 				return;
 			}
 
-			viewer.setResolution(128, 128, 4);
-			viewer.leftTag = null;
-			viewer.rightTag = null;
-			viewer.animation.loop = true;
-			viewer.animation.speed = 1;
-			viewer.clampCameraDistance = { enabled: true, minimumDistance: 3 };
-			viewer.maxFps = fps;
-			viewer.cameraMode = "spin";
-			viewer.cameraModeSpeed = 5;
-			viewer.animation.setTime(0);
+			configureViewer(viewer, fps);
 
 			const presentFrame = (onPresented: () => void) => {
 				if (viewerRef.current !== viewer) return;
@@ -234,14 +222,14 @@ export function Trophy({
 			);
 			setHasAnimation(tracksAnimationProgress);
 
-			if ((context && onRenderStats) || tracksAnimationProgress) {
-				viewer.onFrame = () => {
+			if ((context && reportsRenderStats) || tracksAnimationProgress) {
+				setFrameListener(viewer, () => {
 					if (context) onRenderStatsRef.current?.({ ...context.stats });
 					animationProgressRef.current?.style.setProperty(
 						"--animation-progress",
 						String(viewer.animation.time / animationDuration),
 					);
-				};
+				});
 			}
 
 			const markDrawn = () => {
@@ -281,6 +269,9 @@ export function Trophy({
 			colorScheme,
 			fps,
 			showAnimationProgress,
+			reportsRenderStats,
+			onRenderStatsRef,
+			pausedRef,
 		],
 	);
 
@@ -355,6 +346,23 @@ export function Trophy({
 			{cornerPill}
 		</div>
 	);
+}
+
+function configureViewer(viewer: PicoCAD2Viewer, fps: number) {
+	viewer.setResolution(128, 128, 4);
+	viewer.leftTag = null;
+	viewer.rightTag = null;
+	viewer.animation.loop = true;
+	viewer.animation.speed = 1;
+	viewer.clampCameraDistance = { enabled: true, minimumDistance: 3 };
+	viewer.maxFps = fps;
+	viewer.cameraMode = "spin";
+	viewer.cameraModeSpeed = 5;
+	viewer.animation.setTime(0);
+}
+
+function setFrameListener(viewer: PicoCAD2Viewer, onFrame: () => void) {
+	viewer.onFrame = onFrame;
 }
 
 function useTrophyColorScheme(): ColorScheme {

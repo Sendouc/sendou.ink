@@ -26,6 +26,7 @@ import type {
 	TournamentSearchFieldOptions,
 	UserSearchFieldOptions,
 } from "~/form/types";
+import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
 import { tournamentAdminPage } from "~/utils/urls";
 import type { TournamentAdminRegistrationLoaderData } from "../loaders/to.$id.admin.registration.$tid.server";
 import {
@@ -408,7 +409,9 @@ function ImportTeamFields({
 	const fetcher = useFetcher<ImportTeamsLoaderData>();
 
 	const teams = fetcher.data?.teams ?? [];
-	teamsRef.current = teams;
+	useIsomorphicLayoutEffect(() => {
+		teamsRef.current = teams;
+	});
 
 	// the non-clearable native select shows the first option, so keep the form value in sync:
 	// default to the first team, reset when the loaded teams change

@@ -12,7 +12,7 @@
 
 import { ChevronDown, ChevronUp, Eye, EyeOff, Minus } from "lucide-react";
 import type * as React from "react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import { SendouButton } from "~/components/elements/Button";
 import {
 	SendouTab,
@@ -394,18 +394,20 @@ function summaryLine(summary: SessionSummary, clips: number): string {
  * card would animate in for something the user did not watch.
  */
 function useJustFormedKeys(keys: React.Key[]): ReadonlySet<React.Key> {
-	const seenRef = useRef<Set<React.Key> | null>(null);
-	const seen = seenRef.current;
+	const keysId = keys.join("\u0000");
+	const [tracked, setTracked] = useState(() => ({
+		keysId,
+		seen: new Set(keys),
+		justFormed: NO_KEYS,
+	}));
 
-	// after commit, not during render: under StrictMode the render runs twice
-	// and the second pass would find every key already seen
-	useEffect(() => {
-		seenRef.current = new Set(keys);
-	});
+	if (tracked.keysId === keysId) return tracked.justFormed;
 
-	if (seen === null) return NO_KEYS;
-	const justFormed = keys.filter((key) => !seen.has(key));
-	return justFormed.length === keys.length && keys.length > 1
-		? NO_KEYS
-		: new Set(justFormed);
+	const freshKeys = keys.filter((key) => !tracked.seen.has(key));
+	const justFormed =
+		freshKeys.length === keys.length && keys.length > 1
+			? NO_KEYS
+			: new Set(freshKeys);
+	setTracked({ keysId, seen: new Set(keys), justFormed });
+	return justFormed;
 }

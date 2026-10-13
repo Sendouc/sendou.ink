@@ -57,20 +57,18 @@ export function MySchedule({
 	// popover holds uncommitted edits. Edits survive same-route navigations (view tabs), so only a
 	// pathname change or a full unload warns
 	const hasPendingDraftRef = React.useRef(false);
-	const hasUnsavedChangesRef = React.useRef<
-		Parameters<typeof useUnsavedChangesChecker>[0]["current"]
-	>(() => false);
-	hasUnsavedChangesRef.current = (navigation) =>
-		fetcher.state === "idle" &&
-		(!navigation ||
-			navigation.currentLocation.pathname !==
-				navigation.nextLocation.pathname) &&
-		(hasPendingDraftRef.current ||
-			!R.isDeepEqual(
-				weeks,
-				data.weeks.map((editorWeek) => editorWeek.days),
-			));
-	useUnsavedChangesChecker(hasUnsavedChangesRef);
+	useUnsavedChangesChecker(
+		(navigation) =>
+			fetcher.state === "idle" &&
+			(!navigation ||
+				navigation.currentLocation.pathname !==
+					navigation.nextLocation.pathname) &&
+			(hasPendingDraftRef.current ||
+				!R.isDeepEqual(
+					weeks,
+					data.weeks.map((editorWeek) => editorWeek.days),
+				)),
+	);
 
 	const weekIndex = week === "next" ? 1 : 0;
 	const shownDays = weeks[weekIndex];

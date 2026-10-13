@@ -14,6 +14,7 @@ import {
 import { FormMessage } from "~/components/FormMessage";
 import { SubmitButton } from "~/components/SubmitButton";
 import { holdRevalidationsDuring } from "~/features/chat/revalidation-scope";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import { useSearchParam } from "~/modules/search-params/hooks";
 import * as SearchParams from "~/modules/search-params/search-params";
 import { FormField as FormFieldComponent } from "./FormField";
@@ -233,20 +234,6 @@ function SendouFormInner<T extends v.ObjectEntries>({
 		stepIdxByName(steps, stepInUrl),
 	);
 	const { pathname } = useLocation();
-	// browser back/forward changes the step in the URL. Not derived from `stepInUrl` during render: a step push popped before React rendered it never shows up there
-	React.useEffect(() => {
-		const followStepInUrl = () => {
-			if (window.location.pathname !== pathname) return;
-
-			const { step } = formSearchParams.parse(
-				new URLSearchParams(window.location.search),
-			);
-			setCurrentStepIdx(stepIdxByName(latest.current.steps, step));
-		};
-
-		window.addEventListener("popstate", followStepInUrl);
-		return () => window.removeEventListener("popstate", followStepInUrl);
-	}, [pathname]);
 	const isOnLastStep = steps ? currentStepIdx === steps.length - 1 : false;
 	const [hasReachedLastStep, setHasReachedLastStep] =
 		React.useState(isOnLastStep);
@@ -255,17 +242,15 @@ function SendouFormInner<T extends v.ObjectEntries>({
 	}
 	const formRef = React.useRef<HTMLElement | null>(null);
 
-	const storeRef = React.useRef<FormStore | null>(null);
-	if (storeRef.current === null) {
+	const [store] = React.useState(() => {
 		const initialValues = buildInitialValues(schema, defaultValues);
-		storeRef.current = createFormStore(
+		return createFormStore(
 			initialValues,
 			mode === "client"
 				? computeTopLevelFieldErrors(schema, initialValues)
 				: {},
 		);
-	}
-	const store = storeRef.current;
+	});
 
 	const latestProps: LatestFormProps = {
 		schema: schema as FormObjectSchema,
@@ -287,24 +272,35 @@ function SendouFormInner<T extends v.ObjectEntries>({
 				}),
 			),
 	};
-	const latest = React.useRef(latestProps);
-	latest.current = latestProps;
+	const latest = useLatestRef(latestProps);
+	// browser back/forward changes the step in the URL. Not derived from `stepInUrl` during render: a step push popped before React rendered it never shows up there
+	React.useEffect(() => {
+		const followStepInUrl = () => {
+			if (window.location.pathname !== pathname) return;
 
-	const [actions] = React.useState(() =>
-		createFormActions({
-			store,
-			latest,
-			formRef,
-			setHasSubmitted,
-			setVisibleServerErrors,
-			setFallbackError,
-			setCurrentStepIdx,
-		}),
-	);
+			const { step } = formSearchParams.parse(
+				new URLSearchParams(window.location.search),
+			);
+			setCurrentStepIdx(stepIdxByName(latest.current.steps, step));
+		};
 
-	const latestActionData = React.useRef(fetcher.data);
-	if (fetcher.data !== latestActionData.current) {
-		latestActionData.current = fetcher.data;
+		window.addEventListener("popstate", followStepInUrl);
+		return () => window.removeEventListener("popstate", followStepInUrl);
+	}, [pathname]);
+
+	const actions = useFormActions({
+		store,
+		latest,
+		formRef,
+		setHasSubmitted,
+		setVisibleServerErrors,
+		setFallbackError,
+		setCurrentStepIdx,
+	});
+
+	const [shownActionData, setShownActionData] = React.useState(fetcher.data);
+	if (fetcher.data !== shownActionData) {
+		setShownActionData(fetcher.data);
 		setVisibleServerErrors(fetcher.data?.fieldErrors ?? {});
 	}
 
@@ -320,14 +316,14 @@ function SendouFormInner<T extends v.ObjectEntries>({
 		queueMicrotask(() => actions.focusServerErrors(errorEntries));
 	}, [fetcher.data, actions]);
 
-	const hasUnsavedChangesRef = React.useRef<UnsavedChangesChecker>(() => false);
-	hasUnsavedChangesRef.current = (navigation) =>
-		mode === "submit" &&
-		!readOnly &&
-		store.dirty &&
-		fetcher.state === "idle" &&
-		!(navigation && isStepChangeOnly(navigation));
-	useUnsavedChangesChecker(hasUnsavedChangesRef);
+	useUnsavedChangesChecker(
+		(navigation) =>
+			mode === "submit" &&
+			!readOnly &&
+			store.dirty &&
+			fetcher.state === "idle" &&
+			!(navigation && isStepChangeOnly(navigation)),
+	);
 
 	const previousFetcherStateRef = React.useRef(fetcher.state);
 	React.useEffect(() => {
@@ -528,12 +524,11 @@ export function useFormSteps() {
  */
 export function useFieldRevealer(reveal: (fieldName: string) => void) {
 	const context = React.useContext(FormContext);
-	const latestReveal = React.useRef(reveal);
-	latestReveal.current = reveal;
+	const revealRef = useLatestRef(reveal);
 
 	const register = context?.registerFieldRevealer;
 	React.useEffect(
-		() => register?.((fieldName) => latestReveal.current(fieldName)),
+		() => register?.((fieldName) => revealRef.current(fieldName)),
 		[register],
 	);
 }
@@ -695,6 +690,11 @@ interface FormActionDeps {
 	>;
 	setFallbackError: React.Dispatch<React.SetStateAction<string | null>>;
 	setCurrentStepIdx: React.Dispatch<React.SetStateAction<number>>;
+}
+
+function useFormActions(deps: FormActionDeps) {
+	const [actions] = React.useState(() => createFormActions(deps));
+	return actions;
 }
 
 /**

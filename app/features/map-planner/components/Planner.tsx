@@ -407,6 +407,9 @@ export function Planner() {
 		if (shapeIds.length === 0) return;
 
 		const backgroundShape = findBackgroundShape(editor);
+		const bounds = backgroundShape
+			? editor.getShapePageBounds(backgroundShape)
+			: undefined;
 
 		try {
 			const { blob } = await editor.toImage(shapeIds, {
@@ -414,9 +417,7 @@ export function Planner() {
 				background: true,
 				darkMode: false,
 				padding: 0,
-				bounds: backgroundShape
-					? editor.getShapePageBounds(backgroundShape)
-					: undefined,
+				bounds,
 			});
 			downloadBlob(`${PLAN_FILE_NAME}.png`, blob);
 		} catch (error) {

@@ -694,15 +694,16 @@ function ReportData({
 
 	const download = async () => {
 		setZipping(true);
-		try {
-			const zip = await matchZip(built, getFrame, clips);
-			downloadBlob(
-				fileName,
-				new Blob([zip as Uint8Array<ArrayBuffer>], { type: "application/zip" }),
-			);
-		} finally {
-			setZipping(false);
-		}
+		await matchZip(built, getFrame, clips)
+			.then((zip) =>
+				downloadBlob(
+					fileName,
+					new Blob([zip as Uint8Array<ArrayBuffer>], {
+						type: "application/zip",
+					}),
+				),
+			)
+			.finally(() => setZipping(false));
 	};
 
 	return (

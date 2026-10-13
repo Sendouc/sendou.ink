@@ -117,7 +117,7 @@ function ImageExportDialogContent({
 
 		let cancelled = false;
 
-		import("@zumer/snapdom")
+		loadSnapdom()
 			.then(({ preCache }) => {
 				if (cancelled || !frameRef.current) return;
 
@@ -134,24 +134,20 @@ function ImageExportDialogContent({
 		if (!frameRef.current) return;
 
 		setExportAction("download");
-		try {
-			const blob = await capturePng(frameRef.current);
-
-			await saveImage(blob, `${filename}.png`, { canShare: isMobile });
-		} finally {
-			setExportAction(null);
-		}
+		await capturePng(frameRef.current)
+			.then((blob) =>
+				saveImage(blob, `${filename}.png`, { canShare: isMobile }),
+			)
+			.finally(() => setExportAction(null));
 	};
 
 	const handleCopy = async () => {
 		if (!frameRef.current) return;
 
 		setExportAction("copy");
-		try {
-			await copyPngToClipboard(capturePng(frameRef.current));
-		} finally {
-			setExportAction(null);
-		}
+		await copyPngToClipboard(capturePng(frameRef.current)).finally(() =>
+			setExportAction(null),
+		);
 	};
 
 	return (
@@ -219,8 +215,12 @@ function ImageExportDialogContent({
 	);
 }
 
+function loadSnapdom() {
+	return import("@zumer/snapdom");
+}
+
 async function capturePng(frame: HTMLDivElement) {
-	const { snapdom } = await import("@zumer/snapdom");
+	const { snapdom } = await loadSnapdom();
 
 	// defensive/speculative fix
 	await document.fonts.ready;

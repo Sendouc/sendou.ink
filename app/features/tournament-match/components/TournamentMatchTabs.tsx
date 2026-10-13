@@ -338,28 +338,6 @@ function TournamentMatchRosterTab({
 		teams: [teamOne, teamTwo],
 	} = useMatch();
 
-	const tbdTeam = { defaultName: t("tournament:match.tbd"), members: [] };
-
-	return (
-		<MatchRosterTab
-			minMembersPerTeam={tournament.minMembersPerTeam}
-			canEditSubbedOut={[
-				teamOne ? canEditSubbedOutForTeam(teamOne) : false,
-				teamTwo ? canEditSubbedOutForTeam(teamTwo) : false,
-			]}
-			defaultIsEditing={[
-				teamOne ? needsActiveRosterSelection(teamOne) : false,
-				teamTwo ? needsActiveRosterSelection(teamTwo) : false,
-			]}
-			onSubbedOutChange={handleSubbedOutChange}
-			isSubmitting={setActiveRoster.state !== "idle"}
-			teams={[
-				teamOne ? rosterTeamData(teamOne) : tbdTeam,
-				teamTwo ? rosterTeamData(teamTwo) : tbdTeam,
-			]}
-		/>
-	);
-
 	function rosterTeamData(team: MatchPageTeam) {
 		const subbedOut =
 			!data.matchIsOver &&
@@ -425,4 +403,26 @@ function TournamentMatchRosterTab({
 			teamId,
 		});
 	}
+
+	const tbdTeam = { defaultName: t("tournament:match.tbd"), members: [] };
+
+	return (
+		<MatchRosterTab
+			minMembersPerTeam={tournament.minMembersPerTeam}
+			canEditSubbedOut={[
+				teamOne ? canEditSubbedOutForTeam(teamOne) : false,
+				teamTwo ? canEditSubbedOutForTeam(teamTwo) : false,
+			]}
+			defaultIsEditing={[
+				teamOne ? needsActiveRosterSelection(teamOne) : false,
+				teamTwo ? needsActiveRosterSelection(teamTwo) : false,
+			]}
+			onSubbedOutChange={handleSubbedOutChange}
+			isSubmitting={setActiveRoster.state !== "idle"}
+			teams={[
+				teamOne ? rosterTeamData(teamOne) : tbdTeam,
+				teamTwo ? rosterTeamData(teamTwo) : tbdTeam,
+			]}
+		/>
+	);
 }

@@ -121,6 +121,19 @@ export function CoachControls({
 	/** null while there's no map to show */
 	onSwapMap: (() => void) | null;
 }) {
+	const hotkeyAction = (code: string) => {
+		if (PLAY_CODES.includes(code)) return onTogglePlay;
+		if (code === MAP_CODE) return onSwapMap;
+		if (code === SLOWER_CODE || code === FASTER_CODE) {
+			return () => onSpeedStep(code === FASTER_CODE ? "next" : "previous");
+		}
+		for (const { step, previous, next } of STEPS) {
+			if (code === previous.code) return jumps[step].previous;
+			if (code === next.code) return jumps[step].next;
+		}
+		return null;
+	};
+
 	const onKeyDown = useEffectEvent((event: KeyboardEvent) => {
 		if (!isHotkey(event)) return;
 
@@ -135,19 +148,6 @@ export function CoachControls({
 		document.addEventListener("keydown", onKeyDown);
 		return () => document.removeEventListener("keydown", onKeyDown);
 	}, []);
-
-	const hotkeyAction = (code: string) => {
-		if (PLAY_CODES.includes(code)) return onTogglePlay;
-		if (code === MAP_CODE) return onSwapMap;
-		if (code === SLOWER_CODE || code === FASTER_CODE) {
-			return () => onSpeedStep(code === FASTER_CODE ? "next" : "previous");
-		}
-		for (const { step, previous, next } of STEPS) {
-			if (code === previous.code) return jumps[step].previous;
-			if (code === next.code) return jumps[step].next;
-		}
-		return null;
-	};
 
 	return (
 		<div className={styles.bar}>

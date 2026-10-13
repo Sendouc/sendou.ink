@@ -118,9 +118,9 @@ function useFallbackRefreshOnPotentialResolution({
 		navigation.state === "idle" &&
 		fetchers.every((fetcher) => fetcher.state === "idle");
 
-	const refreshOnIdleRef = React.useRef(false);
-	if (submitting && hasUnseen) {
-		refreshOnIdleRef.current = true;
+	const [refreshOnIdle, setRefreshOnIdle] = React.useState(false);
+	if (submitting && hasUnseen && !refreshOnIdle) {
+		setRefreshOnIdle(true);
 	}
 
 	const prevLocationKeyRef = React.useRef(location.key);
@@ -134,9 +134,9 @@ function useFallbackRefreshOnPotentialResolution({
 			return;
 		}
 
-		if (allIdle && refreshOnIdleRef.current) {
-			refreshOnIdleRef.current = false;
+		if (allIdle && refreshOnIdle) {
+			setRefreshOnIdle(false);
 			refresh();
 		}
-	}, [location.key, allIdle, hasUnseen, refresh]);
+	}, [location.key, allIdle, hasUnseen, refresh, refreshOnIdle]);
 }

@@ -289,8 +289,12 @@ function TriggeredDialog({
 				command: "show-modal",
 				onClick: (event) => {
 					trigger.props.onClick?.(event);
-					if (!supportsInvokerCommands()) {
-						dialogRef.current?.showModal();
+					const dialog = document.getElementById(dialogId);
+					if (
+						!supportsInvokerCommands() &&
+						dialog instanceof HTMLDialogElement
+					) {
+						dialog.showModal();
 					}
 				},
 			})}

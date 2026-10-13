@@ -154,6 +154,7 @@ function BaseVisibilityFormField({
 	error: string | undefined;
 }) {
 	const { t } = useTranslation(["scrims"]);
+	const { setValue } = useFormFieldContext();
 	const id = React.useId();
 
 	const noAssociations =
@@ -175,7 +176,12 @@ function BaseVisibilityFormField({
 					associations={associations}
 					id={id}
 					value={String(value)}
-					onChange={(e) => onChange(e.target.value)}
+					onChange={(e) => {
+						onChange(e.target.value);
+						if (e.target.value === "PUBLIC") {
+							setValue("notFoundVisibility", DEFAULT_NOT_FOUND_VISIBILITY);
+						}
+					}}
 				/>
 			)}
 		</FormFieldWrapper>
@@ -193,14 +199,6 @@ function NotFoundVisibilityFormField({
 	const baseVisibility = values.baseVisibility as string;
 	const notFoundVisibility =
 		values.notFoundVisibility as FormFields["notFoundVisibility"];
-
-	const prevBaseVisibility = React.useRef(baseVisibility);
-	if (prevBaseVisibility.current !== baseVisibility) {
-		prevBaseVisibility.current = baseVisibility;
-		if (baseVisibility === "PUBLIC") {
-			setValue("notFoundVisibility", DEFAULT_NOT_FOUND_VISIBILITY);
-		}
-	}
 
 	const error =
 		serverErrors.notFoundVisibility ?? clientErrors.notFoundVisibility;

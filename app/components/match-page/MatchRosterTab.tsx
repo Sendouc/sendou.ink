@@ -127,6 +127,29 @@ function TeamRoster({
 
 	const showEditButton = canEditSubbedOut && team.team && !isEditing;
 
+	const handleToggleMember = (memberId: number) => {
+		setSelectedMemberIds((prev) =>
+			prev.includes(memberId)
+				? prev.filter((id) => id !== memberId)
+				: [...prev, memberId],
+		);
+	};
+
+	const handleSubmit = () => {
+		if (!team.team || !onSubbedOutChange) return;
+
+		const subbedOutIds = team.members
+			.filter((m) => !selectedMemberIds.includes(m.id))
+			.map((m) => m.id);
+		onSubbedOutChange(team.team.id, subbedOutIds);
+		setIsEditing(false);
+	};
+
+	const handleCancel = () => {
+		setSelectedMemberIds(activeMembers.map((m) => m.id));
+		setIsEditing(false);
+	};
+
 	return (
 		<div className={clsx("stack xxs", styles.rosterColumn)}>
 			<TeamHeader team={team} side={side} />
@@ -213,29 +236,6 @@ function TeamRoster({
 			) : null}
 		</div>
 	);
-
-	function handleToggleMember(memberId: number) {
-		setSelectedMemberIds((prev) =>
-			prev.includes(memberId)
-				? prev.filter((id) => id !== memberId)
-				: [...prev, memberId],
-		);
-	}
-
-	function handleSubmit() {
-		if (!team.team || !onSubbedOutChange) return;
-
-		const subbedOutIds = team.members
-			.filter((m) => !selectedMemberIds.includes(m.id))
-			.map((m) => m.id);
-		onSubbedOutChange(team.team.id, subbedOutIds);
-		setIsEditing(false);
-	}
-
-	function handleCancel() {
-		setSelectedMemberIds(activeMembers.map((m) => m.id));
-		setIsEditing(false);
-	}
 }
 
 function rosterIdentityKey(team: RosterTabTeam) {

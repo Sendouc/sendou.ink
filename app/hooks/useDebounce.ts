@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLatestRef } from "~/hooks/useLatestRef";
 
 /**
  * Runs `fn` once `ms` has elapsed without `deps` changing. Uses a latest-ref instead of `useEffectEvent`,
@@ -9,11 +10,10 @@ export function useDebounce(
 	ms = 0,
 	deps: React.DependencyList = [],
 ) {
-	const callback = React.useRef(fn);
-	callback.current = fn;
+	const callbackRef = useLatestRef(fn);
 
 	React.useEffect(() => {
-		const timeout = setTimeout(() => callback.current(), ms);
+		const timeout = setTimeout(() => callbackRef.current(), ms);
 		return () => clearTimeout(timeout);
 	}, [ms, ...deps]);
 }

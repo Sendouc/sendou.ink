@@ -57,9 +57,10 @@ export function useEntitySearch<TItem extends { id: number }>({
 		[query],
 	);
 
-	const prevInitialSelectedId = React.useRef(initialSelectedId);
-	if (initialSelectedId !== prevInitialSelectedId.current) {
-		prevInitialSelectedId.current = initialSelectedId;
+	const [prevInitialSelectedId, setPrevInitialSelectedId] =
+		React.useState(initialSelectedId);
+	if (initialSelectedId !== prevInitialSelectedId) {
+		setPrevInitialSelectedId(initialSelectedId);
 		if (typeof initialSelectedId === "number") {
 			setSelectedKey(initialSelectedId);
 		}

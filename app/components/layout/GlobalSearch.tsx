@@ -83,11 +83,12 @@ export function GlobalSearch() {
 
 	const [isOpen, setIsOpen] = React.useState(searchParamOpen);
 
-	const prevSearchParamOpen = React.useRef(searchParamOpen);
-	if (searchParamOpen !== prevSearchParamOpen.current) {
+	const [prevSearchParamOpen, setPrevSearchParamOpen] =
+		React.useState(searchParamOpen);
+	if (searchParamOpen !== prevSearchParamOpen) {
+		setPrevSearchParamOpen(searchParamOpen);
 		setIsOpen(searchParamOpen);
 	}
-	prevSearchParamOpen.current = searchParamOpen;
 
 	React.useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {

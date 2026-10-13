@@ -112,67 +112,82 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
 							{ap}
 						</div>
 					))}
-					{values.map((row, i) =>
-						[
-							<div
-								className={clsx(
-									styles.inkGridAp,
-									issHovered === AP_VALUES_TO_SHOW[i] &&
-										styles.inkGridApFocused,
-								)}
-								key={i}
-							>
-								{AP_VALUES_TO_SHOW[i]}
-							</div>,
-						].concat(
-							row.map((cell, j) => {
-								const key = `${i}-${j}`;
-
-								if (cell === "N/A") {
-									return <div className={styles.inkGridCell} key={key} />;
-								}
-
-								const title = `${cell.shots ?? "-"} (ISM: ${cell.ismAP}, ISS: ${
-									cell.issAP
-								})`;
-
-								if (typeof cell.shots !== "number") {
-									return (
-										// biome-ignore lint/a11y/noStaticElementInteractions: Biome v2 migration
-										<div
-											className={styles.inkGridCell}
-											key={key}
-											style={{ "--cell-color": "var(--color-bg-high)" }}
-											title={title}
-											onMouseEnter={() =>
-												handleHover({ ismAP: cell.ismAP, issAP: cell.issAP })
-											}
-										>
-											-
-										</div>
-									);
-								}
-
-								return (
-									// biome-ignore lint/a11y/noStaticElementInteractions: Biome v2 migration
-									<div
-										key={key}
-										className={styles.inkGridCell}
-										style={{ "--cell-color": cell.hex }}
-										title={title}
-										onMouseEnter={() =>
-											handleHover({ ismAP: cell.ismAP, issAP: cell.issAP })
-										}
-									>
-										{cell.shots}
-									</div>
-								);
-							}),
-						),
-					)}
+					<InkGridRows
+						values={values}
+						issHovered={issHovered}
+						onHover={handleHover}
+					/>
 				</div>
 			</div>
 		</div>
+	);
+}
+
+function InkGridRows({
+	values,
+	issHovered,
+	onHover,
+}: {
+	values: ReturnType<typeof calculateGrid>;
+	issHovered: number | undefined;
+	onHover: (aps: { ismAP: number; issAP: number }) => void;
+}) {
+	return values.map((row, i) =>
+		[
+			<div
+				className={clsx(
+					styles.inkGridAp,
+					issHovered === AP_VALUES_TO_SHOW[i] && styles.inkGridApFocused,
+				)}
+				key={i}
+			>
+				{AP_VALUES_TO_SHOW[i]}
+			</div>,
+		].concat(
+			row.map((cell, j) => {
+				const key = `${i}-${j}`;
+
+				if (cell === "N/A") {
+					return <div className={styles.inkGridCell} key={key} />;
+				}
+
+				const title = `${cell.shots ?? "-"} (ISM: ${cell.ismAP}, ISS: ${
+					cell.issAP
+				})`;
+
+				if (typeof cell.shots !== "number") {
+					return (
+						// biome-ignore lint/a11y/noStaticElementInteractions: Biome v2 migration
+						<div
+							className={styles.inkGridCell}
+							key={key}
+							style={{ "--cell-color": "var(--color-bg-high)" }}
+							title={title}
+							onMouseEnter={() =>
+								onHover({ ismAP: cell.ismAP, issAP: cell.issAP })
+							}
+						>
+							-
+						</div>
+					);
+				}
+
+				return (
+					// biome-ignore lint/a11y/noStaticElementInteractions: Biome v2 migration
+					<div
+						key={key}
+						className={styles.inkGridCell}
+						style={{ "--cell-color": cell.hex }}
+						title={title}
+						onMouseEnter={() =>
+							onHover({ ismAP: cell.ismAP, issAP: cell.issAP })
+						}
+					>
+						{cell.shots}
+					</div>
+				);
+			}),
+		),
 	);
 }
 

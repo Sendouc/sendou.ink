@@ -403,10 +403,12 @@ function BuildAnalyzerPage({ mainWeaponId }: { mainWeaponId: MainWeaponId }) {
 														return;
 													}
 
-													handleChange({
-														[focused === 1 || firstBuildIsEmpty
+													const buildKey =
+														focused === 1 || firstBuildIsEmpty
 															? "newBuild"
-															: "newBuild2"]: newBuild,
+															: "newBuild2";
+													handleChange({
+														[buildKey]: newBuild,
 														newFocused: firstBuildIsEmpty ? 1 : undefined,
 													});
 												}}
@@ -1646,10 +1648,7 @@ function StatCard({
 		);
 	};
 
-	const memoKey = isStaticValue ? stat : stat[2];
-	const modifiedBy = React.useMemo(() => {
-		return isStaticValue ? [] : [stat[0].modifiedBy].flat();
-	}, [memoKey]);
+	const modifiedBy = isStaticValue ? [] : [stat[0].modifiedBy].flat();
 
 	const stackableAbility = modifiedBy.find(isStackableAbility);
 	const highlight = (() => {

@@ -1,5 +1,6 @@
-import * as React from "react";
+import type * as React from "react";
 import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import { visibleViewportRect } from "~/utils/visual-viewport";
 import * as FloatingLayer from "./floating-layer";
 
@@ -38,8 +39,7 @@ export function useFloatingLayer({
 	getAnchor: () => Element | null;
 	placement?: FloatingPlacement;
 }) {
-	const getAnchorRef = React.useRef(getAnchor);
-	getAnchorRef.current = getAnchor;
+	const getAnchorRef = useLatestRef(getAnchor);
 
 	useIsomorphicLayoutEffect(() => {
 		const floating = floatingRef.current;

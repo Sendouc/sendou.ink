@@ -1,6 +1,6 @@
 import { addWeeks } from "date-fns";
 import type { RawPicoCAD2File } from "picocad2-web";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import type { Role } from "~/modules/permissions/types";
 import { compressToBase64, decompressFromBase64 } from "~/utils/compression";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -156,10 +156,10 @@ function cacheEntryChars(key: string, value: string | null) {
 
 export function useProgressiveRender(total: number, resetKey: string) {
 	const [count, setCount] = useState(1);
-	const prevKeyRef = useRef(resetKey);
+	const [prevKey, setPrevKey] = useState(resetKey);
 
-	if (prevKeyRef.current !== resetKey) {
-		prevKeyRef.current = resetKey;
+	if (prevKey !== resetKey) {
+		setPrevKey(resetKey);
 		setCount(1);
 	}
 

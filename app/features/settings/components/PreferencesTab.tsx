@@ -119,15 +119,13 @@ function PushNotificationsEnabler() {
 		if (permission !== "granted") return;
 
 		subscribeInFlight.current = true;
-		try {
-			setSubscribeFailed(false);
-			await subscribeToPush();
+		setSubscribeFailed(false);
+		const subscribed = await trySubscribeToPush();
+		subscribeInFlight.current = false;
+		if (subscribed) {
 			setHasSubscription(true);
-		} catch (err) {
-			logger.error("Failed to enable push notifications", err);
+		} else {
 			setSubscribeFailed(true);
-		} finally {
-			subscribeInFlight.current = false;
 		}
 	}
 
@@ -186,4 +184,14 @@ function PushNotificationsEnabler() {
 			</FormMessage>
 		</div>
 	);
+}
+
+async function trySubscribeToPush() {
+	try {
+		await subscribeToPush();
+		return true;
+	} catch (err) {
+		logger.error("Failed to enable push notifications", err);
+		return false;
+	}
 }
