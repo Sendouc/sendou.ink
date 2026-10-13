@@ -34,6 +34,3 @@ export const sqGroupChannel = (groupId: number) =>
 	`${CHANNEL_PREFIX.sqGroup}${groupId}`;
 
 export const USER_SKILLS_CACHE_KEY = "user-skills";
-
-/** Main container width (px) below which the 3-column layout switches to tabs */
-export const IS_Q_LOOKING_MOBILE_BREAKPOINT = 700;
