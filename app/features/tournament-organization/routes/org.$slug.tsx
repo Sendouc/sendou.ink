@@ -237,7 +237,7 @@ function InfoTabs() {
 
 	return (
 		<div>
-			<SendouTabs>
+			<SendouTabs keepPanelsMounted>
 				<SendouTabList>
 					<SendouTab id="socials" isDisabled={!hasSocials} icon={<LinkIcon />}>
 						{t("org:edit.form.socialLinks.title")}
@@ -408,7 +408,7 @@ function SeriesView({
 		<div className="stack md">
 			<SeriesHeader series={series} />
 			<div>
-				<SendouTabs>
+				<SendouTabs keepPanelsMounted>
 					<SendouTabList>
 						<SendouTab id="events" number={series.eventsCount}>
 							{t("org:events.tabs.events")}

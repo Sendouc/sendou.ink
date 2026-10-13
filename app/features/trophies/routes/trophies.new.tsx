@@ -93,7 +93,7 @@ export default function NewTrophyPage() {
 
 	return (
 		<Main halfWidth>
-			<SendouTabs>
+			<SendouTabs keepPanelsMounted>
 				<SendouTabList>
 					<SendouTab id="upload">{t("trophies:new.tabs.upload")}</SendouTab>
 					<SendouTab

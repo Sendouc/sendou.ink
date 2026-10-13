@@ -87,7 +87,9 @@ class PendingTrophyList {
 	}
 
 	row(trophyName: string) {
+		// the other list stays mounted in a hidden tab panel
 		return this.page
+			.getByRole("tabpanel")
 			.getByTestId("pending-trophy")
 			.filter({ hasText: trophyName });
 	}
