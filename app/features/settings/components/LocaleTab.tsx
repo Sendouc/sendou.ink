@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Link, useMatches } from "react-router";
+import { Link, useLoaderData, useMatches } from "react-router";
 import { useUser } from "~/features/auth/core/user";
 import { SelectFormField } from "~/form/fields/SelectFormField";
 import { SendouForm } from "~/form/SendouForm";
@@ -12,10 +12,11 @@ import {
 import { languageSearchParams } from "~/modules/i18n/i18n-search-params";
 import { useSearchParam } from "~/modules/search-params/hooks";
 import type { RootLoaderData } from "~/root";
-import { TRANSLATE_PAGE } from "~/utils/urls";
+import { TRANSLATE_PAGE, translatePage } from "~/utils/urls";
+import type { loader } from "../loaders/settings.server";
 import { clockFormatSchema } from "../settings-schemas";
+import styles from "./LocaleTab.module.css";
 
-// xxx: better prompt here (why not progress bar?)
 export function LocaleTab() {
 	const user = useUser();
 
@@ -41,7 +42,7 @@ export function LocaleTab() {
 }
 
 function LanguageSelector() {
-	const { t, i18n } = useTranslation(["common"]);
+	const { t, i18n } = useTranslation(["common", "settings"]);
 	const [, setLng] = useSearchParam(languageSearchParams, "lng");
 
 	const languageItems = languages.map((lang) => ({
@@ -62,8 +63,40 @@ function LanguageSelector() {
 				value={i18n.language as LanguageCode}
 				onChange={handleLanguageChange}
 			/>
-			<Link to={TRANSLATE_PAGE} className="text-xs">
-				Help translate sendou.ink
+			<TranslationProgress language={i18n.language} />
+		</div>
+	);
+}
+
+function TranslationProgress({ language }: { language: string }) {
+	const { t } = useTranslation(["settings"]);
+	const data = useLoaderData<typeof loader>();
+
+	const progress = data.translationProgress.find(
+		(languageProgress) => languageProgress.language === language,
+	);
+
+	if (!progress) {
+		return (
+			<Link to={TRANSLATE_PAGE} className="text-xs font-semi-bold">
+				{t("settings:locale.helpTranslate")}
+			</Link>
+		);
+	}
+
+	const percentage =
+		progress.total === 0
+			? 100
+			: Math.floor((progress.translated / progress.total) * 100);
+
+	return (
+		<div className={styles.translationProgress}>
+			<progress value={progress.translated} max={progress.total} />
+			<span className="text-lighter">
+				{t("settings:locale.translatedPercentage", { percentage })}
+			</span>
+			<Link to={translatePage(language)} className="font-semi-bold">
+				{t("settings:locale.helpTranslate")}
 			</Link>
 		</div>
 	);
