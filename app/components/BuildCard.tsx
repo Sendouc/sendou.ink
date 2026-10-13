@@ -67,10 +67,8 @@ export interface BuildCardProps {
 		modes: ModeShort[] | null;
 		weapons: Array<BuildWeaponWithTop500Info>;
 	};
-	owner?: Pick<UserWithPlusTier, "discordId" | "username" | "plusTier"> &
-		Partial<
-			Pick<BuildGraphicOwner, "customUrl" | "discordAvatar" | "customAvatarUrl">
-		>;
+	owner?: Pick<UserWithPlusTier, "id" | "username" | "plusTier"> &
+		Partial<Pick<BuildGraphicOwner, "customUrl" | "avatar">>;
 	/** false when the page already shows the owner (e.g. their own builds page) */
 	showOwner?: boolean;
 	/** Shown at the end of the owner row */
@@ -176,11 +174,7 @@ export function BuildCard({
 							<div className={styles.owner}>
 								<Link to={userBuildsPage(owner)} className={styles.ownerLink}>
 									<Avatar
-										user={{
-											discordId: owner.discordId,
-											discordAvatar: owner.discordAvatar ?? null,
-											customAvatarUrl: owner.customAvatarUrl,
-										}}
+										user={{ id: owner.id, avatar: owner.avatar ?? null }}
 										size="xxxs"
 									/>
 									<span className="truncate">{owner.username}</span>

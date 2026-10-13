@@ -17,7 +17,6 @@ describe("UserRepository", () => {
 		await UserRepository.upsert({
 			discordId: "1",
 			discordName: "TestUser",
-			discordAvatar: null,
 		});
 
 		const user = await UserRepository.findModInfoById(1);
@@ -30,7 +29,6 @@ describe("UserRepository", () => {
 		const { id } = await UserRepository.upsert({
 			discordId: "1",
 			discordName: "TestUser",
-			discordAvatar: null,
 		});
 
 		const user = await UserRepository.findLayoutDataById(id);
@@ -40,7 +38,6 @@ describe("UserRepository", () => {
 		await UserRepository.upsert({
 			discordId: "1",
 			discordName: "UpdatedUser",
-			discordAvatar: null,
 		});
 
 		const updatedUser = await UserRepository.findLayoutDataById(id);
@@ -51,7 +48,6 @@ describe("UserRepository", () => {
 		await UserRepository.upsert({
 			discordId: "1",
 			discordName: "TestUser",
-			discordAvatar: null,
 		});
 
 		const user = await UserRepository.findModInfoById(1);
@@ -60,7 +56,6 @@ describe("UserRepository", () => {
 		await UserRepository.upsert({
 			discordId: "1",
 			discordName: "UpdatedUser",
-			discordAvatar: null,
 		});
 
 		const updatedUser = await UserRepository.findModInfoById(1);
@@ -71,7 +66,6 @@ describe("UserRepository", () => {
 		const { id } = await UserRepository.upsert({
 			discordId: "1",
 			discordName: "TestUser",
-			discordAvatar: null,
 		});
 
 		const result = await UserRepository.findJoinOrderByUserId(id);
@@ -83,13 +77,11 @@ describe("UserRepository", () => {
 		const { id: firstId } = await UserRepository.upsert({
 			discordId: "1",
 			discordName: "FirstUser",
-			discordAvatar: null,
 		});
 
 		const { id: secondId } = await UserRepository.upsert({
 			discordId: "2",
 			discordName: "SecondUser",
-			discordAvatar: null,
 		});
 
 		expect(
@@ -102,7 +94,6 @@ describe("UserRepository", () => {
 		await UserRepository.upsert({
 			discordId: "1",
 			discordName: "UpdatedFirstUser",
-			discordAvatar: null,
 		});
 
 		expect(

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import type * as React from "react";
 import { Link } from "react-router";
-import type { Tables } from "~/db/tables";
+import type { CommonUser } from "~/utils/kysely.server";
 import { Avatar } from "./Avatar";
 import styles from "./ListItem.module.css";
 
@@ -23,9 +23,7 @@ export function ListLink({
 	icon?: React.ReactNode;
 	imageUrl?: string;
 	overlayIconUrl?: string;
-	user?: Pick<Tables["User"], "discordId" | "discordAvatar"> & {
-		customAvatarUrl?: string | null;
-	};
+	user?: Pick<CommonUser, "id" | "avatar">;
 	subtitle?: React.ReactNode;
 	badge?: React.ReactNode;
 	badgeVariant?: "default" | "warning";
@@ -62,9 +60,7 @@ export function ListButton({
 	...rest
 }: {
 	children: React.ReactNode;
-	user?: Pick<Tables["User"], "discordId" | "discordAvatar"> & {
-		customAvatarUrl?: string | null;
-	};
+	user?: Pick<CommonUser, "id" | "avatar">;
 	subtitle?: string | null;
 	badge?: string | null;
 	badgeVariant?: "default" | "warning";
@@ -147,9 +143,7 @@ function ListItemContent({
 	children: React.ReactNode;
 	/** Custom leading visual, takes precedence over `user` and `imageUrl` */
 	icon?: React.ReactNode;
-	user?: Pick<Tables["User"], "discordId" | "discordAvatar"> & {
-		customAvatarUrl?: string | null;
-	};
+	user?: Pick<CommonUser, "id" | "avatar">;
 	imageUrl?: string;
 	overlayIconUrl?: string;
 	subtitle?: React.ReactNode;
