@@ -16,12 +16,13 @@ function Menu({ onThird }: { onThird?: () => void }) {
 	);
 }
 
-/** Opens the menu and waits for the focus it takes on the next frame. */
+/** Opens the menu and waits for it to show and take focus on the next frame. */
 async function openMenu(screen: Awaited<ReturnType<typeof render>>) {
 	await screen.getByRole("button", { name: "Open" }).click();
-	const menu = await screen.getByRole("menu").element();
+	const menu = screen.getByRole("menu");
+	await expect.element(menu).toBeVisible();
 	await vi.waitFor(() =>
-		expect(document.activeElement?.contains(menu)).toBe(true),
+		expect(document.activeElement?.contains(menu.element())).toBe(true),
 	);
 }
 
