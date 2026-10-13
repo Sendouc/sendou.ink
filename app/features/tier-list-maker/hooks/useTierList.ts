@@ -159,42 +159,13 @@ export function useTierList() {
 			return;
 		}
 
-		const newTierItems = new Map(tiers.tierItems);
-		const activeItems = activeContainer
-			? newTierItems.get(activeContainer) || []
-			: [];
-		const overItems = newTierItems.get(overContainer) || [];
-
-		const overIndex = overItem
-			? overItems.findIndex(
-					(item) =>
-						item.id === overItem.id &&
-						item.type === overItem.type &&
-						item.nth === overItem.nth,
-				)
-			: overItems.length;
-
-		if (activeContainer) {
-			newTierItems.set(
-				activeContainer,
-				activeItems.filter(
-					(item) =>
-						!(
-							item.id === draggedItem.id &&
-							item.type === draggedItem.type &&
-							item.nth === draggedItem.nth
-						),
-				),
-			);
-		}
-
-		const newOverItems = [...overItems];
-		newOverItems.splice(
-			overIndex === -1 ? newOverItems.length : overIndex,
-			0,
+		const newTierItems = moveItemBetweenContainers({
+			tierItems: tiers.tierItems,
 			draggedItem,
-		);
-		newTierItems.set(overContainer, newOverItems);
+			activeContainer,
+			overContainer,
+			overItem,
+		});
 
 		setTiers({
 			...tiers,
@@ -507,4 +478,57 @@ function useSearchParamTiersState() {
 		setTiers,
 		persistTiersStateToParams: setStateParam,
 	};
+}
+
+function moveItemBetweenContainers({
+	tierItems,
+	draggedItem,
+	activeContainer,
+	overContainer,
+	overItem,
+}: {
+	tierItems: Map<string, TierListItem[]>;
+	draggedItem: TierListItem;
+	activeContainer: string | null;
+	overContainer: string;
+	overItem: TierListItem | null;
+}) {
+	const newTierItems = new Map(tierItems);
+	const activeItems = activeContainer
+		? newTierItems.get(activeContainer) || []
+		: [];
+	const overItems = newTierItems.get(overContainer) || [];
+
+	const overIndex = overItem
+		? overItems.findIndex(
+				(item) =>
+					item.id === overItem.id &&
+					item.type === overItem.type &&
+					item.nth === overItem.nth,
+			)
+		: overItems.length;
+
+	if (activeContainer) {
+		newTierItems.set(
+			activeContainer,
+			activeItems.filter(
+				(item) =>
+					!(
+						item.id === draggedItem.id &&
+						item.type === draggedItem.type &&
+						item.nth === draggedItem.nth
+					),
+			),
+		);
+	}
+
+	const newOverItems = [...overItems];
+	newOverItems.splice(
+		overIndex === -1 ? newOverItems.length : overIndex,
+		0,
+		draggedItem,
+	);
+	newTierItems.set(overContainer, newOverItems);
+
+	return newTierItems;
 }

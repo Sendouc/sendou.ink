@@ -107,8 +107,7 @@ function ResultsTable({ standings }: { standings: ResultsStanding[] }) {
 	const { t } = useTranslation(["tournament"]);
 	const tournament = useTournament();
 
-	let lastRenderedPlacement = 0;
-	let rowDarkerBg = false;
+	const darkerBgByRow = alternatingPlacementGroups(standings);
 
 	return (
 		<Table noRowHover>
@@ -141,14 +140,10 @@ function ResultsTable({ standings }: { standings: ResultsStanding[] }) {
 			<tbody>
 				{standings.map((standing, i) => {
 					const placement =
-						lastRenderedPlacement === standing.placement
+						standing.placement === standings[i - 1]?.placement
 							? null
 							: standing.placement;
-					lastRenderedPlacement = standing.placement;
-
-					if (standing.placement !== standings[i - 1]?.placement) {
-						rowDarkerBg = !rowDarkerBg;
-					}
+					const rowDarkerBg = darkerBgByRow[i];
 
 					const teamLogoSrc = standing.team.logoUrl;
 
@@ -264,4 +259,16 @@ function MatchResultSquare({
 			{children}
 		</Link>
 	);
+}
+
+function alternatingPlacementGroups(standings: ResultsStanding[]) {
+	const result: boolean[] = [];
+	let darker = false;
+	for (const [i, standing] of standings.entries()) {
+		if (standing.placement !== standings[i - 1]?.placement) {
+			darker = !darker;
+		}
+		result.push(darker);
+	}
+	return result;
 }

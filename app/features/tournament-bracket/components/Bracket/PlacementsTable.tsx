@@ -146,8 +146,22 @@ function StandingsTable({
 	canEditDestination: boolean;
 	allMatchesFinished: boolean;
 }) {
-	let qualifiedRowRendered = false;
-	let eliminatedRowRendered = false;
+	const advanceThreshold = bracket.settings?.advanceThreshold;
+	const qualifiedDividerIdx = advanceThreshold
+		? standings.findIndex((s) => s.stats && s.stats.setWins < advanceThreshold)
+		: -1;
+	const eliminatedDividerIdx = advanceThreshold
+		? standings.findIndex(
+				(s) =>
+					s.stats &&
+					Swiss.calculateTeamStatus({
+						advanceThreshold,
+						losses: s.stats.setLosses,
+						wins: s.stats.setWins,
+						roundCount: bracket.swissRoundCount,
+					}) === "eliminated",
+			)
+		: -1;
 
 	return (
 		<table
@@ -226,24 +240,8 @@ function StandingsTable({
 						return `${s.team.id}-${overridenDestinationBracket?.idx}`;
 					};
 
-					const renderQualifiedRow =
-						!qualifiedRowRendered &&
-						bracket.settings?.advanceThreshold &&
-						s.stats &&
-						s.stats.setWins < bracket.settings.advanceThreshold;
-					const renderEliminatedRow =
-						!eliminatedRowRendered &&
-						bracket.settings?.advanceThreshold &&
-						s.stats &&
-						Swiss.calculateTeamStatus({
-							advanceThreshold: bracket.settings.advanceThreshold,
-							losses: s.stats.setLosses,
-							wins: s.stats.setWins,
-							roundCount: bracket.swissRoundCount,
-						}) === "eliminated";
-
-					if (renderQualifiedRow) qualifiedRowRendered = true;
-					if (renderEliminatedRow) eliminatedRowRendered = true;
+					const renderQualifiedRow = i === qualifiedDividerIdx;
+					const renderEliminatedRow = i === eliminatedDividerIdx;
 
 					return (
 						<React.Fragment key={s.team.id}>
@@ -329,7 +327,7 @@ function StandingsTable({
 									droppedOut={Boolean(s.team.droppedOut)}
 								/>
 							</tr>
-							{!eliminatedRowRendered &&
+							{eliminatedDividerIdx === -1 &&
 							i === standings.length - 1 &&
 							bracket.settings?.advanceThreshold ? (
 								<SwissDividerRow

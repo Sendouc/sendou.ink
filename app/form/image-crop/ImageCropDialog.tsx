@@ -94,11 +94,7 @@ export function ImageCropDialog({
 
 	const handleApply = async () => {
 		setIsApplying(true);
-		try {
-			await onApply(crop);
-		} finally {
-			setIsApplying(false);
-		}
+		await onApply(crop).finally(() => setIsApplying(false));
 	};
 
 	const orientedImage = ImageCrop.orientedSize(imageSize, crop.rotation);

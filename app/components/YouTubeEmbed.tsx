@@ -64,18 +64,20 @@ export function YouTubeEmbed({
 	useEffect(() => {
 		if (!enableApi || !isApiReady || !containerRef.current) return;
 
+		const playerVars = {
+			autoplay: autoplay ? 1 : 0,
+			controls: 1,
+			rel: 0,
+			modestbranding: 1,
+			start: start ?? 0,
+		};
+
 		try {
 			const player = new window.YT.Player(containerRef.current, {
 				height: "281",
 				width: "500",
 				videoId: id,
-				playerVars: {
-					autoplay: autoplay ? 1 : 0,
-					controls: 1,
-					rel: 0,
-					modestbranding: 1,
-					start: start ?? 0,
-				},
+				playerVars,
 				events: {
 					onReady: () => {
 						playerRef.current = player;

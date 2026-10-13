@@ -15,7 +15,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Search as SearchIcon, Trash } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { flushSync } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Link, useFetcher, useLoaderData } from "react-router";
@@ -71,13 +71,11 @@ export default function EditWidgetsPage() {
 	const [expandedWidgetId, setExpandedWidgetId] = useState<string | null>(null);
 	const [emptySaveAttempted, setEmptySaveAttempted] = useState(false);
 
-	const hasUnsavedChangesRef = useRef<
-		Parameters<typeof useUnsavedChangesChecker>[0]["current"]
-	>(() => false);
-	hasUnsavedChangesRef.current = () =>
-		fetcher.state === "idle" &&
-		!R.isDeepEqual(selectedWidgets, data.currentWidgets);
-	useUnsavedChangesChecker(hasUnsavedChangesRef);
+	useUnsavedChangesChecker(
+		() =>
+			fetcher.state === "idle" &&
+			!R.isDeepEqual(selectedWidgets, data.currentWidgets),
+	);
 
 	const mainWidgets = selectedWidgets.filter((w) => {
 		const def = findWidgetById(w.id);

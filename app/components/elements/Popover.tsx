@@ -3,6 +3,7 @@ import * as React from "react";
 import { flushSync } from "react-dom";
 import { useHydrated } from "~/hooks/useHydrated";
 import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import styles from "./Popover.module.css";
 import { type FloatingPlacement, useFloatingLayer } from "./useFloatingLayer";
 import { useScrollIntoView } from "./useScrollIntoView";
@@ -47,8 +48,7 @@ export function useShowPopoverOnOpen({
 	onOpen: () => void;
 }) {
 	const showingRef = React.useRef(false);
-	const onOpenRef = React.useRef(onOpen);
-	onOpenRef.current = onOpen;
+	const onOpenRef = useLatestRef(onOpen);
 
 	useIsomorphicLayoutEffect(() => {
 		const popover = popoverRef.current;

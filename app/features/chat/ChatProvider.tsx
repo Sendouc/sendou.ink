@@ -7,6 +7,7 @@ import {
 } from "~/features/events/events-hooks";
 import { chatRoomChannel } from "~/features/events/events-types";
 import { useHydrated } from "~/hooks/useHydrated";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import { type LayoutSize, useLayoutSize } from "~/hooks/useLayoutSize";
 import { useSearchParam } from "~/modules/search-params/hooks";
 import type { LoggedInUser } from "~/root";
@@ -331,8 +332,7 @@ function useOpenChatFromSearchParam({
 	openChat: (roomIds: number[], selectedRoomId: number) => void;
 }) {
 	const [chatRoomId, setChatRoomId] = useSearchParam(chatSearchParams, "chat");
-	const openChatRef = React.useRef(openChat);
-	openChatRef.current = openChat;
+	const openChatRef = useLatestRef(openChat);
 
 	// declared after the route sync so the room opened here is not replaced by the route's own
 	React.useEffect(() => {
@@ -382,8 +382,7 @@ function useChatRouteSync({
 	// keys rather than the arrays themselves: a route revalidation hands over
 	// equal-but-new loader data that must not re-run the effects
 	const routeRoomIdsKey = routeRooms.map((room) => room.room.id).join(",");
-	const latestRouteRoomsRef = React.useRef(routeRooms);
-	latestRouteRoomsRef.current = routeRooms;
+	const routeRoomsRef = useLatestRef(routeRooms);
 	const { pathname } = useLocation();
 	const previousRouteRoomIdsKeyRef = React.useRef<string | null>(null);
 	const previousPathnameRef = React.useRef<string | null>(null);
@@ -435,7 +434,7 @@ function useChatRouteSync({
 
 			// the loader can know about a just-created room of the user's own before
 			// the room list does: refetched so it gets listed rather than merely observed
-			const unlistedOwnRoom = latestRouteRoomsRef.current.find(
+			const unlistedOwnRoom = routeRoomsRef.current.find(
 				(entry) =>
 					entry.room.participantUserIds.includes(userId) &&
 					!rooms.some((room) => room.id === entry.room.id),
@@ -451,7 +450,7 @@ function useChatRouteSync({
 			setActiveRoomIds(autoOpenRoomIds);
 			// a room opening on arrival brings its history along; one that did not
 			// (an older loader response) is fetched
-			for (const entry of latestRouteRoomsRef.current) {
+			for (const entry of routeRoomsRef.current) {
 				if (entry.autoOpen && entry.messages === null) {
 					chatClient.ensureMessagesLoaded(entry.room.id);
 				}

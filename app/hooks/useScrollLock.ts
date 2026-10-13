@@ -16,26 +16,30 @@ export function useScrollLockWhileOpen(
 		const element = ref.current;
 		if (!element) return;
 
-		let release: (() => void) | undefined;
-		const syncLock = (isOpen: boolean) => {
-			if (isOpen) {
-				release ??= lockScroll();
-			} else {
-				release?.();
-				release = undefined;
-			}
-		};
-		const onToggle = (event: Event) => {
-			syncLock((event as ToggleEvent).newState === "open");
-		};
-
-		element.addEventListener("toggle", onToggle);
-		syncLock(isElementOpen(element));
-		return () => {
-			element.removeEventListener("toggle", onToggle);
-			syncLock(false);
-		};
+		return lockScrollWhileOpen(element);
 	}, [ref]);
+}
+
+function lockScrollWhileOpen(element: HTMLElement) {
+	let release: (() => void) | undefined;
+	const syncLock = (isOpen: boolean) => {
+		if (isOpen) {
+			release ??= lockScroll();
+		} else {
+			release?.();
+			release = undefined;
+		}
+	};
+	const onToggle = (event: Event) => {
+		syncLock((event as ToggleEvent).newState === "open");
+	};
+
+	element.addEventListener("toggle", onToggle);
+	syncLock(isElementOpen(element));
+	return () => {
+		element.removeEventListener("toggle", onToggle);
+		syncLock(false);
+	};
 }
 
 function isElementOpen(element: HTMLElement) {

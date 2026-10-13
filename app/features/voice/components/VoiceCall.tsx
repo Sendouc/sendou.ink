@@ -13,6 +13,7 @@ import {
 	useParticipantIds,
 } from "@daily-co/daily-react";
 import * as React from "react";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import { logger } from "~/utils/logger";
 import { type VoiceCallParticipant, voiceClient } from "../voice-client";
 import { VOICE_TELEMETRY_INTERVAL_MS } from "../voice-constants";
@@ -259,8 +260,7 @@ function ParticipantAudio({
 
 function Telemetry() {
 	const { networkState } = useNetwork();
-	const networkStateRef = React.useRef(networkState);
-	networkStateRef.current = networkState;
+	const networkStateRef = useLatestRef(networkState);
 
 	React.useEffect(() => {
 		const totals = { lowQualitySeconds: 0, talkSeconds: 0 };

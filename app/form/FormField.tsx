@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import type {
 	MainWeaponId,
 	SpecialWeaponId,
@@ -113,42 +114,8 @@ export function FormField({
 	const context = useOptionalFormFieldContext();
 	const isDisabled = disabled ?? context?.readOnly ?? false;
 
-	const fieldSchema = React.useMemo(() => {
-		if (field) return field;
-		if (!context?.schema) {
-			throw new Error(
-				"FormField requires either a 'field' prop or to be used within a FormProvider",
-			);
-		}
-
-		const objectSchema = context.schema;
-		const result = name.includes(".")
-			? getNestedSchema(objectSchema, name)
-			: objectSchema.entries[name];
-
-		if (!result) {
-			throw new Error(
-				`Field schema not found for name: ${name}. Does the schema have a corresponding key?`,
-			);
-		}
-		return result;
-	}, [field, context?.schema, name]);
-
-	const formField = React.useMemo(() => {
-		const result = formRegistry.get(fieldSchema) as FormFieldType | undefined;
-
-		if (!result) {
-			throw new Error(`Form field metadata not found for name: ${name}`);
-		}
-
-		return {
-			...result,
-			...(label ? { label } : {}),
-			...(typeof required === "boolean" && "required" in result
-				? { required }
-				: {}),
-		} as FormFieldType;
-	}, [fieldSchema, name, label, required]);
+	const fieldSchema = resolveFieldSchema(field, context?.schema, name);
+	const formField = resolveFormField(fieldSchema, name, label, required);
 
 	const isNestedPath = name.includes(".") || name.includes("[");
 	const store = context?.store ?? EMPTY_FORM_STORE;
@@ -191,8 +158,7 @@ export function FormField({
 	};
 
 	// a ref so an inline `onValueChange` doesn't destabilize `handleChange`, which fields rely on to skip re-renders
-	const latestOnValueChange = React.useRef(onValueChange);
-	latestOnValueChange.current = onValueChange;
+	const onValueChangeRef = useLatestRef(onValueChange);
 
 	const handleChange = React.useCallback(
 		(newValue: unknown) => {
@@ -207,9 +173,9 @@ export function FormField({
 				context.revalidateAll(context.store.values);
 			}
 			context.onFieldChange?.(name, newValue);
-			latestOnValueChange.current?.(newValue);
+			onValueChangeRef.current?.(newValue);
 		},
-		[context, name],
+		[context, name, onValueChangeRef],
 	);
 
 	const displayedError = serverError ?? clientError;
@@ -453,15 +419,14 @@ export function FormField({
 			throw new Error("Custom form field requires children render function");
 		}
 		return (
-			<>
-				{(children as (props: CustomFieldRenderProps) => React.ReactNode)({
-					name,
-					error: displayedError,
-					value,
-					onChange: handleChange,
-					disabled: isDisabled,
-				})}
-			</>
+			<CustomField
+				render={children as (props: CustomFieldRenderProps) => React.ReactNode}
+				name={name}
+				error={displayedError}
+				value={value}
+				onChange={handleChange}
+				disabled={isDisabled}
+			/>
 		);
 	}
 
@@ -737,4 +702,60 @@ function isArrayAppend(
 	const isNestedPath = name.includes(".") || name.includes("[");
 	const prevValue = isNestedPath ? getNestedValue(values, name) : values[name];
 	return Array.isArray(prevValue) && newValue.length > prevValue.length;
+}
+
+function CustomField({
+	render,
+	...props
+}: CustomFieldRenderProps & {
+	render: (props: CustomFieldRenderProps) => React.ReactNode;
+}) {
+	return render(props);
+}
+
+function resolveFieldSchema(
+	field: FormFieldProps["field"],
+	schema:
+		| NonNullable<ReturnType<typeof useOptionalFormFieldContext>>["schema"]
+		| undefined,
+	name: string,
+) {
+	if (field) return field;
+	if (!schema) {
+		throw new Error(
+			"FormField requires either a 'field' prop or to be used within a FormProvider",
+		);
+	}
+
+	const result = name.includes(".")
+		? getNestedSchema(schema, name)
+		: schema.entries[name];
+
+	if (!result) {
+		throw new Error(
+			`Field schema not found for name: ${name}. Does the schema have a corresponding key?`,
+		);
+	}
+	return result;
+}
+
+function resolveFormField(
+	fieldSchema: AnySyncSchema,
+	name: string,
+	label: FormFieldProps["label"],
+	required: FormFieldProps["required"],
+) {
+	const result = formRegistry.get(fieldSchema) as FormFieldType | undefined;
+
+	if (!result) {
+		throw new Error(`Form field metadata not found for name: ${name}`);
+	}
+
+	return {
+		...result,
+		...(label ? { label } : {}),
+		...(typeof required === "boolean" && "required" in result
+			? { required }
+			: {}),
+	} as FormFieldType;
 }

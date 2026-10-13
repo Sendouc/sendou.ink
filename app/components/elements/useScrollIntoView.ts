@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import { isScrollLocked } from "~/modules/scroll-lock/scroll-lock";
 import { keyboardIsOpen } from "~/utils/visual-viewport";
 import { floatingBounds } from "./useFloatingLayer";
@@ -10,8 +11,7 @@ export function useScrollIntoView(
 	isOpen: boolean,
 	getAnchor: () => Element | null,
 ) {
-	const getAnchorRef = React.useRef(getAnchor);
-	getAnchorRef.current = getAnchor;
+	const getAnchorRef = useLatestRef(getAnchor);
 
 	React.useEffect(() => {
 		const viewport = window.visualViewport;

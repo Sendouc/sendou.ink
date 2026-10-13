@@ -2,6 +2,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { browser } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import { useVirtualizer } from "~/modules/virtualizer/react";
 import { SendouButton } from "../../../components/elements/Button";
 import { useChatAutoScroll } from "../chat-hooks";
@@ -112,9 +113,8 @@ export function MessageLog({
 		estimatedSize: ESTIMATED_MESSAGE_HEIGHT,
 	});
 
-	const messagesRef = React.useRef(messages);
-	messagesRef.current = messages;
-	React.useImperativeHandle(jumpToMessageRef, () => (messageId: number) => {
+	const messagesRef = useLatestRef(messages);
+	const jumpToMessage = (messageId: number) => {
 		const indexOfMessage = () =>
 			messagesRef.current.findIndex((msg) => msg.id === messageId);
 		if (indexOfMessage() === -1) return;
@@ -127,7 +127,9 @@ export function MessageLog({
 			return virtualizer.startOf(index) - container.clientHeight / 3;
 		});
 		setFlashingMessageId(messageId);
-	});
+	};
+
+	React.useImperativeHandle(jumpToMessageRef, () => jumpToMessage);
 
 	return (
 		<>

@@ -27,7 +27,12 @@ export function OrganizerMatchMapListDialog({
 		(map) => map.bannedByTournamentTeamId,
 	);
 
-	let number = 0;
+	const playableSlots = nullFilledArray(
+		Math.max(data.mapList?.length ?? 0, data.match.roundMaps?.count ?? 0),
+	)
+		.map((_, i) => ({ key: i, map: data.mapList?.[i] }))
+		.filter(({ map }) => !map?.bannedByTournamentTeamId);
+
 	return (
 		<>
 			<SendouDialog
@@ -37,21 +42,12 @@ export function OrganizerMatchMapListDialog({
 				className="w-max"
 			>
 				<div className="mt-2">
-					{nullFilledArray(
-						Math.max(
-							data.mapList?.length ?? 0,
-							data.match.roundMaps?.count ?? 0,
-						),
-					).map((_, i) => {
-						const map = data.mapList?.[i];
-
-						if (map?.bannedByTournamentTeamId) return null;
-
-						number++;
+					{playableSlots.map(({ key, map }, slotIndex) => {
+						const number = slotIndex + 1;
 
 						if (!map)
 							return (
-								<div key={i}>
+								<div key={key}>
 									{number}){" "}
 									<span className="text-lighter text-xs italic">
 										Counterpick
@@ -60,7 +56,7 @@ export function OrganizerMatchMapListDialog({
 							);
 
 						return (
-							<div key={i}>
+							<div key={key}>
 								{number}) {t(`game-misc:MODE_LONG_${map.mode}`)} on{" "}
 								{t(`game-misc:STAGE_${map.stageId}`)}{" "}
 								<span className="text-lighter text-xs italic ml-1">

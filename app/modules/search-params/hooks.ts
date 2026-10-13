@@ -1,5 +1,7 @@
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router";
+import { useIsomorphicLayoutEffect } from "~/hooks/useIsomorphicLayoutEffect";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import type {
 	ParamDef,
 	SearchParamsDefinition,
@@ -100,7 +102,9 @@ function useDecodedValues<Shape extends AnyShape>(
 		},
 		() => SearchParams.pickRelevantSearch(keys, initialSearch),
 	);
-	lastSearchRef.current = relevantSearch;
+	useIsomorphicLayoutEffect(() => {
+		lastSearchRef.current = relevantSearch;
+	});
 
 	return React.useMemo(
 		() => definition.parse(new URLSearchParams(relevantSearch)),
@@ -112,8 +116,7 @@ function useSetSearchParams<Shape extends AnyShape>(
 	definition: SearchParamsDefinition<Shape>,
 ): SetSearchParams<Shape> {
 	const navigate = useNavigate();
-	const navigateRef = React.useRef(navigate);
-	navigateRef.current = navigate;
+	const navigateRef = useLatestRef(navigate);
 
 	return React.useCallback(
 		(updates, opts) => {
@@ -141,7 +144,7 @@ function useSetSearchParams<Shape extends AnyShape>(
 				Store.notify();
 			}
 		},
-		[definition],
+		[definition, navigateRef],
 	);
 }
 

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { type Location, useBlocker } from "react-router";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
+import { useLatestRef } from "~/hooks/useLatestRef";
 
 /** In-app navigations pass the locations so same-route ones can be ignored; a page unload passes nothing. */
 export type UnsavedChangesChecker = (navigation?: {
@@ -60,16 +61,16 @@ export function UnsavedChangesGuard() {
 	);
 }
 
-/** Registers a dirty checker; the ref lets it read the latest state without re-registering every render. */
-export function useUnsavedChangesChecker(
-	checkerRef: React.RefObject<UnsavedChangesChecker>,
-) {
+/** Registers a dirty checker, always calling its latest version without re-registering every render. */
+export function useUnsavedChangesChecker(checker: UnsavedChangesChecker) {
+	const checkerRef = useLatestRef(checker);
+
 	React.useEffect(() => {
-		const checker: UnsavedChangesChecker = (navigation) =>
+		const latestChecker: UnsavedChangesChecker = (navigation) =>
 			checkerRef.current(navigation);
-		dirtyCheckers.add(checker);
+		dirtyCheckers.add(latestChecker);
 		return () => {
-			dirtyCheckers.delete(checker);
+			dirtyCheckers.delete(latestChecker);
 		};
 	}, [checkerRef]);
 }

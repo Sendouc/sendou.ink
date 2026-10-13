@@ -15,24 +15,28 @@ export function useBackgroundResource<T>(url: string) {
 		const requestId = ++latestRequestRef.current;
 		inFlightRef.current = true;
 
-		try {
-			const response = await fetch(url);
-			if (!response.ok) return;
+		const result = await fetchJson(url);
+		// a newer refresh already started, its response is the fresher one
+		if (requestId !== latestRequestRef.current) return;
 
-			const json = (await response.json()) as T;
-			// a newer refresh already started, its response is the fresher one
-			if (requestId !== latestRequestRef.current) return;
-
-			setData(json);
-		} catch {
-			// a background refresh failing just leaves the last data in place
-		} finally {
-			if (requestId === latestRequestRef.current) inFlightRef.current = false;
-		}
+		inFlightRef.current = false;
+		// a background refresh failing just leaves the last data in place
+		if (result) setData(result.json as T);
 	}, [url]);
 
 	// stable for the same reason
 	const isLoading = React.useCallback(() => inFlightRef.current, []);
 
 	return { data, isLoading, refresh };
+}
+
+async function fetchJson(url: string): Promise<{ json: unknown } | null> {
+	try {
+		const response = await fetch(url);
+		if (!response.ok) return null;
+
+		return { json: await response.json() };
+	} catch {
+		return null;
+	}
 }

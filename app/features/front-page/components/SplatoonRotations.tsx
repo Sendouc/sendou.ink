@@ -135,9 +135,9 @@ function useNowUnix(initialNow: number) {
 	const now = useAutoRerender("minute", {
 		alignTo: databaseTimestampToDate(initialNow),
 	});
-	const firstNowRef = React.useRef(now);
+	const [firstNow] = React.useState(now);
 
-	if (now === firstNowRef.current) return initialNow;
+	if (now === firstNow) return initialNow;
 
 	return dateToDatabaseTimestamp(now);
 }

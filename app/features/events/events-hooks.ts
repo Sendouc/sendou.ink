@@ -4,6 +4,7 @@ import {
 	eventsClient,
 } from "~/features/events/events-client";
 import type { ServerEvent } from "~/features/events/events-types";
+import { useLatestRef } from "~/hooks/useLatestRef";
 
 // how long the page must have been away for coming back to it to be worth a catch-up
 const CATCH_UP_AWAY_MS = 20 * 1000;
@@ -77,8 +78,7 @@ export function useEventStreamCatchUp({
 	heldSince?: number;
 }) {
 	const connected = useEventsConnected();
-	const latestOnCatchUp = React.useRef(onCatchUp);
-	latestOnCatchUp.current = onCatchUp;
+	const onCatchUpRef = useLatestRef(onCatchUp);
 	const scheduledRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	// stable so the effects below keep their listeners across renders
@@ -87,9 +87,9 @@ export function useEventStreamCatchUp({
 
 		scheduledRef.current = setTimeout(() => {
 			scheduledRef.current = null;
-			latestOnCatchUp.current();
+			onCatchUpRef.current();
 		}, Math.random() * CATCH_UP_MAX_JITTER_MS);
-	}, []);
+	}, [onCatchUpRef]);
 
 	React.useEffect(
 		() => () => {
@@ -137,7 +137,9 @@ function useCatchUpOnConnect(
 			listeningSinceRef.current = null;
 			return;
 		}
-		listeningSinceRef.current ??= Date.now();
+		if (listeningSinceRef.current === null) {
+			listeningSinceRef.current = Date.now();
+		}
 
 		if (!connected) return;
 

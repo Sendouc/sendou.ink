@@ -5,6 +5,7 @@ import {
 	useEventsTopic,
 	useServerEventListener,
 } from "~/features/events/events-hooks";
+import { useLatestRef } from "~/hooks/useLatestRef";
 import { useUser } from "../auth/core/user";
 import type { ClientChatMessage } from "./chat-types";
 import * as Attention from "./core/Attention";
@@ -37,8 +38,7 @@ export function useChatAutoScroll(
 	const pinnedToBottomRef = React.useRef(true);
 	/** Where the view is held (the first unread, a jumped-to message) until the user scrolls, while the virtualizer measures the rows above it. */
 	const anchorOffsetRef = React.useRef<(() => number | null) | null>(null);
-	const firstUnreadOffsetRef = React.useRef(firstUnreadOffset);
-	firstUnreadOffsetRef.current = firstUnreadOffset;
+	const firstUnreadOffsetRef = useLatestRef(firstUnreadOffset);
 	const lastUserScrollIntentRef = React.useRef(Number.NEGATIVE_INFINITY);
 	const isPointerDownRef = React.useRef(false);
 	const lastStableScrollTopRef = React.useRef(0);

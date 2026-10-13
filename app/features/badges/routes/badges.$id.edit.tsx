@@ -102,13 +102,13 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
 			</div>
 		</div>
 	);
+}
 
-	function submitButtonText(count: number) {
-		if (count === 0) return "Submit";
-		if (count === 1) return `Submit ${count} change`;
+function submitButtonText(count: number) {
+	if (count === 0) return "Submit";
+	if (count === 1) return `Submit ${count} change`;
 
-		return `Submit ${count} changes`;
-	}
+	return `Submit ${count} changes`;
 }
 
 function Owners({ data }: { data: BadgeDetailsLoaderData }) {
