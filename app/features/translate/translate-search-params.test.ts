@@ -3,10 +3,7 @@ import {
 	assertDecodesToDefault,
 	assertRoundTrips,
 } from "~/modules/search-params/search-params-test-utils";
-import {
-	siteLanguageSearchParams,
-	translateLanguageSearchParams,
-} from "./translate-search-params";
+import { translateLanguageSearchParams } from "./translate-search-params";
 
 describe("translateLanguageSearchParams", () => {
 	test("round-trips", () => {
@@ -30,17 +27,5 @@ describe("translateLanguageSearchParams", () => {
 		assertDecodesToDefault(translateLanguageSearchParams, "search", [
 			["x".repeat(101)],
 		]);
-	});
-});
-
-describe("siteLanguageSearchParams", () => {
-	test("round-trips", () => {
-		assertRoundTrips(siteLanguageSearchParams, {
-			lng: [null, "de", "pt-BR"],
-		});
-	});
-
-	test("malformed values decode to defaults", () => {
-		assertDecodesToDefault(siteLanguageSearchParams, "lng", [["en"], ["xx"]]);
 	});
 });

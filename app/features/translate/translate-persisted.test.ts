@@ -27,10 +27,15 @@ describe("draftsPersisted", () => {
 
 describe("previewLanguagePersisted", () => {
 	test("round-trips", () => {
-		assertRoundTrips(previewLanguagePersisted, [null, "de", "pt-BR"]);
+		assertRoundTrips(previewLanguagePersisted, [null, "de", "es-US"]);
 	});
 
 	test("malformed values decode to the default", () => {
-		assertDecodesToDefault(previewLanguagePersisted, ["en", "xx", "[1]"]);
+		assertDecodesToDefault(previewLanguagePersisted, [
+			"en",
+			"pt-BR",
+			"xx",
+			"[1]",
+		]);
 	});
 });

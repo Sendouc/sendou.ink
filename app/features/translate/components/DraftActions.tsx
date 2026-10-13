@@ -3,6 +3,7 @@ import { Download, Eye, Upload } from "lucide-react";
 import * as React from "react";
 import { SendouButton } from "~/components/elements/Button";
 import { toastQueue } from "~/components/elements/Toast";
+import { languageSearchParams } from "~/modules/i18n/i18n-search-params";
 import * as PersistedState from "~/modules/persisted-state/persisted-state";
 import * as TranslationDrafts from "../core/TranslationDrafts";
 import type { TranslatableLanguage } from "../translate-constants";
@@ -12,7 +13,6 @@ import {
 	useTranslationDrafts,
 } from "../translate-drafts";
 import { previewLanguagePersisted } from "../translate-persisted";
-import { siteLanguageSearchParams } from "../translate-search-params";
 
 /** Previewing, downloading and importing the drafts kept in this browser */
 export function DraftActions({
@@ -33,9 +33,7 @@ export function DraftActions({
 		deleteDrafts(language, obsolete);
 		PersistedState.write(previewLanguagePersisted, language);
 		// full page load so the site loads in the previewed language
-		window.location.assign(
-			siteLanguageSearchParams.href("/", { lng: language }),
-		);
+		window.location.assign(languageSearchParams.href("/", { lng: language }));
 	};
 
 	const download = () => {

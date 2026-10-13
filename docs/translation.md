@@ -13,14 +13,15 @@ sendou.ink can be translated into any language. The easiest way to contribute is
 
 You can also edit the translation files directly. All of them can be found in the [locales folder](../locales):
 
-1. Open a `.json` file for your language (e.g. `locales/de/common.json` for German)
-2. Find empty strings (`""`) - these are the lines that need translating
-3. Translate them while keeping the "key" on the left side of `:` unchanged. For example `"country": "",` could become `"country": "Maa",`
+1. Open the English `.json` file (e.g. `locales/en/common.json`) and the same file for your language (e.g. `locales/de/common.json` for German, create it if it doesn't exist)
+2. Lines missing from your language's file are the ones that need translating, until then the English text is shown
+3. Copy them over and translate the text while keeping the "key" on the left side of `:` unchanged. For example `"country": "Country",` could become `"country": "Maa",`
 4. Send the translated .json to Sendou or make a pull request
 
 Things to note:
 
 - `weapons.json` and `gear.json` are auto-generated. Don't touch these.
+- Español (Latino) only holds the texts that differ from Español (España), anything missing is shown in Español (España).
 - If you want to add a new language, ask Sendou.
 - Some lines have dynamic parts like `"articleBy": "by {{author}}"`. The `{{author}}` part should appear in the translated version unchanged - don't translate the part inside `{{}}`.
 - Another special syntax: `"project": "Sendou.ink is a project by <2>Sendou</2> with help from contributors:"`. The `<2></2>` tags should appear in the translated version, but the text inside them can change.

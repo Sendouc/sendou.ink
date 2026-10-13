@@ -977,21 +977,12 @@ function PlanFileMenu({
 const ourLanguageToTldrawLanguageMap: Record<LanguageCode, string> = {
 	"es-US": "es",
 	"es-ES": "es",
-	ko: "ko-kr",
-	nl: "nl",
 	zh: "zh-cn",
-	"fr-CA": "fr",
 	"fr-EU": "fr",
-	"pt-BR": "pt-br",
 	// map to itself
-	da: "da",
 	de: "de",
 	en: "en",
-	he: "he",
-	it: "it",
 	ja: "ja",
-	ru: "ru",
-	pl: "pl",
 };
 function ourLanguageToTldrawLanguage(ourLanguageUserSelected: string) {
 	for (const [ourLanguage, tldrawLanguage] of Object.entries(

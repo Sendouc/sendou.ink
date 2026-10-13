@@ -5,7 +5,10 @@ import * as TranslationUnits from "./TranslationUnits";
 export type Catalog = {
 	language: string;
 	english: TranslationUnits.Translations;
+	/** Includes what a regional variant inherits from its parent language */
 	translations: TranslationUnits.Translations;
+	/** What a regional variant inherits from its parent language, left out of its files */
+	inherited: TranslationUnits.Translations;
 };
 
 const unitsCache = new WeakMap<
@@ -49,7 +52,11 @@ export function sort({
 	return { pending, obsolete };
 }
 
-/** Full translation jsons of the namespaces the pending drafts touch, the drafts written over the current translations */
+/**
+ * Full translation jsons of the namespaces the pending drafts touch, the drafts written over the current
+ * translations in English key order, as `pnpm run i18n:sync` writes them. A regional variant's files leave
+ * out what equals its parent language's translation.
+ */
 export function mergedFiles({
 	catalog,
 	pending,
@@ -57,11 +64,31 @@ export function mergedFiles({
 	catalog: Catalog;
 	pending: TranslationUnits.Translations;
 }): TranslationUnits.Translations {
+	const catalogUnits = units(catalog);
+
 	return Object.fromEntries(
-		Object.entries(pending).map(([namespace, namespaceTranslations]) => [
-			namespace,
-			{ ...catalog.translations[namespace], ...namespaceTranslations },
-		]),
+		Object.entries(pending).map(([namespace, namespaceTranslations]) => {
+			const merged = {
+				...catalog.translations[namespace],
+				...namespaceTranslations,
+			};
+
+			return [
+				namespace,
+				Object.fromEntries(
+					catalogUnits
+						.filter((unit) => unit.namespace === namespace)
+						.flatMap((unit) => unit.forms.map((form) => form.key))
+						.flatMap((key) => {
+							const value = merged[key];
+							if (value === undefined) return [];
+							if (catalog.inherited[namespace]?.[key] === value) return [];
+
+							return [[key, value]];
+						}),
+				),
+			];
+		}),
 	);
 }
 

@@ -19,25 +19,6 @@ const __dirname = path.dirname(__filename);
 const BADGE_DIR = path.join(__dirname, "badge");
 const OUTPUT_DIR = path.join(__dirname, "output");
 
-const ALL_LOCALE_FOLDERS = [
-	"da",
-	"de",
-	"en",
-	"es-ES",
-	"es-US",
-	"fr-CA",
-	"fr-EU",
-	"he",
-	"it",
-	"ja",
-	"ko",
-	"nl",
-	"pl",
-	"pt-BR",
-	"ru",
-	"zh",
-];
-
 const BADGE_TEMPLATE_RULES = [
 	{
 		prefix: "CoopGrade_Normal_",
@@ -227,14 +208,6 @@ function generateBadgeData(langDicts: LangDicts) {
 		.map((f) => f.replace("Badge_", "").replace(".png", ""))
 		.sort();
 
-	const englishDict = langDicts.find(([code]) => code === "EUen")?.[1];
-	invariant(englishDict, "Missing English language dict");
-
-	const englishBadgeTranslations = buildBadgeTranslations(
-		badgeIds,
-		englishDict,
-	);
-
 	for (const langCode of LANG_JSONS_TO_CREATE) {
 		const langDict = langDicts.find(([code]) => code === langCode)?.[1];
 		invariant(langDict, `Missing translations for ${langCode}`);
@@ -243,19 +216,6 @@ function generateBadgeData(langDicts: LangDicts) {
 
 		const folder = translationJsonFolderName(langCode);
 		writeBadgeJson(folder, translationsMap);
-	}
-
-	for (const folder of ALL_LOCALE_FOLDERS) {
-		const jsonPath = path.join(
-			__dirname,
-			"..",
-			"locales",
-			folder,
-			"game-badges.json",
-		);
-		if (fs.existsSync(jsonPath)) continue;
-
-		writeBadgeJson(folder, englishBadgeTranslations);
 	}
 
 	if (!fs.existsSync(OUTPUT_DIR)) {

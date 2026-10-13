@@ -1,10 +1,9 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { getUser } from "~/features/auth/core/user.server";
-import { getFixedTForLanguage } from "~/modules/i18n/i18next.server";
 import { weaponIdToType } from "~/modules/in-game-lists/weapon-ids";
+import { englishWeaponName, weaponSlug } from "~/utils/english-weapon-names";
 import { notFound } from "~/utils/remix.server";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
-import { mySlugify } from "~/utils/urls";
 import * as BuildRepository from "../BuildRepository.server";
 import { BUILDS_PAGE_MAX_BUILDS } from "../builds-constants";
 import { buildsSearchParams } from "../builds-search-params";
@@ -12,7 +11,6 @@ import { filterBuilds } from "../core/filter.server";
 
 export const loader = async ({ params, url }: LoaderFunctionArgs) => {
 	const user = getUser();
-	const t = await getFixedTForLanguage("en", ["weapons", "common"]);
 	const weaponId = weaponNameSlugToId(params.slug);
 
 	if (typeof weaponId !== "number" || weaponIdToType(weaponId) === "ALT_SKIN") {
@@ -21,9 +19,8 @@ export const loader = async ({ params, url }: LoaderFunctionArgs) => {
 
 	const { limit, abilities, mode, date } = buildsSearchParams.parse(url);
 
-	const weaponName = t(`weapons:MAIN_${weaponId}`);
-
-	const slug = mySlugify(t(`weapons:MAIN_${weaponId}`, { lng: "en" }));
+	const weaponName = englishWeaponName({ type: "MAIN", id: weaponId });
+	const slug = weaponSlug({ type: "MAIN", id: weaponId });
 
 	const hasActiveFilters =
 		abilities.length > 0 || mode !== null || date !== null;

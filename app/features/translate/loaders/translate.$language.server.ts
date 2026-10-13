@@ -21,6 +21,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		language,
 		progress: TranslationUnits.progress(units, translations),
 		namespaces: TranslationEntries.namespaceSummaries(units, translations),
-		catalog: { language, english: TranslationCatalog.english(), translations },
+		catalog: {
+			language,
+			english: TranslationCatalog.english(),
+			translations,
+			inherited: TranslationCatalog.inherited(language),
+		},
 	};
 };

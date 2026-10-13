@@ -1,13 +1,19 @@
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
+import { Link, useMatches } from "react-router";
 import { useUser } from "~/features/auth/core/user";
 import { SelectFormField } from "~/form/fields/SelectFormField";
 import { SendouForm } from "~/form/SendouForm";
-import { languages } from "~/modules/i18n/config";
+import {
+	type GameLanguageCode,
+	gameLanguages,
+	type LanguageCode,
+	languages,
+} from "~/modules/i18n/config";
+import { languageSearchParams } from "~/modules/i18n/i18n-search-params";
 import { useSearchParam } from "~/modules/search-params/hooks";
+import type { RootLoaderData } from "~/root";
 import { TRANSLATE_PAGE } from "~/utils/urls";
 import { clockFormatSchema } from "../settings-schemas";
-import { settingsSearchParams } from "../settings-search-params";
 
 // xxx: better prompt here (why not progress bar?)
 export function LocaleTab() {
@@ -16,6 +22,7 @@ export function LocaleTab() {
 	return (
 		<div className="stack md">
 			<LanguageSelector />
+			<GameLanguageSelector />
 			{user ? (
 				<SendouForm
 					schema={clockFormatSchema}
@@ -35,14 +42,14 @@ export function LocaleTab() {
 
 function LanguageSelector() {
 	const { t, i18n } = useTranslation(["common"]);
-	const [, setLng] = useSearchParam(settingsSearchParams, "lng");
+	const [, setLng] = useSearchParam(languageSearchParams, "lng");
 
 	const languageItems = languages.map((lang) => ({
 		value: lang.code,
 		label: lang.name,
 	}));
 
-	const handleLanguageChange = (newLang: string | null) => {
+	const handleLanguageChange = (newLang: LanguageCode | null) => {
 		if (!newLang) return;
 		setLng(newLang, { replace: false });
 	};
@@ -52,12 +59,39 @@ function LanguageSelector() {
 			<SelectFormField
 				label={t("common:header.language")}
 				items={languageItems}
-				value={i18n.language}
+				value={i18n.language as LanguageCode}
 				onChange={handleLanguageChange}
 			/>
 			<Link to={TRANSLATE_PAGE} className="text-xs">
 				Help translate sendou.ink
 			</Link>
 		</div>
+	);
+}
+
+function GameLanguageSelector() {
+	const { t } = useTranslation(["settings"]);
+	const [root] = useMatches();
+	const rootData = root.loaderData as RootLoaderData | undefined;
+	const [, setGameLng] = useSearchParam(languageSearchParams, "gameLng");
+
+	const languageItems = gameLanguages.map((lang) => ({
+		value: lang.code,
+		label: lang.name,
+	}));
+
+	const handleLanguageChange = (newLang: GameLanguageCode | null) => {
+		if (!newLang) return;
+		setGameLng(newLang, { replace: false });
+	};
+
+	return (
+		<SelectFormField
+			label={t("settings:locale.gameLanguage")}
+			bottomText={t("settings:locale.gameLanguage.bottomText")}
+			items={languageItems}
+			value={rootData?.gameLanguage ?? null}
+			onChange={handleLanguageChange}
+		/>
 	);
 }

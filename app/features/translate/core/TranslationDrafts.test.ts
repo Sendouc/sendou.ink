@@ -12,8 +12,9 @@ const catalog: TranslationDrafts.Catalog = {
 		},
 	},
 	translations: {
-		common: { save: "Speichern", by: "", sets_one: "", sets_other: "" },
+		common: { save: "Speichern" },
 	},
+	inherited: {},
 };
 
 describe("TranslationDrafts.sort", () => {
@@ -73,9 +74,35 @@ describe("TranslationDrafts.mergedFiles", () => {
 			common: {
 				save: "Speichern",
 				by: "von {{author}}",
-				sets_one: "",
-				sets_other: "",
 			},
+		});
+	});
+
+	test("orders the keys like English", () => {
+		const files = TranslationDrafts.mergedFiles({
+			catalog: {
+				...catalog,
+				translations: { common: { by: "von {{author}}" } },
+			},
+			pending: { common: { save: "Speichern" } },
+		});
+
+		expect(Object.keys(files.common)).toEqual(["save", "by"]);
+	});
+
+	test("leaves out what a regional variant inherits from its parent language", () => {
+		expect(
+			TranslationDrafts.mergedFiles({
+				catalog: {
+					...catalog,
+					language: "es-US",
+					translations: { common: { save: "Guardar", by: "por {{author}}" } },
+					inherited: { common: { save: "Guardar", by: "de {{author}}" } },
+				},
+				pending: { common: { sets_one: "{{count}} set" } },
+			}),
+		).toEqual({
+			common: { by: "por {{author}}", sets_one: "{{count}} set" },
 		});
 	});
 });

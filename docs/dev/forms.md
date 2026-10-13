@@ -745,7 +745,7 @@ NOTE: before adding a new one, verify one does not already exist.
 - Select options: `options.fieldName.value`
 - Mode names: `modes.SZ`, `modes.TC`, etc.
 
-Run `pnpm run i18n:sync` after adding English translations to initialize other language files.
+Run `pnpm run i18n:sync` after changing English translations to sync the other language files.
 
 ## E2E Testing
 

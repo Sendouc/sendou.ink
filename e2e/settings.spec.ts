@@ -98,6 +98,28 @@ test.describe("Settings", () => {
 		await expect(faq.question("What is the Plus Server?")).toBeVisible();
 	});
 
+	test("shows in-game names in the picked game language and the rest in the site's language", async ({
+		page,
+		factories,
+	}) => {
+		await factories.BuildFactory.create({
+			ownerId: ADMIN_ID,
+			weaponSplIds: [LUNA_BLASTER_ID],
+		});
+
+		const settings = new SettingsPage(page);
+		const weaponBuilds = new WeaponBuildsPage(page);
+
+		await settings.goto("locale");
+		await settings.selectGameLanguage("日本語");
+
+		await weaponBuilds.goto("luna-blaster");
+		await expect(
+			weaponBuilds.buildCard(0).weaponImage("ノヴァブラスター"),
+		).toBeVisible();
+		await expect(weaponBuilds.locators.abilityStatsLink).toBeVisible();
+	});
+
 	test("persists sound settings and dark/light theme across reload", async ({
 		page,
 	}) => {

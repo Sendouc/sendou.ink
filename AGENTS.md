@@ -100,7 +100,7 @@
 - by default everything should be translated via i18next
 - some a11y labels or text that should not normally be encountered by user (example given, error message by server) can be english
 - before adding a new translation, check that one doesn't already exist you can reuse (particularly in the common.json)
-- add only English translation and use `pnpm run i18n:sync` to initialize other jsons with empty string ready for translators
+- add only English translation, other languages fall back to English until translated (never add empty strings); run `pnpm run i18n:sync` after removing or renaming keys
 - when using namespace e.g. `const { t } = useTranslation("settings"]);` it needs to be defined in the `handle` for that route e.g. `export const handle: SendouRouteHandle = { i18n: ["settings"], ... }`. Certain namespaces are always included and you don't have to worry about those: "common", "forms", "game-misc", "weapons", "front", "friends"
 - if changing translation key names make sure to port over any already translated values for non-english languages if the english language is unchanged
 

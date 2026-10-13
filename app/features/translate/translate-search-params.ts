@@ -1,10 +1,7 @@
 import * as v from "valibot";
 import * as SearchParams from "~/modules/search-params/search-params";
 import { SP } from "~/modules/search-params/search-params";
-import {
-	TRANSLATABLE_LANGUAGES,
-	TRANSLATION_STATUSES,
-} from "./translate-constants";
+import { TRANSLATION_STATUSES } from "./translate-constants";
 
 export const translateLanguageSearchParams = SearchParams.define({
 	page: SP.page(),
@@ -21,12 +18,5 @@ export const translateLanguageSearchParams = SearchParams.define({
 		default: "",
 		loader: true,
 		resets: ["page"],
-	}),
-});
-
-/** Switches the site's language, read by the i18n middleware on any page */
-export const siteLanguageSearchParams = SearchParams.define({
-	lng: SP.param(v.nullable(v.picklist(TRANSLATABLE_LANGUAGES)), {
-		loader: true,
 	}),
 });
