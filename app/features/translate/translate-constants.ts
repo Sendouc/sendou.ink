@@ -10,7 +10,6 @@ export const TRANSLATE = {
 	USAGE_ITEMS_SHOWN: 4,
 } as const;
 
-// xxx: do we want this?
 /** Most visible texts, listed before the other namespaces */
 export const PRIORITY_NAMESPACES = ["common", "front", "forms"] as const;
 
