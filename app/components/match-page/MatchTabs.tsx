@@ -73,6 +73,7 @@ export function MatchTabs({
 				onSelectionChange={(key) => setTab(key as MatchTabsKey)}
 				disappearing={false}
 				padded={false}
+				keepPanelsMounted
 			>
 				<SendouTabList>
 					{tabs.map((tab) => (

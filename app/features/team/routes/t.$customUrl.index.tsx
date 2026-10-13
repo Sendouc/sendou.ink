@@ -85,7 +85,7 @@ export default function TeamIndexPage() {
 				<article data-testid="team-bio">{layoutData.team.bio}</article>
 			) : null}
 			{showSections ? (
-				<SendouTabs>
+				<SendouTabs keepPanelsMounted>
 					<SendouTabList>
 						<SendouTab
 							id="players"
