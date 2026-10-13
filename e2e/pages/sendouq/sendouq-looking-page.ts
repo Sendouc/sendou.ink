@@ -17,7 +17,10 @@ export class SendouQLookingPage {
 	constructor(page: Page) {
 		this.page = page;
 		this.locators = {
-			groupCards: page.getByTestId("sendouq-group-card"),
+			// narrow screens keep the other tabs' cards in the DOM, hidden
+			groupCards: page
+				.getByTestId("sendouq-group-card")
+				.filter({ visible: true }),
 			undoButtons: page.getByRole("button", { name: "Undo" }),
 			actionButtons: page.getByTestId("group-card-action-button"),
 			suggestButtons: page.getByTestId("group-card-suggest-button"),

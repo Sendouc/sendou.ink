@@ -1,0 +1,76 @@
+.tabs {
+	display: none;
+}
+
+.columns {
+	display: grid;
+	justify-content: center;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--s-6);
+}
+
+.ownColumn,
+.own,
+.invited,
+.available,
+.received {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+}
+
+.header {
+	text-align: center;
+	font-size: var(--font-2xs);
+	font-weight: var(--weight-semi);
+	text-transform: uppercase;
+	color: var(--color-fg-accent);
+	display: flex;
+	align-items: center;
+
+	&::before,
+	&::after {
+		flex: 1;
+		content: "";
+		padding: 2px;
+		background-color: var(--color-bg-high);
+		margin: 5px;
+		border-radius: var(--radius-box);
+	}
+}
+
+@container (width < 676px) {
+	.layout {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-6);
+	}
+
+	.tabs {
+		display: flex;
+	}
+
+	.columns {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-2);
+	}
+
+	.header {
+		display: none;
+	}
+
+	.ownColumn {
+		display: contents;
+	}
+
+	.layout:not([data-tab="own"]) .own,
+	.layout:not([data-tab="received"]) .received,
+	.layout:not([data-tab="groups"]) :is(.invited, .available) {
+		display: none;
+	}
+
+	.layout[data-tab="groups"] :is(.invited, .available) {
+		display: contents;
+	}
+}

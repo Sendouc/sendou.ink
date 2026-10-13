@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { Mic, Trash } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -9,19 +8,14 @@ import { EmptyState } from "~/components/EmptyState";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
 import { SendouPopover } from "~/components/elements/Popover";
-import {
-	SendouTab,
-	SendouTabList,
-	SendouTabPanel,
-	SendouTabs,
-} from "~/components/elements/Tabs";
-import { Flipper } from "~/components/Flipper";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { WeaponImage } from "~/components/Image";
 import { NoteAvatar } from "~/components/NoteAvatar";
-import { Placeholder } from "~/components/Placeholder";
 import { useUser } from "~/features/auth/core/user";
-import { IS_Q_LOOKING_MOBILE_BREAKPOINT } from "~/features/sendouq/q-constants";
+import {
+	LookingColumns,
+	SortedCard,
+} from "~/features/sendouq/components/LookingColumns";
 import { useTournament } from "~/features/tournament/tournament-context";
 import {
 	UserCard,
@@ -29,8 +23,6 @@ import {
 } from "~/features/user-card/components/UserCard";
 import { privateNoteSentimentScore } from "~/features/user-card/user-card-utils";
 import { SendouForm } from "~/form/SendouForm";
-import { useHydrated } from "~/hooks/useHydrated";
-import { useMainContentWidth } from "~/hooks/useMainContentWidth";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { LFGGroupCard } from "../components/LFGGroupCard";
 import {
@@ -53,15 +45,7 @@ export const handle: SendouRouteHandle = {
 	i18n: ["q", "tournament", "forms", "common", "user"],
 };
 
-export default function TournamentLFGShell() {
-	const isHydrated = useHydrated();
-
-	if (!isHydrated) return <Placeholder />;
-
-	return <TournamentLFGPage />;
-}
-
-function TournamentLFGPage() {
+export default function TournamentLFGPage() {
 	const data = useLoaderData<typeof loader>();
 	if (data.mode === "subs") {
 		return <SubsView data={data} />;
@@ -75,11 +59,7 @@ function GroupsView({
 }: {
 	data: Extract<LookingLoaderData, { mode: "looking" }>;
 }) {
-	const { t } = useTranslation(["q"]);
 	const tournament = useTournament();
-	const width = useMainContentWidth();
-
-	const isMobile = width < IS_Q_LOOKING_MOBILE_BREAKPOINT;
 
 	const ownMemberCount =
 		data.ownGroup?.members.length ?? data.ownTeam?.members.length ?? 0;
@@ -92,145 +72,73 @@ function GroupsView({
 				privateNoteSentimentScore(b.members, data.userCards) -
 				privateNoteSentimentScore(a.members, data.userCards),
 		);
+	const sortIndexes = new Map(
+		compatibleGroups.map((group, index) => [group.id, index]),
+	);
+
+	const likedGroupIds = new Set(data.likes.given.map((like) => like.teamId));
+	const receivedLikeGroupIds = new Set(
+		data.likes.received.map((like) => like.teamId),
+	);
 
 	const neutralGroups = compatibleGroups.filter(
 		(group) =>
-			!data.likes.given.some((like) => like.teamId === group.id) &&
-			!data.likes.received.some((like) => like.teamId === group.id),
+			!likedGroupIds.has(group.id) && !receivedLikeGroupIds.has(group.id),
 	);
-	const likedGroups = compatibleGroups.filter((group) =>
-		data.likes.given.some((like) => like.teamId === group.id),
+	const likedGroups = compatibleGroups.filter(
+		(group) =>
+			likedGroupIds.has(group.id) && !receivedLikeGroupIds.has(group.id),
 	);
 	const groupsReceivedLikesFrom = compatibleGroups.filter((group) =>
-		data.likes.received.some((like) => like.teamId === group.id),
+		receivedLikeGroupIds.has(group.id),
 	);
 
-	const invitedGroupsDesktop = (
-		<div className="stack sm">
-			<ColumnHeader>{t("q:looking.columns.invited")}</ColumnHeader>
-			{likedGroups.map((group) => (
-				<LFGGroupCard
-					key={group.id}
-					group={group}
-					action="UNLIKE"
-					ownGroup={data.ownGroup ?? undefined}
-				/>
-			))}
-		</div>
-	);
-
-	const ownTabMemberCount = data.ownGroup
-		? data.ownGroup.members.length
-		: data.ownTeam
-			? data.ownTeam.members.length
-			: 0;
-
-	const ownGroupElement = data.ownGroup ? (
-		<div className="stack md">
-			<LFGGroupCard group={data.ownGroup} ownGroup={data.ownGroup} />
-			<LFGGroupLeaver />
-			{!isMobile ? invitedGroupsDesktop : null}
-		</div>
-	) : null;
-
-	const leftColumnContent = data.ownGroup ? (
-		ownGroupElement
-	) : data.ownTeam ? (
-		<TeamQueueSection />
-	) : (
-		<JoinQueueForm />
+	const sortedGroupCard = (
+		group: (typeof compatibleGroups)[number],
+		action: "LIKE" | "UNLIKE",
+	) => (
+		<SortedCard key={group.id} sortIndex={sortIndexes.get(group.id)!}>
+			<LFGGroupCard
+				group={group}
+				action={action}
+				ownGroup={data.ownGroup ?? undefined}
+			/>
+		</SortedCard>
 	);
 
 	return (
-		<Flipper
+		<LookingColumns
 			flipKey={data}
-			className={clsx(styles.container, {
-				[styles.containerMobile]: isMobile,
-			})}
-		>
-			{!isMobile ? (
-				<div>
-					<SendouTabs>
-						<SendouTabList>
-							<SendouTab id="own" number={ownTabMemberCount}>
-								{t("q:looking.columns.myGroup")}
-							</SendouTab>
-						</SendouTabList>
-						<SendouTabPanel id="own">{leftColumnContent}</SendouTabPanel>
-					</SendouTabs>
-				</div>
-			) : null}
-			<div className={styles.innerContainer}>
-				<SendouTabs>
-					<SendouTabList>
-						<SendouTab id="groups" number={neutralGroups.length}>
-							{t("q:looking.columns.groups")}
-						</SendouTab>
-						{isMobile ? (
-							<SendouTab id="received" number={groupsReceivedLikesFrom.length}>
-								{t("q:looking.columns.invitations")}
-							</SendouTab>
-						) : null}
-						{isMobile ? (
-							<SendouTab id="own" number={ownTabMemberCount}>
-								{t("q:looking.columns.myGroup")}
-							</SendouTab>
-						) : null}
-					</SendouTabList>
-					<SendouTabPanel id="groups">
-						<div className="stack sm">
-							<ColumnHeader>{t("q:looking.columns.available")}</ColumnHeader>
-							{(isMobile
-								? compatibleGroups.filter(
-										(group) =>
-											!data.likes.received.some(
-												(like) => like.teamId === group.id,
-											),
-									)
-								: neutralGroups
-							).map((group) => (
-								<LFGGroupCard
-									key={group.id}
-									group={group}
-									action={
-										data.likes.given.some((like) => like.teamId === group.id)
-											? "UNLIKE"
-											: "LIKE"
-									}
-									ownGroup={data.ownGroup ?? undefined}
-								/>
-							))}
-						</div>
-					</SendouTabPanel>
-					<SendouTabPanel id="received">
-						<div className="stack sm">
-							{groupsReceivedLikesFrom.map((group) => (
-								<LFGGroupCard
-									key={group.id}
-									group={group}
-									action="ACCEPT"
-									ownGroup={data.ownGroup ?? undefined}
-								/>
-							))}
-						</div>
-					</SendouTabPanel>
-					<SendouTabPanel id="own">{leftColumnContent}</SendouTabPanel>
-				</SendouTabs>
-			</div>
-			{!isMobile ? (
-				<div className="stack sm">
-					<ColumnHeader>{t("q:looking.columns.invitations")}</ColumnHeader>
-					{groupsReceivedLikesFrom.map((group) => (
-						<LFGGroupCard
-							key={group.id}
-							group={group}
-							action="ACCEPT"
-							ownGroup={data.ownGroup ?? undefined}
-						/>
-					))}
-				</div>
-			) : null}
-		</Flipper>
+			own={{
+				memberCount: ownMemberCount,
+				content: data.ownGroup ? (
+					<div className="stack md">
+						<LFGGroupCard group={data.ownGroup} ownGroup={data.ownGroup} />
+						<LFGGroupLeaver />
+					</div>
+				) : data.ownTeam ? (
+					<TeamQueueSection />
+				) : (
+					<JoinQueueForm />
+				),
+			}}
+			invited={
+				data.ownGroup
+					? likedGroups.map((group) => sortedGroupCard(group, "UNLIKE"))
+					: null
+			}
+			available={neutralGroups.map((group) => sortedGroupCard(group, "LIKE"))}
+			availableCount={neutralGroups.length}
+			received={groupsReceivedLikesFrom.map((group) => (
+				<LFGGroupCard
+					key={group.id}
+					group={group}
+					action="ACCEPT"
+					ownGroup={data.ownGroup ?? undefined}
+				/>
+			))}
+			receivedCount={groupsReceivedLikesFrom.length}
+		/>
 	);
 }
 
@@ -386,16 +294,6 @@ function SubCard({ sub }: { sub: SubEntry }) {
 			) : null}
 		</div>
 	);
-}
-
-function ColumnHeader({ children }: { children: React.ReactNode }) {
-	const width = useMainContentWidth();
-
-	const isMobile = width < IS_Q_LOOKING_MOBILE_BREAKPOINT;
-
-	if (isMobile) return null;
-
-	return <div className={styles.header}>{children}</div>;
 }
 
 function JoinQueueForm() {

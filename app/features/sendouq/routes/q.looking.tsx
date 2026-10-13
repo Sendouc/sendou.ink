@@ -1,21 +1,13 @@
 import clsx from "clsx";
-import type * as React from "react";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
 import { ActionButton } from "~/components/ActionButton";
 import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/elements/Button";
-import {
-	SendouTab,
-	SendouTabList,
-	SendouTabPanel,
-	SendouTabs,
-} from "~/components/elements/Tabs";
-import { Flipper } from "~/components/Flipper";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { Placeholder } from "~/components/Placeholder";
 import { useUser } from "~/features/auth/core/user";
 import { useTopicRevalidation } from "~/features/chat/chat-hooks";
 import { useGlobalStatus } from "~/features/global-status/GlobalStatusProvider";
@@ -24,7 +16,6 @@ import type { UserCardData } from "~/features/user-card/user-card-types";
 import { privateNoteSentimentScore } from "~/features/user-card/user-card-utils";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { useHydrated } from "~/hooks/useHydrated";
-import { useMainContentWidth } from "~/hooks/useMainContentWidth";
 import { useSearchParam } from "~/modules/search-params/hooks";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
@@ -38,18 +29,17 @@ import {
 import { action } from "../actions/q.looking.server";
 import { GroupCard, type GroupCardTrail } from "../components/GroupCard";
 import { GroupLeaver } from "../components/GroupLeaver";
+import { LookingColumns, SortedCard } from "../components/LookingColumns";
 import { MemberAdder } from "../components/MemberAdder";
 import { canSuggest, groupExpiryStatus } from "../core/groups";
 import { loader } from "../loaders/q.looking.server";
 import { lookingSchema } from "../q-action-schemas";
 import {
 	FULL_GROUP_SIZE,
-	IS_Q_LOOKING_MOBILE_BREAKPOINT,
 	SENDOUQ_LOOKING_CHANNEL,
 	sqGroupChannel,
 } from "../q-constants";
 import { qLookingSearchParams } from "../q-search-params";
-import styles from "./q.looking.module.css";
 
 export { action, loader };
 
@@ -70,20 +60,7 @@ export const meta: MetaFunction = (args) => {
 	});
 };
 
-export default function QLookingShell() {
-	const isHydrated = useHydrated();
-
-	if (!isHydrated)
-		return (
-			<Main>
-				<Placeholder />
-			</Main>
-		);
-
-	return <QLookingPage />;
-}
-
-function QLookingPage() {
+export default function QLookingPage() {
 	const { t } = useTranslation(["q"]);
 	const user = useUser();
 	const data = useLoaderData<typeof loader>();
@@ -229,18 +206,9 @@ function StreamsLinkButton() {
 }
 
 function Groups() {
-	const { t } = useTranslation(["q"]);
 	const data = useLoaderData<typeof loader>();
-	const isHydrated = useHydrated();
 
-	const width = useMainContentWidth();
-
-	// width === 0 means the main content hasn't been measured yet
-	if (!isHydrated || width === 0) return null;
-
-	const isMobile = width < IS_Q_LOOKING_MOBILE_BREAKPOINT;
-	const isFullGroup =
-		data.ownGroup && data.ownGroup.members.length === FULL_GROUP_SIZE;
+	const isFullGroup = data.ownGroup?.members.length === FULL_GROUP_SIZE;
 
 	const suggestedByUsernames = new Map(
 		data.suggestions.map((suggestion) => [
@@ -251,6 +219,9 @@ function Groups() {
 	const invitedByUsernames = new Map(
 		data.likes.given.map((like) => [like.groupId, like.createdByUsername]),
 	);
+	const receivedLikes = new Map(
+		data.likes.received.map((like) => [like.groupId, like]),
+	);
 
 	const suggestedGroupIds = new Set(suggestedByUsernames.keys());
 
@@ -258,6 +229,7 @@ function Groups() {
 		userCards: data.userCards,
 		suggestedGroupIds,
 	});
+	const sortIndexes = new Map(groups.map((group, index) => [group.id, index]));
 
 	const isSoloGroup = data.ownGroup?.members.length === 1;
 
@@ -280,196 +252,101 @@ function Groups() {
 		!invitedByUsernames.has(groupId) &&
 		!suggestedByUsernames.has(groupId);
 
-	const invitedGroupsDesktop = (
-		<div className="stack sm">
-			<ColumnHeader isMobile={isMobile}>
-				{t(
-					isFullGroup
-						? "q:looking.columns.challenged"
-						: "q:looking.columns.invited",
-				)}
-			</ColumnHeader>
-			{groups
-				.filter((group) =>
-					data.likes.given.some((like) => like.groupId === group.id),
-				)
-				.map((group) => {
-					return (
-						<GroupCard
-							key={group.id}
-							group={group}
-							action="UNLIKE"
-							trail={trailOf(group.id)}
-							isSuggested={suggestedGroupIds.has(group.id)}
-							ownGroup={data.ownGroup}
-						/>
-					);
-				})}
-		</div>
+	const receivedLikeAction = (groupId: number) => {
+		if (!isFullGroup) return "GROUP_UP";
+
+		if (receivedLikes.get(groupId)?.isRechallenge) {
+			return "MATCH_UP_RECHALLENGE";
+		}
+		return "MATCH_UP";
+	};
+
+	const groupsReceivedLikesFrom = groups.filter((group) =>
+		receivedLikes.has(group.id),
 	);
-
-	const ownGroupElement = data.ownGroup ? (
-		<div className="stack sm">
-			<ColumnHeader isMobile={isMobile}>
-				{t("q:looking.columns.myGroup")}
-			</ColumnHeader>
-			<GroupCard
-				group={data.ownGroup}
-				ownGroup={data.ownGroup}
-				kickableUserIds={data.kickableUserIds}
-			/>
-			{data.ownGroup.inviteCode ? (
-				<MemberAdder
-					inviteCode={data.ownGroup.inviteCode}
-					groupMemberIds={data.ownGroup.members.map((m) => m.id)}
-				/>
-			) : null}
-			<GroupLeaver
-				type={data?.ownGroup.members.length === 1 ? "LEAVE_Q" : "LEAVE_GROUP"}
-			/>
-			{!isMobile ? invitedGroupsDesktop : null}
-		</div>
-	) : null;
-
+	const invitedGroups = groups.filter(
+		(group) => invitedByUsernames.has(group.id) && !receivedLikes.has(group.id),
+	);
 	const neutralGroups = groups.filter(
 		(group) =>
-			!data.likes.given.some((like) => like.groupId === group.id) &&
-			!data.likes.received.some((like) => like.groupId === group.id),
+			!invitedByUsernames.has(group.id) && !receivedLikes.has(group.id),
 	);
-	const groupsReceivedLikesFrom = groups.filter((group) =>
-		data.likes.received.some((like) => like.groupId === group.id),
+
+	const groupCard = (
+		group: (typeof groups)[number],
+		cardAction: React.ComponentProps<typeof GroupCard>["action"],
+	) => (
+		<GroupCard
+			group={group}
+			action={cardAction}
+			suggestable={isSuggestable(group.id)}
+			trail={trailOf(group.id)}
+			isSuggested={suggestedGroupIds.has(group.id)}
+			ownGroup={data.ownGroup}
+		/>
+	);
+
+	const sortedGroupCard = (
+		group: (typeof groups)[number],
+		cardAction: React.ComponentProps<typeof GroupCard>["action"],
+	) => (
+		<SortedCard key={group.id} sortIndex={sortIndexes.get(group.id)!}>
+			{groupCard(group, cardAction)}
+		</SortedCard>
 	);
 
 	return (
-		<Flipper
+		<LookingColumns
 			flipKey={data}
-			className={clsx(styles.container, {
-				[styles.containerMobile]: isMobile,
-			})}
-		>
-			{!isMobile ? <div>{ownGroupElement}</div> : null}
-			<div className={styles.innerContainer}>
-				<SendouTabs>
-					<SendouTabList>
-						<SendouTab id="groups" number={neutralGroups.length}>
-							{t("q:looking.columns.groups")}
-						</SendouTab>
-						{isMobile ? (
-							<SendouTab id="received" number={groupsReceivedLikesFrom.length}>
-								{t(
-									isFullGroup
-										? "q:looking.columns.challenges"
-										: "q:looking.columns.invitations",
-								)}
-							</SendouTab>
-						) : null}
-						{isMobile && data.ownGroup ? (
-							<SendouTab id="own" number={data.ownGroup.members.length}>
-								{t("q:looking.columns.myGroup")}
-							</SendouTab>
-						) : null}
-					</SendouTabList>
-					<SendouTabPanel id="groups">
-						<div className="stack sm">
-							<ColumnHeader isMobile={isMobile}>
-								{t("q:looking.columns.available")}
-							</ColumnHeader>
-							{(isMobile
-								? groups.filter(
-										(group) =>
-											!data.likes.received.some(
-												(like) => like.groupId === group.id,
-											),
-									)
-								: neutralGroups
-							).map((group) => {
-								return (
+			isFullGroup={isFullGroup}
+			own={
+				data.ownGroup
+					? {
+							memberCount: data.ownGroup.members.length,
+							content: (
+								<>
 									<GroupCard
-										key={group.id}
-										group={group}
-										action={
-											data.likes.given.some((like) => like.groupId === group.id)
-												? "UNLIKE"
-												: "LIKE"
+										group={data.ownGroup}
+										ownGroup={data.ownGroup}
+										kickableUserIds={data.kickableUserIds}
+									/>
+									{data.ownGroup.inviteCode ? (
+										<MemberAdder
+											inviteCode={data.ownGroup.inviteCode}
+											groupMemberIds={data.ownGroup.members.map((m) => m.id)}
+										/>
+									) : null}
+									<GroupLeaver
+										type={
+											data.ownGroup.members.length === 1
+												? "LEAVE_Q"
+												: "LEAVE_GROUP"
 										}
-										suggestable={isSuggestable(group.id)}
-										trail={trailOf(group.id)}
-										isSuggested={suggestedGroupIds.has(group.id)}
-										ownGroup={data.ownGroup}
 									/>
-								);
-							})}
-						</div>
-					</SendouTabPanel>
-					<SendouTabPanel id="received">
-						<div className="stack sm">
-							{!data.ownGroup ? <JoinQueuePrompt /> : null}
-							{groupsReceivedLikesFrom.map((group) => {
-								const like = data.likes.received.find(
-									(l) => l.groupId === group.id,
-								)!;
-
-								const likeAction = () => {
-									if (!isFullGroup) return "GROUP_UP";
-
-									if (like.isRechallenge) return "MATCH_UP_RECHALLENGE";
-									return "MATCH_UP";
-								};
-
-								return (
-									<GroupCard
-										key={group.id}
-										group={group}
-										action={likeAction()}
-										suggestable={isSuggestable(group.id)}
-										trail={trailOf(group.id)}
-										isSuggested={suggestedGroupIds.has(group.id)}
-										ownGroup={data.ownGroup}
-									/>
-								);
-							})}
-						</div>
-					</SendouTabPanel>
-					<SendouTabPanel id="own">{ownGroupElement}</SendouTabPanel>
-				</SendouTabs>
-			</div>
-			{!isMobile ? (
-				<div className="stack sm">
-					<ColumnHeader isMobile={isMobile}>
-						{t(
-							isFullGroup
-								? "q:looking.columns.challenges"
-								: "q:looking.columns.invitations",
-						)}
-					</ColumnHeader>
+								</>
+							),
+						}
+					: null
+			}
+			invited={
+				data.ownGroup
+					? invitedGroups.map((group) => sortedGroupCard(group, "UNLIKE"))
+					: null
+			}
+			available={neutralGroups.map((group) => sortedGroupCard(group, "LIKE"))}
+			availableCount={neutralGroups.length}
+			received={
+				<>
 					{!data.ownGroup ? <JoinQueuePrompt /> : null}
-					{groupsReceivedLikesFrom.map((group) => {
-						const like = data.likes.received.find(
-							(l) => l.groupId === group.id,
-						)!;
-
-						const likeAction = () => {
-							if (!isFullGroup) return "GROUP_UP";
-
-							if (like.isRechallenge) return "MATCH_UP_RECHALLENGE";
-							return "MATCH_UP";
-						};
-
-						return (
-							<GroupCard
-								key={group.id}
-								group={group}
-								action={likeAction()}
-								suggestable={isSuggestable(group.id)}
-								trail={trailOf(group.id)}
-								isSuggested={suggestedGroupIds.has(group.id)}
-								ownGroup={data.ownGroup}
-							/>
-						);
-					})}
-				</div>
-			) : null}
-		</Flipper>
+					{groupsReceivedLikesFrom.map((group) => (
+						<React.Fragment key={group.id}>
+							{groupCard(group, receivedLikeAction(group.id))}
+						</React.Fragment>
+					))}
+				</>
+			}
+			receivedCount={groupsReceivedLikesFrom.length}
+		/>
 	);
 }
 
@@ -502,18 +379,6 @@ function sortGroups<T extends { id: number; members?: { id: number }[] }>(
 
 		return sentimentScore(b) - sentimentScore(a);
 	});
-}
-
-function ColumnHeader({
-	isMobile,
-	children,
-}: {
-	isMobile: boolean;
-	children: React.ReactNode;
-}) {
-	if (isMobile) return null;
-
-	return <div className={styles.header}>{children}</div>;
 }
 
 function JoinQueuePrompt() {
