@@ -4,7 +4,7 @@ import {
 	popularBuilds,
 } from "./build-stats-utils";
 
-const commonAbilities = [
+const commonAbilitySums = [
 	{
 		ability: "QR" as const,
 		abilityPointsSum: 57,
@@ -27,10 +27,15 @@ const commonAbilities = [
 	},
 ];
 
-const allAbilities = [
-	...commonAbilities,
-	{ ability: "BRU" as const, abilityPointsSum: 57 },
-];
+const commonAbilities = { abilities: commonAbilitySums, buildsCount: 2 };
+
+const allAbilities = {
+	abilities: [
+		...commonAbilitySums,
+		{ ability: "BRU" as const, abilityPointsSum: 57 },
+	],
+	buildsCount: 3,
+};
 
 describe("abilityPointCountsToAverages", () => {
 	test("calculates build count", () => {
