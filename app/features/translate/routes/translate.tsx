@@ -13,7 +13,7 @@ export const meta: MetaFunction = (args) => {
 	return metaTags({
 		title: "Translate",
 		description:
-			"Help translate sendou.ink, the competitive Splatoon hub, to your language.",
+			"Help translate sendou.ink, the competitive Splatoon hub, into your language.",
 		location: args.location,
 	});
 };

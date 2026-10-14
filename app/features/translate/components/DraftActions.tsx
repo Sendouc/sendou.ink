@@ -67,16 +67,20 @@ export function DraftActions({
 
 	const importFiles = async (fileList: FileList) => {
 		setIsImporting(true);
-		const imported = TranslationDrafts.fromFiles({
-			catalog,
-			files: await readTranslationFiles(fileList),
-		});
+		const files = await readTranslationFiles(fileList).catch(() => null);
+		setIsImporting(false);
+
+		if (!files) {
+			toastQueue.add({ message: "Couldn't read the files", variant: "error" });
+			return;
+		}
+
+		const imported = TranslationDrafts.fromFiles({ catalog, files });
 		const count = Object.values(imported).reduce(
 			(sum, namespaceDrafts) => sum + Object.keys(namespaceDrafts).length,
 			0,
 		);
 		const isSaved = addDrafts(language, imported);
-		setIsImporting(false);
 
 		toastQueue.add(
 			!isSaved
