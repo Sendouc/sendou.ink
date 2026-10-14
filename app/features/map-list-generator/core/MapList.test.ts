@@ -673,6 +673,59 @@ describe("MapList.generate() with initialWeights", () => {
 	});
 });
 
+describe("MapList.generate() with candidateFilters", () => {
+	const SZ_ONLY_MAP_POOL = new MapPool({
+		SZ: [1, 2, 3, 4, 5, 6],
+		TC: [],
+		RM: [],
+		CB: [],
+		TW: [],
+	});
+
+	test("draws from the first filter that leaves any candidate", () => {
+		for (let i = 0; i < 20; i++) {
+			const gen = MapList.generate({
+				mapPool: SZ_ONLY_MAP_POOL,
+				candidateFilters: () => [
+					(map) => map.stageId === 10,
+					(map) => map.stageId === 2 || map.stageId === 3,
+				],
+			});
+			gen.next();
+
+			const maps = gen.next({ amount: 2 }).value;
+
+			expect(maps.map((m) => m.stageId).sort()).toEqual([2, 3]);
+		}
+	});
+
+	test("draws from every candidate when no filter leaves any", () => {
+		const gen = MapList.generate({
+			mapPool: SZ_ONLY_MAP_POOL,
+			candidateFilters: () => [(map) => map.stageId === 10],
+		});
+		gen.next();
+
+		const maps = gen.next({ amount: 6 }).value;
+
+		expect(new Set(maps.map((m) => m.stageId)).size).toBe(6);
+	});
+
+	test("passes the map's index in the set to the filters", () => {
+		for (let i = 0; i < 20; i++) {
+			const gen = MapList.generate({
+				mapPool: SZ_ONLY_MAP_POOL,
+				candidateFilters: (index) => [(map) => map.stageId === index + 1],
+			});
+			gen.next();
+
+			const maps = gen.next({ amount: 3 }).value;
+
+			expect(maps.map((m) => m.stageId)).toEqual([1, 2, 3]);
+		}
+	});
+});
+
 describe("MapList.resume()", () => {
 	const POOL = new MapPool({
 		TW: [],

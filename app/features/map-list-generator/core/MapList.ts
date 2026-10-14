@@ -51,6 +51,8 @@ export function* generate(args: {
 	modeOrder?: ModeShort[];
 	/** Mode-agnostic initial stage weights, how `resume` carries over stage-level penalties from history. */
 	initialStageWeights?: Map<StageId, number>;
+	/** Filters per map index of a set, tried in order. The first one leaving any candidate narrows the draw. */
+	candidateFilters?: (index: number) => Array<(map: ModeWithStage) => boolean>;
 }): Generator<Array<ModeWithStage>, Array<ModeWithStage>, GenerateNext> {
 	if (args.mapPool.isEmpty()) {
 		while (true) yield [];
@@ -106,6 +108,7 @@ export function* generate(args: {
 				mode,
 				stageWeights,
 				stageModeWeights,
+				filters: args.candidateFilters?.(i) ?? [],
 			});
 
 			result.push({ mode, stageId });
@@ -239,11 +242,13 @@ function selectStageWeighted({
 	mode,
 	stageWeights,
 	stageModeWeights,
+	filters,
 }: {
 	possibleStages: readonly StageId[];
 	mode: ModeShort;
 	stageWeights: Map<StageId, number>;
 	stageModeWeights: Map<string, number>;
+	filters: Array<(map: ModeWithStage) => boolean>;
 }): StageId {
 	const getCandidates = () =>
 		possibleStages.filter((stageId) => {
@@ -263,6 +268,14 @@ function selectStageWeighted({
 			stageModeWeights.set(key, value + 1);
 		}
 		candidates = getCandidates();
+	}
+
+	for (const filter of filters) {
+		const filtered = candidates.filter((stageId) => filter({ mode, stageId }));
+		if (filtered.length > 0) {
+			candidates = filtered;
+			break;
+		}
 	}
 
 	return weightedRandomSelect(candidates, (stageId) => {
