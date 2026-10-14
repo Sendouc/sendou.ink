@@ -306,5 +306,10 @@
 	"settings.notifications.browserNotSupported": "Les notifications push ne sont pas supporter par cet navigateur",
 	"settings.notifications.permissionDenied": "Les notifications push ont été refusées. Vérifiez les paramètres de votre navigateur pour les réactiver",
 	"badges.selector.none": "Aucun badges est sélectionné",
-	"badges.selector.select": "Selectionner un badge pour l'ajouter"
+	"badges.selector.select": "Selectionner un badge pour l'ajouter",
+	"modes.short.TW": "GdT",
+	"modes.short.SZ": "DdZ",
+	"modes.short.TC": "ER",
+	"modes.short.RM": "MB",
+	"modes.short.CB": "PdP"
 }

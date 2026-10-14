@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { abilitiesShort } from "~/modules/in-game-lists/abilities";
 import { brandIds } from "~/modules/in-game-lists/brand-ids";
+import { modesShortWithSpecial } from "~/modules/in-game-lists/modes";
 import { invariant } from "~/utils/invariant";
 import {
 	LANG_JSONS_TO_CREATE,
@@ -91,6 +92,27 @@ const stages = [
 	"Urchin Underpass",
 ] as const;
 
+const modeShortToLangDictEntry: Record<
+	(typeof modesShortWithSpecial)[number],
+	[dict: string, key: string]
+> = {
+	TW: ["CommonMsg/VS/VSRuleName", "Pnt"],
+	SZ: ["CommonMsg/VS/VSRuleName", "Var"],
+	TC: ["CommonMsg/VS/VSRuleName", "Vlf"],
+	RM: ["CommonMsg/VS/VSRuleName", "Vgl"],
+	CB: ["CommonMsg/VS/VSRuleName", "Vcl"],
+	TB: ["CommonMsg/MatchMode", "MiniGame"],
+	SR: ["CommonMsg/MatchMode", "Coop"],
+};
+
+/** Replaces generated values where the game's text doesn't work as a standalone name */
+const TRANSLATION_OVERRIDES: Record<string, Record<string, string>> = {
+	// game shows the English logo text "SALMON RUN", the names below are from its titles
+	JPja: { MODE_LONG_SR: "サーモンラン" },
+	KRko: { MODE_LONG_SR: "새먼 런" },
+	CNzh: { MODE_LONG_SR: "鲑鱼跑" },
+};
+
 const abilityShortToInternalName = new Map([
 	["ISM", "MainInk_Save"],
 	["ISS", "SubInk_Save"],
@@ -174,16 +196,24 @@ async function main() {
 			translationsMap[`BRAND_${brandCode}`] = translation;
 		}
 
-		const jsonPath = path.join(
-			__dirname,
-			"..",
-			"locales",
-			translationJsonFolderName(langCode),
-			"game-misc.json",
-		);
+		for (const mode of modesShortWithSpecial) {
+			const [dict, key] = modeShortToLangDictEntry[mode];
+			const translation = langDict[dict]?.[key];
+			invariant(translation, `Missing translation for mode ${mode}`);
 
-		const jsonCurrentContents = fs.readFileSync(jsonPath, "utf-8");
-		const jsonCurrent = JSON.parse(jsonCurrentContents);
+			translationsMap[`MODE_LONG_${mode}`] = translation;
+		}
+
+		for (const [key, translation] of Object.entries(
+			TRANSLATION_OVERRIDES[langCode] ?? {},
+		)) {
+			invariant(
+				translationsMap[key],
+				`Override for ${langCode} ${key} doesn't match a generated key`,
+			);
+
+			translationsMap[key] = translation;
+		}
 
 		fs.writeFileSync(
 			path.join(
@@ -193,7 +223,7 @@ async function main() {
 				translationJsonFolderName(langCode),
 				"game-misc.json",
 			),
-			`${JSON.stringify({ ...jsonCurrent, ...translationsMap }, null, 2)}\n`,
+			`${JSON.stringify(translationsMap, null, 2)}\n`,
 		);
 	}
 

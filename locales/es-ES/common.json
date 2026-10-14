@@ -462,5 +462,10 @@
 	"tier.tentative": "Tier {{tierName}} provisional (según el historial de la serie)",
 	"tier.confirmed": "Torneo de tier {{tierName}}",
 	"spoilerFree.showResults": "Mostrar resultados",
-	"spoilerFree.hideResults": "Ocultar resultados"
+	"spoilerFree.hideResults": "Ocultar resultados",
+	"modes.short.TW": "TT",
+	"modes.short.SZ": "PZ",
+	"modes.short.TC": "TR",
+	"modes.short.RM": "PD",
+	"modes.short.CB": "AA"
 }

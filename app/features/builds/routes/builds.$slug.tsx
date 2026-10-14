@@ -195,7 +195,7 @@ export default function WeaponsBuildsPage() {
 }
 
 function Filters() {
-	const { t } = useTranslation(["builds", "game-misc"]);
+	const { t } = useTranslation(["builds", "game-misc", "common"]);
 	const [{ abilities: abilityConditions, mode, date }, setParams] =
 		useSearchParamsTyped(buildsSearchParams);
 
@@ -226,7 +226,7 @@ function Filters() {
 					name: t("builds:filters.mode"),
 					icon: <MapIcon />,
 					formattedValue:
-						mode !== null ? t(`game-misc:MODE_SHORT_${mode}`) : null,
+						mode !== null ? t(`common:modes.short.${mode}`) : null,
 					onAdd: () => setParams({ mode: "SZ" }),
 					onRemove: () => setParams({ mode: null }),
 					testId: "mode",

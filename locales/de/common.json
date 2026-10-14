@@ -99,5 +99,10 @@
 	"support.perk.customizedColorsTeam": "Farben anpassen (Team-Seite)",
 	"support.perk.customizedColorsTeam.extra": "Nur ein Team-Mitglied muss Patron sein, um diesen Vorteil zu erhalten.",
 	"support.perk.privateDiscord": "Zugang zu einem exklusiven Discord-Kanal",
-	"support.perk.privateDiscord.extra": "Zum Austausch gelegentlicher 'Work in progress'-Updates, für priorisierten Support und der Möglichkeit zur priorisierten Erfüllung von Verbesserungsideen."
+	"support.perk.privateDiscord.extra": "Zum Austausch gelegentlicher 'Work in progress'-Updates, für priorisierten Support und der Möglichkeit zur priorisierten Erfüllung von Verbesserungsideen.",
+	"modes.short.TW": "RK",
+	"modes.short.SZ": "HS",
+	"modes.short.TC": "TK",
+	"modes.short.RM": "OG",
+	"modes.short.CB": "MC"
 }

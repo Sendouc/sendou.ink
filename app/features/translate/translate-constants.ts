@@ -13,9 +13,13 @@ export const TRANSLATE = {
 /** Most visible texts, listed before the other namespaces */
 export const PRIORITY_NAMESPACES = ["common", "front", "forms"] as const;
 
-// xxx: game-misc too?
 /** Generated from game data, not translated by hand */
-export const GENERATED_NAMESPACES = ["weapons", "gear", "game-badges"] as const;
+export const GENERATED_NAMESPACES = [
+	"weapons",
+	"gear",
+	"game-badges",
+	"game-misc",
+] as const;
 
 export const TRANSLATABLE_LANGUAGES = languages
 	.map((language) => language.code)

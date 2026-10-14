@@ -345,5 +345,10 @@
 	"tier.tentative": "暂定 {{tierName}} 级别（基于过往历史）",
 	"tier.confirmed": "{{tierName}} 级别赛事",
 	"spoilerFree.showResults": "显示结果",
-	"spoilerFree.hideResults": "隐藏结果"
+	"spoilerFree.hideResults": "隐藏结果",
+	"modes.short.TW": "涂地",
+	"modes.short.SZ": "区域",
+	"modes.short.TC": "塔楼",
+	"modes.short.RM": "鱼虎",
+	"modes.short.CB": "蛤蜊"
 }

@@ -531,5 +531,10 @@
 	"streams.help.twitch": "Stream in the Splatoon 3 category.",
 	"streams.help.youtube": "Add #sendouink to your stream's title or description. It can take up to 20 minutes for your stream to appear.",
 	"streams.help.sidebar.title": "Sidebar",
-	"streams.help.sidebar": "Streams of tournament and SendouQ matches can be shown in the sidebar. Other streams can be shown there if your linked X Rank peak is at least {{minXp}} X Power and you have played at least {{minSets}} SendouQ or tournament sets this or last season."
+	"streams.help.sidebar": "Streams of tournament and SendouQ matches can be shown in the sidebar. Other streams can be shown there if your linked X Rank peak is at least {{minXp}} X Power and you have played at least {{minSets}} SendouQ or tournament sets this or last season.",
+	"modes.short.TW": "TW",
+	"modes.short.SZ": "SZ",
+	"modes.short.TC": "TC",
+	"modes.short.RM": "RM",
+	"modes.short.CB": "CB"
 }
