@@ -280,6 +280,64 @@ describe("Tournament match page", () => {
 		});
 	});
 
+	describe("reopening a play all set", () => {
+		const PLAY_ALL_MAPS = {
+			count: 3,
+			type: "PLAY_ALL",
+			list: ([1, 2, 3] as const).map((stageId) => ({
+				mode: "SZ" as const,
+				stageId,
+			})),
+		} satisfies TournamentFactory.RoundMaps;
+
+		let playAllParams: { id: string; mid: string };
+		let teamA: { id: number };
+		let teamB: { id: number };
+
+		const reportPlayAllScore = (position: number, winnerTeamId: number) =>
+			reportScoreAction({ position, winnerTeamId, params: playAllParams });
+
+		beforeEach(async () => {
+			const tournament = await TournamentFactory.create({
+				authorId: organizerId,
+			});
+			teamA = await createTournamentTeam(tournament.id, users.ids(ROSTER_SIZE));
+			teamB = await createTournamentTeam(
+				tournament.id,
+				users.ids(ROSTER_SIZE * 2).slice(ROSTER_SIZE),
+			);
+
+			const [match] = await TournamentFactory.startBracket(tournament.id, {
+				maps: PLAY_ALL_MAPS,
+			});
+			playAllParams = { id: String(tournament.id), mid: String(match.id) };
+		});
+
+		test("removes the last game's score when the set loser won the last game", async () => {
+			await reportPlayAllScore(0, teamA.id);
+			await reportPlayAllScore(1, teamA.id);
+			await reportPlayAllScore(2, teamB.id);
+
+			await tournamentMatchAction(
+				{ _action: "REOPEN_MATCH" },
+				{ user: "admin", params: playAllParams },
+			);
+
+			const data = await tournamentMatchLoader({ params: playAllParams });
+			const scoreOf = (teamId: number) =>
+				[data.match.opponentOne, data.match.opponentTwo].find(
+					(opponent) => opponent?.id === teamId,
+				)?.score;
+
+			expect(data.results.map((result) => result.winnerTeamId)).toEqual([
+				teamA.id,
+				teamA.id,
+			]);
+			expect(scoreOf(teamA.id)).toBe(2);
+			expect(scoreOf(teamB.id)).toBe(0);
+		});
+	});
+
 	describe("pick/ban", () => {
 		/** Two maps more than the set's length, so both teams get to ban one. */
 		const BAN_2_MAPS = {
