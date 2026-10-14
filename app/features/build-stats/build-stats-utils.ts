@@ -2,31 +2,28 @@ import { abilities } from "~/modules/in-game-lists/abilities";
 import type { Ability } from "~/modules/in-game-lists/types";
 import { invariant } from "~/utils/invariant";
 import { roundToNDecimalPlaces } from "~/utils/number";
-import { MAX_AP } from "../build-analyzer/analyzer-constants";
 import { isStackableAbility } from "../build-analyzer/core/ability-points";
 import type {
 	AverageAbilityPointsResult,
 	PopularBuildsRow,
 } from "../builds/BuildRepository.server";
 
-const toBuildsCount = (counts: AverageAbilityPointsResult[]) =>
-	counts.reduce((acc, cur) => acc + cur.abilityPointsSum, 0) / MAX_AP;
-
 const toAbilityPoints = (
-	results: AverageAbilityPointsResult[],
+	results: AverageAbilityPointsResult,
 	ability: Ability,
 ) =>
-	results.find((current) => current.ability === ability)?.abilityPointsSum ?? 0;
+	results.abilities.find((current) => current.ability === ability)
+		?.abilityPointsSum ?? 0;
 
 export function abilityPointCountsToAverages({
 	allAbilities,
 	weaponAbilities,
 }: {
-	allAbilities: AverageAbilityPointsResult[];
-	weaponAbilities: AverageAbilityPointsResult[];
+	allAbilities: AverageAbilityPointsResult;
+	weaponAbilities: AverageAbilityPointsResult;
 }) {
-	const allBuildsCount = toBuildsCount(allAbilities);
-	const weaponBuildsCount = toBuildsCount(weaponAbilities);
+	const allBuildsCount = allAbilities.buildsCount;
+	const weaponBuildsCount = weaponAbilities.buildsCount;
 	invariant(
 		allBuildsCount > weaponBuildsCount,
 		"allBuildsCount < weaponBuildsCount",

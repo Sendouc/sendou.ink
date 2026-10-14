@@ -183,7 +183,9 @@ export async function findAllAbilityPointAverages(
 ) {
 	// sum tables only hold public builds, so no private filter or `Build` join is needed
 	if (typeof weaponSplId === "number") {
-		return db
+		const canonicalId = canonicalWeaponSplId(weaponSplId);
+
+		const abilities = await db
 			.selectFrom("BuildWeaponAbility")
 			.select(({ fn }) => [
 				"BuildWeaponAbility.ability",
@@ -191,16 +193,25 @@ export async function findAllAbilityPointAverages(
 					.sum<number>("BuildWeaponAbility.abilityPoints")
 					.as("abilityPointsSum"),
 			])
-			.where(
-				"BuildWeaponAbility.canonicalWeaponSplId",
-				"=",
-				canonicalWeaponSplId(weaponSplId),
-			)
+			.where("BuildWeaponAbility.canonicalWeaponSplId", "=", canonicalId)
 			.groupBy("BuildWeaponAbility.ability")
 			.execute();
+
+		const { buildsCount } = await db
+			.selectFrom("BuildWeaponAbility")
+			.select(({ fn }) =>
+				fn
+					.count<number>("BuildWeaponAbility.buildId")
+					.distinct()
+					.as("buildsCount"),
+			)
+			.where("BuildWeaponAbility.canonicalWeaponSplId", "=", canonicalId)
+			.executeTakeFirstOrThrow();
+
+		return { abilities, buildsCount };
 	}
 
-	return db
+	const abilities = await db
 		.selectFrom("BuildAbilitySum")
 		.select(({ fn }) => [
 			"BuildAbilitySum.ability",
@@ -208,6 +219,15 @@ export async function findAllAbilityPointAverages(
 		])
 		.groupBy("BuildAbilitySum.ability")
 		.execute();
+
+	const { buildsCount } = await db
+		.selectFrom("BuildAbilitySum")
+		.select(({ fn }) =>
+			fn.count<number>("BuildAbilitySum.buildId").distinct().as("buildsCount"),
+		)
+		.executeTakeFirstOrThrow();
+
+	return { abilities, buildsCount };
 }
 
 export async function findAllPopularAbilitiesByWeaponId(
@@ -250,7 +270,7 @@ export async function findAllPopularAbilitiesByWeaponId(
 
 export type AverageAbilityPointsResult = Awaited<
 	ReturnType<typeof findAllAbilityPointAverages>
->[number];
+>;
 
 export type PopularBuildsRow = Awaited<
 	ReturnType<typeof findAllPopularAbilitiesByWeaponId>

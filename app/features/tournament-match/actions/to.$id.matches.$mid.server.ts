@@ -504,7 +504,11 @@ export const action = defineAction(
 				const { result: reopened } = await executeBracketOperation({
 					tournamentId,
 					tournament,
-					operation: (bracketData) => Engine.reopenMatch(bracketData, match.id),
+					operation: (bracketData) =>
+						Engine.reopenMatch(bracketData, {
+							matchId: match.id,
+							lastGameWinnerTeamId: lastResult?.winnerTeamId ?? null,
+						}),
 					endDroppedTeams: false,
 					inTransaction: async (result, trx) => {
 						// round robin edge case: leave the match as is, lock it and unlock later to continue (should not really ever happen)
