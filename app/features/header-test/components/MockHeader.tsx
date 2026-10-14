@@ -9,7 +9,6 @@ import {
 	PanelLeft,
 	Phone,
 	Plus,
-	ScanEye,
 	Search,
 	Settings,
 } from "lucide-react";
@@ -27,6 +26,8 @@ import {
 	LeaveVoiceButton,
 	MicToggle,
 	ParticipantStack,
+	ScannerCorner,
+	ScannerIcon,
 	ScannerPanel,
 	ScannerRecDot,
 	SqBadge,
@@ -281,9 +282,8 @@ function ButtonCluster() {
 			{state.scanner !== "none" ? (
 				<ClusterButton
 					label="Scanner"
-					icon={<ScanEye />}
-					corner={<ScannerRecDot />}
-					dot={state.scanner === "error"}
+					icon={<ScannerIcon />}
+					corner={<ScannerCorner />}
 				>
 					<ScannerPanel />
 				</ClusterButton>
@@ -531,9 +531,8 @@ function ScannerIconButton() {
 	return (
 		<ClusterButton
 			label="Scanner"
-			icon={<ScanEye />}
-			corner={<ScannerRecDot />}
-			dot={state.scanner === "error"}
+			icon={<ScannerIcon />}
+			corner={<ScannerCorner />}
 			className={styles.standaloneIconButton}
 		>
 			<ScannerPanel />

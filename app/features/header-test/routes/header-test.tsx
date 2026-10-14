@@ -26,10 +26,15 @@ type LayoutId = (typeof LAYOUTS)[number]["id"];
 
 const SQ_OPTIONS: Array<[HeaderMockState["sq"], string]> = [
 	["none", "None"],
+	["preparing", "Preparing"],
 	["queued", "In queue (likes)"],
+	["expired", "Group inactive"],
 	["readyCheck", "Ready check"],
 	["match", "In match"],
 	["checkIn", "Tournament check-in"],
+	["toWaiting", "Tournament waiting"],
+	["toCast", "Tournament waiting for cast"],
+	["toMatch", "Tournament match"],
 ];
 
 const VOICE_OPTIONS: Array<[HeaderMockState["voice"], string]> = [

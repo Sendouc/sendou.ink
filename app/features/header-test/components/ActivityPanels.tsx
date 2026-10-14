@@ -4,16 +4,17 @@ import {
 	ExternalLink,
 	HeadphoneOff,
 	Headphones,
+	Hourglass,
 	Mic,
 	MicOff,
 	Phone,
 	PhoneOff,
 	RotateCcw,
-	ScanEye,
 	Settings,
 	Signal,
 	Square,
 	Volume2,
+	X,
 } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -45,12 +46,28 @@ export function SqIcon({ size = 20 }: { size?: number }) {
 	const { state } = useHeaderMock();
 	if (state.sq === "none") return null;
 
-	return (
-		<Image
-			path={navIconUrl(SQ_MOCK_STATUS[state.sq].navIcon)}
-			size={size}
+	const status = SQ_MOCK_STATUS[state.sq];
+	const icon = status.logoUrl ? (
+		<img
+			src={status.logoUrl}
+			width={size}
+			height={size}
 			alt=""
+			className={styles.sqLogo}
 		/>
+	) : (
+		<Image path={navIconUrl(status.navIcon)} size={size} alt="" />
+	);
+
+	if (!status.waiting) return icon;
+
+	return (
+		<span className={styles.sqIconWaiting}>
+			{icon}
+			<span className={styles.waitingMark}>
+				<Hourglass />
+			</span>
+		</span>
 	);
 }
 
@@ -66,9 +83,7 @@ export function SqBadge({ sq }: { sq: SqMockState }) {
 	if (sq === "none") return null;
 	const status = SQ_MOCK_STATUS[sq];
 
-	if (status.alert) {
-		return <span className={clsx(styles.badge, styles.alertBadge)}>!</span>;
-	}
+	if (status.alert) return <AlertBadge />;
 	if (status.count) {
 		return (
 			<span className={clsx(styles.badge, styles.actionBadge)}>
@@ -640,6 +655,28 @@ function Slider({
 	);
 }
 
+export function ScannerIcon() {
+	return <Image path={navIconUrl("scanner")} size={20} alt="" />;
+}
+
+/** Rec dot while capturing, the same "!" badge as other activities when the scanner stopped. */
+export function ScannerCorner() {
+	const { state } = useHeaderMock();
+	if (state.scanner === "error") {
+		return (
+			<span className={clsx(styles.badge, styles.errorBadge)}>
+				<X />
+			</span>
+		);
+	}
+
+	return <ScannerRecDot />;
+}
+
+function AlertBadge() {
+	return <span className={clsx(styles.badge, styles.alertBadge)}>!</span>;
+}
+
 export function ScannerRecDot() {
 	const { state } = useHeaderMock();
 
@@ -647,7 +684,6 @@ export function ScannerRecDot() {
 		<span
 			className={clsx(styles.recDot, {
 				[styles.recDotError]: state.scanner === "error",
-				[styles.recDotLive]: state.scanner !== "error",
 			})}
 		/>
 	);
@@ -730,7 +766,11 @@ export function ScannerPanel() {
 				</div>
 			</dl>
 			<div className={styles.controls}>
-				<SendouButton size="small" variant="outlined" icon={<ScanEye />}>
+				<SendouButton
+					size="small"
+					variant="outlined"
+					icon={<Image path={navIconUrl("scanner")} size={16} alt="" />}
+				>
 					Open scanner
 				</SendouButton>
 				{isError ? (

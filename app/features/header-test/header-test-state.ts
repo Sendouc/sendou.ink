@@ -39,10 +39,15 @@ export type HeaderVariant = (typeof HEADER_VARIANTS)[number]["id"];
 
 export type SqMockState =
 	| "none"
+	| "preparing"
 	| "queued"
+	| "expired"
 	| "readyCheck"
 	| "match"
-	| "checkIn";
+	| "checkIn"
+	| "toWaiting"
+	| "toCast"
+	| "toMatch";
 export type VoiceMockState =
 	| "none"
 	| "available"
@@ -100,21 +105,38 @@ export const INITIAL_HEADER_MOCK_STATE: HeaderMockState = {
 	},
 };
 
+const MOCK_TOURNAMENT_LOGO_URL =
+	"https://sendou.nyc3.cdn.digitaloceanspaces.com/tournament-logo-itz.png";
+
 export const SQ_MOCK_STATUS: Record<
 	Exclude<SqMockState, "none">,
 	{
 		state: GlobalStatusState;
 		navIcon: string;
+		logoUrl?: string;
 		subtitle: string;
 		count?: number;
 		alert?: boolean;
+		waiting?: boolean;
 	}
 > = {
+	preparing: {
+		state: "SQ_PREPARING",
+		navIcon: "sendouq",
+		subtitle: "Group 2/4 · Invite teammates to join",
+		waiting: true,
+	},
 	queued: {
 		state: "SQ_QUEUED",
 		navIcon: "sendouq",
 		subtitle: "Group 3/4 · 2 new likes",
 		count: 2,
+	},
+	expired: {
+		state: "SQ_EXPIRED",
+		navIcon: "sendouq",
+		subtitle: "Group hidden from others · Refresh to keep looking",
+		alert: true,
 	},
 	readyCheck: {
 		state: "SQ_READY_CHECK",
@@ -130,8 +152,29 @@ export const SQ_MOCK_STATUS: Record<
 	checkIn: {
 		state: "TO_CHECKIN",
 		navIcon: "medal",
+		logoUrl: MOCK_TOURNAMENT_LOGO_URL,
 		subtitle: "In The Zone 42 · closes in 12 min",
 		alert: true,
+	},
+	toWaiting: {
+		state: "TO_WAITING_FOR_MATCH",
+		navIcon: "medal",
+		logoUrl: MOCK_TOURNAMENT_LOGO_URL,
+		subtitle: "In The Zone 42 · Winners round 3",
+		waiting: true,
+	},
+	toCast: {
+		state: "TO_WAITING_FOR_CAST",
+		navIcon: "medal",
+		logoUrl: MOCK_TOURNAMENT_LOGO_URL,
+		subtitle: "In The Zone 42 · Match is held for the stream",
+		waiting: true,
+	},
+	toMatch: {
+		state: "TO_MATCH",
+		navIcon: "medal",
+		logoUrl: MOCK_TOURNAMENT_LOGO_URL,
+		subtitle: "In The Zone 42 · Winners round 3",
 	},
 };
 
