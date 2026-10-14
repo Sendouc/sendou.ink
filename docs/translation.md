@@ -13,6 +13,14 @@ sendou.ink can be translated into any of its supported languages. The easiest wa
 
 Drafts only exist in the browser they were written in. To continue elsewhere (or after clearing the browser's data), use "Import files" with the downloaded files: whatever differs from the current translations becomes a draft again.
 
+## 100% isn't done
+
+A language being 100% translated doesn't mean the work is over. Existing translations can always be improved, use the "Translated" filter on the Translate page to go through them:
+
+- Make texts sound more natural
+- Fix inaccurate translations
+- Browse the site in your language and check that the layout isn't broken, e.g. text overflowing or getting cut off. Sometimes there just isn't room and you need to find a shorter word. If the layout is broken by the code rather than the text, [open an issue on GitHub](https://github.com/sendou-ink/sendou.ink/issues)
+
 ## Things to note
 
 - Some lines have dynamic parts like `"articleBy": "by {{author}}"`. The `{{author}}` part should appear in the translated version unchanged - don't translate the part inside `{{}}`.

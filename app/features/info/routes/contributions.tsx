@@ -12,8 +12,6 @@ import {
 	TRANSLATE_PAGE,
 } from "~/utils/urls";
 
-// xxx: docs about translation progress incl. how 100% is not rly done
-
 export const meta: MetaFunction = (args) => {
 	return metaTags({
 		title: "Contributions",
