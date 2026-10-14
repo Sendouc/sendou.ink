@@ -25,6 +25,7 @@ import type {
 	ModeShort,
 } from "~/modules/in-game-lists/types";
 import { canonicalWeaponSplId } from "~/modules/in-game-lists/weapon-ids";
+import { weaponSlug } from "~/utils/english-weapon-names";
 import type { UserWithPlusTier } from "~/utils/kysely.server";
 import { gearTypeToInitial } from "~/utils/strings";
 import {
@@ -317,10 +318,7 @@ function BuildImageExportDialog({
 function RoundWeaponImage({ weapon }: { weapon: BuildWeaponWithTop500Info }) {
 	const normalizedWeaponSplId = canonicalWeaponSplId(weapon.weaponSplId);
 
-	const { t } = useTranslation(["weapons"]);
-	const slug = mySlugify(
-		t(`weapons:MAIN_${normalizedWeaponSplId}`, { lng: "en" }),
-	);
+	const slug = weaponSlug({ type: "MAIN", id: normalizedWeaponSplId });
 
 	return (
 		<div key={weapon.weaponSplId} className={styles.weapon}>

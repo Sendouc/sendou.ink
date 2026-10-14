@@ -112,4 +112,6 @@ When utilizing feature specific translations ensure the json is loaded. This is 
 
 ### Sync
 
-Use the `pnpm run i18n:sync` command to sync translation jsons with English (removing and adding keys for each language as needed). There is not currently a check in the pipeline that this was done but it should always be ran when a new translation string has been added or removed.
+Run `pnpm run i18n:sync` after changing English keys (`pnpm run checks` fails otherwise). It keeps the jsons minimal: untranslated keys are left out and fall back to the parent language (`es-US` → `es-ES`, `fr-CA` → `fr-EU`), then English.
+
+Site languages are `languages` in `app/modules/i18n/config.ts`. In-game names (`weapons`, `gear`, `game-misc`, `game-badges`) use `gameLanguages`, picked separately by the user.

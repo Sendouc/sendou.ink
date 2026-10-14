@@ -31,8 +31,5 @@
 	"filters.atMost": "Como máximo",
 	"filters.date.since": "Desde",
 	"filters.date.custom": "Elegir fecha",
-	"filters.filterByWeapon": "Filtrar por arma",
-	"weaponBuildCount_one": "",
-	"weaponBuildCount_many": "",
-	"weaponBuildCount_other": ""
+	"filters.filterByWeapon": "Filtrar por arma"
 }

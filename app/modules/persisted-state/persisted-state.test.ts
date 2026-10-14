@@ -73,3 +73,33 @@ describe("prependToRecentList", () => {
 		]);
 	});
 });
+
+// unit tests run without `window`, so every write is one web storage refuses
+describe("without web storage", () => {
+	test("a written value lasts for the visit", () => {
+		const unstoredList = PersistedState.define({
+			key: "test-unstored-list",
+			storage: "local",
+			schema: v.array(v.number()),
+			default: [],
+		});
+
+		expect(PersistedState.write(unstoredList, [1, 2])).toBe(false);
+		expect(PersistedState.read(unstoredList)).toEqual([1, 2]);
+	});
+
+	test("written map entries last for the visit until removed", () => {
+		const unstoredCounts = PersistedState.defineMap({
+			keyPrefix: "test-unstored-counts__",
+			storage: "local",
+			schema: v.number(),
+			default: 0,
+		});
+
+		expect(PersistedState.writeMapEntry(unstoredCounts, "a", 1)).toBe(false);
+		PersistedState.writeMapEntry(unstoredCounts, "b", 2);
+		PersistedState.removeMapEntry(unstoredCounts, "a");
+
+		expect(PersistedState.readMap(unstoredCounts)).toEqual({ b: 2 });
+	});
+});

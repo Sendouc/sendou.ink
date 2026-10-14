@@ -102,6 +102,7 @@ export const FAQ_PAGE = "/faq";
 export const WELCOME_PAGE = "/welcome";
 export const SUPPORT_PAGE = "/support";
 export const CONTRIBUTIONS_PAGE = "/contributions";
+export const TRANSLATE_PAGE = "/translate";
 export const BADGES_PAGE = "/badges";
 export const TROPHIES_PAGE = "/trophies";
 export const NEW_TROPHY_PAGE = "/trophies/new";
@@ -265,6 +266,11 @@ export interface UserLinkArgs {
 	discordId: Tables["User"]["discordId"];
 	customUrl?: Tables["User"]["customUrl"];
 }
+
+export const translatePage = (language: string) =>
+	`${TRANSLATE_PAGE}/${language}`;
+export const sourceFileUrl = (filePath: string) =>
+	`${SENDOU_INK_GITHUB_URL}/blob/main/${filePath}`;
 
 export const userPage = (user: UserLinkArgs) =>
 	`/u/${user.customUrl ?? user.discordId}`;

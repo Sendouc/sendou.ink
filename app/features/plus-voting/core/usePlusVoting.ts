@@ -1,22 +1,13 @@
 import * as React from "react";
-import type { Tables } from "~/db/tables";
 import type * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { useHydrated } from "~/hooks/useHydrated";
+import * as PersistedState from "~/modules/persisted-state/persisted-state";
 import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "../plus-voting-constants";
+import { plusVotingPersisted } from "../plus-voting-persisted";
 import type { PlusVoteFromFE } from "./types";
 import { nextNonCompletedVoting, rangeToMonthYear } from "./voting-time";
-
-const LOCAL_STORAGE_KEY = "plusVoting";
-
-interface VotingLocalStorageData {
-	month: number;
-	year: number;
-	votes: PlusVoteFromFE[];
-	/** User id -> order for sorting */
-	usersForVotingOrder: Record<Tables["User"]["id"], number>;
-}
 
 interface VotingState {
 	usersForVoting: PlusVotingRepository.UsersForVoting;
@@ -97,18 +88,10 @@ function resolveInitialVotingState(
 	invariant(range, "No next voting found");
 	const { month, year } = rangeToMonthYear(range);
 
-	const usersForVotingFromLocalStorage =
-		localStorage.getItem(LOCAL_STORAGE_KEY);
-
-	if (!usersForVotingFromLocalStorage) {
-		return { usersForVoting: usersForVotingFromServer, votes: [] };
-	}
-
-	const parsedUsersForVoting = JSON.parse(
-		usersForVotingFromLocalStorage,
-	) as VotingLocalStorageData;
+	const parsedUsersForVoting = PersistedState.read(plusVotingPersisted);
 
 	if (
+		!parsedUsersForVoting ||
 		parsedUsersForVoting.month !== month ||
 		parsedUsersForVoting.year !== year
 	) {
@@ -192,13 +175,12 @@ function votesToLocalStorage({
 
 	const { month, year } = rangeToMonthYear(range);
 
-	const toLocalStorage: VotingLocalStorageData = {
+	PersistedState.write(plusVotingPersisted, {
 		month,
 		year,
 		votes,
 		usersForVotingOrder: Object.fromEntries(
 			usersForVoting.map(({ user }, i) => [user.id, i]),
 		),
-	};
-	localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(toLocalStorage));
+	});
 }

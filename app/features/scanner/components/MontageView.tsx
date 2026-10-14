@@ -31,6 +31,7 @@ import {
 	SendouChipRadioGroup,
 } from "~/components/elements/ChipRadio";
 import { WeaponImage } from "~/components/Image";
+import { usePersistedState } from "~/modules/persisted-state/hooks";
 import { formatPosition } from "../core/format";
 import { mainWeaponLabel, modeLabel, stageLabel } from "../core/labels";
 import {
@@ -40,6 +41,7 @@ import {
 	type MontageCandidate,
 	maxSecondsFor,
 } from "../core/montage";
+import { montageCollapsedGroupsPersisted } from "../scanner-persisted";
 import { ClipVideo } from "./ClipVideo";
 import { MontageGraphicStage } from "./MontageGraphics";
 import styles from "./MontageView.module.css";
@@ -67,8 +69,6 @@ import {
 import { ScanWorkers } from "./ScanWorkers";
 import { SessionHeader } from "./SessionHeader";
 import { useVodScan } from "./vod-scan";
-
-const COLLAPSED_GROUPS_STORAGE_KEY = "scanner:montage-collapsed-groups";
 
 export function MontageView() {
 	const montage = useMontage();
@@ -364,7 +364,10 @@ function MusicPicker({
 function CandidatesPanel({ montage }: { montage: MontageSnapshot }) {
 	const candidates = availableCandidates(montage);
 	const groups = candidatesByBaseWeapon(candidates);
-	const [collapsed, setCollapsed] = useState(loadCollapsedGroups);
+	const [collapsedGroups, setCollapsedGroups] = usePersistedState(
+		montageCollapsedGroupsPersisted,
+	);
+	const collapsed = new Set(collapsedGroups);
 	const allCollapsed =
 		groups.length > 0 &&
 		groups.every((group) => collapsed.has(String(group.baseWeaponId)));
@@ -375,8 +378,7 @@ function CandidatesPanel({ montage }: { montage: MontageSnapshot }) {
 			if (expand) next.delete(groupKey);
 			else next.add(groupKey);
 		}
-		setCollapsed(next);
-		saveCollapsedGroups(next);
+		setCollapsedGroups([...next]);
 	};
 
 	return (
@@ -588,29 +590,6 @@ function CandidateSummary({ candidate }: { candidate: MontageCandidate }) {
 			</span>
 		</span>
 	);
-}
-
-/** Base weapon ids (as strings, "null" for unknown) of the collapsed clip groups. */
-function loadCollapsedGroups(): Set<string> {
-	try {
-		const stored = JSON.parse(
-			localStorage.getItem(COLLAPSED_GROUPS_STORAGE_KEY) ?? "[]",
-		);
-		return new Set(Array.isArray(stored) ? stored.map(String) : []);
-	} catch {
-		return new Set();
-	}
-}
-
-function saveCollapsedGroups(collapsed: Set<string>): void {
-	try {
-		localStorage.setItem(
-			COLLAPSED_GROUPS_STORAGE_KEY,
-			JSON.stringify([...collapsed]),
-		);
-	} catch {
-		// private mode or a full quota: the groups stay collapsed for this visit
-	}
 }
 
 /** The candidate's thumbnail once decoded (they queue up, one VoD open at a time). */

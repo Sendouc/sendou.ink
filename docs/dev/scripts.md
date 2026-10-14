@@ -50,6 +50,7 @@ Note: it only works with Node 16.
 1. `pnpm exec vite-node scripts/create-gear-json.ts`
 1. `pnpm exec vite-node scripts/create-analyzer-json.ts`
    8a. Double check that no hard-coded special damages changed
+   8b. `pnpm run i18n:sync` (the scripts write the regional variants' full translations, sync removes what they share with their parent language)
 1. `pnpm exec vite-node scripts/create-object-dmg-json.ts` (also writes `damage-rate-history.json` for the params page directly into `app/features/params/data`)
 1. `pnpm exec vite-node scripts/sync-weapon-params.ts` (writes the weapon/sub/special param histories for the params page, see [Sync weapon params](#sync-weapon-params))
 1. Fill new weapon IDs by category to `weapon-ids.ts` (easy to take from the diff of English weapons.json)

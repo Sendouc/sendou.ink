@@ -314,6 +314,15 @@
 		{
 			"includes": [
 				"app/**",
+				"!app/modules/persisted-state/**",
+				"!**/*.test.ts",
+				"!**/*.test.tsx"
+			],
+			"plugins": ["./biome-plugins/no-raw-web-storage.grit"]
+		},
+		{
+			"includes": [
+				"app/**",
 				"!app/form/parse.server.ts",
 				"!app/form/define-action.server.ts"
 			],

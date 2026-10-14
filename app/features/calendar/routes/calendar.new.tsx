@@ -979,7 +979,7 @@ function CustomTeamPickPoolField({
 }: {
 	pickedModes: ModeShort[];
 }) {
-	const { t } = useTranslation(["calendar", "game-misc"]);
+	const { t } = useTranslation(["calendar", "game-misc", "common"]);
 	const { values } = useFormFieldContext();
 	const quickFill = useMapPoolQuickFill();
 
@@ -1012,7 +1012,7 @@ function CustomTeamPickPoolField({
 					: shortfalls
 							.map(({ mode, required, has }) =>
 								t("calendar:forms.teamPick.poolShortfall", {
-									mode: t(`game-misc:MODE_SHORT_${mode}`),
+									mode: t(`common:modes.short.${mode}`),
 									required,
 									has,
 								}),

@@ -33,6 +33,5 @@
 	"filters.date.custom": "Personalisé",
 	"filters.filterByWeapon": "Filtre par arme",
 	"weaponBuildCount_one": "{{count}} set",
-	"weaponBuildCount_many": "",
 	"weaponBuildCount_other": "{{count}} sets"
 }

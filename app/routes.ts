@@ -258,6 +258,13 @@ export default [
 	route("/faq", "features/info/routes/faq.tsx"),
 	route("/welcome", "features/info/routes/welcome.tsx"),
 	route("/contributions", "features/info/routes/contributions.tsx"),
+
+	route("/translate", "features/translate/routes/translate.tsx"),
+	route(
+		"/translate/:language",
+		"features/translate/routes/translate.$language.tsx",
+		[index("features/translate/routes/translate.$language.index.tsx")],
+	),
 	route("/support", "features/info/routes/support.tsx"),
 
 	route("/t/new", "features/team/routes/t.new.tsx"),
