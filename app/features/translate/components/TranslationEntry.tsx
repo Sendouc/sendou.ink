@@ -107,9 +107,7 @@ function Editor({
 		isDirty && issues.every((formIssues) => formIssues.length === 0);
 	const hasDraft = formDrafts.some((draft) => draft !== null);
 
-	const isDirtyRef = React.useRef(() => isDirty);
-	isDirtyRef.current = () => isDirty;
-	useUnsavedChangesChecker(isDirtyRef);
+	useUnsavedChangesChecker(() => isDirty);
 
 	const setValue = (index: number, value: string) =>
 		setEdits((current) => current.map((v, i) => (i === index ? value : v)));
