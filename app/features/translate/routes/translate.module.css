@@ -17,7 +17,7 @@
 	color: var(--color-text);
 
 	&:hover {
-		border-color: var(--color-accent);
+		background-color: var(--color-bg-higher);
 		text-decoration: none;
 	}
 }

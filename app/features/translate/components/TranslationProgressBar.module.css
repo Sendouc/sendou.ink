@@ -7,15 +7,7 @@
 
 .bar {
 	height: var(--s-2);
-	overflow: hidden;
-	border-radius: var(--radius-full);
-	background-color: var(--color-bg-higher);
-}
-
-.fill {
-	height: 100%;
-	border-radius: var(--radius-full);
-	background-color: var(--color-accent);
+	background-color: var(--color-bg-accent);
 }
 
 .labels {

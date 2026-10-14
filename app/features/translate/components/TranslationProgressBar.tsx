@@ -1,6 +1,5 @@
 import styles from "./TranslationProgressBar.module.css";
 
-// xxx: why not our standard progressbar component
 export function TranslationProgressBar({
 	translated,
 	total,
@@ -12,15 +11,7 @@ export function TranslationProgressBar({
 
 	return (
 		<div className={styles.container}>
-			<div
-				className={styles.bar}
-				role="progressbar"
-				aria-valuemin={0}
-				aria-valuemax={total}
-				aria-valuenow={translated}
-			>
-				<div className={styles.fill} style={{ width: `${percentage}%` }} />
-			</div>
+			<progress className={styles.bar} value={translated} max={total} />
 			<div className={styles.labels}>
 				<span>
 					{translated} / {total} translated

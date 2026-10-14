@@ -101,7 +101,7 @@
 	cursor: pointer;
 
 	&:hover {
-		border-color: var(--color-accent);
+		border-color: var(--color-fg-accent);
 	}
 }
 
