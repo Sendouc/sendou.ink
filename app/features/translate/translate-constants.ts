@@ -11,7 +11,11 @@ export const TRANSLATE = {
 } as const;
 
 /** Most visible texts, listed before the other namespaces */
-export const PRIORITY_NAMESPACES = ["common", "front", "forms"] as const;
+export const PRIORITY_NAMESPACES: readonly string[] = [
+	"common",
+	"front",
+	"forms",
+];
 
 /** Generated from game data, not translated by hand */
 export const GENERATED_NAMESPACES = [

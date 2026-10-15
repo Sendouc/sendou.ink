@@ -158,7 +158,8 @@
 					"level": "error"
 				},
 				"noUselessCatchBinding": "error",
-				"noForEach": "error"
+				"noForEach": "error",
+				"useIndexOf": "error"
 			},
 			"performance": {
 				"noSyncScripts": "error"

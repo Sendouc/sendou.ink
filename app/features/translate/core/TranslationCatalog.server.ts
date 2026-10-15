@@ -103,9 +103,7 @@ export function progressByLanguage() {
 }
 
 function namespacePriority(namespace: string) {
-	const index = PRIORITY_NAMESPACES.findIndex(
-		(priority) => priority === namespace,
-	);
+	const index = PRIORITY_NAMESPACES.indexOf(namespace);
 	return index === -1 ? PRIORITY_NAMESPACES.length : index;
 }
 
