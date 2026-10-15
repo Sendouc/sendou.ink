@@ -224,6 +224,7 @@ function useTournamentWeaponReport({
 	const weaponReport = useMatchWeaponReport({
 		maps: weaponReportMaps,
 		pastReported,
+		weaponPoolIds: data.viewerWeaponPoolIds ?? undefined,
 	});
 
 	if (viewerUserId === undefined) return null;

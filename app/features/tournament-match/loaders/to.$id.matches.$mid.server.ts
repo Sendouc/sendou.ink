@@ -5,6 +5,7 @@ import * as Availability from "~/features/availability/core/Availability";
 import * as VisibleSchedules from "~/features/availability/core/VisibleSchedules.server";
 import type { RouteChatRoomInput } from "~/features/chat/chat-types";
 import * as RouteChatRooms from "~/features/chat/RouteChatRooms.server";
+import * as MatchProfileRepository from "~/features/match-profile/MatchProfileRepository.server";
 import { resolveNotifications } from "~/features/notifications/core/resolve.server";
 import * as ScannerIngestRepository from "~/features/scanner-ingest/ScannerIngestRepository.server";
 import * as ReportedWeaponRepository from "~/features/sendouq-match/ReportedWeaponRepository.server";
@@ -205,6 +206,12 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 		},
 		results,
 		reportedWeapons,
+		viewerWeaponPoolIds:
+			user && isParticipant
+				? (await MatchProfileRepository.findWeaponPoolByUserId(user.id)).map(
+						(weapon) => weapon.weaponSplId,
+					)
+				: null,
 		ingestedScoreboards,
 		mapList,
 		teams: [match.opponentOne?.id, match.opponentTwo?.id].flatMap(
