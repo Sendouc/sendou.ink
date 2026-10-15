@@ -16,6 +16,7 @@ import {
 	PADDLING_POOL_255,
 	PADDLING_POOL_257,
 } from "./tests/mocks";
+import { LUTI_S16_DIV_1 } from "./tests/mocks-luti";
 import { SWIM_OR_SINK_167 } from "./tests/mocks-sos";
 import {
 	progressions,
@@ -36,6 +37,7 @@ describe("Follow-up bracket progression", () => {
 			hasCheckedOutTeam: true,
 		}),
 	);
+	const tournamentLUTIS16Div1 = LUTI_S16_DIV_1();
 
 	test("correct amount of teams in the top cut", () => {
 		expect(tournamentPP257.brackets[1].seeding?.length).toBe(18);
@@ -227,10 +229,43 @@ describe("Follow-up bracket progression", () => {
 		expect(tournament.brackets).toHaveLength(2);
 	});
 
-	// TODO: handle LUTI bracket progression
-	// test("avoids rematches in RR -> SE (LUTI S16 Div 1) - avoid as long as possible", () => {
-	// 	https://github.com/sendou-ink/sendou.ink/pull/2192
-	// });
+	test("avoids rematches in RR -> SE (LUTI S16 Div 1) - avoid as long as possible", () => {
+		const groupsMatches = tournamentLUTIS16Div1.brackets[0].data.match;
+		const topCutMatches = tournamentLUTIS16Div1.brackets[1].data.match;
+
+		const topHalfTeams = topCutMatches
+			.slice(0, 2)
+			.flatMap((match) => [match.opponent1, match.opponent2]);
+		const bottomHalfTeams = topCutMatches
+			.slice(2, 4)
+			.flatMap((match) => [match.opponent1, match.opponent2]);
+
+		for (const half of [topHalfTeams, bottomHalfTeams]) {
+			for (const team of half) {
+				if (!team?.id) {
+					throw new Error("Unexpected no team in the test data");
+				}
+
+				for (const otherTeam of half) {
+					if (!otherTeam || otherTeam.id === team.id) {
+						continue;
+					}
+
+					if (
+						groupsMatches.some(
+							(match) =>
+								match.opponent1?.id === team.id &&
+								match.opponent2?.id === otherTeam.id,
+						)
+					) {
+						throw new Error(
+							`Teams would meet each other earlier than necessary: ${team.id} vs ${otherTeam.id}`,
+						);
+					}
+				}
+			}
+		}
+	});
 });
 
 describe("Bracket progression override", () => {
