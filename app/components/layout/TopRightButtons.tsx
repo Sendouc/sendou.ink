@@ -1,11 +1,11 @@
-import clsx from "clsx";
 import { Heart, LogIn, MessageSquare } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
 import { useChatContext } from "~/features/chat/ChatProvider";
-import { GlobalStatusIndicator } from "~/features/global-status/components/GlobalStatusIndicator";
-import { useGlobalStatus } from "~/features/global-status/GlobalStatusProvider";
+import { StatusActivity } from "~/features/global-status/components/StatusActivity";
+import { ScannerActivity } from "~/features/scanner/components/ScannerActivity";
+import { VoiceActivity } from "~/features/voice/components/VoiceActivity";
 import { useLayoutSize } from "~/hooks/useLayoutSize";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { LinkButton, SendouButton } from "../elements/Button";
@@ -16,6 +16,7 @@ import { GlobalSearch, LoggedOutGlobalSearch } from "./GlobalSearch";
 import { LogInButtonContainer } from "./LogInButtonContainer";
 import styles from "./TopRightButtons.module.css";
 
+// xxx: animations?
 export function TopRightButtons({
 	showSupport,
 	isLoggedIn,
@@ -24,16 +25,9 @@ export function TopRightButtons({
 	isLoggedIn: boolean;
 }) {
 	const { t } = useTranslation(["common", "front"]);
-	const { status: globalStatus } = useGlobalStatus();
-	const hasGlobalStatus = globalStatus !== null;
 
 	return (
-		<div
-			className={clsx(
-				styles.container,
-				hasGlobalStatus ? styles.withStatus : null,
-			)}
-		>
+		<div className={styles.container}>
 			{showSupport ? (
 				<>
 					<div className={styles.supportWrapper}>
@@ -58,7 +52,11 @@ export function TopRightButtons({
 				</>
 			) : null}
 			<div className={styles.searchAndAddContainer}>
-				<GlobalStatusIndicator />
+				<div className={styles.activities}>
+					<StatusActivity />
+					<VoiceActivity />
+					<ScannerActivity />
+				</div>
 				<div className={styles.searchWrapper}>
 					{isLoggedIn ? <GlobalSearch /> : <LoggedOutGlobalSearch />}
 				</div>

@@ -34,6 +34,7 @@ import styles from "./VoiceBar.module.css";
 
 const RATINGS = [1, 2, 3, 4, 5];
 
+// xxx: the header has voice controls of its own now, reconsider whether the chat sidebar still needs these
 export function VoiceBar({ room }: { room: ChatRoomListItem }) {
 	const voiceRoom = useVoiceRoom(room);
 	const { call, pendingFeedback } = useVoiceSnapshot();

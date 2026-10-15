@@ -24,22 +24,29 @@ export function useVoiceSnapshot(): VoiceSnapshot {
 	);
 }
 
-export function useVoiceRoom(room: {
-	id: number;
-	type: ChatRoomType;
-}): VoiceRoomState | null {
+export function useVoiceRoom(
+	room: {
+		id: number;
+		type: ChatRoomType;
+	} | null,
+): VoiceRoomState | null {
 	const snapshot = useVoiceSnapshot();
-	const hasVoice = VOICE_ROOM_TYPES.some((type) => type === room.type);
+	const hasVoice = VOICE_ROOM_TYPES.some((type) => type === room?.type);
+	const roomId = room?.id;
 
 	React.useEffect(() => {
-		if (!hasVoice) return;
-		void voiceClient.loadRoom(room.id);
-	}, [hasVoice, room.id]);
+		if (!hasVoice || roomId === undefined) return;
+		void voiceClient.loadRoom(roomId);
+	}, [hasVoice, roomId]);
 
 	useEventStreamCatchUp({
 		enabled: hasVoice,
-		onCatchUp: () => void voiceClient.loadRoom(room.id),
+		onCatchUp: () => {
+			if (roomId !== undefined) void voiceClient.loadRoom(roomId);
+		},
 	});
 
-	return hasVoice ? (snapshot.roomsById.get(room.id) ?? null) : null;
+	return hasVoice && roomId !== undefined
+		? (snapshot.roomsById.get(roomId) ?? null)
+		: null;
 }

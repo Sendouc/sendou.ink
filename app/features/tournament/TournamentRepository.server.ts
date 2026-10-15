@@ -1012,6 +1012,8 @@ export function findPendingCheckInsStartingBetween({
 			.select((eb) => [
 				"TournamentTeamMember.userId",
 				"Tournament.id as tournamentId",
+				"CalendarEvent.name as tournamentName",
+				"CalendarEventDate.startsAt",
 				tournamentLogoWithDefault(eb).as("logoUrl"),
 			])
 			// a multi-day tournament checks in before its first day only

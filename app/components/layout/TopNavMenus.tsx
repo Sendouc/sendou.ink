@@ -25,7 +25,6 @@ const DEV_IMPERSONATE_ITEMS = [
 const DEV_LINK_ITEMS = [
 	{ name: "Components", icon: "settings", url: "/components" },
 	{ name: "OG Images", icon: "art", url: "/admin/og-images" },
-	{ name: "Header test", icon: "settings", url: "/header-test" },
 ] as const;
 
 const NAV_CATEGORIES = [

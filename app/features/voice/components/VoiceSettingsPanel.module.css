@@ -1,0 +1,55 @@
+.panel {
+	gap: var(--s-3);
+}
+
+.slider {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	column-gap: var(--s-2);
+
+	& > span:first-child {
+		grid-column: 1 / -1;
+	}
+
+	& input {
+		width: 100%;
+		accent-color: var(--color-fill-accent);
+	}
+}
+
+.sliderValue {
+	min-width: 3.5ch;
+	text-align: end;
+	font-size: var(--font-2xs);
+	font-variant-numeric: tabular-nums;
+	color: var(--color-text-high);
+}
+
+.levelRow {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-1);
+}
+
+/* notches, the marker is the sensitivity threshold */
+.level {
+	position: relative;
+	height: 8px;
+	border-radius: var(--radius-full);
+	background: repeating-linear-gradient(
+		90deg,
+		var(--color-bg-higher) 0 3px,
+		transparent 3px 5px
+	);
+	overflow: hidden;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: var(--sensitivity);
+		width: 2px;
+		background-color: var(--color-text-high);
+	}
+}
