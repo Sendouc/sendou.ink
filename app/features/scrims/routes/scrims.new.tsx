@@ -2,13 +2,12 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { type MetaFunction, useLoaderData } from "react-router";
 import type * as v from "valibot";
-import { SendouDatePicker } from "~/components/elements/DatePicker";
 import { Label } from "~/components/Label";
 import type { CustomFieldRenderProps } from "~/form";
 import { FormField as UntypedFormField } from "~/form/FormField";
+import { DatetimeFormField } from "~/form/fields/DatetimeFormField";
 import { FormFieldWrapper } from "~/form/fields/FormFieldWrapper";
 import { SendouForm, useFormFieldContext } from "~/form/SendouForm";
-import { errorMessageId } from "~/form/utils";
 import { nullFilledArray } from "~/utils/arrays";
 import { metaTags, ogPageImage } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
@@ -208,10 +207,10 @@ function NotFoundVisibilityFormField({
 
 	if (noAssociations || baseVisibility === "PUBLIC") return null;
 
-	const handleDateChange = (val: Date | null) => {
+	const handleDateChange = (val: Date | undefined) => {
 		setValue("notFoundVisibility", {
 			...notFoundVisibility,
-			at: val,
+			at: val ?? null,
 		});
 	};
 
@@ -224,23 +223,23 @@ function NotFoundVisibilityFormField({
 
 	const dateValue = notFoundVisibility.at
 		? new Date(notFoundVisibility.at)
-		: null;
+		: undefined;
 
 	return (
 		<div>
 			<div className="stack horizontal sm">
 				<div className={styles.datePickerFullWidth}>
-					<SendouDatePicker
-						label={t("scrims:forms.notFoundVisibility.title")}
-						granularity="minute"
-						errorText={error ? t(`forms:${error}` as never) : undefined}
-						errorId={errorMessageId("notFoundVisibility")}
+					<DatetimeFormField
+						name="notFoundVisibility"
+						label="scrims:forms.notFoundVisibility.title"
+						required={false}
+						error={error}
 						value={dateValue}
 						onChange={handleDateChange}
 						bottomText={
 							notFoundVisibility.at
 								? undefined
-								: t("scrims:forms.notFoundVisibility.explanation")
+								: "scrims:forms.notFoundVisibility.explanation"
 						}
 					/>
 				</div>

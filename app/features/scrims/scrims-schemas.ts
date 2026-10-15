@@ -322,7 +322,7 @@ export const scrimsNewFormSchema = v.pipe(
 						if (!at) return true;
 						if (at < sub(new Date(), { days: 1 })) return false;
 						return true;
-					}, "errors.dateInPast"),
+					}, "forms:errors.dateInPast"),
 				),
 				forAssociation: associationIdentifierSchema,
 			}),
