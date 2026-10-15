@@ -2,11 +2,17 @@ import { addDays, subDays } from "date-fns";
 import { ADMIN_ID } from "~/features/admin/admin-constants";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { expect, impersonate, isNotVisible, test } from "./helpers/playwright";
+import {
+	createTeams,
+	startedTournamentTimes,
+	teamSeeds,
+} from "./helpers/tournament";
 import { TournamentLookingPage } from "./pages/tournament/tournament-looking-page";
 import { TournamentSubsPage } from "./pages/tournament/tournament-subs-page";
 
 const SUB_NAME = "Subby Sam";
 const SUB_MESSAGE = "Free after 8pm";
+const NOT_STAYING_NAME = "Leaving Lee";
 
 test.describe("Tournament LFG", () => {
 	test("player adds their own sub post and deletes it", async ({
@@ -72,5 +78,54 @@ test.describe("Tournament LFG", () => {
 
 		await looking.goto(tournament.id);
 		await expect(looking.locators.stayAsSubSwitch).toBeChecked();
+	});
+
+	test.only("player who preferred to stay as sub keeps their post once the tournament starts and can replace it", async ({
+		page,
+		factories,
+	}) => {
+		const tournament = await factories.TournamentFactory.create({
+			authorId: ADMIN_ID,
+			startTimes: startedTournamentTimes(),
+		});
+		await createTeams(factories, tournament.id, teamSeeds(2));
+
+		const stayingSub = await factories.UserFactory.create({
+			discordName: SUB_NAME,
+		});
+		const notStayingPlayer = await factories.UserFactory.create({
+			discordName: NOT_STAYING_NAME,
+		});
+		await factories.TournamentLFGTeamFactory.create({
+			tournamentId: tournament.id,
+			userId: stayingSub.id,
+			isStayAsSub: true,
+		});
+		await factories.TournamentLFGTeamFactory.create({
+			tournamentId: tournament.id,
+			userId: notStayingPlayer.id,
+			isStayAsSub: false,
+		});
+
+		await factories.TournamentFactory.startBracket(tournament.id);
+
+		await impersonate(page, stayingSub.id);
+
+		const subs = new TournamentSubsPage(page);
+		await subs.goto(tournament.id);
+
+		await expect(subs.subPostText(SUB_NAME)).toBeVisible();
+		await isNotVisible(subs.subPostText(NOT_STAYING_NAME));
+
+		await subs.deleteOwnPost();
+
+		await expect(subs.locators.noPostsText).toBeVisible();
+
+		await subs.openAddPostDialog();
+		await subs.addSubForm.fill("message", SUB_MESSAGE);
+		await subs.addSubForm.submit();
+
+		await expect(subs.subPostText(SUB_NAME)).toBeVisible();
+		await expect(subs.subPostText(SUB_MESSAGE)).toBeVisible();
 	});
 });

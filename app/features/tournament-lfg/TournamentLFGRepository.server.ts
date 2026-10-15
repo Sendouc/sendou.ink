@@ -318,7 +318,13 @@ export function leaveLfg({
 			])
 			.where("TournamentTeamMember.userId", "=", userId)
 			.where("TournamentTeam.tournamentId", "=", tournamentId)
-			.where("TournamentTeam.isLooking", "=", 1)
+			// starting a bracket clears isLooking, also from sub posts
+			.where((eb) =>
+				eb.or([
+					eb("TournamentTeam.isLooking", "=", 1),
+					eb("TournamentTeam.isPlaceholder", "=", 1),
+				]),
+			)
 			.executeTakeFirst();
 
 		if (!userTeam) return [];
