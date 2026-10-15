@@ -22,6 +22,7 @@ import {
 	GraphicTeamsList,
 } from "~/features/img-export/components/Graphic";
 import { TournamentGraphicHeader } from "~/features/img-export/components/TournamentResultsGraphic";
+import { SNAPDOM_CAPTURE_OPTIONS } from "~/features/img-export/img-export-constants";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { tournamentPage } from "~/utils/urls";
 import type { MontageManifest, MontageManifestVod } from "../core/montage";
@@ -294,13 +295,5 @@ async function captureImage(
 	const { snapdom } = await import("@zumer/snapdom");
 	await document.fonts.ready;
 
-	// the same options the image export captures with (ImageExportDialog.tsx)
-	return snapdom.toBlob(element, {
-		type: "png",
-		scale,
-		dpr: 1,
-		embedFonts: true,
-		compress: false,
-		reconcile: true,
-	});
+	return snapdom.toBlob(element, { ...SNAPDOM_CAPTURE_OPTIONS, scale });
 }
