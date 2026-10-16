@@ -1119,10 +1119,17 @@ export function changedStartingBrackets(
  * Bracket order for standings: a participant's standing comes from the first bracket in this order they
  * are in. Finals first; a bracket always comes after every bracket it advances teams to, so teams it
  * eliminated end up below those that advanced. Underground brackets are omitted as they only break
- * ties within their source bracket, see `tiebrokenByUndergroundBrackets`.
+ * ties within their source bracket, see `tiebrokenByUndergroundBrackets`. Considers the brackets
+ * reachable from `startingBracketIdx`, for tournaments with many starting brackets (divisions).
  */
-export function bracketIdxsForStandings(progression: ParsedBracket[]) {
-	const bracketsToConsider = bracketsReachableFrom(0, progression);
+export function bracketIdxsForStandings(
+	progression: ParsedBracket[],
+	startingBracketIdx = 0,
+) {
+	const bracketsToConsider = bracketsReachableFrom(
+		startingBracketIdx,
+		progression,
+	);
 
 	const ordered = destinationsFirstOrder(bracketsToConsider, progression);
 

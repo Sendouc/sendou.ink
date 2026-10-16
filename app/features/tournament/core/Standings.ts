@@ -319,26 +319,12 @@ function tournamentStandingsForBracket(
 	tournament: Tournament,
 	bracketIdx: number | undefined,
 ): Standing[] {
-	let bracketIdxs: number[];
-
 	const isSingleStartingBracket = typeof bracketIdx !== "number";
 
-	if (isSingleStartingBracket) {
-		bracketIdxs = Progression.bracketIdxsForStandings(
-			tournament.ctx.settings.bracketProgression,
-		);
-	} else {
-		const reachableBrackets = Progression.bracketsReachableFrom(
-			bracketIdx,
-			tournament.ctx.settings.bracketProgression,
-		);
-		const reachableSet = new Set(reachableBrackets);
-
-		const allBracketIdxs = tournament.ctx.settings.bracketProgression
-			.map((_, idx) => idx)
-			.sort((a, b) => b - a);
-		bracketIdxs = allBracketIdxs.filter((idx) => reachableSet.has(idx));
-	}
+	const bracketIdxs = Progression.bracketIdxsForStandings(
+		tournament.ctx.settings.bracketProgression,
+		bracketIdx,
+	);
 
 	const result: Standing[] = [];
 	const alreadyIncludedTeamIds = new Set<number>();

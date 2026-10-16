@@ -58,6 +58,17 @@ describe("tournamentStandings", () => {
 		expect(new Set(divs).size).toBe(2);
 	});
 
+	test("ranks a division's top cut above its consolation bracket", () => {
+		const tournament = divisionsWithConsolationTournament();
+
+		const result = tournamentStandings(tournament);
+
+		invariant(result.type === "multi");
+		const divisionA = result.standings[0].standings;
+		expect(divisionA.map((s) => s.team.id)).toEqual([1, 2, 3, 4]);
+		expect(divisionA.map((s) => s.placement)).toEqual([1, 2, 3, 4]);
+	});
+
 	test("splits A/B divisions finals into 'A' and 'B' divs with teams partitioned by abDivision", () => {
 		const tournament = abDivisionsTournament();
 
@@ -614,6 +625,95 @@ function groupsToRedemptionAndConsolationTournament() {
 			},
 			teams: [1, 2, 3, 4, 5, 6, 7, 8].map((id) =>
 				tournamentCtxTeam(id, { startingBracketIdx: 0, seed: id }),
+			),
+		},
+		data,
+	});
+}
+
+function divisionsWithConsolationTournament() {
+	const data = mergeStages(
+		playOutLowerIdWins(
+			createResolved({
+				type: "round_robin",
+				seeding: [1, 2, 3, 4],
+				settings: { groupCount: 1 },
+			}),
+		),
+		playOutLowerIdWins(
+			createResolved({
+				type: "round_robin",
+				seeding: [5, 6, 7, 8],
+				settings: { groupCount: 1 },
+			}),
+		),
+		playOutLowerIdWins(
+			createResolved({
+				type: "single_elimination",
+				seeding: [1, 2],
+				settings: {},
+			}),
+		),
+		playOutLowerIdWins(
+			createResolved({
+				type: "single_elimination",
+				seeding: [3, 4],
+				settings: {},
+			}),
+		),
+		playOutLowerIdWins(
+			createResolved({
+				type: "single_elimination",
+				seeding: [5, 6],
+				settings: {},
+			}),
+		),
+	);
+
+	return testTournament({
+		ctx: {
+			settings: {
+				bracketProgression: [
+					{
+						type: "round_robin",
+						name: "A Groups",
+						requiresCheckIn: false,
+						settings: { groupCount: 1 },
+					},
+					{
+						type: "round_robin",
+						name: "B Groups",
+						requiresCheckIn: false,
+						settings: { groupCount: 1 },
+					},
+					{
+						type: "single_elimination",
+						name: "A Top Cut",
+						requiresCheckIn: false,
+						settings: {},
+						sources: [{ bracketIdx: 0, placements: [1, 2] }],
+					},
+					{
+						type: "single_elimination",
+						name: "A Consolation",
+						requiresCheckIn: false,
+						settings: {},
+						sources: [{ bracketIdx: 0, placements: [3, 4] }],
+					},
+					{
+						type: "single_elimination",
+						name: "B Top Cut",
+						requiresCheckIn: false,
+						settings: {},
+						sources: [{ bracketIdx: 1, placements: [1, 2] }],
+					},
+				],
+			},
+			teams: [1, 2, 3, 4, 5, 6, 7, 8].map((id) =>
+				tournamentCtxTeam(id, {
+					startingBracketIdx: id <= 4 ? 0 : 1,
+					seed: id,
+				}),
 			),
 		},
 		data,
