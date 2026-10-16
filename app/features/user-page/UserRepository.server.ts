@@ -11,6 +11,7 @@ import {
 	type TournamentTierNumber,
 	WORST_TIER_NUMBER,
 } from "~/features/tournament/core/tiering";
+import * as TournamentTeamRepository from "~/features/tournament/TournamentTeamRepository.server";
 import type {
 	BuildSort,
 	ResultSource,
@@ -1303,7 +1304,7 @@ export function updateOwnProfile(args: UpdateProfileArgs) {
 				.execute();
 		}
 
-		return trx
+		const user = await trx
 			.updateTable("User")
 			.set({
 				country: args.country,
@@ -1326,6 +1327,15 @@ export function updateOwnProfile(args: UpdateProfileArgs) {
 			.where("id", "=", userId)
 			.returning(["User.id", "User.customUrl", "User.discordId"])
 			.executeTakeFirstOrThrow();
+
+		const inGameNameUpdatedTournamentIds = args.inGameName
+			? await TournamentTeamRepository.updateOwnMemberInGameNameForNonStarted(
+					args.inGameName,
+					trx,
+				)
+			: [];
+
+		return { ...user, inGameNameUpdatedTournamentIds };
 	});
 }
 

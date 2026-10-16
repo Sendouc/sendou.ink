@@ -83,8 +83,11 @@ export function setActiveRoster({
 		.execute();
 }
 
-const regOpenTournamentTeamsByJoinedUserId = (userId: number) =>
-	db
+const regOpenTournamentTeamsByJoinedUserId = (
+	userId: number,
+	trx: Transaction<DB>,
+) =>
+	trx
 		.selectFrom("TournamentTeamMember")
 		.innerJoin(
 			"TournamentTeam",
@@ -145,11 +148,15 @@ export function updateMemberInGameName({
 /** Updates the acting user's in-game name in tournaments not yet started, returning the ids of those tournaments. */
 export async function updateOwnMemberInGameNameForNonStarted(
 	inGameName: string,
+	trx: Transaction<DB>,
 ): Promise<number[]> {
 	const userId = actorId();
-	const tournamentTeams = await regOpenTournamentTeamsByJoinedUserId(userId);
+	const tournamentTeams = await regOpenTournamentTeamsByJoinedUserId(
+		userId,
+		trx,
+	);
 
-	await db
+	await trx
 		.updateTable("TournamentTeamMember")
 		.set({ inGameName })
 		.where("TournamentTeamMember.userId", "=", userId)
