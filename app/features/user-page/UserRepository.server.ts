@@ -1285,7 +1285,7 @@ export function upsert(
 				...R.omit(args, ["discordId"]),
 			});
 		})
-		.returning(["id", "discordAvatar"])
+		.returning(["id", "discordAvatar", "syncedAvatarImgId"])
 		.executeTakeFirstOrThrow();
 }
 
