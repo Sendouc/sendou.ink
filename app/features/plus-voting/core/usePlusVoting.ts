@@ -127,6 +127,8 @@ function resolveInitialVotingState(
 function useVoteWithKeysEffect(vote: (type: "upvote" | "downvote") => void) {
 	React.useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
+			if (!isVoteHotkey(e)) return;
+
 			if (e.code === "KeyS") {
 				vote("downvote");
 			} else if (e.code === "KeyK") {
@@ -140,6 +142,24 @@ function useVoteWithKeysEffect(vote: (type: "upvote" | "downvote") => void) {
 			window.removeEventListener("keydown", handleKeyDown);
 		};
 	}, [vote]);
+}
+
+/** A bare key press not meant for a shortcut, a text field or an open dialog. */
+function isVoteHotkey(e: KeyboardEvent) {
+	if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+		return false;
+	}
+
+	const target = e.target;
+	if (!(target instanceof HTMLElement)) return true;
+
+	return !(
+		target.isContentEditable ||
+		target instanceof HTMLInputElement ||
+		target instanceof HTMLTextAreaElement ||
+		target instanceof HTMLSelectElement ||
+		target.closest("[popover], dialog")
+	);
 }
 
 function previousUser({
