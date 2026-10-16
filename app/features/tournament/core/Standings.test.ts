@@ -312,15 +312,28 @@ describe("sprByTeamId", () => {
 		expect(result.get(4)).toBe(0);
 	});
 
-	test("returns 0 for a team whose seed is outside the standings", () => {
+	test("returns 0 for a team without a seed", () => {
 		const result = sprByTeamId(
 			standings([
-				{ id: 1, seed: 1, placement: 1 },
-				{ id: 2, seed: 9, placement: 2 },
+				{ id: 2, seed: null, placement: 1 },
+				{ id: 1, seed: 1, placement: 2 },
 			]),
 		);
 
 		expect(result.get(2)).toBe(0);
+	});
+
+	test("compares a division's teams by their seed order within that division", () => {
+		// division B of an A/B divisions tournament, seeds 1 & 3 went to division A
+		const result = sprByTeamId(
+			standings([
+				{ id: 4, seed: 4, placement: 1 },
+				{ id: 2, seed: 2, placement: 2 },
+			]),
+		);
+
+		expect(result.get(4)).toBe(1);
+		expect(result.get(2)).toBe(-1);
 	});
 });
 
@@ -976,7 +989,7 @@ function playOut(
 }
 
 function standings(
-	teams: Array<{ id: number; seed: number; placement: number }>,
+	teams: Array<{ id: number; seed: number | null; placement: number }>,
 ): Standing[] {
 	return teams.map(({ id, seed, placement }) => ({
 		team: tournamentCtxTeam(id, { seed }),

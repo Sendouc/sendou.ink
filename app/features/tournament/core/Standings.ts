@@ -66,6 +66,7 @@ export function reNumberPlacements<T extends { placement: number }>(
 
 /**
  * SPR (Seed Performance Rating) of every team in the standings, keyed by tournament team id.
+ * Seeds are ranked among the given standings only, so a division's standings are compared to its own seed order.
  * See https://web.archive.org/web/20250513034545/https://www.pgstats.com/articles/introducing-spr-and-uf
  */
 export function sprByTeamId(standings: Standing[]): Map<number, number> {
@@ -75,11 +76,19 @@ export function sprByTeamId(standings: Standing[]): Map<number, number> {
 			.map((placement, index) => [placement, index]),
 	);
 
+	const seedRankByTeamId = new Map(
+		R.sortBy(
+			standings.filter((standing) => typeof standing.team.seed === "number"),
+			(standing) => standing.team.seed ?? 0,
+		).map((standing, rank) => [standing.team.id, rank]),
+	);
+
 	const result = new Map<number, number>();
 
 	for (const standing of standings) {
+		const seedRank = seedRankByTeamId.get(standing.team.id);
 		const expectedPlacement =
-			standings[(standing.team.seed ?? 0) - 1]?.placement;
+			typeof seedRank === "number" ? standings[seedRank]?.placement : undefined;
 		const expectedIndex = expectedPlacement
 			? indexByPlacement.get(expectedPlacement)
 			: undefined;
