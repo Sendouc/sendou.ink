@@ -49,6 +49,13 @@ export async function replaceByMatchId(
 	await executor.insertInto("ReportedWeapon").values(weapons).execute();
 }
 
+export async function deleteByMatchId(matchId: number, trx?: Transaction<DB>) {
+	await (trx ?? db)
+		.deleteFrom("ReportedWeapon")
+		.where("groupMatchId", "=", matchId)
+		.execute();
+}
+
 export async function deleteOwnByMapIndex({
 	matchId,
 	mapIndex,
