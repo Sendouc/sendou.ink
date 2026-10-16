@@ -51,7 +51,7 @@ export const action = defineAction(
 				const bracket = tournament.bracketByIdx(body.bracketIdx);
 				invariant(bracket, "Bracket not found");
 
-				const seeding = bracket.seeding;
+				const seeding = bracket.previewSeeding;
 				errorToastIfFalsy(seeding, "Bracket already started");
 
 				errorToastIfFalsy(
@@ -225,7 +225,7 @@ export const action = defineAction(
 					type: bracket.type,
 					settings: bracket.settings,
 					participantsCount:
-						body.eliminationTeamCount ?? (bracket.seeding ?? []).length,
+						body.eliminationTeamCount ?? (bracket.previewSeeding ?? []).length,
 				});
 
 				await TournamentRepository.upsertPreparedMaps({

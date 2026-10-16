@@ -32,7 +32,7 @@ export interface CreateBracketArgs {
 		bracketIdx: number;
 		placements: number[];
 	}[];
-	seeding?: number[];
+	previewSeeding?: number[];
 	settings: TournamentStageSettings | null;
 	requiresCheckIn: boolean;
 	startTime: Date | null;
@@ -94,7 +94,7 @@ export abstract class Bracket {
 	tournament;
 	sources;
 	createdAt;
-	seeding;
+	previewSeeding;
 	settings;
 	requiresCheckIn;
 	startTime;
@@ -114,22 +114,22 @@ export abstract class Bracket {
 		tournament,
 		sources,
 		createdAt,
-		seeding,
+		previewSeeding,
 		settings,
 		requiresCheckIn,
 		startTime,
 	}: Omit<CreateBracketArgs, "format">) {
-		if (!data && !seeding) {
-			throw new Error("Bracket: seeding or data required");
+		if (!data && !previewSeeding) {
+			throw new Error("Bracket: previewSeeding or data required");
 		}
 
 		this.id = id;
 		this.idx = idx;
 		this.preview = preview;
-		this.seeding = seeding;
+		this.previewSeeding = previewSeeding;
 		this.tournament = tournament;
 		this.settings = settings;
-		this.data = data ?? this.generateMatchesData(this.seeding!);
+		this.data = data ?? this.generateMatchesData(this.previewSeeding!);
 		this.participantsReady = participantsReady;
 		this.name = name;
 		this.teamsPendingCheckIn = teamsPendingCheckIn;
@@ -312,6 +312,8 @@ export abstract class Bracket {
 	}
 
 	get participantTournamentTeamIds() {
+		if (this.preview && this.previewSeeding) return this.previewSeeding;
+
 		return R.unique(
 			this.data.match
 				.flatMap((match) => [match.opponent1?.id, match.opponent2?.id])

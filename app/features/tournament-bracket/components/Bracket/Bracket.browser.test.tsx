@@ -830,7 +830,7 @@ function createMockBracket(
 		tournament: mockTournament as any,
 		settings: type === "swiss" ? { roundCount: 3 } : null,
 		sources: undefined,
-		seeding: undefined,
+		previewSeeding: undefined,
 		createdAt: null,
 		requiresCheckIn: false,
 		startTime: null,

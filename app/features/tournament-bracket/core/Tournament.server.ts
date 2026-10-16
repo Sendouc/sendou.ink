@@ -370,7 +370,7 @@ export function serializeBracket(
 		teamsPendingCheckIn: bracket.teamsPendingCheckIn,
 		createdAt: bracket.createdAt ?? null,
 		sources: bracket.sources,
-		seeding: bracket.seeding,
+		previewSeeding: bracket.previewSeeding,
 		settings: bracket.settings,
 		requiresCheckIn: bracket.requiresCheckIn,
 		startTime: bracket.startTime

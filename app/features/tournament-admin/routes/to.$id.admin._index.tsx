@@ -505,7 +505,7 @@ function isCheckInBracket(bracket: BracketMeta) {
 /** Is the team going to play (or pending check-in) in this bracket? */
 function isTeamInBracket(bracket: BracketMeta, teamId: number) {
 	return Boolean(
-		bracket.seeding?.includes(teamId) ||
+		bracket.previewSeeding?.includes(teamId) ||
 			bracket.teamsPendingCheckIn?.includes(teamId),
 	);
 }

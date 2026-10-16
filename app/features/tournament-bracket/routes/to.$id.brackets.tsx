@@ -307,14 +307,14 @@ function getAbDivisionsStartError(
 		bracket.type !== "round_robin" ||
 		!bracket.settings?.hasAbDivisions ||
 		!bracket.isStartingBracket ||
-		!bracket.seeding ||
-		bracket.seeding.length === 0
+		!bracket.previewSeeding ||
+		bracket.previewSeeding.length === 0
 	) {
 		return null;
 	}
 
 	const groupCount = new Set(bracket.data.round.map((r) => r.groupId)).size;
-	const abDivisionsBySeedOrder = bracket.seeding.map(
+	const abDivisionsBySeedOrder = bracket.previewSeeding.map(
 		(teamId) => tournament.teamById(teamId)?.abDivision,
 	);
 
