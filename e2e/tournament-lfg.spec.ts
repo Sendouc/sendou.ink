@@ -80,7 +80,7 @@ test.describe("Tournament LFG", () => {
 		await expect(looking.locators.stayAsSubSwitch).toBeChecked();
 	});
 
-	test.only("player who preferred to stay as sub keeps their post once the tournament starts and can replace it", async ({
+	test("player who preferred to stay as sub keeps their post once the tournament starts and can replace it", async ({
 		page,
 		factories,
 	}) => {
