@@ -1,8 +1,5 @@
-import { PassThrough } from "node:stream";
-import { createReadableStreamFromReadable } from "@react-router/node";
 import { isbot } from "isbot";
-import cron from "node-cron";
-import { renderToPipeableStream } from "react-dom/server";
+import { renderToReadableStream } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
 import {
 	type EntryContext,
@@ -40,47 +37,33 @@ async function handleRequest(
 ) {
 	await dateFnsLocalesLoaded;
 
-	const callbackName = isbot(request.headers.get("user-agent"))
-		? "onAllReady"
-		: "onShellReady";
-
 	const instance = getI18nInstance(loadContext);
 
-	return new Promise((resolve, reject) => {
-		let didError = false;
+	let didError = false;
+	const body = await renderToReadableStream(
+		<I18nextProvider i18n={instance}>
+			<ServerRouter context={reactRouterContext} url={request.url} />
+		</I18nextProvider>,
+		{
+			// +1s gives React time to flush the rejected boundary contents
+			signal: AbortSignal.timeout(streamTimeout + 1000),
+			onError(error: unknown) {
+				didError = true;
 
-		const { pipe, abort } = renderToPipeableStream(
-			<I18nextProvider i18n={instance}>
-				<ServerRouter context={reactRouterContext} url={request.url} />
-			</I18nextProvider>,
-			{
-				[callbackName]: () => {
-					const body = new PassThrough();
-					const stream = createReadableStreamFromReadable(body);
-					responseHeaders.set("Content-Type", "text/html");
-
-					resolve(
-						new Response(stream, {
-							headers: responseHeaders,
-							status: didError ? 500 : responseStatusCode,
-						}),
-					);
-
-					pipe(body);
-				},
-				onShellError(error: unknown) {
-					reject(error);
-				},
-				onError(error: unknown) {
-					didError = true;
-
-					logger.error(error);
-				},
+				logger.error(error);
 			},
-		);
+		},
+	);
 
-		// +1s gives React time to flush the rejected boundary contents
-		setTimeout(abort, streamTimeout + 1000);
+	if (isbot(request.headers.get("user-agent"))) {
+		await body.allReady;
+	}
+
+	responseHeaders.set("Content-Type", "text/html; charset=utf-8");
+
+	return new Response(body, {
+		headers: responseHeaders,
+		status: didError ? 500 : responseStatusCode,
 	});
 }
 
@@ -110,37 +93,41 @@ declare global {
 if (!global.appStartSignal && ServerConfig.isProduction && !IS_E2E_TEST_RUN) {
 	global.appStartSignal = true;
 
-	cron.schedule("0 */1 * * *", async () => {
+	Bun.cron("0 */1 * * *", async () => {
 		for (const routine of everyHourAt00) {
 			await routine.run();
 		}
 	});
 
-	cron.schedule("30 */1 * * *", async () => {
+	Bun.cron("30 */1 * * *", async () => {
 		for (const routine of everyHourAt30) {
 			await routine.run();
 		}
 	});
 
 	// 4:00 AM UTC
-	cron.schedule("0 4 * * *", async () => {
-		for (const routine of daily) {
-			await routine.run();
-		}
-	});
+	Bun.cron(
+		"0 4 * * *",
+		async () => {
+			for (const routine of daily) {
+				await routine.run();
+			}
+		},
+		{ tz: "UTC" },
+	);
 
 	// 9:00 AM Finnish time on Wednesdays, a quiet hour since vacuuming blocks writes longer than the 5s busy_timeout
-	cron.schedule(
+	Bun.cron(
 		"0 9 * * 3",
 		async () => {
 			for (const routine of weekly) {
 				await routine.run();
 			}
 		},
-		{ timezone: "Europe/Helsinki" },
+		{ tz: "Europe/Helsinki" },
 	);
 
-	cron.schedule("*/2 * * * *", async () => {
+	Bun.cron("*/2 * * * *", async () => {
 		for (const routine of everyTwoMinutes) {
 			await routine.run();
 		}

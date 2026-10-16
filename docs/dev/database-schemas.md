@@ -82,5 +82,5 @@ Adding a column, table or index is a `trx.schema` call (see [how-to.md](./how-to
 
 ## After changing the schema
 
-1. Run the migration against `db.sqlite3` (`pnpm run migrate up`). The unit test database `db-test.sqlite3` is migrated automatically when unit tests run.
-2. Regenerate the e2e seeds with `pnpm run test:e2e:generate-seeds` — `pnpm run checks` fails otherwise.
+1. Run the migration against `db.sqlite3` (`bun run migrate up`). The unit test database `db-test.sqlite3` is migrated automatically when unit tests run.
+2. Regenerate the e2e seeds with `bun run test:e2e:generate-seeds` — `bun run checks` fails otherwise.

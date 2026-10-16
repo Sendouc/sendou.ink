@@ -1,6 +1,6 @@
 /**
  * The tournament montage (dev only, `view=montage`), a module singleton like
- * the VoD scan it drives. Opening a folder written by `pnpm vods:download`
+ * the VoD scan it drives. Opening a folder written by `bun run vods:download`
  * (the File System Access API's directory picker) reads its manifest; every
  * VoD in it is scanned in turn through `startVodScan` (saved like any file
  * scan, no clips cut) and its streaks meeting the criteria (`montageWindows`:
@@ -156,7 +156,7 @@ export function availableCandidates(state: MontageSnapshot) {
 	);
 }
 
-/** Opens a folder written by `pnpm vods:download` through the directory picker. */
+/** Opens a folder written by `bun run vods:download` through the directory picker. */
 export async function openMontageFolder(): Promise<void> {
 	const picker = (window as Window & { showDirectoryPicker?: DirectoryPicker })
 		.showDirectoryPicker;
@@ -505,13 +505,13 @@ async function readFolder(directory: FileSystemDirectoryHandle) {
 	const manifestFile = await read(MONTAGE_MANIFEST_FILE);
 	if (!manifestFile) {
 		throw new Error(
-			`No ${MONTAGE_MANIFEST_FILE} in the folder: pick a folder written by pnpm vods:download`,
+			`No ${MONTAGE_MANIFEST_FILE} in the folder: pick a folder written by bun run vods:download`,
 		);
 	}
 	const manifest = JSON.parse(await manifestFile.text()) as MontageManifest;
 	if (manifest.vods.some((vod) => !vod.teams)) {
 		throw new Error(
-			`${MONTAGE_MANIFEST_FILE} is from an older version: run pnpm vods:download ${manifest.tournamentId} again`,
+			`${MONTAGE_MANIFEST_FILE} is from an older version: run bun run vods:download ${manifest.tournamentId} again`,
 		);
 	}
 	const names = new Set(
