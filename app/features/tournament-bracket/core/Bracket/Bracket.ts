@@ -16,6 +16,7 @@ import * as Progression from "../Progression";
 import type { OptionalIdObject, Tournament } from "../Tournament";
 import type { TournamentDataTeam } from "../Tournament.server";
 import type { BracketMapCounts } from "../toMapList";
+import type * as Tiebreakers from "./Tiebreakers";
 
 export interface CreateBracketArgs {
 	id: number;
@@ -294,6 +295,11 @@ export abstract class Bracket {
 	}
 
 	abstract get type(): Tables["TournamentStage"]["type"];
+
+	/** Stats teams with equal placement-deciding results are ranked by, in order. Also the standings table's columns. */
+	get tiebreakers(): Tiebreakers.Tiebreaker[] {
+		return [];
+	}
 
 	/** Settled standings, teams still playing left out. Safe for deciding who advances. */
 	get standings(): Standing[] {
