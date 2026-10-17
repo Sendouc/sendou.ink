@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FoldHorizontal, UnfoldHorizontal } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { IS_E2E_TEST_RUN } from "~/utils/e2e";
@@ -59,14 +59,7 @@ export function BuildStack({ buildId, stack, children }: BuildStackProps) {
 				stack.isExpanded ? "collapse-build-stack" : "expand-build-stack"
 			}
 		>
-			{stack.isExpanded ? (
-				<ChevronLeft />
-			) : (
-				<>
-					+{stack.buildIds.length}
-					<ChevronRight />
-				</>
-			)}
+			{stack.isExpanded ? <FoldHorizontal /> : <UnfoldHorizontal />}
 		</button>
 	) : null;
 

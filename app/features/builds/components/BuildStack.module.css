@@ -30,25 +30,18 @@
 }
 
 .toggle {
-	display: flex;
+	display: grid;
+	width: 22px;
+	height: 22px;
 	flex-shrink: 0;
-	align-items: center;
 	margin-inline-start: auto;
-	padding: 0 var(--s-1) 0 var(--s-1-5);
+	padding: 0;
 	border: var(--border-style);
-	border-radius: var(--radius-full);
+	border-radius: 50%;
 	background-color: var(--color-bg);
 	color: var(--color-text-high);
 	cursor: pointer;
-	font-size: var(--font-2xs);
-	font-weight: var(--weight-bold);
-	gap: var(--s-0-5);
-	height: 20px;
-	white-space: nowrap;
-
-	&[aria-expanded="true"] {
-		padding: 0 var(--s-0-5);
-	}
+	place-items: center;
 
 	&:hover {
 		background-color: var(--color-bg-high);
@@ -61,7 +54,7 @@
 	}
 
 	& svg {
-		width: 12px;
-		height: 12px;
+		width: 14px;
+		height: 14px;
 	}
 }
