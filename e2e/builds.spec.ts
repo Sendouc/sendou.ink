@@ -94,7 +94,7 @@ test.describe("Builds", () => {
 		await buildForm.form.submit();
 
 		await expect(userBuilds.locators.buildCards).toHaveCount(2);
-		await expect(userBuilds.buildCard(0).root).toContainText("Private");
+		await expect(userBuilds.buildCard(0).privateIndicator).toBeVisible();
 
 		const buildIdAfter = await userBuilds.buildId(0);
 		expect(buildIdAfter).toBe(buildIdBefore);
@@ -102,7 +102,7 @@ test.describe("Builds", () => {
 		await impersonate(page, NZAP_TEST_ID);
 		await userBuilds.goto(ADMIN_DISCORD_ID);
 		await expect(userBuilds.locators.buildCards).toHaveCount(1);
-		await expect(userBuilds.buildCard(0).root).not.toContainText("Private");
+		await expect(userBuilds.buildCard(0).privateIndicator).toHaveCount(0);
 	});
 
 	test("filters builds", async ({ page, factories }) => {

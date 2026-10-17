@@ -25,8 +25,14 @@ import { possibleApValues } from "~/features/build-analyzer/analyzer-constants";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { abilities } from "~/modules/in-game-lists/abilities";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import type { Ability as AbilityType } from "~/modules/in-game-lists/types";
-import { weaponIdToCategory } from "~/modules/in-game-lists/weapon-ids";
+import type {
+	Ability as AbilityType,
+	MainWeaponId,
+} from "~/modules/in-game-lists/types";
+import {
+	canonicalWeaponSplId,
+	weaponIdToCategory,
+} from "~/modules/in-game-lists/weapon-ids";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import { dateToYYYYMMDD, isValidDate } from "~/utils/dates";
 import { metaTags, ogPageImage, type SerializeFrom } from "~/utils/remix";
@@ -46,7 +52,10 @@ import {
 	RECENT_PATCHES,
 } from "../builds-constants";
 import { buildsSearchParams } from "../builds-search-params";
-import type { AbilityCondition } from "../builds-types";
+import type {
+	AbilityCondition,
+	BuildWeaponWithTop500Info,
+} from "../builds-types";
 import { loader } from "../loaders/builds.$slug.server";
 import styles from "./builds.$slug.module.css";
 
@@ -95,7 +104,10 @@ export function BuildCards({ data }: { data: SerializeFrom<typeof loader> }) {
 				return (
 					<BuildCard
 						key={build.id}
-						build={build}
+						build={{
+							...build,
+							weapons: viewedWeaponFirst(build.weapons, data.weaponId),
+						}}
 						owner={{ ...build.owner, plusTier: build.plusTier }}
 						canEdit={false}
 					/>
@@ -521,4 +533,14 @@ function DatePopover({
 			) : null}
 		</div>
 	);
+}
+
+function viewedWeaponFirst(
+	weapons: Array<BuildWeaponWithTop500Info>,
+	viewedWeaponId: MainWeaponId,
+) {
+	const isViewed = (weapon: BuildWeaponWithTop500Info) =>
+		canonicalWeaponSplId(weapon.weaponSplId) === viewedWeaponId;
+
+	return [...weapons.filter(isViewed), ...weapons.filter((w) => !isViewed(w))];
 }

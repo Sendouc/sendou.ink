@@ -1,0 +1,115 @@
+.card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: var(--s-3);
+	border-radius: var(--radius-box);
+	background-color: var(--color-bg-high);
+	gap: var(--s-3);
+}
+
+.private {
+	background-color: var(--color-bg-higher);
+}
+
+.privateText {
+	display: flex;
+	justify-content: center;
+	font-weight: var(--weight-semi);
+	gap: var(--s-1);
+}
+
+.title {
+	overflow: hidden;
+	height: 2.5rem;
+	font-size: var(--font-sm);
+	line-height: 1.25;
+	word-wrap: break-word;
+}
+
+.topRow {
+	display: flex;
+	justify-content: space-between;
+}
+
+.dateAuthorRow {
+	display: flex;
+	font-size: var(--font-2xs);
+	gap: var(--s-1);
+}
+
+.modes {
+	position: absolute;
+	right: 0;
+	display: flex;
+	min-width: max-content;
+	margin-top: -21px;
+	gap: var(--s-1);
+}
+
+.weapon {
+	position: relative;
+	border-radius: 50%;
+
+	&:focus-within {
+		outline: var(--focus-ring);
+		outline-offset: 1px;
+	}
+}
+
+.weaponBackdrop {
+	--circle-backdrop-color: var(--color-bg);
+}
+
+.top500 {
+	position: absolute;
+	z-index: 1;
+	top: -11px;
+	right: 12px;
+}
+
+.weaponText {
+	padding-left: var(--s-1);
+	color: var(--color-text-high);
+	font-size: var(--font-2xs);
+	font-weight: var(--weight-semi);
+}
+
+.weapons {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: var(--s-1-5);
+}
+
+.gearAbilities {
+	display: grid;
+	gap: var(--s-2) var(--s-1);
+	grid-template-columns: repeat(5, max-content);
+	place-items: center;
+}
+
+.noGear {
+	grid-template-columns: repeat(4, max-content);
+	margin: 0 auto;
+	margin-top: 10px;
+	margin-bottom: 1rem;
+	row-gap: 28px;
+}
+
+.gearBackdrop {
+	--circle-backdrop-color: var(--color-bg);
+}
+
+.bottomRow {
+	display: flex;
+	height: 100%;
+	align-items: flex-end;
+	justify-content: center;
+	gap: var(--s-2);
+}
+
+.smallText {
+	font-size: var(--font-2xs) !important;
+}

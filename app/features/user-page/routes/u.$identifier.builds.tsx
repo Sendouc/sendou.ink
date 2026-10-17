@@ -84,7 +84,7 @@ export default function UserBuildsPage() {
 				/>
 			) : null}
 			<SubPageHeader user={layoutData.user} title={t("common:pages.builds")}>
-				{isOwnPage ? (
+				{isOwnPage && data.builds.length > 0 ? (
 					<SendouButton
 						onClick={() => setChangingSorting(true)}
 						size="small"
