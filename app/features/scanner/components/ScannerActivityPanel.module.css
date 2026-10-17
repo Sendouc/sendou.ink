@@ -6,9 +6,18 @@
 
 .elapsed {
 	flex-shrink: 0;
+	align-self: flex-start;
+	min-width: 7ch;
+	text-align: end;
 	font-size: var(--font-2xs);
 	font-variant-numeric: tabular-nums;
 	color: var(--color-success);
+}
+
+.errorBadge {
+	display: flex;
+	flex-shrink: 0;
+	align-self: flex-start;
 }
 
 .preview {

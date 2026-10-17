@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { LinkButton, SendouButton } from "~/components/elements/Button";
 import { Spinner } from "~/components/elements/Spinner";
 import { Image, ModeImage, StageImage } from "~/components/Image";
-import { RecDot } from "~/components/layout/ActivityButton";
+import { ActivityBadge, RecDot } from "~/components/layout/ActivityButton";
 import {
 	ActivityPanel,
 	ActivityPanelControls,
@@ -37,7 +37,11 @@ export function ScannerActivityPanel({
 	return (
 		<ActivityPanel>
 			<ActivityPanelHeader
-				icon={<RecDot stopped={!isCapturing} />}
+				icon={
+					activity.status === "error" ? undefined : (
+						<RecDot stopped={!isCapturing} />
+					)
+				}
 				title={
 					activity.status === "running"
 						? "Capturing"
@@ -54,6 +58,10 @@ export function ScannerActivityPanel({
 						<Elapsed since={activity.since} />
 					) : activity.status === "starting" ? (
 						<Spinner className={styles.spinner} />
+					) : activity.status === "error" ? (
+						<span className={styles.errorBadge}>
+							<ActivityBadge kind="error" />
+						</span>
 					) : null
 				}
 			/>

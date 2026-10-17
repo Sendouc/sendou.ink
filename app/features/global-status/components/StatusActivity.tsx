@@ -1,4 +1,4 @@
-import { ExternalLink, Hourglass } from "lucide-react";
+import { Hourglass } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LinkButton } from "~/components/elements/Button";
 import { Image } from "~/components/Image";
@@ -69,7 +69,11 @@ function StatusPanel({ status }: { status: GlobalStatus }) {
 				icon={<StatusIcon status={status} size={24} />}
 				title={t(`common:globalStatus.${status.state}`)}
 				subtitle={<StatusSubtitle status={status} />}
-				end={<StatusBadge status={status} />}
+				end={
+					<span className={styles.headerBadge}>
+						<StatusBadge status={status} />
+					</span>
+				}
 			/>
 			<LinkButton
 				to={status.url}
@@ -82,7 +86,7 @@ function StatusPanel({ status }: { status: GlobalStatus }) {
 				}
 				prefetch="intent"
 				size="small"
-				icon={<ExternalLink />}
+				className="mt-2"
 			>
 				{status.state === "TO_CHECKIN"
 					? t("common:globalStatus.goCheckIn")

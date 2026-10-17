@@ -9,6 +9,15 @@
 	object-fit: cover;
 }
 
+.headerBadge {
+	display: flex;
+	align-self: flex-start;
+
+	&:empty {
+		display: none;
+	}
+}
+
 .waiting {
 	position: relative;
 	display: flex;
