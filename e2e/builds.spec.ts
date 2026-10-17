@@ -125,24 +125,18 @@ test.describe("Builds", () => {
 		await new BuildsPage(page).openWeapon(40);
 		await weaponBuilds.expandBuildStacks();
 
-		await weaponBuilds.addFilter("ability");
-		await weaponBuilds.locators.comparisonSelect.selectOption("AT_MOST");
+		await weaponBuilds.abilityToggle("Ink Saver (Main)").click();
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(3);
 
-		// every build with ISM is hidden
-		await expect(weaponBuilds.ability("ISM")).toHaveCount(1);
+		await weaponBuilds.abilityToggle("Ink Saver (Main)").click();
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);
 
-		await weaponBuilds.deleteFilter("ability");
-
-		await expect(weaponBuilds.ability("ISM").nth(1)).toBeVisible();
-
-		await weaponBuilds.addFilter("mode");
-		await weaponBuilds.modeFilterCheckbox("Tower Control").click();
+		await weaponBuilds.filterOption("Tower Control").click();
 		await expect(weaponBuilds.modeBadge("TC")).toHaveCount(3);
-		await weaponBuilds.deleteFilter("mode");
-		await expect(weaponBuilds.locators.buildCards.first()).toBeVisible();
+		await weaponBuilds.filterOption("Any mode").click();
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);
 
-		await weaponBuilds.addFilter("date");
-		await weaponBuilds.locators.dateSelect.selectOption("CUSTOM");
+		await weaponBuilds.filterOption("Custom").click();
 		await expect(weaponBuilds.locators.dateInput).toBeVisible();
 		// no change in count since all builds in test data are new
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);

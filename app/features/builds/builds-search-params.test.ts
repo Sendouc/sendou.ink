@@ -9,15 +9,7 @@ describe("buildsSearchParams", () => {
 	test("round-trips", () => {
 		assertRoundTrips(buildsSearchParams, {
 			limit: [24, 48, 1, 240],
-			abilities: [
-				[],
-				[
-					{ ability: "ISM", comparison: "AT_LEAST", value: 3 },
-					{ ability: "SSU", comparison: "AT_MOST", value: 12 },
-				],
-				[{ ability: "LDE", value: true }],
-				[{ ability: "CB", value: false }],
-			],
+			abilities: [[], ["ISM"], ["SSU", "LDE", "NS"]],
 			mode: [null, "SZ", "TW"],
 			date: [null, "2026-01-28"],
 		});
@@ -31,10 +23,8 @@ describe("buildsSearchParams", () => {
 			["abc"],
 		]);
 		assertDecodesToDefault(buildsSearchParams, "abilities", [
-			["not-json"],
-			['[{"ability":"XXX","value":true}]'],
-			['{"ability":"ISM","value":3}'],
-			['[{"ability":"ISM","value":100,"comparison":"AT_LEAST"}]'],
+			["XXX"],
+			["ISM", "ISS", "IRU", "RSU", "SSU", "SCU", "SS"],
 		]);
 		assertDecodesToDefault(buildsSearchParams, "mode", [["XX"], ["zz"]]);
 		assertDecodesToDefault(buildsSearchParams, "date", [

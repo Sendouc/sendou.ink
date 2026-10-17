@@ -19,10 +19,6 @@
 	"linkButton.popularBuilds": "热门配装",
 	"noPopularBuilds": "目前尚无该武器的热门配装。",
 	"emptyAbilitySlot": "空能力槽",
-	"filters.has": "包含",
-	"filters.does.not.have": "不包含",
-	"filters.atLeast": "至少",
-	"filters.atMost": "最多",
 	"filters.date.since": "自",
 	"filters.date.custom": "自定义",
 	"filters.filterByWeapon": "按武器筛选"

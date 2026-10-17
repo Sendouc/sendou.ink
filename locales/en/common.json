@@ -188,6 +188,8 @@
 	"actions.join": "Join",
 	"filterBar.addFilter": "Filter",
 	"filterBar.saveAsDefault": "Save as default",
+	"filterLayout.filters": "Filters",
+	"filterLayout.clearAll": "Clear all",
 	"imageExport.export": "Export image",
 	"imageExport.download": "Download",
 	"imageExport.theme.light": "Light",

@@ -11,7 +11,8 @@
 	--card-gear-gap: var(--s-2);
 	--card-action-size: 32px;
 	--card-mode-size: 24px;
-	--card-divider-spacing: var(--s-4);
+	--card-header-spacing: var(--s-2);
+	--card-divider-spacing: var(--s-3);
 	--card-actions-spacing: var(--s-3);
 	--card-bg: var(--color-bg-high);
 	--card-ring: 2px solid var(--color-border);
@@ -19,13 +20,14 @@
 	/* in a grid of cards the header, gear and action rows are shared so the dividers line up */
 	display: grid;
 	padding: var(--card-padding);
+	padding-top: var(--s-5);
 	padding-bottom: var(--card-actions-spacing);
 	border: var(--border-style);
 	border-radius: var(--radius-box);
 	background-color: var(--card-bg);
 	grid-row: span 3;
 	grid-template-rows: subgrid;
-	row-gap: var(--card-divider-spacing);
+	row-gap: 0;
 }
 
 .weapons {
@@ -111,7 +113,7 @@
 .header {
 	display: flex;
 	align-items: flex-start;
-	gap: var(--s-2);
+	gap: var(--s-3);
 }
 
 .titleBlock {
@@ -137,6 +139,9 @@
 	line-height: var(--card-title-line-height);
 	overflow-wrap: anywhere;
 	text-box: trim-start cap alphabetic;
+	/* room above the trimmed cap height for glyphs reaching higher (e.g. Japanese), which the clamp would clip */
+	padding-top: 0.3em;
+	margin-top: -0.3em;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;
 	line-clamp: 2;
@@ -268,13 +273,14 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	margin-top: var(--card-header-spacing);
 	padding-top: var(--card-divider-spacing);
 	border-top: var(--border-style);
 	gap: var(--s-2);
 }
 
 .gearAbilitiesWithPatch {
-	margin-top: calc(var(--card-patch-height) / 2);
+	margin-top: calc(var(--card-header-spacing) + var(--card-patch-height) / 2);
 	padding-top: calc(var(--card-divider-spacing) + var(--card-patch-height) / 2);
 }
 
@@ -334,7 +340,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	margin-top: calc(var(--card-mode-size) / 2);
+	margin-top: calc(var(--card-divider-spacing) + var(--card-mode-size) / 2);
 	padding-top: calc(var(--card-actions-spacing) + var(--card-mode-size) / 2);
 	border-top: var(--border-style);
 	gap: var(--s-2);

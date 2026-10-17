@@ -125,10 +125,7 @@ test.describe("Public pages", () => {
 
 		const logInPopover = new LogInPopover(page);
 
-		await weaponBuilds.locators.addFilterButton.click();
-		await expect(logInPopover.locators.logInButton).toBeVisible();
-
-		await page.keyboard.press("Escape");
+		await expect(weaponBuilds.locators.filtersLogInButton).toBeVisible();
 
 		await new TopRightButtons(page).locators.searchButton.click();
 		await expect(logInPopover.locators.logInButton).toBeVisible();

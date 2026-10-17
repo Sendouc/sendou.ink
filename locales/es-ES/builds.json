@@ -24,11 +24,6 @@
 	"filters.abilities": "Potenciadores",
 	"filters.mode": "Modo",
 	"filters.date": "Fecha",
-	"filters.addAbility": "Añadir potenciador",
-	"filters.has": "Tiene",
-	"filters.does.not.have": "No tiene",
-	"filters.atLeast": "Al menos",
-	"filters.atMost": "Como máximo",
 	"filters.date.since": "Desde",
 	"filters.date.custom": "Elegir fecha",
 	"filters.filterByWeapon": "Filtrar por arma"

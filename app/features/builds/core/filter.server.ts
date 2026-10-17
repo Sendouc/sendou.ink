@@ -1,11 +1,10 @@
 import type { Tables } from "~/db/tables";
-import { buildToAbilityPoints } from "~/features/build-analyzer/core/ability-points";
 import type {
+	Ability,
 	BuildAbilitiesTuple,
 	ModeShort,
 } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
-import type { AbilityCondition } from "../builds-types";
 
 type PartialBuild = {
 	abilities: BuildAbilitiesTuple;
@@ -14,7 +13,8 @@ type PartialBuild = {
 };
 
 interface BuildFilters {
-	abilities: AbilityCondition[];
+	/** Each has to be in the build, in any slot */
+	abilities: Ability[];
 	mode: ModeShort | null;
 	date: string | null;
 }
@@ -49,35 +49,13 @@ function buildMatchesFilters<T extends PartialBuild>({
 	mode,
 	date,
 }: BuildFilters & { build: T }) {
-	for (const condition of abilities) {
-		if (!matchesAbilityCondition({ build, condition })) return false;
+	const buildAbilities = build.abilities.flat();
+	if (!abilities.every((ability) => buildAbilities.includes(ability))) {
+		return false;
 	}
 
 	if (mode !== null && !matchesModeFilter({ build, mode })) return false;
 	if (date !== null && !matchesDateFilter({ build, date })) return false;
-
-	return true;
-}
-
-function matchesAbilityCondition({
-	build,
-	condition,
-}: {
-	build: PartialBuild;
-	condition: AbilityCondition;
-}) {
-	if (typeof condition.value === "boolean") {
-		const hasAbility = build.abilities.flat().includes(condition.ability);
-		if (condition.value && !hasAbility) return false;
-		if (!condition.value && hasAbility) return false;
-	} else if (typeof condition.value === "number") {
-		const abilityPoints = buildToAbilityPoints(build.abilities);
-		const ap = abilityPoints.get(condition.ability) ?? 0;
-		if (condition.comparison === "AT_LEAST" && ap < condition.value)
-			return false;
-		if (condition.comparison === "AT_MOST" && ap > condition.value)
-			return false;
-	}
 
 	return true;
 }

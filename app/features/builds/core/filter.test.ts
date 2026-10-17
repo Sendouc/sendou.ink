@@ -35,86 +35,22 @@ const createBuild = ({
 const noFilters = { abilities: [], mode: null, date: null };
 
 describe("Filter builds", () => {
-	test("returns correct build back based on abilities (AT_LEAST)", () => {
+	test("keeps builds that have the ability in any slot", () => {
 		const filtered = filterBuilds({
 			builds: [
-				createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
-				createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"] }),
+				createBuild({ headAbilities: ["ISS", "ISS", "ISS", "ISM"] }),
+				createBuild({ headAbilities: ["ISM", "ISS", "ISS", "ISS"] }),
+				createBuild({ headAbilities: ["ISS", "ISS", "ISS", "ISS"] }),
 			],
-			count: 2,
+			count: 3,
 			...noFilters,
-			abilities: [
-				{
-					ability: "ISM",
-					value: 10,
-					comparison: "AT_LEAST",
-				},
-			],
+			abilities: ["ISM"],
 		});
 
-		expect(filtered.length).toBe(1);
-		expect(filtered[0].abilities[0]).toEqual(["ISM", "ISM", "ISM", "ISM"]);
-	});
-
-	test("returns correct build back based on abilities (AT_MOST)", () => {
-		const filtered = filterBuilds({
-			builds: [
-				createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
-				createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"] }),
-			],
-			count: 2,
-			...noFilters,
-			abilities: [
-				{
-					ability: "ISM",
-					value: 6,
-					comparison: "AT_MOST",
-				},
-			],
-		});
-
-		expect(filtered.length).toBe(1);
-		expect(filtered[0].abilities[0]).toEqual(["ISS", "ISS", "ISM", "ISM"]);
-	});
-
-	test("filters based on main ability (true)", () => {
-		const filtered = filterBuilds({
-			builds: [
-				createBuild({ headAbilities: ["T", "ISM", "ISM", "ISM"] }),
-				createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
-			],
-			count: 2,
-			...noFilters,
-			abilities: [
-				{
-					ability: "T",
-					value: true,
-				},
-			],
-		});
-
-		expect(filtered.length).toBe(1);
-		expect(filtered[0].abilities[0]).toEqual(["T", "ISM", "ISM", "ISM"]);
-	});
-
-	test("filters based on main ability (false)", () => {
-		const filtered = filterBuilds({
-			builds: [
-				createBuild({ headAbilities: ["T", "ISM", "ISM", "ISM"] }),
-				createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
-			],
-			count: 2,
-			...noFilters,
-			abilities: [
-				{
-					ability: "T",
-					value: false,
-				},
-			],
-		});
-
-		expect(filtered.length).toBe(1);
-		expect(filtered[0].abilities[0]).toEqual(["ISS", "ISS", "ISM", "ISM"]);
+		expect(filtered.map((build) => build.abilities[0])).toEqual([
+			["ISS", "ISS", "ISS", "ISM"],
+			["ISM", "ISS", "ISS", "ISS"],
+		]);
 	});
 
 	test("filters based on mode", () => {
@@ -160,26 +96,16 @@ describe("Filter builds", () => {
 		expect(filtered[0].abilities[0]).toEqual(["ISS", "ISM", "ISM", "ISM"]);
 	});
 
-	test("combines multiple ability conditions", () => {
+	test("requires every selected ability", () => {
 		const filtered = filterBuilds({
 			builds: [
 				createBuild({ headAbilities: ["T", "ISM", "ISM", "ISM"] }),
 				createBuild({ headAbilities: ["T", "RES", "RES", "RES"] }),
 				createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
 			],
-			count: 2,
+			count: 3,
 			...noFilters,
-			abilities: [
-				{
-					ability: "T",
-					value: true,
-				},
-				{
-					ability: "ISM",
-					value: 9,
-					comparison: "AT_LEAST",
-				},
-			],
+			abilities: ["T", "ISM"],
 		});
 
 		expect(filtered.length).toBe(1);
@@ -201,20 +127,14 @@ describe("Filter builds", () => {
 				}),
 				// has date
 				createBuild({
-					headAbilities: ["ISS", "ISS", "ISM", "ISM"],
+					headAbilities: ["ISS", "ISS", "RES", "RES"],
 					updatedAt: dateToDatabaseTimestamp(new Date(2023, 0, 1)),
 				}),
 			],
 			count: 2,
 			...noFilters,
 			date: "2022-01-01",
-			abilities: [
-				{
-					ability: "ISM",
-					value: 9,
-					comparison: "AT_LEAST",
-				},
-			],
+			abilities: ["ISM"],
 		});
 
 		expect(filtered.length).toBe(1);

@@ -7,7 +7,7 @@ import {
 	BUILDS_PAGE_MAX_BUILDS,
 } from "./builds-constants";
 import {
-	abilityConditionsSchema,
+	abilitiesFilterSchema,
 	buildsDateFilterSchema,
 } from "./builds-schemas";
 
@@ -24,7 +24,7 @@ export const buildsSearchParams = SearchParams.define({
 			loader: true,
 		},
 	),
-	abilities: SP.json(abilityConditionsSchema, {
+	abilities: SP.param(abilitiesFilterSchema, {
 		default: [],
 		resets: ["limit"],
 		loader: true,
