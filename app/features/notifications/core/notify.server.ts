@@ -1,6 +1,4 @@
 import type { TFunction } from "i18next";
-import pLimit from "p-limit";
-import { type Urgency, WebPushError } from "web-push";
 import type { NotificationSubscription } from "~/db/tables-json";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
 import { IS_E2E_TEST_RUN } from "~/utils/e2e";
@@ -11,9 +9,15 @@ import { logger } from "../../../utils/logger";
 import * as NotificationRepository from "../NotificationRepository.server";
 import type { Notification } from "../notifications-types";
 import { notificationLink, notificationMeta } from "../notifications-utils";
-import { webPush, webPushEnabled } from "./webPush.server";
+import {
+	type PushUrgency,
+	sendNotification,
+	webPushEnabled,
+} from "./webPush.server";
 
-const NOTIFICATION_URGENCY: Record<Notification["type"], Urgency> = {
+const PUSH_CONCURRENCY = 50;
+
+const NOTIFICATION_URGENCY: Record<Notification["type"], PushUrgency> = {
 	SQ_ADDED_TO_GROUP: "high",
 	SQ_NEW_MATCH: "high",
 	SQ_READY_CHECK: "high",
@@ -131,20 +135,19 @@ async function sendPushNotificationsToUnseen({
 
 	const t = await getFixedTForLanguage("en-US", ["common"]);
 
-	const limit = pLimit(50);
-
+	const queue = subscriptions.values();
 	await Promise.all(
-		subscriptions.map(({ id, subscription, discordId, customUrl }) =>
-			limit(() =>
-				sendPushNotification({
+		Array.from({ length: PUSH_CONCURRENCY }, async () => {
+			for (const { id, subscription, discordId, customUrl } of queue) {
+				await sendPushNotification({
 					subscription,
 					subscriptionId: id,
 					notification,
 					recipient: { discordId, customUrl },
 					t,
-				}),
-			),
-		),
+				});
+			}
+		}),
 	);
 }
 
@@ -200,20 +203,16 @@ async function sendPushNotification({
 	t: TFunction<["common"], undefined>;
 }) {
 	try {
-		await webPush.sendNotification(
+		const result = await sendNotification(
 			subscription,
 			JSON.stringify(pushNotificationOptions(notification, recipient, t)),
 			{ urgency: NOTIFICATION_URGENCY[notification.type] },
 		);
-	} catch (err) {
-		if (!(err instanceof WebPushError)) {
-			logger.error("Failed to send push notification (unknown error)", err);
-			// "Not Found" / "Gone": the subscription is expired or no longer valid
-		} else if (err.statusCode === 404 || err.statusCode === 410) {
+		if (result === "SUBSCRIPTION_GONE") {
 			await NotificationRepository.deleteSubscriptionById(subscriptionId);
-		} else {
-			logger.error("Failed to send push notification", err);
 		}
+	} catch (err) {
+		logger.error("Failed to send push notification", err);
 	}
 }
 
