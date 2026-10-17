@@ -55,7 +55,6 @@
 		"setup": "DB_PATH=db.sqlite3 bun --preload ./scripts/preload.ts ./scripts/setup.ts",
 		"og:generate": "bun scripts/generate-og-images.ts",
 		"changelog:image": "bun scripts/generate-changelog-image.ts",
-		"ink-detail:generate": "bun scripts/create-ink-detail-images.ts",
 		"notification:test": "DB_PATH=db.sqlite3 bun --preload ./scripts/preload.ts ./scripts/send-test-notification.ts",
 		"i18n:usage": "bun scripts/generate-translation-usage.ts",
 		"i18n:sync": "bun scripts/collapse-single-plural-keys.ts && bun scripts/sync-translation-jsons.ts && bun run biome:fix",
@@ -125,7 +124,6 @@
 		"knip": "6.40.0",
 		"magic-string": "1.4.3",
 		"postcss": "8.5.29",
-		"sharp": "^0.35.5",
 		"sql-formatter": "15.9.0",
 		"vite": "8.3.3",
 		"vite-plugin-babel": "1.7.3"
