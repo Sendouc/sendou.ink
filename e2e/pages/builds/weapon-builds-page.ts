@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 import type { Ability, ModeShort } from "~/modules/in-game-lists/types";
 import { weaponBuildPage } from "~/utils/urls";
-import { navigate } from "../../helpers/playwright";
+import { expect, navigate } from "../../helpers/playwright";
 import { BuildCard } from "./build-card";
 
 export class WeaponBuildsPage {
@@ -18,6 +18,8 @@ export class WeaponBuildsPage {
 			comparisonSelect: page.getByTestId("comparison-select"),
 			dateSelect: page.getByTestId("date-select"),
 			dateInput: page.getByTestId("date-input"),
+			expandStackButtons: page.getByTestId("expand-build-stack"),
+			collapseStackButtons: page.getByTestId("collapse-build-stack"),
 		};
 	}
 
@@ -27,6 +29,16 @@ export class WeaponBuildsPage {
 
 	buildCard(nth: number) {
 		return new BuildCard(this.locators.buildCards.nth(nth));
+	}
+
+	async expandBuildStacks() {
+		const buttons = this.locators.expandStackButtons;
+		await expect(this.locators.buildCards.first()).toBeVisible();
+
+		for (let count = await buttons.count(); count > 0; count--) {
+			await buttons.first().click();
+			await expect(buttons).toHaveCount(count - 1);
+		}
 	}
 
 	ability(ability: Ability) {

@@ -75,6 +75,8 @@ export interface BuildCardProps {
 		>;
 	/** false when the page already shows the owner (e.g. their own builds page) */
 	showOwner?: boolean;
+	/** Shown at the end of the owner row */
+	ownerAction?: React.ReactNode;
 	canEdit?: boolean;
 }
 
@@ -82,6 +84,7 @@ export function BuildCard({
 	build,
 	owner,
 	showOwner = true,
+	ownerAction,
 	canEdit = false,
 }: BuildCardProps) {
 	const { t } = useTranslation([
@@ -160,6 +163,7 @@ export function BuildCard({
 										{owner.plusTier}
 									</span>
 								) : null}
+								{ownerAction}
 							</div>
 						) : otherWeapons.length > 0 ? (
 							<div className={styles.otherWeapons}>

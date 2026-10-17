@@ -123,6 +123,7 @@ test.describe("Builds", () => {
 
 		const weaponBuilds = new WeaponBuildsPage(page);
 		await new BuildsPage(page).openWeapon(40);
+		await weaponBuilds.expandBuildStacks();
 
 		await weaponBuilds.addFilter("ability");
 		await weaponBuilds.locators.comparisonSelect.selectOption("AT_MOST");
@@ -145,6 +146,34 @@ test.describe("Builds", () => {
 		await expect(weaponBuilds.locators.dateInput).toBeVisible();
 		// no change in count since all builds in test data are new
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);
+	});
+
+	test("stacks an author's builds and expands the stack", async ({
+		page,
+		factories,
+	}) => {
+		await factories.BuildFactory.createMany(3, {
+			ownerId: ADMIN_ID,
+			weaponSplIds: [40],
+		});
+		await factories.BuildFactory.create({
+			ownerId: NZAP_TEST_ID,
+			weaponSplIds: [40],
+		});
+
+		const weaponBuilds = new WeaponBuildsPage(page);
+		await new BuildsPage(page).openWeapon(40);
+
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(2);
+		await expect(weaponBuilds.locators.expandStackButtons).toHaveAccessibleName(
+			"2 more builds",
+		);
+
+		await weaponBuilds.locators.expandStackButtons.click();
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(4);
+
+		await weaponBuilds.locators.collapseStackButtons.click();
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(2);
 	});
 
 	test("aggregates builds into ability stats and popular builds", async ({
@@ -170,6 +199,7 @@ test.describe("Builds", () => {
 
 		const weaponBuilds = new WeaponBuildsPage(page);
 		await new BuildsPage(page).openWeapon(40);
+		await weaponBuilds.expandBuildStacks();
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(4);
 
 		await weaponBuilds.locators.abilityStatsLink.click();

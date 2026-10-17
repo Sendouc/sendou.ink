@@ -33,5 +33,7 @@
 	"filters.date.custom": "Custom",
 	"filters.filterByWeapon": "Filter by weapon",
 	"weaponBuildCount_one": "{{count}} build",
-	"weaponBuildCount_other": "{{count}} builds"
+	"weaponBuildCount_other": "{{count}} builds",
+	"stack.moreBuilds_one": "{{count}} more build",
+	"stack.moreBuilds_other": "{{count}} more builds"
 }

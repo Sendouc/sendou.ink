@@ -1,0 +1,67 @@
+/* the stack and its card pass the build card's rows through so dividers line up across a row of cards */
+.stack {
+	position: relative;
+	display: grid;
+	grid-row: span 3;
+	grid-template-rows: subgrid;
+	isolation: isolate;
+}
+
+/* keeps the card above builds sliding out from under it */
+.stackWithToggle {
+	z-index: 1;
+}
+
+.card {
+	display: grid;
+	grid-row: span 3;
+	grid-template-rows: subgrid;
+}
+
+.layer {
+	position: absolute;
+	inset: 0;
+	left: var(--layer-offset);
+	right: calc(-1 * var(--layer-offset));
+	border: var(--border-style);
+	border-radius: var(--radius-box);
+	background-color: var(--color-bg-high);
+	pointer-events: none;
+}
+
+.toggle {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	margin-inline-start: auto;
+	padding: 0 var(--s-1) 0 var(--s-1-5);
+	border: var(--border-style);
+	border-radius: var(--radius-full);
+	background-color: var(--color-bg);
+	color: var(--color-text-high);
+	cursor: pointer;
+	font-size: var(--font-2xs);
+	font-weight: var(--weight-bold);
+	gap: var(--s-0-5);
+	height: 20px;
+	white-space: nowrap;
+
+	&[aria-expanded="true"] {
+		padding: 0 var(--s-0-5);
+	}
+
+	&:hover {
+		background-color: var(--color-bg-high);
+		color: var(--color-text);
+	}
+
+	&:focus-visible {
+		outline: var(--focus-ring);
+		outline-offset: 1px;
+	}
+
+	& svg {
+		width: 12px;
+		height: 12px;
+	}
+}
