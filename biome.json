@@ -186,7 +186,7 @@
 		"useEditorconfig": true
 	},
 	"javascript": {
-		"globals": ["Bun"]
+		"globals": ["Bun", "HTMLRewriter"]
 	},
 	"css": {
 		"formatter": {

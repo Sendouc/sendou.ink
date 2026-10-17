@@ -133,7 +133,6 @@ export default defineConfig((config) => {
 				"edmonds-blossom-fixed",
 				"fflate",
 				"kysely",
-				"markdown-to-jsx",
 				"mediabunny",
 				"nanoid",
 				"openskill",
