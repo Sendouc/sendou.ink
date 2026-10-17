@@ -1,5 +1,5 @@
+import { beforeEach, describe, expect, test, vi } from "bun:test";
 import { addHours, addMinutes, subHours, subMinutes } from "date-fns";
-import { beforeEach, describe, expect, test, vi } from "vitest";
 import { backdate } from "~/db/seed/core/backdate";
 import * as SQGroupFactory from "~/db/seed/factories/SQGroupFactory";
 import * as SQMatchFactory from "~/db/seed/factories/SQMatchFactory";
@@ -27,12 +27,10 @@ import {
 } from "~/utils/urls";
 import { resolveGlobalStatus } from "./global-status.server";
 
-const { mockSeasonCurrentOrPrevious } = vi.hoisted(() => ({
-	mockSeasonCurrentOrPrevious: vi.fn(() => ({
-		nth: 1,
-		starts: new Date("2023-01-01"),
-		ends: new Date("2030-12-31"),
-	})),
+const mockSeasonCurrentOrPrevious = vi.fn(() => ({
+	nth: 1,
+	starts: new Date("2023-01-01"),
+	ends: new Date("2030-12-31"),
 }));
 
 vi.mock("~/features/mmr/core/Seasons", () => ({

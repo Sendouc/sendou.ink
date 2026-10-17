@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import type { TournamentStageSettings } from "~/db/tables-json";
 import { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import {
@@ -240,7 +240,7 @@ describe("Swiss", () => {
 	];
 
 	describe("pairUp()", () => {
-		test.for(PAIR_UP_TEST_CASES)(
+		test.each(PAIR_UP_TEST_CASES.map((testCase) => [testCase]))(
 			"all teams have matches (pair up test cases idx %#)",
 			(testCase) => {
 				const result = Swiss.pairUp(testCase);
@@ -257,7 +257,7 @@ describe("Swiss", () => {
 			},
 		);
 
-		test.for(PAIR_UP_TEST_CASES)(
+		test.each(PAIR_UP_TEST_CASES.map((testCase) => [testCase]))(
 			"every pair is max one set win from each other (pair up test cases idx %#)",
 			(testCase) => {
 				const result = Swiss.pairUp(testCase);
@@ -281,7 +281,7 @@ describe("Swiss", () => {
 			},
 		);
 
-		test.for(PAIR_UP_TEST_CASES)(
+		test.each(PAIR_UP_TEST_CASES.map((testCase) => [testCase]))(
 			"matches perfect records against each other as much as possible (pair up test cases idx %#)",
 			(testCase) => {
 				const result = Swiss.pairUp(testCase);
@@ -318,7 +318,7 @@ describe("Swiss", () => {
 			},
 		);
 
-		test.for(PAIR_UP_TEST_CASES)(
+		test.each(PAIR_UP_TEST_CASES.map((testCase) => [testCase]))(
 			"generates max one bye (pair up test cases idx %#)",
 			(testCase) => {
 				const result = Swiss.pairUp(testCase);

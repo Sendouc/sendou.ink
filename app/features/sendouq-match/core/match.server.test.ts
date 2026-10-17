@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
-import { getDefaultMapWeights } from "~/features/sendouq/core/default-maps.server";
+import { afterEach, describe, expect, test, vi } from "bun:test";
+import type { getDefaultMapWeights } from "~/features/sendouq/core/default-maps.server";
 import { SENDOUQ_BEST_OF } from "~/features/sendouq/q-constants";
 import type { StageId } from "~/modules/in-game-lists/types";
 import * as Test from "~/utils/Test";
@@ -9,8 +9,10 @@ import {
 	normalizeAndCombineWeights,
 } from "./match.server";
 
+const mockGetDefaultMapWeights = vi.fn<typeof getDefaultMapWeights>();
+
 vi.mock("~/features/sendouq/core/default-maps.server", () => ({
-	getDefaultMapWeights: vi.fn(),
+	getDefaultMapWeights: mockGetDefaultMapWeights,
 }));
 
 describe("mapModePreferencesToModeList()", () => {
@@ -242,7 +244,7 @@ describe("matchMapList()", () => {
 			mockDefaults.set(`SZ-${stageId}`, -1);
 		}
 
-		vi.mocked(getDefaultMapWeights).mockResolvedValue(mockDefaults);
+		mockGetDefaultMapWeights.mockResolvedValue(mockDefaults);
 
 		// empty preferences force the system to rely entirely on defaults
 		const emptyPreferences = {
@@ -282,7 +284,7 @@ describe("matchMapList()", () => {
 			mockDefaults.set(`SZ-${stageId}`, -SENDOUQ_BEST_OF);
 		}
 
-		vi.mocked(getDefaultMapWeights).mockResolvedValue(mockDefaults);
+		mockGetDefaultMapWeights.mockResolvedValue(mockDefaults);
 
 		const teamPreferences = {
 			modes: [{ mode: "SZ" as const, preference: "PREFER" as const }],
@@ -324,7 +326,7 @@ describe("matchMapList()", () => {
 	});
 
 	test("teams alternate picking maps", async () => {
-		vi.mocked(getDefaultMapWeights).mockResolvedValue(new Map());
+		mockGetDefaultMapWeights.mockResolvedValue(new Map());
 
 		for (let i = 0; i < 20; i++) {
 			const result = await matchMapList(
@@ -340,7 +342,7 @@ describe("matchMapList()", () => {
 	});
 
 	test("includes the map both teams voted for", async () => {
-		vi.mocked(getDefaultMapWeights).mockResolvedValue(new Map());
+		mockGetDefaultMapWeights.mockResolvedValue(new Map());
 
 		for (let i = 0; i < 20; i++) {
 			const result = await matchMapList(
@@ -355,7 +357,7 @@ describe("matchMapList()", () => {
 
 	test("plays only on the other team's maps when a team has no pool", async () => {
 		const otherTeamStageIds: StageId[] = [8, 10, 11, 12, 13, 14, 15];
-		vi.mocked(getDefaultMapWeights).mockResolvedValue(
+		mockGetDefaultMapWeights.mockResolvedValue(
 			new Map([
 				["SZ-0", -SENDOUQ_BEST_OF],
 				["SZ-2", -SENDOUQ_BEST_OF],

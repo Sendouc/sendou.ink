@@ -153,4 +153,5 @@ For developers reading the [architecture.md](./docs/dev/architecture.md) file is
 - **Internationalization**: i18next
 - **Testing**:
    - End-to-End (E2E): Playwright
-   - Unit/Integration: Vitest
+   - Unit/Integration: bun:test
+   - Components: bun:test + happy-dom + Testing Library

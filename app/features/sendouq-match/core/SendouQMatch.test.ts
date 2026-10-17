@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test } from "bun:test";
 import * as SendouQMatch from "./SendouQMatch";
 
 const ALPHA_ID = 1;

@@ -1,7 +1,7 @@
 /**
- * Preload (`bun --preload ./scripts/preload.ts`) for scripts that import app code
- * written for Vite: defaults NODE_ENV like Vite does and implements the eager
- * `import.meta.glob` forms the app uses.
+ * Preload for scripts (`bun --preload ./scripts/preload.ts`) and `bun test`
+ * (`bunfig.toml`) importing app code written for Vite: defaults NODE_ENV like
+ * Vite does and implements the eager `import.meta.glob` forms the app uses.
  */
 import path from "node:path";
 import { plugin } from "bun";
