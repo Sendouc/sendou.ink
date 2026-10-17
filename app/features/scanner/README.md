@@ -302,7 +302,10 @@ sequenceDiagram
   order-free (a misread or unread row still joins), stage not contradicting
   it, recording time within 20 min of its play time — joins that match's sources instead of forming a new
   one, so browsing the log after playing neither adds a card nor re-uploads
-  (the match was already sent). Any other history screen closes the game
+  (the match was already sent). The recording time's AM/PM letter reads as
+  "o" either way, so the header tells them apart by the letter's bottom rows
+  (A stands on two legs, P on its stem): a flipped one puts the time 12h off
+  and the screen turns into a duplicate card. Any other history screen closes the game
   being gathered — a missed results screen amended from the log — unless
   the intro/minimap stage, intro mode or recording time (vs. the game's
   first read) contradicts it. Then, or with no game being gathered, it
@@ -810,7 +813,10 @@ direction. So no detector sets `sufficientConfidence` (the first clean read
 is the stale one), each gate returns a `signature` over its numbers, and the
 timeline orders same-type reads by `animationProgressByType` instead of
 confidence: a further-along read replaces the kept one, an earlier one
-merges into it. A count read whose digits disagree with its slots, or a set
+merges into it. The count's end can fall between two sampled frames (a 2 fps
+live capture), so a set result read after the change lands takes its power
+from the power before it plus the change whenever an earlier read showed the
+old value (`carryOverByType`); the old value holds ~1.5s, the final one ~1s. A count read whose digits disagree with its slots, or a set
 result whose header doesn't describe a decided set of tiles (tiles still
 popping in), scores under the timeline floor. The result tiles center on
 the card (five games three over two, four two over two, three in one row
