@@ -23,9 +23,7 @@
 	"emptyAbilitySlot": "Emplacement de bonus vide",
 	"filters.abilities": "Bonus",
 	"filters.mode": "Mode",
-	"filters.date": "Date",
 	"filters.date.since": "Depuis",
-	"filters.date.custom": "Personalisé",
 	"filters.filterByWeapon": "Filtre par arme",
 	"weaponBuildCount_one": "{{count}} set",
 	"weaponBuildCount_other": "{{count}} sets"

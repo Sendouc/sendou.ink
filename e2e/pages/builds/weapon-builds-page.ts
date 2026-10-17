@@ -15,7 +15,6 @@ export class WeaponBuildsPage {
 			abilityStatsLink: page.getByRole("link", { name: /Ability stats/ }),
 			popularBuildsLink: page.getByRole("link", { name: /Popular builds/ }),
 			filtersLogInButton: page.getByTestId("filters-log-in-button"),
-			dateInput: page.getByTestId("date-input"),
 			expandStackButtons: page.getByTestId("expand-build-stack"),
 			collapseStackButtons: page.getByTestId("collapse-build-stack"),
 		};
@@ -51,7 +50,7 @@ export class WeaponBuildsPage {
 		return this.page.getByRole("button", { name: abilityName, exact: true });
 	}
 
-	filterOption(name: string) {
+	filterOption(name: string | RegExp) {
 		return this.page.getByRole("radio", { name, exact: true });
 	}
 }

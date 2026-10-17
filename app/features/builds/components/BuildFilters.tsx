@@ -10,13 +10,12 @@ import { FilterLayout } from "~/components/filter-layout/FilterLayout";
 import { Image } from "~/components/Image";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { abilities } from "~/modules/in-game-lists/abilities";
-import { modesShort } from "~/modules/in-game-lists/modes";
+import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
 import type {
 	Ability as AbilityType,
 	ModeShort,
 } from "~/modules/in-game-lists/types";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
-import { dateToYYYYMMDD, isValidDate } from "~/utils/dates";
 import { modeImageUrl } from "~/utils/urls";
 import { MAX_BUILD_FILTERS, RECENT_PATCHES } from "../builds-constants";
 import { buildsSearchParams } from "../builds-search-params";
@@ -31,7 +30,6 @@ export function BuildFiltersLayout({
 	const { t } = useTranslation(["builds", "game-misc"]);
 	const [{ abilities: selectedAbilities, mode, date }, setParams] =
 		useSearchParamsTyped(buildsSearchParams);
-	const formatDate = useFormatFilterDate();
 
 	return (
 		<FilterLayout
@@ -75,10 +73,10 @@ export function BuildFiltersLayout({
 					key: "date",
 					name: t("builds:filters.updatedSince"),
 					icon: <Calendar />,
-					formattedValue: date !== null ? formatDate(date) : null,
+					formattedValue: date !== null ? formatFilterDate(date) : null,
 					activeLabels:
 						date !== null
-							? [`${t("builds:filters.date.since")} ${formatDate(date)}`]
+							? [`${t("builds:filters.date.since")} ${formatFilterDate(date)}`]
 							: [],
 					testId: "date-filter",
 					content: (
@@ -117,6 +115,7 @@ function ModeFilter({
 				name={name}
 				checked={mode === null}
 				onChange={() => onChange(null)}
+				icon={<AnyModeIcon />}
 			>
 				{t("builds:filters.mode.any")}
 			</RadioOption>
@@ -130,6 +129,16 @@ function ModeFilter({
 				>
 					{t(`game-misc:MODE_LONG_${option}`)}
 				</RadioOption>
+			))}
+		</div>
+	);
+}
+
+function AnyModeIcon() {
+	return (
+		<div className={styles.anyModeIcon}>
+			{rankedModesShort.map((mode) => (
+				<Image key={mode} path={modeImageUrl(mode)} size={10} alt="" />
 			))}
 		</div>
 	);
@@ -192,66 +201,30 @@ function DateFilter({
 		year: "numeric",
 	});
 
-	const isCustom =
-		date !== null && !RECENT_PATCHES.some((patch) => patch.date === date);
-
-	// on Saturday so it doesn't overlap with actual path dates (no patches on Saturdays)
-	const oneMonthAgoOnSaturday = new Date();
-	oneMonthAgoOnSaturday.setUTCDate(oneMonthAgoOnSaturday.getUTCDate() - 30);
-	oneMonthAgoOnSaturday.setUTCDate(
-		oneMonthAgoOnSaturday.getUTCDate() - oneMonthAgoOnSaturday.getUTCDay() + 6,
-	);
-
-	const customDate =
-		date !== null && isValidDate(new Date(date))
-			? new Date(date)
-			: oneMonthAgoOnSaturday;
-
 	return (
-		<div className={styles.dateFilter}>
-			<div
-				className={styles.optionList}
-				role="radiogroup"
-				aria-label={t("builds:filters.updatedSince")}
+		<div
+			className={styles.optionList}
+			role="radiogroup"
+			aria-label={t("builds:filters.updatedSince")}
+		>
+			<RadioOption
+				name={name}
+				checked={date === null}
+				onChange={() => onChange(null)}
 			>
+				{t("builds:filters.date.anyTime")}
+			</RadioOption>
+			{RECENT_PATCHES.map((patch) => (
 				<RadioOption
+					key={patch.patch}
 					name={name}
-					checked={date === null}
-					onChange={() => onChange(null)}
+					checked={date === patch.date}
+					onChange={() => onChange(patch.date)}
+					sub={formatter.format(new Date(patch.date))}
 				>
-					{t("builds:filters.date.anyTime")}
+					{t("builds:filters.date.patch", { patch: patch.patch })}
 				</RadioOption>
-				{RECENT_PATCHES.map((patch) => (
-					<RadioOption
-						key={patch.patch}
-						name={name}
-						checked={date === patch.date}
-						onChange={() => onChange(patch.date)}
-						sub={formatter.format(new Date(patch.date))}
-					>
-						{t("builds:filters.date.patch", { patch: patch.patch })}
-					</RadioOption>
-				))}
-				<RadioOption
-					name={name}
-					checked={isCustom}
-					onChange={() => onChange(dateToYYYYMMDD(oneMonthAgoOnSaturday))}
-				>
-					{t("builds:filters.date.custom")}
-				</RadioOption>
-			</div>
-			{isCustom ? (
-				<label className={styles.customDate}>
-					{t("builds:filters.date")}
-					<input
-						type="date"
-						value={dateToYYYYMMDD(customDate)}
-						onChange={(e) => onChange(e.target.value)}
-						max={dateToYYYYMMDD(new Date())}
-						data-testid="date-input"
-					/>
-				</label>
-			) : null}
+			))}
 		</div>
 	);
 }
@@ -281,16 +254,8 @@ function RadioOption({
 	);
 }
 
-function useFormatFilterDate() {
-	const { formatter } = useDateTimeFormat({
-		day: "numeric",
-		month: "numeric",
-		year: "numeric",
-	});
-
-	return (date: string) =>
-		RECENT_PATCHES.find((patch) => patch.date === date)?.patch ??
-		formatter.format(new Date(date));
+function formatFilterDate(date: string) {
+	return RECENT_PATCHES.find((patch) => patch.date === date)?.patch ?? date;
 }
 
 function abilityType(ability: AbilityType) {

@@ -1,6 +1,7 @@
 import { subDays } from "date-fns";
 import { NZAP_TEST_DISCORD_ID, NZAP_TEST_ID } from "~/db/seed/constants";
 import { ADMIN_DISCORD_ID, ADMIN_ID } from "~/features/admin/admin-constants";
+import { RECENT_PATCHES } from "~/features/builds/builds-constants";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { expect, impersonate, isNotVisible, test } from "./helpers/playwright";
 import { BuildFormPage } from "./pages/builds/build-form-page";
@@ -136,8 +137,9 @@ test.describe("Builds", () => {
 		await weaponBuilds.filterOption("Any mode").click();
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);
 
-		await weaponBuilds.filterOption("Custom").click();
-		await expect(weaponBuilds.locators.dateInput).toBeVisible();
+		await weaponBuilds
+			.filterOption(new RegExp(`^Patch ${RECENT_PATCHES[0].patch}`))
+			.click();
 		// no change in count since all builds in test data are new
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);
 	});

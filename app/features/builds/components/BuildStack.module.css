@@ -27,6 +27,15 @@
 	border-radius: var(--radius-box);
 	background-color: var(--color-bg-high);
 	pointer-events: none;
+	transition: translate 150ms ease-out;
+
+	.stack:has(.toggle[aria-expanded="false"]:is(:hover, :focus-visible)) & {
+		translate: 4px 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
 }
 
 .toggle {
