@@ -7,6 +7,8 @@ import { StatusActivity } from "~/features/global-status/components/StatusActivi
 import { ScannerActivity } from "~/features/scanner/components/ScannerActivity";
 import { VoiceActivity } from "~/features/voice/components/VoiceActivity";
 import { useLayoutSize } from "~/hooks/useLayoutSize";
+import { IS_E2E_TEST_RUN } from "~/utils/e2e";
+import * as Presence from "~/utils/presence";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { LinkButton, SendouButton } from "../elements/Button";
 import { SendouModal } from "../elements/Dialog";
@@ -16,7 +18,6 @@ import { GlobalSearch, LoggedOutGlobalSearch } from "./GlobalSearch";
 import { LogInButtonContainer } from "./LogInButtonContainer";
 import styles from "./TopRightButtons.module.css";
 
-// xxx: animations?
 export function TopRightButtons({
 	showSupport,
 	isLoggedIn,
@@ -52,7 +53,7 @@ export function TopRightButtons({
 				</>
 			) : null}
 			<div className={styles.searchAndAddContainer}>
-				<div className={styles.activities}>
+				<div ref={animateActivities} className={styles.activities}>
 					<StatusActivity />
 					<VoiceActivity />
 					<ScannerActivity />
@@ -170,4 +171,11 @@ function ChatButton({
 			) : null}
 		</>
 	);
+}
+
+/** Stable ref callback, a new one per render would drop the pending mutation records on reconnect. */
+function animateActivities(element: HTMLDivElement) {
+	if (IS_E2E_TEST_RUN) return;
+
+	return Presence.observe(element);
 }
