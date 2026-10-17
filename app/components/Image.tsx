@@ -259,16 +259,14 @@ function InkTintedImage({
 				aria-label={alt}
 				data-testid={testId}
 				className={clsx(styles.inkTinted, className)}
-				style={
-					{
-						...style,
-						width: size ?? width,
-						height: size ?? height,
-						"--ink-silhouette": `url("${path}.avif")`,
-						"--ink-detail": `url("${detailPath}.avif")`,
-						"--ink-highlight": `url("${highlightPath}.avif")`,
-					} as React.CSSProperties
-				}
+				style={{
+					...style,
+					width: size ?? width,
+					height: size ?? height,
+					"--ink-silhouette": `url("${path}.avif")`,
+					"--ink-detail": `url("${detailPath}.avif")`,
+					"--ink-highlight": `url("${highlightPath}.avif")`,
+				}}
 			>
 				<span className={styles.inkArt} />
 				<span className={styles.inkHighlight} />
@@ -298,14 +296,12 @@ export function OutlinedImage({
 				aria-label={alt}
 				data-testid={testId}
 				className={clsx(styles.inkTinted, className)}
-				style={
-					{
-						...style,
-						width: size ?? width,
-						height: size ?? height,
-						"--ink-silhouette": `url("${path}.avif")`,
-					} as React.CSSProperties
-				}
+				style={{
+					...style,
+					width: size ?? width,
+					height: size ?? height,
+					"--ink-silhouette": `url("${path}.avif")`,
+				}}
 			>
 				<span className={styles.outlinedArt} />
 			</span>

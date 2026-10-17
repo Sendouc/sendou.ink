@@ -3,7 +3,7 @@ import type { LoaderFunction } from "react-router";
 import { redirect } from "react-router";
 import * as v from "valibot";
 import { DANGEROUS_CAN_ACCESS_DEV_CONTROLS } from "~/features/admin/core/dev-controls";
-import { requireUser } from "~/features/auth/core/user.server";
+import { getUser, requireUser } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { defineAction } from "~/form/define-action.server";
 import { isAdmin, isStaff } from "~/modules/permissions/utils";
@@ -25,7 +25,6 @@ import {
 } from "./authenticator.server";
 import type { AuthErrorCode } from "./errors";
 import { authSessionStorage } from "./session.server";
-import { getUser } from "./user.server";
 
 export const callbackLoader: LoaderFunction = async ({ request, url }) => {
 	// eslint-disable-next-line sendou/no-raw-search-params -- OAuth callback param, its name and values defined by the provider

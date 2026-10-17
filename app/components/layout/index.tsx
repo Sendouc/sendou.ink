@@ -134,7 +134,7 @@ function useSideNavCollapsed(initialCollapsed: boolean) {
 
 	const setCollapsedAndPersist = (value: boolean) => {
 		setCollapsed(value);
-		fetcher.submit(
+		void fetcher.submit(
 			{ collapsed: String(value) },
 			{ method: "POST", action: SIDENAV_ACTION },
 		);

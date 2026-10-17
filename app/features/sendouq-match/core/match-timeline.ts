@@ -48,9 +48,7 @@ export function resolveTimelineMaps(
 			);
 			const alphaIsWinner = map.winnerGroupId === match.groupAlpha.id;
 
-			const weaponsFor = (
-				group: MatchData["groupAlpha"] | MatchData["groupBravo"],
-			) =>
+			const weaponsFor = (group: MatchData["groupAlpha"]) =>
 				resolveTimelineWeapons({
 					linkedWeapons: group.members.map(
 						(member) =>
@@ -94,9 +92,7 @@ export function resolveTimelineMaps(
 export function resolveTimelineSpChanges(
 	match: MatchData,
 ): TimelineSpChanges | undefined {
-	const resolveMembers = (
-		group: MatchData["groupAlpha"] | MatchData["groupBravo"],
-	) =>
+	const resolveMembers = (group: MatchData["groupAlpha"]) =>
 		group.members
 			.filter((m) => m.skillDifference)
 			.map((m) => ({
@@ -108,7 +104,7 @@ export function resolveTimelineSpChanges(
 					customUrl: m.customUrl,
 					customAvatarUrl: m.customAvatarUrl,
 				},
-				skillDifference: m.skillDifference!,
+				skillDifference: m.skillDifference,
 			}));
 
 	const alphaMembers = resolveMembers(match.groupAlpha);

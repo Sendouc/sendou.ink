@@ -110,7 +110,7 @@ export const action = defineAction(
 					targetTeamId: body.targetTeamId,
 				});
 
-				notify({
+				void notify({
 					userIds: targetGroup.members.map((m) => m.id),
 					notification: {
 						type: "TO_LIKE_RECEIVED",
@@ -189,7 +189,7 @@ export const action = defineAction(
 
 				await ShowcaseTournaments.refreshCachedTournamentCounts(tournamentId);
 
-				notify({
+				void notify({
 					userIds: theirGroup.members.map((m) => m.id),
 					notification: {
 						type: "TO_LIKE_ACCEPTED",
@@ -215,7 +215,7 @@ export const action = defineAction(
 				errorToastIfFalsy(ownGroup && isGroupOwner(ownGroup), "Not owner");
 
 				await TournamentLFGRepository.updateMemberRole({
-					teamId: ownGroup!.id,
+					teamId: ownGroup.id,
 					userId: body.userId,
 					role: "MANAGER",
 				});
@@ -227,7 +227,7 @@ export const action = defineAction(
 				errorToastIfFalsy(ownGroup && isGroupOwner(ownGroup), "Not owner");
 
 				await TournamentLFGRepository.updateMemberRole({
-					teamId: ownGroup!.id,
+					teamId: ownGroup.id,
 					userId: body.userId,
 					role: "REGULAR",
 				});

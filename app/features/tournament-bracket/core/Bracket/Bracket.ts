@@ -630,7 +630,7 @@ export abstract class Bracket {
 				groupCount,
 			}).ok
 		) {
-			return assignments as (0 | 1)[];
+			return assignments;
 		}
 
 		const fakeAssignments: (0 | 1)[] = teams.map((_, index) =>

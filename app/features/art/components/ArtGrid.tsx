@@ -129,7 +129,7 @@ function BigImageDialog({ close, art }: { close: () => void; art: ListedArt }) {
 					})}
 					style={
 						typeof aspectRatio === "number"
-							? ({ "--aspect-ratio": aspectRatio } as React.CSSProperties)
+							? { "--aspect-ratio": aspectRatio }
 							: undefined
 					}
 				>

@@ -8,7 +8,6 @@ import {
 	TIER_NUMBERS,
 	WORST_TIER_NUMBER,
 } from "~/features/tournament/core/tiering";
-import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { mainWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 import * as SearchParams from "~/modules/search-params/search-params";
 import { codec, SP } from "~/modules/search-params/search-params";
@@ -139,15 +138,15 @@ const buildsWeaponFilterCodec = codec(
 	{
 		decode: (value) => {
 			if ((BUILD_FILTER_TABS as readonly string[]).includes(value)) {
-				return value as (typeof BUILD_FILTER_TABS)[number];
+				return value;
 			}
 			const weaponId = value.trim() === "" ? Number.NaN : Number(value);
 			if ((mainWeaponIds as readonly number[]).includes(weaponId)) {
-				return weaponId as MainWeaponId;
+				return weaponId;
 			}
 			return undefined;
 		},
-		encode: (value) => String(value),
+		encode: String,
 	},
 );
 

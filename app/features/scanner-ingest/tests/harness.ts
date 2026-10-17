@@ -107,7 +107,7 @@ export async function sendouqWorld(
 		maps,
 		alphaUsers,
 		bravoUsers,
-		povUser: alphaUsers[0]!,
+		povUser: alphaUsers[0],
 		conclude: async (reportedThrough?: Date) => {
 			await concludeGroupMatch(match.id);
 			await stampMapReports(match.id, reportedThrough ?? new Date());
@@ -163,7 +163,7 @@ export async function tournamentWorld(
 	clearAllTournamentDataCache();
 
 	const nameByUserId = new Map(
-		users.map((user, index) => [user.id, names[index]!]),
+		users.map((user, index) => [user.id, names[index]]),
 	);
 	const namesByTeamId = new Map(
 		tournament.teams.map((team) => [
@@ -221,7 +221,7 @@ export async function tournamentWorld(
 						? played.loserTeamId
 						: played.winnerTeamId,
 				)!,
-				weaponFor: (name: string) => TOURNAMENT_WEAPONS[names.indexOf(name)]!,
+				weaponFor: (name: string) => TOURNAMENT_WEAPONS[names.indexOf(name)],
 			}));
 		},
 		scanned: scannedGame,
@@ -434,7 +434,7 @@ async function concludeGroupMatch(matchId: number) {
 	invariant(match, "Match not found");
 
 	const winnerId = match.groupAlpha.id;
-	const reportedByUserId = match.groupAlpha.members[0]!.id;
+	const reportedByUserId = match.groupAlpha.members[0].id;
 
 	let reportedCount = 0;
 	let result = await SQMatchRepository.reportMapWinner({
@@ -460,7 +460,7 @@ async function concludeGroupMatch(matchId: number) {
 	const confirmation = await SQMatchRepository.reportMapWinner({
 		matchId,
 		winnerId,
-		reportedByUserId: match.groupBravo.members[0]!.id,
+		reportedByUserId: match.groupBravo.members[0].id,
 		reportedCount: reportedCount + 1,
 	});
 	invariant(
@@ -512,7 +512,7 @@ function scannedTeam(
 	return {
 		players: names.map((name, index) => ({
 			name,
-			weaponId: weaponFor?.(name) ?? WEAPONS[weaponOffset + index]!,
+			weaponId: weaponFor?.(name) ?? WEAPONS[weaponOffset + index],
 			paint: 1000 + (weaponOffset + index) * 100,
 			ka: 20 - (weaponOffset + index),
 			d: weaponOffset + index,

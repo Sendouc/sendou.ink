@@ -252,7 +252,7 @@ export function movePick(key: string, delta: number): void {
 	picks.splice(
 		Math.max(0, Math.min(picks.length, index + delta)),
 		0,
-		snapshot.picks[index]!,
+		snapshot.picks[index],
 	);
 	setPicks(picks);
 }

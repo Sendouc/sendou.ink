@@ -94,7 +94,7 @@ export default function UserEditPage() {
 								</>
 							) : null}
 							<FormMessage type="info">
-								<Trans i18nKey={"user:discordExplanation"} t={t}>
+								<Trans i18nKey="user:discordExplanation" t={t}>
 									Username, profile picture, YouTube, Bluesky and Twitch
 									accounts come from your Discord account. See
 									<Link to={FAQ_PAGE}>FAQ</Link> for more information.

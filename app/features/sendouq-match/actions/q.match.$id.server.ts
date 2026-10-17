@@ -97,7 +97,7 @@ export const action = defineAction(
 
 					if (match.chatRoomId) {
 						if (result.status === "MATCH_FINALIZED") {
-							ChatSystemMessage.sendPersisted({
+							void ChatSystemMessage.sendPersisted({
 								roomId: match.chatRoomId,
 								type: "SCORE_CONFIRMED",
 								authorUserId: user.id,
@@ -137,7 +137,7 @@ export const action = defineAction(
 					);
 
 					if (match.chatRoomId) {
-						ChatSystemMessage.sendPersisted({
+						void ChatSystemMessage.sendPersisted({
 							roomId: match.chatRoomId,
 							type: "SCORE_DISPUTED",
 							authorUserId: user.id,
@@ -371,7 +371,7 @@ export const action = defineAction(
 					}
 
 					if (match.chatRoomId) {
-						ChatSystemMessage.sendPersisted({
+						void ChatSystemMessage.sendPersisted({
 							roomId: match.chatRoomId,
 							type: "CANCEL_REPORTED",
 							authorUserId: user.id,
@@ -405,7 +405,7 @@ export const action = defineAction(
 					await notifyStaffOfCanceledMatch(match);
 
 					if (match.chatRoomId) {
-						ChatSystemMessage.sendPersisted({
+						void ChatSystemMessage.sendPersisted({
 							roomId: match.chatRoomId,
 							type: "CANCEL_CONFIRMED",
 							authorUserId: user.id,
@@ -444,7 +444,9 @@ export const action = defineAction(
 						});
 						// no system message accompanies a staff cancel, so the rooms it
 						// just made inactive are announced on their own
-						ChatSystemMessage.notifyRoomsChangedByRoomIds([match.chatRoomId]);
+						void ChatSystemMessage.notifyRoomsChangedByRoomIds([
+							match.chatRoomId,
+						]);
 					}
 
 					break;
@@ -466,7 +468,7 @@ export const action = defineAction(
 					}
 
 					if (match.chatRoomId) {
-						ChatSystemMessage.sendPersisted({
+						void ChatSystemMessage.sendPersisted({
 							roomId: match.chatRoomId,
 							type: "CANCEL_REFUSED",
 							authorUserId: user.id,

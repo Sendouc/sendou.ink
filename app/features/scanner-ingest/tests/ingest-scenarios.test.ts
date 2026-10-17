@@ -35,8 +35,8 @@ describe("gating & request filtering", () => {
 		await w.conclude();
 
 		const res = await ingest(w.povUser, [
-			w.scanned(w.maps[0]!, { lobby: "SERIES" }),
-			w.scanned(w.maps[1]!, { lobby: "REGULAR" }),
+			w.scanned(w.maps[0], { lobby: "SERIES" }),
+			w.scanned(w.maps[1], { lobby: "REGULAR" }),
 		]);
 
 		expect(res).toEqual({
@@ -53,9 +53,7 @@ describe("gating & request filtering", () => {
 		const w = await sendouqWorld();
 		await w.conclude();
 
-		const res = await ingest(w.povUser, [
-			w.scanned(w.maps[0]!, { lobby: "X" }),
-		]);
+		const res = await ingest(w.povUser, [w.scanned(w.maps[0], { lobby: "X" })]);
 
 		expect(res).toEqual({
 			storedMatchesCount: 1,
@@ -66,8 +64,8 @@ describe("gating & request filtering", () => {
 		});
 		const rows = await fetchIngestedMatches();
 		expect(rows).toHaveLength(1);
-		expect(rows[0]!.data.lobby).toBe("X");
-		expect(rows[0]!.groupMatchIdHint).toBeNull();
+		expect(rows[0].data.lobby).toBe("X");
+		expect(rows[0].groupMatchIdHint).toBeNull();
 		expect(await fetchLinks()).toHaveLength(0);
 	});
 
@@ -76,9 +74,9 @@ describe("gating & request filtering", () => {
 		await w.conclude();
 
 		const res = await ingest(w.povUser, [
-			w.scanned(w.maps[1]!, { lobby: "X" }),
-			w.scanned(w.maps[0]!, { lobby: "REGULAR" }),
-			w.scanned(w.maps[0]!),
+			w.scanned(w.maps[1], { lobby: "X" }),
+			w.scanned(w.maps[0], { lobby: "REGULAR" }),
+			w.scanned(w.maps[0]),
 		]);
 
 		expect(res.storedMatchesCount).toBe(2);
@@ -95,7 +93,7 @@ describe("gating & request filtering", () => {
 	test("G5 implausible values: stats, scores and names the game can't show are stored as unread", async () => {
 		const w = await sendouqWorld();
 		await w.conclude();
-		const scan = w.scanned(w.maps[0]!);
+		const scan = w.scanned(w.maps[0]);
 		const [winners, losers] = scan.teams;
 
 		const res = await ingest(w.povUser, [
@@ -106,7 +104,7 @@ describe("gating & request filtering", () => {
 					{
 						players: [
 							{
-								...winners.players[0]!,
+								...winners.players[0],
 								name: "x".repeat(100),
 								ka: 1e12,
 								d: -3,
@@ -122,7 +120,7 @@ describe("gating & request filtering", () => {
 		]);
 		expect(res.linkedGamesCount).toBe(1);
 
-		const scoreboard = (await qMatchPage(w.match.id)).ingestedScoreboards[0]!;
+		const scoreboard = (await qMatchPage(w.match.id)).ingestedScoreboards[0];
 		expect(scoreboard.data.scores).toEqual([null, null]);
 		expect(scoreboard.data.players[0]).toMatchObject({
 			name: "",
@@ -138,13 +136,13 @@ describe("gating & request filtering", () => {
 		await w.conclude();
 
 		const res = await ingest(w.povUser, [
-			w.scanned(w.maps[0]!, { playedAt: 1e300 }),
+			w.scanned(w.maps[0], { playedAt: 1e300 }),
 		]);
 
 		expect(res.storedMatchesCount).toBe(1);
 		expect(res.linkedGamesCount).toBe(0);
 		const rows = await fetchIngestedMatches();
-		expect(rows[0]!.data.playedAt).toBeNull();
+		expect(rows[0].data.playedAt).toBeNull();
 	});
 });
 
@@ -152,7 +150,7 @@ describe("SendouQ flow", () => {
 	test("Q1 live send, map already reported: stored + linked, page shows the scoreboard", async () => {
 		const w = await sendouqWorld();
 		await w.conclude();
-		const scan = w.scanned(w.maps[0]!);
+		const scan = w.scanned(w.maps[0]);
 
 		const res = await ingest(w.povUser, [scan]);
 		expect(res.storedMatchesCount).toBe(1);
@@ -165,7 +163,7 @@ describe("SendouQ flow", () => {
 
 		const page = await qMatchPage(w.match.id);
 		expect(page.ingestedScoreboards).toHaveLength(1);
-		const scoreboard = page.ingestedScoreboards[0]!;
+		const scoreboard = page.ingestedScoreboards[0];
 		expect(scoreboard.mapIndex).toBe(0);
 		expect(scoreboard.data.players.map((p) => p.name)).toEqual([
 			...ALPHA_NAMES,
@@ -190,16 +188,14 @@ describe("SendouQ flow", () => {
 
 	test("Q2 send before report, resend after: hint first, link on the resend", async () => {
 		const w = await sendouqWorld();
-		const scan = w.scanned(w.maps[0]!);
+		const scan = w.scanned(w.maps[0]);
 
 		const first = await ingest(w.povUser, [scan]);
 		expect(first.storedMatchesCount).toBe(1);
 		expect(first.contextResolved).toBe(true);
 		expect(first.linkedGamesCount).toBe(0);
 		expect(first.linkedMatches).toEqual([]);
-		expect((await fetchIngestedMatches())[0]!.groupMatchIdHint).toBe(
-			w.match.id,
-		);
+		expect((await fetchIngestedMatches())[0].groupMatchIdHint).toBe(w.match.id);
 		expect((await qMatchPage(w.match.id)).ingestedScoreboards).toHaveLength(0);
 
 		await w.conclude();
@@ -241,13 +237,13 @@ describe("SendouQ flow", () => {
 		const w = await sendouqWorld();
 		await w.conclude();
 
-		const res = await ingest(w.bravoUsers[0]!, [
-			w.scanned(w.maps[0]!, { seenFrom: "loser" }),
+		const res = await ingest(w.bravoUsers[0], [
+			w.scanned(w.maps[0], { seenFrom: "loser" }),
 		]);
 		expect(res.linkedGamesCount).toBe(1);
 
 		const page = await qMatchPage(w.match.id);
-		const scoreboard = page.ingestedScoreboards[0]!;
+		const scoreboard = page.ingestedScoreboards[0];
 		expect(scoreboard.data.scores).toEqual([100, 48]);
 		expect(scoreboard.data.players.map((p) => p.name)).toEqual([
 			...ALPHA_NAMES,
@@ -261,7 +257,7 @@ describe("SendouQ flow", () => {
 			{
 				groupMatchId: w.match.id,
 				mapIndex: 0,
-				userId: w.bravoUsers[0]!.id,
+				userId: w.bravoUsers[0].id,
 				weaponSplId: WEAPONS[4],
 			},
 		]);
@@ -271,13 +267,11 @@ describe("SendouQ flow", () => {
 		const w = await sendouqWorld();
 		await w.conclude();
 
-		const res = await ingest(w.povUser, [w.scanned(w.maps[0]!, { pov: null })]);
+		const res = await ingest(w.povUser, [w.scanned(w.maps[0], { pov: null })]);
 
 		expect(res.contextResolved).toBe(true);
 		expect(res.linkedGamesCount).toBe(0);
-		expect((await fetchIngestedMatches())[0]!.groupMatchIdHint).toBe(
-			w.match.id,
-		);
+		expect((await fetchIngestedMatches())[0].groupMatchIdHint).toBe(w.match.id);
 		expect(await fetchLinks()).toHaveLength(0);
 	});
 
@@ -286,15 +280,13 @@ describe("SendouQ flow", () => {
 		await w.conclude();
 
 		// bravo lost every map, yet the read claims the sender's seat on the winning rows
-		const res = await ingest(w.bravoUsers[0]!, [w.scanned(w.maps[0]!)]);
+		const res = await ingest(w.bravoUsers[0], [w.scanned(w.maps[0])]);
 
 		expect(res.storedMatchesCount).toBe(1);
 		expect(res.contextResolved).toBe(true);
 		expect(res.linkedGamesCount).toBe(0);
 		expect(res.linkedMatches).toEqual([]);
-		expect((await fetchIngestedMatches())[0]!.groupMatchIdHint).toBe(
-			w.match.id,
-		);
+		expect((await fetchIngestedMatches())[0].groupMatchIdHint).toBe(w.match.id);
 		expect((await qMatchPage(w.match.id)).ingestedScoreboards).toHaveLength(0);
 	});
 
@@ -303,7 +295,7 @@ describe("SendouQ flow", () => {
 		await w.conclude();
 
 		const scan = renamed(
-			w.scanned(w.maps[0]!),
+			w.scanned(w.maps[0]),
 			(_, rowIndex) => `???${rowIndex + 1}`,
 		);
 		const res = await ingest(w.povUser, [scan]);
@@ -313,12 +305,12 @@ describe("SendouQ flow", () => {
 			{ matchIndex: 0, link: { type: "sendouq", groupMatchId: w.match.id } },
 		]);
 		const page = await qMatchPage(w.match.id);
-		const scoreboard = page.ingestedScoreboards[0]!;
+		const scoreboard = page.ingestedScoreboards[0];
 		expect(scoreboard.data.players.map((p) => p.tournamentTeamId)).toEqual([
 			...Array(4).fill(w.match.alphaGroup.id),
 			...Array(4).fill(w.match.bravoGroup.id),
 		]);
-		expect(scoreboard.data.players[0]!.userId).toBe(w.povUser.id);
+		expect(scoreboard.data.players[0].userId).toBe(w.povUser.id);
 		expect(page.reportedWeapons).toEqual([
 			{
 				groupMatchId: w.match.id,
@@ -332,7 +324,7 @@ describe("SendouQ flow", () => {
 	test("Q12 a nameless first link: the opponent's named read still joins the game", async () => {
 		const w = await sendouqWorld();
 		await w.conclude();
-		const scan = w.scanned(w.maps[0]!);
+		const scan = w.scanned(w.maps[0]);
 
 		await ingest(w.povUser, [
 			{
@@ -347,18 +339,18 @@ describe("SendouQ flow", () => {
 				],
 			},
 		]);
-		const res = await ingest(w.bravoUsers[0]!, [
-			w.scanned(w.maps[0]!, { seenFrom: "loser" }),
+		const res = await ingest(w.bravoUsers[0], [
+			w.scanned(w.maps[0], { seenFrom: "loser" }),
 		]);
 
 		expect(res.linkedGamesCount).toBe(1);
-		const scoreboard = (await qMatchPage(w.match.id)).ingestedScoreboards[0]!;
+		const scoreboard = (await qMatchPage(w.match.id)).ingestedScoreboards[0];
 		expect(scoreboard.data.players.map((p) => p.name)).toEqual([
 			...ALPHA_NAMES,
 			...BRAVO_NAMES,
 		]);
-		expect(scoreboard.data.players[0]!.userId).toBe(w.povUser.id);
-		expect(scoreboard.data.players[4]!.userId).toBe(w.bravoUsers[0]!.id);
+		expect(scoreboard.data.players[0].userId).toBe(w.povUser.id);
+		expect(scoreboard.data.players[4].userId).toBe(w.bravoUsers[0].id);
 	});
 
 	test("Q13 a teammate's recording: the game links, but their weapon isn't credited to the sender", async () => {
@@ -366,7 +358,7 @@ describe("SendouQ flow", () => {
 		await w.conclude();
 
 		// the POV seat is Alpha1's, sent by their teammate Alpha2
-		const res = await ingest(w.alphaUsers[1]!, [w.scanned(w.maps[0]!)]);
+		const res = await ingest(w.alphaUsers[1], [w.scanned(w.maps[0])]);
 
 		expect(res.linkedGamesCount).toBe(1);
 		expect(await fetchReportedWeapons()).toHaveLength(0);
@@ -379,7 +371,7 @@ describe("SendouQ flow", () => {
 		// a misread status frame can flag POV footage cast while the results
 		// screen still pins the sender's own seat
 		const res = await ingest(w.povUser, [
-			w.scanned(w.maps[0]!, { cast: true, pov: { team: 0, index: 0 } }),
+			w.scanned(w.maps[0], { cast: true, pov: { team: 0, index: 0 } }),
 		]);
 
 		expect(res.contextResolved).toBe(true);
@@ -387,15 +379,13 @@ describe("SendouQ flow", () => {
 		expect(res.linkedMatches).toEqual([
 			{ matchIndex: 0, link: { type: "sendouq", groupMatchId: w.match.id } },
 		]);
-		expect((await fetchIngestedMatches())[0]!.groupMatchIdHint).toBe(
-			w.match.id,
-		);
+		expect((await fetchIngestedMatches())[0].groupMatchIdHint).toBe(w.match.id);
 	});
 
 	test("Q9 live send of an earlier set: queueing again afterwards does not capture the read", async () => {
 		const w = await sendouqWorld({ createdAt: minutesAgo(90) });
 		const maps = await w.conclude(minutesAgo(70));
-		const playedMap = maps[0]!;
+		const playedMap = maps[0];
 		await anotherSendouqMatch(w, minutesAgo(60));
 
 		const res = await ingest(w.povUser, [
@@ -405,9 +395,7 @@ describe("SendouQ flow", () => {
 		expect(res.linkedMatches).toEqual([
 			{ matchIndex: 0, link: { type: "sendouq", groupMatchId: w.match.id } },
 		]);
-		expect((await fetchIngestedMatches())[0]!.groupMatchIdHint).toBe(
-			w.match.id,
-		);
+		expect((await fetchIngestedMatches())[0].groupMatchIdHint).toBe(w.match.id);
 		expect((await qMatchPage(w.match.id)).ingestedScoreboards).toHaveLength(1);
 	});
 
@@ -424,9 +412,9 @@ describe("SendouQ flow", () => {
 			],
 		});
 		const maps = await w.conclude();
-		const replay = maps[3]!;
-		expect(replay.mode).toBe(maps[0]!.mode);
-		expect(replay.stageId).toBe(maps[0]!.stageId);
+		const replay = maps[3];
+		expect(replay.mode).toBe(maps[0].mode);
+		expect(replay.stageId).toBe(maps[0].stageId);
 
 		const res = await ingest(w.povUser, [
 			w.scanned(replay, {
@@ -435,7 +423,7 @@ describe("SendouQ flow", () => {
 		]);
 
 		expect(res.linkedGamesCount).toBe(1);
-		expect((await fetchLinks())[0]!.groupMatchMapId).toBe(replay.id);
+		expect((await fetchLinks())[0].groupMatchMapId).toBe(replay.id);
 		expect((await qMatchPage(w.match.id)).ingestedScoreboards).toEqual([
 			expect.objectContaining({ mapIndex: 3 }),
 		]);
@@ -448,8 +436,8 @@ describe("SendouQ flow", () => {
 		await w.conclude(new Date(playedAt));
 
 		const res = await ingest(w.povUser, [
-			w.scanned(w.maps[0]!, { playedAt }),
-			w.scanned(w.maps[1]!, { playedAt: playedAt + 5 * 60 * 1000 }),
+			w.scanned(w.maps[0], { playedAt }),
+			w.scanned(w.maps[1], { playedAt: playedAt + 5 * 60 * 1000 }),
 		]);
 
 		expect(res.contextResolved).toBe(true);
@@ -464,7 +452,7 @@ describe("SendouQ flow", () => {
 
 	test("Q14 send before report: the report links the stored read without a resend", async () => {
 		const w = await sendouqWorld();
-		const res = await ingest(w.povUser, [w.scanned(w.maps[0]!)]);
+		const res = await ingest(w.povUser, [w.scanned(w.maps[0])]);
 		expect(res.linkedGamesCount).toBe(0);
 
 		await SQMatchRepository.reportMapWinner({
@@ -502,7 +490,7 @@ describe("SendouQ flow", () => {
 			SQMatchRepository.undoMapReport({ matchId: w.match.id, mapIndex: 0 });
 
 		await reportFirstMap(w.match.alphaGroup.id);
-		await ingest(w.povUser, [w.scanned(w.maps[0]!)]);
+		await ingest(w.povUser, [w.scanned(w.maps[0])]);
 		expect(await fetchLinks()).toHaveLength(1);
 
 		await undoFirstMap();
@@ -523,11 +511,11 @@ describe("tournament flow", () => {
 	test("T1 live send links inside the current set only", async () => {
 		const w = await tournamentWorld();
 		const sets = w.matchesOfTeam(w.championTeamId);
-		const round1 = sets[0]!;
+		const round1 = sets[0];
 		const round2 = sets.at(-1)!;
 		const [game1] = await w.games(round2.id);
 
-		const res = await ingest(w.povUser, [w.scanned(game1!)]);
+		const res = await ingest(w.povUser, [w.scanned(game1)]);
 
 		expect(res.linkedMatches).toEqual([
 			{
@@ -550,10 +538,10 @@ describe("tournament flow", () => {
 	test("T5 live send of an earlier set: the team's next set does not capture the read", async () => {
 		const w = await tournamentWorld();
 		const [earlierSet, laterSet] = w.matchesOfTeam(w.championTeamId);
-		const [game1] = await w.games(earlierSet!.id);
+		const [game1] = await w.games(earlierSet.id);
 
 		const res = await ingest(w.povUser, [
-			w.scanned(game1!, { playedAt: game1!.playedAt }),
+			w.scanned(game1, { playedAt: game1.playedAt }),
 		]);
 
 		expect(res.linkedMatches).toEqual([
@@ -562,30 +550,30 @@ describe("tournament flow", () => {
 				link: {
 					type: "tournament",
 					tournamentId: w.tournamentId,
-					matchId: earlierSet!.id,
+					matchId: earlierSet.id,
 				},
 			},
 		]);
 		const earlierPage = await tournamentMatchPage(
 			w.tournamentId,
-			earlierSet!.id,
+			earlierSet.id,
 		);
 		expect(earlierPage.ingestedScoreboards.map((sb) => sb.mapIndex)).toEqual([
 			0,
 		]);
-		const laterPage = await tournamentMatchPage(w.tournamentId, laterSet!.id);
+		const laterPage = await tournamentMatchPage(w.tournamentId, laterSet.id);
 		expect(laterPage.ingestedScoreboards).toHaveLength(0);
 	});
 
 	test("T6 the next set starting moments later: the read lands in the set that was played", async () => {
 		const w = await tournamentWorld();
 		const [earlierSet, laterSet] = w.matchesOfTeam(w.championTeamId);
-		const [game1] = await w.games(earlierSet!.id);
+		const [game1] = await w.games(earlierSet.id);
 		// the next round is created as the finished set gets reported, so it
 		// starts inside the read's clock-skew allowance
-		const playedAt = w.startedAtOf(laterSet!.id) - 2 * 60 * 1000;
+		const playedAt = w.startedAtOf(laterSet.id) - 2 * 60 * 1000;
 
-		const res = await ingest(w.povUser, [w.scanned(game1!, { playedAt })]);
+		const res = await ingest(w.povUser, [w.scanned(game1, { playedAt })]);
 
 		expect(res.linkedMatches).toEqual([
 			{
@@ -593,18 +581,18 @@ describe("tournament flow", () => {
 				link: {
 					type: "tournament",
 					tournamentId: w.tournamentId,
-					matchId: earlierSet!.id,
+					matchId: earlierSet.id,
 				},
 			},
 		]);
-		const laterPage = await tournamentMatchPage(w.tournamentId, laterSet!.id);
+		const laterPage = await tournamentMatchPage(w.tournamentId, laterSet.id);
 		expect(laterPage.ingestedScoreboards).toHaveLength(0);
 	});
 
 	test("T2 reads without a play time (VoD) are stored but never linked", async () => {
 		const w = await tournamentWorld();
 		const [set1] = w.matchesOfTeam(w.championTeamId);
-		const games = await w.games(set1!.id);
+		const games = await w.games(set1.id);
 
 		const res = await ingest(
 			w.povUser,
@@ -614,7 +602,7 @@ describe("tournament flow", () => {
 		expect(res.storedMatchesCount).toBe(games.length);
 		expect(res.linkedGamesCount).toBe(0);
 		expect(res.linkedMatches).toEqual([]);
-		const page = await tournamentMatchPage(w.tournamentId, set1!.id);
+		const page = await tournamentMatchPage(w.tournamentId, set1.id);
 		expect(page.ingestedScoreboards).toHaveLength(0);
 	});
 
@@ -622,14 +610,14 @@ describe("tournament flow", () => {
 		const w = await tournamentWorld();
 		const finalMatch = w.matchesOfTeam(w.championTeamId).at(-1)!;
 		const [game1] = await w.games(finalMatch.id);
-		const partial = w.scanned(game1!, { partial: true });
+		const partial = w.scanned(game1, { partial: true });
 
 		const first = await ingest(w.povUser, [partial]);
 		expect(first.storedMatchesCount).toBe(1);
 		expect(first.contextResolved).toBe(true);
 		expect(first.linkedGamesCount).toBe(0);
 
-		const full = w.scanned(game1!, { playedAt: partial.playedAt! + 60_000 });
+		const full = w.scanned(game1, { playedAt: partial.playedAt! + 60_000 });
 		const second = await ingest(w.povUser, [full]);
 
 		expect(second.storedMatchesCount).toBe(0);
@@ -677,15 +665,15 @@ describe("tournament flow", () => {
 		)!;
 		// their own game, but read with their seat on the winning side, so
 		// nothing of their set takes it and it waits unlinked with the hint
-		await ingest({ id: stranger.memberUserIds[0]! }, [
+		await ingest({ id: stranger.memberUserIds[0] }, [
 			w.scanned({
-				...ownGame!,
-				mode: finalGame!.mode,
-				stage: finalGame!.stage,
-				playedAt: finalGame!.playedAt,
+				...ownGame,
+				mode: finalGame.mode,
+				stage: finalGame.stage,
+				playedAt: finalGame.playedAt,
 			}),
 		]);
-		expect((await fetchIngestedMatches())[0]!.tournamentIdHint).toBe(
+		expect((await fetchIngestedMatches())[0].tournamentIdHint).toBe(
 			w.tournamentId,
 		);
 
@@ -746,28 +734,28 @@ describe("tournament flow", () => {
 		const w = await tournamentWorld();
 		const finalMatch = w.matches.at(-1)!;
 		const [game1] = await w.games(finalMatch.id);
-		await ingest(w.povUser, [w.scanned(game1!)]);
+		await ingest(w.povUser, [w.scanned(game1)]);
 		const [result] = await TournamentMatchRepository.findResultsByMatchId(
 			finalMatch.id,
 		);
 
-		await TournamentMatchRepository.deleteResultById(result!.id);
+		await TournamentMatchRepository.deleteResultById(result.id);
 		expect(await fetchLinks()).toHaveLength(0);
 
 		const reReported = await TournamentMatchRepository.insertResult({
 			matchId: finalMatch.id,
-			mode: result!.mode,
-			stageId: result!.stageId,
+			mode: result.mode,
+			stageId: result.stageId,
 			reporterId: w.author.id,
-			winnerTeamId: result!.winnerTeamId,
+			winnerTeamId: result.winnerTeamId,
 			number: 1,
-			source: result!.source,
+			source: result.source,
 		});
 		await db
 			.transaction()
 			.execute((trx) =>
 				TournamentMatchRepository.setParticipants(
-					{ resultId: reReported.id, participants: result!.participants },
+					{ resultId: reReported.id, participants: result.participants },
 					trx,
 				),
 			);
@@ -787,7 +775,7 @@ describe("tournament flow", () => {
 		const w = await tournamentWorld();
 		const finalMatch = w.matchesOfTeam(w.championTeamId).at(-1)!;
 		const [game1] = await w.games(finalMatch.id);
-		const completed = w.scanned(game1!);
+		const completed = w.scanned(game1);
 		const minimapsOnly: ScannerMatch = {
 			...completed,
 			playedAt: null,
@@ -843,14 +831,14 @@ describe("response contract & idempotency", () => {
 		});
 		const rows = await fetchIngestedMatches();
 		expect(rows).toHaveLength(1);
-		expect(rows[0]!.tournamentIdHint).toBeNull();
-		expect(rows[0]!.groupMatchIdHint).toBeNull();
+		expect(rows[0].tournamentIdHint).toBeNull();
+		expect(rows[0].groupMatchIdHint).toBeNull();
 	});
 
 	test("R2 double-send is idempotent but still reports where each match belongs", async () => {
 		const w = await sendouqWorld();
 		await w.conclude();
-		const scan = w.scanned(w.maps[0]!);
+		const scan = w.scanned(w.maps[0]);
 		await ingest(w.povUser, [scan]);
 
 		const resend = await ingest(w.povUser, [scan]);
@@ -878,12 +866,12 @@ async function ingestDecidingGame({
 }) {
 	const w = await tournamentWorld();
 	const [decidedSet, nextSet] = w.matchesOfTeam(w.championTeamId);
-	const decidingGame = (await w.games(decidedSet!.id)).at(-1)!;
+	const decidingGame = (await w.games(decidedSet.id)).at(-1)!;
 	await w.startSetAt(
-		decidedSet!.id,
+		decidedSet.id,
 		new Date(decidingGame.playedAt! - 20 * 60_000),
 	);
-	await w.startSetAt(nextSet!.id, new Date(decidingGame.playedAt!));
+	await w.startSetAt(nextSet.id, new Date(decidingGame.playedAt!));
 	// the results screen shows after the game was already reported
 	const playedAt = decidingGame.playedAt! + 25_000;
 
@@ -898,5 +886,5 @@ async function ingestDecidingGame({
 		}),
 	]);
 
-	return { res, w, decidedSet: decidedSet!, nextSet: nextSet! };
+	return { res, w, decidedSet, nextSet };
 }

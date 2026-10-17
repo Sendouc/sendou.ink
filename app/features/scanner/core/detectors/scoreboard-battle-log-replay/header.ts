@@ -95,12 +95,12 @@ function parseTopBand(reading: string): TopBandParse {
 		TIMESTAMP_GAPPED_DATE_RE.exec(normalized) ??
 		TIMESTAMP_FUSED_RE.exec(normalized);
 	const stageReading = m
-		? reading.slice(reading.length - m[4]!.length)
+		? reading.slice(reading.length - m[4].length)
 		: reading;
 	if (m) {
 		// P's bowl can read as "o", folded to "0" above
 		const meridiem = m[3] ? ` ${m[3].replace("0", "P")}` : "";
-		timestamp = `${m[1]!.replace(/ /g, "")} ${m[2]!.replace(/ /g, "")}${meridiem}`;
+		timestamp = `${m[1].replace(/ /g, "")} ${m[2].replace(/ /g, "")}${meridiem}`;
 	}
 	if (stageReading) {
 		const match = closestBy(

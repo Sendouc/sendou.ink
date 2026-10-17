@@ -3,6 +3,12 @@ import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { databaseTimestampNow } from "~/utils/dates";
 import { sortBuilds } from "./build-sorting.server";
 
+const GEAR_SORT_CASES = [
+	{ identifier: "HEADGEAR_ID", key: "headGearSplId" },
+	{ identifier: "CLOTHES_ID", key: "clothesGearSplId" },
+	{ identifier: "SHOES_ID", key: "shoesGearSplId" },
+] as const;
+
 type BuildSortingBuildArg = Parameters<
 	typeof sortBuilds
 >[number]["builds"][number];
@@ -295,49 +301,34 @@ describe("sortBuilds()", () => {
 		expect(sortedBuilds[2].id).toBe(1);
 	});
 
-	for (const identifier of ["HEADGEAR_ID", "CLOTHES_ID", "SHOES_ID"]) {
-		test(`sorts by ${identifier}`, () => {
-			const key = (
-				{
-					HEADGEAR_ID: "headGearSplId",
-					CLOTHES_ID: "clothesGearSplId",
-					SHOES_ID: "shoesGearSplId",
-				} as const
-			)[identifier]!;
+	test.each(GEAR_SORT_CASES)("sorts by $identifier", ({ identifier, key }) => {
+		const builds = [
+			mockBuild({
+				id: 1,
+				[key]: 3,
+			}),
+			mockBuild({
+				id: 2,
+				[key]: 1,
+			}),
+			mockBuild({
+				id: 3,
+				[key]: 1,
+			}),
+		];
 
-			const builds = [
-				mockBuild({
-					id: 1,
-					[key]: 3,
-				}),
-				mockBuild({
-					id: 2,
-					[key]: 1,
-				}),
-				mockBuild({
-					id: 3,
-					[key]: 1,
-				}),
-			];
-
-			const sortedBuilds = sortBuilds({
-				builds,
-				buildSorting: [identifier as any],
-				weaponPool: [],
-			});
-
-			expect(sortedBuilds[2].id).toBe(1);
+		const sortedBuilds = sortBuilds({
+			builds,
+			buildSorting: [identifier],
+			weaponPool: [],
 		});
 
-		test(`sorts ${identifier} with null gear last`, () => {
-			const key = (
-				{
-					HEADGEAR_ID: "headGearSplId",
-					CLOTHES_ID: "clothesGearSplId",
-					SHOES_ID: "shoesGearSplId",
-				} as const
-			)[identifier]!;
+		expect(sortedBuilds[2].id).toBe(1);
+	});
 
+	test.each(GEAR_SORT_CASES)(
+		"sorts $identifier with null gear last",
+		({ identifier, key }) => {
 			const builds = [
 				mockBuild({
 					id: 1,
@@ -355,15 +346,15 @@ describe("sortBuilds()", () => {
 
 			const sortedBuilds = sortBuilds({
 				builds,
-				buildSorting: [identifier as any],
+				buildSorting: [identifier],
 				weaponPool: [],
 			});
 
 			expect(sortedBuilds[0].id).toBe(3);
 			expect(sortedBuilds[1].id).toBe(2);
 			expect(sortedBuilds[2].id).toBe(1);
-		});
-	}
+		},
+	);
 
 	test("sorts when buildSort not given", () => {
 		const builds = [mockBuild({}), mockBuild({}), mockBuild({})];

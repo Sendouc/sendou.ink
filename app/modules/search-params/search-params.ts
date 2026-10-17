@@ -448,7 +448,7 @@ function arrayParam<T>(
 					try {
 						const parsed = JSON.parse(plains[0]);
 						if (Array.isArray(parsed)) {
-							items = parsed.map((member) => String(member));
+							items = parsed.map(String);
 						}
 					} catch {}
 				} else if (itemBase === "number" && plains[0].includes(",")) {
@@ -471,7 +471,7 @@ function arrayParam<T>(
 		encodePlain: (value) => {
 			const items = value as unknown[];
 			if (items.length === 0) return [""];
-			return items.map((item) => String(item));
+			return items.map(String);
 		},
 	};
 }
