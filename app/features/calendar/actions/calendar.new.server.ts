@@ -31,6 +31,7 @@ import {
 	teamPickSettingsFromFormValues,
 } from "../calendar-new-schemas";
 import { formValuesToInputBrackets } from "../calendar-progression-form";
+import type { CalendarEventTag } from "../calendar-types";
 import { findValidOrganizations } from "../loaders/calendar.new.server";
 
 export const action = defineAction(
@@ -45,49 +46,25 @@ export const action = defineAction(
 			? Number(body.organizationId)
 			: null;
 
-		if (organizationId) {
-			await validateOrganization({
-				userId: user.id,
-				organizationId,
-				isTournamentAdder,
-			});
-		} else if (!isEditing) {
-			requireRole(
-				isAddingTournament ? "TOURNAMENT_ADDER" : "CALENDAR_EVENT_ADDER",
-			);
-		}
+		await requireCanAddToOrganization({
+			userId: user.id,
+			organizationId,
+			isTournamentAdder,
+			isEditing,
+			isAddingTournament,
+		});
 
 		if (body.trophyId) {
-			const trophyOrganizationId =
-				await TrophyRepository.findOrganizationIdById(body.trophyId);
-			if (trophyOrganizationId !== organizationId) {
-				errorToast("Trophy does not belong to the selected organization");
-			}
+			await validateTrophyOrganization({
+				trophyId: body.trophyId,
+				organizationId,
+			});
 		}
 
-		const eventToEdit = body.eventToEditId
-			? badRequestIfFalsy(
-					await CalendarRepository.findById(body.eventToEditId, {
-						includeBadgePrizes: true,
-					}),
-				)
-			: null;
-
-		const tournamentToEdit = eventToEdit?.tournamentId
-			? await tournamentFromDB(eventToEdit.tournamentId)
-			: null;
-		if (tournamentToEdit) {
-			errorToastIfFalsy(
-				!tournamentToEdit.hasStarted,
-				"Tournament has already started",
-			);
-			errorToastIfFalsy(
-				tournamentToEdit.canEditEventInfo(user),
-				"Not authorized",
-			);
-		} else if (eventToEdit) {
-			requirePermission(eventToEdit, "EDIT");
-		}
+		const { eventToEdit, tournamentToEdit } = await findEditableEvent(
+			body.eventToEditId,
+			user,
+		);
 
 		const data = await resolveImages({
 			isCurrentImgId: async (imgId) =>
@@ -119,13 +96,7 @@ export const action = defineAction(
 			discordInviteCode: data.discordInviteCode
 				? pathnameFromPotentialURL(data.discordInviteCode)
 				: data.discordInviteCode,
-			tags:
-				data.tags.length > 0
-					? data.tags.toSorted(
-							(a, b) =>
-								CALENDAR_EVENT.TAGS.indexOf(a) - CALENDAR_EVENT.TAGS.indexOf(b),
-						)
-					: null,
+			tags: sortedTagsOrNull(data.tags),
 			badges: data.trophyId
 				? []
 				: data.badges.filter((badge) => attachableBadgeIds.has(badge)),
@@ -154,10 +125,7 @@ export const action = defineAction(
 			requireInGameNames: data.requireInGameNames,
 			autonomousSubs: data.autonomousSubs,
 			tournamentToCopyId: data.tournamentToCopyId,
-			regClosesAt:
-				isAddingTournament && !data.isInvitational && data.regClosesAt
-					? dateToDatabaseTimestamp(data.regClosesAt)
-					: undefined,
+			regClosesAt: isAddingTournament ? regClosesAtTimestamp(data) : undefined,
 		};
 		errorToastIfFalsy(
 			!commonArgs.toToolsEnabled || commonArgs.bracketProgression,
@@ -200,28 +168,34 @@ export const action = defineAction(
 			});
 
 		if (createdTournamentId) {
-			clearTournamentDataCache(createdTournamentId);
-			ShowcaseTournaments.clearParticipationInfoMap();
-			ShowcaseTournaments.clearCachedTournaments();
-
-			if (data.isTest) {
-				void notify({
-					notification: {
-						type: "TO_TEST_CREATED",
-						meta: {
-							tournamentName: data.name,
-							tournamentId: createdTournamentId,
-						},
-					},
-					defaultSeenUserIds: [user.id],
-					userIds: [user.id],
-				});
-			}
+			onTournamentCreated({
+				tournamentId: createdTournamentId,
+				tournamentName: data.name,
+				isTest: data.isTest,
+				userId: user.id,
+			});
 		}
 
 		throw redirect(calendarEventPage(createdEventId));
 	},
 );
+
+function sortedTagsOrNull(tags: CalendarEventTag[]) {
+	if (tags.length === 0) return null;
+
+	return tags.toSorted(
+		(a, b) => CALENDAR_EVENT.TAGS.indexOf(a) - CALENDAR_EVENT.TAGS.indexOf(b),
+	);
+}
+
+function regClosesAtTimestamp(data: {
+	isInvitational: boolean;
+	regClosesAt?: Date | null;
+}) {
+	if (data.isInvitational || !data.regClosesAt) return undefined;
+
+	return dateToDatabaseTimestamp(data.regClosesAt);
+}
 
 /** Bracket progression from the `brackets` + `progression` fields, already validated by the schema's refine. */
 function bracketProgressionFromFormData(data: {
@@ -236,6 +210,100 @@ function bracketProgressionFromFormData(data: {
 	);
 
 	return Progression.isBrackets(validated) ? validated : null;
+}
+
+async function requireCanAddToOrganization({
+	userId,
+	organizationId,
+	isTournamentAdder,
+	isEditing,
+	isAddingTournament,
+}: {
+	userId: number;
+	organizationId: number | null;
+	isTournamentAdder: boolean;
+	isEditing: boolean;
+	isAddingTournament: boolean;
+}) {
+	if (organizationId) {
+		await validateOrganization({ userId, organizationId, isTournamentAdder });
+	} else if (!isEditing) {
+		requireRole(
+			isAddingTournament ? "TOURNAMENT_ADDER" : "CALENDAR_EVENT_ADDER",
+		);
+	}
+}
+
+async function validateTrophyOrganization({
+	trophyId,
+	organizationId,
+}: {
+	trophyId: number;
+	organizationId: number | null;
+}) {
+	const trophyOrganizationId =
+		await TrophyRepository.findOrganizationIdById(trophyId);
+	if (trophyOrganizationId !== organizationId) {
+		errorToast("Trophy does not belong to the selected organization");
+	}
+}
+
+async function findEditableEvent(
+	eventToEditId: number | undefined,
+	user: ReturnType<typeof requireUser>,
+) {
+	const eventToEdit = eventToEditId
+		? badRequestIfFalsy(
+				await CalendarRepository.findById(eventToEditId, {
+					includeBadgePrizes: true,
+				}),
+			)
+		: null;
+
+	const tournamentToEdit = eventToEdit?.tournamentId
+		? await tournamentFromDB(eventToEdit.tournamentId)
+		: null;
+	if (tournamentToEdit) {
+		errorToastIfFalsy(
+			!tournamentToEdit.hasStarted,
+			"Tournament has already started",
+		);
+		errorToastIfFalsy(
+			tournamentToEdit.canEditEventInfo(user),
+			"Not authorized",
+		);
+	} else if (eventToEdit) {
+		requirePermission(eventToEdit, "EDIT");
+	}
+
+	return { eventToEdit, tournamentToEdit };
+}
+
+function onTournamentCreated({
+	tournamentId,
+	tournamentName,
+	isTest,
+	userId,
+}: {
+	tournamentId: number;
+	tournamentName: string;
+	isTest: boolean;
+	userId: number;
+}) {
+	clearTournamentDataCache(tournamentId);
+	ShowcaseTournaments.clearParticipationInfoMap();
+	ShowcaseTournaments.clearCachedTournaments();
+
+	if (isTest) {
+		void notify({
+			notification: {
+				type: "TO_TEST_CREATED",
+				meta: { tournamentName, tournamentId },
+			},
+			defaultSeenUserIds: [userId],
+			userIds: [userId],
+		});
+	}
 }
 
 /** The user may create a tournament in this organization. */

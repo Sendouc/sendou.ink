@@ -1,7 +1,9 @@
+import type { AuthenticatedUser } from "~/features/auth/core/user.server";
 import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
 import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import { notify } from "~/features/notifications/core/notify.server";
 import { resolveNotifications } from "~/features/notifications/core/resolve.server";
+import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import {
 	clearTournamentDataCache,
 	requireTournamentOrganizer,
@@ -33,18 +35,6 @@ export const action = defineAction(
 			return groups.find((g) => g.members.some((m) => m.id === user.id));
 		};
 
-		const isGroupManager = (
-			group: Awaited<ReturnType<typeof findOwnGroup>>,
-		) => {
-			const member = group?.members.find((m) => m.id === user.id);
-			return member?.role === "OWNER" || member?.role === "MANAGER";
-		};
-
-		const isGroupOwner = (group: Awaited<ReturnType<typeof findOwnGroup>>) => {
-			const member = group?.members.find((m) => m.id === user.id);
-			return member?.role === "OWNER";
-		};
-
 		switch (body._action) {
 			case "JOIN_QUEUE": {
 				const existingGroup = await findOwnGroup();
@@ -58,29 +48,7 @@ export const action = defineAction(
 				const team = tournament.teamMemberOfByUser(user);
 
 				if (team) {
-					const teams = await tournamentTeamsFullCached({ tournamentId, user });
-					const member = teams
-						.find((t) => t.id === team.id)
-						?.members.find((m) => m.userId === user.id);
-					const canManageTeam =
-						member?.role === "OWNER" || member?.role === "MANAGER";
-					errorToastIfFalsy(
-						canManageTeam,
-						"Only team owners and managers can join the queue",
-					);
-
-					errorToastIfFalsy(
-						team.memberUserIds.length < tournament.maxMembersPerTeam,
-						"Team is already at max capacity",
-					);
-					const roomsChangedUserIds =
-						await TournamentLFGRepository.startLooking({
-							teamId: team.id,
-							chatRoomExpiresAt: pickupChatRoomExpiresAt(
-								tournament.ctx.startsAt,
-							),
-						});
-					ChatSystemMessage.notifyRoomsChanged(roomsChangedUserIds);
+					await startLookingAsTeam({ tournament, tournamentId, user, team });
 				} else {
 					await TournamentLFGRepository.insertPlaceholderTeam({
 						tournamentId,
@@ -100,7 +68,7 @@ export const action = defineAction(
 				const ownGroup = groups.find((g) =>
 					g.members.some((m) => m.id === user.id),
 				);
-				if (!ownGroup || !isGroupManager(ownGroup)) return null;
+				if (!ownGroup || !isGroupManager(ownGroup, user.id)) return null;
 
 				const targetGroup = groups.find((g) => g.id === body.targetTeamId);
 				if (!targetGroup) return null;
@@ -127,7 +95,7 @@ export const action = defineAction(
 			}
 			case "UNLIKE": {
 				const ownGroup = await findOwnGroup();
-				if (!ownGroup || !isGroupManager(ownGroup)) return null;
+				if (!ownGroup || !isGroupManager(ownGroup, user.id)) return null;
 
 				await TournamentLFGRepository.deleteLike({
 					likerTeamId: ownGroup.id,
@@ -137,82 +105,22 @@ export const action = defineAction(
 				break;
 			}
 			case "ACCEPT": {
-				const groups =
-					await TournamentLFGRepository.findLookingTeamsByTournamentId(
-						tournamentId,
-					);
-				const ownGroup = groups.find((g) =>
-					g.members.some((m) => m.id === user.id),
-				);
-				if (!ownGroup || !isGroupManager(ownGroup)) return null;
-
-				const theirGroup = groups.find((g) => g.id === body.targetTeamId);
-				if (!theirGroup) return null;
-
-				const theirLikes = await TournamentLFGRepository.findAllLikesByTeamId(
-					body.targetTeamId,
-				);
-				if (!theirLikes.given.some((like) => like.teamId === ownGroup.id)) {
-					return null;
-				}
-
-				const surviving = survivingTeamId({
-					ourGroup: {
-						id: ownGroup.id,
-						isPlaceholder: Boolean(ownGroup.isPlaceholder),
-						teamName: null,
-						teamAvatarUrl: null,
-						note: null,
-						members: [],
-						usersRole: null,
-					},
-					theirGroup: {
-						id: theirGroup.id,
-						isPlaceholder: Boolean(theirGroup.isPlaceholder),
-						teamName: null,
-						teamAvatarUrl: null,
-						note: null,
-						members: [],
-						usersRole: null,
-					},
+				const merged = await acceptLike({
+					tournament,
+					tournamentId,
+					user,
+					targetTeamId: body.targetTeamId,
 				});
-
-				const otherGroup = surviving === ownGroup.id ? theirGroup : ownGroup;
-
-				const roomsChangedUserIds = await TournamentLFGRepository.mergeTeams({
-					survivingTeamId: surviving,
-					otherTeamId: otherGroup.id,
-					maxGroupSize: tournament.maxMembersPerTeam,
-					chatRoomExpiresAt: pickupChatRoomExpiresAt(tournament.ctx.startsAt),
-				});
-				ChatSystemMessage.notifyRoomsChanged(roomsChangedUserIds);
-
-				await ShowcaseTournaments.refreshCachedTournamentCounts(tournamentId);
-
-				void notify({
-					userIds: theirGroup.members.map((m) => m.id),
-					notification: {
-						type: "TO_LIKE_ACCEPTED",
-						meta: {
-							tournamentId,
-							tournamentName: tournament.ctx.name,
-							accepterUsername: user.username,
-						},
-						pictureUrl: tournament.ctx.logoUrl,
-					},
-				});
-
-				await resolveNotifications({
-					userIds: ownGroup.members.map((m) => m.id),
-					type: "TO_LIKE_RECEIVED",
-					meta: { tournamentId },
-				});
+				if (!merged) return null;
 
 				break;
 			}
 			case "GIVE_MANAGER": {
 				const ownGroup = await findOwnGroup();
-				errorToastIfFalsy(ownGroup && isGroupOwner(ownGroup), "Not owner");
+				errorToastIfFalsy(
+					ownGroup && isGroupOwner(ownGroup, user.id),
+					"Not owner",
+				);
 
 				await TournamentLFGRepository.updateMemberRole({
 					teamId: ownGroup.id,
@@ -224,7 +132,10 @@ export const action = defineAction(
 			}
 			case "REMOVE_MANAGER": {
 				const ownGroup = await findOwnGroup();
-				errorToastIfFalsy(ownGroup && isGroupOwner(ownGroup), "Not owner");
+				errorToastIfFalsy(
+					ownGroup && isGroupOwner(ownGroup, user.id),
+					"Not owner",
+				);
 
 				await TournamentLFGRepository.updateMemberRole({
 					teamId: ownGroup.id,
@@ -374,3 +285,130 @@ export const action = defineAction(
 		return null;
 	},
 );
+
+type LookingGroup = Awaited<
+	ReturnType<typeof TournamentLFGRepository.findLookingTeamsByTournamentId>
+>[number];
+
+function isGroupManager(group: LookingGroup | undefined, userId: number) {
+	const member = group?.members.find((m) => m.id === userId);
+	return member?.role === "OWNER" || member?.role === "MANAGER";
+}
+
+function isGroupOwner(group: LookingGroup | undefined, userId: number) {
+	const member = group?.members.find((m) => m.id === userId);
+	return member?.role === "OWNER";
+}
+
+async function startLookingAsTeam({
+	tournament,
+	tournamentId,
+	user,
+	team,
+}: {
+	tournament: Tournament;
+	tournamentId: number;
+	user: AuthenticatedUser;
+	team: NonNullable<ReturnType<Tournament["teamMemberOfByUser"]>>;
+}) {
+	const teams = await tournamentTeamsFullCached({ tournamentId, user });
+	const member = teams
+		.find((t) => t.id === team.id)
+		?.members.find((m) => m.userId === user.id);
+	const canManageTeam = member?.role === "OWNER" || member?.role === "MANAGER";
+	errorToastIfFalsy(
+		canManageTeam,
+		"Only team owners and managers can join the queue",
+	);
+
+	errorToastIfFalsy(
+		team.memberUserIds.length < tournament.maxMembersPerTeam,
+		"Team is already at max capacity",
+	);
+	const roomsChangedUserIds = await TournamentLFGRepository.startLooking({
+		teamId: team.id,
+		chatRoomExpiresAt: pickupChatRoomExpiresAt(tournament.ctx.startsAt),
+	});
+	ChatSystemMessage.notifyRoomsChanged(roomsChangedUserIds);
+}
+
+/** Merges the viewer's group with the group that liked it. False when there is nothing to accept. */
+async function acceptLike({
+	tournament,
+	tournamentId,
+	user,
+	targetTeamId,
+}: {
+	tournament: Tournament;
+	tournamentId: number;
+	user: AuthenticatedUser;
+	targetTeamId: number;
+}) {
+	const groups =
+		await TournamentLFGRepository.findLookingTeamsByTournamentId(tournamentId);
+	const ownGroup = groups.find((g) => g.members.some((m) => m.id === user.id));
+	if (!ownGroup || !isGroupManager(ownGroup, user.id)) return false;
+
+	const theirGroup = groups.find((g) => g.id === targetTeamId);
+	if (!theirGroup) return false;
+
+	const theirLikes =
+		await TournamentLFGRepository.findAllLikesByTeamId(targetTeamId);
+	if (!theirLikes.given.some((like) => like.teamId === ownGroup.id)) {
+		return false;
+	}
+
+	const surviving = survivingTeamId({
+		ourGroup: {
+			id: ownGroup.id,
+			isPlaceholder: Boolean(ownGroup.isPlaceholder),
+			teamName: null,
+			teamAvatarUrl: null,
+			note: null,
+			members: [],
+			usersRole: null,
+		},
+		theirGroup: {
+			id: theirGroup.id,
+			isPlaceholder: Boolean(theirGroup.isPlaceholder),
+			teamName: null,
+			teamAvatarUrl: null,
+			note: null,
+			members: [],
+			usersRole: null,
+		},
+	});
+
+	const otherGroup = surviving === ownGroup.id ? theirGroup : ownGroup;
+
+	const roomsChangedUserIds = await TournamentLFGRepository.mergeTeams({
+		survivingTeamId: surviving,
+		otherTeamId: otherGroup.id,
+		maxGroupSize: tournament.maxMembersPerTeam,
+		chatRoomExpiresAt: pickupChatRoomExpiresAt(tournament.ctx.startsAt),
+	});
+	ChatSystemMessage.notifyRoomsChanged(roomsChangedUserIds);
+
+	await ShowcaseTournaments.refreshCachedTournamentCounts(tournamentId);
+
+	void notify({
+		userIds: theirGroup.members.map((m) => m.id),
+		notification: {
+			type: "TO_LIKE_ACCEPTED",
+			meta: {
+				tournamentId,
+				tournamentName: tournament.ctx.name,
+				accepterUsername: user.username,
+			},
+			pictureUrl: tournament.ctx.logoUrl,
+		},
+	});
+
+	await resolveNotifications({
+		userIds: ownGroup.members.map((m) => m.id),
+		type: "TO_LIKE_RECEIVED",
+		meta: { tournamentId },
+	});
+
+	return true;
+}

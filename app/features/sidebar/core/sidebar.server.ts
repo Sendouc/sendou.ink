@@ -223,7 +223,7 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 		].map(LiveStream.key),
 	);
 
-	const ranked: { stream: SidebarStream; score: number }[] = [];
+	const ranked: RankedSidebarStream[] = [];
 
 	for (const externalStream of externalStreams) {
 		ranked.push({
@@ -265,7 +265,27 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 		ranked.push({ stream: sidebarStream, score });
 	}
 
-	const xRankByStream = new Map<string, (typeof xRankRows)[number]>();
+	ranked.push(
+		...xRankStreamEntries(xRankRows, seenStreamKeys),
+		...upcomingTournamentStreamEntries(upcomingTournaments),
+	);
+
+	return StreamRanking.rank(ranked, MAX_STREAMS_VISIBLE);
+}
+
+type RankedSidebarStream = { stream: SidebarStream; score: number };
+
+type XRankStreamRow = Awaited<
+	ReturnType<typeof LiveStreamRepository.findXRankStreams>
+>[number];
+
+function xRankStreamEntries(
+	xRankRows: XRankStreamRow[],
+	seenStreamKeys: Set<string>,
+): RankedSidebarStream[] {
+	const result: RankedSidebarStream[] = [];
+
+	const xRankByStream = new Map<string, XRankStreamRow>();
 	for (const row of xRankRows) {
 		const key = LiveStream.key(row);
 		const existing = xRankByStream.get(key);
@@ -288,19 +308,11 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 		const score = StreamRanking.xpToScore(row.peakXp ?? 0);
 		if (score === null) continue;
 
-		ranked.push({
+		result.push({
 			stream: {
 				id: `xrank-${row.id}`,
 				name: row.username,
-				imageUrl: row.customAvatarUrl
-					? row.customAvatarUrl
-					: row.discordAvatar
-						? discordAvatarUrl({
-								discordId: row.discordId,
-								discordAvatar: row.discordAvatar,
-								size: "sm",
-							})
-						: BLANK_IMAGE_URL,
+				imageUrl: xRankStreamImageUrl(row),
 				url: LiveStream.url(row),
 				subtitle: "",
 				startsAt: databaseTimestampNow(),
@@ -310,6 +322,27 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 			score,
 		});
 	}
+
+	return result;
+}
+
+function xRankStreamImageUrl(row: XRankStreamRow) {
+	if (row.customAvatarUrl) return row.customAvatarUrl;
+	if (!row.discordAvatar) return BLANK_IMAGE_URL;
+
+	return discordAvatarUrl({
+		discordId: row.discordId,
+		discordAvatar: row.discordAvatar,
+		size: "sm",
+	});
+}
+
+function upcomingTournamentStreamEntries(
+	upcomingTournaments: Awaited<
+		ReturnType<typeof ShowcaseTournaments.upcomingTournaments>
+	>,
+): RankedSidebarStream[] {
+	const result: RankedSidebarStream[] = [];
 
 	const nowTimestamp = databaseTimestampNow();
 	const threeDaysFromNow = dateToDatabaseTimestamp(
@@ -324,7 +357,7 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 
 		const membersPerTeam = event.minMembersPerTeam ?? 4;
 
-		ranked.push({
+		result.push({
 			stream: {
 				id: `upcoming-${event.id}`,
 				name: event.name,
@@ -343,7 +376,7 @@ async function combinedStreams(): Promise<SidebarStream[]> {
 		});
 	}
 
-	return StreamRanking.rank(ranked, MAX_STREAMS_VISIBLE);
+	return result;
 }
 
 type FriendWithActivity = Awaited<
