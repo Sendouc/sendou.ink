@@ -4,12 +4,15 @@ const config = {
 		type: true,
 	},
 	tags: ["-lintignore"],
-	ignoreBinaries: ["ffmpeg", "ffprobe", "yt-dlp", "check"],
+	ignoreBinaries: ["ffmpeg", "ffprobe", "yt-dlp", "check", "lint", "fmt"],
+	// loaded by bun lint through bunfig.toml
+	ignoreDependencies: ["eslint-plugin-playwright"],
 	entry: [
 		"app/features/*/routes/**/*.{ts,tsx}",
 		"migrations/**/*.ts",
 		"scripts/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}",
 		"public/sw-2.js",
+		"lint-plugins/index.ts",
 	],
 	compilers: {
 		css: (text: string, path: string) => {

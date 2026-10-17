@@ -15,55 +15,55 @@ This document describes the schema-based form system using `SendouForm`. Forms a
 
 ```ts
 export const myFormSchema = v.object({
-  name: textField({
-    label: "labels.name",
-    maxLength: 100,
-  }),
-  bio: textAreaOptional({
-    label: "labels.bio",
-    bottomText: "bottomTexts.bioHelp",
-    maxLength: 500,
-  }),
-  isPublic: toggle({
-    label: "labels.isPublic",
-  }),
+	name: textField({
+		label: "labels.name",
+		maxLength: 100,
+	}),
+	bio: textAreaOptional({
+		label: "labels.bio",
+		bottomText: "bottomTexts.bioHelp",
+		maxLength: 500,
+	}),
+	isPublic: toggle({
+		label: "labels.isPublic",
+	}),
 });
 ```
 
 ### Available Field Builders
 
-| Builder | Description | Required Props |
-|---------|-------------|----------------|
-| `textField` | Required text input | `label`, `maxLength` |
-| `textFieldOptional` | Optional text input | `maxLength` |
-| `numberFieldOptional` | Optional number input | - |
-| `textArea` | Required multiline text | `label`, `maxLength` |
-| `textAreaOptional` | Optional multiline text | `maxLength` |
-| `toggle` | Boolean switch | `label` |
-| `select` | Required dropdown | `label`, `items` |
-| `selectOptional` | Optional dropdown (clearable) | `label`, `items` |
-| `selectDynamicOptional` | Dropdown with runtime options | `label` |
-| `radioGroup` | Radio button group | `label`, `items` |
-| `checkboxGroup` | Multiple selection checkboxes | `label`, `items` |
-| `checkboxGroupDynamic` | Checkboxes with runtime options | `label` |
-| `datetime` | Required date/time picker | `label` |
-| `datetimeOptional` | Optional date/time picker | `label` |
-| `dayMonthYear` | Date picker (day only) | `label` |
-| `dualSelectOptional` | Two linked dropdowns | `fields` |
-| `timeRangeOptional` | Start/end time range | `label` |
-| `weaponPool` | Weapon selection pool | `label`, `maxCount` |
-| `stageSelect` | Stage dropdown | `label` |
-| `mapPoolOptional` | Map pool picker (serialized `MapPool`), `options` takes `quickFill` presets and `modes` | - |
-| `weaponSelectOptional` | Weapon dropdown | `label` |
-| `userSearch` | User search autocomplete | `label` |
-| `userSearchOptional` | Optional user search | `label` |
-| `image` | Small image upload (avatar / logo / banner) | `label` |
-| `badges` | Badge selection | `label` |
-| `array` | Repeatable field | `field`, `max` |
-| `fieldset` | Nested object fields | `fields` |
-| `stringConstant` | Hidden string value | value |
-| `idConstant` | Hidden numeric ID | value (optional) |
-| `customField` | Custom render | `initialValue`, schema |
+| Builder                 | Description                                                                             | Required Props         |
+| ----------------------- | --------------------------------------------------------------------------------------- | ---------------------- |
+| `textField`             | Required text input                                                                     | `label`, `maxLength`   |
+| `textFieldOptional`     | Optional text input                                                                     | `maxLength`            |
+| `numberFieldOptional`   | Optional number input                                                                   | -                      |
+| `textArea`              | Required multiline text                                                                 | `label`, `maxLength`   |
+| `textAreaOptional`      | Optional multiline text                                                                 | `maxLength`            |
+| `toggle`                | Boolean switch                                                                          | `label`                |
+| `select`                | Required dropdown                                                                       | `label`, `items`       |
+| `selectOptional`        | Optional dropdown (clearable)                                                           | `label`, `items`       |
+| `selectDynamicOptional` | Dropdown with runtime options                                                           | `label`                |
+| `radioGroup`            | Radio button group                                                                      | `label`, `items`       |
+| `checkboxGroup`         | Multiple selection checkboxes                                                           | `label`, `items`       |
+| `checkboxGroupDynamic`  | Checkboxes with runtime options                                                         | `label`                |
+| `datetime`              | Required date/time picker                                                               | `label`                |
+| `datetimeOptional`      | Optional date/time picker                                                               | `label`                |
+| `dayMonthYear`          | Date picker (day only)                                                                  | `label`                |
+| `dualSelectOptional`    | Two linked dropdowns                                                                    | `fields`               |
+| `timeRangeOptional`     | Start/end time range                                                                    | `label`                |
+| `weaponPool`            | Weapon selection pool                                                                   | `label`, `maxCount`    |
+| `stageSelect`           | Stage dropdown                                                                          | `label`                |
+| `mapPoolOptional`       | Map pool picker (serialized `MapPool`), `options` takes `quickFill` presets and `modes` | -                      |
+| `weaponSelectOptional`  | Weapon dropdown                                                                         | `label`                |
+| `userSearch`            | User search autocomplete                                                                | `label`                |
+| `userSearchOptional`    | Optional user search                                                                    | `label`                |
+| `image`                 | Small image upload (avatar / logo / banner)                                             | `label`                |
+| `badges`                | Badge selection                                                                         | `label`                |
+| `array`                 | Repeatable field                                                                        | `field`, `max`         |
+| `fieldset`              | Nested object fields                                                                    | `fields`               |
+| `stringConstant`        | Hidden string value                                                                     | value                  |
+| `idConstant`            | Hidden numeric ID                                                                       | value (optional)       |
+| `customField`           | Custom render                                                                           | `initialValue`, schema |
 
 ### Select Items
 
@@ -71,11 +71,11 @@ Select fields require `items` array:
 
 ```ts
 const typeField = select({
-  label: "labels.type",
-  items: [
-    { label: "options.type.free", value: "FREE" },
-    { label: "options.type.paid", value: "PAID" },
-  ],
+	label: "labels.type",
+	items: [
+		{ label: "options.type.free", value: "FREE" },
+		{ label: "options.type.paid", value: "PAID" },
+	],
 });
 ```
 
@@ -83,9 +83,9 @@ For dynamic labels (e.g., numbers or translation not needed), use the functional
 
 ```ts
 items: [
-  { label: () => "1v1", value: "1" },
-  { label: () => "2v2", value: "2" },
-]
+	{ label: () => "1v1", value: "1" },
+	{ label: () => "2v2", value: "2" },
+];
 ```
 
 ### Action Fields
@@ -94,8 +94,8 @@ Define action discriminators with `stringConstant`:
 
 ```ts
 export const myFormSchema = v.object({
-  _action: stringConstant("CREATE_ITEM"),
-  name: textField({ label: "labels.name", maxLength: 100 }),
+	_action: stringConstant("CREATE_ITEM"),
+	name: textField({ label: "labels.name", maxLength: 100 }),
 });
 ```
 
@@ -105,8 +105,8 @@ Use `idConstant` for IDs that need default values:
 
 ```ts
 export const editFormSchema = v.object({
-  itemId: idConstant(), // Requires defaultValues
-  name: textField({ label: "labels.name", maxLength: 100 }),
+	itemId: idConstant(), // Requires defaultValues
+	name: textField({ label: "labels.name", maxLength: 100 }),
 });
 ```
 
@@ -116,78 +116,78 @@ When `idConstant()` is called without a value, the schema requires `defaultValue
 
 ```ts
 textField({
-  label: "labels.url",
-  maxLength: 200,
-  validate: "url", // Built-in URL validation
-})
+	label: "labels.url",
+	maxLength: 200,
+	validate: "url", // Built-in URL validation
+});
 
 textField({
-  label: "labels.custom",
-  maxLength: 100,
-  validate: {
-    func: (val) => val.startsWith("https://"),
-    message: "Must start with https://",
-  },
-})
+	label: "labels.custom",
+	maxLength: 100,
+	validate: {
+		func: (val) => val.startsWith("https://"),
+		message: "Must start with https://",
+	},
+});
 
 textField({
-  label: "labels.pattern",
-  maxLength: 10,
-  regExp: {
-    pattern: /^\d{1,2}:\d{2}$/,
-    message: "Invalid format",
-  },
-})
+	label: "labels.pattern",
+	maxLength: 10,
+	regExp: {
+		pattern: /^\d{1,2}:\d{2}$/,
+		message: "Invalid format",
+	},
+});
 ```
 
 ### DateTime Validation
 
 ```ts
 datetime({
-  label: "labels.date",
-  min: new Date(),
-  max: add(new Date(), { days: 30 }),
-  minMessage: "errors.dateInPast",
-  maxMessage: "errors.dateTooFarInFuture",
-})
+	label: "labels.date",
+	min: new Date(),
+	max: add(new Date(), { days: 30 }),
+	minMessage: "errors.dateInPast",
+	maxMessage: "errors.dateTooFarInFuture",
+});
 ```
 
 ### Dual Select
 
 ```ts
 dualSelectOptional({
-  fields: [
-    {
-      label: "labels.maxDiv",
-      items: DIVS.map((d) => ({ label: () => d, value: d })),
-    },
-    {
-      label: "labels.minDiv",
-      items: DIVS.map((d) => ({ label: () => d, value: d })),
-    },
-  ],
-  validate: {
-    func: ([max, min]) => (max && !min) || (!max && min) ? false : true,
-    message: "errors.bothOrNeither",
-  },
-})
+	fields: [
+		{
+			label: "labels.maxDiv",
+			items: DIVS.map((d) => ({ label: () => d, value: d })),
+		},
+		{
+			label: "labels.minDiv",
+			items: DIVS.map((d) => ({ label: () => d, value: d })),
+		},
+	],
+	validate: {
+		func: ([max, min]) => ((max && !min) || (!max && min) ? false : true),
+		message: "errors.bothOrNeither",
+	},
+});
 ```
 
 ### Arrays and Fieldsets
 
 ```ts
 const itemSchema = v.object({
-  name: textField({ label: "labels.itemName", maxLength: 50 }),
-  quantity: numberFieldOptional({ label: "labels.quantity" }),
+	name: textField({ label: "labels.itemName", maxLength: 50 }),
+	quantity: numberFieldOptional({ label: "labels.quantity" }),
 });
 
 export const formSchema = v.object({
-  items: array({
-    label: "labels.items",
-    min: 1,
-    max: 10,
-    field: fieldset({ fields: itemSchema }),
-  }),
+	items: array({
+		label: "labels.items",
+		min: 1,
+		max: 10,
+		field: fieldset({ fields: itemSchema }),
+	}),
 });
 ```
 
@@ -197,19 +197,19 @@ Place field inside `v.union([])` to reuse across multiple schemas:
 
 ```ts
 const sharedNameField = textField({
-  label: "labels.name",
-  maxLength: 100,
+	label: "labels.name",
+	maxLength: 100,
 });
 
 const createSchema = v.object({
-  _action: stringConstant("CREATE"),
-  name: sharedNameField,
+	_action: stringConstant("CREATE"),
+	name: sharedNameField,
 });
 
 const editSchema = v.object({
-  _action: stringConstant("EDIT"),
-  id: idConstant(),
-  name: sharedNameField,
+	_action: stringConstant("EDIT"),
+	id: idConstant(),
+	name: sharedNameField,
 });
 
 export const actionSchema = v.union([createSchema, editSchema]);
@@ -224,17 +224,17 @@ import { SendouForm } from "~/form/SendouForm";
 import { myFormSchema } from "./my-schemas";
 
 function MyForm() {
-  return (
-    <SendouForm schema={myFormSchema} submitButtonText="Save">
-      {({ FormField }) => (
-        <>
-          <FormField name="name" />
-          <FormField name="bio" />
-          <FormField name="isPublic" />
-        </>
-      )}
-    </SendouForm>
-  );
+	return (
+		<SendouForm schema={myFormSchema} submitButtonText="Save">
+			{({ FormField }) => (
+				<>
+					<FormField name="name" />
+					<FormField name="bio" />
+					<FormField name="isPublic" />
+				</>
+			)}
+		</SendouForm>
+	);
 }
 ```
 
@@ -246,16 +246,14 @@ Typically default values are loaded via a loader function
 const data = useLoaderData<typeof loader>();
 
 <SendouForm
-  schema={editFormSchema}
-  defaultValues={{
-    itemId: data.item.id,
-    name: data.item.name,
-  }}
+	schema={editFormSchema}
+	defaultValues={{
+		itemId: data.item.id,
+		name: data.item.name,
+	}}
 >
-  {({ FormField }) => (
-    <FormField name="name" />
-  )}
-</SendouForm>
+	{({ FormField }) => <FormField name="name" />}
+</SendouForm>;
 ```
 
 ### Form Modes
@@ -270,9 +268,7 @@ The `mode` prop controls how submitting works:
 
 ```tsx
 <SendouForm schema={filterSchema} mode="autoSubmit">
-  {({ FormField }) => (
-    <FormField name="sortBy" />
-  )}
+	{({ FormField }) => <FormField name="sortBy" />}
 </SendouForm>
 ```
 
@@ -282,16 +278,14 @@ Submitting hands the validated values to `onApply` instead of the server:
 
 ```tsx
 <SendouForm
-  schema={filtersSchema}
-  defaultValues={currentFilters}
-  onApply={(values) => {
-    setSearchParams({ filters: JSON.stringify(values) });
-    closeDialog();
-  }}
+	schema={filtersSchema}
+	defaultValues={currentFilters}
+	onApply={(values) => {
+		setSearchParams({ filters: JSON.stringify(values) });
+		closeDialog();
+	}}
 >
-  {({ FormField }) => (
-    <FormField name="category" />
-  )}
+	{({ FormField }) => <FormField name="category" />}
 </SendouForm>
 ```
 
@@ -303,10 +297,14 @@ Long forms can be split into steps shown one at a time. Define the steps next to
 
 ```ts
 export const NEW_THING_STEPS: ReadonlyArray<
-  FormStepDefinition<keyof typeof newThingSchema.entries>
+	FormStepDefinition<keyof typeof newThingSchema.entries>
 > = [
-  { name: "basics", label: "steps.newThing.basics", fields: ["name", "description"] },
-  { name: "settings", label: "steps.newThing.settings", fields: ["isPublic"] },
+	{
+		name: "basics",
+		label: "steps.newThing.basics",
+		fields: ["name", "description"],
+	},
+	{ name: "settings", label: "steps.newThing.settings", fields: ["isPublic"] },
 ];
 ```
 
@@ -314,13 +312,13 @@ Then pass them to `SendouForm` and wrap each step's fields in a `<FormStep>` of 
 
 ```tsx
 <SendouForm schema={newThingSchema} steps={NEW_THING_STEPS}>
-  <FormStep name="basics">
-    <FormField name="name" />
-    <FormField name="description" />
-  </FormStep>
-  <FormStep name="settings">
-    <FormField name="isPublic" />
-  </FormStep>
+	<FormStep name="basics">
+		<FormField name="name" />
+		<FormField name="description" />
+	</FormStep>
+	<FormStep name="settings">
+		<FormField name="isPublic" />
+	</FormStep>
 </SendouForm>
 ```
 
@@ -340,8 +338,8 @@ A custom field that shows only part of its nested fields at a time (e.g. one sel
 
 ```tsx
 useFieldRevealer((fieldName) => {
-  const match = fieldName.match(/^brackets\[(\d+)\]/);
-  if (match) setSelectedIdx(Number(match[1]));
+	const match = fieldName.match(/^brackets\[(\d+)\]/);
+	if (match) setSelectedIdx(Number(match[1]));
 });
 ```
 
@@ -351,24 +349,24 @@ For `selectDynamicOptional`, pass options via the `options` prop:
 
 ```tsx
 const options = tournaments.map((t) => ({
-  value: String(t.id),
-  label: t.name,
+	value: String(t.id),
+	label: t.name,
 }));
 
-<FormField name="tournamentId" options={options} />
+<FormField name="tournamentId" options={options} />;
 ```
 
 ### Badges Field
 
 ```tsx
 const badgeOptions = badges.map((b) => ({
-  id: b.id,
-  displayName: b.displayName,
-  code: b.code,
-  hue: b.hue,
+	id: b.id,
+	displayName: b.displayName,
+	code: b.code,
+	hue: b.hue,
 }));
 
-<FormField name="displayBadges" options={badgeOptions} />
+<FormField name="displayBadges" options={badgeOptions} />;
 ```
 
 ## Image Field
@@ -391,10 +389,13 @@ flow, while keeping `SendouForm`'s single-submit `application/json` model unchan
 import { image } from "~/form/fields";
 
 export const editTeamSchema = v.object({
-  teamId: idConstant(),
-  logo: image({ label: "labels.logo" }),                                 // logo (default)
-  banner: image({ label: "labels.banner", dimensions: "thick-banner" }),
-  cover: image({ label: "labels.cover", dimensions: { width: 800, height: 300 } }),
+	teamId: idConstant(),
+	logo: image({ label: "labels.logo" }), // logo (default)
+	banner: image({ label: "labels.banner", dimensions: "thick-banner" }),
+	cover: image({
+		label: "labels.cover",
+		dimensions: { width: 800, height: 300 },
+	}),
 });
 ```
 
@@ -408,9 +409,9 @@ The field value is a small JSON-serializable union (`ImageFieldValue` from `~/fo
 
 ```ts
 type ImageFieldValue =
-  | null                                              // none / removed
-  | { type: "EXISTING"; imgId: number; url: string }  // loaded, unchanged (url = preview)
-  | { type: "NEW"; dataUrl: string }                  // newly picked, base64 webp
+	| null // none / removed
+	| { type: "EXISTING"; imgId: number; url: string } // loaded, unchanged (url = preview)
+	| { type: "NEW"; dataUrl: string }; // newly picked, base64 webp
 ```
 
 - `initialValue` is `null` (the create case).
@@ -471,15 +472,18 @@ Use `customField` for complex UI that doesn't fit standard field types:
 
 ```ts
 const povSchema = v.union([
-  v.object({ type: v.literal("USER"), userId: v.optional(id) }),
-  v.object({ type: v.literal("NAME"), name: v.pipe(v.string(), v.maxLength(100)) }),
+	v.object({ type: v.literal("USER"), userId: v.optional(id) }),
+	v.object({
+		type: v.literal("NAME"),
+		name: v.pipe(v.string(), v.maxLength(100)),
+	}),
 ]);
 
 export const formSchema = v.object({
-  pov: customField(
-    { initialValue: { type: "USER" as const } },
-    v.optional(povSchema)
-  ),
+	pov: customField(
+		{ initialValue: { type: "USER" as const } },
+		v.optional(povSchema),
+	),
 });
 ```
 
@@ -487,13 +491,9 @@ export const formSchema = v.object({
 
 ```tsx
 <FormField name="pov">
-  {({ value, onChange, error }) => (
-    <MyCustomPovSelector
-      value={value}
-      onChange={onChange}
-      error={error}
-    />
-  )}
+	{({ value, onChange, error }) => (
+		<MyCustomPovSelector value={value} onChange={onChange} error={error} />
+	)}
 </FormField>
 ```
 
@@ -501,10 +501,10 @@ export const formSchema = v.object({
 
 ```ts
 type CustomFieldRenderProps<TValue = unknown> = {
-  name: string;
-  error: string | undefined;
-  value: TValue;
-  onChange: (value: TValue) => void;
+	name: string;
+	error: string | undefined;
+	value: TValue;
+	onChange: (value: TValue) => void;
 };
 ```
 
@@ -512,22 +512,20 @@ type CustomFieldRenderProps<TValue = unknown> = {
 
 ```tsx
 <FormField name="matches">
-  {({ index, itemName, values, setItemField, canRemove, remove }) => (
-    <div>
-      <FormField name={`${itemName}.startsAt`} />
-      <FormField name={`${itemName}.mode`} />
+	{({ index, itemName, values, setItemField, canRemove, remove }) => (
+		<div>
+			<FormField name={`${itemName}.startsAt`} />
+			<FormField name={`${itemName}.mode`} />
 
-      {/* Custom element within array item */}
-      <MyCustomWeaponSelect
-        value={values.weapon}
-        onChange={(v) => setItemField("weapon", v)}
-      />
+			{/* Custom element within array item */}
+			<MyCustomWeaponSelect
+				value={values.weapon}
+				onChange={(v) => setItemField("weapon", v)}
+			/>
 
-      {canRemove && (
-        <button onClick={remove}>Remove</button>
-      )}
-    </div>
-  )}
+			{canRemove && <button onClick={remove}>Remove</button>}
+		</div>
+	)}
 </FormField>
 ```
 
@@ -544,12 +542,12 @@ import { idObject } from "~/utils/schema";
 import { myFormSchema } from "./my-schemas";
 
 export const action = defineAction(
-  { params: idObject, body: myFormSchema },
-  async ({ params, body }) => {
-    // params and body are fully typed based on their schemas
-    await doSomething(params.id, body);
-    return redirect("/success");
-  },
+	{ params: idObject, body: myFormSchema },
+	async ({ params, body }) => {
+		// params and body are fully typed based on their schemas
+		await doSomething(params.id, body);
+		return redirect("/success");
+	},
 );
 ```
 
@@ -566,7 +564,7 @@ export const action = defineAction(
   The body is read as form data by `Content-Type`, otherwise as JSON (an empty body reads as an empty object).
 
 Every exported action (`action`, `logOutAction`, ...) is a `defineAction(...)` and never reads the
-request body itself, enforced by the `no-raw-actions` Biome plugin.
+request body itself, enforced by the `no-raw-actions` lint rule.
 
 ### Server-Only Schema Pattern
 
@@ -576,45 +574,45 @@ When you need async validation (database checks, authorization), create a separa
 
 ```ts
 import * as v from "valibot";
-import { textField, idConstantOptional } from "~/form/fields";
+import { idConstantOptional, textField } from "~/form/fields";
 
 // Shared sync validation that can be extracted for reuse
 function validateGearAllOrNone(data: {
-  head: number | null;
-  clothes: number | null;
-  shoes: number | null;
+	head: number | null;
+	clothes: number | null;
+	shoes: number | null;
 }) {
-  const gearFilled = [data.head, data.clothes, data.shoes].filter(
-    (g) => g !== null,
-  );
-  return gearFilled.length === 0 || gearFilled.length === 3;
+	const gearFilled = [data.head, data.clothes, data.shoes].filter(
+		(g) => g !== null,
+	);
+	return gearFilled.length === 0 || gearFilled.length === 3;
 }
 
 // Export refine config for reuse in server schema
 export const gearAllOrNoneRefine = {
-  fn: validateGearAllOrNone,
-  message: "forms:errors.gearAllOrNone",
-  path: ["head"],
+	fn: validateGearAllOrNone,
+	message: "forms:errors.gearAllOrNone",
+	path: ["head"],
 };
 
 // Base schema with form field builders (for UI generation)
 export const newBuildBaseSchema = v.object({
-  buildToEditId: idConstantOptional(),
-  title: textField({ label: "labels.buildTitle", maxLength: 50 }),
-  // ... other fields
+	buildToEditId: idConstantOptional(),
+	title: textField({ label: "labels.buildTitle", maxLength: 50 }),
+	// ... other fields
 });
 
 // Client schema with sync refinements only
 export const newBuildSchema = v.pipe(
-  newBuildBaseSchema,
-  superRefine((data, ctx) => {
-    if (!gearAllOrNoneRefine.fn(data)) {
-      ctx.addIssue({
-        message: gearAllOrNoneRefine.message,
-        path: gearAllOrNoneRefine.path,
-      });
-    }
-  }),
+	newBuildBaseSchema,
+	superRefine((data, ctx) => {
+		if (!gearAllOrNoneRefine.fn(data)) {
+			ctx.addIssue({
+				message: gearAllOrNoneRefine.message,
+				path: gearAllOrNoneRefine.path,
+			});
+		}
+	}),
 );
 ```
 
@@ -628,29 +626,29 @@ import { superRefine, superRefineAsync } from "~/utils/schema";
 import { gearAllOrNoneRefine, newBuildBaseSchema } from "./feature-schemas";
 
 export const newBuildSchemaServer = v.pipeAsync(
-  newBuildBaseSchema,
-  // Reuse sync refinements from base
-  superRefine((data, ctx) => {
-    if (gearAllOrNoneRefine.fn(data)) return;
+	newBuildBaseSchema,
+	// Reuse sync refinements from base
+	superRefine((data, ctx) => {
+		if (gearAllOrNoneRefine.fn(data)) return;
 
-    ctx.addIssue({
-      message: gearAllOrNoneRefine.message,
-      path: gearAllOrNoneRefine.path,
-    });
-  }),
-  // Add async server-only validation
-  superRefineAsync(async (data, ctx) => {
-    if (!data.buildToEditId) return;
+		ctx.addIssue({
+			message: gearAllOrNoneRefine.message,
+			path: gearAllOrNoneRefine.path,
+		});
+	}),
+	// Add async server-only validation
+	superRefineAsync(async (data, ctx) => {
+		if (!data.buildToEditId) return;
 
-    const user = requireUser();
-    const ownerId = await BuildRepository.ownerIdById(data.buildToEditId);
-    if (ownerId === user.id) return;
+		const user = requireUser();
+		const ownerId = await BuildRepository.ownerIdById(data.buildToEditId);
+		if (ownerId === user.id) return;
 
-    ctx.addIssue({
-      message: "Not a build you own",
-      path: ["buildToEditId"],
-    });
-  }),
+		ctx.addIssue({
+			message: "Not a build you own",
+			path: ["buildToEditId"],
+		});
+	}),
 );
 ```
 
@@ -661,10 +659,10 @@ import { defineAction } from "~/form/define-action.server";
 import { newBuildSchemaServer } from "./feature-schemas.server";
 
 export const action = defineAction(
-  { body: newBuildSchemaServer },
-  async ({ body }) => {
-    // ...
-  },
+	{ body: newBuildSchemaServer },
+	async ({ body }) => {
+		// ...
+	},
 );
 ```
 
@@ -678,15 +676,15 @@ import { createTeamSchema } from "./feature-schemas";
 import * as TeamRepository from "./TeamRepository.server";
 
 export const createTeamSchemaServer = v.objectAsync({
-  ...createTeamSchema.entries,
-  name: v.pipeAsync(
-    createTeamSchema.entries.name,
-    v.checkAsync(async (name) => {
-      const teams = await TeamRepository.findAllUndisbanded();
-      const customUrl = mySlugify(name);
-      return !teams.some((team) => team.customUrl === customUrl);
-    }, "forms:errors.duplicateName"),
-  ),
+	...createTeamSchema.entries,
+	name: v.pipeAsync(
+		createTeamSchema.entries.name,
+		v.checkAsync(async (name) => {
+			const teams = await TeamRepository.findAllUndisbanded();
+			const customUrl = mySlugify(name);
+			return !teams.some((team) => team.customUrl === customUrl);
+		}, "forms:errors.duplicateName"),
+	),
 });
 ```
 
@@ -696,26 +694,26 @@ For complex validation involving multiple fields:
 
 ```ts
 export const scrimsNewFormSchema = v.pipe(
-  v.object({
-    at: datetime({ label: "labels.start" }),
-    maps: select({ label: "labels.maps", items: mapsItems }),
-    mapsTournamentId: customField({ initialValue: null }, v.nullable(id)),
-  }),
-  superRefine((data, ctx) => {
-    if (data.maps === "TOURNAMENT" && !data.mapsTournamentId) {
-      ctx.addIssue({
-        path: ["mapsTournamentId"],
-        message: "errors.tournamentMustBeSelected",
-      });
-    }
+	v.object({
+		at: datetime({ label: "labels.start" }),
+		maps: select({ label: "labels.maps", items: mapsItems }),
+		mapsTournamentId: customField({ initialValue: null }, v.nullable(id)),
+	}),
+	superRefine((data, ctx) => {
+		if (data.maps === "TOURNAMENT" && !data.mapsTournamentId) {
+			ctx.addIssue({
+				path: ["mapsTournamentId"],
+				message: "errors.tournamentMustBeSelected",
+			});
+		}
 
-    if (data.maps !== "TOURNAMENT" && data.mapsTournamentId) {
-      ctx.addIssue({
-        path: ["mapsTournamentId"],
-        message: "errors.tournamentOnlyWhenMapsIsTournament",
-      });
-    }
-  }),
+		if (data.maps !== "TOURNAMENT" && data.mapsTournamentId) {
+			ctx.addIssue({
+				path: ["mapsTournamentId"],
+				message: "errors.tournamentOnlyWhenMapsIsTournament",
+			});
+		}
+	}),
 );
 ```
 
@@ -725,13 +723,13 @@ All labels and text go in `locales/en/forms.json`:
 
 ```json
 {
-  "labels.name": "Name",
-  "labels.bio": "Bio",
-  "bottomTexts.bioHelp": "Write a short description",
-  "errors.required": "This field is required",
-  "errors.customError": "Custom error message",
-  "options.type.free": "Free",
-  "options.type.paid": "Paid"
+	"labels.name": "Name",
+	"labels.bio": "Bio",
+	"bottomTexts.bioHelp": "Write a short description",
+	"errors.required": "This field is required",
+	"errors.customError": "Custom error message",
+	"options.type.free": "Free",
+	"options.type.paid": "Paid"
 }
 ```
 
@@ -752,37 +750,37 @@ Run `bun run i18n:sync` after changing English translations to sync the other la
 Use `createFormHelpers` for type-safe form interactions:
 
 ```ts
-import { createFormHelpers } from "./helpers/playwright-form";
 import { myFormSchema } from "~/features/my/my-schemas";
+import { createFormHelpers } from "./helpers/playwright-form";
 
 test("fills and submits form", async ({ page }) => {
-  const form = createFormHelpers(page, myFormSchema);
+	const form = createFormHelpers(page, myFormSchema);
 
-  await form.fill("name", "Test Name");
-  await form.fill("bio", "Test bio text");
-  await form.check("isPublic");
-  await form.select("type", "PAID");
-  await form.setDateTime("date", new Date(2024, 5, 15, 14, 30));
-  await form.submit();
+	await form.fill("name", "Test Name");
+	await form.fill("bio", "Test bio text");
+	await form.check("isPublic");
+	await form.select("type", "PAID");
+	await form.setDateTime("date", new Date(2024, 5, 15, 14, 30));
+	await form.submit();
 });
 ```
 
 ### Available Helper Methods
 
-| Method | Usage |
-|--------|-------|
-| `fill(name, value)` | Fill text input |
-| `check(name)` | Check a toggle/checkbox |
-| `uncheck(name)` | Uncheck a toggle/checkbox |
-| `select(name, optionValue)` | Select dropdown option by value |
-| `checkItems(name, values)` | Check specific checkbox group items |
-| `selectUser(name, userName)` | Search and select user |
-| `selectWeapons(name, weaponNames)` | Select weapons in weapon pool |
-| `setDateTime(name, date)` | Set datetime picker |
-| `setImage(name, filePath)` | Upload a file into an image field |
-| `submit()` | Click submit button |
-| `getLabel(name)` | Get translated label for field |
-| `getItemLabel(name, value)` | Get translated label for select item |
+| Method                             | Usage                                |
+| ---------------------------------- | ------------------------------------ |
+| `fill(name, value)`                | Fill text input                      |
+| `check(name)`                      | Check a toggle/checkbox              |
+| `uncheck(name)`                    | Uncheck a toggle/checkbox            |
+| `select(name, optionValue)`        | Select dropdown option by value      |
+| `checkItems(name, values)`         | Check specific checkbox group items  |
+| `selectUser(name, userName)`       | Search and select user               |
+| `selectWeapons(name, weaponNames)` | Select weapons in weapon pool        |
+| `setDateTime(name, date)`          | Set datetime picker                  |
+| `setImage(name, filePath)`         | Upload a file into an image field    |
+| `submit()`                         | Click submit button                  |
+| `getLabel(name)`                   | Get translated label for field       |
+| `getItemLabel(name, value)`        | Get translated label for select item |
 
 ### Custom Fields in Tests
 
@@ -802,11 +800,11 @@ await selectWeapon({ page, name: "Tenta Brella", testId: "match-0-weapon" });
 
 ```ts
 import {
-  navigate,
-  submit,
-  selectStage,
-  selectWeapon,
-  selectUser,
+	navigate,
+	selectStage,
+	selectUser,
+	selectWeapon,
+	submit,
 } from "./helpers/playwright";
 ```
 
@@ -817,34 +815,34 @@ import {
 ```ts
 import * as v from "valibot";
 import {
-  textField,
-  textAreaOptional,
-  select,
-  toggle,
-  stringConstant,
+	select,
+	stringConstant,
+	textAreaOptional,
+	textField,
+	toggle,
 } from "~/form/fields";
 
 export const createItemSchema = v.object({
-  _action: stringConstant("CREATE"),
-  name: textField({
-    label: "labels.itemName",
-    maxLength: 100,
-  }),
-  description: textAreaOptional({
-    label: "labels.description",
-    bottomText: "bottomTexts.descriptionHelp",
-    maxLength: 500,
-  }),
-  category: select({
-    label: "labels.category",
-    items: [
-      { label: "options.category.general", value: "GENERAL" },
-      { label: "options.category.special", value: "SPECIAL" },
-    ],
-  }),
-  isActive: toggle({
-    label: "labels.isActive",
-  }),
+	_action: stringConstant("CREATE"),
+	name: textField({
+		label: "labels.itemName",
+		maxLength: 100,
+	}),
+	description: textAreaOptional({
+		label: "labels.description",
+		bottomText: "bottomTexts.descriptionHelp",
+		maxLength: 500,
+	}),
+	category: select({
+		label: "labels.category",
+		items: [
+			{ label: "options.category.general", value: "GENERAL" },
+			{ label: "options.category.special", value: "SPECIAL" },
+		],
+	}),
+	isActive: toggle({
+		label: "labels.isActive",
+	}),
 });
 ```
 
@@ -855,18 +853,18 @@ import { SendouForm } from "~/form/SendouForm";
 import { createItemSchema } from "./feature-schemas";
 
 export default function NewItemPage() {
-  return (
-    <SendouForm schema={createItemSchema}>
-      {({ FormField }) => (
-        <>
-          <FormField name="name" />
-          <FormField name="description" />
-          <FormField name="category" />
-          <FormField name="isActive" />
-        </>
-      )}
-    </SendouForm>
-  );
+	return (
+		<SendouForm schema={createItemSchema}>
+			{({ FormField }) => (
+				<>
+					<FormField name="name" />
+					<FormField name="description" />
+					<FormField name="category" />
+					<FormField name="isActive" />
+				</>
+			)}
+		</SendouForm>
+	);
 }
 ```
 
@@ -879,35 +877,35 @@ import { createItemSchema } from "./feature-schemas";
 import * as ItemRepository from "./ItemRepository.server";
 
 export const action = defineAction(
-  { body: createItemSchema },
-  async ({ body }) => {
-    await ItemRepository.create(body);
-    return redirect("/items");
-  },
+	{ body: createItemSchema },
+	async ({ body }) => {
+		await ItemRepository.create(body);
+		return redirect("/items");
+	},
 );
 ```
 
 ### E2E Test (`feature.spec.ts`)
 
 ```ts
-import { createFormHelpers } from "./helpers/playwright-form";
 import { createItemSchema } from "~/features/item/feature-schemas";
-import { test, navigate, impersonate, seed } from "./helpers/playwright";
+import { impersonate, navigate, seed, test } from "./helpers/playwright";
+import { createFormHelpers } from "./helpers/playwright-form";
 
 test("creates new item", async ({ page }) => {
-  await seed(page);
-  await impersonate(page);
-  await navigate({ page, url: "/items/new" });
+	await seed(page);
+	await impersonate(page);
+	await navigate({ page, url: "/items/new" });
 
-  const form = createFormHelpers(page, createItemSchema);
+	const form = createFormHelpers(page, createItemSchema);
 
-  await form.fill("name", "Test Item");
-  await form.fill("description", "A test description");
-  await form.select("category", "SPECIAL");
-  await form.check("isActive");
-  await form.submit();
+	await form.fill("name", "Test Item");
+	await form.fill("description", "A test description");
+	await form.select("category", "SPECIAL");
+	await form.check("isActive");
+	await form.submit();
 
-  await expect(page).toHaveURL("/items");
+	await expect(page).toHaveURL("/items");
 });
 ```
 
@@ -915,12 +913,12 @@ test("creates new item", async ({ page }) => {
 
 ```json
 {
-  "labels.itemName": "Name",
-  "labels.description": "Description",
-  "labels.category": "Category",
-  "labels.isActive": "Active",
-  "bottomTexts.descriptionHelp": "Optional description for the item",
-  "options.category.general": "General",
-  "options.category.special": "Special"
+	"labels.itemName": "Name",
+	"labels.description": "Description",
+	"labels.category": "Category",
+	"labels.isActive": "Active",
+	"bottomTexts.descriptionHelp": "Optional description for the item",
+	"options.category.general": "General",
+	"options.category.special": "Special"
 }
 ```
