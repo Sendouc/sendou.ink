@@ -26,12 +26,12 @@ import { SNAPDOM_CAPTURE_OPTIONS } from "~/features/img-export/img-export-consta
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { tournamentPage } from "~/utils/urls";
 import type { MontageManifest, MontageManifestVod } from "../core/montage";
-import styles from "./MontageGraphics.module.css";
 import {
 	type MontageGraphic,
 	montageImageUrl,
 	setMontageGraphicCapture,
 } from "./montage";
+import styles from "./MontageGraphics.module.css";
 
 /** the full-frame graphics' CSS size times this is 1920×1080 */
 const FRAME_SCALE: Record<"title" | "standings", number> = {

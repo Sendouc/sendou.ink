@@ -12,11 +12,11 @@ import type { DB, Tables } from "~/db/tables";
 import type { TeamPickSettings, TournamentSettings } from "~/db/tables-json";
 import { EXCLUDED_TAGS } from "~/features/calendar/calendar-constants";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import * as TeamPick from "~/features/tournament/core/TeamPick";
 import * as Progression from "~/features/tournament-bracket/core/Progression";
 import * as Series from "~/features/tournament-organization/core/Series";
 import { getTentativeTier } from "~/features/tournament-organization/core/tentativeTiers.server";
 import * as TournamentOrganizationRepository from "~/features/tournament-organization/TournamentOrganizationRepository.server";
+import * as TeamPick from "~/features/tournament/core/TeamPick";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
 	databaseTimestampNow,

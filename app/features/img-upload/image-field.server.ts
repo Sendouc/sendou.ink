@@ -3,8 +3,8 @@ import type { ImageFieldValue } from "~/form/image-field";
 import { databaseTimestampNow } from "~/utils/dates";
 import { shortNanoid } from "~/utils/id";
 import { errorToastIfFalsy } from "~/utils/remix.server";
-import * as ImageRepository from "./ImageRepository.server";
 import { dataUrlToImageBuffer } from "./image-bytes.server";
+import * as ImageRepository from "./ImageRepository.server";
 import { uploadToS3 } from "./s3.server";
 import { MAX_UNVALIDATED_IMG_COUNT } from "./upload-constants";
 

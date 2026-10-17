@@ -36,15 +36,13 @@ import { formatPosition } from "../core/format";
 import { mainWeaponLabel, modeLabel, stageLabel } from "../core/labels";
 import {
 	candidatesByBaseWeapon,
+	maxSecondsFor,
 	MONTAGE_KILL_COUNTS,
 	MONTAGE_MAX_SECONDS_OPTIONS,
 	type MontageCandidate,
-	maxSecondsFor,
 } from "../core/montage";
 import { montageCollapsedGroupsPersisted } from "../scanner-persisted";
 import { ClipVideo } from "./ClipVideo";
-import { MontageGraphicStage } from "./MontageGraphics";
-import styles from "./MontageView.module.css";
 import {
 	availableCandidates,
 	cancelMontageRender,
@@ -52,8 +50,8 @@ import {
 	candidatePreview,
 	candidateThumbnail,
 	downloadMontageResults,
-	type MontageSnapshot,
 	montageDuration,
+	type MontageSnapshot,
 	montageTeamComps,
 	movePick,
 	openMontageFolder,
@@ -66,6 +64,8 @@ import {
 	updateMontageCriteria,
 	useMontage,
 } from "./montage";
+import { MontageGraphicStage } from "./MontageGraphics";
+import styles from "./MontageView.module.css";
 import { ScanWorkers } from "./ScanWorkers";
 import { SessionHeader } from "./SessionHeader";
 import { useVodScan } from "./vod-scan";

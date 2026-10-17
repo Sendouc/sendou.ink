@@ -25,10 +25,10 @@ import {
 	type AvailabilityPanelEntry,
 	AvailabilityRowDetail,
 	type AvailabilityRowStatus,
+	availabilityRowStatus,
 	AvailabilityStatusDots,
 	AvailabilitySummary,
 	AvailabilityWindowText,
-	availabilityRowStatus,
 	RegistrationAvailabilityPanel,
 } from "~/features/availability/components/RegistrationAvailabilityPanel";
 import type {
@@ -37,6 +37,8 @@ import type {
 } from "~/features/team/team-constants";
 import { getMemberRoleType } from "~/features/team/team-utils";
 import { timezoneMiddleware } from "~/features/timezone/timezone-middleware.server";
+import type { TournamentTeamFull } from "~/features/tournament-bracket/core/Tournament.server";
+import { LUTI_ORGANIZATION_ID } from "~/features/tournament-organization/tournament-organization-constants";
 import {
 	type CounterPickMapPool,
 	CounterPickMapPoolPicker,
@@ -45,8 +47,6 @@ import {
 } from "~/features/tournament/components/CounterPickMapPoolPicker";
 import { useTournament } from "~/features/tournament/tournament-context";
 import { tournamentJoinPage } from "~/features/tournament/tournament-urls";
-import type { TournamentTeamFull } from "~/features/tournament-bracket/core/Tournament.server";
-import { LUTI_ORGANIZATION_ID } from "~/features/tournament-organization/tournament-organization-constants";
 import { FormField } from "~/form/FormField";
 import { SendouForm, useFormFieldContext } from "~/form/SendouForm";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
@@ -62,8 +62,8 @@ import { action } from "../actions/to.$id.register.server";
 import type { TournamentRegisterPageLoader } from "../loaders/to.$id.register.server";
 import { loader } from "../loaders/to.$id.register.server";
 import {
-	type RegisterTeamFormValues,
 	registerTeamFormSchema,
+	type RegisterTeamFormValues,
 } from "../tournament-register-schemas";
 import {
 	addPlayerSchema,

@@ -12,12 +12,12 @@ import {
 	type SendouQMatchLoaderData,
 } from "~/features/sendouq-match/loaders/q.match.$id.server";
 import * as SQMatchRepository from "~/features/sendouq-match/SQMatchRepository.server";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { clearAllTournamentDataCache } from "~/features/tournament-bracket/core/Tournament.server";
 import {
-	type TournamentMatchLoaderData,
 	loader as tournamentMatchLoader,
+	type TournamentMatchLoaderData,
 } from "~/features/tournament-match/loaders/to.$id.matches.$mid.server";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import type {
 	MainWeaponId,
 	ModeShort,
@@ -28,8 +28,8 @@ import { invariant } from "~/utils/invariant";
 import { wrappedAction, wrappedLoader } from "~/utils/Test";
 import { action } from "../actions/scanner-ingest.server";
 import type {
-	IngestResponse,
 	ingestBodySchema,
+	IngestResponse,
 } from "../scanner-ingest-schemas";
 
 /** In-game names of the SendouQ world's alpha group, in member order. */

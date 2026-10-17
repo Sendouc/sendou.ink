@@ -4,8 +4,8 @@
 
 Sendou.ink can used to run Splatoon 3 tournaments without the need of another bracket hosting website. Currently it is in limited beta. Note that you should only make tournaments you host yourself. Creating tournaments on behalf of others is not allowed. Access is available to two groups:
 
-1) Patreon supporters of Supporter tier or above
-2) Established organizations
+1. Patreon supporters of Supporter tier or above
+2. Established organizations
 
 See the /faq page for more information about established organizations.
 
@@ -97,7 +97,7 @@ Allow participants to look for more members via the LFG feature and sign up as s
 Allow teams to add subs while the tournament is in progress on their own. If off then all the subs have to be added by the tournament organizers.
 
 ![alt text](./img/tournament-auto-subs.png)
-*Tournament team member adding a sub in the middle of a tournament*
+_Tournament team member adding a sub in the middle of a tournament_
 
 ### Require in-game names
 
@@ -125,16 +125,16 @@ Unlike test mode, draft tournaments are fully functional once opened: they appea
 
 #### Draft vs Test
 
-| Feature | Draft | Test |
-|---------|-------|------|
-| Visible on calendar | No (until opened) | No (never) |
-| Accessible to organizers | Yes | Yes |
-| Accessible to anyone with link | No (until opened) | Yes |
-| Can be opened later | Yes | No |
-| Affects rankings/results | Yes (once opened) | No (never) |
-| Bracket can be started | Only after opening | Yes |
-| Toggle editable after creation | Yes (until opened) | No |
-| Purpose | Prepare tournament privately | Dry-run testing |
+| Feature                        | Draft                        | Test            |
+| ------------------------------ | ---------------------------- | --------------- |
+| Visible on calendar            | No (until opened)            | No (never)      |
+| Accessible to organizers       | Yes                          | Yes             |
+| Accessible to anyone with link | No (until opened)            | Yes             |
+| Can be opened later            | Yes                          | No              |
+| Affects rankings/results       | Yes (once opened)            | No (never)      |
+| Bracket can be started         | Only after opening           | Yes             |
+| Toggle editable after creation | Yes (until opened)           | No              |
+| Purpose                        | Prepare tournament privately | Dry-run testing |
 
 ## Tournament maps
 
@@ -149,7 +149,7 @@ The maps teams can pick from are either the SendouQ legal maps, all maps or a cu
 When a match is played the last map of the list is a map both teams picked when one exists, otherwise a random map from the pool that neither team picked. When starting a bracket the organizer can fix the mode order of the rounds with the same mode patterns as organizer picked tournaments use.
 
 ![alt text](./img/tournament-team-map-pick.png)
-*Team picking maps as part of their registration process*
+_Team picking maps as part of their registration process_
 
 Then when the tournament in in progress an algorithm decides the map list for each match:
 
@@ -162,7 +162,7 @@ Then when the tournament in in progress an algorithm decides the map list for ea
 Note that here you select just the map pool. The actual map lists are picked when the bracket starts (or prepared) in advance:
 
 ![alt text](./img/tournament-bracket-start.png)
-*View when starting bracket*
+_View when starting bracket_
 
 ## Tournament format
 
@@ -198,7 +198,7 @@ Placements is a comma separated list of placements. So e.g. the following are va
 Placements are relative in the sense that the amount of teams that sign up don't affect them. `1` is always the 1st placement but `2` is the "2nd best possible placement to achieve" and so on. So for example with round robin the amount of teams advancing from that bracket depends entirely on the amount of groups (which is decided via sign ups.)
 
 ![alt text](./img/tournament-placement-mapping.png)
-*A screenshot from one Swim or Sink and how the placements map*
+_A screenshot from one Swim or Sink and how the placements map_
 
 ### Start time
 
@@ -250,10 +250,10 @@ Alternatively the bracket can be started with "Play in real time" on. Then its s
 
 Every set of a scheduled bracket has a Schedule tab on its match page, visible to both teams, the organizers and the streamers.
 
-1) Scheduling opens a day before the round becomes playable (right away if the round has no playable date).
-2) Either team proposes up to 6 times they could play. The tab shows when their own roster is free based on the teammates' availability.
-3) The other team picks one of the proposed times, or answers with times of their own.
-4) Once a time is agreed the set can be played from the moment its round is playable. Teams are free to play before the agreed time if both are ready.
+1. Scheduling opens a day before the round becomes playable (right away if the round has no playable date).
+2. Either team proposes up to 6 times they could play. The tab shows when their own roster is free based on the teammates' availability.
+3. The other team picks one of the proposed times, or answers with times of their own.
+4. Once a time is agreed the set can be played from the moment its round is playable. Teams are free to play before the agreed time if both are ready.
 
 After agreeing either team can propose new times to reschedule. The other team doesn't have to agree.
 

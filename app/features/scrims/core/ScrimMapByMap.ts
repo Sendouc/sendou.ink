@@ -1,7 +1,7 @@
 import type { Tables } from "~/db/tables";
-import * as MapList from "~/features/map-list-generator/core/MapList";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import type { MapPoolObject } from "~/features/map-list-generator/core/map-pool-serializer/types";
+import * as MapList from "~/features/map-list-generator/core/MapList";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort, StageId } from "~/modules/in-game-lists/types";
 

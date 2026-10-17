@@ -136,9 +136,7 @@ export function getAllDamageKeys(
 	for (const source of sources) {
 		for (const damage of source.damages) {
 			const weaponType = damage.weaponType.toLowerCase() as
-				| "main"
-				| "sub"
-				| "special";
+				"main" | "sub" | "special";
 			const keyString = `${source.weaponId}-${weaponType}-${damage.type}`;
 
 			if (seen.has(keyString)) {
@@ -197,9 +195,7 @@ function flattenToOptions(
 			if (damage.value >= LETHAL_DAMAGE) continue;
 
 			const weaponType = damage.weaponType.toLowerCase() as
-				| "main"
-				| "sub"
-				| "special";
+				"main" | "sub" | "special";
 			const key = `${source.weaponId}-${weaponType}-${damage.type}`;
 
 			if (excludedSet.has(key)) {

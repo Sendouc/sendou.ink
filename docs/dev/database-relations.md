@@ -101,9 +101,10 @@ erDiagram
 ### Notes
 
 Can be one of the following:
-1) Regular calendar events map pool
-2) Tournament's map pool (organizer picked, or the custom pool of a team picked tournament)
-3) Tournament teams map picks (team picked, the modes and counts live in `Tournament.settings.teamPick`)
+
+1. Regular calendar events map pool
+2. Tournament's map pool (organizer picked, or the custom pool of a team picked tournament)
+3. Tournament teams map picks (team picked, the modes and counts live in `Tournament.settings.teamPick`)
 
 ## Plus Server Suggestions
 
@@ -125,9 +126,11 @@ erDiagram
 ```
 
 ### Views
+
 - **FreshPlusTier** - Calculates Plus Server Tiers based on the latest voting results
 
 ### Notes
+
 - PlusTier is just FreshPlusTier materialized for performance reasons with players from the leaderboard added
 
 ## Results (maps/head-to-head)
@@ -136,7 +139,7 @@ erDiagram
 erDiagram
     User ||--o{ MapResult : has
     PlayerResult }o--|| User : owner
-    PlayerResult }o--|| User : other 
+    PlayerResult }o--|| User : other
 ```
 
 ### Notes
@@ -209,7 +212,7 @@ erDiagram
     Badge ||--o{ TournamentOrganizationBadge : badge_of
 
     TournamentOrganization ||--o{ TournamentOrganizationSeries : has_series
-    
+
     TournamentOrganization ||--o{ TournamentOrganizationBannedUser : has_banned
     User ||--o{ TournamentOrganizationBannedUser : banned_from
 ```
@@ -231,6 +234,7 @@ erDiagram
 - **TournamentMatchVod** - Past broadcast VOD references for tournament matches with a timestamp offset to jump to the specific match.
 
 ## Videos
+
 ```mermaid
 erDiagram
     UnvalidatedVideo ||--|{ VideoMatch : has

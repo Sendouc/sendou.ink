@@ -16,12 +16,12 @@ Note: plenty of older repositories don't follow this yet. Fix them as you touch 
 
 Reads:
 
-| Returns | Name |
-| --- | --- |
+| Returns            | Name                                                         |
+| ------------------ | ------------------------------------------------------------ |
 | One row or nothing | `findById`, `findByUserId`, `findLookingTeamsByTournamentId` |
-| An array | `findAllByTournamentId`, `findAllVods` |
-| A number | `countVods` |
-| A boolean | `existsByCustomUrl`, `hasUnvalidatedImages` |
+| An array           | `findAllByTournamentId`, `findAllVods`                       |
+| A number           | `countVods`                                                  |
+| A boolean          | `existsByCustomUrl`, `hasUnvalidatedImages`                  |
 
 Writes are named after the SQL verb: `insert`, `update`, `upsert`, `deleteById`. Not `create`, `del`, `remove`, `add`.
 
@@ -152,7 +152,7 @@ return Pagination.findPage({
 
 ## Documentation
 
-Repositories are modules, so exported functions get a JSDoc one-liner saying what they return, plus any scoping that isn't visible from the name ("excludes private builds", "latest row per season"). Non-obvious SQL gets a comment explaining *why* it's written that way — especially when the obvious form was rejected for performance reasons.
+Repositories are modules, so exported functions get a JSDoc one-liner saying what they return, plus any scoping that isn't visible from the name ("excludes private builds", "latest row per season"). Non-obvious SQL gets a comment explaining _why_ it's written that way — especially when the obvious form was rejected for performance reasons.
 
 Private helpers can skip the JSDoc or keep it to a line.
 

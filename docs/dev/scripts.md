@@ -62,7 +62,7 @@ Note: it only works with Node 16.
 1. Run the `bun --preload ./scripts/preload.ts scripts/replace-img-names.ts` command
 1. Run the `bun --preload ./scripts/preload.ts scripts/replace-weapon-names.ts` command
 1. Run the .avif generating command in each image folder.
-2. Update manually any languages that use English `gear.json` and `weapons.json` files
+1. Update manually any languages that use English `gear.json` and `weapons.json` files
 
 ## Deploy to Render.com
 

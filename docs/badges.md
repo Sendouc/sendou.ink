@@ -27,26 +27,32 @@ Any badge to be added has to follow these rules. Badges that do not follow the r
 ## Adding a new badge
 
 1. First badge needs to be made
+
 - 3D artists can use [picoCAD](https://johanpeitz.itch.io/picocad)
 - Some quick guide to picoCAD can be found pinned in the #badges Discord channel
 - Others can use the "[badges" Discord channel](https://discord.gg/sendou) to inquire about a commission
 - Read rules from above carefully at this point and ask if you do not understand something
 
 2. Use [the tool](https://sendou-badge-uploader.hfcred.workers.dev/) to upload the badge you made (credits for making the tool go to hfcRed)
+
 - It will handle creating the assets for you and opening the pull request with the changes needed
 
 3. Wait for Sendou to look into the pull request
+
 - Sometimes this can take a while if Sendou is busy
 - Changes might be requested (you can update the pull request made with the tool also)
 
 4. Wait for the site to be updated
+
 - After the pull request is merged it does not automatically go to the site yet
 - Normally the site updates a couple times a week, but this can vary
 
 5. Request permissions
+
 - After you see your badge on the /badges page you can request manager permissions to it on from the staff on the helpdesk channel
 
 6. Give out the badges to tournament winners
+
 - Badge can be given out via the /badges page
 
 ## Updating a badge

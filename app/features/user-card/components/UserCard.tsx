@@ -237,8 +237,7 @@ export function useUserCardData(
 
 	for (const match of matches) {
 		const data = match.loaderData as
-			| { userCards?: Map<number, UserCardData> }
-			| undefined;
+			{ userCards?: Map<number, UserCardData> } | undefined;
 		const card = data?.userCards?.get(userId);
 		if (card) return card;
 	}
@@ -574,7 +573,7 @@ function CardMutualFriends({
 	return (
 		<div className={styles.mutualFriends}>
 			{friendship === undefined ? null : friendship.mutualFriends.length ===
-				0 ? (
+			  0 ? (
 				<span className={styles.noMutualFriends}>
 					{t("user:card.noMutualFriends")}
 				</span>

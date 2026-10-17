@@ -6,10 +6,10 @@ import { SendouPopover } from "~/components/elements/Popover";
 import {
 	AvailabilityMemberRow,
 	type AvailabilityPanelUser,
+	availabilityRowStatus,
 	AvailabilityStatusDots,
 	AvailabilitySummary,
 	AvailabilityWindowText,
-	availabilityRowStatus,
 } from "~/features/availability/components/RegistrationAvailabilityPanel";
 import * as Scrim from "../core/Scrim";
 import type { loader as scrimsLoader } from "../loaders/scrims.server";

@@ -10,10 +10,10 @@ import {
 	FRIENDS_PAGE,
 	NEW_TROPHY_PAGE,
 	PLUS_VOTING_PAGE,
-	SENDOUQ_PAGE,
-	SENDOUQ_READY_PAGE,
 	scrimPage,
 	scrimsPage,
+	SENDOUQ_PAGE,
+	SENDOUQ_READY_PAGE,
 	sendouQMatchPage,
 	teamSchedulePage,
 	tournamentMatchPage,
@@ -21,8 +21,8 @@ import {
 	tournamentSubsPage,
 	tournamentTeamPage,
 	trophyPage,
-	type UserLinkArgs,
 	userEditProfilePage,
+	type UserLinkArgs,
 } from "~/utils/urls";
 import type { Notification } from "./notifications-types";
 

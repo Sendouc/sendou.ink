@@ -28,7 +28,7 @@ import { authSessionStorage } from "./session.server";
 import { getUser } from "./user.server";
 
 export const callbackLoader: LoaderFunction = async ({ request, url }) => {
-	// biome-ignore lint/plugin: OAuth callback param, its name and values defined by the provider
+	// eslint-disable-next-line sendou/no-raw-search-params -- OAuth callback param, its name and values defined by the provider
 	if (url.searchParams.get("error") === "access_denied") {
 		// https://www.oauth.com/oauth2-servers/server-side-apps/possible-errors/
 
@@ -89,7 +89,7 @@ export const impersonateAction = defineAction(
 			}
 
 			if (user.roles.includes("DEV") && !user.roles.includes("ADMIN")) {
-				// biome-ignore lint/plugin: a missing or malformed `id` must 400, not fall back to a default
+				// eslint-disable-next-line sendou/no-raw-search-params -- a missing or malformed `id` must 400, not fall back to a default
 				const targetId = Number(url.searchParams.get("id"));
 				if (isAdmin({ id: targetId }) || isStaff({ id: targetId })) {
 					forbidden();
@@ -105,11 +105,11 @@ export const impersonateAction = defineAction(
 
 		const realUserId = session.get(SESSION_KEY);
 
-		// biome-ignore-start lint/plugin: a missing or malformed `id` must 400, not fall back to a default
+		/* eslint-disable sendou/no-raw-search-params -- a missing or malformed `id` must 400, not fall back to a default */
 		const rawId = url.searchParams.get("id");
 
 		const userId = Number(url.searchParams.get("id"));
-		// biome-ignore-end lint/plugin: a missing or malformed `id` must 400, not fall back to a default
+		/* eslint-enable sendou/no-raw-search-params */
 		if (!rawId || Number.isNaN(userId)) badRequest();
 
 		logger.info(

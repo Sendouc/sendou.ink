@@ -28,12 +28,12 @@ graph TD
 List of the dependencies in production:
 
 - [Lohi](https://github.com/sendou-ink/lohi) - Discord bot for profile updates, log-in links etc.
-- [Leanny/splat3](https://github.com/Leanny/splat3) - In-game data (manual update) 
+- [Leanny/splat3](https://github.com/Leanny/splat3) - In-game data (manual update)
 - [splatoon3.ink](https://github.com/misenhower/splatoon3.ink) - Rotation schedules (hourly routine) & X Rank placement data (manual update)
-- Discord - Auth  
-- Twitch - Streams  
-- Patreon - Supporter status (hourly routine)  
-- Bluesky - Front page changelog  
+- Discord - Auth
+- Twitch - Streams
+- Patreon - Supporter status (hourly routine)
+- Bluesky - Front page changelog
 
 Configuration for these lives in `app/config.ts` (client, `VITE_*` variables, imported as `Config`) and `app/config.server.ts` (server only, imported as `ServerConfig`). Both validate their environment variables once on import.
 
@@ -72,7 +72,7 @@ sendou.ink/
 
 Feature folders collect together all the code needed to make that particular feature happen: database, backend, frontend, core logic etc. Feature can mean an user facing feature like "map-planner" but also something of a more cross-cutting concern like "chat".
 
-You should aim to colocate code that "changes together" as much as possible. Features can depend (import) on other features. 
+You should aim to colocate code that "changes together" as much as possible. Features can depend (import) on other features.
 
 ### Feature folder files & folders
 
@@ -101,12 +101,8 @@ Define in a core folder:
 // app/features/cool-feature/core/Module.ts
 
 /** Descriptive JSDoc goes here */
-export function doTheThing() {
-
-}
-function implementationDetail() {
-
-}
+export function doTheThing() {}
+function implementationDetail() {}
 ```
 
 You should document any functions exported by the module well.
@@ -115,9 +111,9 @@ Usage:
 
 ```ts
 // anywhere else in the codebase, particularly inside that feature
-import * as Module from "../core/Module.ts"
+import * as Module from "../core/Module.ts";
 
-Module.doTheThing()
+Module.doTheThing();
 ```
 
 ## Concepts
@@ -130,7 +126,7 @@ Unit testing "core logic" (i.e. no React, no DB calls) with `bun:test` is highly
 
 `bun:test` can also be used to write "integration tests" that call actions/loaders directly via the `wrappedAction` / `wrappedLoader` helpers from `~/utils/Test` (see `t.$customUrl.edit.test.ts` for example). These run against `db-test.sqlite3` and reset it between tests with `dbReset`. In practice this is best sparingly as they are typically slower than pure unit tests with more dependencies but also don't test the true end to end flow. Repository functions are tested the same way (`*Repository.server.test.ts`), wrapping calls in `withUser` / `withUserId` when the repository resolves an acting user.
 
-Components and hooks can be tested against a simulated DOM (happy-dom) with Testing Library. These files are named `*.dom.test.tsx` and run after the unit tests in `bun run test:unit:dom` (or alone via `bun run test:dom`). happy-dom has no Popover API, layout, CSS, IndexedDB, canvas or audio, so overlays, scrolling and the like are covered by E2E tests instead. 
+Components and hooks can be tested against a simulated DOM (happy-dom) with Testing Library. These files are named `*.dom.test.tsx` and run after the unit tests in `bun run test:unit:dom` (or alone via `bun run test:dom`). happy-dom has no Popover API, layout, CSS, IndexedDB, canvas or audio, so overlays, scrolling and the like are covered by E2E tests instead.
 
 Which brings us to E2E tests. For new features at least testing the happy path is encouraged. For more critical features (mainly tournament related stuff) it makes sense to test a bit more rigorously.
 
@@ -155,9 +151,9 @@ These take no arguments. The logged in user is resolved once per request by `use
 
 ### Permissions
 
-1) Add a permission object in a `Repository` code.
-2) Read in React code via the `useHasPermission` hook.
-3) Read in server code via the `requirePermission` guard.
+1. Add a permission object in a `Repository` code.
+2. Read in React code via the `useHasPermission` hook.
+3. Read in server code via the `requirePermission` guard.
 
 User can also have global roles such as "staff" or "tournament adder". Set in the root loader and `getUser`/`requireUser` code.
 
@@ -195,8 +191,8 @@ We are not using a state management library such as Redux. Instead use React Con
 
 Often it's convenient to store state in search params. This allows for nice features like users to deep link to the view they are seeing. You have two options to achieve this:
 
-1) Use React Router's built-in solution. Use this if data loaders should rerun once search params are changed.
-2) `useSearchParamState` hook. Use this if it is not needed.
+1. Use React Router's built-in solution. Use this if data loaders should rerun once search params are changed.
+2. `useSearchParamState` hook. Use this if it is not needed.
 
 ### Routines
 
@@ -210,10 +206,10 @@ A page opts into revalidation on a topic with `useTopicRevalidation`, and an act
 
 ```ts
 ChatSystemMessage.send([
-    {
-        channel: tournamentChannel(tournament.id),
-        revalidateOnly: true,
-    },
+	{
+		channel: tournamentChannel(tournament.id),
+		revalidateOnly: true,
+	},
 ]);
 ```
 
@@ -223,17 +219,17 @@ There is a single `ChatProvider` mounted near the root, glue over the framework-
 
 Two things drive which rooms the client cares about:
 
-1) **The user's own rooms.** Every room the user participates in, resolved from the owning entity (SendouQ group/match, tournament match/team, scrim). The root loader serves the list with the page (`chatRoomList`) and `GET /api/chat/rooms` refetches it on events and reconnects. These show up in the chat list regardless of which page the user is on.
-2) **Route-exposed `chatRooms`.** A loader can expose `chatRooms: RouteChatRoom[]` in its returned data, built with `RouteChatRooms.resolve()` so the page arrives with each room as the sidebar lists it and, for rooms opening on arrival, its latest messages (no fetch after mount, no content shift). The provider reads this out of `useMatches()` and surfaces those rooms for the duration of the route being active — used for rooms the user is viewing but is not a participant of (e.g. a tournament match chat viewed by a TO). An `autoOpen` room is opened for the viewer, the rest are only listed in the chat sidebar (e.g. the private group chats of a SendouQ match, which staff may read but not post in). The loader decides who gets which rooms; the helper drops any the user may not view.
+1. **The user's own rooms.** Every room the user participates in, resolved from the owning entity (SendouQ group/match, tournament match/team, scrim). The root loader serves the list with the page (`chatRoomList`) and `GET /api/chat/rooms` refetches it on events and reconnects. These show up in the chat list regardless of which page the user is on.
+2. **Route-exposed `chatRooms`.** A loader can expose `chatRooms: RouteChatRoom[]` in its returned data, built with `RouteChatRooms.resolve()` so the page arrives with each room as the sidebar lists it and, for rooms opening on arrival, its latest messages (no fetch after mount, no content shift). The provider reads this out of `useMatches()` and surfaces those rooms for the duration of the route being active — used for rooms the user is viewing but is not a participant of (e.g. a tournament match chat viewed by a TO). An `autoOpen` room is opened for the viewer, the rest are only listed in the chat sidebar (e.g. the private group chats of a SendouQ match, which staff may read but not post in). The loader decides who gets which rooms; the helper drops any the user may not view.
 
 Example loader:
 
 ```ts
 return {
-    // ...other loader data
-    chatRooms: await RouteChatRooms.resolve(user, [
-        { roomId: match.chatRoomId, autoOpen: true },
-    ]),
+	// ...other loader data
+	chatRooms: await RouteChatRooms.resolve(user, [
+		{ roomId: match.chatRoomId, autoOpen: true },
+	]),
 };
 ```
 

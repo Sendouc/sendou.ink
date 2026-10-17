@@ -10,9 +10,9 @@ import { userNewBuildPage } from "~/features/user-page/user-page-urls";
 import { newVodPage } from "~/features/vods/vods-urls";
 import {
 	CALENDAR_NEW_PAGE,
+	navIconUrl,
 	NEW_TEAM_PAGE,
 	NEW_TROPHY_PAGE,
-	navIconUrl,
 	newAssociationsPage,
 	newScrimPostPage,
 	ORGANIZATION_NEW_PAGE,

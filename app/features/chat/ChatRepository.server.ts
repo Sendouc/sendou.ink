@@ -403,11 +403,7 @@ export async function deleteOrphanedRooms() {
 }
 
 type ChatRoomOwnerTable =
-	| "Group"
-	| "GroupMatch"
-	| "TournamentMatch"
-	| "TournamentTeam"
-	| "ScrimPost";
+	"Group" | "GroupMatch" | "TournamentMatch" | "TournamentTeam" | "ScrimPost";
 
 /** The one table that can own a room of each type. */
 const OWNER_TABLE_BY_ROOM_TYPE = {

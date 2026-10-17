@@ -9,7 +9,6 @@ import * as TournamentLFGTeamFactory from "~/db/seed/factories/TournamentLFGTeam
 import * as TournamentTeamFactory from "~/db/seed/factories/TournamentTeamFactory";
 import * as UserFactory from "~/db/seed/factories/UserFactory";
 import { refreshSendouQInstance } from "~/features/sendouq/core/SendouQ.server";
-import * as PendingCheckIns from "~/features/tournament/core/PendingCheckIns.server";
 import { RunningTournaments } from "~/features/tournament-bracket/core/RunningTournaments.server";
 import {
 	runningTournamentWithMatch,
@@ -17,6 +16,7 @@ import {
 	tournamentCtxTeam,
 } from "~/features/tournament-bracket/core/tests/test-utils";
 import { tournamentBracketsPage } from "~/features/tournament-bracket/tournament-bracket-urls";
+import * as PendingCheckIns from "~/features/tournament/core/PendingCheckIns.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import {
 	SENDOUQ_LOOKING_PAGE,

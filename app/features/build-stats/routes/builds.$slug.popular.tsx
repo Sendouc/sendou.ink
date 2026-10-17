@@ -17,7 +17,6 @@ import {
 	ogPageImage,
 	type SerializeFrom,
 } from "../../../utils/remix";
-
 import { loader } from "../loaders/builds.$slug.popular.server";
 
 export { loader };

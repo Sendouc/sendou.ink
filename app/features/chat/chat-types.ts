@@ -3,11 +3,7 @@ import type { CommonUser } from "~/utils/kysely.server";
 import type { UNTHROTTLED_SYSTEM_MESSAGE_TYPES } from "./chat-constants";
 
 export type ChatRoomType =
-	| "SQ_GROUP"
-	| "SQ_MATCH"
-	| "TOURNAMENT_MATCH"
-	| "TOURNAMENT_TEAM"
-	| "SCRIM";
+	"SQ_GROUP" | "SQ_MATCH" | "TOURNAMENT_MATCH" | "TOURNAMENT_TEAM" | "SCRIM";
 
 export type SystemMessageType =
 	| "USER_LEFT"

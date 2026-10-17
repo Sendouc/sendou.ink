@@ -37,18 +37,18 @@ import {
 	userPage,
 } from "~/utils/urls";
 import { Avatar } from "./Avatar";
-import { EventsList } from "./EventsList";
 import { LinkButton } from "./elements/Button";
 import { isOwnToggle } from "./elements/Popover";
+import { EventsList } from "./EventsList";
 import { Image } from "./Image";
 import { ChatSidebar } from "./layout/ChatSidebar";
 import { LogInButtonContainer } from "./layout/LogInButtonContainer";
+import { navItems } from "./layout/nav-items";
 import {
 	NotificationContent,
 	useMarkNotificationsSeenWhileOpen,
 	useNotifications,
 } from "./layout/NotificationPopover";
-import { navItems } from "./layout/nav-items";
 import styles from "./MobileNav.module.css";
 import { NotificationDot } from "./NotificationDot";
 import { ShareUrlButton } from "./ShareUrlButton";

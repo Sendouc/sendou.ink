@@ -2,20 +2,20 @@ import * as ChatSystemMessage from "~/features/chat/ChatSystemMessage.server";
 import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournaments.server";
 import { notify } from "~/features/notifications/core/notify.server";
 import { resolveNotifications } from "~/features/notifications/core/resolve.server";
-import { requireNotBannedByOrganization } from "~/features/tournament/tournament-utils.server";
 import {
 	clearTournamentDataCache,
 	requireTournamentOrganizer,
 	tournamentFromParams,
 	tournamentTeamsFullCached,
 } from "~/features/tournament-bracket/core/Tournament.server";
+import { requireNotBannedByOrganization } from "~/features/tournament/tournament-utils.server";
 import { defineAction } from "~/form/define-action.server";
 import { errorToastIfFalsy } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
-import * as TournamentLFGRepository from "../TournamentLFGRepository.server";
 import { lookingSchema } from "../tournament-lfg-schemas";
 import { survivingTeamId } from "../tournament-lfg-utils";
 import { pickupChatRoomExpiresAt } from "../tournament-lfg-utils.server";
+import * as TournamentLFGRepository from "../TournamentLFGRepository.server";
 
 export const action = defineAction(
 	{ body: lookingSchema },
