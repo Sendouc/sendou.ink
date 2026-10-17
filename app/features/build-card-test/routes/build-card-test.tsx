@@ -146,6 +146,41 @@ const VARIANTS: Array<{
 		},
 	},
 	{
+		label: "Own build, max weapons (5)",
+		props: {
+			build: {
+				...BASE_BUILD,
+				id: 12,
+				weapons: [
+					{ weaponSplId: 40, isTop500: 1 },
+					{ weaponSplId: 50, isTop500: 0 },
+					{ weaponSplId: 60, isTop500: 1 },
+					{ weaponSplId: 70, isTop500: 0 },
+					{ weaponSplId: 80, isTop500: 0 },
+				],
+			},
+			owner: OWNER,
+			showOwner: false,
+			canEdit: true,
+		},
+	},
+	{
+		label: "Own build, two weapons",
+		props: {
+			build: {
+				...BASE_BUILD,
+				id: 13,
+				weapons: [
+					{ weaponSplId: 3020, isTop500: 0 },
+					{ weaponSplId: 3021, isTop500: 1 },
+				],
+			},
+			owner: OWNER,
+			showOwner: false,
+			canEdit: true,
+		},
+	},
+	{
 		label: "No gear",
 		props: {
 			build: {

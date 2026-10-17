@@ -106,11 +106,13 @@ export function BuildCard({
 	} = build;
 
 	const patch = patchOfTimestamp(updatedAt);
+	const isOwnerShown = Boolean(owner && showOwner);
+	const [mainWeapon, ...otherWeapons] = weapons;
 
 	return (
 		<div className={styles.card} data-testid="build-card">
 			<div className={styles.header}>
-				<BuildWeapons weapons={weapons} />
+				<BuildWeapons weapons={isOwnerShown ? weapons : [mainWeapon]} />
 				<div className={styles.titleBlock}>
 					<div className={styles.title}>
 						<h2 className={styles.titleText} data-testid="build-title">
@@ -134,7 +136,7 @@ export function BuildCard({
 						) : null}
 					</div>
 					<div className={styles.details}>
-						{owner && showOwner ? (
+						{owner && isOwnerShown ? (
 							<div className={styles.owner}>
 								<Link to={userBuildsPage(owner)} className={styles.ownerLink}>
 									<Avatar
@@ -158,6 +160,16 @@ export function BuildCard({
 										{owner.plusTier}
 									</span>
 								) : null}
+							</div>
+						) : otherWeapons.length > 0 ? (
+							<div className={styles.otherWeapons}>
+								{otherWeapons.map((weapon) => (
+									<RoundWeaponImage
+										key={weapon.weaponSplId}
+										weapon={weapon}
+										isSmall
+									/>
+								))}
 							</div>
 						) : null}
 					</div>

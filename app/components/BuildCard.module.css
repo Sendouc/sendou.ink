@@ -71,6 +71,13 @@
 	gap: var(--s-0-5);
 }
 
+.otherWeapons {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: var(--s-1-5);
+	gap: var(--s-1);
+}
+
 .moreWeapons {
 	display: grid;
 	width: var(--card-weapon-small-size);
