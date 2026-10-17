@@ -2,7 +2,7 @@
  * Downloads the match VoDs of a tournament with yt-dlp, trimmed to each match. Starts from the same timestamp
  * the VoD link on the site points to and ends shortly after the last game of the match was reported.
  *
- * Usage: pnpm vods:download <tournament id or url> [--include-winless] [--dry-run]
+ * Usage: bun run vods:download <tournament id or url> [--include-winless] [--dry-run]
  *
  * VoDs of teams that won no sets (e.g. went 0-2) are skipped unless --include-winless is passed.
  * Files go to scripts/output/vods/<tournament id>/<match id>-<stream account>.mp4 and existing ones are not redownloaded.

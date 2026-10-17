@@ -39,21 +39,22 @@ jobs:
           echo "SeaweedFS failed to start"
           exit 1
 
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
 
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
+        run: bunx playwright install --with-deps
 
       - name: Run E2E tests
-        run: pnpm run test:e2e
+        run: bun run test:e2e
 
       - name: Stop SeaweedFS
         if: always()

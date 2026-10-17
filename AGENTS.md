@@ -3,23 +3,28 @@
 - only rarely use comments, prefer descriptive variable and function names (leave existing comments as is).
 - if you encounter an existing TODO or xxx comment assume it is there for a reason and do not remove it unless you specifically addressed what the comment is about
 - when a comment is needed, brevity is the key, less is more
-- task is not considered completely until `pnpm run checks` passes
+- task is not considered completely until `bun run checks` passes
 - normal file structure has constants at the top immediately followed by the main function body of the file. Helpers are used to structure the code and they are at the bottom of the file (main implementation first, at the top of the file)
-- note: any formatting issue (such as tabs vs. spaces) can be resolved by running the `pnpm run biome:fix` command
+- note: any formatting issue (such as tabs vs. spaces) can be resolved by running the `bun run biome:fix` command
 - typical way to structure pure logic is into Modules divided by logical domains which are imported with the "* as Module" import and then used like so "Module.foo()". These functions always need JSDoc.
 - non-exported functions typically do not need JSDoc or at least it can be kept short
 - more topic docs live in `docs/dev/` — notably [architecture.md](./docs/dev/architecture.md) (feature folder layout), [permissions.md](./docs/dev/permissions.md) (authorization: global roles via `requireRole()`/`useHasRole()`, per-object `permissions` computed in repositories) and [overlays.md](./docs/dev/overlays.md) (popovers, menus, selects and dialogs: the floating layer, scroll lock and mobile keyboard handling)
 
 ## Commands
 
-- `pnpm run checks` runs, in order: biome:fix, unit/browser tests, translation json checks, typecheck and knip — knip means unused exports fail checks, so remove exports nothing imports
-- `pnpm run typecheck` runs TypeScript type checking
-- `pnpm run biome:fix` runs Biome code formatter and linter
-- `pnpm run test:unit:browser` runs all unit tests and browser tests
-- `pnpm run test:e2e` runs all e2e tests
-- `pnpm run test:e2e:flaky-detect` runs all e2e tests and repeats each 10 times
-- `pnpm run i18n:sync` syncs translation jsons with English
-- `pnpm run dev` starts the dev server (also runs migrations and setup first); `pnpm run seed` rebuilds the dev dataset. The dev admin user ("Sendou") has id 274 (`ADMIN_ID`)
+- `bun run checks` runs, in order: biome:fix, unit/browser tests, translation json checks, typecheck and knip — knip means unused exports fail checks, so remove exports nothing imports
+- `bun run typecheck` runs TypeScript type checking
+- `bun run biome:fix` runs Biome code formatter and linter
+- `bun run test:unit:browser` runs all unit tests and browser tests
+- `bun run test:e2e` runs all e2e tests
+- `bun run test:e2e:flaky-detect` runs all e2e tests and repeats each 10 times
+- `bun run i18n:sync` syncs translation jsons with English
+- `bun run dev` starts the dev server (also runs migrations and setup first); `bun run seed` rebuilds the dev dataset. The dev admin user ("Sendou") has id 274 (`ADMIN_ID`)
+
+## Runtime
+
+- Bun is the package manager and runs the production server (`server.ts`, `Bun.serve`), the build and the scripts (`bun scripts/foo.ts`; scripts importing app code that uses `import.meta.glob` need `--preload ./scripts/preload.ts`)
+- the dev server, Vitest and Playwright run on Node (Vite's dev server starts ~10x slower on Bun on macOS), so app code must run on both: use web standard APIs and `node:` modules, `Bun.*` only in `server.ts`, scripts and production-only paths
 
 ## Typescript
 
@@ -75,13 +80,13 @@
 - database is Sqlite3, driven by Node's built-in `node:sqlite` through a custom Kysely dialect (`app/db/node-sqlite-dialect.ts`)
 - database code should only be written in Repository files, see [repositories.md](./docs/dev/repositories.md) for their conventions
 - import `jsonArrayFrom`/`jsonObjectFrom`/`jsonBuildObject` from `~/utils/kysely.server`, never from `kysely/helpers/sqlite` (enforced by the `no-kysely-sqlite-helpers` Biome plugin); JSON columns are registered in `app/db/json-columns.ts`
-- migrations are Kysely migrations in `/migrations`, scaffolded with `pnpm run migrate:new "description"` and applied with `pnpm run migrate up`, see [how-to.md](./docs/dev/how-to.md)
+- migrations are Kysely migrations in `/migrations`, scaffolded with `bun run migrate:new "description"` and applied with `bun run migrate up`, see [how-to.md](./docs/dev/how-to.md)
 - down migrations are not needed, only up migrations
 - if we are working on a branch by default we should add to the migration this branch added instead of creating a brand new one
 - `/app/db/tables.ts` contains all tables and columns available, see [database-schemas.md](./docs/dev/database-schemas.md) for how columns should be typed (booleans, timestamps, JSON, enums, SQLite migration quirks)
 - `db.sqlite3` is development database
 - `db-test.sqlite3` is the unit test database (blank sans migrations; gitignored and created/migrated automatically when unit tests run)
-- `db-sandbox.sqlite3` is a local, disposable copy of production data. Read, write, migrate, run servers against it or delete it freely — it is not connected to production in any way. `pnpm run sandbox:reset` restores it
+- `db-sandbox.sqlite3` is a local, disposable copy of production data. Read, write, migrate, run servers against it or delete it freely — it is not connected to production in any way. `bun run sandbox:reset` restores it
 - `db-snapshot.sqlite3` is the pristine source `db-sandbox.sqlite3` is reset from, never modify it
 
 ## Unit testing
@@ -100,7 +105,7 @@
 - by default everything should be translated via i18next
 - some a11y labels or text that should not normally be encountered by user (example given, error message by server) can be english
 - before adding a new translation, check that one doesn't already exist you can reuse (particularly in the common.json)
-- add only English translation, other languages fall back to English until translated (never add empty strings); run `pnpm run i18n:sync` after removing or renaming keys
+- add only English translation, other languages fall back to English until translated (never add empty strings); run `bun run i18n:sync` after removing or renaming keys
 - when using namespace e.g. `const { t } = useTranslation("settings"]);` it needs to be defined in the `handle` for that route e.g. `export const handle: SendouRouteHandle = { i18n: ["settings"], ... }`. Certain namespaces are always included and you don't have to worry about those: "common", "forms", "game-misc", "weapons", "front", "friends"
 - if changing translation key names make sure to port over any already translated values for non-english languages if the english language is unchanged
 
@@ -140,5 +145,5 @@ Map planner improvements
 - computer-vision match-event detection; full docs in `app/features/scanner/README.md` — read it before touching detector/recognition code
 - OpenCV ROI-view gotcha: `.data`/`.clone()` are broken on ROI views — always `view.copyTo(freshMat)` before pixel access
 - fixture workflow: every live misread becomes a fixture under `app/features/scanner/tests/fixtures/`; ground-truth labels are hand-corrected by the maintainer and definitive over any matcher output
-- test with `pnpm test:scanner`; accuracy report with `pnpm scanner:report`; atlas regen commands and the assets-repo/CDN flow are in the README
+- test with `bun run test:scanner`; accuracy report with `bun run scanner:report`; atlas regen commands and the assets-repo/CDN flow are in the README
 - events, snap tables, and fixtures speak sendou ids (`ModeShort`/`StageId`/weapon ids/`Ability`) — never reintroduce English game-name literals outside the generated localized snap tables

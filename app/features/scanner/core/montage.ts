@@ -1,6 +1,6 @@
 /**
  * The tournament montage (dev only, `view=montage`): a folder of a
- * tournament's match VoDs downloaded by `pnpm vods:download`, described by
+ * tournament's match VoDs downloaded by `bun run vods:download`, described by
  * its `tournament.json` manifest, which streaks of its games are clip
  * candidates (a length cap per splat count, so a longer streak may run
  * longer), and how a picked clip plays back in the rendered video — the

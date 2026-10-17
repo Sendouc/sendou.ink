@@ -1,14 +1,11 @@
-import { basename } from "node:path";
-import { Readable } from "node:stream";
 import type { AuthenticatedUser } from "~/features/auth/core/user.server";
 import type { ImageFieldValue } from "~/form/image-field";
 import { databaseTimestampNow } from "~/utils/dates";
 import { shortNanoid } from "~/utils/id";
-import { invariant } from "~/utils/invariant";
 import { errorToastIfFalsy } from "~/utils/remix.server";
 import * as ImageRepository from "./ImageRepository.server";
 import { dataUrlToImageBuffer } from "./image-bytes.server";
-import { uploadStreamToS3 } from "./s3.server";
+import { uploadToS3 } from "./s3.server";
 import { MAX_UNVALIDATED_IMG_COUNT } from "./upload-constants";
 
 /**
@@ -63,12 +60,8 @@ export async function imageFieldValueToImgId({
 		"png",
 	]);
 
-	const uploadedFileLocation = await uploadStreamToS3(
-		Readable.from(buffer),
-		`img-${Date.now()}-${shortNanoid()}.${extension}`,
-	);
-	invariant(uploadedFileLocation, "Image upload failed");
-	const fileName = basename(uploadedFileLocation);
+	const fileName = `img-${Date.now()}-${shortNanoid()}.${extension}`;
+	await uploadToS3(buffer, fileName);
 
 	const img = await ImageRepository.insert({
 		submitterUserId: user.id,
