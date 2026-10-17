@@ -12,7 +12,7 @@
 
 ## Commands
 
-- `bun run checks` runs, in order: biome:fix, unit and DOM tests, translation json checks, typecheck and knip — knip means unused exports fail checks, so remove exports nothing imports
+- `bun run checks` runs biome:fix, typegen and test db setup first, then unit and DOM tests, translation json checks, typecheck and knip in parallel (output is prefixed per check, every check runs to completion even if one fails) — knip means unused exports fail checks, so remove exports nothing imports
 - `bun run typecheck` runs TypeScript type checking
 - `bun run biome:fix` runs Biome code formatter and linter
 - `bun run test:unit:dom` runs all unit and DOM tests (`bun run test:unit` / `bun run test:dom` for one half)
