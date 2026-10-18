@@ -300,9 +300,16 @@ sequenceDiagram
   match it opened splits only once no later minimap of that game reads it. A battle history screen (battle log, replay
   browser) showing a game already built — at least 6 paint totals shared
   order-free (a misread or unread row still joins), stage not contradicting
-  it, recording time within 20 min of its play time — joins that match's sources instead of forming a new
+  it, and either 6 whole stat lines (paint, K/A, D, S) shared or the recording time within 20 min of its play time (the console clock can be hours off the PC's: another timezone, a misread AM/PM) — joins that match's sources instead of forming a new
   one, so browsing the log after playing neither adds a card nor re-uploads
-  (the match was already sent). The recording time's AM/PM letter reads as
+  (the match was already sent). X Battle shows every player under a random
+  alias (a gear name) until the log is asked for the real names: a history
+  screen whose rows pair with the results screen's by stat line under other
+  names puts its names on the match (and on the POV's kills), and the
+  timeline keeps it apart from the alias read of the same entry
+  (`renamedRows`). Only a results screen's names count as aliases, so a match
+  a history screen closed keeps its first names; the upload is not redone, so
+  sendou.ink keeps the aliases. The recording time's AM/PM letter reads as
   "o" either way, so the header tells them apart by the letter's bottom rows
   (A stands on two legs, P on its stem): a flipped one puts the time 12h off
   and the screen turns into a duplicate card. Any other history screen closes the game
