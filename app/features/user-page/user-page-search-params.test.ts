@@ -189,7 +189,14 @@ describe("userBuildsSearchParams", () => {
 			page: [1, 2, 10],
 			weapon: [null, 0, 40, 8010],
 			visibility: [null, "PUBLIC", "PRIVATE"],
-			abilities: [[], ["ISM"], ["SSU", "QR", "RSU"]],
+			abilities: [
+				[],
+				[{ type: "HAS", ability: "ISM" }],
+				[
+					{ type: "AT_LEAST", ability: "SSU", ap: 12 },
+					{ type: "HAS_NOT", ability: "QR" },
+				],
+			],
 			mode: [null, "SZ", "TW"],
 			date: [null, "2026-01-28"],
 			sorting: [false, true],

@@ -1,17 +1,20 @@
 import clsx from "clsx";
-import { Calendar, FlaskConical, Map as MapIcon } from "lucide-react";
+import { Calendar, FlaskConical, Map as MapIcon, X } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import {
 	AbilityPalette,
 	AbilityPaletteButton,
 } from "~/components/AbilityPalette";
+import { SendouButton } from "~/components/elements/Button";
 import {
 	FilterLayout,
 	type FilterLayoutFilter,
 } from "~/components/filter-layout/FilterLayout";
 import { Image } from "~/components/Image";
 import { Pagination } from "~/components/Pagination";
+import { possibleApValues } from "~/features/build-analyzer/analyzer-constants";
+import { isStackableAbility } from "~/features/build-analyzer/core/ability-points";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { abilities } from "~/modules/in-game-lists/abilities";
 import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
@@ -19,19 +22,23 @@ import type {
 	Ability as AbilityType,
 	ModeShort,
 } from "~/modules/in-game-lists/types";
-import { modeImageUrl } from "~/utils/urls";
+import { abilityImageUrl, modeImageUrl } from "~/utils/urls";
 import { MAX_BUILD_FILTERS, RECENT_PATCHES } from "../builds-constants";
+import type { AbilityFilter } from "../builds-types";
 import styles from "./BuildFilters.module.css";
 
+const FILTER_AP_VALUES = possibleApValues().filter((ap) => ap > 0);
+const DEFAULT_FILTER_AP = 10;
+
 interface BuildFilterValues {
-	abilities: AbilityType[];
+	abilities: AbilityFilter[];
 	mode: ModeShort | null;
 	date: string | null;
 }
 
 /** Build filters (mode, abilities & date, plus any `leadingFilters`) around the build results. */
 export function BuildFiltersLayout({
-	values: { abilities: selectedAbilities, mode, date },
+	values: { abilities: abilityFilters, mode, date },
 	onChange: setParams,
 	onClearAll,
 	leadingFilters = [],
@@ -72,19 +79,20 @@ export function BuildFiltersLayout({
 					name: t("builds:filters.abilities"),
 					icon: <FlaskConical />,
 					formattedValue:
-						selectedAbilities.length > 0
-							? `${selectedAbilities.length} / ${MAX_BUILD_FILTERS}`
+						abilityFilters.length > 0
+							? `${abilityFilters.length} / ${MAX_BUILD_FILTERS}`
 							: null,
-					activeLabels: selectedAbilities.map((ability) =>
-						t(`game-misc:ABILITY_${ability}`),
+					activeLabels: abilityFilters.map((filter) =>
+						abilityFilterLabel(
+							filter,
+							t(`game-misc:ABILITY_${filter.ability}`),
+						),
 					),
 					testId: "ability-filter",
 					content: (
 						<AbilitiesFilter
-							selectedAbilities={selectedAbilities}
-							onChange={(newAbilities) =>
-								setParams({ abilities: newAbilities })
-							}
+							filters={abilityFilters}
+							onChange={(newFilters) => setParams({ abilities: newFilters })}
 						/>
 					),
 				},
@@ -165,44 +173,150 @@ function AnyModeIcon() {
 }
 
 function AbilitiesFilter({
-	selectedAbilities,
+	filters,
 	onChange,
 }: {
-	selectedAbilities: AbilityType[];
-	onChange: (abilities: AbilityType[]) => void;
+	filters: AbilityFilter[];
+	onChange: (filters: AbilityFilter[]) => void;
 }) {
-	const isFull = selectedAbilities.length >= MAX_BUILD_FILTERS;
-	const takenMainOnlyTypes = new Set<ReturnType<typeof abilityType>>(
-		selectedAbilities.map(abilityType).filter((type) => type !== "STACKABLE"),
-	);
+	const isFull = filters.length >= MAX_BUILD_FILTERS;
+	// a gear piece has only one main slot
+	const mainOnlyTypeTakenBy = (ability: AbilityType) =>
+		filters.some(
+			(filter) =>
+				filter.type === "HAS" &&
+				filter.ability !== ability &&
+				!isStackableAbility(ability) &&
+				abilityType(filter.ability) === abilityType(ability),
+		);
 
 	const toggleAbility = (ability: AbilityType) =>
 		onChange(
-			selectedAbilities.includes(ability)
-				? selectedAbilities.filter((selected) => selected !== ability)
-				: [...selectedAbilities, ability],
+			filters.some((filter) => filter.ability === ability)
+				? filters.filter((filter) => filter.ability !== ability)
+				: [...filters, { type: "HAS", ability }],
 		);
 
 	return (
-		<AbilityPalette
-			renderAbility={(ability) => {
-				const isSelected = selectedAbilities.includes(ability);
-				// a gear piece has only one main slot
-				const isDisabled =
-					!isSelected &&
-					(isFull || takenMainOnlyTypes.has(abilityType(ability)));
+		<div className={styles.abilitiesFilter}>
+			<AbilityPalette
+				renderAbility={(ability) => {
+					const isSelected = filters.some(
+						(filter) => filter.ability === ability,
+					);
+					const isDisabled =
+						!isSelected && (isFull || mainOnlyTypeTakenBy(ability));
 
-				return (
-					<AbilityPaletteButton
-						key={ability}
-						ability={ability}
-						aria-pressed={isSelected}
-						aria-disabled={isDisabled || undefined}
-						onClick={() => toggleAbility(ability)}
-					/>
-				);
-			}}
-		/>
+					return (
+						<AbilityPaletteButton
+							key={ability}
+							ability={ability}
+							aria-pressed={isSelected}
+							aria-disabled={isDisabled || undefined}
+							onClick={() => toggleAbility(ability)}
+						/>
+					);
+				}}
+			/>
+			{filters.length > 0 ? (
+				<ul className={styles.abilityFilterRows}>
+					{filters.map((filter) => (
+						<AbilityFilterRow
+							key={filter.ability}
+							filter={filter}
+							isHasDisabled={mainOnlyTypeTakenBy(filter.ability)}
+							onChange={(newFilter) =>
+								onChange(
+									filters.map((existing) =>
+										existing.ability === filter.ability ? newFilter : existing,
+									),
+								)
+							}
+							onRemove={() => toggleAbility(filter.ability)}
+						/>
+					))}
+				</ul>
+			) : null}
+		</div>
+	);
+}
+
+function AbilityFilterRow({
+	filter,
+	isHasDisabled,
+	onChange,
+	onRemove,
+}: {
+	filter: AbilityFilter;
+	isHasDisabled: boolean;
+	onChange: (filter: AbilityFilter) => void;
+	onRemove: () => void;
+}) {
+	const { t } = useTranslation(["builds", "analyzer", "game-misc"]);
+	const abilityName = t(`game-misc:ABILITY_${filter.ability}`);
+
+	const changeType = (type: AbilityFilter["type"]) =>
+		onChange(
+			type === "AT_LEAST" || type === "AT_MOST"
+				? {
+						type,
+						ability: filter.ability,
+						ap: "ap" in filter ? filter.ap : DEFAULT_FILTER_AP,
+					}
+				: { type, ability: filter.ability },
+		);
+
+	return (
+		<li className={styles.abilityFilterRow} data-testid="ability-filter-row">
+			<Image alt="" path={abilityImageUrl(filter.ability)} size={24} />
+			<span className={styles.abilityFilterName}>{abilityName}</span>
+			<SendouButton
+				icon={<X />}
+				size="miniscule"
+				variant="minimal-destructive"
+				onClick={onRemove}
+				aria-label={`Remove ${abilityName} filter`}
+			/>
+			<div className={styles.abilityFilterCondition}>
+				<select
+					value={filter.type}
+					onChange={(e) => changeType(e.target.value as AbilityFilter["type"])}
+					aria-label={`${abilityName} condition`}
+					data-testid="ability-filter-type-select"
+				>
+					<option value="HAS" disabled={isHasDisabled}>
+						{t("builds:filters.has")}
+					</option>
+					<option value="HAS_NOT">{t("builds:filters.does.not.have")}</option>
+					{isStackableAbility(filter.ability) ? (
+						<>
+							<option value="AT_LEAST">{t("builds:filters.atLeast")}</option>
+							<option value="AT_MOST">{t("builds:filters.atMost")}</option>
+						</>
+					) : null}
+				</select>
+				{filter.type === "AT_LEAST" || filter.type === "AT_MOST" ? (
+					<>
+						<select
+							className={styles.abilityFilterApSelect}
+							value={filter.ap}
+							onChange={(e) =>
+								onChange({ ...filter, ap: Number(e.target.value) })
+							}
+							aria-label={`${abilityName} ability points`}
+							data-testid="ability-filter-ap-select"
+						>
+							{FILTER_AP_VALUES.map((ap) => (
+								<option key={ap} value={ap}>
+									{ap}
+								</option>
+							))}
+						</select>
+						<span className="text-xs">{t("analyzer:abilityPoints.short")}</span>
+					</>
+				) : null}
+			</div>
+		</li>
 	);
 }
 
@@ -288,6 +402,19 @@ export function BuildFilterRadioOption({
 
 function formatFilterDate(date: string) {
 	return RECENT_PATCHES.find((patch) => patch.date === date)?.patch ?? date;
+}
+
+function abilityFilterLabel(filter: AbilityFilter, abilityName: string) {
+	switch (filter.type) {
+		case "HAS":
+			return abilityName;
+		case "HAS_NOT":
+			return `✗ ${abilityName}`;
+		case "AT_LEAST":
+			return `${abilityName} ≥ ${filter.ap}`;
+		case "AT_MOST":
+			return `${abilityName} ≤ ${filter.ap}`;
+	}
 }
 
 function abilityType(ability: AbilityType) {

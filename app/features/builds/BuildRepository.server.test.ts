@@ -10,6 +10,7 @@ import type {
 } from "~/modules/in-game-lists/types";
 import * as BuildRepository from "./BuildRepository.server";
 import { BUILDS_PAGE_SIZE } from "./builds-constants";
+import type { AbilityFilter } from "./builds-types";
 
 const users = UserFactory.pool();
 
@@ -89,6 +90,82 @@ const buildWeaponAbilitiesByBuildId = (buildId: number) =>
 		.select(["canonicalWeaponSplId", "ability", "abilityPoints"])
 		.where("buildId", "=", buildId)
 		.execute();
+
+// ISM 18 (subs doubled), ISS 20, SS 18
+const DOUBLER_ABILITIES: BuildAbilitiesTuple = [
+	["AD", "ISM", "ISM", "ISM"],
+	["ISS", "SS", "SS", "SS"],
+	["ISS", "SS", "SS", "SS"],
+];
+const LDE_ABILITIES: BuildAbilitiesTuple = [
+	["LDE", "SS", "SS", "SS"],
+	["SS", "SS", "SS", "SS"],
+	["SS", "SS", "SS", "SS"],
+];
+
+const ABILITY_FILTER_BUILDS = {
+	inkSaver: ABILITIES,
+	doubler: DOUBLER_ABILITIES,
+	lastDitch: LDE_ABILITIES,
+} satisfies Record<string, BuildAbilitiesTuple>;
+
+type AbilityFilterBuild = keyof typeof ABILITY_FILTER_BUILDS;
+
+const ABILITY_FILTER_CASES: Array<{
+	why: string;
+	filters: AbilityFilter[];
+	expected: AbilityFilterBuild[];
+}> = [
+	{
+		why: "has an ability in any slot",
+		filters: [{ type: "HAS", ability: "ISS" }],
+		expected: ["inkSaver", "doubler"],
+	},
+	{
+		why: "has a main-only ability",
+		filters: [{ type: "HAS", ability: "LDE" }],
+		expected: ["lastDitch"],
+	},
+	{
+		why: "doesn't have an ability",
+		filters: [{ type: "HAS_NOT", ability: "LDE" }],
+		expected: ["inkSaver", "doubler"],
+	},
+	{
+		why: "has at least the AP, doubled subs included",
+		filters: [{ type: "AT_LEAST", ability: "ISM", ap: 18 }],
+		expected: ["inkSaver", "doubler"],
+	},
+	{
+		why: "has more AP than at least asks",
+		filters: [{ type: "AT_LEAST", ability: "ISM", ap: 19 }],
+		expected: ["inkSaver"],
+	},
+	{
+		why: "has at most the AP, lacking the ability included",
+		filters: [{ type: "AT_MOST", ability: "ISS", ap: 19 }],
+		expected: ["inkSaver", "lastDitch"],
+	},
+	{
+		why: "matches every filter",
+		filters: [
+			{ type: "HAS", ability: "ISS" },
+			{ type: "AT_MOST", ability: "ISM", ap: 20 },
+		],
+		expected: ["doubler"],
+	},
+];
+
+/** Creates one build per {@link ABILITY_FILTER_BUILDS} and returns the ids the expected names map to. */
+const createAbilityFilterBuilds = async (expected: AbilityFilterBuild[]) => {
+	const idsByName = new Map<AbilityFilterBuild, number>();
+	for (const [name, abilities] of Object.entries(ABILITY_FILTER_BUILDS)) {
+		const build = await createBuild({ ownerId: users.id(1), abilities });
+		idsByName.set(name as AbilityFilterBuild, build.id);
+	}
+
+	return expected.map((name) => idsByName.get(name)!).sort((a, b) => a - b);
+};
 
 const NO_FILTERS: BuildRepository.BuildListFilters = {
 	abilities: [],
@@ -460,45 +537,18 @@ describe("BuildRepository.findPageByWeaponId", () => {
 		expect(result.builds).toHaveLength(1);
 	});
 
-	test("keeps builds having every filtered ability in any slot", async () => {
-		const subSlotOnly = await createBuild({ ownerId: users.id(1) });
-		await createBuild({
-			ownerId: users.id(2),
-			abilities: [
-				["LDE", "SS", "SS", "SS"],
-				["SS", "SS", "SS", "SS"],
-				["SS", "SS", "SS", "SS"],
-			],
-		});
+	test.each(ABILITY_FILTER_CASES)(
+		"filters by abilities: $why",
+		async ({ filters, expected }) => {
+			const expectedIds = await createAbilityFilterBuilds(expected);
 
-		const withIss = await weaponBuilds(SPLATTERSHOT, {
-			filters: { ...NO_FILTERS, abilities: ["ISS"] },
-		});
-		const withIssAndLde = await weaponBuilds(SPLATTERSHOT, {
-			filters: { ...NO_FILTERS, abilities: ["ISS", "LDE"] },
-		});
+			const result = await weaponBuilds(SPLATTERSHOT, {
+				filters: { ...NO_FILTERS, abilities: filters },
+			});
 
-		expect(idsOf(withIss)).toEqual([subSlotOnly.id]);
-		expect(withIssAndLde.builds).toEqual([]);
-	});
-
-	test("filters by a main-only ability", async () => {
-		await createBuild({ ownerId: users.id(1) });
-		const withLde = await createBuild({
-			ownerId: users.id(2),
-			abilities: [
-				["LDE", "SS", "SS", "SS"],
-				["SS", "SS", "SS", "SS"],
-				["SS", "SS", "SS", "SS"],
-			],
-		});
-
-		const result = await weaponBuilds(SPLATTERSHOT, {
-			filters: { ...NO_FILTERS, abilities: ["LDE"] },
-		});
-
-		expect(idsOf(result)).toEqual([withLde.id]);
-	});
+			expect(idsOf(result).sort((a, b) => a - b)).toEqual(expectedIds);
+		},
+	);
 
 	test("filters by mode", async () => {
 		const towerControl = await createBuild({
@@ -558,11 +608,27 @@ describe("BuildRepository.findPageByUserId", () => {
 		});
 
 		const result = await userBuilds({
-			filters: { abilities: ["ISS", "ISM"] },
+			filters: {
+				abilities: [
+					{ type: "HAS", ability: "ISS" },
+					{ type: "AT_LEAST", ability: "ISM", ap: 38 },
+				],
+			},
 		});
 
 		expect(idsOf(result)).toEqual([privateBuild.id]);
 	});
+
+	test.each(ABILITY_FILTER_CASES)(
+		"filters by abilities: $why",
+		async ({ filters, expected }) => {
+			const expectedIds = await createAbilityFilterBuilds(expected);
+
+			const result = await userBuilds({ filters: { abilities: filters } });
+
+			expect(idsOf(result).sort((a, b) => a - b)).toEqual(expectedIds);
+		},
+	);
 
 	test("filters by exact weapon id", async () => {
 		const nouveauBuild = await createBuild({

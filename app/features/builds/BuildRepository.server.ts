@@ -29,12 +29,16 @@ import { invariant } from "~/utils/invariant";
 import { commonUserJsonObject, jsonArrayFrom } from "~/utils/kysely.server";
 import { toDBBoolean } from "~/utils/sql";
 import { assertUnreachable } from "~/utils/types";
-import { MAIN_SLOT_AP } from "../build-analyzer/analyzer-constants";
+import {
+	MAIN_SLOT_AP,
+	SUB_SLOT_AP,
+} from "../build-analyzer/analyzer-constants";
 import {
 	buildToAbilityPoints,
 	isStackableAbility,
 } from "../build-analyzer/core/ability-points";
 import { BUILD, BUILDS_PAGE_SIZE } from "./builds-constants";
+import type { AbilityFilter } from "./builds-types";
 import { sortAbilities } from "./core/ability-sorting.server";
 
 export async function findAllByUserId(
@@ -293,8 +297,8 @@ export type PopularBuildsRow = Awaited<
 
 /** Filters shared by the build lists, each a no-op when unset. */
 export interface BuildListFilters {
-	/** Each has to be in the build, in any slot. */
-	abilities: Ability[];
+	/** Every one has to hold, AP counted like the analyzer does (ability doubler included). */
+	abilities: AbilityFilter[];
 	mode: ModeShort | null;
 	/** `YYYY-MM-DD`, only builds updated after it. */
 	date: string | null;
@@ -323,7 +327,7 @@ export async function findPageByWeaponId({
 			.where((eb) =>
 				eb.and(
 					filterConditions(filters, {
-						hasAbility: (ability) =>
+						abilityPointsAtLeast: (ability, ap) =>
 							// an index probe (only public builds have these rows, as only they are listed here)
 							eb.exists(
 								eb
@@ -339,7 +343,8 @@ export async function findPageByWeaponId({
 										"=",
 										"BuildWeapon.buildId",
 									)
-									.where("BuildWeaponAbility.ability", "=", ability),
+									.where("BuildWeaponAbility.ability", "=", ability)
+									.where("BuildWeaponAbility.abilityPoints", ">=", ap),
 							),
 						onBuild: (condition) =>
 							eb.exists(
@@ -411,8 +416,8 @@ export async function findPageByUserId({
 				eb.and([
 					...filterConditions(filters, {
 						// private builds have no ability sum rows to probe
-						hasAbility: (ability) =>
-							sql<SqlBool>`exists (select 1 from json_each("Build"."abilities") as "gear", json_each("gear"."value") as "slot" where "slot"."value" = ${ability})`,
+						abilityPointsAtLeast: (ability, ap) =>
+							sql<SqlBool>`(select coalesce(sum(case when "slot"."key" = 0 then ${MAIN_SLOT_AP} when json_extract("gear"."value", '$[0]') = 'AD' then ${SUB_SLOT_AP * 2} else ${SUB_SLOT_AP} end), 0) from json_each("Build"."abilities") as "gear", json_each("gear"."value") as "slot" where "slot"."value" = ${ability}) >= ${ap}`,
 						onBuild: (condition) => condition,
 						updatedAt: "Build.updatedAt",
 					}),
@@ -588,18 +593,20 @@ async function recalculateSortValues(trx: Transaction<DB>, userId?: number) {
 function filterConditions(
 	{ abilities, mode, date }: BuildListFilters,
 	{
-		hasAbility,
+		abilityPointsAtLeast,
 		onBuild,
 		updatedAt,
 	}: {
-		hasAbility: (ability: Ability) => Expression<SqlBool>;
+		abilityPointsAtLeast: (ability: Ability, ap: number) => Expression<SqlBool>;
 		/** Applies a condition on the build's `Build` row. */
 		onBuild: (condition: Expression<SqlBool>) => Expression<SqlBool>;
 		updatedAt: "Build.updatedAt" | "BuildWeapon.updatedAt";
 	},
 ): Array<Expression<SqlBool>> {
 	return [
-		...abilities.map(hasAbility),
+		...abilities.map((filter) =>
+			abilityFilterCondition(filter, abilityPointsAtLeast),
+		),
 		...(mode !== null
 			? [
 					// a quoted two letter code can't match inside another, and a substring search is far cheaper than `json_each`
@@ -614,6 +621,24 @@ function filterConditions(
 				]
 			: []),
 	];
+}
+
+function abilityFilterCondition(
+	filter: AbilityFilter,
+	abilityPointsAtLeast: (ability: Ability, ap: number) => Expression<SqlBool>,
+): Expression<SqlBool> {
+	switch (filter.type) {
+		case "HAS":
+			return abilityPointsAtLeast(filter.ability, 1);
+		case "HAS_NOT":
+			return sql<SqlBool>`not (${abilityPointsAtLeast(filter.ability, 1)})`;
+		case "AT_LEAST":
+			return abilityPointsAtLeast(filter.ability, filter.ap);
+		case "AT_MOST":
+			return sql<SqlBool>`not (${abilityPointsAtLeast(filter.ability, filter.ap + 1)})`;
+		default:
+			assertUnreachable(filter);
+	}
 }
 
 function userBuildSortKeys(

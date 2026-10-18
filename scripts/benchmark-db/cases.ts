@@ -287,7 +287,34 @@ export function buildCases(fx: Fixtures): {
 		(weaponSplId) =>
 			BuildRepository.findPageByWeaponId({
 				weaponId: weaponSplId,
-				filters: { abilities: ["AD", "TI", "RP"], mode: "TC", date: null },
+				filters: {
+					abilities: [
+						{ type: "HAS", ability: "AD" },
+						{ type: "HAS", ability: "TI" },
+						{ type: "HAS", ability: "RP" },
+					],
+					mode: "TC",
+					date: null,
+				},
+				page: 1,
+				sortAbilities: true,
+			}),
+	);
+	add(
+		"BuildRepository.findPageByWeaponId.apFilters",
+		fx.heavyWeaponSplId,
+		(weaponSplId) =>
+			BuildRepository.findPageByWeaponId({
+				weaponId: weaponSplId,
+				filters: {
+					abilities: [
+						{ type: "AT_LEAST", ability: "ISM", ap: 10 },
+						{ type: "AT_MOST", ability: "SSU", ap: 6 },
+						{ type: "HAS_NOT", ability: "LDE" },
+					],
+					mode: null,
+					date: null,
+				},
 				page: 1,
 				sortAbilities: true,
 			}),
@@ -325,7 +352,11 @@ export function buildCases(fx: Fixtures): {
 				userId,
 				showPrivate: true,
 				filters: {
-					abilities: ["AD", "TI", "RP"],
+					abilities: [
+						{ type: "HAS", ability: "AD" },
+						{ type: "HAS", ability: "TI" },
+						{ type: "HAS", ability: "RP" },
+					],
 					mode: "TC",
 					date: null,
 					weaponId: null,

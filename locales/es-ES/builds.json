@@ -22,6 +22,10 @@
 	"noBuildsMatchingFilters": "No hay builds que coincidan con los filtros",
 	"emptyAbilitySlot": "Espacio de potenciador vacío",
 	"filters.abilities": "Potenciadores",
+	"filters.has": "Tiene",
+	"filters.does.not.have": "No tiene",
+	"filters.atLeast": "Al menos",
+	"filters.atMost": "Como máximo",
 	"filters.mode": "Modo",
 	"filters.date.since": "Desde"
 }

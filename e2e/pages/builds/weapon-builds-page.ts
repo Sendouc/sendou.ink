@@ -17,6 +17,8 @@ export class WeaponBuildsPage {
 			filtersLogInButton: page.getByTestId("filters-log-in-button"),
 			expandStackButtons: page.getByTestId("expand-build-stack"),
 			collapseStackButtons: page.getByTestId("collapse-build-stack"),
+			abilityFilterTypeSelect: page.getByTestId("ability-filter-type-select"),
+			abilityFilterApSelect: page.getByTestId("ability-filter-ap-select"),
 		};
 	}
 

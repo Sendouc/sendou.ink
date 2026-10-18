@@ -132,6 +132,19 @@ test.describe("Builds", () => {
 		await weaponBuilds.abilityToggle("Ink Saver (Main)").click();
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(3);
 
+		await weaponBuilds.locators.abilityFilterTypeSelect.selectOption("HAS_NOT");
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(2);
+
+		await weaponBuilds.locators.abilityFilterTypeSelect.selectOption(
+			"AT_LEAST",
+		);
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(3);
+
+		await weaponBuilds.locators.abilityFilterTypeSelect.selectOption("AT_MOST");
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(2);
+		await weaponBuilds.locators.abilityFilterApSelect.selectOption("19");
+		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);
+
 		await weaponBuilds.abilityToggle("Ink Saver (Main)").click();
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);
 

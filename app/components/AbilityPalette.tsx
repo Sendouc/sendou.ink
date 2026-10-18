@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import {
-	Check,
 	HatGlasses,
 	Layers,
 	type LucideIcon,
@@ -92,11 +91,6 @@ export function AbilityPaletteButton({
 			{...rest}
 		>
 			<Image alt="" path={abilityImageUrl(ability)} width={32} height={32} />
-			{rest["aria-pressed"] === true ? (
-				<span className={styles.selectedCheck}>
-					<Check />
-				</span>
-			) : null}
 		</button>
 	);
 }

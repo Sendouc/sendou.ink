@@ -122,24 +122,3 @@
 		outline-offset: 2px;
 	}
 }
-
-.selectedCheck {
-	position: absolute;
-	top: -4px;
-	right: -4px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 16px;
-	height: 16px;
-	border-radius: var(--radius-full);
-	background-color: var(--color-fill-accent);
-	color: var(--color-fg-on-accent);
-	pointer-events: none;
-
-	& > svg {
-		width: 10px;
-		height: 10px;
-		stroke-width: 4;
-	}
-}
