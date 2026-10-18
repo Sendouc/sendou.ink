@@ -23,6 +23,5 @@
 	"emptyAbilitySlot": "Espacio de potenciador vacío",
 	"filters.abilities": "Potenciadores",
 	"filters.mode": "Modo",
-	"filters.date.since": "Desde",
-	"filters.filterByWeapon": "Filtrar por arma"
+	"filters.date.since": "Desde"
 }

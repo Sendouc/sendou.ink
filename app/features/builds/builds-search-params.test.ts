@@ -8,7 +8,7 @@ import { buildsSearchParams } from "./builds-search-params";
 describe("buildsSearchParams", () => {
 	test("round-trips", () => {
 		assertRoundTrips(buildsSearchParams, {
-			limit: [24, 48, 1, 240],
+			page: [1, 2, 10],
 			abilities: [[], ["ISM"], ["SSU", "LDE", "NS"]],
 			mode: [null, "SZ", "TW"],
 			date: [null, "2026-01-28"],
@@ -16,12 +16,7 @@ describe("buildsSearchParams", () => {
 	});
 
 	test("decodes garbage to defaults", () => {
-		assertDecodesToDefault(buildsSearchParams, "limit", [
-			[""],
-			["0"],
-			["241"],
-			["abc"],
-		]);
+		assertDecodesToDefault(buildsSearchParams, "page", [[""], ["0"], ["abc"]]);
 		assertDecodesToDefault(buildsSearchParams, "abilities", [
 			["XXX"],
 			["ISM", "ISS", "IRU", "RSU", "SSU", "SCU", "SS"],

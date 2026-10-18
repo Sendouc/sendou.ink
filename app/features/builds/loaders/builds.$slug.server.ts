@@ -2,12 +2,11 @@ import type { LoaderFunctionArgs } from "react-router";
 import { getUser } from "~/features/auth/core/user.server";
 import { weaponIdToType } from "~/modules/in-game-lists/weapon-ids";
 import { englishWeaponName, weaponSlug } from "~/utils/english-weapon-names";
-import { notFound } from "~/utils/remix.server";
+import { notFound, paginate } from "~/utils/remix.server";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
 import * as BuildRepository from "../BuildRepository.server";
-import { BUILDS_PAGE_MAX_BUILDS } from "../builds-constants";
+import { BUILDS_PAGE_SIZE } from "../builds-constants";
 import { buildsSearchParams } from "../builds-search-params";
-import { filterBuilds } from "../core/filter.server";
 
 export const loader = async ({ params, url }: LoaderFunctionArgs) => {
 	const user = getUser();
@@ -17,44 +16,20 @@ export const loader = async ({ params, url }: LoaderFunctionArgs) => {
 		notFound();
 	}
 
-	const { limit, abilities, mode, date } = buildsSearchParams.parse(url);
+	const { page, ...filters } = buildsSearchParams.parse(url);
 
-	const weaponName = englishWeaponName({ type: "MAIN", id: weaponId });
-	const slug = weaponSlug({ type: "MAIN", id: weaponId });
-
-	const hasActiveFilters =
-		abilities.length > 0 || mode !== null || date !== null;
-
-	const builds = await BuildRepository.findAllByWeaponId(weaponId, {
-		limit: hasActiveFilters ? BUILDS_PAGE_MAX_BUILDS : limit + 1,
+	const { builds, totalCount } = await BuildRepository.findPageByWeaponId({
+		weaponId,
+		filters,
+		page,
 		sortAbilities: !user?.preferences?.disableBuildAbilitySorting,
 	});
 
-	const filteredBuilds = hasActiveFilters
-		? filterBuilds({
-				builds,
-				abilities,
-				mode,
-				date,
-				count: limit + 1,
-			})
-		: builds;
-
-	let hasMoreBuilds = false;
-	if (filteredBuilds.length > limit) {
-		filteredBuilds.pop();
-
-		if (limit < BUILDS_PAGE_MAX_BUILDS) {
-			hasMoreBuilds = true;
-		}
-	}
-
 	return {
 		weaponId,
-		weaponName,
-		builds: filteredBuilds,
-		limit,
-		hasMoreBuilds,
-		slug,
+		weaponName: englishWeaponName({ type: "MAIN", id: weaponId }),
+		builds,
+		...paginate({ url, page, pageSize: BUILDS_PAGE_SIZE, totalCount }),
+		slug: weaponSlug({ type: "MAIN", id: weaponId }),
 	};
 };

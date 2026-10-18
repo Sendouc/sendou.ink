@@ -3,38 +3,26 @@ import * as SearchParams from "~/modules/search-params/search-params";
 import { SP } from "~/modules/search-params/search-params";
 import { modeShort } from "~/utils/schema";
 import {
-	BUILDS_PAGE_BATCH_SIZE,
-	BUILDS_PAGE_MAX_BUILDS,
-} from "./builds-constants";
-import {
 	abilitiesFilterSchema,
 	buildsDateFilterSchema,
 } from "./builds-schemas";
 
-export const buildsSearchParams = SearchParams.define({
-	limit: SP.param(
-		v.pipe(
-			v.number(),
-			v.integer(),
-			v.minValue(1),
-			v.maxValue(BUILDS_PAGE_MAX_BUILDS),
-		),
-		{
-			default: BUILDS_PAGE_BATCH_SIZE,
-			loader: true,
-		},
-	),
+/** Params of a filtered, paginated build list, shared by the weapon and user build pages. */
+export const buildListParams = {
+	page: SP.page(),
 	abilities: SP.param(abilitiesFilterSchema, {
 		default: [],
-		resets: ["limit"],
+		resets: ["page"],
 		loader: true,
 	}),
 	mode: SP.param(v.nullable(modeShort), {
-		resets: ["limit"],
+		resets: ["page"],
 		loader: true,
 	}),
 	date: SP.param(v.nullable(buildsDateFilterSchema), {
-		resets: ["limit"],
+		resets: ["page"],
 		loader: true,
 	}),
-});
+};
+
+export const buildsSearchParams = SearchParams.define(buildListParams);

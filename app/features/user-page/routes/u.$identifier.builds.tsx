@@ -1,4 +1,11 @@
-import { ArrowDownNarrowWide, Lock, LockOpen, Trash } from "lucide-react";
+import {
+	ArrowDownNarrowWide,
+	Crosshair,
+	Eye,
+	Lock,
+	LockOpen,
+	Trash,
+} from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher, useLoaderData } from "react-router";
@@ -6,28 +13,32 @@ import { BuildCard } from "~/components/BuildCard";
 import { EmptyState } from "~/components/EmptyState";
 import { SendouButton } from "~/components/elements/Button";
 import { SendouDialog } from "~/components/elements/Dialog";
-import { SendouMenu, SendouMenuItem } from "~/components/elements/Menu";
 import { FormMessage } from "~/components/FormMessage";
+import type { FilterLayoutFilter } from "~/components/filter-layout/FilterLayout";
 import { Image, WeaponImage } from "~/components/Image";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useUser } from "~/features/auth/core/user";
 import {
+	BuildFilterRadioGroup,
+	BuildFilterRadioOption,
+	BuildFiltersLayout,
+} from "~/features/builds/components/BuildFilters";
+import {
 	BUILD_SORT_IDENTIFIERS,
 	type BuildSort,
+	type BuildVisibility,
 } from "~/features/user-page/user-page-constants";
 import { buildsActionSchema } from "~/features/user-page/user-page-schemas";
+import { useSearchParamPagination } from "~/hooks/useSearchParamPagination";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { mainWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 import { hasPermission } from "~/modules/permissions/utils";
-import { useSearchParam } from "~/modules/search-params/hooks";
+import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { weaponCategoryUrl } from "~/utils/urls";
 import { action } from "../actions/u.$identifier.builds.server";
 import { SubPageHeader } from "../components/SubPageHeader";
-import {
-	loader,
-	type UserBuildsPageData,
-} from "../loaders/u.$identifier.builds.server";
+import { loader } from "../loaders/u.$identifier.builds.server";
 import { DEFAULT_BUILD_SORT } from "../user-page-constants";
 import { useUserPageLayoutData } from "../user-page-hooks";
 import { userBuildsSearchParams } from "../user-page-search-params";
@@ -35,45 +46,93 @@ import styles from "./u.$identifier.builds.module.css";
 
 export { action, loader };
 
+export const shouldRevalidate = userBuildsSearchParams.shouldRevalidate;
+
 export const handle: SendouRouteHandle = {
 	i18n: ["weapons", "builds", "gear", "analyzer"],
 };
 
-type BuildFilter = "ALL" | "PUBLIC" | "PRIVATE" | MainWeaponId;
-
 export default function UserBuildsPage() {
-	const { t } = useTranslation(["builds", "user", "common"]);
+	const { t } = useTranslation(["builds", "user", "common", "weapons"]);
 	const user = useUser();
 	const layoutData = useUserPageLayoutData();
 	const data = useLoaderData<typeof loader>();
-	const [weaponFilter, setWeaponFilter] = useSearchParam(
-		userBuildsSearchParams,
-		"weapon",
-	);
+	const [{ weapon, visibility, abilities, mode, date, sorting }, setParams] =
+		useSearchParamsTyped(userBuildsSearchParams);
+	const pagination = useSearchParamPagination({
+		definition: userBuildsSearchParams,
+		currentPage: data.currentPage,
+		pagesCount: data.pagesCount,
+	});
 
 	const isOwnPage = user?.id === layoutData.user.id;
-	const [sorting, setChangingSorting] = useSearchParam(
-		userBuildsSearchParams,
-		"sorting",
-	);
 	const changingSorting = sorting && isOwnPage;
 	// here so closing the dialog mid-submit doesn't unmount the fetcher and drop the redirect
 	const sortingFetcher = useFetcher();
 
-	const closeSortingDialog = () => setChangingSorting(false);
+	const closeSortingDialog = () => setParams({ sorting: false });
 
-	const builds =
-		weaponFilter === "ALL"
-			? data.builds
-			: weaponFilter === "PUBLIC"
-				? data.builds.filter((build) => !build.isPrivate)
-				: weaponFilter === "PRIVATE"
-					? data.builds.filter((build) => build.isPrivate)
-					: data.builds.filter((build) =>
-							build.weapons
-								.map((wpn) => wpn.weaponSplId)
-								.includes(weaponFilter),
-						);
+	const showVisibilityFilter = data.counts.private > 0;
+
+	const hasFilters =
+		weapon !== null ||
+		(showVisibilityFilter && visibility !== null) ||
+		abilities.length > 0 ||
+		mode !== null ||
+		date !== null;
+
+	const leadingFilters: FilterLayoutFilter[] = [
+		{
+			key: "weapon",
+			name: t("builds:filters.weapon"),
+			icon: <Crosshair />,
+			formattedValue: weapon !== null ? t(`weapons:MAIN_${weapon}`) : null,
+			testId: "weapon-filter",
+			content: (
+				<WeaponFilter
+					weapon={weapon}
+					onChange={(newWeapon) => setParams({ weapon: newWeapon })}
+				/>
+			),
+		},
+	];
+	if (showVisibilityFilter) {
+		leadingFilters.push({
+			key: "visibility",
+			name: t("builds:filters.visibility"),
+			icon: <Eye />,
+			formattedValue:
+				visibility !== null
+					? t(`builds:stats.${visibility === "PUBLIC" ? "public" : "private"}`)
+					: null,
+			testId: "visibility-filter",
+			content: (
+				<VisibilityFilter
+					visibility={visibility}
+					onChange={(newVisibility) => setParams({ visibility: newVisibility })}
+				/>
+			),
+		});
+	}
+
+	const buildCards =
+		data.builds.length > 0 ? (
+			<div className={styles.buildsContainer}>
+				{data.builds.map((build) => (
+					<BuildCard
+						key={build.id}
+						build={build}
+						owner={layoutData.user}
+						showOwner={false}
+						canEdit={hasPermission(build, "EDIT", user)}
+					/>
+				))}
+			</div>
+		) : (
+			<EmptyState navItem="builds">
+				{hasFilters ? t("noBuildsMatchingFilters") : t("noBuilds")}
+			</EmptyState>
+		);
 
 	return (
 		<div className="stack lg">
@@ -84,9 +143,9 @@ export default function UserBuildsPage() {
 				/>
 			) : null}
 			<SubPageHeader user={layoutData.user} title={t("common:pages.builds")}>
-				{isOwnPage && data.builds.length > 0 ? (
+				{isOwnPage && data.counts.total > 0 ? (
 					<SendouButton
-						onClick={() => setChangingSorting(true)}
+						onClick={() => setParams({ sorting: true })}
 						size="small"
 						variant="outlined"
 						icon={<ArrowDownNarrowWide />}
@@ -96,90 +155,27 @@ export default function UserBuildsPage() {
 					</SendouButton>
 				) : null}
 			</SubPageHeader>
-			<BuildsFilters
-				weaponFilter={weaponFilter}
-				setWeaponFilter={setWeaponFilter}
-			/>
-			{builds.length > 0 ? (
-				<div className={styles.buildsContainer}>
-					{builds.map((build) => (
-						<BuildCard
-							key={build.id}
-							build={build}
-							owner={layoutData.user}
-							showOwner={false}
-							canEdit={hasPermission(build, "EDIT", user)}
-						/>
-					))}
-				</div>
+			{data.counts.total > 0 ? (
+				<BuildFiltersLayout
+					values={{ abilities, mode, date }}
+					onChange={setParams}
+					onClearAll={() =>
+						setParams({
+							weapon: null,
+							visibility: null,
+							abilities: [],
+							mode: null,
+							date: null,
+						})
+					}
+					leadingFilters={leadingFilters}
+					pagination={pagination}
+				>
+					{buildCards}
+				</BuildFiltersLayout>
 			) : (
-				<EmptyState navItem="builds">{t("noBuilds")}</EmptyState>
+				buildCards
 			)}
-		</div>
-	);
-}
-
-function BuildsFilters({
-	weaponFilter,
-	setWeaponFilter,
-}: {
-	weaponFilter: BuildFilter;
-	setWeaponFilter: (weaponFilter: BuildFilter) => void;
-}) {
-	const { t } = useTranslation(["weapons", "builds"]);
-	const data = useLoaderData<typeof loader>();
-	const user = useUser();
-	const layoutData = useUserPageLayoutData();
-
-	if (data.builds.length === 0) return null;
-
-	const privateBuildsCount = data.builds.filter(
-		(build) => build.isPrivate,
-	).length;
-	const publicBuildsCount = data.builds.length - privateBuildsCount;
-
-	const showPublicPrivateFilters =
-		user?.id === layoutData.user.id && privateBuildsCount > 0;
-
-	return (
-		<div className="stack horizontal sm flex-wrap">
-			<SendouButton
-				onClick={() => setWeaponFilter("ALL")}
-				variant={weaponFilter === "ALL" ? undefined : "outlined"}
-				size="small"
-				className={styles.buildFilterButton}
-			>
-				{t("builds:stats.all")} ({data.builds.length})
-			</SendouButton>
-			{showPublicPrivateFilters ? (
-				<>
-					<SendouButton
-						onClick={() => setWeaponFilter("PUBLIC")}
-						variant={weaponFilter === "PUBLIC" ? undefined : "outlined"}
-						size="small"
-						className={styles.buildFilterButton}
-						icon={<LockOpen />}
-					>
-						{t("builds:stats.public")} ({publicBuildsCount})
-					</SendouButton>
-					<SendouButton
-						onClick={() => setWeaponFilter("PRIVATE")}
-						variant={weaponFilter === "PRIVATE" ? undefined : "outlined"}
-						size="small"
-						className={styles.buildFilterButton}
-						icon={<Lock />}
-					>
-						{t("builds:stats.private")} ({privateBuildsCount})
-					</SendouButton>
-				</>
-			) : null}
-
-			<WeaponFilterMenu
-				mainWeaponIds={mainWeaponIds}
-				counts={data.weaponCounts}
-				weaponFilter={weaponFilter}
-				setWeaponFilter={setWeaponFilter}
-			/>
 		</div>
 	);
 }
@@ -327,56 +323,91 @@ function ChangeSortingDialogSelect({
 	);
 }
 
-function WeaponFilterMenu({
-	mainWeaponIds: weaponIds,
-	counts,
-	weaponFilter,
-	setWeaponFilter,
+function WeaponFilter({
+	weapon,
+	onChange,
 }: {
-	mainWeaponIds: MainWeaponId[];
-	counts: UserBuildsPageData["weaponCounts"];
-	weaponFilter: BuildFilter;
-	setWeaponFilter: (weaponFilter: MainWeaponId) => void;
+	weapon: MainWeaponId | null;
+	onChange: (weapon: MainWeaponId | null) => void;
 }) {
 	const { t } = useTranslation(["weapons", "builds"]);
+	const data = useLoaderData<typeof loader>();
+	const name = React.useId();
 
 	return (
-		<SendouMenu
-			scrolling
-			trigger={
-				<SendouButton
-					variant={typeof weaponFilter === "number" ? undefined : "outlined"}
-					size="small"
-					className={styles.buildFilterButton}
-				>
-					<Image
-						path={weaponCategoryUrl("SHOOTERS")}
-						width={24}
-						height={24}
-						alt=""
-					/>
-					{t("builds:filters.filterByWeapon")}
-				</SendouButton>
-			}
-		>
-			{weaponIds.map((weaponId) => {
-				const count = counts[weaponId];
+		<BuildFilterRadioGroup label={t("builds:filters.weapon")}>
+			<BuildFilterRadioOption
+				name={name}
+				checked={weapon === null}
+				onChange={() => onChange(null)}
+				icon={<Image path={weaponCategoryUrl("SHOOTERS")} size={20} alt="" />}
+				sub={String(data.counts.total)}
+			>
+				{t("builds:filters.weapon.any")}
+			</BuildFilterRadioOption>
+			{mainWeaponIds.map((weaponId) => {
+				const count = data.counts.byWeaponId[weaponId];
 
 				if (!count) return null;
 
 				return (
-					<SendouMenuItem
+					<BuildFilterRadioOption
 						key={weaponId}
+						name={name}
+						checked={weapon === weaponId}
+						onChange={() => onChange(weaponId)}
 						icon={
-							<WeaponImage weaponSplId={weaponId} variant="build" size={18} />
+							<WeaponImage weaponSplId={weaponId} variant="badge" size={20} />
 						}
-						onAction={() => setWeaponFilter(weaponId)}
-						isActive={weaponFilter === weaponId}
+						sub={String(count)}
 					>
-						{`${t(`weapons:MAIN_${weaponId}`)} (${count})`}
-					</SendouMenuItem>
+						{t(`weapons:MAIN_${weaponId}`)}
+					</BuildFilterRadioOption>
 				);
 			})}
-		</SendouMenu>
+		</BuildFilterRadioGroup>
+	);
+}
+
+function VisibilityFilter({
+	visibility,
+	onChange,
+}: {
+	visibility: BuildVisibility | null;
+	onChange: (visibility: BuildVisibility | null) => void;
+}) {
+	const { t } = useTranslation(["builds"]);
+	const data = useLoaderData<typeof loader>();
+	const name = React.useId();
+
+	return (
+		<BuildFilterRadioGroup label={t("builds:filters.visibility")}>
+			<BuildFilterRadioOption
+				name={name}
+				checked={visibility === null}
+				onChange={() => onChange(null)}
+				sub={String(data.counts.total)}
+			>
+				{t("builds:stats.all")}
+			</BuildFilterRadioOption>
+			<BuildFilterRadioOption
+				name={name}
+				checked={visibility === "PUBLIC"}
+				onChange={() => onChange("PUBLIC")}
+				icon={<LockOpen size={16} />}
+				sub={String(data.counts.total - data.counts.private)}
+			>
+				{t("builds:stats.public")}
+			</BuildFilterRadioOption>
+			<BuildFilterRadioOption
+				name={name}
+				checked={visibility === "PRIVATE"}
+				onChange={() => onChange("PRIVATE")}
+				icon={<Lock size={16} />}
+				sub={String(data.counts.private)}
+			>
+				{t("builds:stats.private")}
+			</BuildFilterRadioOption>
+		</BuildFilterRadioGroup>
 	);
 }

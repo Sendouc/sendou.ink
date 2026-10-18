@@ -6,8 +6,12 @@ import {
 	AbilityPalette,
 	AbilityPaletteButton,
 } from "~/components/AbilityPalette";
-import { FilterLayout } from "~/components/filter-layout/FilterLayout";
+import {
+	FilterLayout,
+	type FilterLayoutFilter,
+} from "~/components/filter-layout/FilterLayout";
 import { Image } from "~/components/Image";
+import { Pagination } from "~/components/Pagination";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { abilities } from "~/modules/in-game-lists/abilities";
 import { modesShort, rankedModesShort } from "~/modules/in-game-lists/modes";
@@ -15,25 +19,40 @@ import type {
 	Ability as AbilityType,
 	ModeShort,
 } from "~/modules/in-game-lists/types";
-import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import { modeImageUrl } from "~/utils/urls";
 import { MAX_BUILD_FILTERS, RECENT_PATCHES } from "../builds-constants";
-import { buildsSearchParams } from "../builds-search-params";
 import styles from "./BuildFilters.module.css";
 
-/** The weapon builds page filters (mode, abilities & date) around the build results. */
+interface BuildFilterValues {
+	abilities: AbilityType[];
+	mode: ModeShort | null;
+	date: string | null;
+}
+
+/** Build filters (mode, abilities & date, plus any `leadingFilters`) around the build results. */
 export function BuildFiltersLayout({
+	values: { abilities: selectedAbilities, mode, date },
+	onChange: setParams,
+	onClearAll,
+	leadingFilters = [],
+	pagination,
 	children,
 }: {
+	values: BuildFilterValues;
+	onChange: (newValues: Partial<BuildFilterValues>) => void;
+	/** Resets every filter, including `leadingFilters`. */
+	onClearAll: () => void;
+	leadingFilters?: FilterLayoutFilter[];
+	/** Shown below the results when there is more than one page. */
+	pagination: React.ComponentProps<typeof Pagination>;
 	children: React.ReactNode;
 }) {
 	const { t } = useTranslation(["builds", "game-misc"]);
-	const [{ abilities: selectedAbilities, mode, date }, setParams] =
-		useSearchParamsTyped(buildsSearchParams);
 
 	return (
 		<FilterLayout
 			filters={[
+				...leadingFilters,
 				{
 					key: "mode",
 					name: t("builds:filters.mode"),
@@ -87,10 +106,11 @@ export function BuildFiltersLayout({
 					),
 				},
 			]}
-			onClearAll={() => setParams({ abilities: [], mode: null, date: null })}
+			onClearAll={onClearAll}
 			showResultsText={t("builds:filters.showBuilds")}
 		>
 			{children}
+			{pagination.pagesCount > 1 ? <Pagination {...pagination} /> : null}
 		</FilterLayout>
 	);
 }
@@ -111,16 +131,16 @@ function ModeFilter({
 			role="radiogroup"
 			aria-label={t("builds:filters.mode")}
 		>
-			<RadioOption
+			<BuildFilterRadioOption
 				name={name}
 				checked={mode === null}
 				onChange={() => onChange(null)}
 				icon={<AnyModeIcon />}
 			>
 				{t("builds:filters.mode.any")}
-			</RadioOption>
+			</BuildFilterRadioOption>
 			{modesShort.map((option) => (
-				<RadioOption
+				<BuildFilterRadioOption
 					key={option}
 					name={name}
 					checked={mode === option}
@@ -128,7 +148,7 @@ function ModeFilter({
 					icon={<Image path={modeImageUrl(option)} size={20} alt="" />}
 				>
 					{t(`game-misc:MODE_LONG_${option}`)}
-				</RadioOption>
+				</BuildFilterRadioOption>
 			))}
 		</div>
 	);
@@ -202,20 +222,16 @@ function DateFilter({
 	});
 
 	return (
-		<div
-			className={styles.optionList}
-			role="radiogroup"
-			aria-label={t("builds:filters.updatedSince")}
-		>
-			<RadioOption
+		<BuildFilterRadioGroup label={t("builds:filters.updatedSince")}>
+			<BuildFilterRadioOption
 				name={name}
 				checked={date === null}
 				onChange={() => onChange(null)}
 			>
 				{t("builds:filters.date.anyTime")}
-			</RadioOption>
+			</BuildFilterRadioOption>
 			{RECENT_PATCHES.map((patch) => (
-				<RadioOption
+				<BuildFilterRadioOption
 					key={patch.patch}
 					name={name}
 					checked={date === patch.date}
@@ -223,13 +239,29 @@ function DateFilter({
 					sub={formatter.format(new Date(patch.date))}
 				>
 					{t("builds:filters.date.patch", { patch: patch.patch })}
-				</RadioOption>
+				</BuildFilterRadioOption>
 			))}
+		</BuildFilterRadioGroup>
+	);
+}
+
+/** Vertical list of `BuildFilterRadioOption`s. */
+export function BuildFilterRadioGroup({
+	label,
+	children,
+}: {
+	label: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<div className={styles.optionList} role="radiogroup" aria-label={label}>
+			{children}
 		</div>
 	);
 }
 
-function RadioOption({
+/** Radio styled like the other build filter options. */
+export function BuildFilterRadioOption({
 	name,
 	checked,
 	onChange,

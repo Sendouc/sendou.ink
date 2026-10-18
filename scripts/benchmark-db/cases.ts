@@ -269,11 +269,75 @@ export function buildCases(fx: Fixtures): {
 		(weaponSplId) =>
 			BuildRepository.findAllPopularAbilitiesByWeaponId(weaponSplId),
 	);
-	add("BuildRepository.findAllByWeaponId", fx.heavyWeaponSplId, (weaponSplId) =>
-		BuildRepository.findAllByWeaponId(weaponSplId, {
-			limit: 60,
+	add(
+		"BuildRepository.findPageByWeaponId",
+		fx.heavyWeaponSplId,
+		(weaponSplId) =>
+			BuildRepository.findPageByWeaponId({
+				weaponId: weaponSplId,
+				filters: { abilities: [], mode: null, date: null },
+				page: 1,
+				sortAbilities: true,
+			}),
+	);
+	// rare abilities match almost nothing, so every build of the weapon is checked
+	add(
+		"BuildRepository.findPageByWeaponId.rareFilters",
+		fx.heavyWeaponSplId,
+		(weaponSplId) =>
+			BuildRepository.findPageByWeaponId({
+				weaponId: weaponSplId,
+				filters: { abilities: ["AD", "TI", "RP"], mode: "TC", date: null },
+				page: 1,
+				sortAbilities: true,
+			}),
+	);
+	add("BuildRepository.findPageByUserId", fx.heavyBuildUserId, (userId) =>
+		BuildRepository.findPageByUserId({
+			userId,
+			showPrivate: true,
+			filters: {
+				abilities: [],
+				mode: null,
+				date: null,
+				weaponId: null,
+				visibility: null,
+			},
+			sorting: {
+				buildSorting: [
+					"WEAPON_POOL",
+					"MODE",
+					"TOP_500",
+					"WEAPON_IN_GAME_ORDER",
+					"UPDATED_AT",
+				],
+				weaponPool: [40, 1010, 2070, 3010],
+			},
+			page: 1,
 			sortAbilities: true,
 		}),
+	);
+	add(
+		"BuildRepository.findPageByUserId.rareFilters",
+		fx.heavyBuildUserId,
+		(userId) =>
+			BuildRepository.findPageByUserId({
+				userId,
+				showPrivate: true,
+				filters: {
+					abilities: ["AD", "TI", "RP"],
+					mode: "TC",
+					date: null,
+					weaponId: null,
+					visibility: null,
+				},
+				sorting: { buildSorting: null, weaponPool: [40] },
+				page: 1,
+				sortAbilities: true,
+			}),
+	);
+	add("BuildRepository.countsByUserId", fx.heavyBuildUserId, (userId) =>
+		BuildRepository.countsByUserId(userId, { showPrivate: true }),
 	);
 	addStatic("BuildRepository.countAllPublicByWeaponId", () =>
 		BuildRepository.countAllPublicByWeaponId(),

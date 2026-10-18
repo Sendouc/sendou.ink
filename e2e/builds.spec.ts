@@ -1,7 +1,10 @@
 import { subDays } from "date-fns";
 import { NZAP_TEST_DISCORD_ID, NZAP_TEST_ID } from "~/db/seed/constants";
 import { ADMIN_DISCORD_ID, ADMIN_ID } from "~/features/admin/admin-constants";
-import { RECENT_PATCHES } from "~/features/builds/builds-constants";
+import {
+	BUILDS_PAGE_SIZE,
+	RECENT_PATCHES,
+} from "~/features/builds/builds-constants";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { expect, impersonate, isNotVisible, test } from "./helpers/playwright";
 import { BuildFormPage } from "./pages/builds/build-form-page";
@@ -142,6 +145,45 @@ test.describe("Builds", () => {
 			.click();
 		// no change in count since all builds in test data are new
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(5);
+	});
+
+	test("filters a user's builds", async ({ page, factories }) => {
+		await factories.BuildFactory.createMany(3, {
+			ownerId: ADMIN_ID,
+			weaponSplIds: [40],
+			abilities: ABILITIES_WITH_ISM,
+		});
+		await factories.BuildFactory.createMany(2, {
+			ownerId: ADMIN_ID,
+			weaponSplIds: [0],
+			abilities: ABILITIES_WITHOUT_ISM,
+		});
+
+		await impersonate(page, NZAP_TEST_ID);
+
+		const userBuilds = new UserBuildsPage(page);
+		await userBuilds.goto(ADMIN_DISCORD_ID);
+		await expect(userBuilds.locators.buildCards).toHaveCount(5);
+
+		await userBuilds.filterOption(/^Sploosh-o-matic/).click();
+		await expect(userBuilds.locators.buildCards).toHaveCount(2);
+
+		await userBuilds.filterOption(/^Any weapon/).click();
+		await userBuilds.abilityToggle("Ink Saver (Main)").click();
+		await expect(userBuilds.locators.buildCards).toHaveCount(3);
+	});
+
+	test("paginates a user's builds", async ({ page, factories }) => {
+		await factories.BuildFactory.createMany(BUILDS_PAGE_SIZE + 1, {
+			ownerId: ADMIN_ID,
+		});
+
+		const userBuilds = new UserBuildsPage(page);
+		await userBuilds.goto(ADMIN_DISCORD_ID);
+		await expect(userBuilds.locators.buildCards).toHaveCount(BUILDS_PAGE_SIZE);
+
+		await userBuilds.locators.nextPageButton.click();
+		await expect(userBuilds.locators.buildCards).toHaveCount(1);
 	});
 
 	test("stacks an author's builds and expands the stack", async ({

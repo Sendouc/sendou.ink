@@ -15,6 +15,7 @@ import { Main } from "~/components/Main";
 import { PageHeader } from "~/components/PageHeader";
 import type { WeaponLandingState } from "~/components/WeaponLanding";
 import { weaponLandingSearchParams } from "~/components/weapon-landing-search-params";
+import { useSearchParamPagination } from "~/hooks/useSearchParamPagination";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import {
 	canonicalWeaponSplId,
@@ -31,10 +32,6 @@ import {
 	weaponBuildPopularPage,
 	weaponBuildStatsPage,
 } from "~/utils/urls";
-import {
-	BUILDS_PAGE_BATCH_SIZE,
-	BUILDS_PAGE_MAX_BUILDS,
-} from "../builds-constants";
 import { buildsSearchParams } from "../builds-search-params";
 import type { BuildWeaponWithTop500Info } from "../builds-types";
 import { BuildFiltersLayout } from "../components/BuildFilters";
@@ -148,16 +145,14 @@ function BuildCards({ data }: { data: SerializeFrom<typeof loader> }) {
 export default function WeaponsBuildsPage() {
 	const data = useLoaderData<typeof loader>();
 	const { t } = useTranslation(["common", "builds"]);
-	const [{ abilities: abilityConditions, mode, date }] =
+	const [{ abilities: abilityConditions, mode, date }, setParams] =
 		useSearchParamsTyped(buildsSearchParams);
 
-	const loadMoreLink = () =>
-		buildsSearchParams.href(weaponBuildPage(data.slug), {
-			limit: data.limit + BUILDS_PAGE_BATCH_SIZE,
-			abilities: abilityConditions,
-			mode,
-			date,
-		});
+	const pagination = useSearchParamPagination({
+		definition: buildsSearchParams,
+		currentPage: data.currentPage,
+		pagesCount: data.pagesCount,
+	});
 
 	const hasFilters =
 		abilityConditions.length > 0 || mode !== null || date !== null;
@@ -207,7 +202,12 @@ export default function WeaponsBuildsPage() {
 					{t("builds:linkButton.popularBuilds")}
 				</LinkButton>
 			</PageHeader>
-			<BuildFiltersLayout>
+			<BuildFiltersLayout
+				values={{ abilities: abilityConditions, mode, date }}
+				onChange={setParams}
+				onClearAll={() => setParams({ abilities: [], mode: null, date: null })}
+				pagination={pagination}
+			>
 				{data.builds.length > 0 ? (
 					<BuildCards data={data} />
 				) : (
@@ -217,16 +217,6 @@ export default function WeaponsBuildsPage() {
 							: t("builds:noBuildsForWeapon")}
 					</EmptyState>
 				)}
-				{data.limit < BUILDS_PAGE_MAX_BUILDS && data.hasMoreBuilds ? (
-					<LinkButton
-						className="m-0-auto"
-						size="small"
-						to={loadMoreLink()}
-						preventScrollReset
-					>
-						{t("common:actions.loadMore")}
-					</LinkButton>
-				) : null}
 			</BuildFiltersLayout>
 		</Main>
 	);
