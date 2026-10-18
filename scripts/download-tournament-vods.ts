@@ -226,14 +226,23 @@ async function writeMontageManifest() {
 				return {
 					...(await teamOf(standing.team.id)),
 					placement: standing.placement,
-					players: (fullTeamById.get(standing.team.id)?.members ?? [])
-						.filter((member) => playedUserIds.has(member.userId))
-						.map((member) => ({
-							name: member.username,
-							countryCode: member.country,
-						})),
+					players: await Promise.all(
+						(fullTeamById.get(standing.team.id)?.members ?? [])
+							.filter((member) => playedUserIds.has(member.userId))
+							.map(async (member) => ({
+								name: member.username,
+								countryCode: member.country,
+								avatar: await downloadImage(
+									resolveAvatarUrl({ ...member, size: "sm" }) ?? null,
+									`user-${member.userId}`,
+								),
+							})),
+					),
 				};
 			}),
+		),
+		teams: await Promise.all(
+			tournament.ctx.teams.map((team) => teamOf(team.id)),
 		),
 		vods: await Promise.all(
 			vods.map(async (vod) => {

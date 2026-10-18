@@ -190,7 +190,7 @@ the ring would have dropped it by then:
 builds the basis of a tournament highlight video. `pnpm vods:download <id>`
 writes the match VoDs of the top 8 teams (`--all-teams` for every team) to
 `scripts/output/vods/<id>/` together with `tournament.json` (name, start,
-logo, top 8, each VoD's POV team —
+logo, top 8, every team that played, each VoD's POV team —
 `MontageManifest` in `core/montage.ts`) and the logos it names; the view
 opens that folder through the File System Access API's directory picker
 (Chrome). `components/montage.ts` scans every VoD without games yet through
@@ -200,16 +200,20 @@ candidate, best score first (`montageWindows`): min splats (default 3) and
 a length cap per splat count before fast-forwarding (defaults 2: 20 s,
 3: 30 s, 4: 45 s, 5+: 60 s), picked on the page and kept in localStorage.
 Candidates are grouped by the POV player's base weapon (read off the
-game's scoreboard seat, variants folded to their base). Picking one hides
-that team's other candidates (a cast VoD has no team: only its own go). The scanned games, the picks (stored whole, so changing
+game's scoreboard seat, variants folded to their base) and can be filtered
+by team. Only top teams' candidates are listed: a POV VoD's under its team,
+a cast's under either side (`candidateTeamIds`), and each pick is added
+under one of them. The scanned games, the picks (stored whole, so changing
 the criteria never drops one) and the folder's handle live in the
 `montages` store (`store/montages.ts`, one record per tournament): a reload
 restores the latest montage at once and reconnects the folder itself when
 Chrome kept the permission, else `Reconnect folder` asks again.
 
 Rendering (`capture/montage-render.ts`, overlays in `montage-overlays.ts`)
-re-encodes everything at 1920×1080 60 fps: the title card, the picks in
-order, then the top 8 (player names for the top 3, and each team's comp:
+re-encodes everything at 1920×1080 60 fps: the intro card (the tournament
+and every team's avatar), then the top 8 counting down to the winner
+(`montageTeamSections`), each team's card (placement, roster and comp)
+followed by its picks in order. The comp:
 `montage-comps.ts` builds it the way the results image export does, from
 the scans alone — every scoreboard names both sides' weapons and the POV
 seat tells which side is the streamer's team, so a team needs VoDs of its
@@ -219,8 +223,13 @@ fades out after 5 s) are the image export's graphic blocks
 (`features/img-export`), mounted off screen by `MontageGraphics.tsx` in the
 dark theme and rasterized with snapdom at the scale that makes them full HD —
 the renderer asks for them through `setMontageGraphicCapture`, so the page
-must stay open. The manifest carries what they show (round names, both
-sides, the streamer, top-3 players, tier, organization, counts — no
+must stay open. Each card is captured twice, with and without its revealed
+items (the intro's team avatars, a team card's roster): the renderer draws
+the empty one and brings the items in from the other (`REVEAL_TIMINGS` in
+`montage-overlays.ts`), with a moving wave along the bottom. The page's
+Cards panel shows each card live with the same animations (to tweak its
+styles with hot reload; Replay restarts them) and downloads it as captured. The manifest carries what they show (round names, both
+sides, the streamer, rosters, tier, organization, counts — no
 weapons: those come from the scans) and the
 download script saves every image it names next to the VoDs. Dead time
 between two kills — from 3 s after one to 3 s before the next, when at
