@@ -2,8 +2,9 @@
  * Downloads the match VoDs of a tournament with yt-dlp, trimmed to each match. Starts from the same timestamp
  * the VoD link on the site points to and ends shortly after the last game of the match was reported.
  *
- * Usage: pnpm vods:download <tournament id or url> [--include-winless] [--dry-run]
+ * Usage: pnpm vods:download <tournament id or url> [--all-teams] [--include-winless] [--dry-run]
  *
+ * Only VoDs of the top 8 teams (cast VoDs: matches with a top 8 team in them) are downloaded unless --all-teams is passed.
  * VoDs of teams that won no sets (e.g. went 0-2) are skipped unless --include-winless is passed.
  * Files go to scripts/output/vods/<tournament id>/<match id>-<stream account>.mp4 and existing ones are not redownloaded.
  * Next to them go tournament.json and the logos it names, for the scanner's tournament montage (`/scanner?view=montage`, dev only).
@@ -40,13 +41,16 @@ const cliArgs = process.argv.slice(2);
 const tournamentId = parseTournamentId(
 	cliArgs.find((arg) => !arg.startsWith("--")),
 );
+const allTeams = cliArgs.includes("--all-teams");
 const includeWinless = cliArgs.includes("--include-winless");
 const dryRun = cliArgs.includes("--dry-run");
 
-const vods =
-	await TournamentMatchVodRepository.findAllForDownloadByTournamentId(
-		tournamentId,
-	);
+const [vods, tournament] = await Promise.all([
+	TournamentMatchVodRepository.findAllForDownloadByTournamentId(tournamentId),
+	tournamentFromDB(tournamentId),
+]);
+const topStandings = resolveTopStandings();
+const topTeamIds = new Set(topStandings.map((standing) => standing.team.id));
 const outputDir = path.join(OUTPUT_ROOT, String(tournamentId));
 fs.mkdirSync(outputDir, { recursive: true });
 
@@ -62,6 +66,11 @@ const sectionsToDownload: Array<{
 
 for (const vod of vods) {
 	const name = `${vod.matchId}-${vod.account}`;
+
+	if (!allTeams && !isTopTeamVod(vod)) {
+		logger.info(`Skipping ${name}: not a top ${MONTAGE_TOP_TEAMS_COUNT} team`);
+		continue;
+	}
 
 	if (!includeWinless && vod.povTeamSetWins === 0) {
 		logger.info(`Skipping ${name}: team won no sets`);
@@ -150,18 +159,35 @@ function videoUrl({
 	}
 }
 
-async function writeMontageManifest() {
-	const [tournament, fullTeams] = await Promise.all([
-		tournamentFromDB(tournamentId),
-		TournamentRepository.findTeamsFullByTournamentId(tournamentId),
-	]);
-	const fullTeamById = new Map(fullTeams.map((team) => [team.id, team]));
+function resolveTopStandings() {
 	const standings = Standings.tournamentStandings(tournament);
-	const topStandings = (
+
+	return (
 		standings.type === "single"
 			? standings.standings
 			: (standings.standings[0]?.standings ?? [])
 	).slice(0, MONTAGE_TOP_TEAMS_COUNT);
+}
+
+function isTopTeamVod(vod: { matchId: number; povTeamId: number | null }) {
+	if (vod.povTeamId !== null) return topTeamIds.has(vod.povTeamId);
+
+	const match = findMatch(vod.matchId);
+	return [match?.opponent1?.id, match?.opponent2?.id].some(
+		(teamId) => typeof teamId === "number" && topTeamIds.has(teamId),
+	);
+}
+
+function findMatch(matchId: number) {
+	return tournament.brackets
+		.flatMap((bracket) => (bracket.preview ? [] : bracket.data.match))
+		.find((candidate) => candidate.id === matchId);
+}
+
+async function writeMontageManifest() {
+	const fullTeams =
+		await TournamentRepository.findTeamsFullByTournamentId(tournamentId);
+	const fullTeamById = new Map(fullTeams.map((team) => [team.id, team]));
 
 	const teamOf = async (teamId: number) => {
 		const team = tournament.teamById(teamId);
@@ -219,9 +245,7 @@ async function writeMontageManifest() {
 						: fullTeamById
 								.get(vod.povTeamId)
 								?.members.find((member) => member.userId === vod.userId);
-				const match = tournament.brackets
-					.flatMap((bracket) => (bracket.preview ? [] : bracket.data.match))
-					.find((candidate) => candidate.id === vod.matchId);
+				const match = findMatch(vod.matchId);
 				const { roundNameWithoutMatchIdentifier, bracketName } =
 					tournament.matchContextNamesById(vod.matchId);
 

@@ -188,8 +188,9 @@ the ring would have dropped it by then:
 
 `view=montage` (Settings → Debug → Tournament montage, development only)
 builds the basis of a tournament highlight video. `pnpm vods:download <id>`
-writes the tournament's match VoDs to `scripts/output/vods/<id>/` together
-with `tournament.json` (name, start, logo, top 8, each VoD's POV team —
+writes the match VoDs of the top 8 teams (`--all-teams` for every team) to
+`scripts/output/vods/<id>/` together with `tournament.json` (name, start,
+logo, top 8, each VoD's POV team —
 `MontageManifest` in `core/montage.ts`) and the logos it names; the view
 opens that folder through the File System Access API's directory picker
 (Chrome). `components/montage.ts` scans every VoD without games yet through
