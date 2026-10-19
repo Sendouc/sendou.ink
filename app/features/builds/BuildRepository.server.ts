@@ -5,6 +5,7 @@ import {
 	sql,
 	type Transaction,
 } from "kysely";
+import * as R from "remeda";
 import * as Pagination from "~/db/pagination.server";
 import { db } from "~/db/sql";
 import type { BuildWeapon, DB, TablesInsertable } from "~/db/tables";
@@ -197,41 +198,23 @@ export async function findOwnerIdById(buildId: number) {
 	return result?.ownerId ?? null;
 }
 
-export async function findAllAbilityPointAverages(
-	weaponSplId?: MainWeaponId | null,
-) {
-	// sum tables only hold public builds, so no private filter or `Build` join is needed
-	if (typeof weaponSplId === "number") {
-		const canonicalId = canonicalWeaponSplId(weaponSplId);
-
-		const abilities = await db
-			.selectFrom("BuildWeaponAbility")
-			.select(({ fn }) => [
-				"BuildWeaponAbility.ability",
-				fn
-					.sum<number>("BuildWeaponAbility.abilityPoints")
-					.as("abilityPointsSum"),
-			])
-			.where("BuildWeaponAbility.canonicalWeaponSplId", "=", canonicalId)
-			.groupBy("BuildWeaponAbility.ability")
-			.execute();
-
-		const { buildsCount } = await db
-			.selectFrom("BuildWeaponAbility")
-			.select(({ fn }) =>
-				fn
-					.count<number>("BuildWeaponAbility.buildId")
-					.distinct()
-					.as("buildsCount"),
-			)
-			.where("BuildWeaponAbility.canonicalWeaponSplId", "=", canonicalId)
-			.executeTakeFirstOrThrow();
-
-		return { abilities, buildsCount };
-	}
-
-	const abilities = await db
+/** Ability point sums of every public build updated after the date (`YYYY-MM-DD`, all when null), a build counted once however many weapons it lists. */
+export async function findAllAbilityPointSums(updatedSince: string | null) {
+	// sum tables only hold public builds, so no private filter is needed
+	const sums = db
 		.selectFrom("BuildAbilitySum")
+		.$if(updatedSince !== null, (qb) =>
+			qb.where(
+				"BuildAbilitySum.buildId",
+				"in",
+				db
+					.selectFrom("Build")
+					.select("Build.id")
+					.where("Build.updatedAt", ">", toTimestamp(updatedSince!)),
+			),
+		);
+
+	const abilities = await sums
 		.select(({ fn }) => [
 			"BuildAbilitySum.ability",
 			fn.sum<number>("BuildAbilitySum.abilityPoints").as("abilityPointsSum"),
@@ -239,8 +222,7 @@ export async function findAllAbilityPointAverages(
 		.groupBy("BuildAbilitySum.ability")
 		.execute();
 
-	const { buildsCount } = await db
-		.selectFrom("BuildAbilitySum")
+	const { buildsCount } = await sums
 		.select(({ fn }) =>
 			fn.count<number>("BuildAbilitySum.buildId").distinct().as("buildsCount"),
 		)
@@ -249,51 +231,112 @@ export async function findAllAbilityPointAverages(
 	return { abilities, buildsCount };
 }
 
-export async function findAllPopularAbilitiesByWeaponId(
-	weaponSplId: MainWeaponId,
-) {
-	// one signature per user so several builds for the same weapon don't inflate several buckets;
-	// the CTE picks the most recently updated one via SQLite's MAX() + bare columns rule
-	// (https://www.sqlite.org/lang_select.html#bareagg)
-	return db
-		.with("UserSignature", (cte) =>
-			cte
-				.selectFrom("Build")
-				.innerJoin("BuildWeapon", "BuildWeapon.buildId", "Build.id")
-				.select(({ fn }) => [
-					"Build.abilitiesSignature",
-					fn.max("Build.updatedAt").as("latestUpdatedAt"),
-				])
-				.where(
-					"BuildWeapon.canonicalWeaponSplId",
-					"=",
-					canonicalWeaponSplId(weaponSplId),
-				)
-				.where("Build.isPrivate", "=", 0)
-				.where("Build.abilitiesSignature", "is not", null)
-				.groupBy("Build.ownerId"),
+/**
+ * For each of the weapons (alt skins folded), how many public builds updated after the date (`YYYY-MM-DD`, all when null)
+ * run each amount of AP of each ability, plus their build counts.
+ */
+export async function findAbilityPointCountsByWeaponIds({
+	weaponIds,
+	updatedSince,
+}: {
+	weaponIds: MainWeaponId[];
+	updatedSince: string | null;
+}) {
+	const rows = db
+		.selectFrom("BuildWeaponAbility")
+		.where(
+			"BuildWeaponAbility.canonicalWeaponSplId",
+			"in",
+			R.unique(weaponIds.map(canonicalWeaponSplId)),
 		)
-		.selectFrom("UserSignature")
+		.$if(updatedSince !== null, (qb) =>
+			qb.where((eb) =>
+				eb.exists(
+					eb
+						.selectFrom("BuildWeapon")
+						.select("BuildWeapon.buildId")
+						.whereRef("BuildWeapon.buildId", "=", "BuildWeaponAbility.buildId")
+						.whereRef(
+							"BuildWeapon.canonicalWeaponSplId",
+							"=",
+							"BuildWeaponAbility.canonicalWeaponSplId",
+						)
+						.where("BuildWeapon.updatedAt", ">", toTimestamp(updatedSince!)),
+				),
+			),
+		);
+
+	const abilityPointCounts = await rows
 		.select(({ fn }) => [
-			"UserSignature.abilitiesSignature",
-			fn.count<number>("UserSignature.abilitiesSignature").as("count"),
+			"BuildWeaponAbility.canonicalWeaponSplId as weaponSplId",
+			"BuildWeaponAbility.ability",
+			"BuildWeaponAbility.abilityPoints",
+			fn.countAll<number>().as("buildsCount"),
 		])
-		.groupBy("UserSignature.abilitiesSignature")
-		.having((eb) => eb(eb.fn.count("UserSignature.abilitiesSignature"), ">", 1))
-		.orderBy("count", "desc")
-		.orderBy("UserSignature.abilitiesSignature", "asc")
-		.limit(25)
-		.$narrowType<{ abilitiesSignature: NotNull }>()
+		.groupBy([
+			"BuildWeaponAbility.canonicalWeaponSplId",
+			"BuildWeaponAbility.ability",
+			"BuildWeaponAbility.abilityPoints",
+		])
 		.execute();
+
+	const buildCounts = await rows
+		.select(({ fn }) => [
+			"BuildWeaponAbility.canonicalWeaponSplId as weaponSplId",
+			fn
+				.count<number>("BuildWeaponAbility.buildId")
+				.distinct()
+				.as("buildsCount"),
+		])
+		.groupBy("BuildWeaponAbility.canonicalWeaponSplId")
+		.execute();
+
+	return { abilityPointCounts, buildCounts };
 }
 
-export type AverageAbilityPointsResult = Awaited<
-	ReturnType<typeof findAllAbilityPointAverages>
->;
+/** The newest public build of each owner listing the weapon (alt skins folded), if updated after the date (`YYYY-MM-DD`, any time when null). */
+export async function findNewestBuildPerOwnerByWeaponId({
+	weaponId,
+	updatedSince,
+}: {
+	weaponId: MainWeaponId;
+	updatedSince: string | null;
+}) {
+	// picks the most recently updated build via SQLite's MAX() + bare columns rule
+	// (https://www.sqlite.org/lang_select.html#bareagg)
+	const rows = await db
+		.selectFrom("Build")
+		.innerJoin("BuildWeapon", "BuildWeapon.buildId", "Build.id")
+		.select(({ fn }) => [
+			"Build.abilitiesSignature",
+			"Build.abilities",
+			"Build.modes",
+			fn.max("Build.updatedAt").as("latestUpdatedAt"),
+		])
+		.where(
+			"BuildWeapon.canonicalWeaponSplId",
+			"=",
+			canonicalWeaponSplId(weaponId),
+		)
+		.where("Build.isPrivate", "=", 0)
+		.where("Build.abilitiesSignature", "is not", null)
+		.$if(updatedSince !== null, (qb) =>
+			qb.where("Build.updatedAt", ">", toTimestamp(updatedSince!)),
+		)
+		.groupBy("Build.ownerId")
+		.$narrowType<{ abilitiesSignature: NotNull }>()
+		.execute();
 
-export type PopularBuildsRow = Awaited<
-	ReturnType<typeof findAllPopularAbilitiesByWeaponId>
->[number];
+	return rows.map((row) => {
+		invariant(row.abilities, "expected build abilities to be populated");
+
+		return {
+			abilitiesSignature: row.abilitiesSignature,
+			abilities: sortAbilities(row.abilities),
+			modes: row.modes,
+		};
+	});
+}
 
 /** Filters shared by the build lists, each a no-op when unset. */
 export interface BuildListFilters {
@@ -621,6 +664,10 @@ function filterConditions(
 				]
 			: []),
 	];
+}
+
+function toTimestamp(date: string) {
+	return dateToDatabaseTimestamp(new Date(date));
 }
 
 function abilityFilterCondition(

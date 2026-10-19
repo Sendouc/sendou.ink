@@ -9,6 +9,7 @@ import * as LogInLinkRepository from "~/features/auth/LogInLinkRepository.server
 import * as AvailabilityRepository from "~/features/availability/AvailabilityRepository.server";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
+import { RECENT_PATCHES } from "~/features/builds/builds-constants";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import * as ChatRepository from "~/features/chat/ChatRepository.server";
 import * as ChatRoomResolver from "~/features/chat/ChatRoomResolver.server";
@@ -51,6 +52,11 @@ import * as TrophyRepository from "~/features/trophies/TrophyRepository.server";
 import * as UserCardRepository from "~/features/user-card/UserCardRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as VodRepository from "~/features/vods/VodRepository.server";
+import type { MainWeaponId } from "~/modules/in-game-lists/types";
+import {
+	weaponCategories,
+	weaponIdToCategory,
+} from "~/modules/in-game-lists/weapon-ids";
 import { LUTI_NAME_PREFIX } from "~/routines/computeLutiDivs";
 import { dateToDatabaseTimestamp, dateToYYYYMMDD } from "~/utils/dates";
 import type { Fixtures } from "./fixtures";
@@ -255,19 +261,26 @@ export function buildCases(fx: Fixtures): {
 	add("BuildRepository.findOwnerIdById", fx.buildId, (buildId) =>
 		BuildRepository.findOwnerIdById(buildId),
 	);
-	addStatic("BuildRepository.findAllAbilityPointAverages.all", () =>
-		BuildRepository.findAllAbilityPointAverages(),
+	addStatic("BuildRepository.findAllAbilityPointSums", () =>
+		BuildRepository.findAllAbilityPointSums(RECENT_PATCHES.at(-1)!.date),
 	);
 	add(
-		"BuildRepository.findAllAbilityPointAverages.byWeapon",
-		fx.heavyWeaponSplId,
-		(weaponSplId) => BuildRepository.findAllAbilityPointAverages(weaponSplId),
-	);
-	add(
-		"BuildRepository.findAllPopularAbilitiesByWeaponId",
+		"BuildRepository.findAbilityPointCountsByWeaponIds",
 		fx.heavyWeaponSplId,
 		(weaponSplId) =>
-			BuildRepository.findAllPopularAbilitiesByWeaponId(weaponSplId),
+			BuildRepository.findAbilityPointCountsByWeaponIds({
+				weaponIds: categoryWeaponIds(weaponSplId),
+				updatedSince: RECENT_PATCHES.at(-1)!.date,
+			}),
+	);
+	add(
+		"BuildRepository.findNewestBuildPerOwnerByWeaponId",
+		fx.heavyWeaponSplId,
+		(weaponSplId) =>
+			BuildRepository.findNewestBuildPerOwnerByWeaponId({
+				weaponId: weaponSplId,
+				updatedSince: RECENT_PATCHES.at(-1)!.date,
+			}),
 	);
 	add(
 		"BuildRepository.findPageByWeaponId",
@@ -1708,4 +1721,10 @@ function both<A, B>(a: A | null, b: B | null): [A, B] | null {
 	if (a === null || b === null) return null;
 
 	return [a, b];
+}
+
+function categoryWeaponIds(weaponSplId: MainWeaponId) {
+	const category = weaponIdToCategory(weaponSplId);
+
+	return [...weaponCategories.find(({ name }) => name === category)!.weaponIds];
 }

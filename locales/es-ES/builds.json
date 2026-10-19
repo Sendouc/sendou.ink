@@ -9,7 +9,6 @@
 	"forms.gear.SHOES": "Calzado",
 	"forms.abilities": "Potenciadores",
 	"deleteConfirm": "¿Borrar la build '{{title}}'?",
-	"stats.count.title": "Estadísticas de {{count}} builds de {{weapon}}",
 	"stats.ap.title": "Promedios de puntos de potenciadores",
 	"stats.percentage.title": "Frecuencia de potenciadores exclusivos de la ranura principal",
 	"stats.all": "Todas",

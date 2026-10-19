@@ -1,0 +1,13 @@
+.subNav {
+	margin-block-end: 0;
+
+	/* the links fit their labels instead of SubNav's default fixed width */
+	& > a {
+		flex: none;
+		max-width: none;
+	}
+}
+
+.link {
+	gap: var(--s-1-5);
+}

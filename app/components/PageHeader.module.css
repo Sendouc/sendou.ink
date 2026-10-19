@@ -20,20 +20,6 @@
 			"heading back"
 			"actions actions";
 	}
-
-	&[data-back-position="start"] {
-		grid-template-areas: "heading actions";
-
-		@container (width < 36rem) {
-			grid-template-areas:
-				"heading heading"
-				"actions actions";
-		}
-	}
-
-	&[data-back-position="start"]:not(:has(> .actions)) {
-		grid-template-areas: "heading heading";
-	}
 }
 
 .heading {
@@ -87,15 +73,5 @@
 
 	@container (width < 36rem) {
 		justify-self: start;
-	}
-
-	/* with the back link at the start, actions fill their own row in equal parts on narrow screens */
-	[data-back-position="start"] > & {
-		@container (width < 36rem) {
-			justify-self: stretch;
-			display: grid;
-			grid-auto-columns: minmax(0, 1fr);
-			grid-auto-flow: column;
-		}
 	}
 }

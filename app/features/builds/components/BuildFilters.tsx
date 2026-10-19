@@ -107,7 +107,7 @@ export function BuildFiltersLayout({
 							: [],
 					testId: "date-filter",
 					content: (
-						<DateFilter
+						<BuildDateFilter
 							date={date}
 							onChange={(newDate) => setParams({ date: newDate })}
 						/>
@@ -320,7 +320,8 @@ function AbilityFilterRow({
 	);
 }
 
-function DateFilter({
+/** Radio list of the recent patches to filter builds updated since one, null for any time. */
+export function BuildDateFilter({
 	date,
 	onChange,
 }: {

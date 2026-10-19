@@ -21,11 +21,3 @@
 	height: 18px;
 	flex-shrink: 0;
 }
-
-.iconOnly {
-	justify-content: center;
-	width: var(--back-link-size, 36px);
-	height: var(--back-link-size, 36px);
-	flex-shrink: 0;
-	padding: 0;
-}

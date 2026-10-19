@@ -7,6 +7,7 @@ import { weaponNameSlugToId } from "~/utils/unslugify.server";
 import * as BuildRepository from "../BuildRepository.server";
 import { BUILDS_PAGE_SIZE } from "../builds-constants";
 import { buildsSearchParams } from "../builds-search-params";
+import { cachedPublicBuildCounts } from "../core/public-build-counts.server";
 
 export const loader = async ({ params, url }: LoaderFunctionArgs) => {
 	const user = getUser();
@@ -31,5 +32,6 @@ export const loader = async ({ params, url }: LoaderFunctionArgs) => {
 		builds,
 		...paginate({ url, page, pageSize: BUILDS_PAGE_SIZE, totalCount }),
 		slug: weaponSlug({ type: "MAIN", id: weaponId }),
+		buildsCount: (await cachedPublicBuildCounts()).get(weaponId) ?? 0,
 	};
 };

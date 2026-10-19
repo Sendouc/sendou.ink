@@ -420,42 +420,42 @@ describe("BuildRepository.insert — computeBuildData", () => {
 	});
 });
 
-describe("BuildRepository.findAllPopularAbilitiesByWeaponId", () => {
-	// All SS: each gear sums to 10 (main) + 3*3 (subs) = 19, total 57.
-	const SS_ABILITIES: BuildAbilitiesTuple = [
-		["SS", "SS", "SS", "SS"],
-		["SS", "SS", "SS", "SS"],
-		["SS", "SS", "SS", "SS"],
-	];
+// All SS: each gear sums to 10 (main) + 3*3 (subs) = 19, total 57.
+const SS_ABILITIES: BuildAbilitiesTuple = [
+	["SS", "SS", "SS", "SS"],
+	["SS", "SS", "SS", "SS"],
+	["SS", "SS", "SS", "SS"],
+];
 
+describe("BuildRepository.findNewestBuildPerOwnerByWeaponId", () => {
 	beforeEach(async () => {
 		await users.create(2);
 	});
 
-	test("counts each user at most once across signature buckets", async () => {
-		// without per-user dedup both users would inflate both buckets (4 total instead of <= 2)
-		await createBuild({ ownerId: users.id(1) });
+	const newestBuilds = (
+		weaponId: MainWeaponId,
+		updatedSince: string | null = null,
+	) =>
+		BuildRepository.findNewestBuildPerOwnerByWeaponId({
+			weaponId,
+			updatedSince,
+		});
+
+	test("returns only each owner's newest build", async () => {
+		const olderBuild = await createBuild({ ownerId: users.id(1) });
+		await BuildFactory.backdate(olderBuild.id, new Date("2024-01-01"));
 		await createBuild({ ownerId: users.id(1), abilities: SS_ABILITIES });
-		await createBuild({ ownerId: users.id(2) });
-		await createBuild({ ownerId: users.id(2), abilities: SS_ABILITIES });
 
-		const rows =
-			await BuildRepository.findAllPopularAbilitiesByWeaponId(SPLATTERSHOT);
-		const totalCount = rows.reduce((acc, row) => acc + row.count, 0);
+		const builds = await newestBuilds(SPLATTERSHOT);
 
-		expect(totalCount).toBeLessThanOrEqual(2);
-		expect(rows.every((row) => row.count <= 2)).toBe(true);
+		expect(builds.map((build) => build.abilitiesSignature)).toEqual(["SS_57"]);
 	});
 
-	test("only counts public builds", async () => {
+	test("only returns public builds", async () => {
 		await createBuild({ ownerId: users.id(1) });
 		await createBuild({ ownerId: users.id(2), isPrivate: 1 });
 
-		const rows =
-			await BuildRepository.findAllPopularAbilitiesByWeaponId(SPLATTERSHOT);
-
-		// only one user with a public build → filtered by HAVING count > 1
-		expect(rows).toHaveLength(0);
+		expect(await newestBuilds(SPLATTERSHOT)).toHaveLength(1);
 	});
 
 	test("folds alt skins via canonicalWeaponSplId", async () => {
@@ -465,18 +465,118 @@ describe("BuildRepository.findAllPopularAbilitiesByWeaponId", () => {
 			weaponSplIds: [HERO_SHOT_REPLICA],
 		});
 
-		const rows =
-			await BuildRepository.findAllPopularAbilitiesByWeaponId(SPLATTERSHOT);
+		expect(await newestBuilds(SPLATTERSHOT)).toHaveLength(2);
+		expect(await newestBuilds(HERO_SHOT_REPLICA)).toHaveLength(2);
+	});
 
-		expect(rows).toEqual([
-			{ abilitiesSignature: EXPECTED_SIGNATURE, count: 2 },
+	test("leaves out owners whose newest build was updated before the date", async () => {
+		const oldBuild = await createBuild({ ownerId: users.id(1) });
+		await BuildFactory.backdate(oldBuild.id, new Date("2024-01-01"));
+		await createBuild({ ownerId: users.id(2) });
+
+		expect(await newestBuilds(SPLATTERSHOT, "2025-01-01")).toHaveLength(1);
+	});
+});
+
+describe("BuildRepository.findAbilityPointCountsByWeaponIds", () => {
+	beforeEach(async () => {
+		await users.create(2);
+	});
+
+	const abilityPointCounts = (updatedSince: string | null = null) =>
+		BuildRepository.findAbilityPointCountsByWeaponIds({
+			weaponIds: [SPLATTERSHOT, SPLATTERSHOT_NOUVEAU],
+			updatedSince,
+		});
+
+	test("counts the builds running each amount of AP of each ability per weapon", async () => {
+		await createBuild({ ownerId: users.id(1) });
+		await createBuild({ ownerId: users.id(2) });
+		await createBuild({
+			ownerId: users.id(2),
+			weaponSplIds: [HERO_SHOT_REPLICA, SPLATTERSHOT_NOUVEAU],
+			abilities: SS_ABILITIES,
+		});
+
+		const { abilityPointCounts: counts, buildCounts } =
+			await abilityPointCounts();
+
+		expect(counts).toEqual(
+			expect.arrayContaining([
+				{
+					weaponSplId: SPLATTERSHOT,
+					ability: "ISM",
+					abilityPoints: 38,
+					buildsCount: 2,
+				},
+				{
+					weaponSplId: SPLATTERSHOT,
+					ability: "SS",
+					abilityPoints: 57,
+					buildsCount: 1,
+				},
+				{
+					weaponSplId: SPLATTERSHOT_NOUVEAU,
+					ability: "SS",
+					abilityPoints: 57,
+					buildsCount: 1,
+				},
+			]),
+		);
+		expect(buildCounts).toEqual(
+			expect.arrayContaining([
+				{ weaponSplId: SPLATTERSHOT, buildsCount: 3 },
+				{ weaponSplId: SPLATTERSHOT_NOUVEAU, buildsCount: 1 },
+			]),
+		);
+	});
+
+	test("only counts builds updated after the date", async () => {
+		const oldBuild = await createBuild({ ownerId: users.id(1) });
+		await BuildFactory.backdate(oldBuild.id, new Date("2024-01-01"));
+		await createBuild({ ownerId: users.id(2) });
+
+		const { buildCounts } = await abilityPointCounts("2025-01-01");
+
+		expect(buildCounts).toEqual([
+			{ weaponSplId: SPLATTERSHOT, buildsCount: 1 },
 		]);
-		// the alt-skin id alone should also resolve to the same canonical bucket
-		const altRows =
-			await BuildRepository.findAllPopularAbilitiesByWeaponId(
-				HERO_SHOT_REPLICA,
-			);
-		expect(altRows).toEqual(rows);
+	});
+});
+
+describe("BuildRepository.findAllAbilityPointSums", () => {
+	beforeEach(async () => {
+		await users.create(2);
+	});
+
+	const abilityPointSums = (updatedSince: string | null = null) =>
+		BuildRepository.findAllAbilityPointSums(updatedSince);
+
+	test("sums the AP of every public build, a multi-weapon build counted once", async () => {
+		await createBuild({
+			ownerId: users.id(1),
+			weaponSplIds: [SPLATTERSHOT, SPLATTERSHOT_NOUVEAU],
+		});
+		await createBuild({ ownerId: users.id(2) });
+		await createBuild({ ownerId: users.id(2), isPrivate: 1 });
+
+		const sums = await abilityPointSums();
+
+		expect(sums.buildsCount).toBe(2);
+		expect(sums.abilities).toEqual(
+			expect.arrayContaining([
+				{ ability: "ISM", abilityPointsSum: 76 },
+				{ ability: "ISS", abilityPointsSum: 38 },
+			]),
+		);
+	});
+
+	test("only sums builds updated after the date", async () => {
+		const oldBuild = await createBuild({ ownerId: users.id(1) });
+		await BuildFactory.backdate(oldBuild.id, new Date("2024-01-01"));
+		await createBuild({ ownerId: users.id(2) });
+
+		expect((await abilityPointSums("2025-01-01")).buildsCount).toBe(1);
 	});
 });
 

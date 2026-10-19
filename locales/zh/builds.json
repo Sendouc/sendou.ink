@@ -9,7 +9,6 @@
 	"forms.gear.SHOES": "鞋子",
 	"forms.abilities": "装备能力",
 	"deleteConfirm": "删除配装'{{title}}'？",
-	"stats.count.title": "{{count}} 件 {{weapon}} 配装的数据",
 	"stats.ap.title": "平均能力点数",
 	"stats.percentage.title": "基本装备能力出现率",
 	"stats.all": "全部",

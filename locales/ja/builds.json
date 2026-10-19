@@ -9,7 +9,6 @@
 	"forms.gear.SHOES": "ギア (クツ)",
 	"forms.abilities": "ギアパワー",
 	"deleteConfirm": "'{{title}}'を削除しますか?",
-	"stats.count.title": "{{count}} による統計 {{weapon}} のギア構成",
 	"stats.ap.title": "ギアポイント平均",
 	"stats.percentage.title": "メインパワーでのみ使用",
 	"stats.all": "すべて",

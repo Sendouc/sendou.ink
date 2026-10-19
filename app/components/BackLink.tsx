@@ -8,29 +8,18 @@ import styles from "./BackLink.module.css";
 export function BackLink({
 	className,
 	children,
-	iconOnly,
 	...rest
-}: Omit<LinkProps, "className"> & {
-	className?: string;
-	/** Circle with just the arrow, sized by `--back-link-size` (default 36px). */
-	iconOnly?: boolean;
-}) {
+}: Omit<LinkProps, "className"> & { className?: string }) {
 	const { t } = useTranslation(["common"]);
-	const text = children ?? t("common:actions.back");
 
 	return (
 		<Link
 			prefetch="intent"
-			aria-label={iconOnly && typeof text === "string" ? text : undefined}
 			{...rest}
-			className={clsx(
-				styles.backLink,
-				{ [styles.iconOnly]: iconOnly },
-				className,
-			)}
+			className={clsx(styles.backLink, className)}
 		>
 			<ArrowLeft className={styles.icon} />
-			{iconOnly ? null : text}
+			{children ?? t("common:actions.back")}
 		</Link>
 	);
 }

@@ -1,26 +1,15 @@
 import clsx from "clsx";
-import { ChartColumnBig, Flame } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
-import { BackLink } from "~/components/BackLink";
 import { BuildCard } from "~/components/BuildCard";
-import { CircleBackdrop } from "~/components/CircleBackdrop";
 import { EmptyState } from "~/components/EmptyState";
-import { LinkButton } from "~/components/elements/Button";
 import { Flipper } from "~/components/Flipper";
-import { Image, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { PageHeader } from "~/components/PageHeader";
-import type { WeaponLandingState } from "~/components/WeaponLanding";
-import { weaponLandingSearchParams } from "~/components/weapon-landing-search-params";
 import { useSearchParamPagination } from "~/hooks/useSearchParamPagination";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
-import {
-	canonicalWeaponSplId,
-	weaponIdToCategory,
-} from "~/modules/in-game-lists/weapon-ids";
+import { canonicalWeaponSplId } from "~/modules/in-game-lists/weapon-ids";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import { metaTags, ogPageImage, type SerializeFrom } from "~/utils/remix";
 import type { SendouRouteHandle } from "~/utils/remix.server";
@@ -29,13 +18,12 @@ import {
 	navIconUrl,
 	outlinedMainWeaponImageUrl,
 	weaponBuildPage,
-	weaponBuildPopularPage,
-	weaponBuildStatsPage,
 } from "~/utils/urls";
 import { buildsSearchParams } from "../builds-search-params";
 import type { BuildWeaponWithTop500Info } from "../builds-types";
 import { BuildFiltersLayout } from "../components/BuildFilters";
 import { BuildStack } from "../components/BuildStack";
+import { WeaponBuildsHeader } from "../components/WeaponBuildsHeader";
 import { loader } from "../loaders/builds.$slug.server";
 import styles from "./builds.$slug.module.css";
 
@@ -159,49 +147,12 @@ export default function WeaponsBuildsPage() {
 
 	return (
 		<Main className={clsx("stack lg", styles.main)}>
-			<PageHeader
-				image={
-					<CircleBackdrop>
-						<WeaponImage
-							weaponSplId={data.weaponId}
-							variant="build"
-							size={36}
-						/>
-					</CircleBackdrop>
-				}
-				title={data.weaponName}
-				subtitle={
-					<>
-						<Image path={navIconUrl("builds")} size={16} alt="" />
-						{t("common:pages.builds")}
-					</>
-				}
-				backPosition="start"
-				back={
-					<BackLink
-						iconOnly
-						to={weaponLandingSearchParams.href(BUILDS_PAGE, {
-							category: weaponIdToCategory(data.weaponId),
-						})}
-						state={{ focusSearch: true } satisfies WeaponLandingState}
-					/>
-				}
-			>
-				<LinkButton
-					to={weaponBuildStatsPage(data.slug)}
-					variant="outlined"
-					icon={<ChartColumnBig />}
-				>
-					{t("builds:linkButton.abilityStats")}
-				</LinkButton>
-				<LinkButton
-					to={weaponBuildPopularPage(data.slug)}
-					variant="outlined"
-					icon={<Flame />}
-				>
-					{t("builds:linkButton.popularBuilds")}
-				</LinkButton>
-			</PageHeader>
+			<WeaponBuildsHeader
+				weaponId={data.weaponId}
+				weaponName={data.weaponName}
+				slug={data.slug}
+				buildsCount={data.buildsCount}
+			/>
 			<BuildFiltersLayout
 				values={{ abilities: abilityConditions, mode, date }}
 				onChange={setParams}

@@ -9,7 +9,6 @@
 	"forms.gear.SHOES": "Chaussures",
 	"forms.abilities": "Bonus",
 	"deleteConfirm": "Supprimer le set '{{title}}' ?",
-	"stats.count.title": "Statistiques de {{count}} sets pour {{weapon}}",
 	"stats.ap.title": "Moyenne des Points de Compétences",
 	"stats.percentage.title": "Taux de présence des bonus exclusifs",
 	"stats.all": "Tous",
