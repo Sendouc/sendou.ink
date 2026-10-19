@@ -1,6 +1,6 @@
 .card {
 	--card-padding: var(--s-3);
-	--card-action-size: 32px;
+	--card-action-size: var(--field-size-sm);
 
 	display: flex;
 	flex-direction: column;
@@ -17,7 +17,7 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: var(--s-2);
-	min-height: 24px;
+	min-height: var(--selector-size);
 }
 
 .rank {
@@ -37,7 +37,7 @@
 }
 
 .playersBar {
-	height: 4px;
+	height: var(--s-1);
 	background-color: var(--color-bg-higher);
 }
 
@@ -63,7 +63,7 @@
 .action {
 	width: var(--card-action-size);
 	height: var(--card-action-size);
-	border: 2px solid var(--color-border);
+	border: var(--border-style);
 	background-color: var(--color-bg-high);
 	color: var(--color-text-high);
 
@@ -72,7 +72,7 @@
 	}
 
 	& svg {
-		min-width: 16px;
-		max-width: 16px;
+		min-width: var(--s-4);
+		max-width: var(--s-4);
 	}
 }

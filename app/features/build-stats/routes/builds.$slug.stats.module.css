@@ -162,7 +162,7 @@
 }
 
 .peerBar {
-	height: 6px;
+	height: var(--s-1-5);
 	border-radius: var(--radius-full);
 	background-color: var(--color-bg-higher);
 

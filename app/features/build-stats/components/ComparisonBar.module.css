@@ -1,6 +1,6 @@
 .bar {
-	--bar-height: 10px;
-	--marker-overhang: 4px;
+	--bar-height: var(--s-2-5);
+	--marker-overhang: var(--s-1);
 
 	position: relative;
 	height: var(--bar-height);
@@ -8,7 +8,7 @@
 	background-color: var(--color-bg-higher);
 
 	&[data-size="small"] {
-		--bar-height: 6px;
+		--bar-height: var(--s-1-5);
 		--marker-overhang: 3px;
 	}
 }
@@ -40,7 +40,7 @@
 
 .fillSwatch {
 	width: 14px;
-	height: 8px;
+	height: var(--s-2);
 }
 
 .markerSwatch {

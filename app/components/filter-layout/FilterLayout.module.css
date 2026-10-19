@@ -46,7 +46,7 @@
 	background-color: var(--color-bg-high);
 
 	& .panelHeader {
-		min-height: 2.5rem;
+		min-height: var(--field-size);
 		padding-block-end: var(--s-2);
 	}
 }
@@ -70,8 +70,8 @@
 }
 
 .accentIcon {
-	width: 18px;
-	height: 18px;
+	width: var(--field-size-icon);
+	height: var(--field-size-icon);
 	flex: none;
 	color: var(--color-fg-accent);
 }
@@ -80,8 +80,8 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 20px;
-	height: 20px;
+	min-width: var(--selector-size-sm);
+	height: var(--selector-size-sm);
 	padding: 0 var(--s-1-5);
 	border-radius: var(--radius-full);
 	background-color: var(--color-fill-accent);
@@ -113,7 +113,7 @@
 	display: flex;
 	align-items: center;
 	gap: var(--s-2);
-	height: 2.5rem;
+	height: var(--field-size);
 	margin-inline: calc(-1 * var(--s-2));
 	padding-inline: var(--s-2);
 	border-radius: var(--radius-field);
@@ -142,8 +142,8 @@
 	color: var(--color-text-high);
 
 	& > svg {
-		width: 16px;
-		height: 16px;
+		width: var(--s-4);
+		height: var(--s-4);
 	}
 }
 
@@ -154,8 +154,8 @@
 }
 
 .sectionChevron {
-	width: 16px;
-	height: 16px;
+	width: var(--s-4);
+	height: var(--s-4);
 	margin-inline-start: auto;
 	color: var(--color-text-high);
 	transition: rotate 0.15s;
@@ -204,8 +204,8 @@
 }
 
 .sheetTriggerIcon {
-	width: 20px;
-	height: 20px;
+	width: var(--s-5);
+	height: var(--s-5);
 	flex: none;
 	color: var(--color-fg-accent);
 }
@@ -235,8 +235,8 @@
 }
 
 .sheetTriggerChevron {
-	width: 18px;
-	height: 18px;
+	width: var(--field-size-icon);
+	height: var(--field-size-icon);
 	flex: none;
 	color: var(--color-text-high);
 }
