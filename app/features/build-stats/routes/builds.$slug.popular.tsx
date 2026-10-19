@@ -5,8 +5,7 @@ import { useLoaderData } from "react-router";
 import { Ability } from "~/components/Ability";
 import { EmptyState } from "~/components/EmptyState";
 import { SendouSection } from "~/components/elements/Section";
-import { Main } from "~/components/Main";
-import { WeaponBuildsHeader } from "~/features/builds/components/WeaponBuildsHeader";
+import { WeaponBuildsLayout } from "~/features/builds/components/WeaponBuildsLayout";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	BUILDS_PAGE,
@@ -71,26 +70,30 @@ export default function PopularBuildsPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<Main bigger className="stack md-plus">
-			<WeaponBuildsHeader
-				weaponId={data.weaponId}
-				weaponName={data.weaponName}
-				slug={data.slug}
-				buildsCount={data.buildsCount}
-			/>
-			<BuildStatsDateFilter />
-			{data.popular.builds.length === 0 ? (
-				<EmptyState navItem="builds">{t("builds:noPopularBuilds")}</EmptyState>
-			) : (
-				<div className={styles.columns}>
-					<PopularBuilds popular={data.popular} />
-					<aside className="stack md-plus">
-						<Staples popular={data.popular} />
-						<BuildVariety popular={data.popular} />
-					</aside>
-				</div>
-			)}
-		</Main>
+		<WeaponBuildsLayout
+			weaponId={data.weaponId}
+			weaponName={data.weaponName}
+			slug={data.slug}
+			buildsCount={data.buildsCount}
+			selectedTab="popular"
+		>
+			<div className="stack md-plus">
+				<BuildStatsDateFilter />
+				{data.popular.builds.length === 0 ? (
+					<EmptyState navItem="builds">
+						{t("builds:noPopularBuilds")}
+					</EmptyState>
+				) : (
+					<div className={styles.columns}>
+						<PopularBuilds popular={data.popular} />
+						<aside className="stack md-plus">
+							<Staples popular={data.popular} />
+							<BuildVariety popular={data.popular} />
+						</aside>
+					</div>
+				)}
+			</div>
+		</WeaponBuildsLayout>
 	);
 }
 

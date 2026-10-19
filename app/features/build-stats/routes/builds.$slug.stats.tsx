@@ -13,8 +13,7 @@ import {
 import { SendouSection } from "~/components/elements/Section";
 import { SendouSelect, SendouSelectItem } from "~/components/elements/Select";
 import { WeaponImage } from "~/components/Image";
-import { Main } from "~/components/Main";
-import { WeaponBuildsHeader } from "~/features/builds/components/WeaponBuildsHeader";
+import { WeaponBuildsLayout } from "~/features/builds/components/WeaponBuildsLayout";
 import type { Ability as AbilityType } from "~/modules/in-game-lists/types";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
@@ -86,38 +85,40 @@ export default function BuildStatsPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<Main bigger className="stack md-plus">
-			<WeaponBuildsHeader
-				weaponId={data.weaponId}
-				weaponName={data.weaponName}
-				slug={data.slug}
-				buildsCount={data.buildsCount}
-			/>
-			<BuildStatsDateFilter />
-			{data.stats.weaponBuildsCount === 0 ? (
-				<EmptyState navItem="builds">
-					{t("builds:noBuildsForWeapon")}
-				</EmptyState>
-			) : (
-				<>
-					<KeyStats stats={data.stats} />
-					<div className={styles.columns}>
-						<div className="stack md-plus">
-							<AbilityPointAverages
-								stats={data.stats}
+		<WeaponBuildsLayout
+			weaponId={data.weaponId}
+			weaponName={data.weaponName}
+			slug={data.slug}
+			buildsCount={data.buildsCount}
+			selectedTab="stats"
+		>
+			<div className="stack md-plus">
+				<BuildStatsDateFilter />
+				{data.stats.weaponBuildsCount === 0 ? (
+					<EmptyState navItem="builds">
+						{t("builds:noBuildsForWeapon")}
+					</EmptyState>
+				) : (
+					<>
+						<KeyStats stats={data.stats} />
+						<div className={styles.columns}>
+							<div className="stack md-plus">
+								<AbilityPointAverages
+									stats={data.stats}
+									weaponName={data.weaponName}
+								/>
+								<MainOnlyAbilities stats={data.stats} />
+							</div>
+							<AbilityBreakdown
+								stackableAbilities={data.stats.stackableAbilities}
 								weaponName={data.weaponName}
+								weaponCategory={data.weaponCategory}
 							/>
-							<MainOnlyAbilities stats={data.stats} />
 						</div>
-						<AbilityBreakdown
-							stackableAbilities={data.stats.stackableAbilities}
-							weaponName={data.weaponName}
-							weaponCategory={data.weaponCategory}
-						/>
-					</div>
-				</>
-			)}
-		</Main>
+					</>
+				)}
+			</div>
+		</WeaponBuildsLayout>
 	);
 }
 

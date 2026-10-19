@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { MetaFunction } from "react-router";
@@ -6,7 +5,6 @@ import { useLoaderData } from "react-router";
 import { BuildCard } from "~/components/BuildCard";
 import { EmptyState } from "~/components/EmptyState";
 import { Flipper } from "~/components/Flipper";
-import { Main } from "~/components/Main";
 import { useSearchParamPagination } from "~/hooks/useSearchParamPagination";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { canonicalWeaponSplId } from "~/modules/in-game-lists/weapon-ids";
@@ -23,7 +21,7 @@ import { buildsSearchParams } from "../builds-search-params";
 import type { BuildWeaponWithTop500Info } from "../builds-types";
 import { BuildFiltersLayout } from "../components/BuildFilters";
 import { BuildStack } from "../components/BuildStack";
-import { WeaponBuildsHeader } from "../components/WeaponBuildsHeader";
+import { WeaponBuildsLayout } from "../components/WeaponBuildsLayout";
 import { loader } from "../loaders/builds.$slug.server";
 import styles from "./builds.$slug.module.css";
 
@@ -146,13 +144,13 @@ export default function WeaponsBuildsPage() {
 		abilityConditions.length > 0 || mode !== null || date !== null;
 
 	return (
-		<Main className={clsx("stack lg", styles.main)}>
-			<WeaponBuildsHeader
-				weaponId={data.weaponId}
-				weaponName={data.weaponName}
-				slug={data.slug}
-				buildsCount={data.buildsCount}
-			/>
+		<WeaponBuildsLayout
+			weaponId={data.weaponId}
+			weaponName={data.weaponName}
+			slug={data.slug}
+			buildsCount={data.buildsCount}
+			selectedTab="builds"
+		>
 			<BuildFiltersLayout
 				values={{ abilities: abilityConditions, mode, date }}
 				onChange={setParams}
@@ -169,7 +167,7 @@ export default function WeaponsBuildsPage() {
 					</EmptyState>
 				)}
 			</BuildFiltersLayout>
-		</Main>
+		</WeaponBuildsLayout>
 	);
 }
 

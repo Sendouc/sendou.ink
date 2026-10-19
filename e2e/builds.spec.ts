@@ -253,7 +253,7 @@ test.describe("Builds", () => {
 		await weaponBuilds.expandBuildStacks();
 		await expect(weaponBuilds.locators.buildCards).toHaveCount(4);
 
-		await weaponBuilds.locators.abilityStatsLink.click();
+		await weaponBuilds.locators.abilityStatsTab.click();
 
 		const buildStats = new BuildStatsPage(page);
 		await expect(buildStats.buildsCountTitle(4, "Splattershot")).toBeVisible();

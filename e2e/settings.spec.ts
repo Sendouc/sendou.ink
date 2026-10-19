@@ -117,7 +117,7 @@ test.describe("Settings", () => {
 		await expect(
 			weaponBuilds.buildCard(0).weaponImage("ノヴァブラスター"),
 		).toBeVisible();
-		await expect(weaponBuilds.locators.abilityStatsLink).toBeVisible();
+		await expect(weaponBuilds.locators.abilityStatsTab).toBeVisible();
 	});
 
 	test("persists sound settings and dark/light theme across reload", async ({

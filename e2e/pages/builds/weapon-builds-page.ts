@@ -12,8 +12,8 @@ export class WeaponBuildsPage {
 		this.page = page;
 		this.locators = {
 			buildCards: page.getByTestId("build-card"),
-			abilityStatsLink: page.getByRole("link", { name: /Ability stats/ }),
-			popularBuildsLink: page.getByRole("link", { name: /Popular builds/ }),
+			abilityStatsTab: page.getByRole("tab", { name: /Ability stats/ }),
+			popularBuildsTab: page.getByRole("tab", { name: /Popular builds/ }),
 			filtersLogInButton: page.getByTestId("filters-log-in-button"),
 			expandStackButtons: page.getByTestId("expand-build-stack"),
 			collapseStackButtons: page.getByTestId("collapse-build-stack"),
