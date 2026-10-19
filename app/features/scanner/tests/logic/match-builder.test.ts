@@ -119,6 +119,7 @@ function scoreboard(
 		matchScores = [100, 47] as [number | null, number | null],
 		paints = [] as (number | null)[],
 		names = NAMES,
+		noContest = false,
 	} = {},
 ): DetectedEvent {
 	const data: ScoreboardData = {
@@ -126,6 +127,7 @@ function scoreboard(
 		mode,
 		stage,
 		matchScores,
+		noContest,
 		players: weaponIds.map((weaponId, i) => ({
 			name: names[i] ?? `p${i}`,
 			weaponId,
@@ -980,6 +982,21 @@ test("a scoreless match replayed on the same map is a disconnect", () => {
 	assert.equal(built.length, 2);
 	assert.equal(skipped.get(built[0]!), "disconnect");
 	assert.equal(skipped.get(built[1]!), undefined);
+});
+
+test("a game ended as a no contest builds no match", () => {
+	const built = buildScannerMatches([
+		mapStart(0),
+		objective(13, { time: 287, score: [100, 100] }),
+		death(14, "l1"),
+		scoreboard(35, { matchScores: [null, null], noContest: true }),
+		scoreboard(38, { matchScores: [null, null], noContest: true }),
+		mapStart(140),
+		scoreboard(440),
+	]);
+	assert.equal(built.length, 1);
+	assert.equal(built[0]!.match.startsAt, 140);
+	assert.deepEqual(built[0]!.match.matchScores, [100, 47]);
 });
 
 test("a full-length match whose score went unread is kept when the same map follows", () => {

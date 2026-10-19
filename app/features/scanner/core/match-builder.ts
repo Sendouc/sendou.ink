@@ -253,8 +253,10 @@ export type MatchBuildCache<E extends DetectedEvent> = WeakMap<
  * match of its own and the game being gathered stays open. A history screen
  * with its stage unread and no built match forms none. A map intro right
  * after a replay-browser entry of its stage and mode is that replay played
- * back: its gameplay joins the entry's match. Every input event ends up in at
- * most one match's `sources`.
+ * back: its gameplay joins the entry's match. A results screen of a no contest
+ * (DRAW tags: the host ended the game, an early disconnect) discards the game
+ * being gathered: it has no result, and its replay forms the real match. Every
+ * input event ends up in at most one match's `sources`.
  *
  * `unbacked` also emits, flagged, the stretches with kill reads no scoreboard,
  * minimap or played counter backed (a results screen missed, the map never
@@ -342,6 +344,12 @@ export function buildScannerMatches<E extends DetectedEvent>(
 				vote(open.stageVotes, (board!.data as ScoreboardData).stage);
 			}
 		} else if (SCOREBOARD_EVENT_TYPES.includes(event.type)) {
+			if ((event.data as ScoreboardData).noContest) {
+				// ended undecided: the game being gathered has no result to keep
+				open = null;
+				dropOrphans();
+				continue;
+			}
 			if (HISTORY_SCOREBOARD_EVENT_TYPES.includes(event.type)) {
 				lastHistoryScreen = event;
 			}

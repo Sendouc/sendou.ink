@@ -339,7 +339,10 @@ sequenceDiagram
   timeline also holds history screens to a 0.75 confidence floor (clean
   reads score 0.81+). Likewise a results screen read again with no
   match opened since (a lost-connection dialog hid it and the detector
-  re-armed) joins the last match. An event belongs to at most one match; deaths
+  re-armed) joins the last match. A no-contest results screen (the host
+  ended the game or a disconnect did early: DRAW tags on both team boxes,
+  drawn grey, and "No contest." for a score — `noContest`) discards the game
+  being gathered, so the replay of that map is its only card. An event belongs to at most one match; deaths
   reveal enemy builds (`ability-harvest.ts`), the personal results screen
   (`ScoreboardOwn`, seen within `OWN_RESULTS_WINDOW_SECONDS` of a closed
   match's scoreboard) completes the POV player's full build, and minimap
