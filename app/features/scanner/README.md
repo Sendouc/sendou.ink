@@ -408,7 +408,9 @@ sequenceDiagram
   than their surroundings; the previous read's fit holds unless clearly
   beaten. Each state then reads off the apex core alone: saturated ink of
   any hue = alive, pale = special ready (the wash pulses from lilac or pink
-  to near-white but never saturates or greys), else splatted (dark plate
+  to near-white but never saturates or greys) unless both sides of the
+  body still hold team ink (a weapon render pale over the apex, Painbrush's
+  head: the wash pales the whole icon), else splatted (dark plate
   under grey X strokes) — unless the whole body is opaque black with no X
   or weapon render in it, an empty seat (a 1v1 lobby, a disconnect), which
   sets neither flag. No geometry implies a footage type: the D-pad camera
