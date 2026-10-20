@@ -1,7 +1,7 @@
 .container {
 	display: grid;
 	gap: var(--s-10);
-	grid-template-columns: 1fr 2fr;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
 }
 
 .leftColumn {
@@ -16,7 +16,7 @@
 
 @container (width < 640px) {
 	.container {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 
 	.leftColumn {
