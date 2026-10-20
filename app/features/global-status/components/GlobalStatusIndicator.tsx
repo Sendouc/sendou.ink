@@ -44,6 +44,7 @@ export function GlobalStatusIndicator() {
 						} satisfies BracketsPageState)
 					: undefined
 			}
+			preventScrollReset={typeof status.scrollToMatchId === "number"}
 			prefetch="intent"
 			className={styles.status}
 			aria-label={text}
