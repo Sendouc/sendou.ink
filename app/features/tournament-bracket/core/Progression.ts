@@ -950,7 +950,15 @@ export function isError(
 export function isFinals(idx: number, brackets: ParsedBracket[]) {
 	invariant(idx < brackets.length, "Bracket index out of bounds");
 
-	return resolveMainBracketProgression(brackets).at(-1) === idx;
+	return finalsBracketIdx(brackets) === idx;
+}
+
+/** Index of the last bracket of the main progression starting from `startBracketIdx`, e.g. a division's top cut. */
+export function finalsBracketIdx(
+	brackets: ParsedBracket[],
+	startBracketIdx = 0,
+): number {
+	return resolveMainBracketProgression(brackets, startBracketIdx).at(-1)!;
 }
 
 /** Whether the finals bracket is an A/B divisions round robin. */

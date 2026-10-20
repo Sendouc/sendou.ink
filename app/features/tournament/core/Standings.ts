@@ -328,18 +328,19 @@ function tournamentStandingsForBracket(
 	tournament: Tournament,
 	bracketIdx: number | undefined,
 ): Standing[] {
-	const isSingleStartingBracket = typeof bracketIdx !== "number";
-
+	const progression = tournament.ctx.settings.bracketProgression;
 	const bracketIdxs = Progression.bracketIdxsForStandings(
-		tournament.ctx.settings.bracketProgression,
+		progression,
 		bracketIdx,
 	);
 
 	const result: Standing[] = [];
 	const alreadyIncludedTeamIds = new Set<number>();
 
-	const finalBracketIsOver = tournament.brackets.some(
-		(bracket) => bracket.isFinals && bracket.everyMatchOver,
+	const finalBracketIsOver = Boolean(
+		tournament.bracketByIdx(
+			Progression.finalsBracketIdx(progression, bracketIdx),
+		)?.everyMatchOver,
 	);
 
 	for (const idx of bracketIdxs) {
@@ -347,7 +348,7 @@ function tournamentStandingsForBracket(
 		invariant(bracket);
 
 		// a bracket that never got played is left out
-		if (isSingleStartingBracket && finalBracketIsOver && bracket.preview) {
+		if (finalBracketIsOver && bracket.preview) {
 			continue;
 		}
 

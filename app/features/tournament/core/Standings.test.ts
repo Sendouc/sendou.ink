@@ -59,7 +59,21 @@ describe("tournamentStandings", () => {
 	});
 
 	test("ranks a division's top cut above its consolation bracket", () => {
-		const tournament = divisionsWithConsolationTournament();
+		const tournament = divisionsWithUndergroundTournament();
+
+		const result = tournamentStandings(tournament);
+
+		invariant(result.type === "multi");
+		const divisionA = result.standings[0].standings;
+		expect(divisionA.map((s) => s.team.id)).toEqual([1, 2, 3, 4]);
+		expect(divisionA.map((s) => s.placement)).toEqual([1, 2, 3, 4]);
+	});
+
+	test("places a division's teams from its groups when their underground bracket was never started", () => {
+		const tournament = divisionsWithUndergroundTournament({
+			undergroundStarted: false,
+		});
+		expect(tournament.bracketByIdx(3)?.preview).toBe(true);
 
 		const result = tournamentStandings(tournament);
 
@@ -644,44 +658,38 @@ function groupsToRedemptionAndConsolationTournament() {
 	});
 }
 
-function divisionsWithConsolationTournament() {
-	const data = mergeStages(
-		playOutLowerIdWins(
-			createResolved({
-				type: "round_robin",
-				seeding: [1, 2, 3, 4],
-				settings: { groupCount: 1 },
-			}),
-		),
-		playOutLowerIdWins(
-			createResolved({
-				type: "round_robin",
-				seeding: [5, 6, 7, 8],
-				settings: { groupCount: 1 },
-			}),
-		),
-		playOutLowerIdWins(
-			createResolved({
-				type: "single_elimination",
-				seeding: [1, 2],
-				settings: {},
-			}),
-		),
-		playOutLowerIdWins(
-			createResolved({
-				type: "single_elimination",
-				seeding: [3, 4],
-				settings: {},
-			}),
-		),
-		playOutLowerIdWins(
-			createResolved({
-				type: "single_elimination",
-				seeding: [5, 6],
-				settings: {},
-			}),
+function divisionsWithUndergroundTournament({
+	undergroundStarted = true,
+}: {
+	undergroundStarted?: boolean;
+} = {}) {
+	const playedStages = (
+		[
+			["A Groups", "round_robin", [1, 2, 3, 4]],
+			["B Groups", "round_robin", [5, 6, 7, 8]],
+			["A Top Cut", "single_elimination", [1, 2]],
+			["A Underground", "single_elimination", [3, 4]],
+			["B Top Cut", "single_elimination", [5, 6]],
+		] as const
+	).filter(([name]) => undergroundStarted || name !== "A Underground");
+	const merged = mergeStages(
+		...playedStages.map(([, type, seeding]) =>
+			playOutLowerIdWins(
+				createResolved({
+					type,
+					seeding: [...seeding],
+					settings: type === "round_robin" ? { groupCount: 1 } : {},
+				}),
+			),
 		),
 	);
+	const data = {
+		...merged,
+		stage: merged.stage.map((stage, stageIdx) => ({
+			...stage,
+			name: playedStages[stageIdx][0],
+		})),
+	};
 
 	return testTournament({
 		ctx: {
@@ -708,7 +716,7 @@ function divisionsWithConsolationTournament() {
 					},
 					{
 						type: "single_elimination",
-						name: "A Consolation",
+						name: "A Underground",
 						requiresCheckIn: false,
 						settings: {},
 						sources: [{ bracketIdx: 0, placements: [3, 4] }],
