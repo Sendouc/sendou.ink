@@ -1,4 +1,5 @@
 import { cachified } from "@epic-web/cachified";
+import { userIsBanned } from "~/features/ban/core/banned.server";
 import type {
 	SeasonPopularUsersWeapon,
 	UserSPLeaderboardItem,
@@ -172,6 +173,7 @@ export function addPendingPlusTiers<T extends UserSPLeaderboardItem>(
 	for (const entry of entries) {
 		const highestPlusTierWithSpace = resolveHighestPlusTierWithSpace();
 		if (!highestPlusTierWithSpace) break;
+		if (userIsBanned(entry.id)) continue;
 
 		const plusTier = plusTiers.find((t) => t.userId === entry.id)?.plusTier;
 
