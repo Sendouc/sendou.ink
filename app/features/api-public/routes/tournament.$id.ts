@@ -1,7 +1,10 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { db } from "~/db/sql";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { jsonArrayFrom } from "~/utils/kysely.server";
+import {
+	concatUserSubmittedImagePrefix,
+	jsonArrayFrom,
+} from "~/utils/kysely.server";
 import { notFoundIfNullish, parseParams } from "~/utils/remix.server";
 import { idObject } from "~/utils/schema";
 import type { GetTournamentResponse } from "../schema";
@@ -28,10 +31,14 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 						.where("TournamentResult.tournamentId", "=", tournamentId)
 						.select("TournamentResult.tournamentId"),
 				).as("isFinalized"),
-				eb
-					.selectFrom("UserSubmittedImage")
-					.select(["UserSubmittedImage.url"])
-					.whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+				concatUserSubmittedImagePrefix(
+					eb
+						.selectFrom("UserSubmittedImage")
+						.select("UserSubmittedImage.url")
+						.whereRef("CalendarEvent.avatarImgId", "=", "UserSubmittedImage.id")
+						.$asScalar(),
+				)
+					.$castTo<string | null>()
 					.as("logoUrl"),
 				jsonArrayFrom(
 					eb
