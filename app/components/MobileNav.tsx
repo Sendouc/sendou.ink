@@ -58,6 +58,7 @@ type SidebarData = RootLoaderData["sidebar"] | undefined;
 type PanelType = (typeof PANEL_TYPES)[number];
 type PanelIds = Record<PanelType, string>;
 type PanelToggleHandler = (event: React.ToggleEvent<HTMLDivElement>) => void;
+type TabClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => void;
 
 const MOBILE_NAV_ID = "mobile-nav";
 const PANEL_TYPES = ["menu", "friends", "tourneys", "chat", "you"] as const;
@@ -71,6 +72,10 @@ const PANEL_TYPES = ["menu", "friends", "tourneys", "chat", "you"] as const;
  *
  * The bar itself is a manual popover shown on hydration so it lives in the top
  * layer; before that it is a plain fixed bar.
+ *
+ * Once hydrated, while a panel is open every tab targets it, so pressing a tab
+ * does not light dismiss it. The tab's click then swaps the panels in one go,
+ * as on touch devices the click can come frames after the press.
  */
 export function MobileNav({ sidebarData }: { sidebarData: SidebarData }) {
 	const [activePanel, setActivePanel] = React.useState<PanelType | null>(null);
@@ -143,9 +148,23 @@ export function MobileNav({ sidebarData }: { sidebarData: SidebarData }) {
 			}
 		};
 
-	// a panel taking another one's place appears in place instead of sliding
-	// up again; decided as the tab is pressed, before the popovers switch
-	const rememberOpenPanel = () => setSkipAnimation(activePanel !== null);
+	const onTabClick =
+		(panel: PanelType): TabClickHandler =>
+		(event) => {
+			const target = document.getElementById(panelIds[panel]);
+			if (!target) return;
+			event.preventDefault();
+
+			if (target.matches(":popover-open")) {
+				target.hidePopover();
+				return;
+			}
+
+			// a panel taking another one's place appears in place instead of sliding up again
+			setSkipAnimation(activePanel !== null);
+			setActivePanel(panel);
+			target.showPopover({ source: event.currentTarget });
+		};
 
 	return (
 		<div
@@ -195,7 +214,7 @@ export function MobileNav({ sidebarData }: { sidebarData: SidebarData }) {
 			<MobileTabBar
 				panelIds={panelIds}
 				activePanel={activePanel}
-				onBeforeToggle={rememberOpenPanel}
+				onTabClick={onTabClick}
 				isLoggedIn={Boolean(user)}
 				hasUnseenNotifications={showUnseenDot}
 				hasFriendInSendouQ={hasFriendInSendouQ}
@@ -208,7 +227,7 @@ export function MobileNav({ sidebarData }: { sidebarData: SidebarData }) {
 function MobileTabBar({
 	panelIds,
 	activePanel,
-	onBeforeToggle,
+	onTabClick,
 	isLoggedIn,
 	hasUnseenNotifications,
 	hasFriendInSendouQ,
@@ -216,7 +235,7 @@ function MobileTabBar({
 }: {
 	panelIds: PanelIds;
 	activePanel: PanelType | null;
-	onBeforeToggle: () => void;
+	onTabClick: (panel: PanelType) => TabClickHandler;
 	isLoggedIn: boolean;
 	hasUnseenNotifications: boolean;
 	hasFriendInSendouQ: boolean;
@@ -225,17 +244,26 @@ function MobileTabBar({
 	const { t } = useTranslation(["front", "common"]);
 	const chatContext = useChatContext();
 	const isHydrated = useHydrated();
-	const panelIdOnceHydrated = (panel: PanelType) =>
-		isHydrated ? panelIds[panel] : undefined;
+	const tabProps = (
+		panel: PanelType,
+		{ worksBeforeHydration = false } = {},
+	) => ({
+		popoverTarget:
+			activePanel !== null
+				? panelIds[activePanel]
+				: isHydrated || worksBeforeHydration
+					? panelIds[panel]
+					: undefined,
+		isActive: activePanel === panel,
+		onClick: onTabClick(panel),
+	});
 
 	return (
 		<nav className={styles.tabBar}>
 			<MobileTab
 				icon={<Menu />}
 				label={t("front:mobileNav.menu")}
-				panelId={panelIds.menu}
-				isActive={activePanel === "menu"}
-				onBeforeToggle={onBeforeToggle}
+				{...tabProps("menu", { worksBeforeHydration: true })}
 			/>
 
 			{isLoggedIn ? (
@@ -243,9 +271,7 @@ function MobileTabBar({
 					<MobileTab
 						icon={<Users />}
 						label={t("front:mobileNav.friends")}
-						panelId={panelIdOnceHydrated("friends")}
-						isActive={activePanel === "friends"}
-						onBeforeToggle={onBeforeToggle}
+						{...tabProps("friends")}
 						showNotificationDot={hasFriendInSendouQ}
 						badgeCount={unseenFriendRequests}
 						badgeLeft={hasFriendInSendouQ}
@@ -253,24 +279,18 @@ function MobileTabBar({
 					<MobileTab
 						icon={<Calendar />}
 						label={t("front:sideNav.myCalendar")}
-						panelId={panelIdOnceHydrated("tourneys")}
-						isActive={activePanel === "tourneys"}
-						onBeforeToggle={onBeforeToggle}
+						{...tabProps("tourneys")}
 					/>
 					<MobileTab
 						icon={<MessageSquare />}
 						label={t("front:mobileNav.chat")}
-						panelId={panelIds.chat}
-						isActive={activePanel === "chat"}
-						onBeforeToggle={onBeforeToggle}
+						{...tabProps("chat", { worksBeforeHydration: true })}
 						unreadCount={chatContext?.totalUnreadCount}
 					/>
 					<MobileTab
 						icon={<User />}
 						label={t("front:mobileNav.you")}
-						panelId={panelIdOnceHydrated("you")}
-						isActive={activePanel === "you"}
-						onBeforeToggle={onBeforeToggle}
+						{...tabProps("you")}
 						showNotificationDot={hasUnseenNotifications}
 					/>
 				</>
@@ -291,9 +311,9 @@ function MobileTabBar({
 function MobileTab({
 	icon,
 	label,
-	panelId,
+	popoverTarget,
 	isActive,
-	onBeforeToggle,
+	onClick,
 	showNotificationDot,
 	unreadCount,
 	badgeCount,
@@ -301,9 +321,9 @@ function MobileTab({
 }: {
 	icon: React.ReactNode;
 	label: string;
-	panelId?: string;
+	popoverTarget?: string;
 	isActive: boolean;
-	onBeforeToggle: () => void;
+	onClick: TabClickHandler;
 	showNotificationDot?: boolean;
 	unreadCount?: number;
 	badgeCount?: number;
@@ -316,11 +336,8 @@ function MobileTab({
 			type="button"
 			className={styles.tab}
 			data-active={isActive}
-			popoverTarget={panelId}
-			onPointerDown={onBeforeToggle}
-			onKeyDown={(event) => {
-				if (event.key === "Enter" || event.key === " ") onBeforeToggle();
-			}}
+			popoverTarget={popoverTarget}
+			onClick={onClick}
 		>
 			<span className={styles.tabIcon}>
 				{icon}
