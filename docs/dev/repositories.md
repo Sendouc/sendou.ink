@@ -146,6 +146,7 @@ return Pagination.findPage({
 ```
 
 - **Two phases.** `query` is sorted and sliced into one page's ids, the total riding along as a window count; `rowsByIds` then selects the expensive fields (JSON subqueries, aggregates) for those ids only. The rows come back in phase one's order whatever order `rowsByIds` returns them in.
+- **`separateCount`** counts in a query of its own instead. A window count materializes every matching row, so when an index serves `orderBy` (the ids could stop at the page's end) a separate count, often a pure index scan, is much faster. `BuildRepository.findPageByWeaponId` is the example.
 - **Filters must be SQL.** Filtering fetched rows in JS gives short pages; a filter SQL can't express (e.g. one over cached skill tiers) is resolved to an id list first and passed in as a filter.
 - **The order is total.** `id` is appended as the last sort key so equal keys never swap between pages.
 - Pair it with `paginate()` (`~/utils/remix.server`) in the loader, which redirects a page past the end to the last one.

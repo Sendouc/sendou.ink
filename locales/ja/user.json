@@ -29,18 +29,8 @@
 	"seasons.noReportedWeapons": "報告された武器がありません",
 	"seasons.loading": "読み込み中...",
 	"builds.sorting.changeButton": "並べ替え変更",
-	"builds.sorting.header": "ギアの並べ替えを変更",
-	"builds.sorting.backToDefaults": "デフォルトに戻す",
-	"builds.sorting.info": "プロファイルのギア表示を変更しました。ギアのビルドを閲覧してるユーザー、自分両方を影響します。",
 	"builds.sorting.UPDATED_AT": "最終更新日",
 	"builds.sorting.TOP_500": "Xランク上位500",
 	"builds.sorting.WEAPON_POOL": "武器プール",
-	"builds.sorting.WEAPON_IN_GAME_ORDER": "武器、ゲーム内の順番",
-	"builds.sorting.ALPHABETICAL_TITLE": "タイトル、アルファベット順",
-	"builds.sorting.MODE": "モード",
-	"builds.sorting.HEADGEAR_ID": "アタマ(ギア)ゲーム内の順番",
-	"builds.sorting.CLOTHES_ID": "フク(ギア)ゲーム内の順番",
-	"builds.sorting.SHOES_ID": "クツ(ギア)ゲーム内の順番",
-	"builds.sorting.PUBLIC_BUILD": "公開ビルド",
-	"builds.sorting.PRIVATE_BUILD": "非公開ビルド"
+	"builds.sorting.MODE": "モード"
 }

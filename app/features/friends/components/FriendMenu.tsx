@@ -8,7 +8,7 @@ import {
 	SendouMenuItem,
 	SendouMenuSection,
 } from "~/components/elements/Menu";
-import { ListButton } from "~/components/SideNav";
+import { ListButton } from "~/components/ListItem";
 import {
 	type FriendActivityBadge,
 	type FriendActivityType,

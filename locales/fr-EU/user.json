@@ -29,18 +29,8 @@
 	"seasons.noReportedWeapons": "Aucune arme a été reporté",
 	"seasons.loading": "Chargement...",
 	"builds.sorting.changeButton": "Changer le tri",
-	"builds.sorting.header": "Modifier le tri des builds",
-	"builds.sorting.backToDefaults": "Revenir par défaut",
-	"builds.sorting.info": "Modifiez la façon dont les builds sont classés sur votre profil. Affecte à la fois vous et les visiteurs qui consultent vos builds.",
 	"builds.sorting.UPDATED_AT": "Dernière mise à jour",
 	"builds.sorting.TOP_500": "Rank X Top 500",
 	"builds.sorting.WEAPON_POOL": "Armes jouées",
-	"builds.sorting.WEAPON_IN_GAME_ORDER": "Ordre des armes dans le jeu",
-	"builds.sorting.ALPHABETICAL_TITLE": "Titre alphabétique",
-	"builds.sorting.MODE": "Mode",
-	"builds.sorting.HEADGEAR_ID": "Ordre des Accessoires dans le jeu",
-	"builds.sorting.CLOTHES_ID": "Ordre des Vêtements dans le jeu",
-	"builds.sorting.SHOES_ID": "Ordre des Chaussures dans le jeu",
-	"builds.sorting.PUBLIC_BUILD": "Build public",
-	"builds.sorting.PRIVATE_BUILD": "Build privée"
+	"builds.sorting.MODE": "Mode"
 }

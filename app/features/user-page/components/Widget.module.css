@@ -294,6 +294,7 @@
 
 .builds {
 	display: flex;
+	align-items: flex-start;
 	gap: var(--s-3);
 	overflow-x: auto;
 	padding-block: var(--s-2);

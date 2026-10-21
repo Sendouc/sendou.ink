@@ -142,9 +142,11 @@ export default function UserPageLayout() {
 
 	return (
 		<Main
-			bigger={WIDE_LAYOUT_SUB_PAGES.some((subPage) =>
-				location.pathname.includes(subPage),
-			)}
+			bigger={
+				WIDE_LAYOUT_SUB_PAGES.some((subPage) =>
+					location.pathname.includes(subPage),
+				) || location.pathname.endsWith("/builds")
+			}
 		>
 			<Outlet context={{ navItems }} />
 		</Main>

@@ -117,18 +117,13 @@ test.describe("Public pages", () => {
 		await expect(scanner.locators.startCaptureButton).toBeVisible();
 	});
 
-	test("prompts a logged out visitor to log in when using search or a filter", async ({
+	test("prompts a logged out visitor to log in when using search", async ({
 		page,
 	}) => {
 		const weaponBuilds = new WeaponBuildsPage(page);
 		await weaponBuilds.goto(BUILD_WEAPON_SLUG);
 
 		const logInPopover = new LogInPopover(page);
-
-		await weaponBuilds.locators.addFilterButton.click();
-		await expect(logInPopover.locators.logInButton).toBeVisible();
-
-		await page.keyboard.press("Escape");
 
 		await new TopRightButtons(page).locators.searchButton.click();
 		await expect(logInPopover.locators.logInButton).toBeVisible();

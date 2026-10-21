@@ -10,7 +10,6 @@ import {
 	Tv,
 	User,
 	Users,
-	X,
 } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -38,6 +37,10 @@ import {
 } from "~/utils/urls";
 import { Avatar } from "./Avatar";
 import { EventsList } from "./EventsList";
+import {
+	SendouBottomSheet,
+	SendouBottomSheetCloseButton,
+} from "./elements/BottomSheet";
 import { LinkButton } from "./elements/Button";
 import { isOwnToggle } from "./elements/Popover";
 import { Image } from "./Image";
@@ -357,70 +360,6 @@ function MobileTab({
 	);
 }
 
-function PanelCloseButton({ panelId }: { panelId: string }) {
-	const { t } = useTranslation(["common"]);
-
-	return (
-		<button
-			type="button"
-			className={styles.panelCloseButton}
-			popoverTarget={panelId}
-			popoverTargetAction="hide"
-			aria-label={t("common:actions.close")}
-		>
-			<X size={18} />
-		</button>
-	);
-}
-
-function MobilePanel({
-	id,
-	title,
-	icon,
-	children,
-	skipAnimation,
-	onToggle,
-}: {
-	id: string;
-	title: string;
-	icon: React.ReactNode;
-	children: React.ReactNode;
-	skipAnimation: boolean;
-	onToggle: PanelToggleHandler;
-}) {
-	const titleId = `${id}-title`;
-	const [hasOpened, setHasOpened] = React.useState(false);
-
-	return (
-		<div
-			id={id}
-			popover="auto"
-			role="dialog"
-			aria-labelledby={titleId}
-			className={clsx(styles.panel, skipAnimation && styles.noAnimation)}
-			onBeforeToggle={(event) => {
-				if (isOwnToggle(event) && event.newState === "open") {
-					setHasOpened(true);
-				}
-			}}
-			onToggle={onToggle}
-		>
-			<div className={styles.panelDialog}>
-				<header className={styles.panelHeader}>
-					<div className={styles.panelIconContainer}>{icon}</div>
-					<h2 id={titleId} className={styles.panelTitle}>
-						{title}
-					</h2>
-					<PanelCloseButton panelId={id} />
-				</header>
-				<div className={clsx(styles.panelContent, "scrollbar")}>
-					{hasOpened ? children : null}
-				</div>
-			</div>
-		</div>
-	);
-}
-
 function MenuPanel({
 	id,
 	streams,
@@ -476,7 +415,7 @@ function MenuPanel({
 							shape="square"
 							url={`${SENDOU_INK_BASE_URL}${location.pathname}${location.search}`}
 						/>
-						<PanelCloseButton panelId={id} />
+						<SendouBottomSheetCloseButton sheetId={id} />
 					</div>
 				</header>
 
@@ -543,7 +482,7 @@ function FriendsPanel({
 	const { t } = useTranslation(["front", "common"]);
 
 	return (
-		<MobilePanel
+		<SendouBottomSheet
 			id={id}
 			title={t("front:sideNav.friends")}
 			icon={<Users size={18} />}
@@ -565,7 +504,7 @@ function FriendsPanel({
 				{t("common:actions.viewAll")}
 				<ChevronRight size={14} />
 			</Link>
-		</MobilePanel>
+		</SendouBottomSheet>
 	);
 }
 
@@ -585,7 +524,7 @@ function TourneysPanel({
 	const { t } = useTranslation(["front", "common"]);
 
 	return (
-		<MobilePanel
+		<SendouBottomSheet
 			id={id}
 			title={t("front:sideNav.myCalendar")}
 			icon={<Calendar size={18} />}
@@ -602,7 +541,7 @@ function TourneysPanel({
 				{t("common:actions.viewAll")}
 				<ChevronRight size={14} />
 			</Link>
-		</MobilePanel>
+		</SendouBottomSheet>
 	);
 }
 
@@ -627,7 +566,7 @@ function YouPanel({
 	}
 
 	return (
-		<MobilePanel
+		<SendouBottomSheet
 			id={id}
 			title={t("front:mobileNav.you")}
 			icon={<User size={18} />}
@@ -674,7 +613,7 @@ function YouPanel({
 			</div>
 
 			<NotificationContent notifications={notifications} isOpen={isOpen} />
-		</MobilePanel>
+		</SendouBottomSheet>
 	);
 }
 

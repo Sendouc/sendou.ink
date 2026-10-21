@@ -122,6 +122,7 @@ async function seedXRankPlacements(users: SeededUsers) {
 	}
 
 	for (const [i, placement] of NZAP_XP_TROPHY_PLACEMENTS.entries()) {
+		const isLast = i === NZAP_XP_TROPHY_PLACEMENTS.length - 1;
 		await XRankPlacementFactory.create(
 			{
 				...placement,
@@ -130,7 +131,7 @@ async function seedXRankPlacements(users: SeededUsers) {
 				playerSplId: NZAP_PLAYER_SPL_ID,
 				playerUserId: users.nzapId,
 			},
-			{ refreshPeakXp: i === NZAP_XP_TROPHY_PLACEMENTS.length - 1 },
+			{ refreshPeakXp: isLast, recalculateBuildSortValues: isLast },
 		);
 	}
 }
