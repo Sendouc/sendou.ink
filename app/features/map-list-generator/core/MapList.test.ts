@@ -70,6 +70,17 @@ describe("MapList.generate()", () => {
 			}
 		});
 
+		test("does not repeat the stage order when the list goes through every stage twice", () => {
+			const gen = initGenerator(ALL_MAPS_TEST_MAP_POOL);
+			const stages = gen
+				.next({ amount: stageIds.length * 2 })
+				.value.map((map) => map.stageId);
+
+			expect(stages.slice(stageIds.length)).not.toEqual(
+				stages.slice(0, stageIds.length),
+			);
+		});
+
 		test("contains every mode once before repeating", () => {
 			const gen = initGenerator();
 			const maps = gen.next({ amount: 5 }).value;

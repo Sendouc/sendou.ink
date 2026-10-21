@@ -59,6 +59,7 @@ export function* generate(args: {
 	}
 
 	const modes = args.mapPool.modes;
+	const distinctStageCount = new Set(args.mapPool.stages).size;
 
 	const { stageWeights, stageModeWeights } = initializeWeights(
 		modes,
@@ -88,15 +89,16 @@ export function* generate(args: {
 					modesConsumed: amount,
 				};
 
-		if (!args.skipEnsureMinimumCandidates) {
-			ensureMinimumCandidates({
-				mapPool: args.mapPool,
-				stageWeights,
-				stageModeWeights,
-			});
-		}
-
 		for (let i = 0; i < amount; i++) {
+			const isStartOfPoolCycle = i % distinctStageCount === 0;
+			if (!args.skipEnsureMinimumCandidates && isStartOfPoolCycle) {
+				ensureMinimumCandidates({
+					mapPool: args.mapPool,
+					stageWeights,
+					stageModeWeights,
+				});
+			}
+
 			const mode = currentModeOrder[i % currentModeOrder.length];
 			const possibleStages = args.mapPool.parsed[mode];
 			const isNotGuaranteedToBePlayed = args.considerGuaranteed
