@@ -1,0 +1,99 @@
+---
+import { anchor } from "../../../../../scripts/living-docs/links.ts";
+import type { ModuleDoc } from "../../../../../scripts/living-docs/modules.ts";
+import { count, markdown, moduleLabel } from "../../living/format.ts";
+import ExportBlock from "./ExportBlock.astro";
+import FileLink from "./FileLink.astro";
+import UnitTests from "./UnitTests.astro";
+
+interface Props {
+	module: ModuleDoc;
+}
+
+const { module } = Astro.props;
+const isServer = module.name.endsWith(".server");
+---
+
+<article class="module">
+	<header class="module-head">
+		<h2 id={anchor(module.name)}>{module.name.replace(/\.server$/, "")}</h2>
+		{isServer ? <span class="badge">server</span> : null}
+		<FileLink file={module.path} line={1} label={module.path} />
+	</header>
+	{
+		module.overview ? (
+			<div class="overview" set:html={markdown(module.overview)} />
+		) : (
+			<p class="missing">No overview comment at the top of the file.</p>
+		)
+	}
+	<dl class="module-facts">
+		<dt>Imports</dt>
+		<dd>
+			{
+				module.dependencies.length > 0 ? (
+					module.dependencies.map((dependency) => (
+						<span class="chip">{moduleLabel(dependency)}</span>
+					))
+				) : (
+					<span class="muted">no other modules</span>
+				)
+			}
+		</dd>
+		<dt>Used by</dt>
+		<dd>
+			{
+				module.dependents.length > 0 ? (
+					module.dependents.map((group) => (
+						<span class={`chip kind-${group.kind}`}>
+							{count(group.items.length, group.singular, group.label.toLowerCase())}
+						</span>
+					))
+				) : (
+					<span class="muted">nothing outside tests</span>
+				)
+			}
+		</dd>
+	</dl>
+	{
+		module.types.length > 0 ? (
+			<>
+				<p class="section-title">Types</p>
+				{module.types.map((exported) => (
+					<ExportBlock exported={exported} module={module} />
+				))}
+			</>
+		) : null
+	}
+	{
+		module.values.length > 0 ? (
+			<>
+				<p class="section-title">Functions &amp; values</p>
+				{module.values.map((exported) => (
+					<ExportBlock exported={exported} module={module} />
+				))}
+			</>
+		) : null
+	}
+	{
+		module.otherUnitTests.length > 0 ? (
+			<>
+				<p class="section-title">Other unit tests</p>
+				<UnitTests tests={module.otherUnitTests} />
+			</>
+		) : null
+	}
+	{
+		module.testOnlyExports.length > 0 ? (
+			<p class="muted test-only">
+				Not shown, only used by tests:{" "}
+				{module.testOnlyExports.map((name, index) => (
+					<>
+						{index > 0 ? ", " : ""}
+						<code>{name}</code>
+					</>
+				))}
+			</p>
+		) : null
+	}
+</article>

@@ -12,15 +12,15 @@
 
 ## Commands
 
-- `pnpm run checks` runs, in order: biome:fix, living docs regeneration, unit/browser tests, translation json checks, typecheck and knip — knip means unused exports fail checks, so remove exports nothing imports
-- `pnpm run docs:living` regenerates `docs/living/` (generated, committed) from the core modules, e2e specs and routes; `pnpm run docs:living:capture` refreshes its route coverage and screenshots from an e2e run, see [living-docs.md](./docs/dev/living-docs.md)
+- `pnpm run checks` runs, in order: biome:fix, unit/browser tests, translation json checks, typecheck (app, scripts and the docs site) and knip — knip means unused exports fail checks, so remove exports nothing imports
+- `pnpm run docs:dev` serves the docs site (`docs/site/`, Astro Starlight): the markdown docs of `docs/` plus the living docs generated from the core modules, e2e specs and routes; `pnpm run docs:capture` refreshes its route coverage and screenshots from an e2e run, see [living-docs.md](./docs/dev/living-docs.md)
 - `pnpm run typecheck` runs TypeScript type checking
 - `pnpm run biome:fix` runs Biome code formatter and linter
 - `pnpm run test:unit:browser` runs all unit tests and browser tests
 - `pnpm run test:e2e` runs all e2e tests
 - `pnpm run test:e2e:flaky-detect` runs all e2e tests and repeats each 10 times
 - `pnpm run i18n:sync` syncs translation jsons with English
-- `pnpm run dev` starts the dev server (also runs migrations and setup first); `pnpm run seed` rebuilds the dev dataset. The dev admin user ("Sendou") has id 274 (`ADMIN_ID`)
+- `pnpm run dev` starts the dev server (also runs migrations and setup first) together with the docs site's, served at `docs.localhost` on the same port (`vite-docs-proxy.ts`); `pnpm run seed` rebuilds the dev dataset. The dev admin user ("Sendou") has id 274 (`ADMIN_ID`)
 
 ## Typescript
 
@@ -69,7 +69,7 @@
 - for simple styling, prefer [utility classes](./app/styles/utils.css) over creating a new class
 - use CSS nesting with the `&` selector to group related selectors (pseudo-classes, pseudo-elements, child selectors, attribute selectors) under their parent instead of repeating the parent selector
 - prefer container queries over media queries
-- every CSS module is wrapped in a cascade layer by its path (`vite.config.ts`): `app/components/elements/**` → `elements`, `app/components/*.module.css` → `components`, everything else → `features`. A higher layer always beats a lower one, so a feature can override a shared component's class no matter what order the chunks load in — never reach for `!important` or a specificity hack to win that fight. Two modules in the *same* layer fall back to load order, so a variant of a component's own class (e.g. a divider row of a table) belongs in that component's module, not the caller's.
+- every CSS module is wrapped in a cascade layer by its path (`vite-css-plugins.ts`): `app/components/elements/**` → `elements`, `app/components/*.module.css` → `components`, everything else → `features`. A higher layer always beats a lower one, so a feature can override a shared component's class no matter what order the chunks load in — never reach for `!important` or a specificity hack to win that fight. Two modules in the *same* layer fall back to load order, so a variant of a component's own class (e.g. a divider row of a table) belongs in that component's module, not the caller's.
 
 ## SQL
 

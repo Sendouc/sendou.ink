@@ -1,6 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
-import { lineOf, type ParsedFile, parseFile, ROOT, walk } from "./ast.ts";
+import {
+	createCache,
+	lineOf,
+	type ParsedFile,
+	parseFile,
+	ROOT,
+	walk,
+} from "./ast.ts";
 
 const SOURCE_DIRS = ["app", "e2e", "scripts"];
 const IGNORED_DIRS = new Set(["node_modules", "output", "living-docs"]);
@@ -86,7 +93,7 @@ export function usagesOf(modulePath: string, files: string[]) {
 	return usages;
 }
 
-const sources = new Map<string, string>();
+const sources = createCache<string, string>();
 
 function sourceOf(file: string) {
 	const cached = sources.get(file);

@@ -2,9 +2,18 @@ import path from "node:path";
 
 const GITHUB_BLOB_URL = "https://github.com/sendou-ink/sendou.ink/blob/main";
 
-/** File name of a feature's page. */
-export function featurePageFile(featureId: string) {
-	return `${featureId}.html`;
+/** The pages of a feature, the first one it has is where it is linked to. */
+export const VIEWS = [
+	{ id: "modules", label: "Modules" },
+	{ id: "e2e", label: "E2E tests" },
+	{ id: "routes", label: "Routes" },
+] as const;
+
+export type ViewId = (typeof VIEWS)[number]["id"];
+
+/** Path of a feature's page, relative to the docs site's base. */
+export function featureViewPath(featureId: string, view: ViewId) {
+	return `features/${featureId}/${view}/`;
 }
 
 export function githubUrl(file: string, line: number) {
@@ -34,6 +43,11 @@ export function exportAnchor(
 	return anchor(moduleName, exported.name, isType ? "type" : "");
 }
 
+/** Id of a `describe`'s heading on its feature page. */
+export function groupAnchor(specPath: string, groupName: string | null) {
+	return anchor(path.basename(specPath, ".spec.ts"), groupName ?? "");
+}
+
 /** Id of a route's element on its feature page. */
 export function routeAnchor(route: { file: string; isLayout: boolean }) {
 	return anchor(route.file, route.isLayout ? "layout" : "");
@@ -46,4 +60,9 @@ export function anchor(...parts: string[]) {
 		.toLowerCase()
 		.replace(/[^a-z0-9]+/g, "-")
 		.replace(/^-|-$/g, "");
+}
+
+/** Path of the screenshot of a page divider within the screenshots directory, named after the spec line it starts on. */
+export function screenshotName(spec: string, line: number) {
+	return `${path.basename(spec, ".spec.ts")}/${line}.jpg`;
 }

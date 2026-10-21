@@ -46,5 +46,7 @@ notepad.txt
 !/e2e/fixtures/scanner-vod.webm
 !/e2e/fixtures/scanner-coach-vod.webm
 
-# living docs screenshots, from pnpm run docs:living:capture
-/docs/living/screenshots/
+# docs site build output, and the living docs screenshots from pnpm run docs:capture
+/docs/site/dist/
+/docs/site/.astro/
+/docs/site/public/screenshots/

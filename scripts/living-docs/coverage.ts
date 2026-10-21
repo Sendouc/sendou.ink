@@ -1,11 +1,12 @@
 import { type AppRoute, matchRoute } from "./app-routes.ts";
 import type { SpecDoc, TestDoc } from "./e2e.ts";
-import { featurePageFile, testAnchor } from "./links.ts";
+import { testAnchor } from "./links.ts";
 import { type Visits, visitsOfTest } from "./visits.ts";
 
 export interface TestLink {
 	name: string;
-	href: string;
+	featureId: string;
+	anchor: string;
 }
 
 export interface RouteCoverage {
@@ -51,7 +52,8 @@ export function buildCoverage(
 							...(visitors.get(route) ?? []),
 							{
 								name: test.name,
-								href: `${featurePageFile(feature.id)}#e2e/${testAnchor(spec.path, group.name, test)}`,
+								featureId: feature.id,
+								anchor: testAnchor(spec.path, group.name, test),
 							},
 						]);
 					}

@@ -1,0 +1,24 @@
+:root {
+	--sl-color-accent-low: #272040;
+	--sl-color-accent: #8b6dff;
+	--sl-color-accent-high: #d4c9ff;
+}
+
+:root[data-theme="light"] {
+	--sl-color-accent-low: #ede8ff;
+	--sl-color-accent: #6d4aff;
+	--sl-color-accent-high: #3a1fb0;
+}
+
+pre.mermaid {
+	display: flex;
+	justify-content: center;
+	background: transparent;
+	border: none;
+}
+
+ul ul .group-label .large {
+	font-size: var(--sl-text-sm);
+	font-weight: 500;
+	color: var(--sl-color-gray-2);
+}

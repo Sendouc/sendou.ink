@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { Expression, Node } from "oxc-parser";
 import {
+	createCache,
 	lineOf,
 	type ParsedFile,
 	parseFile,
@@ -25,12 +26,13 @@ export interface FormField {
 
 export type FormSchema = Map<string, FormField>;
 
-const translations = {
-	forms: readTranslations(FORMS_TRANSLATIONS),
-	common: readTranslations(COMMON_TRANSLATIONS),
+const TRANSLATION_FILES = {
+	forms: FORMS_TRANSLATIONS,
+	common: COMMON_TRANSLATIONS,
 };
 
-const cache = new Map<string, FormSchema | null>();
+const cache = createCache<string, FormSchema | null>();
+const translations = createCache<string, Record<string, string>>();
 
 /** Fields of the SendouForm schema `schemaName` as imported (or declared) in `fromFile`, with their English labels. */
 export function formSchemaOf(
@@ -213,11 +215,14 @@ function unwrap(node: Expression): Expression {
 
 function translate(key: string) {
 	const [namespace, translationKey] = key.split(":") as [
-		keyof typeof translations,
+		keyof typeof TRANSLATION_FILES,
 		string,
 	];
+	const file = TRANSLATION_FILES[namespace];
+	if (!file) return translationKey;
 
-	return translations[namespace]?.[translationKey] ?? translationKey;
+	if (!translations.has(file)) translations.set(file, readTranslations(file));
+	return translations.get(file)![translationKey] ?? translationKey;
 }
 
 function readTranslations(file: string): Record<string, string> {

@@ -79,7 +79,7 @@ function main() {
 	const screenshotCount = saveScreenshots(reported, capturedSpecs);
 
 	console.log(
-		`Captured ${reported.length} tests of ${capturedSpecs.size} specs, ${screenshotCount} screenshots. Run pnpm run docs:living to update the pages.`,
+		`Captured ${reported.length} tests of ${capturedSpecs.size} specs, ${screenshotCount} screenshots. A running pnpm run docs:dev picks them up, otherwise run it to see them.`,
 	);
 }
 

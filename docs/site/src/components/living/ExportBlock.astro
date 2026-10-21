@@ -1,0 +1,76 @@
+---
+import { highlight } from "../../../../../scripts/living-docs/highlight.ts";
+import { exportAnchor } from "../../../../../scripts/living-docs/links.ts";
+import type {
+	ExportDoc,
+	ModuleDoc,
+} from "../../../../../scripts/living-docs/modules.ts";
+import { markdown, usageLabel } from "../../living/format.ts";
+import FileLink from "./FileLink.astro";
+import UnitTests from "./UnitTests.astro";
+
+interface Props {
+	exported: ExportDoc;
+	module: ModuleDoc;
+}
+
+const { exported, module } = Astro.props;
+---
+
+<div class="export">
+	<div class="export-head">
+		<span class={`kind kind-${exported.kind}`}>{exported.kind}</span>
+		<h3 class="export-name" id={exportAnchor(module.name, exported)}>
+			<code>{exported.name}</code>
+		</h3>
+		{
+			exported.doc ? null : (
+				<span class="warn" title="Module functions should always have JSDoc">
+					no JSDoc
+				</span>
+			)
+		}
+		<FileLink file={module.path} line={exported.line} label={`:${exported.line}`} />
+	</div>
+	{
+		exported.doc?.description ? (
+			<div class="doc" set:html={markdown(exported.doc.description)} />
+		) : null
+	}
+	{
+		exported.doc && exported.doc.tags.length > 0 ? (
+			<ul class="doc-tags">
+				{exported.doc.tags.map((tag) => (
+					<li>
+						<span>@{tag.tag}</span> <Fragment set:html={markdown(tag.text)} />
+					</li>
+				))}
+			</ul>
+		) : null
+	}
+	<pre class="code" set:html={highlight(exported.signature)} />
+	{exported.unitTests.length > 0 ? <UnitTests tests={exported.unitTests} /> : null}
+	<div class="usages">
+		{
+			exported.usages.length > 0 ? (
+				exported.usages.map((group) => (
+					<div class="usage-row">
+						<span class={`usage-kind kind-${group.kind}`}>{group.label}</span>
+						<span class="usage-files">
+							{group.items.map((item) => (
+								<FileLink
+									file={item.file}
+									line={item.line}
+									label={usageLabel(item.file)}
+									class="chip file-chip"
+								/>
+							))}
+						</span>
+					</div>
+				))
+			) : (
+				<span class="muted">Only used inside the module</span>
+			)
+		}
+	</div>
+</div>

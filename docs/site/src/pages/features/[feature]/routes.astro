@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import type { InferGetStaticPropsType } from "astro";
+import FeaturePage from "../../../components/living/FeaturePage.astro";
+import RouteArticle from "../../../components/living/RouteArticle.astro";
+import { count, routesHeadings } from "../../../living/format.ts";
+
+export async function getStaticPaths() {
+	const features = await getCollection("features");
+
+	return features
+		.filter((entry) => entry.data.views.includes("routes"))
+		.map((entry) => ({
+			params: { feature: entry.id },
+			props: { feature: entry.data },
+		}));
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { feature } = Astro.props;
+const visitedCount = feature.routes.filter(
+	({ visitedBy }) => visitedBy.length > 0,
+).length;
+---
+
+<FeaturePage feature={feature} view="routes" headings={routesHeadings(feature)}>
+	{
+		feature.hasCapture ? (
+			<p class="coverage">
+				<strong>{visitedCount}</strong> of {count(feature.routes.length, "route")}{" "}
+				rendered by an e2e test, from the last <code>pnpm run docs:capture</code>.
+			</p>
+		) : (
+			<p class="coverage muted">
+				No capture yet, run <code>pnpm run docs:capture</code> to see which e2e tests render
+				each route.
+			</p>
+		)
+	}
+	<div class="routes">
+		{feature.routes.map((coverage) => <RouteArticle feature={feature} coverage={coverage} />)}
+	</div>
+</FeaturePage>

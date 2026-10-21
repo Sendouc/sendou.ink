@@ -1,0 +1,108 @@
+---
+import { getCollection } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import FeatureIcon from "../components/living/FeatureIcon.astro";
+import { count, sitePath, testsOf, viewHref } from "../living/format.ts";
+import "../styles/living.css";
+
+const docs = (await getCollection("docs")).sort((a, b) =>
+	a.data.title.localeCompare(b.data.title),
+);
+const devDocs = docs.filter((doc) => doc.id.startsWith("dev/"));
+const projectDocs = docs.filter((doc) => doc.id.startsWith("project/"));
+const guides = docs.filter((doc) => !doc.id.includes("/"));
+const reference = [
+	{ title: "What's new", path: "changelog/" },
+	{ title: "Routes", path: "reference/routes/" },
+	{ title: "Database tables", path: "reference/db-tables/" },
+	{ title: "Lint rules", path: "reference/lint-rules/" },
+	{ title: "Components", path: "components/buttons/" },
+];
+const features = (await getCollection("features"))
+	.map((entry) => entry.data)
+	.sort((a, b) => a.config.label.localeCompare(b.config.label));
+---
+
+<StarlightPage
+	frontmatter={{ title: "sendou.ink docs", editUrl: false }}
+	headings={[
+		{ depth: 2, slug: "developer-docs", text: "Developer docs" },
+		{ depth: 2, slug: "project", text: "Project" },
+		{ depth: 2, slug: "guides", text: "Guides" },
+		{ depth: 2, slug: "reference", text: "Reference" },
+		{ depth: 2, slug: "features", text: "Features" },
+	]}
+>
+	<p>
+		The repo's markdown docs and the living docs generated from the code: every feature's core
+		modules, e2e tests and routes, the components, database tables and lint rules. Runs locally
+		with <code>pnpm dev</code>, see <a href={sitePath("dev/living-docs/")}>Living docs</a>.
+	</p>
+
+	<h2 id="developer-docs">Developer docs</h2>
+	<ul>
+		{devDocs.map((doc) => <li><a href={sitePath(`${doc.id}/`)}>{doc.data.title}</a></li>)}
+	</ul>
+
+	<h2 id="project">Project</h2>
+	<ul>
+		{projectDocs.map((doc) => <li><a href={sitePath(`${doc.id}/`)}>{doc.data.title}</a></li>)}
+	</ul>
+
+	<h2 id="guides">Guides</h2>
+	<ul>
+		{guides.map((doc) => <li><a href={sitePath(`${doc.id}/`)}>{doc.data.title}</a></li>)}
+	</ul>
+
+	<h2 id="reference">Reference</h2>
+	<ul>
+		{reference.map((page) => <li><a href={sitePath(page.path)}>{page.title}</a></li>)}
+	</ul>
+
+	<h2 id="features">Features</h2>
+	<div class="living not-content">
+		<div class="feature-grid">
+			{
+				features.map((feature) => {
+					const testCount = testsOf(feature).length;
+					const visitedCount = feature.routes.filter(
+						({ visitedBy }) => visitedBy.length > 0,
+					).length;
+					const counts = [
+						feature.modules.length > 0 ? count(feature.modules.length, "module") : null,
+						testCount > 0 ? count(testCount, "e2e test") : null,
+					].filter((stat) => stat !== null);
+					const showsCoverage = feature.routes.length > 0 && feature.hasCapture;
+
+					return (
+						<a class="feature-card" href={viewHref(feature.config.id, feature.views[0])}>
+							<span class="feature-card-head">
+								<FeatureIcon config={feature.config} size={36} />
+								<span class="feature-card-label">{feature.config.label}</span>
+							</span>
+							{counts.length > 0 ? (
+								<span class="feature-card-stats">
+									{counts.map((stat) => (
+										<span>{stat}</span>
+									))}
+								</span>
+							) : null}
+							{showsCoverage ? (
+								<span
+									class="feature-card-coverage"
+									title={`${visitedCount} of ${count(feature.routes.length, "route")} rendered by an e2e test`}
+								>
+									<span
+										class="coverage-meter"
+										style={`--coverage: ${(visitedCount / feature.routes.length) * 100}%`}
+									/>
+									{visitedCount}/{count(feature.routes.length, "route")}
+								</span>
+							) : null}
+						</a>
+					);
+				})
+			}
+		</div>
+	</div>
+</StarlightPage>

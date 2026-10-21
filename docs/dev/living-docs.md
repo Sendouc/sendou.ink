@@ -1,21 +1,37 @@
 # Living docs
 
-`docs/living/` is a generated, committed set of HTML pages documenting every feature from two sources:
+The docs site (`docs/site/`, built with [Astro Starlight](https://starlight.astro.build/)) serves the markdown docs of `docs/` and the living docs: pages generated from the code for every feature, from three sources:
 
 - **Modules**: the `Module.ts` files of `app/features/<feature>/core/` (capitalized file names). Shown: the comment at the top of the file, exports (types first) with their JSDoc and signature, the unit tests describing each export, where each export is used (grouped into loaders, actions, routes, components…) and a graph of who imports who.
 - **E2E tests**: `e2e/<feature>*.spec.ts`, each test turned into readable steps grouped by who is logged in (`impersonate`), the page object being used and arrange/act/assert. Hovering a step shows the page object method, locator, helper or form field it was generated from.
 - **Routes**: the feature's routes from `app/routes.ts`, with the e2e tests that render each one.
 
-Open `docs/living/index.html` in a browser, <kbd>⌘K</kbd> searches everything. Regenerate with `pnpm run docs:living` (part of `pnpm run checks`, CI fails when the pages are stale). The generator lives in `scripts/living-docs/`.
+Each feature has a page per source (`/features/<feature>/modules/`, `/e2e/`, `/routes/`). Nothing generated is committed, the pages are built from the code on demand:
+
+- `pnpm run dev` serves the site next to the app, at `docs.localhost` on the app's port (e.g. http://docs.localhost:5173), `pnpm run docs:dev` alone at http://localhost:4321 (`DOCS_PORT` to change). It regenerates the living docs as files under `app/`, `e2e/` or `locales/en/` change. Search only works in a build.
+- `pnpm run docs:preview` builds the site and serves the build, search included.
+- `pnpm run docs:build` builds it into `docs/site/dist/` and checks every internal link of the build leads somewhere (`scripts/check-docs-links.ts`). CI runs it on every push and deploys the site from `main` to GitHub Pages (`.github/workflows/docs.yml`).
+
+Besides the feature pages, the generated pages are: Routes (every route with its e2e coverage), Database tables (from `app/db/tables.ts`), Lint rules (`biome-plugins/` and where `biome.json` enables them) and What's new (`changelog/`). Each is a content collection of `docs/site/src/content.config.ts`, the data read by an extractor of `scripts/living-docs/`.
+
+The extractors (reading the code into data) live in `scripts/living-docs/`, `documentFeatures()` being the entry point. The site reads them through a content collection (`docs/site/src/living/loader.ts`) and renders them with the components of `docs/site/src/components/living/`.
+
+The markdown docs stay plain GitHub markdown: their `# Heading` is the page title, "Last updated" comes from git, and relative links (`./forms.md`, `../../app/routes.ts`) are rewritten to the site's pages or to GitHub. A new file in `docs/dev/` or `docs/` shows up in the sidebar on its own, which repo root files are shown is set in `docs/site/src/plugins/doc-files.ts`.
+
+## Components showcase
+
+The site's Components pages (`/components/<section>/`) render the app's shared components with example props, one page per section of `app/features/components-showcase/components/ShowcaseSections.tsx` (listed in `showcase-sections.ts`), plus the color tokens (`ColorsShowcase.tsx`). Add examples there when adding or changing a shared component. Each `<ComponentRow>` shows its source under it, and each page lists where the components it shows are used in the app (`scripts/living-docs/showcase.ts`).
+
+They are React islands (`ShowcaseRoot` gives them the translations, router and theme the app's root would) styled by the app's own CSS: `vars.css` as is, the theme following the site's light/dark switch, and the other global stylesheets of `app/styles/` scoped to the showcase (`docs/site/src/plugins/scope-app-styles.ts`) so they don't restyle the rest of the site.
 
 ## Capturing an e2e run
 
-`pnpm run docs:living:capture [specs…]` runs the e2e tests (all, or the given spec files) with tracing on and keeps two things from the run:
+`pnpm run docs:capture [specs…]` runs the e2e tests (all, or the given spec files) with tracing on and keeps two things from the run:
 
-- `docs/living/visits.json` (committed): the pathnames each test visited, the source of route coverage.
-- `docs/living/screenshots/` (gitignored): a screenshot for each `test.step` (taken as the step passes) or, in tests without steps, each page divider (from the trace's screencast), shown as the test's storyboard. They exist only on the machine that ran the capture.
+- `docs/site/visits.json` (committed): the pathnames each test visited, the source of route coverage.
+- `docs/site/public/screenshots/` (gitignored): a screenshot for each `test.step` (taken as the step passes) or, in tests without steps, each page divider (from the trace's screencast), shown as the test's storyboard. They exist only on the machine that ran the capture.
 
-Run `pnpm run docs:living` afterwards to update the pages. Capturing a few specs only replaces their part of `visits.json`.
+Capturing a few specs only replaces their part of `visits.json`.
 
 ## Writing code that documents well
 

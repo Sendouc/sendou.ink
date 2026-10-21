@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { githubUrl } from "../../../../../scripts/living-docs/links.ts";
+import { markdown } from "../../living/format.ts";
+
+const tables = (await getCollection("dbTables"))
+	.map((entry) => entry.data)
+	.sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<StarlightPage
+	frontmatter={{
+		title: "Database tables",
+		description: "The tables and views of the database, generated from app/db/tables.ts.",
+		editUrl: false,
+	}}
+	headings={tables.map((table) => ({ depth: 2, slug: table.name, text: table.name }))}
+>
+	<p>
+		Generated from the <code>DB</code> interface of{" "}
+		<a href={githubUrl("app/db/tables.ts", 1)}><code>app/db/tables.ts</code></a>. See{" "}
+		<a href="../../dev/database-relations/">Database relations</a> for how they relate and{" "}
+		<a href="../../dev/database-schemas/">Database schemas</a> for how columns are typed.
+	</p>
+	{
+		tables.map((table) => (
+			<>
+				<h2 id={table.name}>{table.name}</h2>
+				{table.doc ? <Fragment set:html={markdown(table.doc)} /> : null}
+				<p>
+					Rows typed by{" "}
+					<a href={githubUrl(table.file, table.line)}>
+						<code>{table.rowType}</code>
+					</a>
+				</p>
+				<table>
+					<thead>
+						<tr>
+							<th>Column</th>
+							<th>Type</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						{table.columns.map((column) => (
+							<tr>
+								<td>
+									<code>{column.name}</code>
+								</td>
+								<td>
+									<code>{column.type}</code>
+								</td>
+								<td set:html={column.doc ? markdown(column.doc) : ""} />
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</>
+		))
+	}
+</StarlightPage>

@@ -21,7 +21,19 @@ export interface ParsedFile {
 	lineStarts: number[];
 }
 
-const cache = new Map<string, ParsedFile>();
+const caches: Array<Map<unknown, unknown>> = [];
+const cache = createCache<string, ParsedFile>();
+
+/** A memo cache emptied by `clearCaches`, so a rerun sees edited files. */
+export function createCache<K, V>() {
+	const map = new Map<K, V>();
+	caches.push(map as Map<unknown, unknown>);
+	return map;
+}
+
+export function clearCaches() {
+	for (const map of caches) map.clear();
+}
 
 /** Parses (once) a repo relative TypeScript file. */
 export function parseFile(relativePath: string): ParsedFile {

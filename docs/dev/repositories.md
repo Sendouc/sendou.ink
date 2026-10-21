@@ -167,4 +167,4 @@ Not every function needs a test. Write one for:
 
 Plain `findById`-style queries don't need one. Tests run against `db-test.sqlite3`.
 
-A test's setup goes through the factories in `app/db/seed/factories`, never a raw `db.insertInto` / `db.updateTable` — a lint rule enforces this, and [seeds.md](./seeds.md) covers the factories and the rare exceptions. Only the write a test is actually asserting about is called through its repository directly. There is no cleanup to write: the database is wiped after every test that wrote to it.
+A test's setup goes through the factories in `app/db/seed/factories`, never a raw `db.insertInto` / `db.updateTable` — a lint rule ([no-raw-db-writes-in-tests](../../biome-plugins/no-raw-db-writes-in-tests.grit)) enforces this and explains the rare exceptions. Only the write a test is actually asserting about is called through its repository directly. There is no cleanup to write: the database is wiped after every test that wrote to it.

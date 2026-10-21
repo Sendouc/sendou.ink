@@ -1,11 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { ROOT } from "./ast.ts";
+import { screenshotName } from "./links.ts";
 
 /** Pathnames each e2e test visited in the last capture, written by `capture.ts`. */
-export const VISITS_FILE = "docs/living/visits.json";
-/** Screenshots of the last capture, gitignored. */
-export const SCREENSHOTS_DIR = "docs/living/screenshots";
+export const VISITS_FILE = "docs/site/visits.json";
+/** Screenshots of the last capture, gitignored. Served by the docs site from `/screenshots`. */
+export const SCREENSHOTS_DIR = "docs/site/public/screenshots";
 
 /** Spec → test title path (joined with " › ") → pathnames visited. */
 export type Visits = Record<string, Record<string, string[]>>;
@@ -17,9 +18,9 @@ export function readVisits(): Visits {
 	return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
-/** Repo relative path of the screenshot of a page divider, named after the spec line it starts on. */
+/** Repo relative path of the screenshot of a page divider. */
 export function screenshotFile(spec: string, line: number) {
-	return `${SCREENSHOTS_DIR}/${path.basename(spec, ".spec.ts")}/${line}.jpg`;
+	return `${SCREENSHOTS_DIR}/${screenshotName(spec, line)}`;
 }
 
 /** Whether a test as written (names may be `${templates}`) is the test Playwright reported. */

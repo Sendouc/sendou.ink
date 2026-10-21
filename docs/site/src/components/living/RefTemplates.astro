@@ -1,0 +1,29 @@
+---
+import type { SpecDoc } from "../../../../../scripts/living-docs/e2e.ts";
+import { highlight } from "../../../../../scripts/living-docs/highlight.ts";
+import { githubUrl } from "../../../../../scripts/living-docs/links.ts";
+import { markdown } from "../../living/format.ts";
+
+interface Props {
+	specs: SpecDoc[];
+}
+
+const refs = new Map(Astro.props.specs.flatMap((spec) => [...spec.refs]));
+---
+
+{
+	[...refs].map(([id, ref]) => (
+		<template data-ref-id={id} data-href={githubUrl(ref.file, ref.line)}>
+			<div class="tooltip-head">
+				<code>{ref.title}</code>
+				<span>{`${ref.file}:${ref.line}`}</span>
+			</div>
+			{ref.doc ? (
+				<div class="tooltip-doc" set:html={markdown(ref.doc)} />
+			) : (
+				<div class="tooltip-doc muted">No JSDoc</div>
+			)}
+			{ref.code ? <pre class="code" set:html={highlight(ref.code)} /> : null}
+		</template>
+	))
+}
