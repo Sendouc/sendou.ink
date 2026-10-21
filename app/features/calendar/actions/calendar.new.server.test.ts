@@ -249,3 +249,41 @@ describe("calendar new action: team picked tournament", () => {
 		expect(edited.ctx.teams[0].checkIns).toEqual([]);
 	});
 });
+
+describe("calendar new action: organization the user no longer organizes in", () => {
+	const orgOwnerId = () => users.id(1);
+	const demotedAuthorId = () => users.id(2);
+
+	beforeEach(async () => {
+		await users.create(2);
+	});
+
+	test("author demoted to a member can still edit their tournament", async () => {
+		const org = await TournamentOrganizationFactory.create(
+			{ ownerId: orgOwnerId() },
+			{
+				isEstablished: true,
+				members: [{ userId: demotedAuthorId(), role: "MEMBER" }],
+			},
+		);
+		const tournament = await TournamentFactory.create({
+			authorId: demotedAuthorId(),
+			organizationId: org.id,
+			name: "Low Ink",
+		});
+
+		await editAction(
+			calendarNewFormValues({
+				eventToEditId: tournament.eventId,
+				name: "Low Ink (edited)",
+				organizationId: String(org.id),
+				bracketUrl: "https://sendou.ink",
+			}),
+			{ user: demotedAuthorId() },
+		);
+
+		expect((await CalendarRepository.findById(tournament.eventId))?.name).toBe(
+			"Low Ink (edited)",
+		);
+	});
+});

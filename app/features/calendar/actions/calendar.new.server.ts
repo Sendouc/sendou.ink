@@ -47,7 +47,19 @@ export const action = defineAction(
 			? Number(body.organizationId)
 			: null;
 
-		if (organizationId) {
+		const eventToEdit = body.eventToEditId
+			? badRequestIfFalsy(
+					await CalendarRepository.findById(body.eventToEditId, {
+						includeBadgePrizes: true,
+					}),
+				)
+			: null;
+
+		const isKeepingCurrentOrganization =
+			organizationId !== null &&
+			eventToEdit?.organization?.id === organizationId;
+
+		if (organizationId && !isKeepingCurrentOrganization) {
 			await validateOrganization({
 				userId: user.id,
 				organizationId,
@@ -66,14 +78,6 @@ export const action = defineAction(
 				errorToast("Trophy does not belong to the selected organization");
 			}
 		}
-
-		const eventToEdit = body.eventToEditId
-			? badRequestIfFalsy(
-					await CalendarRepository.findById(body.eventToEditId, {
-						includeBadgePrizes: true,
-					}),
-				)
-			: null;
 
 		const tournamentToEdit = eventToEdit?.tournamentId
 			? await tournamentFromDB(eventToEdit.tournamentId)
