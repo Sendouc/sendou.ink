@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import { formatISO } from "date-fns";
 import {
 	Download,
 	Lock,
@@ -12,8 +11,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import type { Tables } from "~/db/tables";
 import { analyzerPage } from "~/features/build-analyzer/analyzer-urls";
-import { PATCHES } from "~/features/builds/builds-constants";
 import type { BuildWeaponWithTop500Info } from "~/features/builds/builds-types";
+import * as Patches from "~/features/builds/core/patches";
 import {
 	BuildGraphic,
 	type BuildGraphicOwner,
@@ -27,7 +26,6 @@ import type {
 	ModeShort,
 } from "~/modules/in-game-lists/types";
 import { canonicalWeaponSplId } from "~/modules/in-game-lists/weapon-ids";
-import { databaseTimestampToDate } from "~/utils/dates";
 import { weaponSlug } from "~/utils/english-weapon-names";
 import type { UserWithPlusTier } from "~/utils/kysely.server";
 import { gearTypeToInitial } from "~/utils/strings";
@@ -108,7 +106,7 @@ export function BuildCard({
 		abilities,
 	} = build;
 
-	const patch = patchOfTimestamp(updatedAt);
+	const patch = Patches.ofTimestamp(updatedAt);
 	const isOwnerShown = Boolean(owner && showOwner);
 	const [mainWeapon, ...otherWeapons] = weapons;
 
@@ -294,14 +292,6 @@ export function BuildCard({
 			</div>
 		</div>
 	);
-}
-
-function patchOfTimestamp(timestamp: number) {
-	const isoDate = formatISO(databaseTimestampToDate(timestamp), {
-		representation: "date",
-	});
-
-	return PATCHES.find(({ date }) => date <= isoDate)?.patch ?? null;
 }
 
 function BuildImageExportDialog({

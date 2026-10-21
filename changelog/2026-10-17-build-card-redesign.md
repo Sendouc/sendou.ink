@@ -10,6 +10,7 @@ Build cards redesigned
 - Cards stretch to fill the page, on mobile a card spans the whole screen
 - Author's avatar and Plus Server tier shown next to their name
 - On weapon build pages an author's builds are stacked together, the "+" count next to their name shows how many more there are
+- Exported build images match the new card style
 - Analyzer stat cards use the same style as build cards
 - How many builds match the filters is shown above the results
 - "Clear filters" button when no builds match the filters
