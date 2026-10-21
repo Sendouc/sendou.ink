@@ -39,11 +39,6 @@ const devOnlyRoutes =
 					"/match-page-test",
 					"features/match-page-test/routes/match-page-test.tsx",
 				),
-				// xxx: delete before merge
-				route(
-					"/build-card-test",
-					"features/build-card-test/routes/build-card-test.tsx",
-				),
 				route(
 					"/scanner/fixtures/:detector?/:caseName?",
 					"features/scanner/routes/scanner.fixtures.ts",
