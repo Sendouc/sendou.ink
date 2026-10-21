@@ -1,5 +1,5 @@
 .dialog {
-	max-width: 36rem;
+	max-width: 32rem;
 }
 
 .form {
@@ -54,7 +54,6 @@
 }
 
 .rules {
-	container-type: inline-size;
 	display: flex;
 	flex-direction: column;
 	gap: var(--s-2);
@@ -142,12 +141,6 @@
 .ruleActions {
 	display: flex;
 	flex-shrink: 0;
-}
-
-.moveButton {
-	@container (width < 26rem) {
-		display: none;
-	}
 }
 
 .chipGroup {

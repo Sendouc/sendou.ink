@@ -179,10 +179,10 @@
 		outline-offset: 1px;
 	}
 
-	/* the title is trimmed to cap height and clips its overflow, so the icon must fit in it */
+	/* the title is trimmed to cap height and clips its overflow, so the icon must fit within its 0.3em top padding */
 	& svg {
-		width: 1cap;
-		height: 1cap;
+		width: 1.25cap;
+		height: 1.25cap;
 		vertical-align: baseline;
 	}
 }

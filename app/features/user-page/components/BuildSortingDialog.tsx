@@ -17,14 +17,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import clsx from "clsx";
-import {
-	ChevronDown,
-	ChevronUp,
-	GripVertical,
-	Plus,
-	RotateCcw,
-	X,
-} from "lucide-react";
+import { GripVertical, Plus, RotateCcw, X } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { useFetcher } from "react-router";
@@ -162,12 +155,6 @@ export function BuildSortingDialog({
 											key={sort}
 											sort={sort}
 											position={i + 1}
-											onMoveUp={i > 0 ? () => moveSort(i, i - 1) : undefined}
-											onMoveDown={
-												i < buildSorting.length - 1
-													? () => moveSort(i, i + 1)
-													: undefined
-											}
 											onRemove={() => removeSort(sort)}
 										/>
 									))}
@@ -226,14 +213,10 @@ export function BuildSortingDialog({
 function SortableRule({
 	sort,
 	position,
-	onMoveUp,
-	onMoveDown,
 	onRemove,
 }: {
 	sort: BuildSort;
 	position: number;
-	onMoveUp?: () => void;
-	onMoveDown?: () => void;
 	onRemove: () => void;
 }) {
 	const { t } = useTranslation(["common", "user"]);
@@ -272,26 +255,6 @@ function SortableRule({
 				</span>
 			</div>
 			<div className={styles.ruleActions}>
-				<SendouButton
-					variant="minimal"
-					size="small"
-					shape="square"
-					icon={<ChevronUp />}
-					className={styles.moveButton}
-					aria-label={`Move ${label} up`}
-					isDisabled={!onMoveUp}
-					onClick={onMoveUp}
-				/>
-				<SendouButton
-					variant="minimal"
-					size="small"
-					shape="square"
-					icon={<ChevronDown />}
-					className={styles.moveButton}
-					aria-label={`Move ${label} down`}
-					isDisabled={!onMoveDown}
-					onClick={onMoveDown}
-				/>
 				<SendouButton
 					variant="minimal-destructive"
 					size="small"
