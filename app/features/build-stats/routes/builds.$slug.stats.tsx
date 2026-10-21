@@ -15,6 +15,7 @@ import { SendouSelect, SendouSelectItem } from "~/components/elements/Select";
 import { WeaponImage } from "~/components/Image";
 import { WeaponBuildsLayout } from "~/features/builds/components/WeaponBuildsLayout";
 import type { Ability as AbilityType } from "~/modules/in-game-lists/types";
+import { roundToNDecimalPlaces } from "~/utils/number";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import {
 	BUILDS_PAGE,
@@ -27,7 +28,7 @@ import {
 	ogPageImage,
 	type SerializeFrom,
 } from "../../../utils/remix";
-import { AP_DISTRIBUTION_BINS } from "../build-stats-constants";
+import { ANY_TIME, AP_DISTRIBUTION_BINS } from "../build-stats-constants";
 import { buildStatsSearchParams } from "../build-stats-search-params";
 import { BuildStatsDateFilter } from "../components/BuildStatsDateFilter";
 import {
@@ -93,10 +94,12 @@ export default function BuildStatsPage() {
 			selectedTab="stats"
 		>
 			<div className="stack md-plus">
-				<BuildStatsDateFilter />
+				<BuildStatsDateFilter loaderDate={data.date} />
 				{data.stats.weaponBuildsCount === 0 ? (
 					<EmptyState navItem="builds">
-						{t("builds:noBuildsForWeapon")}
+						{data.date === ANY_TIME
+							? t("builds:noBuildsForWeapon")
+							: t("builds:noBuildsMatchingFilters")}
 					</EmptyState>
 				) : (
 					<>
@@ -134,12 +137,23 @@ function KeyStats({ stats }: { stats: Stats }) {
 	const mostSkipped = stats.stackableAbilities.reduce((skipped, ability) =>
 		apDifference(ability) < apDifference(skipped) ? ability : skipped,
 	);
-	const mostFavoredMainOnly = stats.mainOnlyAbilities.reduce(
-		(favored, ability) =>
-			percentageDifference(ability) > percentageDifference(favored)
-				? ability
-				: favored,
+	const mostFavoredMainOnly = R.firstBy(
+		stats.mainOnlyAbilities.filter(
+			(ability) => percentageDifference(ability) > 0,
+		),
+		[percentageDifference, "desc"],
 	);
+	const mostRunMainOnly = stats.mainOnlyAbilities.find(
+		(ability) => ability.percentage.weapon > 0,
+	);
+	const mainOnlyKeyStat = mostFavoredMainOnly
+		? {
+				label: t("builds:stats.mostFavoredMainOnly"),
+				ability: mostFavoredMainOnly,
+			}
+		: mostRunMainOnly
+			? { label: t("builds:stats.mostRunMainOnly"), ability: mostRunMainOnly }
+			: null;
 
 	return (
 		<div className={styles.keyStats}>
@@ -172,16 +186,18 @@ function KeyStats({ stats }: { stats: Stats }) {
 					</span>
 				}
 			/>
-			<KeyStat
-				label={t("builds:stats.mostFavoredMainOnly")}
-				ability={mostFavoredMainOnly.name}
-				sub={t("builds:stats.inPercentageOfBuildsVsAll", {
-					percentage: mostFavoredMainOnly.percentage.weapon,
-					difference: formatDifference(
-						percentageDifference(mostFavoredMainOnly),
-					),
-				})}
-			/>
+			{mainOnlyKeyStat ? (
+				<KeyStat
+					label={mainOnlyKeyStat.label}
+					ability={mainOnlyKeyStat.ability.name}
+					sub={t("builds:stats.inPercentageOfBuildsVsAll", {
+						percentage: mainOnlyKeyStat.ability.percentage.weapon,
+						difference: formatDifference(
+							percentageDifference(mainOnlyKeyStat.ability),
+						),
+					})}
+				/>
+			) : null}
 		</div>
 	);
 }
@@ -461,6 +477,7 @@ function AbilityPointDistribution({
 		(bin) => bin.percentage === maxPercentage,
 	)!;
 	const skippedPercentage = ability.distribution[0].percentage;
+	const isMajority = mostCommonBin.percentage > 50;
 
 	return (
 		<div className="stack sm-plus">
@@ -489,24 +506,39 @@ function AbilityPointDistribution({
 				))}
 			</div>
 			<p className="text-xs">
-				{mostCommonBin.min === 0
+				{mostCommonBin.min === 0 && isMajority
 					? t("builds:stats.distribution.mostlySkipped", {
 							weapon: weaponName,
 							ability: abilityName,
 						})
-					: t("builds:stats.distribution.summary", {
-							weapon: weaponName,
-							ability: abilityName,
-							range: binLabel(mostCommonBin),
-						})}{" "}
-				{mostCommonBin.min === 0
-					? null
-					: t("builds:stats.distribution.skipped", {
+					: `${distributionSummary()} ${t("builds:stats.distribution.skipped", {
 							percentage: skippedPercentage,
-						})}
+						})}`}
 			</p>
 		</div>
 	);
+
+	function distributionSummary() {
+		if (mostCommonBin.min === 0) {
+			return t("builds:stats.distribution.run", {
+				weapon: weaponName,
+				ability: abilityName,
+				percentage: roundToNDecimalPlaces(100 - skippedPercentage, 1),
+			});
+		}
+
+		return t(
+			isMajority
+				? "builds:stats.distribution.summary"
+				: "builds:stats.distribution.mostCommon",
+			{
+				weapon: weaponName,
+				ability: abilityName,
+				range: binLabel(mostCommonBin),
+				percentage: mostCommonBin.percentage,
+			},
+		);
+	}
 }
 
 function WeaponComparison({ ability }: { ability: StackableAbilityStats }) {

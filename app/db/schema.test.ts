@@ -18,6 +18,8 @@ const NOT_FOREIGN_KEYS: Record<string, string> = {
 		"a watermark, the message itself may be deleted",
 	"TournamentTeamHistory.tournamentTeamId":
 		"preserves the identity of a team after it is hard-deleted",
+	"BuildWeapon.ownerId":
+		"mirror of Build.ownerId, deleted along with its build",
 };
 
 describe("database schema", () => {

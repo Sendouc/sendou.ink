@@ -2,7 +2,6 @@ import clsx from "clsx";
 import {
 	ChevronDown,
 	ChevronRight,
-	LogIn,
 	RotateCcw,
 	SlidersHorizontal,
 } from "lucide-react";
@@ -12,8 +11,6 @@ import { useUser } from "~/features/auth/core/user";
 import { useHydrated } from "~/hooks/useHydrated";
 import { SendouBottomSheet } from "../elements/BottomSheet";
 import { SendouButton } from "../elements/Button";
-import { LogInPopover } from "../LogInPopover";
-import { LogInButtonContainer } from "../layout/LogInButtonContainer";
 import styles from "./FilterLayout.module.css";
 
 export interface FilterLayoutFilter {
@@ -32,12 +29,13 @@ export interface FilterLayoutFilter {
 
 /**
  * Results with their filters: a sidebar next to them when there is room, otherwise a summary
- * button above them opening the same filters in a bottom sheet.
+ * button above them opening the same filters in a bottom sheet. Logged out users get only the results.
  */
 export function FilterLayout({
 	filters,
 	onClearAll,
 	showResultsText,
+	filteredResultsText,
 	children,
 }: {
 	filters: FilterLayoutFilter[];
@@ -45,6 +43,8 @@ export function FilterLayout({
 	onClearAll?: () => void;
 	/** Label of the button closing the bottom sheet, e.g. "Show builds". */
 	showResultsText: string;
+	/** Shown above the results while filters are active, e.g. "142 builds". */
+	filteredResultsText?: string;
 	children: React.ReactNode;
 }) {
 	const isLoggedIn = Boolean(useUser());
@@ -56,6 +56,10 @@ export function FilterLayout({
 	);
 	const activeCount = activeLabels.length;
 
+	if (!isLoggedIn) {
+		return <div className={styles.results}>{children}</div>;
+	}
+
 	return (
 		<div className={styles.container}>
 			<div className={styles.layout}>
@@ -65,7 +69,6 @@ export function FilterLayout({
 						activeLabels={activeLabels}
 						onClearAll={activeCount > 0 ? onClearAll : undefined}
 						showResultsText={showResultsText}
-						isLoggedIn={isLoggedIn}
 					/>
 				</div>
 				<aside
@@ -75,15 +78,21 @@ export function FilterLayout({
 						activeCount={activeCount}
 						onClearAll={activeCount > 0 ? onClearAll : undefined}
 					/>
-					{isLoggedIn ? (
-						filters.map((filter) => (
-							<FilterSection key={filter.key} filter={filter} collapsible />
-						))
-					) : (
-						<LogInPrompt />
-					)}
+					{filters.map((filter) => (
+						<FilterSection key={filter.key} filter={filter} collapsible />
+					))}
 				</aside>
-				<div className={styles.results}>{children}</div>
+				<div className={styles.results}>
+					{activeCount > 0 && filteredResultsText ? (
+						<div
+							className={styles.filteredResultsText}
+							data-testid="filtered-results-text"
+						>
+							{filteredResultsText}
+						</div>
+					) : null}
+					{children}
+				</div>
 			</div>
 		</div>
 	);
@@ -94,13 +103,11 @@ function FilterSheet({
 	activeLabels,
 	onClearAll,
 	showResultsText,
-	isLoggedIn,
 }: {
 	filters: FilterLayoutFilter[];
 	activeLabels: Array<{ key: string; label: React.ReactNode }>;
 	onClearAll?: () => void;
 	showResultsText: string;
-	isLoggedIn: boolean;
 }) {
 	const { t } = useTranslation(["common"]);
 	const sheetId = React.useId();
@@ -135,10 +142,6 @@ function FilterSheet({
 			<ChevronRight className={styles.sheetTriggerChevron} />
 		</button>
 	);
-
-	if (!isLoggedIn) {
-		return <LogInPopover>{trigger}</LogInPopover>;
-	}
 
 	return (
 		<>
@@ -263,26 +266,6 @@ function FilterSection({
 			</summary>
 			<div className={styles.sectionContent}>{filter.content}</div>
 		</details>
-	);
-}
-
-function LogInPrompt() {
-	const { t } = useTranslation(["common"]);
-
-	return (
-		<div className={styles.logInPrompt}>
-			<div className={styles.logInPromptText}>{t("common:logInPrompt")}</div>
-			<LogInButtonContainer>
-				<SendouButton
-					type="submit"
-					size="small"
-					icon={<LogIn />}
-					data-testid="filters-log-in-button"
-				>
-					{t("common:header.login.discord")}
-				</SendouButton>
-			</LogInButtonContainer>
-		</div>
 	);
 }
 

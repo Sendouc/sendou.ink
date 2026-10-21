@@ -18,7 +18,7 @@ import {
 	ogPageImage,
 	type SerializeFrom,
 } from "../../../utils/remix";
-import { VARIETY_TOP_BUILDS_COUNT } from "../build-stats-constants";
+import { ANY_TIME } from "../build-stats-constants";
 import { buildStatsSearchParams } from "../build-stats-search-params";
 import { BuildStatsDateFilter } from "../components/BuildStatsDateFilter";
 import { PopularBuildCard } from "../components/PopularBuildCard";
@@ -78,10 +78,12 @@ export default function PopularBuildsPage() {
 			selectedTab="popular"
 		>
 			<div className="stack md-plus">
-				<BuildStatsDateFilter />
+				<BuildStatsDateFilter loaderDate={data.date} />
 				{data.popular.builds.length === 0 ? (
 					<EmptyState navItem="builds">
-						{t("builds:noPopularBuilds")}
+						{data.date === ANY_TIME
+							? t("builds:noBuildsForWeapon")
+							: t("builds:noBuildsMatchingFilters")}
 					</EmptyState>
 				) : (
 					<div className={styles.columns}>
@@ -187,7 +189,7 @@ function BuildVariety({ popular }: { popular: PopularData }) {
 				<p className="text-xs">
 					{t("builds:popular.variety.topBuildsShare", {
 						percentage: popular.topBuildsPercentage,
-						count: VARIETY_TOP_BUILDS_COUNT,
+						count: popular.topBuildsCount,
 					})}
 				</p>
 			</div>

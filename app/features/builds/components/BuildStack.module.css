@@ -39,8 +39,9 @@
 }
 
 .toggle {
-	display: grid;
-	width: 22px;
+	position: relative;
+	display: flex;
+	min-width: 22px;
 	height: 22px;
 	flex-shrink: 0;
 	margin-inline-start: auto;
@@ -50,7 +51,15 @@
 	background-color: var(--color-bg);
 	color: var(--color-text-high);
 	cursor: pointer;
-	place-items: center;
+	align-items: center;
+	justify-content: center;
+
+	/* touch target larger than the visible pill */
+	&::before {
+		content: "";
+		position: absolute;
+		inset: -8px -12px -8px -4px;
+	}
 
 	&:hover {
 		background-color: var(--color-bg-high);
@@ -65,5 +74,14 @@
 	& svg {
 		width: 14px;
 		height: 14px;
+		flex-shrink: 0;
 	}
+}
+
+.toggleWithCount {
+	padding-inline: var(--s-1-5);
+	border-radius: var(--radius-full);
+	font-size: var(--font-3xs);
+	font-weight: var(--weight-bold);
+	gap: var(--s-0-5);
 }

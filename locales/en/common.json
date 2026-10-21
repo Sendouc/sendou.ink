@@ -190,6 +190,7 @@
 	"filterBar.saveAsDefault": "Save as default",
 	"filterLayout.filters": "Filters",
 	"filterLayout.clearAll": "Clear all",
+	"filterLayout.clearFilters": "Clear filters",
 	"imageExport.export": "Export image",
 	"imageExport.download": "Download",
 	"imageExport.theme.light": "Light",

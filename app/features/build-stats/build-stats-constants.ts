@@ -1,4 +1,5 @@
 import { MAX_AP } from "~/features/build-analyzer/analyzer-constants";
+import { RECENT_PATCHES } from "~/features/builds/builds-constants";
 
 export const POPULAR_BUILDS_MAX_COUNT = 25;
 
@@ -23,3 +24,6 @@ export const AP_DISTRIBUTION_BINS = [
 
 /** Date filter value including builds updated whenever. */
 export const ANY_TIME = "ANY";
+
+/** Date filter value used when none is selected, the oldest patch the filter offers so the stats cover about a year. Falls back to `ANY_TIME` if the weapon has no builds since it. */
+export const DEFAULT_UPDATED_SINCE = RECENT_PATCHES.at(-1)!.date;

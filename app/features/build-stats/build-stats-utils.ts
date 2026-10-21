@@ -153,9 +153,11 @@ export function abilityStats({
 
 /**
  * The most popular ability combinations (by ability points, so the gear they're on doesn't matter) among the builds,
- * expected to be each player's newest one, plus how varied the builds are.
+ * expected to be each player's newest one, plus how varied the builds are. Builds with only one ability are left out
+ * as they are typically for testing.
  */
-export function popularBuilds(builds: Array<NewestBuild>) {
+export function popularBuilds(allBuilds: Array<NewestBuild>) {
+	const builds = allBuilds.filter((build) => !isSingleAbilityBuild(build));
 	const sortedGroups = Object.entries(
 		R.groupBy(builds, (build) => build.abilitiesSignature),
 	).sort(
@@ -176,20 +178,23 @@ export function popularBuilds(builds: Array<NewestBuild>) {
 		modes: frequentModes(group),
 		abilityPoints: parseSignature(signature),
 	}));
+	const topGroups = sortedGroups.slice(0, VARIETY_TOP_BUILDS_COUNT);
 
 	return {
 		builds: popular,
 		staples: staples(popular),
 		playersCount: builds.length,
 		uniqueBuildsCount: sortedGroups.length,
+		topBuildsCount: topGroups.length,
 		topBuildsPercentage: percentage(
-			R.sumBy(
-				popular.slice(0, VARIETY_TOP_BUILDS_COUNT),
-				(build) => build.playersCount,
-			),
+			R.sumBy(topGroups, ([, group]) => group.length),
 			builds.length,
 		),
 	};
+}
+
+function isSingleAbilityBuild(build: NewestBuild) {
+	return !build.abilitiesSignature.includes(",");
 }
 
 function ratio(part: number, whole: number) {

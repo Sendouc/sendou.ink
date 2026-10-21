@@ -19,7 +19,10 @@ import {
 } from "~/utils/urls";
 import { buildsSearchParams } from "../builds-search-params";
 import type { BuildWeaponWithTop500Info } from "../builds-types";
-import { BuildFiltersLayout } from "../components/BuildFilters";
+import {
+	BuildFiltersLayout,
+	ClearFiltersButton,
+} from "../components/BuildFilters";
 import { BuildStack } from "../components/BuildStack";
 import { WeaponBuildsLayout } from "../components/WeaponBuildsLayout";
 import { loader } from "../loaders/builds.$slug.server";
@@ -142,6 +145,8 @@ export default function WeaponsBuildsPage() {
 
 	const hasFilters =
 		abilityConditions.length > 0 || mode !== null || date !== null;
+	const clearFilters = () =>
+		setParams({ abilities: [], mode: null, date: null });
 
 	return (
 		<WeaponBuildsLayout
@@ -154,13 +159,19 @@ export default function WeaponsBuildsPage() {
 			<BuildFiltersLayout
 				values={{ abilities: abilityConditions, mode, date }}
 				onChange={setParams}
-				onClearAll={() => setParams({ abilities: [], mode: null, date: null })}
+				onClearAll={clearFilters}
+				filteredBuildsCount={data.filteredBuildsCount}
 				pagination={pagination}
 			>
 				{data.builds.length > 0 ? (
 					<BuildCards data={data} />
 				) : (
-					<EmptyState navItem="builds">
+					<EmptyState
+						navItem="builds"
+						action={
+							hasFilters ? <ClearFiltersButton onClick={clearFilters} /> : null
+						}
+					>
 						{hasFilters
 							? t("builds:noBuildsMatchingFilters")
 							: t("builds:noBuildsForWeapon")}

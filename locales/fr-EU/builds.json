@@ -16,7 +16,6 @@
 	"stats.private": "Privé",
 	"linkButton.abilityStats": "Statistiques",
 	"linkButton.popularBuilds": "Sets populaires",
-	"noPopularBuilds": "Il semble qu'il n'y ait pas de sets populaires pour cette arme en ce moment.",
 	"noBuildsForWeapon": "Il n'y a pas encore de sets pour cette arme",
 	"noBuildsMatchingFilters": "Aucun set ne correspond à ces filtres",
 	"emptyAbilitySlot": "Emplacement de bonus vide",

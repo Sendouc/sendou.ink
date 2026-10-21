@@ -10,7 +10,12 @@ import { buildStatsSearchParams } from "./build-stats-search-params";
 describe("buildStatsSearchParams", () => {
 	test("round-trips", () => {
 		assertRoundTrips(buildStatsSearchParams, {
-			date: [ANY_TIME, RECENT_PATCHES[0].date, RECENT_PATCHES.at(-1)!.date],
+			date: [
+				null,
+				ANY_TIME,
+				RECENT_PATCHES[0].date,
+				RECENT_PATCHES.at(-1)!.date,
+			],
 		});
 	});
 

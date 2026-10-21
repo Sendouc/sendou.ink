@@ -14,7 +14,6 @@ export class WeaponBuildsPage {
 			buildCards: page.getByTestId("build-card"),
 			abilityStatsTab: page.getByRole("tab", { name: /Ability stats/ }),
 			popularBuildsTab: page.getByRole("tab", { name: /Popular builds/ }),
-			filtersLogInButton: page.getByTestId("filters-log-in-button"),
 			expandStackButtons: page.getByTestId("expand-build-stack"),
 			collapseStackButtons: page.getByTestId("collapse-build-stack"),
 			abilityFilterTypeSelect: page.getByTestId("ability-filter-type-select"),

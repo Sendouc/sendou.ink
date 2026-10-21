@@ -46,6 +46,7 @@ export const loader = async ({ url }: LoaderFunctionArgs) => {
 	return {
 		buildSorting: user.buildSorting,
 		builds,
+		filteredBuildsCount: totalCount,
 		...paginate({ url, page, pageSize: BUILDS_PAGE_SIZE, totalCount }),
 		counts,
 	};

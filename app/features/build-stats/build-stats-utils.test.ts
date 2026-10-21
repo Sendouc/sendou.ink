@@ -179,31 +179,41 @@ describe("popularBuilds", () => {
 	test("groups the builds by their ability points, the most popular first", () => {
 		const result = popularBuilds([
 			build("SSU_10,LDE_10"),
-			...repeat(3, () => build("SSU_57")),
+			...repeat(3, () => build("SSU_54,RSU_3")),
 			build("SSU_10,LDE_10"),
 		]);
 
 		expect(
 			result.builds.map(({ id, playersCount }) => [id, playersCount]),
 		).toEqual([
-			["SSU_57", 3],
+			["SSU_54,RSU_3", 3],
 			["SSU_10,LDE_10", 2],
 		]);
 	});
 
+	test("leaves out builds with only one ability", () => {
+		const result = popularBuilds([
+			...repeat(3, () => build("SSU_57")),
+			...repeat(2, () => build("SSU_47,LDE_10")),
+		]);
+
+		expect(result.builds.map((b) => b.id)).toEqual(["SSU_47,LDE_10"]);
+		expect(result.playersCount).toBe(2);
+	});
+
 	test("leaves out ability combinations only one player runs", () => {
 		const result = popularBuilds([
-			build("SSU_57"),
-			build("SSU_57"),
+			build("SSU_54,RSU_3"),
+			build("SSU_54,RSU_3"),
 			build("SSU_47,LDE_10"),
 		]);
 
-		expect(result.builds.map((b) => b.id)).toEqual(["SSU_57"]);
+		expect(result.builds.map((b) => b.id)).toEqual(["SSU_54,RSU_3"]);
 	});
 
 	test("gives builds with as many players the same rank", () => {
 		const result = popularBuilds([
-			...repeat(3, () => build("SSU_57")),
+			...repeat(3, () => build("SSU_54,RSU_3")),
 			...repeat(2, () => build("SSU_47,LDE_10")),
 			...repeat(2, () => build("SSU_47,CB_10")),
 			...repeat(2, () => build("SSU_47,OG_10")),
@@ -214,8 +224,8 @@ describe("popularBuilds", () => {
 
 	test("tells the share of players running a build", () => {
 		const result = popularBuilds([
-			build("SSU_57"),
-			build("SSU_57"),
+			build("SSU_54,RSU_3"),
+			build("SSU_54,RSU_3"),
 			build("SSU_47,LDE_10"),
 			build("SSU_47,CB_10"),
 		]);
@@ -235,9 +245,9 @@ describe("popularBuilds", () => {
 
 	test("lists the modes more than half of a build's players play it in", () => {
 		const result = popularBuilds([
-			build("SSU_57", { modes: ["SZ", "TC"] }),
-			build("SSU_57", { modes: ["SZ"] }),
-			build("SSU_57", { modes: null }),
+			build("SSU_54,RSU_3", { modes: ["SZ", "TC"] }),
+			build("SSU_54,RSU_3", { modes: ["SZ"] }),
+			build("SSU_54,RSU_3", { modes: null }),
 		]);
 
 		expect(result.builds[0].modes).toEqual(["SZ"]);
@@ -257,26 +267,42 @@ describe("popularBuilds", () => {
 
 	test("counts how many popular builds run each ability", () => {
 		const result = popularBuilds([
-			...repeat(2, () => build("SSU_57")),
+			...repeat(2, () => build("SSU_54,RSU_3")),
 			...repeat(2, () => build("SSU_47,LDE_10")),
 		]);
 
 		expect(result.staples).toEqual([
 			{ ability: "SSU", buildsCount: 2 },
 			{ ability: "LDE", buildsCount: 1 },
+			{ ability: "RSU", buildsCount: 1 },
 		]);
 	});
 
 	test("tells how varied the builds are", () => {
 		const result = popularBuilds([
-			...repeat(3, () => build("SSU_57")),
+			...repeat(3, () => build("SSU_54,RSU_3")),
 			build("SSU_47,LDE_10"),
 		]);
 
 		expect(result).toMatchObject({
 			playersCount: 4,
 			uniqueBuildsCount: 2,
-			topBuildsPercentage: 75,
+			topBuildsCount: 2,
+			topBuildsPercentage: 100,
+		});
+	});
+
+	test("counts builds only one player runs among the top builds", () => {
+		const result = popularBuilds([
+			...repeat(2, () => build("SSU_54,RSU_3")),
+			...Array.from({ length: 18 }, (_, i) =>
+				build(`SSU_${i + 1},LDE_${56 - i}`),
+			),
+		]);
+
+		expect(result).toMatchObject({
+			topBuildsCount: 10,
+			topBuildsPercentage: 55,
 		});
 	});
 });

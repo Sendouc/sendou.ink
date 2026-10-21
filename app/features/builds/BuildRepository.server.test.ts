@@ -614,18 +614,44 @@ describe("BuildRepository.findPageByWeaponId", () => {
 		await users.create(2);
 	});
 
-	test("returns a page of builds and the total count", async () => {
-		await BuildFactory.createMany(BUILDS_PAGE_SIZE + 1, {
-			ownerId: users.id(1),
-			weaponSplIds: [SPLATTERSHOT],
-		});
+	test("pages by author with all of their builds, counting the authors", async () => {
+		await users.create(BUILDS_PAGE_SIZE + 1);
+		for (const ownerId of users.ids()) {
+			await BuildFactory.createMany(2, {
+				ownerId,
+				weaponSplIds: [SPLATTERSHOT],
+			});
+		}
 
 		const firstPage = await weaponBuilds(SPLATTERSHOT, { page: 1 });
 		const secondPage = await weaponBuilds(SPLATTERSHOT, { page: 2 });
 
-		expect(firstPage.builds).toHaveLength(BUILDS_PAGE_SIZE);
-		expect(firstPage.totalCount).toBe(BUILDS_PAGE_SIZE + 1);
-		expect(secondPage.builds).toHaveLength(1);
+		expect(firstPage.builds).toHaveLength(BUILDS_PAGE_SIZE * 2);
+		expect(firstPage.ownerCount).toBe(BUILDS_PAGE_SIZE + 1);
+		expect(secondPage.builds).toHaveLength(2);
+	});
+
+	test("keeps an author's builds together, after their newest", async () => {
+		const oldest = await createBuild({ ownerId: users.id(1) });
+		await BuildFactory.backdate(oldest.id, new Date("2024-01-01"));
+		const older = await createBuild({ ownerId: users.id(2) });
+		await BuildFactory.backdate(older.id, new Date("2025-01-01"));
+		const newest = await createBuild({ ownerId: users.id(1) });
+
+		const result = await weaponBuilds(SPLATTERSHOT);
+
+		expect(idsOf(result)).toEqual([newest.id, oldest.id, older.id]);
+	});
+
+	test("ranks authors by their best ranked build", async () => {
+		await makeTop500(users.id(2), SPLATTERSHOT);
+		const older = await createBuild({ ownerId: users.id(2) });
+		await BuildFactory.backdate(older.id, new Date("2025-01-01"));
+		const newest = await createBuild({ ownerId: users.id(1) });
+
+		const result = await weaponBuilds(SPLATTERSHOT);
+
+		expect(idsOf(result)).toEqual([older.id, newest.id]);
 	});
 
 	test("excludes private builds", async () => {
@@ -663,6 +689,21 @@ describe("BuildRepository.findPageByWeaponId", () => {
 		});
 
 		expect(idsOf(result)).toEqual([towerControl.id]);
+		expect(result.ownerCount).toBe(1);
+	});
+
+	test("counts the matching builds only when filtering", async () => {
+		await createBuild({ ownerId: users.id(1), modes: ["TC"] });
+		await createBuild({ ownerId: users.id(1), modes: ["TC"] });
+		await createBuild({ ownerId: users.id(2), modes: ["SZ"] });
+
+		const filtered = await weaponBuilds(SPLATTERSHOT, {
+			filters: { ...NO_FILTERS, mode: "TC" },
+		});
+		const unfiltered = await weaponBuilds(SPLATTERSHOT);
+
+		expect(filtered.buildCount).toBe(2);
+		expect(unfiltered.buildCount).toBeNull();
 	});
 
 	test("filters by the date the build was last updated after", async () => {

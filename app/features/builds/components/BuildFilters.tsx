@@ -1,5 +1,11 @@
 import clsx from "clsx";
-import { Calendar, FlaskConical, Map as MapIcon, X } from "lucide-react";
+import {
+	Calendar,
+	FlaskConical,
+	Map as MapIcon,
+	RotateCcw,
+	X,
+} from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -42,6 +48,7 @@ export function BuildFiltersLayout({
 	onChange: setParams,
 	onClearAll,
 	leadingFilters = [],
+	filteredBuildsCount,
 	pagination,
 	children,
 }: {
@@ -50,6 +57,8 @@ export function BuildFiltersLayout({
 	/** Resets every filter, including `leadingFilters`. */
 	onClearAll: () => void;
 	leadingFilters?: FilterLayoutFilter[];
+	/** How many builds match the active filters, null if unknown. */
+	filteredBuildsCount: number | null;
 	/** Shown below the results when there is more than one page. */
 	pagination: React.ComponentProps<typeof Pagination>;
 	children: React.ReactNode;
@@ -116,10 +125,32 @@ export function BuildFiltersLayout({
 			]}
 			onClearAll={onClearAll}
 			showResultsText={t("builds:filters.showBuilds")}
+			filteredResultsText={
+				filteredBuildsCount
+					? t("builds:weaponBuildCount", { count: filteredBuildsCount })
+					: undefined
+			}
 		>
 			{children}
 			{pagination.pagesCount > 1 ? <Pagination {...pagination} /> : null}
 		</FilterLayout>
+	);
+}
+
+/** For the empty state of filtered results, so the filters can be reset without opening them. */
+export function ClearFiltersButton({ onClick }: { onClick: () => void }) {
+	const { t } = useTranslation(["common"]);
+
+	return (
+		<SendouButton
+			variant="outlined"
+			size="small"
+			icon={<RotateCcw />}
+			onClick={onClick}
+			data-testid="empty-state-clear-filters"
+		>
+			{t("common:filterLayout.clearFilters")}
+		</SendouButton>
 	);
 }
 

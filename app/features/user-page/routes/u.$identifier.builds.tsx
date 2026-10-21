@@ -4,11 +4,13 @@ import {
 	Eye,
 	Lock,
 	LockOpen,
+	Search,
 	Trash,
 } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useFetcher, useLoaderData } from "react-router";
+import * as R from "remeda";
 import { BuildCard } from "~/components/BuildCard";
 import { EmptyState } from "~/components/EmptyState";
 import { SendouButton } from "~/components/elements/Button";
@@ -16,12 +18,14 @@ import { SendouDialog } from "~/components/elements/Dialog";
 import { FormMessage } from "~/components/FormMessage";
 import type { FilterLayoutFilter } from "~/components/filter-layout/FilterLayout";
 import { Image, WeaponImage } from "~/components/Image";
+import { Input } from "~/components/Input";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useUser } from "~/features/auth/core/user";
 import {
 	BuildFilterRadioGroup,
 	BuildFilterRadioOption,
 	BuildFiltersLayout,
+	ClearFiltersButton,
 } from "~/features/builds/components/BuildFilters";
 import {
 	BUILD_SORT_IDENTIFIERS,
@@ -31,6 +35,7 @@ import {
 import { buildsActionSchema } from "~/features/user-page/user-page-schemas";
 import { useSearchParamPagination } from "~/hooks/useSearchParamPagination";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
+import { filterWeapon } from "~/modules/in-game-lists/utils";
 import { mainWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 import { hasPermission } from "~/modules/permissions/utils";
 import { useSearchParamsTyped } from "~/modules/search-params/hooks";
@@ -45,6 +50,8 @@ import { userBuildsSearchParams } from "../user-page-search-params";
 import styles from "./u.$identifier.builds.module.css";
 
 export { action, loader };
+
+const WEAPON_FILTER_COLLAPSED_COUNT = 8;
 
 export const shouldRevalidate = userBuildsSearchParams.shouldRevalidate;
 
@@ -67,7 +74,7 @@ export default function UserBuildsPage() {
 
 	const isOwnPage = user?.id === layoutData.user.id;
 	const changingSorting = sorting && isOwnPage;
-	// here so closing the dialog mid-submit doesn't unmount the fetcher and drop the redirect
+	// here so closing the dialog mid-submit doesn't unmount the fetcher and drop the revalidation
 	const sortingFetcher = useFetcher();
 
 	const closeSortingDialog = () => setParams({ sorting: false });
@@ -80,6 +87,14 @@ export default function UserBuildsPage() {
 		abilities.length > 0 ||
 		mode !== null ||
 		date !== null;
+	const clearFilters = () =>
+		setParams({
+			weapon: null,
+			visibility: null,
+			abilities: [],
+			mode: null,
+			date: null,
+		});
 
 	const leadingFilters: FilterLayoutFilter[] = [
 		{
@@ -129,7 +144,12 @@ export default function UserBuildsPage() {
 				))}
 			</div>
 		) : (
-			<EmptyState navItem="builds">
+			<EmptyState
+				navItem="builds"
+				action={
+					hasFilters ? <ClearFiltersButton onClick={clearFilters} /> : null
+				}
+			>
 				{hasFilters ? t("noBuildsMatchingFilters") : t("noBuilds")}
 			</EmptyState>
 		);
@@ -159,16 +179,9 @@ export default function UserBuildsPage() {
 				<BuildFiltersLayout
 					values={{ abilities, mode, date }}
 					onChange={setParams}
-					onClearAll={() =>
-						setParams({
-							weapon: null,
-							visibility: null,
-							abilities: [],
-							mode: null,
-							date: null,
-						})
-					}
+					onClearAll={clearFilters}
 					leadingFilters={leadingFilters}
+					filteredBuildsCount={data.filteredBuildsCount}
 					pagination={pagination}
 				>
 					{buildCards}
@@ -330,27 +343,61 @@ function WeaponFilter({
 	weapon: MainWeaponId | null;
 	onChange: (weapon: MainWeaponId | null) => void;
 }) {
-	const { t } = useTranslation(["weapons", "builds"]);
+	const { t } = useTranslation(["weapons", "builds", "common"]);
 	const data = useLoaderData<typeof loader>();
 	const name = React.useId();
+	const [searchTerm, setSearchTerm] = React.useState("");
+	const [showAll, setShowAll] = React.useState(false);
+
+	const buildCount = (weaponId: MainWeaponId) =>
+		data.counts.byWeaponId[weaponId] ?? 0;
+	const weaponIdsByBuildCount = R.sortBy(
+		mainWeaponIds.filter((weaponId) => buildCount(weaponId) > 0),
+		[buildCount, "desc"],
+	);
+	const isCollapsible =
+		weaponIdsByBuildCount.length > WEAPON_FILTER_COLLAPSED_COUNT;
+	const isSearching = searchTerm !== "";
+
+	const shownWeaponIds = isSearching
+		? weaponIdsByBuildCount.filter((weaponId) =>
+				filterWeapon({
+					weapon: { type: "MAIN", id: weaponId },
+					weaponName: t(`weapons:MAIN_${weaponId}`),
+					searchTerm,
+				}),
+			)
+		: weaponIdsByBuildCount.filter(
+				(weaponId, i) =>
+					showAll || i < WEAPON_FILTER_COLLAPSED_COUNT || weaponId === weapon,
+			);
+	const hasHiddenWeapons =
+		!isSearching && shownWeaponIds.length < weaponIdsByBuildCount.length;
 
 	return (
-		<BuildFilterRadioGroup label={t("builds:filters.weapon")}>
-			<BuildFilterRadioOption
-				name={name}
-				checked={weapon === null}
-				onChange={() => onChange(null)}
-				icon={<Image path={weaponCategoryUrl("SHOOTERS")} size={20} alt="" />}
-				sub={String(data.counts.total)}
-			>
-				{t("builds:filters.weapon.any")}
-			</BuildFilterRadioOption>
-			{mainWeaponIds.map((weaponId) => {
-				const count = data.counts.byWeaponId[weaponId];
-
-				if (!count) return null;
-
-				return (
+		<div className="stack sm">
+			{isCollapsible ? (
+				<Input
+					type="search"
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
+					placeholder={t("common:forms.weaponSearch.search.placeholder")}
+					aria-label={t("common:forms.weaponSearch.search.placeholder")}
+					icon={<Search aria-hidden />}
+					testId="weapon-filter-search"
+				/>
+			) : null}
+			<BuildFilterRadioGroup label={t("builds:filters.weapon")}>
+				<BuildFilterRadioOption
+					name={name}
+					checked={weapon === null}
+					onChange={() => onChange(null)}
+					icon={<Image path={weaponCategoryUrl("SHOOTERS")} size={20} alt="" />}
+					sub={String(data.counts.total)}
+				>
+					{t("builds:filters.weapon.any")}
+				</BuildFilterRadioOption>
+				{shownWeaponIds.map((weaponId) => (
 					<BuildFilterRadioOption
 						key={weaponId}
 						name={name}
@@ -359,13 +406,27 @@ function WeaponFilter({
 						icon={
 							<WeaponImage weaponSplId={weaponId} variant="badge" size={20} />
 						}
-						sub={String(count)}
+						sub={String(buildCount(weaponId))}
 					>
 						{t(`weapons:MAIN_${weaponId}`)}
 					</BuildFilterRadioOption>
-				);
-			})}
-		</BuildFilterRadioGroup>
+				))}
+			</BuildFilterRadioGroup>
+			{isSearching && shownWeaponIds.length === 0 ? (
+				<div className="text-xs text-lighter text-center">
+					{t("common:noResults")}
+				</div>
+			) : null}
+			{hasHiddenWeapons ? (
+				<SendouButton
+					variant="minimal"
+					size="small"
+					onClick={() => setShowAll(true)}
+				>
+					{t("common:actions.showAll")} ({weaponIdsByBuildCount.length})
+				</SendouButton>
+			) : null}
+		</div>
 	);
 }
 

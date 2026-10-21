@@ -8,10 +8,13 @@ import { ANY_TIME } from "../build-stats-constants";
 import { buildStatsSearchParams } from "../build-stats-search-params";
 import styles from "./BuildStatsDateFilter.module.css";
 
-/** Filter of the build stats pages picking the patch the builds have to be updated since. */
-export function BuildStatsDateFilter() {
+/** Filter of the build stats pages picking the patch the builds have to be updated since. `loaderDate` is the date the loader resolved to when none is selected. */
+export function BuildStatsDateFilter({ loaderDate }: { loaderDate: string }) {
 	const { t } = useTranslation(["builds"]);
-	const [{ date }, setParams] = useSearchParamsTyped(buildStatsSearchParams);
+	const [{ date: selectedDate }, setParams] = useSearchParamsTyped(
+		buildStatsSearchParams,
+	);
+	const date = selectedDate ?? loaderDate;
 
 	const options = [
 		{ date: ANY_TIME, label: t("builds:filters.date.anyTime") },

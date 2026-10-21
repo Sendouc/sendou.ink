@@ -35,6 +35,12 @@
 	min-width: 0;
 }
 
+.filteredResultsText {
+	color: var(--color-text-high);
+	font-size: var(--font-sm);
+	font-weight: var(--weight-semi);
+}
+
 .sidebar {
 	position: sticky;
 	top: var(--layout-sticky-top);
@@ -148,6 +154,10 @@
 }
 
 .sectionValue {
+	overflow: hidden;
+	min-width: 0;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	font-size: var(--font-xs);
 	font-weight: var(--weight-semi);
 	color: var(--color-fg-accent);
@@ -167,20 +177,6 @@
 
 .sectionContent {
 	margin-block-start: var(--s-1-5);
-}
-
-.logInPrompt {
-	display: flex;
-	flex-direction: column;
-	gap: var(--s-3);
-	padding-block: var(--s-4);
-	border-top: var(--border-style);
-}
-
-.logInPromptText {
-	font-size: var(--font-xs);
-	color: var(--color-text-high);
-	text-align: center;
 }
 
 .sheetTrigger {

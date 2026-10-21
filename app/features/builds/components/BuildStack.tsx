@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { IS_E2E_TEST_RUN } from "~/utils/e2e";
 import styles from "./BuildStack.module.css";
 
-const LAYER_OFFSET_PX = 5;
-const MAX_PEEKING_LAYERS = 1;
+const LAYER_OFFSET_PX = 4;
+const MAX_PEEKING_LAYERS = 2;
 const FAN_OUT_OFFSET_PX = 14;
 const MAX_FANNED_LAYERS = 4;
 const FAN_OUT_DURATION_MS = 150;
@@ -50,7 +50,9 @@ export function BuildStack({ buildId, stack, children }: BuildStackProps) {
 	const toggle = stack ? (
 		<button
 			type="button"
-			className={styles.toggle}
+			className={clsx(styles.toggle, {
+				[styles.toggleWithCount]: !stack.isExpanded,
+			})}
 			onClick={stack.isExpanded ? stack.onToggle : expand}
 			aria-expanded={stack.isExpanded}
 			aria-label={toggleLabel}
@@ -59,7 +61,13 @@ export function BuildStack({ buildId, stack, children }: BuildStackProps) {
 				stack.isExpanded ? "collapse-build-stack" : "expand-build-stack"
 			}
 		>
-			{stack.isExpanded ? <FoldHorizontal /> : <UnfoldHorizontal />}
+			{stack.isExpanded ? (
+				<FoldHorizontal />
+			) : (
+				<>
+					<UnfoldHorizontal />+{stack.buildIds.length}
+				</>
+			)}
 		</button>
 	) : null;
 

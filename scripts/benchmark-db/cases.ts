@@ -293,6 +293,18 @@ export function buildCases(fx: Fixtures): {
 				sortAbilities: true,
 			}),
 	);
+	// pages by author, so the authors before the page are read off the index first
+	add(
+		"BuildRepository.findPageByWeaponId.deepPage",
+		fx.heavyWeaponSplId,
+		(weaponSplId) =>
+			BuildRepository.findPageByWeaponId({
+				weaponId: weaponSplId,
+				filters: { abilities: [], mode: null, date: null },
+				page: 50,
+				sortAbilities: true,
+			}),
+	);
 	// rare abilities match almost nothing, so every build of the weapon is checked
 	add(
 		"BuildRepository.findPageByWeaponId.rareFilters",

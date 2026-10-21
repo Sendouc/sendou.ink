@@ -19,18 +19,25 @@ export const loader = async ({ params, url }: LoaderFunctionArgs) => {
 
 	const { page, ...filters } = buildsSearchParams.parse(url);
 
-	const { builds, totalCount } = await BuildRepository.findPageByWeaponId({
-		weaponId,
-		filters,
-		page,
-		sortAbilities: !user?.preferences?.disableBuildAbilitySorting,
-	});
+	const { builds, ownerCount, buildCount } =
+		await BuildRepository.findPageByWeaponId({
+			weaponId,
+			filters,
+			page,
+			sortAbilities: !user?.preferences?.disableBuildAbilitySorting,
+		});
 
 	return {
 		weaponId,
 		weaponName: englishWeaponName({ type: "MAIN", id: weaponId }),
 		builds,
-		...paginate({ url, page, pageSize: BUILDS_PAGE_SIZE, totalCount }),
+		filteredBuildsCount: buildCount,
+		...paginate({
+			url,
+			page,
+			pageSize: BUILDS_PAGE_SIZE,
+			totalCount: ownerCount,
+		}),
 		slug: weaponSlug({ type: "MAIN", id: weaponId }),
 		buildsCount: (await cachedPublicBuildCounts()).get(weaponId) ?? 0,
 	};

@@ -16,7 +16,6 @@
 	"stats.private": "Privado",
 	"linkButton.abilityStats": "Estadísticas de potenciadores",
 	"linkButton.popularBuilds": "Builds populares",
-	"noPopularBuilds": "Parece que no hay builds populares para esta arma en este momento.",
 	"noBuildsForWeapon": "Aún no hay builds para esta arma",
 	"noBuildsMatchingFilters": "No hay builds que coincidan con los filtros",
 	"emptyAbilitySlot": "Espacio de potenciador vacío",
