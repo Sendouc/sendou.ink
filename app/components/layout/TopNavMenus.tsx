@@ -33,6 +33,7 @@ const NAV_CATEGORIES = [
 		items: [
 			{ name: "sendouq", url: "q" },
 			{ name: "scrims", url: "scrims" },
+			{ name: "lobbies", url: "lobbies" },
 			{ name: "lfg", url: "lfg" },
 			{ name: "calendar", url: "calendar" },
 			{ name: "leaderboards", url: "leaderboards" },

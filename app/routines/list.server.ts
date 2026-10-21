@@ -13,6 +13,7 @@ import { DeleteOldVoiceTelemetryRoutine } from "./deleteOldVoiceTelemetry";
 import { DeleteOrphanArtTagsRoutine } from "./deleteOrphanArtTags";
 import { EvictStaleRunningTournamentsRoutine } from "./evictStaleRunningTournaments";
 import { ExpireReadyChecksRoutine } from "./expireReadyChecks";
+import { LobbiesRoutine } from "./lobbies";
 import { NotifyCheckInStartRoutine } from "./notifyCheckInStart";
 import { NotifyLeagueMatchStartingSoonRoutine } from "./notifyLeagueMatchStartingSoon";
 import { NotifyPlusServerVotingRoutine } from "./notifyPlusServerVoting";
@@ -72,4 +73,5 @@ export const weekly = [VacuumDatabaseRoutine];
 export const everyTwoMinutes = [
 	SyncLiveStreamsRoutine,
 	ExpireReadyChecksRoutine,
+	LobbiesRoutine,
 ];

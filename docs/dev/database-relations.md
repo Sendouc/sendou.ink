@@ -143,6 +143,26 @@ erDiagram
 
 - Denormalized tables to make fetching these efficient
 
+## Lobbies
+
+```mermaid
+erDiagram
+    Lobby ||--|{ LobbyParticipant : has
+    Lobby ||--o{ LobbySet : plays
+    LobbySet ||--|{ LobbySetParticipant : has
+    LobbySet ||--|{ LobbyGame : has
+    Lobby ||--o{ LobbyReadyCheck : has
+    LobbyReadyCheck ||--o{ LobbyReadyCheckUser : asks
+
+    User ||--o{ LobbyParticipant : participates
+    User ||--o{ LobbySetParticipant : plays
+```
+
+### Notes
+
+- Everything a lobby does next (starting, shuffling, filling the room) is decided from these rows by `LobbyTransition.next` and applied by `LobbyProgression.advance`, see the lobbies feature folder
+- Lobby-local ratings are not stored, they are computed from the games of finished sets
+
 ## Scrims
 
 ```mermaid
@@ -154,6 +174,21 @@ erDiagram
     User ||--o{ ScrimPostUser : participates
     User ||--o{ ScrimPostRequestUser : participates
 ```
+
+## Content visibility
+
+```mermaid
+erDiagram
+    ScrimPost ||--|{ ContentVisibility : visible_to
+    Lobby ||--|{ ContentVisibility : visible_to
+    Association ||--o{ ContentVisibility : audience
+    User ||--o{ ContentVisibility : friends_of
+```
+
+### Notes
+
+- One row per audience step of the schedule (base audience from creation, "if not found by" steps from their time), an entity with no restriction has a single public row
+- Evaluated only in SQL with the `visibleTo` / `isPublicNow` / `mentionsAssociation` fragments of `~/utils/kysely.server`
 
 ## Teams
 

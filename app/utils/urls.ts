@@ -188,6 +188,7 @@ export const NAV_ICONS = [
 	"badges",
 	"luti",
 	"scanner",
+	"lobbies",
 ] as const;
 
 export type NavIcon = (typeof NAV_ICONS)[number];
@@ -378,6 +379,18 @@ export const scrimPage = (id: number) => {
 
 export const newScrimPostPage = () => {
 	return "/scrims/new";
+};
+
+export const lobbiesPage = () => {
+	return "/lobbies";
+};
+
+export const lobbyPage = (id: number) => {
+	return `${lobbiesPage()}/${id}`;
+};
+
+export const newLobbyPage = () => {
+	return "/lobbies/new";
 };
 
 export const newAssociationsPage = () => {

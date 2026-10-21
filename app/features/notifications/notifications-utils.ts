@@ -8,6 +8,7 @@ import {
 	badgePage,
 	EVENTS_PAGE,
 	FRIENDS_PAGE,
+	lobbyPage,
 	NEW_TROPHY_PAGE,
 	PLUS_VOTING_PAGE,
 	SENDOUQ_PAGE,
@@ -75,6 +76,12 @@ export const notificationNavIcon = (type: Notification["type"]) => {
 			return "calendar";
 		case "CHAT_MENTION":
 			return "u";
+		case "LOBBY_CHECK_IN_OPENED":
+		case "LOBBY_STARTED":
+		case "LOBBY_PROMOTED":
+		case "LOBBY_HOST":
+		case "LOBBY_READY_CHECK":
+			return "lobbies";
 		default:
 			assertUnreachable(type);
 	}
@@ -163,6 +170,13 @@ export const notificationLink = (
 		}
 		case "SCHEDULE_TEAM_REMINDER": {
 			return EVENTS_PAGE;
+		}
+		case "LOBBY_CHECK_IN_OPENED":
+		case "LOBBY_STARTED":
+		case "LOBBY_PROMOTED":
+		case "LOBBY_HOST":
+		case "LOBBY_READY_CHECK": {
+			return lobbyPage(notification.meta.lobbyId);
 		}
 		case "CHAT_MENTION": {
 			return chatOpenedPage({

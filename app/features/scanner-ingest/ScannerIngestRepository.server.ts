@@ -3,8 +3,10 @@ import { subDays } from "date-fns";
 import { sql, type Transaction } from "kysely";
 import { db } from "~/db/sql";
 import type { DB } from "~/db/tables";
+import { LOBBY_SIDE_TEAM_ID } from "~/features/lobbies/lobbies-constants";
 import type { ScannerMatch } from "~/features/scanner/core/scanner-match";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { assertUnreachable } from "~/utils/types";
 import * as Matches from "./core/Matches";
 import type {
 	IngestableGame,
@@ -90,6 +92,20 @@ export function sendouqGamesPlayedByUserSince(params: {
 	since: number;
 }) {
 	return sendouqGames(params);
+}
+
+/** A lobby set's reported games in map order, see {@link gamesInGroupMatch}. */
+export function gamesInLobbySet(lobbySetId: number) {
+	return lobbyGames({ lobbySetId });
+}
+
+/** Reported lobby games a user played since the timestamp, chronological — candidates for Scoreboards.resolveContext. */
+export function lobbyGamesPlayedByUserSince(params: {
+	userId: number;
+	/** database timestamp (seconds) */
+	since: number;
+}) {
+	return lobbyGames(params);
 }
 
 /**
@@ -196,6 +212,42 @@ export async function groupMatchIdAt({
 		)
 		.where("GroupMatch.cancelAcceptedByUserId", "is", null)
 		.orderBy(startedNearestBefore("GroupMatch.createdAt", atSeconds))
+		.executeTakeFirst();
+
+	return row?.id ?? null;
+}
+
+/**
+ * The lobby set the user was probably playing at `at`: one they played a side of, started close enough
+ * before it. The most recently started wins, sets follow each other back to back.
+ */
+export async function lobbySetIdAt({
+	userId,
+	at,
+}: {
+	userId: number;
+	/** wall-clock ms */
+	at: number;
+}) {
+	const atSeconds = toDbTimestamp(at)!;
+
+	const row = await db
+		.selectFrom("LobbySetParticipant")
+		.innerJoin("LobbySet", "LobbySet.id", "LobbySetParticipant.setId")
+		.select("LobbySet.id")
+		.where("LobbySetParticipant.userId", "=", userId)
+		.where("LobbySetParticipant.side", "is not", null)
+		.where(
+			"LobbySet.createdAt",
+			"<=",
+			atSeconds + GROUP_MATCH_WINDOW_AFTER_SECONDS,
+		)
+		.where(
+			"LobbySet.createdAt",
+			">=",
+			atSeconds - GROUP_MATCH_WINDOW_BEFORE_SECONDS,
+		)
+		.orderBy(startedNearestBefore("LobbySet.createdAt", atSeconds))
 		.executeTakeFirst();
 
 	return row?.id ?? null;
@@ -399,6 +451,58 @@ export async function findScoreboardsByGroupMatchId(groupMatchId: number) {
 	});
 }
 
+/** The lobby's ingested scoreboards per set and 0-based map index, derived from each map's linked ingests. */
+export async function findScoreboardsByLobbyId(lobbyId: number) {
+	const rows = await db
+		.selectFrom("IngestedMatchLink")
+		.innerJoin(
+			"IngestedMatch",
+			"IngestedMatch.id",
+			"IngestedMatchLink.ingestedMatchId",
+		)
+		.innerJoin("LobbyGame", "LobbyGame.id", "IngestedMatchLink.lobbyGameId")
+		.innerJoin("LobbySet", "LobbySet.id", "LobbyGame.setId")
+		.select([
+			"LobbyGame.id as lobbyGameId",
+			"LobbyGame.setId as lobbySetId",
+			"LobbyGame.index as mapIndex",
+			"LobbyGame.winnerSide",
+			"IngestedMatch.data",
+			"IngestedMatch.povUserId",
+		])
+		.where("LobbySet.lobbyId", "=", lobbyId)
+		.where("LobbyGame.winnerSide", "is not", null)
+		.orderBy("LobbyGame.id", "asc")
+		.orderBy("IngestedMatchLink.createdAt", "asc")
+		.orderBy("IngestedMatchLink.id", "asc")
+		.execute();
+
+	const byGame = new Map<number, typeof rows>();
+	for (const row of rows) {
+		const gameRows = byGame.get(row.lobbyGameId) ?? [];
+		gameRows.push(row);
+		byGame.set(row.lobbyGameId, gameRows);
+	}
+
+	return [...byGame.values()].flatMap((gameRows) => {
+		const first = gameRows[0]!;
+		const winnerSide = first.winnerSide!;
+
+		const data = Scoreboards.deriveScoreboardData({
+			linked: gameRows.map((row) => ({
+				data: row.data,
+				povUserId: row.povUserId,
+			})),
+			winnerTeamId: LOBBY_SIDE_TEAM_ID[winnerSide],
+			loserTeamId:
+				LOBBY_SIDE_TEAM_ID[winnerSide === "ALPHA" ? "BRAVO" : "ALPHA"],
+		});
+		if (!data) return [];
+
+		return [{ lobbySetId: first.lobbySetId, mapIndex: first.mapIndex, data }];
+	});
+}
+
 /**
  * Stores ingested matches, merging partials: one `Matches.isSameMatch` recognizes (same POV user
  * scope) enriches the stored row instead of inserting; identical resends are no-ops via the
@@ -422,6 +526,7 @@ export async function addOrMergeMatches({
 		tournamentIdHint:
 			context?.type === "tournament" ? context.tournamentId : null,
 		groupMatchIdHint: context?.type === "sendouq" ? context.groupMatchId : null,
+		lobbySetIdHint: context?.type === "lobby" ? context.lobbySetId : null,
 	};
 
 	return db.transaction().execute(async (trx) => {
@@ -480,6 +585,10 @@ export async function addLinks({
 						link.game.target.type === "sendouq"
 							? link.game.target.groupMatchMapId
 							: null,
+					lobbyGameId:
+						link.game.target.type === "lobby"
+							? link.game.target.lobbyGameId
+							: null,
 				})
 				.onConflict((oc) => oc.column("ingestedMatchId").doNothing())
 				.executeTakeFirst();
@@ -512,15 +621,26 @@ export function findUnlinkedMatchesByHint({
 			"IngestedMatch.data",
 			"IngestedMatch.povUserId",
 		])
-		.where(
-			context.type === "tournament"
-				? "IngestedMatch.tournamentIdHint"
-				: "IngestedMatch.groupMatchIdHint",
-			"=",
-			context.type === "tournament"
-				? context.tournamentId
-				: context.groupMatchId,
-		)
+		.where((eb) => {
+			switch (context.type) {
+				case "tournament":
+					return eb(
+						"IngestedMatch.tournamentIdHint",
+						"=",
+						context.tournamentId,
+					);
+				case "sendouq":
+					return eb(
+						"IngestedMatch.groupMatchIdHint",
+						"=",
+						context.groupMatchId,
+					);
+				case "lobby":
+					return eb("IngestedMatch.lobbySetIdHint", "=", context.lobbySetId);
+				default:
+					assertUnreachable(context);
+			}
+		})
 		.where("IngestedMatch.playedAt", ">=", playedSince)
 		.where((eb) =>
 			eb.not(
@@ -551,6 +671,23 @@ export async function deleteLinksByGroupMatchMapId(
 		.execute();
 }
 
+/** Unlinks every ingested match from a lobby game, as when its report is undone. */
+export async function deleteLinksByLobbyGameId(
+	lobbyGameId: number,
+	trx?: Transaction<DB>,
+) {
+	await (trx ?? db)
+		.deleteFrom("IngestedMatchLink")
+		.where("IngestedMatchLink.lobbyGameId", "=", lobbyGameId)
+		.execute();
+}
+
+type Hints = {
+	tournamentIdHint: number | null;
+	groupMatchIdHint: number | null;
+	lobbySetIdHint: number | null;
+};
+
 async function addOrMergeMatch(
 	trx: Transaction<DB>,
 	{
@@ -562,7 +699,7 @@ async function addOrMergeMatch(
 		povUserId: number | null;
 		submitterUserId: number | null;
 		match: ScannerMatch;
-		hints: { tournamentIdHint: number | null; groupMatchIdHint: number | null };
+		hints: Hints;
 	},
 ): Promise<{
 	id: number;
@@ -574,7 +711,13 @@ async function addOrMergeMatch(
 
 	const identical = await trx
 		.selectFrom("IngestedMatch")
-		.select(["id", "data", "tournamentIdHint", "groupMatchIdHint"])
+		.select([
+			"id",
+			"data",
+			"tournamentIdHint",
+			"groupMatchIdHint",
+			"lobbySetIdHint",
+		])
 		.where("matchHash", "=", hash)
 		.executeTakeFirst();
 	if (identical) {
@@ -617,6 +760,7 @@ async function addOrMergeMatch(
 			matchHash: matchHash({ povUserId, match: mergedCanonical }),
 			tournamentIdHint: stored.tournamentIdHint ?? hints.tournamentIdHint,
 			groupMatchIdHint: stored.groupMatchIdHint ?? hints.groupMatchIdHint,
+			lobbySetIdHint: stored.lobbySetIdHint ?? hints.lobbySetIdHint,
 		})
 		.where("id", "=", stored.id)
 		.execute();
@@ -625,25 +769,23 @@ async function addOrMergeMatch(
 
 async function backfillHints(
 	trx: Transaction<DB>,
-	stored: {
-		id: number;
-		tournamentIdHint: number | null;
-		groupMatchIdHint: number | null;
-	},
-	hints: { tournamentIdHint: number | null; groupMatchIdHint: number | null },
+	stored: { id: number } & Hints,
+	hints: Hints,
 ) {
 	const tournamentIdHint = stored.tournamentIdHint ?? hints.tournamentIdHint;
 	const groupMatchIdHint = stored.groupMatchIdHint ?? hints.groupMatchIdHint;
+	const lobbySetIdHint = stored.lobbySetIdHint ?? hints.lobbySetIdHint;
 	if (
 		tournamentIdHint === stored.tournamentIdHint &&
-		groupMatchIdHint === stored.groupMatchIdHint
+		groupMatchIdHint === stored.groupMatchIdHint &&
+		lobbySetIdHint === stored.lobbySetIdHint
 	) {
 		return;
 	}
 
 	await trx
 		.updateTable("IngestedMatch")
-		.set({ tournamentIdHint, groupMatchIdHint })
+		.set({ tournamentIdHint, groupMatchIdHint, lobbySetIdHint })
 		.where("id", "=", stored.id)
 		.execute();
 }
@@ -667,7 +809,14 @@ async function findMergeCandidate(
 	// instead of an OR, so each can use the (povUserId, playedAt) index
 	const baseQuery = trx
 		.selectFrom("IngestedMatch")
-		.select(["id", "data", "tournamentIdHint", "groupMatchIdHint", "createdAt"])
+		.select([
+			"id",
+			"data",
+			"tournamentIdHint",
+			"groupMatchIdHint",
+			"lobbySetIdHint",
+			"createdAt",
+		])
 		.$if(povUserId === null, (qb) => qb.where("povUserId", "is", null))
 		.$if(povUserId !== null, (qb) => qb.where("povUserId", "=", povUserId!))
 		.orderBy("createdAt", "desc")
@@ -720,7 +869,10 @@ function newestFirst<T extends { createdAt: number }>(a: T[], b: T[]): T[] {
  * started last, the wrong set for back-to-back rounds.
  */
 function startedNearestBefore(
-	column: "TournamentMatch.startedAt" | "GroupMatch.createdAt",
+	column:
+		| "TournamentMatch.startedAt"
+		| "GroupMatch.createdAt"
+		| "LobbySet.createdAt",
 	atSeconds: number,
 ) {
 	const start = sql.ref(column);
@@ -1043,7 +1195,7 @@ async function groupRosters(groupIds: number[]) {
 
 /** Winner-first player names of each game's earliest linked ingest with recognizable names, keyed by the link target column's value. */
 async function linkedPlayerNamesByTarget(
-	column: "tournamentMatchGameResultId" | "groupMatchMapId",
+	column: "tournamentMatchGameResultId" | "groupMatchMapId" | "lobbyGameId",
 	targetIds: number[],
 ) {
 	const result = new Map<number, string[]>();
@@ -1079,15 +1231,27 @@ async function isLinkedToGame(
 		.selectFrom("IngestedMatchLink")
 		.select("IngestedMatchLink.id")
 		.where("IngestedMatchLink.ingestedMatchId", "=", ingestedMatchId)
-		.where(
-			game.target.type === "tournament"
-				? "IngestedMatchLink.tournamentMatchGameResultId"
-				: "IngestedMatchLink.groupMatchMapId",
-			"=",
-			game.target.type === "tournament"
-				? game.target.matchGameResultId
-				: game.target.groupMatchMapId,
-		)
+		.where((eb) => {
+			const { target } = game;
+			switch (target.type) {
+				case "tournament":
+					return eb(
+						"IngestedMatchLink.tournamentMatchGameResultId",
+						"=",
+						target.matchGameResultId,
+					);
+				case "sendouq":
+					return eb(
+						"IngestedMatchLink.groupMatchMapId",
+						"=",
+						target.groupMatchMapId,
+					);
+				case "lobby":
+					return eb("IngestedMatchLink.lobbyGameId", "=", target.lobbyGameId);
+				default:
+					assertUnreachable(target);
+			}
+		})
 		.executeTakeFirst();
 
 	return existing !== undefined;
@@ -1115,6 +1279,7 @@ async function reportPovWeapon(
 					: null,
 			groupMatchId:
 				game.target.type === "sendouq" ? game.target.groupMatchId : null,
+			lobbySetId: game.target.type === "lobby" ? game.target.lobbySetId : null,
 			mapIndex: game.mapIndex,
 			userId: povUserId,
 			weaponSplId,
@@ -1124,12 +1289,138 @@ async function reportPovWeapon(
 		})
 		.onConflict((oc) =>
 			oc
-				.columns(
-					game.target.type === "tournament"
-						? ["tournamentMatchId", "mapIndex", "userId"]
-						: ["groupMatchId", "mapIndex", "userId"],
-				)
+				.columns([targetMatchColumn(game.target), "mapIndex", "userId"])
 				.doNothing(),
 		)
 		.execute();
+}
+
+function targetMatchColumn(target: Scoreboards.IngestableGameTarget) {
+	switch (target.type) {
+		case "tournament":
+			return "tournamentMatchId" as const;
+		case "sendouq":
+			return "groupMatchId" as const;
+		case "lobby":
+			return "lobbySetId" as const;
+		default:
+			assertUnreachable(target);
+	}
+}
+
+async function lobbyGames({
+	lobbySetId,
+	userId,
+	since,
+}: {
+	lobbySetId?: number;
+	userId?: number;
+	since?: number;
+}): Promise<IngestableGameWithContext[]> {
+	const rows = await db
+		.selectFrom("LobbyGame")
+		.innerJoin("LobbySet", "LobbySet.id", "LobbyGame.setId")
+		.select((eb) => [
+			"LobbyGame.id as lobbyGameId",
+			"LobbyGame.setId as lobbySetId",
+			"LobbySet.lobbyId",
+			"LobbyGame.index as mapIndex",
+			"LobbyGame.mode",
+			"LobbyGame.stageId",
+			"LobbyGame.winnerSide",
+			eb.fn
+				.coalesce("LobbyGame.reportedAt", "LobbySet.createdAt")
+				.as("playedAt"),
+		])
+		.where("LobbyGame.winnerSide", "is not", null)
+		.$if(lobbySetId !== undefined, (qb) =>
+			qb.where("LobbyGame.setId", "=", lobbySetId!),
+		)
+		.$if(userId !== undefined, (qb) =>
+			qb.innerJoin("LobbySetParticipant", (join) =>
+				join
+					.onRef("LobbySetParticipant.setId", "=", "LobbySet.id")
+					.on("LobbySetParticipant.userId", "=", userId!)
+					.on("LobbySetParticipant.side", "is not", null),
+			),
+		)
+		.$if(since !== undefined, (qb) =>
+			qb.where("LobbySet.createdAt", ">=", since!),
+		)
+		.orderBy("LobbySet.createdAt", "asc")
+		.orderBy("LobbyGame.index", "asc")
+		.execute();
+
+	const rostersBySetId = await lobbySetRosters(
+		rows.map((row) => row.lobbySetId),
+	);
+	const linkedNames = await linkedPlayerNamesByTarget(
+		"lobbyGameId",
+		rows.map((row) => row.lobbyGameId),
+	);
+
+	return rows.map((row) => {
+		const rosters = rostersBySetId.get(row.lobbySetId);
+		const winnerSide = row.winnerSide!;
+		const loserSide = winnerSide === "ALPHA" ? "BRAVO" : "ALPHA";
+
+		return {
+			target: {
+				type: "lobby",
+				lobbyGameId: row.lobbyGameId,
+				lobbySetId: row.lobbySetId,
+				lobbyId: row.lobbyId,
+			},
+			context: { type: "lobby", lobbySetId: row.lobbySetId },
+			mapIndex: row.mapIndex,
+			mode: row.mode,
+			stageId: row.stageId,
+			winnerUserIds: rosters?.[winnerSide].userIds ?? [],
+			loserUserIds: rosters?.[loserSide].userIds ?? [],
+			inGameNameByUserId: new Map([
+				...(rosters?.ALPHA.inGameNameByUserId ?? []),
+				...(rosters?.BRAVO.inGameNameByUserId ?? []),
+			]),
+			playedAt: row.playedAt,
+			linkedPlayerNames: linkedNames.get(row.lobbyGameId) ?? null,
+		};
+	});
+}
+
+async function lobbySetRosters(setIds: number[]) {
+	const uniqueSetIds = [...new Set(setIds)];
+	const result = new Map<number, { ALPHA: Roster; BRAVO: Roster }>();
+	if (uniqueSetIds.length === 0) return result;
+
+	const members = await db
+		.selectFrom("LobbySetParticipant")
+		.innerJoin("User", "User.id", "LobbySetParticipant.userId")
+		.select([
+			"LobbySetParticipant.setId",
+			"LobbySetParticipant.userId",
+			"LobbySetParticipant.side",
+			"User.inGameName",
+		])
+		.where("LobbySetParticipant.setId", "in", uniqueSetIds)
+		.where("LobbySetParticipant.side", "is not", null)
+		.execute();
+
+	for (const member of members) {
+		if (!member.side) continue;
+
+		const rosters = result.get(member.setId) ?? {
+			ALPHA: emptyRoster(),
+			BRAVO: emptyRoster(),
+		};
+		rosters[member.side].userIds.push(member.userId);
+		if (member.inGameName) {
+			rosters[member.side].inGameNameByUserId.set(
+				member.userId,
+				member.inGameName,
+			);
+		}
+		result.set(member.setId, rosters);
+	}
+
+	return result;
 }
