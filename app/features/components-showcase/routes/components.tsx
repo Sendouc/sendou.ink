@@ -64,7 +64,7 @@ import {
 	ChangelogGraphic,
 	type ChangelogGraphicEntry,
 } from "~/features/changelog/components/ChangelogGraphic";
-import { calculateDamageCombos } from "~/features/comp-analyzer/core/damage-combinations";
+import * as DamageCombos from "~/features/comp-analyzer/core/DamageCombos";
 import { useGlobalStatus } from "~/features/global-status/GlobalStatusProvider";
 import type { GlobalStatus } from "~/features/global-status/global-status-types";
 import { CompGraphic } from "~/features/img-export/components/CompGraphic";
@@ -2321,7 +2321,7 @@ function CompGraphicSection({ id }: { id: string }) {
 				<ComponentRow label="With title">
 					<CompGraphic
 						weaponIds={COMP_GRAPHIC_WEAPON_IDS}
-						combos={calculateDamageCombos(COMP_GRAPHIC_WEAPON_IDS)}
+						combos={DamageCombos.calculate(COMP_GRAPHIC_WEAPON_IDS)}
 						title="Low Ink comp"
 					/>
 				</ComponentRow>
@@ -2329,7 +2329,7 @@ function CompGraphicSection({ id }: { id: string }) {
 				<ComponentRow label="Without title">
 					<CompGraphic
 						weaponIds={COMP_GRAPHIC_WEAPON_IDS}
-						combos={calculateDamageCombos(COMP_GRAPHIC_WEAPON_IDS)}
+						combos={DamageCombos.calculate(COMP_GRAPHIC_WEAPON_IDS)}
 					/>
 				</ComponentRow>
 			</div>

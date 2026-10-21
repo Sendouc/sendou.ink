@@ -5,6 +5,7 @@
 			"**",
 			"!scripts/dicts/**/*",
 			"!scripts/output/**/*",
+			"!docs/living/**/*",
 			"!app/db/seed/data/placements.json",
 			"!build/**/*",
 			"!app/features/scanner/tests/fixtures",

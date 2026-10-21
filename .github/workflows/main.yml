@@ -42,3 +42,5 @@ jobs:
         run: pnpm run check-plural-collapse
       - name: Check articles
         run: pnpm run check-articles
+      - name: Check living docs are up to date
+        run: pnpm run docs:living:check

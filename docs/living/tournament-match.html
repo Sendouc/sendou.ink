@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tournament match · sendou.ink living docs</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--bg: #f6f6f8;
+	--surface: #ffffff;
+	--surface-2: #f2f2f6;
+	--border: #e3e3ea;
+	--text: #1b1b21;
+	--muted: #6c6c7a;
+	--accent: #6d4aff;
+	--accent-soft: #ede8ff;
+	--warn: #b45309;
+	--warn-soft: #fef3c7;
+	--arrange: #64748b;
+	--act: #3b82f6;
+	--assert: #16a34a;
+	--code-bg: #f7f7fa;
+	--hl-k: #a626a4; --hl-s: #3d8b3d; --hl-n: #986801; --hl-c: #a0a1a7; --hl-t: #b76e00; --hl-f: #3b6fd8; --hl-l: #0184bc;
+	--radius: 12px;
+	--font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0e0e12;
+		--surface: #16161c;
+		--surface-2: #1d1d25;
+		--border: #2a2a35;
+		--text: #e7e7ee;
+		--muted: #9898a8;
+		--accent: #a58fff;
+		--accent-soft: #272040;
+		--warn: #fbbf24;
+		--warn-soft: #3a2a0a;
+		--arrange: #94a3b8;
+		--act: #60a5fa;
+		--assert: #4ade80;
+		--code-bg: #121218;
+		--hl-k: #c678dd; --hl-s: #98c379; --hl-n: #d19a66; --hl-c: #6b717d; --hl-t: #e5c07b; --hl-f: #61afef; --hl-l: #56b6c2;
+	}
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--font); }
+a { color: inherit; }
+code { font-family: var(--mono); font-size: 0.88em; }
+p { margin: 0; }
+p + p { margin-top: 0.5em; }
+.muted { color: var(--muted); }
+
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 24px; padding: 10px 24px; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+.brand span { color: var(--accent); font-weight: 600; }
+.feature-tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: thin; mask-image: linear-gradient(to right, black calc(100% - 32px), transparent); padding-right: 32px; }
+.feature-tab { display: flex; align-items: center; gap: 7px; padding: 5px 11px 5px 7px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.feature-tab:hover { background: var(--surface-2); color: var(--text); }
+.feature-tab[aria-current="page"] { background: var(--accent-soft); color: var(--text); }
+.feature-icon { flex: none; object-fit: contain; }
+.search-button { display: flex; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.search-button:hover { border-color: var(--accent); color: var(--text); }
+
+.search-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 120px)); margin: 80px auto auto; padding: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 24px 64px rgb(0 0 0 / 0.3); overflow: hidden; }
+.search-dialog[open] { display: flex; flex-direction: column; }
+.search-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.search-dialog input { width: 100%; padding: 16px 18px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 16px; outline: none; }
+.search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; flex: 1; }
+.search-results a { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 2px 10px; padding: 7px 10px; border-radius: 8px; text-decoration: none; }
+.search-results a[aria-selected="true"] { background: var(--accent-soft); }
+.search-kind { grid-row: span 2; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 3px; }
+.search-label { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-detail { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-empty { padding: 18px; color: var(--muted); text-align: center; }
+.search-hint { margin: 0; padding: 8px 14px; border-top: 1px solid var(--border); font-size: 12px; }
+
+.lightbox { max-width: min(1280px, calc(100vw - 32px)); padding: 0; border: none; border-radius: 12px; background: var(--surface); box-shadow: 0 24px 64px rgb(0 0 0 / 0.4); cursor: zoom-out; }
+.lightbox::backdrop { background: rgb(0 0 0 / 0.6); }
+.lightbox img { display: block; max-width: 100%; max-height: calc(100vh - 120px); }
+.lightbox-caption { margin: 0; padding: 8px 14px; font-weight: 600; font-size: 13px; color: var(--text); }
+.letter-icon { display: inline-grid; place-items: center; width: var(--size); height: var(--size); border-radius: 28%; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: calc(var(--size) * 0.5); }
+
+.index-head { margin-bottom: 24px; }
+.index-head h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.02em; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.feature-card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 12px; align-items: center; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; }
+.feature-card:hover { border-color: var(--accent); }
+.feature-card .feature-icon { grid-row: span 2; }
+.feature-card-label { font-weight: 700; }
+.feature-card-stats { display: flex; flex-wrap: wrap; column-gap: 10px; color: var(--muted); font-size: 12px; }
+.feature-card-stats span { white-space: nowrap; }
+
+main { max-width: 1320px; margin: 0 auto; padding: 24px; }
+.feature-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.feature-head h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+.stats { color: var(--muted); font-size: 14px; }
+.view-switch { margin-left: auto; display: flex; padding: 3px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; }
+.view-switch a { padding: 6px 14px; border-radius: 7px; text-decoration: none; font-weight: 600; font-size: 14px; color: var(--muted); }
+.view-switch a[aria-current="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgb(0 0 0 / 0.08); }
+
+.view { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; align-items: start; }
+.view[hidden] { display: none; }
+.sidebar { position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow-y: auto; font-size: 13px; padding-right: 6px; }
+.sidebar h4 { margin: 18px 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.sidebar h4:first-child { margin-top: 0; }
+.toc, .toc ul, .legend { list-style: none; margin: 0; padding: 0; }
+.toc > li { margin-bottom: 10px; }
+.toc > li > a { font-weight: 600; }
+.toc ul { margin-top: 4px; border-left: 1px solid var(--border); }
+.toc ul a { display: flex; align-items: center; gap: 6px; padding: 2px 0 2px 10px; color: var(--muted); }
+.toc a { text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 600; }
+.toc ul a[aria-current="location"] { margin-left: -1px; border-left: 2px solid var(--accent); padding-left: 9px; }
+.toc a.is-active-parent { color: var(--accent); }
+.toc-group { font-weight: 600; }
+.toc > li.toc-depth-2 { margin-left: 10px; }
+.toc > li.toc-depth-3 { margin-left: 20px; }
+.toc > li:has(> .toc-group:only-child) { margin-bottom: 4px; }
+.kind-dot { width: 7px; height: 7px; border-radius: 2px; flex: none; background: var(--accent); }
+.kind-dot.kind-type, .kind-dot.kind-interface { background: var(--hl-t); }
+.kind-dot.is-visited { background: var(--assert); border-radius: 50%; }
+.kind-dot.is-unvisited { background: transparent; border: 1.5px solid var(--muted); border-radius: 50%; }
+.coverage { margin: 0; font-size: 14px; }
+.route-toc a { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--muted); }
+.routes { display: grid; gap: 10px; }
+.route { padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); scroll-margin-top: 80px; }
+.route-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.route-head .file-link { margin-left: auto; }
+.route-path { font-size: 15px; font-weight: 700; }
+.route-param { color: var(--accent); }
+.badge-loader { color: var(--act); }
+.badge-action { color: var(--warn); }
+.route-tests { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; columns: 2 300px; column-gap: 24px; }
+.route-tests li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.route-tests li::before { content: "▸"; position: absolute; left: 4px; color: var(--muted); }
+.route-tests a { text-decoration: none; }
+.route-tests a:hover { color: var(--accent); text-decoration: underline; }
+.warn-text { margin: 8px 0 0; font-size: 13px; color: var(--warn); }
+.legend li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-weight: 600; }
+.legend small { color: var(--muted); font-weight: 400; margin-left: auto; font-family: var(--mono); font-size: 10px; }
+.legend.phases small { font-family: var(--font); font-size: 11px; }
+.legend-note { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.toggle { display: flex; align-items: center; gap: 8px; margin-top: 14px; cursor: pointer; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); font-size: 12px; text-decoration: none; margin: 2px 4px 2px 0; white-space: nowrap; }
+.file-chip { font-family: var(--mono); font-size: 11.5px; }
+.file-chip:hover { border-color: var(--accent); color: var(--accent); }
+.badge { display: inline-block; padding: 1px 7px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+.warn { font-size: 11px; font-weight: 600; color: var(--warn); background: var(--warn-soft); padding: 1px 7px; border-radius: 6px; }
+.file-link { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; }
+.file-link:hover { color: var(--accent); text-decoration: underline; }
+
+.graph-card, .module, .test { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.graph-card { margin: 0 0 24px; padding: 16px 20px; }
+.graph-card figcaption { font-weight: 700; margin-bottom: 8px; }
+.graph-scroll { overflow-x: auto; }
+.graph { display: block; font-size: 13px; }
+.column-title { fill: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.node rect { fill: var(--surface-2); stroke: var(--border); }
+.node-self rect { fill: var(--accent-soft); stroke: var(--accent); }
+.node-label { fill: var(--text); font-weight: 600; }
+.node-sublabel { fill: var(--muted); font-size: 11px; }
+.node { cursor: default; transition: opacity 0.15s; }
+.edge { fill: none; stroke: var(--muted); stroke-opacity: 0.45; stroke-width: 1.4; transition: opacity 0.15s; }
+.arrowhead { fill: var(--muted); }
+.graph.focusing .node, .graph.focusing .edge { opacity: 0.18; }
+.graph.focusing .is-related { opacity: 1; }
+.graph.focusing .edge.is-related { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2; }
+
+.module { padding: 22px 24px; margin-bottom: 24px; scroll-margin-top: 80px; }
+.module-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.module-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+.module-head .file-link { margin-left: auto; }
+.overview { margin-top: 10px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+.missing { margin-top: 10px; color: var(--muted); font-style: italic; font-size: 14px; }
+.module-facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 14px 0 0; font-size: 13px; }
+.module-facts dt { color: var(--muted); font-weight: 600; padding-top: 2px; }
+.module-facts dd { margin: 0; }
+.section-title { margin: 26px 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.export { padding: 16px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
+.section-title + .export { border-top: none; }
+.export-head { display: flex; align-items: center; gap: 8px; }
+.export-head .file-link { margin-left: auto; }
+.export-name { font-size: 15px; font-weight: 700; }
+.kind { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 5px; color: var(--accent); background: var(--accent-soft); }
+.kind.kind-type, .kind.kind-interface { color: var(--hl-t); background: color-mix(in srgb, var(--hl-t) 14%, transparent); }
+.doc { margin-top: 6px; }
+.doc code, .overview code, .note code, .tooltip-doc code { background: var(--surface-2); padding: 0 4px; border-radius: 4px; }
+.doc-tags { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.doc-tags span { font-family: var(--mono); color: var(--muted); }
+.doc-tags p { display: inline; }
+
+pre.code, code { font-variant-ligatures: none; }
+pre.code { margin: 10px 0 0; padding: 12px 14px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; font: 12.5px/1.6 var(--mono); tab-size: 2; }
+.c { color: var(--hl-c); font-style: italic; } .k { color: var(--hl-k); } .s { color: var(--hl-s); } .n { color: var(--hl-n); } .t { color: var(--hl-t); } .f { color: var(--hl-f); } .l { color: var(--hl-l); }
+details.source { margin-top: 8px; }
+details.source summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+details.source summary:hover { color: var(--accent); }
+.unit-tests { margin-top: 10px; font-size: 13px; }
+.unit-tests-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+.unit-test-list { margin: 0; padding: 0; list-style: none; columns: 2 320px; column-gap: 24px; }
+.unit-test-list > li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.unit-test-list > li::before { content: "✓"; position: absolute; left: 2px; color: var(--assert); font-weight: 800; }
+.unit-test-heading { font-weight: 650; }
+.unit-test-group ul { margin: 1px 0 4px; padding: 0 0 0 12px; list-style: none; border-left: 2px solid var(--border); }
+.unit-test-group li { padding: 1px 0; }
+.unit-tests a { text-decoration: none; }
+.unit-tests a:hover { color: var(--accent); text-decoration: underline; }
+.usages { margin-top: 10px; font-size: 13px; display: grid; gap: 4px; }
+.usage-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.usage-kind { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.test-only { margin-top: 18px; font-size: 13px; }
+
+.spec-head { margin-bottom: 8px; }
+.group-title { font-size: 18px; margin: 28px 0 12px; letter-spacing: -0.01em; }
+.group-options { margin: -6px 0 12px; color: var(--muted); font-size: 13px; }
+.group-title.group-depth-2 { font-size: 16px; margin-top: 20px; }
+.group-title.group-depth-3 { font-size: 14px; }
+.group-title:is(.group-depth-2, .group-depth-3)::before { content: "› "; color: var(--muted); }
+.test-group:has(> .group-title.group-depth-1):not(:has(.test)) .group-title { margin-bottom: 0; }
+.group-doc, .test-doc { margin: -6px 0 12px; color: var(--muted); font-size: 14px; }
+.group-doc p, .test-doc p { margin: 0; }
+.chapters { display: grid; gap: 20px; }
+.chapter { display: grid; gap: 8px; }
+.chapter-title { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 650; }
+.chapter-text { flex: 1; }
+.chapter-number { display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 800; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+body.outline-only .chapter .segments { display: none; }
+body.outline-only .chapters { gap: 8px; }
+.test-group:first-child .group-title { margin-top: 0; }
+.test { padding: 18px 20px; margin-bottom: 20px; scroll-margin-top: 80px; }
+.test-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.test-head h3 { margin: 0; font-size: 16px; flex: 1; }
+.test-head h3::first-letter { text-transform: uppercase; }
+.test-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.user { display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--actor, var(--accent)); background: color-mix(in srgb, var(--actor, var(--accent)) 15%, transparent); }
+.avatar { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; font-weight: 800; color: white; background: var(--actor, var(--arrange)); }
+
+.segments { display: grid; gap: 10px; }
+.test-routes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -6px 0 12px; font-size: 12px; color: var(--muted); }
+.route-chip { font-family: var(--mono); font-size: 11.5px; padding: 1px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); text-decoration: none; color: var(--text); }
+.route-chip:hover { border-color: var(--accent); color: var(--accent); }
+.storyboard { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+.storyboard:not(:has(img)) { display: none; }
+.storyboard-frame { flex: none; display: grid; gap: 4px; width: 176px; padding: 0; border: none; background: none; color: var(--muted); font: inherit; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; text-align: left; cursor: zoom-in; }
+.storyboard-frame img, .divider-shot img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); }
+.storyboard-frame:hover img, .divider-shot:hover img { border-color: var(--accent); }
+.storyboard-frame span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.divider-shot { flex: none; order: 3; width: 48px; padding: 0; border: none; background: none; cursor: zoom-in; }
+.divider-shot img { border-radius: 4px; }
+.segment { display: grid; grid-template-columns: 92px minmax(0, 1fr); border-radius: 10px; border: 1px solid var(--border); overflow: clip; }
+.segment-actor { border-color: color-mix(in srgb, var(--actor) 45%, transparent); background: color-mix(in srgb, var(--actor) 5%, var(--surface)); }
+.lane { padding: 12px 6px; font-size: 12px; font-weight: 700; text-align: center; background: var(--surface-2); border-right: 1px solid var(--border); color: var(--muted); }
+.lane-sticky { position: sticky; top: 76px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.segment-actor .lane { background: color-mix(in srgb, var(--actor) 14%, var(--surface)); color: var(--actor); border-right-color: color-mix(in srgb, var(--actor) 35%, transparent); }
+.segment-body { padding: 8px 14px 10px; min-width: 0; }
+
+.divider { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; font-size: 12px; }
+.divider::after { content: ""; order: 2; flex: 1; border-bottom: 1px dashed var(--border); align-self: center; }
+.divider-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+.divider-label::before { content: "▸ "; }
+
+.run { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; padding: 4px 0; }
+.run + .run { border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.run-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 5px; }
+.phase-arrange { --phase: var(--arrange); }
+.phase-act { --phase: var(--act); }
+.phase-assert { --phase: var(--assert); }
+.run-label { color: var(--phase); }
+.steps { list-style: none; margin: 0; padding: 0; }
+.steps.nested { margin: 2px 0 2px 9px; padding-left: 14px; border-left: 2px solid var(--border); }
+.step { padding: 3px 0; }
+.step-line { display: flex; gap: 10px; align-items: baseline; }
+.phase-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--phase); }
+.phase-arrange .phase-icon::before { content: "+"; }
+.phase-act .phase-icon::before { content: "→"; }
+.phase-assert .phase-icon::before { content: "✓"; }
+.step-naming > .step-line .phase-icon::before { content: "="; color: var(--muted); }
+.step-naming > .step-line { color: var(--muted); }
+.legend .phase-icon { width: 24px; }
+.step-text strong { font-weight: 650; }
+.ref { text-decoration: underline dotted color-mix(in srgb, currentColor 45%, transparent); text-underline-offset: 3px; cursor: help; }
+.ref:hover { text-decoration-color: var(--accent); color: var(--accent); }
+.tooltip { position: fixed; z-index: 100; max-width: min(560px, calc(100vw - 24px)); padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 32px rgb(0 0 0 / 0.18); font-size: 13px; pointer-events: none; }
+.tooltip-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.tooltip-head code { font-weight: 700; }
+.tooltip-head span { color: var(--muted); font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.tooltip-doc { margin-top: 6px; }
+.tooltip pre.code { margin-top: 8px; font-size: 11.5px; max-height: 280px; overflow: hidden; }
+.note { margin: 4px 0 2px 26px; padding-left: 10px; border-left: 2px solid var(--border); color: var(--muted); font-size: 13px; font-style: italic; }
+.str { color: var(--hl-s); }
+.num { color: var(--hl-n); font-family: var(--mono); font-size: 0.9em; }
+.const { cursor: help; }
+.tuple::before { content: "("; color: var(--muted); }
+.tuple::after { content: ")"; color: var(--muted); }
+.kv + .kv::before { content: "· "; color: var(--muted); }
+.key { color: var(--muted); }
+.binds { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+code.inline { background: var(--surface-2); padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+kbd { font-family: var(--mono); font-size: 12px; padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); }
+.step-code { display: none; margin: 4px 0 4px 26px !important; padding: 6px 10px !important; font-size: 11.5px !important; }
+body.show-code .step-code { display: block; }
+
+@media (max-width: 900px) {
+	main { padding: 16px; }
+	.topbar { padding: 10px 16px; gap: 12px; }
+	.brand span { display: none; }
+	.search-button kbd { display: none; }
+	.view { grid-template-columns: minmax(0, 1fr); }
+	.sidebar { position: static; max-height: none; }
+	.segment { grid-template-columns: minmax(0, 1fr); }
+	.lane { border-right: none; border-bottom: 1px solid var(--border); padding: 6px 10px; }
+	.lane-sticky { position: static; flex-direction: row; }
+	.run { grid-template-columns: minmax(0, 1fr); gap: 0; }
+	.view-switch { margin-left: 0; }
+	.usage-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+	.chip { white-space: normal; overflow-wrap: anywhere; }
+	.test-head { flex-direction: column; gap: 6px; }
+	.test-meta { justify-content: flex-start; }
+	.divider { flex-wrap: wrap; gap: 2px 10px; }
+	.divider::after { display: none; }
+}
+
+[data-actor="ADMIN_ID"] { --actor: #8b5cf6; }
+[data-actor="NZAP_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="REGULAR_USER_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="ORG_ADMIN_TEST_ID"] { --actor: #0ea5e9; }
+[data-actor="STAFF_TEST_ID"] { --actor: #14b8a6; }
+[data-actor="DEV_TEST_ID"] { --actor: #64748b; }
+</style>
+</head>
+<body>
+<header class="topbar">
+	<a class="brand" href="index.html">sendou.ink <span>living docs</span></a>
+	<button type="button" class="search-button" data-open-search>Search <kbd>⌘K</kbd></button>
+	<nav class="feature-tabs">
+		<a class="feature-tab" href="admin.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Admin</a><a class="feature-tab" href="api.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api</a><a class="feature-tab" href="api-private.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api private</a><a class="feature-tab" href="art.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/art.avif" alt="" width="20" height="20" loading="lazy">Art</a><a class="feature-tab" href="articles.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/articles.avif" alt="" width="20" height="20" loading="lazy">Articles</a><a class="feature-tab" href="associations.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/associations.avif" alt="" width="20" height="20" loading="lazy">Associations</a><a class="feature-tab" href="auth.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Auth</a><a class="feature-tab" href="availability.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Availability</a><a class="feature-tab" href="badges.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/badges.avif" alt="" width="20" height="20" loading="lazy">Badges</a><a class="feature-tab" href="ban.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">B</span>Ban</a><a class="feature-tab" href="build-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/analyzer.avif" alt="" width="20" height="20" loading="lazy">Build analyzer</a><a class="feature-tab" href="build-stats.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Build stats</a><a class="feature-tab" href="builds.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Builds</a><a class="feature-tab" href="calendar.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/calendar.avif" alt="" width="20" height="20" loading="lazy">Calendar</a><a class="feature-tab" href="chat.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">C</span>Chat</a><a class="feature-tab" href="comp-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/comp-analyzer.avif" alt="" width="20" height="20" loading="lazy">Comp analyzer</a><a class="feature-tab" href="events.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">E</span>Events</a><a class="feature-tab" href="friends.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Friends</a><a class="feature-tab" href="front-page.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Front page</a><a class="feature-tab" href="global-status.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">G</span>Global status</a><a class="feature-tab" href="health.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">H</span>Health</a><a class="feature-tab" href="img-export.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Image export</a><a class="feature-tab" href="img-upload.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Img upload</a><a class="feature-tab" href="info.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Info</a><a class="feature-tab" href="lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/lfg.avif" alt="" width="20" height="20" loading="lazy">LFG</a><a class="feature-tab" href="layout.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Layout</a><a class="feature-tab" href="leaderboards.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/leaderboards.avif" alt="" width="20" height="20" loading="lazy">Leaderboards</a><a class="feature-tab" href="links.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/links.avif" alt="" width="20" height="20" loading="lazy">Links</a><a class="feature-tab" href="live-streams.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Live streams</a><a class="feature-tab" href="mmr.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">M</span>MMR</a><a class="feature-tab" href="map-list-generator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/maps.avif" alt="" width="20" height="20" loading="lazy">Map list generator</a><a class="feature-tab" href="map-planner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plans.avif" alt="" width="20" height="20" loading="lazy">Map planner</a><a class="feature-tab" href="notifications.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">N</span>Notifications</a><a class="feature-tab" href="object-damage-calculator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/object-damage-calculator.avif" alt="" width="20" height="20" loading="lazy">Object damage calculator</a><a class="feature-tab" href="params.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Params</a><a class="feature-tab" href="plus-suggestions.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus suggestions</a><a class="feature-tab" href="plus-voting.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus voting</a><a class="feature-tab" href="api-public.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Public API</a><a class="feature-tab" href="scanner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner</a><a class="feature-tab" href="scanner-ingest.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner ingest</a><a class="feature-tab" href="scrims.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scrims.avif" alt="" width="20" height="20" loading="lazy">Scrims</a><a class="feature-tab" href="search.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Search</a><a class="feature-tab" href="sendouq.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ</a><a class="feature-tab" href="sendouq-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ match</a><a class="feature-tab" href="sendouq-streams.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ streams</a><a class="feature-tab" href="settings.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/settings.avif" alt="" width="20" height="20" loading="lazy">Settings</a><a class="feature-tab" href="sidebar.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Sidebar</a><a class="feature-tab" href="site-wide.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Site-wide</a><a class="feature-tab" href="team.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/t.avif" alt="" width="20" height="20" loading="lazy">Team</a><a class="feature-tab" href="theme.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Theme</a><a class="feature-tab" href="tier-list-maker.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/tier-list-maker.avif" alt="" width="20" height="20" loading="lazy">Tier list maker</a><a class="feature-tab" href="top-search.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/xsearch.avif" alt="" width="20" height="20" loading="lazy">Top search</a><a class="feature-tab" href="tournament.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament</a><a class="feature-tab" href="tournament-admin.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament admin</a><a class="feature-tab" href="tournament-bracket.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament bracket</a><a class="feature-tab" href="tournament-lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament lfg</a><a class="feature-tab" href="tournament-match.html" aria-current="page"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament match</a><a class="feature-tab" href="tournament-organization.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament organization</a><a class="feature-tab" href="tournament-subs.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament subs</a><a class="feature-tab" href="translate.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Translate</a><a class="feature-tab" href="trophies.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/trophies.avif" alt="" width="20" height="20" loading="lazy">Trophies</a><a class="feature-tab" href="user-activity.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">U</span>User activity</a><a class="feature-tab" href="user-card.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User card</a><a class="feature-tab" href="user-page.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User page</a><a class="feature-tab" href="user-report.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User report</a><a class="feature-tab" href="vods.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/vods.avif" alt="" width="20" height="20" loading="lazy">Vods</a><a class="feature-tab" href="voice.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">V</span>Voice</a>
+	</nav>
+</header>
+<main data-default-view="modules">
+	<div class="feature-head">
+		<img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="48" height="48" loading="lazy">
+		<div>
+			<h1>Tournament match</h1>
+			<p class="stats">1 module · 15 exports · 0 e2e tests · 2 routes</p>
+		</div>
+		<div class="view-switch">
+			<a href="#modules" data-view-tab="modules">Modules</a>
+			
+			<a href="#routes" data-view-tab="routes">Routes</a>
+		</div>
+	</div>
+	<div class="view" data-view="modules" hidden>
+		<aside class="sidebar">
+			<h4>Modules</h4>
+			<ul class="toc"><li><a href="#modules/leaguescheduling">LeagueScheduling</a><ul><li><a href="#modules/leaguescheduling-phase-type"><span class="kind-dot kind-type"></span>Phase</a></li><li><a href="#modules/leaguescheduling-proposalerror-type"><span class="kind-dot kind-type"></span>ProposalError</a></li><li><a href="#modules/leaguescheduling-league-scheduling"><span class="kind-dot kind-const"></span>LEAGUE_SCHEDULING</a></li><li><a href="#modules/leaguescheduling-phase"><span class="kind-dot kind-function"></span>phase</a></li><li><a href="#modules/leaguescheduling-opensat"><span class="kind-dot kind-function"></span>opensAt</a></li><li><a href="#modules/leaguescheduling-playableatfromdate"><span class="kind-dot kind-function"></span>playableAtFromDate</a></li><li><a href="#modules/leaguescheduling-playabledate"><span class="kind-dot kind-function"></span>playableDate</a></li><li><a href="#modules/leaguescheduling-playableatsareascending"><span class="kind-dot kind-function"></span>playableAtsAreAscending</a></li><li><a href="#modules/leaguescheduling-validateproposals"><span class="kind-dot kind-function"></span>validateProposals</a></li><li><a href="#modules/leaguescheduling-shouldannounceproposals"><span class="kind-dot kind-function"></span>shouldAnnounceProposals</a></li><li><a href="#modules/leaguescheduling-isacceptableproposal"><span class="kind-dot kind-function"></span>isAcceptableProposal</a></li><li><a href="#modules/leaguescheduling-livewindow"><span class="kind-dot kind-function"></span>liveWindow</a></li><li><a href="#modules/leaguescheduling-islive"><span class="kind-dot kind-function"></span>isLive</a></li><li><a href="#modules/leaguescheduling-busyblock"><span class="kind-dot kind-function"></span>busyBlock</a></li><li><a href="#modules/leaguescheduling-availabilitywindow"><span class="kind-dot kind-function"></span>availabilityWindow</a></li></ul></li></ul>
+		</aside>
+		<div class="content">
+			<figure class="graph-card">
+	<figcaption>Who imports who <span class="muted">· hover a node</span></figcaption>
+	<div class="graph-scroll">
+	<svg class="graph" viewBox="0 0 872 320" width="872" height="320" role="img" aria-label="Module dependency graph">
+		<defs><marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" class="arrowhead"/></marker></defs>
+		<text class="column-title" x="16" y="16">Depends on</text>
+		<text class="column-title" x="336" y="16">Tournament match modules</text>
+		<text class="column-title" x="656" y="16">Used by</text>
+		<path class="edge" data-from="app/features/tournament-match/core/LeagueScheduling.ts" data-to="kind:loader" d="M536 172 C596 172, 596 57, 652 57" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/tournament-match/core/LeagueScheduling.ts" data-to="kind:action" d="M536 172 C596 172, 596 103, 652 103" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/tournament-match/core/LeagueScheduling.ts" data-to="app/features/availability/core/Commitments.server.ts" d="M536 172 C596 172, 596 149, 652 149" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/tournament-match/core/LeagueScheduling.ts" data-to="kind:component" d="M536 172 C596 172, 596 195, 652 195" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/tournament-match/core/LeagueScheduling.ts" data-to="kind:routine" d="M536 172 C596 172, 596 241, 652 241" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/tournament-match/core/LeagueScheduling.ts" data-to="kind:other" d="M536 172 C596 172, 596 287, 652 287" marker-end="url(#arrow)"/>
+		<g class="node node-self" data-node="app/features/tournament-match/core/LeagueScheduling.ts">
+				<rect x="336" y="155" width="200" height="34" rx="8"/>
+				<text x="348" y="176"><tspan class="node-label">LeagueScheduling</tspan><tspan class="node-sublabel" dx="8">15 expo…</tspan></text>
+			</g><g class="node node-loader" data-node="kind:loader">
+				<rect x="656" y="40" width="200" height="34" rx="8"/>
+				<text x="668" y="61"><tspan class="node-label">Loaders</tspan><tspan class="node-sublabel" dx="8">2 files</tspan></text>
+			</g><g class="node node-action" data-node="kind:action">
+				<rect x="656" y="86" width="200" height="34" rx="8"/>
+				<text x="668" y="107"><tspan class="node-label">Actions</tspan><tspan class="node-sublabel" dx="8">1 file</tspan></text>
+			</g><g class="node node-module" data-node="app/features/availability/core/Commitments.server.ts">
+				<rect x="656" y="132" width="200" height="34" rx="8"/>
+				<text x="668" y="153"><tspan class="node-label">Commitments.server</tspan><tspan class="node-sublabel" dx="8">avail…</tspan></text>
+			</g><g class="node node-component" data-node="kind:component">
+				<rect x="656" y="178" width="200" height="34" rx="8"/>
+				<text x="668" y="199"><tspan class="node-label">Components</tspan><tspan class="node-sublabel" dx="8">3 files</tspan></text>
+			</g><g class="node node-routine" data-node="kind:routine">
+				<rect x="656" y="224" width="200" height="34" rx="8"/>
+				<text x="668" y="245"><tspan class="node-label">Routines</tspan><tspan class="node-sublabel" dx="8">1 file</tspan></text>
+			</g><g class="node node-other" data-node="kind:other">
+				<rect x="656" y="270" width="200" height="34" rx="8"/>
+				<text x="668" y="291"><tspan class="node-label">Other</tspan><tspan class="node-sublabel" dx="8">5 files</tspan></text>
+			</g>
+	</svg>
+	</div>
+</figure>
+			<article class="module" id="modules/leaguescheduling">
+	<header class="module-head">
+		<h2>LeagueScheduling</h2>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L1" title="app/features/tournament-match/core/LeagueScheduling.ts:1">app/features/tournament-match/core/LeagueScheduling.ts</a>
+	</header>
+	<p class="missing">No overview comment at the top of the file.</p>
+	<dl class="module-facts">
+		<dt>Imports</dt><dd><span class="muted">no other modules</span></dd>
+		<dt>Used by</dt><dd><span class="chip kind-loader">2 loaders</span><span class="chip kind-action">1 action</span><span class="chip kind-module">1 module</span><span class="chip kind-component">3 components</span><span class="chip kind-routine">1 routine</span><span class="chip kind-other">5 other</span></dd>
+	</dl>
+	<h3 class="section-title">Types</h3><div class="export" id="modules/leaguescheduling-phase-type">
+	<div class="export-head">
+		<span class="kind kind-type">type</span>
+		<code class="export-name">Phase</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L32" title="app/features/tournament-match/core/LeagueScheduling.ts:32">:32</a>
+	</div>
+	<div class="doc"><p><code>CLOSED</code> = nothing to schedule (no scheduling in the bracket, over, or a team missing), <code>NOT_OPEN</code> = the board opens later, <code>UNSCHEDULED</code> = the teams are agreeing on a time, <code>SCHEDULED_LOCKED</code> = a time is agreed but the round is not playable yet, <code>SCHEDULED</code> = agreed and playable.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">type</span> <span class="t">Phase</span> =
+	| <span class="s">&quot;CLOSED&quot;</span>
+	| <span class="s">&quot;NOT_OPEN&quot;</span>
+	| <span class="s">&quot;UNSCHEDULED&quot;</span>
+	| <span class="s">&quot;SCHEDULED_LOCKED&quot;</span>
+	| <span class="s">&quot;SCHEDULED&quot;</span>;</pre>
+	
+	<div class="usages"><span class="muted">Only used inside the module</span></div>
+</div><div class="export" id="modules/leaguescheduling-proposalerror-type">
+	<div class="export-head">
+		<span class="kind kind-type">type</span>
+		<code class="export-name">ProposalError</code>
+		<span class="warn" title="Module functions should always have JSDoc">no JSDoc</span>
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L39" title="app/features/tournament-match/core/LeagueScheduling.ts:39">:39</a>
+	</div>
+	
+	
+	<pre class="code"><span class="k">export</span> <span class="k">type</span> <span class="t">ProposalError</span> =
+	| <span class="s">&quot;NOT_OPEN&quot;</span>
+	| <span class="s">&quot;BEFORE_PLAYABLE&quot;</span>
+	| <span class="s">&quot;IN_PAST&quot;</span>
+	| <span class="s">&quot;TOO_MANY&quot;</span>
+	| <span class="s">&quot;ORGANIZER_LOCKED&quot;</span>;</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/actions/to.$id.matches.$mid.server.ts#L939" title="app/features/tournament-match/actions/to.$id.matches.$mid.server.ts:939">tournament-match/to.$id.matches.$mid.server.ts</a></span></div></div>
+</div>
+	<h3 class="section-title">Functions &amp; values</h3><div class="export" id="modules/leaguescheduling-league-scheduling">
+	<div class="export-head">
+		<span class="kind kind-const">const</span>
+		<code class="export-name">LEAGUE_SCHEDULING</code>
+		<span class="warn" title="Module functions should always have JSDoc">no JSDoc</span>
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L6" title="app/features/tournament-match/core/LeagueScheduling.ts:6">:6</a>
+	</div>
+	
+	
+	<pre class="code"><span class="k">export</span> <span class="k">const</span> <span class="t">LEAGUE_SCHEDULING</span> = {
+	<span class="c">/** Teams can put candidate times up this long before the round becomes playable. */</span>
+	<span class="t">OPENS_BEFORE_PLAYABLE_SECONDS</span>: <span class="t">DAY_SECONDS</span>,
+	<span class="c">/** Sanity cap on a team's open candidates per set. */</span>
+	<span class="t">MAX_OPEN_PROPOSALS_PER_TEAM</span>: <span class="n">6</span>,
+	<span class="c">/** How long before the agreed time a set counts as live while a member streams. */</span>
+	<span class="t">LIVE_BEFORE_SECONDS</span>: <span class="t">HOUR_SECONDS</span> / <span class="n">2</span>,
+	<span class="c">/** How long after the agreed time a set without a winner still counts as live. */</span>
+	<span class="t">LIVE_AFTER_SECONDS</span>: <span class="t">HOUR_SECONDS</span>,
+	<span class="c">/** Length of the busy block a scheduled set puts on its players' schedules. */</span>
+	<span class="t">SET_DURATION_SECONDS</span>: <span class="t">HOUR_SECONDS</span>,
+	<span class="c">/** Availability is shown until the next round opens, or this long when there is no next round. */</span></pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-module">Modules</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/availability/core/Commitments.server.ts#L57" title="app/features/availability/core/Commitments.server.ts:57">availability/Commitments.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-routine">Routines</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/routines/notifyLeagueMatchStartingSoon.ts#L2" title="app/routines/notifyLeagueMatchStartingSoon.ts:2">app/routines/notifyLeagueMatchStartingSoon.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/tournament-match-schemas.ts#L5" title="app/features/tournament-match/tournament-match-schemas.ts:5">tournament-match/tournament-match-schemas.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-phase">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">phase</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L47" title="app/features/tournament-match/core/LeagueScheduling.ts:47">:47</a>
+	</div>
+	<div class="doc"><p>Which point of the scheduling flow the set is at; every timestamp in unix seconds.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">phase</span>({
+	hasScheduling,
+	isOver,
+	hasBothTeams,
+	isPlayableAt,
+	scheduledAt,
+	now,
+}: {
+	<span class="c">/** False outside leagues and in a league's real-time brackets. */</span>
+	hasScheduling: <span class="t">boolean</span>;
+	isOver: <span class="t">boolean</span>;
+	hasBothTeams: <span class="t">boolean</span>;
+	isPlayableAt: <span class="t">number</span> | <span class="l">null</span>;
+	scheduledAt: <span class="t">number</span> | <span class="l">null</span>;
+	now: <span class="t">number</span>;
+}): <span class="t">Phase</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L18">$why -&gt; $expected</a> <span class="muted">× 10</span></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-loader">Loaders</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/loaders/to.$id.matches.$mid.server.ts#L291" title="app/features/tournament-match/loaders/to.$id.matches.$mid.server.ts:291">tournament-match/to.$id.matches.$mid.server.ts</a><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/loaders/to.$id.matches.server.ts#L108" title="app/features/tournament-match/loaders/to.$id.matches.server.ts:108">tournament-match/to.$id.matches.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/actions/to.$id.matches.$mid.server.ts#L956" title="app/features/tournament-match/actions/to.$id.matches.$mid.server.ts:956">tournament-match/to.$id.matches.$mid.server.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-opensat">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">opensAt</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L77" title="app/features/tournament-match/core/LeagueScheduling.ts:77">:77</a>
+	</div>
+	<div class="doc"><p>When teams can start putting times on the board: a day before the round is playable, right away without a playable time.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">opensAt</span>(isPlayableAt: <span class="t">number</span> | <span class="l">null</span>)</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L75">a day before the round is playable</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L79">right away without a playable time</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-loader">Loaders</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/loaders/to.$id.matches.$mid.server.ts#L325" title="app/features/tournament-match/loaders/to.$id.matches.$mid.server.ts:325">tournament-match/to.$id.matches.$mid.server.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-playableatfromdate">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">playableAtFromDate</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L84" title="app/features/tournament-match/core/LeagueScheduling.ts:84">:84</a>
+	</div>
+	<div class="doc"><p>When a round picked to be playable on <code>date</code>'s calendar day (read in local time) opens: the start of that day in UTC+14.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">playableAtFromDate</span>(date: <span class="t">Date</span>)</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L85">opens at the start of the picked day in UTC+14</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-component">Components</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-bracket/components/BracketMapListDialog.tsx#L1067" title="app/features/tournament-bracket/components/BracketMapListDialog.tsx:1067">tournament-bracket/BracketMapListDialog.tsx</a></span></div><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/db/seed/dev/tournaments.ts#L580" title="app/db/seed/dev/tournaments.ts:580">app/db/tournaments.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-playabledate">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">playableDate</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L92" title="app/features/tournament-match/core/LeagueScheduling.ts:92">:92</a>
+	</div>
+	<div class="doc"><p>The calendar day a round is playable from, as local midnight, so formatting it shows the organizer's picked date in any time zone.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">playableDate</span>(isPlayableAt: <span class="t">number</span>)</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L93">gives back the picked day</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-component">Components</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-bracket/components/BracketMapListDialog.tsx#L1062" title="app/features/tournament-bracket/components/BracketMapListDialog.tsx:1062">tournament-bracket/BracketMapListDialog.tsx</a><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/components/TournamentMatchBanner.tsx#L102" title="app/features/tournament-match/components/TournamentMatchBanner.tsx:102">tournament-match/TournamentMatchBanner.tsx</a></span></div><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament/tournament-utils.ts#L95" title="app/features/tournament/tournament-utils.ts:95">tournament/tournament-utils.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-playableatsareascending">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">playableAtsAreAscending</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L105" title="app/features/tournament-match/core/LeagueScheduling.ts:105">:105</a>
+	</div>
+	<div class="doc"><p>Whether no round becomes playable before an earlier round of its section; rounds in play order, those without a time skipped.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">playableAtsAreAscending</span>(
+	rounds: <span class="t">Array</span>&lt;{ section?: <span class="t">string</span> | <span class="l">null</span>; isPlayableAt?: <span class="t">number</span> | <span class="l">null</span> }&gt;,
+)</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L105">$why</a> <span class="muted">× 5</span></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L123">compares rounds only within their section</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-component">Components</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-bracket/components/BracketMapListDialog.tsx#L729" title="app/features/tournament-bracket/components/BracketMapListDialog.tsx:729">tournament-bracket/BracketMapListDialog.tsx</a></span></div><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-bracket/tournament-bracket-schemas.ts#L150" title="app/features/tournament-bracket/tournament-bracket-schemas.ts:150">tournament-bracket/tournament-bracket-schemas.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-validateproposals">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">validateProposals</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L124" title="app/features/tournament-match/core/LeagueScheduling.ts:124">:124</a>
+	</div>
+	<div class="doc"><p>Whether a team may replace its candidate times with <code>proposedAts</code> now, and if not, why; times it already has up are not rechecked.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">validateProposals</span>({
+	proposedAts,
+	existingProposedAts,
+	phase: currentPhase,
+	isPlayableAt,
+	now,
+	setByOrganizer,
+}: {
+	<span class="c">/** The team's full new set of candidates. */</span>
+	proposedAts: <span class="t">Array</span>&lt;<span class="t">number</span>&gt;;
+	<span class="c">/** The team's candidates currently on the board. */</span>
+	existingProposedAts: <span class="t">Array</span>&lt;<span class="t">number</span>&gt;;
+	phase: <span class="t">Phase</span>;
+	isPlayableAt: <span class="t">number</span> | <span class="l">null</span>;
+	now: <span class="t">number</span>;
+	setByOrganizer: <span class="t">boolean</span>;
+}): <span class="t">ProposalError</span> | <span class="l">null</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L142">$why -&gt; $expected</a> <span class="muted">× 13</span></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/actions/to.$id.matches.$mid.server.ts#L713" title="app/features/tournament-match/actions/to.$id.matches.$mid.server.ts:713">tournament-match/to.$id.matches.$mid.server.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-shouldannounceproposals">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">shouldAnnounceProposals</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L164" title="app/features/tournament-match/core/LeagueScheduling.ts:164">:164</a>
+	</div>
+	<div class="doc"><p>Whether a team putting up new candidate times gets a chat line. Not when the room's latest message already announces the same team's times recently, so repeated updates can't flood the chat.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">shouldAnnounceProposals</span>({
+	latestMessage,
+	teamMemberUserIds,
+	now,
+}: {
+	latestMessage:
+		| {
+				<span class="k">type</span>: <span class="t">string</span> | <span class="l">null</span>;
+				authorUserId: <span class="t">number</span> | <span class="l">null</span>;
+				createdAt: <span class="t">number</span>;
+		  }
+		| <span class="l">undefined</span>;
+	teamMemberUserIds: <span class="t">Array</span>&lt;<span class="t">number</span>&gt;;
+	now: <span class="t">number</span>;
+})</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L272">$why -&gt; $expected</a> <span class="muted">× 5</span></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/actions/to.$id.matches.$mid.server.ts#L743" title="app/features/tournament-match/actions/to.$id.matches.$mid.server.ts:743">tournament-match/to.$id.matches.$mid.server.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-isacceptableproposal">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">isAcceptableProposal</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L196" title="app/features/tournament-match/core/LeagueScheduling.ts:196">:196</a>
+	</div>
+	<div class="doc"><p>Whether a candidate time can still be picked: it has to be ahead.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">isAcceptableProposal</span>({
+	proposedAt,
+	now,
+}: {
+	proposedAt: <span class="t">number</span>;
+	now: <span class="t">number</span>;
+})</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L247">a candidate that passed can't be picked</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/actions/to.$id.matches.$mid.server.ts#L796" title="app/features/tournament-match/actions/to.$id.matches.$mid.server.ts:796">tournament-match/to.$id.matches.$mid.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-component">Components</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/components/TournamentMatchScheduleTab.tsx#L158" title="app/features/tournament-match/components/TournamentMatchScheduleTab.tsx:158">tournament-match/TournamentMatchScheduleTab.tsx</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-livewindow">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">liveWindow</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L207" title="app/features/tournament-match/core/LeagueScheduling.ts:207">:207</a>
+	</div>
+	<div class="doc"><p>The span around the agreed time in which the set counts as live while somebody streams it.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">liveWindow</span>(scheduledAt: <span class="t">number</span>): <span class="t">TimeRange</span></pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/core/streams/streams.server.ts#L65" title="app/features/core/streams/streams.server.ts:65">core/streams.server.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-islive">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">isLive</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L215" title="app/features/tournament-match/core/LeagueScheduling.ts:215">:215</a>
+	</div>
+	<div class="doc"><p>Whether the set is inside its live window and still undecided.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">isLive</span>({
+	scheduledAt,
+	hasWinner,
+	now,
+}: {
+	scheduledAt: <span class="t">number</span>;
+	hasWinner: <span class="t">boolean</span>;
+	now: <span class="t">number</span>;
+})</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L321">$why -&gt; $expected</a> <span class="muted">× 5</span></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L333">a decided set is not live</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-loader">Loaders</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/loaders/to.$id.matches.server.ts#L120" title="app/features/tournament-match/loaders/to.$id.matches.server.ts:120">tournament-match/to.$id.matches.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/core/streams/streams.server.ts#L184" title="app/features/core/streams/streams.server.ts:184">core/streams.server.ts</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-busyblock">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">busyBlock</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L232" title="app/features/tournament-match/core/LeagueScheduling.ts:232">:232</a>
+	</div>
+	<div class="doc"><p>The span a scheduled set blocks on its players' schedules.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">busyBlock</span>(scheduledAt: <span class="t">number</span>): <span class="t">TimeRange</span></pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-module">Modules</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/availability/core/Commitments.server.ts#L101" title="app/features/availability/core/Commitments.server.ts:101">availability/Commitments.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-component">Components</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/components/TournamentMatchScheduleTab.tsx#L83" title="app/features/tournament-match/components/TournamentMatchScheduleTab.tsx:83">tournament-match/TournamentMatchScheduleTab.tsx</a></span></div></div>
+</div><div class="export" id="modules/leaguescheduling-availabilitywindow">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">availabilityWindow</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.ts#L243" title="app/features/tournament-match/core/LeagueScheduling.ts:243">:243</a>
+	</div>
+	<div class="doc"><p>The span the availability panel covers: from the round becoming playable (or now, once it is) to the next round becoming playable, a week when there is no next round or it opens no later.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">availabilityWindow</span>({
+	now,
+	isPlayableAt,
+	nextIsPlayableAt,
+}: {
+	now: <span class="t">number</span>;
+	isPlayableAt: <span class="t">number</span> | <span class="l">null</span>;
+	nextIsPlayableAt: <span class="t">number</span> | <span class="l">null</span>;
+}): <span class="t">TimeRange</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li class="unit-test-group"><span class="unit-test-heading">from</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L345">playable to the next round while the round is ahead</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L355">now once the round is playable</a></li></ul></li><li class="unit-test-group"><span class="unit-test-heading">a</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L365">week without a next round</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L375">week when the next round already opened</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/core/LeagueScheduling.test.ts#L388">week from now without any playable time</a></li></ul></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-loader">Loaders</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/loaders/to.$id.matches.$mid.server.ts#L342" title="app/features/tournament-match/loaders/to.$id.matches.$mid.server.ts:342">tournament-match/to.$id.matches.$mid.server.ts</a></span></div></div>
+</div>
+	
+	
+</article>
+		</div>
+	</div>
+	
+	<div class="view" data-view="routes" hidden>
+		<aside class="sidebar">
+			<h4>Coverage</h4>
+			<p class="coverage"><strong>2</strong> of 2 routes rendered by an e2e test</p>
+			<p class="legend-note">From the last <code>pnpm run docs:living:capture</code>.</p>
+			<h4>Routes</h4>
+			<ul class="toc route-toc"><li><a href="#routes/app-features-tournament-match-routes-to-id-matches-tsx"><span class="kind-dot is-visited"></span>/to/:id/matches</a></li><li><a href="#routes/app-features-tournament-match-routes-to-id-matches-mid-tsx"><span class="kind-dot is-visited"></span>/to/:id/matches/:mid</a></li></ul>
+		</aside>
+		<div class="content">
+			<div class="routes"><article class="route" id="routes/app-features-tournament-match-routes-to-id-matches-tsx">
+				<div class="route-head">
+					<code class="route-path">/to/<span class="route-param">:id</span>/matches</code>
+					<span class="badge">page</span>
+					<span class="badge badge-loader">loader</span>
+					
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/routes/to.$id.matches.tsx#L1" title="app/features/tournament-match/routes/to.$id.matches.tsx:1">to.$id.matches.tsx</a>
+				</div>
+				<ul class="route-tests"><li><a href="tournament.html#e2e/tournament-league-tournament-league-teams-agree-on-a-time-decline-a-reschedule-the-organizer-overrides-it-and-the-set-gets-played">teams agree on a time, decline a reschedule, the organizer overrides it and the set gets played</a></li></ul>
+			</article><article class="route" id="routes/app-features-tournament-match-routes-to-id-matches-mid-tsx">
+				<div class="route-head">
+					<code class="route-path">/to/<span class="route-param">:id</span>/matches/<span class="route-param">:mid</span></code>
+					<span class="badge">page</span>
+					<span class="badge badge-loader">loader</span>
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/tournament-match/routes/to.$id.matches.$mid.tsx#L1" title="app/features/tournament-match/routes/to.$id.matches.$mid.tsx:1">to.$id.matches.$mid.tsx</a>
+				</div>
+				<ul class="route-tests"><li><a href="chat.html#e2e/chat-chat-tournament-organizer-posts-into-a-match-chat-and-is-labelled">Tournament organizer posts into a match chat and is labelled</a></li><li><a href="chat.html#e2e/chat-chat-an-observer-coming-back-to-a-match-chat-sees-what-was-said-while-they-were-away">An observer coming back to a match chat sees what was said while they were away</a></li><li><a href="sidebar.html#e2e/sidebar-friends-sidebar-friends-friend-menu-actions-of-tournament-friends-land-on-a-real-page">friend menu actions of tournament friends land on a real page</a></li><li><a href="tournament.html#e2e/tournament-league-tournament-league-teams-agree-on-a-time-decline-a-reschedule-the-organizer-overrides-it-and-the-set-gets-played">teams agree on a time, decline a reschedule, the organizer overrides it and the set gets played</a></li><li><a href="tournament.html#e2e/tournament-league-tournament-league-a-set-can-t-be-played-before-the-teams-agree-on-a-time-or-the-round-is-playable">a set can't be played before the teams agree on a time or the round is playable</a></li><li><a href="tournament.html#e2e/tournament-staff-tournament-staff-gives-staff-role-which-allows-another-user-to-see-limited-info">gives staff role which allows another user to see limited info</a></li><li><a href="tournament.html#e2e/tournament-streams-tournament-streams-can-view-streams-on-bracket-popover-when-match-is-in-progress">can view streams on bracket popover when match is in progress</a></li><li><a href="tournament.html#e2e/tournament-streams-tournament-streams-cast-stream-shows-on-bracket-when-match-is-set-as-casted">cast stream shows on bracket when match is set as casted</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-elimination-tournament-bracket-elimination-reports-score-and-sees-bracket-update">reports score and sees bracket update</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-elimination-tournament-bracket-elimination-losers-bracket-team-winning-grand-finals-forces-a-bracket-reset">losers bracket team winning grand finals forces a bracket reset</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-elimination-tournament-bracket-elimination-completes-and-finalizes-a-small-tournament-with-badge-assigning">completes and finalizes a small tournament with badge assigning</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-elimination-tournament-bracket-elimination-locks-unlocks-matches-sets-match-as-casted">locks/unlocks matches &amp; sets match as casted</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-elimination-tournament-bracket-elimination-resets-bracket">resets bracket</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-elimination-tournament-bracket-elimination-dropping-team-out-ends-ongoing-match-early-and-auto-forfeits-losers-bracket-match">dropping team out ends ongoing match early and auto-forfeits losers bracket match</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-multi-stage-tournament-bracket-multi-stage-completes-and-finalizes-a-small-tournament-rr-se-w-underground-bracket">completes and finalizes a small tournament (RR-&gt;SE w/ underground bracket)</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-multi-stage-tournament-bracket-multi-stage-changes-sos-format-and-progresses-with-it-adds-a-member-to-another-team">changes SOS format and progresses with it &amp; adds a member to another team</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-multi-stage-tournament-bracket-multi-stage-plays-out-a-redemption-bracket-set-up-in-the-tournament-creation-form">plays out a redemption bracket set up in the tournament creation form</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-pick-ban-tournament-bracket-pick-ban-ban-pick-pickban">ban/pick ${pickBan}</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-pick-ban-tournament-bracket-pick-ban-ban-pick-custom-flow">ban/pick CUSTOM flow</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-round-robin-tournament-bracket-round-robin-organizer-edits-a-match-after-it-is-done">organizer edits a match after it is done</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-round-robin-tournament-bracket-round-robin-changes-to-picked-map-pool-best-of">changes to picked map pool &amp; best of</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-round-robin-tournament-bracket-round-robin-reopens-round-robin-match-and-changes-score">reopens round robin match and changes score</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-round-robin-tournament-bracket-round-robin-reopening-round-robin-match-does-not-lock-already-unlocked-matches-issue-2690">reopening round robin match does not lock already-unlocked matches (issue #2690)</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-round-robin-tournament-bracket-round-robin-user-no-screen-setting-affects-tournament-match">user no screen setting affects tournament match</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-round-robin-tournament-bracket-round-robin-hosts-a-play-all-round-robin-stage">hosts a 'play all' round robin stage</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-swiss-tournament-bracket-swiss-swiss-tournament-with-bracket-advancing-unadvancing-dropping-out-a-team">swiss tournament with bracket advancing/unadvancing &amp; dropping out a team</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-swiss-tournament-bracket-swiss-swiss-tournament-with-early-advance-replaying-giving-a-bye-to-a-lone-team">swiss tournament with early advance replaying &amp; giving a bye to a lone team</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-tournament-bracket-sets-active-roster-as-regular-member">sets active roster as regular member</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-tournament-bracket-only-asks-for-weapons-of-the-maps-played">only asks for weapons of the maps played</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-tournament-bracket-can-end-set-early-when-past-time-limit-and-shows-timer-on-bracket-and-match-page">can end set early when past time limit and shows timer on bracket and match page</a></li></ul>
+			</article></div>
+		</div>
+	</div>
+</main>
+
+<div class="tooltip" role="tooltip" hidden></div>
+<dialog class="search-dialog" aria-label="Search">
+	<input type="search" placeholder="Search features, modules, exports, tests, routes…" autocomplete="off" spellcheck="false">
+	<ul class="search-results" role="listbox"></ul>
+	<p class="search-hint muted"><kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to open, <kbd>Esc</kbd> to close</p>
+</dialog>
+<dialog class="lightbox" aria-label="Screenshot"><img alt=""><p class="lightbox-caption"></p></dialog>
+<script>
+const main = document.querySelector("main");
+
+function show() {
+	const hash = decodeURIComponent(location.hash.slice(1));
+	const views = [...document.querySelectorAll("[data-view]")];
+	if (views.length === 0) return;
+
+	const requested = hash.split("/")[0];
+	const view = views.some((el) => el.dataset.view === requested) ? requested : main.dataset.defaultView;
+
+	for (const el of views) el.hidden = el.dataset.view !== view;
+	for (const tab of document.querySelectorAll("[data-view-tab]")) {
+		tab.setAttribute("aria-current", String(tab.dataset.viewTab === view));
+	}
+
+	const target = hash.includes("/") ? document.getElementById(hash) : null;
+	if (target) target.scrollIntoView({ block: "start" });
+	else if (hash) window.scrollTo({ top: 0 });
+}
+
+window.addEventListener("hashchange", show);
+show();
+
+let spyFrame = 0;
+function updateScrollSpy() {
+	spyFrame = 0;
+	const view = [...document.querySelectorAll("[data-view]")].find((el) => !el.hidden);
+	if (!view) return;
+	const sidebar = view.querySelector(".sidebar");
+	const links = [...view.querySelectorAll('.toc a[href^="#"]')];
+
+	const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+	const threshold = isAtBottom ? window.innerHeight : Math.max(120, window.innerHeight * 0.3);
+	let current = null;
+	for (const link of links) {
+		const target = document.getElementById(decodeURIComponent(link.getAttribute("href").slice(1)));
+		if (target && target.getBoundingClientRect().top <= threshold) current = link;
+	}
+
+	for (const link of links) {
+		link.toggleAttribute("aria-current", link === current);
+		if (link === current) link.setAttribute("aria-current", "location");
+		link.classList.remove("is-active-parent");
+	}
+	const parent = current?.closest("ul")?.closest("li")?.querySelector(":scope > a");
+	parent?.classList.add("is-active-parent");
+
+	if (current && sidebar && current !== followedLink) {
+		followedLink = current;
+		const linkTop = current.getBoundingClientRect().top - sidebar.getBoundingClientRect().top + sidebar.scrollTop;
+		const maxScroll = sidebar.scrollHeight - sidebar.clientHeight;
+		followSidebar(sidebar, Math.min(maxScroll, Math.max(0, linkTop - sidebar.clientHeight * 0.35)));
+	}
+}
+
+// the sidebar eases towards keeping the current entry a third of the way down, so many
+// entries passing quickly read as one glide instead of a jump per entry
+let followedLink = null;
+let followFrame = 0;
+let followTarget = 0;
+let followedSidebar = null;
+let userScrolledSidebarAt = 0;
+function followSidebar(sidebar, target) {
+	if (Date.now() - userScrolledSidebarAt < 1500) return;
+	followTarget = target;
+	followedSidebar = sidebar;
+	followFrame ||= requestAnimationFrame(stepSidebar);
+}
+function stepSidebar() {
+	followFrame = 0;
+	const distance = followTarget - followedSidebar.scrollTop;
+	if (Math.abs(distance) < 1) {
+		followedSidebar.scrollTop = followTarget;
+		return;
+	}
+	followedSidebar.scrollTop += distance * 0.18;
+	followFrame = requestAnimationFrame(stepSidebar);
+}
+for (const sidebar of document.querySelectorAll(".sidebar")) {
+	for (const type of ["wheel", "touchmove"]) {
+		sidebar.addEventListener(type, () => {
+			userScrolledSidebarAt = Date.now();
+			cancelAnimationFrame(followFrame);
+			followFrame = 0;
+		}, { passive: true });
+	}
+}
+window.addEventListener("scroll", () => {
+	spyFrame ||= requestAnimationFrame(updateScrollSpy);
+}, { passive: true });
+window.addEventListener("hashchange", () => requestAnimationFrame(updateScrollSpy));
+updateScrollSpy();
+
+document.querySelector(".feature-tab[aria-current]")?.scrollIntoView({ inline: "center", block: "nearest" });
+
+for (const toggle of document.querySelectorAll("[data-toggle-code]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("show-code", toggle.checked);
+	});
+}
+
+for (const toggle of document.querySelectorAll("[data-toggle-outline]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("outline-only", toggle.checked);
+	});
+}
+
+const tooltip = document.querySelector(".tooltip");
+const refTemplates = new Map([...document.querySelectorAll("template[data-ref-id]")].map((template) => [template.dataset.refId, template]));
+
+document.addEventListener("mouseover", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (!template) {
+		tooltip.hidden = true;
+		return;
+	}
+
+	tooltip.innerHTML = template.innerHTML;
+	tooltip.hidden = false;
+
+	const anchor = ref.getBoundingClientRect();
+	const box = tooltip.getBoundingClientRect();
+	const below = anchor.bottom + 8 + box.height < window.innerHeight;
+	tooltip.style.top = (below ? anchor.bottom + 8 : Math.max(8, anchor.top - 8 - box.height)) + "px";
+	tooltip.style.left = Math.min(Math.max(8, anchor.left), window.innerWidth - box.width - 8) + "px";
+});
+
+document.addEventListener("click", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (template) window.open(template.dataset.href, "_blank", "noopener");
+});
+
+const lightbox = document.querySelector(".lightbox");
+document.addEventListener("click", (event) => {
+	const shot = event.target.closest?.("[data-shot]");
+	if (!shot) return;
+	lightbox.querySelector("img").src = shot.dataset.shot;
+	lightbox.querySelector(".lightbox-caption").textContent = shot.dataset.caption;
+	lightbox.showModal();
+});
+lightbox.addEventListener("click", () => lightbox.close());
+
+const searchDialog = document.querySelector(".search-dialog");
+const searchInput = searchDialog.querySelector("input");
+const searchResults = searchDialog.querySelector(".search-results");
+let selectedResult = 0;
+
+function openSearch() {
+	if (!window.LIVING_DOCS_SEARCH && !document.querySelector("script[data-search-index]")) {
+		const script = document.createElement("script");
+		script.src = "search-index.js";
+		script.dataset.searchIndex = "";
+		script.onload = renderResults;
+		document.head.append(script);
+	}
+	searchDialog.showModal();
+	searchInput.select();
+	renderResults();
+}
+
+function searchMatches(query) {
+	const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+	if (tokens.length === 0) return [];
+
+	return (window.LIVING_DOCS_SEARCH ?? [])
+		.map((entry) => {
+			const label = entry[1].toLowerCase();
+			const haystack = label + " " + entry[2].toLowerCase() + " " + entry[0].toLowerCase();
+			if (!tokens.every((token) => haystack.includes(token))) return null;
+			const score = (label.startsWith(tokens[0]) ? 0 : label.includes(tokens[0]) ? 1 : 2) * 1000 + label.length;
+			return { entry, score };
+		})
+		.filter(Boolean)
+		.sort((a, b) => a.score - b.score)
+		.slice(0, 60)
+		.map(({ entry }) => entry);
+}
+
+function renderResults() {
+	const matches = searchMatches(searchInput.value);
+	selectedResult = 0;
+	searchResults.replaceChildren(
+		...matches.map(([kind, label, detail, href], index) => {
+			const item = document.createElement("li");
+			const link = document.createElement("a");
+			link.href = href;
+			link.setAttribute("aria-selected", String(index === 0));
+			for (const [className, text] of [["search-kind", kind], ["search-label", label], ["search-detail", detail]]) {
+				const span = document.createElement("span");
+				span.className = className;
+				span.textContent = text;
+				link.append(span);
+			}
+			link.addEventListener("click", () => searchDialog.close());
+			item.append(link);
+			return item;
+		}),
+	);
+	if (matches.length === 0 && searchInput.value.trim()) {
+		const empty = document.createElement("li");
+		empty.className = "search-empty";
+		empty.textContent = window.LIVING_DOCS_SEARCH ? "No matches" : "Loading…";
+		searchResults.append(empty);
+	}
+}
+
+function moveSelection(delta) {
+	const links = [...searchResults.querySelectorAll("a")];
+	if (links.length === 0) return;
+	selectedResult = (selectedResult + delta + links.length) % links.length;
+	for (const [index, link] of links.entries()) {
+		link.setAttribute("aria-selected", String(index === selectedResult));
+	}
+	links[selectedResult].scrollIntoView({ block: "nearest" });
+}
+
+searchInput.addEventListener("input", renderResults);
+searchInput.addEventListener("keydown", (event) => {
+	if (event.key === "ArrowDown") moveSelection(1);
+	else if (event.key === "ArrowUp") moveSelection(-1);
+	else if (event.key === "Enter") {
+		const link = searchResults.querySelectorAll("a")[selectedResult];
+		if (link) {
+			searchDialog.close();
+			location.href = link.href;
+		}
+	} else return;
+	event.preventDefault();
+});
+searchDialog.addEventListener("click", (event) => {
+	if (event.target === searchDialog) searchDialog.close();
+});
+document.querySelector("[data-open-search]").addEventListener("click", openSearch);
+document.addEventListener("keydown", (event) => {
+	const isTyping = event.target.closest?.("input, textarea");
+	if ((event.key === "k" && (event.metaKey || event.ctrlKey)) || (event.key === "/" && !isTyping)) {
+		event.preventDefault();
+		openSearch();
+	}
+});
+
+for (const graph of document.querySelectorAll(".graph")) {
+	for (const node of graph.querySelectorAll("[data-node]")) {
+		node.addEventListener("mouseenter", () => {
+			const id = node.dataset.node;
+			graph.classList.add("focusing");
+			node.classList.add("is-related");
+			for (const edge of graph.querySelectorAll(".edge")) {
+				if (edge.dataset.from !== id && edge.dataset.to !== id) continue;
+				edge.classList.add("is-related");
+				const other = edge.dataset.from === id ? edge.dataset.to : edge.dataset.from;
+				graph.querySelector('[data-node="' + CSS.escape(other) + '"]')?.classList.add("is-related");
+			}
+		});
+		node.addEventListener("mouseleave", () => {
+			graph.classList.remove("focusing");
+			for (const el of graph.querySelectorAll(".is-related")) el.classList.remove("is-related");
+		});
+	}
+}
+</script>
+</body>
+</html>

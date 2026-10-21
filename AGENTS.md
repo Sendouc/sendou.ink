@@ -12,7 +12,8 @@
 
 ## Commands
 
-- `pnpm run checks` runs, in order: biome:fix, unit/browser tests, translation json checks, typecheck and knip — knip means unused exports fail checks, so remove exports nothing imports
+- `pnpm run checks` runs, in order: biome:fix, living docs regeneration, unit/browser tests, translation json checks, typecheck and knip — knip means unused exports fail checks, so remove exports nothing imports
+- `pnpm run docs:living` regenerates `docs/living/` (generated, committed) from the core modules, e2e specs and routes; `pnpm run docs:living:capture` refreshes its route coverage and screenshots from an e2e run, see [living-docs.md](./docs/dev/living-docs.md)
 - `pnpm run typecheck` runs TypeScript type checking
 - `pnpm run biome:fix` runs Biome code formatter and linter
 - `pnpm run test:unit:browser` runs all unit tests and browser tests

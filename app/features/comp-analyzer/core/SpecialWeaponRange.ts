@@ -1,11 +1,13 @@
+/**
+ * Range circles of special weapons, as drawn on the map planner and the comp analyzer. Projectile
+ * specials (Trizooka, Crab Tank…) reuse the main weapon trajectory model of `WeaponRange`, area
+ * specials carry a radius in their params.
+ */
+
 import { specialWeaponParams } from "~/features/build-analyzer/core/utils";
 import type { SpecialWeaponId } from "~/modules/in-game-lists/types";
 import { specialWeaponIds } from "~/modules/in-game-lists/weapon-ids";
-import {
-	calculateGroundRange,
-	simulateTrajectoryPoints,
-	type TrajectoryParams,
-} from "./weapon-range";
+import * as WeaponRange from "./WeaponRange";
 
 const DEFAULT_BRAKE_AIR_RESIST = 0.36;
 const DEFAULT_BRAKE_GRAVITY = 0.07;
@@ -13,6 +15,7 @@ const DEFAULT_BRAKE_TO_FREE_FRAME = 4;
 const DEFAULT_FREE_GRAVITY = 0.016;
 const DEFAULT_FREE_AIR_RESIST = 0;
 
+/** Range of a special: how far its projectile flies, or the radius of its area. */
 export interface SpecialWeaponRangeResult {
 	/** In game distance units. */
 	range: number;
@@ -25,7 +28,7 @@ export interface SpecialWeaponRangeResult {
  * Range circle of a special, or `null` when it has none worth drawing. Values come from
  * `weapon-params.ts`: projectile specials reuse the main weapon trajectory model, the rest carry a radius.
  */
-export function getSpecialWeaponRange(
+export function ofSpecial(
 	specialWeaponId: SpecialWeaponId,
 ): SpecialWeaponRangeResult | null {
 	const params = specialWeaponParams(specialWeaponId);
@@ -44,7 +47,7 @@ export function getSpecialWeaponRange(
 
 	if (params.Range_SpawnSpeed === undefined) return null;
 
-	const trajectoryParams: TrajectoryParams = {
+	const trajectoryParams: WeaponRange.TrajectoryParams = {
 		spawnSpeed: params.Range_SpawnSpeed,
 		goStraightStateEndMaxSpeed:
 			params.Range_GoStraightStateEndMaxSpeed ?? params.Range_SpawnSpeed,
@@ -57,8 +60,8 @@ export function getSpecialWeaponRange(
 			params.Range_BrakeToFreeStateFrame ?? DEFAULT_BRAKE_TO_FREE_FRAME,
 	};
 
-	const range = calculateGroundRange(
-		simulateTrajectoryPoints(trajectoryParams),
+	const range = WeaponRange.groundRange(
+		WeaponRange.simulateTrajectory(trajectoryParams),
 	);
 
 	return {
@@ -68,15 +71,16 @@ export function getSpecialWeaponRange(
 	};
 }
 
+/** A special with its range. */
 export interface SpecialWeaponWithRange extends SpecialWeaponRangeResult {
 	specialWeaponId: SpecialWeaponId;
 }
 
 /** Every special with a range to draw, widest first. */
-export function getSpecialsWithRange(): SpecialWeaponWithRange[] {
+export function allSpecials(): SpecialWeaponWithRange[] {
 	return specialWeaponIds
 		.flatMap((specialWeaponId): SpecialWeaponWithRange[] => {
-			const result = getSpecialWeaponRange(specialWeaponId);
+			const result = ofSpecial(specialWeaponId);
 			return result ? [{ specialWeaponId, ...result }] : [];
 		})
 		.sort((a, b) => b.range - a.range);

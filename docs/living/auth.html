@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auth · sendou.ink living docs</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--bg: #f6f6f8;
+	--surface: #ffffff;
+	--surface-2: #f2f2f6;
+	--border: #e3e3ea;
+	--text: #1b1b21;
+	--muted: #6c6c7a;
+	--accent: #6d4aff;
+	--accent-soft: #ede8ff;
+	--warn: #b45309;
+	--warn-soft: #fef3c7;
+	--arrange: #64748b;
+	--act: #3b82f6;
+	--assert: #16a34a;
+	--code-bg: #f7f7fa;
+	--hl-k: #a626a4; --hl-s: #3d8b3d; --hl-n: #986801; --hl-c: #a0a1a7; --hl-t: #b76e00; --hl-f: #3b6fd8; --hl-l: #0184bc;
+	--radius: 12px;
+	--font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0e0e12;
+		--surface: #16161c;
+		--surface-2: #1d1d25;
+		--border: #2a2a35;
+		--text: #e7e7ee;
+		--muted: #9898a8;
+		--accent: #a58fff;
+		--accent-soft: #272040;
+		--warn: #fbbf24;
+		--warn-soft: #3a2a0a;
+		--arrange: #94a3b8;
+		--act: #60a5fa;
+		--assert: #4ade80;
+		--code-bg: #121218;
+		--hl-k: #c678dd; --hl-s: #98c379; --hl-n: #d19a66; --hl-c: #6b717d; --hl-t: #e5c07b; --hl-f: #61afef; --hl-l: #56b6c2;
+	}
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--font); }
+a { color: inherit; }
+code { font-family: var(--mono); font-size: 0.88em; }
+p { margin: 0; }
+p + p { margin-top: 0.5em; }
+.muted { color: var(--muted); }
+
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 24px; padding: 10px 24px; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+.brand span { color: var(--accent); font-weight: 600; }
+.feature-tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: thin; mask-image: linear-gradient(to right, black calc(100% - 32px), transparent); padding-right: 32px; }
+.feature-tab { display: flex; align-items: center; gap: 7px; padding: 5px 11px 5px 7px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.feature-tab:hover { background: var(--surface-2); color: var(--text); }
+.feature-tab[aria-current="page"] { background: var(--accent-soft); color: var(--text); }
+.feature-icon { flex: none; object-fit: contain; }
+.search-button { display: flex; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.search-button:hover { border-color: var(--accent); color: var(--text); }
+
+.search-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 120px)); margin: 80px auto auto; padding: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 24px 64px rgb(0 0 0 / 0.3); overflow: hidden; }
+.search-dialog[open] { display: flex; flex-direction: column; }
+.search-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.search-dialog input { width: 100%; padding: 16px 18px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 16px; outline: none; }
+.search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; flex: 1; }
+.search-results a { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 2px 10px; padding: 7px 10px; border-radius: 8px; text-decoration: none; }
+.search-results a[aria-selected="true"] { background: var(--accent-soft); }
+.search-kind { grid-row: span 2; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 3px; }
+.search-label { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-detail { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-empty { padding: 18px; color: var(--muted); text-align: center; }
+.search-hint { margin: 0; padding: 8px 14px; border-top: 1px solid var(--border); font-size: 12px; }
+
+.lightbox { max-width: min(1280px, calc(100vw - 32px)); padding: 0; border: none; border-radius: 12px; background: var(--surface); box-shadow: 0 24px 64px rgb(0 0 0 / 0.4); cursor: zoom-out; }
+.lightbox::backdrop { background: rgb(0 0 0 / 0.6); }
+.lightbox img { display: block; max-width: 100%; max-height: calc(100vh - 120px); }
+.lightbox-caption { margin: 0; padding: 8px 14px; font-weight: 600; font-size: 13px; color: var(--text); }
+.letter-icon { display: inline-grid; place-items: center; width: var(--size); height: var(--size); border-radius: 28%; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: calc(var(--size) * 0.5); }
+
+.index-head { margin-bottom: 24px; }
+.index-head h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.02em; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.feature-card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 12px; align-items: center; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; }
+.feature-card:hover { border-color: var(--accent); }
+.feature-card .feature-icon { grid-row: span 2; }
+.feature-card-label { font-weight: 700; }
+.feature-card-stats { display: flex; flex-wrap: wrap; column-gap: 10px; color: var(--muted); font-size: 12px; }
+.feature-card-stats span { white-space: nowrap; }
+
+main { max-width: 1320px; margin: 0 auto; padding: 24px; }
+.feature-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.feature-head h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+.stats { color: var(--muted); font-size: 14px; }
+.view-switch { margin-left: auto; display: flex; padding: 3px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; }
+.view-switch a { padding: 6px 14px; border-radius: 7px; text-decoration: none; font-weight: 600; font-size: 14px; color: var(--muted); }
+.view-switch a[aria-current="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgb(0 0 0 / 0.08); }
+
+.view { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; align-items: start; }
+.view[hidden] { display: none; }
+.sidebar { position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow-y: auto; font-size: 13px; padding-right: 6px; }
+.sidebar h4 { margin: 18px 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.sidebar h4:first-child { margin-top: 0; }
+.toc, .toc ul, .legend { list-style: none; margin: 0; padding: 0; }
+.toc > li { margin-bottom: 10px; }
+.toc > li > a { font-weight: 600; }
+.toc ul { margin-top: 4px; border-left: 1px solid var(--border); }
+.toc ul a { display: flex; align-items: center; gap: 6px; padding: 2px 0 2px 10px; color: var(--muted); }
+.toc a { text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 600; }
+.toc ul a[aria-current="location"] { margin-left: -1px; border-left: 2px solid var(--accent); padding-left: 9px; }
+.toc a.is-active-parent { color: var(--accent); }
+.toc-group { font-weight: 600; }
+.toc > li.toc-depth-2 { margin-left: 10px; }
+.toc > li.toc-depth-3 { margin-left: 20px; }
+.toc > li:has(> .toc-group:only-child) { margin-bottom: 4px; }
+.kind-dot { width: 7px; height: 7px; border-radius: 2px; flex: none; background: var(--accent); }
+.kind-dot.kind-type, .kind-dot.kind-interface { background: var(--hl-t); }
+.kind-dot.is-visited { background: var(--assert); border-radius: 50%; }
+.kind-dot.is-unvisited { background: transparent; border: 1.5px solid var(--muted); border-radius: 50%; }
+.coverage { margin: 0; font-size: 14px; }
+.route-toc a { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--muted); }
+.routes { display: grid; gap: 10px; }
+.route { padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); scroll-margin-top: 80px; }
+.route-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.route-head .file-link { margin-left: auto; }
+.route-path { font-size: 15px; font-weight: 700; }
+.route-param { color: var(--accent); }
+.badge-loader { color: var(--act); }
+.badge-action { color: var(--warn); }
+.route-tests { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; columns: 2 300px; column-gap: 24px; }
+.route-tests li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.route-tests li::before { content: "▸"; position: absolute; left: 4px; color: var(--muted); }
+.route-tests a { text-decoration: none; }
+.route-tests a:hover { color: var(--accent); text-decoration: underline; }
+.warn-text { margin: 8px 0 0; font-size: 13px; color: var(--warn); }
+.legend li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-weight: 600; }
+.legend small { color: var(--muted); font-weight: 400; margin-left: auto; font-family: var(--mono); font-size: 10px; }
+.legend.phases small { font-family: var(--font); font-size: 11px; }
+.legend-note { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.toggle { display: flex; align-items: center; gap: 8px; margin-top: 14px; cursor: pointer; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); font-size: 12px; text-decoration: none; margin: 2px 4px 2px 0; white-space: nowrap; }
+.file-chip { font-family: var(--mono); font-size: 11.5px; }
+.file-chip:hover { border-color: var(--accent); color: var(--accent); }
+.badge { display: inline-block; padding: 1px 7px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+.warn { font-size: 11px; font-weight: 600; color: var(--warn); background: var(--warn-soft); padding: 1px 7px; border-radius: 6px; }
+.file-link { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; }
+.file-link:hover { color: var(--accent); text-decoration: underline; }
+
+.graph-card, .module, .test { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.graph-card { margin: 0 0 24px; padding: 16px 20px; }
+.graph-card figcaption { font-weight: 700; margin-bottom: 8px; }
+.graph-scroll { overflow-x: auto; }
+.graph { display: block; font-size: 13px; }
+.column-title { fill: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.node rect { fill: var(--surface-2); stroke: var(--border); }
+.node-self rect { fill: var(--accent-soft); stroke: var(--accent); }
+.node-label { fill: var(--text); font-weight: 600; }
+.node-sublabel { fill: var(--muted); font-size: 11px; }
+.node { cursor: default; transition: opacity 0.15s; }
+.edge { fill: none; stroke: var(--muted); stroke-opacity: 0.45; stroke-width: 1.4; transition: opacity 0.15s; }
+.arrowhead { fill: var(--muted); }
+.graph.focusing .node, .graph.focusing .edge { opacity: 0.18; }
+.graph.focusing .is-related { opacity: 1; }
+.graph.focusing .edge.is-related { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2; }
+
+.module { padding: 22px 24px; margin-bottom: 24px; scroll-margin-top: 80px; }
+.module-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.module-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+.module-head .file-link { margin-left: auto; }
+.overview { margin-top: 10px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+.missing { margin-top: 10px; color: var(--muted); font-style: italic; font-size: 14px; }
+.module-facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 14px 0 0; font-size: 13px; }
+.module-facts dt { color: var(--muted); font-weight: 600; padding-top: 2px; }
+.module-facts dd { margin: 0; }
+.section-title { margin: 26px 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.export { padding: 16px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
+.section-title + .export { border-top: none; }
+.export-head { display: flex; align-items: center; gap: 8px; }
+.export-head .file-link { margin-left: auto; }
+.export-name { font-size: 15px; font-weight: 700; }
+.kind { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 5px; color: var(--accent); background: var(--accent-soft); }
+.kind.kind-type, .kind.kind-interface { color: var(--hl-t); background: color-mix(in srgb, var(--hl-t) 14%, transparent); }
+.doc { margin-top: 6px; }
+.doc code, .overview code, .note code, .tooltip-doc code { background: var(--surface-2); padding: 0 4px; border-radius: 4px; }
+.doc-tags { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.doc-tags span { font-family: var(--mono); color: var(--muted); }
+.doc-tags p { display: inline; }
+
+pre.code, code { font-variant-ligatures: none; }
+pre.code { margin: 10px 0 0; padding: 12px 14px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; font: 12.5px/1.6 var(--mono); tab-size: 2; }
+.c { color: var(--hl-c); font-style: italic; } .k { color: var(--hl-k); } .s { color: var(--hl-s); } .n { color: var(--hl-n); } .t { color: var(--hl-t); } .f { color: var(--hl-f); } .l { color: var(--hl-l); }
+details.source { margin-top: 8px; }
+details.source summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+details.source summary:hover { color: var(--accent); }
+.unit-tests { margin-top: 10px; font-size: 13px; }
+.unit-tests-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+.unit-test-list { margin: 0; padding: 0; list-style: none; columns: 2 320px; column-gap: 24px; }
+.unit-test-list > li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.unit-test-list > li::before { content: "✓"; position: absolute; left: 2px; color: var(--assert); font-weight: 800; }
+.unit-test-heading { font-weight: 650; }
+.unit-test-group ul { margin: 1px 0 4px; padding: 0 0 0 12px; list-style: none; border-left: 2px solid var(--border); }
+.unit-test-group li { padding: 1px 0; }
+.unit-tests a { text-decoration: none; }
+.unit-tests a:hover { color: var(--accent); text-decoration: underline; }
+.usages { margin-top: 10px; font-size: 13px; display: grid; gap: 4px; }
+.usage-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.usage-kind { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.test-only { margin-top: 18px; font-size: 13px; }
+
+.spec-head { margin-bottom: 8px; }
+.group-title { font-size: 18px; margin: 28px 0 12px; letter-spacing: -0.01em; }
+.group-options { margin: -6px 0 12px; color: var(--muted); font-size: 13px; }
+.group-title.group-depth-2 { font-size: 16px; margin-top: 20px; }
+.group-title.group-depth-3 { font-size: 14px; }
+.group-title:is(.group-depth-2, .group-depth-3)::before { content: "› "; color: var(--muted); }
+.test-group:has(> .group-title.group-depth-1):not(:has(.test)) .group-title { margin-bottom: 0; }
+.group-doc, .test-doc { margin: -6px 0 12px; color: var(--muted); font-size: 14px; }
+.group-doc p, .test-doc p { margin: 0; }
+.chapters { display: grid; gap: 20px; }
+.chapter { display: grid; gap: 8px; }
+.chapter-title { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 650; }
+.chapter-text { flex: 1; }
+.chapter-number { display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 800; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+body.outline-only .chapter .segments { display: none; }
+body.outline-only .chapters { gap: 8px; }
+.test-group:first-child .group-title { margin-top: 0; }
+.test { padding: 18px 20px; margin-bottom: 20px; scroll-margin-top: 80px; }
+.test-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.test-head h3 { margin: 0; font-size: 16px; flex: 1; }
+.test-head h3::first-letter { text-transform: uppercase; }
+.test-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.user { display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--actor, var(--accent)); background: color-mix(in srgb, var(--actor, var(--accent)) 15%, transparent); }
+.avatar { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; font-weight: 800; color: white; background: var(--actor, var(--arrange)); }
+
+.segments { display: grid; gap: 10px; }
+.test-routes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -6px 0 12px; font-size: 12px; color: var(--muted); }
+.route-chip { font-family: var(--mono); font-size: 11.5px; padding: 1px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); text-decoration: none; color: var(--text); }
+.route-chip:hover { border-color: var(--accent); color: var(--accent); }
+.storyboard { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+.storyboard:not(:has(img)) { display: none; }
+.storyboard-frame { flex: none; display: grid; gap: 4px; width: 176px; padding: 0; border: none; background: none; color: var(--muted); font: inherit; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; text-align: left; cursor: zoom-in; }
+.storyboard-frame img, .divider-shot img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); }
+.storyboard-frame:hover img, .divider-shot:hover img { border-color: var(--accent); }
+.storyboard-frame span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.divider-shot { flex: none; order: 3; width: 48px; padding: 0; border: none; background: none; cursor: zoom-in; }
+.divider-shot img { border-radius: 4px; }
+.segment { display: grid; grid-template-columns: 92px minmax(0, 1fr); border-radius: 10px; border: 1px solid var(--border); overflow: clip; }
+.segment-actor { border-color: color-mix(in srgb, var(--actor) 45%, transparent); background: color-mix(in srgb, var(--actor) 5%, var(--surface)); }
+.lane { padding: 12px 6px; font-size: 12px; font-weight: 700; text-align: center; background: var(--surface-2); border-right: 1px solid var(--border); color: var(--muted); }
+.lane-sticky { position: sticky; top: 76px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.segment-actor .lane { background: color-mix(in srgb, var(--actor) 14%, var(--surface)); color: var(--actor); border-right-color: color-mix(in srgb, var(--actor) 35%, transparent); }
+.segment-body { padding: 8px 14px 10px; min-width: 0; }
+
+.divider { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; font-size: 12px; }
+.divider::after { content: ""; order: 2; flex: 1; border-bottom: 1px dashed var(--border); align-self: center; }
+.divider-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+.divider-label::before { content: "▸ "; }
+
+.run { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; padding: 4px 0; }
+.run + .run { border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.run-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 5px; }
+.phase-arrange { --phase: var(--arrange); }
+.phase-act { --phase: var(--act); }
+.phase-assert { --phase: var(--assert); }
+.run-label { color: var(--phase); }
+.steps { list-style: none; margin: 0; padding: 0; }
+.steps.nested { margin: 2px 0 2px 9px; padding-left: 14px; border-left: 2px solid var(--border); }
+.step { padding: 3px 0; }
+.step-line { display: flex; gap: 10px; align-items: baseline; }
+.phase-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--phase); }
+.phase-arrange .phase-icon::before { content: "+"; }
+.phase-act .phase-icon::before { content: "→"; }
+.phase-assert .phase-icon::before { content: "✓"; }
+.step-naming > .step-line .phase-icon::before { content: "="; color: var(--muted); }
+.step-naming > .step-line { color: var(--muted); }
+.legend .phase-icon { width: 24px; }
+.step-text strong { font-weight: 650; }
+.ref { text-decoration: underline dotted color-mix(in srgb, currentColor 45%, transparent); text-underline-offset: 3px; cursor: help; }
+.ref:hover { text-decoration-color: var(--accent); color: var(--accent); }
+.tooltip { position: fixed; z-index: 100; max-width: min(560px, calc(100vw - 24px)); padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 32px rgb(0 0 0 / 0.18); font-size: 13px; pointer-events: none; }
+.tooltip-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.tooltip-head code { font-weight: 700; }
+.tooltip-head span { color: var(--muted); font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.tooltip-doc { margin-top: 6px; }
+.tooltip pre.code { margin-top: 8px; font-size: 11.5px; max-height: 280px; overflow: hidden; }
+.note { margin: 4px 0 2px 26px; padding-left: 10px; border-left: 2px solid var(--border); color: var(--muted); font-size: 13px; font-style: italic; }
+.str { color: var(--hl-s); }
+.num { color: var(--hl-n); font-family: var(--mono); font-size: 0.9em; }
+.const { cursor: help; }
+.tuple::before { content: "("; color: var(--muted); }
+.tuple::after { content: ")"; color: var(--muted); }
+.kv + .kv::before { content: "· "; color: var(--muted); }
+.key { color: var(--muted); }
+.binds { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+code.inline { background: var(--surface-2); padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+kbd { font-family: var(--mono); font-size: 12px; padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); }
+.step-code { display: none; margin: 4px 0 4px 26px !important; padding: 6px 10px !important; font-size: 11.5px !important; }
+body.show-code .step-code { display: block; }
+
+@media (max-width: 900px) {
+	main { padding: 16px; }
+	.topbar { padding: 10px 16px; gap: 12px; }
+	.brand span { display: none; }
+	.search-button kbd { display: none; }
+	.view { grid-template-columns: minmax(0, 1fr); }
+	.sidebar { position: static; max-height: none; }
+	.segment { grid-template-columns: minmax(0, 1fr); }
+	.lane { border-right: none; border-bottom: 1px solid var(--border); padding: 6px 10px; }
+	.lane-sticky { position: static; flex-direction: row; }
+	.run { grid-template-columns: minmax(0, 1fr); gap: 0; }
+	.view-switch { margin-left: 0; }
+	.usage-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+	.chip { white-space: normal; overflow-wrap: anywhere; }
+	.test-head { flex-direction: column; gap: 6px; }
+	.test-meta { justify-content: flex-start; }
+	.divider { flex-wrap: wrap; gap: 2px 10px; }
+	.divider::after { display: none; }
+}
+
+[data-actor="ADMIN_ID"] { --actor: #8b5cf6; }
+[data-actor="NZAP_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="REGULAR_USER_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="ORG_ADMIN_TEST_ID"] { --actor: #0ea5e9; }
+[data-actor="STAFF_TEST_ID"] { --actor: #14b8a6; }
+[data-actor="DEV_TEST_ID"] { --actor: #64748b; }
+</style>
+</head>
+<body>
+<header class="topbar">
+	<a class="brand" href="index.html">sendou.ink <span>living docs</span></a>
+	<button type="button" class="search-button" data-open-search>Search <kbd>⌘K</kbd></button>
+	<nav class="feature-tabs">
+		<a class="feature-tab" href="admin.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Admin</a><a class="feature-tab" href="api.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api</a><a class="feature-tab" href="api-private.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api private</a><a class="feature-tab" href="art.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/art.avif" alt="" width="20" height="20" loading="lazy">Art</a><a class="feature-tab" href="articles.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/articles.avif" alt="" width="20" height="20" loading="lazy">Articles</a><a class="feature-tab" href="associations.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/associations.avif" alt="" width="20" height="20" loading="lazy">Associations</a><a class="feature-tab" href="auth.html" aria-current="page"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Auth</a><a class="feature-tab" href="availability.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Availability</a><a class="feature-tab" href="badges.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/badges.avif" alt="" width="20" height="20" loading="lazy">Badges</a><a class="feature-tab" href="ban.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">B</span>Ban</a><a class="feature-tab" href="build-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/analyzer.avif" alt="" width="20" height="20" loading="lazy">Build analyzer</a><a class="feature-tab" href="build-stats.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Build stats</a><a class="feature-tab" href="builds.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Builds</a><a class="feature-tab" href="calendar.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/calendar.avif" alt="" width="20" height="20" loading="lazy">Calendar</a><a class="feature-tab" href="chat.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">C</span>Chat</a><a class="feature-tab" href="comp-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/comp-analyzer.avif" alt="" width="20" height="20" loading="lazy">Comp analyzer</a><a class="feature-tab" href="events.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">E</span>Events</a><a class="feature-tab" href="friends.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Friends</a><a class="feature-tab" href="front-page.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Front page</a><a class="feature-tab" href="global-status.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">G</span>Global status</a><a class="feature-tab" href="health.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">H</span>Health</a><a class="feature-tab" href="img-export.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Image export</a><a class="feature-tab" href="img-upload.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Img upload</a><a class="feature-tab" href="info.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Info</a><a class="feature-tab" href="lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/lfg.avif" alt="" width="20" height="20" loading="lazy">LFG</a><a class="feature-tab" href="layout.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Layout</a><a class="feature-tab" href="leaderboards.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/leaderboards.avif" alt="" width="20" height="20" loading="lazy">Leaderboards</a><a class="feature-tab" href="links.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/links.avif" alt="" width="20" height="20" loading="lazy">Links</a><a class="feature-tab" href="live-streams.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Live streams</a><a class="feature-tab" href="mmr.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">M</span>MMR</a><a class="feature-tab" href="map-list-generator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/maps.avif" alt="" width="20" height="20" loading="lazy">Map list generator</a><a class="feature-tab" href="map-planner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plans.avif" alt="" width="20" height="20" loading="lazy">Map planner</a><a class="feature-tab" href="notifications.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">N</span>Notifications</a><a class="feature-tab" href="object-damage-calculator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/object-damage-calculator.avif" alt="" width="20" height="20" loading="lazy">Object damage calculator</a><a class="feature-tab" href="params.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Params</a><a class="feature-tab" href="plus-suggestions.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus suggestions</a><a class="feature-tab" href="plus-voting.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus voting</a><a class="feature-tab" href="api-public.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Public API</a><a class="feature-tab" href="scanner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner</a><a class="feature-tab" href="scanner-ingest.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner ingest</a><a class="feature-tab" href="scrims.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scrims.avif" alt="" width="20" height="20" loading="lazy">Scrims</a><a class="feature-tab" href="search.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Search</a><a class="feature-tab" href="sendouq.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ</a><a class="feature-tab" href="sendouq-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ match</a><a class="feature-tab" href="sendouq-streams.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ streams</a><a class="feature-tab" href="settings.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/settings.avif" alt="" width="20" height="20" loading="lazy">Settings</a><a class="feature-tab" href="sidebar.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Sidebar</a><a class="feature-tab" href="site-wide.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Site-wide</a><a class="feature-tab" href="team.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/t.avif" alt="" width="20" height="20" loading="lazy">Team</a><a class="feature-tab" href="theme.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Theme</a><a class="feature-tab" href="tier-list-maker.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/tier-list-maker.avif" alt="" width="20" height="20" loading="lazy">Tier list maker</a><a class="feature-tab" href="top-search.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/xsearch.avif" alt="" width="20" height="20" loading="lazy">Top search</a><a class="feature-tab" href="tournament.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament</a><a class="feature-tab" href="tournament-admin.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament admin</a><a class="feature-tab" href="tournament-bracket.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament bracket</a><a class="feature-tab" href="tournament-lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament lfg</a><a class="feature-tab" href="tournament-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament match</a><a class="feature-tab" href="tournament-organization.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament organization</a><a class="feature-tab" href="tournament-subs.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament subs</a><a class="feature-tab" href="translate.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Translate</a><a class="feature-tab" href="trophies.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/trophies.avif" alt="" width="20" height="20" loading="lazy">Trophies</a><a class="feature-tab" href="user-activity.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">U</span>User activity</a><a class="feature-tab" href="user-card.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User card</a><a class="feature-tab" href="user-page.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User page</a><a class="feature-tab" href="user-report.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User report</a><a class="feature-tab" href="vods.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/vods.avif" alt="" width="20" height="20" loading="lazy">Vods</a><a class="feature-tab" href="voice.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">V</span>Voice</a>
+	</nav>
+</header>
+<main data-default-view="modules">
+	<div class="feature-head">
+		<span class="feature-icon letter-icon" style="--size: 48px" aria-hidden="true">A</span>
+		<div>
+			<h1>Auth</h1>
+			<p class="stats">1 module · 1 export · 3 e2e tests · 7 routes</p>
+		</div>
+		<div class="view-switch">
+			<a href="#modules" data-view-tab="modules">Modules</a>
+			<a href="#e2e" data-view-tab="e2e">E2E tests</a>
+			<a href="#routes" data-view-tab="routes">Routes</a>
+		</div>
+	</div>
+	<div class="view" data-view="modules" hidden>
+		<aside class="sidebar">
+			<h4>Modules</h4>
+			<ul class="toc"><li><a href="#modules/discordstrategy-server">DiscordStrategy.server</a><ul><li><a href="#modules/discordstrategy-server-discordstrategy"><span class="kind-dot kind-function"></span>DiscordStrategy</a></li></ul></li></ul>
+		</aside>
+		<div class="content">
+			<figure class="graph-card">
+	<figcaption>Who imports who <span class="muted">· hover a node</span></figcaption>
+	<div class="graph-scroll">
+	<svg class="graph" viewBox="0 0 872 90" width="872" height="90" role="img" aria-label="Module dependency graph">
+		<defs><marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" class="arrowhead"/></marker></defs>
+		<text class="column-title" x="16" y="16">Depends on</text>
+		<text class="column-title" x="336" y="16">Auth modules</text>
+		<text class="column-title" x="656" y="16">Used by</text>
+		<path class="edge" data-from="app/features/auth/core/DiscordStrategy.server.ts" data-to="kind:other" d="M536 57 C596 57, 596 57, 652 57" marker-end="url(#arrow)"/>
+		<g class="node node-self" data-node="app/features/auth/core/DiscordStrategy.server.ts">
+				<rect x="336" y="40" width="200" height="34" rx="8"/>
+				<text x="348" y="61"><tspan class="node-label">DiscordStrategy.server</tspan><tspan class="node-sublabel" dx="8"></tspan></text>
+			</g><g class="node node-other" data-node="kind:other">
+				<rect x="656" y="40" width="200" height="34" rx="8"/>
+				<text x="668" y="61"><tspan class="node-label">Other</tspan><tspan class="node-sublabel" dx="8">1 file</tspan></text>
+			</g>
+	</svg>
+	</div>
+</figure>
+			<article class="module" id="modules/discordstrategy-server">
+	<header class="module-head">
+		<h2>DiscordStrategy</h2>
+		<span class="badge">server</span>
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/core/DiscordStrategy.server.ts#L1" title="app/features/auth/core/DiscordStrategy.server.ts:1">app/features/auth/core/DiscordStrategy.server.ts</a>
+	</header>
+	<p class="missing">No overview comment at the top of the file.</p>
+	<dl class="module-facts">
+		<dt>Imports</dt><dd><span class="muted">no other modules</span></dd>
+		<dt>Used by</dt><dd><span class="chip kind-other">1 other</span></dd>
+	</dl>
+	
+	<h3 class="section-title">Functions &amp; values</h3><div class="export" id="modules/discordstrategy-server-discordstrategy">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">DiscordStrategy</code>
+		<span class="warn" title="Module functions should always have JSDoc">no JSDoc</span>
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/core/DiscordStrategy.server.ts#L36" title="app/features/auth/core/DiscordStrategy.server.ts:36">:36</a>
+	</div>
+	
+	
+	<pre class="code"><span class="k">export</span> <span class="k">const</span> <span class="t">DiscordStrategy</span> = () =&gt;</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/core/authenticator.server.ts#L2" title="app/features/auth/core/authenticator.server.ts:2">auth/authenticator.server.ts</a></span></div></div>
+</div>
+	
+	
+</article>
+		</div>
+	</div>
+	<div class="view" data-view="e2e" hidden>
+		<aside class="sidebar">
+			
+			<h4>Phases</h4>
+			<ul class="legend phases">
+				<li class="phase-arrange"><span class="phase-icon"></span>Arrange <small>data setup</small></li>
+				<li class="phase-act"><span class="phase-icon"></span>Act <small>what the user does</small></li>
+				<li class="phase-assert"><span class="phase-icon"></span>Assert <small>what is expected</small></li>
+			</ul>
+			<label class="toggle"><input type="checkbox" data-toggle-code> Show code of each step</label>
+			
+			<h4>Tests</h4>
+			<ul class="toc"><li class="toc-depth-1"><span class="toc-group">Auth</span><ul><li><a href="#e2e/auth-auth-logs-in-via-a-log-in-link-and-logs-out-from-the-settings-page">logs in via a log in link and logs out from the settings page</a></li><li><a href="#e2e/auth-auth-a-session-of-an-account-deleted-by-a-migration-falls-back-to-logged-out">a session of an account deleted by a migration falls back to logged out</a></li><li><a href="#e2e/auth-auth-log-in-button-starts-the-discord-oauth-flow">log in button starts the Discord OAuth flow</a></li></ul></li></ul>
+		</aside>
+		<div class="content">
+			<div class="spec">
+	<div class="spec-head"><a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/auth.spec.ts#L1" title="e2e/auth.spec.ts:1">e2e/auth.spec.ts</a></div>
+	<section class="test-group">
+		<h2 class="group-title group-depth-1">Auth</h2>
+		
+		
+		<article class="test" id="e2e/auth-auth-logs-in-via-a-log-in-link-and-logs-out-from-the-settings-page">
+	<header class="test-head">
+		<h3>logs in via a log in link and logs out from the settings page</h3>
+		<div class="test-meta">
+			
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/auth.spec.ts#L24" title="e2e/auth.spec.ts:24">auth.spec.ts:24</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="front-page.html#routes/app-features-front-page-routes-index-tsx">/</a><a class="route-chip" href="notifications.html#routes/app-features-notifications-routes-notifications-tsx">/notifications</a><a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/auth/35.jpg" data-caption="Log in link page"><img src="screenshots/auth/35.jpg" alt="Log in link page" loading="lazy" onerror="this.parentElement.remove()"><span>Log in link page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/37.jpg" data-caption="Side nav"><img src="screenshots/auth/37.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"><span>Side nav</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/41.jpg" data-caption="Settings page"><img src="screenshots/auth/41.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/44.jpg" data-caption="Side nav"><img src="screenshots/auth/44.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"><span>Side nav</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/50.jpg" data-caption="Error page"><img src="screenshots/auth/50.jpg" alt="Error page" loading="lazy" onerror="this.parentElement.remove()"><span>Error page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/53.jpg" data-caption="Log in link page"><img src="screenshots/auth/53.jpg" alt="Log in link page" loading="lazy" onerror="this.parentElement.remove()"><span>Log in link page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create log in link <span class="kv"><span class="key">user</span> <span class="user" data-actor="NZAP_TEST_ID">N-ZAP</span></span> <span class="binds">→ logInLink</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> logInLink = <span class="k">await</span> factories.<span class="t">LogInLinkFactory</span>.<span class="f">create</span>({
+	userId: <span class="t">NZAP_TEST_ID</span>,
+});</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #94a3b8">
+	<div class="lane" title="Logged in as Logged out (logged-out)"><div class="lane-sticky"><span class="avatar">LO</span><span class="lane-name">Logged out</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/auth/log-in-link-page.ts:5:LogInLinkPage">Log in link page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/35.jpg" data-caption="Log in link page"><img src="screenshots/auth/35.jpg" alt="Log in link page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/auth/log-in-link-page.ts:12:LogInLinkPage.goto">Open</span> the <strong>log in link page</strong> <code class="inline" title="logInLink.code">logInLink.code</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> logInLinkPage.<span class="f">goto</span>(logInLink.code);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>the page</strong> URL is <span class="str">“/”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(page).<span class="f">toHaveURL</span>(<span class="s">&quot;/&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:11:SideNav">Side nav</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/37.jpg" data-caption="Side nav"><img src="screenshots/auth/37.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:23:SideNav.locators.footerUsername">footer username</span></strong> reads <span class="str">“N-ZAP”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(sideNav.locators.footerUsername).<span class="f">toHaveText</span>(<span class="s">&quot;N-ZAP&quot;</span>);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:20:SideNav.locators.logInButton">log in button</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(sideNav.locators.logInButton);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/41.jpg" data-caption="Settings page"><img src="screenshots/auth/41.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto">Open</span> the <strong>settings page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:60:SettingsPage.logOut">Log out</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">logOut</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:11:SideNav">Side nav</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/44.jpg" data-caption="Side nav"><img src="screenshots/auth/44.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:20:SideNav.locators.logInButton">log in button</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(sideNav.locators.logInButton).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:23:SideNav.locators.footerUsername">footer username</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(sideNav.locators.footerUsername);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Go to <code class="inline" title="NOTIFICATIONS_URL"><span class="t">NOTIFICATIONS_URL</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="t">NOTIFICATIONS_URL</span> });</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/error-page.ts:5:ErrorPage">Error page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/50.jpg" data-caption="Error page"><img src="screenshots/auth/50.jpg" alt="Error page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/error-page.ts:28:ErrorPage.heading">heading</span> <span class="str">“Authentication required”</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(errorPage.<span class="f">heading</span>(<span class="s">&quot;Authentication required&quot;</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/auth/log-in-link-page.ts:5:LogInLinkPage">Log in link page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/53.jpg" data-caption="Log in link page"><img src="screenshots/auth/53.jpg" alt="Log in link page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	<div class="note"><p>the first log in consumed the single use link</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/auth/log-in-link-page.ts:17:LogInLinkPage.fetchResponse">Fetch response</span> <code class="inline" title="logInLink.code">logInLink.code</code> <span class="binds">→ reusedLink</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> reusedLink = <span class="k">await</span> logInLinkPage.<span class="f">fetchResponse</span>(logInLink.code);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="reusedLink.status">reusedLink.status</code></strong> is <span class="num">400</span></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(reusedLink.status).<span class="f">toBe</span>(<span class="n">400</span>);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;logs in via a log in link and logs out from the settings page&quot;</span>, <span class="k">async</span> ({
+	page,
+	factories,
+}) =&gt; {
+	<span class="k">const</span> logInLink = <span class="k">await</span> factories.<span class="t">LogInLinkFactory</span>.<span class="f">create</span>({
+		userId: <span class="t">NZAP_TEST_ID</span>,
+	});
+
+	<span class="k">const</span> logInLinkPage = <span class="k">new</span> <span class="t">LogInLinkPage</span>(page);
+	<span class="k">const</span> sideNav = <span class="k">new</span> <span class="t">SideNav</span>(page);
+
+	<span class="k">await</span> logInLinkPage.<span class="f">goto</span>(logInLink.code);
+	<span class="k">await</span> <span class="f">expect</span>(page).<span class="f">toHaveURL</span>(<span class="s">&quot;/&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(sideNav.locators.footerUsername).<span class="f">toHaveText</span>(<span class="s">&quot;N-ZAP&quot;</span>);
+	<span class="k">await</span> <span class="f">isNotVisible</span>(sideNav.locators.logInButton);
+
+	<span class="k">const</span> settings = <span class="k">new</span> <span class="t">SettingsPage</span>(page);
+	<span class="k">await</span> settings.<span class="f">goto</span>();
+	<span class="k">await</span> settings.<span class="f">logOut</span>();
+
+	<span class="k">await</span> <span class="f">expect</span>(sideNav.locators.logInButton).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">isNotVisible</span>(sideNav.locators.footerUsername);
+
+	<span class="k">const</span> errorPage = <span class="k">new</span> <span class="t">ErrorPage</span>(page);
+
+	<span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="t">NOTIFICATIONS_URL</span> });
+	<span class="k">await</span> <span class="f">expect</span>(errorPage.<span class="f">heading</span>(<span class="s">&quot;Authentication required&quot;</span>)).<span class="f">toBeVisible</span>();
+
+	<span class="c">// the first log in consumed the single use link</span>
+	<span class="k">const</span> reusedLink = <span class="k">await</span> logInLinkPage.<span class="f">fetchResponse</span>(logInLink.code);
+	<span class="f">expect</span>(reusedLink.status).<span class="f">toBe</span>(<span class="n">400</span>);
+})</pre></details>
+</article><article class="test" id="e2e/auth-auth-a-session-of-an-account-deleted-by-a-migration-falls-back-to-logged-out">
+	<header class="test-head">
+		<h3>a session of an account deleted by a migration falls back to logged out</h3>
+		<div class="test-meta">
+			
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/auth.spec.ts#L57" title="e2e/auth.spec.ts:57">auth.spec.ts:57</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="front-page.html#routes/app-features-front-page-routes-index-tsx">/</a><a class="route-chip" href="notifications.html#routes/app-features-notifications-routes-notifications-tsx">/notifications</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/auth/75.jpg" data-caption="Log in link page"><img src="screenshots/auth/75.jpg" alt="Log in link page" loading="lazy" onerror="this.parentElement.remove()"><span>Log in link page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/76.jpg" data-caption="Side nav"><img src="screenshots/auth/76.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"><span>Side nav</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/82.jpg" data-caption="Admin actions page"><img src="screenshots/auth/82.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"><span>Admin actions page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/98.jpg" data-caption="Side nav"><img src="screenshots/auth/98.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"><span>Side nav</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/104.jpg" data-caption="Error page"><img src="screenshots/auth/104.jpg" alt="Error page" loading="lazy" onerror="this.parentElement.remove()"><span>Error page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/107.jpg" data-caption="Log in link page"><img src="screenshots/auth/107.jpg" alt="Log in link page" loading="lazy" onerror="this.parentElement.remove()"><span>Log in link page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/108.jpg" data-caption="Side nav"><img src="screenshots/auth/108.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"><span>Side nav</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create user <code class="inline" title="KEEPER"><span class="t">KEEPER</span></code> <span class="binds">→ keeper</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> keeper = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>(<span class="t">KEEPER</span>);</pre>
+	
+</li><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create user <code class="inline" title="LEAVER"><span class="t">LEAVER</span></code> <span class="binds">→ leaver</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> leaver = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>(<span class="t">LEAVER</span>);</pre>
+	
+</li><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create log in link <span class="kv"><span class="key">user id</span> <code class="inline" title="leaver.id">leaver.id</code></span> <span class="binds">→ leaverLogInLink</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> leaverLogInLink = <span class="k">await</span> factories.<span class="t">LogInLinkFactory</span>.<span class="f">create</span>({
+	userId: leaver.id,
+});</pre>
+	
+</li><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create log in link <span class="kv"><span class="key">user id</span> <code class="inline" title="keeper.id">keeper.id</code></span> <span class="binds">→ keeperLogInLink</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> keeperLogInLink = <span class="k">await</span> factories.<span class="t">LogInLinkFactory</span>.<span class="f">create</span>({
+	userId: keeper.id,
+});</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #94a3b8">
+	<div class="lane" title="Logged in as Logged out (logged-out)"><div class="lane-sticky"><span class="avatar">LO</span><span class="lane-name">Logged out</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/auth/log-in-link-page.ts:5:LogInLinkPage">Log in link page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/75.jpg" data-caption="Log in link page"><img src="screenshots/auth/75.jpg" alt="Log in link page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/auth/log-in-link-page.ts:12:LogInLinkPage.goto">Open</span> the <strong>log in link page</strong> <code class="inline" title="leaverLogInLink.code">leaverLogInLink.code</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> logInLinkPage.<span class="f">goto</span>(leaverLogInLink.code);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:11:SideNav">Side nav</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/76.jpg" data-caption="Side nav"><img src="screenshots/auth/76.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:23:SideNav.locators.footerUsername">footer username</span></strong> reads <code class="inline" title="LEAVER.discordName"><span class="t">LEAVER</span>.discordName</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(sideNav.locators.footerUsername).<span class="f">toHaveText</span>(
+	<span class="t">LEAVER</span>.discordName,
+);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/helpers/chat.ts:7:openSecondUser">Open second user</span> <code class="inline" title="browser">browser</code>, <code class="inline" title="workerBaseURL">workerBaseURL</code> <span class="binds">→ admin</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> admin = <span class="k">await</span> <span class="f">openSecondUser</span>(browser, workerBaseURL);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:13:AdminActionsPage">Admin actions page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/82.jpg" data-caption="Admin actions page"><img src="screenshots/auth/82.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:20:AdminActionsPage.goto">Open</span> the <strong>admin actions page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:77:AdminActionsPage.migrateUser">Migrate user</span> <span class="kv"><span class="key">old user name</span> <code class="inline" title="KEEPER.discordName"><span class="t">KEEPER</span>.discordName</code></span> <span class="kv"><span class="key">new user name</span> <code class="inline" title="LEAVER.discordName"><span class="t">LEAVER</span>.discordName</code></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">migrateUser</span>({
+	oldUserName: <span class="t">KEEPER</span>.discordName,
+	newUserName: <span class="t">LEAVER</span>.discordName,
+});</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Close</span></div>
+	<pre class="code step-code"><span class="k">await</span> admin.<span class="f">close</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange step-naming">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><code class="inline" title="sessionCookie">sessionCookie</code> = <code class="inline" title="async () =&gt; (await page.context().cookies()).find( (cookie) =&gt; cookie.name === SESSION_COOKIE_NAME, )"><span class="k">async</span> () =&gt; (<span class="k">await</span> page.<span class="f">context</span>().<span class="f">cookies</span>()).<span class="f">find</span>( (cookie) =&gt; cookie.name ==…</code></span></div>
+	<pre class="code step-code"><span class="k">const</span> sessionCookie = <span class="k">async</span> () =&gt;
+	(<span class="k">await</span> page.<span class="f">context</span>().<span class="f">cookies</span>()).<span class="f">find</span>(
+		(cookie) =&gt; cookie.name === <span class="t">SESSION_COOKIE_NAME</span>,
+	);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Session cookie <span class="binds">→ staleCookie</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> staleCookie = <span class="k">await</span> <span class="f">sessionCookie</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="staleCookie">staleCookie</code></strong> be defined </span></div>
+	<pre class="code step-code"><span class="f">expect</span>(staleCookie).<span class="f">toBeDefined</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Go to <span class="str">“/”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="s">&quot;/&quot;</span> });</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/helpers/playwright.ts:696:expectNoErrorPage">no error page</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expectNoErrorPage</span>(page);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:11:SideNav">Side nav</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/98.jpg" data-caption="Side nav"><img src="screenshots/auth/98.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:20:SideNav.locators.logInButton">log in button</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(sideNav.locators.logInButton).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:23:SideNav.locators.footerUsername">footer username</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(sideNav.locators.footerUsername);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="sessionCookie()"><span class="f">sessionCookie</span>()</code></strong> be undefined </span></div>
+	<pre class="code step-code"><span class="f">expect</span>(<span class="k">await</span> <span class="f">sessionCookie</span>()).<span class="f">toBeUndefined</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Go to <code class="inline" title="NOTIFICATIONS_URL"><span class="t">NOTIFICATIONS_URL</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="t">NOTIFICATIONS_URL</span> });</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/error-page.ts:5:ErrorPage">Error page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/104.jpg" data-caption="Error page"><img src="screenshots/auth/104.jpg" alt="Error page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/error-page.ts:28:ErrorPage.heading">heading</span> <span class="str">“Authentication required”</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(errorPage.<span class="f">heading</span>(<span class="s">&quot;Authentication required&quot;</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Add cookies <code class="inline" title="staleCookie!">staleCookie!</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> page.<span class="f">context</span>().<span class="f">addCookies</span>([staleCookie!]);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/auth/log-in-link-page.ts:5:LogInLinkPage">Log in link page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/107.jpg" data-caption="Log in link page"><img src="screenshots/auth/107.jpg" alt="Log in link page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/auth/log-in-link-page.ts:12:LogInLinkPage.goto">Open</span> the <strong>log in link page</strong> <code class="inline" title="keeperLogInLink.code">keeperLogInLink.code</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> logInLinkPage.<span class="f">goto</span>(keeperLogInLink.code);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:11:SideNav">Side nav</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/108.jpg" data-caption="Side nav"><img src="screenshots/auth/108.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:23:SideNav.locators.footerUsername">footer username</span></strong> reads <code class="inline" title="KEEPER.discordName"><span class="t">KEEPER</span>.discordName</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(sideNav.locators.footerUsername).<span class="f">toHaveText</span>(
+	<span class="t">KEEPER</span>.discordName,
+);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;a session of an account deleted by a migration falls back to logged out&quot;</span>, <span class="k">async</span> ({
+	page,
+	browser,
+	workerBaseURL,
+	factories,
+}) =&gt; {
+	<span class="k">const</span> keeper = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>(<span class="t">KEEPER</span>);
+	<span class="k">const</span> leaver = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>(<span class="t">LEAVER</span>);
+	<span class="k">const</span> leaverLogInLink = <span class="k">await</span> factories.<span class="t">LogInLinkFactory</span>.<span class="f">create</span>({
+		userId: leaver.id,
+	});
+	<span class="k">const</span> keeperLogInLink = <span class="k">await</span> factories.<span class="t">LogInLinkFactory</span>.<span class="f">create</span>({
+		userId: keeper.id,
+	});
+
+	<span class="k">const</span> logInLinkPage = <span class="k">new</span> <span class="t">LogInLinkPage</span>(page);
+	<span class="k">const</span> sideNav = <span class="k">new</span> <span class="t">SideNav</span>(page);
+
+	<span class="k">await</span> logInLinkPage.<span class="f">goto</span>(leaverLogInLink.code);
+	<span class="k">await</span> <span class="f">expect</span>(sideNav.locators.footerUsername).<span class="f">toHaveText</span>(
+		<span class="t">LEAVER</span>.discordName,
+	);
+
+	<span class="k">const</span> admin = <span class="k">await</span> <span class="f">openSecondUser</span>(browser, workerBaseURL);
+	<span class="k">const</span> adminActions = <span class="k">new</span> <span class="t">AdminActionsPage</span>(admin.page);
+	<span class="k">await</span> adminActions.<span class="f">goto</span>();
+	<span class="k">await</span> adminActions.<span class="f">migrateUser</span>({
+		oldUserName: <span class="t">KEEPER</span>.discordName,
+		newUserName: <span class="t">LEAVER</span>.discordName,
+	});
+	<span class="k">await</span> admin.<span class="f">close</span>();
+
+	<span class="k">const</span> sessionCookie = <span class="k">async</span> () =&gt;
+		(<span class="k">await</span> page.<span class="f">context</span>().<span class="f">cookies</span>()).<span class="f">find</span>(
+			(cookie) =&gt; cookie.name === <span class="t">SESSION_COOKIE_NAME</span>,
+		);
+	<span class="k">const</span> staleCookie = <span class="k">await</span> <span class="f">sessionCookie</span>();
+	<span class="f">expect</span>(staleCookie).<span class="f">toBeDefined</span>();
+
+	<span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="s">&quot;/&quot;</span> });
+	<span class="k">await</span> <span class="f">expectNoErrorPage</span>(page);
+	<span class="k">await</span> <span class="f">expect</span>(sideNav.locators.logInButton).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">isNotVisible</span>(sideNav.locators.footerUsername);
+	<span class="f">expect</span>(<span class="k">await</span> <span class="f">sessionCookie</span>()).<span class="f">toBeUndefined</span>();
+
+	<span class="k">const</span> errorPage = <span class="k">new</span> <span class="t">ErrorPage</span>(page);
+	<span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="t">NOTIFICATIONS_URL</span> });
+	<span class="k">await</span> <span class="f">expect</span>(errorPage.<span class="f">heading</span>(<span class="s">&quot;Authentication required&quot;</span>)).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> page.<span class="f">context</span>().<span class="f">addCookies</span>([staleCookie!]);
+	<span class="k">await</span> logInLinkPage.<span class="f">goto</span>(keeperLogInLink.code);
+	<span class="k">await</span> <span class="f">expect</span>(sideNav.locators.footerUsername).<span class="f">toHaveText</span>(
+		<span class="t">KEEPER</span>.discordName,
+	);
+})</pre></details>
+</article><article class="test" id="e2e/auth-auth-log-in-button-starts-the-discord-oauth-flow">
+	<header class="test-head">
+		<h3>log in button starts the Discord OAuth flow</h3>
+		<div class="test-meta">
+			
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/auth.spec.ts#L113" title="e2e/auth.spec.ts:113">auth.spec.ts:113</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="front-page.html#routes/app-features-front-page-routes-index-tsx">/</a><a class="route-chip" href="auth.html#routes/app-features-auth-routes-auth-ts">/auth</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/auth/118.jpg" data-caption="Discord authorize interceptor"><img src="screenshots/auth/118.jpg" alt="Discord authorize interceptor" loading="lazy" onerror="this.parentElement.remove()"><span>Discord authorize interceptor</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/121.jpg" data-caption="Front page"><img src="screenshots/auth/121.jpg" alt="Front page" loading="lazy" onerror="this.parentElement.remove()"><span>Front page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/124.jpg" data-caption="Side nav"><img src="screenshots/auth/124.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"><span>Side nav</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/auth/126.jpg" data-caption="Discord authorize interceptor"><img src="screenshots/auth/126.jpg" alt="Discord authorize interceptor" loading="lazy" onerror="this.parentElement.remove()"><span>Discord authorize interceptor</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-actor" style="--actor: #94a3b8">
+	<div class="lane" title="Logged in as Logged out (logged-out)"><div class="lane-sticky"><span class="avatar">LO</span><span class="lane-name">Logged out</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:10:DiscordAuthorizeInterceptor">Discord authorize interceptor</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/118.jpg" data-caption="Discord authorize interceptor"><img src="screenshots/auth/118.jpg" alt="Discord authorize interceptor" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:13:DiscordAuthorizeInterceptor.install">Install</span> <code class="inline" title="context">context</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> discord.<span class="f">install</span>(context);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/front-page/front-page.ts:6:FrontPage">Front page</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/121.jpg" data-caption="Front page"><img src="screenshots/auth/121.jpg" alt="Front page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/front-page/front-page.ts:19:FrontPage.goto">Open</span> the <strong>front page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> frontPage.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:11:SideNav">Side nav</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/124.jpg" data-caption="Side nav"><img src="screenshots/auth/124.jpg" alt="Side nav" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Click <strong><span class="ref" data-ref="e2e/pages/layout/side-nav.ts:20:SideNav.locators.logInButton">log in button</span></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> sideNav.locators.logInButton.<span class="f">click</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:10:DiscordAuthorizeInterceptor">Discord authorize interceptor</span></span><button type="button" class="divider-shot" data-shot="screenshots/auth/126.jpg" data-caption="Discord authorize interceptor"><img src="screenshots/auth/126.jpg" alt="Discord authorize interceptor" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:32:DiscordAuthorizeInterceptor.waitForCapture">Wait for capture</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> discord.<span class="f">waitForCapture</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>href</strong> match <code class="inline" title="/discord\.com\/(api\/)?oauth2\/authorize/">/discord\.com\/(api\/)?oauth2\/authorize/</code></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(discord.authorizeUrl.href).<span class="f">toMatch</span>(
+	/discord\.com\/(api\/)?oauth2\/authorize/,
+);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:43:DiscordAuthorizeInterceptor.param">param</span> <span class="str">“client_id”</span></strong> is <span class="str">“123”</span></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;client_id&quot;</span>)).<span class="f">toBe</span>(<span class="s">&quot;123&quot;</span>);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:43:DiscordAuthorizeInterceptor.param">param</span> <span class="str">“response_type”</span></strong> is <span class="str">“code”</span></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;response_type&quot;</span>)).<span class="f">toBe</span>(<span class="s">&quot;code&quot;</span>);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:43:DiscordAuthorizeInterceptor.param">param</span> <span class="str">“scope”</span></strong> contains <span class="str">“identify”</span></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;scope&quot;</span>)).<span class="f">toContain</span>(<span class="s">&quot;identify&quot;</span>);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:43:DiscordAuthorizeInterceptor.param">param</span> <span class="str">“state”</span></strong> is truthy</span></div>
+	<pre class="code step-code"><span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;state&quot;</span>)).<span class="f">toBeTruthy</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/auth/discord-authorize.ts:43:DiscordAuthorizeInterceptor.param">param</span> <span class="str">“redirect_uri”</span></strong> match <code class="inline" title="/^http:\/\/localhost:\d+\/auth\/callback$/">/^http:\/\/localhost:\d+\/auth\/callback$/</code></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;redirect_uri&quot;</span>)).<span class="f">toMatch</span>(
+	/^http:\/\/localhost:\d+\/auth\/callback$/,
+);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;log in button starts the Discord OAuth flow&quot;</span>, <span class="k">async</span> ({
+	page,
+	context,
+}) =&gt; {
+	<span class="k">const</span> discord = <span class="k">new</span> <span class="t">DiscordAuthorizeInterceptor</span>();
+	<span class="k">await</span> discord.<span class="f">install</span>(context);
+
+	<span class="k">const</span> frontPage = <span class="k">new</span> <span class="t">FrontPage</span>(page);
+	<span class="k">await</span> frontPage.<span class="f">goto</span>();
+
+	<span class="k">const</span> sideNav = <span class="k">new</span> <span class="t">SideNav</span>(page);
+	<span class="k">await</span> sideNav.locators.logInButton.<span class="f">click</span>();
+
+	<span class="k">await</span> discord.<span class="f">waitForCapture</span>();
+	<span class="f">expect</span>(discord.authorizeUrl.href).<span class="f">toMatch</span>(
+		/discord\.com\/(api\/)?oauth2\/authorize/,
+	);
+	<span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;client_id&quot;</span>)).<span class="f">toBe</span>(<span class="s">&quot;123&quot;</span>);
+	<span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;response_type&quot;</span>)).<span class="f">toBe</span>(<span class="s">&quot;code&quot;</span>);
+	<span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;scope&quot;</span>)).<span class="f">toContain</span>(<span class="s">&quot;identify&quot;</span>);
+	<span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;state&quot;</span>)).<span class="f">toBeTruthy</span>();
+	<span class="f">expect</span>(discord.<span class="f">param</span>(<span class="s">&quot;redirect_uri&quot;</span>)).<span class="f">toMatch</span>(
+		/^http:\/\/localhost:\d+\/auth\/callback$/,
+	);
+})</pre></details>
+</article>
+	</section>
+</div>
+		</div>
+	</div>
+	<div class="view" data-view="routes" hidden>
+		<aside class="sidebar">
+			<h4>Coverage</h4>
+			<p class="coverage"><strong>1</strong> of 7 routes rendered by an e2e test</p>
+			<p class="legend-note">From the last <code>pnpm run docs:living:capture</code>.</p>
+			<h4>Routes</h4>
+			<ul class="toc route-toc"><li><a href="#routes/app-features-auth-routes-auth-ts"><span class="kind-dot is-visited"></span>/auth</a></li><li><a href="#routes/app-features-auth-routes-auth-callback-ts"><span class="kind-dot is-unvisited"></span>/auth/callback</a></li><li><a href="#routes/app-features-auth-routes-auth-create-link-ts"><span class="kind-dot is-unvisited"></span>/auth/create-link</a></li><li><a href="#routes/app-features-auth-routes-auth-login-ts"><span class="kind-dot is-unvisited"></span>/auth/login</a></li><li><a href="#routes/app-features-auth-routes-auth-logout-ts"><span class="kind-dot is-unvisited"></span>/auth/logout</a></li><li><a href="#routes/app-features-auth-routes-auth-impersonate-ts"><span class="kind-dot is-unvisited"></span>/auth/impersonate</a></li><li><a href="#routes/app-features-auth-routes-auth-impersonate-stop-ts"><span class="kind-dot is-unvisited"></span>/auth/impersonate/stop</a></li></ul>
+		</aside>
+		<div class="content">
+			<div class="routes"><article class="route" id="routes/app-features-auth-routes-auth-ts">
+				<div class="route-head">
+					<code class="route-path">/auth</code>
+					<span class="badge">resource · index</span>
+					
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/routes/auth.ts#L1" title="app/features/auth/routes/auth.ts:1">auth.ts</a>
+				</div>
+				<ul class="route-tests"><li><a href="auth.html#e2e/auth-auth-log-in-button-starts-the-discord-oauth-flow">log in button starts the Discord OAuth flow</a></li></ul>
+			</article><article class="route" id="routes/app-features-auth-routes-auth-callback-ts">
+				<div class="route-head">
+					<code class="route-path">/auth/callback</code>
+					<span class="badge">resource</span>
+					<span class="badge badge-loader">loader</span>
+					
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/routes/auth.callback.ts#L1" title="app/features/auth/routes/auth.callback.ts:1">auth.callback.ts</a>
+				</div>
+				<p class="warn-text">No e2e test renders this route</p>
+			</article><article class="route" id="routes/app-features-auth-routes-auth-create-link-ts">
+				<div class="route-head">
+					<code class="route-path">/auth/create-link</code>
+					<span class="badge">resource</span>
+					
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/routes/auth.create-link.ts#L1" title="app/features/auth/routes/auth.create-link.ts:1">auth.create-link.ts</a>
+				</div>
+				<p class="warn-text">No e2e test renders this route</p>
+			</article><article class="route" id="routes/app-features-auth-routes-auth-login-ts">
+				<div class="route-head">
+					<code class="route-path">/auth/login</code>
+					<span class="badge">resource</span>
+					<span class="badge badge-loader">loader</span>
+					
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/routes/auth.login.ts#L1" title="app/features/auth/routes/auth.login.ts:1">auth.login.ts</a>
+				</div>
+				<p class="warn-text">No e2e test renders this route</p>
+			</article><article class="route" id="routes/app-features-auth-routes-auth-logout-ts">
+				<div class="route-head">
+					<code class="route-path">/auth/logout</code>
+					<span class="badge">resource</span>
+					
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/routes/auth.logout.ts#L1" title="app/features/auth/routes/auth.logout.ts:1">auth.logout.ts</a>
+				</div>
+				<p class="warn-text">No e2e test renders this route</p>
+			</article><article class="route" id="routes/app-features-auth-routes-auth-impersonate-ts">
+				<div class="route-head">
+					<code class="route-path">/auth/impersonate</code>
+					<span class="badge">resource</span>
+					
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/routes/auth.impersonate.ts#L1" title="app/features/auth/routes/auth.impersonate.ts:1">auth.impersonate.ts</a>
+				</div>
+				<p class="warn-text">No e2e test renders this route</p>
+			</article><article class="route" id="routes/app-features-auth-routes-auth-impersonate-stop-ts">
+				<div class="route-head">
+					<code class="route-path">/auth/impersonate/stop</code>
+					<span class="badge">resource</span>
+					
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/auth/routes/auth.impersonate.stop.ts#L1" title="app/features/auth/routes/auth.impersonate.stop.ts:1">auth.impersonate.stop.ts</a>
+				</div>
+				<p class="warn-text">No e2e test renders this route</p>
+			</article></div>
+		</div>
+	</div>
+</main>
+<template data-ref-id="e2e/pages/auth/log-in-link-page.ts:12:LogInLinkPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/auth/log-in-link-page.ts#L12">
+	<div class="tooltip-head"><code>LogInLinkPage.goto</code><span>e2e/pages/auth/log-in-link-page.ts:12</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(code: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="s">`/auth/login?code=${code}`</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/layout/side-nav.ts:23:SideNav.locators.footerUsername" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/layout/side-nav.ts#L23">
+	<div class="tooltip-head"><code>SideNav.locators.footerUsername</code><span>e2e/pages/layout/side-nav.ts:23</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="l">this</span>.root.<span class="f">locator</span>(<span class="s">&quot;a[class*='sideNavFooterUser']&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/layout/side-nav.ts:20:SideNav.locators.logInButton" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/layout/side-nav.ts#L20">
+	<div class="tooltip-head"><code>SideNav.locators.logInButton</code><span>e2e/pages/layout/side-nav.ts:20</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="l">this</span>.root.<span class="f">getByRole</span>(<span class="s">&quot;button&quot;</span>, {
+	name: <span class="s">&quot;Log in via Discord&quot;</span>,
+})</pre>
+</template>
+<template data-ref-id="e2e/helpers/playwright.ts:700:isNotVisible" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/helpers/playwright.ts#L700">
+	<div class="tooltip-head"><code>isNotVisible</code><span>e2e/helpers/playwright.ts:700</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">isNotVisible</span>(locator: <span class="t">Locator</span>) {
+	<span class="k">return</span> <span class="f">expect</span>(locator).<span class="f">toHaveCount</span>(<span class="n">0</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L52">
+	<div class="tooltip-head"><code>SettingsPage.goto</code><span>e2e/pages/settings/settings-page.ts:52</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(tab?: <span class="t">SettingsTab</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({
+		page: <span class="l">this</span>.page,
+		url: tab ? <span class="s">`${SETTINGS_PAGE}?tab=${tab}`</span> : <span class="t">SETTINGS_PAGE</span>,
+	});
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:60:SettingsPage.logOut" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L60">
+	<div class="tooltip-head"><code>SettingsPage.logOut</code><span>e2e/pages/settings/settings-page.ts:60</span></div>
+	<div class="tooltip-doc"><p>Submits the log out form; a native form POST followed by a redirect to the front page.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">logOut</span>() {
+	<span class="k">await</span> <span class="l">this</span>.locators.logOutButton.<span class="f">click</span>();
+	<span class="k">await</span> <span class="l">this</span>.page.<span class="f">waitForURL</span>(<span class="s">&quot;/&quot;</span>);
+	<span class="k">await</span> <span class="f">expectIsHydrated</span>(<span class="l">this</span>.page);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/layout/error-page.ts:28:ErrorPage.heading" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/layout/error-page.ts#L28">
+	<div class="tooltip-head"><code>ErrorPage.heading</code><span>e2e/pages/layout/error-page.ts:28</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">heading</span>(name: <span class="t">string</span> | <span class="t">RegExp</span>) {
+	<span class="k">return</span> <span class="l">this</span>.locators.root.<span class="f">getByRole</span>(<span class="s">&quot;heading&quot;</span>, { name });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/auth/log-in-link-page.ts:17:LogInLinkPage.fetchResponse" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/auth/log-in-link-page.ts#L17">
+	<div class="tooltip-head"><code>LogInLinkPage.fetchResponse</code><span>e2e/pages/auth/log-in-link-page.ts:17</span></div>
+	<div class="tooltip-doc"><p>An invalid link is served as a plain-text error response, not an app page.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">fetchResponse</span>(code: <span class="t">string</span>) {
+	<span class="k">const</span> response = <span class="k">await</span> <span class="l">this</span>.page.request.<span class="f">get</span>(<span class="s">`/auth/login?code=${code}`</span>);
+	<span class="k">return</span> { status: response.<span class="f">status</span>() };
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/auth/log-in-link-page.ts:5:LogInLinkPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/auth/log-in-link-page.ts#L5">
+	<div class="tooltip-head"><code>LogInLinkPage</code><span>e2e/pages/auth/log-in-link-page.ts:5</span></div>
+	<div class="tooltip-doc"><p><code>/auth/login?code=...</code>, the single use log in links the Lohi bot hands out.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/layout/side-nav.ts:11:SideNav" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/layout/side-nav.ts#L11">
+	<div class="tooltip-head"><code>SideNav</code><span>e2e/pages/layout/side-nav.ts:11</span></div>
+	<div class="tooltip-doc"><p>The sidebar of the site layout, a modal behind a hamburger on narrower viewports. Rows are looked up inside whichever the viewport shows so that the same row on the page behind it (a tournament also shown as a front page card) is not mistaken for one.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:18:SettingsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L18">
+	<div class="tooltip-head"><code>SettingsPage</code><span>e2e/pages/settings/settings-page.ts:18</span></div>
+	<div class="tooltip-doc"><p><code>/settings</code> preference toggles and the theme tab; the match profile tab has its own page object.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/layout/error-page.ts:5:ErrorPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/layout/error-page.ts#L5">
+	<div class="tooltip-head"><code>ErrorPage</code><span>e2e/pages/layout/error-page.ts:5</span></div>
+	<div class="tooltip-doc"><p>The root error boundary (<code>Catcher</code>), rendered in place of a page.</p></div>
+	
+</template>
+<template data-ref-id="e2e/helpers/chat.ts:7:openSecondUser" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/helpers/chat.ts#L7">
+	<div class="tooltip-head"><code>openSecondUser</code><span>e2e/helpers/chat.ts:7</span></div>
+	<div class="tooltip-doc"><p>A second logged in browser: impersonating back and forth on one page never shows live delivery, as only one user holds the event stream.</p></div>
+	<pre class="code"><span class="k">export</span> <span class="k">async</span> <span class="k">function</span> <span class="f">openSecondUser</span>(
+	browser: <span class="t">Browser</span>,
+	baseURL: <span class="t">string</span>,
+	userId = <span class="t">ADMIN_ID</span>,
+) {
+	<span class="k">const</span> context = <span class="k">await</span> browser.<span class="f">newContext</span>({ baseURL });
+	<span class="c">// the `context` fixture blocks these for the test's own context only</span>
+	<span class="k">await</span> context.<span class="f">route</span>(
+		/^https:\/\/fonts\.(googleapis|gstatic)\.com\<span class="c">//,</span>
+		(route) =&gt; route.<span class="f">abort</span>(),
+	);
+
+	<span class="k">const</span> page = <span class="k">await</span> context.<span class="f">newPage</span>();
+	<span class="k">await</span> <span class="f">impersonate</span>(page, userId);
+	<span class="c">// …</span></pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:20:AdminActionsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L20">
+	<div class="tooltip-head"><code>AdminActionsPage.goto</code><span>e2e/pages/admin/admin-actions-page.ts:20</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="t">ADMIN_PAGE</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:77:AdminActionsPage.migrateUser" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L77">
+	<div class="tooltip-head"><code>AdminActionsPage.migrateUser</code><span>e2e/pages/admin/admin-actions-page.ts:77</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">migrateUser</span>({
+	oldUserName,
+	newUserName,
+}: {
+	oldUserName: <span class="t">string</span>;
+	newUserName: <span class="t">string</span>;
+}) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Migrate user data&quot;</span>);
+	<span class="k">await</span> <span class="f">selectUser</span>({
+		page: <span class="l">this</span>.page,
+		userName: oldUserName,
+		labelName: <span class="s">&quot;Old user&quot;</span>,
+		within: form,
+	});
+	<span class="c">// …</span></pre>
+</template>
+<template data-ref-id="e2e/helpers/playwright.ts:696:expectNoErrorPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/helpers/playwright.ts#L696">
+	<div class="tooltip-head"><code>expectNoErrorPage</code><span>e2e/helpers/playwright.ts:696</span></div>
+	<div class="tooltip-doc"><p>Asserts the page rendered rather than the error boundary catching something.</p></div>
+	<pre class="code"><span class="k">export</span> <span class="k">async</span> <span class="k">function</span> <span class="f">expectNoErrorPage</span>(page: <span class="t">Page</span>) {
+	<span class="k">await</span> <span class="f">expect</span>(page.<span class="f">getByTestId</span>(<span class="s">&quot;error-page&quot;</span>)).<span class="f">toHaveCount</span>(<span class="n">0</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:13:AdminActionsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L13">
+	<div class="tooltip-head"><code>AdminActionsPage</code><span>e2e/pages/admin/admin-actions-page.ts:13</span></div>
+	<div class="tooltip-doc"><p>The staff action forms of the admin page, ban &amp; unban excluded (see AdminBanPage).</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/auth/discord-authorize.ts:13:DiscordAuthorizeInterceptor.install" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/auth/discord-authorize.ts#L13">
+	<div class="tooltip-head"><code>DiscordAuthorizeInterceptor.install</code><span>e2e/pages/auth/discord-authorize.ts:13</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">install</span>(context: <span class="t">BrowserContext</span>) {
+	<span class="k">await</span> context.<span class="f">route</span>(<span class="s">&quot;**/auth&quot;</span>, <span class="k">async</span> (route) =&gt; {
+		<span class="k">if</span> (route.<span class="f">request</span>().<span class="f">method</span>() !== <span class="s">&quot;POST&quot;</span>) <span class="k">return</span> route.<span class="f">fallback</span>();
+
+		<span class="k">const</span> response = <span class="k">await</span> route.<span class="f">fetch</span>({ maxRedirects: <span class="n">0</span> });
+		<span class="k">const</span> location = response.<span class="f">headers</span>().location;
+		<span class="k">if</span> (!location?.<span class="f">includes</span>(<span class="t">AUTHORIZE_PATHNAME</span>)) {
+			<span class="k">return</span> route.<span class="f">fulfill</span>({ response });
+		}
+
+		<span class="l">this</span>.capturedUrl = <span class="k">new</span> <span class="t">URL</span>(location);
+		<span class="k">return</span> route.<span class="f">fulfill</span>({
+			contentType: <span class="s">&quot;text/html&quot;</span>,
+			body: <span class="s">&quot;&lt;h1&gt;Discord authorize stub&lt;/h1&gt;&quot;</span>,
+	<span class="c">// …</span></pre>
+</template>
+<template data-ref-id="e2e/pages/front-page/front-page.ts:19:FrontPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/front-page/front-page.ts#L19">
+	<div class="tooltip-head"><code>FrontPage.goto</code><span>e2e/pages/front-page/front-page.ts:19</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="s">&quot;/&quot;</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/auth/discord-authorize.ts:32:DiscordAuthorizeInterceptor.waitForCapture" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/auth/discord-authorize.ts#L32">
+	<div class="tooltip-head"><code>DiscordAuthorizeInterceptor.waitForCapture</code><span>e2e/pages/auth/discord-authorize.ts:32</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">waitForCapture</span>() {
+	<span class="k">await</span> expect.<span class="f">poll</span>(() =&gt; <span class="l">this</span>.capturedUrl).not.<span class="f">toBeNull</span>();
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/auth/discord-authorize.ts:43:DiscordAuthorizeInterceptor.param" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/auth/discord-authorize.ts#L43">
+	<div class="tooltip-head"><code>DiscordAuthorizeInterceptor.param</code><span>e2e/pages/auth/discord-authorize.ts:43</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">param</span>(name: <span class="t">string</span>) {
+	<span class="k">return</span> <span class="l">this</span>.authorizeUrl.searchParams.<span class="f">get</span>(name);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/auth/discord-authorize.ts:10:DiscordAuthorizeInterceptor" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/auth/discord-authorize.ts#L10">
+	<div class="tooltip-head"><code>DiscordAuthorizeInterceptor</code><span>e2e/pages/auth/discord-authorize.ts:10</span></div>
+	<div class="tooltip-doc"><p>Captures the Discord authorize URL from the login POST's redirect and serves a stub page in its place, so the login flow can be asserted without discord.com. The capture happens on <code>/auth</code> since redirects are followed inside a single request and a discord.com route would never fire.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/front-page/front-page.ts:6:FrontPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/front-page/front-page.ts#L6">
+	<div class="tooltip-head"><code>FrontPage</code><span>e2e/pages/front-page/front-page.ts:6</span></div>
+	<div class="tooltip-doc"><p><code>/</code></p></div>
+	
+</template>
+<div class="tooltip" role="tooltip" hidden></div>
+<dialog class="search-dialog" aria-label="Search">
+	<input type="search" placeholder="Search features, modules, exports, tests, routes…" autocomplete="off" spellcheck="false">
+	<ul class="search-results" role="listbox"></ul>
+	<p class="search-hint muted"><kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to open, <kbd>Esc</kbd> to close</p>
+</dialog>
+<dialog class="lightbox" aria-label="Screenshot"><img alt=""><p class="lightbox-caption"></p></dialog>
+<script>
+const main = document.querySelector("main");
+
+function show() {
+	const hash = decodeURIComponent(location.hash.slice(1));
+	const views = [...document.querySelectorAll("[data-view]")];
+	if (views.length === 0) return;
+
+	const requested = hash.split("/")[0];
+	const view = views.some((el) => el.dataset.view === requested) ? requested : main.dataset.defaultView;
+
+	for (const el of views) el.hidden = el.dataset.view !== view;
+	for (const tab of document.querySelectorAll("[data-view-tab]")) {
+		tab.setAttribute("aria-current", String(tab.dataset.viewTab === view));
+	}
+
+	const target = hash.includes("/") ? document.getElementById(hash) : null;
+	if (target) target.scrollIntoView({ block: "start" });
+	else if (hash) window.scrollTo({ top: 0 });
+}
+
+window.addEventListener("hashchange", show);
+show();
+
+let spyFrame = 0;
+function updateScrollSpy() {
+	spyFrame = 0;
+	const view = [...document.querySelectorAll("[data-view]")].find((el) => !el.hidden);
+	if (!view) return;
+	const sidebar = view.querySelector(".sidebar");
+	const links = [...view.querySelectorAll('.toc a[href^="#"]')];
+
+	const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+	const threshold = isAtBottom ? window.innerHeight : Math.max(120, window.innerHeight * 0.3);
+	let current = null;
+	for (const link of links) {
+		const target = document.getElementById(decodeURIComponent(link.getAttribute("href").slice(1)));
+		if (target && target.getBoundingClientRect().top <= threshold) current = link;
+	}
+
+	for (const link of links) {
+		link.toggleAttribute("aria-current", link === current);
+		if (link === current) link.setAttribute("aria-current", "location");
+		link.classList.remove("is-active-parent");
+	}
+	const parent = current?.closest("ul")?.closest("li")?.querySelector(":scope > a");
+	parent?.classList.add("is-active-parent");
+
+	if (current && sidebar && current !== followedLink) {
+		followedLink = current;
+		const linkTop = current.getBoundingClientRect().top - sidebar.getBoundingClientRect().top + sidebar.scrollTop;
+		const maxScroll = sidebar.scrollHeight - sidebar.clientHeight;
+		followSidebar(sidebar, Math.min(maxScroll, Math.max(0, linkTop - sidebar.clientHeight * 0.35)));
+	}
+}
+
+// the sidebar eases towards keeping the current entry a third of the way down, so many
+// entries passing quickly read as one glide instead of a jump per entry
+let followedLink = null;
+let followFrame = 0;
+let followTarget = 0;
+let followedSidebar = null;
+let userScrolledSidebarAt = 0;
+function followSidebar(sidebar, target) {
+	if (Date.now() - userScrolledSidebarAt < 1500) return;
+	followTarget = target;
+	followedSidebar = sidebar;
+	followFrame ||= requestAnimationFrame(stepSidebar);
+}
+function stepSidebar() {
+	followFrame = 0;
+	const distance = followTarget - followedSidebar.scrollTop;
+	if (Math.abs(distance) < 1) {
+		followedSidebar.scrollTop = followTarget;
+		return;
+	}
+	followedSidebar.scrollTop += distance * 0.18;
+	followFrame = requestAnimationFrame(stepSidebar);
+}
+for (const sidebar of document.querySelectorAll(".sidebar")) {
+	for (const type of ["wheel", "touchmove"]) {
+		sidebar.addEventListener(type, () => {
+			userScrolledSidebarAt = Date.now();
+			cancelAnimationFrame(followFrame);
+			followFrame = 0;
+		}, { passive: true });
+	}
+}
+window.addEventListener("scroll", () => {
+	spyFrame ||= requestAnimationFrame(updateScrollSpy);
+}, { passive: true });
+window.addEventListener("hashchange", () => requestAnimationFrame(updateScrollSpy));
+updateScrollSpy();
+
+document.querySelector(".feature-tab[aria-current]")?.scrollIntoView({ inline: "center", block: "nearest" });
+
+for (const toggle of document.querySelectorAll("[data-toggle-code]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("show-code", toggle.checked);
+	});
+}
+
+for (const toggle of document.querySelectorAll("[data-toggle-outline]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("outline-only", toggle.checked);
+	});
+}
+
+const tooltip = document.querySelector(".tooltip");
+const refTemplates = new Map([...document.querySelectorAll("template[data-ref-id]")].map((template) => [template.dataset.refId, template]));
+
+document.addEventListener("mouseover", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (!template) {
+		tooltip.hidden = true;
+		return;
+	}
+
+	tooltip.innerHTML = template.innerHTML;
+	tooltip.hidden = false;
+
+	const anchor = ref.getBoundingClientRect();
+	const box = tooltip.getBoundingClientRect();
+	const below = anchor.bottom + 8 + box.height < window.innerHeight;
+	tooltip.style.top = (below ? anchor.bottom + 8 : Math.max(8, anchor.top - 8 - box.height)) + "px";
+	tooltip.style.left = Math.min(Math.max(8, anchor.left), window.innerWidth - box.width - 8) + "px";
+});
+
+document.addEventListener("click", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (template) window.open(template.dataset.href, "_blank", "noopener");
+});
+
+const lightbox = document.querySelector(".lightbox");
+document.addEventListener("click", (event) => {
+	const shot = event.target.closest?.("[data-shot]");
+	if (!shot) return;
+	lightbox.querySelector("img").src = shot.dataset.shot;
+	lightbox.querySelector(".lightbox-caption").textContent = shot.dataset.caption;
+	lightbox.showModal();
+});
+lightbox.addEventListener("click", () => lightbox.close());
+
+const searchDialog = document.querySelector(".search-dialog");
+const searchInput = searchDialog.querySelector("input");
+const searchResults = searchDialog.querySelector(".search-results");
+let selectedResult = 0;
+
+function openSearch() {
+	if (!window.LIVING_DOCS_SEARCH && !document.querySelector("script[data-search-index]")) {
+		const script = document.createElement("script");
+		script.src = "search-index.js";
+		script.dataset.searchIndex = "";
+		script.onload = renderResults;
+		document.head.append(script);
+	}
+	searchDialog.showModal();
+	searchInput.select();
+	renderResults();
+}
+
+function searchMatches(query) {
+	const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+	if (tokens.length === 0) return [];
+
+	return (window.LIVING_DOCS_SEARCH ?? [])
+		.map((entry) => {
+			const label = entry[1].toLowerCase();
+			const haystack = label + " " + entry[2].toLowerCase() + " " + entry[0].toLowerCase();
+			if (!tokens.every((token) => haystack.includes(token))) return null;
+			const score = (label.startsWith(tokens[0]) ? 0 : label.includes(tokens[0]) ? 1 : 2) * 1000 + label.length;
+			return { entry, score };
+		})
+		.filter(Boolean)
+		.sort((a, b) => a.score - b.score)
+		.slice(0, 60)
+		.map(({ entry }) => entry);
+}
+
+function renderResults() {
+	const matches = searchMatches(searchInput.value);
+	selectedResult = 0;
+	searchResults.replaceChildren(
+		...matches.map(([kind, label, detail, href], index) => {
+			const item = document.createElement("li");
+			const link = document.createElement("a");
+			link.href = href;
+			link.setAttribute("aria-selected", String(index === 0));
+			for (const [className, text] of [["search-kind", kind], ["search-label", label], ["search-detail", detail]]) {
+				const span = document.createElement("span");
+				span.className = className;
+				span.textContent = text;
+				link.append(span);
+			}
+			link.addEventListener("click", () => searchDialog.close());
+			item.append(link);
+			return item;
+		}),
+	);
+	if (matches.length === 0 && searchInput.value.trim()) {
+		const empty = document.createElement("li");
+		empty.className = "search-empty";
+		empty.textContent = window.LIVING_DOCS_SEARCH ? "No matches" : "Loading…";
+		searchResults.append(empty);
+	}
+}
+
+function moveSelection(delta) {
+	const links = [...searchResults.querySelectorAll("a")];
+	if (links.length === 0) return;
+	selectedResult = (selectedResult + delta + links.length) % links.length;
+	for (const [index, link] of links.entries()) {
+		link.setAttribute("aria-selected", String(index === selectedResult));
+	}
+	links[selectedResult].scrollIntoView({ block: "nearest" });
+}
+
+searchInput.addEventListener("input", renderResults);
+searchInput.addEventListener("keydown", (event) => {
+	if (event.key === "ArrowDown") moveSelection(1);
+	else if (event.key === "ArrowUp") moveSelection(-1);
+	else if (event.key === "Enter") {
+		const link = searchResults.querySelectorAll("a")[selectedResult];
+		if (link) {
+			searchDialog.close();
+			location.href = link.href;
+		}
+	} else return;
+	event.preventDefault();
+});
+searchDialog.addEventListener("click", (event) => {
+	if (event.target === searchDialog) searchDialog.close();
+});
+document.querySelector("[data-open-search]").addEventListener("click", openSearch);
+document.addEventListener("keydown", (event) => {
+	const isTyping = event.target.closest?.("input, textarea");
+	if ((event.key === "k" && (event.metaKey || event.ctrlKey)) || (event.key === "/" && !isTyping)) {
+		event.preventDefault();
+		openSearch();
+	}
+});
+
+for (const graph of document.querySelectorAll(".graph")) {
+	for (const node of graph.querySelectorAll("[data-node]")) {
+		node.addEventListener("mouseenter", () => {
+			const id = node.dataset.node;
+			graph.classList.add("focusing");
+			node.classList.add("is-related");
+			for (const edge of graph.querySelectorAll(".edge")) {
+				if (edge.dataset.from !== id && edge.dataset.to !== id) continue;
+				edge.classList.add("is-related");
+				const other = edge.dataset.from === id ? edge.dataset.to : edge.dataset.from;
+				graph.querySelector('[data-node="' + CSS.escape(other) + '"]')?.classList.add("is-related");
+			}
+		});
+		node.addEventListener("mouseleave", () => {
+			graph.classList.remove("focusing");
+			for (const el of graph.querySelectorAll(".is-related")) el.classList.remove("is-related");
+		});
+	}
+}
+</script>
+</body>
+</html>

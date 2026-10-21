@@ -1,0 +1,1595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vods · sendou.ink living docs</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--bg: #f6f6f8;
+	--surface: #ffffff;
+	--surface-2: #f2f2f6;
+	--border: #e3e3ea;
+	--text: #1b1b21;
+	--muted: #6c6c7a;
+	--accent: #6d4aff;
+	--accent-soft: #ede8ff;
+	--warn: #b45309;
+	--warn-soft: #fef3c7;
+	--arrange: #64748b;
+	--act: #3b82f6;
+	--assert: #16a34a;
+	--code-bg: #f7f7fa;
+	--hl-k: #a626a4; --hl-s: #3d8b3d; --hl-n: #986801; --hl-c: #a0a1a7; --hl-t: #b76e00; --hl-f: #3b6fd8; --hl-l: #0184bc;
+	--radius: 12px;
+	--font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0e0e12;
+		--surface: #16161c;
+		--surface-2: #1d1d25;
+		--border: #2a2a35;
+		--text: #e7e7ee;
+		--muted: #9898a8;
+		--accent: #a58fff;
+		--accent-soft: #272040;
+		--warn: #fbbf24;
+		--warn-soft: #3a2a0a;
+		--arrange: #94a3b8;
+		--act: #60a5fa;
+		--assert: #4ade80;
+		--code-bg: #121218;
+		--hl-k: #c678dd; --hl-s: #98c379; --hl-n: #d19a66; --hl-c: #6b717d; --hl-t: #e5c07b; --hl-f: #61afef; --hl-l: #56b6c2;
+	}
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--font); }
+a { color: inherit; }
+code { font-family: var(--mono); font-size: 0.88em; }
+p { margin: 0; }
+p + p { margin-top: 0.5em; }
+.muted { color: var(--muted); }
+
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 24px; padding: 10px 24px; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+.brand span { color: var(--accent); font-weight: 600; }
+.feature-tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: thin; mask-image: linear-gradient(to right, black calc(100% - 32px), transparent); padding-right: 32px; }
+.feature-tab { display: flex; align-items: center; gap: 7px; padding: 5px 11px 5px 7px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.feature-tab:hover { background: var(--surface-2); color: var(--text); }
+.feature-tab[aria-current="page"] { background: var(--accent-soft); color: var(--text); }
+.feature-icon { flex: none; object-fit: contain; }
+.search-button { display: flex; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.search-button:hover { border-color: var(--accent); color: var(--text); }
+
+.search-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 120px)); margin: 80px auto auto; padding: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 24px 64px rgb(0 0 0 / 0.3); overflow: hidden; }
+.search-dialog[open] { display: flex; flex-direction: column; }
+.search-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.search-dialog input { width: 100%; padding: 16px 18px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 16px; outline: none; }
+.search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; flex: 1; }
+.search-results a { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 2px 10px; padding: 7px 10px; border-radius: 8px; text-decoration: none; }
+.search-results a[aria-selected="true"] { background: var(--accent-soft); }
+.search-kind { grid-row: span 2; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 3px; }
+.search-label { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-detail { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-empty { padding: 18px; color: var(--muted); text-align: center; }
+.search-hint { margin: 0; padding: 8px 14px; border-top: 1px solid var(--border); font-size: 12px; }
+
+.lightbox { max-width: min(1280px, calc(100vw - 32px)); padding: 0; border: none; border-radius: 12px; background: var(--surface); box-shadow: 0 24px 64px rgb(0 0 0 / 0.4); cursor: zoom-out; }
+.lightbox::backdrop { background: rgb(0 0 0 / 0.6); }
+.lightbox img { display: block; max-width: 100%; max-height: calc(100vh - 120px); }
+.lightbox-caption { margin: 0; padding: 8px 14px; font-weight: 600; font-size: 13px; color: var(--text); }
+.letter-icon { display: inline-grid; place-items: center; width: var(--size); height: var(--size); border-radius: 28%; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: calc(var(--size) * 0.5); }
+
+.index-head { margin-bottom: 24px; }
+.index-head h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.02em; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.feature-card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 12px; align-items: center; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; }
+.feature-card:hover { border-color: var(--accent); }
+.feature-card .feature-icon { grid-row: span 2; }
+.feature-card-label { font-weight: 700; }
+.feature-card-stats { display: flex; flex-wrap: wrap; column-gap: 10px; color: var(--muted); font-size: 12px; }
+.feature-card-stats span { white-space: nowrap; }
+
+main { max-width: 1320px; margin: 0 auto; padding: 24px; }
+.feature-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.feature-head h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+.stats { color: var(--muted); font-size: 14px; }
+.view-switch { margin-left: auto; display: flex; padding: 3px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; }
+.view-switch a { padding: 6px 14px; border-radius: 7px; text-decoration: none; font-weight: 600; font-size: 14px; color: var(--muted); }
+.view-switch a[aria-current="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgb(0 0 0 / 0.08); }
+
+.view { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; align-items: start; }
+.view[hidden] { display: none; }
+.sidebar { position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow-y: auto; font-size: 13px; padding-right: 6px; }
+.sidebar h4 { margin: 18px 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.sidebar h4:first-child { margin-top: 0; }
+.toc, .toc ul, .legend { list-style: none; margin: 0; padding: 0; }
+.toc > li { margin-bottom: 10px; }
+.toc > li > a { font-weight: 600; }
+.toc ul { margin-top: 4px; border-left: 1px solid var(--border); }
+.toc ul a { display: flex; align-items: center; gap: 6px; padding: 2px 0 2px 10px; color: var(--muted); }
+.toc a { text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 600; }
+.toc ul a[aria-current="location"] { margin-left: -1px; border-left: 2px solid var(--accent); padding-left: 9px; }
+.toc a.is-active-parent { color: var(--accent); }
+.toc-group { font-weight: 600; }
+.toc > li.toc-depth-2 { margin-left: 10px; }
+.toc > li.toc-depth-3 { margin-left: 20px; }
+.toc > li:has(> .toc-group:only-child) { margin-bottom: 4px; }
+.kind-dot { width: 7px; height: 7px; border-radius: 2px; flex: none; background: var(--accent); }
+.kind-dot.kind-type, .kind-dot.kind-interface { background: var(--hl-t); }
+.kind-dot.is-visited { background: var(--assert); border-radius: 50%; }
+.kind-dot.is-unvisited { background: transparent; border: 1.5px solid var(--muted); border-radius: 50%; }
+.coverage { margin: 0; font-size: 14px; }
+.route-toc a { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--muted); }
+.routes { display: grid; gap: 10px; }
+.route { padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); scroll-margin-top: 80px; }
+.route-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.route-head .file-link { margin-left: auto; }
+.route-path { font-size: 15px; font-weight: 700; }
+.route-param { color: var(--accent); }
+.badge-loader { color: var(--act); }
+.badge-action { color: var(--warn); }
+.route-tests { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; columns: 2 300px; column-gap: 24px; }
+.route-tests li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.route-tests li::before { content: "▸"; position: absolute; left: 4px; color: var(--muted); }
+.route-tests a { text-decoration: none; }
+.route-tests a:hover { color: var(--accent); text-decoration: underline; }
+.warn-text { margin: 8px 0 0; font-size: 13px; color: var(--warn); }
+.legend li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-weight: 600; }
+.legend small { color: var(--muted); font-weight: 400; margin-left: auto; font-family: var(--mono); font-size: 10px; }
+.legend.phases small { font-family: var(--font); font-size: 11px; }
+.legend-note { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.toggle { display: flex; align-items: center; gap: 8px; margin-top: 14px; cursor: pointer; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); font-size: 12px; text-decoration: none; margin: 2px 4px 2px 0; white-space: nowrap; }
+.file-chip { font-family: var(--mono); font-size: 11.5px; }
+.file-chip:hover { border-color: var(--accent); color: var(--accent); }
+.badge { display: inline-block; padding: 1px 7px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+.warn { font-size: 11px; font-weight: 600; color: var(--warn); background: var(--warn-soft); padding: 1px 7px; border-radius: 6px; }
+.file-link { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; }
+.file-link:hover { color: var(--accent); text-decoration: underline; }
+
+.graph-card, .module, .test { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.graph-card { margin: 0 0 24px; padding: 16px 20px; }
+.graph-card figcaption { font-weight: 700; margin-bottom: 8px; }
+.graph-scroll { overflow-x: auto; }
+.graph { display: block; font-size: 13px; }
+.column-title { fill: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.node rect { fill: var(--surface-2); stroke: var(--border); }
+.node-self rect { fill: var(--accent-soft); stroke: var(--accent); }
+.node-label { fill: var(--text); font-weight: 600; }
+.node-sublabel { fill: var(--muted); font-size: 11px; }
+.node { cursor: default; transition: opacity 0.15s; }
+.edge { fill: none; stroke: var(--muted); stroke-opacity: 0.45; stroke-width: 1.4; transition: opacity 0.15s; }
+.arrowhead { fill: var(--muted); }
+.graph.focusing .node, .graph.focusing .edge { opacity: 0.18; }
+.graph.focusing .is-related { opacity: 1; }
+.graph.focusing .edge.is-related { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2; }
+
+.module { padding: 22px 24px; margin-bottom: 24px; scroll-margin-top: 80px; }
+.module-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.module-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+.module-head .file-link { margin-left: auto; }
+.overview { margin-top: 10px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+.missing { margin-top: 10px; color: var(--muted); font-style: italic; font-size: 14px; }
+.module-facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 14px 0 0; font-size: 13px; }
+.module-facts dt { color: var(--muted); font-weight: 600; padding-top: 2px; }
+.module-facts dd { margin: 0; }
+.section-title { margin: 26px 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.export { padding: 16px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
+.section-title + .export { border-top: none; }
+.export-head { display: flex; align-items: center; gap: 8px; }
+.export-head .file-link { margin-left: auto; }
+.export-name { font-size: 15px; font-weight: 700; }
+.kind { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 5px; color: var(--accent); background: var(--accent-soft); }
+.kind.kind-type, .kind.kind-interface { color: var(--hl-t); background: color-mix(in srgb, var(--hl-t) 14%, transparent); }
+.doc { margin-top: 6px; }
+.doc code, .overview code, .note code, .tooltip-doc code { background: var(--surface-2); padding: 0 4px; border-radius: 4px; }
+.doc-tags { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.doc-tags span { font-family: var(--mono); color: var(--muted); }
+.doc-tags p { display: inline; }
+
+pre.code, code { font-variant-ligatures: none; }
+pre.code { margin: 10px 0 0; padding: 12px 14px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; font: 12.5px/1.6 var(--mono); tab-size: 2; }
+.c { color: var(--hl-c); font-style: italic; } .k { color: var(--hl-k); } .s { color: var(--hl-s); } .n { color: var(--hl-n); } .t { color: var(--hl-t); } .f { color: var(--hl-f); } .l { color: var(--hl-l); }
+details.source { margin-top: 8px; }
+details.source summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+details.source summary:hover { color: var(--accent); }
+.unit-tests { margin-top: 10px; font-size: 13px; }
+.unit-tests-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+.unit-test-list { margin: 0; padding: 0; list-style: none; columns: 2 320px; column-gap: 24px; }
+.unit-test-list > li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.unit-test-list > li::before { content: "✓"; position: absolute; left: 2px; color: var(--assert); font-weight: 800; }
+.unit-test-heading { font-weight: 650; }
+.unit-test-group ul { margin: 1px 0 4px; padding: 0 0 0 12px; list-style: none; border-left: 2px solid var(--border); }
+.unit-test-group li { padding: 1px 0; }
+.unit-tests a { text-decoration: none; }
+.unit-tests a:hover { color: var(--accent); text-decoration: underline; }
+.usages { margin-top: 10px; font-size: 13px; display: grid; gap: 4px; }
+.usage-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.usage-kind { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.test-only { margin-top: 18px; font-size: 13px; }
+
+.spec-head { margin-bottom: 8px; }
+.group-title { font-size: 18px; margin: 28px 0 12px; letter-spacing: -0.01em; }
+.group-options { margin: -6px 0 12px; color: var(--muted); font-size: 13px; }
+.group-title.group-depth-2 { font-size: 16px; margin-top: 20px; }
+.group-title.group-depth-3 { font-size: 14px; }
+.group-title:is(.group-depth-2, .group-depth-3)::before { content: "› "; color: var(--muted); }
+.test-group:has(> .group-title.group-depth-1):not(:has(.test)) .group-title { margin-bottom: 0; }
+.group-doc, .test-doc { margin: -6px 0 12px; color: var(--muted); font-size: 14px; }
+.group-doc p, .test-doc p { margin: 0; }
+.chapters { display: grid; gap: 20px; }
+.chapter { display: grid; gap: 8px; }
+.chapter-title { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 650; }
+.chapter-text { flex: 1; }
+.chapter-number { display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 800; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+body.outline-only .chapter .segments { display: none; }
+body.outline-only .chapters { gap: 8px; }
+.test-group:first-child .group-title { margin-top: 0; }
+.test { padding: 18px 20px; margin-bottom: 20px; scroll-margin-top: 80px; }
+.test-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.test-head h3 { margin: 0; font-size: 16px; flex: 1; }
+.test-head h3::first-letter { text-transform: uppercase; }
+.test-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.user { display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--actor, var(--accent)); background: color-mix(in srgb, var(--actor, var(--accent)) 15%, transparent); }
+.avatar { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; font-weight: 800; color: white; background: var(--actor, var(--arrange)); }
+
+.segments { display: grid; gap: 10px; }
+.test-routes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -6px 0 12px; font-size: 12px; color: var(--muted); }
+.route-chip { font-family: var(--mono); font-size: 11.5px; padding: 1px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); text-decoration: none; color: var(--text); }
+.route-chip:hover { border-color: var(--accent); color: var(--accent); }
+.storyboard { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+.storyboard:not(:has(img)) { display: none; }
+.storyboard-frame { flex: none; display: grid; gap: 4px; width: 176px; padding: 0; border: none; background: none; color: var(--muted); font: inherit; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; text-align: left; cursor: zoom-in; }
+.storyboard-frame img, .divider-shot img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); }
+.storyboard-frame:hover img, .divider-shot:hover img { border-color: var(--accent); }
+.storyboard-frame span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.divider-shot { flex: none; order: 3; width: 48px; padding: 0; border: none; background: none; cursor: zoom-in; }
+.divider-shot img { border-radius: 4px; }
+.segment { display: grid; grid-template-columns: 92px minmax(0, 1fr); border-radius: 10px; border: 1px solid var(--border); overflow: clip; }
+.segment-actor { border-color: color-mix(in srgb, var(--actor) 45%, transparent); background: color-mix(in srgb, var(--actor) 5%, var(--surface)); }
+.lane { padding: 12px 6px; font-size: 12px; font-weight: 700; text-align: center; background: var(--surface-2); border-right: 1px solid var(--border); color: var(--muted); }
+.lane-sticky { position: sticky; top: 76px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.segment-actor .lane { background: color-mix(in srgb, var(--actor) 14%, var(--surface)); color: var(--actor); border-right-color: color-mix(in srgb, var(--actor) 35%, transparent); }
+.segment-body { padding: 8px 14px 10px; min-width: 0; }
+
+.divider { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; font-size: 12px; }
+.divider::after { content: ""; order: 2; flex: 1; border-bottom: 1px dashed var(--border); align-self: center; }
+.divider-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+.divider-label::before { content: "▸ "; }
+
+.run { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; padding: 4px 0; }
+.run + .run { border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.run-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 5px; }
+.phase-arrange { --phase: var(--arrange); }
+.phase-act { --phase: var(--act); }
+.phase-assert { --phase: var(--assert); }
+.run-label { color: var(--phase); }
+.steps { list-style: none; margin: 0; padding: 0; }
+.steps.nested { margin: 2px 0 2px 9px; padding-left: 14px; border-left: 2px solid var(--border); }
+.step { padding: 3px 0; }
+.step-line { display: flex; gap: 10px; align-items: baseline; }
+.phase-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--phase); }
+.phase-arrange .phase-icon::before { content: "+"; }
+.phase-act .phase-icon::before { content: "→"; }
+.phase-assert .phase-icon::before { content: "✓"; }
+.step-naming > .step-line .phase-icon::before { content: "="; color: var(--muted); }
+.step-naming > .step-line { color: var(--muted); }
+.legend .phase-icon { width: 24px; }
+.step-text strong { font-weight: 650; }
+.ref { text-decoration: underline dotted color-mix(in srgb, currentColor 45%, transparent); text-underline-offset: 3px; cursor: help; }
+.ref:hover { text-decoration-color: var(--accent); color: var(--accent); }
+.tooltip { position: fixed; z-index: 100; max-width: min(560px, calc(100vw - 24px)); padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 32px rgb(0 0 0 / 0.18); font-size: 13px; pointer-events: none; }
+.tooltip-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.tooltip-head code { font-weight: 700; }
+.tooltip-head span { color: var(--muted); font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.tooltip-doc { margin-top: 6px; }
+.tooltip pre.code { margin-top: 8px; font-size: 11.5px; max-height: 280px; overflow: hidden; }
+.note { margin: 4px 0 2px 26px; padding-left: 10px; border-left: 2px solid var(--border); color: var(--muted); font-size: 13px; font-style: italic; }
+.str { color: var(--hl-s); }
+.num { color: var(--hl-n); font-family: var(--mono); font-size: 0.9em; }
+.const { cursor: help; }
+.tuple::before { content: "("; color: var(--muted); }
+.tuple::after { content: ")"; color: var(--muted); }
+.kv + .kv::before { content: "· "; color: var(--muted); }
+.key { color: var(--muted); }
+.binds { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+code.inline { background: var(--surface-2); padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+kbd { font-family: var(--mono); font-size: 12px; padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); }
+.step-code { display: none; margin: 4px 0 4px 26px !important; padding: 6px 10px !important; font-size: 11.5px !important; }
+body.show-code .step-code { display: block; }
+
+@media (max-width: 900px) {
+	main { padding: 16px; }
+	.topbar { padding: 10px 16px; gap: 12px; }
+	.brand span { display: none; }
+	.search-button kbd { display: none; }
+	.view { grid-template-columns: minmax(0, 1fr); }
+	.sidebar { position: static; max-height: none; }
+	.segment { grid-template-columns: minmax(0, 1fr); }
+	.lane { border-right: none; border-bottom: 1px solid var(--border); padding: 6px 10px; }
+	.lane-sticky { position: static; flex-direction: row; }
+	.run { grid-template-columns: minmax(0, 1fr); gap: 0; }
+	.view-switch { margin-left: 0; }
+	.usage-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+	.chip { white-space: normal; overflow-wrap: anywhere; }
+	.test-head { flex-direction: column; gap: 6px; }
+	.test-meta { justify-content: flex-start; }
+	.divider { flex-wrap: wrap; gap: 2px 10px; }
+	.divider::after { display: none; }
+}
+
+[data-actor="ADMIN_ID"] { --actor: #8b5cf6; }
+[data-actor="NZAP_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="REGULAR_USER_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="ORG_ADMIN_TEST_ID"] { --actor: #0ea5e9; }
+[data-actor="STAFF_TEST_ID"] { --actor: #14b8a6; }
+[data-actor="DEV_TEST_ID"] { --actor: #64748b; }
+</style>
+</head>
+<body>
+<header class="topbar">
+	<a class="brand" href="index.html">sendou.ink <span>living docs</span></a>
+	<button type="button" class="search-button" data-open-search>Search <kbd>⌘K</kbd></button>
+	<nav class="feature-tabs">
+		<a class="feature-tab" href="admin.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Admin</a><a class="feature-tab" href="api.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api</a><a class="feature-tab" href="api-private.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api private</a><a class="feature-tab" href="art.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/art.avif" alt="" width="20" height="20" loading="lazy">Art</a><a class="feature-tab" href="articles.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/articles.avif" alt="" width="20" height="20" loading="lazy">Articles</a><a class="feature-tab" href="associations.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/associations.avif" alt="" width="20" height="20" loading="lazy">Associations</a><a class="feature-tab" href="auth.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Auth</a><a class="feature-tab" href="availability.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Availability</a><a class="feature-tab" href="badges.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/badges.avif" alt="" width="20" height="20" loading="lazy">Badges</a><a class="feature-tab" href="ban.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">B</span>Ban</a><a class="feature-tab" href="build-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/analyzer.avif" alt="" width="20" height="20" loading="lazy">Build analyzer</a><a class="feature-tab" href="build-stats.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Build stats</a><a class="feature-tab" href="builds.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Builds</a><a class="feature-tab" href="calendar.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/calendar.avif" alt="" width="20" height="20" loading="lazy">Calendar</a><a class="feature-tab" href="chat.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">C</span>Chat</a><a class="feature-tab" href="comp-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/comp-analyzer.avif" alt="" width="20" height="20" loading="lazy">Comp analyzer</a><a class="feature-tab" href="events.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">E</span>Events</a><a class="feature-tab" href="friends.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Friends</a><a class="feature-tab" href="front-page.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Front page</a><a class="feature-tab" href="global-status.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">G</span>Global status</a><a class="feature-tab" href="health.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">H</span>Health</a><a class="feature-tab" href="img-export.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Image export</a><a class="feature-tab" href="img-upload.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Img upload</a><a class="feature-tab" href="info.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Info</a><a class="feature-tab" href="lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/lfg.avif" alt="" width="20" height="20" loading="lazy">LFG</a><a class="feature-tab" href="layout.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Layout</a><a class="feature-tab" href="leaderboards.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/leaderboards.avif" alt="" width="20" height="20" loading="lazy">Leaderboards</a><a class="feature-tab" href="links.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/links.avif" alt="" width="20" height="20" loading="lazy">Links</a><a class="feature-tab" href="live-streams.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Live streams</a><a class="feature-tab" href="mmr.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">M</span>MMR</a><a class="feature-tab" href="map-list-generator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/maps.avif" alt="" width="20" height="20" loading="lazy">Map list generator</a><a class="feature-tab" href="map-planner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plans.avif" alt="" width="20" height="20" loading="lazy">Map planner</a><a class="feature-tab" href="notifications.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">N</span>Notifications</a><a class="feature-tab" href="object-damage-calculator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/object-damage-calculator.avif" alt="" width="20" height="20" loading="lazy">Object damage calculator</a><a class="feature-tab" href="params.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Params</a><a class="feature-tab" href="plus-suggestions.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus suggestions</a><a class="feature-tab" href="plus-voting.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus voting</a><a class="feature-tab" href="api-public.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Public API</a><a class="feature-tab" href="scanner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner</a><a class="feature-tab" href="scanner-ingest.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner ingest</a><a class="feature-tab" href="scrims.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scrims.avif" alt="" width="20" height="20" loading="lazy">Scrims</a><a class="feature-tab" href="search.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Search</a><a class="feature-tab" href="sendouq.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ</a><a class="feature-tab" href="sendouq-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ match</a><a class="feature-tab" href="sendouq-streams.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ streams</a><a class="feature-tab" href="settings.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/settings.avif" alt="" width="20" height="20" loading="lazy">Settings</a><a class="feature-tab" href="sidebar.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Sidebar</a><a class="feature-tab" href="site-wide.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Site-wide</a><a class="feature-tab" href="team.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/t.avif" alt="" width="20" height="20" loading="lazy">Team</a><a class="feature-tab" href="theme.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Theme</a><a class="feature-tab" href="tier-list-maker.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/tier-list-maker.avif" alt="" width="20" height="20" loading="lazy">Tier list maker</a><a class="feature-tab" href="top-search.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/xsearch.avif" alt="" width="20" height="20" loading="lazy">Top search</a><a class="feature-tab" href="tournament.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament</a><a class="feature-tab" href="tournament-admin.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament admin</a><a class="feature-tab" href="tournament-bracket.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament bracket</a><a class="feature-tab" href="tournament-lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament lfg</a><a class="feature-tab" href="tournament-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament match</a><a class="feature-tab" href="tournament-organization.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament organization</a><a class="feature-tab" href="tournament-subs.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament subs</a><a class="feature-tab" href="translate.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Translate</a><a class="feature-tab" href="trophies.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/trophies.avif" alt="" width="20" height="20" loading="lazy">Trophies</a><a class="feature-tab" href="user-activity.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">U</span>User activity</a><a class="feature-tab" href="user-card.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User card</a><a class="feature-tab" href="user-page.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User page</a><a class="feature-tab" href="user-report.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User report</a><a class="feature-tab" href="vods.html" aria-current="page"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/vods.avif" alt="" width="20" height="20" loading="lazy">Vods</a><a class="feature-tab" href="voice.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">V</span>Voice</a>
+	</nav>
+</header>
+<main data-default-view="e2e">
+	<div class="feature-head">
+		<img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/vods.avif" alt="" width="48" height="48" loading="lazy">
+		<div>
+			<h1>Vods</h1>
+			<p class="stats">0 modules · 0 exports · 4 e2e tests · 3 routes</p>
+		</div>
+		<div class="view-switch">
+			
+			<a href="#e2e" data-view-tab="e2e">E2E tests</a>
+			<a href="#routes" data-view-tab="routes">Routes</a>
+		</div>
+	</div>
+	
+	<div class="view" data-view="e2e" hidden>
+		<aside class="sidebar">
+			<h4>Users</h4>
+			<ul class="legend"><li style="--actor: #8b5cf6"><span class="avatar">S</span>Sendou<small>ADMIN_ID</small></li></ul>
+			
+			<h4>Phases</h4>
+			<ul class="legend phases">
+				<li class="phase-arrange"><span class="phase-icon"></span>Arrange <small>data setup</small></li>
+				<li class="phase-act"><span class="phase-icon"></span>Act <small>what the user does</small></li>
+				<li class="phase-assert"><span class="phase-icon"></span>Assert <small>what is expected</small></li>
+			</ul>
+			<label class="toggle"><input type="checkbox" data-toggle-code> Show code of each step</label>
+			
+			<h4>Tests</h4>
+			<ul class="toc"><li class="toc-depth-1"><span class="toc-group">VoDs page</span><ul><li><a href="#e2e/vods-vods-page-adds-video-pov">adds video (pov)</a></li><li><a href="#e2e/vods-vods-page-adds-video-cast">adds video (cast)</a></li><li><a href="#e2e/vods-vods-page-edits-and-deletes-vod">edits and deletes vod</a></li><li><a href="#e2e/vods-vods-page-operates-vod-filters">operates vod filters</a></li></ul></li></ul>
+		</aside>
+		<div class="content">
+			<div class="spec">
+	<div class="spec-head"><a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/vods.spec.ts#L1" title="e2e/vods.spec.ts:1">e2e/vods.spec.ts</a></div>
+	<section class="test-group">
+		<h2 class="group-title group-depth-1">VoDs page</h2>
+		
+		
+		<article class="test" id="e2e/vods-vods-page-adds-video-pov">
+	<header class="test-head">
+		<h3>adds video (pov)</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/vods.spec.ts#L20" title="e2e/vods.spec.ts:20">vods.spec.ts:20</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-id-tsx">/vods/:id</a><a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-new-tsx">/vods/new</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/vods/26.jpg" data-caption="New vod page"><img src="screenshots/vods/26.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"><span>New vod page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/42.jpg" data-caption="Vod match fields"><img src="screenshots/vods/42.jpg" alt="Vod match fields" loading="lazy" onerror="this.parentElement.remove()"><span>Vod match fields</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/47.jpg" data-caption="New vod page"><img src="screenshots/vods/47.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"><span>New vod page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/50.jpg" data-caption="Vod match fields"><img src="screenshots/vods/50.jpg" alt="Vod match fields" loading="lazy" onerror="this.parentElement.remove()"><span>Vod match fields</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/55.jpg" data-caption="New vod page"><img src="screenshots/vods/55.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"><span>New vod page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/57.jpg" data-caption="Vod page"><img src="screenshots/vods/57.jpg" alt="Vod page" loading="lazy" onerror="this.parentElement.remove()"><span>Vod page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Grant user <span class="user" data-actor="ADMIN_ID">Sendou</span> <span class="kv"><span class="key">roles</span> <span class="str">“VIDEO_ADDER”</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">grant</span>(<span class="t">ADMIN_ID</span>, { roles: [<span class="s">&quot;VIDEO_ADDER&quot;</span>] });</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:15:NewVodPage">New vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/26.jpg" data-caption="New vod page"><img src="screenshots/vods/26.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:31:NewVodPage.goto">Open</span> the <strong>new vod page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Fill <strong><span class="ref" data-ref="app/features/vods/vods-schemas.ts:148:vodFormBaseSchema.youtubeUrl">YouTube URL</span></strong> with <span class="str">“https://www.youtube.com/watch?v=o7kWlMZP3lM”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.form.<span class="f">fill</span>(
+	<span class="s">&quot;youtubeUrl&quot;</span>,
+	<span class="s">&quot;https://www.youtube.com/watch?v=o7kWlMZP3lM&quot;</span>,
+);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Fill <strong><span class="ref" data-ref="app/features/vods/vods-schemas.ts:157:vodFormBaseSchema.title">Video title</span></strong> with <span class="str">“ITZXI Finals - Team Olive vs. Astral [CAMO TENTA PoV]”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.form.<span class="f">fill</span>(
+	<span class="s">&quot;title&quot;</span>,
+	<span class="s">&quot;ITZXI Finals - Team Olive vs. Astral [CAMO TENTA PoV]&quot;</span>,
+);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set <strong><span class="ref" data-ref="app/features/vods/vods-schemas.ts:161:vodFormBaseSchema.date">Video date</span></strong> to <code class="inline" title="VIDEO_DATE"><span class="t">VIDEO_DATE</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.form.<span class="f">setDate</span>(<span class="s">&quot;date&quot;</span>, <span class="t">VIDEO_DATE</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Select <span class="str">“SCRIM”</span> for <strong><span class="ref" data-ref="app/features/vods/vods-schemas.ts:167:vodFormBaseSchema.type">Type</span></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.form.<span class="f">select</span>(<span class="s">&quot;type&quot;</span>, <span class="s">&quot;SCRIM&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:35:NewVodPage.selectPov">Select pov</span> <span class="str">“Sendou”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.<span class="f">selectPov</span>(<span class="s">&quot;Sendou&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:43:NewVodPage.match">Match</span> <span class="num">0</span> <span class="binds">→ firstMatch</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> firstMatch = newVod.<span class="f">match</span>(<span class="n">0</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:58:VodMatchFields">Vod match fields</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/42.jpg" data-caption="Vod match fields"><img src="screenshots/vods/42.jpg" alt="Vod match fields" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:78:VodMatchFields.setStartsAt">Set starts at</span> <span class="str">“0:20”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> firstMatch.<span class="f">setStartsAt</span>(<span class="s">&quot;0:20&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:85:VodMatchFields.selectMode">Select mode</span> <span class="str">“Tower Control”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> firstMatch.<span class="f">selectMode</span>(<span class="s">&quot;Tower Control&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:92:VodMatchFields.selectStage">Select stage</span> <span class="str">“Hammerhead Bridge”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> firstMatch.<span class="f">selectStage</span>(<span class="s">&quot;Hammerhead Bridge&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:96:VodMatchFields.selectWeapon">Select weapon</span> <span class="str">“Zink Mini Splatling”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> firstMatch.<span class="f">selectWeapon</span>(<span class="s">&quot;Zink Mini Splatling&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:15:NewVodPage">New vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/47.jpg" data-caption="New vod page"><img src="screenshots/vods/47.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:47:NewVodPage.addMatch">Add match</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.<span class="f">addMatch</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:43:NewVodPage.match">Match</span> <span class="num">1</span> <span class="binds">→ secondMatch</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> secondMatch = newVod.<span class="f">match</span>(<span class="n">1</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:58:VodMatchFields">Vod match fields</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/50.jpg" data-caption="Vod match fields"><img src="screenshots/vods/50.jpg" alt="Vod match fields" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:78:VodMatchFields.setStartsAt">Set starts at</span> <span class="str">“5:55”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> secondMatch.<span class="f">setStartsAt</span>(<span class="s">&quot;5:55&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:85:VodMatchFields.selectMode">Select mode</span> <span class="str">“Rainmaker”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> secondMatch.<span class="f">selectMode</span>(<span class="s">&quot;Rainmaker&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:92:VodMatchFields.selectStage">Select stage</span> <span class="str">“Museum d'Alfonsino”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> secondMatch.<span class="f">selectStage</span>(<span class="s">&quot;Museum d'Alfonsino&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:96:VodMatchFields.selectWeapon">Select weapon</span> <span class="str">“Tenta Brella”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> secondMatch.<span class="f">selectWeapon</span>(<span class="s">&quot;Tenta Brella&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:15:NewVodPage">New vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/55.jpg" data-caption="New vod page"><img src="screenshots/vods/55.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:51:NewVodPage.save">Save</span> <span class="binds">→ vod</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> vod = <span class="k">await</span> newVod.<span class="f">save</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:8:VodPage">Vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/57.jpg" data-caption="Vod page"><img src="screenshots/vods/57.jpg" alt="Vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:15:VodPage.locators.publishedAt">published at</span></strong> contains <code class="inline" title="FORMATTED_VIDEO_DATE"><span class="t">FORMATTED_VIDEO_DATE</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(vod.locators.publishedAt).<span class="f">toContainText</span>(<span class="t">FORMATTED_VIDEO_DATE</span>);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:31:VodPage.weaponImage">weapon image</span> <span class="const" title="ZINK_MINI_SPLATLING"><span class="num">4001</span></span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(vod.<span class="f">weaponImage</span>(<span class="t">ZINK_MINI_SPLATLING</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:31:VodPage.weaponImage">weapon image</span> <span class="const" title="TENTA_BRELLA"><span class="num">6010</span></span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(vod.<span class="f">weaponImage</span>(<span class="t">TENTA_BRELLA</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:39:VodPage.openCopyTimestamps">Open copy timestamps</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> vod.<span class="f">openCopyTimestamps</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:17:VodPage.locators.timestamps">timestamps</span></strong> has value <code class="inline" title="[ &quot;0:00 Intro&quot;, &quot;0:20 Zink Mini Splatling / TC Hammerhead Bridge&quot;, &quot;5:55 Tenta Brella / RM Museum d'Alfonsino&quot;, ].join(&quot;\n&quot;)">[ <span class="s">&quot;0:00 Intro&quot;</span>, <span class="s">&quot;0:20 Zink Mini Splatling / TC Hammerhead Bridge&quot;</span>, &quot;<span class="n">5</span>:<span class="n">55</span> <span class="t">Tent</span>…</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(vod.locators.timestamps).<span class="f">toHaveValue</span>(
+	[
+		<span class="s">&quot;0:00 Intro&quot;</span>,
+		<span class="s">&quot;0:20 Zink Mini Splatling / TC Hammerhead Bridge&quot;</span>,
+		<span class="s">&quot;5:55 Tenta Brella / RM Museum d'Alfonsino&quot;</span>,
+	].<span class="f">join</span>(<span class="s">&quot;\n&quot;</span>),
+);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;adds video (pov)&quot;</span>, <span class="k">async</span> ({ page, factories }) =&gt; {
+	<span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">grant</span>(<span class="t">ADMIN_ID</span>, { roles: [<span class="s">&quot;VIDEO_ADDER&quot;</span>] });
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> newVod = <span class="k">new</span> <span class="t">NewVodPage</span>(page);
+	<span class="k">await</span> newVod.<span class="f">goto</span>();
+
+	<span class="k">await</span> newVod.form.<span class="f">fill</span>(
+		<span class="s">&quot;youtubeUrl&quot;</span>,
+		<span class="s">&quot;https://www.youtube.com/watch?v=o7kWlMZP3lM&quot;</span>,
+	);
+	<span class="k">await</span> newVod.form.<span class="f">fill</span>(
+		<span class="s">&quot;title&quot;</span>,
+		<span class="s">&quot;ITZXI Finals - Team Olive vs. Astral [CAMO TENTA PoV]&quot;</span>,
+	);
+	<span class="k">await</span> newVod.form.<span class="f">setDate</span>(<span class="s">&quot;date&quot;</span>, <span class="t">VIDEO_DATE</span>);
+	<span class="k">await</span> newVod.form.<span class="f">select</span>(<span class="s">&quot;type&quot;</span>, <span class="s">&quot;SCRIM&quot;</span>);
+
+	<span class="k">await</span> newVod.<span class="f">selectPov</span>(<span class="s">&quot;Sendou&quot;</span>);
+
+	<span class="k">const</span> firstMatch = newVod.<span class="f">match</span>(<span class="n">0</span>);
+	<span class="k">await</span> firstMatch.<span class="f">setStartsAt</span>(<span class="s">&quot;0:20&quot;</span>);
+	<span class="k">await</span> firstMatch.<span class="f">selectMode</span>(<span class="s">&quot;Tower Control&quot;</span>);
+	<span class="k">await</span> firstMatch.<span class="f">selectStage</span>(<span class="s">&quot;Hammerhead Bridge&quot;</span>);
+	<span class="k">await</span> firstMatch.<span class="f">selectWeapon</span>(<span class="s">&quot;Zink Mini Splatling&quot;</span>);
+
+	<span class="k">await</span> newVod.<span class="f">addMatch</span>();
+
+	<span class="k">const</span> secondMatch = newVod.<span class="f">match</span>(<span class="n">1</span>);
+	<span class="k">await</span> secondMatch.<span class="f">setStartsAt</span>(<span class="s">&quot;5:55&quot;</span>);
+	<span class="k">await</span> secondMatch.<span class="f">selectMode</span>(<span class="s">&quot;Rainmaker&quot;</span>);
+	<span class="k">await</span> secondMatch.<span class="f">selectStage</span>(<span class="s">&quot;Museum d'Alfonsino&quot;</span>);
+	<span class="k">await</span> secondMatch.<span class="f">selectWeapon</span>(<span class="s">&quot;Tenta Brella&quot;</span>);
+
+	<span class="k">const</span> vod = <span class="k">await</span> newVod.<span class="f">save</span>();
+
+	<span class="k">await</span> <span class="f">expect</span>(vod.locators.publishedAt).<span class="f">toContainText</span>(<span class="t">FORMATTED_VIDEO_DATE</span>);
+	<span class="k">await</span> <span class="f">expect</span>(vod.<span class="f">weaponImage</span>(<span class="t">ZINK_MINI_SPLATLING</span>)).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">expect</span>(vod.<span class="f">weaponImage</span>(<span class="t">TENTA_BRELLA</span>)).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> vod.<span class="f">openCopyTimestamps</span>();
+	<span class="k">await</span> <span class="f">expect</span>(vod.locators.timestamps).<span class="f">toHaveValue</span>(
+		[
+			<span class="s">&quot;0:00 Intro&quot;</span>,
+			<span class="s">&quot;0:20 Zink Mini Splatling / TC Hammerhead Bridge&quot;</span>,
+			<span class="s">&quot;5:55 Tenta Brella / RM Museum d'Alfonsino&quot;</span>,
+		].<span class="f">join</span>(<span class="s">&quot;\n&quot;</span>),
+	);
+})</pre></details>
+</article><article class="test" id="e2e/vods-vods-page-adds-video-cast">
+	<header class="test-head">
+		<h3>adds video (cast)</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/vods.spec.ts#L71" title="e2e/vods.spec.ts:71">vods.spec.ts:71</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-id-tsx">/vods/:id</a><a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-new-tsx">/vods/new</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/vods/77.jpg" data-caption="New vod page"><img src="screenshots/vods/77.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"><span>New vod page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/91.jpg" data-caption="Vod match fields"><img src="screenshots/vods/91.jpg" alt="Vod match fields" loading="lazy" onerror="this.parentElement.remove()"><span>Vod match fields</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/102.jpg" data-caption="New vod page"><img src="screenshots/vods/102.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"><span>New vod page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Grant user <span class="user" data-actor="ADMIN_ID">Sendou</span> <span class="kv"><span class="key">roles</span> <span class="str">“VIDEO_ADDER”</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">grant</span>(<span class="t">ADMIN_ID</span>, { roles: [<span class="s">&quot;VIDEO_ADDER&quot;</span>] });</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:15:NewVodPage">New vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/77.jpg" data-caption="New vod page"><img src="screenshots/vods/77.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:31:NewVodPage.goto">Open</span> the <strong>new vod page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Fill <strong><span class="ref" data-ref="app/features/vods/vods-schemas.ts:148:vodFormBaseSchema.youtubeUrl">YouTube URL</span></strong> with <span class="str">“https://www.youtube.com/watch?v=QFk1Gf91SwI”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.form.<span class="f">fill</span>(
+	<span class="s">&quot;youtubeUrl&quot;</span>,
+	<span class="s">&quot;https://www.youtube.com/watch?v=QFk1Gf91SwI&quot;</span>,
+);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Fill <strong><span class="ref" data-ref="app/features/vods/vods-schemas.ts:157:vodFormBaseSchema.title">Video title</span></strong> with <span class="str">“BIG ! vs Starburst - Splatoon 3 Grand Finals - The Big House 10”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.form.<span class="f">fill</span>(
+	<span class="s">&quot;title&quot;</span>,
+	<span class="s">&quot;BIG ! vs Starburst - Splatoon 3 Grand Finals - The Big House 10&quot;</span>,
+);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set <strong><span class="ref" data-ref="app/features/vods/vods-schemas.ts:161:vodFormBaseSchema.date">Video date</span></strong> to <code class="inline" title="VIDEO_DATE"><span class="t">VIDEO_DATE</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.form.<span class="f">setDate</span>(<span class="s">&quot;date&quot;</span>, <span class="t">VIDEO_DATE</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Select <span class="str">“CAST”</span> for <strong><span class="ref" data-ref="app/features/vods/vods-schemas.ts:167:vodFormBaseSchema.type">Type</span></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.form.<span class="f">select</span>(<span class="s">&quot;type&quot;</span>, <span class="s">&quot;CAST&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:43:NewVodPage.match">Match</span> <span class="num">0</span> <span class="binds">→ match</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> match = newVod.<span class="f">match</span>(<span class="n">0</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:58:VodMatchFields">Vod match fields</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/91.jpg" data-caption="Vod match fields"><img src="screenshots/vods/91.jpg" alt="Vod match fields" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:78:VodMatchFields.setStartsAt">Set starts at</span> <span class="str">“0:25”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> match.<span class="f">setStartsAt</span>(<span class="s">&quot;0:25&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:85:VodMatchFields.selectMode">Select mode</span> <span class="str">“Clam Blitz”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> match.<span class="f">selectMode</span>(<span class="s">&quot;Clam Blitz&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:92:VodMatchFields.selectStage">Select stage</span> <span class="str">“MakoMart”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> match.<span class="f">selectStage</span>(<span class="s">&quot;MakoMart&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Repeat <code class="inline" title="for (let i = 0; i &lt; 4; i++)"><span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">4</span>; i++)</code></span></div>
+	<pre class="code step-code"><span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">4</span>; i++) {
+	<span class="k">await</span> match.<span class="f">selectTeamWeapon</span>(<span class="n">1</span>, i, <span class="s">&quot;Luna Blaster&quot;</span>);
+}</pre>
+	<ol class="steps nested"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:105:VodMatchFields.selectTeamWeapon">Select team weapon</span> <span class="num">1</span>, <code class="inline" title="i">i</code>, <span class="str">“Luna Blaster”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> match.<span class="f">selectTeamWeapon</span>(<span class="n">1</span>, i, <span class="s">&quot;Luna Blaster&quot;</span>);</pre>
+	
+</li></ol>
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Repeat <code class="inline" title="for (let i = 0; i &lt; 4; i++)"><span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">4</span>; i++)</code></span></div>
+	<pre class="code step-code"><span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">4</span>; i++) {
+	<span class="k">await</span> match.<span class="f">selectTeamWeapon</span>(<span class="n">2</span>, i, <span class="s">&quot;Tenta Brella&quot;</span>);
+}</pre>
+	<ol class="steps nested"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:105:VodMatchFields.selectTeamWeapon">Select team weapon</span> <span class="num">2</span>, <code class="inline" title="i">i</code>, <span class="str">“Tenta Brella”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> match.<span class="f">selectTeamWeapon</span>(<span class="n">2</span>, i, <span class="s">&quot;Tenta Brella&quot;</span>);</pre>
+	
+</li></ol>
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:15:NewVodPage">New vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/102.jpg" data-caption="New vod page"><img src="screenshots/vods/102.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:51:NewVodPage.save">Save</span> <span class="binds">→ vod</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> vod = <span class="k">await</span> newVod.<span class="f">save</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Repeat <code class="inline" title="for (let i = 0; i &lt; 8; i++)"><span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">8</span>; i++)</code></span></div>
+	<pre class="code step-code"><span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">8</span>; i++) {
+	<span class="k">await</span> <span class="f">expect</span>(
+		vod.<span class="f">weaponImage</span>(i &lt; <span class="n">4</span> ? <span class="t">LUNA_BLASTER</span> : <span class="t">TENTA_BRELLA</span>, i),
+	).<span class="f">toBeVisible</span>();
+}</pre>
+	<ol class="steps nested"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:31:VodPage.weaponImage">weapon image</span> <code class="inline" title="i &lt; 4 ? LUNA_BLASTER : TENTA_BRELLA">i &lt; <span class="n">4</span> ? <span class="t">LUNA_BLASTER</span> : <span class="t">TENTA_BRELLA</span></code>, <code class="inline" title="i">i</code></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(
+	vod.<span class="f">weaponImage</span>(i &lt; <span class="n">4</span> ? <span class="t">LUNA_BLASTER</span> : <span class="t">TENTA_BRELLA</span>, i),
+).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;adds video (cast)&quot;</span>, <span class="k">async</span> ({ page, factories }) =&gt; {
+	<span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">grant</span>(<span class="t">ADMIN_ID</span>, { roles: [<span class="s">&quot;VIDEO_ADDER&quot;</span>] });
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> newVod = <span class="k">new</span> <span class="t">NewVodPage</span>(page);
+	<span class="k">await</span> newVod.<span class="f">goto</span>();
+
+	<span class="k">await</span> newVod.form.<span class="f">fill</span>(
+		<span class="s">&quot;youtubeUrl&quot;</span>,
+		<span class="s">&quot;https://www.youtube.com/watch?v=QFk1Gf91SwI&quot;</span>,
+	);
+	<span class="k">await</span> newVod.form.<span class="f">fill</span>(
+		<span class="s">&quot;title&quot;</span>,
+		<span class="s">&quot;BIG ! vs Starburst - Splatoon 3 Grand Finals - The Big House 10&quot;</span>,
+	);
+	<span class="k">await</span> newVod.form.<span class="f">setDate</span>(<span class="s">&quot;date&quot;</span>, <span class="t">VIDEO_DATE</span>);
+	<span class="k">await</span> newVod.form.<span class="f">select</span>(<span class="s">&quot;type&quot;</span>, <span class="s">&quot;CAST&quot;</span>);
+
+	<span class="k">const</span> match = newVod.<span class="f">match</span>(<span class="n">0</span>);
+	<span class="k">await</span> match.<span class="f">setStartsAt</span>(<span class="s">&quot;0:25&quot;</span>);
+	<span class="k">await</span> match.<span class="f">selectMode</span>(<span class="s">&quot;Clam Blitz&quot;</span>);
+	<span class="k">await</span> match.<span class="f">selectStage</span>(<span class="s">&quot;MakoMart&quot;</span>);
+
+	<span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">4</span>; i++) {
+		<span class="k">await</span> match.<span class="f">selectTeamWeapon</span>(<span class="n">1</span>, i, <span class="s">&quot;Luna Blaster&quot;</span>);
+	}
+	<span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">4</span>; i++) {
+		<span class="k">await</span> match.<span class="f">selectTeamWeapon</span>(<span class="n">2</span>, i, <span class="s">&quot;Tenta Brella&quot;</span>);
+	}
+
+	<span class="k">const</span> vod = <span class="k">await</span> newVod.<span class="f">save</span>();
+
+	<span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">8</span>; i++) {
+		<span class="k">await</span> <span class="f">expect</span>(
+			vod.<span class="f">weaponImage</span>(i &lt; <span class="n">4</span> ? <span class="t">LUNA_BLASTER</span> : <span class="t">TENTA_BRELLA</span>, i),
+		).<span class="f">toBeVisible</span>();
+	}
+})</pre></details>
+</article><article class="test" id="e2e/vods-vods-page-edits-and-deletes-vod">
+	<header class="test-head">
+		<h3>edits and deletes vod</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/vods.spec.ts#L111" title="e2e/vods.spec.ts:111">vods.spec.ts:111</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="user-page.html#routes/app-features-user-page-routes-u-identifier-tsx">/u/:identifier</a><a class="route-chip" href="user-page.html#routes/app-features-user-page-routes-u-identifier-vods-tsx">/u/:identifier/vods</a><a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-tsx">/vods</a><a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-id-tsx">/vods/:id</a><a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-new-tsx">/vods/new</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/vods/130.jpg" data-caption="Vod page"><img src="screenshots/vods/130.jpg" alt="Vod page" loading="lazy" onerror="this.parentElement.remove()"><span>Vod page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/133.jpg" data-caption="New vod page"><img src="screenshots/vods/133.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"><span>New vod page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/137.jpg" data-caption="Vod page"><img src="screenshots/vods/137.jpg" alt="Vod page" loading="lazy" onerror="this.parentElement.remove()"><span>Vod page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/vods/144.jpg" data-caption="Vods page"><img src="screenshots/vods/144.jpg" alt="Vods page" loading="lazy" onerror="this.parentElement.remove()"><span>Vods page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create vod <span class="kv"><span class="key">submitter</span> <span class="user" data-actor="ADMIN_ID">Sendou</span></span> <span class="kv"><span class="key">pov</span> <span class="kv"><span class="key">type</span> <span class="str">“USER”</span></span> <span class="kv"><span class="key">user</span> <span class="user" data-actor="ADMIN_ID">Sendou</span></span></span> <span class="kv"><span class="key">matches</span> <span class="kv"><span class="key">starts at</span> <span class="str">“0:00”</span></span> <span class="kv"><span class="key">stage id</span> <span class="const" title="SCORCH_GORGE"><span class="num">0</span></span></span> <span class="kv"><span class="key">mode</span> <span class="str">“SZ”</span></span> <span class="kv"><span class="key">weapons</span> <span class="const" title="TENTA_BRELLA"><span class="num">6010</span></span></span></span> <span class="binds">→ existingVod</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> existingVod = <span class="k">await</span> factories.<span class="t">VodFactory</span>.<span class="f">create</span>({
+	submitterUserId: <span class="t">ADMIN_ID</span>,
+	pov: { <span class="k">type</span>: <span class="s">&quot;USER&quot;</span>, userId: <span class="t">ADMIN_ID</span> },
+	matches: [
+		{
+			startsAt: <span class="s">&quot;0:00&quot;</span>,
+			stageId: <span class="t">SCORCH_GORGE</span>,
+			mode: <span class="s">&quot;SZ&quot;</span>,
+			weapons: [<span class="t">TENTA_BRELLA</span>],
+		},
+	],
+});</pre>
+	
+</li><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Grant user <span class="user" data-actor="ADMIN_ID">Sendou</span> <span class="kv"><span class="key">roles</span> <span class="str">“VIDEO_ADDER”</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">grant</span>(<span class="t">ADMIN_ID</span>, { roles: [<span class="s">&quot;VIDEO_ADDER&quot;</span>] });</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:8:VodPage">Vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/130.jpg" data-caption="Vod page"><img src="screenshots/vods/130.jpg" alt="Vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:26:VodPage.goto">Open</span> the <strong>vod page</strong> <code class="inline" title="existingVod.id">existingVod.id</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> vod.<span class="f">goto</span>(existingVod.id);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:43:VodPage.openEdit">Open edit</span> <span class="binds">→ editVod</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> editVod = <span class="k">await</span> vod.<span class="f">openEdit</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:15:NewVodPage">New vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/133.jpg" data-caption="New vod page"><img src="screenshots/vods/133.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Select weapon <span class="str">“Luna Blaster”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> editVod.<span class="f">match</span>(<span class="n">0</span>).<span class="f">selectWeapon</span>(<span class="s">&quot;Luna Blaster&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:51:NewVodPage.save">Save</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> editVod.<span class="f">save</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>the page</strong> URL is <code class="inline" title="vodVideoPage(existingVod.id)"><span class="f">vodVideoPage</span>(existingVod.id)</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(page).<span class="f">toHaveURL</span>(<span class="f">vodVideoPage</span>(existingVod.id));</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:8:VodPage">Vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/137.jpg" data-caption="Vod page"><img src="screenshots/vods/137.jpg" alt="Vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:31:VodPage.weaponImage">weapon image</span> <span class="const" title="LUNA_BLASTER"><span class="num">200</span></span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(vod.<span class="f">weaponImage</span>(<span class="t">LUNA_BLASTER</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/vod-page.ts:49:VodPage.delete">Delete</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> vod.<span class="f">delete</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>the page</strong> URL is <code class="inline" title="/\/u\/.+\/vods/">/\/u\/.+\/vods/</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(page).<span class="f">toHaveURL</span>(/\/u\/.+\/vods/);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/vods-page.ts:6:VodsPage">Vods page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/144.jpg" data-caption="Vods page"><img src="screenshots/vods/144.jpg" alt="Vods page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/vods-page.ts:18:VodsPage.goto">Open</span> the <strong>vods page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> vods.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/vods-page.ts:13:VodsPage.locators.noVodsText">no vods text</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(vods.locators.noVodsText).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;edits and deletes vod&quot;</span>, <span class="k">async</span> ({ page, factories }) =&gt; {
+	<span class="k">const</span> existingVod = <span class="k">await</span> factories.<span class="t">VodFactory</span>.<span class="f">create</span>({
+		submitterUserId: <span class="t">ADMIN_ID</span>,
+		pov: { <span class="k">type</span>: <span class="s">&quot;USER&quot;</span>, userId: <span class="t">ADMIN_ID</span> },
+		matches: [
+			{
+				startsAt: <span class="s">&quot;0:00&quot;</span>,
+				stageId: <span class="t">SCORCH_GORGE</span>,
+				mode: <span class="s">&quot;SZ&quot;</span>,
+				weapons: [<span class="t">TENTA_BRELLA</span>],
+			},
+		],
+	});
+
+	<span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">grant</span>(<span class="t">ADMIN_ID</span>, { roles: [<span class="s">&quot;VIDEO_ADDER&quot;</span>] });
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> vod = <span class="k">new</span> <span class="t">VodPage</span>(page);
+	<span class="k">await</span> vod.<span class="f">goto</span>(existingVod.id);
+
+	<span class="k">const</span> editVod = <span class="k">await</span> vod.<span class="f">openEdit</span>();
+	<span class="k">await</span> editVod.<span class="f">match</span>(<span class="n">0</span>).<span class="f">selectWeapon</span>(<span class="s">&quot;Luna Blaster&quot;</span>);
+	<span class="k">await</span> editVod.<span class="f">save</span>();
+
+	<span class="k">await</span> <span class="f">expect</span>(page).<span class="f">toHaveURL</span>(<span class="f">vodVideoPage</span>(existingVod.id));
+	<span class="k">await</span> <span class="f">expect</span>(vod.<span class="f">weaponImage</span>(<span class="t">LUNA_BLASTER</span>)).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> vod.<span class="f">delete</span>();
+
+	<span class="k">await</span> <span class="f">expect</span>(page).<span class="f">toHaveURL</span>(/\/u\/.+\/vods/);
+
+	<span class="k">const</span> vods = <span class="k">new</span> <span class="t">VodsPage</span>(page);
+	<span class="k">await</span> vods.<span class="f">goto</span>();
+
+	<span class="k">await</span> <span class="f">expect</span>(vods.locators.noVodsText).<span class="f">toBeVisible</span>();
+})</pre></details>
+</article><article class="test" id="e2e/vods-vods-page-operates-vod-filters">
+	<header class="test-head">
+		<h3>operates vod filters</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/vods.spec.ts#L149" title="e2e/vods.spec.ts:149">vods.spec.ts:149</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-tsx">/vods</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/vods/166.jpg" data-caption="Vods page"><img src="screenshots/vods/166.jpg" alt="Vods page" loading="lazy" onerror="this.parentElement.remove()"><span>Vods page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create vod <span class="kv"><span class="key">submitter</span> <span class="user" data-actor="ADMIN_ID">Sendou</span></span> <span class="kv"><span class="key">pov</span> <span class="kv"><span class="key">type</span> <span class="str">“USER”</span></span> <span class="kv"><span class="key">user</span> <span class="user" data-actor="NZAP_TEST_ID">N-ZAP</span></span></span> <span class="kv"><span class="key">matches</span> <span class="kv"><span class="key">starts at</span> <span class="str">“0:00”</span></span> <span class="kv"><span class="key">stage id</span> <span class="const" title="SCORCH_GORGE"><span class="num">0</span></span></span> <span class="kv"><span class="key">mode</span> <span class="str">“SZ”</span></span> <span class="kv"><span class="key">weapons</span> <span class="const" title="TENTA_BRELLA"><span class="num">6010</span></span></span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">VodFactory</span>.<span class="f">create</span>({
+	submitterUserId: <span class="t">ADMIN_ID</span>,
+	pov: { <span class="k">type</span>: <span class="s">&quot;USER&quot;</span>, userId: <span class="t">NZAP_TEST_ID</span> },
+	matches: [
+		{
+			startsAt: <span class="s">&quot;0:00&quot;</span>,
+			stageId: <span class="t">SCORCH_GORGE</span>,
+			mode: <span class="s">&quot;SZ&quot;</span>,
+			weapons: [<span class="t">TENTA_BRELLA</span>],
+		},
+	],
+});</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/vods-page.ts:6:VodsPage">Vods page</span></span><button type="button" class="divider-shot" data-shot="screenshots/vods/166.jpg" data-caption="Vods page"><img src="screenshots/vods/166.jpg" alt="Vods page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/vods-page.ts:18:VodsPage.goto">Open</span> the <strong>vods page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> vods.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/vods-page.ts:23:VodsPage.povLink">Pov link</span> <span class="str">“N-ZAP”</span> <span class="binds">→ nzapPovLink</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> nzapPovLink = vods.<span class="f">povLink</span>(<span class="s">&quot;N-ZAP&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="nzapPovLink">nzapPovLink</code></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(nzapPovLink).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/vods-page.ts:27:VodsPage.filterByWeapon">Filter by weapon</span> <span class="str">“Carbon Roller”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> vods.<span class="f">filterByWeapon</span>(<span class="s">&quot;Carbon Roller&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="nzapPovLink">nzapPovLink</code></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(nzapPovLink);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/vods-page.ts:13:VodsPage.locators.noVodsText">no vods text</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(vods.locators.noVodsText).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;operates vod filters&quot;</span>, <span class="k">async</span> ({ page, factories }) =&gt; {
+	<span class="k">await</span> factories.<span class="t">VodFactory</span>.<span class="f">create</span>({
+		submitterUserId: <span class="t">ADMIN_ID</span>,
+		pov: { <span class="k">type</span>: <span class="s">&quot;USER&quot;</span>, userId: <span class="t">NZAP_TEST_ID</span> },
+		matches: [
+			{
+				startsAt: <span class="s">&quot;0:00&quot;</span>,
+				stageId: <span class="t">SCORCH_GORGE</span>,
+				mode: <span class="s">&quot;SZ&quot;</span>,
+				weapons: [<span class="t">TENTA_BRELLA</span>],
+			},
+		],
+	});
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> vods = <span class="k">new</span> <span class="t">VodsPage</span>(page);
+	<span class="k">await</span> vods.<span class="f">goto</span>();
+
+	<span class="k">const</span> nzapPovLink = vods.<span class="f">povLink</span>(<span class="s">&quot;N-ZAP&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(nzapPovLink).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> vods.<span class="f">filterByWeapon</span>(<span class="s">&quot;Carbon Roller&quot;</span>);
+
+	<span class="k">await</span> <span class="f">isNotVisible</span>(nzapPovLink);
+	<span class="k">await</span> <span class="f">expect</span>(vods.locators.noVodsText).<span class="f">toBeVisible</span>();
+})</pre></details>
+</article>
+	</section>
+</div>
+		</div>
+	</div>
+	<div class="view" data-view="routes" hidden>
+		<aside class="sidebar">
+			<h4>Coverage</h4>
+			<p class="coverage"><strong>3</strong> of 3 routes rendered by an e2e test</p>
+			<p class="legend-note">From the last <code>pnpm run docs:living:capture</code>.</p>
+			<h4>Routes</h4>
+			<ul class="toc route-toc"><li><a href="#routes/app-features-vods-routes-vods-tsx"><span class="kind-dot is-visited"></span>/vods</a></li><li><a href="#routes/app-features-vods-routes-vods-new-tsx"><span class="kind-dot is-visited"></span>/vods/new</a></li><li><a href="#routes/app-features-vods-routes-vods-id-tsx"><span class="kind-dot is-visited"></span>/vods/:id</a></li></ul>
+		</aside>
+		<div class="content">
+			<div class="routes"><article class="route" id="routes/app-features-vods-routes-vods-tsx">
+				<div class="route-head">
+					<code class="route-path">/vods</code>
+					<span class="badge">page · index</span>
+					<span class="badge badge-loader">loader</span>
+					
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/routes/vods.tsx#L1" title="app/features/vods/routes/vods.tsx:1">vods.tsx</a>
+				</div>
+				<ul class="route-tests"><li><a href="vods.html#e2e/vods-vods-page-edits-and-deletes-vod">edits and deletes vod</a></li><li><a href="vods.html#e2e/vods-vods-page-operates-vod-filters">operates vod filters</a></li></ul>
+			</article><article class="route" id="routes/app-features-vods-routes-vods-new-tsx">
+				<div class="route-head">
+					<code class="route-path">/vods/new</code>
+					<span class="badge">page</span>
+					<span class="badge badge-loader">loader</span>
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/routes/vods.new.tsx#L1" title="app/features/vods/routes/vods.new.tsx:1">vods.new.tsx</a>
+				</div>
+				<ul class="route-tests"><li><a href="admin.html#e2e/admin-admin-panel-grants-roles-friend-code-and-api-access-to-a-user">grants roles, friend code and API access to a user</a></li><li><a href="scanner.html#e2e/scanner-scanner-prefills-a-new-vod-from-a-scanned-file">prefills a new VoD from a scanned file</a></li><li><a href="vods.html#e2e/vods-vods-page-adds-video-pov">adds video (pov)</a></li><li><a href="vods.html#e2e/vods-vods-page-adds-video-cast">adds video (cast)</a></li><li><a href="vods.html#e2e/vods-vods-page-edits-and-deletes-vod">edits and deletes vod</a></li></ul>
+			</article><article class="route" id="routes/app-features-vods-routes-vods-id-tsx">
+				<div class="route-head">
+					<code class="route-path">/vods/<span class="route-param">:id</span></code>
+					<span class="badge">page</span>
+					<span class="badge badge-loader">loader</span>
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/routes/vods.$id.tsx#L1" title="app/features/vods/routes/vods.$id.tsx:1">vods.$id.tsx</a>
+				</div>
+				<ul class="route-tests"><li><a href="vods.html#e2e/vods-vods-page-adds-video-pov">adds video (pov)</a></li><li><a href="vods.html#e2e/vods-vods-page-adds-video-cast">adds video (cast)</a></li><li><a href="vods.html#e2e/vods-vods-page-edits-and-deletes-vod">edits and deletes vod</a></li></ul>
+			</article></div>
+		</div>
+	</div>
+</main>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:31:NewVodPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L31">
+	<div class="tooltip-head"><code>NewVodPage.goto</code><span>e2e/pages/vods/new-vod-page.ts:31</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="f">newVodPage</span>() });
+}</pre>
+</template>
+<template data-ref-id="app/features/vods/vods-schemas.ts:148:vodFormBaseSchema.youtubeUrl" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/vods-schemas.ts#L148">
+	<div class="tooltip-head"><code>vodFormBaseSchema.youtubeUrl</code><span>app/features/vods/vods-schemas.ts:148</span></div>
+	<div class="tooltip-doc"><p>Label: <code>forms:labels.vodYoutubeUrl</code></p></div>
+	<pre class="code">youtubeUrl: <span class="f">textField</span>({
+	label: <span class="s">&quot;labels.vodYoutubeUrl&quot;</span>,
+	maxLength: <span class="n">200</span>,
+	inputMode: <span class="s">&quot;url&quot;</span>,
+	validate: {
+		func: (val) =&gt; <span class="f">extractYoutubeIdFromVideoUrl</span>(val) !== <span class="l">null</span>,
+		message: <span class="s">&quot;Invalid YouTube URL&quot;</span>,
+	},
+})</pre>
+</template>
+<template data-ref-id="app/features/vods/vods-schemas.ts:157:vodFormBaseSchema.title" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/vods-schemas.ts#L157">
+	<div class="tooltip-head"><code>vodFormBaseSchema.title</code><span>app/features/vods/vods-schemas.ts:157</span></div>
+	<div class="tooltip-doc"><p>Label: <code>forms:labels.vodTitle</code></p></div>
+	<pre class="code">title: <span class="f">textField</span>({
+	label: <span class="s">&quot;labels.vodTitle&quot;</span>,
+	maxLength: <span class="n">100</span>,
+})</pre>
+</template>
+<template data-ref-id="app/features/vods/vods-schemas.ts:161:vodFormBaseSchema.date" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/vods-schemas.ts#L161">
+	<div class="tooltip-head"><code>vodFormBaseSchema.date</code><span>app/features/vods/vods-schemas.ts:161</span></div>
+	<div class="tooltip-doc"><p>Label: <code>forms:labels.vodDate</code></p></div>
+	<pre class="code">date: <span class="f">dayMonthYearField</span>({
+	label: <span class="s">&quot;labels.vodDate&quot;</span>,
+	max: () =&gt; <span class="f">add</span>(<span class="k">new</span> <span class="t">Date</span>(), { days: <span class="n">1</span> }),
+	maxMessage: <span class="s">&quot;errors.dateMustNotBeFuture&quot;</span>,
+	minMessage: <span class="s">&quot;errors.dateTooOld&quot;</span>,
+})</pre>
+</template>
+<template data-ref-id="app/features/vods/vods-schemas.ts:167:vodFormBaseSchema.type" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/vods-schemas.ts#L167">
+	<div class="tooltip-head"><code>vodFormBaseSchema.type</code><span>app/features/vods/vods-schemas.ts:167</span></div>
+	<div class="tooltip-doc"><p>Label: <code>forms:labels.type</code></p></div>
+	<pre class="code"><span class="k">type</span>: <span class="f">select</span>({
+	label: <span class="s">&quot;labels.type&quot;</span>,
+	items: videoMatchTypes.<span class="f">map</span>((<span class="k">type</span>) =&gt; ({
+		label: <span class="s">`vodTypes.${type}`</span> <span class="k">as</span> <span class="k">const</span>,
+		value: <span class="k">type</span>,
+	})),
+})</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:35:NewVodPage.selectPov" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L35">
+	<div class="tooltip-head"><code>NewVodPage.selectPov</code><span>e2e/pages/vods/new-vod-page.ts:35</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">selectPov</span>(userName: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="f">selectUser</span>({
+		page: <span class="l">this</span>.page,
+		userName,
+		labelName: <span class="s">&quot;Player (PoV)&quot;</span>,
+	});
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:43:NewVodPage.match" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L43">
+	<div class="tooltip-head"><code>NewVodPage.match</code><span>e2e/pages/vods/new-vod-page.ts:43</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">match</span>(index: <span class="t">number</span>) {
+	<span class="k">return</span> <span class="k">new</span> <span class="t">VodMatchFields</span>(<span class="l">this</span>.page, index);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:78:VodMatchFields.setStartsAt" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L78">
+	<div class="tooltip-head"><code>VodMatchFields.setStartsAt</code><span>e2e/pages/vods/new-vod-page.ts:78</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">setStartsAt</span>(timestamp: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="l">this</span>.page
+		.<span class="f">getByLabel</span>(<span class="s">&quot;Start timestamp&quot;</span>)
+		.<span class="f">nth</span>(<span class="l">this</span>.index)
+		.<span class="f">fill</span>(timestamp);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:85:VodMatchFields.selectMode" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L85">
+	<div class="tooltip-head"><code>VodMatchFields.selectMode</code><span>e2e/pages/vods/new-vod-page.ts:85</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">selectMode</span>(modeName: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="l">this</span>.page
+		.<span class="f">getByRole</span>(<span class="s">&quot;radio&quot;</span>, { name: modeName })
+		.<span class="f">nth</span>(<span class="l">this</span>.index)
+		.<span class="f">click</span>();
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:92:VodMatchFields.selectStage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L92">
+	<div class="tooltip-head"><code>VodMatchFields.selectStage</code><span>e2e/pages/vods/new-vod-page.ts:92</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">selectStage</span>(stageName: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="f">selectStage</span>({ page: <span class="l">this</span>.page, name: stageName, nth: <span class="l">this</span>.index });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:96:VodMatchFields.selectWeapon" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L96">
+	<div class="tooltip-head"><code>VodMatchFields.selectWeapon</code><span>e2e/pages/vods/new-vod-page.ts:96</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">selectWeapon</span>(weaponName: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="f">selectWeapon</span>({
+		page: <span class="l">this</span>.page,
+		name: weaponName,
+		testId: <span class="s">`match-${this.index}-weapon`</span>,
+	});
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:47:NewVodPage.addMatch" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L47">
+	<div class="tooltip-head"><code>NewVodPage.addMatch</code><span>e2e/pages/vods/new-vod-page.ts:47</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">addMatch</span>() {
+	<span class="k">await</span> <span class="l">this</span>.locators.addMatchButton.<span class="f">click</span>();
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:51:NewVodPage.save" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L51">
+	<div class="tooltip-head"><code>NewVodPage.save</code><span>e2e/pages/vods/new-vod-page.ts:51</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">save</span>() {
+	<span class="k">await</span> <span class="f">submit</span>(<span class="l">this</span>.page);
+	<span class="k">return</span> <span class="k">new</span> <span class="t">VodPage</span>(<span class="l">this</span>.page);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vod-page.ts:15:VodPage.locators.publishedAt" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vod-page.ts#L15">
+	<div class="tooltip-head"><code>VodPage.locators.publishedAt</code><span>e2e/pages/vods/vod-page.ts:15</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="l">this</span>.page.<span class="f">locator</span>(<span class="s">&quot;time&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vod-page.ts:31:VodPage.weaponImage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vod-page.ts#L31">
+	<div class="tooltip-head"><code>VodPage.weaponImage</code><span>e2e/pages/vods/vod-page.ts:31</span></div>
+	<div class="tooltip-doc"><p>A cast shows the same weapon many times, so its images are numbered.</p></div>
+	<pre class="code"><span class="f">weaponImage</span>(weaponSplId: <span class="t">MainWeaponId</span>, nth?: <span class="t">number</span>) {
+	<span class="k">return</span> <span class="l">this</span>.page.<span class="f">getByTestId</span>(
+		nth === <span class="l">undefined</span>
+			? <span class="s">`weapon-img-${weaponSplId}`</span>
+			: <span class="s">`weapon-img-${weaponSplId}-${nth}`</span>,
+	);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vod-page.ts:39:VodPage.openCopyTimestamps" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vod-page.ts#L39">
+	<div class="tooltip-head"><code>VodPage.openCopyTimestamps</code><span>e2e/pages/vods/vod-page.ts:39</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">openCopyTimestamps</span>() {
+	<span class="k">await</span> <span class="l">this</span>.locators.copyTimestampsButton.<span class="f">click</span>();
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vod-page.ts:17:VodPage.locators.timestamps" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vod-page.ts#L17">
+	<div class="tooltip-head"><code>VodPage.locators.timestamps</code><span>e2e/pages/vods/vod-page.ts:17</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;dialog&quot;</span>).<span class="f">getByRole</span>(<span class="s">&quot;textbox&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:15:NewVodPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L15">
+	<div class="tooltip-head"><code>NewVodPage</code><span>e2e/pages/vods/new-vod-page.ts:15</span></div>
+	<div class="tooltip-doc"><p><code>/vods/new</code>, also reached with <code>?vod=</code> to edit an existing one.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:58:VodMatchFields" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L58">
+	<div class="tooltip-head"><code>VodMatchFields</code><span>e2e/pages/vods/new-vod-page.ts:58</span></div>
+	<div class="tooltip-doc"><p>One &quot;Game N&quot; fieldset of the form.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/vods/vod-page.ts:8:VodPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vod-page.ts#L8">
+	<div class="tooltip-head"><code>VodPage</code><span>e2e/pages/vods/vod-page.ts:8</span></div>
+	<div class="tooltip-doc"><p><code>/vods/:id</code></p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:105:VodMatchFields.selectTeamWeapon" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L105">
+	<div class="tooltip-head"><code>VodMatchFields.selectTeamWeapon</code><span>e2e/pages/vods/new-vod-page.ts:105</span></div>
+	<div class="tooltip-doc"><p>The per-team weapon selects a cast has in place of a single point of view weapon.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">selectTeamWeapon</span>(team: <span class="n">1</span> | <span class="n">2</span>, weaponIndex: <span class="t">number</span>, weaponName: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="f">selectWeapon</span>({
+		page: <span class="l">this</span>.page,
+		name: weaponName,
+		testId: <span class="s">`match-${this.index}-team${team}-weapon-${weaponIndex}`</span>,
+	});
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vod-page.ts:26:VodPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vod-page.ts#L26">
+	<div class="tooltip-head"><code>VodPage.goto</code><span>e2e/pages/vods/vod-page.ts:26</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(vodId: <span class="t">number</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="f">vodVideoPage</span>(vodId) });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vod-page.ts:43:VodPage.openEdit" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vod-page.ts#L43">
+	<div class="tooltip-head"><code>VodPage.openEdit</code><span>e2e/pages/vods/vod-page.ts:43</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">openEdit</span>() {
+	<span class="k">await</span> <span class="l">this</span>.locators.editButton.<span class="f">click</span>();
+	<span class="k">return</span> <span class="k">new</span> <span class="t">NewVodPage</span>(<span class="l">this</span>.page);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vod-page.ts:49:VodPage.delete" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vod-page.ts#L49">
+	<div class="tooltip-head"><code>VodPage.delete</code><span>e2e/pages/vods/vod-page.ts:49</span></div>
+	<div class="tooltip-doc"><p>Lands on the deleter's own vods page.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">delete</span>() {
+	<span class="k">await</span> <span class="l">this</span>.locators.deleteButton.<span class="f">click</span>();
+	<span class="k">await</span> <span class="f">modalClickConfirmButton</span>(<span class="l">this</span>.page);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vods-page.ts:18:VodsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vods-page.ts#L18">
+	<div class="tooltip-head"><code>VodsPage.goto</code><span>e2e/pages/vods/vods-page.ts:18</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="t">VODS_PAGE</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vods-page.ts:13:VodsPage.locators.noVodsText" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vods-page.ts#L13">
+	<div class="tooltip-head"><code>VodsPage.locators.noVodsText</code><span>e2e/pages/vods/vods-page.ts:13</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="l">this</span>.page.<span class="f">getByText</span>(/<span class="t">No</span> videos found matching <span class="l">this</span> filter/)</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vods-page.ts:6:VodsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vods-page.ts#L6">
+	<div class="tooltip-head"><code>VodsPage</code><span>e2e/pages/vods/vods-page.ts:6</span></div>
+	<div class="tooltip-doc"><p><code>/vods</code></p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/vods/vods-page.ts:23:VodsPage.povLink" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vods-page.ts#L23">
+	<div class="tooltip-head"><code>VodsPage.povLink</code><span>e2e/pages/vods/vods-page.ts:23</span></div>
+	<div class="tooltip-doc"><p>The point of view user of a listing, doubling as a link to their profile.</p></div>
+	<pre class="code"><span class="f">povLink</span>(userName: <span class="t">string</span>) {
+	<span class="k">return</span> <span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;link&quot;</span>, { name: userName });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/vods-page.ts:27:VodsPage.filterByWeapon" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/vods-page.ts#L27">
+	<div class="tooltip-head"><code>VodsPage.filterByWeapon</code><span>e2e/pages/vods/vods-page.ts:27</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">filterByWeapon</span>(weaponName: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="l">this</span>.locators.addFilterButton.<span class="f">click</span>();
+	<span class="k">await</span> <span class="l">this</span>.page.<span class="f">getByTestId</span>(<span class="s">&quot;menu-item-vods-weapon-filter&quot;</span>).<span class="f">click</span>();
+	<span class="k">await</span> <span class="f">selectWeapon</span>({ page: <span class="l">this</span>.page, name: weaponName });
+}</pre>
+</template>
+<template data-ref-id="e2e/helpers/playwright.ts:700:isNotVisible" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/helpers/playwright.ts#L700">
+	<div class="tooltip-head"><code>isNotVisible</code><span>e2e/helpers/playwright.ts:700</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">isNotVisible</span>(locator: <span class="t">Locator</span>) {
+	<span class="k">return</span> <span class="f">expect</span>(locator).<span class="f">toHaveCount</span>(<span class="n">0</span>);
+}</pre>
+</template>
+<div class="tooltip" role="tooltip" hidden></div>
+<dialog class="search-dialog" aria-label="Search">
+	<input type="search" placeholder="Search features, modules, exports, tests, routes…" autocomplete="off" spellcheck="false">
+	<ul class="search-results" role="listbox"></ul>
+	<p class="search-hint muted"><kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to open, <kbd>Esc</kbd> to close</p>
+</dialog>
+<dialog class="lightbox" aria-label="Screenshot"><img alt=""><p class="lightbox-caption"></p></dialog>
+<script>
+const main = document.querySelector("main");
+
+function show() {
+	const hash = decodeURIComponent(location.hash.slice(1));
+	const views = [...document.querySelectorAll("[data-view]")];
+	if (views.length === 0) return;
+
+	const requested = hash.split("/")[0];
+	const view = views.some((el) => el.dataset.view === requested) ? requested : main.dataset.defaultView;
+
+	for (const el of views) el.hidden = el.dataset.view !== view;
+	for (const tab of document.querySelectorAll("[data-view-tab]")) {
+		tab.setAttribute("aria-current", String(tab.dataset.viewTab === view));
+	}
+
+	const target = hash.includes("/") ? document.getElementById(hash) : null;
+	if (target) target.scrollIntoView({ block: "start" });
+	else if (hash) window.scrollTo({ top: 0 });
+}
+
+window.addEventListener("hashchange", show);
+show();
+
+let spyFrame = 0;
+function updateScrollSpy() {
+	spyFrame = 0;
+	const view = [...document.querySelectorAll("[data-view]")].find((el) => !el.hidden);
+	if (!view) return;
+	const sidebar = view.querySelector(".sidebar");
+	const links = [...view.querySelectorAll('.toc a[href^="#"]')];
+
+	const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+	const threshold = isAtBottom ? window.innerHeight : Math.max(120, window.innerHeight * 0.3);
+	let current = null;
+	for (const link of links) {
+		const target = document.getElementById(decodeURIComponent(link.getAttribute("href").slice(1)));
+		if (target && target.getBoundingClientRect().top <= threshold) current = link;
+	}
+
+	for (const link of links) {
+		link.toggleAttribute("aria-current", link === current);
+		if (link === current) link.setAttribute("aria-current", "location");
+		link.classList.remove("is-active-parent");
+	}
+	const parent = current?.closest("ul")?.closest("li")?.querySelector(":scope > a");
+	parent?.classList.add("is-active-parent");
+
+	if (current && sidebar && current !== followedLink) {
+		followedLink = current;
+		const linkTop = current.getBoundingClientRect().top - sidebar.getBoundingClientRect().top + sidebar.scrollTop;
+		const maxScroll = sidebar.scrollHeight - sidebar.clientHeight;
+		followSidebar(sidebar, Math.min(maxScroll, Math.max(0, linkTop - sidebar.clientHeight * 0.35)));
+	}
+}
+
+// the sidebar eases towards keeping the current entry a third of the way down, so many
+// entries passing quickly read as one glide instead of a jump per entry
+let followedLink = null;
+let followFrame = 0;
+let followTarget = 0;
+let followedSidebar = null;
+let userScrolledSidebarAt = 0;
+function followSidebar(sidebar, target) {
+	if (Date.now() - userScrolledSidebarAt < 1500) return;
+	followTarget = target;
+	followedSidebar = sidebar;
+	followFrame ||= requestAnimationFrame(stepSidebar);
+}
+function stepSidebar() {
+	followFrame = 0;
+	const distance = followTarget - followedSidebar.scrollTop;
+	if (Math.abs(distance) < 1) {
+		followedSidebar.scrollTop = followTarget;
+		return;
+	}
+	followedSidebar.scrollTop += distance * 0.18;
+	followFrame = requestAnimationFrame(stepSidebar);
+}
+for (const sidebar of document.querySelectorAll(".sidebar")) {
+	for (const type of ["wheel", "touchmove"]) {
+		sidebar.addEventListener(type, () => {
+			userScrolledSidebarAt = Date.now();
+			cancelAnimationFrame(followFrame);
+			followFrame = 0;
+		}, { passive: true });
+	}
+}
+window.addEventListener("scroll", () => {
+	spyFrame ||= requestAnimationFrame(updateScrollSpy);
+}, { passive: true });
+window.addEventListener("hashchange", () => requestAnimationFrame(updateScrollSpy));
+updateScrollSpy();
+
+document.querySelector(".feature-tab[aria-current]")?.scrollIntoView({ inline: "center", block: "nearest" });
+
+for (const toggle of document.querySelectorAll("[data-toggle-code]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("show-code", toggle.checked);
+	});
+}
+
+for (const toggle of document.querySelectorAll("[data-toggle-outline]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("outline-only", toggle.checked);
+	});
+}
+
+const tooltip = document.querySelector(".tooltip");
+const refTemplates = new Map([...document.querySelectorAll("template[data-ref-id]")].map((template) => [template.dataset.refId, template]));
+
+document.addEventListener("mouseover", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (!template) {
+		tooltip.hidden = true;
+		return;
+	}
+
+	tooltip.innerHTML = template.innerHTML;
+	tooltip.hidden = false;
+
+	const anchor = ref.getBoundingClientRect();
+	const box = tooltip.getBoundingClientRect();
+	const below = anchor.bottom + 8 + box.height < window.innerHeight;
+	tooltip.style.top = (below ? anchor.bottom + 8 : Math.max(8, anchor.top - 8 - box.height)) + "px";
+	tooltip.style.left = Math.min(Math.max(8, anchor.left), window.innerWidth - box.width - 8) + "px";
+});
+
+document.addEventListener("click", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (template) window.open(template.dataset.href, "_blank", "noopener");
+});
+
+const lightbox = document.querySelector(".lightbox");
+document.addEventListener("click", (event) => {
+	const shot = event.target.closest?.("[data-shot]");
+	if (!shot) return;
+	lightbox.querySelector("img").src = shot.dataset.shot;
+	lightbox.querySelector(".lightbox-caption").textContent = shot.dataset.caption;
+	lightbox.showModal();
+});
+lightbox.addEventListener("click", () => lightbox.close());
+
+const searchDialog = document.querySelector(".search-dialog");
+const searchInput = searchDialog.querySelector("input");
+const searchResults = searchDialog.querySelector(".search-results");
+let selectedResult = 0;
+
+function openSearch() {
+	if (!window.LIVING_DOCS_SEARCH && !document.querySelector("script[data-search-index]")) {
+		const script = document.createElement("script");
+		script.src = "search-index.js";
+		script.dataset.searchIndex = "";
+		script.onload = renderResults;
+		document.head.append(script);
+	}
+	searchDialog.showModal();
+	searchInput.select();
+	renderResults();
+}
+
+function searchMatches(query) {
+	const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+	if (tokens.length === 0) return [];
+
+	return (window.LIVING_DOCS_SEARCH ?? [])
+		.map((entry) => {
+			const label = entry[1].toLowerCase();
+			const haystack = label + " " + entry[2].toLowerCase() + " " + entry[0].toLowerCase();
+			if (!tokens.every((token) => haystack.includes(token))) return null;
+			const score = (label.startsWith(tokens[0]) ? 0 : label.includes(tokens[0]) ? 1 : 2) * 1000 + label.length;
+			return { entry, score };
+		})
+		.filter(Boolean)
+		.sort((a, b) => a.score - b.score)
+		.slice(0, 60)
+		.map(({ entry }) => entry);
+}
+
+function renderResults() {
+	const matches = searchMatches(searchInput.value);
+	selectedResult = 0;
+	searchResults.replaceChildren(
+		...matches.map(([kind, label, detail, href], index) => {
+			const item = document.createElement("li");
+			const link = document.createElement("a");
+			link.href = href;
+			link.setAttribute("aria-selected", String(index === 0));
+			for (const [className, text] of [["search-kind", kind], ["search-label", label], ["search-detail", detail]]) {
+				const span = document.createElement("span");
+				span.className = className;
+				span.textContent = text;
+				link.append(span);
+			}
+			link.addEventListener("click", () => searchDialog.close());
+			item.append(link);
+			return item;
+		}),
+	);
+	if (matches.length === 0 && searchInput.value.trim()) {
+		const empty = document.createElement("li");
+		empty.className = "search-empty";
+		empty.textContent = window.LIVING_DOCS_SEARCH ? "No matches" : "Loading…";
+		searchResults.append(empty);
+	}
+}
+
+function moveSelection(delta) {
+	const links = [...searchResults.querySelectorAll("a")];
+	if (links.length === 0) return;
+	selectedResult = (selectedResult + delta + links.length) % links.length;
+	for (const [index, link] of links.entries()) {
+		link.setAttribute("aria-selected", String(index === selectedResult));
+	}
+	links[selectedResult].scrollIntoView({ block: "nearest" });
+}
+
+searchInput.addEventListener("input", renderResults);
+searchInput.addEventListener("keydown", (event) => {
+	if (event.key === "ArrowDown") moveSelection(1);
+	else if (event.key === "ArrowUp") moveSelection(-1);
+	else if (event.key === "Enter") {
+		const link = searchResults.querySelectorAll("a")[selectedResult];
+		if (link) {
+			searchDialog.close();
+			location.href = link.href;
+		}
+	} else return;
+	event.preventDefault();
+});
+searchDialog.addEventListener("click", (event) => {
+	if (event.target === searchDialog) searchDialog.close();
+});
+document.querySelector("[data-open-search]").addEventListener("click", openSearch);
+document.addEventListener("keydown", (event) => {
+	const isTyping = event.target.closest?.("input, textarea");
+	if ((event.key === "k" && (event.metaKey || event.ctrlKey)) || (event.key === "/" && !isTyping)) {
+		event.preventDefault();
+		openSearch();
+	}
+});
+
+for (const graph of document.querySelectorAll(".graph")) {
+	for (const node of graph.querySelectorAll("[data-node]")) {
+		node.addEventListener("mouseenter", () => {
+			const id = node.dataset.node;
+			graph.classList.add("focusing");
+			node.classList.add("is-related");
+			for (const edge of graph.querySelectorAll(".edge")) {
+				if (edge.dataset.from !== id && edge.dataset.to !== id) continue;
+				edge.classList.add("is-related");
+				const other = edge.dataset.from === id ? edge.dataset.to : edge.dataset.from;
+				graph.querySelector('[data-node="' + CSS.escape(other) + '"]')?.classList.add("is-related");
+			}
+		});
+		node.addEventListener("mouseleave", () => {
+			graph.classList.remove("focusing");
+			for (const el of graph.querySelectorAll(".is-related")) el.classList.remove("is-related");
+		});
+	}
+}
+</script>
+</body>
+</html>

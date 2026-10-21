@@ -212,6 +212,9 @@ importers:
       magic-string:
         specifier: 1.4.3
         version: 1.4.3
+      oxc-parser:
+        specifier: 0.150.0
+        version: 0.150.0
       postcss:
         specifier: 8.5.30
         version: 8.5.30

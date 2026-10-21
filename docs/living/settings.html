@@ -1,0 +1,2009 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings · sendou.ink living docs</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--bg: #f6f6f8;
+	--surface: #ffffff;
+	--surface-2: #f2f2f6;
+	--border: #e3e3ea;
+	--text: #1b1b21;
+	--muted: #6c6c7a;
+	--accent: #6d4aff;
+	--accent-soft: #ede8ff;
+	--warn: #b45309;
+	--warn-soft: #fef3c7;
+	--arrange: #64748b;
+	--act: #3b82f6;
+	--assert: #16a34a;
+	--code-bg: #f7f7fa;
+	--hl-k: #a626a4; --hl-s: #3d8b3d; --hl-n: #986801; --hl-c: #a0a1a7; --hl-t: #b76e00; --hl-f: #3b6fd8; --hl-l: #0184bc;
+	--radius: 12px;
+	--font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0e0e12;
+		--surface: #16161c;
+		--surface-2: #1d1d25;
+		--border: #2a2a35;
+		--text: #e7e7ee;
+		--muted: #9898a8;
+		--accent: #a58fff;
+		--accent-soft: #272040;
+		--warn: #fbbf24;
+		--warn-soft: #3a2a0a;
+		--arrange: #94a3b8;
+		--act: #60a5fa;
+		--assert: #4ade80;
+		--code-bg: #121218;
+		--hl-k: #c678dd; --hl-s: #98c379; --hl-n: #d19a66; --hl-c: #6b717d; --hl-t: #e5c07b; --hl-f: #61afef; --hl-l: #56b6c2;
+	}
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--font); }
+a { color: inherit; }
+code { font-family: var(--mono); font-size: 0.88em; }
+p { margin: 0; }
+p + p { margin-top: 0.5em; }
+.muted { color: var(--muted); }
+
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 24px; padding: 10px 24px; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+.brand span { color: var(--accent); font-weight: 600; }
+.feature-tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: thin; mask-image: linear-gradient(to right, black calc(100% - 32px), transparent); padding-right: 32px; }
+.feature-tab { display: flex; align-items: center; gap: 7px; padding: 5px 11px 5px 7px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.feature-tab:hover { background: var(--surface-2); color: var(--text); }
+.feature-tab[aria-current="page"] { background: var(--accent-soft); color: var(--text); }
+.feature-icon { flex: none; object-fit: contain; }
+.search-button { display: flex; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.search-button:hover { border-color: var(--accent); color: var(--text); }
+
+.search-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 120px)); margin: 80px auto auto; padding: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 24px 64px rgb(0 0 0 / 0.3); overflow: hidden; }
+.search-dialog[open] { display: flex; flex-direction: column; }
+.search-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.search-dialog input { width: 100%; padding: 16px 18px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 16px; outline: none; }
+.search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; flex: 1; }
+.search-results a { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 2px 10px; padding: 7px 10px; border-radius: 8px; text-decoration: none; }
+.search-results a[aria-selected="true"] { background: var(--accent-soft); }
+.search-kind { grid-row: span 2; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 3px; }
+.search-label { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-detail { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-empty { padding: 18px; color: var(--muted); text-align: center; }
+.search-hint { margin: 0; padding: 8px 14px; border-top: 1px solid var(--border); font-size: 12px; }
+
+.lightbox { max-width: min(1280px, calc(100vw - 32px)); padding: 0; border: none; border-radius: 12px; background: var(--surface); box-shadow: 0 24px 64px rgb(0 0 0 / 0.4); cursor: zoom-out; }
+.lightbox::backdrop { background: rgb(0 0 0 / 0.6); }
+.lightbox img { display: block; max-width: 100%; max-height: calc(100vh - 120px); }
+.lightbox-caption { margin: 0; padding: 8px 14px; font-weight: 600; font-size: 13px; color: var(--text); }
+.letter-icon { display: inline-grid; place-items: center; width: var(--size); height: var(--size); border-radius: 28%; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: calc(var(--size) * 0.5); }
+
+.index-head { margin-bottom: 24px; }
+.index-head h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.02em; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.feature-card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 12px; align-items: center; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; }
+.feature-card:hover { border-color: var(--accent); }
+.feature-card .feature-icon { grid-row: span 2; }
+.feature-card-label { font-weight: 700; }
+.feature-card-stats { display: flex; flex-wrap: wrap; column-gap: 10px; color: var(--muted); font-size: 12px; }
+.feature-card-stats span { white-space: nowrap; }
+
+main { max-width: 1320px; margin: 0 auto; padding: 24px; }
+.feature-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.feature-head h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+.stats { color: var(--muted); font-size: 14px; }
+.view-switch { margin-left: auto; display: flex; padding: 3px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; }
+.view-switch a { padding: 6px 14px; border-radius: 7px; text-decoration: none; font-weight: 600; font-size: 14px; color: var(--muted); }
+.view-switch a[aria-current="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgb(0 0 0 / 0.08); }
+
+.view { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; align-items: start; }
+.view[hidden] { display: none; }
+.sidebar { position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow-y: auto; font-size: 13px; padding-right: 6px; }
+.sidebar h4 { margin: 18px 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.sidebar h4:first-child { margin-top: 0; }
+.toc, .toc ul, .legend { list-style: none; margin: 0; padding: 0; }
+.toc > li { margin-bottom: 10px; }
+.toc > li > a { font-weight: 600; }
+.toc ul { margin-top: 4px; border-left: 1px solid var(--border); }
+.toc ul a { display: flex; align-items: center; gap: 6px; padding: 2px 0 2px 10px; color: var(--muted); }
+.toc a { text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 600; }
+.toc ul a[aria-current="location"] { margin-left: -1px; border-left: 2px solid var(--accent); padding-left: 9px; }
+.toc a.is-active-parent { color: var(--accent); }
+.toc-group { font-weight: 600; }
+.toc > li.toc-depth-2 { margin-left: 10px; }
+.toc > li.toc-depth-3 { margin-left: 20px; }
+.toc > li:has(> .toc-group:only-child) { margin-bottom: 4px; }
+.kind-dot { width: 7px; height: 7px; border-radius: 2px; flex: none; background: var(--accent); }
+.kind-dot.kind-type, .kind-dot.kind-interface { background: var(--hl-t); }
+.kind-dot.is-visited { background: var(--assert); border-radius: 50%; }
+.kind-dot.is-unvisited { background: transparent; border: 1.5px solid var(--muted); border-radius: 50%; }
+.coverage { margin: 0; font-size: 14px; }
+.route-toc a { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--muted); }
+.routes { display: grid; gap: 10px; }
+.route { padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); scroll-margin-top: 80px; }
+.route-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.route-head .file-link { margin-left: auto; }
+.route-path { font-size: 15px; font-weight: 700; }
+.route-param { color: var(--accent); }
+.badge-loader { color: var(--act); }
+.badge-action { color: var(--warn); }
+.route-tests { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; columns: 2 300px; column-gap: 24px; }
+.route-tests li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.route-tests li::before { content: "▸"; position: absolute; left: 4px; color: var(--muted); }
+.route-tests a { text-decoration: none; }
+.route-tests a:hover { color: var(--accent); text-decoration: underline; }
+.warn-text { margin: 8px 0 0; font-size: 13px; color: var(--warn); }
+.legend li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-weight: 600; }
+.legend small { color: var(--muted); font-weight: 400; margin-left: auto; font-family: var(--mono); font-size: 10px; }
+.legend.phases small { font-family: var(--font); font-size: 11px; }
+.legend-note { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.toggle { display: flex; align-items: center; gap: 8px; margin-top: 14px; cursor: pointer; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); font-size: 12px; text-decoration: none; margin: 2px 4px 2px 0; white-space: nowrap; }
+.file-chip { font-family: var(--mono); font-size: 11.5px; }
+.file-chip:hover { border-color: var(--accent); color: var(--accent); }
+.badge { display: inline-block; padding: 1px 7px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+.warn { font-size: 11px; font-weight: 600; color: var(--warn); background: var(--warn-soft); padding: 1px 7px; border-radius: 6px; }
+.file-link { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; }
+.file-link:hover { color: var(--accent); text-decoration: underline; }
+
+.graph-card, .module, .test { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.graph-card { margin: 0 0 24px; padding: 16px 20px; }
+.graph-card figcaption { font-weight: 700; margin-bottom: 8px; }
+.graph-scroll { overflow-x: auto; }
+.graph { display: block; font-size: 13px; }
+.column-title { fill: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.node rect { fill: var(--surface-2); stroke: var(--border); }
+.node-self rect { fill: var(--accent-soft); stroke: var(--accent); }
+.node-label { fill: var(--text); font-weight: 600; }
+.node-sublabel { fill: var(--muted); font-size: 11px; }
+.node { cursor: default; transition: opacity 0.15s; }
+.edge { fill: none; stroke: var(--muted); stroke-opacity: 0.45; stroke-width: 1.4; transition: opacity 0.15s; }
+.arrowhead { fill: var(--muted); }
+.graph.focusing .node, .graph.focusing .edge { opacity: 0.18; }
+.graph.focusing .is-related { opacity: 1; }
+.graph.focusing .edge.is-related { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2; }
+
+.module { padding: 22px 24px; margin-bottom: 24px; scroll-margin-top: 80px; }
+.module-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.module-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+.module-head .file-link { margin-left: auto; }
+.overview { margin-top: 10px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+.missing { margin-top: 10px; color: var(--muted); font-style: italic; font-size: 14px; }
+.module-facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 14px 0 0; font-size: 13px; }
+.module-facts dt { color: var(--muted); font-weight: 600; padding-top: 2px; }
+.module-facts dd { margin: 0; }
+.section-title { margin: 26px 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.export { padding: 16px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
+.section-title + .export { border-top: none; }
+.export-head { display: flex; align-items: center; gap: 8px; }
+.export-head .file-link { margin-left: auto; }
+.export-name { font-size: 15px; font-weight: 700; }
+.kind { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 5px; color: var(--accent); background: var(--accent-soft); }
+.kind.kind-type, .kind.kind-interface { color: var(--hl-t); background: color-mix(in srgb, var(--hl-t) 14%, transparent); }
+.doc { margin-top: 6px; }
+.doc code, .overview code, .note code, .tooltip-doc code { background: var(--surface-2); padding: 0 4px; border-radius: 4px; }
+.doc-tags { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.doc-tags span { font-family: var(--mono); color: var(--muted); }
+.doc-tags p { display: inline; }
+
+pre.code, code { font-variant-ligatures: none; }
+pre.code { margin: 10px 0 0; padding: 12px 14px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; font: 12.5px/1.6 var(--mono); tab-size: 2; }
+.c { color: var(--hl-c); font-style: italic; } .k { color: var(--hl-k); } .s { color: var(--hl-s); } .n { color: var(--hl-n); } .t { color: var(--hl-t); } .f { color: var(--hl-f); } .l { color: var(--hl-l); }
+details.source { margin-top: 8px; }
+details.source summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+details.source summary:hover { color: var(--accent); }
+.unit-tests { margin-top: 10px; font-size: 13px; }
+.unit-tests-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+.unit-test-list { margin: 0; padding: 0; list-style: none; columns: 2 320px; column-gap: 24px; }
+.unit-test-list > li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.unit-test-list > li::before { content: "✓"; position: absolute; left: 2px; color: var(--assert); font-weight: 800; }
+.unit-test-heading { font-weight: 650; }
+.unit-test-group ul { margin: 1px 0 4px; padding: 0 0 0 12px; list-style: none; border-left: 2px solid var(--border); }
+.unit-test-group li { padding: 1px 0; }
+.unit-tests a { text-decoration: none; }
+.unit-tests a:hover { color: var(--accent); text-decoration: underline; }
+.usages { margin-top: 10px; font-size: 13px; display: grid; gap: 4px; }
+.usage-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.usage-kind { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.test-only { margin-top: 18px; font-size: 13px; }
+
+.spec-head { margin-bottom: 8px; }
+.group-title { font-size: 18px; margin: 28px 0 12px; letter-spacing: -0.01em; }
+.group-options { margin: -6px 0 12px; color: var(--muted); font-size: 13px; }
+.group-title.group-depth-2 { font-size: 16px; margin-top: 20px; }
+.group-title.group-depth-3 { font-size: 14px; }
+.group-title:is(.group-depth-2, .group-depth-3)::before { content: "› "; color: var(--muted); }
+.test-group:has(> .group-title.group-depth-1):not(:has(.test)) .group-title { margin-bottom: 0; }
+.group-doc, .test-doc { margin: -6px 0 12px; color: var(--muted); font-size: 14px; }
+.group-doc p, .test-doc p { margin: 0; }
+.chapters { display: grid; gap: 20px; }
+.chapter { display: grid; gap: 8px; }
+.chapter-title { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 650; }
+.chapter-text { flex: 1; }
+.chapter-number { display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 800; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+body.outline-only .chapter .segments { display: none; }
+body.outline-only .chapters { gap: 8px; }
+.test-group:first-child .group-title { margin-top: 0; }
+.test { padding: 18px 20px; margin-bottom: 20px; scroll-margin-top: 80px; }
+.test-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.test-head h3 { margin: 0; font-size: 16px; flex: 1; }
+.test-head h3::first-letter { text-transform: uppercase; }
+.test-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.user { display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--actor, var(--accent)); background: color-mix(in srgb, var(--actor, var(--accent)) 15%, transparent); }
+.avatar { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; font-weight: 800; color: white; background: var(--actor, var(--arrange)); }
+
+.segments { display: grid; gap: 10px; }
+.test-routes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -6px 0 12px; font-size: 12px; color: var(--muted); }
+.route-chip { font-family: var(--mono); font-size: 11.5px; padding: 1px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); text-decoration: none; color: var(--text); }
+.route-chip:hover { border-color: var(--accent); color: var(--accent); }
+.storyboard { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+.storyboard:not(:has(img)) { display: none; }
+.storyboard-frame { flex: none; display: grid; gap: 4px; width: 176px; padding: 0; border: none; background: none; color: var(--muted); font: inherit; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; text-align: left; cursor: zoom-in; }
+.storyboard-frame img, .divider-shot img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); }
+.storyboard-frame:hover img, .divider-shot:hover img { border-color: var(--accent); }
+.storyboard-frame span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.divider-shot { flex: none; order: 3; width: 48px; padding: 0; border: none; background: none; cursor: zoom-in; }
+.divider-shot img { border-radius: 4px; }
+.segment { display: grid; grid-template-columns: 92px minmax(0, 1fr); border-radius: 10px; border: 1px solid var(--border); overflow: clip; }
+.segment-actor { border-color: color-mix(in srgb, var(--actor) 45%, transparent); background: color-mix(in srgb, var(--actor) 5%, var(--surface)); }
+.lane { padding: 12px 6px; font-size: 12px; font-weight: 700; text-align: center; background: var(--surface-2); border-right: 1px solid var(--border); color: var(--muted); }
+.lane-sticky { position: sticky; top: 76px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.segment-actor .lane { background: color-mix(in srgb, var(--actor) 14%, var(--surface)); color: var(--actor); border-right-color: color-mix(in srgb, var(--actor) 35%, transparent); }
+.segment-body { padding: 8px 14px 10px; min-width: 0; }
+
+.divider { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; font-size: 12px; }
+.divider::after { content: ""; order: 2; flex: 1; border-bottom: 1px dashed var(--border); align-self: center; }
+.divider-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+.divider-label::before { content: "▸ "; }
+
+.run { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; padding: 4px 0; }
+.run + .run { border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.run-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 5px; }
+.phase-arrange { --phase: var(--arrange); }
+.phase-act { --phase: var(--act); }
+.phase-assert { --phase: var(--assert); }
+.run-label { color: var(--phase); }
+.steps { list-style: none; margin: 0; padding: 0; }
+.steps.nested { margin: 2px 0 2px 9px; padding-left: 14px; border-left: 2px solid var(--border); }
+.step { padding: 3px 0; }
+.step-line { display: flex; gap: 10px; align-items: baseline; }
+.phase-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--phase); }
+.phase-arrange .phase-icon::before { content: "+"; }
+.phase-act .phase-icon::before { content: "→"; }
+.phase-assert .phase-icon::before { content: "✓"; }
+.step-naming > .step-line .phase-icon::before { content: "="; color: var(--muted); }
+.step-naming > .step-line { color: var(--muted); }
+.legend .phase-icon { width: 24px; }
+.step-text strong { font-weight: 650; }
+.ref { text-decoration: underline dotted color-mix(in srgb, currentColor 45%, transparent); text-underline-offset: 3px; cursor: help; }
+.ref:hover { text-decoration-color: var(--accent); color: var(--accent); }
+.tooltip { position: fixed; z-index: 100; max-width: min(560px, calc(100vw - 24px)); padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 32px rgb(0 0 0 / 0.18); font-size: 13px; pointer-events: none; }
+.tooltip-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.tooltip-head code { font-weight: 700; }
+.tooltip-head span { color: var(--muted); font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.tooltip-doc { margin-top: 6px; }
+.tooltip pre.code { margin-top: 8px; font-size: 11.5px; max-height: 280px; overflow: hidden; }
+.note { margin: 4px 0 2px 26px; padding-left: 10px; border-left: 2px solid var(--border); color: var(--muted); font-size: 13px; font-style: italic; }
+.str { color: var(--hl-s); }
+.num { color: var(--hl-n); font-family: var(--mono); font-size: 0.9em; }
+.const { cursor: help; }
+.tuple::before { content: "("; color: var(--muted); }
+.tuple::after { content: ")"; color: var(--muted); }
+.kv + .kv::before { content: "· "; color: var(--muted); }
+.key { color: var(--muted); }
+.binds { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+code.inline { background: var(--surface-2); padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+kbd { font-family: var(--mono); font-size: 12px; padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); }
+.step-code { display: none; margin: 4px 0 4px 26px !important; padding: 6px 10px !important; font-size: 11.5px !important; }
+body.show-code .step-code { display: block; }
+
+@media (max-width: 900px) {
+	main { padding: 16px; }
+	.topbar { padding: 10px 16px; gap: 12px; }
+	.brand span { display: none; }
+	.search-button kbd { display: none; }
+	.view { grid-template-columns: minmax(0, 1fr); }
+	.sidebar { position: static; max-height: none; }
+	.segment { grid-template-columns: minmax(0, 1fr); }
+	.lane { border-right: none; border-bottom: 1px solid var(--border); padding: 6px 10px; }
+	.lane-sticky { position: static; flex-direction: row; }
+	.run { grid-template-columns: minmax(0, 1fr); gap: 0; }
+	.view-switch { margin-left: 0; }
+	.usage-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+	.chip { white-space: normal; overflow-wrap: anywhere; }
+	.test-head { flex-direction: column; gap: 6px; }
+	.test-meta { justify-content: flex-start; }
+	.divider { flex-wrap: wrap; gap: 2px 10px; }
+	.divider::after { display: none; }
+}
+
+[data-actor="ADMIN_ID"] { --actor: #8b5cf6; }
+[data-actor="NZAP_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="REGULAR_USER_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="ORG_ADMIN_TEST_ID"] { --actor: #0ea5e9; }
+[data-actor="STAFF_TEST_ID"] { --actor: #14b8a6; }
+[data-actor="DEV_TEST_ID"] { --actor: #64748b; }
+</style>
+</head>
+<body>
+<header class="topbar">
+	<a class="brand" href="index.html">sendou.ink <span>living docs</span></a>
+	<button type="button" class="search-button" data-open-search>Search <kbd>⌘K</kbd></button>
+	<nav class="feature-tabs">
+		<a class="feature-tab" href="admin.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Admin</a><a class="feature-tab" href="api.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api</a><a class="feature-tab" href="api-private.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api private</a><a class="feature-tab" href="art.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/art.avif" alt="" width="20" height="20" loading="lazy">Art</a><a class="feature-tab" href="articles.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/articles.avif" alt="" width="20" height="20" loading="lazy">Articles</a><a class="feature-tab" href="associations.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/associations.avif" alt="" width="20" height="20" loading="lazy">Associations</a><a class="feature-tab" href="auth.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Auth</a><a class="feature-tab" href="availability.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Availability</a><a class="feature-tab" href="badges.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/badges.avif" alt="" width="20" height="20" loading="lazy">Badges</a><a class="feature-tab" href="ban.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">B</span>Ban</a><a class="feature-tab" href="build-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/analyzer.avif" alt="" width="20" height="20" loading="lazy">Build analyzer</a><a class="feature-tab" href="build-stats.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Build stats</a><a class="feature-tab" href="builds.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Builds</a><a class="feature-tab" href="calendar.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/calendar.avif" alt="" width="20" height="20" loading="lazy">Calendar</a><a class="feature-tab" href="chat.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">C</span>Chat</a><a class="feature-tab" href="comp-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/comp-analyzer.avif" alt="" width="20" height="20" loading="lazy">Comp analyzer</a><a class="feature-tab" href="events.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">E</span>Events</a><a class="feature-tab" href="friends.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Friends</a><a class="feature-tab" href="front-page.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Front page</a><a class="feature-tab" href="global-status.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">G</span>Global status</a><a class="feature-tab" href="health.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">H</span>Health</a><a class="feature-tab" href="img-export.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Image export</a><a class="feature-tab" href="img-upload.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Img upload</a><a class="feature-tab" href="info.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Info</a><a class="feature-tab" href="lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/lfg.avif" alt="" width="20" height="20" loading="lazy">LFG</a><a class="feature-tab" href="layout.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Layout</a><a class="feature-tab" href="leaderboards.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/leaderboards.avif" alt="" width="20" height="20" loading="lazy">Leaderboards</a><a class="feature-tab" href="links.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/links.avif" alt="" width="20" height="20" loading="lazy">Links</a><a class="feature-tab" href="live-streams.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Live streams</a><a class="feature-tab" href="mmr.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">M</span>MMR</a><a class="feature-tab" href="map-list-generator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/maps.avif" alt="" width="20" height="20" loading="lazy">Map list generator</a><a class="feature-tab" href="map-planner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plans.avif" alt="" width="20" height="20" loading="lazy">Map planner</a><a class="feature-tab" href="notifications.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">N</span>Notifications</a><a class="feature-tab" href="object-damage-calculator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/object-damage-calculator.avif" alt="" width="20" height="20" loading="lazy">Object damage calculator</a><a class="feature-tab" href="params.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Params</a><a class="feature-tab" href="plus-suggestions.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus suggestions</a><a class="feature-tab" href="plus-voting.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus voting</a><a class="feature-tab" href="api-public.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Public API</a><a class="feature-tab" href="scanner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner</a><a class="feature-tab" href="scanner-ingest.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner ingest</a><a class="feature-tab" href="scrims.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scrims.avif" alt="" width="20" height="20" loading="lazy">Scrims</a><a class="feature-tab" href="search.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Search</a><a class="feature-tab" href="sendouq.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ</a><a class="feature-tab" href="sendouq-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ match</a><a class="feature-tab" href="sendouq-streams.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ streams</a><a class="feature-tab" href="settings.html" aria-current="page"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/settings.avif" alt="" width="20" height="20" loading="lazy">Settings</a><a class="feature-tab" href="sidebar.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Sidebar</a><a class="feature-tab" href="site-wide.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Site-wide</a><a class="feature-tab" href="team.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/t.avif" alt="" width="20" height="20" loading="lazy">Team</a><a class="feature-tab" href="theme.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Theme</a><a class="feature-tab" href="tier-list-maker.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/tier-list-maker.avif" alt="" width="20" height="20" loading="lazy">Tier list maker</a><a class="feature-tab" href="top-search.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/xsearch.avif" alt="" width="20" height="20" loading="lazy">Top search</a><a class="feature-tab" href="tournament.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament</a><a class="feature-tab" href="tournament-admin.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament admin</a><a class="feature-tab" href="tournament-bracket.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament bracket</a><a class="feature-tab" href="tournament-lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament lfg</a><a class="feature-tab" href="tournament-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament match</a><a class="feature-tab" href="tournament-organization.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament organization</a><a class="feature-tab" href="tournament-subs.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament subs</a><a class="feature-tab" href="translate.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Translate</a><a class="feature-tab" href="trophies.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/trophies.avif" alt="" width="20" height="20" loading="lazy">Trophies</a><a class="feature-tab" href="user-activity.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">U</span>User activity</a><a class="feature-tab" href="user-card.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User card</a><a class="feature-tab" href="user-page.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User page</a><a class="feature-tab" href="user-report.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User report</a><a class="feature-tab" href="vods.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/vods.avif" alt="" width="20" height="20" loading="lazy">Vods</a><a class="feature-tab" href="voice.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">V</span>Voice</a>
+	</nav>
+</header>
+<main data-default-view="e2e">
+	<div class="feature-head">
+		<img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/settings.avif" alt="" width="48" height="48" loading="lazy">
+		<div>
+			<h1>Settings</h1>
+			<p class="stats">0 modules · 0 exports · 9 e2e tests · 1 route</p>
+		</div>
+		<div class="view-switch">
+			
+			<a href="#e2e" data-view-tab="e2e">E2E tests</a>
+			<a href="#routes" data-view-tab="routes">Routes</a>
+		</div>
+	</div>
+	
+	<div class="view" data-view="e2e" hidden>
+		<aside class="sidebar">
+			<h4>Users</h4>
+			<ul class="legend"><li style="--actor: #8b5cf6"><span class="avatar">S</span>Sendou<small>ADMIN_ID</small></li></ul>
+			
+			<h4>Phases</h4>
+			<ul class="legend phases">
+				<li class="phase-arrange"><span class="phase-icon"></span>Arrange <small>data setup</small></li>
+				<li class="phase-act"><span class="phase-icon"></span>Act <small>what the user does</small></li>
+				<li class="phase-assert"><span class="phase-icon"></span>Assert <small>what is expected</small></li>
+			</ul>
+			<label class="toggle"><input type="checkbox" data-toggle-code> Show code of each step</label>
+			
+			<h4>Tests</h4>
+			<ul class="toc"><li class="toc-depth-1"><span class="toc-group">Settings</span><ul><li><a href="#e2e/settings-settings-updates-disablebuildabilitysorting">updates 'disableBuildAbilitySorting'</a></li><li><a href="#e2e/settings-settings-updates-clock-format-preference">updates clock format preference</a></li><li><a href="#e2e/settings-settings-switches-language-to-japanese-persists-it-across-pages-and-restores-english">switches language to Japanese, persists it across pages and restores English</a></li><li><a href="#e2e/settings-settings-shows-in-game-names-in-the-picked-game-language-and-the-rest-in-the-site-s-language">shows in-game names in the picked game language and the rest in the site's language</a></li><li><a href="#e2e/settings-settings-persists-sound-settings-and-dark-light-theme-across-reload">persists sound settings and dark/light theme across reload</a></li></ul></li><li class="toc-depth-1"><span class="toc-group">Match profile map preferences</span><ul><li><a href="#e2e/settings-match-profile-map-preferences-retains-map-selection-when-toggling-a-mode-prefer-avoid-prefer">retains map selection when toggling a mode prefer -&gt; avoid -&gt; prefer</a></li><li><a href="#e2e/settings-match-profile-map-preferences-can-save-zones-only-after-a-now-avoided-mode-previously-had-a-map-pool">can save 'zones only' after a now-avoided mode previously had a map pool</a></li></ul></li><li class="toc-depth-1"><span class="toc-group">Spoiler-free mode</span><ul><li><a href="#e2e/settings-spoiler-free-mode-censors-bracket-and-reveals-on-click">censors bracket and reveals on click</a></li><li><a href="#e2e/settings-spoiler-free-mode-results-page-is-censored-and-can-be-revealed">results page is censored and can be revealed</a></li></ul></li></ul>
+		</aside>
+		<div class="content">
+			<div class="spec">
+	<div class="spec-head"><a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L1" title="e2e/settings.spec.ts:1">e2e/settings.spec.ts</a></div>
+	<section class="test-group">
+		<h2 class="group-title group-depth-1">Settings</h2>
+		
+		
+		<article class="test" id="e2e/settings-settings-updates-disablebuildabilitysorting">
+	<header class="test-head">
+		<h3>updates 'disableBuildAbilitySorting'</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L24" title="e2e/settings.spec.ts:24">settings.spec.ts:24</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="builds.html#routes/app-features-builds-routes-builds-slug-tsx">/builds/:slug</a><a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/34.jpg" data-caption="Weapon builds page"><img src="screenshots/settings/34.jpg" alt="Weapon builds page" loading="lazy" onerror="this.parentElement.remove()"><span>Weapon builds page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/39.jpg" data-caption="Settings page"><img src="screenshots/settings/39.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/41.jpg" data-caption="Weapon builds page"><img src="screenshots/settings/41.jpg" alt="Weapon builds page" loading="lazy" onerror="this.parentElement.remove()"><span>Weapon builds page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create build <span class="kv"><span class="key">owner</span> <span class="user" data-actor="ADMIN_ID">Sendou</span></span> <span class="kv"><span class="key">weapon spl ids</span> <span class="const" title="LUNA_BLASTER_ID"><span class="num">200</span></span></span> <span class="kv"><span class="key">abilities</span> <code class="inline" title="UNSORTED_ABILITIES"><span class="t">UNSORTED_ABILITIES</span></code></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">BuildFactory</span>.<span class="f">create</span>({
+	ownerId: <span class="t">ADMIN_ID</span>,
+	weaponSplIds: [<span class="t">LUNA_BLASTER_ID</span>],
+	abilities: <span class="t">UNSORTED_ABILITIES</span>,
+});</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/builds/weapon-builds-page.ts:7:WeaponBuildsPage">Weapon builds page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/34.jpg" data-caption="Weapon builds page"><img src="screenshots/settings/34.jpg" alt="Weapon builds page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/builds/weapon-builds-page.ts:24:WeaponBuildsPage.goto">Open</span> the <strong>weapon builds page</strong> <span class="str">“luna-blaster”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> weaponBuilds.<span class="f">goto</span>(<span class="s">&quot;luna-blaster&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Inner HTML <span class="binds">→ oldContents</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> oldContents = <span class="k">await</span> weaponBuilds.<span class="f">buildCard</span>(<span class="n">0</span>).root.<span class="f">innerHTML</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/39.jpg" data-caption="Settings page"><img src="screenshots/settings/39.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:72:SettingsPage.disableBuildAbilitySorting">Disable build ability sorting</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">disableBuildAbilitySorting</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/builds/weapon-builds-page.ts:7:WeaponBuildsPage">Weapon builds page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/41.jpg" data-caption="Weapon builds page"><img src="screenshots/settings/41.jpg" alt="Weapon builds page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/builds/weapon-builds-page.ts:24:WeaponBuildsPage.goto">Open</span> the <strong>weapon builds page</strong> <span class="str">“luna-blaster”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> weaponBuilds.<span class="f">goto</span>(<span class="s">&quot;luna-blaster&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Inner HTML <span class="binds">→ newContents</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> newContents = <span class="k">await</span> weaponBuilds.<span class="f">buildCard</span>(<span class="n">0</span>).root.<span class="f">innerHTML</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="newContents">newContents</code></strong> is not <code class="inline" title="oldContents">oldContents</code></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(newContents).not.<span class="f">toBe</span>(oldContents);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;updates 'disableBuildAbilitySorting'&quot;</span>, <span class="k">async</span> ({ page, factories }) =&gt; {
+	<span class="k">await</span> factories.<span class="t">BuildFactory</span>.<span class="f">create</span>({
+		ownerId: <span class="t">ADMIN_ID</span>,
+		weaponSplIds: [<span class="t">LUNA_BLASTER_ID</span>],
+		abilities: <span class="t">UNSORTED_ABILITIES</span>,
+	});
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> weaponBuilds = <span class="k">new</span> <span class="t">WeaponBuildsPage</span>(page);
+	<span class="k">await</span> weaponBuilds.<span class="f">goto</span>(<span class="s">&quot;luna-blaster&quot;</span>);
+
+	<span class="k">const</span> oldContents = <span class="k">await</span> weaponBuilds.<span class="f">buildCard</span>(<span class="n">0</span>).root.<span class="f">innerHTML</span>();
+
+	<span class="k">const</span> settings = <span class="k">new</span> <span class="t">SettingsPage</span>(page);
+	<span class="k">await</span> settings.<span class="f">disableBuildAbilitySorting</span>();
+
+	<span class="k">await</span> weaponBuilds.<span class="f">goto</span>(<span class="s">&quot;luna-blaster&quot;</span>);
+
+	<span class="k">const</span> newContents = <span class="k">await</span> weaponBuilds.<span class="f">buildCard</span>(<span class="n">0</span>).root.<span class="f">innerHTML</span>();
+
+	<span class="f">expect</span>(newContents).not.<span class="f">toBe</span>(oldContents);
+})</pre></details>
+</article><article class="test" id="e2e/settings-settings-updates-clock-format-preference">
+	<header class="test-head">
+		<h3>updates clock format preference</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L48" title="e2e/settings.spec.ts:48">settings.spec.ts:48</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="calendar.html#routes/app-features-calendar-routes-calendar-tsx">/calendar</a><a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/55.jpg" data-caption="Calendar page"><img src="screenshots/settings/55.jpg" alt="Calendar page" loading="lazy" onerror="this.parentElement.remove()"><span>Calendar page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/63.jpg" data-caption="Settings page"><img src="screenshots/settings/63.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/65.jpg" data-caption="Calendar page"><img src="screenshots/settings/65.jpg" alt="Calendar page" loading="lazy" onerror="this.parentElement.remove()"><span>Calendar page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	<div class="note"><p>the clock header only renders above a day's events</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create calendar event <span class="kv"><span class="key">author</span> <span class="user" data-actor="ADMIN_ID">Sendou</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">CalendarEventFactory</span>.<span class="f">create</span>({ authorId: <span class="t">ADMIN_ID</span> });</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/calendar/calendar-page.ts:14:CalendarPage">Calendar page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/55.jpg" data-caption="Calendar page"><img src="screenshots/settings/55.jpg" alt="Calendar page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/calendar/calendar-page.ts:35:CalendarPage.goto">Open</span> the <strong>calendar page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> calendar.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">First <span class="binds">→ clockTime</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> clockTime = calendar.locators.clockHeaderTimes.<span class="f">first</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Text content <span class="binds">→ initialTime</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> initialTime = <span class="k">await</span> clockTime.<span class="f">textContent</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="initialTime">initialTime</code></strong> match <code class="inline" title="/AM|PM/">/<span class="t">AM</span>|<span class="t">PM</span>/</code></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(initialTime).<span class="f">toMatch</span>(/<span class="t">AM</span>|<span class="t">PM</span>/);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/63.jpg" data-caption="Settings page"><img src="screenshots/settings/63.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:84:SettingsPage.setClockFormat">Set clock format</span> <span class="str">“24h”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">setClockFormat</span>(<span class="s">&quot;24h&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/calendar/calendar-page.ts:14:CalendarPage">Calendar page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/65.jpg" data-caption="Calendar page"><img src="screenshots/settings/65.jpg" alt="Calendar page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/calendar/calendar-page.ts:35:CalendarPage.goto">Open</span> the <strong>calendar page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> calendar.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Text content <span class="binds">→ newTime</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> newTime = <span class="k">await</span> clockTime.<span class="f">textContent</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="newTime">newTime</code></strong> not match <code class="inline" title="/AM|PM/">/<span class="t">AM</span>|<span class="t">PM</span>/</code></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(newTime).not.<span class="f">toMatch</span>(/<span class="t">AM</span>|<span class="t">PM</span>/);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="newTime">newTime</code></strong> is not <code class="inline" title="initialTime">initialTime</code></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(newTime).not.<span class="f">toBe</span>(initialTime);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="newTime">newTime</code></strong> contains <span class="str">“:”</span></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(newTime).<span class="f">toContain</span>(<span class="s">&quot;:&quot;</span>);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;updates clock format preference&quot;</span>, <span class="k">async</span> ({ page, factories }) =&gt; {
+	<span class="c">// the clock header only renders above a day's events</span>
+	<span class="k">await</span> factories.<span class="t">CalendarEventFactory</span>.<span class="f">create</span>({ authorId: <span class="t">ADMIN_ID</span> });
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> calendar = <span class="k">new</span> <span class="t">CalendarPage</span>(page);
+	<span class="k">await</span> calendar.<span class="f">goto</span>();
+
+	<span class="k">const</span> clockTime = calendar.locators.clockHeaderTimes.<span class="f">first</span>();
+	<span class="k">const</span> initialTime = <span class="k">await</span> clockTime.<span class="f">textContent</span>();
+
+	<span class="f">expect</span>(initialTime).<span class="f">toMatch</span>(/<span class="t">AM</span>|<span class="t">PM</span>/);
+
+	<span class="k">const</span> settings = <span class="k">new</span> <span class="t">SettingsPage</span>(page);
+	<span class="k">await</span> settings.<span class="f">setClockFormat</span>(<span class="s">&quot;24h&quot;</span>);
+
+	<span class="k">await</span> calendar.<span class="f">goto</span>();
+
+	<span class="k">const</span> newTime = <span class="k">await</span> clockTime.<span class="f">textContent</span>();
+
+	<span class="f">expect</span>(newTime).not.<span class="f">toMatch</span>(/<span class="t">AM</span>|<span class="t">PM</span>/);
+	<span class="f">expect</span>(newTime).not.<span class="f">toBe</span>(initialTime);
+	<span class="f">expect</span>(newTime).<span class="f">toContain</span>(<span class="s">&quot;:&quot;</span>);
+})</pre></details>
+</article><article class="test" id="e2e/settings-settings-switches-language-to-japanese-persists-it-across-pages-and-restores-english">
+	<header class="test-head">
+		<h3>switches language to Japanese, persists it across pages and restores English</h3>
+		<div class="test-meta">
+			
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L74" title="e2e/settings.spec.ts:74">settings.spec.ts:74</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="info.html#routes/app-features-info-routes-faq-tsx">/faq</a><a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/80.jpg" data-caption="Settings page"><img src="screenshots/settings/80.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/88.jpg" data-caption="Faq page"><img src="screenshots/settings/88.jpg" alt="Faq page" loading="lazy" onerror="this.parentElement.remove()"><span>Faq page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/91.jpg" data-caption="Settings page"><img src="screenshots/settings/91.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/97.jpg" data-caption="Faq page"><img src="screenshots/settings/97.jpg" alt="Faq page" loading="lazy" onerror="this.parentElement.remove()"><span>Faq page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-actor" style="--actor: #94a3b8">
+	<div class="lane" title="Logged in as Logged out (logged-out)"><div class="lane-sticky"><span class="avatar">LO</span><span class="lane-name">Logged out</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/80.jpg" data-caption="Settings page"><img src="screenshots/settings/80.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto">Open</span> the <strong>settings page</strong> <span class="str">“locale”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;locale&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:42:SettingsPage.locators.pageHeading">page heading</span></strong> reads <span class="str">“Settings”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.pageHeading).<span class="f">toHaveText</span>(<span class="s">&quot;Settings&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:99:SettingsPage.selectLanguage">Select language</span> <span class="str">“日本語”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">selectLanguage</span>(<span class="s">&quot;日本語&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:42:SettingsPage.locators.pageHeading">page heading</span></strong> reads <span class="str">“設定”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.pageHeading).<span class="f">toHaveText</span>(<span class="s">&quot;設定&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/info/faq-page.ts:6:FaqPage">Faq page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/88.jpg" data-caption="Faq page"><img src="screenshots/settings/88.jpg" alt="Faq page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	<div class="note"><p>full page load without the lng param -&gt; the language comes from the cookie; the faq namespace is registered via the route handle</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/info/faq-page.ts:13:FaqPage.goto">Open</span> the <strong>faq page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> faq.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/info/faq-page.ts:17:FaqPage.question">question</span> <span class="str">“プラスサーバーとはなんですか?”</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(faq.<span class="f">question</span>(<span class="s">&quot;プラスサーバーとはなんですか?&quot;</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/91.jpg" data-caption="Settings page"><img src="screenshots/settings/91.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto">Open</span> the <strong>settings page</strong> <span class="str">“locale”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;locale&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:42:SettingsPage.locators.pageHeading">page heading</span></strong> reads <span class="str">“設定”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.pageHeading).<span class="f">toHaveText</span>(<span class="s">&quot;設定&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:99:SettingsPage.selectLanguage">Select language</span> <span class="str">“English”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">selectLanguage</span>(<span class="s">&quot;English&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:42:SettingsPage.locators.pageHeading">page heading</span></strong> reads <span class="str">“Settings”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.pageHeading).<span class="f">toHaveText</span>(<span class="s">&quot;Settings&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/info/faq-page.ts:6:FaqPage">Faq page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/97.jpg" data-caption="Faq page"><img src="screenshots/settings/97.jpg" alt="Faq page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/info/faq-page.ts:13:FaqPage.goto">Open</span> the <strong>faq page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> faq.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/info/faq-page.ts:17:FaqPage.question">question</span> <span class="str">“What is the Plus Server?”</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(faq.<span class="f">question</span>(<span class="s">&quot;What is the Plus Server?&quot;</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;switches language to Japanese, persists it across pages and restores English&quot;</span>, <span class="k">async</span> ({
+	page,
+}) =&gt; {
+	<span class="k">const</span> settings = <span class="k">new</span> <span class="t">SettingsPage</span>(page);
+	<span class="k">const</span> faq = <span class="k">new</span> <span class="t">FaqPage</span>(page);
+
+	<span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;locale&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.pageHeading).<span class="f">toHaveText</span>(<span class="s">&quot;Settings&quot;</span>);
+
+	<span class="k">await</span> settings.<span class="f">selectLanguage</span>(<span class="s">&quot;日本語&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.pageHeading).<span class="f">toHaveText</span>(<span class="s">&quot;設定&quot;</span>);
+
+	<span class="c">// full page load without the lng param -&gt; the language comes from the cookie;</span>
+	<span class="c">// the faq namespace is registered via the route handle</span>
+	<span class="k">await</span> faq.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">expect</span>(faq.<span class="f">question</span>(<span class="s">&quot;プラスサーバーとはなんですか?&quot;</span>)).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;locale&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.pageHeading).<span class="f">toHaveText</span>(<span class="s">&quot;設定&quot;</span>);
+
+	<span class="k">await</span> settings.<span class="f">selectLanguage</span>(<span class="s">&quot;English&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.pageHeading).<span class="f">toHaveText</span>(<span class="s">&quot;Settings&quot;</span>);
+
+	<span class="k">await</span> faq.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">expect</span>(faq.<span class="f">question</span>(<span class="s">&quot;What is the Plus Server?&quot;</span>)).<span class="f">toBeVisible</span>();
+})</pre></details>
+</article><article class="test" id="e2e/settings-settings-shows-in-game-names-in-the-picked-game-language-and-the-rest-in-the-site-s-language">
+	<header class="test-head">
+		<h3>shows in-game names in the picked game language and the rest in the site's language</h3>
+		<div class="test-meta">
+			
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L101" title="e2e/settings.spec.ts:101">settings.spec.ts:101</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="builds.html#routes/app-features-builds-routes-builds-slug-tsx">/builds/:slug</a><a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/113.jpg" data-caption="Settings page"><img src="screenshots/settings/113.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/116.jpg" data-caption="Weapon builds page"><img src="screenshots/settings/116.jpg" alt="Weapon builds page" loading="lazy" onerror="this.parentElement.remove()"><span>Weapon builds page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create build <span class="kv"><span class="key">owner</span> <span class="user" data-actor="ADMIN_ID">Sendou</span></span> <span class="kv"><span class="key">weapon spl ids</span> <span class="const" title="LUNA_BLASTER_ID"><span class="num">200</span></span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">BuildFactory</span>.<span class="f">create</span>({
+	ownerId: <span class="t">ADMIN_ID</span>,
+	weaponSplIds: [<span class="t">LUNA_BLASTER_ID</span>],
+});</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #94a3b8">
+	<div class="lane" title="Logged in as Logged out (logged-out)"><div class="lane-sticky"><span class="avatar">LO</span><span class="lane-name">Logged out</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/113.jpg" data-caption="Settings page"><img src="screenshots/settings/113.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto">Open</span> the <strong>settings page</strong> <span class="str">“locale”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;locale&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:104:SettingsPage.selectGameLanguage">Select game language</span> <span class="str">“日本語”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">selectGameLanguage</span>(<span class="s">&quot;日本語&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/builds/weapon-builds-page.ts:7:WeaponBuildsPage">Weapon builds page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/116.jpg" data-caption="Weapon builds page"><img src="screenshots/settings/116.jpg" alt="Weapon builds page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/builds/weapon-builds-page.ts:24:WeaponBuildsPage.goto">Open</span> the <strong>weapon builds page</strong> <span class="str">“luna-blaster”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> weaponBuilds.<span class="f">goto</span>(<span class="s">&quot;luna-blaster&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>weapon image <span class="str">“ノヴァブラスター”</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(
+	weaponBuilds.<span class="f">buildCard</span>(<span class="n">0</span>).<span class="f">weaponImage</span>(<span class="s">&quot;ノヴァブラスター&quot;</span>),
+).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/builds/weapon-builds-page.ts:15:WeaponBuildsPage.locators.abilityStatsLink">ability stats link</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(weaponBuilds.locators.abilityStatsLink).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;shows in-game names in the picked game language and the rest in the site's language&quot;</span>, <span class="k">async</span> ({
+	page,
+	factories,
+}) =&gt; {
+	<span class="k">await</span> factories.<span class="t">BuildFactory</span>.<span class="f">create</span>({
+		ownerId: <span class="t">ADMIN_ID</span>,
+		weaponSplIds: [<span class="t">LUNA_BLASTER_ID</span>],
+	});
+
+	<span class="k">const</span> settings = <span class="k">new</span> <span class="t">SettingsPage</span>(page);
+	<span class="k">const</span> weaponBuilds = <span class="k">new</span> <span class="t">WeaponBuildsPage</span>(page);
+
+	<span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;locale&quot;</span>);
+	<span class="k">await</span> settings.<span class="f">selectGameLanguage</span>(<span class="s">&quot;日本語&quot;</span>);
+
+	<span class="k">await</span> weaponBuilds.<span class="f">goto</span>(<span class="s">&quot;luna-blaster&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(
+		weaponBuilds.<span class="f">buildCard</span>(<span class="n">0</span>).<span class="f">weaponImage</span>(<span class="s">&quot;ノヴァブラスター&quot;</span>),
+	).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">expect</span>(weaponBuilds.locators.abilityStatsLink).<span class="f">toBeVisible</span>();
+})</pre></details>
+</article><article class="test" id="e2e/settings-settings-persists-sound-settings-and-dark-light-theme-across-reload">
+	<header class="test-head">
+		<h3>persists sound settings and dark/light theme across reload</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L123" title="e2e/settings.spec.ts:123">settings.spec.ts:123</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/129.jpg" data-caption="Settings page"><img src="screenshots/settings/129.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/129.jpg" data-caption="Settings page"><img src="screenshots/settings/129.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto">Open</span> the <strong>settings page</strong> <span class="str">“sounds”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;sounds&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:116:SettingsPage.soundCheckbox">Sound checkbox</span> <span class="str">“Group invitation received”</span> <span class="binds">→ likeSound</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> likeSound = settings.<span class="f">soundCheckbox</span>(<span class="s">&quot;Group invitation received&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="likeSound">likeSound</code></strong> is checked</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(likeSound).<span class="f">toBeChecked</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Click <strong><code class="inline" title="likeSound">likeSound</code></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> likeSound.<span class="f">click</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="likeSound">likeSound</code></strong> is not checked</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(likeSound).not.<span class="f">toBeChecked</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:120:SettingsPage.setSoundVolume">Set sound volume</span> <span class="str">“37”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">setSoundVolume</span>(<span class="s">&quot;37&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	<div class="note"><p>default resolves to light (auto + light color scheme) so dark is a real change</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto">Open</span> the <strong>settings page</strong> <span class="str">“theme”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;theme&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:110:SettingsPage.setTheme">Set theme</span> <span class="str">“Dark”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">setTheme</span>(<span class="s">&quot;Dark&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:46:SettingsPage.locators.htmlRoot">html root</span></strong> has class <code class="inline" title="/dark/">/dark/</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.htmlRoot).<span class="f">toHaveClass</span>(/dark/);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:146:SettingsPage.reload">Reload</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">reload</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:46:SettingsPage.locators.htmlRoot">html root</span></strong> has class <code class="inline" title="/dark/">/dark/</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.htmlRoot).<span class="f">toHaveClass</span>(/dark/);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto">Open</span> the <strong>settings page</strong> <span class="str">“sounds”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;sounds&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="likeSound">likeSound</code></strong> is not checked</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(likeSound).not.<span class="f">toBeChecked</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:47:SettingsPage.locators.volumeSlider">volume slider</span></strong> has value <span class="str">“37”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.volumeSlider).<span class="f">toHaveValue</span>(<span class="s">&quot;37&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto">Open</span> the <strong>settings page</strong> <span class="str">“theme”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;theme&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:110:SettingsPage.setTheme">Set theme</span> <span class="str">“Light”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">setTheme</span>(<span class="s">&quot;Light&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:46:SettingsPage.locators.htmlRoot">html root</span></strong> has class <code class="inline" title="/light/">/light/</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.htmlRoot).<span class="f">toHaveClass</span>(/light/);</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:46:SettingsPage.locators.htmlRoot">html root</span></strong> does not have class <code class="inline" title="/dark/">/dark/</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(settings.locators.htmlRoot).not.<span class="f">toHaveClass</span>(/dark/);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;persists sound settings and dark/light theme across reload&quot;</span>, <span class="k">async</span> ({
+	page,
+}) =&gt; {
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> settings = <span class="k">new</span> <span class="t">SettingsPage</span>(page);
+	<span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;sounds&quot;</span>);
+
+	<span class="k">const</span> likeSound = settings.<span class="f">soundCheckbox</span>(<span class="s">&quot;Group invitation received&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(likeSound).<span class="f">toBeChecked</span>();
+	<span class="k">await</span> likeSound.<span class="f">click</span>();
+	<span class="k">await</span> <span class="f">expect</span>(likeSound).not.<span class="f">toBeChecked</span>();
+	<span class="k">await</span> settings.<span class="f">setSoundVolume</span>(<span class="s">&quot;37&quot;</span>);
+
+	<span class="c">// default resolves to light (auto + light color scheme) so dark is a real change</span>
+	<span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;theme&quot;</span>);
+	<span class="k">await</span> settings.<span class="f">setTheme</span>(<span class="s">&quot;Dark&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.htmlRoot).<span class="f">toHaveClass</span>(/dark/);
+
+	<span class="k">await</span> settings.<span class="f">reload</span>();
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.htmlRoot).<span class="f">toHaveClass</span>(/dark/);
+
+	<span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;sounds&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(likeSound).not.<span class="f">toBeChecked</span>();
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.volumeSlider).<span class="f">toHaveValue</span>(<span class="s">&quot;37&quot;</span>);
+
+	<span class="k">await</span> settings.<span class="f">goto</span>(<span class="s">&quot;theme&quot;</span>);
+	<span class="k">await</span> settings.<span class="f">setTheme</span>(<span class="s">&quot;Light&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.htmlRoot).<span class="f">toHaveClass</span>(/light/);
+	<span class="k">await</span> <span class="f">expect</span>(settings.locators.htmlRoot).not.<span class="f">toHaveClass</span>(/dark/);
+})</pre></details>
+</article>
+	</section><section class="test-group">
+		<h2 class="group-title group-depth-1">Match profile map preferences</h2>
+		
+		
+		<article class="test" id="e2e/settings-match-profile-map-preferences-retains-map-selection-when-toggling-a-mode-prefer-avoid-prefer">
+	<header class="test-head">
+		<h3>retains map selection when toggling a mode prefer -&gt; avoid -&gt; prefer</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L157" title="e2e/settings.spec.ts:157">settings.spec.ts:157</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/163.jpg" data-caption="Match profile page"><img src="screenshots/settings/163.jpg" alt="Match profile page" loading="lazy" onerror="this.parentElement.remove()"><span>Match profile page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:8:MatchProfilePage">Match profile page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/163.jpg" data-caption="Match profile page"><img src="screenshots/settings/163.jpg" alt="Match profile page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:25:MatchProfilePage.goto">Open</span> the <strong>match profile page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“SZ”</span>, <span class="str">“Prefer”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;SZ&quot;</span>, <span class="s">&quot;Prefer&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Select mode tab <span class="str">“SZ”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">selectModeTab</span>(<span class="s">&quot;SZ&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Click <strong>map button <span class="str">“SZ”</span>, <span class="num">1</span></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>).<span class="f">click</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>map button <span class="str">“SZ”</span>, <span class="num">1</span></strong> has class <code class="inline" title="SELECTED_MAP_CLASS"><span class="t">SELECTED_MAP_CLASS</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>)).<span class="f">toHaveClass</span>(
+	<span class="t">SELECTED_MAP_CLASS</span>,
+);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	<div class="note"><p>avoiding hides the picker, but the selection should be remembered</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“SZ”</span>, <span class="str">“Avoid”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;SZ&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>map button <span class="str">“SZ”</span>, <span class="num">1</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>));</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“SZ”</span>, <span class="str">“Prefer”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;SZ&quot;</span>, <span class="s">&quot;Prefer&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Select mode tab <span class="str">“SZ”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">selectModeTab</span>(<span class="s">&quot;SZ&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>map button <span class="str">“SZ”</span>, <span class="num">1</span></strong> has class <code class="inline" title="SELECTED_MAP_CLASS"><span class="t">SELECTED_MAP_CLASS</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>)).<span class="f">toHaveClass</span>(
+	<span class="t">SELECTED_MAP_CLASS</span>,
+);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;retains map selection when toggling a mode prefer -&gt; avoid -&gt; prefer&quot;</span>, <span class="k">async</span> ({
+	page,
+}) =&gt; {
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> matchProfile = <span class="k">new</span> <span class="t">MatchProfilePage</span>(page);
+	<span class="k">await</span> matchProfile.<span class="f">goto</span>();
+
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;SZ&quot;</span>, <span class="s">&quot;Prefer&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">selectModeTab</span>(<span class="s">&quot;SZ&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>).<span class="f">click</span>();
+	<span class="k">await</span> <span class="f">expect</span>(matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>)).<span class="f">toHaveClass</span>(
+		<span class="t">SELECTED_MAP_CLASS</span>,
+	);
+
+	<span class="c">// avoiding hides the picker, but the selection should be remembered</span>
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;SZ&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);
+	<span class="k">await</span> <span class="f">isNotVisible</span>(matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>));
+
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;SZ&quot;</span>, <span class="s">&quot;Prefer&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">selectModeTab</span>(<span class="s">&quot;SZ&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>)).<span class="f">toHaveClass</span>(
+		<span class="t">SELECTED_MAP_CLASS</span>,
+	);
+})</pre></details>
+</article><article class="test" id="e2e/settings-match-profile-map-preferences-can-save-zones-only-after-a-now-avoided-mode-previously-had-a-map-pool">
+	<header class="test-head">
+		<h3>can save 'zones only' after a now-avoided mode previously had a map pool</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L183" title="e2e/settings.spec.ts:183">settings.spec.ts:183</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/189.jpg" data-caption="Match profile page"><img src="screenshots/settings/189.jpg" alt="Match profile page" loading="lazy" onerror="this.parentElement.remove()"><span>Match profile page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:8:MatchProfilePage">Match profile page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/189.jpg" data-caption="Match profile page"><img src="screenshots/settings/189.jpg" alt="Match profile page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:25:MatchProfilePage.goto">Open</span> the <strong>match profile page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	<div class="note"><p>stage 2 is not banned in TC</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“SZ”</span>, <span class="str">“Prefer”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;SZ&quot;</span>, <span class="s">&quot;Prefer&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Select mode tab <span class="str">“SZ”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">selectModeTab</span>(<span class="s">&quot;SZ&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Click <strong>map button <span class="str">“SZ”</span>, <span class="num">1</span></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>).<span class="f">click</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“TC”</span>, <span class="str">“Prefer”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;TC&quot;</span>, <span class="s">&quot;Prefer&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Select mode tab <span class="str">“TC”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">selectModeTab</span>(<span class="s">&quot;TC&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Click <strong>map button <span class="str">“TC”</span>, <span class="num">2</span></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;TC&quot;</span>, <span class="n">2</span>).<span class="f">click</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:29:MatchProfilePage.save">Save</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.<span class="f">save</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“TW”</span>, <span class="str">“Avoid”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;TW&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“TC”</span>, <span class="str">“Avoid”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;TC&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“RM”</span>, <span class="str">“Avoid”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;RM&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Set mode preference <span class="str">“CB”</span>, <span class="str">“Avoid”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;CB&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:29:MatchProfilePage.save">Save</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.<span class="f">save</span>();</pre>
+	
+</li><li class="step phase-act">
+	<div class="note"><p>the previously saved TC pool must not resurface as an invalid &quot;pool for an avoided mode&quot;</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:25:MatchProfilePage.goto">Open</span> the <strong>match profile page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:29:MatchProfilePage.save">Save</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> matchProfile.<span class="f">save</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/settings/match-profile-page.ts:19:MatchProfilePage.locators.avoidedModePoolError">avoided mode pool error</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(matchProfile.locators.avoidedModePoolError);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;can save 'zones only' after a now-avoided mode previously had a map pool&quot;</span>, <span class="k">async</span> ({
+	page,
+}) =&gt; {
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+
+	<span class="k">const</span> matchProfile = <span class="k">new</span> <span class="t">MatchProfilePage</span>(page);
+	<span class="k">await</span> matchProfile.<span class="f">goto</span>();
+
+	<span class="c">// stage 2 is not banned in TC</span>
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;SZ&quot;</span>, <span class="s">&quot;Prefer&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">selectModeTab</span>(<span class="s">&quot;SZ&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;SZ&quot;</span>, <span class="n">1</span>).<span class="f">click</span>();
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;TC&quot;</span>, <span class="s">&quot;Prefer&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">selectModeTab</span>(<span class="s">&quot;TC&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">mapButton</span>(<span class="s">&quot;TC&quot;</span>, <span class="n">2</span>).<span class="f">click</span>();
+	<span class="k">await</span> matchProfile.<span class="f">save</span>();
+
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;TW&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;TC&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;RM&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);
+	<span class="k">await</span> matchProfile.maps.<span class="f">setModePreference</span>(<span class="s">&quot;CB&quot;</span>, <span class="s">&quot;Avoid&quot;</span>);
+	<span class="k">await</span> matchProfile.<span class="f">save</span>();
+
+	<span class="c">// the previously saved TC pool must not resurface as an invalid &quot;pool for an avoided mode&quot;</span>
+	<span class="k">await</span> matchProfile.<span class="f">goto</span>();
+
+	<span class="k">await</span> matchProfile.<span class="f">save</span>();
+	<span class="k">await</span> <span class="f">isNotVisible</span>(matchProfile.locators.avoidedModePoolError);
+})</pre></details>
+</article>
+	</section><section class="test-group">
+		<h2 class="group-title group-depth-1">Spoiler-free mode</h2>
+		
+		
+		<article class="test" id="e2e/settings-spoiler-free-mode-censors-bracket-and-reveals-on-click">
+	<header class="test-head">
+		<h3>censors bracket and reveals on click</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L215" title="e2e/settings.spec.ts:215">settings.spec.ts:215</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a><a class="route-chip" href="tournament.html#routes/app-features-tournament-routes-to-id-tsx">/to/:id</a><a class="route-chip" href="tournament-bracket.html#routes/app-features-tournament-bracket-routes-to-id-brackets-tsx">/to/:id/brackets</a><a class="route-chip" href="tournament.html#routes/app-features-tournament-routes-to-id-results-tsx">/to/:id/results</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/220.jpg" data-caption="Settings page"><img src="screenshots/settings/220.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/223.jpg" data-caption="Tournament brackets page"><img src="screenshots/settings/223.jpg" alt="Tournament brackets page" loading="lazy" onerror="this.parentElement.remove()"><span>Tournament brackets page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/236.jpg" data-caption="Tournament results page"><img src="screenshots/settings/236.jpg" alt="Tournament results page" loading="lazy" onerror="this.parentElement.remove()"><span>Tournament results page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/settings.spec.ts:264:createFinalizedTournament">Create finalized tournament</span> <span class="binds">→ tournament</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> tournament = <span class="k">await</span> <span class="f">createFinalizedTournament</span>(factories);</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/220.jpg" data-caption="Settings page"><img src="screenshots/settings/220.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:91:SettingsPage.enableSpoilerFreeMode">Enable spoiler free mode</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">enableSpoilerFreeMode</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/tournament/tournament-brackets-page.ts:14:TournamentBracketsPage">Tournament brackets page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/223.jpg" data-caption="Tournament brackets page"><img src="screenshots/settings/223.jpg" alt="Tournament brackets page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/tournament/tournament-brackets-page.ts:45:TournamentBracketsPage.goto">Open</span> the <strong>tournament brackets page</strong> <code class="inline" title="tournament.id">tournament.id</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> brackets.<span class="f">goto</span>(tournament.id);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/tournament/tournament-brackets-page.ts:24:TournamentBracketsPage.locators.showResultsButton">show results button</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(brackets.locators.showResultsButton).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>first <span class="ref" data-ref="e2e/pages/tournament/tournament-brackets-page.ts:26:TournamentBracketsPage.locators.censoredTeamNames">censored team names</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(brackets.locators.censoredTeamNames.<span class="f">first</span>()).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Click <strong><span class="ref" data-ref="e2e/pages/tournament/tournament-brackets-page.ts:24:TournamentBracketsPage.locators.showResultsButton">show results button</span></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> brackets.locators.showResultsButton.<span class="f">click</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/tournament/tournament-brackets-page.ts:25:TournamentBracketsPage.locators.hideResultsButton">hide results button</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(brackets.locators.hideResultsButton).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/tournament/tournament-brackets-page.ts:26:TournamentBracketsPage.locators.censoredTeamNames">censored team names</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(brackets.locators.censoredTeamNames);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:7:TournamentResultsPage">Tournament results page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/236.jpg" data-caption="Tournament results page"><img src="screenshots/settings/236.jpg" alt="Tournament results page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:22:TournamentResultsPage.goto">Open</span> the <strong>tournament results page</strong> <code class="inline" title="tournament.id">tournament.id</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> results.<span class="f">goto</span>(tournament.id);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>first <span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:15:TournamentResultsPage.locators.resultTeamNames">result team names</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(results.locators.resultTeamNames.<span class="f">first</span>()).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;censors bracket and reveals on click&quot;</span>, <span class="k">async</span> ({ page, factories }) =&gt; {
+	<span class="k">const</span> tournament = <span class="k">await</span> <span class="f">createFinalizedTournament</span>(factories);
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+	<span class="k">const</span> settings = <span class="k">new</span> <span class="t">SettingsPage</span>(page);
+	<span class="k">await</span> settings.<span class="f">enableSpoilerFreeMode</span>();
+
+	<span class="k">const</span> brackets = <span class="k">new</span> <span class="t">TournamentBracketsPage</span>(page);
+	<span class="k">await</span> brackets.<span class="f">goto</span>(tournament.id);
+
+	<span class="k">await</span> <span class="f">expect</span>(brackets.locators.showResultsButton).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> <span class="f">expect</span>(brackets.locators.censoredTeamNames.<span class="f">first</span>()).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> brackets.locators.showResultsButton.<span class="f">click</span>();
+
+	<span class="k">await</span> <span class="f">expect</span>(brackets.locators.hideResultsButton).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">isNotVisible</span>(brackets.locators.censoredTeamNames);
+
+	<span class="c">// the sessionStorage reveal carries over to the results page</span>
+	<span class="k">const</span> results = <span class="k">new</span> <span class="t">TournamentResultsPage</span>(page);
+	<span class="k">await</span> results.<span class="f">goto</span>(tournament.id);
+	<span class="k">await</span> <span class="f">expect</span>(results.locators.resultTeamNames.<span class="f">first</span>()).<span class="f">toBeVisible</span>();
+})</pre></details>
+</article><article class="test" id="e2e/settings-spoiler-free-mode-results-page-is-censored-and-can-be-revealed">
+	<header class="test-head">
+		<h3>results page is censored and can be revealed</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L240" title="e2e/settings.spec.ts:240">settings.spec.ts:240</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="settings.html#routes/app-features-settings-routes-settings-tsx">/settings</a><a class="route-chip" href="tournament.html#routes/app-features-tournament-routes-to-id-tsx">/to/:id</a><a class="route-chip" href="tournament.html#routes/app-features-tournament-routes-to-id-results-tsx">/to/:id/results</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/settings/248.jpg" data-caption="Settings page"><img src="screenshots/settings/248.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"><span>Settings page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/settings/251.jpg" data-caption="Tournament results page"><img src="screenshots/settings/251.jpg" alt="Tournament results page" loading="lazy" onerror="this.parentElement.remove()"><span>Tournament results page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/settings.spec.ts:264:createFinalizedTournament">Create finalized tournament</span> <span class="binds">→ tournament</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> tournament = <span class="k">await</span> <span class="f">createFinalizedTournament</span>(factories);</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:18:SettingsPage">Settings page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/248.jpg" data-caption="Settings page"><img src="screenshots/settings/248.jpg" alt="Settings page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/settings/settings-page.ts:91:SettingsPage.enableSpoilerFreeMode">Enable spoiler free mode</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> settings.<span class="f">enableSpoilerFreeMode</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:7:TournamentResultsPage">Tournament results page</span></span><button type="button" class="divider-shot" data-shot="screenshots/settings/251.jpg" data-caption="Tournament results page"><img src="screenshots/settings/251.jpg" alt="Tournament results page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:22:TournamentResultsPage.goto">Open</span> the <strong>tournament results page</strong> <code class="inline" title="tournament.id">tournament.id</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> results.<span class="f">goto</span>(tournament.id);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:14:TournamentResultsPage.locators.showResultsButton">show results button</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(results.locators.showResultsButton).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:15:TournamentResultsPage.locators.resultTeamNames">result team names</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(results.locators.resultTeamNames);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Click <strong><span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:14:TournamentResultsPage.locators.showResultsButton">show results button</span></strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> results.locators.showResultsButton.<span class="f">click</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>first <span class="ref" data-ref="e2e/pages/tournament/tournament-results-page.ts:15:TournamentResultsPage.locators.resultTeamNames">result team names</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(results.locators.resultTeamNames.<span class="f">first</span>()).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;results page is censored and can be revealed&quot;</span>, <span class="k">async</span> ({
+	page,
+	factories,
+}) =&gt; {
+	<span class="k">const</span> tournament = <span class="k">await</span> <span class="f">createFinalizedTournament</span>(factories);
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page);
+	<span class="k">const</span> settings = <span class="k">new</span> <span class="t">SettingsPage</span>(page);
+	<span class="k">await</span> settings.<span class="f">enableSpoilerFreeMode</span>();
+
+	<span class="k">const</span> results = <span class="k">new</span> <span class="t">TournamentResultsPage</span>(page);
+	<span class="k">await</span> results.<span class="f">goto</span>(tournament.id);
+
+	<span class="k">await</span> <span class="f">expect</span>(results.locators.showResultsButton).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">isNotVisible</span>(results.locators.resultTeamNames);
+
+	<span class="k">await</span> results.locators.showResultsButton.<span class="f">click</span>();
+	<span class="k">await</span> <span class="f">expect</span>(results.locators.resultTeamNames.<span class="f">first</span>()).<span class="f">toBeVisible</span>();
+})</pre></details>
+</article>
+	</section>
+</div>
+		</div>
+	</div>
+	<div class="view" data-view="routes" hidden>
+		<aside class="sidebar">
+			<h4>Coverage</h4>
+			<p class="coverage"><strong>1</strong> of 1 route rendered by an e2e test</p>
+			<p class="legend-note">From the last <code>pnpm run docs:living:capture</code>.</p>
+			<h4>Routes</h4>
+			<ul class="toc route-toc"><li><a href="#routes/app-features-settings-routes-settings-tsx"><span class="kind-dot is-visited"></span>/settings</a></li></ul>
+		</aside>
+		<div class="content">
+			<div class="routes"><article class="route" id="routes/app-features-settings-routes-settings-tsx">
+				<div class="route-head">
+					<code class="route-path">/settings</code>
+					<span class="badge">page</span>
+					<span class="badge badge-loader">loader</span>
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/settings/routes/settings.tsx#L1" title="app/features/settings/routes/settings.tsx:1">settings.tsx</a>
+				</div>
+				<ul class="route-tests"><li><a href="auth.html#e2e/auth-auth-logs-in-via-a-log-in-link-and-logs-out-from-the-settings-page">logs in via a log in link and logs out from the settings page</a></li><li><a href="sendouq.html#e2e/sendouq-sendouq-changing-match-preferences-cancels-pending-requests">Changing match preferences cancels pending requests</a></li><li><a href="settings.html#e2e/settings-settings-updates-disablebuildabilitysorting">updates 'disableBuildAbilitySorting'</a></li><li><a href="settings.html#e2e/settings-settings-updates-clock-format-preference">updates clock format preference</a></li><li><a href="settings.html#e2e/settings-settings-switches-language-to-japanese-persists-it-across-pages-and-restores-english">switches language to Japanese, persists it across pages and restores English</a></li><li><a href="settings.html#e2e/settings-settings-shows-in-game-names-in-the-picked-game-language-and-the-rest-in-the-site-s-language">shows in-game names in the picked game language and the rest in the site's language</a></li><li><a href="settings.html#e2e/settings-settings-persists-sound-settings-and-dark-light-theme-across-reload">persists sound settings and dark/light theme across reload</a></li><li><a href="settings.html#e2e/settings-match-profile-map-preferences-retains-map-selection-when-toggling-a-mode-prefer-avoid-prefer">retains map selection when toggling a mode prefer -&gt; avoid -&gt; prefer</a></li><li><a href="settings.html#e2e/settings-match-profile-map-preferences-can-save-zones-only-after-a-now-avoided-mode-previously-had-a-map-pool">can save 'zones only' after a now-avoided mode previously had a map pool</a></li><li><a href="settings.html#e2e/settings-spoiler-free-mode-censors-bracket-and-reveals-on-click">censors bracket and reveals on click</a></li><li><a href="settings.html#e2e/settings-spoiler-free-mode-results-page-is-censored-and-can-be-revealed">results page is censored and can be revealed</a></li><li><a href="site-wide.html#e2e/mobile-smoke-mobile-smoke-moves-through-common-pages-via-the-mobile-nav-and-saves-a-setting">moves through common pages via the mobile nav and saves a setting</a></li><li><a href="tournament-bracket.html#e2e/tournament-bracket-round-robin-tournament-bracket-round-robin-user-no-screen-setting-affects-tournament-match">user no screen setting affects tournament match</a></li><li><a href="user-page.html#e2e/user-page-user-page-customizes-theme-colors-and-resets-them">customizes theme colors and resets them</a></li></ul>
+			</article></div>
+		</div>
+	</div>
+</main>
+<template data-ref-id="e2e/pages/builds/weapon-builds-page.ts:24:WeaponBuildsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/builds/weapon-builds-page.ts#L24">
+	<div class="tooltip-head"><code>WeaponBuildsPage.goto</code><span>e2e/pages/builds/weapon-builds-page.ts:24</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(weaponSlug: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="f">weaponBuildPage</span>(weaponSlug) });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:72:SettingsPage.disableBuildAbilitySorting" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L72">
+	<div class="tooltip-head"><code>SettingsPage.disableBuildAbilitySorting</code><span>e2e/pages/settings/settings-page.ts:72</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">disableBuildAbilitySorting</span>() {
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">goto</span>(<span class="s">&quot;preferences&quot;</span>);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">checkDisableBuildAbilitySortingToggle</span>();
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/builds/weapon-builds-page.ts:7:WeaponBuildsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/builds/weapon-builds-page.ts#L7">
+	<div class="tooltip-head"><code>WeaponBuildsPage</code><span>e2e/pages/builds/weapon-builds-page.ts:7</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:18:SettingsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L18">
+	<div class="tooltip-head"><code>SettingsPage</code><span>e2e/pages/settings/settings-page.ts:18</span></div>
+	<div class="tooltip-doc"><p><code>/settings</code> preference toggles and the theme tab; the match profile tab has its own page object.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/calendar/calendar-page.ts:35:CalendarPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/calendar/calendar-page.ts#L35">
+	<div class="tooltip-head"><code>CalendarPage.goto</code><span>e2e/pages/calendar/calendar-page.ts:35</span></div>
+	<div class="tooltip-doc"><p>Given a date, opens the calendar at that week instead of the current one.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(dayMonthYear?: <span class="t">DayMonthYear</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="f">calendarPage</span>({ dayMonthYear }) });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:84:SettingsPage.setClockFormat" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L84">
+	<div class="tooltip-head"><code>SettingsPage.setClockFormat</code><span>e2e/pages/settings/settings-page.ts:84</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">setClockFormat</span>(format: <span class="s">&quot;12h&quot;</span> | <span class="s">&quot;24h&quot;</span>) {
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">goto</span>(<span class="s">&quot;locale&quot;</span>);
+	<span class="k">await</span> <span class="f">waitForPOSTResponse</span>(<span class="l">this</span>.page, () =&gt;
+		<span class="l">this</span>.clockFormatForm.<span class="f">select</span>(<span class="s">&quot;newValue&quot;</span>, format),
+	);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/calendar/calendar-page.ts:14:CalendarPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/calendar/calendar-page.ts#L14">
+	<div class="tooltip-head"><code>CalendarPage</code><span>e2e/pages/calendar/calendar-page.ts:14</span></div>
+	<div class="tooltip-doc"><p><code>/calendar</code></p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:52:SettingsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L52">
+	<div class="tooltip-head"><code>SettingsPage.goto</code><span>e2e/pages/settings/settings-page.ts:52</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(tab?: <span class="t">SettingsTab</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({
+		page: <span class="l">this</span>.page,
+		url: tab ? <span class="s">`${SETTINGS_PAGE}?tab=${tab}`</span> : <span class="t">SETTINGS_PAGE</span>,
+	});
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:42:SettingsPage.locators.pageHeading" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L42">
+	<div class="tooltip-head"><code>SettingsPage.locators.pageHeading</code><span>e2e/pages/settings/settings-page.ts:42</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByRole</span>(<span class="s">&quot;heading&quot;</span>, { name: /^(<span class="t">Settings</span>|設定)$/ })</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:99:SettingsPage.selectLanguage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L99">
+	<div class="tooltip-head"><code>SettingsPage.selectLanguage</code><span>e2e/pages/settings/settings-page.ts:99</span></div>
+	<div class="tooltip-doc"><p>Selects an interface language on the locale tab by its native name.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">selectLanguage</span>(name: <span class="s">&quot;English&quot;</span> | <span class="s">&quot;日本語&quot;</span>) {
+	<span class="k">await</span> <span class="l">this</span>.locators.languageSelect.<span class="f">selectOption</span>({ label: name });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/info/faq-page.ts:13:FaqPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/info/faq-page.ts#L13">
+	<div class="tooltip-head"><code>FaqPage.goto</code><span>e2e/pages/info/faq-page.ts:13</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="t">FAQ_PAGE</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/info/faq-page.ts:17:FaqPage.question" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/info/faq-page.ts#L17">
+	<div class="tooltip-head"><code>FaqPage.question</code><span>e2e/pages/info/faq-page.ts:17</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">question</span>(text: <span class="t">string</span>) {
+	<span class="k">return</span> <span class="l">this</span>.page.<span class="f">getByText</span>(text);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/info/faq-page.ts:6:FaqPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/info/faq-page.ts#L6">
+	<div class="tooltip-head"><code>FaqPage</code><span>e2e/pages/info/faq-page.ts:6</span></div>
+	<div class="tooltip-doc"><p><code>/faq</code></p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:104:SettingsPage.selectGameLanguage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L104">
+	<div class="tooltip-head"><code>SettingsPage.selectGameLanguage</code><span>e2e/pages/settings/settings-page.ts:104</span></div>
+	<div class="tooltip-doc"><p>Selects the language of in-game names on the locale tab by its native name.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">selectGameLanguage</span>(name: <span class="s">&quot;English&quot;</span> | <span class="s">&quot;日本語&quot;</span>) {
+	<span class="k">await</span> <span class="l">this</span>.locators.gameLanguageSelect.<span class="f">selectOption</span>({ label: name });
+	<span class="k">await</span> <span class="l">this</span>.page.<span class="f">waitForURL</span>(/gameLng=/);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/builds/weapon-builds-page.ts:28:WeaponBuildsPage.buildCard" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/builds/weapon-builds-page.ts#L28">
+	<div class="tooltip-head"><code>WeaponBuildsPage.buildCard</code><span>e2e/pages/builds/weapon-builds-page.ts:28</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">buildCard</span>(nth: <span class="t">number</span>) {
+	<span class="k">return</span> <span class="k">new</span> <span class="t">BuildCard</span>(<span class="l">this</span>.locators.buildCards.<span class="f">nth</span>(nth));
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/builds/weapon-builds-page.ts:15:WeaponBuildsPage.locators.abilityStatsLink" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/builds/weapon-builds-page.ts#L15">
+	<div class="tooltip-head"><code>WeaponBuildsPage.locators.abilityStatsLink</code><span>e2e/pages/builds/weapon-builds-page.ts:15</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByRole</span>(<span class="s">&quot;link&quot;</span>, { name: /<span class="t">Ability</span> stats/ })</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:116:SettingsPage.soundCheckbox" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L116">
+	<div class="tooltip-head"><code>SettingsPage.soundCheckbox</code><span>e2e/pages/settings/settings-page.ts:116</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">soundCheckbox</span>(name: <span class="t">string</span>) {
+	<span class="k">return</span> <span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;checkbox&quot;</span>, { name });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:120:SettingsPage.setSoundVolume" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L120">
+	<div class="tooltip-head"><code>SettingsPage.setSoundVolume</code><span>e2e/pages/settings/settings-page.ts:120</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">setSoundVolume</span>(value: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="l">this</span>.locators.volumeSlider.<span class="f">fill</span>(value);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:110:SettingsPage.setTheme" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L110">
+	<div class="tooltip-head"><code>SettingsPage.setTheme</code><span>e2e/pages/settings/settings-page.ts:110</span></div>
+	<div class="tooltip-doc"><p>Selects dark/light/auto on the theme tab; persisted via a POST to /theme.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">setTheme</span>(theme: <span class="s">&quot;Auto&quot;</span> | <span class="s">&quot;Dark&quot;</span> | <span class="s">&quot;Light&quot;</span>) {
+	<span class="k">await</span> <span class="f">waitForPOSTResponse</span>(<span class="l">this</span>.page, <span class="k">async</span> () =&gt; {
+		<span class="k">await</span> <span class="l">this</span>.locators.themeSelect.<span class="f">selectOption</span>({ label: theme });
+	});
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:46:SettingsPage.locators.htmlRoot" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L46">
+	<div class="tooltip-head"><code>SettingsPage.locators.htmlRoot</code><span>e2e/pages/settings/settings-page.ts:46</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">locator</span>(<span class="s">&quot;html&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:146:SettingsPage.reload" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L146">
+	<div class="tooltip-head"><code>SettingsPage.reload</code><span>e2e/pages/settings/settings-page.ts:146</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">reload</span>() {
+	<span class="k">await</span> <span class="l">this</span>.page.<span class="f">reload</span>();
+	<span class="k">await</span> <span class="f">expectIsHydrated</span>(<span class="l">this</span>.page);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:47:SettingsPage.locators.volumeSlider" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L47">
+	<div class="tooltip-head"><code>SettingsPage.locators.volumeSlider</code><span>e2e/pages/settings/settings-page.ts:47</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByRole</span>(<span class="s">&quot;slider&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/match-profile-page.ts:25:MatchProfilePage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/match-profile-page.ts#L25">
+	<div class="tooltip-head"><code>MatchProfilePage.goto</code><span>e2e/pages/settings/match-profile-page.ts:25</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="t">MATCH_PROFILE_PAGE</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/helpers/playwright.ts:700:isNotVisible" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/helpers/playwright.ts#L700">
+	<div class="tooltip-head"><code>isNotVisible</code><span>e2e/helpers/playwright.ts:700</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">isNotVisible</span>(locator: <span class="t">Locator</span>) {
+	<span class="k">return</span> <span class="f">expect</span>(locator).<span class="f">toHaveCount</span>(<span class="n">0</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/match-profile-page.ts:8:MatchProfilePage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/match-profile-page.ts#L8">
+	<div class="tooltip-head"><code>MatchProfilePage</code><span>e2e/pages/settings/match-profile-page.ts:8</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	
+</template>
+<template data-ref-id="e2e/pages/settings/match-profile-page.ts:29:MatchProfilePage.save" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/match-profile-page.ts#L29">
+	<div class="tooltip-head"><code>MatchProfilePage.save</code><span>e2e/pages/settings/match-profile-page.ts:29</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">save</span>() {
+	<span class="k">await</span> <span class="f">submit</span>(<span class="l">this</span>.page);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/match-profile-page.ts:19:MatchProfilePage.locators.avoidedModePoolError" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/match-profile-page.ts#L19">
+	<div class="tooltip-head"><code>MatchProfilePage.locators.avoidedModePoolError</code><span>e2e/pages/settings/match-profile-page.ts:19</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByText</span>(
+	<span class="s">&quot;Can't have map pool for a mode that was avoided&quot;</span>,
+)</pre>
+</template>
+<template data-ref-id="e2e/settings.spec.ts:264:createFinalizedTournament" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/settings.spec.ts#L264">
+	<div class="tooltip-head"><code>createFinalizedTournament</code><span>e2e/settings.spec.ts:264</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="k">function</span> <span class="f">createFinalizedTournament</span>(factories: <span class="t">Factories</span>) {
+	<span class="k">const</span> users = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">createMany</span>(<span class="t">TEAM_COUNT</span> * <span class="t">TEAM_SIZE</span>);
+	<span class="k">const</span> teamRosters = <span class="t">Array</span>.<span class="k">from</span>({ length: <span class="t">TEAM_COUNT</span> }, (_, teamIndex) =&gt;
+		users
+			.<span class="f">slice</span>(teamIndex * <span class="t">TEAM_SIZE</span>, (teamIndex + <span class="n">1</span>) * <span class="t">TEAM_SIZE</span>)
+			.<span class="f">map</span>((user) =&gt; user.id),
+	);
+
+	<span class="k">return</span> factories.<span class="t">TournamentFactory</span>.<span class="f">createPlayed</span>(
+		{ authorId: <span class="t">ADMIN_ID</span> },
+		{ teamRosters, playedOut: <span class="s">&quot;all&quot;</span> },
+	);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/settings/settings-page.ts:91:SettingsPage.enableSpoilerFreeMode" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/settings/settings-page.ts#L91">
+	<div class="tooltip-head"><code>SettingsPage.enableSpoilerFreeMode</code><span>e2e/pages/settings/settings-page.ts:91</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">enableSpoilerFreeMode</span>() {
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">goto</span>(<span class="s">&quot;preferences&quot;</span>);
+	<span class="k">await</span> <span class="f">waitForPOSTResponse</span>(<span class="l">this</span>.page, () =&gt;
+		<span class="l">this</span>.spoilerFreeModeForm.<span class="f">check</span>(<span class="s">&quot;newValue&quot;</span>),
+	);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-brackets-page.ts:45:TournamentBracketsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-brackets-page.ts#L45">
+	<div class="tooltip-head"><code>TournamentBracketsPage.goto</code><span>e2e/pages/tournament/tournament-brackets-page.ts:45</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(tournamentId: <span class="t">number</span>, bracketIdx?: <span class="t">number</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({
+		page: <span class="l">this</span>.page,
+		url: <span class="f">tournamentBracketsPage</span>({ tournamentId, bracketIdx }),
+	});
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-brackets-page.ts:24:TournamentBracketsPage.locators.showResultsButton" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-brackets-page.ts#L24">
+	<div class="tooltip-head"><code>TournamentBracketsPage.locators.showResultsButton</code><span>e2e/pages/tournament/tournament-brackets-page.ts:24</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByRole</span>(<span class="s">&quot;button&quot;</span>, { name: <span class="s">&quot;Show results&quot;</span> })</pre>
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-brackets-page.ts:26:TournamentBracketsPage.locators.censoredTeamNames" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-brackets-page.ts#L26">
+	<div class="tooltip-head"><code>TournamentBracketsPage.locators.censoredTeamNames</code><span>e2e/pages/tournament/tournament-brackets-page.ts:26</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByText</span>(<span class="s">&quot;???&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-brackets-page.ts:25:TournamentBracketsPage.locators.hideResultsButton" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-brackets-page.ts#L25">
+	<div class="tooltip-head"><code>TournamentBracketsPage.locators.hideResultsButton</code><span>e2e/pages/tournament/tournament-brackets-page.ts:25</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByRole</span>(<span class="s">&quot;button&quot;</span>, { name: <span class="s">&quot;Hide results&quot;</span> })</pre>
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-results-page.ts:22:TournamentResultsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-results-page.ts#L22">
+	<div class="tooltip-head"><code>TournamentResultsPage.goto</code><span>e2e/pages/tournament/tournament-results-page.ts:22</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(tournamentId: <span class="t">number</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({
+		page: <span class="l">this</span>.page,
+		url: <span class="f">tournamentResultsPage</span>(tournamentId),
+	});
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-results-page.ts:15:TournamentResultsPage.locators.resultTeamNames" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-results-page.ts#L15">
+	<div class="tooltip-head"><code>TournamentResultsPage.locators.resultTeamNames</code><span>e2e/pages/tournament/tournament-results-page.ts:15</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByTestId</span>(<span class="s">&quot;result-team-name&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-brackets-page.ts:14:TournamentBracketsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-brackets-page.ts#L14">
+	<div class="tooltip-head"><code>TournamentBracketsPage</code><span>e2e/pages/tournament/tournament-brackets-page.ts:14</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-results-page.ts:7:TournamentResultsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-results-page.ts#L7">
+	<div class="tooltip-head"><code>TournamentResultsPage</code><span>e2e/pages/tournament/tournament-results-page.ts:7</span></div>
+	<div class="tooltip-doc"><p><code>/to/:id/results</code></p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/tournament/tournament-results-page.ts:14:TournamentResultsPage.locators.showResultsButton" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/tournament/tournament-results-page.ts#L14">
+	<div class="tooltip-head"><code>TournamentResultsPage.locators.showResultsButton</code><span>e2e/pages/tournament/tournament-results-page.ts:14</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByRole</span>(<span class="s">&quot;button&quot;</span>, { name: <span class="s">&quot;Show results&quot;</span> })</pre>
+</template>
+<div class="tooltip" role="tooltip" hidden></div>
+<dialog class="search-dialog" aria-label="Search">
+	<input type="search" placeholder="Search features, modules, exports, tests, routes…" autocomplete="off" spellcheck="false">
+	<ul class="search-results" role="listbox"></ul>
+	<p class="search-hint muted"><kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to open, <kbd>Esc</kbd> to close</p>
+</dialog>
+<dialog class="lightbox" aria-label="Screenshot"><img alt=""><p class="lightbox-caption"></p></dialog>
+<script>
+const main = document.querySelector("main");
+
+function show() {
+	const hash = decodeURIComponent(location.hash.slice(1));
+	const views = [...document.querySelectorAll("[data-view]")];
+	if (views.length === 0) return;
+
+	const requested = hash.split("/")[0];
+	const view = views.some((el) => el.dataset.view === requested) ? requested : main.dataset.defaultView;
+
+	for (const el of views) el.hidden = el.dataset.view !== view;
+	for (const tab of document.querySelectorAll("[data-view-tab]")) {
+		tab.setAttribute("aria-current", String(tab.dataset.viewTab === view));
+	}
+
+	const target = hash.includes("/") ? document.getElementById(hash) : null;
+	if (target) target.scrollIntoView({ block: "start" });
+	else if (hash) window.scrollTo({ top: 0 });
+}
+
+window.addEventListener("hashchange", show);
+show();
+
+let spyFrame = 0;
+function updateScrollSpy() {
+	spyFrame = 0;
+	const view = [...document.querySelectorAll("[data-view]")].find((el) => !el.hidden);
+	if (!view) return;
+	const sidebar = view.querySelector(".sidebar");
+	const links = [...view.querySelectorAll('.toc a[href^="#"]')];
+
+	const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+	const threshold = isAtBottom ? window.innerHeight : Math.max(120, window.innerHeight * 0.3);
+	let current = null;
+	for (const link of links) {
+		const target = document.getElementById(decodeURIComponent(link.getAttribute("href").slice(1)));
+		if (target && target.getBoundingClientRect().top <= threshold) current = link;
+	}
+
+	for (const link of links) {
+		link.toggleAttribute("aria-current", link === current);
+		if (link === current) link.setAttribute("aria-current", "location");
+		link.classList.remove("is-active-parent");
+	}
+	const parent = current?.closest("ul")?.closest("li")?.querySelector(":scope > a");
+	parent?.classList.add("is-active-parent");
+
+	if (current && sidebar && current !== followedLink) {
+		followedLink = current;
+		const linkTop = current.getBoundingClientRect().top - sidebar.getBoundingClientRect().top + sidebar.scrollTop;
+		const maxScroll = sidebar.scrollHeight - sidebar.clientHeight;
+		followSidebar(sidebar, Math.min(maxScroll, Math.max(0, linkTop - sidebar.clientHeight * 0.35)));
+	}
+}
+
+// the sidebar eases towards keeping the current entry a third of the way down, so many
+// entries passing quickly read as one glide instead of a jump per entry
+let followedLink = null;
+let followFrame = 0;
+let followTarget = 0;
+let followedSidebar = null;
+let userScrolledSidebarAt = 0;
+function followSidebar(sidebar, target) {
+	if (Date.now() - userScrolledSidebarAt < 1500) return;
+	followTarget = target;
+	followedSidebar = sidebar;
+	followFrame ||= requestAnimationFrame(stepSidebar);
+}
+function stepSidebar() {
+	followFrame = 0;
+	const distance = followTarget - followedSidebar.scrollTop;
+	if (Math.abs(distance) < 1) {
+		followedSidebar.scrollTop = followTarget;
+		return;
+	}
+	followedSidebar.scrollTop += distance * 0.18;
+	followFrame = requestAnimationFrame(stepSidebar);
+}
+for (const sidebar of document.querySelectorAll(".sidebar")) {
+	for (const type of ["wheel", "touchmove"]) {
+		sidebar.addEventListener(type, () => {
+			userScrolledSidebarAt = Date.now();
+			cancelAnimationFrame(followFrame);
+			followFrame = 0;
+		}, { passive: true });
+	}
+}
+window.addEventListener("scroll", () => {
+	spyFrame ||= requestAnimationFrame(updateScrollSpy);
+}, { passive: true });
+window.addEventListener("hashchange", () => requestAnimationFrame(updateScrollSpy));
+updateScrollSpy();
+
+document.querySelector(".feature-tab[aria-current]")?.scrollIntoView({ inline: "center", block: "nearest" });
+
+for (const toggle of document.querySelectorAll("[data-toggle-code]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("show-code", toggle.checked);
+	});
+}
+
+for (const toggle of document.querySelectorAll("[data-toggle-outline]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("outline-only", toggle.checked);
+	});
+}
+
+const tooltip = document.querySelector(".tooltip");
+const refTemplates = new Map([...document.querySelectorAll("template[data-ref-id]")].map((template) => [template.dataset.refId, template]));
+
+document.addEventListener("mouseover", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (!template) {
+		tooltip.hidden = true;
+		return;
+	}
+
+	tooltip.innerHTML = template.innerHTML;
+	tooltip.hidden = false;
+
+	const anchor = ref.getBoundingClientRect();
+	const box = tooltip.getBoundingClientRect();
+	const below = anchor.bottom + 8 + box.height < window.innerHeight;
+	tooltip.style.top = (below ? anchor.bottom + 8 : Math.max(8, anchor.top - 8 - box.height)) + "px";
+	tooltip.style.left = Math.min(Math.max(8, anchor.left), window.innerWidth - box.width - 8) + "px";
+});
+
+document.addEventListener("click", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (template) window.open(template.dataset.href, "_blank", "noopener");
+});
+
+const lightbox = document.querySelector(".lightbox");
+document.addEventListener("click", (event) => {
+	const shot = event.target.closest?.("[data-shot]");
+	if (!shot) return;
+	lightbox.querySelector("img").src = shot.dataset.shot;
+	lightbox.querySelector(".lightbox-caption").textContent = shot.dataset.caption;
+	lightbox.showModal();
+});
+lightbox.addEventListener("click", () => lightbox.close());
+
+const searchDialog = document.querySelector(".search-dialog");
+const searchInput = searchDialog.querySelector("input");
+const searchResults = searchDialog.querySelector(".search-results");
+let selectedResult = 0;
+
+function openSearch() {
+	if (!window.LIVING_DOCS_SEARCH && !document.querySelector("script[data-search-index]")) {
+		const script = document.createElement("script");
+		script.src = "search-index.js";
+		script.dataset.searchIndex = "";
+		script.onload = renderResults;
+		document.head.append(script);
+	}
+	searchDialog.showModal();
+	searchInput.select();
+	renderResults();
+}
+
+function searchMatches(query) {
+	const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+	if (tokens.length === 0) return [];
+
+	return (window.LIVING_DOCS_SEARCH ?? [])
+		.map((entry) => {
+			const label = entry[1].toLowerCase();
+			const haystack = label + " " + entry[2].toLowerCase() + " " + entry[0].toLowerCase();
+			if (!tokens.every((token) => haystack.includes(token))) return null;
+			const score = (label.startsWith(tokens[0]) ? 0 : label.includes(tokens[0]) ? 1 : 2) * 1000 + label.length;
+			return { entry, score };
+		})
+		.filter(Boolean)
+		.sort((a, b) => a.score - b.score)
+		.slice(0, 60)
+		.map(({ entry }) => entry);
+}
+
+function renderResults() {
+	const matches = searchMatches(searchInput.value);
+	selectedResult = 0;
+	searchResults.replaceChildren(
+		...matches.map(([kind, label, detail, href], index) => {
+			const item = document.createElement("li");
+			const link = document.createElement("a");
+			link.href = href;
+			link.setAttribute("aria-selected", String(index === 0));
+			for (const [className, text] of [["search-kind", kind], ["search-label", label], ["search-detail", detail]]) {
+				const span = document.createElement("span");
+				span.className = className;
+				span.textContent = text;
+				link.append(span);
+			}
+			link.addEventListener("click", () => searchDialog.close());
+			item.append(link);
+			return item;
+		}),
+	);
+	if (matches.length === 0 && searchInput.value.trim()) {
+		const empty = document.createElement("li");
+		empty.className = "search-empty";
+		empty.textContent = window.LIVING_DOCS_SEARCH ? "No matches" : "Loading…";
+		searchResults.append(empty);
+	}
+}
+
+function moveSelection(delta) {
+	const links = [...searchResults.querySelectorAll("a")];
+	if (links.length === 0) return;
+	selectedResult = (selectedResult + delta + links.length) % links.length;
+	for (const [index, link] of links.entries()) {
+		link.setAttribute("aria-selected", String(index === selectedResult));
+	}
+	links[selectedResult].scrollIntoView({ block: "nearest" });
+}
+
+searchInput.addEventListener("input", renderResults);
+searchInput.addEventListener("keydown", (event) => {
+	if (event.key === "ArrowDown") moveSelection(1);
+	else if (event.key === "ArrowUp") moveSelection(-1);
+	else if (event.key === "Enter") {
+		const link = searchResults.querySelectorAll("a")[selectedResult];
+		if (link) {
+			searchDialog.close();
+			location.href = link.href;
+		}
+	} else return;
+	event.preventDefault();
+});
+searchDialog.addEventListener("click", (event) => {
+	if (event.target === searchDialog) searchDialog.close();
+});
+document.querySelector("[data-open-search]").addEventListener("click", openSearch);
+document.addEventListener("keydown", (event) => {
+	const isTyping = event.target.closest?.("input, textarea");
+	if ((event.key === "k" && (event.metaKey || event.ctrlKey)) || (event.key === "/" && !isTyping)) {
+		event.preventDefault();
+		openSearch();
+	}
+});
+
+for (const graph of document.querySelectorAll(".graph")) {
+	for (const node of graph.querySelectorAll("[data-node]")) {
+		node.addEventListener("mouseenter", () => {
+			const id = node.dataset.node;
+			graph.classList.add("focusing");
+			node.classList.add("is-related");
+			for (const edge of graph.querySelectorAll(".edge")) {
+				if (edge.dataset.from !== id && edge.dataset.to !== id) continue;
+				edge.classList.add("is-related");
+				const other = edge.dataset.from === id ? edge.dataset.to : edge.dataset.from;
+				graph.querySelector('[data-node="' + CSS.escape(other) + '"]')?.classList.add("is-related");
+			}
+		});
+		node.addEventListener("mouseleave", () => {
+			graph.classList.remove("focusing");
+			for (const el of graph.querySelectorAll(".is-related")) el.classList.remove("is-related");
+		});
+	}
+}
+</script>
+</body>
+</html>

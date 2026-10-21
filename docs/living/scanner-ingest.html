@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scanner ingest · sendou.ink living docs</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--bg: #f6f6f8;
+	--surface: #ffffff;
+	--surface-2: #f2f2f6;
+	--border: #e3e3ea;
+	--text: #1b1b21;
+	--muted: #6c6c7a;
+	--accent: #6d4aff;
+	--accent-soft: #ede8ff;
+	--warn: #b45309;
+	--warn-soft: #fef3c7;
+	--arrange: #64748b;
+	--act: #3b82f6;
+	--assert: #16a34a;
+	--code-bg: #f7f7fa;
+	--hl-k: #a626a4; --hl-s: #3d8b3d; --hl-n: #986801; --hl-c: #a0a1a7; --hl-t: #b76e00; --hl-f: #3b6fd8; --hl-l: #0184bc;
+	--radius: 12px;
+	--font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0e0e12;
+		--surface: #16161c;
+		--surface-2: #1d1d25;
+		--border: #2a2a35;
+		--text: #e7e7ee;
+		--muted: #9898a8;
+		--accent: #a58fff;
+		--accent-soft: #272040;
+		--warn: #fbbf24;
+		--warn-soft: #3a2a0a;
+		--arrange: #94a3b8;
+		--act: #60a5fa;
+		--assert: #4ade80;
+		--code-bg: #121218;
+		--hl-k: #c678dd; --hl-s: #98c379; --hl-n: #d19a66; --hl-c: #6b717d; --hl-t: #e5c07b; --hl-f: #61afef; --hl-l: #56b6c2;
+	}
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--font); }
+a { color: inherit; }
+code { font-family: var(--mono); font-size: 0.88em; }
+p { margin: 0; }
+p + p { margin-top: 0.5em; }
+.muted { color: var(--muted); }
+
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 24px; padding: 10px 24px; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+.brand span { color: var(--accent); font-weight: 600; }
+.feature-tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: thin; mask-image: linear-gradient(to right, black calc(100% - 32px), transparent); padding-right: 32px; }
+.feature-tab { display: flex; align-items: center; gap: 7px; padding: 5px 11px 5px 7px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.feature-tab:hover { background: var(--surface-2); color: var(--text); }
+.feature-tab[aria-current="page"] { background: var(--accent-soft); color: var(--text); }
+.feature-icon { flex: none; object-fit: contain; }
+.search-button { display: flex; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.search-button:hover { border-color: var(--accent); color: var(--text); }
+
+.search-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 120px)); margin: 80px auto auto; padding: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 24px 64px rgb(0 0 0 / 0.3); overflow: hidden; }
+.search-dialog[open] { display: flex; flex-direction: column; }
+.search-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.search-dialog input { width: 100%; padding: 16px 18px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 16px; outline: none; }
+.search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; flex: 1; }
+.search-results a { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 2px 10px; padding: 7px 10px; border-radius: 8px; text-decoration: none; }
+.search-results a[aria-selected="true"] { background: var(--accent-soft); }
+.search-kind { grid-row: span 2; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 3px; }
+.search-label { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-detail { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-empty { padding: 18px; color: var(--muted); text-align: center; }
+.search-hint { margin: 0; padding: 8px 14px; border-top: 1px solid var(--border); font-size: 12px; }
+
+.lightbox { max-width: min(1280px, calc(100vw - 32px)); padding: 0; border: none; border-radius: 12px; background: var(--surface); box-shadow: 0 24px 64px rgb(0 0 0 / 0.4); cursor: zoom-out; }
+.lightbox::backdrop { background: rgb(0 0 0 / 0.6); }
+.lightbox img { display: block; max-width: 100%; max-height: calc(100vh - 120px); }
+.lightbox-caption { margin: 0; padding: 8px 14px; font-weight: 600; font-size: 13px; color: var(--text); }
+.letter-icon { display: inline-grid; place-items: center; width: var(--size); height: var(--size); border-radius: 28%; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: calc(var(--size) * 0.5); }
+
+.index-head { margin-bottom: 24px; }
+.index-head h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.02em; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.feature-card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 12px; align-items: center; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; }
+.feature-card:hover { border-color: var(--accent); }
+.feature-card .feature-icon { grid-row: span 2; }
+.feature-card-label { font-weight: 700; }
+.feature-card-stats { display: flex; flex-wrap: wrap; column-gap: 10px; color: var(--muted); font-size: 12px; }
+.feature-card-stats span { white-space: nowrap; }
+
+main { max-width: 1320px; margin: 0 auto; padding: 24px; }
+.feature-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.feature-head h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+.stats { color: var(--muted); font-size: 14px; }
+.view-switch { margin-left: auto; display: flex; padding: 3px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; }
+.view-switch a { padding: 6px 14px; border-radius: 7px; text-decoration: none; font-weight: 600; font-size: 14px; color: var(--muted); }
+.view-switch a[aria-current="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgb(0 0 0 / 0.08); }
+
+.view { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; align-items: start; }
+.view[hidden] { display: none; }
+.sidebar { position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow-y: auto; font-size: 13px; padding-right: 6px; }
+.sidebar h4 { margin: 18px 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.sidebar h4:first-child { margin-top: 0; }
+.toc, .toc ul, .legend { list-style: none; margin: 0; padding: 0; }
+.toc > li { margin-bottom: 10px; }
+.toc > li > a { font-weight: 600; }
+.toc ul { margin-top: 4px; border-left: 1px solid var(--border); }
+.toc ul a { display: flex; align-items: center; gap: 6px; padding: 2px 0 2px 10px; color: var(--muted); }
+.toc a { text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 600; }
+.toc ul a[aria-current="location"] { margin-left: -1px; border-left: 2px solid var(--accent); padding-left: 9px; }
+.toc a.is-active-parent { color: var(--accent); }
+.toc-group { font-weight: 600; }
+.toc > li.toc-depth-2 { margin-left: 10px; }
+.toc > li.toc-depth-3 { margin-left: 20px; }
+.toc > li:has(> .toc-group:only-child) { margin-bottom: 4px; }
+.kind-dot { width: 7px; height: 7px; border-radius: 2px; flex: none; background: var(--accent); }
+.kind-dot.kind-type, .kind-dot.kind-interface { background: var(--hl-t); }
+.kind-dot.is-visited { background: var(--assert); border-radius: 50%; }
+.kind-dot.is-unvisited { background: transparent; border: 1.5px solid var(--muted); border-radius: 50%; }
+.coverage { margin: 0; font-size: 14px; }
+.route-toc a { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--muted); }
+.routes { display: grid; gap: 10px; }
+.route { padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); scroll-margin-top: 80px; }
+.route-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.route-head .file-link { margin-left: auto; }
+.route-path { font-size: 15px; font-weight: 700; }
+.route-param { color: var(--accent); }
+.badge-loader { color: var(--act); }
+.badge-action { color: var(--warn); }
+.route-tests { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; columns: 2 300px; column-gap: 24px; }
+.route-tests li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.route-tests li::before { content: "▸"; position: absolute; left: 4px; color: var(--muted); }
+.route-tests a { text-decoration: none; }
+.route-tests a:hover { color: var(--accent); text-decoration: underline; }
+.warn-text { margin: 8px 0 0; font-size: 13px; color: var(--warn); }
+.legend li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-weight: 600; }
+.legend small { color: var(--muted); font-weight: 400; margin-left: auto; font-family: var(--mono); font-size: 10px; }
+.legend.phases small { font-family: var(--font); font-size: 11px; }
+.legend-note { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.toggle { display: flex; align-items: center; gap: 8px; margin-top: 14px; cursor: pointer; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); font-size: 12px; text-decoration: none; margin: 2px 4px 2px 0; white-space: nowrap; }
+.file-chip { font-family: var(--mono); font-size: 11.5px; }
+.file-chip:hover { border-color: var(--accent); color: var(--accent); }
+.badge { display: inline-block; padding: 1px 7px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+.warn { font-size: 11px; font-weight: 600; color: var(--warn); background: var(--warn-soft); padding: 1px 7px; border-radius: 6px; }
+.file-link { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; }
+.file-link:hover { color: var(--accent); text-decoration: underline; }
+
+.graph-card, .module, .test { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.graph-card { margin: 0 0 24px; padding: 16px 20px; }
+.graph-card figcaption { font-weight: 700; margin-bottom: 8px; }
+.graph-scroll { overflow-x: auto; }
+.graph { display: block; font-size: 13px; }
+.column-title { fill: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.node rect { fill: var(--surface-2); stroke: var(--border); }
+.node-self rect { fill: var(--accent-soft); stroke: var(--accent); }
+.node-label { fill: var(--text); font-weight: 600; }
+.node-sublabel { fill: var(--muted); font-size: 11px; }
+.node { cursor: default; transition: opacity 0.15s; }
+.edge { fill: none; stroke: var(--muted); stroke-opacity: 0.45; stroke-width: 1.4; transition: opacity 0.15s; }
+.arrowhead { fill: var(--muted); }
+.graph.focusing .node, .graph.focusing .edge { opacity: 0.18; }
+.graph.focusing .is-related { opacity: 1; }
+.graph.focusing .edge.is-related { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2; }
+
+.module { padding: 22px 24px; margin-bottom: 24px; scroll-margin-top: 80px; }
+.module-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.module-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+.module-head .file-link { margin-left: auto; }
+.overview { margin-top: 10px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+.missing { margin-top: 10px; color: var(--muted); font-style: italic; font-size: 14px; }
+.module-facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 14px 0 0; font-size: 13px; }
+.module-facts dt { color: var(--muted); font-weight: 600; padding-top: 2px; }
+.module-facts dd { margin: 0; }
+.section-title { margin: 26px 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.export { padding: 16px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
+.section-title + .export { border-top: none; }
+.export-head { display: flex; align-items: center; gap: 8px; }
+.export-head .file-link { margin-left: auto; }
+.export-name { font-size: 15px; font-weight: 700; }
+.kind { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 5px; color: var(--accent); background: var(--accent-soft); }
+.kind.kind-type, .kind.kind-interface { color: var(--hl-t); background: color-mix(in srgb, var(--hl-t) 14%, transparent); }
+.doc { margin-top: 6px; }
+.doc code, .overview code, .note code, .tooltip-doc code { background: var(--surface-2); padding: 0 4px; border-radius: 4px; }
+.doc-tags { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.doc-tags span { font-family: var(--mono); color: var(--muted); }
+.doc-tags p { display: inline; }
+
+pre.code, code { font-variant-ligatures: none; }
+pre.code { margin: 10px 0 0; padding: 12px 14px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; font: 12.5px/1.6 var(--mono); tab-size: 2; }
+.c { color: var(--hl-c); font-style: italic; } .k { color: var(--hl-k); } .s { color: var(--hl-s); } .n { color: var(--hl-n); } .t { color: var(--hl-t); } .f { color: var(--hl-f); } .l { color: var(--hl-l); }
+details.source { margin-top: 8px; }
+details.source summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+details.source summary:hover { color: var(--accent); }
+.unit-tests { margin-top: 10px; font-size: 13px; }
+.unit-tests-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+.unit-test-list { margin: 0; padding: 0; list-style: none; columns: 2 320px; column-gap: 24px; }
+.unit-test-list > li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.unit-test-list > li::before { content: "✓"; position: absolute; left: 2px; color: var(--assert); font-weight: 800; }
+.unit-test-heading { font-weight: 650; }
+.unit-test-group ul { margin: 1px 0 4px; padding: 0 0 0 12px; list-style: none; border-left: 2px solid var(--border); }
+.unit-test-group li { padding: 1px 0; }
+.unit-tests a { text-decoration: none; }
+.unit-tests a:hover { color: var(--accent); text-decoration: underline; }
+.usages { margin-top: 10px; font-size: 13px; display: grid; gap: 4px; }
+.usage-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.usage-kind { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.test-only { margin-top: 18px; font-size: 13px; }
+
+.spec-head { margin-bottom: 8px; }
+.group-title { font-size: 18px; margin: 28px 0 12px; letter-spacing: -0.01em; }
+.group-options { margin: -6px 0 12px; color: var(--muted); font-size: 13px; }
+.group-title.group-depth-2 { font-size: 16px; margin-top: 20px; }
+.group-title.group-depth-3 { font-size: 14px; }
+.group-title:is(.group-depth-2, .group-depth-3)::before { content: "› "; color: var(--muted); }
+.test-group:has(> .group-title.group-depth-1):not(:has(.test)) .group-title { margin-bottom: 0; }
+.group-doc, .test-doc { margin: -6px 0 12px; color: var(--muted); font-size: 14px; }
+.group-doc p, .test-doc p { margin: 0; }
+.chapters { display: grid; gap: 20px; }
+.chapter { display: grid; gap: 8px; }
+.chapter-title { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 650; }
+.chapter-text { flex: 1; }
+.chapter-number { display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 800; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+body.outline-only .chapter .segments { display: none; }
+body.outline-only .chapters { gap: 8px; }
+.test-group:first-child .group-title { margin-top: 0; }
+.test { padding: 18px 20px; margin-bottom: 20px; scroll-margin-top: 80px; }
+.test-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.test-head h3 { margin: 0; font-size: 16px; flex: 1; }
+.test-head h3::first-letter { text-transform: uppercase; }
+.test-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.user { display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--actor, var(--accent)); background: color-mix(in srgb, var(--actor, var(--accent)) 15%, transparent); }
+.avatar { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; font-weight: 800; color: white; background: var(--actor, var(--arrange)); }
+
+.segments { display: grid; gap: 10px; }
+.test-routes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -6px 0 12px; font-size: 12px; color: var(--muted); }
+.route-chip { font-family: var(--mono); font-size: 11.5px; padding: 1px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); text-decoration: none; color: var(--text); }
+.route-chip:hover { border-color: var(--accent); color: var(--accent); }
+.storyboard { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+.storyboard:not(:has(img)) { display: none; }
+.storyboard-frame { flex: none; display: grid; gap: 4px; width: 176px; padding: 0; border: none; background: none; color: var(--muted); font: inherit; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; text-align: left; cursor: zoom-in; }
+.storyboard-frame img, .divider-shot img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); }
+.storyboard-frame:hover img, .divider-shot:hover img { border-color: var(--accent); }
+.storyboard-frame span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.divider-shot { flex: none; order: 3; width: 48px; padding: 0; border: none; background: none; cursor: zoom-in; }
+.divider-shot img { border-radius: 4px; }
+.segment { display: grid; grid-template-columns: 92px minmax(0, 1fr); border-radius: 10px; border: 1px solid var(--border); overflow: clip; }
+.segment-actor { border-color: color-mix(in srgb, var(--actor) 45%, transparent); background: color-mix(in srgb, var(--actor) 5%, var(--surface)); }
+.lane { padding: 12px 6px; font-size: 12px; font-weight: 700; text-align: center; background: var(--surface-2); border-right: 1px solid var(--border); color: var(--muted); }
+.lane-sticky { position: sticky; top: 76px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.segment-actor .lane { background: color-mix(in srgb, var(--actor) 14%, var(--surface)); color: var(--actor); border-right-color: color-mix(in srgb, var(--actor) 35%, transparent); }
+.segment-body { padding: 8px 14px 10px; min-width: 0; }
+
+.divider { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; font-size: 12px; }
+.divider::after { content: ""; order: 2; flex: 1; border-bottom: 1px dashed var(--border); align-self: center; }
+.divider-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+.divider-label::before { content: "▸ "; }
+
+.run { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; padding: 4px 0; }
+.run + .run { border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.run-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 5px; }
+.phase-arrange { --phase: var(--arrange); }
+.phase-act { --phase: var(--act); }
+.phase-assert { --phase: var(--assert); }
+.run-label { color: var(--phase); }
+.steps { list-style: none; margin: 0; padding: 0; }
+.steps.nested { margin: 2px 0 2px 9px; padding-left: 14px; border-left: 2px solid var(--border); }
+.step { padding: 3px 0; }
+.step-line { display: flex; gap: 10px; align-items: baseline; }
+.phase-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--phase); }
+.phase-arrange .phase-icon::before { content: "+"; }
+.phase-act .phase-icon::before { content: "→"; }
+.phase-assert .phase-icon::before { content: "✓"; }
+.step-naming > .step-line .phase-icon::before { content: "="; color: var(--muted); }
+.step-naming > .step-line { color: var(--muted); }
+.legend .phase-icon { width: 24px; }
+.step-text strong { font-weight: 650; }
+.ref { text-decoration: underline dotted color-mix(in srgb, currentColor 45%, transparent); text-underline-offset: 3px; cursor: help; }
+.ref:hover { text-decoration-color: var(--accent); color: var(--accent); }
+.tooltip { position: fixed; z-index: 100; max-width: min(560px, calc(100vw - 24px)); padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 32px rgb(0 0 0 / 0.18); font-size: 13px; pointer-events: none; }
+.tooltip-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.tooltip-head code { font-weight: 700; }
+.tooltip-head span { color: var(--muted); font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.tooltip-doc { margin-top: 6px; }
+.tooltip pre.code { margin-top: 8px; font-size: 11.5px; max-height: 280px; overflow: hidden; }
+.note { margin: 4px 0 2px 26px; padding-left: 10px; border-left: 2px solid var(--border); color: var(--muted); font-size: 13px; font-style: italic; }
+.str { color: var(--hl-s); }
+.num { color: var(--hl-n); font-family: var(--mono); font-size: 0.9em; }
+.const { cursor: help; }
+.tuple::before { content: "("; color: var(--muted); }
+.tuple::after { content: ")"; color: var(--muted); }
+.kv + .kv::before { content: "· "; color: var(--muted); }
+.key { color: var(--muted); }
+.binds { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+code.inline { background: var(--surface-2); padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+kbd { font-family: var(--mono); font-size: 12px; padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); }
+.step-code { display: none; margin: 4px 0 4px 26px !important; padding: 6px 10px !important; font-size: 11.5px !important; }
+body.show-code .step-code { display: block; }
+
+@media (max-width: 900px) {
+	main { padding: 16px; }
+	.topbar { padding: 10px 16px; gap: 12px; }
+	.brand span { display: none; }
+	.search-button kbd { display: none; }
+	.view { grid-template-columns: minmax(0, 1fr); }
+	.sidebar { position: static; max-height: none; }
+	.segment { grid-template-columns: minmax(0, 1fr); }
+	.lane { border-right: none; border-bottom: 1px solid var(--border); padding: 6px 10px; }
+	.lane-sticky { position: static; flex-direction: row; }
+	.run { grid-template-columns: minmax(0, 1fr); gap: 0; }
+	.view-switch { margin-left: 0; }
+	.usage-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+	.chip { white-space: normal; overflow-wrap: anywhere; }
+	.test-head { flex-direction: column; gap: 6px; }
+	.test-meta { justify-content: flex-start; }
+	.divider { flex-wrap: wrap; gap: 2px 10px; }
+	.divider::after { display: none; }
+}
+
+[data-actor="ADMIN_ID"] { --actor: #8b5cf6; }
+[data-actor="NZAP_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="REGULAR_USER_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="ORG_ADMIN_TEST_ID"] { --actor: #0ea5e9; }
+[data-actor="STAFF_TEST_ID"] { --actor: #14b8a6; }
+[data-actor="DEV_TEST_ID"] { --actor: #64748b; }
+</style>
+</head>
+<body>
+<header class="topbar">
+	<a class="brand" href="index.html">sendou.ink <span>living docs</span></a>
+	<button type="button" class="search-button" data-open-search>Search <kbd>⌘K</kbd></button>
+	<nav class="feature-tabs">
+		<a class="feature-tab" href="admin.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Admin</a><a class="feature-tab" href="api.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api</a><a class="feature-tab" href="api-private.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api private</a><a class="feature-tab" href="art.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/art.avif" alt="" width="20" height="20" loading="lazy">Art</a><a class="feature-tab" href="articles.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/articles.avif" alt="" width="20" height="20" loading="lazy">Articles</a><a class="feature-tab" href="associations.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/associations.avif" alt="" width="20" height="20" loading="lazy">Associations</a><a class="feature-tab" href="auth.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Auth</a><a class="feature-tab" href="availability.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Availability</a><a class="feature-tab" href="badges.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/badges.avif" alt="" width="20" height="20" loading="lazy">Badges</a><a class="feature-tab" href="ban.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">B</span>Ban</a><a class="feature-tab" href="build-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/analyzer.avif" alt="" width="20" height="20" loading="lazy">Build analyzer</a><a class="feature-tab" href="build-stats.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Build stats</a><a class="feature-tab" href="builds.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Builds</a><a class="feature-tab" href="calendar.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/calendar.avif" alt="" width="20" height="20" loading="lazy">Calendar</a><a class="feature-tab" href="chat.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">C</span>Chat</a><a class="feature-tab" href="comp-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/comp-analyzer.avif" alt="" width="20" height="20" loading="lazy">Comp analyzer</a><a class="feature-tab" href="events.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">E</span>Events</a><a class="feature-tab" href="friends.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Friends</a><a class="feature-tab" href="front-page.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Front page</a><a class="feature-tab" href="global-status.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">G</span>Global status</a><a class="feature-tab" href="health.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">H</span>Health</a><a class="feature-tab" href="img-export.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Image export</a><a class="feature-tab" href="img-upload.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Img upload</a><a class="feature-tab" href="info.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Info</a><a class="feature-tab" href="lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/lfg.avif" alt="" width="20" height="20" loading="lazy">LFG</a><a class="feature-tab" href="layout.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Layout</a><a class="feature-tab" href="leaderboards.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/leaderboards.avif" alt="" width="20" height="20" loading="lazy">Leaderboards</a><a class="feature-tab" href="links.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/links.avif" alt="" width="20" height="20" loading="lazy">Links</a><a class="feature-tab" href="live-streams.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Live streams</a><a class="feature-tab" href="mmr.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">M</span>MMR</a><a class="feature-tab" href="map-list-generator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/maps.avif" alt="" width="20" height="20" loading="lazy">Map list generator</a><a class="feature-tab" href="map-planner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plans.avif" alt="" width="20" height="20" loading="lazy">Map planner</a><a class="feature-tab" href="notifications.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">N</span>Notifications</a><a class="feature-tab" href="object-damage-calculator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/object-damage-calculator.avif" alt="" width="20" height="20" loading="lazy">Object damage calculator</a><a class="feature-tab" href="params.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Params</a><a class="feature-tab" href="plus-suggestions.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus suggestions</a><a class="feature-tab" href="plus-voting.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus voting</a><a class="feature-tab" href="api-public.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Public API</a><a class="feature-tab" href="scanner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner</a><a class="feature-tab" href="scanner-ingest.html" aria-current="page"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner ingest</a><a class="feature-tab" href="scrims.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scrims.avif" alt="" width="20" height="20" loading="lazy">Scrims</a><a class="feature-tab" href="search.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Search</a><a class="feature-tab" href="sendouq.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ</a><a class="feature-tab" href="sendouq-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ match</a><a class="feature-tab" href="sendouq-streams.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ streams</a><a class="feature-tab" href="settings.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/settings.avif" alt="" width="20" height="20" loading="lazy">Settings</a><a class="feature-tab" href="sidebar.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Sidebar</a><a class="feature-tab" href="site-wide.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Site-wide</a><a class="feature-tab" href="team.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/t.avif" alt="" width="20" height="20" loading="lazy">Team</a><a class="feature-tab" href="theme.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Theme</a><a class="feature-tab" href="tier-list-maker.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/tier-list-maker.avif" alt="" width="20" height="20" loading="lazy">Tier list maker</a><a class="feature-tab" href="top-search.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/xsearch.avif" alt="" width="20" height="20" loading="lazy">Top search</a><a class="feature-tab" href="tournament.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament</a><a class="feature-tab" href="tournament-admin.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament admin</a><a class="feature-tab" href="tournament-bracket.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament bracket</a><a class="feature-tab" href="tournament-lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament lfg</a><a class="feature-tab" href="tournament-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament match</a><a class="feature-tab" href="tournament-organization.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament organization</a><a class="feature-tab" href="tournament-subs.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament subs</a><a class="feature-tab" href="translate.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Translate</a><a class="feature-tab" href="trophies.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/trophies.avif" alt="" width="20" height="20" loading="lazy">Trophies</a><a class="feature-tab" href="user-activity.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">U</span>User activity</a><a class="feature-tab" href="user-card.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User card</a><a class="feature-tab" href="user-page.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User page</a><a class="feature-tab" href="user-report.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User report</a><a class="feature-tab" href="vods.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/vods.avif" alt="" width="20" height="20" loading="lazy">Vods</a><a class="feature-tab" href="voice.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">V</span>Voice</a>
+	</nav>
+</header>
+<main data-default-view="modules">
+	<div class="feature-head">
+		<img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="48" height="48" loading="lazy">
+		<div>
+			<h1>Scanner ingest</h1>
+			<p class="stats">3 modules · 20 exports · 0 e2e tests · 1 route</p>
+		</div>
+		<div class="view-switch">
+			<a href="#modules" data-view-tab="modules">Modules</a>
+			
+			<a href="#routes" data-view-tab="routes">Routes</a>
+		</div>
+	</div>
+	<div class="view" data-view="modules" hidden>
+		<aside class="sidebar">
+			<h4>Modules</h4>
+			<ul class="toc"><li><a href="#modules/matches">Matches</a><ul><li><a href="#modules/matches-canonicalmatch"><span class="kind-dot kind-function"></span>canonicalMatch</a></li><li><a href="#modules/matches-issamematch"><span class="kind-dot kind-function"></span>isSameMatch</a></li><li><a href="#modules/matches-mergematches"><span class="kind-dot kind-function"></span>mergeMatches</a></li><li><a href="#modules/matches-gamestartedat"><span class="kind-dot kind-function"></span>gameStartedAt</a></li><li><a href="#modules/matches-normalizeingamename"><span class="kind-dot kind-function"></span>normalizeInGameName</a></li></ul></li><li><a href="#modules/scoreboards">Scoreboards</a><ul><li><a href="#modules/scoreboards-ingestcontext-type"><span class="kind-dot kind-type"></span>IngestContext</a></li><li><a href="#modules/scoreboards-ingestablegametarget-type"><span class="kind-dot kind-type"></span>IngestableGameTarget</a></li><li><a href="#modules/scoreboards-ingestablegame-type"><span class="kind-dot kind-interface"></span>IngestableGame</a></li><li><a href="#modules/scoreboards-ingestablegamewithcontext-type"><span class="kind-dot kind-interface"></span>IngestableGameWithContext</a></li><li><a href="#modules/scoreboards-ingestedscoreboardplayer-type"><span class="kind-dot kind-interface"></span>IngestedScoreboardPlayer</a></li><li><a href="#modules/scoreboards-ingestedscoreboarddata-type"><span class="kind-dot kind-interface"></span>IngestedScoreboardData</a></li><li><a href="#modules/scoreboards-played-at-tolerance-ms"><span class="kind-dot kind-const"></span>PLAYED_AT_TOLERANCE_MS</a></li><li><a href="#modules/scoreboards-contextkey"><span class="kind-dot kind-function"></span>contextKey</a></li><li><a href="#modules/scoreboards-resolvecontext"><span class="kind-dot kind-function"></span>resolveContext</a></li><li><a href="#modules/scoreboards-matchedgames"><span class="kind-dot kind-function"></span>matchedGames</a></li><li><a href="#modules/scoreboards-povweaponid"><span class="kind-dot kind-function"></span>povWeaponId</a></li><li><a href="#modules/scoreboards-derivescoreboarddata"><span class="kind-dot kind-function"></span>deriveScoreboardData</a></li><li><a href="#modules/scoreboards-recognizableplayernames"><span class="kind-dot kind-function"></span>recognizablePlayerNames</a></li></ul></li><li><a href="#modules/vodmatches">VodMatches</a><ul><li><a href="#modules/vodmatches-prefillvodmatch-type"><span class="kind-dot kind-interface"></span>PrefillVodMatch</a></li><li><a href="#modules/vodmatches-prefillvodmatches"><span class="kind-dot kind-function"></span>prefillVodMatches</a></li></ul></li></ul>
+		</aside>
+		<div class="content">
+			<figure class="graph-card">
+	<figcaption>Who imports who <span class="muted">· hover a node</span></figcaption>
+	<div class="graph-scroll">
+	<svg class="graph" viewBox="0 0 872 274" width="872" height="274" role="img" aria-label="Module dependency graph">
+		<defs><marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L8 4 L0 8 z" class="arrowhead"/></marker></defs>
+		<text class="column-title" x="16" y="16">Depends on</text>
+		<text class="column-title" x="336" y="16">Scanner ingest modules</text>
+		<text class="column-title" x="656" y="16">Used by</text>
+		<path class="edge" data-from="app/features/scanner-ingest/core/Matches.ts" data-to="app/features/scanner-ingest/core/Scoreboards.ts" d="M336 103 C296 103, 296 149, 336 149" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/scanner-ingest/core/Matches.ts" data-to="kind:action" d="M536 103 C596 103, 596 57, 652 57" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/scanner-ingest/core/Matches.ts" data-to="kind:repository" d="M536 103 C596 103, 596 103, 652 103" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/scanner-ingest/core/Scoreboards.ts" data-to="kind:action" d="M536 149 C596 149, 596 57, 652 57" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/scanner-ingest/core/Scoreboards.ts" data-to="kind:repository" d="M536 149 C596 149, 596 103, 652 103" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/scanner-ingest/core/Scoreboards.ts" data-to="kind:component" d="M536 149 C596 149, 596 149, 652 149" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/scanner-ingest/core/Scoreboards.ts" data-to="kind:other" d="M536 149 C596 149, 596 195, 652 195" marker-end="url(#arrow)"/><path class="edge" data-from="app/features/scanner-ingest/core/VodMatches.ts" data-to="kind:loader" d="M536 195 C596 195, 596 241, 652 241" marker-end="url(#arrow)"/>
+		<g class="node node-self" data-node="app/features/scanner-ingest/core/Matches.ts">
+				<rect x="336" y="86" width="200" height="34" rx="8"/>
+				<text x="348" y="107"><tspan class="node-label">Matches</tspan><tspan class="node-sublabel" dx="8">5 exports</tspan></text>
+			</g><g class="node node-self" data-node="app/features/scanner-ingest/core/Scoreboards.ts">
+				<rect x="336" y="132" width="200" height="34" rx="8"/>
+				<text x="348" y="153"><tspan class="node-label">Scoreboards</tspan><tspan class="node-sublabel" dx="8">13 exports</tspan></text>
+			</g><g class="node node-self" data-node="app/features/scanner-ingest/core/VodMatches.ts">
+				<rect x="336" y="178" width="200" height="34" rx="8"/>
+				<text x="348" y="199"><tspan class="node-label">VodMatches</tspan><tspan class="node-sublabel" dx="8">2 exports</tspan></text>
+			</g><g class="node node-action" data-node="kind:action">
+				<rect x="656" y="40" width="200" height="34" rx="8"/>
+				<text x="668" y="61"><tspan class="node-label">Actions</tspan><tspan class="node-sublabel" dx="8">1 file</tspan></text>
+			</g><g class="node node-repository" data-node="kind:repository">
+				<rect x="656" y="86" width="200" height="34" rx="8"/>
+				<text x="668" y="107"><tspan class="node-label">Repositories</tspan><tspan class="node-sublabel" dx="8">1 file</tspan></text>
+			</g><g class="node node-component" data-node="kind:component">
+				<rect x="656" y="132" width="200" height="34" rx="8"/>
+				<text x="668" y="153"><tspan class="node-label">Components</tspan><tspan class="node-sublabel" dx="8">1 file</tspan></text>
+			</g><g class="node node-other" data-node="kind:other">
+				<rect x="656" y="178" width="200" height="34" rx="8"/>
+				<text x="668" y="199"><tspan class="node-label">Other</tspan><tspan class="node-sublabel" dx="8">1 file</tspan></text>
+			</g><g class="node node-loader" data-node="kind:loader">
+				<rect x="656" y="224" width="200" height="34" rx="8"/>
+				<text x="668" y="245"><tspan class="node-label">Loaders</tspan><tspan class="node-sublabel" dx="8">1 file</tspan></text>
+			</g>
+	</svg>
+	</div>
+</figure>
+			<article class="module" id="modules/matches">
+	<header class="module-head">
+		<h2>Matches</h2>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.ts#L1" title="app/features/scanner-ingest/core/Matches.ts:1">app/features/scanner-ingest/core/Matches.ts</a>
+	</header>
+	<div class="overview"><p>Pure logic for stored scanner matches: canonical serialization (hashing), same-game identity of two partials, and merging a partial into a stored one.</p></div>
+	<dl class="module-facts">
+		<dt>Imports</dt><dd><span class="muted">no other modules</span></dd>
+		<dt>Used by</dt><dd><span class="chip kind-action">1 action</span><span class="chip kind-repository">1 repository</span><span class="chip kind-module">1 module</span></dd>
+	</dl>
+	
+	<h3 class="section-title">Functions &amp; values</h3><div class="export" id="modules/matches-canonicalmatch">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">canonicalMatch</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.ts#L35" title="app/features/scanner-ingest/core/Matches.ts:35">:35</a>
+	</div>
+	<div class="doc"><p>Rebuilds a match with a fixed key order so <code>JSON.stringify</code> is stable — the hashing and change-detection representation.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">canonicalMatch</span>(match: <span class="t">ScannerMatch</span>): <span class="t">ScannerMatch</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L14">serializes identically regardless of input key order</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L572" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:572">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div></div>
+</div><div class="export" id="modules/matches-issamematch">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">isSameMatch</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.ts#L79" title="app/features/scanner-ingest/core/Matches.ts:79">:79</a>
+	</div>
+	<div class="doc"><p>Whether two (possibly partial) matches describe the same game; callers pre-scope to the same tournament + POV user. Contradicting lobby/mode/stage/replay-code/play-time rules identity out; then a matching replay code rules it in, contradicting rosters (a team pair of different players) rule it out, and close play times or an aligning roster (names, else weapons) rule it in.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">isSameMatch</span>(a: <span class="t">ScannerMatch</span>, b: <span class="t">ScannerMatch</span>): <span class="t">boolean</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L54">recognizes an identical match</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L58">matching replay codes are a strong key</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L72">tolerates OCR jitter in the replay code</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L78">clearly different replay codes contradict identity</a></li><li class="unit-test-group"><span class="unit-test-heading">close</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L84">play times identify a match</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L95">play times do not identify back-to-back games against different opponents</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L108">play times still identify a match with a couple of misread names per team</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L117">contradicting weapons rule out close play times when names are unread</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L137">far-apart play times contradict identity even with equal rosters</a></li><li class="unit-test-group"><span class="unit-test-heading">differing</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L143">modes or stages contradict identity</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L158">lobbies contradict identity</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L167">a null mode does not contradict a read one</a></li><li class="unit-test-group"><span class="unit-test-heading">roster</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L176">overlap identifies a match even side-swapped</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L182">overlap survives a couple of misread names</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L189">weapons alone identify a match when names are unread (minimap vs scoreboard)</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L204">unrelated matches are not the same</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L706" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:706">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div></div>
+</div><div class="export" id="modules/matches-mergematches">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">mergeMatches</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.ts#L117" title="app/features/scanner-ingest/core/Matches.ts:117">:117</a>
+	</div>
+	<div class="doc"><p>Merges an ingested partial into the stored match: incoming teams are aligned to the stored orientation (a scoreboard match's teams[0] is the winner, a minimap match's is alpha), then every field fills stored nulls, stored values winning. <code>changed</code> is false when nothing was added.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">mergeMatches</span>(
+	existing: <span class="t">ScannerMatch</span>,
+	incoming: <span class="t">ScannerMatch</span>,
+): { merged: <span class="t">ScannerMatch</span>; changed: <span class="t">boolean</span> }</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li class="unit-test-group"><span class="unit-test-heading">fills</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L225">stored nulls and reports no change when nothing was added</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L311">empty teams from the incoming match</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L238">stored values win on conflict</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L251">flips a side-swapped track position back with its sides</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L279">aligns a side-swapped incoming match before merging</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L293">merges player rows by name, keeping stored stats and adding missing ones</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L605" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:605">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-module">Modules</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L260" title="app/features/scanner-ingest/core/Scoreboards.ts:260">scanner-ingest/Scoreboards.ts</a></span></div></div>
+</div><div class="export" id="modules/matches-gamestartedat">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">gameStartedAt</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.ts#L158" title="app/features/scanner-ingest/core/Matches.ts:158">:158</a>
+	</div>
+	<div class="doc"><p>Wall-clock ms of the game's first read (live reads count <code>startsAt</code> in wall-clock seconds), null when it isn't one shortly before its results screen.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">gameStartedAt</span>(match: <span class="t">ScannerMatch</span>): <span class="t">number</span> | <span class="l">null</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L333">$why</a> <span class="muted">× 5</span></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L360">returns null for $why</a> <span class="muted">× 3</span></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/actions/scanner-ingest.server.ts#L336" title="app/features/scanner-ingest/actions/scanner-ingest.server.ts:336">scanner-ingest/scanner-ingest.server.ts</a></span></div></div>
+</div><div class="export" id="modules/matches-normalizeingamename">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">normalizeInGameName</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.ts#L169" title="app/features/scanner-ingest/core/Matches.ts:169">:169</a>
+	</div>
+	<div class="doc"><p>Lowercased, width-normalized in-game name without the #discriminator.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">normalizeInGameName</span>(name: <span class="t">string</span>): <span class="t">string</span></pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-module">Modules</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L200" title="app/features/scanner-ingest/core/Scoreboards.ts:200">scanner-ingest/Scoreboards.ts</a></span></div></div>
+</div>
+	<h3 class="section-title">Other unit tests</h3><div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L393">playerStatus › merges whole-series first-ingest-wins</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Matches.test.ts#L408">playerStatus › side-aligning an incoming match swaps its status samples too</a></li></ul>
+</div>
+	
+</article><article class="module" id="modules/scoreboards">
+	<header class="module-head">
+		<h2>Scoreboards</h2>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L1" title="app/features/scanner-ingest/core/Scoreboards.ts:1">app/features/scanner-ingest/core/Scoreboards.ts</a>
+	</header>
+	<p class="missing">No overview comment at the top of the file.</p>
+	<dl class="module-facts">
+		<dt>Imports</dt><dd><span class="chip">Matches</span></dd>
+		<dt>Used by</dt><dd><span class="chip kind-action">1 action</span><span class="chip kind-repository">1 repository</span><span class="chip kind-component">1 component</span><span class="chip kind-other">1 other</span></dd>
+	</dl>
+	<h3 class="section-title">Types</h3><div class="export" id="modules/scoreboards-ingestcontext-type">
+	<div class="export-head">
+		<span class="kind kind-type">type</span>
+		<code class="export-name">IngestContext</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L37" title="app/features/scanner-ingest/core/Scoreboards.ts:37">:37</a>
+	</div>
+	<div class="doc"><p>The match context an ingest request was resolved to belong to.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">type</span> <span class="t">IngestContext</span> =
+	| { <span class="k">type</span>: <span class="s">&quot;tournament&quot;</span>; tournamentId: <span class="t">number</span> }
+	| { <span class="k">type</span>: <span class="s">&quot;sendouq&quot;</span>; groupMatchId: <span class="t">number</span> };</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/actions/scanner-ingest.server.ts#L120" title="app/features/scanner-ingest/actions/scanner-ingest.server.ts:120">scanner-ingest/scanner-ingest.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L9" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:9">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-ingestablegametarget-type">
+	<div class="export-head">
+		<span class="kind kind-type">type</span>
+		<code class="export-name">IngestableGameTarget</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L42" title="app/features/scanner-ingest/core/Scoreboards.ts:42">:42</a>
+	</div>
+	<div class="doc"><p>The reported game result an ingested match can link to.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">type</span> <span class="t">IngestableGameTarget</span> =
+	| {
+			<span class="k">type</span>: <span class="s">&quot;tournament&quot;</span>;
+			matchGameResultId: <span class="t">number</span>;
+			tournamentMatchId: <span class="t">number</span>;
+	  }
+	| { <span class="k">type</span>: <span class="s">&quot;sendouq&quot;</span>; groupMatchMapId: <span class="t">number</span>; groupMatchId: <span class="t">number</span> };</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/actions/scanner-ingest.server.ts#L121" title="app/features/scanner-ingest/actions/scanner-ingest.server.ts:121">scanner-ingest/scanner-ingest.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-ingestablegame-type">
+	<div class="export-head">
+		<span class="kind kind-interface">interface</span>
+		<code class="export-name">IngestableGame</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L51" title="app/features/scanner-ingest/core/Scoreboards.ts:51">:51</a>
+	</div>
+	<div class="doc"><p>A game of a tournament or SendouQ match that ingested matches can be linked to.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">interface</span> <span class="t">IngestableGame</span> {
+	target: <span class="t">IngestableGameTarget</span>;
+	<span class="c">/** 0-based index of the game within its match */</span>
+	mapIndex: <span class="t">number</span>;
+	mode: <span class="t">ModeShort</span>;
+	stageId: <span class="t">StageId</span>;
+	<span class="c">/** user ids who played the game on the winning side (a tournament game's active roster, a SendouQ group); only they can link a scan to it */</span>
+	winnerUserIds: <span class="t">number</span>[];
+	<span class="c">/** user ids who played the game on the losing side, see `winnerUserIds` */</span>
+	loserUserIds: <span class="t">number</span>[];
+	<span class="c">/** both teams' known in-game names by user id, tells whose seat a POV read marks */</span>
+	inGameNameByUserId: <span class="t">Map</span>&lt;<span class="t">number</span>, <span class="t">string</span>&gt;;
+	<span class="c">/** timestamp of the game's report: the chronological key and what a scan's play time is measured against */</span>
+	playedAt: <span class="t">number</span>;
+	<span class="c">/** winner-first row-order names of the game's earliest linked ingest that read enough names to recognize a re-detection, null when none; lets matching skip taken games yet recognize re-detections */</span>
+	linkedPlayerNames: <span class="t">string</span>[] | <span class="l">null</span>;
+}</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L9" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:9">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-ingestablegamewithcontext-type">
+	<div class="export-head">
+		<span class="kind kind-interface">interface</span>
+		<code class="export-name">IngestableGameWithContext</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L70" title="app/features/scanner-ingest/core/Scoreboards.ts:70">:70</a>
+	</div>
+	<div class="doc"><p>A candidate game for content resolution, tagged with its context.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">interface</span> <span class="t">IngestableGameWithContext</span> <span class="k">extends</span> <span class="t">IngestableGame</span> {
+	context: <span class="t">IngestContext</span>;
+}</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/actions/scanner-ingest.server.ts#L138" title="app/features/scanner-ingest/actions/scanner-ingest.server.ts:138">scanner-ingest/scanner-ingest.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L9" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:9">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-ingestedscoreboardplayer-type">
+	<div class="export-head">
+		<span class="kind kind-interface">interface</span>
+		<code class="export-name">IngestedScoreboardPlayer</code>
+		<span class="warn" title="Module functions should always have JSDoc">no JSDoc</span>
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L213" title="app/features/scanner-ingest/core/Scoreboards.ts:213">:213</a>
+	</div>
+	
+	
+	<pre class="code"><span class="k">export</span> <span class="k">interface</span> <span class="t">IngestedScoreboardPlayer</span> {
+	name: <span class="t">string</span>;
+	tournamentTeamId: <span class="t">number</span> | <span class="l">null</span>;
+	weaponSplId: <span class="t">MainWeaponId</span> | <span class="l">null</span>;
+	ka: <span class="t">number</span> | <span class="l">null</span>;
+	d: <span class="t">number</span> | <span class="l">null</span>;
+	s: <span class="t">number</span> | <span class="l">null</span>;
+	paint: <span class="t">number</span> | <span class="l">null</span>;
+	<span class="c">/** [head, clothes, shoes] ability rows gathered from the match's death screens */</span>
+	abilities?: <span class="t">AbilityWithUnknown</span>[][];
+	<span class="c">/** set via POV attribution of a linked ingested match */</span>
+	userId?: <span class="t">number</span>;
+}</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-component">Components</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/components/match-page/ingested-scoreboard.ts#L1" title="app/components/match-page/ingested-scoreboard.ts:1">app/components/ingested-scoreboard.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-ingestedscoreboarddata-type">
+	<div class="export-head">
+		<span class="kind kind-interface">interface</span>
+		<code class="export-name">IngestedScoreboardData</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L228" title="app/features/scanner-ingest/core/Scoreboards.ts:228">:228</a>
+	</div>
+	<div class="doc"><p>A game's scoreboard derived from its linked ingested matches, the shape match pages render. Derived at read time, not stored.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">interface</span> <span class="t">IngestedScoreboardData</span> {
+	<span class="c">/** game scores [winner, loser] (0-100; a knockout's winner is 100) */</span>
+	scores: [<span class="t">number</span> | <span class="l">null</span>, <span class="t">number</span> | <span class="l">null</span>];
+	<span class="c">/** in scoreboard order: rows 0-3 winning team, rows 4-7 losing team */</span>
+	players: <span class="t">IngestedScoreboardPlayer</span>[];
+	<span class="c">/** objective-counter progress winner-first (per-team values [winner, loser], `control` 0 = winner), `t` in seconds since the game's first read (the source video is not stored). Absent when no counter was read. */</span>
+	objective?: <span class="t">ScannerMatchObjective</span>;
+	<span class="c">/** per-player special/death samples, teams winner-first, `t` on the same origin as `objective`. Absent when the icon strip was never read. */</span>
+	playerStatus?: <span class="t">ScannerMatchPlayerStatus</span>;
+}</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-component">Components</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/components/match-page/ingested-scoreboard.ts#L1" title="app/components/match-page/ingested-scoreboard.ts:1">app/components/ingested-scoreboard.ts</a></span></div></div>
+</div>
+	<h3 class="section-title">Functions &amp; values</h3><div class="export" id="modules/scoreboards-played-at-tolerance-ms">
+	<div class="export-head">
+		<span class="kind kind-const">const</span>
+		<code class="export-name">PLAYED_AT_TOLERANCE_MS</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L34" title="app/features/scanner-ingest/core/Scoreboards.ts:34">:34</a>
+	</div>
+	<div class="doc"><p>Max distance between a scan's play time and a game's report for them to be the same game: headroom for a slow reporter and the client's clock, still far inside the gap between two plays of one map. Outside every candidate the scan stays unlinked (re-sendable) rather than silently putting strangers on a match page.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">const</span> <span class="t">PLAYED_AT_TOLERANCE_MS</span> = <span class="n">30</span> * <span class="n">60</span> * <span class="n">1000</span>;</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/relink.server.ts#L25" title="app/features/scanner-ingest/core/relink.server.ts:25">scanner-ingest/relink.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-contextkey">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">contextKey</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L81" title="app/features/scanner-ingest/core/Scoreboards.ts:81">:81</a>
+	</div>
+	<div class="doc"><p>Stable grouping/equality key for an {@link IngestContext}.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">contextKey</span>(context: <span class="t">IngestContext</span>): <span class="t">string</span></pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/actions/scanner-ingest.server.ts#L99" title="app/features/scanner-ingest/actions/scanner-ingest.server.ts:99">scanner-ingest/scanner-ingest.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-resolvecontext">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">resolveContext</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L92" title="app/features/scanner-ingest/core/Scoreboards.ts:92">:92</a>
+	</div>
+	<div class="doc"><p>Resolves which context (tournament or SendouQ match) a request's matches belong to from content alone: the POV user's reported games are grouped by context and each is scored by how many matches <code>matchedGames</code> aligns with its games.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">resolveContext</span>({
+	matches,
+	games,
+	povUserId,
+}: {
+	matches: <span class="t">ScannerMatch</span>[];
+	games: <span class="t">IngestableGameWithContext</span>[];
+	povUserId: <span class="t">number</span> | <span class="l">null</span>;
+}): <span class="t">IngestContext</span> | <span class="l">null</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li class="unit-test-group"><span class="unit-test-heading">resolves</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L923">the tournament whose games match the seen sequence</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L942">a SendouQ match over a tournament when its games match better</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L961">does not resolve from a single matching match</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L974">lets the sender's side break a map-sequence tie</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L994">skips unreadable matches but resolves from the rest</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/actions/scanner-ingest.server.ts#L289" title="app/features/scanner-ingest/actions/scanner-ingest.server.ts:289">scanner-ingest/scanner-ingest.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-matchedgames">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">matchedGames</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L141" title="app/features/scanner-ingest/core/Scoreboards.ts:141">:141</a>
+	</div>
+	<div class="doc"><p>Decides which game result each ingested match links to.</p><p>Only matches with a known winner, two full teams and a play time qualify (minimap-only and VoD reads never link). Matches and games are walked chronologically: each match takes the unassigned game of the same mode+stage reported nearest it that the sender played on the POV seat's side, none beyond <code>PLAYED_AT_TOLERANCE_MS</code>.</p><p>A scan only links to a game its sender played: one without a POV seat (cast footage) or sent by someone outside the game's active rosters never does. Other lobbies, unreadable mode/stage and duplicate detections are skipped.</p><p>Matches arrive over many requests, so games already linked are skipped — unless the incoming match is a re-detection of the linked one, which lands on the same game so re-sends stay idempotent and another POV's scan joins it.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">matchedGames</span>({
+	matches,
+	games,
+	povUserId,
+}: {
+	matches: <span class="t">ScannerMatch</span>[];
+	games: <span class="t">IngestableGame</span>[];
+	<span class="c">/** the sender, who is the POV player of the request's non-cast matches */</span>
+	povUserId: <span class="t">number</span> | <span class="l">null</span>;
+}): <span class="t">MatchedGame</span>[]</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li class="unit-test-group"><span class="unit-test-heading">matches</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L222">a game's match and reports its index</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L268">a re-detection of a linked scoreboard to the same game despite misread names</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L298">matches to games by mode and stage</a></li></ul></li><li class="unit-test-group"><span class="unit-test-heading">skips</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L233">matches without a known winner</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L242">matches whose teams were not fully seen</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L253">a game whose linked scoreboard has different players</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L334">duplicate detections of the same game</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L347">a duplicate detection despite a couple of OCR-misread names</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L366">matches from other lobbies</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L375">matches with unreadable mode or stage</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L384">matches that have no matching game left</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L412">a game seating the POV sender on the wrong side</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L422">a game the sender didn't play</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L432">a game the sender's team played without them</a></li></ul></li><li class="unit-test-group"><span class="unit-test-heading">does</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L283">not count unreadable names towards linked scoreboard re-detection</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L459">not assign a game played before the previously assigned one</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L310">assigns two games on the same mode and stage in chronological order</a></li><li class="unit-test-group"><span class="unit-test-heading">links</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L399">on the sender's seat whatever names were read</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L493">the play of a map reported nearest the read</a></li></ul></li><li class="unit-test-group"><span class="unit-test-heading">never</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L442">links $why</a> <span class="muted">× 2</span></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L484">links a read without a play time</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L505">leaves a read unlinked when no game was reported within 30 minutes of it</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-action">Actions</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/actions/scanner-ingest.server.ts#L78" title="app/features/scanner-ingest/actions/scanner-ingest.server.ts:78">scanner-ingest/scanner-ingest.server.ts</a></span></div><div class="usage-row"><span class="usage-kind kind-other">Other</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/relink.server.ts#L48" title="app/features/scanner-ingest/core/relink.server.ts:48">scanner-ingest/relink.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-povweaponid">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">povWeaponId</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L186" title="app/features/scanner-ingest/core/Scoreboards.ts:186">:186</a>
+	</div>
+	<div class="doc"><p>The weapon the sender played in a linked game, read off the scan's POV seat. Null unless the sender played on the seat's side and the seat's name isn't another roster member's: a teammate's recording marks someone else's seat.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">povWeaponId</span>({
+	match,
+	game,
+	povUserId,
+}: {
+	match: <span class="t">ScannerMatch</span>;
+	game: <span class="t">IngestableGame</span>;
+	povUserId: <span class="t">number</span>;
+}): <span class="t">MainWeaponId</span> | <span class="l">null</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L800">$why</a> <span class="muted">× 6</span></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L847">a seat whose name is $why can't contradict the sender</a> <span class="muted">× 2</span></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L865">returns null when the seat's weapon was not read</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L1106" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:1106">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-derivescoreboarddata">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">deriveScoreboardData</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L245" title="app/features/scanner-ingest/core/Scoreboards.ts:245">:245</a>
+	</div>
+	<div class="doc"><p>Derives a game's scoreboard from its linked ingests: earliest link is the base, later ones enrich it field-wise (Matches.mergeMatches), projected winner-first, with every linked POV seat attributing its row to the POV user. <code>winnerTeamId</code>/<code>loserTeamId</code> are the result's sides (tournament team or SendouQ group ids) stamped onto the rows.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">deriveScoreboardData</span>({
+	linked,
+	winnerTeamId,
+	loserTeamId,
+}: {
+	<span class="c">/** in link order, earliest first */</span>
+	linked: <span class="t">Array</span>&lt;{ data: <span class="t">ScannerMatch</span>; povUserId: <span class="t">number</span> | <span class="l">null</span> }&gt;;
+	winnerTeamId: <span class="t">number</span>;
+	loserTeamId: <span class="t">number</span> | <span class="l">null</span>;
+}): <span class="t">IngestedScoreboardData</span> | <span class="l">null</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L526">projects a match winner-first into scoreboard data</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L543">a winner-1 match derives identically to its winner-0 mirror</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L550">returns null for a match that cannot form a scoreboard</a></li><li class="unit-test-group"><span class="unit-test-heading">rebases</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L557">counter samples to the game's first read</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L612">status samples onto the same origin as the counter's</a></li></ul></li><li class="unit-test-group"><span class="unit-test-heading">derives</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L583">counter samples winner-first</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L597">track positions winner-first</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L628">status samples winner-first</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L649">leaves out the objective of a match with no counter reads</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L655">carries ingested player abilities through</a></li><li class="unit-test-group"><span class="unit-test-heading">keeps</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L669">players with unread weapon or empty name</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L687">players whose name appears twice on the same side</a></li></ul></li><li class="unit-test-group"><span class="unit-test-heading">attributes</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L700">the POV seat's row to the POV user</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L707">a losing-side POV of a winner-1 match to the right row</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L715">each linked POV onto the merged scoreboard</a></li></ul></li><li class="unit-test-group"><span class="unit-test-heading">does</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L725">not attribute the same row twice</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L734">not attribute a POV whose read name contradicts its seat's merged row</a></li></ul></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L749">merges a later partial's fields under the first link's values</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L328" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:328">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div></div>
+</div><div class="export" id="modules/scoreboards-recognizableplayernames">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">recognizablePlayerNames</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.ts#L295" title="app/features/scanner-ingest/core/Scoreboards.ts:295">:295</a>
+	</div>
+	<div class="doc"><p>A linked match's players winner-first in row order (unread names as &quot;&quot;), the game's <code>linkedPlayerNames</code>. Null when it can't form a view or read too few names to ever recognize a re-detection: such a read must not lock the game against every other POV's scan.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">recognizablePlayerNames</span>(match: <span class="t">ScannerMatch</span>): <span class="t">string</span>[] | <span class="l">null</span></pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li class="unit-test-group"><span class="unit-test-heading">returns</span><ul><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L764">names winner-first with unread names empty</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L774">null for a match without a linkable scoreboard</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/Scoreboards.test.ts#L780">null for a read with too few names to recognize a re-detection</a></li></ul></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-repository">Repositories</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/ScannerIngestRepository.server.ts#L1067" title="app/features/scanner-ingest/ScannerIngestRepository.server.ts:1067">scanner-ingest/ScannerIngestRepository.server.ts</a></span></div></div>
+</div>
+	
+	<p class="muted test-only">Not shown, only used by tests: <code>MatchedGame</code></p>
+</article><article class="module" id="modules/vodmatches">
+	<header class="module-head">
+		<h2>VodMatches</h2>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/VodMatches.ts#L1" title="app/features/scanner-ingest/core/VodMatches.ts:1">app/features/scanner-ingest/core/VodMatches.ts</a>
+	</header>
+	<p class="missing">No overview comment at the top of the file.</p>
+	<dl class="module-facts">
+		<dt>Imports</dt><dd><span class="muted">no other modules</span></dd>
+		<dt>Used by</dt><dd><span class="chip kind-loader">1 loader</span></dd>
+	</dl>
+	<h3 class="section-title">Types</h3><div class="export" id="modules/vodmatches-prefillvodmatch-type">
+	<div class="export-head">
+		<span class="kind kind-interface">interface</span>
+		<code class="export-name">PrefillVodMatch</code>
+		<span class="warn" title="Module functions should always have JSDoc">no JSDoc</span>
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/VodMatches.ts#L8" title="app/features/scanner-ingest/core/VodMatches.ts:8">:8</a>
+	</div>
+	
+	
+	<pre class="code"><span class="k">export</span> <span class="k">interface</span> <span class="t">PrefillVodMatch</span> {
+	startsAt: <span class="t">number</span>;
+	mode: <span class="t">ModeShort</span> | <span class="l">null</span>;
+	stageId: <span class="t">StageId</span> | <span class="l">null</span>;
+	weapons: (<span class="t">MainWeaponId</span> | <span class="l">null</span>)[];
+	<span class="c">/** the POV player's weapon, when the scan identified their seat */</span>
+	povWeapon: <span class="t">MainWeaponId</span> | <span class="l">null</span>;
+}</pre>
+	
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-loader">Loaders</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/loaders/vods.new.server.ts#L3" title="app/features/vods/loaders/vods.new.server.ts:3">vods/vods.new.server.ts</a></span></div></div>
+</div>
+	<h3 class="section-title">Functions &amp; values</h3><div class="export" id="modules/vodmatches-prefillvodmatches">
+	<div class="export-head">
+		<span class="kind kind-function">function</span>
+		<code class="export-name">prefillVodMatches</code>
+		
+		<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/VodMatches.ts#L18" title="app/features/scanner-ingest/core/VodMatches.ts:18">:18</a>
+	</div>
+	<div class="doc"><p>Turns a scanner VoD scan's per-match rows (sendou ids, validated by ingestVodPrefillSchema) into /vods/new prefill data; only renames fields.</p></div>
+	
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">prefillVodMatches</span>(
+	matches: <span class="t">IngestVodMatchInput</span>[],
+): <span class="t">PrefillVodMatch</span>[]</pre>
+	<div class="unit-tests">
+	<div class="unit-tests-title">Unit tests</div>
+	<ul class="unit-test-list"><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/VodMatches.test.ts#L28">maps validated match rows into the form's prefill shape</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/VodMatches.test.ts#L41">keeps unread (null) fields for the user to fill in the form</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/VodMatches.test.ts#L60">rejects rows that are not sendou ids</a></li><li><a href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/core/VodMatches.test.ts#L67">accepts the `ingest` search param the scanner VoD tab sends</a></li></ul>
+</div>
+	<div class="usages"><div class="usage-row"><span class="usage-kind kind-loader">Loaders</span><span class="usage-files"><a class="chip file-chip" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/vods/loaders/vods.new.server.ts#L3" title="app/features/vods/loaders/vods.new.server.ts:3">vods/vods.new.server.ts</a></span></div></div>
+</div>
+	
+	
+</article>
+		</div>
+	</div>
+	
+	<div class="view" data-view="routes" hidden>
+		<aside class="sidebar">
+			<h4>Coverage</h4>
+			<p class="coverage"><strong>0</strong> of 1 route rendered by an e2e test</p>
+			<p class="legend-note">From the last <code>pnpm run docs:living:capture</code>.</p>
+			<h4>Routes</h4>
+			<ul class="toc route-toc"><li><a href="#routes/app-features-scanner-ingest-routes-scanner-ingest-ts"><span class="kind-dot is-unvisited"></span>/ingest</a></li></ul>
+		</aside>
+		<div class="content">
+			<div class="routes"><article class="route" id="routes/app-features-scanner-ingest-routes-scanner-ingest-ts">
+				<div class="route-head">
+					<code class="route-path">/ingest</code>
+					<span class="badge">resource</span>
+					
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/scanner-ingest/routes/scanner-ingest.ts#L1" title="app/features/scanner-ingest/routes/scanner-ingest.ts:1">scanner-ingest.ts</a>
+				</div>
+				<p class="warn-text">No e2e test renders this route</p>
+			</article></div>
+		</div>
+	</div>
+</main>
+
+<div class="tooltip" role="tooltip" hidden></div>
+<dialog class="search-dialog" aria-label="Search">
+	<input type="search" placeholder="Search features, modules, exports, tests, routes…" autocomplete="off" spellcheck="false">
+	<ul class="search-results" role="listbox"></ul>
+	<p class="search-hint muted"><kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to open, <kbd>Esc</kbd> to close</p>
+</dialog>
+<dialog class="lightbox" aria-label="Screenshot"><img alt=""><p class="lightbox-caption"></p></dialog>
+<script>
+const main = document.querySelector("main");
+
+function show() {
+	const hash = decodeURIComponent(location.hash.slice(1));
+	const views = [...document.querySelectorAll("[data-view]")];
+	if (views.length === 0) return;
+
+	const requested = hash.split("/")[0];
+	const view = views.some((el) => el.dataset.view === requested) ? requested : main.dataset.defaultView;
+
+	for (const el of views) el.hidden = el.dataset.view !== view;
+	for (const tab of document.querySelectorAll("[data-view-tab]")) {
+		tab.setAttribute("aria-current", String(tab.dataset.viewTab === view));
+	}
+
+	const target = hash.includes("/") ? document.getElementById(hash) : null;
+	if (target) target.scrollIntoView({ block: "start" });
+	else if (hash) window.scrollTo({ top: 0 });
+}
+
+window.addEventListener("hashchange", show);
+show();
+
+let spyFrame = 0;
+function updateScrollSpy() {
+	spyFrame = 0;
+	const view = [...document.querySelectorAll("[data-view]")].find((el) => !el.hidden);
+	if (!view) return;
+	const sidebar = view.querySelector(".sidebar");
+	const links = [...view.querySelectorAll('.toc a[href^="#"]')];
+
+	const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+	const threshold = isAtBottom ? window.innerHeight : Math.max(120, window.innerHeight * 0.3);
+	let current = null;
+	for (const link of links) {
+		const target = document.getElementById(decodeURIComponent(link.getAttribute("href").slice(1)));
+		if (target && target.getBoundingClientRect().top <= threshold) current = link;
+	}
+
+	for (const link of links) {
+		link.toggleAttribute("aria-current", link === current);
+		if (link === current) link.setAttribute("aria-current", "location");
+		link.classList.remove("is-active-parent");
+	}
+	const parent = current?.closest("ul")?.closest("li")?.querySelector(":scope > a");
+	parent?.classList.add("is-active-parent");
+
+	if (current && sidebar && current !== followedLink) {
+		followedLink = current;
+		const linkTop = current.getBoundingClientRect().top - sidebar.getBoundingClientRect().top + sidebar.scrollTop;
+		const maxScroll = sidebar.scrollHeight - sidebar.clientHeight;
+		followSidebar(sidebar, Math.min(maxScroll, Math.max(0, linkTop - sidebar.clientHeight * 0.35)));
+	}
+}
+
+// the sidebar eases towards keeping the current entry a third of the way down, so many
+// entries passing quickly read as one glide instead of a jump per entry
+let followedLink = null;
+let followFrame = 0;
+let followTarget = 0;
+let followedSidebar = null;
+let userScrolledSidebarAt = 0;
+function followSidebar(sidebar, target) {
+	if (Date.now() - userScrolledSidebarAt < 1500) return;
+	followTarget = target;
+	followedSidebar = sidebar;
+	followFrame ||= requestAnimationFrame(stepSidebar);
+}
+function stepSidebar() {
+	followFrame = 0;
+	const distance = followTarget - followedSidebar.scrollTop;
+	if (Math.abs(distance) < 1) {
+		followedSidebar.scrollTop = followTarget;
+		return;
+	}
+	followedSidebar.scrollTop += distance * 0.18;
+	followFrame = requestAnimationFrame(stepSidebar);
+}
+for (const sidebar of document.querySelectorAll(".sidebar")) {
+	for (const type of ["wheel", "touchmove"]) {
+		sidebar.addEventListener(type, () => {
+			userScrolledSidebarAt = Date.now();
+			cancelAnimationFrame(followFrame);
+			followFrame = 0;
+		}, { passive: true });
+	}
+}
+window.addEventListener("scroll", () => {
+	spyFrame ||= requestAnimationFrame(updateScrollSpy);
+}, { passive: true });
+window.addEventListener("hashchange", () => requestAnimationFrame(updateScrollSpy));
+updateScrollSpy();
+
+document.querySelector(".feature-tab[aria-current]")?.scrollIntoView({ inline: "center", block: "nearest" });
+
+for (const toggle of document.querySelectorAll("[data-toggle-code]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("show-code", toggle.checked);
+	});
+}
+
+for (const toggle of document.querySelectorAll("[data-toggle-outline]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("outline-only", toggle.checked);
+	});
+}
+
+const tooltip = document.querySelector(".tooltip");
+const refTemplates = new Map([...document.querySelectorAll("template[data-ref-id]")].map((template) => [template.dataset.refId, template]));
+
+document.addEventListener("mouseover", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (!template) {
+		tooltip.hidden = true;
+		return;
+	}
+
+	tooltip.innerHTML = template.innerHTML;
+	tooltip.hidden = false;
+
+	const anchor = ref.getBoundingClientRect();
+	const box = tooltip.getBoundingClientRect();
+	const below = anchor.bottom + 8 + box.height < window.innerHeight;
+	tooltip.style.top = (below ? anchor.bottom + 8 : Math.max(8, anchor.top - 8 - box.height)) + "px";
+	tooltip.style.left = Math.min(Math.max(8, anchor.left), window.innerWidth - box.width - 8) + "px";
+});
+
+document.addEventListener("click", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (template) window.open(template.dataset.href, "_blank", "noopener");
+});
+
+const lightbox = document.querySelector(".lightbox");
+document.addEventListener("click", (event) => {
+	const shot = event.target.closest?.("[data-shot]");
+	if (!shot) return;
+	lightbox.querySelector("img").src = shot.dataset.shot;
+	lightbox.querySelector(".lightbox-caption").textContent = shot.dataset.caption;
+	lightbox.showModal();
+});
+lightbox.addEventListener("click", () => lightbox.close());
+
+const searchDialog = document.querySelector(".search-dialog");
+const searchInput = searchDialog.querySelector("input");
+const searchResults = searchDialog.querySelector(".search-results");
+let selectedResult = 0;
+
+function openSearch() {
+	if (!window.LIVING_DOCS_SEARCH && !document.querySelector("script[data-search-index]")) {
+		const script = document.createElement("script");
+		script.src = "search-index.js";
+		script.dataset.searchIndex = "";
+		script.onload = renderResults;
+		document.head.append(script);
+	}
+	searchDialog.showModal();
+	searchInput.select();
+	renderResults();
+}
+
+function searchMatches(query) {
+	const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+	if (tokens.length === 0) return [];
+
+	return (window.LIVING_DOCS_SEARCH ?? [])
+		.map((entry) => {
+			const label = entry[1].toLowerCase();
+			const haystack = label + " " + entry[2].toLowerCase() + " " + entry[0].toLowerCase();
+			if (!tokens.every((token) => haystack.includes(token))) return null;
+			const score = (label.startsWith(tokens[0]) ? 0 : label.includes(tokens[0]) ? 1 : 2) * 1000 + label.length;
+			return { entry, score };
+		})
+		.filter(Boolean)
+		.sort((a, b) => a.score - b.score)
+		.slice(0, 60)
+		.map(({ entry }) => entry);
+}
+
+function renderResults() {
+	const matches = searchMatches(searchInput.value);
+	selectedResult = 0;
+	searchResults.replaceChildren(
+		...matches.map(([kind, label, detail, href], index) => {
+			const item = document.createElement("li");
+			const link = document.createElement("a");
+			link.href = href;
+			link.setAttribute("aria-selected", String(index === 0));
+			for (const [className, text] of [["search-kind", kind], ["search-label", label], ["search-detail", detail]]) {
+				const span = document.createElement("span");
+				span.className = className;
+				span.textContent = text;
+				link.append(span);
+			}
+			link.addEventListener("click", () => searchDialog.close());
+			item.append(link);
+			return item;
+		}),
+	);
+	if (matches.length === 0 && searchInput.value.trim()) {
+		const empty = document.createElement("li");
+		empty.className = "search-empty";
+		empty.textContent = window.LIVING_DOCS_SEARCH ? "No matches" : "Loading…";
+		searchResults.append(empty);
+	}
+}
+
+function moveSelection(delta) {
+	const links = [...searchResults.querySelectorAll("a")];
+	if (links.length === 0) return;
+	selectedResult = (selectedResult + delta + links.length) % links.length;
+	for (const [index, link] of links.entries()) {
+		link.setAttribute("aria-selected", String(index === selectedResult));
+	}
+	links[selectedResult].scrollIntoView({ block: "nearest" });
+}
+
+searchInput.addEventListener("input", renderResults);
+searchInput.addEventListener("keydown", (event) => {
+	if (event.key === "ArrowDown") moveSelection(1);
+	else if (event.key === "ArrowUp") moveSelection(-1);
+	else if (event.key === "Enter") {
+		const link = searchResults.querySelectorAll("a")[selectedResult];
+		if (link) {
+			searchDialog.close();
+			location.href = link.href;
+		}
+	} else return;
+	event.preventDefault();
+});
+searchDialog.addEventListener("click", (event) => {
+	if (event.target === searchDialog) searchDialog.close();
+});
+document.querySelector("[data-open-search]").addEventListener("click", openSearch);
+document.addEventListener("keydown", (event) => {
+	const isTyping = event.target.closest?.("input, textarea");
+	if ((event.key === "k" && (event.metaKey || event.ctrlKey)) || (event.key === "/" && !isTyping)) {
+		event.preventDefault();
+		openSearch();
+	}
+});
+
+for (const graph of document.querySelectorAll(".graph")) {
+	for (const node of graph.querySelectorAll("[data-node]")) {
+		node.addEventListener("mouseenter", () => {
+			const id = node.dataset.node;
+			graph.classList.add("focusing");
+			node.classList.add("is-related");
+			for (const edge of graph.querySelectorAll(".edge")) {
+				if (edge.dataset.from !== id && edge.dataset.to !== id) continue;
+				edge.classList.add("is-related");
+				const other = edge.dataset.from === id ? edge.dataset.to : edge.dataset.from;
+				graph.querySelector('[data-node="' + CSS.escape(other) + '"]')?.classList.add("is-related");
+			}
+		});
+		node.addEventListener("mouseleave", () => {
+			graph.classList.remove("focusing");
+			for (const el of graph.querySelectorAll(".is-related")) el.classList.remove("is-related");
+		});
+	}
+}
+</script>
+</body>
+</html>

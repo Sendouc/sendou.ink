@@ -1,7 +1,14 @@
+/**
+ * How far main weapons shoot: a frame by frame simulation of a shot's flight (straight, braking,
+ * then falling) from the weapon's params, chargers reaching their full charge distance in a line.
+ * Distances are in game units, measured from a player standing on flat ground.
+ */
+
 import { mainWeaponParams } from "~/features/build-analyzer/core/utils";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { weaponCategories } from "~/modules/in-game-lists/weapon-ids";
 
+/** Flight params of a shot, `Range_*` of the weapon's params with the game's defaults filled in. */
 export interface TrajectoryParams {
 	spawnSpeed: number;
 	goStraightStateEndMaxSpeed: number;
@@ -15,6 +22,7 @@ export interface TrajectoryParams {
 	bounceAfterMaxSpeed?: number;
 }
 
+/** A shot's position: `z` the distance travelled forward, `y` the height above the ground. */
 export interface TrajectoryPoint {
 	z: number;
 	y: number;
@@ -37,7 +45,8 @@ function getWeaponCategoryName(weaponId: MainWeaponId): string | undefined {
 
 const PLAYER_HEIGHT = 1.0;
 
-export function calculateGroundRange(trajectory: TrajectoryPoint[]): number {
+/** Distance at which a trajectory first reaches the ground, its last point's when it never does. */
+export function groundRange(trajectory: TrajectoryPoint[]): number {
 	for (let i = 1; i < trajectory.length; i++) {
 		const point = trajectory[i];
 		const prevPoint = trajectory[i - 1];
@@ -50,12 +59,16 @@ export function calculateGroundRange(trajectory: TrajectoryPoint[]): number {
 	return lastPoint?.z ?? 0;
 }
 
-function calculateBouncingRange(trajectory: TrajectoryPoint[]): number {
+function bouncingRange(trajectory: TrajectoryPoint[]): number {
 	const lastPoint = trajectory[trajectory.length - 1];
 	return lastPoint?.z ?? 0;
 }
 
-export function simulateTrajectoryPoints(
+/**
+ * The shot's position on every frame until it lands, bursts or stops. Bouncing shots
+ * (`bounceAfterMaxSpeed` set) bounce `burstFrame` times instead of landing.
+ */
+export function simulateTrajectory(
 	params: TrajectoryParams,
 ): TrajectoryPoint[] {
 	const {
@@ -154,6 +167,7 @@ export function simulateTrajectoryPoints(
 	return points;
 }
 
+/** Range of a main weapon, `unsupported` for weapons the model can't simulate. */
 export interface WeaponRangeResult {
 	range: number;
 	blastRadius?: number;
@@ -161,7 +175,8 @@ export interface WeaponRangeResult {
 	trajectory?: TrajectoryPoint[];
 }
 
-export function getWeaponRange(weaponId: MainWeaponId): WeaponRangeResult {
+/** Range of a main weapon with the trajectory it was measured from. */
+export function ofMainWeapon(weaponId: MainWeaponId): WeaponRangeResult {
 	const category = getWeaponCategoryName(weaponId);
 
 	if (!category) {
@@ -201,11 +216,11 @@ export function getWeaponRange(weaponId: MainWeaponId): WeaponRangeResult {
 		bounceAfterMaxSpeed: params.Range_BounceAfterMaxSpeed,
 	};
 
-	const trajectory = simulateTrajectoryPoints(trajectoryParams);
+	const trajectory = simulateTrajectory(trajectoryParams);
 	const range =
 		params.Range_BounceAfterMaxSpeed !== undefined
-			? calculateBouncingRange(trajectory)
-			: calculateGroundRange(trajectory);
+			? bouncingRange(trajectory)
+			: groundRange(trajectory);
 
 	return {
 		range,
@@ -215,6 +230,7 @@ export function getWeaponRange(weaponId: MainWeaponId): WeaponRangeResult {
 	};
 }
 
+/** A comp's weapon with its range. */
 export interface WeaponWithRange {
 	weaponId: MainWeaponId;
 	/** Position in the comp, kept through the filtering so duplicates stay apart */
@@ -225,12 +241,11 @@ export interface WeaponWithRange {
 	trajectory?: TrajectoryPoint[];
 }
 
-export function getWeaponsWithRange(
-	weaponIds: MainWeaponId[],
-): WeaponWithRange[] {
+/** Ranges of a comp's weapons, the ones the model can't simulate left out. */
+export function ofWeapons(weaponIds: MainWeaponId[]): WeaponWithRange[] {
 	return weaponIds
 		.map((weaponId, slot) => {
-			const result = getWeaponRange(weaponId);
+			const result = ofMainWeapon(weaponId);
 			return {
 				weaponId,
 				slot,
@@ -240,17 +255,20 @@ export function getWeaponsWithRange(
 		.filter((w) => w.rangeType !== "unsupported");
 }
 
+/** Weapons drawn under every comp's ranges for scale: Splattershot and Snipewriter 5H. */
 export const BENCHMARK_WEAPON_IDS = [40, 2070] satisfies MainWeaponId[];
 
+/** Trajectory of a benchmark weapon. */
 export interface BenchmarkTrajectory {
 	id: MainWeaponId;
 	range: number;
 	trajectory?: TrajectoryPoint[];
 }
 
-export function getBenchmarkTrajectories(): BenchmarkTrajectory[] {
+/** Trajectories of the benchmark weapons. */
+export function benchmarkTrajectories(): BenchmarkTrajectory[] {
 	return BENCHMARK_WEAPON_IDS.map((weaponId) => {
-		const result = getWeaponRange(weaponId);
+		const result = ofMainWeapon(weaponId);
 		return {
 			id: weaponId,
 			range: result.range,

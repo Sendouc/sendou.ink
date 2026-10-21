@@ -1,0 +1,1756 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin · sendou.ink living docs</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--bg: #f6f6f8;
+	--surface: #ffffff;
+	--surface-2: #f2f2f6;
+	--border: #e3e3ea;
+	--text: #1b1b21;
+	--muted: #6c6c7a;
+	--accent: #6d4aff;
+	--accent-soft: #ede8ff;
+	--warn: #b45309;
+	--warn-soft: #fef3c7;
+	--arrange: #64748b;
+	--act: #3b82f6;
+	--assert: #16a34a;
+	--code-bg: #f7f7fa;
+	--hl-k: #a626a4; --hl-s: #3d8b3d; --hl-n: #986801; --hl-c: #a0a1a7; --hl-t: #b76e00; --hl-f: #3b6fd8; --hl-l: #0184bc;
+	--radius: 12px;
+	--font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0e0e12;
+		--surface: #16161c;
+		--surface-2: #1d1d25;
+		--border: #2a2a35;
+		--text: #e7e7ee;
+		--muted: #9898a8;
+		--accent: #a58fff;
+		--accent-soft: #272040;
+		--warn: #fbbf24;
+		--warn-soft: #3a2a0a;
+		--arrange: #94a3b8;
+		--act: #60a5fa;
+		--assert: #4ade80;
+		--code-bg: #121218;
+		--hl-k: #c678dd; --hl-s: #98c379; --hl-n: #d19a66; --hl-c: #6b717d; --hl-t: #e5c07b; --hl-f: #61afef; --hl-l: #56b6c2;
+	}
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--font); }
+a { color: inherit; }
+code { font-family: var(--mono); font-size: 0.88em; }
+p { margin: 0; }
+p + p { margin-top: 0.5em; }
+.muted { color: var(--muted); }
+
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 24px; padding: 10px 24px; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+.brand span { color: var(--accent); font-weight: 600; }
+.feature-tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1; min-width: 0; scrollbar-width: thin; mask-image: linear-gradient(to right, black calc(100% - 32px), transparent); padding-right: 32px; }
+.feature-tab { display: flex; align-items: center; gap: 7px; padding: 5px 11px 5px 7px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.feature-tab:hover { background: var(--surface-2); color: var(--text); }
+.feature-tab[aria-current="page"] { background: var(--accent-soft); color: var(--text); }
+.feature-icon { flex: none; object-fit: contain; }
+.search-button { display: flex; align-items: center; gap: 8px; padding: 5px 8px 5px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.search-button:hover { border-color: var(--accent); color: var(--text); }
+
+.search-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 120px)); margin: 80px auto auto; padding: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 24px 64px rgb(0 0 0 / 0.3); overflow: hidden; }
+.search-dialog[open] { display: flex; flex-direction: column; }
+.search-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.search-dialog input { width: 100%; padding: 16px 18px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; font-size: 16px; outline: none; }
+.search-results { list-style: none; margin: 0; padding: 6px; overflow-y: auto; flex: 1; }
+.search-results a { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 2px 10px; padding: 7px 10px; border-radius: 8px; text-decoration: none; }
+.search-results a[aria-selected="true"] { background: var(--accent-soft); }
+.search-kind { grid-row: span 2; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding-top: 3px; }
+.search-label { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-detail { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-empty { padding: 18px; color: var(--muted); text-align: center; }
+.search-hint { margin: 0; padding: 8px 14px; border-top: 1px solid var(--border); font-size: 12px; }
+
+.lightbox { max-width: min(1280px, calc(100vw - 32px)); padding: 0; border: none; border-radius: 12px; background: var(--surface); box-shadow: 0 24px 64px rgb(0 0 0 / 0.4); cursor: zoom-out; }
+.lightbox::backdrop { background: rgb(0 0 0 / 0.6); }
+.lightbox img { display: block; max-width: 100%; max-height: calc(100vh - 120px); }
+.lightbox-caption { margin: 0; padding: 8px 14px; font-weight: 600; font-size: 13px; color: var(--text); }
+.letter-icon { display: inline-grid; place-items: center; width: var(--size); height: var(--size); border-radius: 28%; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: calc(var(--size) * 0.5); }
+
+.index-head { margin-bottom: 24px; }
+.index-head h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.02em; }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.feature-card { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 12px; align-items: center; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; }
+.feature-card:hover { border-color: var(--accent); }
+.feature-card .feature-icon { grid-row: span 2; }
+.feature-card-label { font-weight: 700; }
+.feature-card-stats { display: flex; flex-wrap: wrap; column-gap: 10px; color: var(--muted); font-size: 12px; }
+.feature-card-stats span { white-space: nowrap; }
+
+main { max-width: 1320px; margin: 0 auto; padding: 24px; }
+.feature-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.feature-head h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+.stats { color: var(--muted); font-size: 14px; }
+.view-switch { margin-left: auto; display: flex; padding: 3px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; }
+.view-switch a { padding: 6px 14px; border-radius: 7px; text-decoration: none; font-weight: 600; font-size: 14px; color: var(--muted); }
+.view-switch a[aria-current="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgb(0 0 0 / 0.08); }
+
+.view { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; align-items: start; }
+.view[hidden] { display: none; }
+.sidebar { position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow-y: auto; font-size: 13px; padding-right: 6px; }
+.sidebar h4 { margin: 18px 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.sidebar h4:first-child { margin-top: 0; }
+.toc, .toc ul, .legend { list-style: none; margin: 0; padding: 0; }
+.toc > li { margin-bottom: 10px; }
+.toc > li > a { font-weight: 600; }
+.toc ul { margin-top: 4px; border-left: 1px solid var(--border); }
+.toc ul a { display: flex; align-items: center; gap: 6px; padding: 2px 0 2px 10px; color: var(--muted); }
+.toc a { text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 600; }
+.toc ul a[aria-current="location"] { margin-left: -1px; border-left: 2px solid var(--accent); padding-left: 9px; }
+.toc a.is-active-parent { color: var(--accent); }
+.toc-group { font-weight: 600; }
+.toc > li.toc-depth-2 { margin-left: 10px; }
+.toc > li.toc-depth-3 { margin-left: 20px; }
+.toc > li:has(> .toc-group:only-child) { margin-bottom: 4px; }
+.kind-dot { width: 7px; height: 7px; border-radius: 2px; flex: none; background: var(--accent); }
+.kind-dot.kind-type, .kind-dot.kind-interface { background: var(--hl-t); }
+.kind-dot.is-visited { background: var(--assert); border-radius: 50%; }
+.kind-dot.is-unvisited { background: transparent; border: 1.5px solid var(--muted); border-radius: 50%; }
+.coverage { margin: 0; font-size: 14px; }
+.route-toc a { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--muted); }
+.routes { display: grid; gap: 10px; }
+.route { padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); scroll-margin-top: 80px; }
+.route-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.route-head .file-link { margin-left: auto; }
+.route-path { font-size: 15px; font-weight: 700; }
+.route-param { color: var(--accent); }
+.badge-loader { color: var(--act); }
+.badge-action { color: var(--warn); }
+.route-tests { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; columns: 2 300px; column-gap: 24px; }
+.route-tests li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.route-tests li::before { content: "▸"; position: absolute; left: 4px; color: var(--muted); }
+.route-tests a { text-decoration: none; }
+.route-tests a:hover { color: var(--accent); text-decoration: underline; }
+.warn-text { margin: 8px 0 0; font-size: 13px; color: var(--warn); }
+.legend li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-weight: 600; }
+.legend small { color: var(--muted); font-weight: 400; margin-left: auto; font-family: var(--mono); font-size: 10px; }
+.legend.phases small { font-family: var(--font); font-size: 11px; }
+.legend-note { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.toggle { display: flex; align-items: center; gap: 8px; margin-top: 14px; cursor: pointer; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); font-size: 12px; text-decoration: none; margin: 2px 4px 2px 0; white-space: nowrap; }
+.file-chip { font-family: var(--mono); font-size: 11.5px; }
+.file-chip:hover { border-color: var(--accent); color: var(--accent); }
+.badge { display: inline-block; padding: 1px 7px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; vertical-align: middle; }
+.warn { font-size: 11px; font-weight: 600; color: var(--warn); background: var(--warn-soft); padding: 1px 7px; border-radius: 6px; }
+.file-link { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; }
+.file-link:hover { color: var(--accent); text-decoration: underline; }
+
+.graph-card, .module, .test { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.graph-card { margin: 0 0 24px; padding: 16px 20px; }
+.graph-card figcaption { font-weight: 700; margin-bottom: 8px; }
+.graph-scroll { overflow-x: auto; }
+.graph { display: block; font-size: 13px; }
+.column-title { fill: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.node rect { fill: var(--surface-2); stroke: var(--border); }
+.node-self rect { fill: var(--accent-soft); stroke: var(--accent); }
+.node-label { fill: var(--text); font-weight: 600; }
+.node-sublabel { fill: var(--muted); font-size: 11px; }
+.node { cursor: default; transition: opacity 0.15s; }
+.edge { fill: none; stroke: var(--muted); stroke-opacity: 0.45; stroke-width: 1.4; transition: opacity 0.15s; }
+.arrowhead { fill: var(--muted); }
+.graph.focusing .node, .graph.focusing .edge { opacity: 0.18; }
+.graph.focusing .is-related { opacity: 1; }
+.graph.focusing .edge.is-related { stroke: var(--accent); stroke-opacity: 1; stroke-width: 2; }
+
+.module { padding: 22px 24px; margin-bottom: 24px; scroll-margin-top: 80px; }
+.module-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.module-head h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
+.module-head .file-link { margin-left: auto; }
+.overview { margin-top: 10px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+.missing { margin-top: 10px; color: var(--muted); font-style: italic; font-size: 14px; }
+.module-facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 14px 0 0; font-size: 13px; }
+.module-facts dt { color: var(--muted); font-weight: 600; padding-top: 2px; }
+.module-facts dd { margin: 0; }
+.section-title { margin: 26px 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.export { padding: 16px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
+.section-title + .export { border-top: none; }
+.export-head { display: flex; align-items: center; gap: 8px; }
+.export-head .file-link { margin-left: auto; }
+.export-name { font-size: 15px; font-weight: 700; }
+.kind { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 5px; color: var(--accent); background: var(--accent-soft); }
+.kind.kind-type, .kind.kind-interface { color: var(--hl-t); background: color-mix(in srgb, var(--hl-t) 14%, transparent); }
+.doc { margin-top: 6px; }
+.doc code, .overview code, .note code, .tooltip-doc code { background: var(--surface-2); padding: 0 4px; border-radius: 4px; }
+.doc-tags { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.doc-tags span { font-family: var(--mono); color: var(--muted); }
+.doc-tags p { display: inline; }
+
+pre.code, code { font-variant-ligatures: none; }
+pre.code { margin: 10px 0 0; padding: 12px 14px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; font: 12.5px/1.6 var(--mono); tab-size: 2; }
+.c { color: var(--hl-c); font-style: italic; } .k { color: var(--hl-k); } .s { color: var(--hl-s); } .n { color: var(--hl-n); } .t { color: var(--hl-t); } .f { color: var(--hl-f); } .l { color: var(--hl-l); }
+details.source { margin-top: 8px; }
+details.source summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+details.source summary:hover { color: var(--accent); }
+.unit-tests { margin-top: 10px; font-size: 13px; }
+.unit-tests-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+.unit-test-list { margin: 0; padding: 0; list-style: none; columns: 2 320px; column-gap: 24px; }
+.unit-test-list > li { break-inside: avoid; padding: 1px 0 1px 20px; position: relative; }
+.unit-test-list > li::before { content: "✓"; position: absolute; left: 2px; color: var(--assert); font-weight: 800; }
+.unit-test-heading { font-weight: 650; }
+.unit-test-group ul { margin: 1px 0 4px; padding: 0 0 0 12px; list-style: none; border-left: 2px solid var(--border); }
+.unit-test-group li { padding: 1px 0; }
+.unit-tests a { text-decoration: none; }
+.unit-tests a:hover { color: var(--accent); text-decoration: underline; }
+.usages { margin-top: 10px; font-size: 13px; display: grid; gap: 4px; }
+.usage-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.usage-kind { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.test-only { margin-top: 18px; font-size: 13px; }
+
+.spec-head { margin-bottom: 8px; }
+.group-title { font-size: 18px; margin: 28px 0 12px; letter-spacing: -0.01em; }
+.group-options { margin: -6px 0 12px; color: var(--muted); font-size: 13px; }
+.group-title.group-depth-2 { font-size: 16px; margin-top: 20px; }
+.group-title.group-depth-3 { font-size: 14px; }
+.group-title:is(.group-depth-2, .group-depth-3)::before { content: "› "; color: var(--muted); }
+.test-group:has(> .group-title.group-depth-1):not(:has(.test)) .group-title { margin-bottom: 0; }
+.group-doc, .test-doc { margin: -6px 0 12px; color: var(--muted); font-size: 14px; }
+.group-doc p, .test-doc p { margin: 0; }
+.chapters { display: grid; gap: 20px; }
+.chapter { display: grid; gap: 8px; }
+.chapter-title { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 650; }
+.chapter-text { flex: 1; }
+.chapter-number { display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 800; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+body.outline-only .chapter .segments { display: none; }
+body.outline-only .chapters { gap: 8px; }
+.test-group:first-child .group-title { margin-top: 0; }
+.test { padding: 18px 20px; margin-bottom: 20px; scroll-margin-top: 80px; }
+.test-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.test-head h3 { margin: 0; font-size: 16px; flex: 1; }
+.test-head h3::first-letter { text-transform: uppercase; }
+.test-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.user { display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--actor, var(--accent)); background: color-mix(in srgb, var(--actor, var(--accent)) 15%, transparent); }
+.avatar { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border-radius: 50%; font-size: 10px; font-weight: 800; color: white; background: var(--actor, var(--arrange)); }
+
+.segments { display: grid; gap: 10px; }
+.test-routes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -6px 0 12px; font-size: 12px; color: var(--muted); }
+.route-chip { font-family: var(--mono); font-size: 11.5px; padding: 1px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); text-decoration: none; color: var(--text); }
+.route-chip:hover { border-color: var(--accent); color: var(--accent); }
+.storyboard { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+.storyboard:not(:has(img)) { display: none; }
+.storyboard-frame { flex: none; display: grid; gap: 4px; width: 176px; padding: 0; border: none; background: none; color: var(--muted); font: inherit; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; text-align: left; cursor: zoom-in; }
+.storyboard-frame img, .divider-shot img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); }
+.storyboard-frame:hover img, .divider-shot:hover img { border-color: var(--accent); }
+.storyboard-frame span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.divider-shot { flex: none; order: 3; width: 48px; padding: 0; border: none; background: none; cursor: zoom-in; }
+.divider-shot img { border-radius: 4px; }
+.segment { display: grid; grid-template-columns: 92px minmax(0, 1fr); border-radius: 10px; border: 1px solid var(--border); overflow: clip; }
+.segment-actor { border-color: color-mix(in srgb, var(--actor) 45%, transparent); background: color-mix(in srgb, var(--actor) 5%, var(--surface)); }
+.lane { padding: 12px 6px; font-size: 12px; font-weight: 700; text-align: center; background: var(--surface-2); border-right: 1px solid var(--border); color: var(--muted); }
+.lane-sticky { position: sticky; top: 76px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.segment-actor .lane { background: color-mix(in srgb, var(--actor) 14%, var(--surface)); color: var(--actor); border-right-color: color-mix(in srgb, var(--actor) 35%, transparent); }
+.segment-body { padding: 8px 14px 10px; min-width: 0; }
+
+.divider { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; font-size: 12px; }
+.divider::after { content: ""; order: 2; flex: 1; border-bottom: 1px dashed var(--border); align-self: center; }
+.divider-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+.divider-label::before { content: "▸ "; }
+
+.run { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; padding: 4px 0; }
+.run + .run { border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.run-label { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 5px; }
+.phase-arrange { --phase: var(--arrange); }
+.phase-act { --phase: var(--act); }
+.phase-assert { --phase: var(--assert); }
+.run-label { color: var(--phase); }
+.steps { list-style: none; margin: 0; padding: 0; }
+.steps.nested { margin: 2px 0 2px 9px; padding-left: 14px; border-left: 2px solid var(--border); }
+.step { padding: 3px 0; }
+.step-line { display: flex; gap: 10px; align-items: baseline; }
+.phase-icon { flex: none; width: 16px; text-align: center; font-weight: 800; color: var(--phase); }
+.phase-arrange .phase-icon::before { content: "+"; }
+.phase-act .phase-icon::before { content: "→"; }
+.phase-assert .phase-icon::before { content: "✓"; }
+.step-naming > .step-line .phase-icon::before { content: "="; color: var(--muted); }
+.step-naming > .step-line { color: var(--muted); }
+.legend .phase-icon { width: 24px; }
+.step-text strong { font-weight: 650; }
+.ref { text-decoration: underline dotted color-mix(in srgb, currentColor 45%, transparent); text-underline-offset: 3px; cursor: help; }
+.ref:hover { text-decoration-color: var(--accent); color: var(--accent); }
+.tooltip { position: fixed; z-index: 100; max-width: min(560px, calc(100vw - 24px)); padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 32px rgb(0 0 0 / 0.18); font-size: 13px; pointer-events: none; }
+.tooltip-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.tooltip-head code { font-weight: 700; }
+.tooltip-head span { color: var(--muted); font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.tooltip-doc { margin-top: 6px; }
+.tooltip pre.code { margin-top: 8px; font-size: 11.5px; max-height: 280px; overflow: hidden; }
+.note { margin: 4px 0 2px 26px; padding-left: 10px; border-left: 2px solid var(--border); color: var(--muted); font-size: 13px; font-style: italic; }
+.str { color: var(--hl-s); }
+.num { color: var(--hl-n); font-family: var(--mono); font-size: 0.9em; }
+.const { cursor: help; }
+.tuple::before { content: "("; color: var(--muted); }
+.tuple::after { content: ")"; color: var(--muted); }
+.kv + .kv::before { content: "· "; color: var(--muted); }
+.key { color: var(--muted); }
+.binds { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+code.inline { background: var(--surface-2); padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+kbd { font-family: var(--mono); font-size: 12px; padding: 0 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--surface); }
+.step-code { display: none; margin: 4px 0 4px 26px !important; padding: 6px 10px !important; font-size: 11.5px !important; }
+body.show-code .step-code { display: block; }
+
+@media (max-width: 900px) {
+	main { padding: 16px; }
+	.topbar { padding: 10px 16px; gap: 12px; }
+	.brand span { display: none; }
+	.search-button kbd { display: none; }
+	.view { grid-template-columns: minmax(0, 1fr); }
+	.sidebar { position: static; max-height: none; }
+	.segment { grid-template-columns: minmax(0, 1fr); }
+	.lane { border-right: none; border-bottom: 1px solid var(--border); padding: 6px 10px; }
+	.lane-sticky { position: static; flex-direction: row; }
+	.run { grid-template-columns: minmax(0, 1fr); gap: 0; }
+	.view-switch { margin-left: 0; }
+	.usage-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+	.chip { white-space: normal; overflow-wrap: anywhere; }
+	.test-head { flex-direction: column; gap: 6px; }
+	.test-meta { justify-content: flex-start; }
+	.divider { flex-wrap: wrap; gap: 2px 10px; }
+	.divider::after { display: none; }
+}
+
+[data-actor="ADMIN_ID"] { --actor: #8b5cf6; }
+[data-actor="NZAP_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="REGULAR_USER_TEST_ID"] { --actor: #f59e0b; }
+[data-actor="ORG_ADMIN_TEST_ID"] { --actor: #0ea5e9; }
+[data-actor="STAFF_TEST_ID"] { --actor: #14b8a6; }
+[data-actor="DEV_TEST_ID"] { --actor: #64748b; }
+</style>
+</head>
+<body>
+<header class="topbar">
+	<a class="brand" href="index.html">sendou.ink <span>living docs</span></a>
+	<button type="button" class="search-button" data-open-search>Search <kbd>⌘K</kbd></button>
+	<nav class="feature-tabs">
+		<a class="feature-tab" href="admin.html" aria-current="page"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Admin</a><a class="feature-tab" href="api.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api</a><a class="feature-tab" href="api-private.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Api private</a><a class="feature-tab" href="art.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/art.avif" alt="" width="20" height="20" loading="lazy">Art</a><a class="feature-tab" href="articles.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/articles.avif" alt="" width="20" height="20" loading="lazy">Articles</a><a class="feature-tab" href="associations.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/associations.avif" alt="" width="20" height="20" loading="lazy">Associations</a><a class="feature-tab" href="auth.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Auth</a><a class="feature-tab" href="availability.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">A</span>Availability</a><a class="feature-tab" href="badges.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/badges.avif" alt="" width="20" height="20" loading="lazy">Badges</a><a class="feature-tab" href="ban.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">B</span>Ban</a><a class="feature-tab" href="build-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/analyzer.avif" alt="" width="20" height="20" loading="lazy">Build analyzer</a><a class="feature-tab" href="build-stats.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Build stats</a><a class="feature-tab" href="builds.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/builds.avif" alt="" width="20" height="20" loading="lazy">Builds</a><a class="feature-tab" href="calendar.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/calendar.avif" alt="" width="20" height="20" loading="lazy">Calendar</a><a class="feature-tab" href="chat.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">C</span>Chat</a><a class="feature-tab" href="comp-analyzer.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/comp-analyzer.avif" alt="" width="20" height="20" loading="lazy">Comp analyzer</a><a class="feature-tab" href="events.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">E</span>Events</a><a class="feature-tab" href="friends.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Friends</a><a class="feature-tab" href="front-page.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">F</span>Front page</a><a class="feature-tab" href="global-status.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">G</span>Global status</a><a class="feature-tab" href="health.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">H</span>Health</a><a class="feature-tab" href="img-export.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Image export</a><a class="feature-tab" href="img-upload.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Img upload</a><a class="feature-tab" href="info.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">I</span>Info</a><a class="feature-tab" href="lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/lfg.avif" alt="" width="20" height="20" loading="lazy">LFG</a><a class="feature-tab" href="layout.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Layout</a><a class="feature-tab" href="leaderboards.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/leaderboards.avif" alt="" width="20" height="20" loading="lazy">Leaderboards</a><a class="feature-tab" href="links.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/links.avif" alt="" width="20" height="20" loading="lazy">Links</a><a class="feature-tab" href="live-streams.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">L</span>Live streams</a><a class="feature-tab" href="mmr.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">M</span>MMR</a><a class="feature-tab" href="map-list-generator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/maps.avif" alt="" width="20" height="20" loading="lazy">Map list generator</a><a class="feature-tab" href="map-planner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plans.avif" alt="" width="20" height="20" loading="lazy">Map planner</a><a class="feature-tab" href="notifications.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">N</span>Notifications</a><a class="feature-tab" href="object-damage-calculator.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/object-damage-calculator.avif" alt="" width="20" height="20" loading="lazy">Object damage calculator</a><a class="feature-tab" href="params.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Params</a><a class="feature-tab" href="plus-suggestions.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus suggestions</a><a class="feature-tab" href="plus-voting.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/plus.avif" alt="" width="20" height="20" loading="lazy">Plus voting</a><a class="feature-tab" href="api-public.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">P</span>Public API</a><a class="feature-tab" href="scanner.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner</a><a class="feature-tab" href="scanner-ingest.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scanner.avif" alt="" width="20" height="20" loading="lazy">Scanner ingest</a><a class="feature-tab" href="scrims.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/scrims.avif" alt="" width="20" height="20" loading="lazy">Scrims</a><a class="feature-tab" href="search.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Search</a><a class="feature-tab" href="sendouq.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ</a><a class="feature-tab" href="sendouq-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ match</a><a class="feature-tab" href="sendouq-streams.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/sendouq.avif" alt="" width="20" height="20" loading="lazy">SendouQ streams</a><a class="feature-tab" href="settings.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/settings.avif" alt="" width="20" height="20" loading="lazy">Settings</a><a class="feature-tab" href="sidebar.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Sidebar</a><a class="feature-tab" href="site-wide.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">S</span>Site-wide</a><a class="feature-tab" href="team.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/t.avif" alt="" width="20" height="20" loading="lazy">Team</a><a class="feature-tab" href="theme.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Theme</a><a class="feature-tab" href="tier-list-maker.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/tier-list-maker.avif" alt="" width="20" height="20" loading="lazy">Tier list maker</a><a class="feature-tab" href="top-search.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/xsearch.avif" alt="" width="20" height="20" loading="lazy">Top search</a><a class="feature-tab" href="tournament.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament</a><a class="feature-tab" href="tournament-admin.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament admin</a><a class="feature-tab" href="tournament-bracket.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament bracket</a><a class="feature-tab" href="tournament-lfg.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament lfg</a><a class="feature-tab" href="tournament-match.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament match</a><a class="feature-tab" href="tournament-organization.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament organization</a><a class="feature-tab" href="tournament-subs.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/medal.avif" alt="" width="20" height="20" loading="lazy">Tournament subs</a><a class="feature-tab" href="translate.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">T</span>Translate</a><a class="feature-tab" href="trophies.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/trophies.avif" alt="" width="20" height="20" loading="lazy">Trophies</a><a class="feature-tab" href="user-activity.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">U</span>User activity</a><a class="feature-tab" href="user-card.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User card</a><a class="feature-tab" href="user-page.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User page</a><a class="feature-tab" href="user-report.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/u.avif" alt="" width="20" height="20" loading="lazy">User report</a><a class="feature-tab" href="vods.html"><img class="feature-icon" src="https://sendou-assets.nyc3.cdn.digitaloceanspaces.com/img/layout/vods.avif" alt="" width="20" height="20" loading="lazy">Vods</a><a class="feature-tab" href="voice.html"><span class="feature-icon letter-icon" style="--size: 20px" aria-hidden="true">V</span>Voice</a>
+	</nav>
+</header>
+<main data-default-view="e2e">
+	<div class="feature-head">
+		<span class="feature-icon letter-icon" style="--size: 48px" aria-hidden="true">A</span>
+		<div>
+			<h1>Admin</h1>
+			<p class="stats">0 modules · 0 exports · 5 e2e tests · 2 routes</p>
+		</div>
+		<div class="view-switch">
+			
+			<a href="#e2e" data-view-tab="e2e">E2E tests</a>
+			<a href="#routes" data-view-tab="routes">Routes</a>
+		</div>
+	</div>
+	
+	<div class="view" data-view="e2e" hidden>
+		<aside class="sidebar">
+			<h4>Users</h4>
+			<ul class="legend"><li style="--actor: #8b5cf6"><span class="avatar">S</span>Sendou<small>ADMIN_ID</small></li></ul>
+			<p class="legend-note">Users a test creates itself are coloured per test.</p>
+			<h4>Phases</h4>
+			<ul class="legend phases">
+				<li class="phase-arrange"><span class="phase-icon"></span>Arrange <small>data setup</small></li>
+				<li class="phase-act"><span class="phase-icon"></span>Act <small>what the user does</small></li>
+				<li class="phase-assert"><span class="phase-icon"></span>Assert <small>what is expected</small></li>
+			</ul>
+			<label class="toggle"><input type="checkbox" data-toggle-code> Show code of each step</label>
+			
+			<h4>Tests</h4>
+			<ul class="toc"><li class="toc-depth-1"><span class="toc-group">Admin panel</span><ul><li><a href="#e2e/admin-admin-panel-grants-roles-friend-code-and-api-access-to-a-user">grants roles, friend code and API access to a user</a></li><li><a href="#e2e/admin-admin-panel-grants-tournament-organizer-role-and-patron-status-to-a-user">grants tournament organizer role and patron status to a user</a></li><li><a href="#e2e/admin-admin-panel-links-a-player-refreshes-plus-tiers-and-migrates-an-account">links a player, refreshes plus tiers and migrates an account</a></li><li><a href="#e2e/admin-admin-panel-keeps-the-scroll-position-when-an-action-shows-a-toast">keeps the scroll position when an action shows a toast</a></li><li><a href="#e2e/admin-admin-panel-adds-and-deletes-an-external-stream">adds and deletes an external stream</a></li></ul></li></ul>
+		</aside>
+		<div class="content">
+			<div class="spec">
+	<div class="spec-head"><a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/admin.spec.ts#L1" title="e2e/admin.spec.ts:1">e2e/admin.spec.ts</a></div>
+	<section class="test-group">
+		<h2 class="group-title group-depth-1">Admin panel</h2>
+		
+		
+		<article class="test" id="e2e/admin-admin-panel-grants-roles-friend-code-and-api-access-to-a-user">
+	<header class="test-head">
+		<h3>grants roles, friend code and API access to a user</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #ec4899">target</span><span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/admin.spec.ts#L38" title="e2e/admin.spec.ts:38">admin.spec.ts:38</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="admin.html#routes/app-features-admin-routes-admin-tsx">/admin</a><a class="route-chip" href="api.html#routes/app-features-api-routes-api-tsx">/api</a><a class="route-chip" href="art.html#routes/app-features-art-routes-art-new-tsx">/art/new</a><a class="route-chip" href="vods.html#routes/app-features-vods-routes-vods-new-tsx">/vods/new</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/admin/50.jpg" data-caption="Api page"><img src="screenshots/admin/50.jpg" alt="Api page" loading="lazy" onerror="this.parentElement.remove()"><span>Api page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/55.jpg" data-caption="Admin actions page"><img src="screenshots/admin/55.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"><span>Admin actions page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/70.jpg" data-caption="New art page"><img src="screenshots/admin/70.jpg" alt="New art page" loading="lazy" onerror="this.parentElement.remove()"><span>New art page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/74.jpg" data-caption="New vod page"><img src="screenshots/admin/74.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"><span>New vod page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/77.jpg" data-caption="Api page"><img src="screenshots/admin/77.jpg" alt="Api page" loading="lazy" onerror="this.parentElement.remove()"><span>Api page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create user <code class="inline" title="...ROLE_TARGET">...<span class="t">ROLE_TARGET</span></code> <span class="kv"><span class="key">friend code</span> <code class="inline" title="null"><span class="l">null</span></code></span> <span class="binds">→ target</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> target = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>({
+	...<span class="t">ROLE_TARGET</span>,
+	friendCode: <span class="l">null</span>,
+});</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #ec4899">
+	<div class="lane" title="Logged in as target (target.id)"><div class="lane-sticky"><span class="avatar">T</span><span class="lane-name">target</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/api/api-page.ts:12:ApiPage">Api page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/50.jpg" data-caption="Api page"><img src="screenshots/admin/50.jpg" alt="Api page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/api/api-page.ts:25:ApiPage.goto">Open</span> the <strong>api page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> api.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/api/api-page.ts:19:ApiPage.locators.noAccessMessage">no access message</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(api.locators.noAccessMessage).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:13:AdminActionsPage">Admin actions page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/55.jpg" data-caption="Admin actions page"><img src="screenshots/admin/55.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:20:AdminActionsPage.goto">Open</span> the <strong>admin actions page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:24:AdminActionsPage.updateFriendCode">Update friend code</span> <code class="inline" title="ROLE_TARGET.discordName"><span class="t">ROLE_TARGET</span>.discordName</code>, <span class="const" title="FRIEND_CODE"><span class="str">“0123-4567-8901”</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">updateFriendCode</span>(<span class="t">ROLE_TARGET</span>.discordName, <span class="t">FRIEND_CODE</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:38:AdminActionsPage.giveArtist">Give artist</span> <code class="inline" title="ROLE_TARGET.discordName"><span class="t">ROLE_TARGET</span>.discordName</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">giveArtist</span>(<span class="t">ROLE_TARGET</span>.discordName);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:44:AdminActionsPage.giveVideoAdder">Give video adder</span> <code class="inline" title="ROLE_TARGET.discordName"><span class="t">ROLE_TARGET</span>.discordName</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">giveVideoAdder</span>(<span class="t">ROLE_TARGET</span>.discordName);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:56:AdminActionsPage.giveApiAccess">Give api access</span> <code class="inline" title="ROLE_TARGET.discordName"><span class="t">ROLE_TARGET</span>.discordName</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">giveApiAccess</span>(<span class="t">ROLE_TARGET</span>.discordName);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:115:AdminActionsPage.openFriendCodeLookUp">Open friend code look up</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">openFriendCodeLookUp</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:119:AdminActionsPage.searchFriendCode">Search friend code</span> <span class="const" title="FRIEND_CODE"><span class="str">“0123-4567-8901”</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">searchFriendCode</span>(<span class="t">FRIEND_CODE</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:127:AdminActionsPage.foundUserLink">found user link</span> <code class="inline" title="ROLE_TARGET.discordName"><span class="t">ROLE_TARGET</span>.discordName</code></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(
+	adminActions.<span class="f">foundUserLink</span>(<span class="t">ROLE_TARGET</span>.discordName),
+).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #ec4899">
+	<div class="lane" title="Logged in as target (target.id)"><div class="lane-sticky"><span class="avatar">T</span><span class="lane-name">target</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/art/new-art-page.ts:10:NewArtPage">New art page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/70.jpg" data-caption="New art page"><img src="screenshots/admin/70.jpg" alt="New art page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/art/new-art-page.ts:27:NewArtPage.goto">Open</span> the <strong>new art page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> newArt.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/art/new-art-page.ts:22:NewArtPage.locators.descriptionInput">description input</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(newArt.locators.descriptionInput).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:15:NewVodPage">New vod page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/74.jpg" data-caption="New vod page"><img src="screenshots/admin/74.jpg" alt="New vod page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:31:NewVodPage.goto">Open</span> the <strong>new vod page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> newVod.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/vods/new-vod-page.ts:24:NewVodPage.locators.addMatchButton">add match button</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(newVod.locators.addMatchButton).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/api/api-page.ts:12:ApiPage">Api page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/77.jpg" data-caption="Api page"><img src="screenshots/admin/77.jpg" alt="Api page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/api/api-page.ts:25:ApiPage.goto">Open</span> the <strong>api page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> api.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/api/api-page.ts:19:ApiPage.locators.noAccessMessage">no access message</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(api.locators.noAccessMessage);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/api/api-page.ts:29:ApiPage.generateToken">Generate token</span> <span class="str">“read”</span> <span class="binds">→ token</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> token = <span class="k">await</span> api.<span class="f">generateToken</span>(<span class="s">&quot;read&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><code class="inline" title="token.length">token.length</code></strong> is more than <span class="num">0</span></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(token.length).<span class="f">toBeGreaterThan</span>(<span class="n">0</span>);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;grants roles, friend code and API access to a user&quot;</span>, <span class="k">async</span> ({
+	page,
+	factories,
+}) =&gt; {
+	<span class="k">const</span> target = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>({
+		...<span class="t">ROLE_TARGET</span>,
+		friendCode: <span class="l">null</span>,
+	});
+
+	<span class="k">const</span> api = <span class="k">new</span> <span class="t">ApiPage</span>(page);
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page, target.id);
+	<span class="k">await</span> api.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">expect</span>(api.locators.noAccessMessage).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page, <span class="t">ADMIN_ID</span>);
+	<span class="k">const</span> adminActions = <span class="k">new</span> <span class="t">AdminActionsPage</span>(page);
+	<span class="k">await</span> adminActions.<span class="f">goto</span>();
+	<span class="k">await</span> adminActions.<span class="f">updateFriendCode</span>(<span class="t">ROLE_TARGET</span>.discordName, <span class="t">FRIEND_CODE</span>);
+	<span class="k">await</span> adminActions.<span class="f">giveArtist</span>(<span class="t">ROLE_TARGET</span>.discordName);
+	<span class="k">await</span> adminActions.<span class="f">giveVideoAdder</span>(<span class="t">ROLE_TARGET</span>.discordName);
+	<span class="k">await</span> adminActions.<span class="f">giveApiAccess</span>(<span class="t">ROLE_TARGET</span>.discordName);
+
+	<span class="k">await</span> adminActions.<span class="f">openFriendCodeLookUp</span>();
+	<span class="k">await</span> adminActions.<span class="f">searchFriendCode</span>(<span class="t">FRIEND_CODE</span>);
+	<span class="k">await</span> <span class="f">expect</span>(
+		adminActions.<span class="f">foundUserLink</span>(<span class="t">ROLE_TARGET</span>.discordName),
+	).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page, target.id);
+
+	<span class="k">const</span> newArt = <span class="k">new</span> <span class="t">NewArtPage</span>(page);
+	<span class="k">await</span> newArt.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">expect</span>(newArt.locators.descriptionInput).<span class="f">toBeVisible</span>();
+
+	<span class="k">const</span> newVod = <span class="k">new</span> <span class="t">NewVodPage</span>(page);
+	<span class="k">await</span> newVod.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">expect</span>(newVod.locators.addMatchButton).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> api.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">isNotVisible</span>(api.locators.noAccessMessage);
+	<span class="k">const</span> token = <span class="k">await</span> api.<span class="f">generateToken</span>(<span class="s">&quot;read&quot;</span>);
+	<span class="f">expect</span>(token.length).<span class="f">toBeGreaterThan</span>(<span class="n">0</span>);
+})</pre></details>
+</article><article class="test" id="e2e/admin-admin-panel-grants-tournament-organizer-role-and-patron-status-to-a-user">
+	<header class="test-head">
+		<h3>grants tournament organizer role and patron status to a user</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #ec4899">target</span><span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/admin.spec.ts#L83" title="e2e/admin.spec.ts:83">admin.spec.ts:83</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="front-page.html#routes/app-features-front-page-routes-index-tsx">/</a><a class="route-chip" href="admin.html#routes/app-features-admin-routes-admin-tsx">/admin</a><a class="route-chip" href="tournament-organization.html#routes/app-features-tournament-organization-routes-org-new-tsx">/org/new</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/admin/93.jpg" data-caption="New organization page"><img src="screenshots/admin/93.jpg" alt="New organization page" loading="lazy" onerror="this.parentElement.remove()"><span>New organization page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/96.jpg" data-caption="Top right buttons"><img src="screenshots/admin/96.jpg" alt="Top right buttons" loading="lazy" onerror="this.parentElement.remove()"><span>Top right buttons</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/100.jpg" data-caption="Admin actions page"><img src="screenshots/admin/100.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"><span>Admin actions page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/109.jpg" data-caption="New organization page"><img src="screenshots/admin/109.jpg" alt="New organization page" loading="lazy" onerror="this.parentElement.remove()"><span>New organization page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create user <code class="inline" title="ROLE_TARGET"><span class="t">ROLE_TARGET</span></code> <span class="binds">→ target</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> target = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>(<span class="t">ROLE_TARGET</span>);</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #ec4899">
+	<div class="lane" title="Logged in as target (target.id)"><div class="lane-sticky"><span class="avatar">T</span><span class="lane-name">target</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/org/new-organization-page.ts:7:NewOrganizationPage">New organization page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/93.jpg" data-caption="New organization page"><img src="screenshots/admin/93.jpg" alt="New organization page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/org/new-organization-page.ts:21:NewOrganizationPage.goto">Open</span> the <strong>new organization page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> newOrganization.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/org/new-organization-page.ts:17:NewOrganizationPage.locators.noPermissionsAlert">no permissions alert</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(newOrganization.locators.noPermissionsAlert).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Go to <span class="str">“/”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="s">&quot;/&quot;</span> });</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/layout/top-right-buttons.ts:4:TopRightButtons">Top right buttons</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/96.jpg" data-caption="Top right buttons"><img src="screenshots/admin/96.jpg" alt="Top right buttons" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/top-right-buttons.ts:12:TopRightButtons.locators.supportLink">support link</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(topRightButtons.locators.supportLink).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:13:AdminActionsPage">Admin actions page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/100.jpg" data-caption="Admin actions page"><img src="screenshots/admin/100.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:20:AdminActionsPage.goto">Open</span> the <strong>admin actions page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:50:AdminActionsPage.giveTournamentOrganizer">Give tournament organizer</span> <code class="inline" title="ROLE_TARGET.discordName"><span class="t">ROLE_TARGET</span>.discordName</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">giveTournamentOrganizer</span>(<span class="t">ROLE_TARGET</span>.discordName);</pre>
+	
+</li><li class="step phase-act">
+	<div class="note"><p>tier one so the tournament organizer grant above stays the only source of that role</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:62:AdminActionsPage.forcePatron">Force patron</span> <code class="inline" title="ROLE_TARGET.discordName"><span class="t">ROLE_TARGET</span>.discordName</code>, <span class="kv"><span class="key">tier</span> <span class="str">“Support”</span></span> <span class="kv"><span class="key">expires at</span> <code class="inline" title="addYears(new Date(), 1)"><span class="f">addYears</span>(<span class="k">new</span> <span class="t">Date</span>(), <span class="n">1</span>)</code></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">forcePatron</span>(<span class="t">ROLE_TARGET</span>.discordName, {
+	tier: <span class="s">&quot;Support&quot;</span>,
+	expiresAt: <span class="f">addYears</span>(<span class="k">new</span> <span class="t">Date</span>(), <span class="n">1</span>),
+});</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #ec4899">
+	<div class="lane" title="Logged in as target (target.id)"><div class="lane-sticky"><span class="avatar">T</span><span class="lane-name">target</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/org/new-organization-page.ts:7:NewOrganizationPage">New organization page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/109.jpg" data-caption="New organization page"><img src="screenshots/admin/109.jpg" alt="New organization page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/org/new-organization-page.ts:21:NewOrganizationPage.goto">Open</span> the <strong>new organization page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> newOrganization.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/org/new-organization-page.ts:16:NewOrganizationPage.locators.heading">heading</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(newOrganization.locators.heading).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Go to <span class="str">“/”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="s">&quot;/&quot;</span> });</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/layout/top-right-buttons.ts:12:TopRightButtons.locators.supportLink">support link</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(topRightButtons.locators.supportLink);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;grants tournament organizer role and patron status to a user&quot;</span>, <span class="k">async</span> ({
+	page,
+	factories,
+}) =&gt; {
+	<span class="k">const</span> target = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>(<span class="t">ROLE_TARGET</span>);
+
+	<span class="k">const</span> newOrganization = <span class="k">new</span> <span class="t">NewOrganizationPage</span>(page);
+	<span class="k">const</span> topRightButtons = <span class="k">new</span> <span class="t">TopRightButtons</span>(page);
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page, target.id);
+	<span class="k">await</span> newOrganization.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">expect</span>(newOrganization.locators.noPermissionsAlert).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="s">&quot;/&quot;</span> });
+	<span class="k">await</span> <span class="f">expect</span>(topRightButtons.locators.supportLink).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page, <span class="t">ADMIN_ID</span>);
+	<span class="k">const</span> adminActions = <span class="k">new</span> <span class="t">AdminActionsPage</span>(page);
+	<span class="k">await</span> adminActions.<span class="f">goto</span>();
+	<span class="k">await</span> adminActions.<span class="f">giveTournamentOrganizer</span>(<span class="t">ROLE_TARGET</span>.discordName);
+	<span class="c">// tier one so the tournament organizer grant above stays the only source of that role</span>
+	<span class="k">await</span> adminActions.<span class="f">forcePatron</span>(<span class="t">ROLE_TARGET</span>.discordName, {
+		tier: <span class="s">&quot;Support&quot;</span>,
+		expiresAt: <span class="f">addYears</span>(<span class="k">new</span> <span class="t">Date</span>(), <span class="n">1</span>),
+	});
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page, target.id);
+	<span class="k">await</span> newOrganization.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">expect</span>(newOrganization.locators.heading).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> <span class="f">navigate</span>({ page, url: <span class="s">&quot;/&quot;</span> });
+	<span class="k">await</span> <span class="f">isNotVisible</span>(topRightButtons.locators.supportLink);
+})</pre></details>
+</article><article class="test" id="e2e/admin-admin-panel-links-a-player-refreshes-plus-tiers-and-migrates-an-account">
+	<header class="test-head">
+		<h3>links a player, refreshes plus tiers and migrates an account</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/admin.spec.ts#L116" title="e2e/admin.spec.ts:116">admin.spec.ts:116</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="admin.html#routes/app-features-admin-routes-admin-tsx">/admin</a><a class="route-chip" href="user-page.html#routes/app-features-user-page-routes-u-identifier-tsx">/u/:identifier</a><a class="route-chip" href="user-page.html#routes/app-features-user-page-routes-u-identifier-index-tsx">/u/:identifier</a><a class="route-chip" href=".html#routes/app-modules-redirects-routes-ts">/*</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/admin/137.jpg" data-caption="Admin actions page"><img src="screenshots/admin/137.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"><span>Admin actions page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/150.jpg" data-caption="User page"><img src="screenshots/admin/150.jpg" alt="User page" loading="lazy" onerror="this.parentElement.remove()"><span>User page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/153.jpg" data-caption="Top search player page"><img src="screenshots/admin/153.jpg" alt="Top search player page" loading="lazy" onerror="this.parentElement.remove()"><span>Top search player page</span></button><button type="button" class="storyboard-frame" data-shot="screenshots/admin/156.jpg" data-caption="User page"><img src="screenshots/admin/156.jpg" alt="User page" loading="lazy" onerror="this.parentElement.remove()"><span>User page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	<div class="note"><p>linking a player syncs XP badges, which requires every XP badge to exist</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">For each <code class="inline" title="value">value</code> of <code class="inline" title="SPLATOON_3_XP_BADGE_VALUES"><span class="t">SPLATOON_3_XP_BADGE_VALUES</span></code></span></div>
+	<pre class="code step-code"><span class="k">for</span> (<span class="k">const</span> value <span class="k">of</span> <span class="t">SPLATOON_3_XP_BADGE_VALUES</span>) {
+	<span class="k">await</span> factories.<span class="t">BadgeFactory</span>.<span class="f">create</span>({ code: <span class="t">String</span>(value) });
+}</pre>
+	<ol class="steps nested"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create badge <span class="kv"><span class="key">code</span> <code class="inline" title="String(value)"><span class="t">String</span>(value)</code></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">BadgeFactory</span>.<span class="f">create</span>({ code: <span class="t">String</span>(value) });</pre>
+	
+</li></ol>
+</li><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create X rank placement <span class="kv"><span class="key">player spl id</span> <span class="str">“e2e-unlinked-player”</span></span> <span class="kv"><span class="key">name</span> <span class="str">“PlacedPlayer”</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">XRankPlacementFactory</span>.<span class="f">create</span>({
+	playerSplId: <span class="s">&quot;e2e-unlinked-player&quot;</span>,
+	name: <span class="s">&quot;PlacedPlayer&quot;</span>,
+});</pre>
+	
+</li><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create user <code class="inline" title="...KEEPER">...<span class="t">KEEPER</span></code> <span class="binds">→ keeper</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> keeper = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>({ ...<span class="t">KEEPER</span> });</pre>
+	
+</li><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create user <code class="inline" title="...LEAVER">...<span class="t">LEAVER</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>({ ...<span class="t">LEAVER</span> });</pre>
+	
+</li><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create plus vote <span class="kv"><span class="key">author</span> <span class="user" data-actor="ADMIN_ID">Sendou</span></span> <span class="kv"><span class="key">voted id</span> <code class="inline" title="keeper.id">keeper.id</code></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">PlusVoteFactory</span>.<span class="f">create</span>({
+	authorId: <span class="t">ADMIN_ID</span>,
+	votedId: keeper.id,
+});</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:13:AdminActionsPage">Admin actions page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/137.jpg" data-caption="Admin actions page"><img src="screenshots/admin/137.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:20:AdminActionsPage.goto">Open</span> the <strong>admin actions page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:31:AdminActionsPage.linkPlayer">Link player</span> <span class="str">“N-ZAP”</span>, <span class="const" title="LINKED_PLAYER_ID"><span class="num">1</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">linkPlayer</span>(<span class="s">&quot;N-ZAP&quot;</span>, <span class="t">LINKED_PLAYER_ID</span>);</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:100:AdminActionsPage.refreshPlusTiers">Refresh plus tiers</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">refreshPlusTiers</span>();</pre>
+	
+</li><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:77:AdminActionsPage.migrateUser">Migrate user</span> <span class="kv"><span class="key">old user name</span> <code class="inline" title="KEEPER.discordName"><span class="t">KEEPER</span>.discordName</code></span> <span class="kv"><span class="key">new user name</span> <code class="inline" title="LEAVER.discordName"><span class="t">LEAVER</span>.discordName</code></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">migrateUser</span>({
+	oldUserName: <span class="t">KEEPER</span>.discordName,
+	newUserName: <span class="t">LEAVER</span>.discordName,
+});</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:105:AdminActionsPage.userSearchSuggestion">user search suggestion</span> <code class="inline" title="KEEPER.discordName"><span class="t">KEEPER</span>.discordName</code></strong> contains <span class="str">“+1”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(
+	<span class="k">await</span> adminActions.<span class="f">userSearchSuggestion</span>(<span class="t">KEEPER</span>.discordName),
+).<span class="f">toContainText</span>(<span class="s">&quot;+1&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/user/user-page.ts:12:UserPage">User page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/150.jpg" data-caption="User page"><img src="screenshots/admin/150.jpg" alt="User page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/user/user-page.ts:35:UserPage.goto">Open</span> the <strong>user page</strong> <code class="inline" title="NZAP_TEST_DISCORD_ID"><span class="t">NZAP_TEST_DISCORD_ID</span></code></span></div>
+	<pre class="code step-code"><span class="k">await</span> userPage.<span class="f">goto</span>(<span class="t">NZAP_TEST_DISCORD_ID</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/user/user-page.ts:85:UserPage.widget">widget</span> <span class="str">“x-rank-peaks”</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(userPage.<span class="f">widget</span>(<span class="s">&quot;x-rank-peaks&quot;</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/user/user-page.ts:117:UserPage.openPlacements">Open placements</span> <span class="binds">→ playerPage</span></span></div>
+	<pre class="code step-code"><span class="k">const</span> playerPage = <span class="k">await</span> userPage.<span class="f">openPlacements</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/top-search/top-search-player-page.ts:8:TopSearchPlayerPage">Top search player page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/153.jpg" data-caption="Top search player page"><img src="screenshots/admin/153.jpg" alt="Top search player page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/top-search/top-search-player-page.ts:18:TopSearchPlayerPage.locators.heading">heading</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(playerPage.locators.heading).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/user/user-page.ts:12:UserPage">User page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/156.jpg" data-caption="User page"><img src="screenshots/admin/156.jpg" alt="User page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	<div class="note"><p>the old user kept their account, now reached via the new user's Discord id</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/user/user-page.ts:35:UserPage.goto">Open</span> the <strong>user page</strong> <code class="inline" title="LEAVER.discordId"><span class="t">LEAVER</span>.discordId</code></span></div>
+	<pre class="code step-code"><span class="k">await</span> userPage.<span class="f">goto</span>(<span class="t">LEAVER</span>.discordId);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/user/user-page.ts:94:UserPage.usernameHeading">username heading</span> <code class="inline" title="KEEPER.discordName"><span class="t">KEEPER</span>.discordName</code></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(userPage.<span class="f">usernameHeading</span>(<span class="t">KEEPER</span>.discordName)).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;links a player, refreshes plus tiers and migrates an account&quot;</span>, <span class="k">async</span> ({
+	page,
+	factories,
+}) =&gt; {
+	<span class="c">// linking a player syncs XP badges, which requires every XP badge to exist</span>
+	<span class="k">for</span> (<span class="k">const</span> value <span class="k">of</span> <span class="t">SPLATOON_3_XP_BADGE_VALUES</span>) {
+		<span class="k">await</span> factories.<span class="t">BadgeFactory</span>.<span class="f">create</span>({ code: <span class="t">String</span>(value) });
+	}
+	<span class="k">await</span> factories.<span class="t">XRankPlacementFactory</span>.<span class="f">create</span>({
+		playerSplId: <span class="s">&quot;e2e-unlinked-player&quot;</span>,
+		name: <span class="s">&quot;PlacedPlayer&quot;</span>,
+	});
+	<span class="k">const</span> keeper = <span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>({ ...<span class="t">KEEPER</span> });
+	<span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>({ ...<span class="t">LEAVER</span> });
+	<span class="k">await</span> factories.<span class="t">PlusVoteFactory</span>.<span class="f">create</span>({
+		authorId: <span class="t">ADMIN_ID</span>,
+		votedId: keeper.id,
+	});
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page, <span class="t">ADMIN_ID</span>);
+	<span class="k">const</span> adminActions = <span class="k">new</span> <span class="t">AdminActionsPage</span>(page);
+	<span class="k">await</span> adminActions.<span class="f">goto</span>();
+	<span class="k">await</span> adminActions.<span class="f">linkPlayer</span>(<span class="s">&quot;N-ZAP&quot;</span>, <span class="t">LINKED_PLAYER_ID</span>);
+	<span class="k">await</span> adminActions.<span class="f">refreshPlusTiers</span>();
+	<span class="k">await</span> adminActions.<span class="f">migrateUser</span>({
+		oldUserName: <span class="t">KEEPER</span>.discordName,
+		newUserName: <span class="t">LEAVER</span>.discordName,
+	});
+
+	<span class="k">await</span> <span class="f">expect</span>(
+		<span class="k">await</span> adminActions.<span class="f">userSearchSuggestion</span>(<span class="t">KEEPER</span>.discordName),
+	).<span class="f">toContainText</span>(<span class="s">&quot;+1&quot;</span>);
+
+	<span class="k">const</span> userPage = <span class="k">new</span> <span class="t">UserPage</span>(page);
+	<span class="k">await</span> userPage.<span class="f">goto</span>(<span class="t">NZAP_TEST_DISCORD_ID</span>);
+	<span class="k">await</span> <span class="f">expect</span>(userPage.<span class="f">widget</span>(<span class="s">&quot;x-rank-peaks&quot;</span>)).<span class="f">toBeVisible</span>();
+	<span class="k">const</span> playerPage = <span class="k">await</span> userPage.<span class="f">openPlacements</span>();
+	<span class="k">await</span> <span class="f">expect</span>(playerPage.locators.heading).<span class="f">toBeVisible</span>();
+
+	<span class="c">// the old user kept their account, now reached via the new user's Discord id</span>
+	<span class="k">await</span> userPage.<span class="f">goto</span>(<span class="t">LEAVER</span>.discordId);
+	<span class="k">await</span> <span class="f">expect</span>(userPage.<span class="f">usernameHeading</span>(<span class="t">KEEPER</span>.discordName)).<span class="f">toBeVisible</span>();
+})</pre></details>
+</article><article class="test" id="e2e/admin-admin-panel-keeps-the-scroll-position-when-an-action-shows-a-toast">
+	<header class="test-head">
+		<h3>keeps the scroll position when an action shows a toast</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/admin.spec.ts#L160" title="e2e/admin.spec.ts:160">admin.spec.ts:160</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="admin.html#routes/app-features-admin-routes-admin-tsx">/admin</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/admin/168.jpg" data-caption="Admin actions page"><img src="screenshots/admin/168.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"><span>Admin actions page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-setup">
+	<div class="lane"><div class="lane-sticky"><span class="lane-name">Setup</span></div></div>
+	<div class="segment-body"><div class="run phase-arrange">
+	<div class="run-label">Arrange</div>
+	<ol class="steps"><li class="step phase-arrange">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text">Create user <code class="inline" title="...ROLE_TARGET">...<span class="t">ROLE_TARGET</span></code> <span class="kv"><span class="key">friend code</span> <code class="inline" title="null"><span class="l">null</span></code></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>({ ...<span class="t">ROLE_TARGET</span>, friendCode: <span class="l">null</span> });</pre>
+	
+</li></ol>
+</div></div>
+</div><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:13:AdminActionsPage">Admin actions page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/168.jpg" data-caption="Admin actions page"><img src="screenshots/admin/168.jpg" alt="Admin actions page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:20:AdminActionsPage.goto">Open</span> the <strong>admin actions page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">goto</span>();</pre>
+	
+</li><li class="step phase-act">
+	<div class="note"><p>the form is far down the page, so filling it scrolls there</p></div>
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-actions-page.ts:24:AdminActionsPage.updateFriendCode">Update friend code</span> <code class="inline" title="ROLE_TARGET.discordName"><span class="t">ROLE_TARGET</span>.discordName</code>, <span class="const" title="FRIEND_CODE"><span class="str">“0123-4567-8901”</span></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> adminActions.<span class="f">updateFriendCode</span>(<span class="t">ROLE_TARGET</span>.discordName, <span class="t">FRIEND_CODE</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong>evaluate <code class="inline" title="() =&gt; window.scrollY">() =&gt; window.scrollY</code></strong> is more than <span class="num">0</span></span></div>
+	<pre class="code step-code"><span class="f">expect</span>(<span class="k">await</span> page.<span class="f">evaluate</span>(() =&gt; window.scrollY)).<span class="f">toBeGreaterThan</span>(<span class="n">0</span>);</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;keeps the scroll position when an action shows a toast&quot;</span>, <span class="k">async</span> ({
+	page,
+	factories,
+}) =&gt; {
+	<span class="k">await</span> factories.<span class="t">UserFactory</span>.<span class="f">create</span>({ ...<span class="t">ROLE_TARGET</span>, friendCode: <span class="l">null</span> });
+
+	<span class="k">await</span> <span class="f">impersonate</span>(page, <span class="t">ADMIN_ID</span>);
+	<span class="k">const</span> adminActions = <span class="k">new</span> <span class="t">AdminActionsPage</span>(page);
+	<span class="k">await</span> adminActions.<span class="f">goto</span>();
+
+	<span class="c">// the form is far down the page, so filling it scrolls there</span>
+	<span class="k">await</span> adminActions.<span class="f">updateFriendCode</span>(<span class="t">ROLE_TARGET</span>.discordName, <span class="t">FRIEND_CODE</span>);
+
+	<span class="f">expect</span>(<span class="k">await</span> page.<span class="f">evaluate</span>(() =&gt; window.scrollY)).<span class="f">toBeGreaterThan</span>(<span class="n">0</span>);
+})</pre></details>
+</article><article class="test" id="e2e/admin-admin-panel-adds-and-deletes-an-external-stream">
+	<header class="test-head">
+		<h3>adds and deletes an external stream</h3>
+		<div class="test-meta">
+			<span class="user" style="--actor: #8b5cf6">Sendou</span>
+			<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/admin.spec.ts#L176" title="e2e/admin.spec.ts:176">admin.spec.ts:176</a>
+		</div>
+	</header>
+	
+	<p class="test-routes">Renders <a class="route-chip" href="admin.html#routes/app-features-admin-routes-admin-streams-tsx">/admin/streams</a></p>
+	<div class="storyboard"><button type="button" class="storyboard-frame" data-shot="screenshots/admin/180.jpg" data-caption="Admin streams page"><img src="screenshots/admin/180.jpg" alt="Admin streams page" loading="lazy" onerror="this.parentElement.remove()"><span>Admin streams page</span></button></div>
+	<div class="chapters"><div class="segments"><div class="segment segment-actor" style="--actor: #8b5cf6">
+	<div class="lane" title="Logged in as Sendou (ADMIN_ID)"><div class="lane-sticky"><span class="avatar">S</span><span class="lane-name">Sendou</span></div></div>
+	<div class="segment-body"><div class="divider"><span class="divider-label"><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:11:AdminStreamsPage">Admin streams page</span></span><button type="button" class="divider-shot" data-shot="screenshots/admin/180.jpg" data-caption="Admin streams page"><img src="screenshots/admin/180.jpg" alt="Admin streams page" loading="lazy" onerror="this.parentElement.remove()"></button></div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:25:AdminStreamsPage.goto">Open</span> the <strong>admin streams page</strong></span></div>
+	<pre class="code step-code"><span class="k">await</span> streams.<span class="f">goto</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:18:AdminStreamsPage.locators.addStreamHeading">add stream heading</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(streams.locators.addStreamHeading).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:21:AdminStreamsPage.locators.noStreams">no streams</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(streams.locators.noStreams).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:33:AdminStreamsPage.createStream">Create stream</span> <span class="kv"><span class="key">name</span> <span class="str">“E2E Stream”</span></span> <span class="kv"><span class="key">url</span> <span class="str">“https://www.twitch.tv/sendou”</span></span> <span class="kv"><span class="key">start time</span> <code class="inline" title="addHours(new Date(), 1)"><span class="f">addHours</span>(<span class="k">new</span> <span class="t">Date</span>(), <span class="n">1</span>)</code></span> <span class="kv"><span class="key">logo path</span> <code class="inline" title="TEST_IMAGE_PATH"><span class="t">TEST_IMAGE_PATH</span></code></span></span></div>
+	<pre class="code step-code"><span class="k">await</span> streams.<span class="f">createStream</span>({
+	name: <span class="s">&quot;E2E Stream&quot;</span>,
+	url: <span class="s">&quot;https://www.twitch.tv/sendou&quot;</span>,
+	startTime: <span class="f">addHours</span>(<span class="k">new</span> <span class="t">Date</span>(), <span class="n">1</span>),
+	logoPath: <span class="t">TEST_IMAGE_PATH</span>,
+});</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:29:AdminStreamsPage.streamLink">stream link</span> <span class="str">“E2E Stream”</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(streams.<span class="f">streamLink</span>(<span class="s">&quot;E2E Stream&quot;</span>)).<span class="f">toBeVisible</span>();</pre>
+	
+</li><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:21:AdminStreamsPage.locators.noStreams">no streams</span></strong> <span class="ref" data-ref="e2e/helpers/playwright.ts:700:isNotVisible">is not visible</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">isNotVisible</span>(streams.locators.noStreams);</pre>
+	
+</li></ol>
+</div><div class="run phase-act">
+	<div class="run-label">Act</div>
+	<ol class="steps"><li class="step phase-act">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:62:AdminStreamsPage.deleteStream">Delete stream</span> <span class="str">“E2E Stream”</span></span></div>
+	<pre class="code step-code"><span class="k">await</span> streams.<span class="f">deleteStream</span>(<span class="s">&quot;E2E Stream&quot;</span>);</pre>
+	
+</li></ol>
+</div><div class="run phase-assert">
+	<div class="run-label">Assert</div>
+	<ol class="steps"><li class="step phase-assert">
+	
+	<div class="step-line"><span class="phase-icon"></span><span class="step-text"><strong><span class="ref" data-ref="e2e/pages/admin/admin-streams-page.ts:21:AdminStreamsPage.locators.noStreams">no streams</span></strong> is visible</span></div>
+	<pre class="code step-code"><span class="k">await</span> <span class="f">expect</span>(streams.locators.noStreams).<span class="f">toBeVisible</span>();</pre>
+	
+</li></ol>
+</div></div>
+</div></div></div>
+	<details class="source"><summary>Source</summary><pre class="code"><span class="f">test</span>(<span class="s">&quot;adds and deletes an external stream&quot;</span>, <span class="k">async</span> ({ page }) =&gt; {
+	<span class="k">await</span> <span class="f">impersonate</span>(page, <span class="t">ADMIN_ID</span>);
+
+	<span class="k">const</span> streams = <span class="k">new</span> <span class="t">AdminStreamsPage</span>(page);
+	<span class="k">await</span> streams.<span class="f">goto</span>();
+	<span class="k">await</span> <span class="f">expect</span>(streams.locators.addStreamHeading).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">expect</span>(streams.locators.noStreams).<span class="f">toBeVisible</span>();
+
+	<span class="k">await</span> streams.<span class="f">createStream</span>({
+		name: <span class="s">&quot;E2E Stream&quot;</span>,
+		url: <span class="s">&quot;https://www.twitch.tv/sendou&quot;</span>,
+		startTime: <span class="f">addHours</span>(<span class="k">new</span> <span class="t">Date</span>(), <span class="n">1</span>),
+		logoPath: <span class="t">TEST_IMAGE_PATH</span>,
+	});
+
+	<span class="k">await</span> <span class="f">expect</span>(streams.<span class="f">streamLink</span>(<span class="s">&quot;E2E Stream&quot;</span>)).<span class="f">toBeVisible</span>();
+	<span class="k">await</span> <span class="f">isNotVisible</span>(streams.locators.noStreams);
+
+	<span class="k">await</span> streams.<span class="f">deleteStream</span>(<span class="s">&quot;E2E Stream&quot;</span>);
+	<span class="k">await</span> <span class="f">expect</span>(streams.locators.noStreams).<span class="f">toBeVisible</span>();
+})</pre></details>
+</article>
+	</section>
+</div>
+		</div>
+	</div>
+	<div class="view" data-view="routes" hidden>
+		<aside class="sidebar">
+			<h4>Coverage</h4>
+			<p class="coverage"><strong>2</strong> of 2 routes rendered by an e2e test</p>
+			<p class="legend-note">From the last <code>pnpm run docs:living:capture</code>.</p>
+			<h4>Routes</h4>
+			<ul class="toc route-toc"><li><a href="#routes/app-features-admin-routes-admin-tsx"><span class="kind-dot is-visited"></span>/admin</a></li><li><a href="#routes/app-features-admin-routes-admin-streams-tsx"><span class="kind-dot is-visited"></span>/admin/streams</a></li></ul>
+		</aside>
+		<div class="content">
+			<div class="routes"><article class="route" id="routes/app-features-admin-routes-admin-tsx">
+				<div class="route-head">
+					<code class="route-path">/admin</code>
+					<span class="badge">page</span>
+					<span class="badge badge-loader">loader</span>
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/admin/routes/admin.tsx#L1" title="app/features/admin/routes/admin.tsx:1">admin.tsx</a>
+				</div>
+				<ul class="route-tests"><li><a href="admin.html#e2e/admin-admin-panel-grants-roles-friend-code-and-api-access-to-a-user">grants roles, friend code and API access to a user</a></li><li><a href="admin.html#e2e/admin-admin-panel-grants-tournament-organizer-role-and-patron-status-to-a-user">grants tournament organizer role and patron status to a user</a></li><li><a href="admin.html#e2e/admin-admin-panel-links-a-player-refreshes-plus-tiers-and-migrates-an-account">links a player, refreshes plus tiers and migrates an account</a></li><li><a href="admin.html#e2e/admin-admin-panel-keeps-the-scroll-position-when-an-action-shows-a-toast">keeps the scroll position when an action shows a toast</a></li><li><a href="ban.html#e2e/ban-user-banning-banned-user-is-redirected-to-suspended-page-and-cannot-access-site">banned user is redirected to suspended page and cannot access site</a></li><li><a href="ban.html#e2e/ban-user-banning-timed-ban-shows-expiration-date-on-suspended-page">timed ban shows expiration date on suspended page</a></li></ul>
+			</article><article class="route" id="routes/app-features-admin-routes-admin-streams-tsx">
+				<div class="route-head">
+					<code class="route-path">/admin/streams</code>
+					<span class="badge">page</span>
+					<span class="badge badge-loader">loader</span>
+					<span class="badge badge-action">action</span>
+					<a class="file-link" href="https://github.com/sendou-ink/sendou.ink/blob/main/app/features/admin/routes/admin.streams.tsx#L1" title="app/features/admin/routes/admin.streams.tsx:1">admin.streams.tsx</a>
+				</div>
+				<ul class="route-tests"><li><a href="admin.html#e2e/admin-admin-panel-adds-and-deletes-an-external-stream">adds and deletes an external stream</a></li></ul>
+			</article></div>
+		</div>
+	</div>
+</main>
+<template data-ref-id="e2e/pages/api/api-page.ts:25:ApiPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/api/api-page.ts#L25">
+	<div class="tooltip-head"><code>ApiPage.goto</code><span>e2e/pages/api/api-page.ts:25</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="t">API_PAGE</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/api/api-page.ts:19:ApiPage.locators.noAccessMessage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/api/api-page.ts#L19">
+	<div class="tooltip-head"><code>ApiPage.locators.noAccessMessage</code><span>e2e/pages/api/api-page.ts:19</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByText</span>(<span class="s">&quot;You do not have access to the API&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:20:AdminActionsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L20">
+	<div class="tooltip-head"><code>AdminActionsPage.goto</code><span>e2e/pages/admin/admin-actions-page.ts:20</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="t">ADMIN_PAGE</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:24:AdminActionsPage.updateFriendCode" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L24">
+	<div class="tooltip-head"><code>AdminActionsPage.updateFriendCode</code><span>e2e/pages/admin/admin-actions-page.ts:24</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">updateFriendCode</span>(userName: <span class="t">string</span>, friendCode: <span class="t">string</span>) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Update friend code&quot;</span>);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">selectFormUser</span>(form, userName);
+	<span class="k">await</span> form.<span class="f">getByLabel</span>(<span class="s">&quot;Friend code&quot;</span>).<span class="f">fill</span>(friendCode);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">submitForm</span>(form, <span class="s">&quot;Submit&quot;</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:38:AdminActionsPage.giveArtist" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L38">
+	<div class="tooltip-head"><code>AdminActionsPage.giveArtist</code><span>e2e/pages/admin/admin-actions-page.ts:38</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">giveArtist</span>(userName: <span class="t">string</span>) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Add as artist&quot;</span>);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">selectFormUser</span>(form, userName);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">submitForm</span>(form, <span class="s">&quot;Add as artist&quot;</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:44:AdminActionsPage.giveVideoAdder" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L44">
+	<div class="tooltip-head"><code>AdminActionsPage.giveVideoAdder</code><span>e2e/pages/admin/admin-actions-page.ts:44</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">giveVideoAdder</span>(userName: <span class="t">string</span>) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Give video adder&quot;</span>);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">selectFormUser</span>(form, userName);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">submitForm</span>(form, <span class="s">&quot;Add as video adder&quot;</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:56:AdminActionsPage.giveApiAccess" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L56">
+	<div class="tooltip-head"><code>AdminActionsPage.giveApiAccess</code><span>e2e/pages/admin/admin-actions-page.ts:56</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">giveApiAccess</span>(userName: <span class="t">string</span>) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Give API access&quot;</span>);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">selectFormUser</span>(form, userName);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">submitForm</span>(form, <span class="s">&quot;Grant API access&quot;</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:115:AdminActionsPage.openFriendCodeLookUp" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L115">
+	<div class="tooltip-head"><code>AdminActionsPage.openFriendCodeLookUp</code><span>e2e/pages/admin/admin-actions-page.ts:115</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">openFriendCodeLookUp</span>() {
+	<span class="k">await</span> <span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;tab&quot;</span>, { name: <span class="s">&quot;Friend code look-up&quot;</span> }).<span class="f">click</span>();
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:119:AdminActionsPage.searchFriendCode" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L119">
+	<div class="tooltip-head"><code>AdminActionsPage.searchFriendCode</code><span>e2e/pages/admin/admin-actions-page.ts:119</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">searchFriendCode</span>(friendCode: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="l">this</span>.page
+		.<span class="f">getByRole</span>(<span class="s">&quot;textbox&quot;</span>, { name: <span class="s">&quot;Friend code&quot;</span> })
+		.<span class="f">fill</span>(friendCode);
+	<span class="c">// scoped by test id: a role query for &quot;Search&quot; would also hit the header's global search</span>
+	<span class="k">await</span> <span class="l">this</span>.page.<span class="f">getByTestId</span>(<span class="s">&quot;submit-button&quot;</span>).<span class="f">click</span>();
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:127:AdminActionsPage.foundUserLink" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L127">
+	<div class="tooltip-head"><code>AdminActionsPage.foundUserLink</code><span>e2e/pages/admin/admin-actions-page.ts:127</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">foundUserLink</span>(userName: <span class="t">string</span>) {
+	<span class="k">return</span> <span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;link&quot;</span>, { name: userName });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/art/new-art-page.ts:27:NewArtPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/art/new-art-page.ts#L27">
+	<div class="tooltip-head"><code>NewArtPage.goto</code><span>e2e/pages/art/new-art-page.ts:27</span></div>
+	<div class="tooltip-doc"><p>Given an art id, edits that art instead of uploading a new one.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(artId?: <span class="t">Tables</span>[<span class="s">&quot;Art&quot;</span>][<span class="s">&quot;id&quot;</span>]) {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="f">newArtPage</span>(artId) });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/art/new-art-page.ts:22:NewArtPage.locators.descriptionInput" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/art/new-art-page.ts#L22">
+	<div class="tooltip-head"><code>NewArtPage.locators.descriptionInput</code><span>e2e/pages/art/new-art-page.ts:22</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="l">this</span>.page.<span class="f">getByLabel</span>(<span class="l">this</span>.form.<span class="f">getLabel</span>(<span class="s">&quot;description&quot;</span>))</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:31:NewVodPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L31">
+	<div class="tooltip-head"><code>NewVodPage.goto</code><span>e2e/pages/vods/new-vod-page.ts:31</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="f">newVodPage</span>() });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:24:NewVodPage.locators.addMatchButton" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L24">
+	<div class="tooltip-head"><code>NewVodPage.locators.addMatchButton</code><span>e2e/pages/vods/new-vod-page.ts:24</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;button&quot;</span>, {
+	name: <span class="s">&quot;Add&quot;</span>,
+	exact: <span class="l">true</span>,
+})</pre>
+</template>
+<template data-ref-id="e2e/helpers/playwright.ts:700:isNotVisible" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/helpers/playwright.ts#L700">
+	<div class="tooltip-head"><code>isNotVisible</code><span>e2e/helpers/playwright.ts:700</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">export</span> <span class="k">function</span> <span class="f">isNotVisible</span>(locator: <span class="t">Locator</span>) {
+	<span class="k">return</span> <span class="f">expect</span>(locator).<span class="f">toHaveCount</span>(<span class="n">0</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/api/api-page.ts:29:ApiPage.generateToken" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/api/api-page.ts#L29">
+	<div class="tooltip-head"><code>ApiPage.generateToken</code><span>e2e/pages/api/api-page.ts:29</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">generateToken</span>(<span class="k">type</span>: <span class="t">ApiTokenType</span>) {
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">section</span>(<span class="k">type</span>)
+		.<span class="f">getByRole</span>(<span class="s">&quot;button&quot;</span>, { name: <span class="s">&quot;Generate Token&quot;</span> })
+		.<span class="f">click</span>();
+	<span class="k">await</span> <span class="l">this</span>.page.<span class="f">waitForURL</span>(<span class="t">API_PAGE</span>);
+
+	<span class="k">return</span> <span class="l">this</span>.<span class="f">revealToken</span>(<span class="k">type</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/api/api-page.ts:12:ApiPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/api/api-page.ts#L12">
+	<div class="tooltip-head"><code>ApiPage</code><span>e2e/pages/api/api-page.ts:12</span></div>
+	<div class="tooltip-doc"><p>Where a user with API access generates their tokens.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:13:AdminActionsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L13">
+	<div class="tooltip-head"><code>AdminActionsPage</code><span>e2e/pages/admin/admin-actions-page.ts:13</span></div>
+	<div class="tooltip-doc"><p>The staff action forms of the admin page, ban &amp; unban excluded (see AdminBanPage).</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/art/new-art-page.ts:10:NewArtPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/art/new-art-page.ts#L10">
+	<div class="tooltip-head"><code>NewArtPage</code><span>e2e/pages/art/new-art-page.ts:10</span></div>
+	<div class="tooltip-doc"><p><code>/art/new</code></p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/vods/new-vod-page.ts:15:NewVodPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/vods/new-vod-page.ts#L15">
+	<div class="tooltip-head"><code>NewVodPage</code><span>e2e/pages/vods/new-vod-page.ts:15</span></div>
+	<div class="tooltip-doc"><p><code>/vods/new</code>, also reached with <code>?vod=</code> to edit an existing one.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/org/new-organization-page.ts:21:NewOrganizationPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/org/new-organization-page.ts#L21">
+	<div class="tooltip-head"><code>NewOrganizationPage.goto</code><span>e2e/pages/org/new-organization-page.ts:21</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="t">ORGANIZATION_NEW_PAGE</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/org/new-organization-page.ts:17:NewOrganizationPage.locators.noPermissionsAlert" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/org/new-organization-page.ts#L17">
+	<div class="tooltip-head"><code>NewOrganizationPage.locators.noPermissionsAlert</code><span>e2e/pages/org/new-organization-page.ts:17</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByText</span>(<span class="s">&quot;No permissions to add organizations&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/layout/top-right-buttons.ts:12:TopRightButtons.locators.supportLink" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/layout/top-right-buttons.ts#L12">
+	<div class="tooltip-head"><code>TopRightButtons.locators.supportLink</code><span>e2e/pages/layout/top-right-buttons.ts:12</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page
+	.<span class="f">getByRole</span>(<span class="s">&quot;banner&quot;</span>)
+	.<span class="f">getByRole</span>(<span class="s">&quot;link&quot;</span>, { name: <span class="s">&quot;Support&quot;</span> })</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:50:AdminActionsPage.giveTournamentOrganizer" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L50">
+	<div class="tooltip-head"><code>AdminActionsPage.giveTournamentOrganizer</code><span>e2e/pages/admin/admin-actions-page.ts:50</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">giveTournamentOrganizer</span>(userName: <span class="t">string</span>) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Give tournament organizer&quot;</span>);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">selectFormUser</span>(form, userName);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">submitForm</span>(form, <span class="s">&quot;Add as tournament organizer&quot;</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:62:AdminActionsPage.forcePatron" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L62">
+	<div class="tooltip-head"><code>AdminActionsPage.forcePatron</code><span>e2e/pages/admin/admin-actions-page.ts:62</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">forcePatron</span>(
+	userName: <span class="t">string</span>,
+	{ tier, expiresAt }: { tier: <span class="t">PatronTierLabel</span>; expiresAt: <span class="t">Date</span> },
+) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Force patron&quot;</span>);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">selectFormUser</span>(form, userName);
+	<span class="k">await</span> form.<span class="f">getByLabel</span>(<span class="s">&quot;Patron tier&quot;</span>).<span class="f">selectOption</span>({ label: tier });
+	<span class="k">await</span> <span class="f">fillDateTimeField</span>({
+		scope: form,
+		label: <span class="s">&quot;Patron until&quot;</span>,
+		date: expiresAt,
+	});
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">submitForm</span>(form, <span class="s">&quot;Save&quot;</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/org/new-organization-page.ts:16:NewOrganizationPage.locators.heading" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/org/new-organization-page.ts#L16">
+	<div class="tooltip-head"><code>NewOrganizationPage.locators.heading</code><span>e2e/pages/org/new-organization-page.ts:16</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByRole</span>(<span class="s">&quot;heading&quot;</span>, { name: <span class="s">&quot;New Organization&quot;</span> })</pre>
+</template>
+<template data-ref-id="e2e/pages/org/new-organization-page.ts:7:NewOrganizationPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/org/new-organization-page.ts#L7">
+	<div class="tooltip-head"><code>NewOrganizationPage</code><span>e2e/pages/org/new-organization-page.ts:7</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	
+</template>
+<template data-ref-id="e2e/pages/layout/top-right-buttons.ts:4:TopRightButtons" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/layout/top-right-buttons.ts#L4">
+	<div class="tooltip-head"><code>TopRightButtons</code><span>e2e/pages/layout/top-right-buttons.ts:4</span></div>
+	<div class="tooltip-doc"><p>The button cluster at the right end of the site header.</p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:31:AdminActionsPage.linkPlayer" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L31">
+	<div class="tooltip-head"><code>AdminActionsPage.linkPlayer</code><span>e2e/pages/admin/admin-actions-page.ts:31</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">linkPlayer</span>(userName: <span class="t">string</span>, playerId: <span class="t">number</span>) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Link player&quot;</span>);
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">selectFormUser</span>(form, userName);
+	<span class="k">await</span> form.<span class="f">getByLabel</span>(<span class="s">&quot;Player ID&quot;</span>).<span class="f">fill</span>(<span class="t">String</span>(playerId));
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">submitForm</span>(form, <span class="s">&quot;Link player&quot;</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:100:AdminActionsPage.refreshPlusTiers" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L100">
+	<div class="tooltip-head"><code>AdminActionsPage.refreshPlusTiers</code><span>e2e/pages/admin/admin-actions-page.ts:100</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">refreshPlusTiers</span>() {
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">submitForm</span>(<span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Refresh Plus Tiers&quot;</span>), <span class="s">&quot;Refresh&quot;</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:77:AdminActionsPage.migrateUser" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L77">
+	<div class="tooltip-head"><code>AdminActionsPage.migrateUser</code><span>e2e/pages/admin/admin-actions-page.ts:77</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">migrateUser</span>({
+	oldUserName,
+	newUserName,
+}: {
+	oldUserName: <span class="t">string</span>;
+	newUserName: <span class="t">string</span>;
+}) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Migrate user data&quot;</span>);
+	<span class="k">await</span> <span class="f">selectUser</span>({
+		page: <span class="l">this</span>.page,
+		userName: oldUserName,
+		labelName: <span class="s">&quot;Old user&quot;</span>,
+		within: form,
+	});
+	<span class="c">// …</span></pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-actions-page.ts:105:AdminActionsPage.userSearchSuggestion" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-actions-page.ts#L105">
+	<div class="tooltip-head"><code>AdminActionsPage.userSearchSuggestion</code><span>e2e/pages/admin/admin-actions-page.ts:105</span></div>
+	<div class="tooltip-doc"><p>Types into a user search and returns the top suggestion, for asserting data the search surfaces (e.g. plus tier).</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">userSearchSuggestion</span>(userName: <span class="t">string</span>) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>(<span class="s">&quot;Add as artist&quot;</span>);
+	<span class="k">await</span> form.<span class="f">getByLabel</span>(<span class="s">&quot;User&quot;</span>).<span class="f">click</span>();
+	<span class="k">await</span> <span class="l">this</span>.page.<span class="f">getByTestId</span>(<span class="s">&quot;user-search-input&quot;</span>).<span class="f">fill</span>(userName);
+	<span class="k">return</span> <span class="l">this</span>.page
+		.<span class="f">getByRole</span>(<span class="s">&quot;listbox&quot;</span>)
+		.<span class="f">getByTestId</span>(<span class="s">&quot;user-search-item&quot;</span>)
+		.<span class="f">first</span>();
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/user/user-page.ts:35:UserPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/user/user-page.ts#L35">
+	<div class="tooltip-head"><code>UserPage.goto</code><span>e2e/pages/user/user-page.ts:35</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>(discordId: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="f">userPage</span>({ discordId }) });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/user/user-page.ts:85:UserPage.widget" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/user/user-page.ts#L85">
+	<div class="tooltip-head"><code>UserPage.widget</code><span>e2e/pages/user/user-page.ts:85</span></div>
+	<div class="tooltip-doc"><p>A profile widget by its id.</p></div>
+	<pre class="code"><span class="f">widget</span>(widgetId: <span class="t">string</span>) {
+	<span class="k">return</span> <span class="l">this</span>.page.<span class="f">getByTestId</span>(<span class="s">`widget-${widgetId}`</span>);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/user/user-page.ts:117:UserPage.openPlacements" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/user/user-page.ts#L117">
+	<div class="tooltip-head"><code>UserPage.openPlacements</code><span>e2e/pages/user/user-page.ts:117</span></div>
+	<div class="tooltip-doc"><p>The X Rank summary, shown only for a user with a linked player.</p></div>
+	<pre class="code"><span class="k">async</span> <span class="f">openPlacements</span>() {
+	<span class="k">await</span> <span class="l">this</span>.<span class="f">widget</span>(<span class="s">&quot;x-rank-peaks&quot;</span>).<span class="f">getByRole</span>(<span class="s">&quot;link&quot;</span>).<span class="f">click</span>();
+	<span class="k">return</span> <span class="k">new</span> <span class="t">TopSearchPlayerPage</span>(<span class="l">this</span>.page);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/top-search/top-search-player-page.ts:18:TopSearchPlayerPage.locators.heading" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/top-search/top-search-player-page.ts#L18">
+	<div class="tooltip-head"><code>TopSearchPlayerPage.locators.heading</code><span>e2e/pages/top-search/top-search-player-page.ts:18</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;heading&quot;</span>, { name: /placements$/ })</pre>
+</template>
+<template data-ref-id="e2e/pages/user/user-page.ts:94:UserPage.usernameHeading" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/user/user-page.ts#L94">
+	<div class="tooltip-head"><code>UserPage.usernameHeading</code><span>e2e/pages/user/user-page.ts:94</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">usernameHeading</span>(username: <span class="t">string</span>) {
+	<span class="k">return</span> <span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;heading&quot;</span>, { name: username });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/user/user-page.ts:12:UserPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/user/user-page.ts#L12">
+	<div class="tooltip-head"><code>UserPage</code><span>e2e/pages/user/user-page.ts:12</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	
+</template>
+<template data-ref-id="e2e/pages/top-search/top-search-player-page.ts:8:TopSearchPlayerPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/top-search/top-search-player-page.ts#L8">
+	<div class="tooltip-head"><code>TopSearchPlayerPage</code><span>e2e/pages/top-search/top-search-player-page.ts:8</span></div>
+	<div class="tooltip-doc"><p><code>/xsearch/player/:id</code></p></div>
+	
+</template>
+<template data-ref-id="e2e/pages/admin/admin-streams-page.ts:25:AdminStreamsPage.goto" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-streams-page.ts#L25">
+	<div class="tooltip-head"><code>AdminStreamsPage.goto</code><span>e2e/pages/admin/admin-streams-page.ts:25</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">goto</span>() {
+	<span class="k">await</span> <span class="f">navigate</span>({ page: <span class="l">this</span>.page, url: <span class="s">&quot;/admin/streams&quot;</span> });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-streams-page.ts:18:AdminStreamsPage.locators.addStreamHeading" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-streams-page.ts#L18">
+	<div class="tooltip-head"><code>AdminStreamsPage.locators.addStreamHeading</code><span>e2e/pages/admin/admin-streams-page.ts:18</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByRole</span>(<span class="s">&quot;heading&quot;</span>, {
+	name: <span class="s">&quot;Add external stream&quot;</span>,
+})</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-streams-page.ts:21:AdminStreamsPage.locators.noStreams" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-streams-page.ts#L21">
+	<div class="tooltip-head"><code>AdminStreamsPage.locators.noStreams</code><span>e2e/pages/admin/admin-streams-page.ts:21</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code">page.<span class="f">getByText</span>(<span class="s">&quot;No external streams&quot;</span>)</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-streams-page.ts:33:AdminStreamsPage.createStream" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-streams-page.ts#L33">
+	<div class="tooltip-head"><code>AdminStreamsPage.createStream</code><span>e2e/pages/admin/admin-streams-page.ts:33</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">createStream</span>({
+	name,
+	url,
+	startTime,
+	logoPath,
+}: {
+	name: <span class="t">string</span>;
+	url: <span class="t">string</span>;
+	startTime: <span class="t">Date</span>;
+	logoPath: <span class="t">string</span>;
+}) {
+	<span class="k">const</span> form = <span class="l">this</span>.<span class="f">form</span>();
+	<span class="k">await</span> form.<span class="f">getByLabel</span>(<span class="s">&quot;Name&quot;</span>).<span class="f">fill</span>(name);
+	<span class="k">await</span> form.<span class="f">getByLabel</span>(<span class="s">&quot;Link&quot;</span>).<span class="f">fill</span>(url);
+	<span class="c">// …</span></pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-streams-page.ts:29:AdminStreamsPage.streamLink" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-streams-page.ts#L29">
+	<div class="tooltip-head"><code>AdminStreamsPage.streamLink</code><span>e2e/pages/admin/admin-streams-page.ts:29</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="f">streamLink</span>(name: <span class="t">string</span>) {
+	<span class="k">return</span> <span class="l">this</span>.page.<span class="f">getByRole</span>(<span class="s">&quot;link&quot;</span>, { name });
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-streams-page.ts:62:AdminStreamsPage.deleteStream" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-streams-page.ts#L62">
+	<div class="tooltip-head"><code>AdminStreamsPage.deleteStream</code><span>e2e/pages/admin/admin-streams-page.ts:62</span></div>
+	<div class="tooltip-doc muted">No JSDoc</div>
+	<pre class="code"><span class="k">async</span> <span class="f">deleteStream</span>(name: <span class="t">string</span>) {
+	<span class="k">await</span> <span class="l">this</span>.page
+		.<span class="f">getByRole</span>(<span class="s">&quot;listitem&quot;</span>)
+		.<span class="f">filter</span>({ hasText: name })
+		.<span class="f">getByRole</span>(<span class="s">&quot;button&quot;</span>, { name: <span class="s">&quot;Delete&quot;</span> })
+		.<span class="f">click</span>();
+	<span class="k">await</span> <span class="f">modalClickConfirmButton</span>(<span class="l">this</span>.page);
+}</pre>
+</template>
+<template data-ref-id="e2e/pages/admin/admin-streams-page.ts:11:AdminStreamsPage" data-href="https://github.com/sendou-ink/sendou.ink/blob/main/e2e/pages/admin/admin-streams-page.ts#L11">
+	<div class="tooltip-head"><code>AdminStreamsPage</code><span>e2e/pages/admin/admin-streams-page.ts:11</span></div>
+	<div class="tooltip-doc"><p><code>/admin/streams</code>, where external (non-Twitch) streams are managed.</p></div>
+	
+</template>
+<div class="tooltip" role="tooltip" hidden></div>
+<dialog class="search-dialog" aria-label="Search">
+	<input type="search" placeholder="Search features, modules, exports, tests, routes…" autocomplete="off" spellcheck="false">
+	<ul class="search-results" role="listbox"></ul>
+	<p class="search-hint muted"><kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to open, <kbd>Esc</kbd> to close</p>
+</dialog>
+<dialog class="lightbox" aria-label="Screenshot"><img alt=""><p class="lightbox-caption"></p></dialog>
+<script>
+const main = document.querySelector("main");
+
+function show() {
+	const hash = decodeURIComponent(location.hash.slice(1));
+	const views = [...document.querySelectorAll("[data-view]")];
+	if (views.length === 0) return;
+
+	const requested = hash.split("/")[0];
+	const view = views.some((el) => el.dataset.view === requested) ? requested : main.dataset.defaultView;
+
+	for (const el of views) el.hidden = el.dataset.view !== view;
+	for (const tab of document.querySelectorAll("[data-view-tab]")) {
+		tab.setAttribute("aria-current", String(tab.dataset.viewTab === view));
+	}
+
+	const target = hash.includes("/") ? document.getElementById(hash) : null;
+	if (target) target.scrollIntoView({ block: "start" });
+	else if (hash) window.scrollTo({ top: 0 });
+}
+
+window.addEventListener("hashchange", show);
+show();
+
+let spyFrame = 0;
+function updateScrollSpy() {
+	spyFrame = 0;
+	const view = [...document.querySelectorAll("[data-view]")].find((el) => !el.hidden);
+	if (!view) return;
+	const sidebar = view.querySelector(".sidebar");
+	const links = [...view.querySelectorAll('.toc a[href^="#"]')];
+
+	const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+	const threshold = isAtBottom ? window.innerHeight : Math.max(120, window.innerHeight * 0.3);
+	let current = null;
+	for (const link of links) {
+		const target = document.getElementById(decodeURIComponent(link.getAttribute("href").slice(1)));
+		if (target && target.getBoundingClientRect().top <= threshold) current = link;
+	}
+
+	for (const link of links) {
+		link.toggleAttribute("aria-current", link === current);
+		if (link === current) link.setAttribute("aria-current", "location");
+		link.classList.remove("is-active-parent");
+	}
+	const parent = current?.closest("ul")?.closest("li")?.querySelector(":scope > a");
+	parent?.classList.add("is-active-parent");
+
+	if (current && sidebar && current !== followedLink) {
+		followedLink = current;
+		const linkTop = current.getBoundingClientRect().top - sidebar.getBoundingClientRect().top + sidebar.scrollTop;
+		const maxScroll = sidebar.scrollHeight - sidebar.clientHeight;
+		followSidebar(sidebar, Math.min(maxScroll, Math.max(0, linkTop - sidebar.clientHeight * 0.35)));
+	}
+}
+
+// the sidebar eases towards keeping the current entry a third of the way down, so many
+// entries passing quickly read as one glide instead of a jump per entry
+let followedLink = null;
+let followFrame = 0;
+let followTarget = 0;
+let followedSidebar = null;
+let userScrolledSidebarAt = 0;
+function followSidebar(sidebar, target) {
+	if (Date.now() - userScrolledSidebarAt < 1500) return;
+	followTarget = target;
+	followedSidebar = sidebar;
+	followFrame ||= requestAnimationFrame(stepSidebar);
+}
+function stepSidebar() {
+	followFrame = 0;
+	const distance = followTarget - followedSidebar.scrollTop;
+	if (Math.abs(distance) < 1) {
+		followedSidebar.scrollTop = followTarget;
+		return;
+	}
+	followedSidebar.scrollTop += distance * 0.18;
+	followFrame = requestAnimationFrame(stepSidebar);
+}
+for (const sidebar of document.querySelectorAll(".sidebar")) {
+	for (const type of ["wheel", "touchmove"]) {
+		sidebar.addEventListener(type, () => {
+			userScrolledSidebarAt = Date.now();
+			cancelAnimationFrame(followFrame);
+			followFrame = 0;
+		}, { passive: true });
+	}
+}
+window.addEventListener("scroll", () => {
+	spyFrame ||= requestAnimationFrame(updateScrollSpy);
+}, { passive: true });
+window.addEventListener("hashchange", () => requestAnimationFrame(updateScrollSpy));
+updateScrollSpy();
+
+document.querySelector(".feature-tab[aria-current]")?.scrollIntoView({ inline: "center", block: "nearest" });
+
+for (const toggle of document.querySelectorAll("[data-toggle-code]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("show-code", toggle.checked);
+	});
+}
+
+for (const toggle of document.querySelectorAll("[data-toggle-outline]")) {
+	toggle.addEventListener("change", () => {
+		document.body.classList.toggle("outline-only", toggle.checked);
+	});
+}
+
+const tooltip = document.querySelector(".tooltip");
+const refTemplates = new Map([...document.querySelectorAll("template[data-ref-id]")].map((template) => [template.dataset.refId, template]));
+
+document.addEventListener("mouseover", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (!template) {
+		tooltip.hidden = true;
+		return;
+	}
+
+	tooltip.innerHTML = template.innerHTML;
+	tooltip.hidden = false;
+
+	const anchor = ref.getBoundingClientRect();
+	const box = tooltip.getBoundingClientRect();
+	const below = anchor.bottom + 8 + box.height < window.innerHeight;
+	tooltip.style.top = (below ? anchor.bottom + 8 : Math.max(8, anchor.top - 8 - box.height)) + "px";
+	tooltip.style.left = Math.min(Math.max(8, anchor.left), window.innerWidth - box.width - 8) + "px";
+});
+
+document.addEventListener("click", (event) => {
+	const ref = event.target.closest?.(".ref");
+	const template = ref ? refTemplates.get(ref.dataset.ref) : null;
+	if (template) window.open(template.dataset.href, "_blank", "noopener");
+});
+
+const lightbox = document.querySelector(".lightbox");
+document.addEventListener("click", (event) => {
+	const shot = event.target.closest?.("[data-shot]");
+	if (!shot) return;
+	lightbox.querySelector("img").src = shot.dataset.shot;
+	lightbox.querySelector(".lightbox-caption").textContent = shot.dataset.caption;
+	lightbox.showModal();
+});
+lightbox.addEventListener("click", () => lightbox.close());
+
+const searchDialog = document.querySelector(".search-dialog");
+const searchInput = searchDialog.querySelector("input");
+const searchResults = searchDialog.querySelector(".search-results");
+let selectedResult = 0;
+
+function openSearch() {
+	if (!window.LIVING_DOCS_SEARCH && !document.querySelector("script[data-search-index]")) {
+		const script = document.createElement("script");
+		script.src = "search-index.js";
+		script.dataset.searchIndex = "";
+		script.onload = renderResults;
+		document.head.append(script);
+	}
+	searchDialog.showModal();
+	searchInput.select();
+	renderResults();
+}
+
+function searchMatches(query) {
+	const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+	if (tokens.length === 0) return [];
+
+	return (window.LIVING_DOCS_SEARCH ?? [])
+		.map((entry) => {
+			const label = entry[1].toLowerCase();
+			const haystack = label + " " + entry[2].toLowerCase() + " " + entry[0].toLowerCase();
+			if (!tokens.every((token) => haystack.includes(token))) return null;
+			const score = (label.startsWith(tokens[0]) ? 0 : label.includes(tokens[0]) ? 1 : 2) * 1000 + label.length;
+			return { entry, score };
+		})
+		.filter(Boolean)
+		.sort((a, b) => a.score - b.score)
+		.slice(0, 60)
+		.map(({ entry }) => entry);
+}
+
+function renderResults() {
+	const matches = searchMatches(searchInput.value);
+	selectedResult = 0;
+	searchResults.replaceChildren(
+		...matches.map(([kind, label, detail, href], index) => {
+			const item = document.createElement("li");
+			const link = document.createElement("a");
+			link.href = href;
+			link.setAttribute("aria-selected", String(index === 0));
+			for (const [className, text] of [["search-kind", kind], ["search-label", label], ["search-detail", detail]]) {
+				const span = document.createElement("span");
+				span.className = className;
+				span.textContent = text;
+				link.append(span);
+			}
+			link.addEventListener("click", () => searchDialog.close());
+			item.append(link);
+			return item;
+		}),
+	);
+	if (matches.length === 0 && searchInput.value.trim()) {
+		const empty = document.createElement("li");
+		empty.className = "search-empty";
+		empty.textContent = window.LIVING_DOCS_SEARCH ? "No matches" : "Loading…";
+		searchResults.append(empty);
+	}
+}
+
+function moveSelection(delta) {
+	const links = [...searchResults.querySelectorAll("a")];
+	if (links.length === 0) return;
+	selectedResult = (selectedResult + delta + links.length) % links.length;
+	for (const [index, link] of links.entries()) {
+		link.setAttribute("aria-selected", String(index === selectedResult));
+	}
+	links[selectedResult].scrollIntoView({ block: "nearest" });
+}
+
+searchInput.addEventListener("input", renderResults);
+searchInput.addEventListener("keydown", (event) => {
+	if (event.key === "ArrowDown") moveSelection(1);
+	else if (event.key === "ArrowUp") moveSelection(-1);
+	else if (event.key === "Enter") {
+		const link = searchResults.querySelectorAll("a")[selectedResult];
+		if (link) {
+			searchDialog.close();
+			location.href = link.href;
+		}
+	} else return;
+	event.preventDefault();
+});
+searchDialog.addEventListener("click", (event) => {
+	if (event.target === searchDialog) searchDialog.close();
+});
+document.querySelector("[data-open-search]").addEventListener("click", openSearch);
+document.addEventListener("keydown", (event) => {
+	const isTyping = event.target.closest?.("input, textarea");
+	if ((event.key === "k" && (event.metaKey || event.ctrlKey)) || (event.key === "/" && !isTyping)) {
+		event.preventDefault();
+		openSearch();
+	}
+});
+
+for (const graph of document.querySelectorAll(".graph")) {
+	for (const node of graph.querySelectorAll("[data-node]")) {
+		node.addEventListener("mouseenter", () => {
+			const id = node.dataset.node;
+			graph.classList.add("focusing");
+			node.classList.add("is-related");
+			for (const edge of graph.querySelectorAll(".edge")) {
+				if (edge.dataset.from !== id && edge.dataset.to !== id) continue;
+				edge.classList.add("is-related");
+				const other = edge.dataset.from === id ? edge.dataset.to : edge.dataset.from;
+				graph.querySelector('[data-node="' + CSS.escape(other) + '"]')?.classList.add("is-related");
+			}
+		});
+		node.addEventListener("mouseleave", () => {
+			graph.classList.remove("focusing");
+			for (const el of graph.querySelectorAll(".is-related")) el.classList.remove("is-related");
+		});
+	}
+}
+</script>
+</body>
+</html>

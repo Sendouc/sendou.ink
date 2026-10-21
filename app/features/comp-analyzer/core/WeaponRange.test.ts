@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
-import { getWeaponsWithRange } from "./weapon-range";
+import * as WeaponRange from "./WeaponRange";
 
 // [longerRangeWeaponId, shorterRangeWeaponId]
 const RANGE_COMPARISONS: [MainWeaponId, MainWeaponId][] = [
@@ -11,20 +11,18 @@ const RANGE_COMPARISONS: [MainWeaponId, MainWeaponId][] = [
 	[2070, 7010], // Snipewriter 5H > Tri-Stringer
 ];
 
-describe("getWeaponsWithRange", () => {
+describe("WeaponRange.ofWeapons", () => {
 	test("keeps a separate slot for each copy of a duplicated weapon", () => {
-		const weapons = getWeaponsWithRange([40, 40, 70]);
+		const weapons = WeaponRange.ofWeapons([40, 40, 70]);
 
 		expect(weapons.map((weapon) => weapon.slot)).toEqual([0, 1, 2]);
 	});
-});
 
-describe("weapon range comparisons", () => {
 	test.each(RANGE_COMPARISONS)(
 		"weapon %i has more range than weapon %i",
 		(longerId, shorterId) => {
-			const [longer] = getWeaponsWithRange([longerId]);
-			const [shorter] = getWeaponsWithRange([shorterId]);
+			const [longer] = WeaponRange.ofWeapons([longerId]);
+			const [shorter] = WeaponRange.ofWeapons([shorterId]);
 
 			expect(longer.range).toBeGreaterThan(shorter.range);
 		},

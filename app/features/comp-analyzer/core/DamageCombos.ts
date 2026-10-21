@@ -1,3 +1,10 @@
+/**
+ * Damage combos of a comp: the ways hits from different weapons (main, sub and special damages
+ * alike) add up to a splat when no single hit does. Combos are searched by backtracking over every
+ * damage the comp deals, kept lethal but not excessive, deduplicated and ordered closest to 100
+ * damage first. Damages come from the build analyzer's stats of each weapon.
+ */
+
 import { damageTypeToWeaponType } from "~/features/build-analyzer/analyzer-constants";
 import type {
 	AbilityPoints,
@@ -33,7 +40,8 @@ interface DamageOption {
 
 const weaponDamagesCache = new Map<string, WeaponDamageSource["damages"]>();
 
-export function extractDamageSources(
+/** Every damage each weapon of the comp deals, against a target with `targetSubDefenseAp` of Sub Defense Up. */
+export function damageSources(
 	weaponIds: MainWeaponId[],
 	targetSubDefenseAp = 0,
 ): WeaponDamageSource[] {
@@ -119,17 +127,19 @@ function weaponDamages(
 	return damages;
 }
 
+/** A damage of one weapon, as the user excludes it from the combos. */
 export interface ExcludedDamageKey {
 	weaponId: MainWeaponId;
 	weaponType: "main" | "sub" | "special";
 	damageType: DamageType;
 }
 
-export function getAllDamageKeys(
+/** Every damage of the comp's weapons once, the ones the user can exclude from the combos. */
+export function damageKeys(
 	weaponIds: MainWeaponId[],
 	targetSubDefenseAp = 0,
 ): ExcludedDamageKey[] {
-	const sources = extractDamageSources(weaponIds, targetSubDefenseAp);
+	const sources = damageSources(weaponIds, targetSubDefenseAp);
 	const seen = new Set<string>();
 	const keys: ExcludedDamageKey[] = [];
 
@@ -157,7 +167,12 @@ export function getAllDamageKeys(
 	return keys;
 }
 
-export function calculateDamageCombos(
+/**
+ * The comp's damage combos, best first: lethal ones closest to 100 damage with the fewest hits.
+ * Combos span at least two weapons unless `includeSingleWeaponCombos`, where a weapon's main, sub
+ * and special count as separate sources.
+ */
+export function calculate(
 	weaponIds: MainWeaponId[],
 	excludedKeys: ExcludedDamageKey[] = [],
 	targetSubDefenseAp = 0,
@@ -173,7 +188,7 @@ export function calculateDamageCombos(
 		excludedKeys.map((k) => `${k.weaponId}-${k.weaponType}-${k.damageType}`),
 	);
 
-	const sources = extractDamageSources(weaponIds, targetSubDefenseAp);
+	const sources = damageSources(weaponIds, targetSubDefenseAp);
 	const damageOptions = flattenToOptions(sources, excludedSet);
 	const combos = generateCombinations(
 		damageOptions,
@@ -394,7 +409,7 @@ const SPLASH_O_MATIC_ID = 20;
  * Frames of enemy ink damage needed to finish a target after `comboDamage`. `targetResAp` is Ink
  * Resistance Up AP (0-57). Null when the combo is already lethal or ink damage can't finish it.
  */
-export function calculateInkTimeToKill(
+export function inkTimeToKill(
 	comboDamage: number,
 	targetResAp: number,
 ): number | null {

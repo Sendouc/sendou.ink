@@ -45,3 +45,6 @@ notepad.txt
 *.mov
 !/e2e/fixtures/scanner-vod.webm
 !/e2e/fixtures/scanner-coach-vod.webm
+
+# living docs screenshots, from pnpm run docs:living:capture
+/docs/living/screenshots/

@@ -8,25 +8,25 @@ import {
 	TRIZOOKA_ID,
 	WAVE_BREAKER_ID,
 } from "~/modules/in-game-lists/weapon-ids";
-import { getSpecialWeaponRange } from "./special-weapon-range";
+import * as SpecialWeaponRange from "./SpecialWeaponRange";
 
-describe("special weapon range", () => {
+describe("SpecialWeaponRange.ofSpecial", () => {
 	test("computes a projectile range for Trizooka", () => {
-		const result = getSpecialWeaponRange(TRIZOOKA_ID);
+		const result = SpecialWeaponRange.ofSpecial(TRIZOOKA_ID);
 
 		expect(result?.rangeType).toBe("projectile");
 		expect(result?.range).toBeGreaterThan(0);
 	});
 
 	test("Crab Tank reaches further than Trizooka", () => {
-		const crab = getSpecialWeaponRange(CRAB_TANK_ID);
-		const trizooka = getSpecialWeaponRange(TRIZOOKA_ID);
+		const crab = SpecialWeaponRange.ofSpecial(CRAB_TANK_ID);
+		const trizooka = SpecialWeaponRange.ofSpecial(TRIZOOKA_ID);
 
 		expect(crab!.range).toBeGreaterThan(trizooka!.range);
 	});
 
 	test("throws-and-bursts specials expose a throw range plus explosion blast", () => {
-		const booyah = getSpecialWeaponRange(BOOYAH_BOMB_ID);
+		const booyah = SpecialWeaponRange.ofSpecial(BOOYAH_BOMB_ID);
 
 		expect(booyah?.rangeType).toBe("projectile");
 		expect(booyah?.range).toBeGreaterThan(0);
@@ -34,20 +34,20 @@ describe("special weapon range", () => {
 	});
 
 	test("returns the effect radius for area specials", () => {
-		const waveBreaker = getSpecialWeaponRange(WAVE_BREAKER_ID);
+		const waveBreaker = SpecialWeaponRange.ofSpecial(WAVE_BREAKER_ID);
 
 		expect(waveBreaker?.rangeType).toBe("radius");
 		expect(waveBreaker?.range).toBeGreaterThan(0);
 	});
 
 	test("returns null for global / utility specials without a meaningful circle", () => {
-		expect(getSpecialWeaponRange(BIG_BUBBLER_ID)).toBeNull();
-		expect(getSpecialWeaponRange(SPLATTERCOLOR_SCREEN_ID)).toBeNull();
+		expect(SpecialWeaponRange.ofSpecial(BIG_BUBBLER_ID)).toBeNull();
+		expect(SpecialWeaponRange.ofSpecial(SPLATTERCOLOR_SCREEN_ID)).toBeNull();
 	});
 
 	test("every special is either unsupported or has a positive finite range", () => {
 		for (const id of specialWeaponIds) {
-			const result = getSpecialWeaponRange(id);
+			const result = SpecialWeaponRange.ofSpecial(id);
 			if (result === null) continue;
 
 			expect(Number.isFinite(result.range)).toBe(true);
