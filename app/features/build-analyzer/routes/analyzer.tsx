@@ -1849,7 +1849,7 @@ function DamageTable({
 			</thead>
 			<tbody>
 				{values.map((val, i) => {
-					if (val.type.includes("SECONDARY")) return null;
+					if (val.type.startsWith("DIRECT_SECONDARY")) return null;
 
 					const damage = (
 						damageValue: AnalyzedBuild["stats"]["damages"][number],
