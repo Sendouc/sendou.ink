@@ -2,7 +2,6 @@
 navItem: builds
 type: feature
 ---
-xxx: edit
 Weapon ability stats & popular builds redesign
 
 - Popular builds show their most common gear layout, how many players run them and link to the analyzer and builds like them
