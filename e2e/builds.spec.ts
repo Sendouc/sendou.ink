@@ -256,24 +256,39 @@ test.describe("Builds", () => {
 		await weaponBuilds.locators.abilityStatsTab.click();
 
 		const buildStats = new BuildStatsPage(page);
-		await expect(buildStats.buildsCountTitle(4, "Splattershot")).toBeVisible();
+		await expect(buildStats.buildsCount(4)).toBeVisible();
 		// SSU and RSU weapon averages
 		await expect(buildStats.apAverage(19)).toHaveCount(2);
 		// ISM weapon average
 		await expect(buildStats.apAverage(9)).toHaveCount(1);
 		// CB is in every Splattershot build but in 4 of the 5 builds site-wide
-		await expect(buildStats.abilityPercentage(100)).toHaveCount(1);
-		await expect(buildStats.abilityPercentage(80)).toHaveCount(1);
+		await expect(
+			buildStats.mainOnlyAbilityPercentages({
+				abilityName: "Comeback",
+				weaponPercentage: 100,
+				allPercentage: 80,
+			}),
+		).toBeVisible();
 
 		const popularBuilds = new PopularBuildsPage(page);
 		await popularBuilds.goto("splattershot");
 
-		// admin's identical builds count once, N-ZAP's brings the signature to ×2
+		// admin's identical builds count once, N-ZAP's brings it to 2 players
 		await expect(popularBuilds.placement(1)).toBeVisible();
-		await expect(popularBuilds.buildCount(2)).toBeVisible();
-		await expect(popularBuilds.ability("CB")).toBeVisible();
-		await expect(popularBuilds.abilityPoints(19)).toHaveCount(2);
-		await expect(popularBuilds.abilityPoints(9)).toHaveCount(1);
+		await expect(popularBuilds.playersCount(2)).toBeVisible();
+		await expect(
+			popularBuilds.buildAbility({ rank: 1, ability: "CB" }),
+		).toHaveCount(1);
+		// 19 AP = one main and three subs
+		await expect(
+			popularBuilds.buildAbility({ rank: 1, ability: "SSU" }),
+		).toHaveCount(4);
+		await expect(
+			popularBuilds.buildAbility({ rank: 1, ability: "RSU" }),
+		).toHaveCount(4);
+		await expect(
+			popularBuilds.buildAbility({ rank: 1, ability: "ISM" }),
+		).toHaveCount(3);
 		await isNotVisible(popularBuilds.placement(2));
 	});
 
