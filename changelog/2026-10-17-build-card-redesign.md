@@ -13,3 +13,4 @@ Build cards redesigned
 - Analyzer stat cards use the same style as build cards
 - How many builds match the filters is shown above the results
 - "Clear filters" button when no builds match the filters
+- Redesigned dialog for sorting your builds: drag the rules to reorder them and add new ones with one click

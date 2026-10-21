@@ -5,7 +5,6 @@ import {
 	Lock,
 	LockOpen,
 	Search,
-	Trash,
 } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -14,12 +13,9 @@ import * as R from "remeda";
 import { BuildCard } from "~/components/BuildCard";
 import { EmptyState } from "~/components/EmptyState";
 import { SendouButton } from "~/components/elements/Button";
-import { SendouDialog } from "~/components/elements/Dialog";
-import { FormMessage } from "~/components/FormMessage";
 import type { FilterLayoutFilter } from "~/components/filter-layout/FilterLayout";
 import { Image, WeaponImage } from "~/components/Image";
 import { Input } from "~/components/Input";
-import { SubmitButton } from "~/components/SubmitButton";
 import { useUser } from "~/features/auth/core/user";
 import {
 	BuildFilterRadioGroup,
@@ -27,12 +23,7 @@ import {
 	BuildFiltersLayout,
 	ClearFiltersButton,
 } from "~/features/builds/components/BuildFilters";
-import {
-	BUILD_SORT_IDENTIFIERS,
-	type BuildSort,
-	type BuildVisibility,
-} from "~/features/user-page/user-page-constants";
-import { buildsActionSchema } from "~/features/user-page/user-page-schemas";
+import type { BuildVisibility } from "~/features/user-page/user-page-constants";
 import { useSearchParamPagination } from "~/hooks/useSearchParamPagination";
 import type { MainWeaponId } from "~/modules/in-game-lists/types";
 import { filterWeapon } from "~/modules/in-game-lists/utils";
@@ -42,9 +33,9 @@ import { useSearchParamsTyped } from "~/modules/search-params/hooks";
 import type { SendouRouteHandle } from "~/utils/remix.server";
 import { weaponCategoryUrl } from "~/utils/urls";
 import { action } from "../actions/u.$identifier.builds.server";
+import { BuildSortingDialog } from "../components/BuildSortingDialog";
 import { SubPageHeader } from "../components/SubPageHeader";
 import { loader } from "../loaders/u.$identifier.builds.server";
-import { DEFAULT_BUILD_SORT } from "../user-page-constants";
 import { useUserPageLayoutData } from "../user-page-hooks";
 import { userBuildsSearchParams } from "../user-page-search-params";
 import styles from "./u.$identifier.builds.module.css";
@@ -157,7 +148,8 @@ export default function UserBuildsPage() {
 	return (
 		<div className="stack lg">
 			{changingSorting ? (
-				<ChangeSortingDialog
+				<BuildSortingDialog
+					initialSorting={data.buildSorting}
 					close={closeSortingDialog}
 					fetcher={sortingFetcher}
 				/>
@@ -190,149 +182,6 @@ export default function UserBuildsPage() {
 				buildCards
 			)}
 		</div>
-	);
-}
-
-const MISSING_SORT_VALUE = "null";
-function ChangeSortingDialog({
-	close,
-	fetcher,
-}: {
-	close: () => void;
-	fetcher: ReturnType<typeof useFetcher>;
-}) {
-	const data = useLoaderData<typeof loader>();
-	const [buildSorting, setBuildSorting] = React.useState<
-		ReadonlyArray<BuildSort | null>
-	>(() => {
-		if (!data.buildSorting) return [...DEFAULT_BUILD_SORT, null];
-		if (data.buildSorting.length === BUILD_SORT_IDENTIFIERS.length)
-			return data.buildSorting;
-
-		return [...data.buildSorting, null];
-	});
-	const { t } = useTranslation(["common", "user"]);
-
-	const canAddMoreSorting = buildSorting.length < BUILD_SORT_IDENTIFIERS.length;
-
-	const changeSorting = (idx: number, newIdentifier: BuildSort | null) => {
-		const newSorting = buildSorting.map((oldIdentifier, i) =>
-			i === idx ? newIdentifier : oldIdentifier,
-		);
-
-		if (canAddMoreSorting && newSorting[newSorting.length - 1] !== null) {
-			newSorting.push(null);
-		}
-
-		setBuildSorting(newSorting);
-	};
-
-	const deleteLastSorting = () => {
-		setBuildSorting((prev) => [...prev.filter(Boolean).slice(0, -1), null]);
-	};
-
-	return (
-		<SendouDialog heading={t("user:builds.sorting.header")} onClose={close}>
-			<fetcher.Form method="post" onSubmit={() => close()}>
-				<input
-					type="hidden"
-					name="buildSorting"
-					value={JSON.stringify(buildSorting.filter(Boolean))}
-				/>
-				<div className="stack lg">
-					<div className="stack md">
-						<FormMessage type="info">
-							{t("user:builds.sorting.info")}
-						</FormMessage>
-						<SendouButton
-							className="ml-auto"
-							variant="minimal"
-							size="small"
-							onClick={() => setBuildSorting([...DEFAULT_BUILD_SORT, null])}
-						>
-							{t("user:builds.sorting.backToDefaults")}
-						</SendouButton>
-						{buildSorting.map((sort, i) => {
-							const isLast = i === buildSorting.length - 1;
-							const isSecondToLast = i === buildSorting.length - 2;
-
-							if (isLast && canAddMoreSorting) {
-								return (
-									<ChangeSortingDialogSelect
-										key={i}
-										identifiers={BUILD_SORT_IDENTIFIERS.filter(
-											(identifier) =>
-												!buildSorting.slice(0, -1).includes(identifier),
-										)}
-										value={sort}
-										changeValue={(newValue) => changeSorting(i, newValue)}
-									/>
-								);
-							}
-
-							return (
-								<div
-									key={i}
-									className="stack horizontal justify-between items-center"
-								>
-									<div className="font-bold">
-										{i + 1}) {t(`user:builds.sorting.${sort!}`)}
-									</div>
-									{(isLast && !canAddMoreSorting) ||
-									(canAddMoreSorting && isSecondToLast) ? (
-										<SendouButton
-											size="small"
-											icon={<Trash />}
-											variant="minimal-destructive"
-											onClick={deleteLastSorting}
-											data-testid="delete-sorting-button"
-										/>
-									) : null}
-								</div>
-							);
-						})}
-					</div>
-
-					<div>
-						<SubmitButton schema={buildsActionSchema} _action="UPDATE_SORTING">
-							{t("common:actions.save")}
-						</SubmitButton>
-					</div>
-				</div>
-			</fetcher.Form>
-		</SendouDialog>
-	);
-}
-
-function ChangeSortingDialogSelect({
-	identifiers,
-	value,
-	changeValue,
-}: {
-	identifiers: BuildSort[];
-	value: BuildSort | null;
-	changeValue: (value: BuildSort | null) => void;
-}) {
-	const { t } = useTranslation(["user"]);
-
-	return (
-		<select
-			value={value ?? MISSING_SORT_VALUE}
-			onChange={(e) => {
-				if (e.target.value === MISSING_SORT_VALUE) changeValue(null);
-
-				changeValue(e.target.value as BuildSort);
-			}}
-		>
-			<option value={MISSING_SORT_VALUE}>-</option>
-			{identifiers.map((identifier) => {
-				return (
-					<option key={identifier} value={identifier}>
-						{t(`user:builds.sorting.${identifier}`)}
-					</option>
-				);
-			})}
-		</select>
 	);
 }
 

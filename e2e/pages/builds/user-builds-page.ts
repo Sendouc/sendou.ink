@@ -65,9 +65,9 @@ export class UserBuildsPage {
 
 		const dialog = this.page.getByRole("dialog");
 		for (const _ of DEFAULT_BUILD_SORT) {
-			await dialog.getByTestId("delete-sorting-button").click();
+			await dialog.getByTestId("remove-sorting-button").first().click();
 		}
-		await dialog.getByRole("combobox").selectOption(sort);
+		await dialog.getByTestId(`add-sorting-${sort}`).click();
 
 		await submit(this.page);
 	}
