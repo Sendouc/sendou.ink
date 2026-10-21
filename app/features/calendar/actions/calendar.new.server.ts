@@ -31,6 +31,8 @@ import {
 	teamPickSettingsFromFormValues,
 } from "../calendar-new-schemas";
 import { formValuesToInputBrackets } from "../calendar-progression-form";
+import type { CalendarEventTag } from "../calendar-types";
+import * as CalendarEvent from "../core/CalendarEvent";
 import { findValidOrganizations } from "../loaders/calendar.new.server";
 
 export const action = defineAction(
@@ -119,13 +121,11 @@ export const action = defineAction(
 			discordInviteCode: data.discordInviteCode
 				? pathnameFromPotentialURL(data.discordInviteCode)
 				: data.discordInviteCode,
-			tags:
-				data.tags.length > 0
-					? data.tags.toSorted(
-							(a, b) =>
-								CALENDAR_EVENT.TAGS.indexOf(a) - CALENDAR_EVENT.TAGS.indexOf(b),
-						)
-					: null,
+			tags: sortedTagsOrNull(
+				isAddingTournament
+					? data.tags.filter((tag) => !CalendarEvent.isVersusTag(tag))
+					: data.tags,
+			),
 			badges: data.trophyId
 				? []
 				: data.badges.filter((badge) => attachableBadgeIds.has(badge)),
@@ -222,6 +222,14 @@ export const action = defineAction(
 		throw redirect(calendarEventPage(createdEventId));
 	},
 );
+
+function sortedTagsOrNull(tags: Array<CalendarEventTag>) {
+	if (tags.length === 0) return null;
+
+	return tags.toSorted(
+		(a, b) => CALENDAR_EVENT.TAGS.indexOf(a) - CALENDAR_EVENT.TAGS.indexOf(b),
+	);
+}
 
 /** Bracket progression from the `brackets` + `progression` fields, already validated by the schema's refine. */
 function bracketProgressionFromFormData(data: {

@@ -56,6 +56,7 @@ import {
 	type TeamPickCountsFormValue,
 	TOURNAMENT_FORM_STEPS,
 	teamPickSettingsFromFormValues,
+	tournamentTagsField,
 } from "../calendar-new-schemas";
 import {
 	type BracketFormValue,
@@ -403,7 +404,7 @@ function TournamentSteps() {
 					<FormField name="rules" />
 					<FormField name="avatarImgId" />
 					<FormField name="discordInviteCode" />
-					<FormField name="tags" />
+					<FormField name="tags" field={tournamentTagsField} />
 				</div>
 			</FormStep>
 
