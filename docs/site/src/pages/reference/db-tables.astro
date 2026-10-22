@@ -1,12 +1,32 @@
 ---
 import { getCollection } from "astro:content";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import type { DbTable } from "../../../../../scripts/living-docs/db-tables.ts";
 import { githubUrl } from "../../../../../scripts/living-docs/links.ts";
+import LivingScript from "../../components/living/LivingScript.astro";
+import RefTemplates from "../../components/living/RefTemplates.astro";
 import { markdown } from "../../living/format.ts";
+import "../../styles/living.css";
+
+const MAX_HEADING_LEVEL = 6;
 
 const tables = (await getCollection("dbTables"))
 	.map((entry) => entry.data)
 	.sort((a, b) => a.name.localeCompare(b.name));
+const groupedTables = inGroupOrder(tables);
+const refs = new Map(tables.flatMap((table) => [...table.refs]));
+
+/** Depth-first, each table followed by the tables grouped under it. */
+function inGroupOrder(all: DbTable[], parent: string | null = null, depth = 0) {
+	return all
+		.filter((table) => table.parent === parent)
+		.flatMap(
+			(table): Array<{ table: DbTable; level: number }> => [
+				{ table, level: Math.min(2 + depth, MAX_HEADING_LEVEL) },
+				...inGroupOrder(all, table.name, depth + 1),
+			],
+		);
+}
 ---
 
 <StarlightPage
@@ -14,8 +34,13 @@ const tables = (await getCollection("dbTables"))
 		title: "Database tables",
 		description: "The tables and views of the database, generated from app/db/tables.ts.",
 		editUrl: false,
+		tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: MAX_HEADING_LEVEL },
 	}}
-	headings={tables.map((table) => ({ depth: 2, slug: table.name, text: table.name }))}
+	headings={groupedTables.map(({ table, level }) => ({
+		depth: level,
+		slug: table.name,
+		text: table.name,
+	}))}
 >
 	<p>
 		Generated from the <code>DB</code> interface of{" "}
@@ -24,39 +49,45 @@ const tables = (await getCollection("dbTables"))
 		<a href="../../dev/database-schemas/">Database schemas</a> for how columns are typed.
 	</p>
 	{
-		tables.map((table) => (
-			<>
-				<h2 id={table.name}>{table.name}</h2>
-				{table.doc ? <Fragment set:html={markdown(table.doc)} /> : null}
-				<p>
-					Rows typed by{" "}
-					<a href={githubUrl(table.file, table.line)}>
-						<code>{table.rowType}</code>
-					</a>
-				</p>
-				<table>
-					<thead>
-						<tr>
-							<th>Column</th>
-							<th>Type</th>
-							<th>Description</th>
-						</tr>
-					</thead>
-					<tbody>
-						{table.columns.map((column) => (
+		groupedTables.map(({ table, level }) => {
+			const Heading = `h${level}`;
+
+			return (
+				<>
+					<Heading id={table.name}>{table.name}</Heading>
+					{table.doc ? <Fragment set:html={markdown(table.doc)} /> : null}
+					<p>
+						Rows typed by{" "}
+						<a href={githubUrl(table.file, table.line)}>
+							<code>{table.rowType}</code>
+						</a>
+					</p>
+					<table>
+						<thead>
 							<tr>
-								<td>
-									<code>{column.name}</code>
-								</td>
-								<td>
-									<code>{column.type}</code>
-								</td>
-								<td set:html={column.doc ? markdown(column.doc) : ""} />
+								<th>Column</th>
+								<th>Type</th>
+								<th>Description</th>
 							</tr>
-						))}
-					</tbody>
-				</table>
-			</>
-		))
+						</thead>
+						<tbody>
+							{table.columns.map((column) => (
+								<tr>
+									<td>
+										<code>{column.name}</code>
+									</td>
+									<td>
+										<code set:html={column.typeHtml} />
+									</td>
+									<td set:html={column.doc ? markdown(column.doc) : ""} />
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</>
+			);
+		})
 	}
+	<RefTemplates refs={refs} />
+	<LivingScript />
 </StarlightPage>

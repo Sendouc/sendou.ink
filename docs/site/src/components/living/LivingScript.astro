@@ -14,6 +14,8 @@
 	}
 
 	const tooltip = document.querySelector<HTMLElement>(".living-tooltip")!;
+	// out of the content column's stacking context, which the "On this page" sidebar paints over
+	document.body.append(tooltip);
 	const refTemplates = new Map(
 		[...document.querySelectorAll<HTMLTemplateElement>("template[data-ref-id]")].map(
 			(template) => [template.dataset.refId, template],

@@ -1,14 +1,15 @@
 ---
-import type { SpecDoc } from "../../../../../scripts/living-docs/e2e.ts";
 import { highlight } from "../../../../../scripts/living-docs/highlight.ts";
 import { githubUrl } from "../../../../../scripts/living-docs/links.ts";
+import type { SourceRef } from "../../../../../scripts/living-docs/page-objects.ts";
 import { markdown } from "../../living/format.ts";
 
 interface Props {
-	specs: SpecDoc[];
+	/** What hovering a `.ref` with the matching `data-ref` shows, by ref id. */
+	refs: Map<string, SourceRef>;
 }
 
-const refs = new Map(Astro.props.specs.flatMap((spec) => [...spec.refs]));
+const { refs } = Astro.props;
 ---
 
 {
