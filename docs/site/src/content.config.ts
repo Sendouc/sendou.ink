@@ -1,9 +1,6 @@
 import { defineCollection } from "astro:content";
-import path from "node:path";
 import { i18nLoader } from "@astrojs/starlight/loaders";
 import { docsSchema, i18nSchema } from "@astrojs/starlight/schema";
-import { glob } from "astro/loaders";
-import { z } from "astro/zod";
 import { ROOT } from "../../../scripts/living-docs/ast.ts";
 import { documentDbTables } from "../../../scripts/living-docs/db-tables.ts";
 import { documentFeatures } from "../../../scripts/living-docs/document.ts";
@@ -24,13 +21,6 @@ export const collections = {
 	}),
 	// Starlight reads it for UI string overrides, an empty one keeps Astro from warning it is missing
 	i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),
-	changelog: defineCollection({
-		loader: glob({ base: path.join(ROOT, "changelog"), pattern: "*.md" }),
-		schema: z.object({
-			type: z.enum(["feature", "bug"]),
-			navItem: z.union([z.string(), z.array(z.string())]).optional(),
-		}),
-	}),
 	features: defineCollection({
 		loader: generatedLoader({
 			name: "living-docs",

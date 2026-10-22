@@ -70,10 +70,7 @@ export default defineConfig({
 				},
 				{
 					label: "Project",
-					items: [
-						{ label: "What's new", link: "/changelog/" },
-						{ autogenerate: { directory: "project" } },
-					],
+					items: [{ autogenerate: { directory: "project" } }],
 				},
 				{ label: "Guides", items: guideSlugs() },
 				{

@@ -22,7 +22,7 @@ import type { UnitTestCase } from "../../../../scripts/living-docs/unit-tests.ts
 export const STATIC_ASSETS_URL =
 	"https://sendou-assets.nyc3.cdn.digitaloceanspaces.com";
 
-/** A path of the site (no leading slash) with the site's base, e.g. `/sendou.ink/changelog/`. */
+/** A path of the site (no leading slash) with the site's base, e.g. `/sendou.ink/reference/routes/`. */
 export function sitePath(pathInSite: string) {
 	return `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}${pathInSite}`;
 }
