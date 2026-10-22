@@ -15,6 +15,8 @@
 	"count.players_other": "{{count}} joueurs",
 	"forms.tags": "Tags",
 	"forms.tags.placeholder": "Choisir un tag",
+	"forms.trophy": "Récompense du trophée",
+	"forms.trophy.placeholder": "Choisissez une récompense pour ce trophée",
 	"forms.mapPool": "Stages disponibles",
 	"forms.reportResultsHeader": "Déclarer les résultats pour {{eventName}}",
 	"forms.reportResultsInfo": "Les résultats déclarés peuvent être personnalisés. Vous pouvez déclarer uniquement le gagnant, le top 3, ou tout ce que vous décidez.",
@@ -28,5 +30,6 @@
 	"filter.modes": "Modes",
 	"filter.exactModes": "Modes exacts",
 	"filter.games": "Parties",
-	"filter.vs": "Contre"
+	"filter.vs": "Contre",
+	"newTournament.prizeKind.trophy": "Trophée"
 }
