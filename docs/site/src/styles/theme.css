@@ -1,13 +1,58 @@
-:root {
-	--sl-color-accent-low: #272040;
-	--sl-color-accent: #8b6dff;
-	--sl-color-accent-high: #d4c9ff;
-}
+/* the app's layers (app/styles/vars.css) rank above Starlight's, declared before the app's styles are imported */
+@layer starlight, reset, base, elements, components, features, utilities;
 
-:root[data-theme="light"] {
-	--sl-color-accent-low: #ede8ff;
-	--sl-color-accent: #6d4aff;
-	--sl-color-accent-high: #3a1fb0;
+@import "../../../../app/styles/fonts.css";
+@import "../../../../app/styles/vars.css";
+
+/* Starlight's tokens mapped onto the app's default theme, both follow Starlight's [data-theme] on <html> */
+:root {
+	--sl-font: lexend, sans-serif;
+
+	--sl-color-white: var(--color-base-0);
+	--sl-color-gray-1: var(--color-base-1);
+	--sl-color-gray-2: var(--color-base-2);
+	--sl-color-gray-3: var(--color-base-3);
+	--sl-color-gray-4: var(--color-base-4);
+	--sl-color-gray-5: var(--color-base-5);
+	--sl-color-gray-6: var(--color-base-6);
+	--sl-color-gray-7: color-mix(
+		in oklch,
+		var(--color-base-6) 50%,
+		var(--color-base-7) 50%
+	);
+	--sl-color-black: var(--color-base-7);
+
+	--sl-color-accent-low: var(--color-accent-low);
+	--sl-color-accent: var(--color-accent);
+	--sl-color-accent-high: var(--color-accent-high);
+
+	--sl-color-blue-low: var(--color-info-low);
+	--sl-color-blue: var(--color-info);
+	--sl-color-blue-high: var(--color-info-high);
+	--sl-color-purple-low: var(--color-bg-accent);
+	--sl-color-purple: var(--color-accent);
+	--sl-color-purple-high: var(--color-fg-accent);
+	--sl-color-green-low: var(--color-success-low);
+	--sl-color-green: var(--color-success);
+	--sl-color-green-high: var(--color-success-high);
+	--sl-color-orange-low: var(--color-warning-low);
+	--sl-color-orange: var(--color-warning);
+	--sl-color-orange-high: var(--color-warning-high);
+	--sl-color-red-low: var(--color-error-low);
+	--sl-color-red: var(--color-error);
+	--sl-color-red-high: var(--color-error-high);
+
+	--sl-color-text-accent: var(--color-fg-accent);
+	--sl-color-text-invert: var(--color-fg-on-accent);
+	--sl-color-bg: var(--color-bg);
+	--sl-color-bg-nav: var(--color-bg-nav);
+	--sl-color-bg-sidebar: var(--color-bg-nav);
+	--sl-color-bg-inline-code: var(--color-bg-higher);
+	--sl-color-bg-accent: var(--color-fill-accent);
+	--sl-color-hairline-light: var(--color-border);
+	--sl-color-hairline: var(--color-border);
+	--sl-color-hairline-shade: var(--color-bg);
+	--sl-color-backdrop-overlay: var(--color-bg-overlay);
 }
 
 pre.mermaid {

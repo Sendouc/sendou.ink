@@ -1,6 +1,3 @@
-/* the app's layers (app/styles/vars.css) rank above Starlight's, this file is imported before the app's styles to declare it first */
-@layer starlight, reset, base, elements, components, features, utilities;
-
 :root:has(.app-root) {
 	--sl-content-width: 72rem;
 }
