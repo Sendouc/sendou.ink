@@ -28,6 +28,7 @@ import { logger } from "./utils/logger";
 export const streamTimeout = 5000;
 
 const PREFETCH_CACHE_CONTROL = "private, max-age=10";
+const DEFAULT_CACHE_CONTROL = "private, no-cache";
 
 const dateFnsLocalesLoaded = loadAllDateFnsLocales();
 
@@ -39,6 +40,10 @@ async function handleRequest(
 	loadContext: RouterContextProvider,
 ) {
 	await dateFnsLocalesLoaded;
+
+	if (!responseHeaders.has("Cache-Control")) {
+		responseHeaders.set("Cache-Control", DEFAULT_CACHE_CONTROL);
+	}
 
 	const callbackName = isbot(request.headers.get("user-agent"))
 		? "onAllReady"
@@ -84,17 +89,26 @@ async function handleRequest(
 	});
 }
 
-/** Lets the browser reuse a hover-prefetched loader response on the click that follows it. Varies by cookie so that a mutation (see `invalidatePrefetchedLoaderData` in entry.client.tsx) or a log in invalidates it. */
+/** Lets the browser reuse a hover-prefetched loader response on the click that follows it. Varies by cookie so that a mutation (see `invalidatePrefetchedLoaderData` in entry.client.tsx) or a log in invalidates it. Every other response defaults to private so a CDN never caches user data. */
 export const handleDataRequest: HandleDataRequestFunction = (
 	response,
 	{ request },
 ) => {
-	const isPrefetch = request.headers.get("Sec-Purpose") === "prefetch";
-	if (request.method !== "GET" || !response.ok || !isPrefetch) return response;
+	const isReusablePrefetch =
+		request.method === "GET" &&
+		response.ok &&
+		request.headers.get("Sec-Purpose") === "prefetch";
+	if (!isReusablePrefetch && response.headers.has("Cache-Control")) {
+		return response;
+	}
 
 	const headers = new Headers(response.headers);
-	headers.set("Cache-Control", PREFETCH_CACHE_CONTROL);
-	headers.set("Vary", "Cookie");
+	if (isReusablePrefetch) {
+		headers.set("Cache-Control", PREFETCH_CACHE_CONTROL);
+		headers.set("Vary", "Cookie");
+	} else {
+		headers.set("Cache-Control", DEFAULT_CACHE_CONTROL);
+	}
 
 	return new Response(response.body, {
 		status: response.status,
