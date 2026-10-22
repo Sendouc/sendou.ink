@@ -1,0 +1,34 @@
+---
+import { escapeHtml } from "../../../../../scripts/living-docs/highlight.ts";
+import { apiEndpointAnchor } from "../../../../../scripts/living-docs/links.ts";
+import type {
+	ApiEndpoint,
+	ApiType,
+} from "../../../../../scripts/living-docs/public-api.ts";
+import FileLink from "./FileLink.astro";
+
+interface Props {
+	endpoint: ApiEndpoint;
+	/** Its response (GET) or request body (POST). */
+	type: ApiType;
+}
+
+const { endpoint, type } = Astro.props;
+const pathHtml = escapeHtml(endpoint.path).replace(
+	/(\{[^}]+\})/g,
+	`<span class="route-param">$1</span>`,
+);
+---
+
+<article class="route">
+	<header class="route-head">
+		<span class:list={["badge", endpoint.method === "GET" ? "badge-loader" : "badge-action"]}>
+			{endpoint.method}
+		</span>
+		<h3 class="route-path" id={apiEndpointAnchor(endpoint)}>
+			<code set:html={pathHtml} />
+		</h3>
+		<FileLink file={type.file} line={type.line} label={type.name} />
+	</header>
+	<pre class="code" set:html={type.html} />
+</article>

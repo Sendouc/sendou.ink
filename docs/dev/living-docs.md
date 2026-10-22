@@ -12,7 +12,7 @@ Each feature has a page per source (`/features/<feature>/modules/`, `/e2e/`, `/r
 - `pnpm run docs:preview` builds the site and serves the build, search included.
 - `pnpm run docs:build` builds it into `docs/site/dist/` and checks every internal link of the build leads somewhere (`scripts/check-docs-links.ts`). CI runs it on every push and deploys the site from `main` to GitHub Pages (`.github/workflows/docs.yml`).
 
-Besides the feature pages, the generated pages are: Routes (every route with its e2e coverage), Database tables (from `app/db/tables.ts`) and Lint rules (`biome-plugins/` and where `biome.json` enables them). Each is a content collection of `docs/site/src/content.config.ts`, the data read by an extractor of `scripts/living-docs/`.
+Besides the feature pages, the generated pages are: Routes (every route with its e2e coverage), Database tables (from `app/db/tables.ts`), Lint rules (`biome-plugins/` and where `biome.json` enables them) and Public API (every endpoint and type of `app/features/api-public/schema.ts`, read from the `/** GET /api/… */` comment above each response or request body type). Each is a content collection of `docs/site/src/content.config.ts`, the data read by an extractor of `scripts/living-docs/`.
 
 The extractors (reading the code into data) live in `scripts/living-docs/`, `documentFeatures()` being the entry point. The site reads them through a content collection (`docs/site/src/living/loader.ts`) and renders them with the components of `docs/site/src/components/living/`.
 

@@ -6,7 +6,7 @@ import {
 	type HastPluginEntry,
 	type MdastPluginEntry,
 } from "satteri";
-import { docSlug } from "./doc-files.ts";
+import { docSlug, linkedPageSlug } from "./doc-files.ts";
 
 /** ```mermaid code blocks as `<pre class="mermaid">`, drawn in the browser by `MarkdownContent.astro`. */
 export const mermaidDiagrams: MdastPluginEntry = defineMdastPlugin({
@@ -33,7 +33,7 @@ export const dropTitle: MdastPluginEntry = defineMdastPlugin({
 
 /**
  * Relative links of the markdown docs as they work on GitHub (`./forms.md`, `../../app/routes.ts`)
- * rewritten to the docs site's page of a doc, or to GitHub for any other file of the repo.
+ * rewritten to the docs site's page of a doc or a generated page's file, or to GitHub for any other file of the repo.
  */
 export function docLinks({
 	repoRoot,
@@ -52,7 +52,7 @@ export function docLinks({
 		const repoRelative = path.relative(repoRoot, path.resolve(fromDir, target));
 		const fragment = hash ? `#${hash}` : "";
 
-		const slug = docSlug(repoRelative);
+		const slug = linkedPageSlug(repoRelative);
 		if (slug) return `${base}${slug}/${fragment}`;
 
 		return `${repoUrl}/blob/main/${repoRelative.split(path.sep).join("/")}${fragment}`;

@@ -1,6 +1,5 @@
 // the docs site: the handwritten docs of docs/ and the living docs generated from the code, see docs/dev/living-docs.md
 
-import fs from "node:fs";
 import path from "node:path";
 import { satteri } from "@astrojs/markdown-satteri";
 import react from "@astrojs/react";
@@ -15,6 +14,7 @@ import {
 	hoverOnlyOnHoverDevices,
 } from "../../vite-css-plugins.ts";
 import { DOCS_DEV_PORT } from "../../vite-docs-proxy.ts";
+import { allDocSlugs, PUBLIC_API_SLUG } from "./src/plugins/doc-files.ts";
 import {
 	docLinks,
 	dropTitle,
@@ -23,8 +23,9 @@ import {
 import { scopeAppStyles } from "./src/plugins/scope-app-styles.ts";
 
 const REPO_URL = "https://github.com/sendou-ink/sendou.ink";
-const DOCS_DIR = path.resolve(import.meta.dirname, "..");
-const REPO_ROOT = path.resolve(DOCS_DIR, "..");
+const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
+/** Starlight's `autogenerate` only finds docs under `src/content/docs`, these are read in place from the repo instead. */
+const DOC_SLUGS = allDocSlugs(REPO_ROOT);
 /** GitHub Pages serves the site from a subpath, see .github/workflows/docs.yml. */
 const BASE = process.env.GITHUB_PAGES === "true" ? "/sendou.ink/" : "/";
 /** The app's global stylesheets the components showcase loads, scoped to it by `scopeAppStyles`. */
@@ -64,15 +65,21 @@ export default defineConfig({
 				SocialIcons: "./src/components/SocialIcons.astro",
 			},
 			sidebar: [
+				{ label: "Contributor docs", items: docSlugsUnder("dev/") },
+				{ label: "Project", items: docSlugsUnder("project/") },
 				{
-					label: "Developer docs",
-					items: [{ autogenerate: { directory: "dev" } }],
+					label: "Guides",
+					items: DOC_SLUGS.filter(
+						(slug) => !slug.includes("/") && slug !== PUBLIC_API_SLUG,
+					),
 				},
 				{
-					label: "Project",
-					items: [{ autogenerate: { directory: "project" } }],
+					label: "Public API",
+					items: [
+						{ label: "Overview", slug: PUBLIC_API_SLUG },
+						{ label: "Endpoints", link: `/${PUBLIC_API_SLUG}/endpoints/` },
+					],
 				},
-				{ label: "Guides", items: guideSlugs() },
 				{
 					label: "Reference",
 					items: [
@@ -123,13 +130,8 @@ export default defineConfig({
 	},
 });
 
-/** The docs directly in docs/, e.g. `tournament-creation.md`. */
-function guideSlugs() {
-	return fs
-		.readdirSync(DOCS_DIR)
-		.filter((name) => name.endsWith(".md"))
-		.sort()
-		.map((name) => name.replace(/\.md$/, ""));
+function docSlugsUnder(prefix: string) {
+	return DOC_SLUGS.filter((slug) => slug.startsWith(prefix));
 }
 
 function featureSidebar(): NonNullable<StarlightUserConfig["sidebar"]> {

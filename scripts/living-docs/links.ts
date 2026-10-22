@@ -53,6 +53,16 @@ export function routeAnchor(route: { file: string; isLayout: boolean }) {
 	return anchor(route.file, route.isLayout ? "layout" : "");
 }
 
+/** Id of a public API endpoint's heading. */
+export function apiEndpointAnchor(endpoint: { method: string; path: string }) {
+	return anchor(endpoint.method, endpoint.path);
+}
+
+/** Id of a public API type's heading. */
+export function apiTypeAnchor(name: string) {
+	return anchor("type", name);
+}
+
 export function anchor(...parts: string[]) {
 	return parts
 		.filter(Boolean)

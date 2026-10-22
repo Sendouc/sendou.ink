@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 
 /** The repo's markdown files the docs site shows, repo relative. */
@@ -7,14 +8,21 @@ export const DOC_FILE_PATTERNS = [
 	"docs/dev/*.md",
 	"CONTRIBUTING.md",
 	"AGENTS.md",
-	"translation-progress.md",
 ];
 
-/** Pages of the repo root's markdown files, under `project/`. */
-const ROOT_DOC_SLUGS: Record<string, string> = {
+/** Slug of the public API's overview, its endpoints page (`pages/api/endpoints.astro`) sits under it. */
+export const PUBLIC_API_SLUG = "api";
+
+/** Docs whose page isn't where their file is: the repo root's markdown files under `project/`, the public API's at its own section. */
+const DOC_SLUG_OVERRIDES: Record<string, string> = {
 	"CONTRIBUTING.md": "project/contributing",
 	"AGENTS.md": "project/agent-instructions",
-	"translation-progress.md": "project/translation-progress",
+	"docs/dev/api.md": PUBLIC_API_SLUG,
+};
+
+/** Repo files with a generated page of their own, where the docs' links to them lead on the site. */
+const GENERATED_PAGE_SLUGS: Record<string, string> = {
+	"app/features/api-public/schema.ts": `${PUBLIC_API_SLUG}/endpoints`,
 };
 
 /** For docs whose file has no `# Heading` to take the title from. */
@@ -25,10 +33,25 @@ const TITLES: Record<string, string> = {
 /** Slug (and so the URL) of a repo relative markdown file's page, null when the site doesn't show it. */
 export function docSlug(repoRelativePath: string) {
 	const file = repoRelativePath.split(path.sep).join("/");
-	if (ROOT_DOC_SLUGS[file]) return ROOT_DOC_SLUGS[file];
+	if (DOC_SLUG_OVERRIDES[file]) return DOC_SLUG_OVERRIDES[file];
 
 	const match = file.match(/^docs\/((?:dev\/)?[^/]+)\.md$/);
 	return match ? match[1].toLowerCase() : null;
+}
+
+/** Slugs of every doc the site shows, sorted. */
+export function allDocSlugs(repoRoot: string) {
+	return fs
+		.globSync(DOC_FILE_PATTERNS, { cwd: repoRoot })
+		.flatMap((file) => docSlug(file) ?? [])
+		.sort();
+}
+
+/** Slug of the page a link to a repo relative file leads to on the site, null for none (GitHub then). */
+export function linkedPageSlug(repoRelativePath: string) {
+	const file = repoRelativePath.split(path.sep).join("/");
+
+	return docSlug(file) ?? GENERATED_PAGE_SLUGS[file] ?? null;
 }
 
 /** A doc's title: set by hand, its `# Heading`, or its file name. */

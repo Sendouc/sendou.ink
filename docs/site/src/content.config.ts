@@ -5,6 +5,10 @@ import { ROOT } from "../../../scripts/living-docs/ast.ts";
 import { documentDbTables } from "../../../scripts/living-docs/db-tables.ts";
 import { documentFeatures } from "../../../scripts/living-docs/document.ts";
 import { documentLintRules } from "../../../scripts/living-docs/lint-rules.ts";
+import {
+	documentPublicApi,
+	PUBLIC_API_SCHEMA_FILE,
+} from "../../../scripts/living-docs/public-api.ts";
 import { documentShowcase } from "../../../scripts/living-docs/showcase.ts";
 import { allSourceFiles } from "../../../scripts/living-docs/source-index.ts";
 import {
@@ -49,6 +53,14 @@ export const collections = {
 			watch: ["app/db/tables.ts"],
 			entries: () =>
 				documentDbTables().map((table) => ({ id: table.name, data: table })),
+		}),
+	}),
+	publicApi: defineCollection({
+		loader: generatedLoader({
+			name: "public-api",
+			watch: [PUBLIC_API_SCHEMA_FILE],
+			entries: () =>
+				documentPublicApi().map((type) => ({ id: type.name, data: type })),
 		}),
 	}),
 	lintRules: defineCollection({

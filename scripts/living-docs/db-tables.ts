@@ -1,15 +1,8 @@
 import type { Node } from "oxc-parser";
-import {
-	jsDocOf,
-	lineOf,
-	type ParsedFile,
-	parseFile,
-	textOf,
-	walk,
-} from "./ast.ts";
+import { jsDocOf, lineOf, type ParsedFile, parseFile, textOf } from "./ast.ts";
 import { escapeHtml } from "./highlight.ts";
-import { docText, type SourceRef, sourceRef } from "./page-objects.ts";
-import { resolveImport } from "./source-index.ts";
+import { docText, type SourceRef } from "./page-objects.ts";
+import { declarationRef, linkTypeReferences } from "./type-refs.ts";
 
 const TABLES_FILE = "app/db/tables.ts";
 const DB_INTERFACE = "DB";
@@ -117,126 +110,21 @@ function prefixParent(name: string, names: string[]) {
 }
 
 function typeHtml(file: ParsedFile, type: Node, refs: Map<string, SourceRef>) {
-	const references: Array<{ start: number; end: number; ref: SourceRef }> = [];
-	walk(type, (node) => {
-		const identifier =
-			node.type === "TSTypeReference"
-				? node.typeName
-				: node.type === "TSTypeQuery"
-					? node.exprName
-					: null;
-		if (
-			identifier?.type !== "Identifier" ||
-			UNREFERENCED_TYPES.has(identifier.name)
-		) {
-			return;
-		}
+	return linkTypeReferences({
+		file,
+		node: type,
+		format: escapeHtml,
+		link: (name, html) => {
+			const ref = UNREFERENCED_TYPES.has(name)
+				? null
+				: declarationRef(file, name);
+			if (!ref) return null;
 
-		const ref = declarationRef(file, identifier.name);
-		if (ref) {
-			references.push({ start: identifier.start, end: identifier.end, ref });
-		}
-		return;
+			const id = `${ref.file}:${ref.line}:${ref.title}`;
+			refs.set(id, ref);
+			return `<span class="ref" data-ref="${escapeHtml(id)}">${html}</span>`;
+		},
 	});
-
-	let html = "";
-	let cursor = type.start;
-	for (const { start, end, ref } of references.sort(
-		(a, b) => a.start - b.start,
-	)) {
-		const id = `${ref.file}:${ref.line}:${ref.title}`;
-		refs.set(id, ref);
-		html += `${escapeHtml(file.source.slice(cursor, start))}<span class="ref" data-ref="${escapeHtml(id)}">${escapeHtml(file.source.slice(start, end))}</span>`;
-		cursor = end;
-	}
-
-	return html + escapeHtml(file.source.slice(cursor, type.end));
-}
-
-/** Where the type or const `name` of `file` is declared, following imports and re-exports. */
-function declarationRef(file: ParsedFile, name: string): SourceRef | null {
-	for (const statement of file.program.body) {
-		const declaration =
-			statement.type === "ExportNamedDeclaration"
-				? statement.declaration
-				: statement;
-		if (declaration && declaredNames(declaration).includes(name)) {
-			return withQueriedValues(
-				file,
-				declaration,
-				sourceRef(file, name, statement, statement),
-			);
-		}
-	}
-
-	for (const entry of file.imports) {
-		const specifier = entry.entries.find(
-			(candidate) => candidate.localName.value === name,
-		);
-		if (!specifier) continue;
-
-		const resolved = resolveImport(file.path, entry.moduleRequest.value);
-		return resolved && specifier.importName.name
-			? declarationRef(parseFile(resolved), specifier.importName.name)
-			: null;
-	}
-
-	for (const statement of file.program.body) {
-		if (statement.type !== "ExportNamedDeclaration" || !statement.source) {
-			continue;
-		}
-		const specifier = statement.specifiers.find(
-			(candidate) => textOf(file, candidate.exported) === name,
-		);
-		if (!specifier) continue;
-
-		const resolved = resolveImport(file.path, statement.source.value);
-		return resolved
-			? declarationRef(parseFile(resolved), textOf(file, specifier.local))
-			: null;
-	}
-
-	return null;
-}
-
-/** Appends the code of the consts a type is derived from, e.g. the array of `(typeof ROLES)[number]`. */
-function withQueriedValues(
-	file: ParsedFile,
-	declaration: Node,
-	ref: SourceRef,
-): SourceRef {
-	if (declaration.type !== "TSTypeAliasDeclaration") return ref;
-
-	const queried: SourceRef[] = [];
-	walk(declaration.typeAnnotation, (node) => {
-		if (node.type === "TSTypeQuery" && node.exprName.type === "Identifier") {
-			const value = declarationRef(file, node.exprName.name);
-			if (value) queried.push(value);
-		}
-		return;
-	});
-
-	return queried.length > 0
-		? {
-				...ref,
-				code: [ref.code, ...queried.map((value) => value.code)].join("\n\n"),
-			}
-		: ref;
-}
-
-function declaredNames(declaration: Node) {
-	switch (declaration.type) {
-		case "TSTypeAliasDeclaration":
-		case "TSInterfaceDeclaration":
-		case "TSEnumDeclaration":
-			return [declaration.id.name];
-		case "VariableDeclaration":
-			return declaration.declarations.flatMap((declarator) =>
-				declarator.id.type === "Identifier" ? [declarator.id.name] : [],
-			);
-		default:
-			return [];
-	}
 }
 
 type PropertySignature = Extract<Node, { type: "TSPropertySignature" }>;

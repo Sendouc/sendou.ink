@@ -3,14 +3,21 @@ import { getCollection } from "astro:content";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import FeatureIcon from "../components/living/FeatureIcon.astro";
 import { count, sitePath, testsOf, viewHref } from "../living/format.ts";
+import { PUBLIC_API_SLUG } from "../plugins/doc-files.ts";
 import "../styles/living.css";
 
 const docs = (await getCollection("docs")).sort((a, b) =>
 	a.data.title.localeCompare(b.data.title),
 );
-const devDocs = docs.filter((doc) => doc.id.startsWith("dev/"));
+const contributorDocs = docs.filter((doc) => doc.id.startsWith("dev/"));
 const projectDocs = docs.filter((doc) => doc.id.startsWith("project/"));
-const guides = docs.filter((doc) => !doc.id.includes("/"));
+const guides = docs.filter(
+	(doc) => !doc.id.includes("/") && doc.id !== PUBLIC_API_SLUG,
+);
+const publicApi = [
+	{ title: "Overview", path: `${PUBLIC_API_SLUG}/` },
+	{ title: "Endpoints", path: `${PUBLIC_API_SLUG}/endpoints/` },
+];
 const reference = [
 	{ title: "Routes", path: "reference/routes/" },
 	{ title: "Database tables", path: "reference/db-tables/" },
@@ -25,9 +32,10 @@ const features = (await getCollection("features"))
 <StarlightPage
 	frontmatter={{ title: "sendou.ink docs", editUrl: false }}
 	headings={[
-		{ depth: 2, slug: "developer-docs", text: "Developer docs" },
+		{ depth: 2, slug: "contributor-docs", text: "Contributor docs" },
 		{ depth: 2, slug: "project", text: "Project" },
 		{ depth: 2, slug: "guides", text: "Guides" },
+		{ depth: 2, slug: "public-api", text: "Public API" },
 		{ depth: 2, slug: "reference", text: "Reference" },
 		{ depth: 2, slug: "features", text: "Features" },
 	]}
@@ -38,9 +46,9 @@ const features = (await getCollection("features"))
 		with <code>pnpm dev</code>, see <a href={sitePath("dev/living-docs/")}>Living docs</a>.
 	</p>
 
-	<h2 id="developer-docs">Developer docs</h2>
+	<h2 id="contributor-docs">Contributor docs</h2>
 	<ul>
-		{devDocs.map((doc) => <li><a href={sitePath(`${doc.id}/`)}>{doc.data.title}</a></li>)}
+		{contributorDocs.map((doc) => <li><a href={sitePath(`${doc.id}/`)}>{doc.data.title}</a></li>)}
 	</ul>
 
 	<h2 id="project">Project</h2>
@@ -51,6 +59,11 @@ const features = (await getCollection("features"))
 	<h2 id="guides">Guides</h2>
 	<ul>
 		{guides.map((doc) => <li><a href={sitePath(`${doc.id}/`)}>{doc.data.title}</a></li>)}
+	</ul>
+
+	<h2 id="public-api">Public API</h2>
+	<ul>
+		{publicApi.map((page) => <li><a href={sitePath(page.path)}>{page.title}</a></li>)}
 	</ul>
 
 	<h2 id="reference">Reference</h2>

@@ -297,6 +297,7 @@
 }
 
 .route {
+	min-width: 0;
 	padding: 14px 18px;
 	background: var(--living-surface);
 	border: 1px solid var(--living-border);
