@@ -10,7 +10,11 @@ import { getFixedTForLanguage } from "../../../modules/i18n/i18next.server";
 import { logger } from "../../../utils/logger";
 import * as NotificationRepository from "../NotificationRepository.server";
 import type { Notification } from "../notifications-types";
-import { notificationLink, notificationMeta } from "../notifications-utils";
+import {
+	isPushServiceEndpoint,
+	notificationLink,
+	notificationMeta,
+} from "../notifications-utils";
 import { webPush, webPushEnabled } from "./webPush.server";
 
 const NOTIFICATION_URGENCY: Record<Notification["type"], Urgency> = {
@@ -50,6 +54,8 @@ const NOTIFICATION_URGENCY: Record<Notification["type"], Urgency> = {
 
 /** How long a push is held back; anything marking the notification seen meanwhile (addressing it, opening the list, `defaultSeenUserIds`) cancels it for that user. */
 export const PUSH_NOTIFICATION_GRACE_PERIOD_MS = 15 * 1000;
+
+const PUSH_NOTIFICATION_TIMEOUT_MS = 10 * 1000;
 
 /** Creates notifications and sends pushes (if enabled) after {@link PUSH_NOTIFICATION_GRACE_PERIOD_MS}, only to users whose notification is still unseen by then. */
 export async function notify({
@@ -199,11 +205,19 @@ async function sendPushNotification({
 	recipient: UserLinkArgs;
 	t: TFunction<["common"], undefined>;
 }) {
+	if (!isPushServiceEndpoint(subscription.endpoint)) {
+		await NotificationRepository.deleteSubscriptionById(subscriptionId);
+		return;
+	}
+
 	try {
 		await webPush.sendNotification(
 			subscription,
 			JSON.stringify(pushNotificationOptions(notification, recipient, t)),
-			{ urgency: NOTIFICATION_URGENCY[notification.type] },
+			{
+				urgency: NOTIFICATION_URGENCY[notification.type],
+				timeout: PUSH_NOTIFICATION_TIMEOUT_MS,
+			},
 		);
 	} catch (err) {
 		if (!(err instanceof WebPushError)) {

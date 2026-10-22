@@ -27,6 +27,22 @@ import {
 } from "~/utils/urls";
 import type { Notification } from "./notifications-types";
 
+const PUSH_SERVICE_HOSTS = [
+	"fcm.googleapis.com",
+	"android.googleapis.com",
+	"jmt17.google.com",
+	"updates.push.services.mozilla.com",
+	"web.push.apple.com",
+];
+
+const PUSH_SERVICE_HOST_SUFFIXES = [
+	".push.services.mozilla.com",
+	".push.apple.com",
+	".notify.windows.com",
+];
+
+const STRICT_HOSTNAME_REGEX = /^[a-z0-9-]+(\.[a-z0-9-]+)*$/;
+
 /** Values the notification's title and text interpolate. Some notification types have none. */
 export const notificationMeta = (notification: Notification) =>
 	"meta" in notification ? notification.meta : undefined;
@@ -175,3 +191,22 @@ export const notificationLink = (
 			assertUnreachable(notification);
 	}
 };
+
+/** Whether the push subscription endpoint points at a known browser push service over the default HTTPS port. The server POSTs to this URL so arbitrary hosts must not be accepted. */
+export function isPushServiceEndpoint(endpoint: string) {
+	let url: URL;
+	try {
+		url = new URL(endpoint);
+	} catch {
+		return false;
+	}
+
+	if (url.protocol !== "https:" || url.port !== "") return false;
+	// web-push connects via legacy url.parse which truncates hosts at chars like ; { ` that WHATWG URL keeps
+	if (!STRICT_HOSTNAME_REGEX.test(url.hostname)) return false;
+
+	return (
+		PUSH_SERVICE_HOSTS.includes(url.hostname) ||
+		PUSH_SERVICE_HOST_SUFFIXES.some((suffix) => url.hostname.endsWith(suffix))
+	);
+}

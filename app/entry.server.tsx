@@ -151,6 +151,11 @@ process.on("unhandledRejection", (reason: string, p: Promise<any>) => {
 	logger.error("Unhandled Rejection at:", p, "reason:", reason);
 });
 
+process.on("uncaughtException", (error) => {
+	logger.error("Uncaught Exception:", error);
+	process.exit(1);
+});
+
 // routes through logger so the request id shows in server logs
 export const handleError: HandleErrorFunction = (error, { request }) => {
 	if (request.signal.aborted) return;

@@ -366,7 +366,7 @@ describe("notify() - web push notifications", () => {
 	};
 
 	test("sends web push notification after the grace period", async () => {
-		await subscribe(users.id(1), "https://push.example.com/1");
+		await subscribe(users.id(1), "https://fcm.googleapis.com/fcm/send/1");
 		mockWebPushEnabled.value = true;
 
 		vi.useFakeTimers();
@@ -389,11 +389,11 @@ describe("notify() - web push notifications", () => {
 		expect(mockSendNotification).toHaveBeenCalledTimes(1);
 		expect(mockSendNotification).toHaveBeenCalledWith(
 			{
-				endpoint: "https://push.example.com/1",
+				endpoint: "https://fcm.googleapis.com/fcm/send/1",
 				keys: { auth: "test-auth-key", p256dh: "test-p256dh-key" },
 			},
 			expect.any(String),
-			{ urgency: "high" },
+			expect.objectContaining({ urgency: "high", timeout: expect.any(Number) }),
 		);
 
 		const callArgs = mockSendNotification.mock.calls[0][1];
@@ -405,8 +405,8 @@ describe("notify() - web push notifications", () => {
 	});
 
 	test("sends web push to multiple subscriptions", async () => {
-		await subscribe(users.id(1), "https://push.example.com/1");
-		await subscribe(users.id(2), "https://push.example.com/2");
+		await subscribe(users.id(1), "https://fcm.googleapis.com/fcm/send/1");
+		await subscribe(users.id(2), "https://fcm.googleapis.com/fcm/send/2");
 		mockWebPushEnabled.value = true;
 
 		await notifyAndElapseGracePeriod({
@@ -420,14 +420,37 @@ describe("notify() - web push notifications", () => {
 		expect(mockSendNotification).toHaveBeenCalledTimes(2);
 		expect(pushedEndpoints()).toEqual(
 			expect.arrayContaining([
-				"https://push.example.com/1",
-				"https://push.example.com/2",
+				"https://fcm.googleapis.com/fcm/send/1",
+				"https://fcm.googleapis.com/fcm/send/2",
 			]),
 		);
 	});
 
+	test("deletes a subscription pointing outside the known push services instead of sending to it", async () => {
+		await subscribe(users.id(1), "https://attacker.example/push");
+		await subscribe(users.id(1), "https://fcm.googleapis.com/fcm/send/1");
+		mockWebPushEnabled.value = true;
+
+		await notifyAndElapseGracePeriod({
+			userIds: [users.id(1)],
+			notification: {
+				type: "BADGE_ADDED",
+				meta: { badgeName: "Test", badgeId: 1 },
+			},
+		});
+
+		expect(pushedEndpoints()).toEqual([
+			"https://fcm.googleapis.com/fcm/send/1",
+		]);
+		const remaining =
+			await NotificationRepository.findAllSubscriptionsByUserIds([users.id(1)]);
+		expect(remaining.map(({ subscription }) => subscription.endpoint)).toEqual([
+			"https://fcm.googleapis.com/fcm/send/1",
+		]);
+	});
+
 	test("does not send web push when webPushEnabled is false", async () => {
-		await subscribe(users.id(1), "https://push.example.com/1");
+		await subscribe(users.id(1), "https://fcm.googleapis.com/fcm/send/1");
 
 		await notifyAndElapseGracePeriod({
 			userIds: [users.id(1)],
@@ -441,8 +464,8 @@ describe("notify() - web push notifications", () => {
 	});
 
 	test("skips the push for a user who saw the notification during the grace period", async () => {
-		await subscribe(users.id(1), "https://push.example.com/1");
-		await subscribe(users.id(2), "https://push.example.com/2");
+		await subscribe(users.id(1), "https://fcm.googleapis.com/fcm/send/1");
+		await subscribe(users.id(2), "https://fcm.googleapis.com/fcm/send/2");
 		mockWebPushEnabled.value = true;
 
 		await notifyAndElapseGracePeriod(
@@ -461,12 +484,14 @@ describe("notify() - web push notifications", () => {
 				}),
 		);
 
-		expect(pushedEndpoints()).toEqual(["https://push.example.com/2"]);
+		expect(pushedEndpoints()).toEqual([
+			"https://fcm.googleapis.com/fcm/send/2",
+		]);
 	});
 
 	test("skips the push for users who had the notification seen by default", async () => {
-		await subscribe(users.id(1), "https://push.example.com/1");
-		await subscribe(users.id(2), "https://push.example.com/2");
+		await subscribe(users.id(1), "https://fcm.googleapis.com/fcm/send/1");
+		await subscribe(users.id(2), "https://fcm.googleapis.com/fcm/send/2");
 		mockWebPushEnabled.value = true;
 
 		await notifyAndElapseGracePeriod({
@@ -478,11 +503,13 @@ describe("notify() - web push notifications", () => {
 			},
 		});
 
-		expect(pushedEndpoints()).toEqual(["https://push.example.com/2"]);
+		expect(pushedEndpoints()).toEqual([
+			"https://fcm.googleapis.com/fcm/send/2",
+		]);
 	});
 
 	test("includes opponent team name for scrim notifications", async () => {
-		await subscribe(users.id(1), "https://push.example.com/1");
+		await subscribe(users.id(1), "https://fcm.googleapis.com/fcm/send/1");
 		mockWebPushEnabled.value = true;
 
 		await notifyAndElapseGracePeriod({
