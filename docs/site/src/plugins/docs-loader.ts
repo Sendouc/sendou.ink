@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { glob, type Loader } from "astro/loaders";
 import {
 	DOC_FILE_PATTERNS,
@@ -14,7 +15,7 @@ import {
  */
 export function docsLoader({ repoRoot }: { repoRoot: string }): Loader {
 	const loader = glob({
-		base: repoRoot,
+		base: pathToFileURL(repoRoot),
 		pattern: DOC_FILE_PATTERNS,
 		generateId: ({ entry }) => docSlug(entry) ?? entry,
 	});

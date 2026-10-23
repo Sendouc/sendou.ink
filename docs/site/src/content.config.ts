@@ -1,4 +1,5 @@
 import { defineCollection } from "astro:content";
+import { pathToFileURL } from "node:url";
 import { i18nLoader } from "@astrojs/starlight/loaders";
 import { docsSchema, i18nSchema } from "@astrojs/starlight/schema";
 import { glob } from "astro/loaders";
@@ -47,7 +48,7 @@ export const collections = {
 	}),
 	featureReadmes: defineCollection({
 		loader: glob({
-			base: ROOT,
+			base: pathToFileURL(ROOT),
 			pattern: FEATURE_README_PATTERN,
 			generateId: ({ entry }) => readmeFeature(entry) ?? entry,
 		}),
