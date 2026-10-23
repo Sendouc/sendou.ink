@@ -80,7 +80,7 @@ export function Widget({
 	widget,
 	user,
 }: {
-	widget: SerializeFrom<LoadedWidget>;
+	widget: SerializeFrom<() => LoadedWidget>;
 	user: Pick<Tables["User"], "id" | "discordId" | "customUrl">;
 }) {
 	const { t } = useTranslation(["user", "badges", "team", "org", "lfg"]);

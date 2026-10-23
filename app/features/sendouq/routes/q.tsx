@@ -15,7 +15,6 @@ import { LocaleTime } from "~/components/LocaleTime";
 import { LocaleTimeRange } from "~/components/LocaleTimeRange";
 import { Main } from "~/components/Main";
 import { useUser } from "~/features/auth/core/user";
-import type * as Seasons from "~/features/mmr/core/Seasons";
 import { userSeasonsPage } from "~/features/user-page/user-page-urls";
 import { useDateTimeFormat } from "~/hooks/intl/useDateTimeFormat";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
@@ -258,7 +257,7 @@ function JoinTeamDialog({
 function ActiveSeasonInfo({
 	season,
 }: {
-	season: SerializeFrom<Seasons.ListItem>;
+	season: NonNullable<SerializeFrom<typeof loader>["season"]>;
 }) {
 	const { t } = useTranslation(["q"]);
 
@@ -359,7 +358,7 @@ function QLink({
 function UpcomingSeasonInfo({
 	season,
 }: {
-	season: SerializeFrom<Seasons.ListItem>;
+	season: NonNullable<SerializeFrom<typeof loader>["season"]>;
 }) {
 	const { t } = useTranslation(["q"]);
 	const { formatter } = useDateTimeFormat({

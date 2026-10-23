@@ -24,11 +24,21 @@ export const loader = async ({ url }: LoaderFunctionArgs) => {
 	const upcomingSeason = !season ? Seasons.next() : undefined;
 
 	return {
-		season,
-		upcomingSeason,
+		season: season ? seasonWithTimestamps(season) : undefined,
+		upcomingSeason: upcomingSeason
+			? seasonWithTimestamps(upcomingSeason)
+			: undefined,
 		groupInvitedTo,
 		friendCode: user
 			? await UserRepository.findCurrentFriendCodeByUserId(user.id)
 			: undefined,
 	};
 };
+
+function seasonWithTimestamps(season: Seasons.ListItem) {
+	return {
+		...season,
+		starts: season.starts.getTime(),
+		ends: season.ends.getTime(),
+	};
+}

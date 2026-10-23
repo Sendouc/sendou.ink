@@ -66,16 +66,18 @@ export default function EditWidgetsPage() {
 	const isSupporter = useHasRole("SUPPORTER");
 	const maxWidgets = maxWidgetsPerSlot(isSupporter);
 
-	const [selectedWidgets, setSelectedWidgets] = useState<
-		Array<Tables["UserWidget"]["widget"]>
-	>(data.currentWidgets);
+	// countdown dates are ISO strings in the db, typed as the form's Date output
+	const currentWidgets = data.currentWidgets as unknown as Array<
+		Tables["UserWidget"]["widget"]
+	>;
+	const [selectedWidgets, setSelectedWidgets] = useState(currentWidgets);
 	const [expandedWidgetId, setExpandedWidgetId] = useState<string | null>(null);
 	const [emptySaveAttempted, setEmptySaveAttempted] = useState(false);
 
 	useUnsavedChangesChecker(
 		() =>
 			fetcher.state === "idle" &&
-			!R.isDeepEqual(selectedWidgets, data.currentWidgets),
+			!R.isDeepEqual(selectedWidgets, currentWidgets),
 	);
 
 	const mainWidgets = selectedWidgets.filter((w) => {
