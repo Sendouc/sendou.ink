@@ -25,6 +25,21 @@ const SCOPED_APP_STYLES = [
 	"flags.css",
 ].map((file) => path.join(REPO_ROOT, "app/styles", file));
 
+const CASCADE_LAYERS = [
+	"starlight.base",
+	"starlight.reset",
+	"starlight.core",
+	"starlight.content",
+	"starlight.components",
+	"starlight.utils",
+	"reset",
+	"base",
+	"elements",
+	"components",
+	"features",
+	"utilities",
+];
+
 const STARLIGHT_SCROLL_CONTAINERS = [
 	"html",
 	".sidebar-pane",
@@ -55,6 +70,7 @@ export default defineConfig({
 				},
 			],
 			editLink: { baseUrl: `${REPO_URL}/edit/main/docs/site/` },
+			head: [{ tag: "style", content: `@layer ${CASCADE_LAYERS.join(", ")};` }],
 			customCss: ["./src/styles/theme.css", "../../app/styles/utils.css"],
 			lastUpdated: true,
 			// the feature READMEs are their own collection, shown on the feature pages (see content.config.ts)

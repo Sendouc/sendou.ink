@@ -1,6 +1,4 @@
-/* the app's layers (app/styles/vars.css) rank above Starlight's, declared before the app's styles are imported */
-@layer starlight, reset, base, elements, components, features, utilities;
-
+/* the app's layers rank above Starlight's, their order is declared in the head (`CASCADE_LAYERS` of astro.config.ts) */
 @import "../../../../app/styles/vars.css";
 
 /* Starlight's tokens mapped onto the app's default theme, both follow Starlight's [data-theme] on <html> */
