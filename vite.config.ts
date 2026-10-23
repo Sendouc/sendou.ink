@@ -1,7 +1,9 @@
+import fs from "node:fs";
+import path from "node:path";
 import { reactRouter } from "@react-router/dev/vite";
 import MagicString from "magic-string";
 import type { Node, Plugin as PostcssPlugin, Rule } from "postcss";
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import babel from "vite-plugin-babel";
 
 export default defineConfig((config) => {
@@ -57,6 +59,7 @@ export default defineConfig((config) => {
 				},
 			},
 			reactRouter(),
+			eagerlyCompileSharedChunks(),
 			// React Compiler is skipped in dev, its transform cost outweighs its value there
 			...(isBuild
 				? [
@@ -151,6 +154,55 @@ export default defineConfig((config) => {
 		},
 	};
 });
+
+const COMPILE_HINT = "//# allFunctionsCalledOnLoad\n";
+
+/**
+ * Marks the chunks every page loads (the static import graph of the client entry and the root
+ * route) with V8's explicit compile hint, so Chromium compiles them on a background thread while
+ * streaming instead of lazily on the main thread during hydration. Route chunks are left out: only
+ * a fraction of their functions run on load and eager compiling costs memory.
+ * See https://v8.dev/blog/explicit-compile-hints
+ */
+function eagerlyCompileSharedChunks(): Plugin {
+	return {
+		name: "eagerly-compile-shared-chunks",
+		apply: "build",
+		// on the written files: Vite prepends its preload helper to chunks after `generateBundle`
+		// and the hint only counts on the first line
+		writeBundle(options, bundle) {
+			const chunks = Object.values(bundle).filter(
+				(output) => output.type === "chunk",
+			);
+			const chunksByFileName = new Map(
+				chunks.map((chunk) => [chunk.fileName, chunk]),
+			);
+			const chunkOf = (modulePath: string) =>
+				chunks.find((chunk) =>
+					chunk.facadeModuleId?.split("?")[0].endsWith(modulePath),
+				);
+			const entryChunk = chunkOf("/app/entry.client.tsx");
+			const rootChunk = chunkOf("/app/root.tsx");
+			// the server build has no client entry
+			if (!entryChunk || !rootChunk) return;
+
+			const visited = new Set<string>();
+			const stack = [entryChunk.fileName, rootChunk.fileName];
+			for (let fileName = stack.pop(); fileName; fileName = stack.pop()) {
+				const chunk = chunksByFileName.get(fileName);
+				if (!chunk || visited.has(fileName)) continue;
+
+				visited.add(fileName);
+				const filePath = path.join(options.dir ?? "", fileName);
+				fs.writeFileSync(
+					filePath,
+					COMPILE_HINT + fs.readFileSync(filePath, "utf8"),
+				);
+				stack.push(...chunk.imports);
+			}
+		},
+	};
+}
 
 function cssModuleLayer(id: string) {
 	if (id.includes("/app/components/elements/")) return "elements";
