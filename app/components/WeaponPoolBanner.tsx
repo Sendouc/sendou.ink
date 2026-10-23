@@ -11,12 +11,14 @@ type WeaponPoolBannerTarget =
 	| {
 			weaponHref: (weaponId: MainWeaponId) => string;
 			defaultShouldRevalidate?: boolean;
+			preventScrollReset?: boolean;
 			onWeaponPress?: never;
 	  }
 	| {
 			onWeaponPress: (weaponId: MainWeaponId) => void;
 			weaponHref?: never;
 			defaultShouldRevalidate?: never;
+			preventScrollReset?: never;
 	  };
 
 /** Highlighted row of quick links (or quick picks) to the weapons of the user's match profile weapon pool. */
@@ -73,6 +75,7 @@ export function WeaponPoolBanner({
 							key={weaponId}
 							to={target.weaponHref(weaponId)}
 							defaultShouldRevalidate={target.defaultShouldRevalidate}
+							preventScrollReset={target.preventScrollReset}
 							className={styles.weapon}
 						>
 							{image}
