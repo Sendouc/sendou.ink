@@ -15,7 +15,10 @@ const { trace } = Astro.props;
 	{
 		trace.tables.length > 0 ? (
 			<li>
-				Queries itself <TableChips tables={trace.tables} />
+				Queries itself
+				<div class="trace-tables">
+					<TableChips tables={trace.tables} />
+				</div>
 			</li>
 		) : null
 	}
@@ -34,8 +37,12 @@ const { trace } = Astro.props;
 							<code>{call.via.name}</code>
 						</a>
 					</span>
-				) : null}{" "}
-				<TableChips tables={call.tables} />
+				) : null}
+				{call.tables.length > 0 ? (
+					<div class="trace-tables">
+						<TableChips tables={call.tables} />
+					</div>
+				) : null}
 			</li>
 		))
 	}

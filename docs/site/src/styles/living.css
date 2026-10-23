@@ -319,8 +319,27 @@
 	color: var(--living-accent);
 }
 
+/* an opened details widens its column and the table scrolls, the other columns keep their width */
 .routes-table {
 	overflow-wrap: normal;
+
+	& :is(th, td) {
+		white-space: nowrap;
+	}
+
+	/* the paths' break opportunities after each "/" (`routePathHtml`) */
+	& wbr {
+		display: none;
+	}
+
+	& details[open] {
+		width: max-content;
+		max-width: 32rem;
+	}
+
+	& details > :not(summary) {
+		white-space: normal;
+	}
 }
 
 details.route-tests {
@@ -1460,10 +1479,11 @@ pre.db-relations-diagram {
 	font-size: var(--sl-text-sm);
 }
 
+/* outlined, unlike the filled inline code they sit next to */
 .access-chip {
-	font-family: var(--living-mono);
 	font-size: 11.5px;
 	color: var(--living-text);
+	background: transparent;
 
 	&.access-write {
 		color: var(--living-warn);
@@ -1507,6 +1527,12 @@ details.route-data {
 
 .route-data-title {
 	font-weight: 600;
+}
+
+.trace-tables {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 2px;
 }
 
 .route-data-via,
