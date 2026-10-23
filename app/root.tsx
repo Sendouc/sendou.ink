@@ -367,18 +367,28 @@ function useScrollBeforeToast() {
 }
 
 function useLoadingIndicator() {
-	const transition = useNavigation();
+	const navigation = useNavigation();
+	const fetchers = useFetchers();
+
+	// submissions already show a pending state on their submit button
+	const isSubmissionFollowUp =
+		navigation.formMethod !== undefined ||
+		fetchers.some(
+			(fetcher) =>
+				fetcher.state === "loading" && fetcher.formMethod !== undefined,
+		);
+	const isLoading = navigation.state === "loading" && !isSubmissionFollowUp;
 
 	useDebounce(
 		() => {
-			if (transition.state === "loading") {
+			if (isLoading) {
 				NProgress.start();
-			} else if (transition.state === "idle") {
+			} else {
 				NProgress.done();
 			}
 		},
 		150,
-		[transition.state],
+		[isLoading],
 	);
 }
 
