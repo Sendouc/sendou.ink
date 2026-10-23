@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { Badge } from "@astrojs/starlight/components";
 import type { InferGetStaticPropsType } from "astro";
 import { githubUrl } from "../../../../../../scripts/living-docs/links.ts";
 import ChecksBySide from "../../../components/living/ChecksBySide.astro";
@@ -110,7 +111,7 @@ const headings = [
 												{labels.get(row.grantedIn) ?? row.grantedIn}
 											</a>
 										) : (
-											<span class="warn">no single feature</span>
+											<Badge text="no single feature" variant="caution" size="small" />
 										)}
 									</td>
 									<td class="living">

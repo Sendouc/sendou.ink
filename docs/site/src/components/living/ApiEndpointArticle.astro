@@ -1,4 +1,5 @@
 ---
+import { Badge } from "@astrojs/starlight/components";
 import type { ApiExchange } from "../../../../../scripts/living-docs/api-examples.ts";
 import {
 	escapeHtml,
@@ -32,9 +33,11 @@ function json(value: unknown) {
 
 <article class="route">
 	<header class="route-head">
-		<span class:list={["badge", endpoint.method === "GET" ? "badge-loader" : "badge-action"]}>
-			{endpoint.method}
-		</span>
+		<Badge
+			text={endpoint.method}
+			variant={endpoint.method === "GET" ? "success" : "caution"}
+			size="small"
+		/>
 		<h3 class="route-path" id={apiEndpointAnchor(endpoint)}>
 			<code set:html={pathHtml} />
 		</h3>
@@ -45,7 +48,12 @@ function json(value: unknown) {
 		endpoint.examples.map((example) => (
 			<details class="source" data-pagefind-ignore>
 				<summary>
-					Example <span class:list={["badge", { "badge-action": example.status >= 400 }]}>{example.status}</span>{" "}
+					Example{" "}
+					<Badge
+						text={String(example.status)}
+						variant={example.status >= 400 ? "danger" : "success"}
+						size="small"
+					/>{" "}
 					<code>{example.path}</code>
 				</summary>
 				<p class="muted">

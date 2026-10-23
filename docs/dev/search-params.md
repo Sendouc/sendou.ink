@@ -57,7 +57,8 @@ Derivation is closed, not best-effort: shapes outside this table (objects, mixed
 | `SP.custom(codec, opts)` | anything — pass a `codec(valueSchema, { decode, encode })` (from the search-params module; `decode` returns `undefined` for malformed input, `nullableCodec` widens with `null`) |
 | `SP.page(opts?)` | the paginated route's `page` param (1-based, `loader: true`, default `1`, `max` overridable) |
 
-Note: schemas carrying a transform are rejected — those built with `preprocess` (like `weaponSplId`, `stageId` in `app/utils/schema.ts`) and those built with `coerceNumber` (like `id`). Use the inner schema instead (`numericEnum(mainWeaponIds)`, `numericEnum(stageIds)`, `v.pipe(v.number(), v.integer(), v.minValue(1))`) since string→number conversion is the codec's job.
+> [!WARNING]
+> Schemas carrying a transform are rejected — those built with `preprocess` (like `weaponSplId`, `stageId` in `app/utils/schema.ts`) and those built with `coerceNumber` (like `id`). Use the inner schema instead (`numericEnum(mainWeaponIds)`, `numericEnum(stageIds)`, `v.pipe(v.number(), v.integer(), v.minValue(1))`) since string→number conversion is the codec's job.
 
 ### Compression
 

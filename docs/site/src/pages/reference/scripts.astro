@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { Badge } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import { anchor, githubUrl } from "../../../../../scripts/living-docs/links.ts";
 import FileLink from "../../components/living/FileLink.astro";
@@ -53,7 +54,7 @@ function scriptId(name: string) {
 	{
 		undocumented.length > 0 ? (
 			<p>
-				<span class="warn">no description</span>{" "}
+				<Badge text="no description" variant="caution" size="small" />{" "}
 				{undocumented.map((script, index) => (
 					<>
 						{index > 0 ? ", " : ""}
@@ -89,7 +90,7 @@ function scriptId(name: string) {
 									{script.description ? (
 										<div set:html={markdown(script.description)} />
 									) : (
-										<span class="warn">no description</span>
+										<Badge text="no description" variant="caution" size="small" />
 									)}
 									<div class="usages">
 										<div class="usage-row">

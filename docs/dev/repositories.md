@@ -4,7 +4,8 @@ Repositories are the only place database queries are written. One per feature (`
 
 See [database-schemas.md](./database-schemas.md) for how columns are typed and [the database tables reference](../../app/db/tables.ts) for the tables and how they relate. Entities that can be acted on get their `permissions` object built in the Repository read function — see [permissions.md](./permissions.md).
 
-Note: plenty of older repositories don't follow this yet. Fix them as you touch them rather than leaving a new style behind.
+> [!NOTE]
+> Plenty of older repositories don't follow this yet. Fix them as you touch them rather than leaving a new style behind.
 
 ## Files
 

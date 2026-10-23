@@ -1,5 +1,6 @@
 ---
 import path from "node:path";
+import { Badge } from "@astrojs/starlight/components";
 import type { FeatureDoc } from "../../../../../scripts/living-docs/document.ts";
 import type {
 	SpecDoc,
@@ -40,7 +41,7 @@ const titledChapters = test.chapters.filter((chapter) => chapter.title);
 		<Heading id={id}>
 			{
 				test.modifier && test.modifier !== "hook" ? (
-					<span class="badge">{test.modifier}</span>
+					<Badge text={test.modifier} size="small" />
 				) : null
 			}
 			{test.name}

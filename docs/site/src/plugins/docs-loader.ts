@@ -4,6 +4,7 @@ import { pathToFileURL } from "node:url";
 import { glob, type Loader } from "astro/loaders";
 import {
 	DOC_FILE_PATTERNS,
+	docDescription,
 	docSlug,
 	docTitle,
 	lastCommitDates,
@@ -29,13 +30,14 @@ export function docsLoader({ repoRoot }: { repoRoot: string }): Loader {
 				...context,
 				parseData: (props) => {
 					const file = props.filePath
-						? path.relative(repoRoot, props.filePath)
+						? path.relative(repoRoot, props.filePath).split(path.sep).join("/")
 						: "";
 
 					return context.parseData({
 						...props,
 						data: {
 							title: docTitle(file, fs.readFileSync(props.filePath!, "utf8")),
+							description: docDescription(file),
 							lastUpdated: lastUpdated.get(file),
 							...props.data,
 						},

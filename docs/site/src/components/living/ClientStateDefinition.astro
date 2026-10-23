@@ -1,5 +1,6 @@
 ---
 import path from "node:path";
+import { Badge } from "@astrojs/starlight/components";
 import type {
 	ClientStateDoc,
 	StateUsage,
@@ -22,11 +23,12 @@ function usageLabel(usage: StateUsage) {
 ---
 
 	<h3 class="definition-title" id={id}>
-		<span class="badge">
-			{definition.kind === "searchParams"
+		<Badge
+			text={definition.kind === "searchParams"
 				? "URL"
 				: `${definition.storage}Storage`}
-		</span>{" "}
+			size="small"
+		/>{" "}
 		<code>{definition.name}</code>
 	</h3>
 	<p class="living">
@@ -35,9 +37,9 @@ function usageLabel(usage: StateUsage) {
 			line={definition.line}
 			label={`${definition.file}:${definition.line}`}
 		/>
-		{definition.exported ? null : <span class="badge">Not exported</span>}
+		{definition.exported ? null : <Badge text="Not exported" size="small" />}
 		{definition.testFiles.length === 0 ? (
-			<span class="warn">No round-trip test</span>
+			<Badge text="No round-trip test" variant="caution" size="small" />
 		) : null}
 	</p>
 	{definition.description ? (
@@ -64,7 +66,7 @@ function usageLabel(usage: StateUsage) {
 						</td>
 						<td>
 							{param.helper && param.helper !== "param" ? (
-								<span class="badge">{param.helper}</span>
+								<Badge text={param.helper} size="small" />
 							) : null}{" "}
 							{param.schemaHtml ? (param.schemaHtml.includes("\n") ? (
 								<pre class="code scrollbar" set:html={param.schemaHtml} />

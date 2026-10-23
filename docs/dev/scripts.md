@@ -1,6 +1,7 @@
 # Scripts
 
-Note: These are mostly useful if you are running the site in production as an admin, not typically for development.
+> [!NOTE]
+> These are mostly useful if you are running the site in production as an admin, not typically for development.
 
 ---
 
@@ -74,7 +75,8 @@ Needs `RENDER_API_KEY` (Render Dashboard -> Account Settings -> API Keys), `REND
 
 ## Download the production database from Render.com
 
-Note: This is only useful if you have access to a production running on Render.com
+> [!NOTE]
+> This is only useful if you have access to a production running on Render.com
 
 ```bash
 pnpm run download-prod-db

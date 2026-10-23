@@ -33,6 +33,39 @@ const TITLES: Record<string, string> = {
 	"AGENTS.md": "Conventions",
 };
 
+/** One line summaries of docs, shown on the home page's cards and as the page's meta description. */
+const DESCRIPTIONS: Record<string, string> = {
+	"AGENTS.md": "The code conventions every change follows.",
+	"docs/dev/api.md": "How to get a token and the rules of using the API.",
+	"docs/dev/architecture.md":
+		"How the app runs in production and how a feature folder is laid out.",
+	"docs/dev/database-schemas.md":
+		"How columns are typed: booleans, timestamps, JSON and enums.",
+	"docs/dev/discord-auth.md": "Setting up Discord login for local development.",
+	"docs/dev/forms.md":
+		"The schema-based SendouForm system and defining actions.",
+	"docs/dev/how-to.md":
+		"Recipes for common tasks like adding a migration or a route.",
+	"docs/dev/living-docs.md":
+		"How this site is built and how to write code that documents well.",
+	"docs/dev/overlays.md":
+		"Popovers, menus, selects and dialogs: scroll lock and mobile keyboards.",
+	"docs/dev/permissions.md":
+		"Global roles and per-object permissions, and where a new check goes.",
+	"docs/dev/repositories.md":
+		"Where database queries live and the conventions they follow.",
+	"docs/dev/request-flow.md":
+		"One request followed through every layer of the app.",
+	"docs/dev/scripts.md":
+		"One-off admin scripts for running the site in production.",
+	"docs/dev/search-params.md":
+		"Declaring URL search params once for loaders, client state and links.",
+	"docs/dev/styles.md":
+		"The theme tokens and how custom theme colors are generated.",
+	"docs/dev/translation.md":
+		"Translating the site and editing the translation files.",
+};
+
 /** Slug (and so the URL) of a repo relative markdown file's page, null when the site doesn't show it. */
 export function docSlug(repoRelativePath: string) {
 	const file = repoRelativePath.split(path.sep).join("/");
@@ -81,6 +114,10 @@ export function docTitle(repoRelativePath: string, source: string) {
 
 	const name = path.basename(file, ".md").replaceAll("-", " ");
 	return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+export function docDescription(repoRelativePath: string) {
+	return DESCRIPTIONS[repoRelativePath.split(path.sep).join("/")];
 }
 
 /** Date of the last commit touching each file, repo relative path → date. Empty outside a git checkout. */

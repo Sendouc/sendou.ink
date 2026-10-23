@@ -14,7 +14,7 @@
 	--sl-text-base: var(--font-md);
 	--sl-text-lg: var(--font-lg);
 	--sl-text-2xl: var(--font-xl);
-	--sl-line-height: var(--line-height);
+	--sl-line-height: 1.75;
 
 	--sl-nav-height: var(--layout-nav-height);
 	--sl-nav-pad-x: var(--s-4);

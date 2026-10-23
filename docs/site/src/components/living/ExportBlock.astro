@@ -1,4 +1,5 @@
 ---
+import { Badge } from "@astrojs/starlight/components";
 import { highlight } from "../../../../../scripts/living-docs/highlight.ts";
 import { exportAnchor } from "../../../../../scripts/living-docs/links.ts";
 import type {
@@ -41,9 +42,7 @@ const dataAccess =
 		</h3>
 		{
 			exported.doc ? null : (
-				<span class="warn" title="Module functions should always have JSDoc">
-					no JSDoc
-				</span>
+				<Badge text="no JSDoc" title="Module functions should always have JSDoc" variant="caution" size="small" />
 			)
 		}
 		<FileLink file={module.path} line={exported.line} label={`:${exported.line}`} />

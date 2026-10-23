@@ -1,4 +1,5 @@
 ---
+import { Badge } from "@astrojs/starlight/components";
 import { githubUrl } from "../../../../../scripts/living-docs/links.ts";
 import type {
 	GrantedPermission,
@@ -58,7 +59,7 @@ function grantLabel(grant: PermissionGrant) {
 						<ChecksBySide checks={permission.checks} chipBy="file" />
 						{permission.directReads.length > 0 ? (
 							<div class="checks-side">
-								<span class="warn">read directly</span>{" "}
+								<Badge text="read directly" variant="caution" size="small" />{" "}
 								{permission.directReads.map((read) => (
 									<a class="chip file-chip" href={githubUrl(read.file, read.line)} title={read.code}>
 										{read.file.split("/").at(-1)}

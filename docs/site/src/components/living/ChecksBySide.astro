@@ -1,5 +1,6 @@
 ---
 import path from "node:path";
+import { Badge } from "@astrojs/starlight/components";
 import { githubUrl } from "../../../../../scripts/living-docs/links.ts";
 import type { PermissionCheck } from "../../../../../scripts/living-docs/permissions.ts";
 
@@ -35,7 +36,7 @@ const sides = SIDES.map((side) => ({
 {
 	sides.map(({ side, chips }) => (
 		<div class="checks-side">
-			<span class="badge">{side.label}</span>
+			<Badge text={side.label} size="small" />
 			{chips.map(([key, keyChecks]) => (
 				<a
 					class="chip file-chip"

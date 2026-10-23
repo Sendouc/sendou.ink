@@ -1,10 +1,9 @@
 # Discord auth
 
-## ⚠️ You probably don't need this ⚠️
-
-When run in dev mode, Sendou provides the option to "impersonate" an account in 
-the developer menu. You can use this to authenticate without configuring Discord
-auth.
+> [!WARNING]
+> **You probably don't need this.** When run in dev mode, Sendou provides the option to "impersonate" an account in
+> the developer menu. You can use this to authenticate without configuring Discord
+> auth.
 
 If you need to test or debug Discord authentication, here's how to proceed:
 

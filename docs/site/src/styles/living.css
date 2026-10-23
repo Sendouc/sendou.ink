@@ -322,14 +322,6 @@
 	color: var(--living-accent);
 }
 
-.badge.badge-loader {
-	color: var(--living-act);
-}
-
-.badge.badge-action {
-	color: var(--living-warn);
-}
-
 .routes-table {
 	overflow-wrap: normal;
 }
@@ -372,28 +364,8 @@ details.route-tests {
 	}
 }
 
-.badge {
-	display: inline-block;
-	padding: 1px 7px;
-	border-radius: 6px;
-	background: var(--living-surface-2);
-	border: 1px solid var(--living-border);
-	font-size: 11px;
-	font-weight: 600;
-	color: var(--living-muted);
-	text-transform: uppercase;
-	letter-spacing: 0.04em;
-	vertical-align: middle;
-}
-
-.warn {
-	font-size: 11px;
-	font-weight: 600;
+.sl-badge {
 	white-space: nowrap;
-	color: var(--living-warn);
-	background: var(--living-warn-soft);
-	padding: 1px 7px;
-	border-radius: 6px;
 }
 
 .living .file-link {

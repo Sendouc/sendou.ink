@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { Badge } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import type { ClientStateDoc } from "../../../../../scripts/living-docs/client-state.ts";
 import { anchor, githubUrl } from "../../../../../scripts/living-docs/links.ts";
@@ -141,7 +142,7 @@ function untestedCount(inFeature: ClientStateDoc[]) {
 									{untestedCount(inKind) > 0 ? (
 										<>
 											{" "}
-											<span class="warn">{untestedCount(inKind)} untested</span>
+											<Badge text={`${untestedCount(inKind)} untested`} variant="caution" size="small" />
 										</>
 									) : null}
 								</td>

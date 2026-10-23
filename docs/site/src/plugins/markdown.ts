@@ -11,6 +11,14 @@ import {
 import { docSlug, linkedPageSlug, readmeFeature } from "./doc-files.ts";
 
 const AGENTS_ONLY = "<!-- agents-only -->";
+const GITHUB_ALERT_MARKER = /^\[!(NOTE|IMPORTANT|TIP|WARNING|CAUTION)\]\s*/;
+const GITHUB_ALERT_ASIDES = {
+	NOTE: "note",
+	IMPORTANT: "note",
+	TIP: "tip",
+	WARNING: "caution",
+	CAUTION: "danger",
+};
 
 type MdastContentNode = Parameters<MdastHookFn>[0]["children"][number];
 
@@ -35,6 +43,33 @@ export const dropAgentsOnly: MdastPluginEntry = defineMdastPlugin({
 	name: "drop-agents-only",
 	before(root, ctx) {
 		dropMarked(root.children, ctx);
+	},
+});
+
+export const githubAlerts: MdastPluginEntry = defineMdastPlugin({
+	name: "github-alerts",
+	blockquote(node) {
+		const [first, ...rest] = node.children;
+		if (first?.type !== "paragraph") return;
+
+		const [marker, ...phrasing] = first.children;
+		const match =
+			marker?.type === "text" ? marker.value.match(GITHUB_ALERT_MARKER) : null;
+		if (marker?.type !== "text" || !match) return;
+
+		const text = marker.value.slice(match[0].length);
+		const paragraph = text
+			? [{ ...marker, value: text }, ...phrasing]
+			: phrasing;
+
+		return {
+			type: "containerDirective",
+			name: GITHUB_ALERT_ASIDES[match[1] as keyof typeof GITHUB_ALERT_ASIDES],
+			children:
+				paragraph.length > 0
+					? [{ ...first, children: paragraph }, ...rest]
+					: rest,
+		};
 	},
 });
 

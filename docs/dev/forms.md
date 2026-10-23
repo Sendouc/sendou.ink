@@ -389,6 +389,7 @@ const badgeOptions = badges.map((b) => ({
 pipeline and the `UnvalidatedUserSubmittedImage` admin-validation / supporter auto-validation
 flow, while keeping `SendouForm`'s single-submit `application/json` model unchanged.
 
+> [!NOTE]
 > **Art upload is out of scope.** Art (`/art/new`) preserves aspect ratio, keeps the original
 > format, produces two derived assets (full + thumbnail) and inserts its image row together with
 > the `Art` row in `ArtRepository.insert` rather than resolving it to an id up front. It therefore uses a `customField` with its own

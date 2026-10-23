@@ -18,6 +18,7 @@ import {
 	docLinks,
 	dropAgentsOnly,
 	dropTitle,
+	githubAlerts,
 	mermaidDiagrams,
 } from "./src/plugins/markdown.ts";
 import { scopeAppStyles } from "./src/plugins/scope-app-styles.ts";
@@ -68,6 +69,8 @@ export default defineConfig({
 			],
 			editLink: { baseUrl: `${REPO_URL}/edit/main/docs/site/` },
 			customCss: ["./src/styles/theme.css", "../../app/styles/utils.css"],
+			// the docs are read in place from the repo (see `docsLoader`), Starlight's asides only reach them like this
+			markdown: { processedDirs: [REPO_ROOT] },
 			components: {
 				Head: "./src/components/Head.astro",
 				MarkdownContent: "./src/components/MarkdownContent.astro",
@@ -141,7 +144,7 @@ export default defineConfig({
 	},
 	markdown: {
 		processor: satteri({
-			mdastPlugins: [dropTitle, dropAgentsOnly, mermaidDiagrams],
+			mdastPlugins: [dropTitle, dropAgentsOnly, mermaidDiagrams, githubAlerts],
 			hastPlugins: [
 				docLinks({ repoRoot: REPO_ROOT, repoUrl: REPO_URL, base: BASE }),
 			],

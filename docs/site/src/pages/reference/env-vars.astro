@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { Badge } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import type {
 	EnvVar,
@@ -101,7 +102,7 @@ function defaultLabel(envVar: EnvVar) {
 			<ul>
 				{notInExample.length > 0 ? (
 					<li>
-						<span class="warn">not in .env.example</span>{" "}
+						<Badge text="not in .env.example" variant="caution" size="small" />{" "}
 						{notInExample.map((envVar, index) => (
 							<>
 								{index > 0 ? ", " : ""}
@@ -114,7 +115,7 @@ function defaultLabel(envVar: EnvVar) {
 				) : null}
 				{neverRead.length > 0 ? (
 					<li>
-						<span class="warn">never read</span>{" "}
+						<Badge text="never read" variant="caution" size="small" />{" "}
 						{neverRead.map((envVar, index) => (
 							<>
 								{index > 0 ? ", " : ""}
@@ -154,13 +155,13 @@ function defaultLabel(envVar: EnvVar) {
 										<code>{envVar.name}</code>
 									</h3>
 									{envVar.schema?.requiredInProd ? (
-										<span class="badge badge-action">required in production</span>
+										<Badge text="required in production" variant="caution" size="small" />
 									) : null}
-									{envVar.schema?.isBoolean ? <span class="badge">boolean</span> : null}
+									{envVar.schema?.isBoolean ? <Badge text="boolean" size="small" /> : null}
 									{!envVar.example && envVar.section !== "tooling" ? (
-										<span class="warn">not in .env.example</span>
+										<Badge text="not in .env.example" variant="caution" size="small" />
 									) : null}
-									{envVar.reads.length === 0 ? <span class="warn">never read</span> : null}
+									{envVar.reads.length === 0 ? <Badge text="never read" variant="caution" size="small" /> : null}
 									{envVar.example ? (
 										<FileLink file=".env.example" line={envVar.example.line} label=".env.example" />
 									) : envVar.schema ? (

@@ -2,7 +2,8 @@
 
 How columns should be typed in `app/db/tables.ts`. See [the database tables reference](../../app/db/tables.ts) for the tables and how they relate to each other and [how-to.md](./how-to.md) for the migration workflow.
 
-Note: some older columns don't follow this yet. Fix them as you touch them rather than leaving a new style behind.
+> [!NOTE]
+> Some older columns don't follow this yet. Fix them as you touch them rather than leaving a new style behind.
 
 ## Booleans
 

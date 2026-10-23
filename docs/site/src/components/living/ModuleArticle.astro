@@ -1,4 +1,5 @@
 ---
+import { Badge } from "@astrojs/starlight/components";
 import { anchor } from "../../../../../scripts/living-docs/links.ts";
 import type { ModuleDoc } from "../../../../../scripts/living-docs/modules.ts";
 import type { RepositoryDoc } from "../../../../../scripts/living-docs/repositories.ts";
@@ -26,7 +27,7 @@ const isServer = !repository && module.name.endsWith(".server");
 <article class="module">
 	<header class="module-head">
 		<h2 id={anchor(module.name)}>{module.name.replace(/\.server$/, "")}</h2>
-		{isServer ? <span class="badge">server</span> : null}
+		{isServer ? <Badge text="server" size="small" /> : null}
 		<FileLink file={module.path} line={1} label={module.path} />
 	</header>
 	{

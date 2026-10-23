@@ -1,6 +1,7 @@
 # Architecture
 
-Note: some code in the project is older and some newer. Not everything follows the concepts and structure as explained here. PR's welcome to improve the situation.
+> [!NOTE]
+> Some code in the project is older and some newer. Not everything follows the concepts and structure as explained here. PR's welcome to improve the situation.
 
 ## Diagram
 
@@ -93,8 +94,8 @@ You should aim to colocate code that "changes together" as much as possible. Fea
 - **Component.module.css**: CSS module matching the React file of the same root name
 - **README.md**: Overview of the feature, shown on its page of the docs site (see `living-docs.md`)
 
-Note: we are not using file-based routing. To add a new route `routes.ts` needs to be updated  
-Note: a route file needs to re-export the action/loader of that route
+> [!NOTE]
+> We are not using file-based routing. To add a new route `routes.ts` needs to be updated and the route file needs to re-export the action/loader of that route.
 
 ### Feature modules
 

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import FeatureIcon from "../components/living/FeatureIcon.astro";
 import { count, sitePath, testsOf, viewHref } from "../living/format.ts";
@@ -15,19 +16,65 @@ const guides = docs.filter(
 	(doc) => !doc.id.includes("/") && doc.id !== PUBLIC_API_SLUG,
 );
 const publicApi = [
-	{ title: "Overview", path: `${PUBLIC_API_SLUG}/` },
-	{ title: "Endpoints", path: `${PUBLIC_API_SLUG}/endpoints/` },
+	{
+		title: "Overview",
+		path: `${PUBLIC_API_SLUG}/`,
+		description: docs.find((doc) => doc.id === PUBLIC_API_SLUG)?.data
+			.description,
+	},
+	{
+		title: "Endpoints",
+		path: `${PUBLIC_API_SLUG}/endpoints/`,
+		description: "Every endpoint with its types and real example requests.",
+	},
 ];
 const reference = [
-	{ title: "Routes", path: "reference/routes/" },
-	{ title: "Database tables", path: "reference/db-tables/" },
-	{ title: "Lint rules", path: "reference/lint-rules/" },
-	{ title: "Permissions", path: "reference/permissions/" },
-	{ title: "Search params & storage", path: "reference/search-params/" },
-	{ title: "Background work", path: "reference/background-work/" },
-	{ title: "Environment variables", path: "reference/env-vars/" },
-	{ title: "Package scripts", path: "reference/scripts/" },
-	{ title: "Components", path: "components/buttons/" },
+	{
+		title: "Routes",
+		path: "reference/routes/",
+		description: "Every route and the e2e tests that render it.",
+	},
+	{
+		title: "Database tables",
+		path: "reference/db-tables/",
+		description: "The tables and views of the database and how they relate.",
+	},
+	{
+		title: "Lint rules",
+		path: "reference/lint-rules/",
+		description: "The repo's own Biome lint rules.",
+	},
+	{
+		title: "Permissions",
+		path: "reference/permissions/",
+		description: "The roles and per-object permissions each feature checks.",
+	},
+	{
+		title: "Search params & storage",
+		path: "reference/search-params/",
+		description: "Every search param and web storage definition.",
+	},
+	{
+		title: "Background work",
+		path: "reference/background-work/",
+		description:
+			"Scheduled routines, machine endpoints, webhooks and notifications.",
+	},
+	{
+		title: "Environment variables",
+		path: "reference/env-vars/",
+		description: "Every environment variable and where the code reads it.",
+	},
+	{
+		title: "Package scripts",
+		path: "reference/scripts/",
+		description: "Every script of package.json and what it runs.",
+	},
+	{
+		title: "Components",
+		path: "components/buttons/",
+		description: "The shared UI components, rendered live.",
+	},
 ];
 const features = (await getCollection("features"))
 	.map((entry) => entry.data)
@@ -53,9 +100,17 @@ const features = (await getCollection("features"))
 	</p>
 
 	<h2 id="contributor-docs">Contributor docs</h2>
-	<ul>
-		{contributorDocs.map((doc) => <li><a href={sitePath(`${doc.id}/`)}>{doc.data.title}</a></li>)}
-	</ul>
+	<CardGrid>
+		{
+			contributorDocs.map((doc) => (
+				<LinkCard
+					title={doc.data.title}
+					href={sitePath(`${doc.id}/`)}
+					description={doc.data.description}
+				/>
+			))
+		}
+	</CardGrid>
 
 	<h2 id="project">Project</h2>
 	<ul>
@@ -68,14 +123,22 @@ const features = (await getCollection("features"))
 	</ul>
 
 	<h2 id="public-api">Public API</h2>
-	<ul>
-		{publicApi.map((page) => <li><a href={sitePath(page.path)}>{page.title}</a></li>)}
-	</ul>
+	<CardGrid>
+		{
+			publicApi.map((page) => (
+				<LinkCard title={page.title} href={sitePath(page.path)} description={page.description} />
+			))
+		}
+	</CardGrid>
 
 	<h2 id="reference">Reference</h2>
-	<ul>
-		{reference.map((page) => <li><a href={sitePath(page.path)}>{page.title}</a></li>)}
-	</ul>
+	<CardGrid>
+		{
+			reference.map((page) => (
+				<LinkCard title={page.title} href={sitePath(page.path)} description={page.description} />
+			))
+		}
+	</CardGrid>
 
 	<h2 id="features">Features</h2>
 	<div class="living not-content">
