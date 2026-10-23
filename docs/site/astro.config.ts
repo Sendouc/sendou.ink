@@ -36,6 +36,16 @@ const SCOPED_APP_STYLES = [
 	"flags.css",
 ].map((file) => path.join(REPO_ROOT, "app/styles", file));
 
+const STARLIGHT_SCROLL_CONTAINERS = [
+	"html",
+	".sidebar-pane",
+	".right-sidebar",
+	"mobile-starlight-toc .dropdown",
+	"site-search .dialog-frame",
+	".sl-markdown-content table",
+	".expressive-code pre",
+];
+
 // the components showcase imports the app's client config (`app/config.ts`), which requires these in a build
 process.env.VITE_SITE_DOMAIN ??= "https://sendou.ink";
 process.env.VITE_TOURNAMENT_DEFAULT_LOGO ??= "tournament-logo-default.avif";
@@ -57,7 +67,7 @@ export default defineConfig({
 				},
 			],
 			editLink: { baseUrl: `${REPO_URL}/edit/main/docs/site/` },
-			customCss: ["./src/styles/theme.css"],
+			customCss: ["./src/styles/theme.css", "../../app/styles/utils.css"],
 			components: {
 				MarkdownContent: "./src/components/MarkdownContent.astro",
 				SocialIcons: "./src/components/SocialIcons.astro",
@@ -118,7 +128,11 @@ export default defineConfig({
 			postcss: {
 				plugins: [
 					hoverOnlyOnHoverDevices(),
-					scopeAppStyles({ files: SCOPED_APP_STYLES, scope: ".app-root" }),
+					scopeAppStyles({
+						files: SCOPED_APP_STYLES,
+						scope: ".app-root",
+						globals: { ".scrollbar": STARLIGHT_SCROLL_CONTAINERS },
+					}),
 				],
 			},
 		},

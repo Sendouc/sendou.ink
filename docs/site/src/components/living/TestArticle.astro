@@ -82,7 +82,7 @@ const titledChapters = test.chapters.filter((chapter) => chapter.title);
 	}
 	{
 		storyboard.length > 0 ? (
-			<div class="storyboard">
+			<div class="storyboard scrollbar">
 				{storyboard.map((shot) => (
 					<Screenshot
 						feature={feature}
@@ -128,6 +128,6 @@ const titledChapters = test.chapters.filter((chapter) => chapter.title);
 	</div>
 	<details class="source" data-pagefind-ignore>
 		<summary>Source</summary>
-		<pre class="code" set:html={highlight(test.source)} />
+		<pre class="code scrollbar" set:html={highlight(test.source)} />
 	</details>
 </article>

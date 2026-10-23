@@ -8,6 +8,27 @@
 :root {
 	--sl-font: lexend, sans-serif;
 
+	--sl-text-2xs: var(--font-2xs);
+	--sl-text-xs: var(--font-xs);
+	--sl-text-sm: var(--font-sm);
+	--sl-text-base: var(--font-md);
+	--sl-text-lg: var(--font-lg);
+	--sl-text-2xl: var(--font-xl);
+	--sl-line-height: var(--line-height);
+
+	--sl-nav-height: var(--layout-nav-height);
+	--sl-nav-pad-x: var(--s-4);
+	--sl-nav-pad-y: var(--s-3);
+	--sl-sidebar-width: var(--layout-sidenav-width);
+	--sl-sidebar-pad-x: var(--s-4);
+	--sl-content-pad-x: var(--s-4);
+	--sl-content-gap-y: var(--s-4);
+	--sl-menu-button-size: var(--field-size-sm);
+
+	--sl-color-text: var(--color-text);
+	--sl-color-banner-bg: var(--color-fill-accent);
+	--sl-color-banner-text: var(--color-fg-on-accent);
+
 	--sl-color-white: var(--color-base-0);
 	--sl-color-gray-1: var(--color-base-1);
 	--sl-color-gray-2: var(--color-base-2);
@@ -53,6 +74,18 @@
 	--sl-color-hairline: var(--color-border);
 	--sl-color-hairline-shade: var(--color-bg);
 	--sl-color-backdrop-overlay: var(--color-bg-overlay);
+}
+
+@media (min-width: 50em) {
+	:root {
+		--sl-nav-pad-x: var(--s-6);
+	}
+}
+
+@media (min-width: 72rem) {
+	:root {
+		--sl-content-pad-x: var(--s-6);
+	}
 }
 
 pre.mermaid {
