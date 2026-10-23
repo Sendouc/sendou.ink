@@ -40,7 +40,6 @@ export const action = defineAction(
 	async ({ body, resolveImages }) => {
 		const user = requireUser();
 
-		const isEditing = Boolean(body.eventToEditId);
 		const isAddingTournament = body.toToolsEnabled;
 		const isTournamentAdder = user.roles.includes("TOURNAMENT_ADDER");
 		const organizationId = body.organizationId
@@ -56,25 +55,29 @@ export const action = defineAction(
 			: null;
 
 		const isKeepingCurrentOrganization =
-			organizationId !== null &&
-			eventToEdit?.organization?.id === organizationId;
+			eventToEdit !== null &&
+			(eventToEdit.organization?.id ?? null) === organizationId;
 
-		if (organizationId && !isKeepingCurrentOrganization) {
+		if (!isKeepingCurrentOrganization && organizationId) {
 			await validateOrganization({
 				userId: user.id,
 				organizationId,
 				isTournamentAdder,
 			});
-		} else if (!isEditing) {
+		} else if (!isKeepingCurrentOrganization) {
 			requireRole(
 				isAddingTournament ? "TOURNAMENT_ADDER" : "CALENDAR_EVENT_ADDER",
 			);
 		}
 
 		if (body.trophyId) {
-			const trophyOrganizationId =
-				await TrophyRepository.findOrganizationIdById(body.trophyId);
-			if (trophyOrganizationId !== organizationId) {
+			const isAwardable =
+				organizationId !== null &&
+				(await TrophyRepository.isAwardableByOrganization({
+					trophyId: body.trophyId,
+					organizationId,
+				}));
+			if (!isAwardable) {
 				errorToast("Trophy does not belong to the selected organization");
 			}
 		}
