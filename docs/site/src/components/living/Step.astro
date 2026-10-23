@@ -11,7 +11,7 @@ const { step } = Astro.props;
 ---
 
 <li class:list={["step", step.phase ? `phase-${step.phase}` : null, { "step-naming": step.isNaming }]}>
-	{step.notes.map((note) => <div class="note" set:html={markdown(note)} />)}
+	{step.notes.map((note) => <div class="step-note" set:html={markdown(note)} />)}
 	<div class="step-line">
 		<span class="phase-icon"></span>
 		<span class="step-text" set:html={step.html} />

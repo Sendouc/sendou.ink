@@ -60,6 +60,25 @@
 	--sl-color-red: var(--color-error);
 	--sl-color-red-high: var(--color-error-high);
 
+	--sl-badge-default-bg: var(--color-bg-accent);
+	--sl-badge-default-border: var(--color-accent);
+	--sl-badge-default-text: var(--color-fg-accent);
+	--sl-badge-tip-bg: var(--color-bg-accent);
+	--sl-badge-tip-border: var(--color-accent);
+	--sl-badge-tip-text: var(--color-fg-accent);
+	--sl-badge-note-bg: var(--color-info-low);
+	--sl-badge-note-border: var(--color-info);
+	--sl-badge-note-text: var(--color-info-high);
+	--sl-badge-success-bg: var(--color-success-low);
+	--sl-badge-success-border: var(--color-success);
+	--sl-badge-success-text: var(--color-success-high);
+	--sl-badge-caution-bg: var(--color-warning-low);
+	--sl-badge-caution-border: var(--color-warning);
+	--sl-badge-caution-text: var(--color-warning-high);
+	--sl-badge-danger-bg: var(--color-error-low);
+	--sl-badge-danger-border: var(--color-error);
+	--sl-badge-danger-text: var(--color-error-high);
+
 	--sl-color-text-accent: var(--color-fg-accent);
 	--sl-color-text-invert: var(--color-fg-on-accent);
 	--sl-color-bg: var(--color-bg);
