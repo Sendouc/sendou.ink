@@ -1,7 +1,9 @@
 ---
 import { getEntry } from "astro:content";
+import { Code } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import type { InferGetStaticPropsType } from "astro";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { ShowcaseRoot } from "../../../../../app/features/components-showcase/components/ShowcaseRoot.tsx";
 import { SHOWCASE_SECTIONS } from "../../../../../app/features/components-showcase/showcase-sections.ts";
 import { githubUrl } from "../../../../../scripts/living-docs/links.ts";
@@ -14,6 +16,10 @@ import "../../../../../app/styles/common.css";
 import "../../../../../app/styles/utils.css";
 import "../../../../../app/styles/flags.css";
 
+/** The stylesheet and copy button script every `<Code>` block brings, loaded once by the page instead. */
+const CODE_BLOCK_ASSETS =
+	/<link rel="stylesheet" href="[^"]*"\s*\/?>|<script type="module" src="[^"]*"><\/script>/g;
+
 export function getStaticPaths() {
 	return SHOWCASE_SECTIONS.map((showcaseSection) => ({
 		params: { section: showcaseSection.id },
@@ -25,6 +31,26 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { section } = Astro.props;
 const showcase = (await getEntry("showcase", section.id))?.data;
+// the examples render inside the React island, which can't use `<Code>` itself
+const container = await AstroContainer.create();
+const codeBlockAssets = new Set<string>();
+const examples = Object.fromEntries(
+	await Promise.all(
+		Object.entries(showcase?.examples ?? {}).map(async ([label, code]) => {
+			const html = await container.renderToString(Code, {
+				props: { code, lang: "tsx" },
+			});
+
+			return [
+				label,
+				html.replace(CODE_BLOCK_ASSETS, (asset) => {
+					codeBlockAssets.add(asset);
+					return "";
+				}),
+			];
+		}),
+	),
+);
 const components = (showcase?.components ?? []).map((component) => {
 	const files = new Map<string, { line: number; uses: number }>();
 	for (const usage of component.usages) {
@@ -49,11 +75,12 @@ const components = (showcase?.components ?? []).map((component) => {
 		tableOfContents: false,
 	}}
 >
+	<Fragment set:html={[...codeBlockAssets].join("")} />
 	<div class="app-root not-content">
 		<ShowcaseRoot
 			client:only="react"
 			sectionId={section.id}
-			examples={showcase?.examples ?? {}}
+			examples={examples}
 		/>
 	</div>
 	{

@@ -32,13 +32,7 @@
 		cursor: pointer;
 	}
 
-	& pre {
+	& :global(.expressive-code) {
 		margin-block-start: var(--s-1-5);
-		padding: var(--s-3);
-		border-radius: var(--radius-box);
-		background-color: var(--color-bg-high);
-		overflow-x: auto;
-		font-size: var(--font-xs);
-		tab-size: 2;
 	}
 }

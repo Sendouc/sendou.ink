@@ -148,10 +148,10 @@ const SECTION_COMPONENTS: Record<ShowcaseSectionId, () => React.ReactNode> = {
 	miscellaneous: MiscSection,
 };
 
-/** `ComponentRow` label → the source of its example, shown under it. */
+/** `ComponentRow` label → the syntax highlighted source of its example (HTML), shown under it. */
 const ExamplesContext = createContext<Record<string, string>>({});
 
-/** One section of the components showcase: example usages of a shared component, each with its source (`examples`, by label). */
+/** One section of the components showcase: example usages of a shared component, each with its highlighted source (`examples`, by label). */
 export function ShowcaseSection({
 	id,
 	examples,
@@ -175,19 +175,17 @@ function ComponentRow({
 	label: string;
 	children: React.ReactNode;
 }) {
-	const code = useContext(ExamplesContext)[label];
+	const codeHtml = useContext(ExamplesContext)[label];
 
 	return (
 		<div className={styles.componentRow}>
 			<div className={styles.componentLabel}>{label}</div>
 			<div className={styles.componentContent}>
 				{children}
-				{code ? (
+				{codeHtml ? (
 					<details className={styles.code}>
 						<summary>Code</summary>
-						<pre>
-							<code>{code}</code>
-						</pre>
+						<div dangerouslySetInnerHTML={{ __html: codeHtml }} />
 					</details>
 				) : null}
 			</div>

@@ -21,7 +21,7 @@ export function ShowcaseRoot({
 	examples,
 }: {
 	sectionId: ShowcaseSectionId;
-	/** `ComponentRow` label → the source of its example. */
+	/** `ComponentRow` label → the syntax highlighted source of its example (HTML). */
 	examples: Record<string, string>;
 }) {
 	const [router] = useState(() =>
