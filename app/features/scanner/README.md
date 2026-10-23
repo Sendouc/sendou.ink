@@ -84,6 +84,9 @@ opens it, for anyone, through the same handoff Inspect uses.
   matches hinted to its context (`scanner-ingest/core/relink.server.ts`),
   and a SendouQ report undo drops the map's links (a tournament undo deletes
   the result, cascading them), so a correction relinks without a resend.
+  `/ingest` refuses (429) a sender past their quota (stored matches per
+  hour, stored size per day), a game links at most one read per sender, and
+  a daily routine deletes linkable reads still unlinked after 30 days.
   Per-event send
   statuses back the cards' upload status button (`UploadStatus.tsx`) and its
   Retry/Upload. VoD scans never upload: their reads carry no wall clock, and

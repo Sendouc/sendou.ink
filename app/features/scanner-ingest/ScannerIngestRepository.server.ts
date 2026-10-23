@@ -4,6 +4,10 @@ import { sql, type Transaction } from "kysely";
 import { db } from "~/db/sql";
 import type { DB } from "~/db/tables";
 import type { ScannerMatch } from "~/features/scanner/core/scanner-match";
+import {
+	isLinkableLobby,
+	SCANNER_LOBBIES,
+} from "~/features/scanner/scanner-types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import * as Matches from "./core/Matches";
 import type {
@@ -21,6 +25,13 @@ const MERGE_CANDIDATE_PLAYED_AT_WINDOW_DAYS = 1;
 /** How recently a playedAt-less stored match must have been created to be a candidate. */
 const MERGE_CANDIDATE_CREATED_AT_WINDOW_DAYS = 7;
 const MERGE_CANDIDATE_LIMIT = 50;
+
+/** Most stored matches a game report relinks: a match's players send a handful each within the window. */
+const UNLINKED_MATCHES_LIMIT = 100;
+
+const LINKABLE_LOBBIES = SCANNER_LOBBIES.filter((lobby) =>
+	isLinkableLobby(lobby),
+);
 
 /** How long before the events' timestamp their match may have started (long sets, swiss rounds get startedAt at creation). */
 const MATCH_WINDOW_BEFORE_SECONDS = 4 * 60 * 60;
@@ -428,6 +439,8 @@ export async function addOrMergeMatches({
 		let insertedCount = 0;
 		let mergedCount = 0;
 		const effectiveMatches: Array<{ id: number; data: ScannerMatch }> = [];
+		// a request's matches share most merge candidates, each parsed once
+		const storedDataById = new Map<number, ScannerMatch>();
 
 		for (const match of matches) {
 			const effective = await addOrMergeMatch(trx, {
@@ -435,6 +448,7 @@ export async function addOrMergeMatches({
 				submitterUserId,
 				match,
 				hints,
+				storedDataById,
 			});
 			if (effective.outcome === "inserted") insertedCount++;
 			if (effective.outcome === "merged") mergedCount++;
@@ -447,9 +461,9 @@ export async function addOrMergeMatches({
 
 /**
  * Links ingested matches to their matched game results. A row links to at most one game (re-sends
- * are no-ops); a game collects links from many rows (each POV's scan). A known POV player's
- * weapon (Scoreboards.povWeaponId) is reported as a ReportedWeapon tagged with its ingested match,
- * unless they already have one for that game or the row stays linked to another game.
+ * are no-ops); a game collects links from many rows (each POV's scan), one per POV user. A known
+ * POV player's weapon (Scoreboards.povWeaponId) is reported as a ReportedWeapon tagged with its
+ * ingested match, unless they already have one for that game or the row stays linked to another game.
  *
  * @returns count of newly created links
  */
@@ -468,6 +482,8 @@ export async function addLinks({
 		let linkedCount = 0;
 
 		for (const link of links) {
+			if (await isGameLinkedByAnotherMatch(trx, link, povUserId)) continue;
+
 			const insertResult = await trx
 				.insertInto("IngestedMatchLink")
 				.values({
@@ -496,15 +512,19 @@ export async function addLinks({
 	});
 }
 
-/** Stored matches hinted to the context and played since `playedSince` that no game links yet, chronological. */
-export function findUnlinkedMatchesByHint({
+/** Stored matches of the given POV users hinted to the context and played since `playedSince` that no game links yet, chronological, at most `UNLINKED_MATCHES_LIMIT`. */
+export async function findUnlinkedMatchesByHint({
 	context,
 	playedSince,
+	povUserIds,
 }: {
 	context: IngestContext;
 	/** database timestamp (seconds) */
 	playedSince: number;
+	povUserIds: number[];
 }) {
+	if (povUserIds.length === 0) return [];
+
 	return db
 		.selectFrom("IngestedMatch")
 		.select([
@@ -521,6 +541,7 @@ export function findUnlinkedMatchesByHint({
 				? context.tournamentId
 				: context.groupMatchId,
 		)
+		.where("IngestedMatch.povUserId", "in", povUserIds)
 		.where("IngestedMatch.playedAt", ">=", playedSince)
 		.where((eb) =>
 			eb.not(
@@ -537,7 +558,82 @@ export function findUnlinkedMatchesByHint({
 			),
 		)
 		.orderBy("IngestedMatch.playedAt", "asc")
+		.limit(UNLINKED_MATCHES_LIMIT)
 		.execute();
+}
+
+/** The matches the user stored in the last hour and the size of those stored in the last day, as the ingest quota counts them. */
+export async function findIngestQuotaUsage({
+	povUserId,
+	hourStart,
+	dayStart,
+}: {
+	povUserId: number;
+	/** database timestamp (seconds) */
+	hourStart: number;
+	/** database timestamp (seconds) */
+	dayStart: number;
+}) {
+	const usage = await db
+		.selectFrom("IngestedMatch")
+		.select((eb) => [
+			eb.fn
+				.countAll<number>()
+				.filterWhere("createdAt", ">=", hourStart)
+				.as("matchesInHour"),
+			eb.fn
+				.coalesce(eb.fn.sum<number>(eb.fn("length", ["data"])), sql.lit(0))
+				.as("bytesInDay"),
+		])
+		.where("povUserId", "=", povUserId)
+		.where("createdAt", ">=", dayStart)
+		.executeTakeFirstOrThrow();
+
+	return { matchesInHour: usage.matchesInHour, bytesInDay: usage.bytesInDay };
+}
+
+/** Deletes stored matches created before the timestamp that could have linked (private battles, unread lobbies) but never did, keeping any a reported weapon still points to. */
+export function deleteUnlinkedMatchesCreatedBefore(
+	/** database timestamp (seconds) */
+	createdBefore: number,
+) {
+	const lobby = sql<string | null>`"IngestedMatch"."data" ->> '$.lobby'`;
+
+	return db
+		.deleteFrom("IngestedMatch")
+		.where("IngestedMatch.createdAt", "<", createdBefore)
+		.where((eb) =>
+			eb.or([eb(lobby, "is", null), eb(lobby, "in", LINKABLE_LOBBIES)]),
+		)
+		.where((eb) =>
+			eb.not(
+				eb.exists(
+					eb
+						.selectFrom("IngestedMatchLink")
+						.select("IngestedMatchLink.id")
+						.whereRef(
+							"IngestedMatchLink.ingestedMatchId",
+							"=",
+							"IngestedMatch.id",
+						),
+				),
+			),
+		)
+		.where((eb) =>
+			eb.not(
+				eb.exists(
+					eb
+						.selectFrom("ReportedWeapon")
+						.select("ReportedWeapon.userId")
+						.whereRef(
+							"ReportedWeapon.ingestedMatchId",
+							"=",
+							"IngestedMatch.id",
+						),
+				),
+			),
+		)
+		.executeTakeFirst();
 }
 
 /** Unlinks every ingested match from a SendouQ map, as when its report is undone. */
@@ -558,11 +654,13 @@ async function addOrMergeMatch(
 		submitterUserId,
 		match,
 		hints,
+		storedDataById,
 	}: {
 		povUserId: number | null;
 		submitterUserId: number | null;
 		match: ScannerMatch;
 		hints: { tournamentIdHint: number | null; groupMatchIdHint: number | null };
+		storedDataById: Map<number, ScannerMatch>;
 	},
 ): Promise<{
 	id: number;
@@ -585,6 +683,7 @@ async function addOrMergeMatch(
 	const stored = await findMergeCandidate(trx, {
 		povUserId,
 		match: canonical,
+		storedDataById,
 	});
 	if (!stored) {
 		const inserted = await trx
@@ -599,6 +698,7 @@ async function addOrMergeMatch(
 			})
 			.returning("id")
 			.executeTakeFirstOrThrow();
+		storedDataById.set(inserted.id, canonical);
 		return { id: inserted.id, data: canonical, outcome: "inserted" };
 	}
 
@@ -620,6 +720,7 @@ async function addOrMergeMatch(
 		})
 		.where("id", "=", stored.id)
 		.execute();
+	storedDataById.set(stored.id, mergedCanonical);
 	return { id: stored.id, data: mergedCanonical, outcome: "merged" };
 }
 
@@ -654,26 +755,31 @@ async function findMergeCandidate(
 	{
 		povUserId,
 		match,
+		storedDataById,
 	}: {
 		povUserId: number | null;
 		match: ScannerMatch;
+		/** parsed data of rows already loaded by this request, filled in as more load */
+		storedDataById: Map<number, ScannerMatch>;
 	},
 ) {
 	const createdAfter = dateToDatabaseTimestamp(
 		subDays(new Date(), MERGE_CANDIDATE_CREATED_AT_WINDOW_DAYS),
 	);
 
-	// one query per branch (playedAt window / playedAt-less recent rows)
-	// instead of an OR, so each can use the (povUserId, playedAt) index
+	// ids first, straight from the covering indexes: sorting full rows would
+	// read the data blob of every row in the window. One query per branch
+	// (playedAt window / playedAt-less recent rows) instead of an OR, so each
+	// can use an index
 	const baseQuery = trx
 		.selectFrom("IngestedMatch")
-		.select(["id", "data", "tournamentIdHint", "groupMatchIdHint", "createdAt"])
+		.select(["id", "createdAt"])
 		.$if(povUserId === null, (qb) => qb.where("povUserId", "is", null))
 		.$if(povUserId !== null, (qb) => qb.where("povUserId", "=", povUserId!))
 		.orderBy("createdAt", "desc")
 		.limit(MERGE_CANDIDATE_LIMIT);
 
-	const candidates =
+	const candidateIds = (
 		match.playedAt === null
 			? await baseQuery.where("createdAt", ">=", createdAfter).execute()
 			: newestFirst(
@@ -699,13 +805,32 @@ async function findMergeCandidate(
 						.where("playedAt", "is", null)
 						.where("createdAt", ">=", createdAfter)
 						.execute(),
-				);
+				)
+	).map((candidate) => candidate.id);
 
-	return (
-		candidates.find((candidate) =>
-			Matches.isSameMatch(candidate.data, match),
-		) ?? null
-	);
+	const unloadedIds = candidateIds.filter((id) => !storedDataById.has(id));
+	if (unloadedIds.length > 0) {
+		const loaded = await trx
+			.selectFrom("IngestedMatch")
+			.select(["id", "data"])
+			.where("id", "in", unloadedIds)
+			.execute();
+		for (const row of loaded) storedDataById.set(row.id, row.data);
+	}
+
+	const sameMatchId = candidateIds.find((id) => {
+		const data = storedDataById.get(id);
+		return data !== undefined && Matches.isSameMatch(data, match);
+	});
+	if (sameMatchId === undefined) return null;
+
+	const hints = await trx
+		.selectFrom("IngestedMatch")
+		.select(["tournamentIdHint", "groupMatchIdHint"])
+		.where("id", "=", sameMatchId)
+		.executeTakeFirstOrThrow();
+
+	return { id: sameMatchId, data: storedDataById.get(sameMatchId)!, ...hints };
 }
 
 function newestFirst<T extends { createdAt: number }>(a: T[], b: T[]): T[] {
@@ -1088,6 +1213,38 @@ async function isLinkedToGame(
 				? game.target.matchGameResultId
 				: game.target.groupMatchMapId,
 		)
+		.executeTakeFirst();
+
+	return existing !== undefined;
+}
+
+/** Whether another of the POV user's stored matches already links to the game: each sender's scans of a game count once. */
+async function isGameLinkedByAnotherMatch(
+	trx: Transaction<DB>,
+	{ ingestedMatchId, game }: { ingestedMatchId: number; game: IngestableGame },
+	povUserId: number | null,
+) {
+	if (povUserId === null) return false;
+
+	const existing = await trx
+		.selectFrom("IngestedMatchLink")
+		.innerJoin(
+			"IngestedMatch",
+			"IngestedMatch.id",
+			"IngestedMatchLink.ingestedMatchId",
+		)
+		.select("IngestedMatchLink.id")
+		.where(
+			game.target.type === "tournament"
+				? "IngestedMatchLink.tournamentMatchGameResultId"
+				: "IngestedMatchLink.groupMatchMapId",
+			"=",
+			game.target.type === "tournament"
+				? game.target.matchGameResultId
+				: game.target.groupMatchMapId,
+		)
+		.where("IngestedMatch.povUserId", "=", povUserId)
+		.where("IngestedMatchLink.ingestedMatchId", "!=", ingestedMatchId)
 		.executeTakeFirst();
 
 	return existing !== undefined;

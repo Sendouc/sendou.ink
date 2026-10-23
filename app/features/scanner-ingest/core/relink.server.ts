@@ -1,3 +1,4 @@
+import * as R from "remeda";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { logger } from "~/utils/logger";
 import * as ScannerIngestRepository from "../ScannerIngestRepository.server";
@@ -16,6 +17,11 @@ type ReportedMatch =
  */
 export async function linkStoredMatches(reported: ReportedMatch) {
 	try {
+		// only the match's players' scans can link to its games
+		const players = (await reportedGames(reported)).flatMap((game) => [
+			...game.winnerUserIds,
+			...game.loserUserIds,
+		]);
 		const stored = await ScannerIngestRepository.findUnlinkedMatchesByHint({
 			context:
 				reported.type === "tournament"
@@ -24,6 +30,7 @@ export async function linkStoredMatches(reported: ReportedMatch) {
 			playedSince: dateToDatabaseTimestamp(
 				new Date(Date.now() - Scoreboards.PLAYED_AT_TOLERANCE_MS),
 			),
+			povUserIds: R.unique(players),
 		});
 
 		// sides are pinned by the sender's seat, so each sender's scans match on their own
@@ -37,14 +44,7 @@ export async function linkStoredMatches(reported: ReportedMatch) {
 
 		for (const [povUserId, matches] of byPovUserId) {
 			// reloaded per sender: an earlier sender's links mark games as taken
-			const games =
-				reported.type === "tournament"
-					? await ScannerIngestRepository.gamesInTournamentMatches([
-							reported.tournamentMatchId,
-						])
-					: await ScannerIngestRepository.gamesInGroupMatch(
-							reported.groupMatchId,
-						);
+			const games = await reportedGames(reported);
 			const matched = Scoreboards.matchedGames({
 				matches: matches.map((match) => match.data),
 				games,
@@ -64,4 +64,12 @@ export async function linkStoredMatches(reported: ReportedMatch) {
 	} catch (error) {
 		logger.error("Linking stored scanner matches failed", error);
 	}
+}
+
+function reportedGames(reported: ReportedMatch) {
+	return reported.type === "tournament"
+		? ScannerIngestRepository.gamesInTournamentMatches([
+				reported.tournamentMatchId,
+			])
+		: ScannerIngestRepository.gamesInGroupMatch(reported.groupMatchId);
 }
