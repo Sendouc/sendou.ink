@@ -25,7 +25,7 @@
 	--sl-content-gap-y: var(--s-4);
 	--sl-menu-button-size: var(--field-size-sm);
 
-	--sl-color-text: var(--color-text);
+	--sl-color-text: var(--color-base-2);
 	--sl-color-banner-bg: var(--color-fill-accent);
 	--sl-color-banner-text: var(--color-fg-on-accent);
 
