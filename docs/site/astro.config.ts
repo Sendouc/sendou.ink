@@ -13,10 +13,10 @@ import {
 	cssModulesLayer,
 	hoverOnlyOnHoverDevices,
 } from "../../vite-css-plugins.ts";
-import { DOCS_DEV_PORT } from "../../vite-docs-proxy.ts";
 import { allDocSlugs, PUBLIC_API_SLUG } from "./src/plugins/doc-files.ts";
 import {
 	docLinks,
+	dropAgentsOnly,
 	dropTitle,
 	mermaidDiagrams,
 } from "./src/plugins/markdown.ts";
@@ -43,8 +43,6 @@ process.env.VITE_TOURNAMENT_DEFAULT_LOGO ??= "tournament-logo-default.avif";
 export default defineConfig({
 	site: "https://sendou-ink.github.io",
 	base: BASE,
-	// the app's dev server serves this one at docs.localhost:PORT, see vite-docs-proxy.ts
-	server: { port: DOCS_DEV_PORT },
 	integrations: [
 		react(),
 		starlight({
@@ -86,6 +84,17 @@ export default defineConfig({
 						{ label: "Routes", link: "/reference/routes/" },
 						{ label: "Database tables", link: "/reference/db-tables/" },
 						{ label: "Lint rules", link: "/reference/lint-rules/" },
+						{ label: "Permissions", link: "/reference/permissions/" },
+						{
+							label: "Search params & storage",
+							link: "/reference/search-params/",
+						},
+						{ label: "Background work", link: "/reference/background-work/" },
+						{
+							label: "Environment variables",
+							link: "/reference/env-vars/",
+						},
+						{ label: "Package scripts", link: "/reference/scripts/" },
 					],
 				},
 				{
@@ -103,11 +112,6 @@ export default defineConfig({
 	vite: {
 		plugins: [cssModulesLayer()],
 		envPrefix: ["PUBLIC_", "VITE_"],
-		server: {
-			strictPort: true,
-			// apart from the app's HMR path, both arrive on its port through vite-docs-proxy.ts
-			hmr: { path: "/__docs-hmr" },
-		},
 		// what the app's vite.config.ts defines, read by `app/utils/git-commit.ts`
 		define: { __GIT_COMMIT__: JSON.stringify("") },
 		css: {
@@ -122,7 +126,7 @@ export default defineConfig({
 	},
 	markdown: {
 		processor: satteri({
-			mdastPlugins: [dropTitle, mermaidDiagrams],
+			mdastPlugins: [dropTitle, dropAgentsOnly, mermaidDiagrams],
 			hastPlugins: [
 				docLinks({ repoRoot: REPO_ROOT, repoUrl: REPO_URL, base: BASE }),
 			],
@@ -135,12 +139,14 @@ function docSlugsUnder(prefix: string) {
 }
 
 function featureSidebar(): NonNullable<StarlightUserConfig["sidebar"]> {
-	return outlineFeatures().map(({ config, views }) => ({
-		label: config.label,
-		collapsed: true,
-		items: VIEWS.filter((view) => views.includes(view.id)).map((view) => ({
-			label: view.label,
-			link: `/${featureViewPath(config.id, view.id)}`,
-		})),
-	}));
+	return outlineFeatures()
+		.filter(({ views }) => views.length > 0)
+		.map(({ config, views }) => ({
+			label: config.label,
+			collapsed: true,
+			items: VIEWS.filter((view) => views.includes(view.id)).map((view) => ({
+				label: view.label,
+				link: `/${featureViewPath(config.id, view.id)}`,
+			})),
+		}));
 }

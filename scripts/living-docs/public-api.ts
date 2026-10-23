@@ -1,4 +1,9 @@
 import type { Node } from "oxc-parser";
+import {
+	type ApiExchange,
+	examplesOf,
+	readApiExamples,
+} from "./api-examples.ts";
 import { lineOf, parseFile } from "./ast.ts";
 import { escapeHtml, highlight } from "./highlight.ts";
 import { apiTypeAnchor } from "./links.ts";
@@ -17,6 +22,8 @@ export interface ApiEndpoint {
 	method: "GET" | "POST";
 	/** With its params in braces, e.g. `/api/team/{teamId}`. */
 	path: string;
+	/** Requests to it the e2e tests made in the last capture, one per status code. */
+	examples: ApiExchange[];
 }
 
 export interface ApiType {
@@ -35,6 +42,7 @@ export interface ApiType {
 export function documentPublicApi(): ApiType[] {
 	const file = parseFile(PUBLIC_API_SCHEMA_FILE);
 	const statements = file.program.body;
+	const exchanges = readApiExamples();
 	const localNames = new Set(
 		statements.flatMap((statement) =>
 			declaredNames(declarationOf(statement) ?? statement),
@@ -58,9 +66,13 @@ export function documentPublicApi(): ApiType[] {
 			);
 		}
 
+		const endpoint = {
+			method: match[1] as ApiEndpoint["method"],
+			path: match[2],
+		};
 		endpointsByStatement.set(statement, [
 			...(endpointsByStatement.get(statement) ?? []),
-			{ method: match[1] as ApiEndpoint["method"], path: match[2] },
+			{ ...endpoint, examples: examplesOf(exchanges, endpoint) },
 		]);
 	}
 

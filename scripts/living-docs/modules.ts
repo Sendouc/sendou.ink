@@ -79,7 +79,12 @@ export interface UsageGroup {
 	kind: UsageKind;
 	label: string;
 	singular: string;
-	items: Array<{ file: string; line: number }>;
+	items: Array<{
+		file: string;
+		line: number;
+		/** Paths of the routes the file serves, as their module, loader or action. */
+		routes: string[];
+	}>;
 }
 
 export interface ExportDoc {
@@ -123,7 +128,11 @@ export function featureModulePaths(featureDir: string) {
 }
 
 /** Documentation of a Module.ts file: its overview, exports with their JSDoc and where they are used. */
-export function documentModule(modulePath: string, sourceFiles: string[]) {
+export function documentModule(
+	modulePath: string,
+	sourceFiles: string[],
+	routePathsByFile: Map<string, string[]>,
+) {
 	const file = parseFile(modulePath);
 	const usages = usagesOf(modulePath, sourceFiles);
 	const productionUsages = usages.filter((usage) => !isTestFile(usage.file));
@@ -137,6 +146,7 @@ export function documentModule(modulePath: string, sourceFiles: string[]) {
 		...exported,
 		usages: groupUsages(
 			productionUsages.filter((usage) => usage.exportName === exported.name),
+			routePathsByFile,
 		),
 		unitTests: unitTests.byExport.get(exported.name) ?? [],
 	}));
@@ -159,7 +169,10 @@ export function documentModule(modulePath: string, sourceFiles: string[]) {
 			...exports.filter(isTestOnly).flatMap((e) => e.unitTests),
 		],
 		dependencies: importsOf(modulePath).filter(isModuleFile),
-		dependents: groupUsages(uniqueBy(productionUsages, (usage) => usage.file)),
+		dependents: groupUsages(
+			uniqueBy(productionUsages, (usage) => usage.file),
+			routePathsByFile,
+		),
 	} satisfies ModuleDoc;
 }
 
@@ -208,8 +221,10 @@ function collectExports(file: ParsedFile) {
 		statement: Node,
 		signatureEnd: number,
 	) => {
-		if (seen.has(name)) return;
-		seen.add(name);
+		// a type and a value may share a name, e.g. `type findById = Unwrapped<typeof findById>`
+		const key = `${kind === "type" || kind === "interface" ? "type" : "value"}:${name}`;
+		if (seen.has(key)) return;
+		seen.add(key);
 
 		exports.push({
 			name,
@@ -287,7 +302,10 @@ function constSignatureEnd(file: ParsedFile, statement: Node) {
 		: statement.end;
 }
 
-function groupUsages(usages: Usage[]): UsageGroup[] {
+function groupUsages(
+	usages: Usage[],
+	routePathsByFile: Map<string, string[]>,
+): UsageGroup[] {
 	const groups: UsageGroup[] = [];
 
 	for (const kind of USAGE_KINDS) {
@@ -297,7 +315,11 @@ function groupUsages(usages: Usage[]): UsageGroup[] {
 					USAGE_KINDS.find((candidate) => candidate.test(usage.file))?.id ===
 					kind.id,
 			)
-			.map(({ file, line }) => ({ file, line }));
+			.map(({ file, line }) => ({
+				file,
+				line,
+				routes: routePathsByFile.get(file) ?? [],
+			}));
 		const unique = uniqueBy(items, (item) => item.file);
 		if (unique.length > 0) {
 			groups.push({

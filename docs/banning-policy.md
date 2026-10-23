@@ -1,4 +1,4 @@
-# Sendou.ink banning policy
+# Banning policy
 
 Sendou.ink and its staff have a responsibility to moderate the site. This document explains and motivates some principles behind how it is done.
 

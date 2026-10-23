@@ -10,7 +10,6 @@ Here is how the application architecture looks like in production.
 graph TD
     subgraph Render
         A[sendou.ink Server] -->|Reads/Writes| B[SQLite3 Database]
-        D[Lohi Discord Bot] -->|HTTP Requests| A
     end
 
     subgraph DigitalOcean
@@ -27,11 +26,10 @@ graph TD
 
 List of the dependencies in production:
 
-- [Lohi](https://github.com/sendou-ink/lohi) - Discord bot for profile updates, log-in links etc.
 - [Leanny/splat3](https://github.com/Leanny/splat3) - In-game data (manual update) 
 - [splatoon3.ink](https://github.com/misenhower/splatoon3.ink) - Rotation schedules (hourly routine) & X Rank placement data (manual update)
 - Discord - Auth  
-- Twitch - Streams  
+- Twitch & YouTube - Streams & VoDs  
 - Patreon - Supporter status (hourly routine)  
 - Bluesky - Front page changelog  
 
@@ -86,9 +84,14 @@ You should aim to colocate code that "changes together" as much as possible. Fea
 - **feature-constants.ts**: Constant values
 - **feature-hooks.ts**: React hooks
 - **feature-schemas.ts**: valibot schemas for validating form values, params, payloads
+- **feature-search-params.ts**: URL search param definitions (see `search-params.md`)
+- **feature-persisted.ts**: `localStorage` / `sessionStorage` definitions (`PersistedState.define`)
 - **feature-types.ts**: Typescript types
+- **feature-urls.ts**: URL builders for the feature's pages
 - **feature-utils.ts**: Utilities too small to make up for their own modules
+- **tests/**: Test fixtures shared by more than one test file
 - **Component.module.css**: CSS module matching the React file of the same root name
+- **README.md**: Overview of the feature, shown on its page of the docs site (see `living-docs.md`)
 
 Note: we are not using file-based routing. To add a new route `routes.ts` needs to be updated  
 Note: a route file needs to re-export the action/loader of that route
@@ -115,7 +118,7 @@ Usage:
 
 ```ts
 // anywhere else in the codebase, particularly inside that feature
-import * as Module from "../core/Module.ts"
+import * as Module from "../core/Module"
 
 Module.doTheThing()
 ```
@@ -128,7 +131,7 @@ Testing is important part of every feature work. The approach the project takes 
 
 Unit testing "core logic" (i.e. no React, no DB calls) with Vitest is highly encouraged whenever feasible. Most tests are like this.
 
-Vitest can also be used to write "integration tests" that call actions/loaders directly via the `wrappedAction` / `wrappedLoader` helpers from `~/utils/Test` (see `t.$customUrl.edit.test.ts` for example). These run against `db-test.sqlite3` and reset it between tests with `dbReset`. In practice this is best sparingly as they are typically slower than pure unit tests with more dependencies but also don't test the true end to end flow. Repository functions are tested the same way (`*Repository.server.test.ts`), wrapping calls in `withUser` / `withUserId` when the repository resolves an acting user.
+Vitest can also be used to write "integration tests" that call actions/loaders directly via the `wrappedAction` / `wrappedLoader` helpers from `~/utils/Test` (see `t.$customUrl.edit.test.ts` for example). These run against `db-test.sqlite3` and reset it between tests with `dbReset`. In practice this is best sparingly as they are typically slower than pure unit tests with more dependencies but also don't test the true end to end flow. Repository functions are tested the same way (`*Repository.server.test.ts`), wrapping calls in `withUserId` / `withNoUser` when the repository resolves an acting user.
 
 Components can be tested in a real browser with Vitest browser mode. These files are named `*.browser.test.tsx` and run together with the unit tests via `pnpm run test:unit:browser`. 
 
@@ -151,7 +154,7 @@ const user = requireUser(); // get user or throw HTTP 401 if not logged in
 const user = getUser(); // get user (undefined if not logged in)
 ```
 
-These take no arguments. The logged in user is resolved once per request by `userMiddleware` (registered in `root.tsx` along with the other middleware) and stored in an `AsyncLocalStorage` that these functions read from. Outside of a request (e.g. in tests or scripts) the store has to be set up manually, see `withUser` in `~/utils/Test`.
+These take no arguments. The logged in user is resolved once per request by `userMiddleware` (registered in `root.tsx` along with the other middleware) and stored in an `AsyncLocalStorage` that these functions read from. Outside of a request (e.g. in tests or scripts) the store has to be set up manually, see `withUserId` in `~/utils/Test`.
 
 ### Permissions
 
@@ -159,11 +162,49 @@ These take no arguments. The logged in user is resolved once per request by `use
 2) Read in React code via the `useHasPermission` hook.
 3) Read in server code via the `requirePermission` guard.
 
-User can also have global roles such as "staff" or "tournament adder". Set in the root loader and `getUser`/`requireUser` code.
+User can also have global roles such as `STAFF` or `TOURNAMENT_ADDER`. They come with the logged in user (`user.roles`) and are checked via `requireRole()` on the server and `useHasRole()` in React code. See `permissions.md`.
 
 ### Anatomy of an action
 
-TODO (after React server actions in use)
+```ts
+export const action = defineAction(
+	{ params: idObject, body: scrimIdActionSchema },
+	async ({ params: { id }, body }) => {
+		const post = notFoundIfNullish(await ScrimPostRepository.findById(id));
+		const user = requireUser();
+		requirePermission(post, "MANAGE_TRACKING");
+
+		switch (body._action) {
+			case "REPORT_MAP": {
+				const { maps } = await loadMapByMapContext({ post, user });
+				const target = maps.find((m) => m.id === body.mapId);
+				errorToastIfFalsy(target?.reportedAt === null, "Map already reported");
+
+				await ScrimMapRepository.reportMapAndGenerateNext({
+					scrimPostId: post.id,
+					mapId: body.mapId,
+					winnerSide: body.winnerSide,
+				});
+				broadcastRevalidate(post);
+				break;
+			}
+			default: {
+				assertUnreachable(body);
+			}
+		}
+
+		return null;
+	},
+);
+```
+
+1) `defineAction` parses params (404 on failure) and the body: a valibot union of one schema per `_action` (`fieldErrors` for SendouForm, error toast otherwise).
+2) Load the object and authorize: `requirePermission` / `requireRole`.
+3) Rule checks a user can hit throw an error toast (`errorToastIfFalsy`), the rules themselves live in a module.
+4) Write through a repository, one transaction per mutation.
+5) Broadcast to other viewers if needed, then return `null` (React Router reruns the page's loaders) or redirect.
+
+See [request-flow.md](./request-flow.md) for one action followed end to end.
 
 ### Forms
 
@@ -179,7 +220,7 @@ Use a load testing tool like `autocannon` to ensure new features scale. For data
 
 Sendou.ink uses SQLite3 for its database solution. See for example ["Consider SQLite"](https://blog.wesleyac.com/posts/consider-sqlite) for motivation why to pick SQLite for a web project over something like PostgreSQL. Tldr; for a project of this scale it gets you far, low latency when accessing data store & simplifies testing when your database is just a file on the filesystem. When writing code it should be kept in mind that writes to the database are not concurrent so abusing the database can lead to the whole web server process freezing essentially.
 
-Check `database-relations.md` for more information about the database relations and `database-schemas.md` for how columns should be typed. See `tables.ts` for documentation on tables and columns. All queries live in repositories, see `repositories.md` for the conventions they follow.
+See [the database tables reference](../../app/db/tables.ts) for the tables, their columns and how they relate (generated from the JSDoc of `tables.ts` and the foreign keys of the schema) and [database-schemas.md](./database-schemas.md) for how columns should be typed. All queries live in repositories, see `repositories.md` for the conventions they follow.
 
 ### React guidelines
 
@@ -193,10 +234,10 @@ We are not using a state management library such as Redux. Instead use React Con
 
 ### Search params
 
-Often it's convenient to store state in search params. This allows for nice features like users to deep link to the view they are seeing. You have two options to achieve this:
+Often it's convenient to store state in search params. This allows for nice features like users to deep link to the view they are seeing. All of them go through `app/modules/search-params/` and are declared once per feature in a `<feature>-search-params.ts` file (see `search-params.md`). Every param picks one of two options:
 
-1) Use React Router's built-in solution. Use this if data loaders should rerun once search params are changed.
-2) `useSearchParamState` hook. Use this if it is not needed.
+1) `loader: true`. Use this if data loaders should rerun once the search param is changed (written via React Router navigation).
+2) `loader: false`. Use this if it is not needed (written via `history.replaceState`).
 
 ### Routines
 
@@ -212,7 +253,6 @@ A page opts into revalidation on a topic with `useTopicRevalidation`, and an act
 ChatSystemMessage.send([
     {
         channel: tournamentChannel(tournament.id),
-        revalidateOnly: true,
     },
 ]);
 ```

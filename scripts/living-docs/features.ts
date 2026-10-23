@@ -2,9 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { ROOT } from "./ast.ts";
 import { featureModulePaths } from "./modules.ts";
+import { featureRepositoryPaths } from "./repositories.ts";
 
 const FEATURES_DIR = "app/features";
 const E2E_DIR = "e2e";
+/** A feature's handwritten overview, shown at the top of its page. */
+export const FEATURE_README_PATTERN = `${FEATURES_DIR}/*/README.md`;
 
 /** Specs whose file name doesn't start with the name of the feature they test. */
 const SPEC_FEATURE_OVERRIDES: Record<string, string> = {
@@ -77,11 +80,14 @@ export interface FeatureConfig {
 	id: string;
 	label: string;
 	navIcon: string | null;
+	/** Repo relative path of the feature's README.md, null when it has none. */
+	readmePath: string | null;
 	modulePaths: string[];
+	repositoryPaths: string[];
 	specs: string[];
 }
 
-/** Every feature with Module.ts files, e2e specs or routes, specs matched to the feature their file name starts with. */
+/** Every feature with a README, Module.ts files, repositories, e2e specs or routes, specs matched to the feature their file name starts with. */
 export function discoverFeatures(
 	featuresWithRoutes: Set<string>,
 ): FeatureConfig[] {
@@ -112,24 +118,46 @@ export function discoverFeatures(
 		id,
 		label: LABELS[id] ?? capitalize(id.replaceAll("-", " ")),
 		navIcon: NAV_ICONS[id] ?? null,
+		readmePath: readmePathOf(id),
 		modulePaths: featureModulePaths(`${FEATURES_DIR}/${id}`),
+		repositoryPaths: featureRepositoryPaths(`${FEATURES_DIR}/${id}`),
 		specs: specsByFeature.get(id) ?? [],
 	}));
 
 	const siteWide = {
 		...SITE_WIDE,
 		navIcon: null,
+		readmePath: null,
 		modulePaths: [],
+		repositoryPaths: [],
 		specs: specsByFeature.get(SITE_WIDE.id) ?? [],
 	};
 
 	return [...features, siteWide]
 		.filter(
 			(feature) =>
-				feature.modulePaths.length + feature.specs.length > 0 ||
+				feature.readmePath !== null ||
+				feature.modulePaths.length +
+					feature.repositoryPaths.length +
+					feature.specs.length >
+					0 ||
 				featuresWithRoutes.has(feature.id),
 		)
 		.sort((a, b) => (a.label < b.label ? -1 : 1));
+}
+
+/** The feature an `app/` file belongs to, or for files outside the feature folders their directory (`app/hooks`). */
+export function featureOfFile(file: string) {
+	return (
+		file.match(new RegExp(`^${FEATURES_DIR}/([^/]+)/`))?.[1] ??
+		path.posix.dirname(file)
+	);
+}
+
+function readmePathOf(featureId: string) {
+	const readmePath = FEATURE_README_PATTERN.replace("*", featureId);
+
+	return fs.existsSync(path.join(ROOT, readmePath)) ? readmePath : null;
 }
 
 function capitalize(text: string) {

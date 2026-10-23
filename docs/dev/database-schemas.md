@@ -1,6 +1,6 @@
 # Database schemas
 
-How columns should be typed in `app/db/tables.ts`. See [database-relations.md](./database-relations.md) for how the tables relate to each other and [how-to.md](./how-to.md) for the migration workflow.
+How columns should be typed in `app/db/tables.ts`. See [the database tables reference](../../app/db/tables.ts) for the tables and how they relate to each other and [how-to.md](./how-to.md) for the migration workflow.
 
 Note: some older columns don't follow this yet. Fix them as you touch them rather than leaving a new style behind.
 
@@ -16,11 +16,11 @@ SQLite has no boolean type, so booleans are `0`/`1` integers typed as `DBBoolean
 Converting to one:
 
 - `toDBBoolean(someBoolean)` from `~/utils/sql` — use this instead of `Number(x)` or `x ? 1 : 0` when writing to the DB.
-- `dbBoolean` / `checkboxValueToDbBoolean` from `~/utils/schema` for form and payload schemas.
+- Form and payload schemas produce plain `boolean`s (e.g. the `toggle` field builder from `~/form/fields`), converted with `toDBBoolean` in the repository.
 
 Reading is just truthiness (`if (build.isPrivate)`); convert to a real boolean with `Boolean()` when the value crosses into a domain type.
 
-Counter-examples that look like booleans but aren't: `User.banned` (`1` = permaban, otherwise a timestamp), `TournamentSub.canVc` (0/1/2), `TournamentTeam.abDivision` (0 = A, 1 = B).
+Counter-examples that look like booleans but aren't: `User.banned` (`1` = permaban, otherwise a timestamp), `TournamentTeam.abDivision` (0 = A, 1 = B).
 
 ## Generated vs. GeneratedAlways
 
@@ -52,7 +52,9 @@ A delete is complete at the database level: deleting a row removes everything th
 
 ## JSON columns
 
-Stored as text, typed with `JSONColumnType<T>` (not null) or `JSONColumnTypeNullable<T>` (nullable) from `~/utils/kysely.server`. Both serialize to `string` on insert, so pass `JSON.stringify(...)`.
+Stored as text, typed with `JSONColumnType<T>` (not null, from `kysely`) or `JSONColumnTypeNullable<T>` (nullable, from `~/utils/kysely.server`). Both serialize to `string` on insert, so pass `JSON.stringify(...)`.
+
+Register every JSON column in `JSON_COLUMNS` of `app/db/json-columns.ts`, it is what makes the dialect parse the column on read. `json-columns.test.ts` keeps it in sync with `tables.ts`.
 
 The payload type lives with its feature and is imported by `tables.ts`. Only payloads with no natural feature home go in `app/db/tables-json.ts`.
 
@@ -64,11 +66,11 @@ When the column is a known set *plus* an open-ended value (an id in string form,
 
 ## Views
 
-Two naming conventions pair a base table with a filtered view: the `All` prefix (`AllTeam` table / `Team` view) and the `Unvalidated` prefix (`UnvalidatedVideo` / `Video`). Write to the prefixed table, read from the view. Both share one interface, so document per-column which fields are meaningless when read through the view. Mark view entries in the `DB` interface as read-only.
+Two naming conventions pair a base table with a filtered view: the `All` prefix (`AllTeam` table / `Team` view) and the `Unvalidated` prefix (`UnvalidatedVideo` / `Video`, `UnvalidatedUserSubmittedImage` / `UserSubmittedImage`). Write to the prefixed table, read from the view. The pair shares one interface (`Team`) or the view gets a read-only copy of it (`Video`), so document per-column which fields are meaningless when read through the view. Mark view entries in the `DB` interface as read-only.
 
 ## JSDoc
 
-Non-obvious columns get a JSDoc comment: what `null` means, what a magic number encodes, why a column is denormalized, which column it mirrors. Self-evident columns (`name`, `userId`) don't.
+Non-obvious columns get a JSDoc comment: what `null` means, what a magic number encodes, why a column is denormalized, which column it mirrors. Self-evident columns (`name`, `userId`) don't. Notes about a whole table (what its rows are, when they are created, how it relates to other tables beyond its foreign keys) go in the JSDoc of its interface. Both are shown on [the database tables reference](../../app/db/tables.ts), together with the relations read from the foreign keys.
 
 ## SQLite migration quirks
 
@@ -82,5 +84,4 @@ Adding a column, table or index is a `trx.schema` call (see [how-to.md](./how-to
 
 ## After changing the schema
 
-1. Run the migration against `db.sqlite3` (`pnpm run migrate up`). The unit test database `db-test.sqlite3` is migrated automatically when unit tests run.
-2. Regenerate the e2e seeds with `pnpm run test:e2e:generate-seeds` — `pnpm run checks` fails otherwise.
+Run the migration against `db.sqlite3` (`pnpm run migrate up`). The unit test database `db-test.sqlite3` and the e2e databases are migrated automatically when the tests run.

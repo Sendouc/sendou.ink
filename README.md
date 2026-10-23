@@ -137,7 +137,7 @@ Alternatively, keep the repository on a [Dev Drive](https://learn.microsoft.com/
 ## Contributing
 
 - **Developers**: Read [CONTRIBUTING.md](./CONTRIBUTING.md)
-- **Translation**: Read [translation.md](./docs/translation.md)
+- **Translation**: Read [translation.md](./docs/dev/translation.md)
 - **Article writing**: Read [articles.md](./docs/articles.md)
 
 For developers reading the [architecture.md](./docs/dev/architecture.md) file is highly recommended to get up to the speed with how the project folder structure works and getting familiar with its concepts.

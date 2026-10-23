@@ -23,7 +23,7 @@ const DEV_IMPERSONATE_ITEMS = [
 ] as const;
 
 const DEV_LINK_ITEMS = [
-	{ name: "Docs", icon: "settings", url: "/__docs" },
+	{ name: "Docs", icon: "settings", url: "http://localhost:4321/" },
 	{ name: "OG Images", icon: "art", url: "/admin/og-images" },
 ] as const;
 
@@ -169,7 +169,6 @@ function DevMenu({ openState }: { openState: MenuOpenState }) {
 						<Link
 							key={item.name}
 							to={item.url}
-							reloadDocument
 							className={styles.menuItem}
 							onClick={() => {
 								openState.onOpenChange(false);
@@ -213,7 +212,6 @@ function DevMenu({ openState }: { openState: MenuOpenState }) {
 						<Link
 							key={item.name}
 							to={item.url}
-							reloadDocument
 							className={styles.previewIcon}
 							title={item.name}
 							aria-label={item.name}

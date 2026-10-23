@@ -46,6 +46,7 @@ const views = VIEWS.filter((candidate) => feature.views.includes(candidate.id));
 					[
 						count(feature.modules.length, "module"),
 						count(exportCount, "export"),
+						count(feature.repositories.length, "repository", "repositories"),
 						count(testsOf(feature).length, "e2e test"),
 						count(feature.routes.length, "route"),
 					].join(" · ")
@@ -68,5 +69,6 @@ const views = VIEWS.filter((candidate) => feature.views.includes(candidate.id));
 		</div>
 		<slot />
 	</div>
+	<slot name="markdown" />
 	<LivingScript />
 </StarlightPage>

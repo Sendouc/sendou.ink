@@ -22,10 +22,16 @@ const reference = [
 	{ title: "Routes", path: "reference/routes/" },
 	{ title: "Database tables", path: "reference/db-tables/" },
 	{ title: "Lint rules", path: "reference/lint-rules/" },
+	{ title: "Permissions", path: "reference/permissions/" },
+	{ title: "Search params & storage", path: "reference/search-params/" },
+	{ title: "Background work", path: "reference/background-work/" },
+	{ title: "Environment variables", path: "reference/env-vars/" },
+	{ title: "Package scripts", path: "reference/scripts/" },
 	{ title: "Components", path: "components/buttons/" },
 ];
 const features = (await getCollection("features"))
 	.map((entry) => entry.data)
+	.filter((feature) => feature.views.length > 0)
 	.sort((a, b) => a.config.label.localeCompare(b.config.label));
 ---
 
@@ -42,8 +48,8 @@ const features = (await getCollection("features"))
 >
 	<p>
 		The repo's markdown docs and the living docs generated from the code: every feature's core
-		modules, e2e tests and routes, the components, database tables and lint rules. Runs locally
-		with <code>pnpm dev</code>, see <a href={sitePath("dev/living-docs/")}>Living docs</a>.
+		modules, repositories, e2e tests and routes, the components, database tables and lint rules. Runs locally
+		with <code>pnpm dev:docs</code>, see <a href={sitePath("dev/living-docs/")}>Living docs</a>.
 	</p>
 
 	<h2 id="contributor-docs">Contributor docs</h2>

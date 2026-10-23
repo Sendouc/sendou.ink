@@ -5,13 +5,14 @@ import { groupByLeadingWord } from "../../living/format.ts";
 
 interface Props {
 	tests: UnitTestCase[];
+	title?: string;
 }
 
-const { tests } = Astro.props;
+const { tests, title = "Unit tests" } = Astro.props;
 ---
 
-<div class="unit-tests">
-	<div class="unit-tests-title">Unit tests</div>
+<details class="unit-tests">
+	<summary class="unit-tests-title">{title} ({tests.length})</summary>
 	<ul class="unit-test-list">
 		{
 			groupByLeadingWord(tests).map(({ heading, cases }) =>
@@ -40,4 +41,4 @@ const { tests } = Astro.props;
 			)
 		}
 	</ul>
-</div>
+</details>

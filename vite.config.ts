@@ -7,7 +7,6 @@ import {
 	cssModulesLayer,
 	hoverOnlyOnHoverDevices,
 } from "./vite-css-plugins.ts";
-import { docsDevProxy } from "./vite-docs-proxy.ts";
 
 export default defineConfig((config) => {
 	const env = loadEnv(config.mode, process.cwd(), "");
@@ -23,7 +22,6 @@ export default defineConfig((config) => {
 			watch: { ignored: ["**/docs/**"] },
 		},
 		plugins: [
-			docsDevProxy(),
 			{
 				// Vite dev serves everything with no-cache, so any <head> mutation (e.g. a prefetch
 				// link mounting) revalidates the woff2 and flashes fallback fonts while the 304

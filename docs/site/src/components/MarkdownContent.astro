@@ -5,29 +5,8 @@ import Default from "@astrojs/starlight/components/MarkdownContent.astro";
 <Default><slot /></Default>
 
 <script>
+	import { drawMermaid } from "../living/mermaid.ts";
+
 	const diagrams = [...document.querySelectorAll<HTMLElement>("pre.mermaid")];
-
-	if (diagrams.length > 0) {
-		const { default: mermaid } = await import("mermaid");
-		for (const diagram of diagrams) diagram.dataset.source = diagram.textContent ?? "";
-
-		const draw = async () => {
-			mermaid.initialize({
-				startOnLoad: false,
-				theme:
-					document.documentElement.dataset.theme === "light" ? "default" : "dark",
-			});
-			for (const diagram of diagrams) {
-				diagram.removeAttribute("data-processed");
-				diagram.textContent = diagram.dataset.source ?? "";
-			}
-			await mermaid.run({ nodes: diagrams });
-		};
-
-		await draw();
-		new MutationObserver(draw).observe(document.documentElement, {
-			attributes: true,
-			attributeFilter: ["data-theme"],
-		});
-	}
+	if (diagrams.length > 0) await drawMermaid(diagrams);
 </script>

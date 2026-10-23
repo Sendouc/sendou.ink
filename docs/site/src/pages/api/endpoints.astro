@@ -1,10 +1,12 @@
 ---
 import { getCollection } from "astro:content";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import type { ApiExchange } from "../../../../../scripts/living-docs/api-examples.ts";
 import {
 	apiEndpointAnchor,
 	apiTypeAnchor,
 	githubUrl,
+	testAnchor,
 } from "../../../../../scripts/living-docs/links.ts";
 import {
 	type ApiEndpoint,
@@ -14,6 +16,7 @@ import ApiEndpointArticle from "../../components/living/ApiEndpointArticle.astro
 import FileLink from "../../components/living/FileLink.astro";
 import LivingScript from "../../components/living/LivingScript.astro";
 import RefTemplates from "../../components/living/RefTemplates.astro";
+import { viewHref } from "../../living/format.ts";
 import "../../styles/living.css";
 
 const types = (await getCollection("publicApi"))
@@ -30,6 +33,34 @@ const writeEndpoints = endpoints.filter(
 );
 const sharedTypes = types.filter((type) => type.endpoints.length === 0);
 const refs = new Map(types.flatMap((type) => [...type.refs]));
+const testHrefs = await exampleTestHrefs();
+
+function testHref(example: ApiExchange) {
+	return testHrefs.get(`${example.test.spec}:${example.test.line}`) ?? "#";
+}
+
+/** Link to every e2e test on its feature's e2e page, by `spec:line`. */
+async function exampleTestHrefs() {
+	const hrefs = new Map<string, string>();
+	for (const { data: feature } of await getCollection("features")) {
+		for (const spec of feature.specs) {
+			for (const group of spec.groups) {
+				for (const test of group.tests) {
+					hrefs.set(
+						`${spec.path}:${test.line}`,
+						viewHref(
+							feature.config.id,
+							"e2e",
+							testAnchor(spec.path, group.name, test),
+						),
+					);
+				}
+			}
+		}
+	}
+
+	return hrefs;
+}
 
 const sections: Array<{
 	id: string;
@@ -83,11 +114,18 @@ function endpointHeading(endpoint: ApiEndpoint) {
 		example request. Every request sends the token as{" "}
 		<code>Authorization: Bearer &lt;token&gt;</code>.
 	</p>
+	<p>
+		The examples under an endpoint are real requests the e2e tests made against it (mostly{" "}
+		<a href={githubUrl("e2e/api-public.spec.ts", 1)}><code>e2e/api-public.spec.ts</code></a>), one
+		per status code, kept by the last <code>pnpm run docs:capture</code> in{" "}
+		<code>docs/site/api-examples.json</code> with arrays cut to their first items. An endpoint
+		without examples has no test calling it.
+	</p>
 
 	<h2 id="read-endpoints">Read endpoints</h2>
 	<p>Work with a read or a write token. The type is the JSON the endpoint responds with.</p>
 	<div class="living routes">
-		{readEndpoints.map(({ endpoint, type }) => <ApiEndpointArticle endpoint={endpoint} type={type} />)}
+		{readEndpoints.map(({ endpoint, type }) => <ApiEndpointArticle endpoint={endpoint} type={type} testHref={testHref} />)}
 	</div>
 
 	<h2 id="write-endpoints">Write endpoints</h2>
@@ -97,7 +135,7 @@ function endpointHeading(endpoint: ApiEndpoint) {
 		one with <code>400</code> and <code>{"{ error: string, fieldErrors?: object }"}</code>.
 	</p>
 	<div class="living routes">
-		{writeEndpoints.map(({ endpoint, type }) => <ApiEndpointArticle endpoint={endpoint} type={type} />)}
+		{writeEndpoints.map(({ endpoint, type }) => <ApiEndpointArticle endpoint={endpoint} type={type} testHref={testHref} />)}
 	</div>
 
 	<h2 id="types">Types</h2>

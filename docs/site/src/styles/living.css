@@ -111,6 +111,7 @@
 .view-switch {
 	margin-left: auto;
 	display: flex;
+	flex-wrap: wrap;
 	padding: 3px;
 	background: var(--living-surface-2);
 	border: 1px solid var(--living-border);
@@ -119,6 +120,7 @@
 	& a {
 		padding: 4px 12px;
 		border-radius: 7px;
+		white-space: nowrap;
 		text-decoration: none;
 		font-weight: 600;
 		color: var(--living-muted);
@@ -287,15 +289,6 @@
 	cursor: pointer;
 }
 
-.living .coverage {
-	margin-bottom: 16px;
-}
-
-.routes {
-	display: grid;
-	gap: 10px;
-}
-
 .route {
 	min-width: 0;
 	padding: 14px 18px;
@@ -337,41 +330,22 @@
 	color: var(--living-warn);
 }
 
-.route-tests {
-	margin: 8px 0 0;
-	padding: 0;
-	list-style: none;
-	font-size: 13px;
-	columns: 2 300px;
-	column-gap: 24px;
-
-	& li {
-		break-inside: avoid;
-		padding: 1px 0 1px 20px;
-		position: relative;
-	}
-
-	& li::before {
-		content: "▸";
-		position: absolute;
-		left: 4px;
-		color: var(--living-muted);
-	}
-
-	& a {
-		text-decoration: none;
-	}
-
-	& a:hover {
-		color: var(--living-accent);
-		text-decoration: underline;
-	}
+.routes-table {
+	overflow-wrap: normal;
 }
 
-.warn-text {
-	margin: 8px 0 0;
+details.route-tests {
+	min-width: 14rem;
 	font-size: 13px;
-	color: var(--living-warn);
+
+	& summary {
+		cursor: pointer;
+	}
+
+	& ul {
+		margin: 4px 0 0;
+		padding-left: 16px;
+	}
 }
 
 .chip {
@@ -415,6 +389,7 @@
 .warn {
 	font-size: 11px;
 	font-weight: 600;
+	white-space: nowrap;
 	color: var(--living-warn);
 	background: var(--living-warn-soft);
 	padding: 1px 7px;
@@ -736,7 +711,15 @@ details.source {
 	color: var(--living-muted);
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
-	margin-bottom: 2px;
+	cursor: pointer;
+
+	&:hover {
+		color: var(--living-accent);
+	}
+
+	[open] > & {
+		margin-bottom: 2px;
+	}
 }
 
 .unit-test-list {
@@ -819,7 +802,8 @@ details.source {
 	letter-spacing: -0.01em;
 	color: var(--living-text);
 
-	.test-group:first-of-type > & {
+	.spec-head + .test-group > &,
+	.spec-head + .test-group > .group-summary > & {
 		margin-top: 0;
 	}
 
@@ -838,8 +822,48 @@ details.source {
 		color: var(--living-muted);
 	}
 
+	.group-summary > & {
+		display: flex;
+		align-items: center;
+		gap: 0.6em;
+	}
+
+	/* a corner of two borders, nudged against the way it points so it sits centered */
+	.group-summary > &::before {
+		content: "";
+		flex-shrink: 0;
+		margin-left: 0.15em;
+		width: 0.4em;
+		height: 0.4em;
+		border-right: 2px solid var(--living-muted);
+		border-bottom: 2px solid var(--living-muted);
+		translate: -20% 0;
+		rotate: -45deg;
+		transition:
+			rotate 0.15s,
+			translate 0.15s;
+	}
+
+	[open] > .group-summary > &::before {
+		translate: 0 -20%;
+		rotate: 45deg;
+	}
+
 	.test-group:not(:has(.test)) > & {
 		margin-bottom: 0;
+	}
+}
+
+.group-summary {
+	list-style: none;
+	cursor: pointer;
+
+	&::-webkit-details-marker {
+		display: none;
+	}
+
+	&:hover .group-title {
+		color: var(--living-accent);
 	}
 }
 
@@ -1429,4 +1453,110 @@ pre.step-code {
 
 .living {
 	container-type: inline-size;
+}
+
+details.db-relations {
+	margin-block: 8px 24px;
+
+	& summary {
+		cursor: pointer;
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--living-muted);
+	}
+
+	& summary:hover {
+		color: var(--living-accent);
+	}
+
+	& p {
+		font-size: 13px;
+	}
+}
+
+pre.db-relations-diagram {
+	display: flex;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	overflow-x: auto;
+}
+
+.db-reference {
+	white-space: nowrap;
+	font-size: 13px;
+}
+
+.behaviour-tests {
+	font-size: var(--sl-text-sm);
+}
+
+.access-chip {
+	font-family: var(--living-mono);
+	font-size: 11.5px;
+	color: var(--living-text);
+
+	&.access-write {
+		color: var(--living-warn);
+		background: var(--living-warn-soft);
+		border-color: color-mix(in srgb, var(--living-warn) 40%, transparent);
+	}
+
+	&:is(a):hover {
+		border-color: var(--living-accent);
+		color: var(--living-accent);
+	}
+}
+
+.living .repositories-intro {
+	margin-bottom: 20px;
+	color: var(--living-muted);
+
+	& .chip {
+		margin: 0;
+	}
+}
+
+details.route-data {
+	min-width: 18rem;
+	font-size: 13px;
+
+	& summary {
+		cursor: pointer;
+		white-space: nowrap;
+	}
+
+	& ul {
+		margin: 2px 0 8px;
+		padding-left: 16px;
+	}
+
+	& li {
+		margin: 0;
+	}
+}
+
+.route-data-title {
+	font-weight: 600;
+}
+
+.route-data-via,
+.route-data-none,
+.db-unused {
+	color: var(--living-muted);
+}
+
+.db-unused {
+	font-size: 13px;
+}
+
+.living.routes {
+	display: grid;
+	gap: 12px;
+	margin-block: 12px 24px;
+}
+
+/* the reference pages' tables hold long chips, wrapping keeps them in the content column */
+.sl-markdown-content table .chip {
+	white-space: normal;
 }

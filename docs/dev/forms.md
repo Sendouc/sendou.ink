@@ -1,4 +1,4 @@
-# SendouForm - Schema-Based Form System
+# Forms
 
 This document describes the schema-based form system using `SendouForm`. Forms are defined as valibot schemas that generate both the UI and server-side validation.
 
@@ -36,14 +36,18 @@ export const myFormSchema = v.object({
 |---------|-------------|----------------|
 | `textField` | Required text input | `label`, `maxLength` |
 | `textFieldOptional` | Optional text input | `maxLength` |
+| `numberField` | Required whole number input, optional `min` / `max` | - |
 | `numberFieldOptional` | Optional number input | - |
+| `inGameName` | Optional in-game name input (normalized and validated) | - |
 | `textArea` | Required multiline text | `label`, `maxLength` |
 | `textAreaOptional` | Optional multiline text | `maxLength` |
 | `toggle` | Boolean switch | `label` |
 | `select` | Required dropdown | `label`, `items` |
 | `selectOptional` | Optional dropdown (clearable) | `label`, `items` |
+| `selectDynamic` | Required dropdown with runtime options | `label` |
 | `selectDynamicOptional` | Dropdown with runtime options | `label` |
 | `radioGroup` | Radio button group | `label`, `items` |
+| `radioGroupDynamic` | Radio button group with runtime options | `label` |
 | `checkboxGroup` | Multiple selection checkboxes | `label`, `items` |
 | `checkboxGroupDynamic` | Checkboxes with runtime options | `label` |
 | `datetime` | Required date/time picker | `label` |
@@ -53,16 +57,23 @@ export const myFormSchema = v.object({
 | `timeRangeOptional` | Start/end time range | `label` |
 | `weaponPool` | Weapon selection pool | `label`, `maxCount` |
 | `stageSelect` | Stage dropdown | `label` |
-| `mapPoolOptional` | Map pool picker (serialized `MapPool`), `options` takes `quickFill` presets and `modes` | - |
+| `mapPoolOptional` | Map pool picker (serialized `MapPool`), `options` takes `quickFill` presets, `modes` and `sendouQFilter` | - |
+| `weaponSelect` | Required weapon dropdown | `label` |
 | `weaponSelectOptional` | Weapon dropdown | `label` |
+| `subWeaponSelect` / `specialWeaponSelect` | Sub / special weapon dropdown | `label` |
 | `userSearch` | User search autocomplete | `label` |
 | `userSearchOptional` | Optional user search | `label` |
+| `tournamentSearchOptional` | Optional tournament search | `label` |
+| `teamSearchOptional` | Optional team search | `label` |
 | `image` | Small image upload (avatar / logo / banner) | `label` |
 | `badges` | Badge selection | `label` |
+| `trophies` | Trophy selection | `label` |
 | `array` | Repeatable field | `field`, `max` |
 | `fieldset` | Nested object fields | `fields` |
 | `stringConstant` | Hidden string value | value |
 | `idConstant` | Hidden numeric ID | value (optional) |
+| `idConstantOptional` | Optional hidden numeric ID | value (optional) |
+| `hidden` | Hidden value of any schema | schema, `initialValue` (optional) |
 | `customField` | Custom render | `initialValue`, schema |
 
 ### Select Items
@@ -145,8 +156,8 @@ textField({
 ```ts
 datetime({
   label: "labels.date",
-  min: new Date(),
-  max: add(new Date(), { days: 30 }),
+  min: () => new Date(),
+  max: () => add(new Date(), { days: 30 }),
   minMessage: "errors.dateInPast",
   maxMessage: "errors.dateTooFarInFuture",
 })
@@ -285,7 +296,7 @@ Submitting hands the validated values to `onApply` instead of the server:
   schema={filtersSchema}
   defaultValues={currentFilters}
   onApply={(values) => {
-    setSearchParams({ filters: JSON.stringify(values) });
+    applyFilters(values);
     closeDialog();
   }}
 >
@@ -325,7 +336,7 @@ Then pass them to `SendouForm` and wrap each step's fields in a `<FormStep>` of 
 ```
 
 - A stepper on top and Back/Next buttons at the bottom are rendered automatically. The submit button shows once the user has reached the last step, or on every step with `submitOnEveryStep` (e.g. when editing something already valid). Pressing enter in a field moves to the next step.
-- The current step is the `step` search param (`app/form/form-search-params.ts`), each step change being a navigation, so browser back goes to the previous step and a refresh keeps the step. The route needs a `shouldRevalidate` that ignores it (any definition's `shouldRevalidate` does) or every step change reruns its loader.
+- The current step is the `step` search param (`app/form/form-search-params.ts`), each step change being a navigation, so browser back goes to the previous step and a refresh keeps the step. The route needs a `shouldRevalidate` that ignores it (any definition's `shouldRevalidate` does, or `skipSearchOnlyRevalidation` for a loader reading no search params) or every step change reruns its loader.
 - Moving forward (Next or a later step in the stepper) validates the fields of every step passed and stops at the first one with errors. Moving back never validates.
 - Errors are only shown for steps the user has tried to leave, so a step isn't full of errors when first opened. Errors of fields no step lists only show after submitting.
 - Steps stay mounted while hidden, so local state of their fields survives switching steps.
@@ -347,7 +358,7 @@ useFieldRevealer((fieldName) => {
 
 ### Dynamic Select Options
 
-For `selectDynamicOptional`, pass options via the `options` prop:
+For `selectDynamic` / `selectDynamicOptional` (and the other `*Dynamic` builders), pass options via the `options` prop:
 
 ```tsx
 const options = tournaments.map((t) => ({
@@ -379,8 +390,8 @@ pipeline and the `UnvalidatedUserSubmittedImage` admin-validation / supporter au
 flow, while keeping `SendouForm`'s single-submit `application/json` model unchanged.
 
 > **Art upload is out of scope.** Art (`/art/new`) preserves aspect ratio, keeps the original
-> format, produces two derived assets (full + thumbnail) and stores them on its own `Art` table
-> rather than as a `UserSubmittedImage` id. It therefore uses a `customField` with its own
+> format, produces two derived assets (full + thumbnail) and inserts its image row together with
+> the `Art` row in `ArtRepository.insert` rather than resolving it to an id up front. It therefore uses a `customField` with its own
 > renderer (`ArtImageFormField`) and its own server resolver (`uploadArtImage`), while still
 > submitting as base64 within `SendouForm`'s single JSON submit. Any future "aspect-preserving /
 > multi-derivative" upload should likewise stay off this field and follow that pattern.
@@ -398,9 +409,11 @@ export const editTeamSchema = v.object({
 });
 ```
 
-`dimensions` is optional, defaulting to `"logo"`. It accepts the `"logo"` / `"thick-banner"`
-presets or explicit `{ width, height }` numbers (passed straight to `compressorjs` with
-`resize: "cover"`).
+`dimensions` is optional, defaulting to `"logo"`. It accepts the `"logo"` (400x400) / `"thick-banner"`
+(1000x500) presets or explicit `{ width, height }` numbers. A picked file opens a crop dialog and the
+crop is drawn at exactly those dimensions.
+
+`autoValidate: true` skips the moderator queue for the uploaded image (e.g. trusted org logos).
 
 ### Value model
 
@@ -410,13 +423,14 @@ The field value is a small JSON-serializable union (`ImageFieldValue` from `~/fo
 type ImageFieldValue =
   | null                                              // none / removed
   | { type: "EXISTING"; imgId: number; url: string }  // loaded, unchanged (url = preview)
-  | { type: "NEW"; dataUrl: string }                  // newly picked, base64 webp
+  | { type: "NEW"; dataUrl: string }                  // newly picked, base64 webp (png fallback)
 ```
 
 - `initialValue` is `null` (the create case).
-- Edit forms pass an `EXISTING` value via `SendouForm`'s `defaultValues` (`url` is only for
-  preview).
-- The renderer produces a `NEW` value (client-compressed to webp, base64 data URL) **only** when
+- Edit forms pass an `EXISTING` value via `SendouForm`'s `defaultValues`, built with
+  `existingImage(imgId, url)` from `~/form/image-field` (`url` is only for preview).
+- The renderer produces a `NEW` value (cropped client-side and encoded to webp, or png where the
+  browser can't encode webp, as a base64 data URL) **only** when
   the user picks a file, and `null` when they remove — so removal is owned by the field, with no
   separate delete action needed. An unchanged `EXISTING` value never re-sends image bytes.
 
@@ -451,16 +465,16 @@ A kept (`EXISTING`) image must be the user's own upload unless `isCurrentImgId` 
 entity already holds it.
 
 Per field it resolves `null → null`, `EXISTING → imgId` (no bytes re-sent), `NEW → upload + insert
-→ new id`. For a `NEW` value it decodes the base64, validates the bytes are a real webp (magic-byte
-check), uploads via `uploadStreamToS3`, and inserts an unvalidated image row (auto-validated for
-supporters). The schema may be a single object or an `_action`-discriminated union. (The underlying
+→ new id`. For a `NEW` value it decodes the base64, validates the bytes are a real webp or png
+(magic-byte check), uploads via `uploadStreamToS3`, and inserts an unvalidated image row
+(auto-validated for supporters or with `autoValidate`). The schema may be a single object or an `_action`-discriminated union. (The underlying
 per-value helper `imageFieldValueToImgId` from `~/features/img-upload/image-field.server` can still
 be called directly if needed.)
 
 ### E2E
 
 ```ts
-await form.setImage("logo", "e2e/fixtures/logo.png");
+await form.setImage("logo", "e2e/fixtures/test-image.png");
 ```
 
 ## Custom Fields
@@ -505,10 +519,13 @@ type CustomFieldRenderProps<TValue = unknown> = {
   error: string | undefined;
   value: TValue;
   onChange: (value: TValue) => void;
+  disabled?: boolean;
 };
 ```
 
 ## Array Field with Custom Items
+
+A render function child works for arrays of objects (`field: fieldset(...)`):
 
 ```tsx
 <FormField name="matches">
@@ -523,9 +540,9 @@ type CustomFieldRenderProps<TValue = unknown> = {
         onChange={(v) => setItemField("weapon", v)}
       />
 
-      {canRemove && (
+      {canRemove ? (
         <button onClick={remove}>Remove</button>
-      )}
+      ) : null}
     </div>
   )}
 </FormField>
@@ -539,6 +556,7 @@ Actions are defined with `defineAction`, which parses the route params and the b
 handler runs:
 
 ```ts
+import { redirect } from "react-router";
 import { defineAction } from "~/form/define-action.server";
 import { idObject } from "~/utils/schema";
 import { myFormSchema } from "./my-schemas";
@@ -561,6 +579,9 @@ export const action = defineAction(
   itself.
 - Endpoints called with a plain `fetch()` or by external API clients can't show a toast, they pass
   `onInvalidBody: "badRequest"` to answer an invalid body with a bare 400 instead.
+- A body schema that depends on the request (e.g. the tournament) is given as a function of the parsed
+  params: `body: async ({ params }) => schemaFor(params.id)`.
+- Bodies over 8 MB are refused with a 413; a form that legitimately submits more passes `maxBodyBytes`.
 - Both are optional, e.g. `defineAction({ params: teamParamsSchema }, ...)` for an action without a body.
   With nothing to parse, the handler is the only argument: `defineAction(async ({ request }) => ...)`.
   The body is read as form data by `Content-Type`, otherwise as JSON (an empty body reads as an empty object).
@@ -577,6 +598,7 @@ When you need async validation (database checks, authorization), create a separa
 ```ts
 import * as v from "valibot";
 import { textField, idConstantOptional } from "~/form/fields";
+import { superRefine } from "~/utils/schema";
 
 // Shared sync validation that can be extracted for reuse
 function validateGearAllOrNone(data: {
@@ -643,7 +665,7 @@ export const newBuildSchemaServer = v.pipeAsync(
     if (!data.buildToEditId) return;
 
     const user = requireUser();
-    const ownerId = await BuildRepository.ownerIdById(data.buildToEditId);
+    const ownerId = await BuildRepository.findOwnerIdById(data.buildToEditId);
     if (ownerId === user.id) return;
 
     ctx.addIssue({
@@ -674,6 +696,8 @@ Check for duplicates in the database:
 
 ```ts
 // feature-schemas.server.ts
+import * as v from "valibot";
+import { mySlugify } from "~/utils/urls";
 import { createTeamSchema } from "./feature-schemas";
 import * as TeamRepository from "./TeamRepository.server";
 
@@ -682,9 +706,10 @@ export const createTeamSchemaServer = v.objectAsync({
   name: v.pipeAsync(
     createTeamSchema.entries.name,
     v.checkAsync(async (name) => {
-      const teams = await TeamRepository.findAllUndisbanded();
-      const customUrl = mySlugify(name);
-      return !teams.some((team) => team.customUrl === customUrl);
+      const existingTeam = await TeamRepository.findByCustomUrl(
+        mySlugify(name),
+      );
+      return !existingTeam;
     }, "forms:errors.duplicateName"),
   ),
 });
@@ -742,10 +767,12 @@ NOTE: before adding a new one, verify one does not already exist.
 - Labels: `labels.fieldName`
 - Bottom text: `bottomTexts.fieldName`
 - Errors: `errors.errorKey`
+- Placeholders: `placeholders.fieldName`
 - Select options: `options.fieldName.value`
 - Mode names: `modes.SZ`, `modes.TC`, etc.
+- Step labels of multi-step forms: `steps.formName.stepName`
 
-Run `pnpm run i18n:sync` after changing English translations to sync the other language files.
+Run `pnpm run i18n:sync` after removing or renaming English keys to sync the other language files.
 
 ## E2E Testing
 
@@ -779,7 +806,8 @@ test("fills and submits form", async ({ page }) => {
 | `selectUser(name, userName)` | Search and select user |
 | `selectWeapons(name, weaponNames)` | Select weapons in weapon pool |
 | `setDateTime(name, date)` | Set datetime picker |
-| `setImage(name, filePath)` | Upload a file into an image field |
+| `setDate(name, date)` | Set date picker (`dayMonthYear`) |
+| `setImage(name, filePath)` | Upload a file into an image field and apply the crop dialog |
 | `submit()` | Click submit button |
 | `getLabel(name)` | Get translated label for field |
 | `getItemLabel(name, value)` | Get translated label for select item |
@@ -870,7 +898,7 @@ export default function NewItemPage() {
 }
 ```
 
-### Action (`route.server.ts`)
+### Action (`actions/route.server.ts`)
 
 ```ts
 import { redirect } from "react-router";
@@ -892,10 +920,9 @@ export const action = defineAction(
 ```ts
 import { createFormHelpers } from "./helpers/playwright-form";
 import { createItemSchema } from "~/features/item/feature-schemas";
-import { test, navigate, impersonate, seed } from "./helpers/playwright";
+import { test, expect, navigate, impersonate } from "./helpers/playwright";
 
 test("creates new item", async ({ page }) => {
-  await seed(page);
   await impersonate(page);
   await navigate({ page, url: "/items/new" });
 

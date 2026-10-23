@@ -1,26 +1,26 @@
 ## General
 
 - only rarely use comments, prefer descriptive variable and function names (leave existing comments as is).
-- if you encounter an existing TODO or xxx comment assume it is there for a reason and do not remove it unless you specifically addressed what the comment is about
+- if you encounter an existing TODO or xxx comment assume it is there for a reason and do not remove it unless you specifically addressed what the comment is about <!-- agents-only -->
 - when a comment is needed, brevity is the key, less is more
-- task is not considered completely until `pnpm run checks` passes
+- task is not considered completely until `pnpm run checks` passes <!-- agents-only -->
 - normal file structure has constants at the top immediately followed by the main function body of the file. Helpers are used to structure the code and they are at the bottom of the file (main implementation first, at the top of the file)
-- note: any formatting issue (such as tabs vs. spaces) can be resolved by running the `pnpm run biome:fix` command
+- note: any formatting issue (such as tabs vs. spaces) can be resolved by running the `pnpm run biome:fix` command <!-- agents-only -->
 - typical way to structure pure logic is into Modules divided by logical domains which are imported with the "* as Module" import and then used like so "Module.foo()". These functions always need JSDoc.
 - non-exported functions typically do not need JSDoc or at least it can be kept short
-- more topic docs live in `docs/dev/` — notably [architecture.md](./docs/dev/architecture.md) (feature folder layout), [permissions.md](./docs/dev/permissions.md) (authorization: global roles via `requireRole()`/`useHasRole()`, per-object `permissions` computed in repositories) and [overlays.md](./docs/dev/overlays.md) (popovers, menus, selects and dialogs: the floating layer, scroll lock and mobile keyboard handling)
+- more topic docs live in `docs/dev/` — notably [architecture.md](./docs/dev/architecture.md) (feature folder layout), [request-flow.md](./docs/dev/request-flow.md) (one request followed through every layer), [permissions.md](./docs/dev/permissions.md) (authorization: global roles via `requireRole()`/`useHasRole()`, per-object `permissions` computed in repositories) and [overlays.md](./docs/dev/overlays.md) (popovers, menus, selects and dialogs: the floating layer, scroll lock and mobile keyboard handling) <!-- agents-only -->
 
 ## Commands
 
 - `pnpm run checks` runs, in order: biome:fix, unit/browser tests, translation json checks, typecheck (app, scripts and the docs site) and knip — knip means unused exports fail checks, so remove exports nothing imports
-- `pnpm run docs:dev` serves the docs site (`docs/site/`, Astro Starlight): the markdown docs of `docs/` plus the living docs generated from the core modules, e2e specs and routes; `pnpm run docs:capture` refreshes its route coverage and screenshots from an e2e run, see [living-docs.md](./docs/dev/living-docs.md)
+- `pnpm run dev:docs` serves the docs site (`docs/site/`, Astro Starlight): the markdown docs of `docs/` plus the living docs generated from the core modules, e2e specs and routes; `pnpm run docs:capture` refreshes its route coverage and screenshots from an e2e run, see [living-docs.md](./docs/dev/living-docs.md)
 - `pnpm run typecheck` runs TypeScript type checking
 - `pnpm run biome:fix` runs Biome code formatter and linter
 - `pnpm run test:unit:browser` runs all unit tests and browser tests
 - `pnpm run test:e2e` runs all e2e tests
 - `pnpm run test:e2e:flaky-detect` runs all e2e tests and repeats each 10 times
 - `pnpm run i18n:sync` syncs translation jsons with English
-- `pnpm run dev` starts the dev server (also runs migrations and setup first) together with the docs site's, served at `docs.localhost` on the same port (`vite-docs-proxy.ts`); `pnpm run seed` rebuilds the dev dataset. The dev admin user ("Sendou") has id 274 (`ADMIN_ID`)
+- `pnpm run dev` starts the dev server (also runs migrations and setup first); `pnpm run seed` rebuilds the dev dataset. The dev admin user ("Sendou") has id 274 (`ADMIN_ID`)
 
 ## Typescript
 
@@ -34,7 +34,7 @@
 - do not use `useMemo`, `useCallback` unless it is to stabilize a `useEffect` dependency array value
 - state management is done via plain `useState` and React Context API
 - avoid using `useEffect`
-- all texts should be provided translations via the i18next library's `useTranslations` hook's `t` function
+- all texts should be provided translations via the react-i18next library's `useTranslation` hook's `t` function
 - instead of `&&` operator for conditional rendering, use the ternary operator; enforced by the `no-and-conditional-rendering` Biome plugin
 - for localized user-readable time strings use `<LocaleTime />`, `<LocaleTimeRange>` or `useFormatDistanceToNow`. If needed use `useDateTimeFormat` directly. NEVER use e.g. `toLocaleString` directly as it does not include users' language selection.
 
@@ -103,7 +103,7 @@
 - some a11y labels or text that should not normally be encountered by user (example given, error message by server) can be english
 - before adding a new translation, check that one doesn't already exist you can reuse (particularly in the common.json)
 - add only English translation, other languages fall back to English until translated (never add empty strings); run `pnpm run i18n:sync` after removing or renaming keys
-- when using namespace e.g. `const { t } = useTranslation("settings"]);` it needs to be defined in the `handle` for that route e.g. `export const handle: SendouRouteHandle = { i18n: ["settings"], ... }`. Certain namespaces are always included and you don't have to worry about those: "common", "forms", "game-misc", "weapons", "front", "friends"
+- when using namespace e.g. `const { t } = useTranslation(["settings"]);` it needs to be defined in the `handle` for that route e.g. `export const handle: SendouRouteHandle = { i18n: ["settings"], ... }`. Certain namespaces are always included and you don't have to worry about those: "common", "forms", "game-misc", "weapons", "front", "friends"
 - if changing translation key names make sure to port over any already translated values for non-english languages if the english language is unchanged
 
 ## Changelog
@@ -126,16 +126,6 @@ Map planner improvements
 ```
 
 - on update day these become the image posted on social media, see [how-to.md](./docs/dev/how-to.md)
-
-## Commits
-
-- do not mention claude or claude code
-- unless specifically instructed, do not create new branches
-
-## Pull request
-
-- use the template `/github/pull_request_template.md`
-- do not mention claude or claude code in the description
 
 ## Scanner feature (app/features/scanner)
 

@@ -25,7 +25,7 @@ const ZERO_SUFFIX = "_zero";
 const PLURAL_SUFFIXES = KNOWN_SUFFIXES.filter((sfx) => sfx !== ZERO_SUFFIX);
 
 const REPO_TRANSLATIONS_INFO_URL =
-	"https://github.com/sendou-ink/sendou.ink/blob/main/docs/translation.md";
+	"https://github.com/sendou-ink/sendou.ink/blob/main/docs/dev/translation.md";
 
 const MD = {
 	inlineCode: (s: string) => `\`${s}\``,

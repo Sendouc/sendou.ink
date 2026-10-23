@@ -38,7 +38,7 @@ New languages are added sparingly, only where there is clear demand from the com
 Alternatively the .json files can be edited directly. Note you lose some features of the translate page like being able to preview your changes on the live site. 
 
 
-All translation files can be found in the [locales folder](../locales):
+All translation files can be found in the [locales folder](../../locales):
 
 1. Open the English `.json` file (e.g. `locales/en/common.json`) and the same file for your language (e.g. `locales/de/common.json` for German, create it if it doesn't exist)
 2. Lines missing from your language's file are the ones that need translating, until then the English text is shown

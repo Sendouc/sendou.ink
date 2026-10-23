@@ -4,16 +4,21 @@ const GITHUB_BLOB_URL = "https://github.com/sendou-ink/sendou.ink/blob/main";
 
 /** The pages of a feature, the first one it has is where it is linked to. */
 export const VIEWS = [
+	{ id: "overview", label: "Overview" },
 	{ id: "modules", label: "Modules" },
+	{ id: "repositories", label: "Repositories" },
+	{ id: "permissions", label: "Permissions" },
+	{ id: "search-params", label: "Search params & storage" },
 	{ id: "e2e", label: "E2E tests" },
-	{ id: "routes", label: "Routes" },
 ] as const;
 
 export type ViewId = (typeof VIEWS)[number]["id"];
 
-/** Path of a feature's page, relative to the docs site's base. */
+/** Path of a feature's page, relative to the docs site's base. The overview is the feature's own path. */
 export function featureViewPath(featureId: string, view: ViewId) {
-	return `features/${featureId}/${view}/`;
+	return view === "overview"
+		? `features/${featureId}/`
+		: `features/${featureId}/${view}/`;
 }
 
 export function githubUrl(file: string, line: number) {

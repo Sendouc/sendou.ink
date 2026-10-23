@@ -2,7 +2,7 @@
 
 Repositories are the only place database queries are written. One per feature (`app/features/<feature>/FeatureRepository.server.ts`), imported as a module: `import * as VodRepository from "~/features/vods/VodRepository.server"`.
 
-See [database-schemas.md](./database-schemas.md) for how columns are typed and [database-relations.md](./database-relations.md) for how the tables relate. Entities that can be acted on get their `permissions` object built in the Repository read function — see [permissions.md](./permissions.md).
+See [database-schemas.md](./database-schemas.md) for how columns are typed and [the database tables reference](../../app/db/tables.ts) for the tables and how they relate. Entities that can be acted on get their `permissions` object built in the Repository read function — see [permissions.md](./permissions.md).
 
 Note: plenty of older repositories don't follow this yet. Fix them as you touch them rather than leaving a new style behind.
 
@@ -19,9 +19,9 @@ Reads:
 | Returns | Name |
 | --- | --- |
 | One row or nothing | `findById`, `findByUserId`, `findLookingTeamsByTournamentId` |
-| An array | `findAllByTournamentId`, `findAllVods` |
+| An array | `findAllByUserId`, `findAllByChatRoomIds` |
 | A number | `countVods` |
-| A boolean | `existsByCustomUrl`, `hasUnvalidatedImages` |
+| A boolean | `existsBySeason`, `hasHighlightedResultsByUserId` |
 
 Writes are named after the SQL verb: `insert`, `update`, `upsert`, `deleteById`. Not `create`, `del`, `remove`, `add`.
 
@@ -71,7 +71,7 @@ Infer as much as possible. A repository's types should follow from the query and
 
 - **Never `as`.** No `as any`, no `as unknown as`, no asserting a row into the shape you wanted. A cast that seems necessary means the query or the `tables.ts` typing is wrong — fix that instead.
 - `$castTo<T>()` is the sanctioned exception, and only where Kysely genuinely can't infer: raw `sql` fragments and `json_group_array` aggregates. `$narrowType<{ x: NotNull }>()` for narrowing Kysely knows it can't prove.
-- **Return types are derived, never written by hand**: `type Vod = Unwrapped<typeof findAllVods>`.
+- **Return types are derived, never written by hand**: `type Vod = Unwrapped<typeof findVodById>`.
 - **Insert arguments come from `TablesInsertable`** rather than restating column types:
 
 ```ts
@@ -110,7 +110,7 @@ Any user id the caller picks is an explicit parameter — `findAllByUserId(userI
 
 - Qualify every column: `"Video.id"`, not `"id"`.
 - Reuse the shared selects in `~/utils/kysely.server` (`commonUserSelect`, `commonUserJsonObject`, `commonUserObjectFields`) instead of re-listing user fields.
-- Prefer `jsonArrayFrom` / `jsonBuildObject` from `kysely/helpers/sqlite` over raw `json_group_array`. When raw `sql` is needed, a comment says why.
+- Prefer `jsonArrayFrom` / `jsonObjectFrom` / `jsonBuildObject` from `~/utils/kysely.server` (never from `kysely/helpers/sqlite`, enforced by the `no-kysely-sqlite-helpers` lint rule) over raw `json_group_array`. When raw `sql` is needed, a comment says why.
 - Never insert row-by-row in a loop — one `values([...])` call.
 - Optional filters are applied by reassigning the query:
 
@@ -127,7 +127,7 @@ Writes block the whole server (see [architecture.md](./architecture.md)), and on
 
 - Every list read is bounded — a `limit` parameter or a key that limits the result set.
 - Check `EXPLAIN QUERY PLAN` for new queries: no unexpected full table scans, indexes actually used.
-- Read functions on hot paths get a case in `scripts/benchmark-db.ts`.
+- Read functions on hot paths get a case in `scripts/benchmark-db/cases.ts` (run with `pnpm run bench:db`).
 
 ## Pagination
 
@@ -156,6 +156,8 @@ return Pagination.findPage({
 Repositories are modules, so exported functions get a JSDoc one-liner saying what they return, plus any scoping that isn't visible from the name ("excludes private builds", "latest row per season"). Non-obvious SQL gets a comment explaining *why* it's written that way — especially when the obvious form was rejected for performance reasons.
 
 Private helpers can skip the JSDoc or keep it to a line.
+
+The JSDoc is shown on the feature's Repositories page of the docs site (see [living-docs.md](./living-docs.md)), next to the tables each function reads and writes.
 
 ## Testing
 

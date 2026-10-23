@@ -5,16 +5,32 @@ import type {
 	ExportDoc,
 	ModuleDoc,
 } from "../../../../../scripts/living-docs/modules.ts";
-import { markdown, usageLabel } from "../../living/format.ts";
+import type { RepositoryExportDoc } from "../../../../../scripts/living-docs/repositories.ts";
+import {
+	featureOf,
+	markdown,
+	repositoryHref,
+	repositoryLabel,
+	usageChips,
+	viewHref,
+} from "../../living/format.ts";
 import FileLink from "./FileLink.astro";
+import TableChips from "./TableChips.astro";
 import UnitTests from "./UnitTests.astro";
 
 interface Props {
-	exported: ExportDoc;
-	module: ModuleDoc;
+	exported: ExportDoc | RepositoryExportDoc;
+	module: Pick<ModuleDoc, "name" | "path">;
 }
 
 const { exported, module } = Astro.props;
+const dataAccess =
+	"tables" in exported &&
+	(exported.tables.length > 0 ||
+		exported.calls.length > 0 ||
+		exported.permissions.length > 0)
+		? exported
+		: null;
 ---
 
 <div class="export">
@@ -49,6 +65,44 @@ const { exported, module } = Astro.props;
 		) : null
 	}
 	<pre class="code" set:html={highlight(exported.signature)} />
+	{
+		dataAccess ? (
+			<div class="usages">
+				{dataAccess.tables.length > 0 ? (
+					<div class="usage-row">
+						<span class="usage-kind">Tables</span>
+						<span>
+							<TableChips tables={dataAccess.tables} />
+						</span>
+					</div>
+				) : null}
+				{dataAccess.permissions.length > 0 ? (
+					<div class="usage-row">
+						<span class="usage-kind">Permissions</span>
+						<span>
+							{dataAccess.permissions.map((name) => (
+								<a class="chip" href={viewHref(featureOf(module.path), "permissions", "granted")}>
+									{name}
+								</a>
+							))}
+						</span>
+					</div>
+				) : null}
+				{dataAccess.calls.length > 0 ? (
+					<div class="usage-row">
+						<span class="usage-kind">Calls</span>
+						<span>
+							{dataAccess.calls.map((call) => (
+								<a class="chip file-chip" href={repositoryHref(call.repository, call.name)}>
+									{repositoryLabel(call.repository)}.{call.name}
+								</a>
+							))}
+						</span>
+					</div>
+				) : null}
+			</div>
+		) : null
+	}
 	{exported.unitTests.length > 0 ? <UnitTests tests={exported.unitTests} /> : null}
 	<div class="usages">
 		{
@@ -57,11 +111,11 @@ const { exported, module } = Astro.props;
 					<div class="usage-row">
 						<span class={`usage-kind kind-${group.kind}`}>{group.label}</span>
 						<span class="usage-files">
-							{group.items.map((item) => (
+							{usageChips(group).map((chip) => (
 								<FileLink
-									file={item.file}
-									line={item.line}
-									label={usageLabel(item.file)}
+									file={chip.file}
+									line={chip.line}
+									label={chip.label}
 									class="chip file-chip"
 								/>
 							))}

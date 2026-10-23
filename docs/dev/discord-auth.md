@@ -1,4 +1,4 @@
-# Configuring Discord Authentication
+# Discord auth
 
 ## ⚠️ You probably don't need this ⚠️
 
@@ -14,9 +14,11 @@ If you need to test or debug Discord authentication, here's how to proceed:
 1. Create a new application for your sendou development setup.
 1. Navigate to the ***Oauth*** settings.
 1. Add a ***redirect*** for `http://localhost:5173/auth/callback`. If your dev 
-   server is running elsewhere, make sure the hostname and port match.
-1. Copy the ***Client ID*** into the `.env`.
-1. Reset the ***Client secret***, and copy the new value into your `.env`. Note
+   server is running elsewhere, make sure the hostname and port match (the
+   callback URL is built from `VITE_SITE_DOMAIN` in `.env`).
+1. Copy the ***Client ID*** into the `.env` as `DISCORD_CLIENT_ID`.
+1. Reset the ***Client secret***, and copy the new value into your `.env` as
+   `DISCORD_CLIENT_SECRET`. Note
    that it won't be shown again, so make sure to grab it.
 1. If your dev server is running, it should have automatically reloaded. If not,
    restart it.

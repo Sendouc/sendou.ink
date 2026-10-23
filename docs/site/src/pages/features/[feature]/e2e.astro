@@ -45,15 +45,25 @@ const { feature } = Astro.props;
 				</div>
 				{spec.groups.map((group) => {
 					const Heading = `h${groupDepth(group)}` as "h2";
+					const heading = (
+						<Heading
+							class={`group-title group-depth-${groupDepth(group) - 1}`}
+							id={groupAnchor(spec.path, group.name)}
+						>
+							{groupTitle(spec, group)}
+						</Heading>
+					);
+					// only a group with tests of its own has anything to collapse, nested groups are its siblings
+					const isCollapsible = group.tests.length > 0;
+					const Group = isCollapsible ? "details" : "section";
 
 					return (
-						<section class="test-group">
-							<Heading
-								class={`group-title group-depth-${groupDepth(group) - 1}`}
-								id={groupAnchor(spec.path, group.name)}
-							>
-								{groupTitle(spec, group)}
-							</Heading>
+						<Group class="test-group" open={isCollapsible ? true : undefined}>
+							{isCollapsible ? (
+								<summary class="group-summary">{heading}</summary>
+							) : (
+								heading
+							)}
 							{group.doc ? (
 								<div class="group-doc" set:html={markdown(group.doc)} />
 							) : null}
@@ -71,7 +81,7 @@ const { feature } = Astro.props;
 									headingLevel={groupDepth(group) + 1}
 								/>
 							))}
-						</section>
+						</Group>
 					);
 				})}
 			</div>

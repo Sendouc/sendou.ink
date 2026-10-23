@@ -11,17 +11,15 @@ See the /faq page for more information about established organizations.
 
 ## Creating
 
-Tournaments can be created via the add menu on the top right of your screen after logging in assuming you have access:
-
-![alt text](./img/tournament-creation-add.png)
+Tournaments can be created via the add menu (the + button on the top right of your screen) after logging in assuming you have access, by choosing "Tournament".
 
 ### Using a template
 
-At the top of the form you can select one of your recent tournaments as a template. Doing so copies over its settings (description, rules, tags, format, map picking style etc.) to the new tournament. Badge prizes are only copied if you still manage those badges.
+At the top of the form you can select one of your recent tournaments as a template. Doing so copies over its settings (description, rules, tags, format, map picking style etc.) to the new tournament. Follow-up bracket start times and the registration closing time keep their distance to the new start time. Badge prizes are only copied if you still manage those badges, and a trophy prize only if it belongs to an organization you can host for.
 
 ## Fields
 
-This section explains all the different options when you are creating a tournament and what they do.
+This section explains all the different options when you are creating a tournament and what they do. The form is split into steps: Basics, Teams & rules, Maps, Format and Prizes & review, the last one showing a summary of the tournament before creating it.
 
 ### Name
 
@@ -55,6 +53,8 @@ Tags that apply to your tournament. Please take a look at the selection and choo
 
 Badges awarded to the winners of the tournament. You can only select badges you manage.
 
+Alternatively a trophy prize can be picked from the trophies of the tournament's organization. A tournament can have either badge prizes or a trophy prize, not both.
+
 ### Logo
 
 Tournament logo you can upload to be shown in various places. For non-patrons the logo is shown publicly only after a moderator has checked it.
@@ -63,7 +63,7 @@ Tournament logo you can upload to be shown in various places. For non-patrons th
 
 ### Players count
 
-Choose whether you want to host a regular 4v4 tournmament or 3v3/2v2/1v1 tournament.
+Choose whether you want to host a regular 4v4 tournament or 3v3/2v2/1v1 tournament.
 
 ### Max team size
 
@@ -71,9 +71,9 @@ Only shown for 4v4 tournaments. The maximum number of players a team can have on
 
 ### Registration closes at
 
-Choose relative to the tournament start time when sign ups close. When the registration closes new teams can't sign up, add team members or change their registration info. All of this is still possible via admin actions regardless of whether the registration is open or not.
+The date and time when sign ups close. Leave it empty to close registration at the tournament start time. Not shown for invitational tournaments. When the registration closes new teams can't sign up, add team members or change their registration info. All of this is still possible via admin actions regardless of whether the registration is open or not.
 
-New sub posts can also no longer be made after registration closes, unless registration is set to close at the start time, in which case subs can be posted until the tournament is finalized.
+New sub posts can also no longer be made after registration closes, unless registration closes at the start time, in which case subs can be posted until the tournament is finalized.
 
 ### Ranked
 
@@ -94,10 +94,7 @@ Allow participants to look for more members via the LFG feature and sign up as s
 
 ### Autonomous subs
 
-Allow teams to add subs while the tournament is in progress on their own. If off then all the subs have to be added by the tournament organizers.
-
-![alt text](./img/tournament-auto-subs.png)
-*Tournament team member adding a sub in the middle of a tournament*
+Allow teams to add subs while the tournament is in progress on their own (via the Add sub button on their team's page). If off then all the subs have to be added by the tournament organizers.
 
 ### Require in-game names
 
@@ -138,7 +135,7 @@ Unlike test mode, draft tournaments are fully functional once opened: they appea
 
 ## Tournament maps
 
-With sendou.ink tournaments all maps are decided ahead of time. The map settings can be edited until the tournament starts, but changing them resets the maps every team has already picked.
+With sendou.ink tournaments all maps are decided ahead of time. The map settings can be edited until the tournament starts, but changing them resets the maps every team has already picked and checks those teams out.
 
 ### Team picked
 
@@ -146,23 +143,13 @@ The tournament organizer chooses which modes are played (any combination, Turf W
 
 The maps teams can pick from are either the SendouQ legal maps, all maps or a custom map pool built by the organizer. A custom pool needs at least one more stage than teams pick in every mode.
 
-When a match is played the last map of the list is a map both teams picked when one exists, otherwise a random map from the pool that neither team picked. When starting a bracket the organizer can fix the mode order of the rounds with the same mode patterns as organizer picked tournaments use.
-
-![alt text](./img/tournament-team-map-pick.png)
-*Team picking maps as part of their registration process*
-
-Then when the tournament in in progress an algorithm decides the map list for each match:
-
-![alt text](./img/tournament-map-list-algo.png)
+Teams pick their maps as part of the registration process. When the tournament is in progress an algorithm builds the map list of each match out of the two teams' picks, both teams getting an equal amount of their own picks and maps the teams have recently played avoided where possible. The last map of the list is a map both teams picked when one exists, otherwise a random map from the pool that neither team picked. When starting a bracket the organizer can fix the mode order of the rounds with the same mode patterns as organizer picked tournaments use.
 
 [More info on how it works](https://gist.github.com/sendou-ink/285c697ad98171243bf5c08a4c7e1f30).
 
 ### Organizer picked
 
-Note that here you select just the map pool. The actual map lists are picked when the bracket starts (or prepared) in advance:
-
-![alt text](./img/tournament-bracket-start.png)
-*View when starting bracket*
+Note that here you select just the map pool. The actual map lists are picked when the bracket starts (or prepared in advance). You choose the amount of maps per round, whether it's a "best of" or "play all" and optionally a pick/ban style. The maps are generated from the pool, and any of them can be edited or the whole list rerolled before starting the bracket.
 
 ## Tournament format
 
@@ -174,21 +161,21 @@ Source bracket means a bracket where teams come from. Target bracket means a bra
 
 Each bracket has a name and a format (single elimination, double elimination, round robin or Swiss). Depending on the format some extra options appear:
 
-- **Single elimination**: whether to have a third place match.
+- **Single and double elimination**: group count, up to 16 groups each playing their own elimination bracket. **Rounds played** picks which of the last rounds are played (semifinals, finals and the 3rd place match for single elimination, winners bracket finals, losers bracket semifinals & finals, grand finals and bracket reset for double elimination). A round can only be left unplayed together with the rounds it feeds teams to, and the teams still in the bracket when it ends share their placement.
 - **Round robin**: max teams per group. Teams are distributed equally so groups may end up smaller than the selected number. Starting round robin brackets can also have **A/B divisions** where teams are split into an A and a B pool and every A team plays every B team once (requires an even amount of teams per group).
 - **Swiss**: group count and round count. **Early advance/elimination** can be enabled so that teams stop playing once they reach the required amount of wins or exceed the maximum amount of losses. With it on you also pick how many wins are needed to advance, and the target bracket doesn't take placements (the teams that hit the threshold advance).
 
-### Teams join from
+### Bracket progression
 
-Each bracket takes its teams either from the sign-up or from another bracket.
+The brackets are shown as cards in columns. Brackets in the "Starting brackets" column take their teams from the sign-up. You can set which teams start from which bracket in the seeding page. Note that when you have more than one starting bracket you are creating a tournament where teams that start in separate brackets will never meet (so in essence they are separate tournaments but just happening on the same tournament page).
 
-If "Sign-up" is selected the bracket is a starting bracket. You can set which teams start from which bracket in the seeding page. Note that when you have more than one starting bracket you are creating a tournament where teams that start in separate brackets will never meet (so in essence they are separate tournaments but just happening on the same tournament page).
+Brackets in the columns after it are follow-up brackets that take their teams from one or more earlier brackets. To send teams from one bracket to another, drag the ● of a bracket onto the other bracket (or click/tap the ● and then the other bracket) and pick who moves on: the best finishers (e.g. "Lost in the semifinals") or, from an elimination bracket, the teams knocked out early (e.g. for an underground bracket). Cards can also be dragged to move or reorder them, which also sets the order of the bracket tabs.
 
-If "Another bracket" is selected you pick one or more source brackets and which placements advance from each of them.
+When the format is edited on the bracket admin page after the tournament has started, each bracket instead has a "Teams join from" option ("Sign-up" or "Another bracket") and the placements that advance are typed in.
 
 ### Placements
 
-Placements is a comma separated list of placements. So e.g. the following are valid:
+On the bracket admin page placements are typed in as a comma separated list. So e.g. the following are valid:
 
 - `1,2,3` - places 1, 2 and 3
 - `1-4` - places 1 to 4
@@ -197,8 +184,7 @@ Placements is a comma separated list of placements. So e.g. the following are va
 
 Placements are relative in the sense that the amount of teams that sign up don't affect them. `1` is always the 1st placement but `2` is the "2nd best possible placement to achieve" and so on. So for example with round robin the amount of teams advancing from that bracket depends entirely on the amount of groups (which is decided via sign ups.)
 
-![alt text](./img/tournament-placement-mapping.png)
-*A screenshot from one Swim or Sink and how the placements map*
+For example in a round robin bracket with two groups of four teams each, placement `1` is both groups' winners and placement `4` both groups' last placed teams.
 
 ### Start time
 
@@ -223,7 +209,7 @@ Current limitations. Feel free to leave feedback if it's blocking you from runni
 - Placements can't have gaps (e.g. if 1st and 3rd advance somewhere then 2nd must also) and the same placement can't be sent to two different brackets.
 - The highest placement that can be used is 100.
 - A/B divisions are only available on starting round robin brackets.
-- The final bracket can't be a Swiss bracket with more than one group.
+- A Swiss bracket with early advance/elimination must lead to another bracket.
 
 ## Leagues
 
@@ -237,7 +223,7 @@ When there is more than one division the tournament gets a Divisions tab listing
 
 ### Registration
 
-- There is no check-in, registration simply closes at the tournament's start time
+- There is no check-in, registration simply closes at the "Registration closes at" time (the tournament's start time by default)
 - After registration has closed teams can't unregister on their own, the organizers handle it
 
 ### Starting a division's bracket

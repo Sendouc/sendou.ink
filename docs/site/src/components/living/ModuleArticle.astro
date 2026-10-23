@@ -1,17 +1,26 @@
 ---
 import { anchor } from "../../../../../scripts/living-docs/links.ts";
 import type { ModuleDoc } from "../../../../../scripts/living-docs/modules.ts";
-import { count, markdown, moduleLabel } from "../../living/format.ts";
+import type { RepositoryDoc } from "../../../../../scripts/living-docs/repositories.ts";
+import {
+	count,
+	markdown,
+	moduleLabel,
+	repositoryHref,
+	repositoryLabel,
+} from "../../living/format.ts";
 import ExportBlock from "./ExportBlock.astro";
 import FileLink from "./FileLink.astro";
+import TableChips from "./TableChips.astro";
 import UnitTests from "./UnitTests.astro";
 
 interface Props {
-	module: ModuleDoc;
+	module: ModuleDoc | RepositoryDoc;
 }
 
 const { module } = Astro.props;
-const isServer = module.name.endsWith(".server");
+const repository = "tables" in module ? module : null;
+const isServer = !repository && module.name.endsWith(".server");
 ---
 
 <article class="module">
@@ -23,11 +32,37 @@ const isServer = module.name.endsWith(".server");
 	{
 		module.overview ? (
 			<div class="overview" set:html={markdown(module.overview)} />
-		) : (
+		) : repository ? null : (
 			<p class="missing">No overview comment at the top of the file.</p>
 		)
 	}
 	<dl class="module-facts">
+		{
+			repository ? (
+				<>
+					<dt>Tables</dt>
+					<dd>
+						{repository.tables.length > 0 ? (
+							<TableChips tables={repository.tables} />
+						) : (
+							<span class="muted">none</span>
+						)}
+					</dd>
+					<dt>Calls</dt>
+					<dd>
+						{repository.calledRepositories.length > 0 ? (
+							repository.calledRepositories.map((called) => (
+								<a class="chip" href={repositoryHref(called)}>
+									{repositoryLabel(called)}
+								</a>
+							))
+						) : (
+							<span class="muted">no other repositories</span>
+						)}
+					</dd>
+				</>
+			) : null
+		}
 		<dt>Imports</dt>
 		<dd>
 			{
@@ -77,10 +112,7 @@ const isServer = module.name.endsWith(".server");
 	}
 	{
 		module.otherUnitTests.length > 0 ? (
-			<>
-				<p class="section-title">Other unit tests</p>
-				<UnitTests tests={module.otherUnitTests} />
-			</>
+			<UnitTests tests={module.otherUnitTests} title="Unit tests not about one export" />
 		) : null
 	}
 	{

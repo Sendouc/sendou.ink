@@ -103,6 +103,7 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
 		});
 
 		const visitedPathnames = trackVisitedPathnames(context);
+		const apiExchanges = recordApiExchanges(context);
 		if (process.env.LIVING_DOCS_CAPTURE) livingDocsContext = context;
 
 		await use(context);
@@ -112,6 +113,12 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
 		if (visitedPathnames) {
 			await testInfo.attach(LIVING_DOCS_VISITS_ATTACHMENT, {
 				body: JSON.stringify([...visitedPathnames]),
+				contentType: "application/json",
+			});
+		}
+		if (apiExchanges && apiExchanges.length > 0) {
+			await testInfo.attach(LIVING_DOCS_API_ATTACHMENT, {
+				body: JSON.stringify(apiExchanges),
 				contentType: "application/json",
 			});
 		}
@@ -164,6 +171,8 @@ export { expect };
 const LIVING_DOCS_VISITS_ATTACHMENT = "living-docs-visits";
 /** Name prefix of the screenshot attached after each `test.step`, read by `scripts/living-docs/capture.ts`. */
 const LIVING_DOCS_STEP_ATTACHMENT = "living-docs-step";
+/** Name of the test attachment listing the `/api/` requests a test made through `page.request`, read by `scripts/living-docs/capture.ts`. */
+const LIVING_DOCS_API_ATTACHMENT = "living-docs-api";
 
 /** Context of the running test, only while capturing for the living docs. */
 let livingDocsContext: BrowserContext | null = null;
@@ -210,6 +219,42 @@ function trackVisitedPathnames(context: BrowserContext) {
 	context.on("page", track);
 
 	return pathnames;
+}
+
+/** The `/api/` requests made through the context's `request` (what `page.request` is), only while capturing for the living docs. */
+function recordApiExchanges(context: BrowserContext) {
+	if (!process.env.LIVING_DOCS_CAPTURE) return null;
+
+	const exchanges: Array<{
+		method: string;
+		path: string;
+		status: number;
+		requestBody: unknown;
+		responseBody: unknown;
+	}> = [];
+	const request = context.request;
+	const fetch = request.fetch.bind(request);
+
+	request.fetch = async (urlOrRequest, options) => {
+		const response = await fetch(urlOrRequest, options);
+
+		const url = new URL(response.url());
+		if (url.pathname.startsWith("/api/")) {
+			const isJson = response.headers()["content-type"]?.includes("json");
+			const body = await response.text();
+			exchanges.push({
+				method: options?.method?.toUpperCase() ?? "GET",
+				path: `${url.pathname}${url.search}`,
+				status: response.status(),
+				requestBody: options?.data ?? null,
+				responseBody: isJson && body ? JSON.parse(body) : null,
+			});
+		}
+
+		return response;
+	};
+
+	return exchanges;
 }
 
 export async function selectWeapon({

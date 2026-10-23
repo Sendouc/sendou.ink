@@ -1,11 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import {
-	githubUrl,
-	routeAnchor,
-} from "../../../../../scripts/living-docs/links.ts";
-import { count, routePathHtml, viewHref } from "../../living/format.ts";
+import RoutesTable from "../../components/living/RoutesTable.astro";
+import { count } from "../../living/format.ts";
+import "../../styles/living.css";
 
 const features = (await getCollection("features")).map((entry) => entry.data);
 const routes = features
@@ -40,50 +38,5 @@ const visitedPages = pages.filter(({ visitedBy }) => visitedBy.length > 0);
 			)
 		}
 	</p>
-	<table>
-		<thead>
-			<tr>
-				<th>Path</th>
-				<th>Feature</th>
-				<th>Kind</th>
-				{hasCapture ? <th>E2E tests</th> : null}
-			</tr>
-		</thead>
-		<tbody>
-			{
-				routes.map(({ route, visitedBy, feature }) => (
-					<tr>
-						<td>
-							<a href={githubUrl(route.file, 1)}>
-								<code set:html={routePathHtml(route.path)} />
-							</a>
-						</td>
-						<td>
-							<a href={viewHref(feature.config.id, "routes", routeAnchor(route))}>
-								{feature.config.label}
-							</a>
-						</td>
-						<td>
-							{[
-								route.isLayout ? "layout" : route.hasComponent ? "page" : "resource",
-								route.hasLoader ? "loader" : null,
-								route.hasAction ? "action" : null,
-							]
-								.filter((kind) => kind !== null)
-								.join(", ")}
-						</td>
-						{hasCapture ? (
-							<td>
-								{visitedBy.length > 0
-									? count(visitedBy.length, "test")
-									: route.isLayout
-										? ""
-										: "none"}
-							</td>
-						) : null}
-					</tr>
-				))
-			}
-		</tbody>
-	</table>
+	<RoutesTable routes={routes} hasCapture={hasCapture} showsFeature />
 </StarlightPage>

@@ -1,5 +1,9 @@
 ---
-import { escapeHtml } from "../../../../../scripts/living-docs/highlight.ts";
+import type { ApiExchange } from "../../../../../scripts/living-docs/api-examples.ts";
+import {
+	escapeHtml,
+	highlight,
+} from "../../../../../scripts/living-docs/highlight.ts";
 import { apiEndpointAnchor } from "../../../../../scripts/living-docs/links.ts";
 import type {
 	ApiEndpoint,
@@ -11,13 +15,19 @@ interface Props {
 	endpoint: ApiEndpoint;
 	/** Its response (GET) or request body (POST). */
 	type: ApiType;
+	/** Link to the e2e test an example was captured from. */
+	testHref: (example: ApiExchange) => string;
 }
 
-const { endpoint, type } = Astro.props;
+const { endpoint, type, testHref } = Astro.props;
 const pathHtml = escapeHtml(endpoint.path).replace(
 	/(\{[^}]+\})/g,
 	`<span class="route-param">$1</span>`,
 );
+
+function json(value: unknown) {
+	return highlight(JSON.stringify(value, null, 2));
+}
 ---
 
 <article class="route">
@@ -31,4 +41,31 @@ const pathHtml = escapeHtml(endpoint.path).replace(
 		<FileLink file={type.file} line={type.line} label={type.name} />
 	</header>
 	<pre class="code" set:html={type.html} />
+	{
+		endpoint.examples.map((example) => (
+			<details class="source" data-pagefind-ignore>
+				<summary>
+					Example <span class:list={["badge", { "badge-action": example.status >= 400 }]}>{example.status}</span>{" "}
+					<code>{example.path}</code>
+				</summary>
+				<p class="muted">
+					From <a href={testHref(example)}>{example.test.titlePath.at(-1)}</a>
+				</p>
+				{example.requestBody !== null ? (
+					<>
+						<p class="muted">Request body</p>
+						<pre class="code" set:html={json(example.requestBody)} />
+					</>
+				) : null}
+				{example.responseBody !== null ? (
+					<>
+						<p class="muted">Response</p>
+						<pre class="code" set:html={json(example.responseBody)} />
+					</>
+				) : (
+					<p class="muted">Empty response</p>
+				)}
+			</details>
+		))
+	}
 </article>

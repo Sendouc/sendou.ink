@@ -1,6 +1,10 @@
 import path from "node:path";
 import type { MarkdownHeading } from "astro";
-import type { FeatureDoc } from "../../../../scripts/living-docs/document.ts";
+import { mergeTableAccesses } from "../../../../scripts/living-docs/data-access.ts";
+import type {
+	FeatureDoc,
+	RouteData,
+} from "../../../../scripts/living-docs/document.ts";
 import type {
 	Divider,
 	SpecDoc,
@@ -12,11 +16,11 @@ import {
 	exportAnchor,
 	featureViewPath,
 	groupAnchor,
-	routeAnchor,
 	screenshotName,
 	testAnchor,
 	type ViewId,
 } from "../../../../scripts/living-docs/links.ts";
+import type { UsageGroup } from "../../../../scripts/living-docs/modules.ts";
 import type { UnitTestCase } from "../../../../scripts/living-docs/unit-tests.ts";
 
 export const STATIC_ASSETS_URL =
@@ -48,6 +52,51 @@ export function modulesHeadings(feature: FeatureDoc) {
 	);
 }
 
+/** The "On this page" outline of a feature's repositories page. */
+export function repositoriesHeadings(feature: FeatureDoc) {
+	return assertUniqueSlugs(
+		feature.repositories.flatMap((repository) => [
+			{
+				depth: 2,
+				slug: anchor(repository.name),
+				text: repositoryLabel(repository.path),
+			},
+			...[...repository.types, ...repository.values].map((exported) => ({
+				depth: 3,
+				slug: exportAnchor(repository.name, exported),
+				text: exported.name,
+			})),
+		]),
+	);
+}
+
+/** Link to a repository's function on its feature's repositories page, or to the repository without `name`. */
+export function repositoryHref(repository: string, name?: string) {
+	return viewHref(
+		featureOf(repository),
+		"repositories",
+		name
+			? exportAnchor(moduleLabel(repository), { name, kind: "function" })
+			: anchor(moduleLabel(repository)),
+	);
+}
+
+/** Link to a table on the Database tables page. */
+export function dbTableHref(table: string) {
+	return sitePath(`reference/db-tables/#${table}`);
+}
+
+/** Every table a route's loader and action reach. */
+export function routeTables(data: RouteData) {
+	return mergeTableAccesses(
+		[data.loader, data.action].flatMap((trace) =>
+			trace
+				? [...trace.tables, ...trace.calls.flatMap((call) => call.tables)]
+				: [],
+		),
+	);
+}
+
 /** The "On this page" outline of a feature's e2e tests page, `describe`s nesting as deep as they do in the spec. */
 export function e2eHeadings(feature: FeatureDoc) {
 	return assertUniqueSlugs(
@@ -68,14 +117,32 @@ export function e2eHeadings(feature: FeatureDoc) {
 	);
 }
 
-/** The "On this page" outline of a feature's routes page. */
-export function routesHeadings(feature: FeatureDoc) {
-	return assertUniqueSlugs(
-		feature.routes.map(({ route }) => ({
-			depth: 2,
-			slug: routeAnchor(route),
-			text: route.path,
-		})),
+/** The rules a feature's e2e tests establish: each `describe` with a JSDoc, linked to its tests. */
+export function behaviourRules(feature: FeatureDoc) {
+	const e2eHref = (elementId: string) =>
+		viewHref(feature.config.id, "e2e", elementId);
+
+	return feature.specs.flatMap((spec) =>
+		spec.groups.flatMap((group) =>
+			group.doc
+				? [
+						{
+							slug: anchor(
+								"behaviour",
+								path.basename(spec.path, ".spec.ts"),
+								group.name ?? "",
+							),
+							title: groupTitle(spec, group),
+							doc: group.doc,
+							href: e2eHref(groupAnchor(spec.path, group.name)),
+							tests: group.tests.map((test) => ({
+								name: test.name,
+								href: e2eHref(testAnchor(spec.path, group.name, test)),
+							})),
+						},
+					]
+				: [],
+		),
 	);
 }
 
@@ -141,15 +208,31 @@ export function groupByLeadingWord(tests: UnitTestCase[]) {
 	}));
 }
 
+/** A route's path as HTML, its params highlighted and line breaks allowed after each `/`. */
 export function routePathHtml(routePath: string) {
-	return escapeHtml(routePath).replace(
-		/(:[\w-]+\??|\*)/g,
-		`<span class="route-param">$1</span>`,
+	return escapeHtml(routePath)
+		.replaceAll("/", "/<wbr>")
+		.replace(/(:[\w-]+\??|\*)/g, `<span class="route-param">$1</span>`);
+}
+
+/** A chip per file using an export, labelled with the paths of the routes it serves when it serves any. */
+export function usageChips(group: UsageGroup) {
+	const chips = group.items.flatMap((item) =>
+		(item.routes.length > 0
+			? item.routes
+			: [`${featureOf(item.file)}/${path.basename(item.file)}`]
+		).map((label) => ({ label, file: item.file, line: item.line })),
+	);
+
+	return chips.filter(
+		(chip, index) =>
+			chips.findIndex((other) => other.label === chip.label) === index,
 	);
 }
 
-export function usageLabel(file: string) {
-	return `${featureOf(file)}/${path.basename(file)}`;
+/** e.g. `ScrimPostRepository` */
+export function repositoryLabel(file: string) {
+	return path.basename(file).replace(/\.server\.ts$/, "");
 }
 
 export function moduleLabel(file: string) {

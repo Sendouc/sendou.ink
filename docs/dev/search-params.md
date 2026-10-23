@@ -15,7 +15,7 @@ All URL search param handling goes through `app/modules/search-params/`. One dec
 One definition per route (or feature, when several routes share params), in a shared **non-`.server`** file named `<feature>-search-params.ts` at the feature root:
 
 ```ts
-// app/features/builds/builds-search-params.ts
+// illustrative, the real one is app/features/builds/builds-search-params.ts
 import * as v from "valibot";
 import * as SearchParams from "~/modules/search-params/search-params";
 import { SP } from "~/modules/search-params/search-params";
@@ -91,7 +91,7 @@ setParams({ f: x, focused: "2" }); // mixed batch → one navigation carrying bo
 - `history.replaceState` writes are invisible to react-router: `useLocation()` keeps returning the search of the last navigation, so `loader: false` params are only readable through this module.
 - Values equal to their default are removed from the URL on write.
 - Default navigation options are `{ replace: true, preventScrollReset: true }`, overridable per call: `setParams(values, { replace: false, preventScrollReset: false })`.
-- For a focused subscription to one param: `const [weapon, setWeapon] = useSearchParam(buildsSearchParams, "weapon")` — rerenders only when that param changes.
+- For a focused subscription to one param: `const [focused, setFocused] = useSearchParam(buildsSearchParams, "focused")` — rerenders only when that param changes.
 - Setter identities are stable; safe in dependency arrays.
 
 Pagination goes through `useSearchParamPagination({ definition, currentPage, pagesCount })` where the definition declares a numeric `page` param.
@@ -99,7 +99,7 @@ Pagination goes through `useSearchParamPagination({ definition, currentPage, pag
 ## Href building
 
 ```ts
-buildsSearchParams.href(buildsPage(slug), { f: filters });
+buildsSearchParams.href(weaponBuildPage(slug), { f: filters });
 // → "/builds/splattershot?f=%5B…%5D"   (defaults omitted)
 ```
 

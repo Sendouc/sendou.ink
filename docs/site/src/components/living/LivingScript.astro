@@ -13,6 +13,25 @@
 		});
 	}
 
+	// a link into a collapsed e2e group opens it
+	const openTarget = () => {
+		const target = location.hash
+			? document.getElementById(decodeURIComponent(location.hash.slice(1)))
+			: null;
+		let opened = false;
+		for (
+			let group = target?.closest("details");
+			group;
+			group = group.parentElement?.closest("details")
+		) {
+			opened ||= !group.open;
+			group.open = true;
+		}
+		if (opened) target?.scrollIntoView();
+	};
+	openTarget();
+	window.addEventListener("hashchange", openTarget);
+
 	const tooltip = document.querySelector<HTMLElement>(".living-tooltip")!;
 	// out of the content column's stacking context, which the "On this page" sidebar paints over
 	document.body.append(tooltip);

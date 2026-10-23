@@ -1,13 +1,18 @@
 /** biome-ignore-all lint/suspicious/noConsole: CLI script output */
 
 // runs e2e specs with tracing on and keeps what the living docs show from the run:
-// the pathnames each test visits (committed) and a screenshot per page divider and test.step (gitignored),
+// the pathnames each test visits and the /api/ requests it makes (committed) and a screenshot per page divider and test.step (gitignored),
 // see docs/dev/living-docs.md
 
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { unzipSync } from "fflate";
+import {
+	API_EXAMPLES_FILE,
+	type ApiExchange,
+	readApiExamples,
+} from "./api-examples.ts";
 import { ROOT } from "./ast.ts";
 import { documentSpec, type TestDoc } from "./e2e.ts";
 import { indexPageObjects } from "./page-objects.ts";
@@ -23,6 +28,11 @@ import {
 const REPORT_FILE = "test-results/living-docs-report.json";
 const VISITS_ATTACHMENT = "living-docs-visits";
 const STEP_ATTACHMENT_PREFIX = "living-docs-step: ";
+const API_ATTACHMENT = "living-docs-api";
+/** Arrays of an API response are cut to this many items, the example only has to show their shape. */
+const MAX_EXAMPLE_ARRAY_ITEMS = 3;
+/** The worker servers' origins in API responses (e.g. in image URLs) are shown as the site's. */
+const LOCAL_ORIGIN_REGEX = /^http:\/\/localhost:\d+/;
 
 interface ReportedTest {
 	spec: string;
@@ -30,6 +40,7 @@ interface ReportedTest {
 	line: number;
 	tracePath: string | null;
 	pathnames: string[];
+	apiExchanges: Array<Omit<ApiExchange, "test">>;
 	/** Screenshot taken as each `test.step` passed, in order. */
 	stepShots: Array<{ title: string; image: Uint8Array }>;
 }
@@ -76,10 +87,11 @@ function main() {
 	const capturedSpecs = new Set(reported.map((test) => test.spec));
 
 	saveVisits(reported, capturedSpecs);
+	saveApiExamples(reported, capturedSpecs);
 	const screenshotCount = saveScreenshots(reported, capturedSpecs);
 
 	console.log(
-		`Captured ${reported.length} tests of ${capturedSpecs.size} specs, ${screenshotCount} screenshots. A running pnpm run docs:dev picks them up, otherwise run it to see them.`,
+		`Captured ${reported.length} tests of ${capturedSpecs.size} specs, ${screenshotCount} screenshots. A running pnpm run dev:docs picks them up, otherwise run it to see them.`,
 	);
 }
 
@@ -113,6 +125,45 @@ function saveVisits(reported: ReportedTest[], capturedSpecs: Set<string>) {
 		path.join(ROOT, VISITS_FILE),
 		`${JSON.stringify(sorted, null, "\t")}\n`,
 	);
+}
+
+function saveApiExamples(reported: ReportedTest[], capturedSpecs: Set<string>) {
+	const exchanges = [
+		...readApiExamples().filter(
+			(exchange) => !capturedSpecs.has(exchange.test.spec),
+		),
+		...reported.flatMap((test) =>
+			test.apiExchanges.map((exchange) => ({
+				...exchange,
+				responseBody: exampleValue(exchange.responseBody),
+				test: { spec: test.spec, titlePath: test.titlePath, line: test.line },
+			})),
+		),
+	].sort(
+		(a, b) =>
+			compareStrings(a.test.spec, b.test.spec) || a.test.line - b.test.line,
+	);
+
+	fs.writeFileSync(
+		path.join(ROOT, API_EXAMPLES_FILE),
+		`${JSON.stringify(exchanges, null, "\t")}\n`,
+	);
+}
+
+function exampleValue(value: unknown): unknown {
+	if (typeof value === "string") {
+		return value.replace(LOCAL_ORIGIN_REGEX, "https://sendou.ink");
+	}
+	if (Array.isArray(value)) {
+		return value.slice(0, MAX_EXAMPLE_ARRAY_ITEMS).map(exampleValue);
+	}
+	if (value && typeof value === "object") {
+		return Object.fromEntries(
+			Object.entries(value).map(([key, item]) => [key, exampleValue(item)]),
+		);
+	}
+
+	return value;
 }
 
 function saveScreenshots(reported: ReportedTest[], capturedSpecs: Set<string>) {
@@ -320,6 +371,9 @@ function reportedTests(report: any): ReportedTest[] {
 			const visits = attachments.find(
 				(attachment) => attachment.name === VISITS_ATTACHMENT,
 			);
+			const apiExchanges = attachments.find(
+				(attachment) => attachment.name === API_ATTACHMENT,
+			);
 			tests.push({
 				spec,
 				titlePath: [...titlePath, reportedSpec.title],
@@ -329,6 +383,11 @@ function reportedTests(report: any): ReportedTest[] {
 					null,
 				pathnames: visits?.body
 					? JSON.parse(Buffer.from(visits.body, "base64").toString("utf8"))
+					: [],
+				apiExchanges: apiExchanges?.body
+					? JSON.parse(
+							Buffer.from(apiExchanges.body, "base64").toString("utf8"),
+						)
 					: [],
 				stepShots: attachments
 					.filter(
