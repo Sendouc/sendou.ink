@@ -1,13 +1,10 @@
 /* the app's layers (app/styles/vars.css) rank above Starlight's, declared before the app's styles are imported */
 @layer starlight, reset, base, elements, components, features, utilities;
 
-@import "../../../../app/styles/fonts.css";
 @import "../../../../app/styles/vars.css";
 
 /* Starlight's tokens mapped onto the app's default theme, both follow Starlight's [data-theme] on <html> */
 :root {
-	--sl-font: lexend, sans-serif;
-
 	--sl-text-2xs: var(--font-2xs);
 	--sl-text-xs: var(--font-xs);
 	--sl-text-sm: var(--font-sm);

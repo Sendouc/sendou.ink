@@ -60,7 +60,6 @@ export default defineConfig({
 			// the feature READMEs are their own collection, shown on the feature pages (see content.config.ts)
 			markdown: { processedDirs: ["./src/content/feature-readmes"] },
 			components: {
-				Head: "./src/components/Head.astro",
 				MarkdownContent: "./src/components/MarkdownContent.astro",
 				SocialIcons: "./src/components/SocialIcons.astro",
 			},
