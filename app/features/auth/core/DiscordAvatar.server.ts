@@ -58,7 +58,7 @@ export async function syncForUser({
  * Copies a Discord avatar and its small copy to S3, animated avatars as their still frame. Returns
  * the file name, or `null` when Discord doesn't have the avatar (anymore). Throws on other failures.
  */
-export async function store({
+async function store({
 	userId,
 	discordId,
 	hash,
@@ -80,7 +80,9 @@ export async function store({
 
 		if (response.status === 404) return null;
 		if (!response.ok) {
-			throw new DiscordCdnError(response);
+			throw new Error(
+				`Discord CDN responded with status code ${response.status}`,
+			);
 		}
 
 		files.push({ key, body: new Uint8Array(await response.arrayBuffer()) });
@@ -96,17 +98,4 @@ export async function store({
 /** File name a Discord avatar is stored under, its small copy is next to it. */
 export function fileNameOf({ userId, hash }: { userId: number; hash: string }) {
 	return `avatar-${userId}-${hash}.webp`;
-}
-
-/** Non-404 failure response from the Discord CDN. */
-export class DiscordCdnError extends Error {
-	readonly status: number;
-	readonly retryAfterSeconds: number | null;
-
-	constructor(response: Response) {
-		super(`Discord CDN responded with status code ${response.status}`);
-		this.status = response.status;
-		const retryAfter = Number(response.headers.get("retry-after"));
-		this.retryAfterSeconds = retryAfter > 0 ? retryAfter : null;
-	}
 }

@@ -31,7 +31,7 @@ export const USER_SUBMITTED_IMAGE_ROOT =
 		: "https://sendou.nyc3.cdn.digitaloceanspaces.com";
 
 /** Full URL of an image in the user submitted image storage by its file name. */
-export const userSubmittedImageUrl = (fileName: string) =>
+const userSubmittedImageUrl = (fileName: string) =>
 	`${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
 
 /** File name of an image's downscaled copy, stored next to it (art thumbnails, avatars). */

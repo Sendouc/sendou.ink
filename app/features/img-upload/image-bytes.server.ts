@@ -33,9 +33,7 @@ export function smallImageCopy(
 		.toBuffer();
 }
 
-export function imageExtensionFromMagicBytes(
-	buffer: Buffer,
-): ImageExtension | null {
+function imageExtensionFromMagicBytes(buffer: Buffer): ImageExtension | null {
 	if (
 		buffer.length > 12 &&
 		buffer.toString("ascii", 0, 4) === "RIFF" &&
