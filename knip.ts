@@ -10,6 +10,7 @@ const config = {
 		entry: [
 			"docs/site/src/content.config.ts",
 			"docs/site/src/pages/**/*.astro",
+			"docs/site/src/content/**/*.mdx",
 			// referenced by path from astro.config.ts
 			"docs/site/src/components/Head.astro",
 			"docs/site/src/components/MarkdownContent.astro",

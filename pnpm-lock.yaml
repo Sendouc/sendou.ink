@@ -236,9 +236,6 @@ importers:
       postcss:
         specifier: 8.5.30
         version: 8.5.30
-      satteri:
-        specifier: 0.10.5
-        version: 0.10.5
       sharp:
         specifier: ^0.35.5
         version: 0.35.5(@types/node@26.6.5)

@@ -1,6 +1,5 @@
 name: Deploy docs site
 
-# TODO: host the docs site on a domain of its own (e.g. docs.sendou.ink) instead of the github.io subpath
 # TODO: the living docs' e2e storyboard screenshots only exist on the machine that ran `pnpm run docs:capture`,
 # capture in CI and publish them with the site
 
@@ -41,8 +40,6 @@ jobs:
 
       - name: Build docs site
         run: pnpm run docs:build
-        env:
-          GITHUB_PAGES: "true"
 
       - uses: actions/upload-pages-artifact@v3
         with:

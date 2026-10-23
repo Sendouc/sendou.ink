@@ -1,4 +1,7 @@
-# API
+---
+title: "API"
+description: "How to get a token and the rules of using the API."
+---
 
 API for external projects to access sendou.ink data for projects such as streams is available. It is mostly for reading data, with a few endpoints for managing tournaments (see [Write endpoints](#write-endpoints)). You will need a token to access the API (only `GET /api/user/{identifier}/ids` works without one). If you have permissions (supporters of Supporter tier or higher, or any admin, organizer or streamer of an established organization has access), you can access the https://sendou.ink/api page to generate one.
 
@@ -8,7 +11,7 @@ Primarily the API is meant to be used to provide data for tournament stream layo
 
 ## Endpoints
 
-Check out [`app/features/api-public/schema.ts`](../../app/features/api-public/schema.ts) - it lists every endpoint along with its request and response types.
+Check out [`app/features/api-public/schema.ts`](/api/endpoints/) - it lists every endpoint along with its request and response types.
 
 ## Write endpoints
 

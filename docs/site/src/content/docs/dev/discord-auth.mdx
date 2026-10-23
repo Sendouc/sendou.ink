@@ -1,13 +1,21 @@
-# Discord auth
+---
+title: "Discord auth"
+description: "Setting up Discord login for local development."
+---
 
-> [!WARNING]
-> **You probably don't need this.** When run in dev mode, Sendou provides the option to "impersonate" an account in
-> the developer menu. You can use this to authenticate without configuring Discord
-> auth.
+import { Steps } from "@astrojs/starlight/components";
+
+:::caution
+**You probably don't need this.** When run in dev mode, Sendou provides the option to "impersonate" an account in
+the developer menu. You can use this to authenticate without configuring Discord
+auth.
+:::
 
 If you need to test or debug Discord authentication, here's how to proceed:
 
 ## Configuring Discord authentication
+
+<Steps>
 
 1. Log into the [Discord developer portal](https://discord.com/developers/applications).
 1. Create a new application for your sendou development setup.
@@ -21,3 +29,5 @@ If you need to test or debug Discord authentication, here's how to proceed:
    that it won't be shown again, so make sure to grab it.
 1. If your dev server is running, it should have automatically reloaded. If not,
    restart it.
+
+</Steps>

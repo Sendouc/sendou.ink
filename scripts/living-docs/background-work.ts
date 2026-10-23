@@ -1,4 +1,4 @@
-// what runs without a user clicking anything: the scheduled routines, the endpoints called by machines and the notifications sent, see docs/dev/living-docs.md
+// what runs without a user clicking anything: the scheduled routines, the endpoints called by machines and the notifications sent, see docs/site/src/content/docs/dev/living-docs.mdx
 
 import fs from "node:fs";
 import path from "node:path";

@@ -1,19 +1,19 @@
 ## General
 
 - only rarely use comments, prefer descriptive variable and function names (leave existing comments as is).
-- if you encounter an existing TODO or xxx comment assume it is there for a reason and do not remove it unless you specifically addressed what the comment is about <!-- agents-only -->
+- if you encounter an existing TODO or xxx comment assume it is there for a reason and do not remove it unless you specifically addressed what the comment is about
 - when a comment is needed, brevity is the key, less is more
-- task is not considered completely until `pnpm run checks` passes <!-- agents-only -->
+- task is not considered completely until `pnpm run checks` passes
 - normal file structure has constants at the top immediately followed by the main function body of the file. Helpers are used to structure the code and they are at the bottom of the file (main implementation first, at the top of the file)
-- note: any formatting issue (such as tabs vs. spaces) can be resolved by running the `pnpm run biome:fix` command <!-- agents-only -->
+- note: any formatting issue (such as tabs vs. spaces) can be resolved by running the `pnpm run biome:fix` command
 - typical way to structure pure logic is into Modules divided by logical domains which are imported with the "* as Module" import and then used like so "Module.foo()". These functions always need JSDoc.
 - non-exported functions typically do not need JSDoc or at least it can be kept short
-- more topic docs live in `docs/dev/` — notably [architecture.md](./docs/dev/architecture.md) (feature folder layout), [request-flow.md](./docs/dev/request-flow.md) (one request followed through every layer), [permissions.md](./docs/dev/permissions.md) (authorization: global roles via `requireRole()`/`useHasRole()`, per-object `permissions` computed in repositories) and [overlays.md](./docs/dev/overlays.md) (popovers, menus, selects and dialogs: the floating layer, scroll lock and mobile keyboard handling) <!-- agents-only -->
+- more topic docs live in `docs/site/src/content/docs/dev/` — notably [architecture.mdx](./docs/site/src/content/docs/dev/architecture.mdx) (feature folder layout), [request-flow.mdx](./docs/site/src/content/docs/dev/request-flow.mdx) (one request followed through every layer), [permissions.mdx](./docs/site/src/content/docs/dev/permissions.mdx) (authorization: global roles via `requireRole()`/`useHasRole()`, per-object `permissions` computed in repositories) and [overlays.mdx](./docs/site/src/content/docs/dev/overlays.mdx) (popovers, menus, selects and dialogs: the floating layer, scroll lock and mobile keyboard handling)
 
 ## Commands
 
 - `pnpm run checks` runs, in order: biome:fix, unit/browser tests, translation json checks, typecheck (app, scripts and the docs site) and knip — knip means unused exports fail checks, so remove exports nothing imports
-- `pnpm run dev:docs` serves the docs site (`docs/site/`, Astro Starlight): the markdown docs of `docs/` plus the living docs generated from the core modules, e2e specs and routes; `pnpm run docs:capture` refreshes its route coverage and screenshots from an e2e run, see [living-docs.md](./docs/dev/living-docs.md)
+- `pnpm run dev:docs` serves the docs site (`docs/site/`, Astro Starlight, live at https://docs.sendou.ink): the MDX docs of `docs/site/src/content/docs/` plus the living docs generated from the core modules, e2e specs and routes; `pnpm run docs:capture` refreshes its route coverage and screenshots from an e2e run, see [living-docs.mdx](./docs/site/src/content/docs/dev/living-docs.mdx)
 - `pnpm run typecheck` runs TypeScript type checking
 - `pnpm run biome:fix` runs Biome code formatter and linter
 - `pnpm run test:unit:browser` runs all unit tests and browser tests
@@ -40,9 +40,9 @@
 
 ## Forms
 
-- forms are built with the `SendouForm` schema-based system: a valibot schema using field builders from `~/form/fields` generates both the UI and server-side validation, see [forms.md](./docs/dev/forms.md)
+- forms are built with the `SendouForm` schema-based system: a valibot schema using field builders from `~/form/fields` generates both the UI and server-side validation, see [forms.mdx](./docs/site/src/content/docs/dev/forms.mdx)
 - form label/help translations go in `locales/en/forms.json`
-- actions are defined with `defineAction` (`~/form/define-action.server`), which parses route params (404 on failure) and the body (`fieldErrors` for SendouForm, error toast otherwise) before the handler runs, see [forms.md](./docs/dev/forms.md); enforced by the `no-raw-actions` Biome plugin
+- actions are defined with `defineAction` (`~/form/define-action.server`), which parses route params (404 on failure) and the body (`fieldErrors` for SendouForm, error toast otherwise) before the handler runs, see [forms.mdx](./docs/site/src/content/docs/dev/forms.mdx); enforced by the `no-raw-actions` Biome plugin
 - fixed-field mutations (an `_action` plus hidden inputs) use `<ActionButton>` which type checks the action and fields against the route's action schema; real multi-input forms instead pass `schema` alongside `_action` to `SubmitButton`; enforced by the `no-raw-action-forms` Biome plugin
 
 ## Remix/React Router
@@ -51,7 +51,7 @@
 
 ## Search params
 
-- all URL search param handling goes through `app/modules/search-params/`, see [search-params.md](./docs/dev/search-params.md) for the conventions
+- all URL search param handling goes through `app/modules/search-params/`, see [search-params.mdx](./docs/site/src/content/docs/dev/search-params.mdx) for the conventions
 - never use raw `useSearchParams` or `searchParams.get()`; declare params once per feature in a `<feature>-search-params.ts` definition (every param has a default, decode never fails). Enforced by the `no-raw-search-params` Biome plugin
 - every definition gets a round-trip test via `assertRoundTrips`
 
@@ -74,12 +74,12 @@
 ## SQL
 
 - database is Sqlite3, driven by Node's built-in `node:sqlite` through a custom Kysely dialect (`app/db/node-sqlite-dialect.ts`)
-- database code should only be written in Repository files, see [repositories.md](./docs/dev/repositories.md) for their conventions
+- database code should only be written in Repository files, see [repositories.mdx](./docs/site/src/content/docs/dev/repositories.mdx) for their conventions
 - import `jsonArrayFrom`/`jsonObjectFrom`/`jsonBuildObject` from `~/utils/kysely.server`, never from `kysely/helpers/sqlite` (enforced by the `no-kysely-sqlite-helpers` Biome plugin); JSON columns are registered in `app/db/json-columns.ts`
-- migrations are Kysely migrations in `/migrations`, scaffolded with `pnpm run migrate:new "description"` and applied with `pnpm run migrate up`, see [how-to.md](./docs/dev/how-to.md)
+- migrations are Kysely migrations in `/migrations`, scaffolded with `pnpm run migrate:new "description"` and applied with `pnpm run migrate up`, see [how-to.mdx](./docs/site/src/content/docs/dev/how-to.mdx)
 - down migrations are not needed, only up migrations
 - if we are working on a branch by default we should add to the migration this branch added instead of creating a brand new one
-- `/app/db/tables.ts` contains all tables and columns available, see [database-schemas.md](./docs/dev/database-schemas.md) for how columns should be typed (booleans, timestamps, JSON, enums, SQLite migration quirks)
+- `/app/db/tables.ts` contains all tables and columns available, see [database-schemas.mdx](./docs/site/src/content/docs/dev/database-schemas.mdx) for how columns should be typed (booleans, timestamps, JSON, enums, SQLite migration quirks)
 - don't wrap queries in `Promise.all`: `node:sqlite` is synchronous, so they can't run in parallel and it only adds noise; await them one after another
 - `db.sqlite3` is development database
 - `db-test.sqlite3` is the unit test database (blank sans migrations; gitignored and created/migrated automatically when unit tests run)
@@ -125,11 +125,11 @@ Map planner improvements
 - Undo & redo are back, now in the toolbar
 ```
 
-- on update day these become the image posted on social media, see [how-to.md](./docs/dev/how-to.md)
+- on update day these become the image posted on social media, see [how-to.mdx](./docs/site/src/content/docs/dev/how-to.mdx)
 
 ## Scanner feature (app/features/scanner)
 
-- computer-vision match-event detection; full docs in `app/features/scanner/README.md` — read it before touching detector/recognition code
+- computer-vision match-event detection; full docs in `docs/site/src/content/feature-readmes/scanner.mdx` — read it before touching detector/recognition code
 - OpenCV ROI-view gotcha: `.data`/`.clone()` are broken on ROI views — always `view.copyTo(freshMat)` before pixel access
 - fixture workflow: every live misread becomes a fixture under `app/features/scanner/tests/fixtures/`; ground-truth labels are hand-corrected by the maintainer and definitive over any matcher output
 - test with `pnpm test:scanner`; accuracy report with `pnpm scanner:report`; atlas regen commands and the assets-repo/CDN flow are in the README

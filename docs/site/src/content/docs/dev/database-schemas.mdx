@@ -1,9 +1,13 @@
-# Database schemas
+---
+title: "Database schemas"
+description: "How columns are typed: booleans, timestamps, JSON and enums."
+---
 
-How columns should be typed in `app/db/tables.ts`. See [the database tables reference](../../app/db/tables.ts) for the tables and how they relate to each other and [how-to.md](./how-to.md) for the migration workflow.
+How columns should be typed in `app/db/tables.ts`. See [the database tables reference](/reference/db-tables/) for the tables and how they relate to each other and [how-to.md](/dev/how-to/) for the migration workflow.
 
-> [!NOTE]
-> Some older columns don't follow this yet. Fix them as you touch them rather than leaving a new style behind.
+:::note
+Some older columns don't follow this yet. Fix them as you touch them rather than leaving a new style behind.
+:::
 
 ## Booleans
 
@@ -71,11 +75,11 @@ Two naming conventions pair a base table with a filtered view: the `All` prefix 
 
 ## JSDoc
 
-Non-obvious columns get a JSDoc comment: what `null` means, what a magic number encodes, why a column is denormalized, which column it mirrors. Self-evident columns (`name`, `userId`) don't. Notes about a whole table (what its rows are, when they are created, how it relates to other tables beyond its foreign keys) go in the JSDoc of its interface. Both are shown on [the database tables reference](../../app/db/tables.ts), together with the relations read from the foreign keys.
+Non-obvious columns get a JSDoc comment: what `null` means, what a magic number encodes, why a column is denormalized, which column it mirrors. Self-evident columns (`name`, `userId`) don't. Notes about a whole table (what its rows are, when they are created, how it relates to other tables beyond its foreign keys) go in the JSDoc of its interface. Both are shown on [the database tables reference](/reference/db-tables/), together with the relations read from the foreign keys.
 
 ## SQLite migration quirks
 
-Adding a column, table or index is a `trx.schema` call (see [how-to.md](./how-to.md)). These are the cases where the schema builder runs out and raw `` sql`...` `` is the answer.
+Adding a column, table or index is a `trx.schema` call (see [how-to.md](/dev/how-to/)). These are the cases where the schema builder runs out and raw `` sql`...` `` is the answer.
 
 - SQLite can't add `not null` to an existing column. To tighten one: add `"<col>_new" integer not null default 0`, `update ... set "<col>_new" = coalesce("<col>", 0)`, drop the old column, rename the new one.
 - `drop column` fails if the column is indexed, part of a constraint, or referenced by a trigger, view, generated column or partial index. Check `sqlite_master` first.

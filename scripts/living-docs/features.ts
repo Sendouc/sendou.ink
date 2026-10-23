@@ -7,7 +7,7 @@ import { featureRepositoryPaths } from "./repositories.ts";
 const FEATURES_DIR = "app/features";
 const E2E_DIR = "e2e";
 /** A feature's handwritten overview, shown at the top of its page. */
-export const FEATURE_README_PATTERN = `${FEATURES_DIR}/*/README.md`;
+const FEATURE_README_PATTERN = "docs/site/src/content/feature-readmes/*.mdx";
 
 /** Specs whose file name doesn't start with the name of the feature they test. */
 const SPEC_FEATURE_OVERRIDES: Record<string, string> = {
@@ -80,7 +80,7 @@ export interface FeatureConfig {
 	id: string;
 	label: string;
 	navIcon: string | null;
-	/** Repo relative path of the feature's README.md, null when it has none. */
+	/** Repo relative path of the feature's README, null when it has none. */
 	readmePath: string | null;
 	modulePaths: string[];
 	repositoryPaths: string[];

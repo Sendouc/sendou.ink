@@ -1,4 +1,4 @@
-// documents every feature (README, core modules, e2e specs and routes) for the living docs pages of the docs site, see docs/dev/living-docs.md
+// documents every feature (README, core modules, e2e specs and routes) for the living docs pages of the docs site, see docs/site/src/content/docs/dev/living-docs.mdx
 
 import fs from "node:fs";
 import path from "node:path";

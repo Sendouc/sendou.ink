@@ -1,16 +1,13 @@
 import { defineCollection } from "astro:content";
-import { pathToFileURL } from "node:url";
-import { i18nLoader } from "@astrojs/starlight/loaders";
+import { docsLoader, i18nLoader } from "@astrojs/starlight/loaders";
 import { docsSchema, i18nSchema } from "@astrojs/starlight/schema";
 import { glob } from "astro/loaders";
 import { API_EXAMPLES_FILE } from "../../../scripts/living-docs/api-examples.ts";
-import { ROOT } from "../../../scripts/living-docs/ast.ts";
 import { documentBackgroundWork } from "../../../scripts/living-docs/background-work.ts";
 import { documentClientState } from "../../../scripts/living-docs/client-state.ts";
 import { documentDbTables } from "../../../scripts/living-docs/db-tables.ts";
 import { documentFeatures } from "../../../scripts/living-docs/document.ts";
 import { documentEnvVars } from "../../../scripts/living-docs/env-vars.ts";
-import { FEATURE_README_PATTERN } from "../../../scripts/living-docs/features.ts";
 import { documentLintRules } from "../../../scripts/living-docs/lint-rules.ts";
 import { documentPackageScripts } from "../../../scripts/living-docs/package-scripts.ts";
 import { documentPermissions } from "../../../scripts/living-docs/permissions.ts";
@@ -25,12 +22,10 @@ import {
 	VISITS_FILE,
 } from "../../../scripts/living-docs/visits.ts";
 import { generatedLoader } from "./living/loader.ts";
-import { readmeFeature } from "./plugins/doc-files.ts";
-import { docsLoader } from "./plugins/docs-loader.ts";
 
 export const collections = {
 	docs: defineCollection({
-		loader: docsLoader({ repoRoot: ROOT }),
+		loader: docsLoader(),
 		schema: docsSchema(),
 	}),
 	// Starlight reads it for UI string overrides, an empty one keeps Astro from warning it is missing
@@ -47,11 +42,7 @@ export const collections = {
 		}),
 	}),
 	featureReadmes: defineCollection({
-		loader: glob({
-			base: pathToFileURL(ROOT),
-			pattern: FEATURE_README_PATTERN,
-			generateId: ({ entry }) => readmeFeature(entry) ?? entry,
-		}),
+		loader: glob({ base: "./src/content/feature-readmes", pattern: "*.mdx" }),
 	}),
 	showcase: defineCollection({
 		loader: generatedLoader({

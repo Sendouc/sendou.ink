@@ -21,7 +21,7 @@ const DESCRIPTIONS: Record<string, string> = {
 	dev: "Dev server against db.sqlite3, migrating and setting up the dev database first",
 	"dev:fast": "Dev server without the migrate and setup steps of `dev`",
 	"dev:docs":
-		"The docs site (living docs included) at http://localhost:4321, see docs/dev/living-docs.md",
+		"The docs site (living docs included) at http://localhost:4321, see docs/site/src/content/docs/dev/living-docs.mdx",
 	"dev:sandbox":
 		"Dev server against db-sandbox.sqlite3, the local copy of production data",
 	start: "Production server: migrates the database then serves the build",
@@ -38,9 +38,9 @@ const DESCRIPTIONS: Record<string, string> = {
 		"Benchmarks the repository read functions against db-sandbox.sqlite3",
 	"compute-luti-divs": "Runs the ComputeLutiDivs routine once",
 	"download-prod-db":
-		"Snapshots the production database over SSH into db-snapshot.sqlite3 and rebuilds the sandbox, see docs/dev/scripts.md",
+		"Snapshots the production database over SSH into db-snapshot.sqlite3 and rebuilds the sandbox, see docs/site/src/content/docs/dev/scripts.mdx",
 	"deploy:prod":
-		"Deploys to Render with maintenance mode on until the new instance is healthy, see docs/dev/scripts.md",
+		"Deploys to Render with maintenance mode on until the new instance is healthy, see docs/site/src/content/docs/dev/scripts.mdx",
 	"sandbox:reset":
 		"Restores db-sandbox.sqlite3 from db-snapshot.sqlite3 and migrates it",
 	"biome:check": "Biome lint and format check",

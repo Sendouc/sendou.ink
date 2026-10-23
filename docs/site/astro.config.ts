@@ -1,4 +1,4 @@
-// the docs site: the handwritten docs of docs/ and the living docs generated from the code, see docs/dev/living-docs.md
+// the docs site: the handwritten docs of src/content/docs and the living docs generated from the code, see src/content/docs/site/src/content/docs/dev/living-docs.mdxx
 
 import path from "node:path";
 import { satteri } from "@astrojs/markdown-satteri";
@@ -13,22 +13,10 @@ import {
 	cssModulesLayer,
 	hoverOnlyOnHoverDevices,
 } from "../../vite-css-plugins.ts";
-import { allDocSlugs, PUBLIC_API_SLUG } from "./src/plugins/doc-files.ts";
-import {
-	docLinks,
-	dropAgentsOnly,
-	dropTitle,
-	githubAlerts,
-	mermaidDiagrams,
-} from "./src/plugins/markdown.ts";
 import { scopeAppStyles } from "./src/plugins/scope-app-styles.ts";
 
 const REPO_URL = "https://github.com/sendou-ink/sendou.ink";
 const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
-/** Starlight's `autogenerate` only finds docs under `src/content/docs`, these are read in place from the repo instead. */
-const DOC_SLUGS = allDocSlugs(REPO_ROOT);
-/** GitHub Pages serves the site from a subpath, see .github/workflows/docs.yml. */
-const BASE = process.env.GITHUB_PAGES === "true" ? "/sendou.ink/" : "/";
 /** The app's global stylesheets the components showcase loads, scoped to it by `scopeAppStyles`. */
 const SCOPED_APP_STYLES = [
 	"normalize.css",
@@ -52,8 +40,7 @@ process.env.VITE_SITE_DOMAIN ??= "https://sendou.ink";
 process.env.VITE_TOURNAMENT_DEFAULT_LOGO ??= "tournament-logo-default.avif";
 
 export default defineConfig({
-	site: "https://sendou-ink.github.io",
-	base: BASE,
+	site: "https://docs.sendou.ink",
 	integrations: [
 		react(),
 		starlight({
@@ -69,27 +56,29 @@ export default defineConfig({
 			],
 			editLink: { baseUrl: `${REPO_URL}/edit/main/docs/site/` },
 			customCss: ["./src/styles/theme.css", "../../app/styles/utils.css"],
-			// the docs are read in place from the repo (see `docsLoader`), Starlight's asides only reach them like this
-			markdown: { processedDirs: [REPO_ROOT] },
+			lastUpdated: true,
+			// the feature READMEs are their own collection, shown on the feature pages (see content.config.ts)
+			markdown: { processedDirs: ["./src/content/feature-readmes"] },
 			components: {
 				Head: "./src/components/Head.astro",
 				MarkdownContent: "./src/components/MarkdownContent.astro",
 				SocialIcons: "./src/components/SocialIcons.astro",
 			},
 			sidebar: [
-				{ label: "Contributor docs", items: docSlugsUnder("dev/") },
-				{ label: "Project", items: docSlugsUnder("project/") },
 				{
-					label: "Guides",
-					items: DOC_SLUGS.filter(
-						(slug) => !slug.includes("/") && slug !== PUBLIC_API_SLUG,
-					),
+					label: "Contributor docs",
+					items: [{ autogenerate: { directory: "dev" } }],
 				},
+				{
+					label: "Project",
+					items: [{ autogenerate: { directory: "project" } }],
+				},
+				{ label: "Guides", items: [{ autogenerate: { directory: "guides" } }] },
 				{
 					label: "Public API",
 					items: [
-						{ label: "Overview", slug: PUBLIC_API_SLUG },
-						{ label: "Endpoints", link: `/${PUBLIC_API_SLUG}/endpoints/` },
+						{ label: "Overview", slug: "api" },
+						{ label: "Endpoints", link: "/api/endpoints/" },
 					],
 				},
 				{
@@ -143,18 +132,9 @@ export default defineConfig({
 		resolve: { tsconfigPaths: true },
 	},
 	markdown: {
-		processor: satteri({
-			mdastPlugins: [dropTitle, dropAgentsOnly, mermaidDiagrams, githubAlerts],
-			hastPlugins: [
-				docLinks({ repoRoot: REPO_ROOT, repoUrl: REPO_URL, base: BASE }),
-			],
-		}),
+		processor: satteri(),
 	},
 });
-
-function docSlugsUnder(prefix: string) {
-	return DOC_SLUGS.filter((slug) => slug.startsWith(prefix));
-}
 
 function featureSidebar(): NonNullable<StarlightUserConfig["sidebar"]> {
 	return outlineFeatures()

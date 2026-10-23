@@ -1,4 +1,7 @@
-# How to...
+---
+title: "How to..."
+description: "Recipes for common tasks like adding a migration or a route."
+---
 
 Guides on how to do different things when developing sendou.ink
 
@@ -58,7 +61,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 Notes:
 - No need to implement the "down" migration
 - Kysely does not wrap migrations in a transaction for SQLite, so wrap it yourself
-- Drop to raw `` sql`...` `` only for what the builder can't express: table rebuilds, `pragma foreign_key_check`, FTS5 virtual tables, generated columns. See the [SQLite migration quirks](./database-schemas.md#sqlite-migration-quirks).
+- Drop to raw `` sql`...` `` only for what the builder can't express: table rebuilds, `pragma foreign_key_check`, FTS5 virtual tables, generated columns. See the [SQLite migration quirks](/dev/database-schemas/#sqlite-migration-quirks).
 - `migrations/20260803000000-initial.ts` is the collapsed history of the 165 migrations that came before it. It only ever runs against an empty database, so leave it alone.
 
 3) Update the typings in `app/db/tables.ts`

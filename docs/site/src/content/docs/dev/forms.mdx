@@ -1,4 +1,7 @@
-# Forms
+---
+title: "Forms"
+description: "The schema-based SendouForm system and defining actions."
+---
 
 This document describes the schema-based form system using `SendouForm`. Forms are defined as valibot schemas that generate both the UI and server-side validation.
 
@@ -389,13 +392,14 @@ const badgeOptions = badges.map((b) => ({
 pipeline and the `UnvalidatedUserSubmittedImage` admin-validation / supporter auto-validation
 flow, while keeping `SendouForm`'s single-submit `application/json` model unchanged.
 
-> [!NOTE]
-> **Art upload is out of scope.** Art (`/art/new`) preserves aspect ratio, keeps the original
-> format, produces two derived assets (full + thumbnail) and inserts its image row together with
-> the `Art` row in `ArtRepository.insert` rather than resolving it to an id up front. It therefore uses a `customField` with its own
-> renderer (`ArtImageFormField`) and its own server resolver (`uploadArtImage`), while still
-> submitting as base64 within `SendouForm`'s single JSON submit. Any future "aspect-preserving /
-> multi-derivative" upload should likewise stay off this field and follow that pattern.
+:::note
+**Art upload is out of scope.** Art (`/art/new`) preserves aspect ratio, keeps the original
+format, produces two derived assets (full + thumbnail) and inserts its image row together with
+the `Art` row in `ArtRepository.insert` rather than resolving it to an id up front. It therefore uses a `customField` with its own
+renderer (`ArtImageFormField`) and its own server resolver (`uploadArtImage`), while still
+submitting as base64 within `SendouForm`'s single JSON submit. Any future "aspect-preserving /
+multi-derivative" upload should likewise stay off this field and follow that pattern.
+:::
 
 ### Schema
 

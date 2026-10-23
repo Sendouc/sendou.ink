@@ -1,4 +1,4 @@
-# Scanner — Splatoon match-event detection
+import Mermaid from "../../components/Mermaid.astro";
 
 Browser app (route `/scanner`, linked from the Tools menu) that watches a
 capture card or OBS Virtual Camera while you play, or scans VoD files,
@@ -274,8 +274,7 @@ the patch stays small). `core/frame-kernels.ts` runs on that memory.
 
 ## Architecture
 
-```mermaid
-sequenceDiagram
+<Mermaid code={`sequenceDiagram
   participant Cap as capture (sampler / vod-frames)
   participant W as analyzer.worker (OpenCV)
   participant TL as TimelineBuilder
@@ -294,8 +293,7 @@ sequenceDiagram
   ING->>DB: merge-store IngestedMatch (matchHash, isSameMatch + merge, context hints)
   ING->>DB: link matches to games the sender played (POV seat in the game's active roster) → IngestedMatchLink (POV weapon → ReportedWeapon; scoreboards derived at read time)
   Note over UI: VoD "Add to VoDs": ScannerMatch → slim prefill param → /vods/new
-  Note over UI: scoreWindows(match) → ring buffer / file packet copy → clips store
-```
+  Note over UI: scoreWindows(match) → ring buffer / file packet copy → clips store`} />
 
 - `core/` is pure (mats in, events/matches out) and runs in the worker, the
   debug view, and Node tests. No DOM/browser APIs; Node-only helpers live
@@ -378,7 +376,7 @@ sequenceDiagram
   the match's mode tells them apart; in CB a filled plate means that team's
   attack window is open, charted as control), `x-set-count`,
   `x-set-result` and `x-rank-position` (the X Battle lobby cards, see
-  below), `kill` (the "Splatted <name>!" feed
+  below), `kill` (the "Splatted &lt;name&gt;!" feed
   bottom-center). The feed is the POV player's — on the SWS26 broadcast the
   specced player's, so a cast's kills follow camera swaps. One `Kill` event
   per frame carries the whole visible stack newest-first, up to four rows,

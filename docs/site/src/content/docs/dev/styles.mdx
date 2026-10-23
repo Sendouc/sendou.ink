@@ -1,4 +1,9 @@
-# Custom Theme System
+---
+title: "Custom Theme System"
+description: "The theme tokens and how custom theme colors are generated."
+---
+
+import { Steps } from "@astrojs/starlight/components";
 
 The custom theme system lets Patreon supporters customize the sites colors, border radii, sizes, and border widths. Custom themes are created using a small set of inputs (slider values) which are expanded into a full set of CSS properties by `ThemePalette.build()`. The original intention of the system is that no combination of inputs can produce inaccessible colors.
 
@@ -47,10 +52,14 @@ The dark mode background lightness (`--_base-l`) is a slider of its own. Dark mo
 
 ### Update procedure
 
+<Steps>
+
 1. Edit `DEFAULT_THEME_INPUT` or the constants in `ThemePalette.ts`
 2. Run `ThemePalette.build(DEFAULT_THEME_INPUT)` to get the output CSS variable values
 3. Update `vars.css` with the output values
 4. If lightness values or offsets changed, update the `oklch()` / `calc()` calls in `vars.css` to match (the sync test fails until they do)
+
+</Steps>
 
 ## Gotchas
 

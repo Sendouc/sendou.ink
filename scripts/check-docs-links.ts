@@ -7,8 +7,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 const DIST_DIR = path.join(import.meta.dirname, "..", "docs/site/dist");
-/** Same as `BASE` of docs/site/astro.config.ts. */
-const BASE = process.env.GITHUB_PAGES === "true" ? "/sendou.ink/" : "/";
+/** The site is served from the root of its domain (docs.sendou.ink). */
+const BASE = "/";
 /** Stands in for wherever the site is hosted when resolving its links. */
 const SITE_ORIGIN = "http://docs-site.invalid";
 const LINK_REGEX = /<a\b[^>]*?\shref="([^"]*)"/g;

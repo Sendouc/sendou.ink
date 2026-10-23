@@ -4,7 +4,6 @@ import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import FeatureIcon from "../components/living/FeatureIcon.astro";
 import { count, sitePath, testsOf, viewHref } from "../living/format.ts";
-import { PUBLIC_API_SLUG } from "../plugins/doc-files.ts";
 import "../styles/living.css";
 
 const docs = (await getCollection("docs")).sort((a, b) =>
@@ -12,19 +11,16 @@ const docs = (await getCollection("docs")).sort((a, b) =>
 );
 const contributorDocs = docs.filter((doc) => doc.id.startsWith("dev/"));
 const projectDocs = docs.filter((doc) => doc.id.startsWith("project/"));
-const guides = docs.filter(
-	(doc) => !doc.id.includes("/") && doc.id !== PUBLIC_API_SLUG,
-);
+const guides = docs.filter((doc) => doc.id.startsWith("guides/"));
 const publicApi = [
 	{
 		title: "Overview",
-		path: `${PUBLIC_API_SLUG}/`,
-		description: docs.find((doc) => doc.id === PUBLIC_API_SLUG)?.data
-			.description,
+		path: "api/",
+		description: docs.find((doc) => doc.id === "api")?.data.description,
 	},
 	{
 		title: "Endpoints",
-		path: `${PUBLIC_API_SLUG}/endpoints/`,
+		path: "api/endpoints/",
 		description: "Every endpoint with its types and real example requests.",
 	},
 ];

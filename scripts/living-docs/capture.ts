@@ -2,7 +2,7 @@
 
 // runs e2e specs with tracing on and keeps what the living docs show from the run:
 // the pathnames each test visits and the /api/ requests it makes (committed) and a screenshot per page divider and test.step (gitignored),
-// see docs/dev/living-docs.md
+// see docs/site/src/content/docs/dev/living-docs.mdx
 
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";

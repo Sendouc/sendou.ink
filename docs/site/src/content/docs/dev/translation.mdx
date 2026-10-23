@@ -1,13 +1,22 @@
-# Translation
+---
+title: "Translation"
+description: "Translating the site and editing the translation files."
+---
+
+import { Steps } from "@astrojs/starlight/components";
 
 sendou.ink can be translated into any of its supported languages. The easiest way to contribute is the [Translate page](https://sendou.ink/translate).
 
 ## Using the Translate page
 
+<Steps>
+
 1. Pick your language to see the texts that still need a translation, along with the English original and where on the site each one is used
 2. Write your translation and save it as a draft. Drafts are saved in your browser, no login needed
 3. Use "Preview on site" to see your drafts on the real site
 4. Use "Download files" and [make a pull request on GitHub](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) replacing the files in `locales/<language>/`, or send them to Sendou
+
+</Steps>
 
 "Download files" gives the full translation files (a zip if there are several) with your drafts written over the current translations. Once they are live, the page forgets the drafts on its own.
 
@@ -38,12 +47,16 @@ New languages are added sparingly, only where there is clear demand from the com
 Alternatively the .json files can be edited directly. Note you lose some features of the translate page like being able to preview your changes on the live site. 
 
 
-All translation files can be found in the [locales folder](../../locales):
+All translation files can be found in the [locales folder](https://github.com/sendou-ink/sendou.ink/tree/main/locales):
+
+<Steps>
 
 1. Open the English `.json` file (e.g. `locales/en/common.json`) and the same file for your language (e.g. `locales/de/common.json` for German, create it if it doesn't exist)
 2. Lines missing from your language's file are the ones that need translating, until then the English text is shown
 3. Copy them over and translate the text while keeping the "key" on the left side of `:` unchanged. For example `"country": "Country",` could become `"country": "Maa",`
 4. Send the translated .json to Sendou or [make a pull request on GitHub](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+
+</Steps>
 
 On top of the things noted above:
 
