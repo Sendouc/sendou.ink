@@ -1,5 +1,12 @@
 import clsx from "clsx";
-import { Braces, CircleHelp, Hand, Heart, HeartHandshake } from "lucide-react";
+import {
+	BookOpen,
+	Braces,
+	CircleHelp,
+	Hand,
+	Heart,
+	HeartHandshake,
+} from "lucide-react";
 import {
 	type ReactNode,
 	type RefObject,
@@ -25,6 +32,7 @@ import {
 	CALENDAR_PAGE,
 	COMP_ANALYZER_URL,
 	CONTRIBUTIONS_PAGE,
+	DOCS_SITE_URL,
 	EVENTS_PAGE,
 	FAQ_PAGE,
 	LFG_PAGE,
@@ -195,6 +203,12 @@ export function Footer() {
 					title={t("common:pages.api")}
 					subtitle={t("common:footer.api.subtitle")}
 					to={API_PAGE}
+				/>
+				<FooterCard
+					icon={<BookOpen className={styles.cardIcon} />}
+					title={t("common:pages.docs")}
+					subtitle={t("common:footer.docs.subtitle")}
+					href={DOCS_SITE_URL}
 				/>
 			</div>
 			<div className={styles.thanks}>

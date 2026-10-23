@@ -51,7 +51,7 @@ export const avatarUrl = (avatar: string, size: "lg" | "sm") =>
 
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
-const DOCS_SITE_URL = "https://docs.sendou.ink";
+export const DOCS_SITE_URL = "https://docs.sendou.ink";
 
 export const BADGES_DOC_LINK = `${DOCS_SITE_URL}/guides/badges/`;
 export const API_DOC_LINK = `${DOCS_SITE_URL}/api/`;
