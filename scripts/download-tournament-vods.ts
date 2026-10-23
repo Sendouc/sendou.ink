@@ -26,7 +26,7 @@ import * as TournamentMatchVodRepository from "~/features/tournament-bracket/Tou
 import { vodTimestampOffsetSeconds } from "~/routines/syncTournamentVods";
 import { invariant } from "~/utils/invariant";
 import { logger } from "~/utils/logger";
-import { resolveAvatarUrl, userPage } from "~/utils/urls";
+import { avatarUrl, userPage } from "~/utils/urls";
 
 const SECONDS_AFTER_LAST_REPORT = 30;
 const MONTAGE_TOP_TEAMS_COUNT = 8;
@@ -233,7 +233,7 @@ async function writeMontageManifest() {
 								name: member.username,
 								countryCode: member.country,
 								avatar: await downloadImage(
-									resolveAvatarUrl({ ...member, size: "sm" }) ?? null,
+									member.avatar ? avatarUrl(member.avatar, "sm") : null,
 									`user-${member.userId}`,
 								),
 							})),
@@ -273,9 +273,12 @@ async function writeMontageManifest() {
 					pov: streamer
 						? {
 								name: streamer.username,
-								profilePath: userPage(streamer),
+								profilePath: userPage({
+									id: streamer.userId,
+									customUrl: streamer.customUrl,
+								}),
 								avatar: await downloadImage(
-									resolveAvatarUrl({ ...streamer, size: "sm" }) ?? null,
+									streamer.avatar ? avatarUrl(streamer.avatar, "sm") : null,
 									`user-${streamer.userId}`,
 								),
 							}

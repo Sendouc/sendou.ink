@@ -29,12 +29,11 @@ import { GraphicContainer } from "./Graphic";
 const BUILD_GRAPHIC_WIDTH = 380;
 
 export interface BuildGraphicOwner {
+	id: number;
 	username: string;
-	discordId: string;
 	plusTier: number | null;
 	customUrl?: Tables["User"]["customUrl"];
-	discordAvatar?: Tables["User"]["discordAvatar"];
-	customAvatarUrl?: string | null;
+	avatar?: string | null;
 }
 
 export function BuildGraphic({
@@ -94,11 +93,7 @@ export function BuildGraphic({
 					</div>
 					<div className={styles.owner}>
 						<Avatar
-							user={{
-								discordId: owner.discordId,
-								discordAvatar: owner.discordAvatar ?? null,
-								customAvatarUrl: owner.customAvatarUrl,
-							}}
+							user={{ id: owner.id, avatar: owner.avatar ?? null }}
 							size="xxxsm"
 							alt=""
 						/>
