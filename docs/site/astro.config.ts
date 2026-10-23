@@ -69,6 +69,7 @@ export default defineConfig({
 			editLink: { baseUrl: `${REPO_URL}/edit/main/docs/site/` },
 			customCss: ["./src/styles/theme.css", "../../app/styles/utils.css"],
 			components: {
+				Head: "./src/components/Head.astro",
 				MarkdownContent: "./src/components/MarkdownContent.astro",
 				SocialIcons: "./src/components/SocialIcons.astro",
 			},
