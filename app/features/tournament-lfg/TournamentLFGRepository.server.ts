@@ -128,11 +128,14 @@ export function mergeTeams({
 	survivingTeamId,
 	otherTeamId,
 	maxGroupSize,
+	requireInGameNames,
 	chatRoomExpiresAt,
 }: {
 	survivingTeamId: number;
 	otherTeamId: number;
 	maxGroupSize: number;
+	/** Fills the in-game name of members who don't have one yet, as registering does. */
+	requireInGameNames: boolean;
 	chatRoomExpiresAt: Date;
 }): Promise<number[]> {
 	return db.transaction().execute(async (trx) => {
@@ -153,6 +156,20 @@ export function mergeTeams({
 				})
 				.where("TournamentTeamMember.tournamentTeamId", "=", otherTeamId)
 				.where("TournamentTeamMember.userId", "=", member.userId)
+				.execute();
+		}
+
+		if (requireInGameNames) {
+			await trx
+				.updateTable("TournamentTeamMember")
+				.set((eb) => ({
+					inGameName: eb
+						.selectFrom("User")
+						.select("User.inGameName")
+						.whereRef("User.id", "=", "TournamentTeamMember.userId"),
+				}))
+				.where("TournamentTeamMember.tournamentTeamId", "=", survivingTeamId)
+				.where("TournamentTeamMember.inGameName", "is", null)
 				.execute();
 		}
 

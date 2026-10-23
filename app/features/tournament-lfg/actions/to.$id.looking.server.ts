@@ -3,12 +3,14 @@ import * as ShowcaseTournaments from "~/features/front-page/core/ShowcaseTournam
 import { notify } from "~/features/notifications/core/notify.server";
 import { resolveNotifications } from "~/features/notifications/core/resolve.server";
 import { requireNotBannedByOrganization } from "~/features/tournament/tournament-utils.server";
+import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import {
 	clearTournamentDataCache,
 	requireTournamentOrganizer,
 	tournamentFromParams,
 	tournamentTeamsFullCached,
 } from "~/features/tournament-bracket/core/Tournament.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 import { defineAction } from "~/form/define-action.server";
 import { errorToastIfFalsy } from "~/utils/remix.server";
 import { assertUnreachable } from "~/utils/types";
@@ -50,6 +52,10 @@ export const action = defineAction(
 				const existingGroup = await findOwnGroup();
 				if (existingGroup) return null;
 
+				errorToastIfFalsy(
+					tournament.registrationOpen,
+					"Registration is closed",
+				);
 				await requireNotBannedByOrganization({ tournament, user });
 				errorToastIfFalsy(
 					tournament.canAddNewSubPost,
@@ -93,6 +99,11 @@ export const action = defineAction(
 				break;
 			}
 			case "LIKE": {
+				errorToastIfFalsy(
+					tournament.registrationOpen,
+					"Registration is closed",
+				);
+
 				const groups =
 					await TournamentLFGRepository.findLookingTeamsByTournamentId(
 						tournamentId,
@@ -137,6 +148,11 @@ export const action = defineAction(
 				break;
 			}
 			case "ACCEPT": {
+				errorToastIfFalsy(
+					tournament.registrationOpen,
+					"Registration is closed",
+				);
+
 				const groups =
 					await TournamentLFGRepository.findLookingTeamsByTournamentId(
 						tournamentId,
@@ -179,10 +195,22 @@ export const action = defineAction(
 
 				const otherGroup = surviving === ownGroup.id ? theirGroup : ownGroup;
 
+				errorToastIfFalsy(
+					!tournament.teamById(otherGroup.id)?.checkIns.length,
+					"A team that has checked in can't be merged into another team",
+				);
+				await requireMembersCanJoinTeam({
+					tournament,
+					members: [...ownGroup.members, ...theirGroup.members],
+				});
+
 				const roomsChangedUserIds = await TournamentLFGRepository.mergeTeams({
 					survivingTeamId: surviving,
 					otherTeamId: otherGroup.id,
 					maxGroupSize: tournament.maxMembersPerTeam,
+					requireInGameNames: Boolean(
+						tournament.ctx.settings.requireInGameNames,
+					),
 					chatRoomExpiresAt: pickupChatRoomExpiresAt(tournament.ctx.startsAt),
 				});
 				ChatSystemMessage.notifyRoomsChanged(roomsChangedUserIds);
@@ -374,3 +402,23 @@ export const action = defineAction(
 		return null;
 	},
 );
+
+async function requireMembersCanJoinTeam({
+	tournament,
+	members,
+}: {
+	tournament: Tournament;
+	members: Array<{ id: number; username: string }>;
+}) {
+	for (const member of members) {
+		const memberUser = await UserRepository.findLeanById(member.id);
+		errorToastIfFalsy(
+			memberUser?.friendCode,
+			`${member.username} has no friend code set`,
+		);
+		errorToastIfFalsy(
+			!tournament.ctx.settings.requireInGameNames || memberUser.inGameName,
+			`${member.username} has no in-game name set`,
+		);
+	}
+}

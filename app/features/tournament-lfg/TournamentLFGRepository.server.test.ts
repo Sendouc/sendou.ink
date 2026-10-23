@@ -36,8 +36,10 @@ const mergeTeams = (args: {
 	survivingTeamId: number;
 	otherTeamId: number;
 	maxGroupSize: number;
+	requireInGameNames?: boolean;
 }) =>
 	TournamentLFGRepository.mergeTeams({
+		requireInGameNames: false,
 		...args,
 		chatRoomExpiresAt: addDays(new Date(), 7),
 	});
@@ -392,6 +394,34 @@ describe("mergeTeams", () => {
 
 		expect(roomsChangedUserIds.sort(byId)).toEqual(
 			[users.id(1), users.id(2)].sort(byId),
+		);
+	});
+
+	test("fills in the in-game names of merged members when required", async () => {
+		const tournament = await createTournament();
+		const playerOne = await UserFactory.create({
+			profile: { inGameName: "Player#1111" },
+		});
+		const playerTwo = await UserFactory.create({
+			profile: { inGameName: "Player#2222" },
+		});
+		const team1 = await createPlaceholder(tournament.id, playerOne.id);
+		const team2 = await createPlaceholder(tournament.id, playerTwo.id);
+
+		await mergeTeams({
+			survivingTeamId: team1.id,
+			otherTeamId: team2.id,
+			maxGroupSize: 4,
+			requireInGameNames: true,
+		});
+
+		const members = await db
+			.selectFrom("TournamentTeamMember")
+			.select("inGameName")
+			.where("tournamentTeamId", "=", team1.id)
+			.execute();
+		expect(new Set(members.map((member) => member.inGameName))).toEqual(
+			new Set(["Player#1111", "Player#2222"]),
 		);
 	});
 
