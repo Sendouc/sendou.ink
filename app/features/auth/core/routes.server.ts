@@ -31,10 +31,14 @@ import type { AuthErrorCode } from "./errors";
 import { authSessionStorage } from "./session.server";
 import { getUser, isImpersonating, requireUser } from "./user.server";
 
+const returnToSchema = v.object({
+	returnTo: v.optional(v.string()),
+});
+
 export const callbackLoader: LoaderFunction = async ({ request, url }) => {
-	const refreshingUserId = await DiscordRefresh.flaggedUserId(request);
-	if (refreshingUserId !== null) {
-		return refreshCallback({ request, url, refreshingUserId });
+	const refresh = await DiscordRefresh.flaggedRefresh(request);
+	if (refresh !== null) {
+		return refreshCallback({ request, url, refresh });
 	}
 
 	// biome-ignore lint/plugin: OAuth callback param, its name and values defined by the provider
@@ -72,37 +76,41 @@ export const callbackLoader: LoaderFunction = async ({ request, url }) => {
 	}
 };
 
-export const refreshFromDiscordAction = defineAction(async ({ request }) => {
-	const user = requireUser();
+export const refreshFromDiscordAction = defineAction(
+	{ body: returnToSchema },
+	async ({ request, body }) => {
+		const user = requireUser();
+		const returnTo = safeReturnTo(body.returnTo ?? null);
 
-	if (await isImpersonating(request)) {
-		throw errorToastWithRedirect({
-			url: SETTINGS_PAGE,
-			message: "Can't refresh from Discord while impersonating",
-		});
-	}
-
-	if (DiscordRefresh.isOnCooldown(user.id)) {
-		throw errorToastWithRedirect({
-			url: SETTINGS_PAGE,
-			message: REFRESH_COOLDOWN_MESSAGE,
-		});
-	}
-
-	try {
-		return await authenticator.authenticate("discord", request);
-	} catch (error) {
-		// starting the OAuth flow always throws the redirect to Discord
-		if (error instanceof Response) {
-			error.headers.append(
-				"Set-Cookie",
-				await DiscordRefresh.flagCookieHeader(user.id),
-			);
+		if (await isImpersonating(request)) {
+			throw errorToastWithRedirect({
+				url: returnTo ?? SETTINGS_PAGE,
+				message: "Can't refresh from Discord while impersonating",
+			});
 		}
 
-		throw error;
-	}
-});
+		if (DiscordRefresh.isOnCooldown(user.id)) {
+			throw errorToastWithRedirect({
+				url: returnTo ?? SETTINGS_PAGE,
+				message: REFRESH_COOLDOWN_MESSAGE,
+			});
+		}
+
+		try {
+			return await authenticator.authenticate("discord", request);
+		} catch (error) {
+			// starting the OAuth flow always throws the redirect to Discord
+			if (error instanceof Response) {
+				error.headers.append(
+					"Set-Cookie",
+					await DiscordRefresh.flagCookieHeader({ userId: user.id, returnTo }),
+				);
+			}
+
+			throw error;
+		}
+	},
+);
 
 export const logOutAction = defineAction(async ({ request }) => {
 	const session = await authSessionStorage.getSession(
@@ -127,10 +135,6 @@ export const logInAction = defineAction(async ({ request }) => {
 
 		throw error;
 	}
-});
-
-const returnToSchema = v.object({
-	returnTo: v.optional(v.string()),
 });
 
 export const impersonateAction = defineAction(
@@ -334,17 +338,18 @@ const REFRESH_COOLDOWN_MESSAGE =
 async function refreshCallback({
 	request,
 	url,
-	refreshingUserId,
+	refresh,
 }: {
 	request: Request;
 	url: URL;
-	refreshingUserId: number;
+	refresh: DiscordRefresh.FlaggedRefresh;
 }) {
 	const headers = {
 		"Set-Cookie": await DiscordRefresh.clearFlagCookieHeader(),
 	};
+	const returnTo = safeReturnTo(refresh.returnTo) ?? SETTINGS_PAGE;
 	const failed = (message: string) =>
-		errorToastWithRedirect({ url: SETTINGS_PAGE, message, headers });
+		errorToastWithRedirect({ url: returnTo, message, headers });
 
 	// biome-ignore lint/plugin: OAuth callback param, its name and values defined by the provider
 	if (url.searchParams.has("error")) {
@@ -352,11 +357,7 @@ async function refreshCallback({
 	}
 
 	const user = getUser();
-	if (
-		!user ||
-		user.id !== refreshingUserId ||
-		(await isImpersonating(request))
-	) {
+	if (!user || user.id !== refresh.userId || (await isImpersonating(request))) {
 		return failed("Refreshing from Discord failed");
 	}
 
@@ -386,7 +387,7 @@ async function refreshCallback({
 	}
 
 	return successToastWithRedirect({
-		url: SETTINGS_PAGE,
+		url: returnTo,
 		message: "Your avatar, name and connections were refreshed from Discord",
 		headers,
 	});

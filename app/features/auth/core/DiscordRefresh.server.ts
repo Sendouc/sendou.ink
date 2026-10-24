@@ -15,25 +15,36 @@ const flagCookie = createCookie("discord_refresh", {
 	maxAge: FLAG_MAX_AGE_SECONDS,
 });
 
+export interface FlaggedRefresh {
+	userId: number;
+	returnTo: string | null;
+}
+
 const lastRefreshedAt = new LRUCache<number, number>({ max: 10_000 });
 
 /**
  * `Set-Cookie` value marking the next OAuth callback as a profile refresh of the given user
  * instead of a log in.
  */
-export function flagCookieHeader(userId: number) {
-	return flagCookie.serialize(userId);
+export function flagCookieHeader(refresh: FlaggedRefresh) {
+	return flagCookie.serialize(refresh);
 }
 
 export function clearFlagCookieHeader() {
 	return flagCookie.serialize("", { maxAge: 0 });
 }
 
-/** The id of the user who started a profile refresh, or `null` if the OAuth flow is a regular log in. */
-export async function flaggedUserId(request: Request): Promise<number | null> {
+/** The profile refresh in progress, or `null` if the OAuth flow is a regular log in. */
+export async function flaggedRefresh(
+	request: Request,
+): Promise<FlaggedRefresh | null> {
 	const value = await flagCookie.parse(request.headers.get("Cookie"));
+	if (typeof value?.userId !== "number") return null;
 
-	return typeof value === "number" ? value : null;
+	return {
+		userId: value.userId,
+		returnTo: typeof value.returnTo === "string" ? value.returnTo : null,
+	};
 }
 
 /** Whether the user refreshed recently. Each refresh costs Discord API calls shared with log in's rate limit. */
