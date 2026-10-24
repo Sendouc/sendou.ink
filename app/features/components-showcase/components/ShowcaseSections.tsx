@@ -101,10 +101,12 @@ import { EXAMPLE_TROPHY_MODEL } from "../example-trophy-model";
 import { formFieldsShowcaseSchema } from "../form-examples-schema";
 import type { ShowcaseSectionId } from "../showcase-sections";
 import { ColorsShowcase } from "./ColorsShowcase";
+import { DesignTokensShowcase } from "./DesignTokensShowcase";
 import styles from "./ShowcaseSections.module.css";
 
 const SECTION_COMPONENTS: Record<ShowcaseSectionId, () => React.ReactNode> = {
 	colors: ColorsShowcase,
+	"design-tokens": DesignTokensShowcase,
 	buttons: ButtonsSection,
 	alerts: AlertsSection,
 	inputs: InputsSection,

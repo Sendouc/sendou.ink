@@ -1,6 +1,7 @@
 /** Sections of the components showcase, each a page of the docs site (`docs/site`). */
 export const SHOWCASE_SECTIONS = [
 	{ id: "colors", title: "Color tokens" },
+	{ id: "design-tokens", title: "Design tokens" },
 	{ id: "buttons", title: "Buttons" },
 	{ id: "alerts", title: "Alerts" },
 	{ id: "inputs", title: "Inputs" },
