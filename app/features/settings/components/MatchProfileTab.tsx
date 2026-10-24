@@ -49,6 +49,7 @@ export function MatchProfileTab() {
 					noScreen: Boolean(matchProfile.noScreen),
 				}}
 				revalidateRoot
+				fullWidth
 			>
 				{({ FormField }) => (
 					<>
@@ -60,6 +61,7 @@ export function MatchProfileTab() {
 								<MapModePreferencesField
 									value={props.value as UserMapModePreferences}
 									onChange={props.onChange}
+									mapResults={data.mapResults ?? undefined}
 								/>
 							)}
 						</FormField>
