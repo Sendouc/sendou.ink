@@ -1,4 +1,4 @@
-// the docs site: the handwritten docs of src/content/docs and the living docs generated from the code, see src/content/docs/site/src/content/docs/dev/living-docs.mdxx
+// the docs site: the handwritten docs of src/content/docs and the living docs generated from the code, see src/content/docs/dev/living-docs.mdx
 
 import path from "node:path";
 import { satteri } from "@astrojs/markdown-satteri";
@@ -72,7 +72,6 @@ export default defineConfig({
 			editLink: { baseUrl: `${REPO_URL}/edit/main/docs/site/` },
 			head: [{ tag: "style", content: `@layer ${CASCADE_LAYERS.join(", ")};` }],
 			customCss: ["./src/styles/theme.css", "../../app/styles/utils.css"],
-			lastUpdated: true,
 			// the feature READMEs are their own collection, shown on the feature pages (see content.config.ts)
 			markdown: { processedDirs: ["./src/content/feature-readmes"] },
 			components: {

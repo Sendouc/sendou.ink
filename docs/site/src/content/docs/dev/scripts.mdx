@@ -83,6 +83,12 @@ If the build fails the previous version is still running, so maintenance mode is
 
 Needs `RENDER_API_KEY` (Render Dashboard -> Account Settings -> API Keys), `RENDER_SERVICE_ID` and `PROD_SSH_TARGET` (see the one-time setup below) in `.env`.
 
+### The docs site
+
+The docs site (https://docs.sendou.ink) is a Render static site that deploys itself: its auto-deploy is set to "After CI checks pass", so every commit to `main` whose checks pass is built, the e2e job having published its screenshots by then (see [Living docs](/dev/living-docs/#screenshots-on-the-live-site)). The previous version is served until the new build is live, and a skipped commit is picked up by the next green one (or redeployed from the dashboard).
+
+The static site's settings: the repository root as its root directory, `pnpm install --frozen-lockfile && pnpm run docs:screenshots:download && pnpm run docs:build` as the build command and `docs/site/dist` as the publish directory.
+
 ## Download the production database from Render.com
 
 :::note

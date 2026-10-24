@@ -93,6 +93,8 @@ function main() {
 	console.log(
 		`Captured ${reported.length} tests of ${capturedSpecs.size} specs, ${screenshotCount} screenshots. A running pnpm run dev:docs picks them up, otherwise run it to see them.`,
 	);
+
+	if (run.status !== 0) process.exitCode = 1;
 }
 
 function saveVisits(reported: ReportedTest[], capturedSpecs: Set<string>) {

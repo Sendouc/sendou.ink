@@ -69,6 +69,10 @@ const DESCRIPTIONS: Record<string, string> = {
 	"docs:build":
 		"Builds the docs site into docs/site/dist and checks its internal links",
 	"docs:preview": "Builds the docs site and serves the build, search included",
+	"docs:screenshots:publish":
+		"Uploads the screenshots of a `docs:capture` run to the docs' Space, run by CI on pushes to main",
+	"docs:screenshots:download":
+		"Downloads the published screenshots whose spec is unchanged since their capture, run by the docs site's Render build",
 	"notification:test":
 		"Sends a test notification (and web push) to a user of the dev database",
 	"i18n:sync":

@@ -16,7 +16,7 @@ Each feature has a page per source (`/features/<feature>/` for the overview, `/m
 
 - `pnpm run dev:docs` serves the site at http://localhost:4321 (linked from the app's dev menu). It regenerates the living docs as files under `app/`, `e2e/` or `locales/en/` change. Search only works in a build.
 - `pnpm run docs:preview` builds the site and serves the build, search included.
-- `pnpm run docs:build` builds it into `docs/site/dist/` and checks every internal link of the build leads somewhere (`scripts/check-docs-links.ts`). CI runs it on pull requests and pushes to `main` (`.github/workflows/main.yml`), and deploys the site from `main` to GitHub Pages at https://docs.sendou.ink (`.github/workflows/docs.yml`).
+- `pnpm run docs:build` builds it into `docs/site/dist/` and checks every internal link of the build leads somewhere (`scripts/check-docs-links.ts`). CI runs it on pull requests and pushes to `main` (`.github/workflows/main.yml`). The site is a Render static site at https://docs.sendou.ink, deployed from every commit to `main` whose CI checks pass (see [Scripts](/dev/scripts/#the-docs-site)).
 
 Besides the feature pages, the generated pages are:
 
@@ -34,7 +34,7 @@ Apart from Routes, which is built from the routes of the `features` collection, 
 
 The extractors (reading the code into data) live in `scripts/living-docs/`, `documentFeatures()` being the entry point. What code reads and writes is traced by `data-access.ts`: from a loader, action or repository function it follows every declaration referenced, across files, collecting the tables queried and the repository functions called (the route traces show which helper a call is reached through). It is static, so a call behind a condition counts as made. The site reads them through a content collection (`docs/site/src/living/loader.ts`) and renders them with the components of `docs/site/src/components/living/`.
 
-The handwritten docs are MDX pages of Starlight's `docs` collection: the frontmatter gives the `title` and the `description` shown on the home page's cards, "Last updated" comes from git, and a new file in `dev/`, `guides/` or `project/` shows up in the sidebar on its own. Write them with Starlight's markdown and components: asides as `:::note` (or `tip`, `caution`, `danger`), procedures as a numbered list inside `<Steps>`, diagrams with ``<Mermaid code={`…`} />`` (`docs/site/src/components/Mermaid.astro`). Link to other pages by their path (`/dev/forms/`) and to code by its GitHub URL. A bare `<` or `{` in text starts JSX in MDX, put code in backticks.
+The handwritten docs are MDX pages of Starlight's `docs` collection: the frontmatter gives the `title` and the `description` shown on the home page's cards, and a new file in `dev/`, `guides/` or `project/` shows up in the sidebar on its own. Write them with Starlight's markdown and components: asides as `:::note` (or `tip`, `caution`, `danger`), procedures as a numbered list inside `<Steps>`, diagrams with ``<Mermaid code={`…`} />`` (`docs/site/src/components/Mermaid.astro`). Link to other pages by their path (`/dev/forms/`) and to code by its GitHub URL. A bare `<` or `{` in text starts JSX in MDX, put code in backticks.
 
 ## Components showcase
 
@@ -48,9 +48,13 @@ They are React islands (`ShowcaseRoot` gives them the translations, router and t
 
 - `docs/site/visits.json` (committed): the pathnames each test visited, the source of route coverage.
 - `docs/site/api-examples.json` (committed): the `/api/` requests each test made through `page.request`, shown as the example requests and responses of the Public API endpoints (one per status code, arrays cut to their first items). Every endpoint should have a test calling it in `e2e/api-public.spec.ts`.
-- `docs/site/public/screenshots/` (gitignored): a screenshot for each `test.step` (taken as the step passes) or, in tests without steps, each page divider (from the trace's screencast), shown as the test's storyboard. They exist only on the machine that ran the capture.
+- `docs/site/public/screenshots/` (gitignored): a screenshot for each `test.step` (taken as the step passes) or, in tests without steps, each page divider (from the trace's screencast), shown as the test's storyboard.
 
 Capturing a few specs only replaces their part of `visits.json` and `api-examples.json`.
+
+### Screenshots on the live site
+
+On pushes to `main` the e2e job (`.github/workflows/e2e-tests.yml`) runs `docs:capture` instead of plain `test:e2e`, and a job after it uploads the screenshots with `pnpm run docs:screenshots:publish` to the `sendou-docs` DigitalOcean Space, under the content hash of the spec they were captured from (`SPACES_ACCESS_KEY` and `SPACES_SECRET_KEY` repo secrets). A screenshot is named after its spec line, so it only fits the spec as it was: the docs site's build runs `pnpm run docs:screenshots:download`, which fetches those of the specs unchanged since their capture and leaves the rest without screenshots until the next capture.
 
 ## Writing code that documents well
 

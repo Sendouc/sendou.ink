@@ -5,7 +5,7 @@ import { screenshotName } from "./links.ts";
 
 /** Pathnames each e2e test visited in the last capture, written by `capture.ts`. */
 export const VISITS_FILE = "docs/site/visits.json";
-/** Screenshots of the last capture, gitignored. Served by the docs site from `/screenshots`. */
+/** Screenshots of the last capture (or of `docs:screenshots:download`), gitignored. Served by the docs site from `/screenshots`. */
 export const SCREENSHOTS_DIR = "docs/site/public/screenshots";
 
 /** Spec → test title path (joined with " › ") → pathnames visited. */
