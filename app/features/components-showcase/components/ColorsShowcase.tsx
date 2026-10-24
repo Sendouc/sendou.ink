@@ -82,7 +82,7 @@ const NEUTRAL_NOTES: Note[] = [
 	{
 		id: "chip",
 		tokens: ["--color-bg-higher"],
-		text: "Raised inside a card: chips, inputs, hovered rows, progress tracks.",
+		text: "Raised inside a card: chips, hovered rows, progress tracks.",
 	},
 	{
 		id: "title",
@@ -97,7 +97,7 @@ const NEUTRAL_NOTES: Note[] = [
 	{
 		id: "divider",
 		tokens: ["--color-border", "--color-border-high"],
-		text: "Dividers and card outlines. The -high variant for borders that need to stand out, like inputs.",
+		text: "Dividers and card outlines. The -high variant for borders that need to stand out.",
 	},
 ];
 
@@ -305,7 +305,7 @@ const REFERENCE = [
 	},
 	{
 		tokens: ["--color-border", "--color-border-high"],
-		use: "Dividers and outlines, -high for inputs and emphasis",
+		use: "Dividers and outlines, -high for emphasis",
 	},
 	{
 		tokens: [
