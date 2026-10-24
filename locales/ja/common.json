@@ -344,5 +344,8 @@
 	"modes.short.SZ": "エリア",
 	"modes.short.TC": "ヤグラ",
 	"modes.short.RM": "ホコ",
-	"modes.short.CB": "アサリ"
+	"modes.short.CB": "アサリ",
+	"vc.YES": "VCあり",
+	"vc.NO": "VCなし",
+	"vc.LISTEN_ONLY": "聞き専門"
 }

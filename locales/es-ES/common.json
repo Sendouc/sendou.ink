@@ -467,5 +467,8 @@
 	"modes.short.SZ": "PZ",
 	"modes.short.TC": "TR",
 	"modes.short.RM": "PD",
-	"modes.short.CB": "AA"
+	"modes.short.CB": "AA",
+	"vc.YES": "Puede usar chat de voz",
+	"vc.NO": "Sin chat de voz",
+	"vc.LISTEN_ONLY": "Solo escuchar"
 }

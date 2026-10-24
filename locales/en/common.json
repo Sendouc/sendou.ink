@@ -541,5 +541,9 @@
 	"modes.short.SZ": "SZ",
 	"modes.short.TC": "TC",
 	"modes.short.RM": "RM",
-	"modes.short.CB": "CB"
+	"modes.short.CB": "CB",
+	"vc.YES": "Can VC",
+	"vc.NO": "No VC",
+	"vc.LISTEN_ONLY": "Listen only",
+	"matchProfile.from": "From your match profile"
 }

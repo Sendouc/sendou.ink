@@ -104,5 +104,8 @@
 	"modes.short.SZ": "HS",
 	"modes.short.TC": "TK",
 	"modes.short.RM": "OG",
-	"modes.short.CB": "MC"
+	"modes.short.CB": "MC",
+	"vc.YES": "VC-fähig",
+	"vc.NO": "Nicht VC-fähig",
+	"vc.LISTEN_ONLY": "Nur zuhören"
 }

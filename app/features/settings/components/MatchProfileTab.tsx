@@ -8,6 +8,7 @@ import { userCardEditPage } from "~/features/user-card/user-card-urls";
 import { SendouForm } from "~/form/SendouForm";
 import type { loader } from "../loaders/settings.server";
 import { updateMatchProfileSchema } from "../match-profile-schemas";
+import { MATCH_PROFILE_WEAPON_POOL_ID } from "../settings-constants";
 import {
 	MapModePreferencesField,
 	preferencesFromRaw,
@@ -66,7 +67,9 @@ export function MatchProfileTab() {
 						<FormMessage type="info">
 							{t("settings:matchProfile.maps.teamPreferencesHint")}
 						</FormMessage>
-						<FormField name="weaponPool" />
+						<div id={MATCH_PROFILE_WEAPON_POOL_ID}>
+							<FormField name="weaponPool" />
+						</div>
 						<FormField name="vc" />
 						<FormField name="languages" />
 						<FormField name="noScreen" />

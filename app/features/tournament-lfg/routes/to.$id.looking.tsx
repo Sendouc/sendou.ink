@@ -1,4 +1,4 @@
-import { Mic, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useLoaderData } from "react-router";
@@ -12,6 +12,10 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { WeaponImage } from "~/components/Image";
 import { NoteAvatar } from "~/components/NoteAvatar";
 import { useUser } from "~/features/auth/core/user";
+import {
+	MatchProfileSummary,
+	VcStatus,
+} from "~/features/match-profile/components/MatchProfileSummary";
 import {
 	LookingColumns,
 	SortedCard,
@@ -185,7 +189,12 @@ function AddSubForm() {
 				}
 			>
 				<SendouForm schema={addSubFormSchema}>
-					{({ FormField }) => <FormField name="message" />}
+					{({ FormField }) => (
+						<>
+							<OwnMatchProfileSummary />
+							<FormField name="message" />
+						</>
+					)}
 				</SendouForm>
 			</SendouDialog>
 		</div>
@@ -198,24 +207,7 @@ function SubCard({ sub }: { sub: SubEntry }) {
 	const tournament = useTournament();
 	const cardData = useUserCardData(sub.userId);
 
-	const infos = [
-		<div key="vc" className={styles.subsInfoVc}>
-			<Mic
-				className={
-					sub.vc === "YES"
-						? "text-success"
-						: sub.vc === "LISTEN_ONLY"
-							? "text-warning"
-							: "text-error"
-				}
-			/>
-			{sub.vc === "YES"
-				? t("tournament:subs.canVC")
-				: sub.vc === "LISTEN_ONLY"
-					? t("tournament:subs.listenOnlyVC")
-					: t("tournament:subs.noVC")}
-		</div>,
-	];
+	const infos = [<VcStatus key="vc" vc={sub.vc} />];
 	if (sub.plusTier) {
 		infos.push(
 			<React.Fragment key="dot-1">{"\u00B7"}</React.Fragment>,
@@ -306,12 +298,21 @@ function JoinQueueForm() {
 		>
 			{({ FormField }) => (
 				<>
+					<OwnMatchProfileSummary />
 					<FormField name="note" />
 					<FormField name="stayAsSub" />
 				</>
 			)}
 		</SendouForm>
 	);
+}
+
+function OwnMatchProfileSummary() {
+	const data = useLoaderData<typeof loader>();
+
+	if (!data.matchProfile) return null;
+
+	return <MatchProfileSummary {...data.matchProfile} />;
 }
 
 function TeamQueueSection() {

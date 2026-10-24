@@ -57,8 +57,5 @@
 	"join.error.NOT_LOGGED_IN": "Du musst eingeloggt sein, um einem Team beizutreten.",
 	"join.VALID": "Team {{teamName}} für {{eventName}} beitreten?",
 	"subs.prefersToPlay": "Bevorzugt zu spielen",
-	"subs.canVC": "VC-fähig",
-	"subs.noVC": "Nicht VC-fähig",
-	"subs.listenOnlyVC": "Nur zuhören",
 	"subs.addPost": "Dich als Ersatzspieler hinzufügen"
 }

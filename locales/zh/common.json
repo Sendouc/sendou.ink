@@ -350,5 +350,8 @@
 	"modes.short.SZ": "区域",
 	"modes.short.TC": "塔楼",
 	"modes.short.RM": "鱼虎",
-	"modes.short.CB": "蛤蜊"
+	"modes.short.CB": "蛤蜊",
+	"vc.YES": "可以进行语音聊天",
+	"vc.NO": "无法进行语音聊天",
+	"vc.LISTEN_ONLY": "仅收听"
 }

@@ -321,5 +321,8 @@
 	"modes.short.SZ": "DdZ",
 	"modes.short.TC": "ER",
 	"modes.short.RM": "MB",
-	"modes.short.CB": "PdP"
+	"modes.short.CB": "PdP",
+	"vc.YES": "Peut Vocal",
+	"vc.NO": "Pas de Vocal",
+	"vc.LISTEN_ONLY": "Ecoute seulement"
 }

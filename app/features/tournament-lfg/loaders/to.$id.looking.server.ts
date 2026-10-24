@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import * as R from "remeda";
 import type { getUser } from "~/features/auth/core/user.server";
+import * as MatchProfileRepository from "~/features/match-profile/MatchProfileRepository.server";
 import { resolveNotifications } from "~/features/notifications/core/resolve.server";
 import {
 	tournamentFromParams,
@@ -109,6 +110,7 @@ async function lookingMode({
 		ownGroup,
 		ownTeam,
 		likes,
+		matchProfile: ownGroup || ownTeam ? null : await findOwnMatchProfile(user),
 		tournamentId,
 	};
 }
@@ -143,13 +145,16 @@ async function subsMode({
 		};
 	});
 
+	const hasOwnSubPost = subs.some((sub) => sub.userId === user?.id);
+
 	return {
 		mode: "subs" as const,
 		...(await UserCardRepository.findAllByUserIds({
 			userIds: subs.map((sub) => sub.userId),
 		})),
 		subs,
-		hasOwnSubPost: subs.some((sub) => sub.userId === user?.id),
+		hasOwnSubPost,
+		matchProfile: hasOwnSubPost ? null : await findOwnMatchProfile(user),
 		tournamentId,
 	};
 }
@@ -201,6 +206,15 @@ async function resolveOwnTeam({
 		members,
 		usersRole: members.find((m) => m.id === user.id)?.role ?? null,
 	};
+}
+
+async function findOwnMatchProfile(user: ReturnType<typeof getUser>) {
+	if (!user) return null;
+
+	const { vc, languages, weaponPool } =
+		await MatchProfileRepository.findSettingsByUserId(user.id);
+
+	return { vc, languages: languages ?? [], weaponPool };
 }
 
 function transformMembers(
