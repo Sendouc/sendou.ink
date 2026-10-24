@@ -23,7 +23,7 @@ const DEV_IMPERSONATE_ITEMS = [
 ] as const;
 
 const DEV_LINK_ITEMS = [
-	{ name: "Components", icon: "settings", url: "/components" },
+	{ name: "Docs", icon: "settings", url: "http://localhost:4321/" },
 	{ name: "OG Images", icon: "art", url: "/admin/og-images" },
 ] as const;
 

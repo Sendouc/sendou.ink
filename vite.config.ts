@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { reactRouter } from "@react-router/dev/vite";
-import MagicString from "magic-string";
-import type { Node, Plugin as PostcssPlugin, Rule } from "postcss";
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import babel from "vite-plugin-babel";
+import {
+	cssModulesLayer,
+	hoverOnlyOnHoverDevices,
+} from "./vite-css-plugins.ts";
 
 export default defineConfig((config) => {
 	const env = loadEnv(config.mode, process.cwd(), "");
@@ -16,6 +18,8 @@ export default defineConfig((config) => {
 				clientFiles: ["./app/entry.client.tsx", "./app/root.tsx"],
 				ssrFiles: ["./app/entry.server.tsx"],
 			},
+			// the docs site has a dev server of its own, its builds and caches would reload the app
+			watch: { ignored: ["**/docs/**"] },
 		},
 		plugins: [
 			{
@@ -36,28 +40,7 @@ export default defineConfig((config) => {
 					});
 				},
 			},
-			{
-				// Wraps CSS modules in a @layer so utilities always win and the higher of two modules
-				// styling the same element wins regardless of chunk order: `elements` < `components`
-				// < `features`. The layer order is prepended to each module because in Vite dev module
-				// <style> tags are injected before global stylesheets.
-				name: "css-modules-layer",
-				enforce: "pre",
-				transform(code, id) {
-					if (!id.endsWith(".module.css")) return;
-					const layerOrder =
-						"@layer reset, base, elements, components, features, utilities;";
-					const layer = cssModuleLayer(id);
-					const magicCode = new MagicString(code);
-					magicCode.prepend(`${layerOrder}\n@layer ${layer} {\n`);
-					magicCode.append("\n}");
-
-					return {
-						code: magicCode.toString(),
-						map: magicCode.generateMap({ source: id, hires: true }),
-					};
-				},
-			},
+			cssModulesLayer(),
 			reactRouter(),
 			eagerlyCompileSharedChunks(),
 			// React Compiler is skipped in dev, its transform cost outweighs its value there
@@ -202,59 +185,4 @@ function eagerlyCompileSharedChunks(): Plugin {
 			}
 		},
 	};
-}
-
-function cssModuleLayer(id: string) {
-	if (id.includes("/app/components/elements/")) return "elements";
-	if (/\/app\/components\/[^/]+\.module\.css$/.test(id)) return "components";
-
-	return "features";
-}
-
-const HOVER_MEDIA_PARAMS = "(hover: hover)";
-
-/**
- * Wraps every `:hover` rule in `@media (hover: hover)` so touch devices don't get
- * hover styles stuck on whatever element was last tapped or scrolled over.
- */
-function hoverOnlyOnHoverDevices(): PostcssPlugin {
-	return {
-		postcssPlugin: "hover-only-on-hover-devices",
-		Rule(rule, { AtRule }) {
-			if (!rule.selector.includes(":hover")) return;
-			if (isInsideHoverMedia(rule)) return;
-
-			const hoverSelectors = rule.selectors.filter((selector) =>
-				selector.includes(":hover"),
-			);
-			const otherSelectors = rule.selectors.filter(
-				(selector) => !selector.includes(":hover"),
-			);
-			const media = new AtRule({ name: "media", params: HOVER_MEDIA_PARAMS });
-
-			if (otherSelectors.length === 0) {
-				rule.replaceWith(media);
-				media.append(rule);
-				return;
-			}
-
-			media.append(rule.clone({ selectors: hoverSelectors }));
-			rule.selectors = otherSelectors;
-			rule.after(media);
-		},
-	};
-}
-
-function isInsideHoverMedia(rule: Rule) {
-	for (let node: Node | undefined = rule.parent; node; node = node.parent) {
-		if (
-			node.type === "atrule" &&
-			"params" in node &&
-			node.params === HOVER_MEDIA_PARAMS
-		) {
-			return true;
-		}
-	}
-
-	return false;
 }

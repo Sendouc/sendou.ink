@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/suspicious/noConsole: script */
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { parseSync } from "vite";
 
 // Generates the index of where each translation key is used (source files and the routes rendering them)
@@ -41,7 +41,8 @@ const files = listSourceFiles(APP);
 const parsed = new Map(files.map((file) => [file, parseFile(file)]));
 
 const routes = flattenRoutes(
-	(await import(path.join(APP, "routes.ts"))).default as RouteEntry[],
+	(await import(pathToFileURL(path.join(APP, "routes.ts")).href))
+		.default as RouteEntry[],
 );
 const siteWideFiles = reachableFrom(ROOT_MODULE);
 // a layout route and its index route share a path

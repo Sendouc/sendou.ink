@@ -227,6 +227,7 @@ export interface PendingTrophyApproval {
 	createdAt: number;
 }
 
+/** Abilities are stored as JSON in `abilities`, `BuildAbilitySum` & `BuildWeaponAbility` denormalize them for computing ability point averages. */
 export interface Build {
 	clothesGearSplId: number | null;
 	description: string | null;
@@ -294,6 +295,7 @@ export interface CalendarEventBadge {
 	eventId: number;
 }
 
+/** A regular calendar event can have many dates, a tournament only one. */
 export interface CalendarEventDate {
 	eventId: number;
 	id: GeneratedAlways<number>;
@@ -306,6 +308,7 @@ export interface CalendarEventResultPlayer {
 	userId: number | null;
 }
 
+/** Results of events not hosted on sendou.ink. */
 export interface CalendarEventResultTeam {
 	eventId: number;
 	id: GeneratedAlways<number>;
@@ -345,6 +348,7 @@ export interface ChatMessageReadIndicator {
 	userId: number;
 }
 
+/** SendouQ group. A new group is created every time even if the same players rejoin the queue after their match. */
 export interface Group {
 	chatRoomId: number | null;
 	createdAt: Generated<number>;
@@ -507,6 +511,12 @@ export interface LFGPost {
 	createdAt: Generated<number>;
 }
 
+/**
+ * One of:
+ * - a regular calendar event's map pool (`calendarEventId`)
+ * - a tournament's map pool, organizer picked or the custom pool of a team picked tournament (`calendarEventId`)
+ * - a tournament team's map picks in a team picked tournament (`tournamentTeamId`), the modes and counts live in `Tournament.settings.teamPick`
+ */
 export interface MapPoolMap {
 	calendarEventId: number | null;
 	mode: ModeShort;
@@ -514,6 +524,7 @@ export interface MapPoolMap {
 	tournamentTeamId: number | null;
 }
 
+/** Denormalized win/loss counts per user, map and season so they are efficient to fetch. */
 export interface MapResult {
 	losses: number;
 	mode: ModeShort;
@@ -523,6 +534,7 @@ export interface MapResult {
 	wins: number;
 }
 
+/** Denormalized head-to-head results between two users per season so they are efficient to fetch. */
 export interface PlayerResult {
 	mapLosses: number;
 	mapWins: number;
@@ -535,6 +547,7 @@ export interface PlayerResult {
 	type: "MATE" | "ENEMY";
 }
 
+/** Comments to a suggestion are also stored as suggestions, same as the suggestion itself. */
 export interface PlusSuggestion {
 	authorId: number;
 	createdAt: Generated<number>;
@@ -547,6 +560,7 @@ export interface PlusSuggestion {
 	year: number;
 }
 
+/** Result of the latest voting (`PlusVoting.computeFreshPlusTiers`) with players from the leaderboard added, materialized for performance. */
 export interface PlusTier {
 	tier: number;
 	userId: number;
@@ -656,6 +670,7 @@ export interface SplatoonPlayer {
 	peakXp: JSONColumnTypeNullable<PeakXP>;
 }
 
+/** The bracket tables (`TournamentStage`, `TournamentGroup`, `TournamentRound`, `TournamentMatch`) mimic the [brackets-manager.js schema](https://github.com/Drarig29/brackets-manager.js/issues/111#issuecomment-997417423). */
 export interface Tournament {
 	settings: JSONColumnType<TournamentSettings>;
 	id: GeneratedAlways<number>;
@@ -839,9 +854,19 @@ export interface TournamentTeam {
 	startingBracketIdx: number | null;
 	activeRosterUserIds: JSONColumnTypeNullable<number[]>;
 	tournamentId: number;
+	/** Optional link to a sendou.ink team, for its avatar & name. */
 	teamId: number | null;
 	avatarImgId: number | null;
+	/** The team is shown on the tournament's LFG page. */
 	isLooking: Generated<DBBoolean>;
+	/**
+	 * Temporary team created automatically when an unregistered user joins the tournament's LFG.
+	 * - A registered team joining the LFG reuses itself, only toggling `isLooking`
+	 * - When a placeholder team's user registers for the tournament, the placeholder team is deleted and a regular team created
+	 * - When two placeholder teams merge the surviving team stops being a placeholder
+	 * - When a placeholder team and a registered team merge the registered team survives
+	 * - On merge, each member's `isStayAsSub` preference is kept
+	 */
 	isPlaceholder: Generated<DBBoolean>;
 	lfgNote: string | null;
 	chatRoomId: number | null;
@@ -1135,6 +1160,7 @@ export interface LiveStream {
 /** Account seen streaming the tournament while it was running, used to find match VoDs afterwards. */
 export interface TournamentStreamer {
 	id: GeneratedAlways<number>;
+	/** Null for cast accounts not linked to a sendou.ink user. */
 	userId: number | null;
 	tournamentId: number;
 	platform: StreamPlatform;
@@ -1150,6 +1176,7 @@ export interface ExternalStream {
 	createdAt: Generated<number>;
 }
 
+/** Past broadcast VoD of a tournament match with the offset to jump to the match. */
 export interface TournamentMatchVod {
 	id: GeneratedAlways<number>;
 	matchId: number;

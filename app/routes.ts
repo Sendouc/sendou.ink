@@ -19,14 +19,6 @@ const devOnlyRoutes =
 					"features/changelog/routes/changelog-image.tsx",
 				),
 				route(
-					"/components",
-					"features/components-showcase/routes/components.tsx",
-				),
-				route(
-					"/components/colors",
-					"features/components-showcase/routes/components.colors.tsx",
-				),
-				route(
 					"/comp-analyzer/all-ranges",
 					"features/comp-analyzer/routes/comp-analyzer.all-ranges.tsx",
 				),

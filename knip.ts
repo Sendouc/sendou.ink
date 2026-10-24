@@ -5,6 +5,18 @@ const config = {
 	},
 	tags: ["-lintignore"],
 	ignoreBinaries: ["ffmpeg", "ffprobe", "yt-dlp"],
+	astro: {
+		config: ["docs/site/astro.config.ts"],
+		entry: [
+			"docs/site/src/content.config.ts",
+			"docs/site/src/pages/**/*.astro",
+			"docs/site/src/content/**/*.mdx",
+			// referenced by path from astro.config.ts
+			"docs/site/src/components/MarkdownContent.astro",
+			"docs/site/src/components/SocialIcons.astro",
+			"docs/site/src/styles/theme.css",
+		],
+	},
 	entry: [
 		"app/features/*/routes/**/*.{ts,tsx}",
 		"migrations/**/*.ts",

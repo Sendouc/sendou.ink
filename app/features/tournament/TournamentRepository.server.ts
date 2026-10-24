@@ -301,7 +301,7 @@ export async function findById(id: number) {
 }
 
 /**
- * Who may act on the tournament, following the convention in docs/dev/permissions.md.
+ * Who may act on the tournament, following the convention in docs/site/src/content/docs/dev/permissions.mdx.
  * `ADMIN`, `ORGANIZE` and `MANAGE_MATCHES` come from {@link organizerPermissions}.
  *
  * - `EDIT_EVENT_INFO`: editing the calendar event the tournament belongs to. Organization
