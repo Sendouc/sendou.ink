@@ -2,6 +2,8 @@ import * as React from "react";
 import { isDeepEqual } from "remeda";
 import styles from "./TokenDocs.module.css";
 
+const ARROW_HEAD_SIZE = 8;
+
 type AnchorSide = "right" | "top" | "bottom";
 
 export interface Note {
@@ -161,9 +163,11 @@ export function Annotated({
 							<marker
 								key={state}
 								id={`${markerId}-${state}`}
-								markerWidth="8"
-								markerHeight="8"
-								refX="7"
+								viewBox="0 0 8 8"
+								markerUnits="userSpaceOnUse"
+								markerWidth={ARROW_HEAD_SIZE}
+								markerHeight={ARROW_HEAD_SIZE}
+								refX="0"
 								refY="4"
 								orient="auto"
 							>
@@ -273,17 +277,19 @@ function anchorPoint(rect: Rect, side: AnchorSide): Point {
 	}
 }
 
-/** S-curves through the gap between stage and notes, entering a right anchor horizontally so the arrow doesn't cross content */
+/** S-curves through the gap between stage and notes, entering a right anchor horizontally so the arrow doesn't cross content. Ends in a straight stub so the head lines up with it */
 function arrowPath({ start, anchor, side }: NoteGeometry, gutterX: number) {
 	const midX = (start.x + gutterX) / 2;
 	const verticalBend = 36;
 
 	if (side === "right") {
-		return `M ${start.x} ${start.y} C ${midX} ${start.y}, ${midX} ${anchor.y}, ${gutterX} ${anchor.y} L ${anchor.x} ${anchor.y}`;
+		return `M ${start.x} ${start.y} C ${midX} ${start.y}, ${midX} ${anchor.y}, ${gutterX} ${anchor.y} L ${anchor.x + ARROW_HEAD_SIZE} ${anchor.y}`;
 	}
 
-	const controlY =
-		side === "top" ? anchor.y - verticalBend : anchor.y + verticalBend;
+	const direction = side === "top" ? -1 : 1;
+	const lineEndY = anchor.y + direction * ARROW_HEAD_SIZE;
+	const curveEndY = lineEndY + direction * ARROW_HEAD_SIZE;
+	const controlY = curveEndY + direction * verticalBend;
 
-	return `M ${start.x} ${start.y} C ${midX} ${start.y}, ${anchor.x} ${controlY}, ${anchor.x} ${anchor.y}`;
+	return `M ${start.x} ${start.y} C ${midX} ${start.y}, ${anchor.x} ${controlY}, ${anchor.x} ${curveEndY} L ${anchor.x} ${lineEndY}`;
 }
