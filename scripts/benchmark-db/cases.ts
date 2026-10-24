@@ -888,6 +888,12 @@ export function buildCases(fx: Fixtures): {
 	add("PlayerStatRepository.findSeasonStagesByUserId", fx.sq, (sq) =>
 		PlayerStatRepository.findSeasonStagesByUserId(sq),
 	);
+	add("PlayerStatRepository.findMapResultsByUserIdAndSeasons", fx.sq, (sq) =>
+		PlayerStatRepository.findMapResultsByUserIdAndSeasons({
+			userId: sq.userId,
+			seasons: [sq.season, sq.season - 1, sq.season - 2, sq.season - 3],
+		}),
+	);
 	add("PlayerStatRepository.findSeasonMatesEnemiesByUserId", fx.sq, (sq) =>
 		PlayerStatRepository.findSeasonMatesEnemiesByUserId({
 			...sq,

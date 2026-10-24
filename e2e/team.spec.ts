@@ -19,7 +19,6 @@ import {
 } from "./helpers/playwright";
 import { createFormHelpers } from "./helpers/playwright-form";
 import { AnythingAdder } from "./pages/layout/anything-adder";
-import { SELECTED_MAP_CLASS } from "./pages/settings/map-mode-preferences-field";
 import { JoinTeamPage } from "./pages/team/join-team-page";
 import { NewTeamPage } from "./pages/team/new-team-page";
 import { TeamEditPage } from "./pages/team/team-edit-page";
@@ -105,8 +104,9 @@ test.describe("Team page", () => {
 		await expect(teamEdit.maps.preferenceRadio("SZ", "Prefer")).toBeChecked();
 		await expect(teamEdit.maps.preferenceRadio("TW", "Avoid")).toBeChecked();
 		await teamEdit.maps.selectModeTab("SZ");
-		await expect(teamEdit.maps.mapButton("SZ", 1)).toHaveClass(
-			SELECTED_MAP_CLASS,
+		await expect(teamEdit.maps.mapButton("SZ", 1)).toHaveAttribute(
+			"aria-pressed",
+			"true",
 		);
 
 		await teamEdit.removeMapPreferences();
@@ -116,8 +116,9 @@ test.describe("Team page", () => {
 		await expect(teamEdit.maps.preferenceRadio("SZ", "Neutral")).toBeChecked();
 		await expect(teamEdit.maps.preferenceRadio("TW", "Neutral")).toBeChecked();
 		await teamEdit.maps.selectModeTab("SZ");
-		await expect(teamEdit.maps.mapButton("SZ", 1)).not.toHaveClass(
-			SELECTED_MAP_CLASS,
+		await expect(teamEdit.maps.mapButton("SZ", 1)).toHaveAttribute(
+			"aria-pressed",
+			"false",
 		);
 
 		await teamEdit.goto(customUrl);
